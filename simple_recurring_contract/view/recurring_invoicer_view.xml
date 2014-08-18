@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Compassion (http://www.compassion.ch)
+    @author Cyril Sester <cyril.sester@outlook.com>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+<data>
+	<!-- Recurring invoicer tree view -->
+	<record id="view_recurring_invoicer_tree" model="ir.ui.view">
+		<field name="name">recurring.invoicer.tree</field>
+		<field name="model">recurring.invoicer</field>
+		<field name="priority" eval="8" />
+		<field name="arch" type="xml">
+			<tree string="Recurring invoicers" create="false">
+				<field name="identifier" />
+				<field name="generation_date" />
+				<field name="invoice_ids" />
+			</tree>
+		</field>
+	</record>
+	
+	<!-- Recurring invoicer form view -->
+	<record id="view_recurring_invoicer_form" model="ir.ui.view">
+		<field name="name">recurring.invoicer.form</field>
+		<field name="model">recurring.invoicer</field>
+		<field name="arch" type="xml">
+			<form string="Recurring invoicer" version="7.0" create="false">
+			<header>
+				<button name="validate_invoices" string="Validate invoices" type="object" class="oe_highlight" />
+				<button name="cancel_invoices" string="Cancel invoices" type="object" />
+			</header>
+			<sheet>
+			    <div class="oe_title">
+					<h1>
+						<field name="identifier" default_focus="1" />
+					</h1>
+				</div>
+				<separator />
+				<h2><label for="invoice_ids" /></h2>
+				<field name="invoice_ids" context="{'form_view_ref': 'account.invoice_form'}">
+				</field>
+			</sheet>
+			</form>
+		</field>
+	</record>
+	
+	<!-- Sidebar action, called from menu_recurring_invoicer_form menuitem -->
+	<record id="action_recurring_invoicer_form" model="ir.actions.act_window">
+		<field name="name">Generated invoices</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">recurring.invoicer</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+	</record>
+	
+	<menuitem id="menu_recurring_invoicer_form" parent="menu_contracts_section" action="action_recurring_invoicer_form" sequence="20"/>
+</data>
+</openerp>

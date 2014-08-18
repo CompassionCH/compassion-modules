@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Compassion (http://www.compassion.ch)
+    @author Cyril Sester <cyril.sester@outlook.com>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+<data>
+	<!-- Workflow header -->
+	<record model="workflow" id="wkf_simple_recurring_contract">
+		<field name="name">simple.recurring.contract.wkf</field>
+		<field name="osv">simple.recurring.contract</field>
+		<field name="on_create" eval='True' />
+	</record>
+
+	<!-- Workflow activities (what is done when state is reached) -->
+	<record model="workflow.activity" id="act_draft">
+		<field name="wkf_id" ref="wkf_simple_recurring_contract" />
+		<field name="flow_start" eval='True' />
+		<field name="name">draft</field>
+		<field name="kind">function</field>
+		<field name="action">contract_draft()</field>
+	</record>
+
+	<record model="workflow.activity" id="act_active">
+		<field name="wkf_id" ref="wkf_simple_recurring_contract" />
+		<field name="name">active</field>
+		<field name="kind">function</field>
+		<field name="action">contract_active()</field>
+	</record>
+
+	<record model="workflow.activity" id="act_terminated">
+		<field name="wkf_id" ref="wkf_simple_recurring_contract" />
+		<field name="name">terminated</field>
+		<field name="kind">function</field>
+		<field name="action">contract_terminated()
+							clean_invoices()</field>
+		<field name="flow_stop" eval='True' />
+	</record>
+
+	<!-- Workflow transitions (how are states reached) -->
+	<record model="workflow.transition" id="t1">
+		<field name="act_from" ref="act_draft" />
+		<field name="act_to" ref="act_active" />
+		<field name="signal">contract_validated</field>
+	</record>
+
+	<record model="workflow.transition" id="t2">
+		<field name="act_from" ref="act_active" />
+		<field name="act_to" ref="act_terminated" />
+		<field name="signal">contract_terminated</field>
+	</record>
+</data>
+</openerp>

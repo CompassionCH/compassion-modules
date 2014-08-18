@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<!--Fizzbuzz form view -->
+		<record id="view_fizzbuzz_form_advanced" model="ir.ui.view">
+			<field name="name">interview.fizzbuzz.form</field>
+			<field name="model">interview.fizzbuzz</field>
+            <field name="inherit_id" ref="coding_interview.view_fizzbuzz_form"/>
+			<field name="arch" type="xml">
+				<field name="result" position="after">
+                    <field name="result_advanced" />
+                </field>
+			</field>
+		</record>
+
+		<record id="view_fizzbuzz_tree_advanced" model="ir.ui.view">
+			<field name="name">interview.fizzbuzz.tree</field>
+			<field name="model">interview.fizzbuzz</field>
+            <field name="inherit_id" ref="coding_interview.view_fizzbuzz_tree"/>
+			<field name="arch" type="xml">
+				<field name="result" position="after">
+                    <field name="result_advanced" />
+                </field>
+			</field>
+		</record>
+
+    </data>
+</openerp>

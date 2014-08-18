@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+<data>
+	<!-- Workflow activities (what is done when state is reached) -->
+
+	<record model="workflow.activity" id="act_waiting">
+		<field name="wkf_id" ref="simple_recurring_contract.wkf_simple_recurring_contract" />
+		<field name="name">waiting</field>
+		<field name="kind">function</field>
+		<field name="action">contract_waiting()</field>
+	</record>
+    
+    <record model="workflow.activity" id="act_cancelled">
+		<field name="wkf_id" ref="simple_recurring_contract.wkf_simple_recurring_contract" />
+		<field name="name">cancelled</field>
+		<field name="kind">function</field>
+		<field name="action">contract_cancelled()</field>
+	</record>
+
+	<!-- Workflow transitions (how are states reached) -->
+	<record model="workflow.transition" id="simple_recurring_contract.t1">
+		<field name="act_from" ref="simple_recurring_contract.act_draft" />
+		<field name="act_to" ref="act_waiting" />
+		<field name="signal">contract_validated</field>
+	</record>
+	<record model="workflow.transition" id="simple_recurring_contract.t2">
+		<field name="act_from" ref="act_waiting" />
+		<field name="act_to" ref="act_cancelled" />
+		<field name="signal">contract_terminated</field>
+	</record>
+</data>
+</openerp>

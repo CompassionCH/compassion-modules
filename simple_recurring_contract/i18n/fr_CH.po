@@ -1,0 +1,613 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* simple_recurring_contract
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0-20140602-231022\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-08-11 14:18+0000\n"
+"PO-Revision-Date: 2014-08-11 16:31+0100\n"
+"Last-Translator: Cyril Sester\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fr_CH\n"
+"X-Generator: Poedit 1.6.6\n"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:123
+#: field:simple.recurring.contract,recurring_unit:0
+#, python-format
+msgid "Reccurency"
+msgstr "Fréquence"
+
+#. module: simple_recurring_contract
+#: field:account.invoice.line,contract_id:0
+#: code:addons/simple_recurring_contract/model/invoice.py:57
+#, python-format
+msgid "Source contract"
+msgstr "Contrat d'origine"
+
+#. module: simple_recurring_contract
+#: view:simple.recurring.contract:0
+msgid "Group By..."
+msgstr "Grouper par..."
+
+#. module: simple_recurring_contract
+#: field:simple.recurring.contract,is_advance:0
+msgid "is advance"
+msgstr "is advance"
+
+#. module: simple_recurring_contract
+#: field:simple.recurring.contract,message_unread:0
+msgid "Unread Messages"
+msgstr "Unread Messages"
+
+#. module: simple_recurring_contract
+#: field:simple.recurring.contract,next_advance_date:0
+msgid "Next advance date"
+msgstr "Prochaine date d'avance"
+
+#. module: simple_recurring_contract
+#: view:simple.recurring.contract:0
+msgid "Ended Contracts"
+msgstr "Contrats terminés"
+
+#. module: simple_recurring_contract
+#: field:simple.recurring.contract.line,subtotal:0
+msgid "Subtotal"
+msgstr "Sous-total"
+
+#. module: simple_recurring_contract
+#: view:recurring.invoicer.wizard:0
+msgid "Generate"
+msgstr "Générer"
+
+#. module: simple_recurring_contract
+#: view:recurring.invoicer:0
+msgid "Recurring invoicers"
+msgstr "Générateurs de facture récurrents"
+
+#. module: simple_recurring_contract
+#: model:ir.model,name:simple_recurring_contract.model_recurring_invoicer_wizard
+msgid "recurring.invoicer.wizard"
+msgstr "recurring.invoicer.wizard"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:143
+#: selection:simple.recurring.contract,advance_billing:0
+#, python-format
+msgid "Annual"
+msgstr "Annuelle"
+
+#. module: simple_recurring_contract
+#: view:simple.recurring.contract:0
+msgid "Payment term"
+msgstr "Conditions de paiement"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:123
+#: selection:simple.recurring.contract,recurring_unit:0
+#, python-format
+msgid "Year(s)"
+msgstr "Année(s)"
+
+#. module: simple_recurring_contract
+#: selection:account.invoice.line,state:0
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: simple_recurring_contract
+#: help:simple.recurring.contract,message_unread:0
+msgid "If checked new messages require your attention."
+msgstr "If checked new messages require your attention."
+
+#. module: simple_recurring_contract
+#: view:simple.recurring.contract.line:0
+msgid "Contract Lines"
+msgstr "Lignes de contrat"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:139
+#: selection:simple.recurring.contract,advance_billing:0
+#, python-format
+msgid "Bimonthly"
+msgstr "Bimensuelle"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:116
+#: view:simple.recurring.contract:0
+#: field:simple.recurring.contract,reference:0
+#, python-format
+msgid "Reference"
+msgstr "Référence"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:122
+#: selection:simple.recurring.contract,recurring_unit:0
+#, python-format
+msgid "Month(s)"
+msgstr "Mois"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:126
+#: model:ir.model,name:simple_recurring_contract.model_res_partner
+#: view:simple.recurring.contract:0
+#: field:simple.recurring.contract,partner_id:0
+#, python-format
+msgid "Partner"
+msgstr "Partenaire"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:124
+#: field:simple.recurring.contract,recurring_value:0
+#, python-format
+msgid "Generate every"
+msgstr "Générer chaque"
+
+#. module: simple_recurring_contract
+#: view:simple.recurring.contract:0
+msgid "Draft Contracts"
+msgstr "Contrat en brouillon"
+
+#. module: simple_recurring_contract
+#: view:simple.recurring.contract:0
+msgid "Active Contracts"
+msgstr "Contrats actifs"
+
+#. module: simple_recurring_contract
+#: field:account.invoice.line,state:0
+#: code:addons/simple_recurring_contract/model/invoice.py:60
+#, python-format
+msgid "State"
+msgstr "État"
+
+#. module: simple_recurring_contract
+#: field:simple.recurring.contract,message_follower_ids:0
+msgid "Followers"
+msgstr "Followers"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:173
+#: constraint:simple.recurring.contract:0
+#, python-format
+msgid "Error: Reference should be unique"
+msgstr "Erreur: La référence doit être unique"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:117
+#: view:simple.recurring.contract:0
+#: field:simple.recurring.contract,start_date:0
+#, python-format
+msgid "Start date"
+msgstr "Date de début"
+
+#. module: simple_recurring_contract
+#: model:ir.ui.menu,name:simple_recurring_contract.menu_invoice_automatic_generation
+msgid "Launch invoices generation"
+msgstr "Générer les factures"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/recurring_invoicer.py:72
+#, python-format
+msgid "There is no invoice to cancel"
+msgstr "Aucune facture à annuler"
+
+#. module: simple_recurring_contract
+#: help:simple.recurring.contract,message_summary:0
+msgid ""
+"Holds the Chatter summary (number of messages, ...). This summary is "
+"directly in html format in order to be inserted in kanban views."
+msgstr ""
+"Holds the Chatter summary (number of messages, ...). This summary is "
+"directly in html format in order to be inserted in kanban views."
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/recurring_invoicer.py:55
+#, python-format
+msgid "There is no invoice to validate"
+msgstr "Aucune facture à valider"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:125
+#: field:simple.recurring.contract,next_invoice_date:0
+#, python-format
+msgid "Next invoice date"
+msgstr "Prochaine date de facturation"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:142
+#: selection:simple.recurring.contract,advance_billing:0
+#, python-format
+msgid "Bi-annual"
+msgstr "Semestrielle"
+
+#. module: simple_recurring_contract
+#: view:recurring.invoicer.wizard:0
+msgid ""
+"By default, all customer contracts are going to be checked and invoices "
+"generated for those who have next invoice date reached."
+msgstr ""
+"Par défaut, tous les clients sont vérifiées et les factures sont générées "
+"pour les contrat ayant atteint la date de prochaine facturation."
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:121
+#: selection:simple.recurring.contract,recurring_unit:0
+#, python-format
+msgid "Week(s)"
+msgstr "Semaine(s)"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/recurring_invoicer.py:36
+#: field:recurring.invoicer,identifier:0
+#, python-format
+msgid "Identifier"
+msgstr "Identifiant"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:195
+#, python-format
+msgid "You cannot delete a contract that is still active. Terminate it first."
+msgstr ""
+"Vous ne pouvez pas supprimer un contrat actif. Commencez par le terminer."
+
+#. module: simple_recurring_contract
+#: field:account.invoice.line,due_date:0
+#: code:addons/simple_recurring_contract/model/invoice.py:58
+#, python-format
+msgid "Due date"
+msgstr "Date d'échéance"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:144
+#: help:simple.recurring.contract,advance_billing:0
+#, python-format
+msgid ""
+"Advance billing allows you to generate invoices in advance. For example, you "
+"can generate the invoices for each month of the year and send them to the "
+"customer in january."
+msgstr ""
+"La facturation en avance vous permet de générer plusieurs factures en "
+"avance. Par exemple, vous pouvez générer des factures pour chaque mois de "
+"l'année et les envoyer au client au mois de janvier."
+
+#. module: simple_recurring_contract
+#: view:simple.recurring.contract:0
+msgid "Terminate"
+msgstr "Terminer"
+
+#. module: simple_recurring_contract
+#: model:ir.model,name:simple_recurring_contract.model_account_invoice_line
+msgid "Invoice Line"
+msgstr "Ligne de facture"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:127
+#: view:simple.recurring.contract:0
+#: field:simple.recurring.contract,invoice_line_ids:0
+#, python-format
+msgid "Related invoice lines"
+msgstr "Lignes de facture associées"
+
+#. module: simple_recurring_contract
+#: view:recurring.invoicer.wizard:0
+msgid "or"
+msgstr "ou"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:132
+#: view:simple.recurring.contract:0
+#: selection:simple.recurring.contract,state:0
+#, python-format
+msgid "Terminated"
+msgstr "Terminé"
+
+#. module: simple_recurring_contract
+#: view:recurring.invoicer.wizard:0
+msgid "Invoice generation"
+msgstr "Génération de factures"
+
+#. module: simple_recurring_contract
+#: selection:account.invoice.line,state:0
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:130
+#: view:simple.recurring.contract:0
+#: selection:simple.recurring.contract,state:0
+#, python-format
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:140
+#: selection:simple.recurring.contract,advance_billing:0
+#, python-format
+msgid "Quarterly"
+msgstr "Trimestrielle"
+
+#. module: simple_recurring_contract
+#: model:ir.model,name:simple_recurring_contract.model_recurring_invoicer
+msgid "recurring.invoicer"
+msgstr "recurring.invoicer"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/recurring_invoicer.py:37
+#: code:addons/simple_recurring_contract/wizard/recurring_invoicer_wizard.py:35
+#: field:recurring.invoicer,generation_date:0
+#: field:recurring.invoicer.wizard,generation_date:0
+#, python-format
+msgid "Generation date"
+msgstr "Date de génération"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:133
+#: view:simple.recurring.contract:0 field:simple.recurring.contract,state:0
+#, python-format
+msgid "Status"
+msgstr "Statut"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:39
+#: model:ir.actions.act_window,name:simple_recurring_contract.action_recurring_contract_form
+#: model:ir.ui.menu,name:simple_recurring_contract.menu_contracts_section
+#: model:ir.ui.menu,name:simple_recurring_contract.menu_recurring_contract_form
+#: view:res.partner:0 view:simple.recurring.contract:0
+#, python-format
+msgid "Contracts"
+msgstr "Contrats"
+
+#. module: simple_recurring_contract
+#: selection:account.invoice.line,state:0
+msgid "Paid"
+msgstr "Payé"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/recurring_invoicer.py:38
+#: code:addons/simple_recurring_contract/wizard/recurring_invoicer_wizard.py:34
+#: model:ir.actions.act_window,name:simple_recurring_contract.action_recurring_invoicer_form
+#: model:ir.ui.menu,name:simple_recurring_contract.menu_recurring_invoicer_form
+#: field:recurring.invoicer,invoice_ids:0
+#: field:recurring.invoicer.wizard,invoice_ids:0
+#, python-format
+msgid "Generated invoices"
+msgstr "Factures générées"
+
+#. module: simple_recurring_contract
+#: field:simple.recurring.contract,message_is_follower:0
+msgid "Is a Follower"
+msgstr "Is a Follower"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:131
+#: view:simple.recurring.contract:0
+#: selection:simple.recurring.contract,state:0
+#, python-format
+msgid "Active"
+msgstr "Actif"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:143
+#: field:simple.recurring.contract,advance_billing:0
+#, python-format
+msgid "Advance billing"
+msgstr "Facturation à l'avance"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:73
+#: view:simple.recurring.contract:0
+#: field:simple.recurring.contract.line,contract_id:0
+#, python-format
+msgid "Contract"
+msgstr "Contrat"
+
+#. module: simple_recurring_contract
+#: field:simple.recurring.contract,message_summary:0
+msgid "Summary"
+msgstr "Summary"
+
+#. module: simple_recurring_contract
+#: model:ir.actions.act_window,name:simple_recurring_contract.action_invoice_automatic_generation
+msgid "Automatic invoice generation from contracts"
+msgstr "Génération de facture automatique à partir de contrats"
+
+#. module: simple_recurring_contract
+#: model:ir.model,name:simple_recurring_contract.model_simple_recurring_contract_line
+msgid "A contract line"
+msgstr "A contract line"
+
+#. module: simple_recurring_contract
+#: view:recurring.invoicer:0
+msgid "Recurring invoicer"
+msgstr "Générateur de facture récurrent"
+
+#. module: simple_recurring_contract
+#: view:simple.recurring.contract:0
+msgid "Validate"
+msgstr "Valider"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:76
+#: field:simple.recurring.contract.line,quantity:0
+#, python-format
+msgid "Quantity"
+msgstr "Quantité"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:118
+#: view:simple.recurring.contract:0 field:simple.recurring.contract,end_date:0
+#, python-format
+msgid "End date"
+msgstr "Date de fin"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:141
+#: selection:simple.recurring.contract,advance_billing:0
+#, python-format
+msgid "Four-monthly"
+msgstr "Quadrimensuel"
+
+#. module: simple_recurring_contract
+#: view:recurring.invoicer.wizard:0
+msgid "Invoice generation from contracts"
+msgstr "Génération de factures à partir de contrats"
+
+#. module: simple_recurring_contract
+#: model:ir.model,name:simple_recurring_contract.model_account_invoice
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: simple_recurring_contract
+#: field:account.invoice,recurring_invoicer_id:0
+#: code:addons/simple_recurring_contract/model/invoice.py:30
+#, python-format
+msgid "Invoicer"
+msgstr "Générateur de facture"
+
+#. module: simple_recurring_contract
+#: view:recurring.invoicer.wizard:0
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: simple_recurring_contract
+#: selection:account.invoice.line,state:0
+msgid "Pro-forma"
+msgstr "Pro-forma"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:128
+#: view:simple.recurring.contract:0
+#: field:simple.recurring.contract,contract_line_ids:0
+#, python-format
+msgid "Contract lines"
+msgstr "Contract lines"
+
+#. module: simple_recurring_contract
+#: view:recurring.invoicer:0
+msgid "Cancel invoices"
+msgstr "Annuler factures"
+
+#. module: simple_recurring_contract
+#: model:ir.model,name:simple_recurring_contract.model_simple_recurring_contract
+msgid "Recurrent invoicing with contracts"
+msgstr "Facturation récurrente basé sur des contrats"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:120
+#: selection:simple.recurring.contract,recurring_unit:0
+#, python-format
+msgid "Day(s)"
+msgstr "Jour(s)"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:74
+#: field:simple.recurring.contract.line,product_id:0
+#, python-format
+msgid "Product"
+msgstr "Produit"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:75
+#: field:simple.recurring.contract.line,amount:0
+#, python-format
+msgid "Price"
+msgstr "Prix"
+
+#. module: simple_recurring_contract
+#: model:ir.actions.act_window,help:simple_recurring_contract.action_recurring_contract_form
+msgid ""
+"<p class=\"oe_view_nocontent_create\">\n"
+"\t\t\tClick to add a contract.\n"
+"\t\t  </p><p>\n"
+"\t\t\tOpenERP helps you to generate recurrent invoices.\n"
+"\t\t  </p>\n"
+"\t\t"
+msgstr ""
+"<p class=\"oe_view_nocontent_create\">\n"
+"Cliquer pour ajouter un contrat.\n"
+"</p><p>\n"
+"OpenERP vous permet de gérer une facturation récurrente basée sur des "
+"contrats.\n"
+"</p>\n"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/wizard/recurring_invoicer_wizard.py:36
+#: field:recurring.invoicer.wizard,group_invoices:0
+#, python-format
+msgid "Group invoices"
+msgstr "Regrouper les factures"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/wizard/recurring_invoicer_wizard.py:36
+#: help:recurring.invoicer.wizard,group_invoices:0
+#, python-format
+msgid ""
+"If true, all invoice lines generated for a same customer             are "
+"grouped into the same invoice. Otherwise, an invoice is generated for each "
+"contract."
+msgstr ""
+"Si vrai, toutes les lignes générées pour un même partenaire sont groupées "
+"dans une même facture. Autrement, une facture est générée pour chaque "
+"contrat."
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:53
+#, python-format
+msgid "You cannot delete a partner having an active contract."
+msgstr "Vous ne pouvez pas supprimer un partenaire ayant des contrats actifs."
+
+#. module: simple_recurring_contract
+#: view:simple.recurring.contract:0
+msgid "Search contract"
+msgstr "Chercher contrat"
+
+#. module: simple_recurring_contract
+#: field:simple.recurring.contract,message_ids:0
+msgid "Messages"
+msgstr "Messages"
+
+#. module: simple_recurring_contract
+#: help:simple.recurring.contract,message_ids:0
+msgid "Messages and communication history"
+msgstr "Messages and communication history"
+
+#. module: simple_recurring_contract
+#: view:recurring.invoicer:0
+msgid "Validate invoices"
+msgstr "Valider les factures"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:137
+#: field:simple.recurring.contract,payment_term_id:0
+#, python-format
+msgid "Payment Term"
+msgstr "Condition de payment"
+
+#. module: simple_recurring_contract
+#: code:addons/simple_recurring_contract/model/simple_recurring_contract.py:134
+#: help:simple.recurring.contract,state:0
+#, python-format
+msgid ""
+" * The 'Draft' status is used when a user is encoding a new and unconfirmed "
+"Contract.\n"
+"* The 'Active' status is used when the contract is confirmed and until it's "
+"terminated.\n"
+"* The 'Terminated' status is used when a contract is no longer active."
+msgstr ""
+" * Le statut 'Brouillon' est utilisé lorsqu'un utilisateur rempli un contrat "
+"non confirmé.\n"
+"* Le statut 'Actif' est utilisé lorsqu'un contrat a été confirmé et jusqu'à "
+"ce qu'il soit terminé.\n"
+"* Le statut 'Terminé' est utilisé lorsqu'un contrat n'est plus actif."
+
+#. module: simple_recurring_contract
+#: selection:account.invoice.line,state:0
+msgid "Open"
+msgstr "Ouvert"
+
+#. module: simple_recurring_contract
+#: view:simple.recurring.contract:0
+#: field:simple.recurring.contract,total_amount:0
+msgid "Total"
+msgstr "Total"

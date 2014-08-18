@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Compassion (http://www.compassion.ch)
+    @author Cyril Sester <cyril.sester@outlook.com>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+<data noupdate="1">
+	<record id="recurring_contract_bvr_seq_type" model="ir.sequence.type">
+		<field name="name">Contract BVR Reference</field>
+		<field name="code">contract.bvr.ref</field>
+	</record>
+
+	<record id="recurring_contract_bvr_seq" model="ir.sequence">
+		<field name="name">Contract BVR Reference</field>
+		<field name="code">contract.bvr.ref</field>
+		<field name="prefix">004874969</field>
+		<field name="padding" eval="17"/>
+	</record>
+</data>
+</openerp>

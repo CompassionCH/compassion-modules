@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<!-- Top menu item -->
+		<menuitem name="Utilities"
+			id="menu_fizzbuzz_root"
+			sequence="5"/>
+
+		<!--Fizzbuzz form view -->
+		<record id="view_fizzbuzz_form" model="ir.ui.view">
+			<field name="name">interview.fizzbuzz.form</field>
+			<field name="model">interview.fizzbuzz</field>
+			<field name="arch" type="xml">
+				<form string="Fizzbuzz" version="7.0">
+					<sheet>
+						<div class="oe_title">
+							<label for="name" class="oe_edit_only"/>
+							<h1>
+								<field name="name"/>
+							</h1>
+						</div>
+						<div class="oe_right oe_button_box" name="button_box">
+							<!-- Put here related buttons -->
+						</div>
+						<notebook>
+							<page string="General Information">
+								<group>
+									<field name="start" />
+									<field name="end" />
+									<field name="result" readonly="1" />
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_fizzbuzz_tree" model="ir.ui.view">
+			<field name="name">interview.fizzbuzz.tree</field>
+			<field name="model">interview.fizzbuzz</field>
+			<field name="arch" type="xml">
+				<tree string="Fizzbuzz">
+					<field name="name" />
+					<field name="start" />
+					<field name="end" />
+					<field name="result" />
+				</tree>
+			</field>
+		</record>
+		 
+		<record id="open_view_children_tree" model="ir.actions.act_window">
+            <field name="name">Fizzbuzz Runs</field>
+            <field name="res_model">interview.fizzbuzz</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="view_fizzbuzz_tree"/>
+            <!--<field name="search_view_id" ref="view_fizzbuzz_filter"/>-->
+        </record>
+		
+		<menuitem id="menu_fizzbuzz_section" parent="menu_fizzbuzz_root" name="Fizzbuzz" sequence="0"/>
+		<menuitem id="menu_fizzbuzz_children" parent="menu_fizzbuzz_section" name="Fizzbuzz Runs" action="open_view_children_tree" sequence="0"/>
+
+    </data>
+</openerp>

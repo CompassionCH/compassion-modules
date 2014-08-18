@@ -1,0 +1,1293 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* sponsorship_compassion
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0-20140602-231022\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-08-13 09:55+0000\n"
+"PO-Revision-Date: 2014-08-13 12:04+0100\n"
+"Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
+"Language-Team: \n"
+"Language: fr_CH\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.6.4\n"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/child_compassion.py:32
+#: field:compassion.child,type:0
+#, python-format
+msgid "Type of sponsorship program"
+msgstr "Type de parrainage"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_hai_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_hai
+msgid ""
+"Thanks to your donation, the families touched by the terrible earthquake "
+"in \n"
+"\t\t\tHaiti can receive a precious help. Compassion is currently bringing "
+"support and food to the affected \n"
+"\t\t\tfamilies and giving them all the necessary support. The emergency fund "
+"will also enable Compassion to \n"
+"\t\t\trebuild damaged or destroyed centers by the disaster.\n"
+"\t\t\tYour support is essential and represents a clear sign of hope to the "
+"sponsored children, their \n"
+"\t\t\tfamilies, the staff of Compassion and the partner churches in Haiti."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_isc_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_isc
+msgid "International Staff Care Fund"
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_ovc_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_ovc
+msgid "\"Highly Vulnerable Children\" Fund"
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:ir.actions.act_window,name:sponsorship_compassion.open_view_project_tree
+msgid "project Structure"
+msgstr "Structure du projet"
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0
+msgid "Group By..."
+msgstr "Grouper par..."
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_gift_birthday_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_gift_birthday
+msgid "Birthday Gift"
+msgstr "Cadeau d'anniversaire"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_mds_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_mds
+msgid ""
+"On behalf of of Raymond Girardet, we thank you for your donation \n"
+"\t\t\twhich will allow him to realize his project."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/child_compassion.py:33
+#: field:compassion.child,date:0
+#, python-format
+msgid "Allocation date"
+msgstr "Date d'attribution"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_csp_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_csp
+msgid ""
+"The CSP Fund  (Child Survival Program) allows us to support 3 CSP centers,\n"
+"\t\t\ttwo in Haiti and one in Ecuador. Each CSP center welcomes around 30 "
+"mothers and their babies and \n"
+"\t\t\tpregnant women. These women receive training, practical assistance, "
+"food, thorough medical checks \n"
+"\t\t\ton a regular basis and Bible lessons.\n"
+"\n"
+"\t\t\tWe are very grateful to you for your interest towards mothers and "
+"their babies and for the hope you \n"
+"\t\t\tare bringing to them through your help."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0
+msgid "Paid invoice lines"
+msgstr "Lignes de facture payés"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_product_standard_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_sponsorship
+msgid "Standard Sponsorship"
+msgstr "Parrainage standard"
+
+#. module: sponsorship_compassion
+#: view:simple.recurring.contract:0
+msgid "draft,active,waiting,terminated"
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:product.category,name:sponsorship_compassion.product_category_gift
+msgid "Sponsor gifts"
+msgstr "Cadeaux de parrain"
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0
+msgid "Search invoice lines"
+msgstr "Chercher lignes de facture"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_nol_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_nol
+msgid ""
+"Thanks to the Christmas Gift Fund, we can offer a Christmas gift to \n"
+"\t\t\teach child registered in a Compassion center. It prevents inequalities "
+"between the children \n"
+"\t\t\tat least at this special time of the year.\n"
+"\t\t\tWe are very grateful for your donation by which you share the joy of "
+"Christmas with each \n"
+"\t\t\tchild of Compassion."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_gen_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_gen
+msgid "General Fund"
+msgstr "Fond général"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_phi_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_phi
+msgid ""
+"Thanks to your donation, the families touched by the typhoon in \n"
+"\t\t\tthe Philippines can receive a precious help. Compassion Philippines "
+"continues to distribute \n"
+"\t\t\tfood as well as first aid material and bring the necessary support to "
+"all who have been affected \n"
+"\t\t\tby the floods.\n"
+"\n"
+"\t\t\tYour support is essential and brings new hope to the families of "
+"sponsored children, the staff \n"
+"\t\t\tof Compassion and the partner churches."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0
+msgid "Last payment"
+msgstr "Dernier paiement"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_ovc_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_ovc
+msgid ""
+"Compassion's Highly Vulnerable Children's Fund provides food, \n"
+"\t\t\tclothing and a nurturing Christian home environment to children in "
+"poverty who are orphans \n"
+"\t\t\tor who have no adult caretakers."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_bfa_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_bfa
+msgid ""
+"Thanks to your donation, the sponsored children and their families \n"
+"\t\t\ttouched by the recent floods in Burkina Faso can receive a precious "
+"help. Compassion Burkina \n"
+"\t\t\tFaso has already started to bring support and food to the affected "
+"families and will start to \n"
+"\t\t\twork at the rebuilding of damaged or destroyed centers or houses as "
+"soon as possible.\n"
+"\t\t\tYour support is essential and is a real sign of hope for the sponsored "
+"children, their families, \n"
+"\t\t\tthe staff of Compassion and the partner churches."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_sgi_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_sgi
+msgid "Special gift"
+msgstr "Cadeau spécial"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_mds_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_mds
+msgid "Project \"Marathon des Sables\""
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_gift_general_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_gift_gen
+msgid "General Gift"
+msgstr "Cadeau général"
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,note:sponsorship_compassion.payment_term_lsv
+msgid "LSV immediate"
+msgstr "LSV immédiat"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_compassion_child
+msgid "compassion.child"
+msgstr "compassion.child"
+
+#. module: sponsorship_compassion
+#: view:res.partner:0
+msgid "Show transactions"
+msgstr "Montrer les transactions"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_pro_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_pro
+msgid ""
+"The professional fund allows many young sponsored people to receive \n"
+"\t\t\ta professional training before they finish the sponsorship program.\n"
+"\t\t\tThanks to your support we can continue to offer this service on a long-"
+"term basis and we are \n"
+"\t\t\tvery grateful to you for your help."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: field:account.invoice.line,last_payment:0
+#: code:addons/sponsorship_compassion/model/invoice_line.py:61
+#, python-format
+msgid "Last Payment"
+msgstr "Dernier paiement"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_aid_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_aid
+msgid "AIDS/HIV Fund"
+msgstr "Fond SIDA/HIV"
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0
+#: code:addons/sponsorship_compassion/model/contracts.py:79
+#: view:simple.recurring.contract:0
+#: selection:simple.recurring.contract,state:0
+#, python-format
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_product_ldp_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_sponsorship_ldp
+msgid "LDP Sponsorship"
+msgstr "Parrainage LDP"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/contracts.py:76
+#: selection:simple.recurring.contract,state:0
+#, python-format
+msgid "Waiting Payment"
+msgstr "En Création"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_kgs_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_kgs
+msgid "Kids Games Burkina Faso"
+msgstr "Kids Games Burkina Faso"
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,name:sponsorship_compassion.payment_term_bvr
+msgid "BVR"
+msgstr "BVR"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_csp_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_csp
+msgid "Child Survival Program"
+msgstr ""
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/project_compassion.py:28
+#: field:compassion.project,code:0
+#, python-format
+msgid "Project code"
+msgstr "Code du projet"
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0
+msgid "Draft invoice lines"
+msgstr "Lignes de contrat en brouillon"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_usp_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_usp
+msgid ""
+"Your donation to the \"Unsponsored Children Fund\" unlocks the benefits \n"
+"\t\t\tof Compassion's program for children who have been registered but not "
+"yet been sponsored. Your \n"
+"\t\t\tgift to this fund also encourages parents and program staff as they "
+"see Compassion benefits at \n"
+"\t\t\twork for the children they love, even as they wait — and hope — for "
+"sponsors.\n"
+"\n"
+"\t\t\tWe thank you very much for your precious support."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_haf_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_haf
+msgid "Cholera in Haiti - Filter action"
+msgstr "Choléra en Haïti - Action filtres"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_usp_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_usp
+msgid "Unsponsored Children Fund"
+msgstr "Fond pour les enfants non-parrainés"
+
+#. module: sponsorship_compassion
+#: view:simple.recurring.contract:0
+msgid "Search contract"
+msgstr "Chercher contrat"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_pro_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_pro
+msgid "Professional Fund"
+msgstr "Fond professionnel"
+
+#. module: sponsorship_compassion
+#: model:ir.ui.menu,name:sponsorship_compassion.menu_sponsorship_project
+msgid "Projects"
+msgstr "Projets"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_product_ldp_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_sponsorship_ldp
+msgid "Sponsorship for LDP Students."
+msgstr "Parrainage pour étudiants LDP."
+
+#. module: sponsorship_compassion
+#: model:ir.actions.act_window,name:sponsorship_compassion.open_view_children_tree
+msgid "Children Structure"
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_res_partner
+msgid "Partner"
+msgstr "Partenaire"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/contracts.py:102
+#, python-format
+msgid ""
+"The reference of the partner has not been set, or is in wrong format.Please "
+"make sure to enter a valid BVR reference for the contract."
+msgstr ""
+"La référence du partenaire n'a pas été définie ou n'a pas le bon format. "
+"Veuillez vous assurer d'insérer une référence BVR valide pour le contrat."
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_fam_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_fam
+msgid "Famine Fund"
+msgstr "Fond contre la famine"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_phi_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_phi
+msgid "Relief Fund Philippines"
+msgstr "Fond d'assistance pour les Philippines"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_ldp_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_ldp
+msgid ""
+"Thanks to the LDP Fund, we currently support 3 LDP students, Alfredo and \n"
+"\t\t\tHellen from Ecuador and Tamirat from Ethiopia. The Leadership "
+"Development Program allows gifted young \n"
+"\t\t\tChristian people who have arrived at the end of their sponsorship to "
+"go to University and be trained \n"
+"\t\t\tas Christian leaders. In the coming years, these young people will be "
+"able to positively influence \n"
+"\t\t\ttheir nation for God.\n"
+"\t\t\tThrough your donation you are offering these students a chance for a "
+"promising future and we are very \n"
+"\t\t\tgrateful to you for your support."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:account.analytic.account,name:sponsorship_compassion.account_analytic_account_des
+msgid "DES"
+msgstr "DES"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_wol_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_wol
+msgid ""
+"Thanks to your donation. It allows us to finance water filters \n"
+"\t\t\tto provide sponsored children, their families, their community and "
+"villages with drinking \n"
+"\t\t\twater, in the poorest regions of the world.\n"
+"\t\t\tThis help would not be possible without you and we are very grateful "
+"for your support."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/child_compassion.py:33
+#: help:compassion.child,date:0
+#, python-format
+msgid "The date at which Compass allocated this child to Switzerland"
+msgstr "Date à laquelle l'enfant a été attribué à la Suisse par Compass"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_don_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_don
+msgid "Compassion Suisse grant"
+msgstr "Fond Compassion Suisse"
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0
+msgid "State"
+msgstr "État"
+
+#. module: sponsorship_compassion
+#: model:account.analytic.account,name:sponsorship_compassion.account_analytic_account_root
+msgid "root"
+msgstr "racine"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_hai_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_hai
+msgid "Disaster Fund Haiti"
+msgstr "Fond catastrophe à Haïti"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_recurring_invoicer
+msgid "recurring.invoicer"
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_urg_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_urg
+msgid ""
+"Thanks to your donation to the humanitarian emergency fund, \n"
+"\t\t\tyou make it possible for the Compassion staff to bring the needed help "
+"immediately to \n"
+"\t\t\tthe families of sponsored children who are touched by a natural "
+"disaster, famine or \n"
+"\t\t\tany other tragedy.\n"
+"\t\t\tFood, covers, shelters and replacement of certains belongings are "
+"commonly covered by this fund.\n"
+"\n"
+"\t\t\tYour support is essential and brings new hope to the families of "
+"sponsorchildren, the staff \n"
+"\t\t\tof Compassion and the partner churches."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:account.analytic.account,name:sponsorship_compassion.account_analytic_account_ps
+msgid "PS"
+msgstr "PS"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_loc_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_loc
+msgid "Local projects"
+msgstr "Projets locaux"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_c20_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_c20
+msgid "CSP HA-C20 in Ecuador"
+msgstr "CSP HA-C20 en Equateur"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_c3b_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_c3b
+msgid "Cicerolandia BR473 project fund - supported by C3"
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_bib_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_bib
+msgid "Bible fund"
+msgstr "Fond pour les bibles"
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,name:sponsorship_compassion.payment_term_lsv
+#: model:account.payment.term,note:sponsorship_compassion.payment_term_lsv_25th
+#: model:account.payment.term,note:sponsorship_compassion.payment_term_lsv_multi_months
+#: code:addons/sponsorship_compassion/model/contracts.py:127
+#, python-format
+msgid "LSV"
+msgstr "LSV"
+
+#. module: sponsorship_compassion
+#: model:product.category,name:sponsorship_compassion.product_category_fund
+msgid "Fund"
+msgstr "Fond"
+
+#. module: sponsorship_compassion
+#: selection:compassion.child,type:0
+msgid "LDP"
+msgstr "LDP"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_c20_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_c20
+msgid ""
+"With your donation, you support the CSP (child survival program) in \n"
+"\t\t\tEcuador. The center welcomes around 30 mothers and their babies and "
+"pregnant women. These women \n"
+"\t\t\treceive training, practical assistance, food, thorough medical checks "
+"on a regular basis and Bible lessons.\n"
+"\n"
+"\t\t\tWe are very grateful to you for your interest towards mothers and "
+"their babies and for the hope you \n"
+"\t\t\tare bringing to them through your help."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_kgs_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_kgs
+msgid ""
+"Your support helps the organizer of the Kids Games to plan this event \n"
+"\t\t\tfor the first time in Burkina Faso. Your support also helps many of "
+"the children in the sponsorship \n"
+"\t\t\tprogram to take part of this event."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_anl_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_anl
+msgid "Compassion Suisse"
+msgstr "Compassion Suisse"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/contracts.py:72
+#: field:simple.recurring.contract,first_payment_date:0
+#, python-format
+msgid "First payment date"
+msgstr "Date de premier paiement"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_gen_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_gen
+msgid ""
+"Thanks to your donation to the General Fund, through your help we can "
+"offer \n"
+"\t\t\ta concrete help and a new future to many children on the field and "
+"restore hope in their lives."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: view:simple.recurring.contract:0
+msgid "onchange_partner_id(partner_id)"
+msgstr ""
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/contracts.py:66
+#: field:simple.recurring.contract,child_code:0
+#, python-format
+msgid "Sponsored child code"
+msgstr "Code enfant"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_med_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_med
+msgid ""
+"Thanks to your donation to the medical fund we can offer each \n"
+"\t\t\tsponsored child affected by a serious illness the necessary medical "
+"care and that way \n"
+"\t\t\trestore both health and hope. Apart from this we can also finance "
+"complementary interventions \n"
+"\t\t\tsuch as a vaccination campaign for several Compassion centers, "
+"distribution of mosquito nets \n"
+"\t\t\tto families that are registered in the Compassion program."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,name:sponsorship_compassion.payment_term_postfinance_dd_multi_months
+msgid "Postfinance Direct Debit multi-months"
+msgstr "Postfinance Débit Direct multi-mois"
+
+#. module: sponsorship_compassion
+#: model:ir.ui.menu,name:sponsorship_compassion.menu_sponsorship_root
+#: model:ir.ui.menu,name:sponsorship_compassion.menu_sponsorship_section
+#: model:product.category,name:sponsorship_compassion.product_category_sponsorship
+#: model:product.template,name:sponsorship_compassion.product_fund_par_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_par
+#: selection:simple.recurring.contract,type:0
+msgid "Sponsorship"
+msgstr "Parrainage"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_ldp_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_ldp
+msgid "LDP Fund"
+msgstr "Fond LDP"
+
+#. module: sponsorship_compassion
+#: model:account.analytic.account,name:sponsorship_compassion.account_analytic_account_fund
+msgid "FUND"
+msgstr "FUND"
+
+#. module: sponsorship_compassion
+#: model:account.analytic.account,name:sponsorship_compassion.account_analytic_account_undes
+msgid "UNDES"
+msgstr "UNDES"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_c13_product_template
+#: model:product.template,description:sponsorship_compassion.product_fund_c46_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_c13
+#: model:product.template,description:sponsorship_compassion.product_template_fund_c46
+msgid ""
+"With your donation, you support the CSP (child survival program) in \n"
+"\t\t\tHaiti. The center welcomes around 30 mothers and their babies and "
+"pregnant women. These women \n"
+"\t\t\treceive training, practical assistance, food, thorough medical checks "
+"on a regular basis and Bible lessons.\n"
+"\n"
+"\t\t\tWe are very grateful to you for your interest towards mothers and "
+"their babies and for the hope you \n"
+"\t\t\tare bringing to them through your help."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_compassion_project
+msgid "compassion.project"
+msgstr "compassion.project"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/contracts.py:128
+#, python-format
+msgid "Direct Debit"
+msgstr "Débit Direct"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_gift_graduation_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_gift_graduation
+msgid "Graduation Gift"
+msgstr "Cadeau de promotion"
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,note:sponsorship_compassion.payment_term_virement
+msgid "Bank Transfer Immediate"
+msgstr "Transfert bancaire immédiat"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_account_invoice_line
+msgid "Invoice Line"
+msgstr "Ligne de facture"
+
+#. module: sponsorship_compassion
+#: view:compassion.child:0
+#: model:ir.ui.menu,name:sponsorship_compassion.menu_sponsorship_children
+msgid "Children"
+msgstr "Enfants"
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,note:sponsorship_compassion.payment_term_postfinance_dd_multi_months
+msgid "Postfinance direct"
+msgstr "Postfinance direct"
+
+#. module: sponsorship_compassion
+#: field:res.partner,contracts_correspondant:0
+#: field:res.partner,contracts_fully_managed:0
+#: field:res.partner,contracts_paid:0
+#: field:simple.recurring.contract,fully_managed:0
+msgid "unknown"
+msgstr "inconnu"
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,name:sponsorship_compassion.payment_term_postfinance_dd_25th
+msgid "Postfinance Direct Debit 25th"
+msgstr "Postfinance Débit Direct au 25"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_cal_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_cal
+msgid "Calendar"
+msgstr "Calendrier"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_cal_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_cal
+msgid ""
+"Thanks to your donation, you help us to finance our calendar which \n"
+"\t\t\tis a precious communication tool to make our work known in many "
+"households during the year. \n"
+"\t\t\tWe also can offer a concrete help and a new future to many children on "
+"the field and restore \n"
+"\t\t\thope in their lives.\n"
+"\n"
+"\t\t\tWe thank you very much for your support."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:account.analytic.account,name:sponsorship_compassion.account_analytic_account_inc
+msgid "INC"
+msgstr "INC"
+
+#. module: sponsorship_compassion
+#: view:res.partner:0
+msgid "Contracts fully managed"
+msgstr "Contrats entièrement gérés"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_kdo_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_kdo
+msgid "Child gift"
+msgstr "Cadeau enfant"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_kdo_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_kdo
+msgid ""
+"Thanks to your gift that will be entirely allocated to them, the family of \n"
+"\t\t\tyour sponsored child will receive a precious additional help to cover "
+"their special needs and to \n"
+"\t\t\timprove their living conditions.\n"
+"\t\t\tWe are very grateful for your complementary support to your sponsored "
+"child and his family that \n"
+"\t\t\tbrings more hope and great encouragement to them."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: selection:compassion.child,type:0
+msgid "CDSP"
+msgstr "CDSP"
+
+#. module: sponsorship_compassion
+#: view:simple.recurring.contract:0
+msgid "Child name"
+msgstr "Nom de l'enfant"
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,note:sponsorship_compassion.payment_term_bvr
+msgid "BVR immediate"
+msgstr "BVR immédiat"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_mag_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_mag
+msgid ""
+"Thanks to your donation you have subscribed to our magazine and you \n"
+"\t\t\thelp us to cover the publishing costs. Our magazine is an important "
+"communication tool and \n"
+"\t\t\tallows us to make our work known and to sensibilise many people to the "
+"cause of poor children.\n"
+"\t\t\tWe are very grateful for your precious support."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/child_compassion.py:29
+#: field:compassion.child,code:0 view:simple.recurring.contract:0
+#, python-format
+msgid "Child code"
+msgstr "Code de l'enfant"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_c13_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_c13
+msgid "CSP HA-C13 in Haiti"
+msgstr "CSP HA-C13 à Haïti"
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0
+#: code:addons/sponsorship_compassion/model/contracts.py:75
+#, python-format
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_anl_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_anl
+msgid ""
+"Thanks to your donation to Compassion Suisse we can continue to make \n"
+"\t\t\tour work known in Switzerland and to improve our services to sponsors, "
+"donors and sponsorchildren. \n"
+"\t\t\tWe can offer a more efficient help to many needy children through "
+"sponsorships and complementary \n"
+"\t\t\tinterventions in the countries supported by Compassion."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_product_standard_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_sponsorship
+msgid "Standard Sponsorship of type CDSP."
+msgstr "Parrainage standard de type CDSP."
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,note:sponsorship_compassion.payment_term_permanent_order
+msgid "Permanent order immediate"
+msgstr "Ordre permanent immédiat."
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/contracts.py:67
+#: field:simple.recurring.contract,partner_codega:0
+#, python-format
+msgid "Partner ref"
+msgstr "Référence partenaire"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/contracts.py:80
+#, python-format
+msgid "Status"
+msgstr "Statut"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_bib_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_bib
+msgid ""
+"Thanks to your donation you support the Bible Fund, by which we can \n"
+"\t\t\toffer a Bible to each child registered in a Compassion center. The "
+"holistic development of the \n"
+"\t\t\tchild is one of the principal values of Compassion. \n"
+"\t\t\tYour support helps the child to grow spiritually, to strengthen his "
+"faith and to receive a \n"
+"\t\t\tprecious encouragement."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: view:res.partner:0 view:simple.recurring.contract:0
+msgid "Contracts"
+msgstr "Contrats"
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,name:sponsorship_compassion.payment_term_permanent_order
+msgid "Permanent Order"
+msgstr "Ordre permanent"
+
+#. module: sponsorship_compassion
+#: help:simple.recurring.contract,is_active:0
+msgid ""
+"It indicates that the first invoice has been paid and the contract is active."
+msgstr ""
+"Ceci indique que la première facture a été payée et que le contrat est actif."
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0
+msgid "Paid"
+msgstr "Payé"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_any_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_any
+msgid "Anonymous donations"
+msgstr "Dons anonymes"
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0 view:compassion.child:0
+msgid "Child"
+msgstr "Enfant"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/contracts.py:77
+#, python-format
+msgid "Active"
+msgstr "Actif"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_don_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_don
+msgid ""
+"Thanks to your donation to Compassion Suisse we can continue to make our \n"
+"\t\t\twork known in Switzerland and to improve our services to sponsors, "
+"donors and sponsored children. \n"
+"\t\t\tWe can offer a more efficient help to many needy children through "
+"sponsorships and complementary \n"
+"\t\t\tinterventions in the countries supported by Compassion."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:account.analytic.account,name:sponsorship_compassion.account_analytic_account_adv
+msgid "ADV"
+msgstr "ADV"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_fam_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_fam
+msgid ""
+"Thanks to your donation, the sponsored children and their families touched \n"
+"\t\t\tby famine receive a precious help. Compassion distributes food to the "
+"affected families but also \n"
+"\t\t\tprovides formation and tools that help families to combat hunger on a "
+"long term basis.\n"
+"\t\t\tWe thank you so much for your generosity and for your interest towards "
+"the poorest children and their \n"
+"\t\t\tfamilies and for the hope that you give them through your support."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: view:simple.recurring.contract:0
+#, fuzzy
+msgid ""
+"blue:state == 'draft';green:state == 'waiting';black:state == 'active';gray:"
+"state in ('terminated','cancelled')"
+msgstr ""
+"blue:state == 'draft';green:state == 'waiting';black:state == 'active';gray:"
+"state == 'terminated'"
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,name:sponsorship_compassion.payment_term_virement
+msgid "Bank Transfer"
+msgstr "Transfert bancaire"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_gift_family_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_gift_family
+msgid "Family Gift"
+msgstr "Cadeau famille"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/child_compassion.py:31
+#: field:compassion.child,birthdate:0
+#, python-format
+msgid "Birthdate"
+msgstr "Date de naissance"
+
+#. module: sponsorship_compassion
+#: model:account.analytic.account,name:sponsorship_compassion.account_analytic_account_cd
+msgid "CD"
+msgstr "CD"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_wtp_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_wtp
+msgid "\"Water for the children\" Fund"
+msgstr "Fond \"De l'eau pour les enfants\""
+
+#. module: sponsorship_compassion
+#: view:res.partner:0
+msgid "Contracts as correspondent only"
+msgstr "Uniquement correspondant"
+
+#. module: sponsorship_compassion
+#: view:simple.recurring.contract:0
+msgid "Cancelled Contracts"
+msgstr "Contrats Annulés"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_c46_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_c46
+msgid "CSP HA-C46 in Haiti"
+msgstr "CSP HA-C46 à Haïti"
+
+#. module: sponsorship_compassion
+#: model:account.analytic.account,name:sponsorship_compassion.account_analytic_account_adm
+msgid "ADM"
+msgstr "ADM"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_sm_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_sm
+msgid "\"Stop Mosquitoes\" campaign"
+msgstr "Campagne \"Stop Mosquitoes\""
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,name:sponsorship_compassion.payment_term_postfinance_dd
+msgid "Postfinance Direct Debit"
+msgstr "Postfinance débit direct"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_nol_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_nol
+msgid "Christmas Gift Fund"
+msgstr "Fond cadeaux de Noël"
+
+#. module: sponsorship_compassion
+#: model:account.analytic.account,name:sponsorship_compassion.account_analytic_account_ss
+msgid "SS"
+msgstr "SS"
+
+#. module: sponsorship_compassion
+#: view:simple.recurring.contract:0
+#: selection:simple.recurring.contract,state:0
+msgid "Waiting"
+msgstr "En Création"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_wtp_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_wtp
+msgid ""
+"Thanks to your donation. It allows us to finance water disinfection \n"
+"\t\t\tproject to provide sponsored children, their families, their community "
+"and villages with \n"
+"\t\t\tdrinking water, in the poorest regions of the world.\n"
+"\t\t\tThis help would not be possible without you and we are very grateful "
+"for your support."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: view:compassion.project:0
+msgid "project"
+msgstr "projet"
+
+#. module: sponsorship_compassion
+#: view:compassion.child:0 view:compassion.project:0
+msgid "General Information"
+msgstr "Information générale"
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0
+#: model:ir.model,name:sponsorship_compassion.model_account_invoice
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/child_compassion.py:30
+#: field:compassion.child,unique_id:0
+#, python-format
+msgid "Unique ID"
+msgstr "ID unique"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_wol_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_wol
+msgid "\"Water of Life\" - Water filter fund"
+msgstr "\"De l'eau pour la vie\" - Fond pour les filtres à eau"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/contracts.py:101
+#, python-format
+msgid "Warning"
+msgstr "Avertissement"
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0
+msgid "Open"
+msgstr "Ouvert"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_bfa_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_bfa
+msgid "Fund \"Floods in Burkina Faso\""
+msgstr "Fond \"Inondations au Burkina Faso\""
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/contracts.py:78
+#, python-format
+msgid "Terminated"
+msgstr "Terminé"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_gift_project_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_gift_project
+msgid "Project Gift"
+msgstr "Cadeau centre d'accueil"
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,name:sponsorship_compassion.payment_term_lsv_25th
+msgid "LSV 25th"
+msgstr "LSV au 25"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_haf_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_haf
+msgid ""
+"Thanks to water filters and rehydratation kits, the families of \n"
+"\t\t\tsponsored children can face this severe epidemic efficiently.\n"
+"\t\t\tWe are very grateful to you for your contribution to this action and "
+"for the help you \n"
+"\t\t\ttherefore give the children and their families."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_simple_recurring_contract
+msgid "Recurrent invoicing with contracts"
+msgstr "Facturation récurrente basé sur des contrats"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_mag_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_mag
+msgid "Compassion magazine"
+msgstr "Magazine Compassion"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/contracts.py:81
+#: help:simple.recurring.contract,state:0
+#, python-format
+msgid ""
+" * The 'Draft' status is used when a user is encoding a new and unconfirmed "
+"Contract.\n"
+" * The 'Waiting' status is used when the Contract is confirmed but the "
+"partner has not yet paid.\n"
+"* The 'Active' status is used when the contract is confirmed and until it's "
+"terminated.\n"
+"* The 'Terminated' status is used when a contract is no longer active.\n"
+"* The 'Cancelled' status is used when a contract was never paid."
+msgstr ""
+" * Le statut 'Brouillon' est utilisé lorsqu'un utilisateur rempli un contrat "
+"non confirmé.\n"
+"* Le statut 'En Création' est utilisé une fois le contrat confirmé et en "
+"attente du premier paiement.\n"
+"* Le statut 'Actif' est utilisé lorsqu'un contrat a été confirmé et jusqu'à "
+"ce qu'il soit terminé.\n"
+"* Le statut 'Terminé' est utilisé lorsqu'un contrat n'est plus actif.\n
+"* Le statut 'Annulé' est utilisé lorsqu'un contrat n'a jamais été payé."
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_sm_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_sm
+msgid "Malaria Fund"
+msgstr "Fond Malaria"
+
+#. module: sponsorship_compassion
+#: selection:simple.recurring.contract,type:0
+msgid "Correspondence"
+msgstr "Correspondance"
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0
+msgid "Cancelled invoice lines"
+msgstr "Lignes de facture annulées"
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0
+msgid "Open invoice lines"
+msgstr "Lignes de facture ouvertes"
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,note:sponsorship_compassion.payment_term_postfinance_dd
+msgid "Postfinance direct debit immediate"
+msgstr "Postfinance débit direct immédiat"
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,note:sponsorship_compassion.payment_term_postfinance_dd_25th
+msgid "Postfinance direct debit"
+msgstr "Postfinance débit direct"
+
+#. module: sponsorship_compassion
+#: model:account.payment.term,name:sponsorship_compassion.payment_term_lsv_multi_months
+msgid "LSV multi-months"
+msgstr "LSV multi-mois"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_med_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_med
+msgid "Medical Fund"
+msgstr "Fond médical"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_urg_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_urg
+msgid "Humanitarian Fund"
+msgstr "Fond humanitaire"
+
+#. module: sponsorship_compassion
+#: view:simple.recurring.contract:0
+msgid "Waiting Payment Contracts"
+msgstr "Contrats en Création"
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0
+msgid "Invoice lines"
+msgstr "Lignes de factures"
+
+#. module: sponsorship_compassion
+#: field:simple.recurring.contract,is_active:0
+msgid "Contract Active"
+msgstr "Contrat actif"
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0 field:account.invoice.line,child_name:0
+#: code:addons/sponsorship_compassion/model/contracts.py:64
+#: code:addons/sponsorship_compassion/model/invoice_line.py:58
+#: field:simple.recurring.contract,child_id:0
+#, python-format
+msgid "Sponsored child"
+msgstr "Enfant parrainé"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/child_compassion.py:28
+#: code:addons/sponsorship_compassion/model/project_compassion.py:27
+#: field:compassion.child,name:0 field:compassion.project,name:0
+#, python-format
+msgid "Name"
+msgstr "Nom"
+
+#. module: sponsorship_compassion
+#: view:simple.recurring.contract:0
+msgid "waiting,active"
+msgstr "waiting,active"
+
+#. module: sponsorship_compassion
+#: view:account.invoice.line:0
+msgid "Product"
+msgstr "Produit"
+
+#. module: sponsorship_compassion
+#: view:res.partner:0
+msgid "Contracts as payer only"
+msgstr "Uniquement payeur"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/contracts.py:70
+#: field:simple.recurring.contract,bvr_reference:0
+#, python-format
+msgid "BVR Ref"
+msgstr "Réf. BVR"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/contracts.py:65
+#: field:simple.recurring.contract,child_name:0
+#, python-format
+msgid "Sponsored child name"
+msgstr "Nom de l'enfant parrainé"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_aid_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_aid
+msgid ""
+"Thanks to the AIDS fund we can bring the necessary lifelong care to \n"
+"\t\t\tthe HIV-infected sponsored children (antiretroviral therapy).\n"
+"\t\t\tWe are very grateful to you for your support to this fund and \n"
+"\t\t\tfor the great hope you offer to the sick children and their families."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_bli_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_bli
+msgid "Blind Children Fund"
+msgstr "Fond enfants aveugles"
+
+#. module: sponsorship_compassion
+#: view:simple.recurring.contract:0
+msgid "Partner reference"
+msgstr "Référence parternaire"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_new_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_new
+msgid "New Building Yverdon"
+msgstr "Nouveaux bureaux à Yverdon"
+
+#. module: sponsorship_compassion
+#: model:product.template,description:sponsorship_compassion.product_fund_ind_product_template
+#: model:product.template,description:sponsorship_compassion.product_template_fund_ind
+msgid ""
+"Thanks to your donation, the families touched by the recent cyclone Aila "
+"in \n"
+"\t\t\tIndia and Bangladesh can receive a precious help. Compassion has "
+"already started to bring support and \n"
+"\t\t\tfood to the affected families and will start to work at the rebuilding "
+"of damaged or destroyed centers \n"
+"\t\t\tor houses as soon as possible.\n"
+"\t\t\tYour support is essential and brings new hope to the families of "
+"sponsored children, the staff of \n"
+"\t\t\tCompassion and the partner churches."
+msgstr ""
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/contracts.py:71
+#: field:simple.recurring.contract,correspondant_id:0
+#, python-format
+msgid "Correspondant"
+msgstr "Correspondant"
+
+#. module: sponsorship_compassion
+#: model:res.groups,name:sponsorship_compassion.group_sponsorship
+msgid "Manage sponsorships"
+msgstr "Gestion des parrainages"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/model/contracts.py:69
+#: field:simple.recurring.contract,type:0
+#, python-format
+msgid "Type of sponsorship"
+msgstr "Type de parrainage"
+
+#. module: sponsorship_compassion
+#: model:account.analytic.account,name:sponsorship_compassion.account_analytic_account_sdm
+msgid "SDM"
+msgstr "SDM"
+
+#. module: sponsorship_compassion
+#: model:product.template,name:sponsorship_compassion.product_fund_ind_product_template
+#: model:product.template,name:sponsorship_compassion.product_template_fund_ind
+msgid "Disaster Fund India"
+msgstr "Fond catastrophe en Inde"

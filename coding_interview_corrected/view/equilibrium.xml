@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<!--Equilibrium form view -->
+		<record id="view_equilibrium_form" model="ir.ui.view">
+			<field name="name">interview.equilibrium.form</field>
+			<field name="model">interview.equilibrium</field>
+			<field name="arch" type="xml">
+				<form string="Equilibrium" version="7.0">
+					<sheet>
+						<div class="oe_title">
+							<label for="name" class="oe_edit_only"/>
+							<h1>
+								<field name="name"/>
+							</h1>
+						</div>
+						<div class="oe_right oe_button_box" name="button_box">
+							<!-- Put here related buttons -->
+						</div>
+						<notebook>
+							<page string="General Information">
+								<group>
+									<field name="list" />
+									<field name="result" readonly="1" />
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_equilibrium_tree" model="ir.ui.view">
+			<field name="name">interview.equilibrium.tree</field>
+			<field name="model">interview.equilibrium</field>
+			<field name="arch" type="xml">
+				<tree string="Equilibrium">
+					<field name="name" />
+					<field name="list" />
+					<field name="result" />
+				</tree>
+			</field>
+		</record>
+		 
+		<record id="open_view_children_tree" model="ir.actions.act_window">
+            <field name="name">Equilibrium Runs</field>
+            <field name="res_model">interview.equilibrium</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="view_equilibrium_tree"/>
+            <!--<field name="search_view_id" ref="view_equilibrium_filter"/>-->
+        </record>
+		
+		<menuitem id="menu_equilibrium_section" parent="coding_interview.menu_fizzbuzz_root" name="Equilibrium" sequence="2"/>
+        <menuitem id="menu_equilibrium_children" parent="menu_equilibrium_section" name="Equilibrium Runs" action="open_view_children_tree" sequence="0"/>
+
+    </data>
+</openerp>

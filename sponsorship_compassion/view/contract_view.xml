@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<record id="view_simple_recurring_contract_tree_compassion" model="ir.ui.view">
+			<field name="name">simple.recurring.contract.compassion.tree</field>
+			<field name="model">simple.recurring.contract</field>
+			<field name="inherit_id" ref="simple_recurring_contract.view_simple_recurring_contract_tree"/>
+			<field eval="18" name="priority"/>
+			<field name="arch" type="xml">
+				<data>
+					<tree string="Contracts" position="attributes">
+						<attribute name="colors">blue:state == 'draft';green:state == 'waiting';black:state == 'active';gray:state in ('terminated','cancelled')</attribute>
+					</tree>
+					<field name="partner_id" position="after">
+						<field name="child_code" />
+						<field name="child_name" />
+					</field>
+					<field name="partner_id" position="before">
+						<field name="partner_codega" invisible="context.get('partner_contracts_view')" />
+					</field>
+					<field name="reference" position="replace" />
+				</data>
+			</field>
+		</record>
+		
+		<record id="view_simple_recurring_contract_form_compassion" model="ir.ui.view">
+			<field name="name">simple.recurring.contract.compassion.form</field>
+			<field name="model">simple.recurring.contract</field>
+			<field name="inherit_id" ref="simple_recurring_contract.view_simple_recurring_contract_form"/>
+			<field eval="18" name="priority"/>
+			<field name="arch" type="xml">
+                <!-- Modify header to add the waiting state -->
+                <field name="state" position="attributes">
+                    <attribute name="statusbar_visible">draft,active,waiting,terminated</attribute>
+                </field>
+                <button name="contract_terminated" position="attributes">
+                    <attribute name="states">waiting,active</attribute>
+                </button>
+                
+				<!-- Add child_id in contract -->
+                <field name="partner_id" position="after">
+					<field name="child_id" />
+				</field>
+                
+                <!-- Add first payment date -->
+                <field name="end_date" position="after">
+                    <field name="first_payment_date" />
+                </field>
+                
+                <!-- Add correspondant -->
+                <field name="partner_id" position="after">
+                    <field name="correspondant_id" />
+                </field>
+                
+                <!-- Compute the BVR reference automatically -->
+               <field name="partner_id" position="attributes">
+                    <attribute name="on_change">onchange_partner_id(partner_id)</attribute>
+                </field>
+                <xpath expr="//field[@name='payment_term_id']" position="before">
+                    <field name="bvr_reference" />
+                </xpath>
+			</field>
+		</record>
+		
+		<record id="view_simple_recurring_contract_compassion_filter" model="ir.ui.view">
+			<field name="name">simple.recurring.contract.compassion.select</field>
+			<field name="model">simple.recurring.contract</field>
+			<field name="inherit_id" ref="simple_recurring_contract.view_simple_recurring_contract_filter" />
+			<field name="arch" type="xml">
+				<data>
+					<search string="Search contract" position="inside">
+						<field name="partner_codega" string="Partner reference"/>
+						<field name="child_code" string="Child code" />
+						<field name="child_name" string="Child name" />
+					</search>
+                    <xpath expr="//filter[@name='draft']" position="after">
+                        <filter name="waiting" string="Waiting" domain="[('state','=','waiting')]" help="Waiting Payment Contracts"/>
+                    </xpath>
+                    <xpath expr="//filter[@name='terminated']" position="after">
+                        <filter name="cancelled" string="Cancelled" domain="[('state','=','cancelled')]" help="Cancelled Contracts"/>
+                    </xpath>
+				</data>
+			</field>
+		</record>
+        
+        <!-- Move the Contracts Menu to the Sponsorship Section -->
+        <menuitem id="simple_recurring_contract.menu_contracts_section" parent="menu_sponsorship_root" 
+			name="Contracts" groups="group_sponsorship" sequence="1"/>
+	</data>
+</openerp>

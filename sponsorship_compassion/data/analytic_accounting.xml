@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="True">
+    	<!--
+            Resource: account.analytic.account
+        -->
+        <record id="account_analytic_account_root" model="account.analytic.account">
+            <field name="name">root</field>
+            <field name="type">view</field>
+            <field name="code">AA107</field>
+        </record>
+        <record id="account_analytic_account_0" model="account.analytic.account">
+            <field name="name">0</field>
+            <field name="type">view</field>
+            <field name="code">AA089</field>
+            <field name="parent_id" ref="account_analytic_account_root"/>
+        </record>
+        <record id="account_analytic_account_inc" model="account.analytic.account">
+            <field name="name">INC</field>
+            <field name="type">view</field>
+            <field name="code">AA104</field>
+            <field name="parent_id" ref="account_analytic_account_0"/>
+        </record>
+        <record id="account_analytic_account_des" model="account.analytic.account">
+            <field name="name">DES</field>
+            <field name="type">normal</field>
+            <field name="code">AA102</field>
+            <field name="parent_id" ref="account_analytic_account_inc"/>
+        </record>
+        <record id="account_analytic_account_undes" model="account.analytic.account">
+            <field name="name">UNDES</field>
+            <field name="type">normal</field>
+            <field name="code">AA110</field>
+            <field name="parent_id" ref="account_analytic_account_inc"/>
+        </record>
+        <record id="account_analytic_account_ps" model="account.analytic.account">
+            <field name="name">PS</field>
+            <field name="type">view</field>
+            <field name="code">AA106</field>
+            <field name="parent_id" ref="account_analytic_account_0"/>
+        </record>
+        <record id="account_analytic_account_adv" model="account.analytic.account">
+            <field name="name">ADV</field>
+            <field name="type">normal</field>
+            <field name="code">AA091</field>
+            <field name="parent_id" ref="account_analytic_account_ps"/>
+        </record>
+        <record id="account_analytic_account_cd" model="account.analytic.account">
+            <field name="name">CD</field>
+            <field name="type">normal</field>
+            <field name="code">AA092</field>
+            <field name="parent_id" ref="account_analytic_account_ps"/>
+        </record>
+        <record id="account_analytic_account_sdm" model="account.analytic.account">
+            <field name="name">SDM</field>
+            <field name="type">normal</field>
+            <field name="code">AA108</field>
+            <field name="parent_id" ref="account_analytic_account_ps"/>
+        </record>
+        <record id="account_analytic_account_ss" model="account.analytic.account">
+            <field name="name">SS</field>
+            <field name="type">view</field>
+            <field name="code">AA109</field>
+            <field name="parent_id" ref="account_analytic_account_0"/>
+        </record>
+        <record id="account_analytic_account_adm" model="account.analytic.account">
+            <field name="name">ADM</field>
+            <field name="type">normal</field>
+            <field name="code">AA090</field>
+            <field name="parent_id" ref="account_analytic_account_ss"/>
+        </record>
+        <record id="account_analytic_account_fund" model="account.analytic.account">
+            <field name="name">FUND</field>
+            <field name="type">normal</field>
+            <field name="code">AA103</field>
+            <field name="parent_id" ref="account_analytic_account_ss"/>
+        </record>
+        
+        <!--
+            Resource: account.analytic.plan.instance
+        -->
+        <record id="account_analytic_plan_instance_sponsorship" model="account.analytic.plan.instance">
+            <field name="name">Sponsorship Distribution</field>
+            <field name="code">SPONSOR</field>
+            <field name="journal_id" ref="account.analytic_journal_sale"/>
+        </record>
+        <record id="account_analytic_plan_instance_100des" model="account.analytic.plan.instance">
+            <field name="name">100% Designated</field>
+            <field name="code">100DES</field>
+            <field name="journal_id" ref="account.analytic_journal_sale"/>
+        </record>
+        <record id="account_analytic_plan_instance_100undes" model="account.analytic.plan.instance">
+            <field name="name">100% Undesignated</field>
+            <field name="code">100UNDES</field>
+            <field name="journal_id" ref="account.analytic_journal_sale"/>
+        </record>
+        
+       <!--
+            Resource: account.analytic.plan.instance.line
+        --> 
+        <record id="account_analytic_plan_instance_line_80des" model="account.analytic.plan.instance.line">
+            <field name="analytic_account_id" ref="account_analytic_account_des"/>
+            <field name="rate">80</field>
+            <field name="plan_id" ref="account_analytic_plan_instance_sponsorship"/>
+        </record>
+        <record id="account_analytic_plan_instance_line_20undes" model="account.analytic.plan.instance.line">
+            <field name="analytic_account_id" ref="account_analytic_account_undes"/>
+            <field name="rate">20</field>
+            <field name="plan_id" ref="account_analytic_plan_instance_sponsorship"/>
+        </record>
+        <record id="account_analytic_plan_instance_line_100des" model="account.analytic.plan.instance.line">
+            <field name="analytic_account_id" ref="account_analytic_account_des"/>
+            <field name="rate">100</field>
+            <field name="plan_id" ref="account_analytic_plan_instance_100des"/>
+        </record>
+        <record id="account_analytic_plan_instance_line_100undes" model="account.analytic.plan.instance.line">
+            <field name="analytic_account_id" ref="account_analytic_account_undes"/>
+            <field name="rate">100</field>
+            <field name="plan_id" ref="account_analytic_plan_instance_100undes"/>
+        </record>
+        
+        <!--
+            Resource: account.analytic.default
+        --> 
+        <record id="account_analytic_default_standard_sponsorship" model="account.analytic.default">
+            <field name="analytics_id" ref="account_analytic_plan_instance_sponsorship"/>
+            <field name="sequence">10</field>
+            <field name="product_id" ref="product_product_standard"/>
+        </record>
+        <record id="account_analytic_default_ldp_sponsorship" model="account.analytic.default">
+            <field name="analytics_id" ref="account_analytic_plan_instance_sponsorship"/>
+            <field name="sequence">10</field>
+            <field name="product_id" ref="product_product_ldp"/>
+        </record>
+        <record id="account_analytic_default_general" model="account.analytic.default">
+            <field name="analytics_id" ref="account_analytic_plan_instance_100undes"/>
+            <field name="sequence">20</field>
+            <field name="product_id" ref="product_fund_gen"/>
+        </record>
+        <record id="account_analytic_default_calendar" model="account.analytic.default">
+            <field name="analytics_id" ref="account_analytic_plan_instance_100undes"/>
+            <field name="sequence">20</field>
+            <field name="product_id" ref="product_fund_cal"/>
+        </record>
+        <record id="account_analytic_default_compassion" model="account.analytic.default">
+            <field name="analytics_id" ref="account_analytic_plan_instance_100undes"/>
+            <field name="sequence">20</field>
+            <field name="product_id" ref="product_fund_anl"/>
+        </record>
+        <record id="account_analytic_default_compassion_2" model="account.analytic.default">
+            <field name="analytics_id" ref="account_analytic_plan_instance_100undes"/>
+            <field name="sequence">20</field>
+            <field name="product_id" ref="product_fund_don"/>
+        </record>
+        <record id="account_analytic_default_anonymous" model="account.analytic.default">
+            <field name="analytics_id" ref="account_analytic_plan_instance_100undes"/>
+            <field name="sequence">20</field>
+            <field name="product_id" ref="product_fund_any"/>
+        </record>
+        <record id="account_analytic_default_100des" model="account.analytic.default">
+            <field name="analytics_id" ref="account_analytic_plan_instance_100des"/>
+            <field name="sequence">100</field>
+        </record>
+    </data>
+</openerp>

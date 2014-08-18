@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+	<record id="view_res_partner_invoice_line_button_form" model="ir.ui.view">
+		<field name="name">res.partner.invoice.line.button.form</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="base.view_partner_form"/>
+		<field eval="18" name="priority"/>
+		<field name="arch" type="xml">
+            <xpath expr="//div[@name='buttons']" position="inside">
+				<button name="show_lines" string="Show transactions" type="object" />
+			</xpath>
+            
+            <!-- Redefine how contracts are shown. -->
+            <xpath expr="//page[@string='Contracts']" position="replace">
+                <page string="Contracts">
+                    <field name="contracts_fully_managed" invisible="True" />
+                    <field name="contracts_paid" invisible="True" />
+                    <field name="contracts_correspondant" invisible="True" />
+                    <div attrs="{'invisible' : [('contracts_paid','=', [])]}">
+                        <h3>Contracts as payer only</h3>
+                        <field name="contracts_paid" context="{'partner_contracts_view': True}" />
+                    </div>
+                    <div attrs="{'invisible' : [('contracts_correspondant','=', [])]}">
+                        <h3>Contracts as correspondent only</h3>
+                        <field name="contracts_correspondant" context="{'partner_contracts_view': True}" />
+                    </div>
+                    <div attrs="{'invisible' : [('contracts_fully_managed','=', [])]}">
+                        <h3>Contracts fully managed</h3>
+                        <field name="contracts_fully_managed" context="{'partner_contracts_view': True}" />
+                    </div>
+                </page>
+            </xpath>
+            
+		</field>
+	</record>
+</data>
+</openerp>
