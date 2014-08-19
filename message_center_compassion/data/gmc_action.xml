@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="True">
+
+        <!--
+        Resource: gmc.action
+        -->
+        
+        <!-- 
+            Constituent Messages 
+        -->
+        <record id="gmc_action_create_constituent" model="gmc.action">
+            <field name="name">CreateConstituent</field>
+            <field name="direction">out</field>
+            <field name="model">res.partner</field>
+            <field name="type">create</field>
+        </record>
+        <record id="gmc_action_create_email" model="gmc.action">
+            <field name="name">CreateEmail</field>
+            <field name="direction">out</field>
+            <field name="model">res.partner</field>
+            <field name="type">create</field>
+        </record>
+        <record id="gmc_action_update_constituent" model="gmc.action">
+            <field name="name">UpdateConstituent</field>
+            <field name="direction">out</field>
+            <field name="model">res.partner</field>
+            <field name="type">update</field>
+        </record>
+        <record id="gmc_action_update_email" model="gmc.action">
+            <field name="name">UpdateEmail</field>
+            <field name="direction">out</field>
+            <field name="model">res.partner</field>
+            <field name="type">update</field>
+        </record>
+        
+        <!--
+            Child Messages
+        -->
+        
+    </data>
+</openerp>
