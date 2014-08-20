@@ -39,7 +39,7 @@ class child_property(orm.Model):
         'us_school_level': fields.char(_('US school level')),
         'school_performance': fields.many2many(
             'compassion.child.property.value', 'child_property_to_value',
-            'property_id', 'value_id', _('Marital status of parents'),
+            'property_id', 'value_id', _('School performances'),
             domain=[('property_name', '=', 'school_performance')]),
         'school_best_subject': fields.many2many(
             'compassion.child.property.value', 'child_property_to_value',
