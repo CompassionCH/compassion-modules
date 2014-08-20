@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<record id="view_child_property_form" model="ir.ui.view">
+			<field name="name">compassion.child.property.form</field>
+			<field name="model">compassion.child.property</field>
+			<field name="arch" type="xml">
+				<form string="Child" version="7.0">
+					<sheet>
+						<div class="oe_title">
+							<group>
+								<field name="info_date" />
+							</group>
+						</div>
+						<group>
+							<group>
+								<field name="sibling_flag" />
+								<field name="orphan_flag" />
+								<field name="us_school_level" />
+								<field name="school_performance" widget="many2many_tags" />
+							</group>
+							<group>
+								<field name="handicapped_flag" />
+								<field name="attending_school_flag" />
+								<field name="family_size" />
+								<field name="school_best_subject" widget="many2many_tags" />
+							</group>
+						</group>
+						<group>
+							<group>
+								<field name="christian_activities_ids" widget="many2many_tags" />
+								<field name="family_duties_ids" widget="many2many_tags" />
+								<field name="hobbies_ids" widget="many2many_tags" />
+								<field name="health_ids" widget="many2many_tags" />
+							</group>
+							<group>
+								<field name="marital_status_id" widget="many2many_tags" />
+								<field name="guardians_ids" widget="many2many_tags" />
+								<field name="father_ids" widget="many2many_tags" />
+								<field name="mother_ids" widget="many2many_tags" />
+								<field name="male_guardian_ids" widget="many2many_tags" />
+								<field name="female_guardian_ids" widget="many2many_tags" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_child_property_tree" model="ir.ui.view">
+			<field name="name">compassion.child.property.tree</field>
+			<field name="model">compassion.child.property</field>
+			<field name="arch" type="xml">
+				<tree string="Children properties">
+					<field name="info_date" />
+				</tree>
+			</field>
+		</record>
+		 
+		<record id="act_child_property_tree" model="ir.actions.act_window">
+            <field name="name">Children</field>
+            <field name="res_model">compassion.child.property</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="view_child_property_tree"/>
+        </record>
+    </data>
+</openerp>
