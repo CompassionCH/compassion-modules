@@ -77,6 +77,9 @@ class compassion_child(orm.Model):
 
     def gen_fr_translation(self, cr, uid, child, case_study, context=None):
         desc_fr = self._gen_christ_act_fr(cr, uid, child, case_study, context)
+        desc_fr += self._gen_family_act_info(cr, uid, child, case_study, context)
+        desc_fr += self._gen_hobbies_info(cr, uid, child, case_study, context)
+        desc_fr += self._get_school_info(cr, uid, child, case_study, context)
         return desc_fr
         
     def _gen_christ_act_fr(self, cr, uid, child, case_study, context=None):
@@ -89,6 +92,73 @@ class compassion_child(orm.Model):
             activities_str += ' et '
         activities_str += activities[-1]
         string = u"A l'Église, %s participe %s." % (child.name, activities_str)
+        return string
+
+    def _gen_family_act_info(self, cr, uid, child, case_study, context=None):
+        if not case_study.family_duties_ids:
+            return ''
+        speciales = ['carries water', 'animal care', 'running errands', 'buying/selling in market'
+                     'gathers firewood', 'teaching others']
+        activities = [activity.value_fr_m if activity.value_fr_m else activity.value_en
+                      for activity in case_study.family_duties_ids
+                      if activity.value_en not in speciales]
+        if len(activities):
+            activities[0] = u'aide à faire %s' % activities[0]
+        activities.extend([activity.value_fr_m if activity.value_fr_m else activity.value_en
+                           for activity in case_study.family_duties_ids
+                           if activity.value_en in speciales])
+        activities_str = ', '.join(activities[:-1])
+        if len(activities) > 1:
+            activities_str += ' et '
+        activities_str += activities[-1]
+        string = u"A la maison, %s %s. " % (child.name, activities_str)
+        return string
+
+    def _gen_hobbies_info(self, cr, uid, child, case_study, context=None):
+        if not case_study.hobbies_ids:
+            return ''
+        verbs = ['art/drawing', 'bicycling', 'jump rope', 'listening to music'
+                 'musical instrument', 'reading', 'running', 'singing', 'story telling',
+                 'swimming', 'walking']
+        activities = [activity.value_fr_m if activity.value_fr_m else activity.value_en
+                      for activity in case_study.hobbies_ids
+                      if activity.value_en not in verbs]
+        if len(activities):
+            activities[0] = u'jouer %s' % activities[0]
+        activities.extend([activity.value_fr_m if activity.value_fr_m else activity.value_en
+                           for activity in case_study.hobbies_ids
+                           if activity.value_en in verbs])
+        activities_str = ', '.join(activities[:-1])
+        if len(activities) > 1:
+            activities_str += ' et '
+        activities_str += activities[-1]
+        string = u"%s aime beaucoup %s. " % ('Il' if child.gender == 'M' else 'Elle', activities_str)
+        return string
+
+    def _get_school_info(self, cr, uid, child, case_study, context=None):
+        ordinals = [u'première', u'deuxième', u'troisième', u'quatrième', u'cinquième',
+                    u'sixième', u'septième', u'huitième', u'neuvième', u'dixième', u'onzième',
+                    u'douzième', u'treizième', u'quatorzième', u'quinzième']
+        string = u'Il' if child.gender == 'M' else u'Elle'
+        if case_study.attending_school_flag:
+            if case_study.us_school_level and int(case_study.us_school_level) < 16:
+                string += u' est en %s année' % ordinals[int(case_study.us_school_level)-1]
+            else:
+                string += u' va à l\'école'
+            if case_study.school_performance:
+                string += u' et %s a des résultats %s. ' % (child.name, 
+                          case_study.school_performance[0].value_fr_m
+                          if case_study.school_performance[0].value_fr_m
+                            else case_study.school_performance[0].value_en)
+            elif case_study.school_best_subject:
+                string += ' et aime bien %s. ' % (case_study.school_best_subject[0].value_fr_m
+                          if case_study.school_best_subject[0].value_fr_m
+                            else case_study.school_best_subject[0].value_en)
+            else:
+                string += '.'
+        else:
+            string += ' ne va pas à l\'école. ' #TODO reason
+
         return string
 
     def _get_case_study(self, cr, uid, child, context=None):
