@@ -1,7 +1,9 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Author: Cyril Sester. Copyright Compassion Suisse
+#    Compassion children module for OpenERP
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    @author: Cyril Sester <csester@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -17,24 +19,24 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
 
 
-class compassion_child(orm.Model):
-    """ A sponsored child """
-    _name = 'compassion.child'
-    _columns = {
-        'name': fields.char(_("Name"),size=128,required=True),
-        'code': fields.char(_("Child code"),size=128,required=True),
-        'unique_id': fields.char(_("Unique ID"),size=128),
-        'birthdate': fields.date(_("Birthdate")),
-        'type': fields.selection((('CDSP', 'CDSP'), ('LDP', 'LDP')), _('Type of sponsorship program'),required=True),
-        'date': fields.date(_("Allocation date"), help=_("The date at which Compass allocated this child to Switzerland")),
-    }
-    
-    _defaults = {
-        'type' : 'CDSP'
-    }
-    
-compassion_child()
+{
+    'name': 'Compassion Children',
+    'version': '1.0',
+    'category': 'Other',
+    'description': """
+    """,
+    'author': 'Compassion CH',
+    'website': 'http://www.compassion.ch',
+    'depends': [],
+    'data': [
+        'view/child_compassion_view.xml',
+        'view/child_compassion_property_view.xml',
+    ],
+    'demo': [],
+    'installable': True,
+    'auto_install': False,
+}
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
