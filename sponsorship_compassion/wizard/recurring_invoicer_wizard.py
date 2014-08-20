@@ -1,8 +1,9 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    Recurring contract module for openERP
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    @author: Cyril Sester <csester@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,5 +20,16 @@
 #
 ##############################################################################
 
-from . import model
-from . import wizard
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
+import logging
+
+logger = logging.getLogger(__name__)
+
+class recurring_invoicer_wizard(orm.TransientModel):
+    _inherit = 'recurring.invoicer.wizard'
+
+    def generate_from_cron(self, cr, uid, group=False, context=None):
+        ret_dict = self.generate(cr, uid, [], context=context, group=group)
+        recurring_invoicer_obj = self.pool.get('recurring.invoicer')
+        recurring_invoicer_obj.validate_invoices(cr, uid, [ret_dict['res_id']]) 

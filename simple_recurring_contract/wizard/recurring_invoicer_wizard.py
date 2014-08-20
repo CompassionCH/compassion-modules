@@ -49,6 +49,12 @@ class recurring_invoicer_wizard(orm.TransientModel):
         
         contract_obj.generate_invoices(cr, uid, [], invoicer_id, group_invoices, context)
         
+        # If no invoice in invoicer, we raise and exception.
+        # This will cancel the invoicer creation too !
+        recurring_invoicer = recurring_invoicer_obj.browse(cr, uid, invoicer_id, context)
+        if not recurring_invoicer.invoice_ids:
+            raise orm.except_orm('ValueError', _('0 invoices have been generated.'))
+        
         return {
             'name': 'recurring.invoicer.form',
             'view_mode': 'form',
