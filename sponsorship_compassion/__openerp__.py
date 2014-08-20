@@ -25,24 +25,15 @@
     'version': '0.2',
     'category': 'Other',
     'description': """
-        Compassion child represent compassion sponsored children. A sponsored child is described by:
-            - Its name
-            - Its reference
-            - Its birthdate
-            - Its status
-            - Its unique compass id
-            
-        This module is actually used only to be linked with a contract, and therefore for billing. 
-        This way all other informations are unnecessary.
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['simple_recurring_contract', 'l10n_ch_payment_slip', 'l10n_ch', 'account_analytic_plans'],
+    'depends': ['simple_recurring_contract', 'l10n_ch_payment_slip', 
+                'l10n_ch', 'account_analytic_plans', 'child_compassion'],
     'data': ['security/sponsorship_groups.xml',
-            'view/child_compassion_view.xml',
+			'view/project_compassion_view.xml',
 			'view/contract_view.xml',
             'view/invoice_line_view.xml',
-			'view/project_compassion_view.xml',
             'view/res_partner_view.xml',
 			'data/product.xml',
             'data/payment_terms.xml',
