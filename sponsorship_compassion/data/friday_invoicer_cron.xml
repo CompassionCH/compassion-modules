@@ -10,7 +10,7 @@
 		<field name="name">Launch friday invoice generation</field>
 		<field name="interval_number">7</field>
 		<field name="interval_type">days</field>
-		<field name="nextcall" eval="__import__('datetime').datetime.today() + timedelta(days=(4-__import__('datetime').datetime.today().weekday())%7)" />
+		<field name="nextcall" eval="__import__('datetime').datetime.today().replace(hour=20, minute=00) + timedelta(days=(4-__import__('datetime').datetime.today().weekday())%7)" />
 	</record>
 </data>
 </openerp>
