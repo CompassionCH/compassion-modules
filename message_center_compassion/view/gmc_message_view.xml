@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+<data>
+	<!-- GMC Message Pool tree view -->
+	<record id="view_gmc_message_pool_tree" model="ir.ui.view">
+		<field name="name">gmc.message.pool.tree</field>
+		<field name="model">gmc.message.pool</field>
+		<field name="arch" type="xml">
+			<tree string="Message Pool" colors="blue:state == 'pending';black:state == 'sent'">
+				<field name="date" />
+				<field name="action_id"/>
+				<field name="send_date" />
+				<field name="object_id" />
+				<field name="incoming_key" />
+				<field name="state" />
+			</tree>
+		</field>
+	</record>
+	
+	<!-- Contract form view -->
+	<record id="view_gmc_message_pool_form" model="ir.ui.view">
+		<field name="name">gmc.message.pool.form</field>
+		<field name="model">gmc.message.pool</field>
+		<field name="arch" type="xml">
+			<form string="GMC Message" version="7.0">
+			<header>
+				<field name="state" widget="statusbar" statusbar_visible="pending,sent" />
+				<button name="process_messages" class="oe_highlight" string="Process Message" states="pending" />
+			</header>
+			<sheet>
+			    <div class="oe_title">
+					<h1>
+						GMC Message
+					</h1>
+				</div>
+				<group>
+					<group>
+						<field name="date" />
+						<field name="send_date" />
+						<field name="incoming_key"/>
+					</group>
+					<group>
+						<field name="action_id"/>
+						<field name="object_id" />
+					</group>
+				</group>
+			</sheet>
+			</form>
+		</field>
+	</record>
+
+	<!-- <record id="view_simple_recurring_contract_filter" model="ir.ui.view">
+		<field name="name">simple.recurring.contract.select</field>
+		<field name="model">simple.recurring.contract</field>
+		<field name="arch" type="xml">
+			<search string="Search contract">
+				<field name="reference" string="Contract" filter_domain="['|','|', ('reference','ilike',self), ('partner_id','child_of',self), ('payment_term_id', 'ilike', self)]"/>
+				<filter name="draft" string="Draft" domain="[('state','=','draft')]" help="Draft Contracts"/>
+				<filter name="active" string="Active" domain="[('state','=','active')]" help="Active Contracts"/>
+				<filter name="terminated" string="Terminated" domain="[('state','=','terminated')]" help="Ended Contracts"/>
+				<field name="partner_id" operator="child_of"/>
+				<field name="payment_term_id" string="Payment term"/>
+				<field name="contract_line_ids" string="Contract lines" />
+				<field name="reference" string="Reference" />
+				<group expand="0" string="Group By...">
+					<filter string="Partner" domain="[]" context="{'group_by':'partner_id'}"/>
+					<filter string="Start date" domain="[]"  context="{'group_by':'start_date'}"/>
+					<filter string="End date" domain="[]" context="{'group_by':'end_date'}"/>
+					<filter string="Payment term" domain="[]"  context="{'group_by':'payment_term_id'}"/>
+					<filter string="Total" domain="[]" context="{'group_by':'total_amount'}"/>
+					<filter string="Status" domain="[]"  context="{'group_by':'state'}"/>
+				</group>
+		   </search>
+		</field>
+	</record> -->
+	
+	<!-- Sidebar action, called from menu_recurring_contract_form menuitem -->
+	<record id="action_gmc_message_pool_form" model="ir.actions.act_window">
+		<field name="name">Message Pool</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">gmc.message.pool</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="help" type="html">
+		  <p class="oe_view_nocontent_create">
+			No messages.
+		  </p>
+		</field>
+	</record>
+	
+	<menuitem id="menu_message_center" parent="sponsorship_compassion.menu_sponsorship_root" name="Message Center" sequence="15" />
+	<menuitem id="menu_recurring_contract_form" parent="menu_message_center" action="action_gmc_message_pool_form" sequence="5"/>
+</data>
+</openerp>

@@ -37,6 +37,57 @@
         <!--
             Child Messages
         -->
+        <record id="gmc_action_allocate_child" model="gmc.action">
+            <field name="name">AllocateChild</field>
+            <field name="direction">in</field>
+            <field name="model">compassion.child</field>
+            <field name="type">allocate</field>
+        </record>
+        <record id="gmc_action_deallocate_child" model="gmc.action">
+            <field name="name">DeallocateChild</field>
+            <field name="direction">in</field>
+            <field name="model">compassion.child</field>
+            <field name="type">deallocate</field>
+        </record>
+        <record id="gmc_action_update_child" model="gmc.action">
+            <field name="name">UpdateChild</field>
+            <field name="direction">in</field>
+            <field name="model">compassion.child</field>
+            <field name="type">update</field>
+        </record>
+        <record id="gmc_action_update_project" model="gmc.action">
+            <field name="name">UpdateProject</field>
+            <field name="direction">in</field>
+            <field name="model">compassion.project</field>
+            <field name="type">update</field>
+        </record>
+        <record id="gmc_action_depart_child" model="gmc.action">
+            <field name="name">DepartChild</field>
+            <field name="direction">in</field>
+            <field name="model">compassion.child</field>
+            <field name="type">depart</field>
+        </record>
         
+        <!--
+            Constituent-Child Relationship Messages
+        -->
+        <record id="gmc_action_create_commitment" model="gmc.action">
+            <field name="name">CreateCommitment</field>
+            <field name="direction">out</field>
+            <field name="model">simple.recurring.contract</field>
+            <field name="type">create</field>
+        </record>
+        <record id="gmc_action_cancel_commitment" model="gmc.action">
+            <field name="name">CancelCommitment</field>
+            <field name="direction">out</field>
+            <field name="model">simple.recurring.contract</field>
+            <field name="type">cancel</field>
+        </record>
+        <record id="gmc_action_create_gift" model="gmc.action">
+            <field name="name">CreateGift</field>
+            <field name="direction">out</field>
+            <field name="model">account.invoice.line</field>
+            <field name="type">create</field>
+        </record>
     </data>
 </openerp>

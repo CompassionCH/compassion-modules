@@ -39,7 +39,7 @@
         'python': ['requests'],
     },
     'data': [
-        'view/middleware_config_view.xml',
+        'view/gmc_message_view.xml',
         'data/gmc_action.xml',
     ],
     'demo': [],

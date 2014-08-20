@@ -23,9 +23,11 @@ from openerp.tools.translate import _
 import requests
 import pdb
 import datetime
+import logging
 
 
 SERVER_URL = 'https://test.services.compassion.ch:443/rest/openerp/'
+logger = logging.getLogger(__name__)
 
 
 class gmc_message_pool(Model):
@@ -54,7 +56,7 @@ class gmc_message_pool(Model):
     def process_messages(self, cr, uid, ids, context=None):
         """ Process given messages in pool. """
         success_ids = []
-        for message = self.browse(cr, uid, ids, context=context):
+        for message in self.browse(cr, uid, ids, context=context):
             if message.state == 'pending':
                 message_args = {'object_ref':message.incoming_key}
                 if self.pool.get('gmc.action').execute(cr, uid, message.action_id.id, message.object_id, message_args, context=context):
@@ -67,7 +69,7 @@ gmc_message_pool()
 
 
 class gmc_action(Model):
-    _description = """ 
+    """ 
     A GMC Action defines what has to be done for a specific OffRamp
     message of the Compassion International specification.
     
@@ -105,6 +107,7 @@ class gmc_action(Model):
         """ Outgoing messages sent to the middleware. """
         return [
             ('create','Create object'),
+            ('cancel','Cancel object'),
         ]
     
     
@@ -130,12 +133,12 @@ class gmc_action(Model):
                              for outgoing messages, object from which to read data.
                 - args (dict): for incoming messages, optional arguments to be passed in the executed method.
         """
-        action = self.browse(cr, uid, id, context=context):
+        action = self.browse(cr, uid, id, context=context)
 
         if action.direction == 'in':
             return self._perform_incoming_action(cr, uid, action, object_id, args=args, context=context)
         elif action.direction == 'out':
-            return self._perform_outgoing_action()
+            return self._perform_outgoing_action(cr, uid, action, object_id, context=context)
         else:
             raise NotImplementedError
             
@@ -165,10 +168,19 @@ class gmc_action(Model):
             
         return res
     
-    def _perform_outgoing_action(self, object_id, action_type):
+    def _perform_outgoing_action(self, cr, uid, action, object_id, context=None):
         """ Process an outgoing message by sending it to the middleware. """
+        session = requests.Session()
+        session.verify = False
+        #pdb.set_trace()
+        url = SERVER_URL + action.type + '/' + action.model + '/' + object_id
+        resp = session.get(url)
+        content = resp.content
+        
+        # TODO : Parse response content to see if the operation succeeded
+        logger.info("middleware response : " + content)
+        
         return True
-    
     
     def _validate_action(self, direction, model, action_type, context=None):
         """ Test if the action can be performed on given model. """
