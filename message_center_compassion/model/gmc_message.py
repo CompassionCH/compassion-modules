@@ -53,6 +53,11 @@ class gmc_message_pool(Model):
                                             be created/modified.")),
     }
     
+    _defaults = {
+        'date' : datetime.date.today(),
+        'state' : 'pending'
+    }
+    
     def process_messages(self, cr, uid, ids, context=None):
         """ Process given messages in pool. """
         success_ids = []
@@ -89,9 +94,11 @@ class gmc_action(Model):
     def _get_message_types(self, cr, uid, context=None):
         res = self._get_incoming_message_types() + self._get_outgoing_message_types()
         # Extend with methods for both incoming and outgoing messages.
-        return res.append(
+        res.append(
             ('update', 'Update Object'),
         )
+        
+        return res
         
     def _get_incoming_message_types(self):
         """ Incoming message types calling specific method on an object. 
@@ -121,6 +128,7 @@ class gmc_action(Model):
         'name': fields.char(_('GMC Message'), size=20, required=True),
         'model': fields.char('OSV Model', size=30),
         'type': fields.selection(_get_message_types, _('Action Type'), required=True),
+        'description': fields.text(_('Action to execute')),
     }
     
     
@@ -147,11 +155,11 @@ class gmc_action(Model):
         direction = values.get('direction', False)
         model = values.get('model', False)
         action_type = values.get('type', False)
-        
+
         if self._validate_action(direction, model, action_type):
             return super(gmc_action, self).create(cr, uid, values, context=context)
         else:
-            raise osv.except_osv(_("Invalid action. Creation aborted."))
+            raise osv.except_osv(_("Creation aborted."), _("Invalid action (%s, %s, %s).") % (direction, model, action_type))
                 
                 
     def _perform_incoming_action(self, cr, uid, action, object_id, args={}, context=None):
@@ -164,15 +172,15 @@ class gmc_action(Model):
         elif action.type in ('deallocate', 'depart', 'update'):
             res = getattr(model_obj, action.type)(cr, uid, object_id, context=context)
         else:
-            raise osv.except_osv("No implementation found for method '%s'." % (action.type))
+            raise osv.except_osv(_("Invalid Action"), _("No implementation found for method '%s'.") % (action.type))
             
         return res
     
     def _perform_outgoing_action(self, cr, uid, action, object_id, context=None):
         """ Process an outgoing message by sending it to the middleware. """
+        pdb.set_trace()
         session = requests.Session()
         session.verify = False
-        #pdb.set_trace()
         url = SERVER_URL + action.type + '/' + action.model + '/' + object_id
         resp = session.get(url)
         content = resp.content

@@ -22,7 +22,7 @@
 		</field>
 	</record>
 	
-	<!-- Contract form view -->
+	<!-- Message form view -->
 	<record id="view_gmc_message_pool_form" model="ir.ui.view">
 		<field name="name">gmc.message.pool.form</field>
 		<field name="model">gmc.message.pool</field>
@@ -45,14 +45,41 @@
 						<field name="incoming_key"/>
 					</group>
 					<group>
-						<field name="action_id"/>
-						<field name="object_id" />
+						<field name="object_id" mode="form" colspan="4">
+                            <!-- 
+                                Not possible on many2one fields :( !
+                            <form string="GMC_Action">
+                                    <field name="name"/>
+                                    <field name="direction"/>
+                                    <field name="model"/>
+                                    <field name="type"/>
+                                    <field name="description"/>
+                            </form> -->
+                        </field>
 					</group>
 				</group>
+                <group>
+                    <field name="action_id"/>
+                </group>
 			</sheet>
 			</form>
 		</field>
 	</record>
+    
+    <!-- GMC Action form view -->
+    <record id="view_gmc_action_form" model="ir.ui.view">
+		<field name="name">gmc.action.form</field>
+		<field name="model">gmc.action</field>
+		<field name="arch" type="xml">
+			<form string="GMC Action" version="7.0">
+                <field name="name"/>
+                <field name="direction"/>
+                <field name="model"/>
+                <field name="type"/>
+                <field name="description"/>
+            </form>
+        </field>
+    </record>
 
 	<!-- <record id="view_simple_recurring_contract_filter" model="ir.ui.view">
 		<field name="name">simple.recurring.contract.select</field>

@@ -38,20 +38,26 @@ class simple_recurring_contract(orm.Model):
         # Dummy function that sets the active flag.
         return dict((id, True) for id in ids)
         
-    def _get_contract_from_invoice (self, cr, uid, invoice_ids, context=None):
+    def _get_contract_from_invoice (invoice_obj, cr, uid, invoice_ids, context=None):
+        self = invoice_obj.pool.get('simple.recurring.contract')
         res = []
-        for invoice in self.pool.get('account.invoice').browse(cr, uid, invoice_ids, context=context):
+        for invoice in invoice_obj.browse(cr, uid, invoice_ids, context=context):
             if invoice.state == 'paid':
+                self._invoice_paid(cr, uid, invoice, context=context)
                 for invoice_line in invoice.invoice_line:
                     contract = invoice_line.contract_id
                     if contract.state == 'waiting':
                         # We should activate the contract and set the first_payment_date
                         res.append(invoice_line.contract_id.id)
-                        self.pool.get('simple.recurring.contract').write(cr, uid, contract.id, {'first_payment_date' : invoice.payment_ids[0].date,
+                        self.write(cr, uid, contract.id, {'first_payment_date' : invoice.payment_ids[0].date,
                                                           'state' : 'active'
                         }, context=context)
         
         return res
+        
+    def _invoice_paid(self, cr, uid, invoice, context=None):
+        """ Hook for doing something when an invoice line is paid. """
+        pass
         
     def _is_fully_managed (self, cr, uid, ids, field_name, arg, context):
         # Tells if the correspondant and the payer is the same person.
