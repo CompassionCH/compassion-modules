@@ -30,15 +30,48 @@ SERVER_URL = 'https://test.services.compassion.ch:443/rest/openerp/'
 logger = logging.getLogger(__name__)
 
 
+class gmc_message_pool_process(osv.orm.TransientModel):
+    _name = 'gmc.message.pool.process'
+    
+    def process_messages(self, cr, uid, ids, context=None):
+        active_ids = context.get('active_ids')
+        self.pool.get('gmc.message.pool').process_messages(cr, uid ,active_ids, context=context)
+        action = {
+            'name': 'Message treated',
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree, form',
+            'res_model': 'gmc.message.pool',
+            'target': 'current',
+        }
+        
+        return action
+
+
 class gmc_message_pool(Model):
     """ Pool of messages exchanged between Compassion CH and GMC. """
     _name = 'gmc.message.pool'
 
+
     _columns = {
-        'date': fields.date(_('Message Date'), required=True, readonly=True),
+        'name': fields.related(
+            'action_id', 'name', type="char", store=False, readonly=True
+        ),
+        'description': fields.related(
+            'action_id', 'description', type="text", string=_("Action to execute"), store=False, readonly=True
+        ),
+        'direction': fields.related( # TODO : see if useless
+            'action_id', 'direction', type="char", store=True
+        ),
+        'partner_id': fields.many2one(
+            'res.partner', _("Partner")
+        ),
+        'child_id': fields.many2one(
+            'compassion.child', _("Child")
+        ),
+        'date': fields.date(_('Message Date'), required=True),
         'action_id': fields.many2one('gmc.action',_('GMC Message'),
-                                  ondelete="restrict", required=True,
-                                  readonly=True),
+                                  ondelete="restrict", required=True),
         'send_date': fields.date(_('Date Sent to GMC'), readonly=True),
         'state': fields.selection(
             [('pending', _('Pending')),
@@ -46,17 +79,19 @@ class gmc_message_pool(Model):
             _('State'), readonly=True
         ),
         'object_id': fields.integer(_('Referrenced Object Id')),
-        'incoming_key': fields.char(_('Object Reference'), size=9,
-                                    help=_("In case of incoming message, \
-                                            contains the reference of the \
-                                            child or the project that will \
-                                            be created/modified.")),
+        'incoming_key': fields.char(_('Incoming Reference'), size=9,
+                                    help=_("In case of incoming message, "
+                                           "contains the reference of the "
+                                           "child or the project that will "
+                                           "be created/modified.")),
     }
     
     _defaults = {
-        'date' : datetime.date.today(),
+        'date' : str(datetime.date.today()),
         'state' : 'pending'
     }
+    
+    
     
     def process_messages(self, cr, uid, ids, context=None):
         """ Process given messages in pool. """
@@ -69,6 +104,8 @@ class gmc_message_pool(Model):
                     
         if success_ids:
             self.write(cr, uid, success_ids, {'state':'sent','send_date':datetime.date.today()}, context=context)
+            
+        return True
                     
 gmc_message_pool()
 
@@ -115,6 +152,7 @@ class gmc_action(Model):
         return [
             ('create','Create object'),
             ('cancel','Cancel object'),
+            ('upsert','Create or Update object'),
         ]
     
     
@@ -160,6 +198,8 @@ class gmc_action(Model):
             return super(gmc_action, self).create(cr, uid, values, context=context)
         else:
             raise osv.except_osv(_("Creation aborted."), _("Invalid action (%s, %s, %s).") % (direction, model, action_type))
+           
+        
                 
                 
     def _perform_incoming_action(self, cr, uid, action, object_id, args={}, context=None):
@@ -178,10 +218,9 @@ class gmc_action(Model):
     
     def _perform_outgoing_action(self, cr, uid, action, object_id, context=None):
         """ Process an outgoing message by sending it to the middleware. """
-        pdb.set_trace()
         session = requests.Session()
         session.verify = False
-        url = SERVER_URL + action.type + '/' + action.model + '/' + object_id
+        url = SERVER_URL + action.type + '/' + action.model + '/' + str(object_id)
         resp = session.get(url)
         content = resp.content
         

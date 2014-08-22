@@ -48,14 +48,18 @@ class simple_recurring_contract(orm.Model):
             message_vals = {
                 'action_id': action_id,
                 'object_id': contract.partner_id.id,
+                'partner_id': contract.partner_id.id,
+                'child_id': contract.child_id.id,
                 'date': contract.first_payment_date,
             }
             message_obj.create(cr, uid, message_vals, context=context)
             
             # CreateCommitment Message
             action_id = action_obj.search(cr, uid, [('name','=','CreateCommitment')], limit=1, context=context)[0]
-            message_vals['action_id'] = action_id
-            message_vals['object_id'] = contract.id
+            message_vals.update({
+                'action_id': action_id,
+                'object_id': contract.id,
+            })
             message_obj.create(cr, uid, message_vals, context=context)
         
         return res
@@ -69,8 +73,12 @@ class simple_recurring_contract(orm.Model):
             action_id = action_obj.search(cr, uid, [('name','=','CancelCommitment')], limit=1, context=context)[0]
             message_vals = {'action_id': action_id}
             
-            for id in ids:
-                message_vals['object_id'] = id
+            for contract in self.browse(cr, uid, ids, context=context):
+                message_vals.update({
+                    'object_id': contract.id,
+                    'partner_id': contract.partner_id.id,
+                    'child_id': contract.child_id.id,
+                })
                 message_obj.create(cr, uid, message_vals)
         
         return res
@@ -85,11 +93,18 @@ class simple_recurring_contract(orm.Model):
         message_obj = self.pool.get('gmc.message.pool')
         action_obj = self.pool.get('gmc.action')
         action_id = action_obj.search(cr, uid, [('name','=','CreateGift')], limit=1, context=context)[0]
-        message_vals = {'action_id': action_id}
+        message_vals = {
+            'action_id': action_id,
+            'date': invoice.date_invoice,
+        }
         gift_ids = self.pool.get('product.product').search(cr, uid, [('name_template','in',gift_product_names)], context={'lang':'en_US'})
 
         for invoice_line in invoice.invoice_line:
             if invoice_line.product_id.id in gift_ids:
-                message_vals['object_id'] = invoice_line.id
-                message_vals['date'] = invoice.date_invoice
+                contract = invoice_line.contract_id
+                message_vals.update({
+                    'object_id': invoice_line.id,
+                    'partner_id': invoice_line.partner_id.id,
+                    'child_id': contract.child_id.id if contract else False,
+                })
                 message_obj.create(cr, uid, message_vals)
