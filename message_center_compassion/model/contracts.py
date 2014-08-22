@@ -34,9 +34,8 @@ class simple_recurring_contract(orm.Model):
     """ We add here creation of messages concerning commitments. """
     _inherit = "simple.recurring.contract"
     
-    def _active (self, cr, uid, ids, field_name, args, context=None) :
+    def _on_contract_active(self, cr, uid, ids, context=None):
         """ Create messages to GMC when new sponsorship is activated. """
-        res = super(simple_recurring_contract, self)._active(cr, uid, ids, field_name, args, context=context)
         message_obj = self.pool.get('gmc.message.pool')
         action_obj = self.pool.get('gmc.action')
         action_id = 0
@@ -49,7 +48,6 @@ class simple_recurring_contract(orm.Model):
                 'action_id': action_id,
                 'object_id': contract.partner_id.id,
                 'partner_id': contract.partner_id.id,
-                'child_id': contract.child_id.id,
                 'date': contract.first_payment_date,
             }
             message_obj.create(cr, uid, message_vals, context=context)
@@ -59,10 +57,9 @@ class simple_recurring_contract(orm.Model):
             message_vals.update({
                 'action_id': action_id,
                 'object_id': contract.id,
+                'child_id': contract.child_id.id,
             })
             message_obj.create(cr, uid, message_vals, context=context)
-        
-        return res
         
     def contract_terminated(self, cr, uid, ids):
         """ Inform GMC when sponsorship is terminated. """
