@@ -1,5 +1,0 @@
-"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-"read_message_pool","Read access on gmc.message.pool","model_gmc_message_pool","sponsorship_compassion.group_sponsorship",1,0,0,0
-"read_gmc_action","Read access on gmc.action","model_gmc_action","sponsorship_compassion.group_sponsorship",1,0,0,0
-"access_message_pool","Full access on gmc.message.pool","model_gmc_message_pool","base.group_erp_manager",1,1,1,1
-"access_gmc_action","Full access on gmc.action","model_gmc_action","base.group_erp_manager",1,1,1,1
