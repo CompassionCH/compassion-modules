@@ -258,8 +258,8 @@ class simple_recurring_contract(orm.Model):
         inv_obj = self.pool.get('account.invoice')
         wf_service = netsvc.LocalService('workflow')
         
-        # Find all invoice lines after the given date
-        inv_line_ids = inv_line_obj.search(cr, uid, [('contract_id', 'in', ids), ('due_date', '>', since_date)], context=context)
+        # Find all unpaid invoice lines after the given date
+        inv_line_ids = inv_line_obj.search(cr, uid, [('contract_id', 'in', ids), ('due_date', '>', since_date), ('state', '!=', 'paid')], context=context)
         inv_ids = set()
         for inv_line in inv_line_obj.browse(cr, uid, inv_line_ids, context):
             inv_ids.add(inv_line.invoice_id.id)
@@ -433,15 +433,15 @@ class simple_recurring_contract(orm.Model):
             
         return {'value': result}
 
-    def contract_draft(self, cr, uid, ids):
+    def contract_draft(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'draft'})
         return True
 
-    def contract_active(self, cr, uid, ids):
+    def contract_active(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'active'})
         return True
 
-    def contract_terminated(self, cr, uid, ids):
+    def contract_terminated(self, cr, uid, ids, context=None):
         today = datetime.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
         self.write(cr, uid, ids, {'state': 'terminated', 'end_date': today})
         return True

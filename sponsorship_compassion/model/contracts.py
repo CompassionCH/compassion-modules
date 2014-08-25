@@ -22,6 +22,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from openerp.osv import orm, fields
 from openerp.tools import mod10r
+from openerp import netsvc
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import pdb
@@ -34,8 +35,9 @@ class simple_recurring_contract(orm.Model):
     _name = "simple.recurring.contract"
     _inherit = "simple.recurring.contract"
     
-    def _active (self, cr, uid, ids, field_name, args, context=None) :
+    def _active (self, cr, uid, ids, field_name, args, context=None):
         # Dummy function that sets the active flag.
+        self._on_contract_active(cr, uid, ids, context=context)
         return dict((id, True) for id in ids)
         
     def _get_contract_from_invoice (invoice_obj, cr, uid, invoice_ids, context=None):
@@ -49,12 +51,17 @@ class simple_recurring_contract(orm.Model):
                     if contract.state == 'waiting':
                         # We should activate the contract and set the first_payment_date
                         res.append(invoice_line.contract_id.id)
-                        self.write(cr, uid, contract.id, {'first_payment_date' : invoice.payment_ids[0].date,
-                                                          'state' : 'active'
-                        }, context=context)
+                        self.write(cr, uid, contract.id, {'first_payment_date' : invoice.payment_ids[0].date},
+                                   context=context)
         
         return res
         
+    def _on_contract_active(self, cr, uid, ids, context=None):
+        """ Hook for doing something when contract is activated. """
+        wf_service = netsvc.LocalService('workflow')
+        for id in ids:
+            wf_service.trg_validate(uid, 'simple.recurring.contract', id, 'contract_active', cr)
+    
     def _invoice_paid(self, cr, uid, invoice, context=None):
         """ Hook for doing something when an invoice line is paid. """
         pass
