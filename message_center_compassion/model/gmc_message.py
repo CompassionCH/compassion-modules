@@ -60,7 +60,7 @@ class gmc_message_pool(Model):
         'description': fields.related(
             'action_id', 'description', type="text", string=_("Action to execute"), store=False, readonly=True
         ),
-        'direction': fields.related( # TODO : see if useless
+        'direction': fields.related(
             'action_id', 'direction', type="char", store=True
         ),
         'partner_id': fields.many2one(
@@ -72,7 +72,7 @@ class gmc_message_pool(Model):
         'date': fields.date(_('Message Date'), required=True),
         'action_id': fields.many2one('gmc.action',_('GMC Message'),
                                   ondelete="restrict", required=True),
-        'send_date': fields.date(_('Date Sent to GMC'), readonly=True),
+        'process_date': fields.date(_('Process Date'), readonly=True),
         'state': fields.selection(
             [('pending', _('Pending')),
              ('sent', _('Sent'))],
@@ -103,7 +103,7 @@ class gmc_message_pool(Model):
                     success_ids.append(message.id)
                     
         if success_ids:
-            self.write(cr, uid, success_ids, {'state':'sent','send_date':datetime.date.today()}, context=context)
+            self.write(cr, uid, success_ids, {'state':'sent','process_date':datetime.date.today()}, context=context)
             
         return True
                     

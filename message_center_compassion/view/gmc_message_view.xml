@@ -7,17 +7,32 @@
 <openerp>
 <data>
 	<!-- GMC Message Pool tree view -->
-	<record id="view_gmc_message_pool_tree" model="ir.ui.view">
+	<record id="view_gmc_message_pool_incoming_tree" model="ir.ui.view">
 		<field name="name">gmc.message.pool.tree</field>
 		<field name="model">gmc.message.pool</field>
+		<field name="priority">17</field>
 		<field name="arch" type="xml">
 			<tree string="Message Pool" colors="blue:state == 'pending';black:state == 'sent'" create="false">
+				<field name="action_id" />
 				<field name="date" />
-				<field name="action_id"/>
-				<field name="send_date" />
-				<field name="partner_id" />
+				<field name="process_date" />
 				<field name="child_id" />
 				<field name="incoming_key"/>
+				<field name="state" />
+			</tree>
+		</field>
+	</record>
+    <record id="view_gmc_message_pool_outgoing_tree" model="ir.ui.view">
+		<field name="name">gmc.message.pool.tree</field>
+		<field name="model">gmc.message.pool</field>
+        <field name="priority">12</field>
+		<field name="arch" type="xml">
+			<tree string="Message Pool" colors="blue:state == 'pending';black:state == 'sent'" create="false">
+				<field name="action_id" />
+				<field name="date" />
+				<field name="process_date" />
+				<field name="partner_id" />
+				<field name="child_id" />
 				<field name="state" />
 			</tree>
 		</field>
@@ -36,12 +51,12 @@
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="name"/>
+                            <field name="action_id"/>
                         </h1>
                     </div>
                     <group>
                         <field name="date" />
-                        <field name="send_date" />
+                        <field name="process_date" />
                         <field name="partner_id" attrs="{'invisible':[('partner_id','=',False)]}" />
                         <field name="child_id" attrs="{'invisible':[('child_id','=',False)]}" />
                         <field name="incoming_key" attrs="{'invisible':[('incoming_key','=',False)]}" />
@@ -57,20 +72,24 @@
 	</record>
     
     
-    <!-- GMC Action form view 
+    <!-- GMC Action form view -->
     <record id="view_gmc_action_form" model="ir.ui.view">
 		<field name="name">gmc.action.form</field>
 		<field name="model">gmc.action</field>
 		<field name="arch" type="xml">
 			<form string="GMC Action" version="7.0">
-                <field name="name"/>
-                <field name="direction"/>
-                <field name="model"/>
-                <field name="type"/>
-                <field name="description"/>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="direction"/>
+                        <field name="model"/>
+                        <field name="type"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>
             </form>
         </field>
-    </record> -->
+    </record>
 
     
     
@@ -110,7 +129,7 @@
 		<field name="res_model">gmc.message.pool</field>
 		<field name="view_type">form</field>
 		<field name="view_mode">tree,form</field>
-		<field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_gmc_message_pool_incoming_tree" />
         <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
         <field name="context">{'search_default_incoming':1}</field>
 		<field name="help" type="html">
@@ -169,7 +188,7 @@
 	</record>
     
     <record id="action_gmc_message_gift_form" model="ir.actions.act_window">
-		<field name="name">Create Gift</field>
+		<field name="name">Gift</field>
 		<field name="type">ir.actions.act_window</field>
 		<field name="res_model">gmc.message.pool</field>
 		<field name="view_type">form</field>
@@ -190,7 +209,6 @@
 	<menuitem id="menu_message_incoming" parent="menu_message_center" action="action_gmc_message_incoming_form" sequence="1" />
     <menuitem id="menu_message_outgoing" name="Outgoing Messages" parent="menu_message_center" sequence="2"/>
 	<menuitem id="menu_message_constituent" parent="menu_message_outgoing" action="action_gmc_message_constituent_form" sequence="5"/>
-	<menuitem id="menu_message_child_form" parent="menu_message_outgoing" action="action_gmc_message_child_form" sequence="6"/>
 	<menuitem id="menu_message_commitment" parent="menu_message_outgoing" action="action_gmc_message_commitment_form" sequence="7"/>
 	<menuitem id="menu_message_gift" parent="menu_message_outgoing" action="action_gmc_message_gift_form" sequence="8"/>
     

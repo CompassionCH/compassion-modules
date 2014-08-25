@@ -36,6 +36,7 @@ class simple_recurring_contract(orm.Model):
     
     def _on_contract_active(self, cr, uid, ids, context=None):
         """ Create messages to GMC when new sponsorship is activated. """
+        super(simple_recurring_contract, self)._on_contract_active(cr, uid, ids, context=context)
         message_obj = self.pool.get('gmc.message.pool')
         action_obj = self.pool.get('gmc.action')
         action_id = 0
@@ -61,8 +62,9 @@ class simple_recurring_contract(orm.Model):
             })
             message_obj.create(cr, uid, message_vals, context=context)
         
-    def contract_terminated(self, cr, uid, ids):
+    def contract_terminated(self, cr, uid, ids, context=None):
         """ Inform GMC when sponsorship is terminated. """
+        pdb.set_trace()
         res = super(simple_recurring_contract, self).contract_terminated(cr, uid, ids)
         if res:
             message_obj = self.pool.get('gmc.message.pool')
