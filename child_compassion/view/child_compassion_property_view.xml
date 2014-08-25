@@ -22,7 +22,7 @@
 							<group>
 								<field name="handicapped_flag" />
 								<field name="attending_school_flag" />
-								<field name="family_size" />
+								<field name="nb_children_family" />
 								<field name="school_best_subject" widget="many2many_tags" />
 							</group>
 						</group>
