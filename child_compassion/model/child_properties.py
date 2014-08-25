@@ -30,12 +30,16 @@ class child_property(orm.Model):
     
     _columns = {
         'child_id': fields.many2one(
-            'compassion.child', _('Concerned child'), required=True),
+            'compassion.child', _('Concerned child'), required=True, ondelete='cascade'),
         'info_date': fields.date(_('Date of case study')),
         'sibling_flag': fields.boolean(_('Has sibling')),
         'orphan_flag': fields.boolean(_('Is orphan')),
         'handicapped_flag': fields.boolean(_('Is handicapped')),
         'attending_school_flag': fields.boolean(_('Is attending school')),
+        'not_attending_reason': fields.many2many(
+            'compassion.child.property.value', 'child_property_to_value',
+            'property_id', 'value_id', _('Not attending school reason'),
+            domain=[('property_name', '=', 'not_attending_reason')]),
         'us_school_level': fields.char(_('US school level')),
         'school_performance': fields.many2many(
             'compassion.child.property.value', 'child_property_to_value',
@@ -85,7 +89,9 @@ class child_property(orm.Model):
             'compassion.child.property.value', 'child_property_to_value',
             'property_id', 'value_id', _('Father'),
             domain=[('property_name', '=', 'mother')]),
-        'family_size': fields.integer(_('Family size')),
+        'nb_children_family': fields.integer(_('Children in family')),
+        'nb_brothers': fields.integer(_('Brothers')),
+        'nb_sisters': fields.integer(_('Sisters')),
         'fullshot_image_uri': fields.char(_('Image URI')),
     }
 
@@ -95,12 +101,9 @@ class child_property_value(orm.Model):
     _rec_name = 'value_en'
     
     _columns = {
-        'property_name': fields.char('Is value for', required=True, readonly=True),
+        'property_name': fields.char(_('Is value for'), required=True, readonly=True),
         'value_en': fields.char(_('English value'), required=True, readonly=True),
-        'value_fr_m': fields.char(_('French masculine translation')),
-        'value_fr_f': fields.char(_('French feminine translation')),
-        'value_de_m': fields.char(_('German masculine translation')),
-        'value_de_f': fields.char(_('German feminine translation')),
-        'value_it_m': fields.char(_('Italian masculine translation')),
-        'value_it_f': fields.char(_('Italian feminine translation')),        
+        'value_fr': fields.char(_('French translation')),
+        'value_de': fields.char(_('German translation')),
+        'value_it': fields.char(_('Italian translation')),
     }

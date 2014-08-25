@@ -23,6 +23,7 @@
 							<page string="General Information">
 								<group>
 									<group>
+										<field name="firstname" />
 										<field name="gender" />
 										<field name="code" />
 										<field name="unique_id" />
