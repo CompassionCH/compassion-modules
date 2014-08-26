@@ -252,38 +252,39 @@ class gmc_action(Model):
         if action.name == 'CreateCommitment':
             contract = self.pool.get(action.model).browse(cr, uid, object_id, context=context)
             # Check that the constituent is known by GMC.
-            partner_id = contract.partner_id.id
-            message_ids = message_obj.search(cr, uid, [('object_id','=',partner_id),('state','=','sent')], context=context)
+            partner = contract.partner_id
+            message_ids = message_obj.search(cr, uid, [('object_id','=',partner.id),('state','=','sent')], context=context)
             if not message_ids:
-                raise osv.except_osv(_("Constituent not sent to GMC"),_("Please send the new constituents to GMC before sending the commitments."))
+                raise osv.except_osv(_("Constituent (%s) not sent to GMC") % partner.name, _("Please send the new constituents to GMC before sending the commitments."))
                             
             # Check that the contract is linked to a child
             child_id = contract.child_id
             if not child_id:
-                raise osv.except_osv(_("Contract is not a sponsorship."),_("The new commitment is not linked to a child and should not be sent to GMC."))
+                raise osv.except_osv(_("Contract is not a sponsorship."),_("The new commitment of %s is not linked to a child and should not be sent to GMC.") % partner.name)
             else:
                 # Check that there are no previous sponsorship cancellation pending.
                 message_ids = message_obj.search(cr, uid, [('name','=','CancelCommitment'),('child_id','=',child_id.id),('state','=','pending')], context=context)
                 if message_ids:
-                    raise osv.except_osv(_("Commitment not sent."), _("Please send the previous commitment cancellation before the creation of a new commitment."))
+                    raise osv.except_osv(_("Commitment not sent (%s).") % child_id.code, _("Please send the previous commitment cancellation before the creation of a new commitment."))
                 
         
         elif action.name == 'CreateGift':
             # Check that the commitment is known by GMC.
-            contract = self.pool.get(action.model).browse(cr, uid, object_id, context=context).contract_id
+            invoice_line = self.pool.get(action.model).browse(cr, uid, object_id, context=context)
+            contract = invoice_line.contract_id
             if contract and contract.partner_id and contract.child_id:
                 message_ids = message_obj.search(cr, uid, [('name','=','CreateCommitment'),('object_id','=',contract.id),('state','=','sent')], context=context)
                 if not message_ids:
-                    raise osv.except_osv(_("Commitment not sent to GMC"), _("The commitment the gift refers to was not sent to GMC."))
+                    raise osv.except_osv(_("Commitment not sent to GMC (%s - %s)") % (contract.partner_id.ref, contract.child_id.code), _("The commitment the gift refers to was not sent to GMC."))
             else:
-                raise osv.except_osv(_("Unknown sponsorship."), _("The gift is not related to a sponsorship so it should not be sent to GMC."))
+                raise osv.except_osv(_("Unknown sponsorship."), _("The gift (%s - %s) is not related to a sponsorship so it should not be sent to GMC.") % (invoice_line.partner_id.name, invoice_line.name))
         
         
         elif action.name == 'CancelCommitment':
             # Check that the commitment is known by GMC.
             message_ids = message_obj.search(cr, uid, [('name','=','CreateCommitment'),('object_id','=',object_id),('state','=','sent')], context=context)
             if not message_ids:
-                raise osv.except_osv(_("Commitment not sent to GMC"), _("The commitment was not sent to GMC and therefore cannot be cancelled."))
+                raise osv.except_osv(_("Commitment not sent to GMC (%s - %s)") % (contract.partner_id.ref, contract.child_id.code), _("The commitment was not sent to GMC and therefore cannot be cancelled."))
 
                 
         return True
