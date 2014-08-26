@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Author: Cyril Sester. Copyright Compassion Suisse
+#    Author: Emanuel Cino. Copyright Compassion Suisse
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -17,38 +17,42 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
+from openerp.osv import orm
 
 
 class compassion_child(orm.Model):
+
     """ Add allocation and deallocation methods on the children. """
     _inherit = 'compassion.child'
-    
+
     def allocate(self, cr, uid, child_reference, context=None):
-        child_id = self.create(cr, uid, {'code':child_reference, 'name':'/'}, context=context)
+        child_id = self.create(
+            cr, uid, {'code': child_reference, 'name': '/'}, context=context)
         return self.update(cr, uid, child_id, context=context)
-        
+
     def deallocate(self, cr, uid, id, context=None):
         # TODO : should be done from GP or see what to do.
         return True
-        
+
     def depart(self, cr, uid, id, context=None):
-        # TODO : terminate the contract, mark the child as departed and the user should do the right communication from GP.
+        # TODO : terminate the contract, mark the child as departed and the
+        # user should do the right communication from GP.
         return True
-        
+
     def update(self, cr, uid, id, context=None):
         """ When we receive a notification that child has been updated, we fetch the last case study. """
         # TODO : uncomment when merged with branch child_compassion.
         # self.get_last_case_study(self, cr, uid, id, context=context)
         return True
-    
+
 compassion_child()
 
+
 class compassion_project(orm.Model):
+
     """ Add update method. """
     _inherit = 'compassion.project'
-    
+
     def update(self, cr, uid, id, context=None):
         # TODO : add a method that calls webservice like get_last_case_study.
         return True
