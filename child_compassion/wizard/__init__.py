@@ -20,25 +20,4 @@
 #
 ##############################################################################
 
-
-{
-    'name': 'Compassion Children',
-    'version': '1.0',
-    'category': 'Other',
-    'description': """
-    """,
-    'author': 'Compassion CH',
-    'website': 'http://www.compassion.ch',
-    'depends': [],
-    'data': [
-        'view/child_compassion_view.xml',
-        'view/child_compassion_property_view.xml',
-        'view/child_description_wizard_view.xml',
-    ],
-    'css': ['static/src/css/child_compassion.css'],
-    'demo': [],
-    'installable': True,
-    'auto_install': False,
-}
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+from . import child_description_wizard

@@ -101,6 +101,9 @@ class child_property_value(orm.Model):
     _rec_name = 'value_en'
     
     _columns = {
+        'property_ids': fields.many2many(
+            'compassion.child.property', 'child_property_to_value',
+            'value_id', 'property_id', _('Properties')),
         'property_name': fields.char(_('Is value for'), required=True, readonly=True),
         'value_en': fields.char(_('English value'), required=True, readonly=True),
         'value_fr': fields.char(_('French translation')),
