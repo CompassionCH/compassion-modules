@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+<data>
+	<!-- GMC Message Pool tree view -->
+	<record id="view_gmc_message_pool_incoming_tree" model="ir.ui.view">
+		<field name="name">gmc.message.pool.tree</field>
+		<field name="model">gmc.message.pool</field>
+		<field name="priority">17</field>
+		<field name="arch" type="xml">
+			<tree string="Message Pool" colors="blue:state == 'pending';black:state == 'sent'" create="false">
+				<field name="action_id" />
+				<field name="date" />
+				<field name="process_date" />
+				<field name="child_id" />
+				<field name="incoming_key"/>
+				<field name="state" />
+			</tree>
+		</field>
+	</record>
+    <record id="view_gmc_message_pool_outgoing_tree" model="ir.ui.view">
+		<field name="name">gmc.message.pool.tree</field>
+		<field name="model">gmc.message.pool</field>
+        <field name="priority">12</field>
+		<field name="arch" type="xml">
+			<tree string="Message Pool" colors="blue:state == 'pending';black:state == 'sent'" create="false">
+				<field name="action_id" />
+				<field name="date" />
+				<field name="process_date" />
+				<field name="partner_id" />
+				<field name="child_id" />
+				<field name="state" />
+			</tree>
+		</field>
+	</record>
+	
+	<!-- GMC Message Pool form view -->
+	<record id="view_gmc_message_pool_form" model="ir.ui.view">
+		<field name="name">gmc.message.pool.form</field>
+		<field name="model">gmc.message.pool</field>
+		<field name="arch" type="xml">
+			<form string="GMC Message" version="7.0" create="false">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,sent" />
+                    <button name="process_messages" type="object" class="oe_highlight" string="Process Message" states="pending" />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="action_id"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="date" />
+                        <field name="process_date" />
+                        <field name="partner_id" attrs="{'invisible':[('partner_id','=',False)]}" />
+                        <field name="child_id" attrs="{'invisible':[('child_id','=',False)]}" />
+                        <field name="incoming_key" attrs="{'invisible':[('incoming_key','=',False)]}" />
+                    </group>
+                    <group></group>
+                    <group>
+                        <field name="description" colspan="4"/>
+                    </group>
+                    
+                </sheet>
+			</form>
+		</field>
+	</record>
+    
+    
+    <!-- GMC Action form view -->
+    <record id="view_gmc_action_form" model="ir.ui.view">
+		<field name="name">gmc.action.form</field>
+		<field name="model">gmc.action</field>
+		<field name="arch" type="xml">
+			<form string="GMC Action" version="7.0">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="direction"/>
+                        <field name="model"/>
+                        <field name="type"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    
+    
+    <!-- Search Filters -->
+    <record id="view_gmc_message_pool_filter" model="ir.ui.view">
+        <field name="name">gmc.message.pool.filter</field>
+        <field name="model">gmc.message.pool</field>
+        <field name="arch" type="xml">
+            <search string="Search Partner">
+                <filter string="Incoming" name="incoming" domain="[('direction','=','in')]" />
+                <filter string="Constituent" name="constituent" domain="['|',('name','like','Constituent'),('name','like','Email')]" />
+                <filter string="Child" name="child" domain="['|',('name','like','Child'),('name','like','Project')]" />
+                <filter string="Commitment" name="commitment" domain="[('name','like','Commitment')]" />
+                <filter string="CreateGift" name="gift" domain="[('name','=','CreateGift')]" />
+                <separator />
+                <filter string="Pending" name="pending" domain="[('state','=','pending')]" />
+                <group expand="0" string="Group By...">
+                    <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+	
+	<!-- Sidebar actions, called from menuitems -->
+	<record id="action_gmc_message_pool_form" model="ir.actions.act_window">
+		<field name="name">Message Pool</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">gmc.message.pool</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="help" type="html">
+		  <p class="oe_view_nocontent_create">
+			No messages.
+		  </p>
+		</field>
+	</record>
+    
+    <record id="action_gmc_message_incoming_form" model="ir.actions.act_window">
+		<field name="name">Incoming Messages</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">gmc.message.pool</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_gmc_message_pool_incoming_tree" />
+        <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
+        <field name="context">{'search_default_incoming':1, 'search_default_pending':1}</field>
+		<field name="help" type="html">
+		  <p class="oe_view_nocontent_create">
+			No messages.
+		  </p>
+		</field>
+	</record>
+    
+    <record id="action_gmc_message_constituent_form" model="ir.actions.act_window">
+		<field name="name">Constituent</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">gmc.message.pool</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
+        <field name="context">{'search_default_constituent':1, 'search_default_pending':1}</field>
+		<field name="help" type="html">
+		  <p class="oe_view_nocontent_create">
+			No messages.
+		  </p>
+		</field>
+	</record>
+    
+    <record id="action_gmc_message_child_form" model="ir.actions.act_window">
+		<field name="name">Child</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">gmc.message.pool</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
+        <field name="context">{'search_default_child':1, 'search_default_pending':1}</field>
+		<field name="help" type="html">
+		  <p class="oe_view_nocontent_create">
+			No messages.
+		  </p>
+		</field>
+	</record>
+    
+    <record id="action_gmc_message_commitment_form" model="ir.actions.act_window">
+		<field name="name">Commitment</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">gmc.message.pool</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
+        <field name="context">{'search_default_commitment':1, 'search_default_pending':1}</field>
+		<field name="help" type="html">
+		  <p class="oe_view_nocontent_create">
+			No messages.
+		  </p>
+		</field>
+	</record>
+    
+    <record id="action_gmc_message_gift_form" model="ir.actions.act_window">
+		<field name="name">Gift</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">gmc.message.pool</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
+        <field name="context">{'search_default_gift':1, 'search_default_pending':1}</field>
+		<field name="help" type="html">
+		  <p class="oe_view_nocontent_create">
+			No messages.
+		  </p>
+		</field>
+	</record>
+    
+	
+    <!-- Menu Items -->
+	<menuitem id="menu_message_center" parent="sponsorship_compassion.menu_sponsorship_root" name="Message Center" sequence="15" />
+	<menuitem id="menu_message_incoming" parent="menu_message_center" action="action_gmc_message_incoming_form" sequence="1" />
+    <menuitem id="menu_message_outgoing" name="Outgoing Messages" parent="menu_message_center" sequence="2"/>
+	<menuitem id="menu_message_constituent" parent="menu_message_outgoing" action="action_gmc_message_constituent_form" sequence="5"/>
+	<menuitem id="menu_message_commitment" parent="menu_message_outgoing" action="action_gmc_message_commitment_form" sequence="7"/>
+	<menuitem id="menu_message_gift" parent="menu_message_outgoing" action="action_gmc_message_gift_form" sequence="8"/>
+    
+    
+    <!-- Process Message Views -->
+    <record id="message_pool_process" model="ir.ui.view">
+		<field name="name">gmc.message.pool.process.form</field>
+		<field name="model">gmc.message.pool.process</field>
+		<field name="arch" type="xml">
+			<form string="Process Messages" version="7.0">
+				<p class="oe_grey">
+					This will execute the action defined for each pending message in the pool.
+				</p>
+				<footer>
+					<button string="Process Messages" name="process_messages" type="object" default_focus="1" class="oe_highlight"/>
+					or
+					<button string="Cancel" class="oe_link" special="cancel"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+    
+    <act_window id="action_message_pool_process"
+		multi="True"
+		key2="client_action_multi" name="Process Messages"
+		res_model="gmc.message.pool.process" src_model="gmc.message.pool"
+		view_mode="form" target="new" view_type="form" />
+</data>
+</openerp>
