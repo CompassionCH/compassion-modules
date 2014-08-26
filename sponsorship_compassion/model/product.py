@@ -17,5 +17,5 @@ class product(orm.Model):
     _inherit = 'product.product'
 
     _columns = {
-        'gp_fund_id': fields.integer(_("GP Fund id"), size=4),
+        'gp_fund_id': fields.integer("GP Fund id", size=4),
     }
