@@ -434,11 +434,11 @@ class simple_recurring_contract(orm.Model):
         return {'value': result}
 
     def contract_draft(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'draft'})
+        self.write(cr, uid, ids, {'state': 'draft'}, context=context)
         return True
 
     def contract_active(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'active'})
+        self.write(cr, uid, ids, {'state': 'active'}, context=context)
         return True
 
     def contract_terminated(self, cr, uid, ids, context=None):
@@ -448,10 +448,10 @@ class simple_recurring_contract(orm.Model):
         
     def end_date_reached(self, cr, uid, context=None):
         today = datetime.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
-        contract_ids = self.search(cr, uid, [('state', '=', 'active'), ('end_date', '<=', today)])
+        contract_ids = self.search(cr, uid, [('state', '=', 'active'), ('end_date', '<=', today)], context=context)
         
         if contract_ids:
-            self.contract_terminated(cr, uid, contract_ids)
+            self.contract_terminated(cr, uid, contract_ids, context=context)
         
         return True
         

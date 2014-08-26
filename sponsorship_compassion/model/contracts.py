@@ -21,8 +21,8 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from openerp.osv import orm, fields
-from openerp.tools import mod10r
 from openerp import netsvc
+from openerp.tools import mod10r
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import pdb
@@ -35,12 +35,12 @@ class simple_recurring_contract(orm.Model):
     _name = "simple.recurring.contract"
     _inherit = "simple.recurring.contract"
     
-    def _active (self, cr, uid, ids, field_name, args, context=None):
+    def _active(self, cr, uid, ids, field_name, args, context=None):
         # Dummy function that sets the active flag.
         self._on_contract_active(cr, uid, ids, context=context)
         return dict((id, True) for id in ids)
         
-    def _get_contract_from_invoice (invoice_obj, cr, uid, invoice_ids, context=None):
+    def _get_contract_from_invoice(invoice_obj, cr, uid, invoice_ids, context=None):
         self = invoice_obj.pool.get('simple.recurring.contract')
         res = []
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, context=context):
@@ -66,7 +66,7 @@ class simple_recurring_contract(orm.Model):
         """ Hook for doing something when an invoice line is paid. """
         pass
         
-    def _is_fully_managed (self, cr, uid, ids, field_name, arg, context):
+    def _is_fully_managed(self, cr, uid, ids, field_name, arg, context):
         # Tells if the correspondant and the payer is the same person.
         res = {}
         for contract in self.browse(cr, uid, ids, context=context):
