@@ -160,7 +160,7 @@
 			<field name="list_price">8</field>
 		</record>
         <record id="product_template_fund_kgs" model="product.template">
-		            <field name="name">Kids Games Burkina Faso</field>
+		    <field name="name">Kids Games Burkina Faso</field>
 			<field name="type">service</field>
 			<field name="categ_id" ref="product_category_fund" />
 			<field name="list_price">8</field>

@@ -258,8 +258,8 @@ class simple_recurring_contract(orm.Model):
         inv_obj = self.pool.get('account.invoice')
         wf_service = netsvc.LocalService('workflow')
         
-        # Find all invoice lines after the given date
-        inv_line_ids = inv_line_obj.search(cr, uid, [('contract_id', 'in', ids), ('due_date', '>', since_date)], context=context)
+        # Find all unpaid invoice lines after the given date
+        inv_line_ids = inv_line_obj.search(cr, uid, [('contract_id', 'in', ids), ('due_date', '>', since_date), ('state', '!=', 'paid')], context=context)
         inv_ids = set()
         for inv_line in inv_line_obj.browse(cr, uid, inv_line_ids, context):
             inv_ids.add(inv_line.invoice_id.id)
@@ -433,25 +433,25 @@ class simple_recurring_contract(orm.Model):
             
         return {'value': result}
 
-    def contract_draft(self, cr, uid, ids):
-        self.write(cr, uid, ids, {'state': 'draft'})
+    def contract_draft(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'draft'}, context=context)
         return True
 
-    def contract_active(self, cr, uid, ids):
-        self.write(cr, uid, ids, {'state': 'active'})
+    def contract_active(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'active'}, context=context)
         return True
 
-    def contract_terminated(self, cr, uid, ids):
+    def contract_terminated(self, cr, uid, ids, context=None):
         today = datetime.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
         self.write(cr, uid, ids, {'state': 'terminated', 'end_date': today})
         return True
         
     def end_date_reached(self, cr, uid, context=None):
         today = datetime.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
-        contract_ids = self.search(cr, uid, [('state', '=', 'active'), ('end_date', '<=', today)])
+        contract_ids = self.search(cr, uid, [('state', '=', 'active'), ('end_date', '<=', today)], context=context)
         
         if contract_ids:
-            self.contract_terminated(cr, uid, contract_ids)
+            self.contract_terminated(cr, uid, contract_ids, context=context)
         
         return True
         

@@ -20,7 +20,8 @@
 		<field name="name">cancelled</field>
 		<field name="kind">function</field>
 		<field name="action">contract_cancelled()</field>
-	</record>
+        <field name="flow_stop" eval='True' />
+    </record>
 
 	<!-- Workflow transitions (how are states reached) -->
 	<record model="workflow.transition" id="simple_recurring_contract.t1">
@@ -28,7 +29,12 @@
 		<field name="act_to" ref="act_waiting" />
 		<field name="signal">contract_validated</field>
 	</record>
-	<record model="workflow.transition" id="simple_recurring_contract.t2">
+    <record model="workflow.transition" id="t4">
+		<field name="act_from" ref="act_waiting" />
+		<field name="act_to" ref="simple_recurring_contract.act_active" />
+		<field name="signal">contract_active</field>
+	</record>
+	<record model="workflow.transition" id="t3">
 		<field name="act_from" ref="act_waiting" />
 		<field name="act_to" ref="act_cancelled" />
 		<field name="signal">contract_terminated</field>
