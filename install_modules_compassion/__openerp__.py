@@ -33,7 +33,6 @@
     'website': 'http://www.compassion.ch',
     'depends': ['disable_openerp_online',
                 'account_statement_bvr_ref_completion',
-                'account_statement_ext_compassion',
                 'account_advanced_reconcile_bvr_ref_compassion',
                 'lsv_compassion',
                 'bvr_ref_compassion',
