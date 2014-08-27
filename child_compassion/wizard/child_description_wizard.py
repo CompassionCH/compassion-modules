@@ -35,11 +35,13 @@ class child_description_wizard(orm.TransientModel):
                    FROM child_property_to_value as rel, 
                         compassion_child_property_value as val 
                    WHERE rel.property_id = %s 
-                   AND rel.value_id = val.id 
+                   AND rel.value_id = val.id
+                   AND val.is_tag = false
                    AND (
                         val.value_fr is Null 
                         OR val.value_de is Null 
-                        OR val.value_it is Null)''' % property_id
+                        OR val.value_it is Null)
+                   ORDER BY val.value_en, val.property_name''' % property_id
         cr.execute(query)
         value_ids = [x[0] for x in cr.fetchall()]
         return dict([(id, value_ids) for id in ids])
