@@ -32,6 +32,12 @@ class child_property(orm.Model):
         'child_id': fields.many2one(
             'compassion.child', _('Concerned child'), required=True, ondelete='cascade'),
         'info_date': fields.date(_('Date of case study')),
+        'name': fields.char(_('Name')),
+        'firstname': fields.char(_('Firstname')),
+        'gender': fields.selection([
+            ('M', 'Male'),
+            ('F', 'Female')], _('Gender')),
+        'birthdate': fields.date(_('Birthdate')),
         'sibling_flag': fields.boolean(_('Has sibling')),
         'orphan_flag': fields.boolean(_('Is orphan')),
         'handicapped_flag': fields.boolean(_('Is handicapped')),

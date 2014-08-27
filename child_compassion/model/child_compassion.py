@@ -20,8 +20,6 @@
 
 import requests
 import json
-import logging
-logger = logging.getLogger(__name__)
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
@@ -30,8 +28,8 @@ class compassion_child(orm.Model):
     """ A sponsored child """
     _name = 'compassion.child'
     _columns = {
-        'name': fields.char(_("Name"),size=128,required=True),
-        'firstname': fields.char(_("Firstname"), size=128, required=True),
+        'name': fields.char(_("Name"),size=128),
+        'firstname': fields.char(_("Firstname"), size=128),
         'code': fields.char(_("Child code"),size=128,required=True),
         'unique_id': fields.char(_("Unique ID"),size=128),
         'birthdate': fields.date(_("Birthdate")),
@@ -58,7 +56,18 @@ class compassion_child(orm.Model):
     _defaults = {
         'type' : 'CDSP'
     }
-    
+
+    def get_basic_informations(self, cr, uid, child_id, case_study_id, context=None):
+        case_study_obj = self.pool.get('compassion.child.property')
+        case_study = case_study_obj.browse(cr, uid, case_study_id, context)
+        if case_study:
+            self.write(cr, uid, child_id, {'name': case_study.name,
+                                           'firstname': case_study.firstname,
+                                           'birthdate': case_study.birthdate,
+                                           'gender': case_study.gender
+                                           }, context=context)
+        return
+
     def get_last_case_study(self, cr, uid, child_id, context=None):
         ''' Get the most recent case study and updates portrait picture '''
         child = self.browse(cr, uid, child_id, context)[0]
@@ -97,13 +106,16 @@ class compassion_child(orm.Model):
         '''
         r = requests.get('https://api2.compassion.com/iptest/ci/v1/child/' + child.code + '/casestudy?api_key=jykapanuupqsrgc7se4q4v2c')
         if not r.status_code/100 == 2:
-            logger.info("Return code : %s" % r.status_code)
             return None
         
         case_study = json.loads(r.text)
         vals = {}
         vals['child_id'] = child.id
         vals['info_date'] = case_study['ChildCaseStudyDate']
+        vals['name'] = case_study['ChildName']
+        vals['firstname'] = case_study['ChildPersonalName']
+        vals['gender'] = case_study['Gender']
+        vals['birthdate'] = case_study['BirthDate']
         values = []
         if case_study['ChristianActivities'].get('ChristianActivity'):
             values.extend(self._get_values(
@@ -197,14 +209,15 @@ class compassion_child(orm.Model):
         value_ids = []
         for elem in _list:
             value_ids.append(self._get_value_id(cr, uid, elem,
-                                                          property_name, context))
+                                                property_name, context))
         return value_ids
 
     def _get_value_id(self, cr, uid, value, property_name, context=None):
         prop_val_obj = self.pool.get('compassion.child.property.value')
         value = value.lower()
         val_ids = prop_val_obj.search(cr, uid, [('value_en', '=like', value),
-                                                ('property_name', '=', property_name)], context=context)
+                                                ('property_name', '=', property_name)],
+                                      context=context)
         if val_ids:
             return val_ids[0]
         prop_id = prop_val_obj.create(cr, uid, {'property_name': property_name,
