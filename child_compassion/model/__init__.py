@@ -22,3 +22,4 @@
 
 from . import child_compassion
 from . import child_properties
+from . import project_compassion

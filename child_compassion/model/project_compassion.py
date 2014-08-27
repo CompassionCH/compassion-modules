@@ -1,9 +1,7 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Compassion children module for OpenERP
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
-#    @author: Cyril Sester <csester@compassion.ch>
+#    Author: Cyril Sester. Copyright Compassion Suisse
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,27 +17,15 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
 
-
-{
-    'name': 'Compassion Children',
-    'version': '1.0',
-    'category': 'Other',
-    'description': """
-    """,
-    'author': 'Compassion CH',
-    'website': 'http://www.compassion.ch',
-    'depends': [],
-    'data': [
-        'view/child_compassion_view.xml',
-        'view/child_compassion_property_view.xml',
-        'view/child_description_wizard_view.xml',
-        'view/project_compassion_view.xml',
-    ],
-    'css': ['static/src/css/child_compassion.css'],
-    'demo': [],
-    'installable': True,
-    'auto_install': False,
-}
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+class compassion_project(orm.Model):
+    """ A compassion project """
+    _name = 'compassion.project'
+    _columns = {
+        'name': fields.char(_("Name"),size=128,required=True),
+        'code': fields.char(_("Project code"),size=128,required=True),
+    }
+    
+compassion_project()
