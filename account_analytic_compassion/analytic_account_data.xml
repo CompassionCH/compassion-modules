@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="True">
+    	<!--
+            Resource: account.analytic.account
+        -->
+        <record id="account_analytic_account_root" model="account.analytic.account">
+            <field name="name">root</field>
+            <field name="type">view</field>
+            <field name="code">AA107</field>
+        </record>
+        <record id="account_analytic_account_0" model="account.analytic.account">
+            <field name="name">0</field>
+            <field name="type">view</field>
+            <field name="code">AA089</field>
+            <field name="parent_id" ref="account_analytic_account_root"/>
+        </record>
+        <record id="account_analytic_account_inc" model="account.analytic.account">
+            <field name="name">INC</field>
+            <field name="type">view</field>
+            <field name="code">AA104</field>
+            <field name="parent_id" ref="account_analytic_account_0"/>
+        </record>
+        <record id="account_analytic_account_des" model="account.analytic.account">
+            <field name="name">DES</field>
+            <field name="type">normal</field>
+            <field name="code">AA102</field>
+            <field name="parent_id" ref="account_analytic_account_inc"/>
+        </record>
+        <record id="account_analytic_account_undes" model="account.analytic.account">
+            <field name="name">UNDES</field>
+            <field name="type">normal</field>
+            <field name="code">AA110</field>
+            <field name="parent_id" ref="account_analytic_account_inc"/>
+        </record>
+        <record id="account_analytic_account_ps" model="account.analytic.account">
+            <field name="name">PS</field>
+            <field name="type">view</field>
+            <field name="code">AA106</field>
+            <field name="parent_id" ref="account_analytic_account_0"/>
+        </record>
+        <record id="account_analytic_account_adv" model="account.analytic.account">
+            <field name="name">ADV</field>
+            <field name="type">normal</field>
+            <field name="code">AA091</field>
+            <field name="parent_id" ref="account_analytic_account_ps"/>
+        </record>
+        <record id="account_analytic_account_cd" model="account.analytic.account">
+            <field name="name">CD</field>
+            <field name="type">normal</field>
+            <field name="code">AA092</field>
+            <field name="parent_id" ref="account_analytic_account_ps"/>
+        </record>
+        <record id="account_analytic_account_sdm" model="account.analytic.account">
+            <field name="name">SDM</field>
+            <field name="type">normal</field>
+            <field name="code">AA108</field>
+            <field name="parent_id" ref="account_analytic_account_ps"/>
+        </record>
+        <record id="account_analytic_account_ss" model="account.analytic.account">
+            <field name="name">SS</field>
+            <field name="type">view</field>
+            <field name="code">AA109</field>
+            <field name="parent_id" ref="account_analytic_account_0"/>
+        </record>
+        <record id="account_analytic_account_adm" model="account.analytic.account">
+            <field name="name">ADM</field>
+            <field name="type">normal</field>
+            <field name="code">AA090</field>
+            <field name="parent_id" ref="account_analytic_account_ss"/>
+        </record>
+        <record id="account_analytic_account_fund" model="account.analytic.account">
+            <field name="name">FUND</field>
+            <field name="type">normal</field>
+            <field name="code">AA103</field>
+            <field name="parent_id" ref="account_analytic_account_ss"/>
+        </record>
+    </data>
+</openerp>
