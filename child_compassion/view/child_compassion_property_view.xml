@@ -56,7 +56,21 @@
 				</tree>
 			</field>
 		</record>
-		 
+
+		<record id="view_child_property_value_tree" model="ir.ui.view">
+			<field name="name">compassion.child.property.value.tree</field>
+			<field name="model">compassion.child.property.value</field>
+			<field name="arch" type="xml">
+				<tree string="Values" editable="top" create="false" delete="false">
+					<field name="property_name" />
+					<field name="value_en" />
+					<field name="value_fr" />
+					<field name="value_de" />
+					<field name="value_it" />
+				</tree>
+			</field>
+		</record>
+
 		<record id="act_child_property_tree" model="ir.actions.act_window">
             <field name="name">Children</field>
             <field name="res_model">compassion.child.property</field>
