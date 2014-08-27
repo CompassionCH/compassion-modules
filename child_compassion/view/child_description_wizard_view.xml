@@ -10,7 +10,7 @@
 					<sheet states="values">
 						<field name="state" invisible="1" />
 						<group string="Complete missing translations if needed">
-							<field name="child_property_value_ids" />
+							<field name="child_property_value_ids" nolabel="1" />
 						</group>
 					</sheet>
 					<sheet states="descriptions">

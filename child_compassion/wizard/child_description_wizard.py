@@ -18,8 +18,6 @@
 #
 ##############################################################################
 
-import logging
-logger = logging.getLogger(__name__)
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
@@ -27,16 +25,42 @@ from openerp.tools.translate import _
 class child_description_wizard(orm.TransientModel):
     _name = 'child.description.wizard'
     
-    def get_value_ids(self, cr, uid, ids, field_name, arg, context=None):
-        property_id = context.get('case_study_id', False)
-        logger.info("%s" % context)
+    def get_value_ids(self, cr, uid, ids, fieldname, args, context=None):
+        property_id = context.get('property_id', False)
         if not property_id:
-            return {ids[0]: []}
+            return dict([(id, []) for id in ids])
 
         value_obj = self.pool.get('compassion.child.property.value')
-        value_ids = value_obj.search(cr, uid, vals = [('property_id', '=', property_id)])
-        logger.info("%s" % value_ids)
-        return {ids[0]: value_ids}
+        query = '''SELECT rel.value_id 
+                   FROM child_property_to_value as rel, 
+                        compassion_child_property_value as val 
+                   WHERE rel.property_id = %s 
+                   AND rel.value_id = val.id 
+                   AND (
+                        val.value_fr is Null 
+                        OR val.value_de is Null 
+                        OR val.value_it is Null)''' % property_id
+        cr.execute(query)
+        value_ids = [x[0] for x in cr.fetchall()]
+        return dict([(id, value_ids) for id in ids])
+
+    def get_default_ids(self, cr, uid, context=None):
+        return self.get_value_ids(cr, uid, [0], '', '', context)[0]
+
+    def write_values(self, cr, uid, id, name, value, inv_arg, context=None):
+        value_obj = self.pool.get('compassion.child.property.value')
+        for line in value:
+            if line[0] == 1: # on2many update
+                value_id = line[1]
+                value_obj.write(cr, uid, [value_id], line[2])
+        return True
+
+    def get_helps(self, cr, uid, context=None):
+        if not context or not context.get('child_id'):
+            return '', '', '', ''
+        child_obj = self.pool.get('compassion.child')
+        child = child_obj.browse(cr, uid, context['child_id'], context=context)[0]
+        return child.desc_fr, child.desc_de, child.desc_it, child.desc_en
     
     _columns = {
         'keep_desc_fr': fields.boolean(_('Keep french description')),
@@ -47,8 +71,9 @@ class child_description_wizard(orm.TransientModel):
         'desc_it': fields.text(_('Italian description')),
         'keep_desc_en': fields.boolean(_('Keep english description')),
         'desc_en': fields.text(_('English description')),
-        'child_property_value_ids': fields.function(get_value_ids, type='char',
-                                                    relation='compassion.child.property.value'),
+        'child_property_value_ids': fields.function(get_value_ids, type='one2many',
+                                                    relation='compassion.child.property.value',
+                                                    fnct_inv=write_values),
         'state': fields.selection(
             [('values', _('Values completion')),
              ('descriptions', _('Descriptions correction'))],
@@ -61,8 +86,10 @@ class child_description_wizard(orm.TransientModel):
         'keep_desc_de': False,
         'keep_desc_it': False,
         'keep_desc_en': False,
+        'child_property_value_ids': lambda self, cr, uid, context: \
+                                        self.get_default_ids(cr, uid, context),
     }
-    
+
     def generate_descriptions(self, cr, uid, ids, context=None):
         child_obj = self.pool.get('compassion.child')
         child = child_obj.browse(cr, uid, context.get('child_id'), context)
@@ -76,6 +103,7 @@ class child_description_wizard(orm.TransientModel):
             }, context)
             
         return {
+            'name': _('Descriptions generation'),
             'type': 'ir.actions.act_window',
             'res_model': self._name,
             'view_mode': 'form',
@@ -108,6 +136,16 @@ class child_description_wizard(orm.TransientModel):
             'type': 'ir.actions.client',
             'tag': 'reload',
         }
+
+    def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
+        ret = super(child_description_wizard, self).fields_view_get(cr, uid, view_id, view_type, 
+                                                                    context, toolbar, submenu)
+        fr, de, it, en = self.get_helps(cr, uid, context)
+        ret['fields']['desc_fr']['help'] = fr
+        ret['fields']['desc_de']['help'] = de
+        ret['fields']['desc_it']['help'] = it
+        ret['fields']['desc_en']['help'] = en
+        return ret
 
     def _gen_list_string(self, list, separator, last_separator):
         string = separator.join(list[:-1])
