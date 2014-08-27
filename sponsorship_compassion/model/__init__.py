@@ -21,5 +21,4 @@
 
 import contracts
 import invoice_line
-import project_compassion
 import res_partner
