@@ -37,7 +37,7 @@
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['simple_recurring_contract', 'l10n_ch_payment_slip', 'l10n_ch', 'account_analytic_plans_compassion'],
+    'depends': ['simple_recurring_contract', 'l10n_ch_payment_slip', 'l10n_ch', 'account_analytic_plans'],
     'data': ['security/sponsorship_groups.xml',
             'view/child_compassion_view.xml',
 			'view/contract_view.xml',
