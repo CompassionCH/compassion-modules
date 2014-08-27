@@ -57,9 +57,9 @@ class compassion_child(orm.Model):
         'type' : 'CDSP'
     }
 
-    def get_basic_informations(self, cr, uid, child_id, case_study_id, context=None):
-        case_study_obj = self.pool.get('compassion.child.property')
-        case_study = case_study_obj.browse(cr, uid, case_study_id, context)
+    def get_basic_informations(self, cr, uid, child_id, context=None):
+        child = self.browse(cr, uid, child_id, context)[0]
+        case_study = child.case_study_ids[-1]
         if case_study:
             self.write(cr, uid, child_id, {'name': case_study.name,
                                            'firstname': case_study.firstname,
