@@ -69,18 +69,13 @@ class AccountStatementCompletionRule(Model):
         ref = st_line['ref'].strip()
         res = {}
         partner_obj = self.pool.get('res.partner')
-        partner_ids = partner_obj.search(cr, uid, [('ref','=',ref[9:16])], context=context)
+        partner_ids = partner_obj.search(cr, uid, [('ref','=',str(int(ref[9:16]))),('is_company','=',False)], context=context)
         
         # Test that only one partner matches.
         partner = None
         if partner_ids:
-            if isinstance(partner_ids, list):
-                if len(partner_ids) == 1:
-                    partner = partner_obj.browse(cr, uid, partner_ids[0], context=context)
-            else:
-                partner = partner_obj.browse(cr, uid, partner_ids, context=context)
-            
-            if partner.id:
+            if len(partner_ids) == 1:
+                partner = partner_obj.browse(cr, uid, partner_ids[0], context=context)
                 res['partner_id'] = partner.id
                 res['account_id'] = partner.property_account_receivable.id
                 # If we fall under this rule of completion, it means there is no open invoice corresponding to the payment. We may need to generate one depending on the payment type.
@@ -105,21 +100,26 @@ class AccountStatementCompletionRule(Model):
         """
         ref = st_line['ref'].strip()
         res = {}
+        partner = None
         
-        # Search open Customer Invoices (with field 'bvr_reference' set)
-        invoice_obj = self.pool.get('account.invoice')
-        invoice_ids = invoice_obj.search(cr, uid, [('bvr_reference','=',ref),('state','=','open')], context=context)
+        # Search Contract
+        contract_obj = self.pool.get('simple.recurring.contract')
+        contract_ids = contract_obj.search(cr, uid, [('bvr_reference','=',ref)], context=context)
+        if contract_ids:
+            partner = contract_obj.browse(cr, uid, contract_ids, context=context)[0].partner_id
+        else:
+            # Search open Customer Invoices (with field 'bvr_reference' set)
+            invoice_obj = self.pool.get('account.invoice')
+            invoice_ids = invoice_obj.search(cr, uid, [('bvr_reference','=',ref),('state','=','open')], context=context)
         if not invoice_ids:
             # Search open Supplier Invoices (with field 'reference_type' set to BVR)
             invoice_ids = invoice_obj.search(cr, uid, [('reference_type','=','bvr'),('reference','=',ref),('state','=','open')], context=context)
-        
         if invoice_ids:
-            invoice = invoice_obj.browse(cr, uid, invoice_ids, context=context)
-            invoice = invoice[0] if isinstance(invoice, list) else invoice
-            res['partner_id'] = invoice.partner_id.id
-            res['account_id'] = invoice.account_id.id
-            res['type'] = 'customer'
-            #res['name'] = 'Sponsorship Payment'
+            partner = invoice_obj.browse(cr, uid, invoice_ids, context=context)[0].partner_id
+
+        if partner:
+            res['partner_id'] = partner.id
+            res['account_id'] = partner.property_account_receivable.id
             
         return res
         
