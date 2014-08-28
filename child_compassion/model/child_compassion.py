@@ -117,21 +117,24 @@ class compassion_child(orm.Model):
         vals['gender'] = case_study['Gender']
         vals['birthdate'] = case_study['BirthDate']
         values = []
-        if case_study['ChristianActivities'].get('ChristianActivity'):
+        if type(case_study['ChristianActivities']) is dict and \
+                case_study['ChristianActivities'].get('ChristianActivity'):
             values.extend(self._get_values(
                 cr, uid, case_study['ChristianActivities']['ChristianActivity'],
                 'christian_activities', context))
         if not case_study['OtherChristianActivities'] == 'None':
             values.append(self._get_value_id(cr, uid, case_study['OtherChristianActivities'],
                                              'christian_activities'))
-        if case_study['FamilyDuties'].get('FamilyDuty'):
+        if type(case_study['FamilyDuties']) is dict and \
+                case_study['FamilyDuties'].get('FamilyDuty'):
             values.extend(self._get_values(
                 cr, uid, case_study['FamilyDuties']['FamilyDuty'],
                 'family_duties', context))
         if not case_study['OtherFamilyDuties'] == 'None':
             values.append(self._get_value_id(cr, uid, case_study['OtherFamilyDuties'],
                                              'family_duties'))
-        if case_study['HobbiesAndSports'].get('Hobby'):
+        if type(case_study['HobbiesAndSports']) is dict and \
+                case_study['HobbiesAndSports'].get('Hobby'):
             values.extend(self._get_values(
                 cr, uid, case_study['HobbiesAndSports']['Hobby'],
                 'hobbies', context))

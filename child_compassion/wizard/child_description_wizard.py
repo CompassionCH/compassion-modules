@@ -56,13 +56,6 @@ class child_description_wizard(orm.TransientModel):
                 value_id = line[1]
                 value_obj.write(cr, uid, [value_id], line[2])
         return True
-
-    def get_helps(self, cr, uid, context=None):
-        if not context or not context.get('child_id'):
-            return '', '', '', ''
-        child_obj = self.pool.get('compassion.child')
-        child = child_obj.browse(cr, uid, context['child_id'], context=context)[0]
-        return child.desc_fr, child.desc_de, child.desc_it, child.desc_en
     
     _columns = {
         'keep_desc_fr': fields.boolean(_('Keep french description')),
@@ -148,6 +141,13 @@ class child_description_wizard(orm.TransientModel):
         ret['fields']['desc_it']['help'] = it
         ret['fields']['desc_en']['help'] = en
         return ret
+
+    def get_helps(self, cr, uid, context=None):
+        if not context or not context.get('child_id'):
+            return '', '', '', ''
+        child_obj = self.pool.get('compassion.child')
+        child = child_obj.browse(cr, uid, context['child_id'], context=context)[0]
+        return child.desc_fr, child.desc_de, child.desc_it, child.desc_en
 
     def _gen_list_string(self, list, separator, last_separator):
         string = separator.join(list[:-1])
