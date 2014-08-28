@@ -26,6 +26,8 @@
     'version': '1.0',
     'category': 'Other',
     'description': """
+Setup child and projects for sponsorship management.
+Webservice information retrieving is also done in this module.
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
