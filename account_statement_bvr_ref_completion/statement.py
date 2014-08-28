@@ -111,11 +111,11 @@ class AccountStatementCompletionRule(Model):
             # Search open Customer Invoices (with field 'bvr_reference' set)
             invoice_obj = self.pool.get('account.invoice')
             invoice_ids = invoice_obj.search(cr, uid, [('bvr_reference','=',ref),('state','=','open')], context=context)
-        if not invoice_ids:
-            # Search open Supplier Invoices (with field 'reference_type' set to BVR)
-            invoice_ids = invoice_obj.search(cr, uid, [('reference_type','=','bvr'),('reference','=',ref),('state','=','open')], context=context)
-        if invoice_ids:
-            partner = invoice_obj.browse(cr, uid, invoice_ids, context=context)[0].partner_id
+            if not invoice_ids:
+                # Search open Supplier Invoices (with field 'reference_type' set to BVR)
+                invoice_ids = invoice_obj.search(cr, uid, [('reference_type','=','bvr'),('reference','=',ref),('state','=','open')], context=context)
+            if invoice_ids:
+                partner = invoice_obj.browse(cr, uid, invoice_ids, context=context)[0].partner_id
 
         if partner:
             res['partner_id'] = partner.id
