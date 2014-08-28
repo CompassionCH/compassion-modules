@@ -210,9 +210,13 @@ class compassion_child(orm.Model):
 
     def _get_values(self, cr, uid, _list, property_name, context):
         value_ids = []
-        for elem in _list:
-            value_ids.append(self._get_value_id(cr, uid, elem,
-                                                property_name, context))
+        if isinstance(_list, list):
+            for elem in _list:
+                value_ids.append(self._get_value_id(cr, uid, elem,
+                                                    property_name, context))
+        elif isinstance(_list, basestring):
+            value_ids.append(self._get_value_id(cr, uid, _list, property_name,
+                                                context))
         return value_ids
 
     def _get_value_id(self, cr, uid, value, property_name, context=None):
