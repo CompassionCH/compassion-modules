@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
+	<data>
 		<!--Compassion child form view -->
 		<record id="view_compassion_child_form" model="ir.ui.view">
 			<field name="name">compassion.child.form</field>
@@ -67,13 +67,13 @@
 				</tree>
 			</field>
 		</record>
-		 
+
 		<record id="open_view_children_tree" model="ir.actions.act_window">
-            <field name="name">Children</field>
-            <field name="res_model">compassion.child</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form,tree</field>
-            <field name="view_id" ref="view_compassion_child_tree"/>
-        </record>
-    </data>
+			<field name="name">Children</field>
+			<field name="res_model">compassion.child</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form,tree</field>
+			<field name="view_id" ref="view_compassion_child_tree"/>
+		</record>
+	</data>
 </openerp>
