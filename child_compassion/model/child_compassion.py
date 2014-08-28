@@ -57,21 +57,30 @@ class compassion_child(orm.Model):
         'type' : 'CDSP'
     }
 
-    def get_basic_informations(self, cr, uid, child_id, context=None):
-        child = self.browse(cr, uid, child_id, context)[0]
-        case_study = child.case_study_ids[-1]
-        if case_study:
-            self.write(cr, uid, child_id, {'name': case_study.name,
-                                           'firstname': case_study.firstname,
-                                           'birthdate': case_study.birthdate,
-                                           'gender': case_study.gender
-                                           }, context=context)
-        return
+    def get_basic_informations(self, cr, uid, ids, context=None):
+        if not isinstance(ids, list):
+            ids = [ids]
 
-    def get_last_case_study(self, cr, uid, child_id, context=None):
+        for child in self.browse(cr, uid, ids, context):
+            case_study = child.case_study_ids[-1]
+            if case_study:
+                self.write(cr, uid, [child.id], {'name': case_study.name,
+                                                 'firstname': case_study.firstname,
+                                                 'birthdate': case_study.birthdate,
+                                                 'gender': case_study.gender
+                                               }, context=context)
+        return True
+
+    def get_last_case_study(self, cr, uid, ids, context=None):
         ''' Get the most recent case study and updates portrait picture '''
-        child = self.browse(cr, uid, child_id, context)[0]
-        return self._get_case_study(cr, uid, child, context)
+        if not isinstance(ids, list):
+            ids = [ids]
+
+        ret = {}
+        for child in self.browse(cr, uid, ids, context):
+            ret[child.id] = self._get_case_study(cr, uid, child, context)
+
+        return ret
 
     def generate_descriptions(self, cr, uid, child_id, context=None):
         child = self.browse(cr, uid, child_id, context)
