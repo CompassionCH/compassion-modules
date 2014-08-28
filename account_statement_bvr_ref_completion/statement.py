@@ -161,15 +161,17 @@ class AccountStatementCompletionRule(Model):
         
     def _find_product_id(self, cr, uid, ref, context=None):
         """ Finds what kind of payment it is, based on the reference of the statement line. """
+        product_obj = self.pool.get('product.product')
         payment_type = int(ref[21])
         product_id = 0
         if payment_type in range(1, 6):
             # Sponsor Gift
-            product_ids = self.pool.get('product.product').search(cr, uid, [('name_template','=',GIFT_TYPES[payment_type-1])], context=context)
+            product_ids = product_obj.search(cr, uid, [('name_template','=',GIFT_TYPES[payment_type-1])], context=context)
             product_id = product_ids[0] if product_ids else 0
         elif payment_type in range(6,8):
-            # The product id should be set in the reference number.
-            product_id = long(ref[22:26])
+            # Fund donation
+            product_ids = product_obj.search(cr, uid, [('gp_fund_id','=',int(ref[22:26]))], context=context)
+            product_id = product_ids[0] if product_ids else 0
             
         return product_id
         

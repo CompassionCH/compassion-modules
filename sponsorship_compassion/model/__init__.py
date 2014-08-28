@@ -22,3 +22,4 @@
 import contracts
 import invoice_line
 import res_partner
+import product
