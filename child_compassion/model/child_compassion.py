@@ -22,6 +22,7 @@ import requests
 import json
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
+from openerp.tools.config import config
 
 
 class compassion_child(orm.Model):
@@ -113,7 +114,16 @@ class compassion_child(orm.Model):
         ''' Get case study from compassion webservices and parse the json response.
             Returns id of generated case_study or None if failed
         '''
-        r = requests.get('https://api2.compassion.com/iptest/ci/v1/child/' + child.code + '/casestudy?api_key=jykapanuupqsrgc7se4q4v2c')
+        url = config.get('compass_url')
+        api_key = config.get('compass_api_key')
+        if not url or not api_key:
+            raise orm.except_orm('ConfigError',
+                                 _('Missing compass_url or compass_api_key '
+                                   'in conf file'))
+        if url.endswith('/'):
+            url = url[:-1]
+        url += '/ci/v1/child/' + child.code + '/casestudy?api_key=' + api_key
+        r = requests.get(url)
         if not r.status_code/100 == 2:
             return None
         
