@@ -20,6 +20,7 @@
 
 import requests
 import json
+import base64
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
@@ -28,6 +29,28 @@ from openerp.tools.config import config
 class compassion_child(orm.Model):
     """ A sponsored child """
     _name = 'compassion.child'
+
+    def get_portrait(self, cr, uid, ids, name, args, context=None):
+        attachment_obj = self.pool.get('ir.attachment')
+        ret = {}
+        for child_id in ids:
+            child = self.browse(cr, uid, child_id, context)
+            case_study_id = -1
+            if child.case_study_ids:
+                case_study_id = child.case_study_ids[-1].id
+            attachment_ids = attachment_obj.search(
+                cr, uid, [('res_model', '=', 'compassion.child.property'),
+                          ('res_id', '=', case_study_id), ('datas_fname', '=', 'Headshot.jpeg')],
+                limit=1, context=context)
+            if not attachment_ids:
+                ret[child_id] = None
+                continue
+            
+            attachment = attachment_obj.browse(cr, uid, attachment_ids[0], context)
+            ret[child_id] = attachment.datas
+
+        return ret
+
     _columns = {
         'name': fields.char(_("Name"),size=128),
         'firstname': fields.char(_("Firstname"), size=128),
@@ -51,7 +74,7 @@ class compassion_child(orm.Model):
         'case_study_ids': fields.one2many(
             'compassion.child.property', 'child_id', string=_('Case studies'),
             readonly=False), #FIXME readonly
-        'portrait': fields.binary(_('Portrait')),
+        'portrait': fields.function(get_portrait, type='binary', string=_('Portrait')),
     }
     
     _defaults = {
@@ -80,7 +103,8 @@ class compassion_child(orm.Model):
         ret = {}
         for child in self.browse(cr, uid, ids, context):
             ret[child.id] = self._get_case_study(cr, uid, child, context)
-
+            self._get_picture(cr, uid, child, 'Fullshot', 300, 1500, 1200, context=context)
+            self._get_picture(cr, uid, child, context=context)
         return ret
 
     def generate_descriptions(self, cr, uid, child_id, context=None):
@@ -221,10 +245,32 @@ class compassion_child(orm.Model):
         prop_id = child_prop_obj.create(cr, uid, vals, context)
         return prop_id
 
-    def _get_picture(self, cr, uid, child_code, context=None):
-        ''' Gets a picture from Compassion webservice.
-            @param TODO
-        '''
+    def _get_picture(self, cr, uid, child, type='Headshot', dpi=72, width=400,
+                     height=400, format='jpeg', context=None):
+        ''' Gets a picture from Compassion webservice '''
+        url = config.get('compass_url')
+        api_key = config.get('compass_api_key')
+        if not url or not api_key:
+            raise orm.except_orm('ConfigError',
+                                 _('Missing compass_url or compass_api_key '
+                                   'in conf file'))
+        if url.endswith('/'):
+            url = url[:-1]
+        url += '/ci/v1/child/' + child.code + '/image?api_key=' + api_key
+        url += '&Height=%s&Width=%s&DPI=%s&ImageFormat=%s&ImageType=%s' \
+                % (height, width, dpi, format, type)
+        r = requests.get(url)
+        data = json.loads(r.text)['Image']['ImageData']
+        
+        attachment_obj = self.pool.get('ir.attachment')
+        if not context:
+            context = {}
+        context['store_fname'] = type + '.' + format
+        attachment_obj.create(cr, uid, {'datas_fname': type + '.' + format,
+                                            'res_model': 'compassion.child.property',
+                                            'res_id': child.case_study_ids[-1].id,
+                                            'datas': data,
+                                            'name': type + '.' + format}, context)
         return False
 
     def _get_values(self, cr, uid, _list, property_name, context):

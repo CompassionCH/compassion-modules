@@ -14,7 +14,7 @@
 			<field name="arch" type="xml">
 				<form string="Child" version="7.0">
 					<sheet>
-						<field name="portrait" widget='image' class="oe_left oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}' />
+						<field name="portrait" widget='image' class="oe_left oe_avatar" options='{"size": [90, 90]}' />
 						<div class="oe_title">
 							<label for="name" class="oe_edit_only"/>
 							<h1>
