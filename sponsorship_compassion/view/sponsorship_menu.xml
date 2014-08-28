@@ -3,11 +3,8 @@
 	<data>
 		<!-- Top menu item -->
 		<menuitem name="Sponsorship"
-			id="menu_sponsorship_root"
+			id="child_compassion.menu_sponsorship_root"
 			groups="sponsorship_compassion.group_sponsorship"
 			sequence="5"/>
-		<menuitem id="menu_sponsorship_section" parent="menu_sponsorship_root" name="Sponsorship" sequence="5"/>
-		<menuitem id="menu_sponsorship_children" parent="menu_sponsorship_section" name="Children" action="child_compassion.open_view_children_tree" sequence="0"/>
-		<menuitem id="menu_sponsorship_project" parent="menu_sponsorship_section" name="Projects" action="child_compassion.open_view_project_tree" sequence="1"/>
 	</data>
 </openerp>
