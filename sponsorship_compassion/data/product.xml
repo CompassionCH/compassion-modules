@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
+    <data>
         <!--
             Resource: product.category
         -->
@@ -267,6 +267,12 @@
 			<field name="categ_id" ref="product_category_fund" />
 			<field name="list_price">8</field>
 		</record>
+        <record id="product_template_fund_4mu" model="product.template">
+            <field name="name">The 4th Musketeer Fund</field>
+			<field name="type">service</field>
+			<field name="categ_id" ref="product_category_fund" />
+			<field name="list_price">8</field>
+		</record>
         
         <!-- Sponsorship Gifts Templates -->
         <record id="product_template_gift_birthday" model="product.template">
@@ -322,6 +328,7 @@
 			for the great hope you offer to the sick children and their families.</field>
             <field name="property_account_income" search="[('code','=','6011')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">5</field>
         </record>
         <record id="product_fund_anl" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_anl" />
@@ -331,11 +338,13 @@
 			interventions in the countries supported by Compassion.</field>
             <field name="property_account_income" search="[('code','=','6007')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">61</field>
         </record>        
 		<record id="product_fund_any" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_any" />
             <field name="property_account_income" search="[('code','=','6010')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">16</field>
         </record>
         <record id="product_fund_bfa" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_bfa" />
@@ -347,6 +356,7 @@
 			the staff of Compassion and the partner churches.</field>
             <field name="property_account_income" search="[('code','=','6005')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">129</field>
         </record>
 		<record id="product_fund_bib" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_bib" />
@@ -357,6 +367,7 @@
 			precious encouragement.</field>
             <field name="property_account_income" search="[('code','=','6006')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">4</field>
         </record>
 		<record id="product_fund_bli" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_bli" />
@@ -374,6 +385,7 @@
 			are bringing to them through your help.</field>
             <field name="property_account_income" search="[('code','=','6014')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">135</field>
         </record>
 		<record id="product_fund_c20" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_c20" />
@@ -385,12 +397,14 @@
 			are bringing to them through your help.</field>
             <field name="property_account_income" search="[('code','=','6014')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">175</field>
         </record>
 		<record id="product_fund_c3b" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_c3b" />
 			<field name="description"></field>
             <field name="property_account_income" search="[('code','=','6002')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">136</field>
         </record>
 		<record id="product_fund_c46" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_c46" />
@@ -402,6 +416,7 @@
 			are bringing to them through your help.</field>
             <field name="property_account_income" search="[('code','=','6014')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">174</field>
         </record>
 		<record id="product_fund_cal" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_cal" />
@@ -413,6 +428,7 @@
 			We thank you very much for your support.</field>
             <field name="property_account_income" search="[('code','=','6007')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">24</field>
         </record>
 		<record id="product_fund_csp" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_csp" />
@@ -425,6 +441,7 @@
 			are bringing to them through your help.</field>
             <field name="property_account_income" search="[('code','=','6014')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">18</field>
         </record>
 		<record id="product_fund_don" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_don" />
@@ -434,6 +451,7 @@
 			interventions in the countries supported by Compassion.</field>
             <field name="property_account_income" search="[('code','=','6007')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">12</field>
         </record>
 		<record id="product_fund_fam" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_fam" />
@@ -444,6 +462,7 @@
 			families and for the hope that you give them through your support.</field>
             <field name="property_account_income" search="[('code','=','6005')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">130</field>
         </record>
 		<record id="product_fund_gen" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_gen" />
@@ -451,6 +470,7 @@
 			a concrete help and a new future to many children on the field and restore hope in their lives.</field>
             <field name="property_account_income" search="[('code','=','6004')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">11</field>
         </record>
 		<record id="product_fund_haf" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_haf" />
@@ -460,6 +480,7 @@
 			therefore give the children and their families.</field>
             <field name="property_account_income" search="[('code','=','6012')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">134</field>
         </record>
 		<record id="product_fund_hai" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_hai" />
@@ -471,6 +492,7 @@
 			families, the staff of Compassion and the partner churches in Haiti.</field>
             <field name="property_account_income" search="[('code','=','6005')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">40</field>
         </record>
 		<record id="product_fund_ind" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_ind" />
@@ -482,12 +504,14 @@
 			Compassion and the partner churches.</field>
             <field name="property_account_income" search="[('code','=','6005')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">127</field>
         </record>
 		<record id="product_fund_isc" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_isc" />
 			<field name="description"></field>
             <field name="property_account_income" search="[('code','=','6005')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">132</field>
         </record>
 		<record id="product_fund_kdo" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_kdo" />
@@ -498,6 +522,7 @@
 			brings more hope and great encouragement to them.</field>
             <field name="property_account_income" search="[('code','=','6003')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">14</field>
         </record>
 		<record id="product_fund_kgs" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_kgs" />
@@ -506,6 +531,7 @@
 			program to take part of this event.</field>
             <field name="property_account_income" search="[('code','=','6004')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">176</field>
         </record>
 		<record id="product_fund_ldp" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_ldp" />
@@ -518,12 +544,14 @@
 			grateful to you for your support.</field>
             <field name="property_account_income" search="[('code','=','6013')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">3</field>
         </record>
 		<record id="product_fund_loc" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_loc" />
 			<field name="description"></field>
             <field name="property_account_income" search="[('code','=','6009')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">15</field>
         </record>
 		<record id="product_fund_mag" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_mag" />
@@ -533,6 +561,7 @@
 			We are very grateful for your precious support.</field>
             <field name="property_account_income" search="[('code','=','6100')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">17</field>
         </record>
 		<record id="product_fund_mds" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_mds" />
@@ -540,6 +569,7 @@
 			which will allow him to realize his project.</field>
             <field name="property_account_income" search="[('code','=','6012')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">177</field>
         </record>
 		<record id="product_fund_med" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_med" />
@@ -550,12 +580,14 @@
 			to families that are registered in the Compassion program.</field>
             <field name="property_account_income" search="[('code','=','6001')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">10</field>
         </record>
 		<record id="product_fund_new" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_new" />
 			<field name="description"></field>
             <field name="property_account_income" search="[('code','=','6007')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">128</field>
         </record>
 		<record id="product_fund_nol" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_nol" />
@@ -566,6 +598,7 @@
 			child of Compassion.</field>
             <field name="property_account_income" search="[('code','=','6008')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">23</field>
         </record>
 		<record id="product_fund_ovc" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_ovc" />
@@ -574,12 +607,14 @@
 			or who have no adult caretakers.</field>
             <field name="property_account_income" search="[('code','=','6015')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">19</field>
         </record>
 		<record id="product_fund_par" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_par" />
 			<field name="description"></field>
             <field name="property_account_income" search="[('code','=','6000')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">58</field>
         </record>
 		<record id="product_fund_phi" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_phi" />
@@ -592,6 +627,7 @@
 			of Compassion and the partner churches.</field>
             <field name="property_account_income" search="[('code','=','6005')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">131</field>
         </record>
 		<record id="product_fund_pro" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_pro" />
@@ -601,18 +637,21 @@
 			very grateful to you for your help.</field>
             <field name="property_account_income" search="[('code','=','6002')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">9</field>
         </record>
 		<record id="product_fund_sgi" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_sgi" />
 			<field name="description"></field>
             <field name="property_account_income" search="[('code','=','6016')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">81</field>
         </record>
 		<record id="product_fund_sm" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_sm" />
 			<field name="description">Malaria Fund</field>
             <field name="property_account_income" search="[('code','=','6011')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">133</field>
         </record>
 		<record id="product_fund_urg" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_urg" />
@@ -626,6 +665,7 @@
 			of Compassion and the partner churches.</field>
             <field name="property_account_income" search="[('code','=','6005')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">8</field>
         </record>
 		<record id="product_fund_usp" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_usp" />
@@ -637,6 +677,7 @@
 			We thank you very much for your precious support.</field>
             <field name="property_account_income" search="[('code','=','6017')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">20</field>
         </record>
 		<record id="product_fund_wol" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_wol" />
@@ -646,6 +687,7 @@
 			This help would not be possible without you and we are very grateful for your support.</field>
             <field name="property_account_income" search="[('code','=','6012')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">172</field>
         </record>
 		<record id="product_fund_wtp" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_wtp" />
@@ -655,6 +697,14 @@
 			This help would not be possible without you and we are very grateful for your support.</field>
             <field name="property_account_income" search="[('code','=','6012')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">6</field>
+        </record>
+        <record id="product_fund_4mu" model="product.product">
+            <field name="product_tmpl_id" ref="product_template_fund_4mu" />
+			<field name="description"></field>
+            <field name="property_account_income" search="[('code','=','6000')]"/>
+            <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">178</field>
         </record>
         
         <!-- Sponsor Gifts -->
