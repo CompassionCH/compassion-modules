@@ -356,6 +356,14 @@
 			<field name="note"></field>
 			<field name="parent_id" ref="comp_103" />
 		</record>
+        <record id="comp_1098" model="account.account.template">
+			<field name="type">other</field>
+			<field name="name">transfert lsv dd</field>
+			<field name="code">1098</field>
+			<field name="user_type" ref="account_type_asset" />
+			<field name="note"></field>
+			<field name="parent_id" ref="comp_103" />
+		</record>
 		<record id="comp_1099" model="account.account.template">
 			<field name="type">other</field>
 			<field name="name">transfert</field>
