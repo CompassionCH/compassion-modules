@@ -138,94 +138,71 @@ class compassion_child(orm.Model):
         ''' Get case study from compassion webservices and parse the json response.
             Returns id of generated case_study or None if failed
         '''
-        url = config.get('compass_url')
-        api_key = config.get('compass_api_key')
-        if not url or not api_key:
-            raise orm.except_orm('ConfigError',
-                                 _('Missing compass_url or compass_api_key '
-                                   'in conf file'))
-        if url.endswith('/'):
-            url = url[:-1]
-        url += '/ci/v1/child/' + child.code + '/casestudy?api_key=' + api_key
+        url = self._get_url(child.code, 'casestudy')
         r = requests.get(url)
         if not r.status_code/100 == 2:
             return None
         
         case_study = json.loads(r.text)
-        vals = {}
-        vals['child_id'] = child.id
-        vals['info_date'] = case_study['ChildCaseStudyDate']
-        vals['name'] = case_study['ChildName']
-        vals['firstname'] = case_study['ChildPersonalName']
-        vals['gender'] = case_study['Gender']
-        vals['birthdate'] = case_study['BirthDate']
+        vals = {
+            'child_id': child.id,
+            'info_date': case_study['ChildCaseStudyDate'],
+            'name': case_study['ChildName'],
+            'firstname': case_study['ChildPersonalName'],
+            'gender': case_study['Gender'],
+            'birthdate': case_study['BirthDate'],
+        }
         values = []
-        if type(case_study['ChristianActivities']) is dict and \
-                case_study['ChristianActivities'].get('ChristianActivity'):
-            values.extend(self._get_values(
-                cr, uid, case_study['ChristianActivities']['ChristianActivity'],
-                'christian_activities', context))
-        if not case_study['OtherChristianActivities'] == 'None':
-            values.append(self._get_value_id(cr, uid, case_study['OtherChristianActivities'],
-                                             'christian_activities'))
-        if type(case_study['FamilyDuties']) is dict and \
-                case_study['FamilyDuties'].get('FamilyDuty'):
-            values.extend(self._get_values(
-                cr, uid, case_study['FamilyDuties']['FamilyDuty'],
-                'family_duties', context))
-        if not case_study['OtherFamilyDuties'] == 'None':
-            values.append(self._get_value_id(cr, uid, case_study['OtherFamilyDuties'],
-                                             'family_duties'))
-        if type(case_study['HobbiesAndSports']) is dict and \
-                case_study['HobbiesAndSports'].get('Hobby'):
-            values.extend(self._get_values(
-                cr, uid, case_study['HobbiesAndSports']['Hobby'],
-                'hobbies', context))
-        if not case_study['OtherHobbies'] == 'None':
-            values.append(self._get_value_id(cr, uid, case_study['OtherHobbies'],
-                                             'hobbies'))
-        if type(case_study['HealthConditions']) is dict and \
-                case_study['HealthConditions'].get('HealthCondition'):
-            values.extend(self._get_values(
-                cr, uid, case_study['HealthConditions']['HealthCondition'],
-                'health_conditions', context))
-        if not case_study['OtherHealthConditions'] == 'None':
-            values.append(self._get_value_id(cr, uid, case_study['OtherHealthConditions'],
-                                             'health_conditions'))
-        if case_study['Guardians'].get('Guardian'):
-            values.extend(self._get_values(
-                cr, uid, case_study['Guardians']['Guardian'],
-                'guardians', context))
-        for key, value in case_study['NaturalParents'].iteritems():
-            property_name = ''
-            if key.startswith('Father'):
-                property_name = 'father'
-            elif key.startswith('Mother'):
-                property_name = 'mother'
-            else:
-                continue
+        
+        """ cs_sections_mapping holds the mapping of sections in case study to property. 
+            cs_sections_mapping is a dict of lists of the following form:
+            {'property_name': ['CaseStudySectionName','CaseStudySectionAttribute','OtherSectionAttribute']}
+            For more information see documentation of compass at the following link:
+            http://developer.compassion.com/docs/read/private_cornerstone_test/REST_Get_Child_Case_Study
+        """
+        cs_sections_mapping = {
+            'christian_activities': ['ChristianActivities','ChristianActivity','OtherChristianActivities'],
+            'family_duties': ['FamilyDuties','FamilyDuty','OtherFamilyDuties'],
+            'hobbies': ['HobbiesAndSports','Hobby','OtherHobbies'],
+            'health_conditions': ['HealthConditions','HealthCondition','OtherHealthConditions'],
+            'guardians': ['Guardians','Guardian',False],
+        }
+        for prop_name, cs_attributes in cs_sections_mapping.iteritems():
+            section = case_study[cs_attributes[0]]
+            section_attr = cs_attributes[1]
+            other_attrs = case_study[cs_attributes[2]] if cs_attributes[2] else 'None'
+            if type(section) is dict and section.get(section_attr):
+                values.extend(self._get_values(cr, uid, section[section_attr], prop_name, context))
+            if other_attrs != 'None':
+                values.append(self._get_values(cr, uid, other_attrs, prop_name, context))
+        
+        """ Natural Parents and Employment Section.
+            nps_sections_mapping is of the form:
+            {'CaseStudySectionName':['property_name_male','property_name_female','CaseStudyKey_male','CaseStudyKey_female']}
+        """
+        npe_sections_mapping = {
+            'NaturalParents': ['father','mother','Father','Mother'],
+            'Employment': ['male_guardian','female_guardian','FatherOrMaleGuardian','MotherOrFemaleGuardian'],
+        }
+        for section, prop_names in npe_sections_mapping.iteritems():
+            for key, value in case_study[section].iteritems():
+                property_name = ''
+                if key.startswith('Father'):
+                    property_name = prop_names[0]
+                elif key.startswith('Mother'):
+                    property_name = prop_names[1]
+                else:
+                    continue
 
-            if value == 'false' or value == '':
-                continue
-            elif value == 'true':
-                value = key.replace('Father', '').replace('Mother', '')
-            values.append(self._get_value_id(cr, uid, value, property_name, context))
+                if value == 'false' or value == '':
+                    continue
+                elif value == 'true':
+                    value = key.replace(prop_names[2], '').replace(prop_names[3], '')
+                values.append(self._get_value_id(cr, uid, value, property_name, context))
+                
+        # Other sections
         values.append(self._get_value_id(cr, uid, case_study['NaturalParents']['MaritalStatusOfParents'], 
                                          'marital_status', context))
-        for key, value in case_study['Employment'].iteritems():
-            property_name = ''
-            if key.startswith('Father'):
-                property_name = 'male_guardian'
-            elif key.startswith('Mother'):
-                property_name = 'female_guardian'
-            else:
-                continue
-
-            if value == 'false' or value == '':
-                continue
-            elif value == 'true':
-                value = key.replace('FatherOrMaleGuardian', '').replace('MotherOrFemaleGuardian', '')
-            values.append(self._get_value_id(cr, uid, value, property_name, context))
         vals['us_school_level'] = case_study['Schooling']['USSchoolEquivalent']
         values.append(self._get_value_id(cr, uid, case_study['Schooling']['SchoolPerformance'], 
                                          'school_performance', context))
@@ -248,15 +225,7 @@ class compassion_child(orm.Model):
     def _get_picture(self, cr, uid, child, type='Headshot', dpi=72, width=400,
                      height=400, format='jpeg', context=None):
         ''' Gets a picture from Compassion webservice '''
-        url = config.get('compass_url')
-        api_key = config.get('compass_api_key')
-        if not url or not api_key:
-            raise orm.except_orm('ConfigError',
-                                 _('Missing compass_url or compass_api_key '
-                                   'in conf file'))
-        if url.endswith('/'):
-            url = url[:-1]
-        url += '/ci/v1/child/' + child.code + '/image?api_key=' + api_key
+        url = self._get_url(child.code, 'image')
         url += '&Height=%s&Width=%s&DPI=%s&ImageFormat=%s&ImageType=%s' \
                 % (height, width, dpi, format, type)
         r = requests.get(url)
@@ -295,3 +264,15 @@ class compassion_child(orm.Model):
         prop_id = prop_val_obj.create(cr, uid, {'property_name': property_name,
                                                 'value_en': value})
         return prop_id
+        
+    def _get_url(self, child_code, api_mess):
+        url = config.get('compass_url')
+        api_key = config.get('compass_api_key')
+        if not url or not api_key:
+            raise orm.except_orm('ConfigError',
+                                 _('Missing compass_url or compass_api_key '
+                                   'in conf file'))
+        if url.endswith('/'):
+            url = url[:-1]     
+        url += '/ci/v1/child/' + child_code + '/' + api_mess + '?api_key=' + api_key
+        return url
