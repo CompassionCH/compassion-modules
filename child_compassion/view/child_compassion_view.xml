@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<!-- Top menu item -->
+		<menuitem name="Sponsorship"
+			id="menu_sponsorship_root"
+			sequence="5"/>
+		<menuitem id="menu_sponsorship_section" parent="menu_sponsorship_root" name="Sponsorship" sequence="5"/>
+
+		<!--Compassion child form view -->
+		<record id="view_compassion_child_form" model="ir.ui.view">
+			<field name="name">compassion.child.form</field>
+			<field name="model">compassion.child</field>
+			<field name="arch" type="xml">
+				<form string="Child" version="7.0">
+					<sheet>
+						<field name="portrait" widget='image' class="oe_left oe_avatar" options='{"size": [90, 90]}' />
+						<div class="oe_title">
+							<label for="name" class="oe_edit_only"/>
+							<h1>
+								<field name="name"/>
+							</h1>
+						</div>
+						<div class="oe_right oe_button_box" name="buttons">
+							<button name="generate_descriptions" string="Generate descriptions" type="object" />
+							<button name="get_last_case_study" string="get infos" type="object" />
+						</div>
+						<notebook>
+							<page string="General Information">
+								<group>
+									<group>
+										<field name="firstname" />
+										<field name="gender" />
+										<field name="code" />
+										<field name="unique_id" />
+										<field name="birthdate" />
+									</group>
+									<group>
+										<field name="type" />
+										<field name="date" />
+										<field name="completion_date" />
+										<field name="start_date" />
+									</group>
+								</group>
+							</page>
+							<page string="Case studies">
+								<field name="case_study_ids" />
+							</page>
+							<page string="Descriptions">
+								<group>
+									<field name="desc_en" />
+									<field name="desc_fr" />
+									<field name="desc_de" />
+									<field name="desc_it" />
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_compassion_child_tree" model="ir.ui.view">
+			<field name="name">compassion.child.tree</field>
+			<field name="model">compassion.child</field>
+			<field name="arch" type="xml">
+				<tree string="Children">
+					<field name="name" />
+					<field name="code" />
+					<field name="gender" />
+					<field name="birthdate" />
+					<field name="type" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="open_view_children_tree" model="ir.actions.act_window">
+			<field name="name">Children</field>
+			<field name="res_model">compassion.child</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form,tree</field>
+			<field name="view_id" ref="view_compassion_child_tree"/>
+		</record>
+
+		<menuitem id="menu_sponsorship_children" parent="menu_sponsorship_section" name="Children" action="child_compassion.open_view_children_tree" sequence="0"/>
+
+	</data>
+</openerp>

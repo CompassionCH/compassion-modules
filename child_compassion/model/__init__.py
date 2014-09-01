@@ -1,8 +1,9 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    Compassion children module for OpenERP
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    @author: Cyril Sester <csester@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,7 +20,6 @@
 #
 ##############################################################################
 
-import contracts
-import invoice_line
-import res_partner
-import product
+from . import child_compassion
+from . import child_properties
+from . import project_compassion

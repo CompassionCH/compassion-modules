@@ -25,26 +25,27 @@
     'version': '0.2',
     'category': 'Other',
     'description': """
-        Compassion child represent compassion sponsored children. A sponsored child is described by:
-            - Its name
-            - Its reference
-            - Its birthdate
-            - Its status
-            - Its unique compass id
-            
-        This module is actually used only to be linked with a contract, and therefore for billing. 
-        This way all other informations are unnecessary.
+Sponsorship management module. This module makes the link between child and 
+contracts. It also customize contracts to fit the child sponsorship context.
+
+This modules also requires en_US, fr_CH, de_DE, it_IT and es_ES to be installed 
+on the server.
+To check installed locales: 
+ $ locale -a
+To add a new locale : 
+ $ /usr/share/locales/install-language-pack <ISO-locale-name>
+ $ dpkg-reconfigure locales
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['simple_recurring_contract', 'l10n_ch_payment_slip', 'l10n_ch', 'account_analytic_plans'],
+    'depends': ['simple_recurring_contract', 'l10n_ch_payment_slip', 
+                'l10n_ch', 'account_analytic_plans', 'child_compassion'],
     'data': ['security/sponsorship_groups.xml',
-            'view/child_compassion_view.xml',
-			'view/contract_view.xml',
+            'view/sponsorship_menu.xml',
+            'view/contract_view.xml',
             'view/invoice_line_view.xml',
-			'view/project_compassion_view.xml',
             'view/res_partner_view.xml',
-			'data/product.xml',
+            'data/product.xml',
             'data/payment_terms.xml',
             'data/lang.xml',
             'data/sequence.xml',

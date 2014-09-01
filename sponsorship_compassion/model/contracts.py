@@ -228,3 +228,9 @@ class recurring_invoicer(orm.Model):
 class account_invoice(orm.Model):
     _inherit = 'account.invoice'
     _name = 'account.invoice'
+
+class compassion_child(orm.Model):
+    _inherit = 'compassion.child'
+
+class compassion_project(orm.Model):
+    _inherit = 'compassion.project'
