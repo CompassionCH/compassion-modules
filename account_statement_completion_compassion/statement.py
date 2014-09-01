@@ -177,12 +177,13 @@ class AccountStatementCompletionRule(Model):
     def get_from_lsv_dd(self, cr, uid, id, st_line, context=None):
         """ If line is a LSV or DD credit, change the account to 1098. """
         label = st_line.get('name', '')
-        lsv_dd_strings = [
-            "BULLETIN DE VERSEMENT", "ORDRE DEBIT DIRECT", "Crèdit LSV"]
+        lsv_dd_strings = [u'BULLETIN DE VERSEMENT',
+                          u'ORDRE DEBIT DIRECT',
+                          u'Crèdit LSV']
         is_lsv_dd = False
         res = {}
         for credit_string in lsv_dd_strings:
-            is_lsv_dd = is_lsv_dd or credit_string.decode('utf-8') in label
+            is_lsv_dd = is_lsv_dd or credit_string in label
         if is_lsv_dd:
             account_id = self.pool.get('account.account').search(
                 cr, uid, [('code', '=', '1098')], context=context)
