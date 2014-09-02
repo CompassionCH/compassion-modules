@@ -57,6 +57,7 @@ class AccountStatementCompletionRule(Model):
             ('get_from_amount',
              'Compassion: From line amount (based on the amount of the supplier invoice)'),
             ('get_from_lsv_dd', 'Compassion: Put LSV DD Credits in 1098'),
+            ('get_from_move_line_ref', 'Compassion: From line reference (based on previous move_line references)'),
         ])
         return res
 
@@ -192,6 +193,28 @@ class AccountStatementCompletionRule(Model):
                 cr, uid, [('code', '=', '1098')], context=context)
             if account_id:
                 res['account_id'] = account_id[0]
+
+        return res
+
+    def get_from_move_line_ref(self, cr, uid, id, st_line, context=None):
+        ''' Update partner if same reference is found '''
+        ref = st_line['ref'].strip()
+        res = {}
+        partner = None
+
+        # Search Contract
+        move_line_obj = self.pool.get('account.move.line')
+        move_line_ids = move_line_obj.search(
+            cr, uid, [('ref', '=', ref), ('partner_id', '!=', None)], context=context)
+        if move_line_ids:
+            partner = move_line_obj.browse(
+                cr, uid, move_line_ids, context=context)[0].partner_id
+
+        if partner:
+            partner_obj = self.pool.get('res.partner')
+            partner = partner_obj._find_accounting_partner(partner)
+            res['partner_id'] = partner.id
+            res['account_id'] = partner.property_account_receivable.id
 
         return res
 

@@ -26,5 +26,10 @@
         <field name="function_to_call">get_from_lsv_dd</field>
     </record>
 
+    <record id="bank_statement_completion_rule_move_line_ref" model="account.statement.completion.rule">
+        <field name="name">Compassion: From line reference (based on previous move_line references)</field>
+        <field name="sequence">70</field>
+        <field name="function_to_call">get_from_move_line_ref</field>
+    </record>
 </data>
 </openerp>
