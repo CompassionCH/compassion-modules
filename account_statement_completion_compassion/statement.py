@@ -88,6 +88,7 @@ class AccountStatementCompletionRule(Model):
             if len(partner_ids) == 1:
                 partner = partner_obj.browse(
                     cr, uid, partner_ids[0], context=context)
+                partner = partner_obj._find_accounting_partner(partner)
                 res['partner_id'] = partner.id
                 res['account_id'] = partner.property_account_receivable.id
                 # If we fall under this rule of completion, it means there is
@@ -139,6 +140,8 @@ class AccountStatementCompletionRule(Model):
                     cr, uid, invoice_ids, context=context)[0].partner_id
 
         if partner:
+            partner_obj = self.pool.get('res.partner')
+            partner = partner_obj._find_accounting_partner(partner)
             res['partner_id'] = partner.id
             res['account_id'] = partner.property_account_receivable.id
 
