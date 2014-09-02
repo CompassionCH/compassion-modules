@@ -47,11 +47,30 @@ class res_partner(orm.Model):
                 res[id] = correspondant_ids
         
         return res
+
+    def _write_related_contracts(self, cr, uid, id, name, value, inv_arg, context=None):
+        value_obj = self.pool.get('simple.recurring.contract')
+        for line in value:
+            if line[0] == 1: # on2many update
+                value_id = line[1]
+                value_obj.write(cr, uid, [value_id], line[2])
+        return True
     
     _columns = {
-        'contracts_fully_managed' : fields.function(_get_related_contracts, type="one2many", obj="simple.recurring.contract"),
-        'contracts_paid' : fields.function(_get_related_contracts, type="one2many", obj="simple.recurring.contract"),
-        'contracts_correspondant' : fields.function(_get_related_contracts, type="one2many", obj="simple.recurring.contract"),
+        'contracts_fully_managed' : fields.function(
+            _get_related_contracts, type="one2many",
+            obj="simple.recurring.contract",
+            fnct_inv=_write_related_contracts,
+            string='Contracts'),
+        'contracts_paid' : fields.function(
+            _get_related_contracts, type="one2many",
+            obj="simple.recurring.contract",
+            fnct_inv=_write_related_contracts,
+            string='Contracts'),
+        'contracts_correspondant' : fields.function(
+            _get_related_contracts, type="one2many",
+            obj="simple.recurring.contract",
+            fnct_inv=_write_related_contracts),
     }
     
     def show_lines(self, cr, uid, ids, context=None):

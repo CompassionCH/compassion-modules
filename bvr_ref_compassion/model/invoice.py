@@ -71,4 +71,11 @@ class account_move_line(Model):
             return move_line.invoice.bvr_reference
         else:
             return super(account_move_line, self).get_bvr_ref(cursor, uid, move_line_id, context)
-            
+
+class account_move(Model):
+    _inherit = 'account.move'
+    def create(self, cr, uid, vals, context=None):
+        invoice = context.get('invoice')
+        if invoice and invoice.bvr_reference:
+            vals['ref'] = invoice.bvr_reference
+        return super(account_move, self).create(cr, uid, vals, context)
