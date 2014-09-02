@@ -31,7 +31,7 @@ class res_users(osv.osv):
         
     def set_pw2(self, cr, uid, id, name, value, args, context):
         if value:
-            gp = gp_connector.GPConnect(cr, uid, self.pool.get('mysql.config.settings'))
+            gp = gp_connector.GPConnect(cr, uid)
             gp.pushPassword(id, value)
             super(res_users, self).set_pw(cr, uid, id, name, value, args, context)
             

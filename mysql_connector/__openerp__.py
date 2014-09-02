@@ -39,9 +39,7 @@ Utility module that enables other modules that depends on it to access a MySQL s
 
 Warning : This module requires python-MySQLdb to be installed on the server.
 """,
-    'data': [
-        'view/mysql_config_view.xml',
-    ],
+    'data': [],
     'demo': [],
     'installable': True,
     'auto_install': False,

@@ -71,7 +71,7 @@ class ResPartner(Model):
         """ We override the create method so that each partner creation will also propagate in the MySQL table used by GP. 
             This method is also called by GP with XMLRPC, so that the OpenERP holds all the logic to sync the two databases. """
         
-        gp = gp_connector.GPConnect(cr, uid, self.pool.get('mysql.config.settings'))
+        gp = gp_connector.GPConnect(cr, uid)
         fieldsUpdate = vals.keys()
         
         # If the reference is not defined, we automatically set it.
@@ -138,7 +138,7 @@ class ResPartner(Model):
         records = self.browse(cr, uid, ids ,context)
         records = [records] if not isinstance(records,list) else records
         create = False
-        gp = gp_connector.GPConnect(cr, uid, self.pool.get('mysql.config.settings'))
+        gp = gp_connector.GPConnect(cr, uid)
         
         for record in records :
             if record.ref:
@@ -331,7 +331,7 @@ class ResPartner(Model):
         """ We want to perform some checks before deleting a partner ! """
         records = self.browse(cr, uid, ids, context)
         records = [records] if not isinstance(records,list) else records
-        gp = gp_connector.GPConnect(cr, uid, self.pool.get('mysql.config.settings'))
+        gp = gp_connector.GPConnect(cr, uid)
         for record in records:
             # If it is a company, unlink contact in MySQL if there is any.
             if record.is_company:
