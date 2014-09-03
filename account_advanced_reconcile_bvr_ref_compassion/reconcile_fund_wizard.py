@@ -18,15 +18,11 @@
 #
 ##############################################################################
 
-import datetime
 import time
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp import netsvc
-
-import logging
-logger = logging.getLogger(__name__)
 
 class reconcile_fund_wizard(orm.TransientModel):
     _name = 'reconcile.fund.wizard'
@@ -68,7 +64,6 @@ class reconcile_fund_wizard(orm.TransientModel):
             'type': 'out_invoice',
             'partner_id': partner.id,
             'journal_id': len(journal_ids) and journal_ids[0] or False,
-            #'currency_id': contract.partner_id.property_product_pricelist.currency_id.id or False,
             'date_invoice': date_invoice,
             'payment_term': 1,  # Immediate payment
             'bvr_reference': '',
