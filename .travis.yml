@@ -12,4 +12,5 @@ install:
 script:
   - travis_run_flake8
 
-after_success:
+notifications:
+  email: false
