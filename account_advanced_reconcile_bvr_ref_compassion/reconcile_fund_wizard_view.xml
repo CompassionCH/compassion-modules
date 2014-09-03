@@ -5,7 +5,7 @@
 		<field name="name">reconcile.fund.wizard.form</field>
 		<field name="model">reconcile.fund.wizard</field>
 		<field name="arch" type="xml">
-			<form string="Chose your fund" version="7.0">
+			<form string="Choose your fund" version="7.0">
 				<sheet>
 					<group>
 						<field name="fund_id" />
