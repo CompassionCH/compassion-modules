@@ -57,6 +57,10 @@ class reconcile_fund_wizard(orm.TransientModel):
             if line.credit > 0:
                 date_invoice = line.date
 
+        if residual < 0:
+            raise orm.except_orm('ResidualError',
+                                 _('This can only be done if credits > debits'))
+
         move_line = move_line_obj.browse(cr, uid, context.get('active_id'), context)
         partner = move_line.partner_id
         inv_data = {

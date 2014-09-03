@@ -201,7 +201,7 @@ class AccountStatementCompletionRule(Model):
         res = {}
         partner = None
 
-        # Search Contract
+        # Search move lines
         move_line_obj = self.pool.get('account.move.line')
         move_line_ids = move_line_obj.search(
             cr, uid, [('ref', '=', ref), ('partner_id', '!=', None)], context=context)
