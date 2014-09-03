@@ -33,7 +33,6 @@ from openerp.osv import fields
 from openerp.addons.account_statement_base_completion.statement import ErrorTooManyPartner
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp import netsvc
-import datetime
 import time
 
 GIFT_TYPES = ['Birthday Gift', 'General Gift',
@@ -231,7 +230,6 @@ class AccountStatementCompletionRule(Model):
             invoicer_id = self.pool.get('account.bank.statement').browse(
                 cr, uid, st_line['statement_id'][0], context=context).recurring_invoicer_id.id
 
-            today = datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
             pay_term_obj = self.pool.get('account.payment.term')
 
             inv_data = {
@@ -240,7 +238,7 @@ class AccountStatementCompletionRule(Model):
                 'partner_id': partner.id,
                 'journal_id': len(journal_ids) and journal_ids[0] or False,
                 #'currency_id': contract.partner_id.property_product_pricelist.currency_id.id or False,
-                'date_invoice': today,
+                'date_invoice': st_line['date'],
                 'payment_term': 1,  # Immediate payment
                 'bvr_reference': st_line['ref'],
                 'recurring_invoicer_id': invoicer_id,
