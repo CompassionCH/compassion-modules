@@ -37,14 +37,11 @@ class mysql_connector:
         mysql_pw = config.get('mysql_pw')
         mysql_db = config.get('mysql_db')
         self._con = False
-        if settings:
-            try:
-                self._con = mdb.connect(mysql_host, mysql_user, mysql_pw, mysql_db);
-                self._cur = self._con.cursor(mdb.cursors.DictCursor)
-            except mdb.Error, e:
-                logging.debug("Error %d: %s" % (e.args[0],e.args[1]))
-        else:
-            raise Exception("No settings found")
+        try:
+            self._con = mdb.connect(mysql_host, mysql_user, mysql_pw, mysql_db);
+            self._cur = self._con.cursor(mdb.cursors.DictCursor)
+        except mdb.Error, e:
+            logging.debug("Error %d: %s" % (e.args[0],e.args[1]))
 
     def __del__(self):
         """ Close the MySQL connection. """
