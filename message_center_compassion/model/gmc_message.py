@@ -20,12 +20,12 @@
 from openerp.osv.orm import Model
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
+from openerp.tools.config import config
 import requests
 import datetime
 import logging
 
 
-SERVER_URL = 'https://test.services.compassion.ch:443/rest/openerp/'
 logger = logging.getLogger(__name__)
 
 
@@ -220,7 +220,12 @@ class gmc_action(Model):
         if self._validate_outgoing_action(cr, uid, action, object_id, context=context):
             session = requests.Session()
             session.verify = False
-            url = SERVER_URL + action.type + '/' + \
+            server_url = config.get('middleware_url')
+            if not server_url:
+                raise orm.except_orm('ConfigError',
+                                     _('No middleware server url specified in '
+                                       'conf file'))
+            url = server_url + action.type + '/' + \
                 action.model + '/' + str(object_id)
             resp = session.get(url)
             content = resp.content
