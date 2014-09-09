@@ -328,10 +328,12 @@ class AccountStatement(Model):
     }
 
     def button_auto_completion(self, cr, uid, ids, context=None):
-        invoicer_obj = self.pool.get('recurring.invoicer')
-        invoicer_id = invoicer_obj.create(cr, uid, {}, context=context)
-        self.write(
-            cr, uid, ids, {'recurring_invoicer_id': invoicer_id}, context=context)
+        invoicer_id = self.browse(cr, uid, ids[0], context).recurring_invoicer_id
+        if not invoicer_id:
+            invoicer_obj = self.pool.get('recurring.invoicer')
+            invoicer_id = invoicer_obj.create(cr, uid, {}, context=context)
+            self.write(
+                cr, uid, ids, {'recurring_invoicer_id': invoicer_id}, context=context)
 
         super(AccountStatement, self).button_auto_completion(
             cr, uid, ids, context=context)
