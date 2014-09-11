@@ -28,7 +28,8 @@ class compassion_child(orm.Model):
     def allocate(self, cr, uid, child_reference, context=None):
         child_id = self.create(
             cr, uid, {'code': child_reference, 'name': '/'}, context=context)
-        return self.update(cr, uid, child_id, context=context)
+        self.update(cr, uid, child_id, context=context)
+        return self.get_basic_informations(cr, uid, child_id, context=context)
 
     def deallocate(self, cr, uid, id, context=None):
         # TODO : should be done from GP or see what to do.
@@ -41,8 +42,7 @@ class compassion_child(orm.Model):
 
     def update(self, cr, uid, id, context=None):
         """ When we receive a notification that child has been updated, we fetch the last case study. """
-        # TODO : uncomment when merged with branch child_compassion.
-        # self.get_last_case_study(self, cr, uid, id, context=context)
+        self.get_last_case_study(self, cr, uid, id, context=context)
         return True
 
 compassion_child()
