@@ -1,7 +1,14 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Compassion children module for OpenERP
+#       ______ Releasing children from poverty      _
+#      / ____/___  ____ ___  ____  ____ ___________(_)___  ____
+#     / /   / __ \/ __ `__ \/ __ \/ __ `/ ___/ ___/ / __ \/ __ \
+#    / /___/ /_/ / / / / / / /_/ / /_/ (__  |__  ) / /_/ / / / /
+#    \____/\____/_/ /_/ /_/ .___/\__,_/____/____/_/\____/_/ /_/
+#                        /_/
+#                            in Jesus' name
+#
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    @author: Cyril Sester <csester@compassion.ch>
 #
@@ -19,7 +26,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
 
 {
     'name': 'Compassion Children',
