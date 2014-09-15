@@ -10,7 +10,7 @@ install:
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
 
 script:
-  - travis_run_flake8
+  - test_flake8
   - travis/travis_header.sh
 
 notifications:
