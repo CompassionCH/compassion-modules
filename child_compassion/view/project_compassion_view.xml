@@ -45,6 +45,9 @@
 									<field name="community_name" />
 								</group>
 							</page>
+							<page string="Miscellaneous">
+								<field name="primary_diet" widget="many2many_tags" />
+							</page>
 							<page string="Description">
 								<field name="description_en" />
 								<field name="description_fr" />
