@@ -33,7 +33,7 @@ Then it reconciles the other invoices from last invoice to first.
  'author': 'Compassion CH',
  'category': 'Finance',
  'website': 'http://www.compassion.ch',
- 'depends': ['account_advanced_reconcile','l10n_ch_payment_slip_base_transaction_id'],
+ 'depends': ['account_advanced_reconcile','l10n_ch_payment_slip_base_transaction_id','account_analytic_default'],
  'data': [
     'easy_reconcile_view.xml',
     'reconcile_fund_wizard_view.xml'],
