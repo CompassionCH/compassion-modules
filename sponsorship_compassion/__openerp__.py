@@ -1,8 +1,16 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#       ______ Releasing children from poverty      _
+#      / ____/___  ____ ___  ____  ____ ___________(_)___  ____
+#     / /   / __ \/ __ `__ \/ __ \/ __ `/ ___/ ___/ / __ \/ __ \
+#    / /___/ /_/ / / / / / / /_/ / /_/ (__  |__  ) / /_/ / / / /
+#    \____/\____/_/ /_/ /_/ .___/\__,_/____/____/_/\____/_/ /_/
+#                        /_/
+#                            in Jesus' name
+#
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    @author: Cyril Sester, Emanuel Cino
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
