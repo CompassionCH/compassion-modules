@@ -41,6 +41,7 @@ class easy_reconcile_advanced_bvr_ref(orm.TransientModel):
             'name',
             'partner_id',
             'account_id',
+            'reconcile_partial_id',
             'move_id',
             'transaction_ref')
         return ["account_move_line.%s" % col for col in aml_cols]    

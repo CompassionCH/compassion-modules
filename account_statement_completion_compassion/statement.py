@@ -33,7 +33,6 @@ from openerp.osv import fields
 from openerp.addons.account_statement_base_completion.statement import ErrorTooManyPartner
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp import netsvc
-import datetime
 import time
 
 GIFT_TYPES = ['Birthday Gift', 'General Gift',
@@ -57,6 +56,7 @@ class AccountStatementCompletionRule(Model):
             ('get_from_amount',
              'Compassion: From line amount (based on the amount of the supplier invoice)'),
             ('get_from_lsv_dd', 'Compassion: Put LSV DD Credits in 1098'),
+            ('get_from_move_line_ref', 'Compassion: From line reference (based on previous move_line references)'),
         ])
         return res
 
@@ -88,6 +88,7 @@ class AccountStatementCompletionRule(Model):
             if len(partner_ids) == 1:
                 partner = partner_obj.browse(
                     cr, uid, partner_ids[0], context=context)
+                partner = partner_obj._find_accounting_partner(partner)
                 res['partner_id'] = partner.id
                 res['account_id'] = partner.property_account_receivable.id
                 # If we fall under this rule of completion, it means there is
@@ -139,6 +140,8 @@ class AccountStatementCompletionRule(Model):
                     cr, uid, invoice_ids, context=context)[0].partner_id
 
         if partner:
+            partner_obj = self.pool.get('res.partner')
+            partner = partner_obj._find_accounting_partner(partner)
             res['partner_id'] = partner.id
             res['account_id'] = partner.property_account_receivable.id
 
@@ -192,6 +195,28 @@ class AccountStatementCompletionRule(Model):
 
         return res
 
+    def get_from_move_line_ref(self, cr, uid, id, st_line, context=None):
+        ''' Update partner if same reference is found '''
+        ref = st_line['ref'].strip()
+        res = {}
+        partner = None
+
+        # Search move lines
+        move_line_obj = self.pool.get('account.move.line')
+        move_line_ids = move_line_obj.search(
+            cr, uid, [('ref', '=', ref), ('partner_id', '!=', None)], context=context)
+        if move_line_ids:
+            partner = move_line_obj.browse(
+                cr, uid, move_line_ids, context=context)[0].partner_id
+
+        if partner:
+            partner_obj = self.pool.get('res.partner')
+            partner = partner_obj._find_accounting_partner(partner)
+            res['partner_id'] = partner.id
+            res['account_id'] = partner.property_account_receivable.id
+
+        return res
+
     def _generate_invoice(self, cr, uid, st_line, partner, context=None):
         """ Genereates an invoice corresponding to the statement line read in order to reconcile the corresponding move lines. """
         product = self.pool.get('product.product').browse(cr, uid, self._find_product_id(
@@ -205,7 +230,6 @@ class AccountStatementCompletionRule(Model):
             invoicer_id = self.pool.get('account.bank.statement').browse(
                 cr, uid, st_line['statement_id'][0], context=context).recurring_invoicer_id.id
 
-            today = datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
             pay_term_obj = self.pool.get('account.payment.term')
 
             inv_data = {
@@ -214,7 +238,7 @@ class AccountStatementCompletionRule(Model):
                 'partner_id': partner.id,
                 'journal_id': len(journal_ids) and journal_ids[0] or False,
                 #'currency_id': contract.partner_id.property_product_pricelist.currency_id.id or False,
-                'date_invoice': today,
+                'date_invoice': st_line['date'],
                 'payment_term': 1,  # Immediate payment
                 'bvr_reference': st_line['ref'],
                 'recurring_invoicer_id': invoicer_id,
@@ -304,10 +328,12 @@ class AccountStatement(Model):
     }
 
     def button_auto_completion(self, cr, uid, ids, context=None):
-        invoicer_obj = self.pool.get('recurring.invoicer')
-        invoicer_id = invoicer_obj.create(cr, uid, {}, context=context)
-        self.write(
-            cr, uid, ids, {'recurring_invoicer_id': invoicer_id}, context=context)
+        invoicer_id = self.browse(cr, uid, ids[0], context).recurring_invoicer_id
+        if not invoicer_id:
+            invoicer_obj = self.pool.get('recurring.invoicer')
+            invoicer_id = invoicer_obj.create(cr, uid, {}, context=context)
+            self.write(
+                cr, uid, ids, {'recurring_invoicer_id': invoicer_id}, context=context)
 
         super(AccountStatement, self).button_auto_completion(
             cr, uid, ids, context=context)

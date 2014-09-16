@@ -20,3 +20,4 @@
 
 from . import easy_reconcile
 from . import advanced_reconciliation
+from . import reconcile_fund_wizard

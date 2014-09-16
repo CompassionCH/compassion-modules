@@ -141,7 +141,9 @@ class compassion_child(orm.Model):
         url = self._get_url(child.code, 'casestudy')
         r = requests.get(url)
         if not r.status_code/100 == 2:
-            return None
+            raise orm.except_orm('NetworkError',
+                                 _('An error occured while fetching the last '
+                                   'case study for child %s.') % child.code)
         
         case_study = json.loads(r.text)
         vals = {
@@ -229,6 +231,10 @@ class compassion_child(orm.Model):
         url += '&Height=%s&Width=%s&DPI=%s&ImageFormat=%s&ImageType=%s' \
                 % (height, width, dpi, format, type)
         r = requests.get(url)
+        if not r.status_code/100 == 2:
+            raise orm.except_orm('NetworkError',
+                                 _('An error occured while fetching the last '
+                                   'picture for child %s.') % child.code)
         data = json.loads(r.text)['Image']['ImageData']
         
         attachment_obj = self.pool.get('ir.attachment')
