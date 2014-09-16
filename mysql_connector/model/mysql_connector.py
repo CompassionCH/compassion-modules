@@ -20,28 +20,28 @@
 
 import MySQLdb as mdb
 import logging
+from openerp.tools.config import config
 
 
 class mysql_connector:
     """ Contains all the utility methods needed to talk with a MySQL server
     which connection settings are stored in the object mysql.config.settings. """
     
-    def __init__(self, cr, uid, settings_obj):
+    def __init__(self, cr, uid):
         """ Establishes the connection to the MySQL server used by GP. 
             Args:
-                - settings_obj : a reference to the 'mysql.config.settings' object
                 - cr : a database cursor to the Postgres database of OpenERP.
                 - uid : OpenERP user id. """
-        settings = settings_obj.default_get(cr, uid, ['default_mysql_host','default_mysql_db','default_mysql_user','default_mysql_pw'])
+        mysql_host = config.get('mysql_host')
+        mysql_user = config.get('mysql_user')
+        mysql_pw = config.get('mysql_pw')
+        mysql_db = config.get('mysql_db')
         self._con = False
-        if settings:
-            try:
-                self._con = mdb.connect(settings['default_mysql_host'], settings['default_mysql_user'], settings['default_mysql_pw'], settings['default_mysql_db']);
-                self._cur = self._con.cursor(mdb.cursors.DictCursor)
-            except mdb.Error, e:
-                logging.debug("Error %d: %s" % (e.args[0],e.args[1]))
-        else:
-            raise Exception("No settings found")
+        try:
+            self._con = mdb.connect(mysql_host, mysql_user, mysql_pw, mysql_db);
+            self._cur = self._con.cursor(mdb.cursors.DictCursor)
+        except mdb.Error, e:
+            logging.debug("Error %d: %s" % (e.args[0],e.args[1]))
 
     def __del__(self):
         """ Close the MySQL connection. """

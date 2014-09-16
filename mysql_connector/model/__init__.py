@@ -18,5 +18,5 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import mysql_config
+
 import mysql_connector
