@@ -234,3 +234,9 @@ class compassion_child(orm.Model):
 
 class compassion_project(orm.Model):
     _inherit = 'compassion.project'
+
+class compassion_child_property(orm.Model):
+    _inherit = 'compassion.child.property'
+
+class compassion_child_property_value(orm.Model):
+    _inherit = 'compassion.child.property.value'
