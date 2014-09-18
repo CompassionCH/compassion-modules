@@ -67,7 +67,7 @@ class compassion_project(orm.Model):
             'compassion.child.property.value', 'project_property_to_value',
             'property_id', 'value_id', _('Primary diet'),
             domain=[('property_name', '=', 'primary_diet')]),
-        #'country_id': fields.many2one('compassion.country', _('Country')),
+        'country_id': fields.many2one('compassion.country', _('Country')),
     }
 
     def update_informations(self, cr, uid, ids, context=None):
@@ -75,18 +75,26 @@ class compassion_project(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
 
+        country_obj = self.pool.get('compassion.country')
         ret = {}
         for project in self.browse(cr, uid, ids, context):
-            values, coutry, type, community_id = self._update_program_info(
+            values, country, type, community_id = self._update_program_info(
                 cr, uid, project, context)
-            values.extend(
+            values.update(
                 self._update_community_info(cr, uid, community_id, context))
             if type == 'CDSP':
-                values.extend(self._update_cdsp_info(cr, uid,
+                values.update(self._update_cdsp_info(cr, uid,
                                                      project, context))
+            country_id = country_obj.search(
+                cr, uid, [('iso_code', '=', country)], context=context)
+            if not country_id:
+                country_id = country_obj.create(
+                    cr, uid, {'iso_code': country}, context=context)
+                country_obj.update_informations(cr, uid, [country_id],
+                                                context=context)
+            values['country_id'] = country_id
             self.write(cr, uid, [project.id], values, context=context)
 
-        #TODO: Update related country informations
         return True
 
     def _update_program_info(self, cr, uid, project, context=None):
@@ -101,7 +109,7 @@ class compassion_project(orm.Model):
 
         coutry_code = prog_impl.get('ISOCountryCode')
         type = prog_impl.get('ProgramImplementorTypeCode')
-        community_id = prog_impl.get('CommunityId')
+        community_id = prog_impl.get('CommunityID')
         return values, coutry_code, type, community_id
 
     def _update_community_info(self, cr, uid, community_id, context=None):
@@ -110,8 +118,8 @@ class compassion_project(orm.Model):
         if not r.status_code/100 == 2:
             return None
 
-        prog_impl = json.loads(r.text)
-        return self._get_community_values(cr, uid, cdsp_impl, context)
+        json_data = json.loads(r.text)
+        return self._get_community_values(cr, uid, json_data, context)
 
     def _update_cdsp_info(self, cr, uid, project, context=None):
         url = self._get_url(project.code, 'cdspimplementor')
@@ -206,8 +214,8 @@ class compassion_project(orm.Model):
             }
 
         for json_name, field in json_field_mapping.iteritems():
-            if cdsp_impl.get(json_name):
-                values[field] = cdsp_impl[json_name]
+            if json_values.get(json_name):
+                values[field] = json_values[json_name]
 
         return values
 
