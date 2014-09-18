@@ -30,9 +30,7 @@
 {
     'name': 'Advanced Reconcile Transaction Ref',
     'description':  """
-    Advanced reconciliation method for the module account_advanced_reconcile
-    ========================================================================
-    Reconcile rules with bvr_ref of invoice.
+    Reconcile rules with bvr_ref of invoice for Compassion CH.
 
     It finds a matching invoice for the move_line and reconciles only if the
     amount of the payment corresponds or if it is a multiple of the invoice

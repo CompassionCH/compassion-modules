@@ -34,6 +34,7 @@ from openerp.addons.account_statement_base_completion.statement import ErrorTooM
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp import netsvc
 import time
+import pdb
 
 GIFT_TYPES = ['Birthday Gift', 'General Gift',
               'Family Gift', 'Project Gift', 'Graduation Gift']
@@ -328,17 +329,20 @@ class AccountStatement(Model):
     }
 
     def button_auto_completion(self, cr, uid, ids, context=None):
-        invoicer_id = self.browse(cr, uid, ids[0], context).recurring_invoicer_id
-        if not invoicer_id:
-            invoicer_obj = self.pool.get('recurring.invoicer')
+        invoicer = self.browse(cr, uid, ids[0], context).recurring_invoicer_id
+        invoicer_obj = self.pool.get('recurring.invoicer')
+        if invoicer:
+            invoicer_id = invoicer.id
+        else:
             invoicer_id = invoicer_obj.create(cr, uid, {}, context=context)
             self.write(
                 cr, uid, ids, {'recurring_invoicer_id': invoicer_id}, context=context)
+            invoicer = invoicer_obj.browse(cr, uid, invoicer_id, context=context)
 
         super(AccountStatement, self).button_auto_completion(
             cr, uid, ids, context=context)
 
-        if not invoicer_obj.browse(cr, uid, invoicer_id, context=context).invoice_ids:
+        if not invoicer.invoice_ids:
             invoicer_obj.unlink(cr, uid, invoicer_id, context=context)
 
     def button_invoices(self, cr, uid, ids, context=None):
