@@ -34,6 +34,7 @@
 										<field name="start_date" />
 										<field name="stop_date" />
 										<field name="last_update_date" />
+										<field name="country_id" />
 									</group>
 								</group>
 								<group string="Community">
@@ -46,7 +47,7 @@
 								</group>
 							</page>
 							<page string="Miscellaneous">
-								<field name="primary_diet" widget="many2many_tags" />
+								<field name="primary_diet_ids" widget="many2many_tags" />
 							</page>
 							<page string="Description">
 								<field name="description_en" />
