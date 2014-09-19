@@ -1,16 +1,16 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Authors: Emanuel Cino
-#    Copyright (c) 2014 Compassion Suisse (http://www.compassion.ch)
-#    All Rights Reserved
+#       ______ Releasing children from poverty      _
+#      / ____/___  ____ ___  ____  ____ ___________(_)___  ____
+#     / /   / __ \/ __ `__ \/ __ \/ __ `/ ___/ ___/ / __ \/ __ \
+#    / /___/ /_/ / / / / / / /_/ / /_/ (__  |__  ) / /_/ / / / /
+#    \____/\____/_/ /_/ /_/ .___/\__,_/____/____/_/\____/_/ /_/
+#                        /_/
+#                            in Jesus' name
 #
-#    WARNING: This program as such is intended to be used by professional
-#    programmers who take the whole responsibility of assessing all potential
-#    consequences resulting from its eventual inadequacies and bugs.
-#    End users who are looking for a ready-to-use solution with commercial
-#    guarantees and support are strongly advised to contact a Free Software
-#    Service Company.
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -45,11 +45,15 @@ Account Statement Completion Rules for Compassion CH
 =========================
 
 - Add three completion methods :
-    1. Completion method based on the BVR reference of the contract or the invoice.
+    1. Completion method based on the BVR reference of the contract
+       or the invoice.
     2. Completion method based on the reference of the partner
-    3. Completion method for Raiffaisen statements (supplier invoices) based only on the amount.
+    3. Completion method for Raiffaisen statements (supplier invoices) based
+       only on the amount.
 
-- The first rule is applied. If no contract or invoice is found with same BVR reference, then second rule is applied, and an invoice is generated on-the-fly for gifts or funds donations.
+- The first rule is applied. If no contract or invoice is found with same
+  BVR reference, then second rule is applied, and an invoice is generated
+  on-the-fly for gifts or funds donations.
 - The third rule is useful only for supplier invoices.
 
 """,
