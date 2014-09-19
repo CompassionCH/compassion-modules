@@ -1,28 +1,19 @@
-# -*- coding: utf-8 -*-
+﻿# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Author: Cyril Sester. Copyright Compassion Suisse
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Cyril Sester <csester@compassion.ch>
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    The licence is in the file __openerp__.py
 #
 ##############################################################################
 
 import time
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp import netsvc
+
 
 class reconcile_fund_wizard(orm.TransientModel):
     _name = 'reconcile.fund.wizard'
@@ -32,7 +23,7 @@ class reconcile_fund_wizard(orm.TransientModel):
     }
 
     def reconcile_with_fund(self, cr, uid, ids, context=None):
-        ''' Generate an invoice corresponding to the selected fund 
+        ''' Generate an invoice corresponding to the selected fund
             and reconcile it with selected move lines
         '''
         if isinstance(ids, list):
@@ -43,8 +34,7 @@ class reconcile_fund_wizard(orm.TransientModel):
         invoice_obj = self.pool.get('account.invoice')
         move_line_obj = self.pool.get('account.move.line')
         journal_obj = self.pool.get('account.journal')
-        pay_term_obj = self.pool.get('account.payment.term')
-        
+
         journal_ids = journal_obj.search(
             cr, uid, [('type', '=', 'sale'), ('company_id', '=', 1 or False)],
             limit=1)
@@ -58,10 +48,12 @@ class reconcile_fund_wizard(orm.TransientModel):
                 date_invoice = line.date
 
         if residual < 0:
-            raise orm.except_orm('ResidualError',
-                                 _('This can only be done if credits > debits'))
+            raise orm.except_orm(
+                'ResidualError',
+                _('This can only be done if credits > debits'))
 
-        move_line = move_line_obj.browse(cr, uid, context.get('active_id'), context)
+        move_line = move_line_obj.browse(
+            cr, uid, context.get('active_id'), context)
         partner = move_line.partner_id
         inv_data = {
             'account_id': partner.property_account_receivable.id,
@@ -77,22 +69,26 @@ class reconcile_fund_wizard(orm.TransientModel):
         invoice_id = invoice_obj.create(cr, uid, inv_data, context=context)
         if invoice_id:
             res.update(self._generate_invoice_line(
-                cr, uid, invoice_id, wizard.fund_id, residual, partner.id, context=context))
+                cr, uid, invoice_id, wizard.fund_id,
+                residual, partner.id, context=context))
 
             # Validate the invoice
             wf_service = netsvc.LocalService('workflow')
             wf_service.trg_validate(
                 uid, 'account.invoice', invoice_id, 'invoice_open', cr)
             invoice = invoice_obj.browse(cr, uid, invoice_id, context)
-            move_line_ids = move_line_obj.search(cr, uid, [('move_id', '=', invoice.move_id.id), 
-                                                           ('account_id', '=', inv_data['account_id'])],
-                                                 context=context)
+            move_line_ids = move_line_obj.search(
+                cr, uid, [('move_id', '=', invoice.move_id.id),
+                          ('account_id', '=', inv_data['account_id'])],
+                context=context)
             active_ids.extend(move_line_ids)
         move_line_obj.reconcile(cr, uid, active_ids)
 
         return res
 
-    def _generate_invoice_line(self, cr, uid, invoice_id, product, price, partner_id, context=None):
+    def _generate_invoice_line(self, cr, uid, invoice_id, product, price,
+                               partner_id, context=None):
+
         inv_line_data = {
             'name': product.name,
             'account_id': product.property_account_income.id,
@@ -107,7 +103,8 @@ class reconcile_fund_wizard(orm.TransientModel):
 
         # Define analytic journal
         analytic = self.pool.get('account.analytic.default').account_get(
-            cr, uid, product.id, partner_id, uid, time.strftime('%Y-%m-%d'), context=context)
+            cr, uid, product.id, partner_id, uid, time.strftime('%Y-%m-%d'),
+            context=context)
         if analytic and analytic.analytics_id:
             inv_line_data['analytics_id'] = analytic.analytics_id.id
 

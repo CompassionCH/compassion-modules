@@ -1,8 +1,16 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#       ______ Releasing children from poverty      _
+#      / ____/___  ____ ___  ____  ____ ___________(_)___  ____
+#     / /   / __ \/ __ `__ \/ __ \/ __ `/ ___/ ___/ / __ \/ __ \
+#    / /___/ /_/ / / / / / / /_/ / /_/ (__  |__  ) / /_/ / / / /
+#    \____/\____/_/ /_/ /_/ .___/\__,_/____/____/_/\____/_/ /_/
+#                        /_/
+#                            in Jesus' name
+#
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -32,8 +40,8 @@
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['disable_openerp_online',
-                'account_statement_bvr_ref_completion',
-                'account_advanced_reconcile_bvr_ref_compassion',
+                'account_statement_completion_compassion',
+                'account_advanced_reconcile_compassion',
                 'lsv_compassion',
                 'bvr_ref_compassion',
                 'crm_child_sponsorship',

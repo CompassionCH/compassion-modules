@@ -28,41 +28,29 @@
 ##############################################################################
 
 {
-    "name": "Account Statement Completion Rules for Compassion CH",
-    "version": "0.6",
-    "author": "Emanuel Cino",
-    "category": "Finance",
-    "website": "http://www.compassion.ch",
-    "depends": ['account_statement_base_completion',
-                'sponsorship_compassion',
-                'account_banking_payment',
-                ],
-    "data": ['statement_view.xml', 'data.xml'],
-    "css": ["static/src/css/sheet.css"],
-    "description": """
+    'name': 'Advanced Reconcile Transaction Ref',
+    'description':  """
+    Reconcile rules with bvr_ref of invoice for Compassion CH.
 
-Account Statement Completion Rules for Compassion CH
-=========================
-
-- Add three completion methods :
-    1. Completion method based on the BVR reference of the contract
-       or the invoice.
-    2. Completion method based on the reference of the partner
-    3. Completion method for Raiffaisen statements (supplier invoices) based
-       only on the amount.
-
-- The first rule is applied. If no contract or invoice is found with same
-  BVR reference, then second rule is applied, and an invoice is generated
-  on-the-fly for gifts or funds donations.
-- The third rule is useful only for supplier invoices.
-
-""",
-    "demo": [],
-    "test": [],
-    "active": False,
-    "license": "AGPL-3",
-    "installable": True,
-    "auto_install": False,
-    "application": False,
+    It finds a matching invoice for the move_line and reconciles only if the
+    amount of the payment corresponds or if it is a multiple of the invoice
+    amount. If many invoices are found, the first reconciled invoice is the
+    current invoice (last invoice that is not in future).
+    Then it reconciles the other invoices from last invoice to first.
+    """,
+    'version': '1.0',
+    'author': 'Compassion CH',
+    'category': 'Finance',
+    'website': 'http://www.compassion.ch',
+    'depends': ['account_advanced_reconcile',
+                'l10n_ch_payment_slip_base_transaction_id',
+                'account_analytic_default'],
+    'data': ['easy_reconcile_view.xml',
+             'reconcile_fund_wizard_view.xml'],
+    'demo': [],
+    'test': [],
+    'auto_install': False,
+    'installable': True,
+    'images': []
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

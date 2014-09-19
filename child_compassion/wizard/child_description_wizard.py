@@ -243,7 +243,9 @@ class child_description_wizard(orm.TransientModel):
                     u'douzième', u'treizième', u'quatorzième', u'quinzième']
         string = u'Il' if child.gender == 'M' else u'Elle'
         if case_study.attending_school_flag:
-            if case_study.us_school_level and int(case_study.us_school_level) < 16:
+            if (case_study.us_school_level and
+                case_study.us_school_level.isdigit() and
+                int(case_study.us_school_level) < 16):
                 string += u' est en %s année (US)' % ordinals[int(case_study.us_school_level)-1]
             else:
                 string += u' va à l\'école'
