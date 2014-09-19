@@ -1,9 +1,16 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Recurring contract module for openERP
+#       ______ Releasing children from poverty      _
+#      / ____/___  ____ ___  ____  ____ ___________(_)___  ____
+#     / /   / __ \/ __ `__ \/ __ \/ __ `/ ___/ ___/ / __ \/ __ \
+#    / /___/ /_/ / / / / / / /_/ / /_/ (__  |__  ) / /_/ / / / /
+#    \____/\____/_/ /_/ /_/ .___/\__,_/____/____/_/\____/_/ /_/
+#                        /_/
+#                            in Jesus' name
+#
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
-#    @author: Cyril Sester <csester@compassion.ch>
+#    @author: [[ NAME ]] [[<email>]]
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,6 +26,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+
 {
     'name': 'Simple recurring contract',
     'summary': 'Contract for recurring invoicing',
@@ -43,7 +51,7 @@
     ],
     'demo': [],
     'description': '''
-
+        TODO
     ''',
     'active': False,
     'installable': True,
