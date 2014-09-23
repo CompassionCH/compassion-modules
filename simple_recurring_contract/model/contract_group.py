@@ -159,7 +159,8 @@ class contract_group(orm.Model):
                 next_date > datetime.strptime(contract.next_advance_date, DF):
             delay_dict = {'annual': 12, 'biannual': 6, 'fourmonthly': 4,
                           'quarterly': 3, 'bimonthly' : 2}
-            next_advance_date = datetime.strptime(contract.next_advance_date, DF)
+            next_advance_date = datetime.strptime(contract.next_advance_date,
+                                                  DF)
             next_advance_date = next_advance_date + relativedelta(months=+delay_dict[contract.advance_billing])
             vals['next_advance_date'] = next_advance_date.strftime(DF)
             contract.next_advance_date = next_advance_date.strftime(DF)
