@@ -38,6 +38,7 @@
     'depends': ['base', 'sale'],
     'external_dependencies': {},
     'data': [
+        'view/contract_group_view.xml',
         'view/simple_recurring_contract_view.xml',
         'view/res_partner_view.xml',
         'view/recurring_invoicer_view.xml',
