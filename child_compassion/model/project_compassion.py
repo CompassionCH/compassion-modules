@@ -11,6 +11,8 @@
 
 import requests
 import json
+import logging
+logger = logging.getLogger(__name__)
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
@@ -63,12 +65,64 @@ class compassion_project(orm.Model):
         # dynamic translations and reuse them if multiple projects refer
         # to a same value. Property_name filter is important to give a context
         # to words.
-        'primary_diet_ids': fields.many2many(
+		'closest_city_ids': fields.many2many(
+			'compassion.child.property.value', 'project_property_to_value',
+			'property_id', 'value_id', _('Closest city'),
+			domain=[('property_name', '=', 'closest_city')]),
+		'terrain_description_ids': fields.many2many(
+			'compassion.child.property.value', 'project_property_to_value',
+			'property_id', 'value_id', _('Terrain description'),
+			domain=[('property_name', '=', 'terrain_description')]),
+		'community_population': fields.integer(_('Community population')),
+		'floor_material_ids': fields.many2many(
+            'compassion.child.property.value', 'project_property_to_value',
+            'property_id', 'value_id', _('Typical floor material'),
+            domain=[('property_name', '=', 'floor_material')]),
+		'wall_material_ids': fields.many2many(
+			'compassion.child.property.value', 'project_property_to_value',
+ 			'property_id', 'value_id', _('Wall material'),
+			domain=[('property_name', '=', 'wall_material')]),
+		'roof_material_ids': fields.many2many(
+			'compassion.child.property.value', 'project_property_to_value',
+ 			'property_id', 'value_id', _('Roof material'),
+			domain=[('property_name', '=', 'roof_material')]),
+		'spoken_languages_ids': fields.many2many(
+			'compassion.child.property.value', 'project_property_to_value',
+ 			'property_id', 'value_id', _('Spoken languages'),
+			domain=[('property_name', '=', 'spoken_languages')]),
+		'primary_diet_ids': fields.many2many(
             'compassion.child.property.value', 'project_property_to_value',
             'property_id', 'value_id', _('Primary diet'),
             domain=[('property_name', '=', 'primary_diet')]),
         'country_id': fields.many2one('compassion.country', _('Country')),
-    }
+		'health_problems_ids': fields.many2many(
+            'compassion.child.property.value', 'project_property_to_value',
+            'property_id', 'value_id', _('Health problem'),
+            domain=[('property_name', '=', 'health_problem')]),
+		'unemployment_rate': fields.float(_('Unemployment rate')),
+		'primary_occupation_ids': fields.many2many(
+            'compassion.child.property.value', 'project_property_to_value',
+            'property_id', 'value_id', _('Occupation title'),
+            domain=[('property_name', '=', 'occupation_title')]),
+		'monthly_income': fields.float(_('Monthly income')),
+		'economic_needs_ids': fields.many2many(
+            'compassion.child.property.value', 'project_property_to_value',
+            'property_id', 'value_id', _('Economic needs'),
+            domain=[('property_name', '=', 'economic_needs')]),
+		'education_needs_ids': fields.many2many(
+            'compassion.child.property.value', 'project_property_to_value',
+            'property_id', 'value_id', _('Education needs'),
+            domain=[('property_name', '=', 'educational_needs')]),
+		'social_needs_ids': fields.many2many(
+            'compassion.child.property.value', 'project_property_to_value',
+            'property_id', 'value_id', _('Social needs'),
+            domain=[('property_name', '=', 'social_needs')]),
+		'spiritual_needs_ids': fields.many2many(
+            'compassion.child.property.value', 'project_property_to_value',
+            'property_id', 'value_id', _('Spiritual needs'),
+            domain=[('property_name', '=', 'spiritual_needs')]),
+		'organization_name': fields.char(_('Organization name')),
+	}
 
     def update_informations(self, cr, uid, ids, context=None):
         ''' Get the most recent informations for selected projects '''
@@ -80,11 +134,12 @@ class compassion_project(orm.Model):
         for project in self.browse(cr, uid, ids, context):
             values, country, type, community_id = self._update_program_info(
                 cr, uid, project, context)
-            values.update(
-                self._update_community_info(cr, uid, community_id, context))
+            v, mv = self._update_community_info(cr, uid, community_id, context)
+            values.update(v)
             if type == 'CDSP':
                 values.update(self._update_cdsp_info(cr, uid,
                                                      project, context))
+            values['primary_diet_ids'] = [(6, 0, mv)]
             country_id = country_obj.search(
                 cr, uid, [('iso_code', '=', country)], context=context)
             if not country_id:
@@ -106,7 +161,7 @@ class compassion_project(orm.Model):
         prog_impl = json.loads(r.text)
         
         values = self._get_program_values(cr, uid, prog_impl, context)
-
+        
         coutry_code = prog_impl.get('ISOCountryCode')
         type = prog_impl.get('ProgramImplementorTypeCode')
         community_id = prog_impl.get('CommunityID')
@@ -153,6 +208,7 @@ class compassion_project(orm.Model):
             'CountryDenomination': 'country_denomination',
             'WesternDenomination': 'western_denomination',
             'CommunityName': 'community_name',
+            'OrganizationName': 'organization_name',
             }
 
         # Setup the values dict. In OpenERP object creation/update is made
@@ -163,6 +219,7 @@ class compassion_project(orm.Model):
             if json_values.get(json_name):
                 values[field] = json_values[json_name]
 
+        
         # TODO: look at a project description (in web-client). All the
         # informations needed to generate this kind of description comes from
         # one of this web-service : 
@@ -187,13 +244,46 @@ class compassion_project(orm.Model):
         # dynamic translations and reuse them if multiple projects refer
         # to a same value. Property_name filter is important to give a context
         # to words.
-        multi_values = self._get_values(cr, uid,
-                                        json_values['PrimaryDiet'].split(', '),
-                                        'primary_diet', context)
-        # Set Many2One or Many2Many values
-        values['primary_diet_ids'] = [(6, 0, multi_values)]
+        
+        values['unemployment_rate'] = json_values['UnemploymentRate']
+        values['community_population'] = json_values['CommunityPopulation']
+        values['monthly_income'] = json_values['FamilyMonthlyIncome']
 
-        return values
+        # dico cle -> nom du champ openerp, value -> tuple contenant le nom du champ json et le separateur 
+        # we create a dico
+       
+        json_misc_tags = {
+        'DistanceFromClosestCity': ('closest',','),
+        'TerrainDescription': ('terrain_description','/'),
+        'TypicalFloorBuildingMaterialDescription': ('floor_material','/'),
+        'TypicalWallBuildingMaterialDescription': ('wall_material','/'),
+        'TypicalRoofBuildingMaterialDescription': ('roof_material','/'),
+        'PrimaryEthnicGroup': ('spoken_languages','/'),
+        'PrimaryDiet': ('primary_diet',','),
+        'CommonHealthProblems': ('health_problem',','),
+        'PrimaryOccupationTitle': ('occupation_title','/'),
+        'EconomicNeeds': ('economic_needs',','),
+        'EducationalNeeds': ('educational_needs','.'),
+        'SocialNeeds': ('social_needs',','),
+        'SpiritualNeeds': ('spiritual_needs',','),
+        'ClosestCityName': ('closest_city', '***'),
+        }
+        """
+        multi_value = self._get_values(cr, uid,
+                                        json_values['DistanceFromClosestCity'].split(','),
+                                        'closest_city', context)
+        """
+        multi_value = []
+        for json_key, field_tuple in json_misc_tags.iteritems():
+            field_name = field_tuple[0]
+            separator = field_tuple[1]
+            multi_value.extend(self._get_values(cr, uid,
+                                                 json_values[json_key].split(separator),
+                                                 field_name, context))
+        # Set Many2One or Many2Many values
+        
+
+        return values, multi_value
 
     def _get_cdsp_values(self, cr, uid, json_values, context=None):
         ''' Map JSON values to fields.
