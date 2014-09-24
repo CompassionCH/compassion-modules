@@ -28,7 +28,7 @@ class recurring_invoicer_wizard(orm.TransientModel):
     }
     
     def generate(self, cr, uid, ids, context=None, group=True):
-        contract_obj = self.pool.get('simple.recurring.contract')
+        contract_group_obj = self.pool.get('simple.recurring.contract.group')
         recurring_invoicer_obj = self.pool.get('recurring.invoicer')
         invoicer_id = recurring_invoicer_obj.create(cr, uid, {}, context)
         
@@ -37,7 +37,7 @@ class recurring_invoicer_wizard(orm.TransientModel):
             form = self.browse(cr, uid, ids[0], context)
             group_invoices = form.group_invoices
         
-        contract_obj.generate_invoices(cr, uid, [], invoicer_id, group_invoices, context)
+        contract_group_obj.generate_invoices(cr, uid, [], invoicer_id, group_invoices, context)
         
         # If no invoice in invoicer, we raise and exception.
         # This will cancel the invoicer creation too !
@@ -56,5 +56,3 @@ class recurring_invoicer_wizard(orm.TransientModel):
         
     def generate_from_cron(self, cr, uid, group=False, context=None):
         self.generate(cr, uid, [], context=context, group=group)
-    
-recurring_invoicer_wizard()

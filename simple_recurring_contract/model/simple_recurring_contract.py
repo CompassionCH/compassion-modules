@@ -12,10 +12,11 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import logging
+import pdb
 from openerp.osv import orm, fields
 from openerp import netsvc
 import openerp.exceptions
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 
@@ -130,9 +131,9 @@ class simple_recurring_contract(orm.Model):
         'next_invoice_date': fields.date(
             _('Next invoice date'), readonly=False,
             states={'draft':[('readonly',False)]}),
-        'partner_id': fields.many2one(
-            'res.partner', _('Partner'), required=True, readonly=True,
-            states={'draft':[('readonly',False)]}, ondelete='cascade'),
+        'partner_id': fields.related(
+            'group_id', 'partner_id', string=_('Partner'), readonly=True,
+            relation='res.partner', type="many2one", store=True),
         'group_id': fields.many2one(
             'simple.recurring.contract.group', _('Group'),
             required=True, ondelete='cascade'),
@@ -154,22 +155,6 @@ class simple_recurring_contract(orm.Model):
                    "confirmed and until it's terminated.\n"
                    "* The 'Terminated' status is used when a contract is no "
                    "longer active.")),
-        'payment_term_id': fields.many2one('account.payment.term',
-                                           _('Payment Term')),
-        'advance_billing': fields.selection([
-            ('bimonthly', _('Bimonthly')),
-            ('quarterly', _('Quarterly')),
-            ('fourmonthly', _('Four-monthly')),
-            ('biannual', _('Bi-annual')),
-            ('annual', _('Annual'))], _('Advance billing'), readonly=True,
-            states={'draft':[('readonly',False)]},
-            help = _('Advance billing allows you to generate invoices in '
-                     'advance. For example, you can generate the invoices '
-                     'for each month of the year and send them to the '
-                     'customer in january.')),
-        # Tools for advance billing
-        'next_advance_date': fields.date('Next advance date', readonly=True),
-        'is_advance': fields.boolean('is advance'),
         'total_amount': fields.function(
             _get_total_amount, string='Total',
             digits_compute = dp.get_precision('Account'),
@@ -182,9 +167,6 @@ class simple_recurring_contract(orm.Model):
     _defaults = {
         'reference': '/',
         'state': 'draft',
-        'recurring_unit': 'month',
-        'recurring_value': 1,
-        'is_advance': False,
     }
 
     def _check_unique_reference(self, cr, uid, ids, context=None):
@@ -208,8 +190,6 @@ class simple_recurring_contract(orm.Model):
         if vals.get('reference', '/') == '/':
             vals['reference'] = self.pool.get('ir.sequence').next_by_code(
                     cr, uid, 'simple.rec.contract.ref', context=context)
-        if not vals['next_advance_date']:
-            vals['next_advance_date'] = vals['next_invoice_date']
         return super(simple_recurring_contract, self).create(cr, uid, vals,
                                                              context=context)
 
@@ -236,19 +216,20 @@ class simple_recurring_contract(orm.Model):
         ''' This method deletes invoices lines generated for a given contract 
             having a due date > since_date. If the invoice_line was the only 
             line in the invoice, we cancel the invoice. In the other case, we 
-            have to revalidate the invoice to update the invoice lines.
+            have to revalidate the invoice to update the move lines.
         '''
-        logger.info("%s" % ids)
-        logger.info("Start clean")
         if not since_date:
-            since_date = datetime.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
+            since_date = datetime.today().strftime(DF)
             
         inv_line_obj = self.pool.get('account.invoice.line')
         inv_obj = self.pool.get('account.invoice')
         wf_service = netsvc.LocalService('workflow')
         
         # Find all unpaid invoice lines after the given date
-        inv_line_ids = inv_line_obj.search(cr, uid, [('contract_id', 'in', ids), ('due_date', '>', since_date), ('state', '!=', 'paid')], context=context)
+        inv_line_ids = inv_line_obj.search(
+            cr, uid, [('contract_id', 'in', ids),
+                      ('due_date', '>', since_date),
+                      ('state', '!=', 'paid')], context=context)
         inv_ids = set()
         for inv_line in inv_line_obj.browse(cr, uid, inv_line_ids, context):
             inv_ids.add(inv_line.invoice_id.id)
@@ -267,26 +248,27 @@ class simple_recurring_contract(orm.Model):
                 
         inv_obj.action_cancel_draft(cr, uid, renew_inv_ids)
         for inv in inv_obj.browse(cr, uid, renew_inv_ids, context):
-            wf_service.trg_validate(uid, 'account.invoice', inv.id, 'invoice_open', cr)
+            wf_service.trg_validate(uid, 'account.invoice',
+                                    inv.id, 'invoice_open', cr)
 
-        logger.info("End clean")
-        
     #################################
     #        PRIVATE METHODS        #
     #################################
     def _compute_next_invoice_date(self, contract):
-        next_date = datetime.strptime(contract.next_invoice_date, DEFAULT_SERVER_DATE_FORMAT)
-        if contract.recurring_unit == 'day':
-            next_date = next_date + relativedelta(days=+contract.recurring_value)
-        elif contract.recurring_unit == 'week':
-            next_date = next_date + relativedelta(weeks=+contract.recurring_value)
-        elif contract.recurring_unit == 'month':
-            next_date = next_date + relativedelta(months=+contract.recurring_value)
+        next_date = datetime.strptime(contract.next_invoice_date, DF)
+        rec_unit = contract.group_id.recurring_unit
+        rec_value = contract.group_id.recurring_value
+        if rec_unit == 'day':
+            next_date = next_date + relativedelta(days=+rec_value)
+        elif rec_unit == 'week':
+            next_date = next_date + relativedelta(weeks=+rec_value)
+        elif rec_unit == 'month':
+            next_date = next_date + relativedelta(months=+rec_value)
         else:
-            next_date = next_date + relativedelta(years=+contract.recurring_value)
-            
+            next_date = next_date + relativedelta(years=+rec_value)
+
         return next_date
-        
+
     def _get_group_fields(self):
         ''' Return a string formatted list of fields that are passed to the orm
             search method. In order to group invoice line, they have to be sorted 
@@ -296,45 +278,7 @@ class simple_recurring_contract(orm.Model):
         '''
         group_fields = 'partner_id, payment_term_id, next_invoice_date'
         return group_fields
-        
-    def _get_search_args(self):
-        ref_date = (datetime.today()+relativedelta(months=1)).strftime(DEFAULT_SERVER_DATE_FORMAT)
-        args = ['&', ('state', '=', 'active'), '|', ('next_invoice_date', '<=', ref_date), 
-               ('is_advance', '=', True)]
-        return args
-    
-    def _match_conditions(self, conditions, contract):
-        match = contract.next_invoice_date == conditions['invoice_date']
-        match &= contract.partner_id.id == conditions['partner_id']
-        match &= contract.payment_term_id.id == conditions['payment_term_id']
 
-        return match   
-        
-    def _setup_conditions(self):
-        ''' Setup grouping conditions. The dict is then used in _match_conditions
-            to determine if 2 contract can be grouped. Inherit to add/remove 
-            conditions.
-        '''
-        conditions = {
-            'partner_id': None,
-            'payment_term_id': None,
-            'invoice_date': None,
-            }
-            
-        return conditions
-
-    def _update_conditions(self, conditions, contract):
-        ''' When a new group of invoice lines is created, update conditions
-            values to fit new group values. Inherit to handle your own conditions.
-        '''
-        conditions.update({
-            'partner_id': contract.partner_id.id,
-            'payment_term_id': contract.payment_term_id and contract.payment_term_id.id or '',
-            'invoice_date': contract.next_invoice_date,
-            })
-        
-        return conditions
-    
     ##########################
     #        CALLBACKS       #
     ##########################        
@@ -342,15 +286,7 @@ class simple_recurring_contract(orm.Model):
         result = {}
         if start_date:
             result.update({'next_invoice_date': start_date})
-            result.update({'next_advance_date': start_date})
         
-        return {'value': result}
-        
-    def on_change_next_invoice_date(self, cr, uid, ids, next_invoice_date, advance_billing, context=None):
-        result = {}
-        if advance_billing and next_invoice_date:
-            result.update({'next_advance_date': next_invoice_date})
-            
         return {'value': result}
 
     def contract_draft(self, cr, uid, ids, context=None):
@@ -362,12 +298,12 @@ class simple_recurring_contract(orm.Model):
         return True
 
     def contract_terminated(self, cr, uid, ids, context=None):
-        today = datetime.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
+        today = datetime.today().strftime(DF)
         self.write(cr, uid, ids, {'state': 'terminated', 'end_date': today})
         return True
         
     def end_date_reached(self, cr, uid, context=None):
-        today = datetime.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
+        today = datetime.today().strftime(DF)
         contract_ids = self.search(cr, uid, [('state', '=', 'active'), ('end_date', '<=', today)], context=context)
         
         if contract_ids:
