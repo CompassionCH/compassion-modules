@@ -47,7 +47,29 @@
 								</group>
 							</page>
 							<page string="Miscellaneous">
-								<field name="primary_diet_ids" widget="many2many_tags" />
+								<group>
+									<group> 
+										<field name="primary_diet_ids" widget="many2many_tags" />
+										<field name="closest_city_ids" widget="many2many_tags" />
+										<field name="terrain_description_ids" widget="many2many_tags" />
+										<field name="community_population" />
+										<field name="floor_material_ids" widget="many2many_tags" />
+										<field name="wall_material_ids" widget="many2many_tags" />
+										<field name="roof_material_ids" widget="many2many_tags" />
+										<field name="spoken_languages_ids" widget="many2many_tags" />
+										<field name="health_problems_ids" widget="many2many_tags" />
+									</group>
+									<group>
+										<field name="unemployment_rate" />
+										<field name="primary_occupation_ids" widget="many2many_tags" />
+										<field name="monthly_income" />
+										<field name="economic_needs_ids" widget="many2many_tags" />
+										<field name="education_needs_ids" widget="many2many_tags" />
+										<field name="social_needs_ids" widget="many2many_tags" />
+										<field name="spiritual_needs_ids" widget="many2many_tags" />
+										<field name="organization_name" />
+									</group>
+								</group>
 							</page>
 							<page string="Description">
 								<field name="description_en" />
