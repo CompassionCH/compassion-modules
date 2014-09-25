@@ -80,7 +80,6 @@ class simple_recurring_contract(orm.Model):
         'partner_codega': fields.related('partner_id', 'ref', string=_('Partner ref'), readonly=True, type='char'),
         # This field is only for the middleware testing purpose. In the future, the type will be identified in another way.
         'type' : fields.selection((('ChildSponsorship','Sponsorship'),('ChildCorrespondenceSponsorship','Correspondence')), _("Type of sponsorship")),
-        'bvr_reference' : fields.char(size=32, string=_('BVR Ref')),
         'correspondant_id' : fields.many2one('res.partner', _('Correspondant'), readonly=True, states={'draft':[('readonly',False)]}),
         'first_payment_date' : fields.date(_('First payment date'), readonly=True),
         # Add a waiting state
@@ -102,98 +101,6 @@ class simple_recurring_contract(orm.Model):
             }, help="It indicates that the first invoice has been paid and the contract is active."),
         'fully_managed': fields.function(_is_fully_managed, type="boolean", store=True),
     }
-    
-    def onchange_partner_id(self, cr, uid, ids, partner_id, context=None):
-        res = {}
-        partner = self.pool.get('res.partner').browse(cr, uid, partner_id, context=context)
-        if partner.ref:
-            computed_ref = self._compute_partner_ref(partner.ref)
-            if computed_ref:
-                res['value'] = {'bvr_reference':computed_ref}
-            else:
-                res['warning'] = {'title': _('Warning'),
-                                         'message': _('The reference of the partner has not been set, or is in wrong format.'
-                                                      'Please make sure to enter a valid BVR reference for the contract.')}
-        return res
-        
-    def _compute_partner_ref(self, reference):
-        # TODO : Retrieve existing ref if there is already a contract !
-        result = '0' * (9+(7-len(reference))) + reference
-        # TODO : Now, only one reference per partner. We should create another number if type of payment is not the same as an existing contract for that partner.
-        result += ('0' * 4) + '1'
-        # TODO : Other types than sponsorship !
-        # Type '0' = Sponsorship
-        result += '0'
-        # TODO : ID child, bordereau or Fonds
-        result += '0' * 4
-        
-        if len(result) == 26:
-            return mod10r(result)
-            
-    def _setup_inv_data(self, cr, uid, contract, journal_ids, invoicer_id, context=None):
-        ''' Inherit to add BVR ref '''
-        inv_data = super(simple_recurring_contract, self)._setup_inv_data(cr, uid, contract, journal_ids, invoicer_id, context)
-        
-        ref = ''
-        if contract.bvr_reference:
-            ref = contract.bvr_reference
-        elif contract.payment_term_id and (_('LSV') in contract.payment_term_id.name  \
-            or _('Direct Debit') in contract.payment_term_id.name):
-            seq = self.pool['ir.sequence']
-            ref = mod10r(seq.next_by_code(cr, uid, 'contract.bvr.ref'))
-        inv_data.update({
-            'bvr_reference': ref,
-            })
-            
-        return inv_data
-        
-    def _setup_inv_line_data(self, cr, uid, contract_line, invoice_id, context=None):
-        ''' Inherit to add analytic distribution '''
-        inv_line_data = super(simple_recurring_contract, self)._setup_inv_line_data(cr, uid, contract_line, invoice_id, context)
-        
-        product_id = contract_line.product_id.id
-        partner_id = contract_line.contract_id.partner_id.id
-        analytic = self.pool.get('account.analytic.default').account_get(cr, uid, product_id, partner_id, uid, time.strftime('%Y-%m-%d'), context=context)
-        if analytic and analytic.analytics_id:
-            inv_line_data.update({'analytics_id': analytic.analytics_id.id})
-        
-        return inv_line_data
-        
-    def _get_group_fields(self):
-        group_fields = super(simple_recurring_contract, self)._get_group_fields()
-        group_fields += ', bvr_reference'
-        
-        return group_fields
-        
-    def _match_conditions(self, conditions, contract):
-        ''' 2 generated invoice line should be group if they have the same bvr ref '''
-        match = super(simple_recurring_contract, self)._match_conditions(conditions, contract)
-        match &= contract.bvr_reference == conditions['bvr_ref']
-
-        return match
-        
-    def _setup_conditions(self):
-        ''' Add bvr ref condition '''
-        conditions = super(simple_recurring_contract, self)._setup_conditions()
-        conditions.update({
-            'bvr_ref': None,
-            })
-            
-        return conditions
-        
-    def _update_conditions(self, conditions, contract):
-        conditions = super(simple_recurring_contract, self)._update_conditions(conditions, contract)
-        conditions.update({
-            'bvr_ref': contract.bvr_reference,
-            })
-        
-        return conditions
-        
-    def _get_search_args(self):
-        ref_date = (datetime.today()+relativedelta(months=1)).strftime(DEFAULT_SERVER_DATE_FORMAT)
-        args = ['&', ('state', 'in', ['active','waiting']), '|', ('next_invoice_date', '<=', ref_date), 
-               ('is_advance', '=', True)]
-        return args
         
     def contract_waiting(self, cr, uid, ids):
         self.write(cr, uid, ids, {'state': 'waiting'})
@@ -234,3 +141,6 @@ class compassion_child(orm.Model):
 
 class compassion_project(orm.Model):
     _inherit = 'compassion.project'
+
+class contract_line(orm.Model):
+    _inherit = 'simple.recurring.contract.line'

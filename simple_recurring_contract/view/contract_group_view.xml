@@ -28,6 +28,8 @@
 						<field name="payment_term_id" />
 					</group>
 				</group>
+				<h2>Contracts</h2>
+				<field name="contract_ids" />
 			</sheet>
 			</form>
 		</field>
