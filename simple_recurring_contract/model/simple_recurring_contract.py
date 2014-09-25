@@ -56,7 +56,13 @@ class recurring_contract_line(orm.Model):
     ''' Each product sold through a contract '''
     _name = "recurring.contract.line"
     _description = "A contract line"
-    _rec_name = 'product_id'
+
+    def name_get(self, cr, uid, ids, context=None):
+        if not ids:
+            return []
+        res = [(cl.id, cl.product_id.name_template) for cl in self.browse(
+               cr, uid, ids, context)]
+        return res
 
     def _compute_subtotal(self, cr, uid, ids, field_name, arg, context):
         res = {}
@@ -115,24 +121,28 @@ class recurring_contract(orm.Model):
             states={'draft': [('readonly', False)]}),
         'start_date': fields.date(
             _('Start date'), required=True, readonly=True,
-            states={'draft': [('readonly', False)]}),
+            states={'draft': [('readonly', False)]},
+            track_visibility="onchange"),
         'end_date': fields.date(
             _('End date'), readonly=False,
-            states={'terminated': [('readonly', True)]}),
+            states={'terminated': [('readonly', True)]},
+            track_visibility="onchange"),
         'next_invoice_date': fields.date(
             _('Next invoice date'), readonly=False,
             states={'draft': [('readonly', False)]}),
         'partner_id': fields.many2one(
-            'res.partner', string=_('Partner'), required=True),
+            'res.partner', string=_('Partner'), required=True,
+            readonly=True, states={'draft': [('readonly', False)]}),
         'group_id': fields.many2one(
             'recurring.contract.group', _('Group'),
-            required=True, ondelete='cascade'),
+            required=True, ondelete='cascade',
+            track_visibility="onchange"),
         'invoice_line_ids': fields.one2many(
             'account.invoice.line', 'contract_id',
             _('Related invoice lines'), readonly=True),
         'contract_line_ids': fields.one2many(
             'recurring.contract.line', 'contract_id',
-            _('Contract lines')),
+            _('Contract lines'), track_visibility="onchange"),
         'state': fields.selection([
             ('draft', _('Draft')),
             ('active', _('Active')),
@@ -150,7 +160,7 @@ class recurring_contract(orm.Model):
             store={
                 'recurring.contract': (lambda self, cr, uid, ids, c={}:
                                        ids, ['contract_line_ids'], 20),
-            }),
+            }, track_visibility="onchange"),
     }
 
     _defaults = {

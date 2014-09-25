@@ -50,7 +50,7 @@ class account_invoice_line(orm.Model):
 
     _columns = {
         'contract_id': fields.many2one(
-            'simple.recurring.contract', _('Source contract')),
+            'recurring.contract', _('Source contract')),
         'due_date': fields.function(
             _get_dates, string=_('Due date'), readonly=True, type='date',
             store={'account.invoice': (_get_invoice_lines, ['date_due'], 20)}),

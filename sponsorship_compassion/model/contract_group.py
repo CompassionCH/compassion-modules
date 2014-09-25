@@ -21,7 +21,8 @@ class contract_group(orm.Model):
     _inherit = 'recurring.contract.group'
 
     _columns = {
-        'bvr_reference': fields.char(size=32, string=_('BVR Ref')),
+        'bvr_reference': fields.char(size=32, string=_('BVR Ref'),
+                                     track_visibility="onchange"),
     }
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
