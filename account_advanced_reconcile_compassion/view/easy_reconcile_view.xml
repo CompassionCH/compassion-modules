@@ -8,8 +8,8 @@
           <field name="arch" type="xml">
               <page name="information" position="inside">
                 <group colspan="2" col="2">
-                    <separator colspan="4" string="Advanced. Partner and BVR Ref"/>
-                    <label string="Match multiple debit vs one credit entries. Allow partial reconciliation of credit entries.
+                    <separator colspan="4" string="Advanced. Compassion Rules"/>
+                    <label string="Match multiple debit vs multiple credit entries.
 The credit entry reference is matched vs the debit entry reference.
 The matching is done only if the amount of the credit corresponds or if it is a multiple of an invoice move lines amount. If many invoices match, the first reconciled invoice is the current invoice (last invoice that is not in future). Then it reconciles the other invoices from last invoice to first." colspan="4"/>
                 </group>
