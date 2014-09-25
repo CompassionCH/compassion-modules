@@ -19,7 +19,8 @@
 #
 ##############################################################################
 
-import contracts
-import invoice_line
-import res_partner
-import product
+from . import contract_group
+from . import contracts
+from . import invoice_line
+from . import res_partner
+from . import product

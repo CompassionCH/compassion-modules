@@ -23,6 +23,13 @@ class contract_group(orm.Model):
     _name = 'simple.recurring.contract.group'
     _desc = 'A group of contracts'
 
+    def name_get(self, cr, uid, ids, context=None):
+        if not ids:
+            return []
+        res = [(gr.id, gr.payment_term_id.name) for gr in self.browse(
+               cr, uid, ids, context)]
+        return res
+
     def _get_next_invoice_date(self, cr, uid, ids, name, args, context=None):
         res = {}
         for group in self.browse(cr, uid, ids, context):
@@ -108,7 +115,8 @@ class contract_group(orm.Model):
         for group_id in ids:
             adv_bill_candidate = set()
             contract_group = self.browse(cr, uid, group_id, context)
-            month_delta = delay_dict[contract_group.advance_billing]
+            month_delta = contract_group.advance_billing and \
+                            delay_dict[contract_group.advance_billing] or 0
             limit_date = datetime.today() + relativedelta(months=+month_delta)
             while True: # Emulate a do-while loop
                 # contract_group update 'cause next_inv_date has been modified
