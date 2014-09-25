@@ -56,7 +56,9 @@ class reconcile_fund_wizard(orm.TransientModel):
         'contract_ids': fields.function(
             _get_contract_ids, fnct_inv=_write_contracts, type='one2many',
             obj='simple.recurring.contract', method=True,
-            string='Contracts to update'),
+            string=_('Related contracts'),
+            help=_('You can directly edit the contracts from here if you want '
+                   'to add a line for the fund.')),
     }
 
     def _get_general_fund(self, cr, uid, context=None):
@@ -95,7 +97,7 @@ class reconcile_fund_wizard(orm.TransientModel):
             if line.credit > 0:
                 date_invoice = line.date
 
-        if residual < 0:
+        if residual <= 0:
             raise orm.except_orm(
                 'ResidualError',
                 _('This can only be done if credits > debits'))
