@@ -51,14 +51,6 @@
                 <field name="partner_id" position="after">
                     <field name="correspondant_id" />
                 </field>
-                
-                <!-- Compute the BVR reference automatically -->
-               <field name="partner_id" position="attributes">
-                    <attribute name="on_change">onchange_partner_id(partner_id)</attribute>
-                </field>
-                <xpath expr="//field[@name='payment_term_id']" position="before">
-                    <field name="bvr_reference" />
-                </xpath>
 			</field>
 		</record>
 		

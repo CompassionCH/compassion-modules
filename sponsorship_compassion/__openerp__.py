@@ -42,6 +42,7 @@ To add a new locale :
                 'l10n_ch', 'account_analytic_plans', 'child_compassion'],
     'data': ['security/sponsorship_groups.xml',
             'view/sponsorship_menu.xml',
+            'view/contract_group_view.xml',
             'view/contract_view.xml',
             'view/invoice_line_view.xml',
             'view/res_partner_view.xml',

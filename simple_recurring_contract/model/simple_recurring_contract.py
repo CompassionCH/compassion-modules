@@ -131,9 +131,8 @@ class simple_recurring_contract(orm.Model):
         'next_invoice_date': fields.date(
             _('Next invoice date'), readonly=False,
             states={'draft':[('readonly',False)]}),
-        'partner_id': fields.related(
-            'group_id', 'partner_id', string=_('Partner'), readonly=True,
-            relation='res.partner', type="many2one", store=True),
+        'partner_id': fields.many2one(
+            'res.partner', string=_('Partner'), required=True),
         'group_id': fields.many2one(
             'simple.recurring.contract.group', _('Group'),
             required=True, ondelete='cascade'),
@@ -269,16 +268,6 @@ class simple_recurring_contract(orm.Model):
 
         return next_date
 
-    def _get_group_fields(self):
-        ''' Return a string formatted list of fields that are passed to the orm
-            search method. In order to group invoice line, they have to be sorted 
-            by ``common´´ fields. If you want to add new grouping conditions, you 
-            should inherit this method and append the concerned fields to the 
-            string
-        '''
-        group_fields = 'partner_id, payment_term_id, next_invoice_date'
-        return group_fields
-
     ##########################
     #        CALLBACKS       #
     ##########################        
@@ -288,6 +277,19 @@ class simple_recurring_contract(orm.Model):
             result.update({'next_invoice_date': start_date})
         
         return {'value': result}
+
+    def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
+        ''' On partner change, we update the group_id. If partner has
+        only 1 group, we take it. Else, we take nothing.
+        '''
+        group_obj = self.pool.get('simple.recurring.contract.group')
+        group_ids = group_obj.search(cr, uid,
+                                     [('partner_id', '=', partner_id)],
+                                     context=context)
+        group_id = None
+        if len(group_ids) == 1:
+            group_id = group_ids[0]
+        return {'value': {'group_id': group_id}}
 
     def contract_draft(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'draft'}, context=context)
