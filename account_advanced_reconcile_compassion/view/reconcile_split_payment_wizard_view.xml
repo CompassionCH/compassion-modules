@@ -6,10 +6,16 @@
 		<field name="model">reconcile.split.payment.wizard</field>
 		<field name="arch" type="xml">
 			<form string="Split Payment and Reconcile" version="7.0">
-				<p>
-                    This will separate the payment in two move_lines, reconcile the open invoices
-                    and put the leftover in the client balance.
-                </p>
+                <sheet>
+                    <p>
+                        This will separate the payment in two move_lines, reconcile the open invoices
+                        and put the leftover in the client balance.
+                    </p>
+                    <group>
+                        <field name="contract_ids" context="{'tree_view_ref' : 'simple_recurring_contract.view_contracts_tree_simplified'}"/>
+                    </group>
+                </sheet>
+                
 				<footer>
 					<button name="reconcile_split_payment" type="object" string="Reconcile" class="oe_highlight"/>
 				</footer>
