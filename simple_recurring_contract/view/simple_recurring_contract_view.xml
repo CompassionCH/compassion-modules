@@ -7,9 +7,9 @@
 <openerp>
 <data>
 	<!-- Contract tree view -->
-	<record id="view_simple_recurring_contract_tree" model="ir.ui.view">
-		<field name="name">simple.recurring.contract.tree</field>
-		<field name="model">simple.recurring.contract</field>
+	<record id="view_recurring_contract_tree" model="ir.ui.view">
+		<field name="name">recurring.contract.tree</field>
+		<field name="model">recurring.contract</field>
 		<field name="priority" eval="8" />
 		<field name="arch" type="xml">
 			<tree string="Contracts" colors="blue:state == 'draft';black:state == 'active';gray:state == 'terminated'">
@@ -24,9 +24,9 @@
 	</record>
 
 	<!-- Contract form view -->
-	<record id="view_simple_recurring_contract_form" model="ir.ui.view">
-		<field name="name">simple.recurring.contract.form</field>
-		<field name="model">simple.recurring.contract</field>
+	<record id="view_recurring_contract_form" model="ir.ui.view">
+		<field name="name">recurring.contract.form</field>
+		<field name="model">recurring.contract</field>
 		<field name="arch" type="xml">
 			<form string="Contract" version="7.0">
 			<header>
@@ -75,14 +75,18 @@
 					</page>
 				</notebook>
 			</sheet>
+			<div class="oe_chatter">
+				<field name="message_follower_ids" widget="mail_followers"/>
+				<field name="message_ids" widget="mail_thread"/>
+			</div>
 			</form>
 		</field>
 	</record>
 
 	<!-- Contract line tree view -->
-	<record id="view_simple_recurring_contract_line_tree" model="ir.ui.view">
-		<field name="name">simple.recurring.contract.line.tree</field>
-		<field name="model">simple.recurring.contract.line</field>
+	<record id="view_recurring_contract_line_tree" model="ir.ui.view">
+		<field name="name">recurring.contract.line.tree</field>
+		<field name="model">recurring.contract.line</field>
 		<field name="priority" eval="8" />
 		<field name="arch" type="xml">
 			<tree string="Contract Lines" editable="bottom">
@@ -94,9 +98,9 @@
 		</field>
 	</record>
 
-	<record id="view_simple_recurring_contract_filter" model="ir.ui.view">
-		<field name="name">simple.recurring.contract.select</field>
-		<field name="model">simple.recurring.contract</field>
+	<record id="view_recurring_contract_filter" model="ir.ui.view">
+		<field name="name">recurring.contract.select</field>
+		<field name="model">recurring.contract</field>
 		<field name="arch" type="xml">
 			<search string="Search contract">
 				<field name="reference" string="Contract" filter_domain="['|','|', ('reference','ilike',self), ('partner_id','child_of',self), ('payment_term_id', 'ilike', self)]"/>
@@ -123,7 +127,7 @@
 	<record id="action_recurring_contract_form" model="ir.actions.act_window">
 		<field name="name">Contracts</field>
 		<field name="type">ir.actions.act_window</field>
-		<field name="res_model">simple.recurring.contract</field>
+		<field name="res_model">recurring.contract</field>
 		<field name="view_type">form</field>
 		<field name="view_mode">tree,form</field>
 		<field name="help" type="html">

@@ -109,7 +109,7 @@ class AccountStatementCompletionRule(Model):
         partner = None
 
         # Search Contract
-        contract_obj = self.pool.get('simple.recurring.contract')
+        contract_obj = self.pool.get('recurring.contract')
         contract_ids = contract_obj.search(
             cr, uid, [('bvr_reference', '=', ref)], context=context)
         if contract_ids:
@@ -307,7 +307,7 @@ class AccountStatementCompletionRule(Model):
         res['name'] = product.name
         # Get the contract of the sponsor in the case of a gift
         if product.name in GIFT_TYPES:
-            contract_obj = self.pool.get('simple.recurring.contract')
+            contract_obj = self.pool.get('recurring.contract')
             contract_number = int(st_line['ref'][16:21])
             contract_ids = contract_obj.search(
                 cr, uid, [('partner_id', '=', partner_id)], context=context)
