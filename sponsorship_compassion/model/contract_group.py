@@ -20,6 +20,21 @@ class contract_group(orm.Model):
     ''' Add BVR on groups and add BVR ref and analytics_id in invoices '''
     _inherit = 'recurring.contract.group'
 
+    def name_get(self, cr, uid, ids, context=None):
+        if not ids:
+            return []
+        res = []
+        for gr in self.browse(cr, uid, ids, context):
+            name = ''
+            if gr.payment_term_id:
+                name = gr.payment_term_id.name
+            if gr.bvr_reference:
+                name += ' ' + gr.bvr_reference
+            if name == '':
+                name = gr.partner_id.name + ' ' + str(gr.id)
+            res.append((gr.id, name))
+        return res
+
     _columns = {
         'bvr_reference': fields.char(size=32, string=_('BVR Ref'),
                                      track_visibility="onchange"),

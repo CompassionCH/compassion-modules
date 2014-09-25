@@ -10,7 +10,7 @@
 #                            in Jesus' name
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
-#    @author: [[ NAME ]] [[<email>]]
+#    @author: Cyril Sester <csester@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,7 @@
 ##############################################################################
 
 {
-    'name': 'Simple recurring contract',
+    'name': 'Recurring contract',
     'summary': 'Contract for recurring invoicing',
     'version': '0.1',
     'license': 'AGPL-3',
@@ -52,7 +52,9 @@
     ],
     'demo': [],
     'description': '''
-        TODO
+        Recurring contracts are made to handle recurring invoice generation.
+        Each contract is part of a contract group. This way, only one invoice
+        is generated for each group.
     ''',
     'active': False,
     'installable': True,

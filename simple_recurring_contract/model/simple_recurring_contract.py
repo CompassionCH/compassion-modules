@@ -161,6 +161,10 @@ class recurring_contract(orm.Model):
                 'recurring.contract': (lambda self, cr, uid, ids, c={}:
                                        ids, ['contract_line_ids'], 20),
             }, track_visibility="onchange"),
+        'payment_term_id': fields.related(
+            'group_id', 'payment_term_id', relation='account.payment.term',
+            type="many2one", readonly=True, string=_('Payment Term'),
+            store=True),
     }
 
     _defaults = {
