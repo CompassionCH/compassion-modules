@@ -14,7 +14,7 @@
 		<field name="interval_type">days</field>
 		<field name="numbercall">-1</field> <!-- don't limit the number of calls -->
 		<field name="doall" eval="False"/>
-		<field name="model" eval="'simple.recurring.contract'"/>
+		<field name="model" eval="'recurring.contract'"/>
 		<field name="function" eval="'end_date_reached'" />
 		<field name="args" eval="'()'"/>
 	</record>

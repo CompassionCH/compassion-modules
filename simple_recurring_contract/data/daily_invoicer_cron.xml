@@ -6,7 +6,7 @@
 -->
 <openerp>
 <data noupdate="1">
-	<record id="recurring_contract_invoicer_cron" model="ir.cron">
+	<record id="recurring_invoicer_cron" model="ir.cron">
 		<field name="name">Launch daily invoice generation</field>
 		<field name="active" eval="True"/>
 		<field name="user_id" ref="base.user_root"/>
@@ -16,7 +16,7 @@
 		<field name="doall" eval="False"/>
 		<field name="model" eval="'recurring.invoicer.wizard'"/>
 		<field name="function" eval="'generate_from_cron'" />
-		<field name="args" eval="{'group':True}"/>
+		<field name="args" eval="()"/>
 	</record>
 </data>
 </openerp>

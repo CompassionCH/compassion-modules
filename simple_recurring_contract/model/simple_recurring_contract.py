@@ -11,16 +11,12 @@
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-import logging
-import pdb
+
 from openerp.osv import orm, fields
 from openerp import netsvc
-import openerp.exceptions
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
-
-logger = logging.getLogger(__name__)
 
 
 class res_partner(orm.Model):
@@ -31,7 +27,7 @@ class res_partner(orm.Model):
 
     _columns = {
         'contract_group_ids': fields.one2many(
-            'simple.recurring.contract.group', 'partner_id',
+            'recurring.contract.group', 'partner_id',
             _('Contract groups')),
     }
 
@@ -41,8 +37,6 @@ class res_partner(orm.Model):
             context = {}
         partners = self.browse(cr, uid, ids, context=context)
         unlink_ids = []
-
-        contract_obj = self.pool.get('simple.recurring.contract')
 
         for partner in partners:
             for contract_group in partner.contract_group_ids:
@@ -58,15 +52,14 @@ class res_partner(orm.Model):
         return True
 
 
-class simple_recurring_contract_line(orm.Model):
+class recurring_contract_line(orm.Model):
     ''' Each product sold through a contract '''
-    _name = "simple.recurring.contract.line"
+    _name = "recurring.contract.line"
     _description = "A contract line"
     _rec_name = 'product_id'
 
     def _compute_subtotal(self, cr, uid, ids, field_name, arg, context):
         res = {}
-        cur_obj = self.pool.get('res.currency')
         for line in self.browse(cr, uid, ids, context=context):
             price = line.amount * line.quantity
             res[line.id] = price
@@ -74,7 +67,7 @@ class simple_recurring_contract_line(orm.Model):
 
     _columns = {
         'contract_id': fields.many2one(
-            'simple.recurring.contract', _('Contract'), required=True,
+            'recurring.contract', _('Contract'), required=True,
             ondelete='cascade', readonly=True),
         'product_id': fields.many2one(
             'product.product', _('Product'), required=True),
@@ -90,63 +83,60 @@ class simple_recurring_contract_line(orm.Model):
     }
 
     def on_change_product_id(self, cr, uid, ids, product_id, context=None):
-        context = context or {}
+        if not context:
+            context = {}
 
         if not product_id:
             return {'value': {'amount': 0.0}}
 
         prod = self.pool.get('product.product').browse(cr, uid, product_id,
-                                                      context=context)
+                                                       context)
         value = {'amount': prod.list_price or 0.0}
-
         return {'value': value}
 
 
-class simple_recurring_contract(orm.Model):
+class recurring_contract(orm.Model):
     ''' A contract to perform recurring invoicing to a partner '''
-    _name = "simple.recurring.contract"
+    _name = "recurring.contract"
     _description = "Contract for recurring invoicing"
     _inherit = ['mail.thread']
     _rec_name = 'reference'
 
     def _get_total_amount(self, cr, uid, ids, name, args, context=None):
-        con_line_obj = self.pool.get('simple.recurring.contract.line')
         total = {}
         for contract in self.browse(cr, uid, ids, context):
             total[contract.id] = sum([line.subtotal
                                       for line in contract.contract_line_ids])
-
         return total
 
     _columns = {
         'reference': fields.char(
             _('Reference'), required=True, readonly=True,
-            states={'draft':[('readonly',False)]}),
+            states={'draft': [('readonly', False)]}),
         'start_date': fields.date(
             _('Start date'), required=True, readonly=True,
-            states={'draft':[('readonly',False)]}),
+            states={'draft': [('readonly', False)]}),
         'end_date': fields.date(
             _('End date'), readonly=False,
-            states={'terminated':[('readonly',True)]}),
+            states={'terminated': [('readonly', True)]}),
         'next_invoice_date': fields.date(
             _('Next invoice date'), readonly=False,
-            states={'draft':[('readonly',False)]}),
+            states={'draft': [('readonly', False)]}),
         'partner_id': fields.many2one(
             'res.partner', string=_('Partner'), required=True),
         'group_id': fields.many2one(
-            'simple.recurring.contract.group', _('Group'),
+            'recurring.contract.group', _('Group'),
             required=True, ondelete='cascade'),
         'invoice_line_ids': fields.one2many(
             'account.invoice.line', 'contract_id',
             _('Related invoice lines'), readonly=True),
         'contract_line_ids': fields.one2many(
-            'simple.recurring.contract.line', 'contract_id',
+            'recurring.contract.line', 'contract_id',
             _('Contract lines')),
         'state': fields.selection([
             ('draft', _('Draft')),
             ('active', _('Active')),
-            ('terminated', _('Terminated')),
-            ], _('Status'), select=True,
+            ('terminated', _('Terminated'))], _('Status'), select=True,
             readonly=True, track_visibility='onchange',
             help=_(" * The 'Draft' status is used when a user is encoding a "
                    "new and unconfirmed Contract.\n"
@@ -156,11 +146,11 @@ class simple_recurring_contract(orm.Model):
                    "longer active.")),
         'total_amount': fields.function(
             _get_total_amount, string='Total',
-            digits_compute = dp.get_precision('Account'),
-            store = {
-                'simple.recurring.contract': (lambda self, cr, uid, ids, c={}: 
-                                              ids, ['contract_line_ids'], 20),
-                }),
+            digits_compute=dp.get_precision('Account'),
+            store={
+                'recurring.contract': (lambda self, cr, uid, ids, c={}:
+                                       ids, ['contract_line_ids'], 20),
+            }),
     }
 
     _defaults = {
@@ -169,11 +159,10 @@ class simple_recurring_contract(orm.Model):
     }
 
     def _check_unique_reference(self, cr, uid, ids, context=None):
-        sr_ids = self.search(cr, 1 ,[], context=context)
+        sr_ids = self.search(cr, 1, [], context=context)
         lst = [contract.reference
                for contract in self.browse(cr, uid, sr_ids, context=context)
-               if contract.reference and contract.id not in ids
-              ]
+               if contract.reference and contract.id not in ids]
         for self_contract in self.browse(cr, uid, ids, context=context):
             if self_contract.reference and self_contract.reference in lst:
                 return False
@@ -186,11 +175,12 @@ class simple_recurring_contract(orm.Model):
     #        PUBLIC METHODS         #
     #################################
     def create(self, cr, uid, vals, context=None):
+        ''' Add a sequence generated ref if none is given '''
         if vals.get('reference', '/') == '/':
             vals['reference'] = self.pool.get('ir.sequence').next_by_code(
-                    cr, uid, 'simple.rec.contract.ref', context=context)
-        return super(simple_recurring_contract, self).create(cr, uid, vals,
-                                                             context=context)
+                cr, uid, 'recurring.contract.ref', context=context)
+        return super(recurring_contract, self).create(cr, uid, vals,
+                                                      context=context)
 
     def unlink(self, cr, uid, ids, context=None):
         if context is None:
@@ -207,23 +197,23 @@ class simple_recurring_contract(orm.Model):
             else:
                 unlink_ids.append(contract['id'])
 
-        super(simple_recurring_contract, self).unlink(cr, uid, unlink_ids,
-                                                      context=context)
+        super(recurring_contract, self).unlink(cr, uid, unlink_ids,
+                                               context=context)
         return
 
     def clean_invoices(self, cr, uid, ids, context=None, since_date=None):
-        ''' This method deletes invoices lines generated for a given contract 
-            having a due date > since_date. If the invoice_line was the only 
-            line in the invoice, we cancel the invoice. In the other case, we 
+        ''' This method deletes invoices lines generated for a given contract
+            having a due date > since_date. If the invoice_line was the only
+            line in the invoice, we cancel the invoice. In the other case, we
             have to revalidate the invoice to update the move lines.
         '''
         if not since_date:
             since_date = datetime.today().strftime(DF)
-            
+
         inv_line_obj = self.pool.get('account.invoice.line')
         inv_obj = self.pool.get('account.invoice')
         wf_service = netsvc.LocalService('workflow')
-        
+
         # Find all unpaid invoice lines after the given date
         inv_line_ids = inv_line_obj.search(
             cr, uid, [('contract_id', 'in', ids),
@@ -232,10 +222,10 @@ class simple_recurring_contract(orm.Model):
         inv_ids = set()
         for inv_line in inv_line_obj.browse(cr, uid, inv_line_ids, context):
             inv_ids.add(inv_line.invoice_id.id)
-        
-        if inv_line_ids: #To prevent remove all inv_lines...
+
+        if inv_line_ids:  # To prevent remove all inv_lines...
             inv_line_obj.unlink(cr, uid, inv_line_ids, context)
-        
+
         inv_ids = list(inv_ids)
         inv_obj.action_cancel(cr, uid, inv_ids, context=context)
 
@@ -243,8 +233,8 @@ class simple_recurring_contract(orm.Model):
         for inv in inv_obj.browse(cr, uid, inv_ids, context):
             if not inv.invoice_line:
                 empty_inv_ids.append(inv.id)
-        renew_inv_ids = list(set(inv_ids)-set(empty_inv_ids))
-                
+        renew_inv_ids = list(set(inv_ids) - set(empty_inv_ids))
+
         inv_obj.action_cancel_draft(cr, uid, renew_inv_ids)
         for inv in inv_obj.browse(cr, uid, renew_inv_ids, context):
             wf_service.trg_validate(uid, 'account.invoice',
@@ -270,19 +260,20 @@ class simple_recurring_contract(orm.Model):
 
     ##########################
     #        CALLBACKS       #
-    ##########################        
+    ##########################
     def on_change_start_date(self, cr, uid, ids, start_date, context=None):
+        ''' We automatically update next_invoice_date on start_date change '''
         result = {}
         if start_date:
             result.update({'next_invoice_date': start_date})
-        
+
         return {'value': result}
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
         ''' On partner change, we update the group_id. If partner has
         only 1 group, we take it. Else, we take nothing.
         '''
-        group_obj = self.pool.get('simple.recurring.contract.group')
+        group_obj = self.pool.get('recurring.contract.group')
         group_ids = group_obj.search(cr, uid,
                                      [('partner_id', '=', partner_id)],
                                      context=context)
@@ -303,13 +294,14 @@ class simple_recurring_contract(orm.Model):
         today = datetime.today().strftime(DF)
         self.write(cr, uid, ids, {'state': 'terminated', 'end_date': today})
         return True
-        
+
     def end_date_reached(self, cr, uid, context=None):
         today = datetime.today().strftime(DF)
-        contract_ids = self.search(cr, uid, [('state', '=', 'active'), ('end_date', '<=', today)], context=context)
-        
+        contract_ids = self.search(cr, uid, [('state', '=', 'active'),
+                                             ('end_date', '<=', today)],
+                                   context=context)
+
         if contract_ids:
             self.contract_terminated(cr, uid, contract_ids, context=context)
-        
+
         return True
-        
