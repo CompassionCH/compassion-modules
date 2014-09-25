@@ -20,6 +20,7 @@ from openerp.tools.translate import _
 class contract_group(orm.Model):
     _name = 'recurring.contract.group'
     _desc = 'A group of contracts'
+    _inherit = 'mail.thread'
 
     def name_get(self, cr, uid, ids, context=None):
         if not ids:
@@ -49,12 +50,13 @@ class contract_group(orm.Model):
             ('day', _('Day(s)')),
             ('week', _('Week(s)')),
             ('month', _('Month(s)')),
-            ('year', _('Year(s)'))], _('Reccurency'), required=True),
+            ('year', _('Year(s)'))], _('Reccurency'), required=True,
+            track_visibility="onchange"),
         'recurring_value': fields.integer(
-            _('Generate every'), required=True),
+            _('Generate every'), required=True, track_visibility="onchange"),
         'partner_id': fields.many2one(
             'res.partner', _('Partner'), required=True,
-            ondelete='cascade'),
+            ondelete='cascade', track_visibility="onchange"),
         'contract_ids': fields.one2many(
             'recurring.contract', 'group_id', _('Contracts'),
             readonly=True),
@@ -67,9 +69,10 @@ class contract_group(orm.Model):
             help=_('Advance billing allows you to generate invoices in '
                    'advance. For example, you can generate the invoices '
                    'for each month of the year and send them to the '
-                   'customer in january.')),
+                   'customer in january.'), track_visibility="onchange"),
         'payment_term_id': fields.many2one('account.payment.term',
-                                           _('Payment Term')),
+                                           _('Payment Term'),
+                                           track_visibility="onchange"),
         'next_invoice_date': fields.function(
             _get_next_invoice_date, type='date',
             string=_('Next invoice date'),

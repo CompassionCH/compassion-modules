@@ -9,14 +9,14 @@
 	<!-- Workflow activities (what is done when state is reached) -->
 
 	<record model="workflow.activity" id="act_waiting">
-		<field name="wkf_id" ref="simple_recurring_contract.wkf_simple_recurring_contract" />
+		<field name="wkf_id" ref="simple_recurring_contract.wkf_recurring_contract" />
 		<field name="name">waiting</field>
 		<field name="kind">function</field>
 		<field name="action">contract_waiting()</field>
 	</record>
     
     <record model="workflow.activity" id="act_cancelled">
-		<field name="wkf_id" ref="simple_recurring_contract.wkf_simple_recurring_contract" />
+		<field name="wkf_id" ref="simple_recurring_contract.wkf_recurring_contract" />
 		<field name="name">cancelled</field>
 		<field name="kind">function</field>
 		<field name="action">contract_cancelled()</field>
