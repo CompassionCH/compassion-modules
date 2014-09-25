@@ -9,5 +9,5 @@
 #
 ##############################################################################
 
-from . import model
-from . import wizard
+from . import easy_reconcile
+from . import advanced_reconciliation
