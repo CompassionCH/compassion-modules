@@ -9,5 +9,5 @@
 #
 ##############################################################################
 
-from . import model
-from . import wizard
+from . import reconcile_fund_wizard
+from . import reconcile_split_payment_wizard
