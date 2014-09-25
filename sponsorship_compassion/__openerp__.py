@@ -1,8 +1,16 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#       ______ Releasing children from poverty      _
+#      / ____/___  ____ ___  ____  ____ ___________(_)___  ____
+#     / /   / __ \/ __ `__ \/ __ \/ __ `/ ___/ ___/ / __ \/ __ \
+#    / /___/ /_/ / / / / / / /_/ / /_/ (__  |__  ) / /_/ / / / /
+#    \____/\____/_/ /_/ /_/ .___/\__,_/____/____/_/\____/_/ /_/
+#                        /_/
+#                            in Jesus' name
+#
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    @author: Cyril Sester, Emanuel Cino
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -25,36 +33,36 @@
     'version': '0.2',
     'category': 'Other',
     'description': """
-Sponsorship management module. This module makes the link between child and 
+Sponsorship management module. This module makes the link between child and
 contracts. It also customize contracts to fit the child sponsorship context.
 
-This modules also requires en_US, fr_CH, de_DE, it_IT and es_ES to be installed 
+This modules also requires en_US, fr_CH, de_DE, it_IT and es_ES to be installed
 on the server.
-To check installed locales: 
+To check installed locales:
  $ locale -a
-To add a new locale : 
+To add a new locale :
  $ /usr/share/locales/install-language-pack <ISO-locale-name>
  $ dpkg-reconfigure locales
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['simple_recurring_contract', 'l10n_ch_payment_slip', 
+    'depends': ['simple_recurring_contract', 'l10n_ch_payment_slip',
                 'l10n_ch', 'account_analytic_plans', 'child_compassion'],
     'data': ['security/sponsorship_groups.xml',
-            'view/sponsorship_menu.xml',
-            'view/contract_group_view.xml',
-            'view/contract_view.xml',
-            'view/invoice_line_view.xml',
-            'view/res_partner_view.xml',
-            'data/product.xml',
-            'data/payment_terms.xml',
-            'data/lang.xml',
-            'data/sequence.xml',
-            'data/analytic_accounting.xml',
-            'data/friday_invoicer_cron.xml',
-            'security/ir.model.access.csv',
-            'workflow/contract_workflow.xml',
-            ],
+             'view/sponsorship_menu.xml',
+             'view/contract_group_view.xml',
+             'view/contract_view.xml',
+             'view/invoice_line_view.xml',
+             'view/res_partner_view.xml',
+             'data/product.xml',
+             'data/payment_terms.xml',
+             'data/lang.xml',
+             'data/sequence.xml',
+             'data/analytic_accounting.xml',
+             'data/friday_invoicer_cron.xml',
+             'security/ir.model.access.csv',
+             'workflow/contract_workflow.xml',
+             ],
     'demo': [],
     'installable': True,
     'auto_install': False,

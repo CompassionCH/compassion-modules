@@ -22,7 +22,7 @@
 			</tree>
 		</field>
 	</record>
-	
+
 	<!-- Contract form view -->
 	<record id="view_simple_recurring_contract_form" model="ir.ui.view">
 		<field name="name">simple.recurring.contract.form</field>
@@ -78,7 +78,7 @@
 			</form>
 		</field>
 	</record>
-	
+
 	<!-- Contract line tree view -->
 	<record id="view_simple_recurring_contract_line_tree" model="ir.ui.view">
 		<field name="name">simple.recurring.contract.line.tree</field>
@@ -118,7 +118,7 @@
 		   </search>
 		</field>
 	</record>
-	
+
 	<!-- Sidebar action, called from menu_recurring_contract_form menuitem -->
 	<record id="action_recurring_contract_form" model="ir.actions.act_window">
 		<field name="name">Contracts</field>
@@ -134,7 +134,7 @@
 		  </p>
 		</field>
 	</record>
-	
+
 	<menuitem id="menu_contracts_section" parent="base.menu_base_partner" name="Contracts" sequence="20" groups="base.group_sale_manager"/>
 	<menuitem id="menu_recurring_contract_form" parent="menu_contracts_section" action="action_recurring_contract_form" sequence="5"/>
 </data>

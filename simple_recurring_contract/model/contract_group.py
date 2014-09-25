@@ -16,11 +16,9 @@ from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
 
-import logging
-logger = logging.getLogger(__name__)
 
 class contract_group(orm.Model):
-    _name = 'simple.recurring.contract.group'
+    _name = 'recurring.contract.group'
     _desc = 'A group of contracts'
 
     def name_get(self, cr, uid, ids, context=None):
@@ -40,7 +38,7 @@ class contract_group(orm.Model):
 
     def _get_groups_from_contract(self, cr, uid, ids, context=None):
         group_ids = set()
-        contract_obj = self.pool.get('simple.recurring.contract')
+        contract_obj = self.pool.get('recurring.contract')
         for contract in contract_obj.browse(cr, uid, ids, context):
             group_ids.add(contract.group_id.id)
         return list(group_ids)
@@ -58,7 +56,7 @@ class contract_group(orm.Model):
             'res.partner', _('Partner'), required=True,
             ondelete='cascade'),
         'contract_ids': fields.one2many(
-            'simple.recurring.contract', 'group_id', _('Contracts'),
+            'recurring.contract', 'group_id', _('Contracts'),
             readonly=True),
         'advance_billing': fields.selection([
             ('bimonthly', _('Bimonthly')),
@@ -66,19 +64,19 @@ class contract_group(orm.Model):
             ('fourmonthly', _('Four-monthly')),
             ('biannual', _('Bi-annual')),
             ('annual', _('Annual'))], _('Advance billing'),
-            help = _('Advance billing allows you to generate invoices in '
-                     'advance. For example, you can generate the invoices '
-                     'for each month of the year and send them to the '
-                     'customer in january.')),
+            help=_('Advance billing allows you to generate invoices in '
+                   'advance. For example, you can generate the invoices '
+                   'for each month of the year and send them to the '
+                   'customer in january.')),
         'payment_term_id': fields.many2one('account.payment.term',
                                            _('Payment Term')),
         'next_invoice_date': fields.function(
             _get_next_invoice_date, type='date',
-            string=_('Smallest invoice date for related contracts'),
+            string=_('Next invoice date'),
             store={
-                'simple.recurring.contract': (
+                'recurring.contract': (
                     _get_groups_from_contract, ['next_invoice_date'], 20),
-                }),
+            }),
     }
 
     _defaults = {
@@ -86,23 +84,22 @@ class contract_group(orm.Model):
         'recurring_value': 1,
     }
 
-    def generate_invoices(self, cr, uid, ids, invoicer_id=None,
-                          is_group=False, context=None):
+    def generate_invoices(self, cr, uid, ids, invoicer_id=None, context=None):
         ''' Checks all contracts and generate invoices if needed.
         Create an invoice per contract group per date.
         '''
         inv_obj = self.pool.get('account.invoice')
         journal_obj = self.pool.get('account.journal')
-        contract_obj = self.pool.get('simple.recurring.contract')
+        contract_obj = self.pool.get('recurring.contract')
 
         if not ids:
             ids = self.search(cr, uid, [], context=context)
-        
+
         journal_ids = journal_obj.search(
-            cr, uid, [('type', '=','sale'),('company_id', '=', 1 or False)],
+            cr, uid, [('type', '=', 'sale'), ('company_id', '=', 1 or False)],
             limit=1)
         delay_dict = {'annual': 12, 'biannual': 6, 'fourmonthly': 4,
-                      'quarterly': 3, 'bimonthly' : 2}
+                      'quarterly': 3, 'bimonthly': 2}
         # Invoice lines are generated for an active contract
         # If group.next_inv_date <= today
         #   and contr.next_inv_date <= group.next_inv_date
@@ -116,9 +113,9 @@ class contract_group(orm.Model):
             adv_bill_candidate = set()
             contract_group = self.browse(cr, uid, group_id, context)
             month_delta = contract_group.advance_billing and \
-                            delay_dict[contract_group.advance_billing] or 0
+                delay_dict[contract_group.advance_billing] or 0
             limit_date = datetime.today() + relativedelta(months=+month_delta)
-            while True: # Emulate a do-while loop
+            while True:  # Emulate a do-while loop
                 # contract_group update 'cause next_inv_date has been modified
                 contract_group = self.browse(cr, uid, group_id, context)
                 group_inv_date = contract_group.next_invoice_date
@@ -131,8 +128,8 @@ class contract_group(orm.Model):
                 else:
                     contr_ids = [c.id
                                  for c in contract_group.contract_ids
-                                 if datetime.strptime(c.next_invoice_date, DF)\
-                                    <= limit_date
+                                 if datetime.strptime(c.next_invoice_date, DF)
+                                 <= limit_date
                                  and c.id in adv_bill_candidate
                                  and c.state in self._get_gen_states()]
 
@@ -144,7 +141,8 @@ class contract_group(orm.Model):
                                                 context=context)
                 invoice_id = inv_obj.create(cr, uid, inv_data, context=context)
 
-                for contract in contract_obj.browse(cr, uid, contr_ids, context):
+                for contract in contract_obj.browse(cr, uid, contr_ids,
+                                                    context):
                     self._generate_invoice_lines(cr, uid, contract, invoice_id,
                                                  context)
                 inv_obj.button_compute(cr, uid, [invoice_id], context=context)
@@ -155,7 +153,6 @@ class contract_group(orm.Model):
             If any custom data is wanted in invoice from contract group, just
             inherit this method.
         '''
-        today = datetime.today().strftime(DF)
         partner = con_gr.partner_id
 
         inv_data = {
@@ -163,13 +160,13 @@ class contract_group(orm.Model):
             'type': 'out_invoice',
             'partner_id': partner.id,
             'journal_id': len(journal_ids) and journal_ids[0] or False,
-            'currency_id': partner.property_product_pricelist.currency_id.id \
-                            or False,
+            'currency_id': partner.property_product_pricelist.currency_id.id
+            or False,
             'date_invoice': con_gr.next_invoice_date,
             'recurring_invoicer_id': invoicer_id,
-            'payment_term': con_gr.payment_term_id \
-                                and con_gr.payment_term_id.id or False,
-            }
+            'payment_term': con_gr.payment_term_id
+            and con_gr.payment_term_id.id or False,
+        }
 
         return inv_data
 
@@ -188,14 +185,14 @@ class contract_group(orm.Model):
             'quantity': contract_line.quantity,
             'uos_id': False,
             'product_id': product.id or False,
-            'invoice_id' : invoice_id,
+            'invoice_id': invoice_id,
             'contract_id': contract_line.contract_id.id,
         }
 
         return inv_line_data
 
     def _generate_invoice_lines(self, cr, uid, contract, invoice_id,
-                               context=None):
+                                context=None):
         inv_line_obj = self.pool.get('account.invoice.line')
         for contract_line in contract.contract_line_ids:
             inv_line_data = self._setup_inv_line_data(cr, uid, contract_line,
@@ -204,7 +201,7 @@ class contract_group(orm.Model):
 
         vals = {}
 
-        contract_obj = self.pool.get('simple.recurring.contract')
+        contract_obj = self.pool.get('recurring.contract')
         next_date = contract_obj._compute_next_invoice_date(contract)
         vals['next_invoice_date'] = next_date.strftime(DF)
 
