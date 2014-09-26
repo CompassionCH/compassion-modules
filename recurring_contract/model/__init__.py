@@ -12,4 +12,4 @@
 from . import contract_group
 from . import invoice
 from . import recurring_invoicer
-from . import simple_recurring_contract
+from . import recurring_contract

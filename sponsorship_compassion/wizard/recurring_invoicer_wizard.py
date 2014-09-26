@@ -15,7 +15,7 @@ from openerp.osv import orm
 class recurring_invoicer_wizard(orm.TransientModel):
     _inherit = 'recurring.invoicer.wizard'
 
-    def generate_from_cron(self, cr, uid, group=False, context=None):
-        ret_dict = self.generate(cr, uid, [], context=context, group=group)
+    def generate_from_cron(self, cr, uid, context=None):
+        ret_dict = self.generate(cr, uid, [], context=context)
         recurring_invoicer_obj = self.pool.get('recurring.invoicer')
         recurring_invoicer_obj.validate_invoices(cr, uid, [ret_dict['res_id']])

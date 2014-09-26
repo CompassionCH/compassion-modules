@@ -24,11 +24,6 @@ class recurring_invoicer_wizard(orm.TransientModel):
             'account.invoice', 'recurring_invoicer_id',
             _('Generated invoices'), readonly=True),
         'generation_date': fields.date(_('Generation date'), readonly=True),
-        'group_invoices': fields.boolean(
-            _('Group invoices'),
-            help=_('If true, all invoice lines generated for a same customer'
-                   'are grouped into the same invoice. Otherwise, an invoice'
-                   'is generated for each contract.')),
     }
 
     def generate(self, cr, uid, ids, context=None):

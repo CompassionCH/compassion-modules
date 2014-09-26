@@ -39,11 +39,11 @@
     'external_dependencies': {},
     'data': [
         'view/contract_group_view.xml',
-        'view/simple_recurring_contract_view.xml',
+        'view/recurring_contract_view.xml',
         'view/res_partner_view.xml',
         'view/recurring_invoicer_view.xml',
         'view/recurring_invoicer_wizard_view.xml',
-        'workflow/simple_recurring_contract_workflow.xml',
+        'workflow/recurring_contract_workflow.xml',
         'data/recurring_contract_sequence.xml',
         'data/recurring_invoicer_sequence.xml',
         'data/contract_expire_cron.xml',

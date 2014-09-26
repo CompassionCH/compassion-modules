@@ -12,10 +12,6 @@
 			<field name="arch" type="xml">
 				<form string="Invoice generation" version="7.0">
 					<separator string="Invoice generation from contracts"/>
-					<label string="By default, all customer contracts are going to be checked and invoices generated for those who have next invoice date reached."/>
-					<group>
-						<field name="group_invoices" />
-					</group>
 					<footer>
 						<button name="generate" string="Generate" type="object" class="oe_highlight"/>
 						or

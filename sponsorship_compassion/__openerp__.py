@@ -46,7 +46,7 @@ To add a new locale :
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['simple_recurring_contract', 'l10n_ch_payment_slip',
+    'depends': ['recurring_contract', 'l10n_ch_payment_slip',
                 'l10n_ch', 'account_analytic_plans', 'child_compassion'],
     'data': ['security/sponsorship_groups.xml',
              'view/sponsorship_menu.xml',
