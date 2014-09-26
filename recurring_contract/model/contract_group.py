@@ -19,7 +19,7 @@ from openerp.tools.translate import _
 
 class contract_group(orm.Model):
     _name = 'recurring.contract.group'
-    _desc = 'A group of contracts'
+    _description = 'A group of contracts'
     _inherit = 'mail.thread'
     _rec_name = 'ref'
 
