@@ -129,8 +129,7 @@ class recurring_contract(orm.Model):
             track_visibility="onchange"),
         'next_invoice_date': fields.date(
             _('Next invoice date'), readonly=False,
-            states={'draft': [('readonly', False)]},
-            track_visibility="onchange"),
+            states={'draft': [('readonly', False)]}),
         'partner_id': fields.many2one(
             'res.partner', string=_('Partner'), required=True,
             readonly=True, states={'draft': [('readonly', False)]}),
@@ -196,6 +195,26 @@ class recurring_contract(orm.Model):
                 cr, uid, 'recurring.contract.ref', context=context)
         return super(recurring_contract, self).create(cr, uid, vals,
                                                       context=context)
+
+    def copy(self, cr, uid, id, default=None, context=None):
+        default = default or {}
+        start_date = self._compute_copy_start_date(cr, uid, id, context)
+        default.update({
+            'state': 'draft',
+            'reference': '/',
+            'start_date': start_date,
+            'end_date': False,
+            'next_invoice_date': start_date,
+            'invoice_line_ids': False,
+        })
+        return super(recurring_contract, self).copy(cr, uid, id, default, context)
+
+    def _compute_copy_start_date(self, cr, uid, id, context=None):
+        today = datetime.today()
+        if today.day > 15:
+            today = today + relativedelta(months=+1)
+        today = today.replace(day=1)
+        return today.strftime(DF)
 
     def unlink(self, cr, uid, ids, context=None):
         if context is None:

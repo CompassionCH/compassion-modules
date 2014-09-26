@@ -38,7 +38,7 @@
                 </button>
                 
 				<!-- Add child_id in contract -->
-                <field name="partner_id" position="after">
+                <field name="group_id" position="after">
 					<field name="child_id" />
 				</field>
                 
@@ -48,7 +48,7 @@
                 </field>
                 
                 <!-- Add correspondant -->
-                <field name="partner_id" position="after">
+                <field name="group_id" position="after">
                     <field name="correspondant_id" />
                 </field>
 			</field>
