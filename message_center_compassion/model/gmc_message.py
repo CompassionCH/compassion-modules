@@ -1,20 +1,11 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Author: Emanuel Cino. Copyright Compassion Suisse
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    The licence is in the file __openerp__.py
 #
 ##############################################################################
 from openerp.osv.orm import Model
@@ -59,7 +50,8 @@ class gmc_message_pool(Model):
             'action_id', 'name', type="char", store=False, readonly=True
         ),
         'description': fields.related(
-            'action_id', 'description', type="text", string=_("Action to execute"), store=False, readonly=True
+            'action_id', 'description', type="text",
+            string=_("Action to execute"), store=False, readonly=True
         ),
         'direction': fields.related(
             'action_id', 'direction', type="char", store=True
@@ -98,12 +90,17 @@ class gmc_message_pool(Model):
         for message in self.browse(cr, uid, ids, context=context):
             if message.state == 'pending':
                 message_args = {'object_ref': message.incoming_key}
-                if self.pool.get('gmc.action').execute(cr, uid, message.action_id.id, message.object_id, message_args, context=context):
+                if self.pool.get(
+                    'gmc.action').execute(cr, uid, message.action_id.id,
+                                          message.object_id, message_args,
+                                          context=context):
                     success_ids.append(message.id)
 
         if success_ids:
-            self.write(cr, uid, success_ids, {
-                       'state': 'sent', 'process_date': datetime.date.today()}, context=context)
+            self.write(
+                cr, uid, success_ids,
+                {'state': 'sent', 'process_date': datetime.date.today()},
+                context=context)
 
         return True
 
@@ -166,7 +163,8 @@ class gmc_action(Model):
         ),
         'name': fields.char(_('GMC Message'), size=20, required=True),
         'model': fields.char('OSV Model', size=30),
-        'type': fields.selection(_get_message_types, _('Action Type'), required=True),
+        'type': fields.selection(_get_message_types, _('Action Type'),
+                                 required=True),
         'description': fields.text(_('Action to execute')),
     }
 
@@ -175,16 +173,21 @@ class gmc_action(Model):
 
             Args:
                 - id: id of the action to be executed.
-                - object_id: for incoming messages, object on which to perform the action.
-                             for outgoing messages, object from which to read data.
-                - args (dict): for incoming messages, optional arguments to be passed in the executed method.
+                - object_id: for incoming messages, object on which to
+                             perform the action.
+                             for outgoing messages, object from which to
+                             read data.
+                - args (dict): for incoming messages, optional arguments
+                               to be passed in the executed method.
         """
         action = self.browse(cr, uid, id, context=context)
 
         if action.direction == 'in':
-            return self._perform_incoming_action(cr, uid, action, object_id, args=args, context=context)
+            return self._perform_incoming_action(cr, uid, action, object_id,
+                                                 args=args, context=context)
         elif action.direction == 'out':
-            return self._perform_outgoing_action(cr, uid, action, object_id, context=context)
+            return self._perform_outgoing_action(cr, uid, action, object_id,
+                                                 context=context)
         else:
             raise NotImplementedError
 
@@ -194,13 +197,17 @@ class gmc_action(Model):
         action_type = values.get('type', False)
 
         if self._validate_action(direction, model, action_type):
-            return super(gmc_action, self).create(cr, uid, values, context=context)
+            return super(gmc_action, self).create(cr, uid, values,
+                                                  context=context)
         else:
             raise osv.except_osv(_("Creation aborted."), _(
-                "Invalid action (%s, %s, %s).") % (direction, model, action_type))
+                "Invalid action (%s, %s, %s).") % (
+                direction, model, action_type))
 
-    def _perform_incoming_action(self, cr, uid, action, object_id, args={}, context=None):
-        """ This method defines what has to be done for each incoming message type. """
+    def _perform_incoming_action(self, cr, uid, action, object_id, args={},
+                                 context=None):
+        """ This method defines what has to be done
+        for each incoming message type. """
         res = False
         model_obj = self.pool.get(action.model)
         if action.type == 'allocate':
@@ -215,16 +222,18 @@ class gmc_action(Model):
 
         return res
 
-    def _perform_outgoing_action(self, cr, uid, action, object_id, context=None):
+    def _perform_outgoing_action(self, cr, uid, action, object_id,
+                                 context=None):
         """ Process an outgoing message by sending it to the middleware. """
-        if self._validate_outgoing_action(cr, uid, action, object_id, context=context):
+        if self._validate_outgoing_action(cr, uid, action, object_id,
+                                          context=context):
             session = requests.Session()
             session.verify = False
             server_url = config.get('middleware_url')
             if not server_url:
-                raise orm.except_orm('ConfigError',
-                                     _('No middleware server url specified in '
-                                       'conf file'))
+                raise osv.orm.except_orm(
+                    'ConfigError', _('No middleware server url specified in '
+                                     'conf file'))
             url = server_url + action.type + '/' + \
                 action.model + '/' + str(object_id)
             resp = session.get(url)
@@ -249,7 +258,8 @@ class gmc_action(Model):
 
         return False
 
-    def _validate_outgoing_action(self, cr, uid, action, object_id, context=None):
+    def _validate_outgoing_action(self, cr, uid, action, object_id,
+                                  context=None):
         """ Validation of outgoing messages before sending them to GMC. """
         message_obj = self.pool.get('gmc.message.pool')
 
@@ -259,24 +269,34 @@ class gmc_action(Model):
             # Check that the constituent is known by GMC.
             partner = contract.partner_id
             message_ids = message_obj.search(
-                cr, uid, [('object_id', '=', partner.id), ('state', '=', 'sent')], context=context)
+                cr, uid,
+                [('object_id', '=', partner.id), ('state', '=', 'sent')],
+                context=context)
             if not message_ids:
-                raise osv.except_osv(_("Constituent (%s) not sent to GMC") % partner.name, _(
-                    "Please send the new constituents to GMC before sending the commitments."))
+                raise osv.except_osv(_(
+                    "Constituent (%s) not sent to GMC") % partner.name, _(
+                    "Please send the new constituents to GMC before sending "
+                    "the commitments."))
 
             # Check that the contract is linked to a child
             child_id = contract.child_id
             if not child_id:
                 raise osv.except_osv(_("Contract is not a sponsorship."), _(
-                    "The new commitment of %s is not linked to a child and should not be sent to GMC.") % partner.name)
+                    "The new commitment of %s is not linked to a child and "
+                    "should not be sent to GMC.") % partner.name)
             else:
                 # Check that there are no previous sponsorship cancellation
                 # pending.
-                message_ids = message_obj.search(cr, uid, [('name', '=', 'CancelCommitment'), (
-                    'child_id', '=', child_id.id), ('state', '=', 'pending')], context=context)
+                message_ids = message_obj.search(
+                    cr, uid, [
+                        ('name', '=', 'CancelCommitment'),
+                        ('child_id', '=', child_id.id),
+                        ('state', '=', 'pending')], context=context)
                 if message_ids:
-                    raise osv.except_osv(_("Commitment not sent (%s).") % child_id.code, _(
-                        "Please send the previous commitment cancellation before the creation of a new commitment."))
+                    raise osv.except_osv(_(
+                        "Commitment not sent (%s).") % child_id.code, _(
+                        "Please send the previous commitment cancellation "
+                        "before the creation of a new commitment."))
 
         elif action.name == 'CreateGift':
             # Check that the commitment is known by GMC.
@@ -284,22 +304,36 @@ class gmc_action(Model):
                 cr, uid, object_id, context=context)
             contract = invoice_line.contract_id
             if contract and contract.partner_id and contract.child_id:
-                message_ids = message_obj.search(cr, uid, [('name', '=', 'CreateCommitment'), (
-                    'object_id', '=', contract.id), ('state', '=', 'sent')], context=context)
+                message_ids = message_obj.search(
+                    cr, uid, [
+                        ('name', '=', 'CreateCommitment'),
+                        ('object_id', '=', contract.id),
+                        ('state', '=', 'sent')], context=context)
                 if not message_ids:
-                    raise osv.except_osv(_("Commitment not sent to GMC (%s - %s)") % (
-                        contract.partner_id.ref, contract.child_id.code), _("The commitment the gift refers to was not sent to GMC."))
+                    raise osv.except_osv(_(
+                        "Commitment not sent to GMC (%s - %s)") % (
+                        contract.partner_id.ref, contract.child_id.code), _(
+                        "The commitment the gift refers to was not "
+                        "sent to GMC."))
             else:
                 raise osv.except_osv(_("Unknown sponsorship."), _(
-                    "The gift (%s - %s) is not related to a sponsorship so it should not be sent to GMC.") % (invoice_line.partner_id.name, invoice_line.name))
+                    "The gift (%s - %s) is not related to a sponsorship so it"
+                    " should not be sent to GMC.") % (
+                    invoice_line.partner_id.name, invoice_line.name))
 
         elif action.name == 'CancelCommitment':
             # Check that the commitment is known by GMC.
-            message_ids = message_obj.search(cr, uid, [('name', '=', 'CreateCommitment'), (
-                'object_id', '=', object_id), ('state', '=', 'sent')], context=context)
+            message_ids = message_obj.search(
+                cr, uid, [
+                    ('name', '=', 'CreateCommitment'),
+                    ('object_id', '=', object_id), ('state', '=', 'sent')],
+                context=context)
             if not message_ids:
-                raise osv.except_osv(_("Commitment not sent to GMC (%s - %s)") % (contract.partner_id.ref, contract.child_id.code), _(
-                    "The commitment was not sent to GMC and therefore cannot be cancelled."))
+                raise osv.except_osv(_(
+                    "Commitment not sent to GMC (%s - %s)") % (
+                    contract.partner_id.ref, contract.child_id.code), _(
+                    "The commitment was not sent to GMC and therefore cannot "
+                    "be cancelled."))
 
         return True
 
