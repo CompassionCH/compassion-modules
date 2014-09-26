@@ -11,7 +11,7 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
-
+import re #regexp module (standard)
 
 class child_description_wizard(orm.TransientModel):
     _name = 'child.description.wizard'
@@ -229,15 +229,34 @@ class child_description_wizard(orm.TransientModel):
              - School performance if relevant and existing
              - School favourite subject if relevant and existing
         '''
-        ordinals = [u'première', u'deuxième', u'troisième', u'quatrième', u'cinquième',
-                    u'sixième', u'septième', u'huitième', u'neuvième', u'dixième', u'onzième',
-                    u'douzième', u'treizième', u'quatorzième', u'quinzième']
+        ordinals = {
+                    '1': u'première',
+                    '2': u'deuxième',
+                    '3': u'troisième',
+                    '4': u'quatrième',
+                    '5': u'cinquième',
+                    '6': u'sixième',
+                    '7': u'septième',
+                    '8': u'huitième',
+                    '9': u'neuvième',
+                    '10': u'dixième',
+                    '11': u'onzième',
+                    '12': u'douzième',
+                    '13': u'treizième',
+                    '14': u'quatorzième',
+                    'PK': u'première enfantine',
+                    'K': u'deuxième enfantine', 
+                    'P': u'primaire',
+                    }
+                    # the value of us_school_level can also be blank
         string = u'Il' if child.gender == 'M' else u'Elle'
         if case_study.attending_school_flag:
-            if (case_study.us_school_level and
-                case_study.us_school_level.isdigit() and
-                int(case_study.us_school_level) < 16):
-                string += u' est en %s année (US)' % ordinals[int(case_study.us_school_level)-1]
+            if case_study.us_school_level and case_study.us_school_level in ordinals:
+                try:
+                    int(case_study.us_school_level)
+                    string += u' est en %s année (US)' % ordinals[case_study.us_school_level]
+                except:
+                    string += u' est en %s (US)' % ordinals[case_study.us_school_level]
             else:
                 string += u' va à l\'école'
             if case_study.school_performance:
@@ -254,7 +273,6 @@ class child_description_wizard(orm.TransientModel):
         else:
             string += ' ne va pas à l\'école' #TODO reason
             
-
         return string
 
     def _get_guardians_info_fr(self, cr, uid, child, case_study, context=None):
@@ -263,7 +281,7 @@ class child_description_wizard(orm.TransientModel):
         if not case_study.guardians_ids:
             return ''
         male_values = ['father', 'uncle', 'brother', 'grandfather', 'stepfather', 'godfather']
-        plur_values = ['friends', 'other relatives']
+        plur_values = ['friends', 'other relatives', 'foster parents']
         live_with = []
         male_guardian = ''
         female_guardian = ''
@@ -275,9 +293,15 @@ class child_description_wizard(orm.TransientModel):
             elif guardian.value_en in plur_values:
                 live_with.append(u'des %s' % value)
             else:
-                live_with.append(u'sa %s' % value)
-                female_guardian = value if not female_guardian else female_guardian
-                
+                if female_guardian == 'institutional worker':
+                    live_with.append(u'un institut') # find better word than "institut"
+                else:
+                    if value == 'institutional worker':
+                        live_with.append(u'un institut')
+                        female_guardian = value if not female_guardian else female_guardian
+                    else:
+                        live_with.append(u'sa %s' % value)
+                        female_guardian = value if not female_guardian else female_guardian
         if case_study.nb_brothers == 1:
             live_with.append(u'son frère')
         elif case_study.nb_brothers > 1:
@@ -286,31 +310,43 @@ class child_description_wizard(orm.TransientModel):
             live_with.append(u'sa soeur')
         elif case_study.nb_sisters > 1:
             live_with.append(u'ses %s soeurs' % case_study.nb_sisters)
-        guardian_str = self._gen_list_string(live_with, ', ', ' et ')
-        string = '%s vit avec %s. ' % (child.firstname, guardian_str)
+        if 'un institut' in live_with:
+            guardian_str = '%s avec %s' %(live_with[0], live_with[1])
+        else:
+            guardian_str = self._gen_list_string(live_with, ', ', ' et ')
+        if 'institut' in guardian_str:
+            string = '%s vit dans %s. ' % (child.firstname, guardian_str)
+        else:
+            string = '%s vit avec %s. ' % (child.firstname, guardian_str)
         string += self._get_guardians_jobs_fr(cr, uid, child, case_study, male_guardian, female_guardian, context)
-        return string
-
+        return string       
+        
     def _get_guardians_jobs_fr(self, cr, uid, child, case_study, m_g, f_g, context=None):
         ''' Generate the guardians jobs description part. '''
-        string = ''
-        if case_study.male_guardian_ids:
-            props = [emp.value_en for emp in case_study.male_guardian_ids]
-            job = [emp.value_fr if emp.value_fr else emp.value_en
+        if case_study.male_guardian_ids or case_study.female_guardian_ids:
+            props_m = [emp.value_en for emp in case_study.male_guardian_ids]
+            job_m = [emp.value_fr if emp.value_fr else emp.value_en
                         for emp in case_study.male_guardian_ids
                         if not emp.value_en.endswith('mployed')]
-            if 'isunemployed' in props:
-                string += u"Son %s n'a pas d'emploi." % m_g
-            elif job:
-                string += u"Son %s est %s. " % (m_g, job[0])
-        if case_study.female_guardian_ids:
-            props = [emp.value_en for emp in case_study.female_guardian_ids]
-            job = [emp.value_fr if emp.value_fr else emp.value_en
+            props_f = [emp.value_en for emp in case_study.female_guardian_ids]
+            job_f = [emp.value_fr if emp.value_fr else emp.value_en
                         for emp in case_study.female_guardian_ids
                         if not emp.value_en.endswith('mployed')]
-            if 'isunemployed' in props:
-                string += u"Sa %s n'a pas d'emploi." % m_g
-            elif job:
-                string += u"Sa %s est %s. " % (f_g, job[0])
+            if f_g == 'institutional worker':
+                string = u""
+            else:
+                if ('isunemployed' in props_m) and job_f:
+                    string = u"Sa %s est %s et son %s n'a pas d'emploi." %(f_g, job_f[0], m_g)
+                elif job_m and ('isunemployed' in props_f):
+                    string = u"Son %s est %s et sa %s n'a pas d'emploi." %(m_g, job_m[0], f_g)
+                elif ('isunemployed' in props_m) and ('isunemployed' in props_f):
+                    if f_g == "mother" and m_g == "father":
+                        string = u"Ses parents n'ont pas d'emploi."
+                    else:
+                        string = u"Son %s et sa %s n'ont pas d'emploi." %(m_g, f_g)
+                elif job_m and job_f:
+                    if (job_f[0][0:7] == job_m[0][0:7]) and (f_g == u"mère" and m_g == u"père"):
+                        string = u"Ses parents sont %ss." %job_m[0]
+                    else:
+                        string = u"Sa %s est %s et son %s est %s." %(f_g, job_f[0], m_g, job_m[0])
         return string
-
