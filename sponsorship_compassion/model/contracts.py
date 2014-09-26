@@ -81,8 +81,7 @@ class recurring_contract(orm.Model):
             ('ChildCorrespondenceSponsorship', 'Correspondence')],
             _("Type of sponsorship")),
         'correspondant_id': fields.many2one(
-            'res.partner', _('Correspondant'), readonly=True,
-            states={'draft': [('readonly', False)]}),
+            'res.partner', _('Correspondant'), required=True),
         'first_payment_date': fields.date(
             _('First payment date'), readonly=True),
         # Add a waiting state
@@ -113,6 +112,13 @@ class recurring_contract(orm.Model):
         'fully_managed': fields.function(
             _is_fully_managed, type="boolean", store=True),
     }
+
+    def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
+        ''' On partner change, we update the correspondent '''
+        res = super(recurring_contract, self).on_change_partner_id(
+            cr, uid, ids, partner_id, context)
+        res['value'].update({'correspondant_id': partner_id})
+        return res
 
     def contract_waiting(self, cr, uid, ids):
         self.write(cr, uid, ids, {'state': 'waiting'})

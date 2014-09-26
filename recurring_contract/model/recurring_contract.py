@@ -129,7 +129,8 @@ class recurring_contract(orm.Model):
             track_visibility="onchange"),
         'next_invoice_date': fields.date(
             _('Next invoice date'), readonly=False,
-            states={'draft': [('readonly', False)]}),
+            states={'draft': [('readonly', False)]},
+            track_visibility="onchange"),
         'partner_id': fields.many2one(
             'res.partner', string=_('Partner'), required=True,
             readonly=True, states={'draft': [('readonly', False)]}),

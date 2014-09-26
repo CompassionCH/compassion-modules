@@ -13,7 +13,8 @@
 		<field name="arch" type="xml">
 			<form string="Contract groups" version="7.0">
 			<sheet>
-				<group>
+				<h1><field name="ref" /></h1>
+				<group name="info">
 					<group>
 						<field name="next_invoice_date" />
 						<label for="recurring_value" />

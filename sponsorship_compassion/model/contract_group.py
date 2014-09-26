@@ -38,6 +38,20 @@ class contract_group(orm.Model):
     _columns = {
         'bvr_reference': fields.char(size=32, string=_('BVR Ref'),
                                      track_visibility="onchange"),
+        'advance_billing': fields.selection([
+            ('monthly', _('Monthly')),
+            ('bimonthly', _('Bimonthly')),
+            ('quarterly', _('Quarterly')),
+            ('fourmonthly', _('Four-monthly')),
+            ('biannual', _('Bi-annual')),
+            ('annual', _('Annual'))], _('Frequency'),
+            help=_('Advance billing allows you to generate invoices in '
+                   'advance. For example, you can generate the invoices '
+                   'for each month of the year and send them to the '
+                   'customer in january.'), track_visibility="onchange"),
+        'payment_term_id': fields.many2one('account.payment.term',
+                                           _('Payment Term'),
+                                           track_visibility="onchange"),
     }
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
