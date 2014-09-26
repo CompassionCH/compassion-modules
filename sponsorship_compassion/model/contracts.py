@@ -128,6 +128,15 @@ class recurring_contract(orm.Model):
         self.write(cr, uid, ids, {'state': 'cancelled'})
         return True
 
+    def copy(self, cr, uid, id, default=None, context=None):
+        default = default or {}
+        default.update({
+            'child_id': False,
+            'first_payment_date': False,
+            'is_active': False,
+        })
+        return super(recurring_contract, self).copy(cr, uid, id, default, context)
+
     def unlink(self, cr, uid, ids, context=None):
         if context is None:
             context = {}

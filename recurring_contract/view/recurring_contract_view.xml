@@ -43,13 +43,13 @@
 				</div>
 				<group>
 					<group>
+						<field name="partner_id" on_change="on_change_partner_id(partner_id)" />
+						<field name="group_id" domain="[('partner_id', '=', partner_id)]" context="{'default_partner_id': partner_id}" />
+					</group>
+					<group>
 						<field name="start_date" on_change="on_change_start_date(start_date)" />
 						<field name="end_date" />
 						<field name="next_invoice_date" />
-					</group>
-					<group>
-						<field name="group_id" domain="[('partner_id', '=', partner_id)]" context="{'default_partner_id': partner_id}" />
-						<field name="partner_id" on_change="on_change_partner_id(partner_id)" />
 					</group>
 				</group>
 				<h2><label for="invoice_line_ids" /></h2>
