@@ -1,20 +1,11 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Author: Emanuel Cino. Copyright Compassion Suisse
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    The licence is in the file __openerp__.py
 #
 ##############################################################################
 
@@ -42,7 +33,8 @@ class simple_recurring_contract(orm.Model):
             if contract.child_id:
                 # UpsertConstituent Message
                 action_id = action_obj.search(
-                    cr, uid, [('name', '=', 'UpsertConstituent')], limit=1, context=context)[0]
+                    cr, uid, [('name', '=', 'UpsertConstituent')],
+                    limit=1, context=context)[0]
                 message_vals = {
                     'action_id': action_id,
                     'object_id': contract.partner_id.id,
@@ -53,7 +45,8 @@ class simple_recurring_contract(orm.Model):
 
                 # CreateCommitment Message
                 action_id = action_obj.search(
-                    cr, uid, [('name', '=', 'CreateCommitment')], limit=1, context=context)[0]
+                    cr, uid, [('name', '=', 'CreateCommitment')],
+                    limit=1, context=context)[0]
                 message_vals.update({
                     'action_id': action_id,
                     'object_id': contract.id,
@@ -69,7 +62,8 @@ class simple_recurring_contract(orm.Model):
             message_obj = self.pool.get('gmc.message.pool')
             action_obj = self.pool.get('gmc.action')
             action_id = action_obj.search(
-                cr, uid, [('name', '=', 'CancelCommitment')], limit=1, context=context)[0]
+                cr, uid, [('name', '=', 'CancelCommitment')],
+                limit=1, context=context)[0]
             message_vals = {'action_id': action_id}
 
             for contract in self.browse(cr, uid, ids, context=context):
@@ -93,13 +87,15 @@ class simple_recurring_contract(orm.Model):
         message_obj = self.pool.get('gmc.message.pool')
         action_obj = self.pool.get('gmc.action')
         action_id = action_obj.search(
-            cr, uid, [('name', '=', 'CreateGift')], limit=1, context=context)[0]
+            cr, uid, [('name', '=', 'CreateGift')], limit=1,
+            context=context)[0]
         message_vals = {
             'action_id': action_id,
             'date': invoice.date_invoice,
         }
         gift_ids = self.pool.get('product.product').search(
-            cr, uid, [('name_template', 'in', gift_product_names)], context={'lang': 'en_US'})
+            cr, uid, [('name_template', 'in', gift_product_names)],
+            context={'lang': 'en_US'})
 
         for invoice_line in invoice.invoice_line:
             if invoice_line.product_id.id in gift_ids:
