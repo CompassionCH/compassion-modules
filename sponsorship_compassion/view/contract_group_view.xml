@@ -3,16 +3,22 @@
 		<record id="view_contract_group_form_compassion" model="ir.ui.view">
 			<field name="name">contract.group.compassion.form</field>
 			<field name="model">recurring.contract.group</field>
-			<field name="inherit_id" ref="simple_recurring_contract.view_group_contract_form"/>
-			<field eval="18" name="priority"/>
+			<field name="inherit_id" ref="recurring_contract.view_group_contract_form"/>
+			<field eval="10" name="priority"/>
 			<field name="arch" type="xml">
-				<!-- Compute the BVR reference automatically -->
-                <field name="partner_id" position="attributes">
-                    <attribute name="on_change">on_change_partner_id(partner_id)</attribute>
-                </field>
-                <xpath expr="//field[@name='payment_term_id']" position="before">
-                    <field name="bvr_reference" />
-                </xpath>
+				<group name="info" position="replace">
+					<group name="info">
+						<group>
+							<field name="next_invoice_date" />
+							<field name="advance_billing" />
+						</group>
+						<group>
+							<field name="partner_id" domain="[('customer', '=', True)]" on_change="on_change_partner_id(partner_id)" />
+							<field name="bvr_reference" />
+							<field name="payment_term_id" />
+						</group>
+					</group>
+				</group>
 			</field>
 		</record>
 	</data>

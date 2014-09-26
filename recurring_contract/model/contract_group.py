@@ -21,13 +21,7 @@ class contract_group(orm.Model):
     _name = 'recurring.contract.group'
     _desc = 'A group of contracts'
     _inherit = 'mail.thread'
-
-    def name_get(self, cr, uid, ids, context=None):
-        if not ids:
-            return []
-        res = [(gr.id, gr.payment_term_id.name) for gr in self.browse(
-               cr, uid, ids, context)]
-        return res
+    _rec_name = 'ref'
 
     def _get_next_invoice_date(self, cr, uid, ids, name, args, context=None):
         res = {}
@@ -46,6 +40,7 @@ class contract_group(orm.Model):
 
     _columns = {
         # TODO sequence for name/ref ?
+        'ref': fields.char(_('Reference')),
         'recurring_unit': fields.selection([
             ('day', _('Day(s)')),
             ('week', _('Week(s)')),
@@ -83,6 +78,7 @@ class contract_group(orm.Model):
     }
 
     _defaults = {
+        'ref': '/',
         'recurring_unit': 'month',
         'recurring_value': 1,
     }
@@ -116,23 +112,24 @@ class contract_group(orm.Model):
             adv_bill_candidate = set()
             contract_group = self.browse(cr, uid, group_id, context)
             month_delta = contract_group.advance_billing and \
-                delay_dict[contract_group.advance_billing] or 0
+                delay_dict.get(contract_group.advance_billing) or 0
             limit_date = datetime.today() + relativedelta(months=+month_delta)
+            in_one_month = datetime.today() + relativedelta(months=+1)
             while True:  # Emulate a do-while loop
                 # contract_group update 'cause next_inv_date has been modified
                 contract_group = self.browse(cr, uid, group_id, context)
                 group_inv_date = contract_group.next_invoice_date
-                if datetime.strptime(group_inv_date, DF) <= datetime.today():
+                contr_ids = []
+                if datetime.strptime(group_inv_date, DF) <= in_one_month:
                     contr_ids = [c.id
                                  for c in contract_group.contract_ids
                                  if c.next_invoice_date <= group_inv_date
                                  and c.state in self._get_gen_states()]
                     adv_bill_candidate.update(contr_ids)
-                else:
+                elif datetime.strptime(group_inv_date, DF) <= limit_date:
                     contr_ids = [c.id
                                  for c in contract_group.contract_ids
-                                 if datetime.strptime(c.next_invoice_date, DF)
-                                 <= limit_date
+                                 if c.next_invoice_date <= group_inv_date
                                  and c.id in adv_bill_candidate
                                  and c.state in self._get_gen_states()]
 
