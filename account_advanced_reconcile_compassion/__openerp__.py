@@ -28,7 +28,7 @@
 ##############################################################################
 
 {
-    'name': 'Advanced Reconcile Transaction Ref',
+    'name': 'Advanced Reconcile Compassion',
     'description':  """
     Reconcile rules with bvr_ref of invoice for Compassion CH.
 
@@ -44,9 +44,12 @@
     'website': 'http://www.compassion.ch',
     'depends': ['account_advanced_reconcile',
                 'l10n_ch_payment_slip_base_transaction_id',
-                'account_analytic_default'],
-    'data': ['easy_reconcile_view.xml',
-             'reconcile_fund_wizard_view.xml'],
+                'account_analytic_default',
+                'sponsorship_compassion',
+                'account_cancel'],
+    'data': ['view/easy_reconcile_view.xml',
+             'view/reconcile_fund_wizard_view.xml',
+             'view/reconcile_split_payment_wizard_view.xml'],
     'demo': [],
     'test': [],
     'auto_install': False,

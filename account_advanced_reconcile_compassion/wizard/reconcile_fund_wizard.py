@@ -16,10 +16,61 @@ from openerp import netsvc
 
 
 class reconcile_fund_wizard(orm.TransientModel):
+    """Wizard that helps the user doing a full reconciliation when a customer
+    paid more than excepted. It puts the extra amount in a fund selected
+    in the wizard and fully reconcile the credit line. """
     _name = 'reconcile.fund.wizard'
+
+    def _get_default_ids(self, cr, uid, context=None):
+        # The ids of the move_lines are given in the context, so
+        # we don't use the 'ids' fields and put [0] in it.
+        return self._get_contract_ids(cr, uid, [0], 'contract_id', '',
+                                      context)[0]
+
+    def _get_contract_ids(self, cr, uid, ids, field_name, arg, context):
+        move_line_obj = self.pool.get('account.move.line')
+        contract_ids = []
+        active_ids = context.get('active_ids')
+        if active_ids:
+            for move_line in move_line_obj.browse(cr, uid, active_ids,
+                                                  context):
+                if move_line and move_line.debit > 0:
+                    invoice = move_line.invoice
+                    if invoice:
+                        for invoice_line in invoice.invoice_line:
+                            if invoice_line.price_subtotal == move_line.debit:
+                                contract_ids.append(
+                                    invoice_line.contract_id.id)
+
+        return dict([(id, contract_ids) for id in ids])
+
+    def _write_contracts(self, cr, uid, ids, field_name, field_value, arg,
+                         context):
+        value_obj = self.pool.get('recurring.contract')
+        for line in field_value:
+            if line[0] == 1:  # one2many update
+                value_id = line[1]
+                value_obj.write(cr, uid, [value_id], line[2])
+        return True
 
     _columns = {
         'fund_id': fields.many2one('product.product', 'Fund', required=True),
+        'contract_ids': fields.function(
+            _get_contract_ids, fnct_inv=_write_contracts, type='one2many',
+            obj='recurring.contract', method=True,
+            string=_('Related contracts'),
+            help=_('You can directly edit the contracts from here if you want '
+                   'to add a line for the fund.')),
+    }
+
+    def _get_general_fund(self, cr, uid, context=None):
+        general_fund = self.pool.get('product.product').search(
+            cr, uid, [('name', '=', 'General Fund')], context=context)
+        return general_fund and general_fund[0] or False
+
+    _defaults = {
+        'fund_id': _get_general_fund,
+        'contract_ids': _get_default_ids,
     }
 
     def reconcile_with_fund(self, cr, uid, ids, context=None):
@@ -30,6 +81,7 @@ class reconcile_fund_wizard(orm.TransientModel):
             ids = ids[0]
 
         wizard = self.browse(cr, uid, ids, context)
+        active_ids = context.get('active_ids')
         res = {}
         invoice_obj = self.pool.get('account.invoice')
         move_line_obj = self.pool.get('account.move.line')
@@ -41,13 +93,13 @@ class reconcile_fund_wizard(orm.TransientModel):
 
         date_invoice = None
         residual = 0.0
-        for line in move_line_obj.browse(cr, uid, context.get('active_ids'),
+        for line in move_line_obj.browse(cr, uid, active_ids,
                                          context):
             residual += line.credit - line.debit
             if line.credit > 0:
                 date_invoice = line.date
 
-        if residual < 0:
+        if residual <= 0:
             raise orm.except_orm(
                 'ResidualError',
                 _('This can only be done if credits > debits'))
@@ -65,7 +117,6 @@ class reconcile_fund_wizard(orm.TransientModel):
             'bvr_reference': '',
         }
 
-        active_ids = context.get('active_ids')
         invoice_id = invoice_obj.create(cr, uid, inv_data, context=context)
         if invoice_id:
             res.update(self._generate_invoice_line(

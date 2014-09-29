@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_reconcile_fund_form" model="ir.ui.view">
+            <field name="name">reconcile.fund.wizard.form</field>
+            <field name="model">reconcile.fund.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Choose your fund" version="7.0">
+                    <sheet>
+                        <group>
+                            <field name="fund_id" />
+                            <field name="contract_ids" context="{'tree_view_ref' : 'recurring_contract.view_contracts_tree_simplified'}" />
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="reconcile_with_fund" type="object" string="Reconcile" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <act_window id="action_reconcile_fund_wizard"
+                    multi="True"
+                    key2="client_action_multi" name="Reconcile + Put in Fund"
+                    res_model="reconcile.fund.wizard" src_model="account.move.line"
+                    view_mode="form" target="new" view_type="form"
+        />
+        
+        <!-- Custom Tree view for the contracts -->
+        <record id="view_contracts_tree_simplified" model="ir.ui.view">
+            <field name="name">view.contracts.simplified.tree</field>
+            <field name="model">recurring.contract</field>
+            <field name="inherit_id" ref="sponsorship_compassion.view_recurring_contract_tree_compassion"/>
+            <field eval="20" name="priority"/>
+            <field name="arch" type="xml">
+                <data>
+                    <tree string="Contracts" position="attributes">
+                        <attribute name="delete">false</attribute>
+                        <attribute name="create">false</attribute>
+                    </tree>
+                    <field name="child_name" position="replace" />
+                    <field name="start_date" position="replace" />
+                    <field name="end_date" position="replace" />
+                </data>
+                
+            </field>
+        </record>
+    </data>
+</openerp> 
