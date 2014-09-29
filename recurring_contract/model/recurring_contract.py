@@ -170,6 +170,7 @@ class recurring_contract(orm.Model):
     _defaults = {
         'reference': '/',
         'state': 'draft',
+        'start_date': datetime.today().strftime(DF),
     }
 
     def _check_unique_reference(self, cr, uid, ids, context=None):
