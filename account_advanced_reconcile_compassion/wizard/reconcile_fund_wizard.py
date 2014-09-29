@@ -13,15 +13,17 @@ import time
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp import netsvc
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 class reconcile_fund_wizard(orm.TransientModel):
+    """Wizard that helps the user doing a full reconciliation when a customer
+    paid more than excepted. It puts the extra amount in a fund selected
+    in the wizard and fully reconcile the credit line. """
     _name = 'reconcile.fund.wizard'
 
     def _get_default_ids(self, cr, uid, context=None):
+        # The ids of the move_lines are given in the context, so
+        # we don't use the 'ids' fields and put [0] in it.
         return self._get_contract_ids(cr, uid, [0], 'contract_id', '',
                                       context)[0]
 
@@ -44,7 +46,7 @@ class reconcile_fund_wizard(orm.TransientModel):
 
     def _write_contracts(self, cr, uid, ids, field_name, field_value, arg,
                          context):
-        value_obj = self.pool.get('simple.recurring.contract')
+        value_obj = self.pool.get('recurring.contract')
         for line in field_value:
             if line[0] == 1:  # one2many update
                 value_id = line[1]
@@ -55,7 +57,7 @@ class reconcile_fund_wizard(orm.TransientModel):
         'fund_id': fields.many2one('product.product', 'Fund', required=True),
         'contract_ids': fields.function(
             _get_contract_ids, fnct_inv=_write_contracts, type='one2many',
-            obj='simple.recurring.contract', method=True,
+            obj='recurring.contract', method=True,
             string=_('Related contracts'),
             help=_('You can directly edit the contracts from here if you want '
                    'to add a line for the fund.')),
