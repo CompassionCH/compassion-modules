@@ -29,6 +29,7 @@ from openerp.tools.config import config
 class compassion_child(orm.Model):
     """ A sponsored child """
     _name = 'compassion.child'
+    _rec_name = 'code'
 
     def get_portrait(self, cr, uid, ids, name, args, context=None):
         attachment_obj = self.pool.get('ir.attachment')

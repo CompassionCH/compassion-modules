@@ -6,7 +6,7 @@
 -->
 <openerp>
 <data noupdate="1">
-	<record id="simple_recurring_contract.recurring_contract_invoicer_cron" model="ir.cron">
+	<record id="recurring_contract.recurring_contract_invoicer_cron" model="ir.cron">
 		<field name="name">Launch friday invoice generation</field>
 		<field name="interval_number">7</field>
 		<field name="interval_type">days</field>

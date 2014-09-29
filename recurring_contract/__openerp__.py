@@ -1,7 +1,14 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Recurring contract module for openERP
+#       ______ Releasing children from poverty      _
+#      / ____/___  ____ ___  ____  ____ ___________(_)___  ____
+#     / /   / __ \/ __ `__ \/ __ \/ __ `/ ___/ ___/ / __ \/ __ \
+#    / /___/ /_/ / / / / / / /_/ / /_/ (__  |__  ) / /_/ / / / /
+#    \____/\____/_/ /_/ /_/ .___/\__,_/____/____/_/\____/_/ /_/
+#                        /_/
+#                            in Jesus' name
+#
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    @author: Cyril Sester <csester@compassion.ch>
 #
@@ -19,8 +26,9 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+
 {
-    'name': 'Simple recurring contract',
+    'name': 'Recurring contract',
     'summary': 'Contract for recurring invoicing',
     'version': '0.1',
     'license': 'AGPL-3',
@@ -30,11 +38,12 @@
     'depends': ['base', 'sale'],
     'external_dependencies': {},
     'data': [
-        'view/simple_recurring_contract_view.xml',
+        'view/contract_group_view.xml',
+        'view/recurring_contract_view.xml',
         'view/res_partner_view.xml',
         'view/recurring_invoicer_view.xml',
         'view/recurring_invoicer_wizard_view.xml',
-        'workflow/simple_recurring_contract_workflow.xml',
+        'workflow/recurring_contract_workflow.xml',
         'data/recurring_contract_sequence.xml',
         'data/recurring_invoicer_sequence.xml',
         'data/contract_expire_cron.xml',
@@ -43,7 +52,9 @@
     ],
     'demo': [],
     'description': '''
-
+        Recurring contracts are made to handle recurring invoice generation.
+        Each contract is part of a contract group. This way, only one invoice
+        is generated for each group.
     ''',
     'active': False,
     'installable': True,

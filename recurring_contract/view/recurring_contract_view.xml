@@ -7,9 +7,9 @@
 <openerp>
 <data>
 	<!-- Contract tree view -->
-	<record id="view_simple_recurring_contract_tree" model="ir.ui.view">
-		<field name="name">simple.recurring.contract.tree</field>
-		<field name="model">simple.recurring.contract</field>
+	<record id="view_recurring_contract_tree" model="ir.ui.view">
+		<field name="name">recurring.contract.tree</field>
+		<field name="model">recurring.contract</field>
 		<field name="priority" eval="8" />
 		<field name="arch" type="xml">
 			<tree string="Contracts" colors="blue:state == 'draft';black:state == 'active';gray:state == 'terminated'">
@@ -23,11 +23,11 @@
 			</tree>
 		</field>
 	</record>
-	
+
 	<!-- Contract form view -->
-	<record id="view_simple_recurring_contract_form" model="ir.ui.view">
-		<field name="name">simple.recurring.contract.form</field>
-		<field name="model">simple.recurring.contract</field>
+	<record id="view_recurring_contract_form" model="ir.ui.view">
+		<field name="name">recurring.contract.form</field>
+		<field name="model">recurring.contract</field>
 		<field name="arch" type="xml">
 			<form string="Contract" version="7.0">
 			<header>
@@ -43,20 +43,13 @@
 				</div>
 				<group>
 					<group>
-						<field name="start_date" on_change="on_change_start_date(start_date)" />
-						<field name="end_date" />
-						<field name="next_invoice_date" on_change="on_change_next_invoice_date(next_invoice_date, advance_billing)" />
-						<label for="recurring_value" />
-						<div>
-							<field name="recurring_value" class="oe_inline" />
-							<field name="recurring_unit" class="oe_inline" />
-						</div>
-						<field name="advance_billing" />
-						<field name="next_advance_date" invisible="1" />
+						<field name="partner_id" on_change="on_change_partner_id(partner_id)" />
+						<field name="group_id" domain="[('partner_id', '=', partner_id)]" context="{'default_partner_id': partner_id}" />
 					</group>
 					<group>
-						<field name="partner_id" domain="[('customer', '=', True)]"/>
-						<field name="payment_term_id" />
+						<field name="start_date" on_change="on_change_start_date(start_date)" />
+						<field name="end_date" />
+						<field name="next_invoice_date" />
 					</group>
 				</group>
 				<h2><label for="invoice_line_ids" /></h2>
@@ -83,14 +76,18 @@
 					</page>
 				</notebook>
 			</sheet>
+			<div class="oe_chatter">
+				<field name="message_follower_ids" widget="mail_followers"/>
+				<field name="message_ids" widget="mail_thread"/>
+			</div>
 			</form>
 		</field>
 	</record>
-	
+
 	<!-- Contract line tree view -->
-	<record id="view_simple_recurring_contract_line_tree" model="ir.ui.view">
-		<field name="name">simple.recurring.contract.line.tree</field>
-		<field name="model">simple.recurring.contract.line</field>
+	<record id="view_recurring_contract_line_tree" model="ir.ui.view">
+		<field name="name">recurring.contract.line.tree</field>
+		<field name="model">recurring.contract.line</field>
 		<field name="priority" eval="8" />
 		<field name="arch" type="xml">
 			<tree string="Contract Lines" editable="bottom">
@@ -102,9 +99,9 @@
 		</field>
 	</record>
 
-	<record id="view_simple_recurring_contract_filter" model="ir.ui.view">
-		<field name="name">simple.recurring.contract.select</field>
-		<field name="model">simple.recurring.contract</field>
+	<record id="view_recurring_contract_filter" model="ir.ui.view">
+		<field name="name">recurring.contract.select</field>
+		<field name="model">recurring.contract</field>
 		<field name="arch" type="xml">
 			<search string="Search contract">
 				<field name="reference" string="Contract" filter_domain="['|','|', ('reference','ilike',self), ('partner_id','child_of',self), ('payment_term_id', 'ilike', self)]"/>
@@ -126,12 +123,12 @@
 		   </search>
 		</field>
 	</record>
-	
+
 	<!-- Sidebar action, called from menu_recurring_contract_form menuitem -->
 	<record id="action_recurring_contract_form" model="ir.actions.act_window">
 		<field name="name">Contracts</field>
 		<field name="type">ir.actions.act_window</field>
-		<field name="res_model">simple.recurring.contract</field>
+		<field name="res_model">recurring.contract</field>
 		<field name="view_type">form</field>
 		<field name="view_mode">tree,form</field>
 		<field name="help" type="html">
@@ -142,7 +139,7 @@
 		  </p>
 		</field>
 	</record>
-	
+
 	<menuitem id="menu_contracts_section" parent="base.menu_base_partner" name="Contracts" sequence="20" groups="base.group_sale_manager"/>
 	<menuitem id="menu_recurring_contract_form" parent="menu_contracts_section" action="action_recurring_contract_form" sequence="5"/>
 </data>

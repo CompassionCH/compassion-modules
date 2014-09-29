@@ -9,14 +9,14 @@
 	<!-- Workflow activities (what is done when state is reached) -->
 
 	<record model="workflow.activity" id="act_waiting">
-		<field name="wkf_id" ref="simple_recurring_contract.wkf_simple_recurring_contract" />
+		<field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
 		<field name="name">waiting</field>
 		<field name="kind">function</field>
 		<field name="action">contract_waiting()</field>
 	</record>
     
     <record model="workflow.activity" id="act_cancelled">
-		<field name="wkf_id" ref="simple_recurring_contract.wkf_simple_recurring_contract" />
+		<field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
 		<field name="name">cancelled</field>
 		<field name="kind">function</field>
 		<field name="action">contract_cancelled()</field>
@@ -24,14 +24,14 @@
     </record>
 
 	<!-- Workflow transitions (how are states reached) -->
-	<record model="workflow.transition" id="simple_recurring_contract.t1">
-		<field name="act_from" ref="simple_recurring_contract.act_draft" />
+	<record model="workflow.transition" id="recurring_contract.t1">
+		<field name="act_from" ref="recurring_contract.act_draft" />
 		<field name="act_to" ref="act_waiting" />
 		<field name="signal">contract_validated</field>
 	</record>
     <record model="workflow.transition" id="t4">
 		<field name="act_from" ref="act_waiting" />
-		<field name="act_to" ref="simple_recurring_contract.act_active" />
+		<field name="act_to" ref="recurring_contract.act_active" />
 		<field name="signal">contract_active</field>
 	</record>
 	<record model="workflow.transition" id="t3">
