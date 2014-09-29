@@ -11,12 +11,13 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 class reconcile_split_payment_wizard(orm.TransientModel):
+    """Wizard that helps the user doing a full reconciliation when a customer
+    paid more than excepted. It splits the payment into two move lines so
+    that one invoice can be reconciled and the extra amount is kept in
+    the customer balance. """
     _name = 'reconcile.split.payment.wizard'
 
     def _get_default_ids(self, cr, uid, context=None):
@@ -42,7 +43,7 @@ class reconcile_split_payment_wizard(orm.TransientModel):
 
     def _write_contracts(self, cr, uid, ids, field_name, field_value, arg,
                          context):
-        value_obj = self.pool.get('simple.recurring.contract')
+        value_obj = self.pool.get('recurring.contract')
         for line in field_value:
             if line[0] == 1:  # one2many update
                 value_id = line[1]
@@ -52,7 +53,7 @@ class reconcile_split_payment_wizard(orm.TransientModel):
     _columns = {
         'contract_ids': fields.function(
             _get_contract_ids, fnct_inv=_write_contracts, type='one2many',
-            obj='simple.recurring.contract', method=True,
+            obj='recurring.contract', method=True,
             string=_('Related contracts'),
             help=_('You can directly edit the contracts from here if you want '
                    'to change the next invoice date of one contract '
@@ -70,7 +71,6 @@ class reconcile_split_payment_wizard(orm.TransientModel):
         if isinstance(ids, list):
             ids = ids[0]
 
-        # wizard = self.browse(cr, uid, ids, context)
         move_line_obj = self.pool.get('account.move.line')
         move_obj = self.pool.get('account.move')
         active_ids = context.get('active_ids')
