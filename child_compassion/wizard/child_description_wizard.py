@@ -21,6 +21,7 @@
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from child_description_fr import Child_description_fr
+from child_description_de import Child_description_de
 
 
 class child_description_wizard(orm.TransientModel):
