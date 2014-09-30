@@ -1,4 +1,4 @@
-﻿# -*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -125,6 +125,7 @@ class Child_description_fr:
             'K': u'deuxième enfantine',
             'P': u'primaire',
             }
+        # the value of us_school_level can also be blank
         string = u'Il' if child.gender == 'M' else u'Elle'
         if case_study.attending_school_flag:
             if (case_study.us_school_level and case_study.us_school_level in
