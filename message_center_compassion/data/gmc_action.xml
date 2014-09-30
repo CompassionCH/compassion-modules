@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="True">
+		
+        <!-- Constituent Messages -->
+        <record id="upsert_constituent" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">UpsertConstituent</field>
+            <field name="model">res.partner</field>
+            <field name="type">upsert</field>
+            <field name="description">This will notify GMC of a creation or modification of a partner.</field>
+        </record>
+        
+        <!-- Child Messages -->
+        <record id="allocate_child" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">AllocateChild</field>
+            <field name="model">compassion.child</field>
+            <field name="type">allocate</field>
+            <field name="description">This will import a new child in the database.</field>
+        </record>
+        <record id="deallocate_child" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">DeallocateChild</field>
+            <field name="model">compassion.child</field>
+            <field name="type">deallocate</field>
+            <field name="description">This won't do anything yet. Please implement the method.</field>
+        </record>
+        <record id="update_child" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">UpdateChild</field>
+            <field name="model">compassion.child</field>
+            <field name="type">update</field>
+            <field name="description">This will retrieve a new case study for a child.</field>
+        </record>
+        <record id="depart_child" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">DepartChild</field>
+            <field name="model">compassion.child</field>
+            <field name="type">allocate</field>
+            <field name="description">This won't do anything yet. Please implement the method.</field>
+        </record>
+        
+        <!-- Project Messages -->
+        <!-- Please add project messages -->
+        
+        <!-- Commitment Messages -->
+        <record id="create_commitment" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">CreateCommitment</field>
+            <field name="model">recurring.contract</field>
+            <field name="type">create</field>
+            <field name="description">This will inform GMC of a new sponsorship.</field>
+        </record>
+        <record id="cancel_commitment" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">CancelCommitment</field>
+            <field name="model">recurring.contract</field>
+            <field name="type">cancel</field>
+            <field name="description">This will inform GMC of a terminated sponsorship.</field>
+        </record>
+        <record id="create_gift" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">CreateGift</field>
+            <field name="model">account.invoice.line</field>
+            <field name="type">create</field>
+            <field name="description">This will inform GMC of a new gift.</field>
+        </record>
+    </data>
+</openerp>
