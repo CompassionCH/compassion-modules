@@ -11,7 +11,6 @@
 
 from openerp.osv import orm
 import logging
-import pdb
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +22,6 @@ class recurring_contract(orm.Model):
 
     def _on_contract_active(self, cr, uid, ids, context=None):
         """ Create messages to GMC when new sponsorship is activated. """
-        pdb.set_trace()
         super(recurring_contract, self)._on_contract_active(
             cr, uid, ids, context=context)
         message_obj = self.pool.get('gmc.message.pool')
