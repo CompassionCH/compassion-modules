@@ -15,7 +15,7 @@
 						<group>
 							<field name="partner_id" domain="[('customer', '=', True)]" on_change="on_change_partner_id(partner_id)" />
 							<field name="bvr_reference" />
-							<field name="payment_term_id" />
+							<field name="payment_term_id" on_change="on_change_payment_term(payment_term_id, partner_id)" />
 						</group>
 					</group>
 				</group>
