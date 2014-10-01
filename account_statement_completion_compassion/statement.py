@@ -110,7 +110,7 @@ class AccountStatementCompletionRule(Model):
 
         # Search Contract
         contract_group_obj = self.pool.get('recurring.contract.group')
-        contract_group_ids = contract_obj.search(
+        contract_group_ids = contract_group_obj.search(
             cr, uid, [('bvr_reference', '=', ref)], context=context)
         if contract_group_ids:
             partner = contract_group_obj.browse(
