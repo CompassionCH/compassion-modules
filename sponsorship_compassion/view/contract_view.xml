@@ -47,9 +47,10 @@
                     <field name="first_payment_date" />
                 </field>
                 
-                <!-- Add correspondant -->
+                <!-- Add correspondent and sponsor contract number -->
                 <field name="group_id" position="after">
                     <field name="correspondant_id" />
+                    <field name="num_pol_ga" invisible="True" />
                 </field>
 			</field>
 		</record>

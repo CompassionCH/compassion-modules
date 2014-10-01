@@ -15,6 +15,7 @@ from openerp.addons.account_statement_base_completion.statement \
     import ErrorTooManyPartner
 from openerp import netsvc
 import time
+import pdb
 
 GIFT_TYPES = ['Birthday Gift', 'General Gift',
               'Family Gift', 'Project Gift', 'Graduation Gift']
@@ -310,10 +311,12 @@ class AccountStatementCompletionRule(Model):
             contract_obj = self.pool.get('recurring.contract')
             contract_number = int(st_line['ref'][16:21])
             contract_ids = contract_obj.search(
-                cr, uid, [('partner_id', '=', partner_id)], context=context)
-            if contract_number < len(contract_ids):
+                cr, uid, [
+                    ('partner_id', '=', partner_id),
+                    ('num_pol_ga', '=', contract_number)], context=context)
+            if contract_ids:
                 contract = contract_obj.browse(
-                    cr, uid, contract_ids[contract_number], context=context)
+                    cr, uid, contract_ids, context=context)
                 inv_line_data['contract_id'] = contract.id
                 inv_line_data['name'] = contract.child_id.code
                 inv_line_data['name'] += " - " + contract.child_id.birthdate \

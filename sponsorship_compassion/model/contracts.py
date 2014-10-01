@@ -111,13 +111,24 @@ class recurring_contract(orm.Model):
                  "contract is active."),
         'fully_managed': fields.function(
             _is_fully_managed, type="boolean", store=True),
+        # Field used for identifying gifts from sponsor (because of bad GP)
+        'num_pol_ga': fields.integer(
+            'Partner Contract Number', required=True
+        ),
     }
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
-        ''' On partner change, we update the correspondent '''
+        ''' On partner change, we update the correspondent and 
+        set the new pol_number (for gift identification).'''
         res = super(recurring_contract, self).on_change_partner_id(
             cr, uid, ids, partner_id, context)
-        res['value'].update({'correspondant_id': partner_id})
+        num_contracts = self.search(
+            cr, uid, [('partner_id', '=', partner_id)], context=context,
+            count=True)
+        res['value'].update({
+            'correspondant_id': partner_id,
+            'num_pol_ga': num_contracts
+        })
         return res
 
     def contract_waiting(self, cr, uid, ids):
@@ -130,10 +141,12 @@ class recurring_contract(orm.Model):
 
     def copy(self, cr, uid, id, default=None, context=None):
         default = default or {}
+        num_pol_ga = self.browse(cr, uid, id, context=context).num_pol_ga
         default.update({
             'child_id': False,
             'first_payment_date': False,
             'is_active': False,
+            'num_pol_ga': num_pol_ga+1,
         })
         return super(recurring_contract, self).copy(cr, uid, id, default, context)
 
