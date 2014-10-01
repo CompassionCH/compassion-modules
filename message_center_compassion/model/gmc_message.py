@@ -13,7 +13,7 @@ from openerp.osv import fields, osv
 from openerp.tools.translate import _
 from openerp.tools.config import config
 import requests
-import datetime
+from datetime import date
 import logging
 
 
@@ -80,7 +80,7 @@ class gmc_message_pool(Model):
     }
 
     _defaults = {
-        'date': str(datetime.date.today()),
+        'date': str(date.today()),
         'state': 'pending'
     }
 
@@ -89,7 +89,8 @@ class gmc_message_pool(Model):
         success_ids = []
         for message in self.browse(cr, uid, ids, context=context):
             if message.state == 'pending':
-                message_args = {'object_ref': message.incoming_key}
+                message_args = {'code': message.incoming_key,
+                                'date': message.date}
                 if self.pool.get(
                     'gmc.action').execute(cr, uid, message.action_id.id,
                                           message.object_id, message_args,
@@ -99,7 +100,7 @@ class gmc_message_pool(Model):
         if success_ids:
             self.write(
                 cr, uid, success_ids,
-                {'state': 'sent', 'process_date': datetime.date.today()},
+                {'state': 'sent', 'process_date': date.today()},
                 context=context)
 
         return True
@@ -211,8 +212,7 @@ class gmc_action(Model):
         res = False
         model_obj = self.pool.get(action.model)
         if action.type == 'allocate':
-            ref = args['object_ref']
-            res = model_obj.allocate(cr, uid, ref, context=context)
+            res = model_obj.allocate(cr, uid, args, context=context)
         elif action.type in ('deallocate', 'depart', 'update'):
             res = getattr(model_obj, action.type)(
                 cr, uid, object_id, context=context)
