@@ -9,6 +9,7 @@
 #
 ##############################################################################
 from openerp.osv import orm
+from datetime import date
 
 
 class compassion_child(orm.Model):
@@ -16,9 +17,8 @@ class compassion_child(orm.Model):
     """ Add allocation and deallocation methods on the children. """
     _inherit = 'compassion.child'
 
-    def allocate(self, cr, uid, child_reference, context=None):
-        child_id = self.create(
-            cr, uid, {'code': child_reference, 'name': '/'}, context=context)
+    def allocate(self, cr, uid, args, context=None):
+        child_id = self.create(cr, uid, args, context=context)
         self.update(cr, uid, child_id, context=context)
         return self.get_basic_informations(cr, uid, child_id, context=context)
 
@@ -34,7 +34,7 @@ class compassion_child(orm.Model):
     def update(self, cr, uid, id, context=None):
         """ When we receive a notification that child has been updated,
         we fetch the last case study. """
-        self.get_last_case_study(self, cr, uid, id, context=context)
+        self.get_last_case_study(cr, uid, id, context=context)
         return True
 
 compassion_child()
