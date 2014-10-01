@@ -40,11 +40,9 @@ class Child_description_de:
         ''' Generate the christian activities description part.
         '''
         if child.gender == 'M':
-            pronom = 'er'
-            pronom_maj = 'Er'
+            pronoun = 'er'
         else:
-            pronom = 'sie'
-            pronom = 'Sie'
+            pronoun = 'sie'
 
         if not case_study.christian_activities_ids:
             return ''
@@ -53,7 +51,7 @@ class Child_description_de:
             for activity in case_study.christian_activities_ids]
         activities_str = cls._gen_list_string(activities, ', ', ' und ')
         string = u"In der Kirche macht %s %s. " % (
-            pronom, activities_str)
+            pronoun, activities_str)
         return string
 
     @classmethod
@@ -61,7 +59,7 @@ class Child_description_de:
             cls, cr, uid, child, case_study, context=None):
         ''' Generate the family duties description part. There are 2 kind of
             activities:
-             - Standards : introduced by 'erledigt' and having  # erledigt or hilft
+             - Standards : introduced by 'erledigt' and having
                 the determinant in value_de
              - Specials : having the action verb included in value_de
         '''
@@ -75,13 +73,12 @@ class Child_description_de:
                       for activity in case_study.family_duties_ids
                       if activity.value_en not in specials]
         if len(activities):
-            #activities[0] = u'aide à faire %s' % activities[0]
             activities[0] = u'erledigt %s' % activities[0]
         activities.extend([activity.value_de if activity.value_de
                            else activity.value_en
                            for activity in case_study.family_duties_ids
                            if activity.value_en in specials])
-        activities_str = cls._gen_list_string(activities, ', ', ' et ')
+        activities_str = cls._gen_list_string(activities, ', ', ' und ')
         string = u"Zu Hause, %s %s. " % (child.firstname, activities_str)
         return string
 
@@ -109,8 +106,8 @@ class Child_description_de:
                            for activity in case_study.hobbies_ids
                            if activity.value_en in verbs])
         activities_str = cls._gen_list_string(activities, ', ', ' und ')
-        string = u"%s liebe %s. " % ('Il' if child.gender == 'M'
-                                             else 'Elle', activities_str)
+        string = u"%s liebe %s. " % ('Er' if child.gender == 'M'
+                                     else 'Sie', activities_str)
         return string
 
     @classmethod
@@ -137,8 +134,8 @@ class Child_description_de:
             '12': u'zwölfte',
             '13': u'dreizehnte',
             '14': u'vierzehnte',
-            'PK': u'pre kindergarten',
-            'K': u'kindergarten',
+            'PK': u'pre Kindergarten',
+            'K': u'Kindergarten',
             'P': u'primär',
             }
                     # the value of us_school_level can also be blank
@@ -148,28 +145,28 @@ class Child_description_de:
                     ordinals):
                 try:
                     int(case_study.us_school_level)
-                    string += (u' ist in der %s Klasse (US)'  # or Dieses erste Jahr. ?
+                    string += (u' ist in der %s Klasse (US)'
                                % ordinals[case_study.us_school_level])
                 except:
-                    string += (u' est en %s (US)'
+                    string += (u' ist in %s (US)'
                                % ordinals[case_study.us_school_level])
             else:
-                string += u' va à l\'école'
+                string += u' geht zur Schule'
             if case_study.school_performance:
-                string += u' et %s a des résultats %s. ' % (child.firstname,
+                # not sure about the "hat ... Ergebnisse."
+                string += u' und %s hat %s Ergebnisse. ' % (child.firstname,
                           case_study.school_performance[0].value_de
                           if case_study.school_performance[0].value_de
                           else case_study.school_performance[0].value_en)
             elif case_study.school_best_subject:
-                string += u' et aime bien %s. ' \
+                string += u' und mag: %s. ' \
                           % (case_study.school_best_subject[0].value_de
                              if case_study.school_best_subject[0].value_de
                              else case_study.school_best_subject[0].value_en)
             else:
                 string += '.'
         else:
-            string += ' ne va pas à l\'école'  # TODO reason
-
+            string += ' geht in die Schule nicht'  # TODO reason
         return string
 
     @classmethod
@@ -197,22 +194,27 @@ class Child_description_de:
             value = (guardian.value_de if guardian.value_de
                      else guardian.value_en)
             if guardian.value_en in male_values:
-                if value == 'stepfather' or value == 'Stiefvater':
-                    live_with.append(u'seinem %s' % value)
-                else:
-                    live_with.append(u'sein %s' % value)
+                child_to_guardian_pronoun = (u'seinem' if child.gender == 'M'
+                                             else u'ihrem')
+                live_with.append(u'%s %s' % (child_to_guardian_pronoun, value))
                 male_guardian = value if not male_guardian else male_guardian
             elif guardian.value_en in plur_values:
-                if  value == 'friends' or value == 'Freunde':
-                    live_with.append(u'ihre %s' % value)
-                elif value == 'other relatives' or value == 'andere Verwandte':
-                    live_with.append(u' %s' % value)
-                #elif value == 'foster parents' or value == 'Pflegeeltern':
+                if value == 'friends' or value == 'Freunden':
+                    live_with.append(u'%s %s'
+                                     % (u'seinen' if child.gender == 'M'
+                                        else u'ihren', value))
+                elif (value == 'other relatives'
+                      or value == 'anderen Verwandten'):
+                    live_with.append(u'anderen  %s' % value)
+                elif value == 'foster parents' or value == 'Pflegeeltern':
+                    live_with.append(u'%s %s'
+                                     % (u'seiner' if child.gender == 'M'
+                                        else u'ihrer', value))
                 else:
                     live_with.append(u' %s' % value)
             else:
                 if female_guardian == 'institutional worker':
-                    live_with.append(u'einem Institut')  # find better "institut"
+                    live_with.append(u'einem Institut')  # find btr "institut"
                 else:
                     if value == 'institutional worker':
                         live_with.append(u'einem Institut')
@@ -223,18 +225,26 @@ class Child_description_de:
                         female_guardian = (value if not female_guardian
                                            else female_guardian)
         if case_study.nb_brothers == 1:
-            live_with.append(u'sein Bruder')
+            live_with.append(u'%s Bruder' % (u'seinem' if child.gender == 'M'
+                                             else u'ihrem'))
         elif case_study.nb_brothers > 1:
-            live_with.append(u'seine %s Brüder' % case_study.nb_brothers)
+            live_with.append(u'%s %s Brüdern'
+                             % (u'seinen' if child.gender == 'M'
+                                else u'ihren', case_study.nb_brothers))
         if case_study.nb_sisters == 1:
-            live_with.append(u'ihren Schwester')
+            live_with.append(u'%s Schwester'
+                             % (u'seiner' if child.gender == 'M'
+                                else u'ihrer'))
         elif case_study.nb_sisters > 1:
-            live_with.append(u'ihren %s Schwester' % case_study.nb_sisters)
-        if 'un institut' in live_with:
+            live_with.append(u'%s %s Schwestern'
+                             % (u'seinen' if child.gender == 'M'
+                                else u'ihren', case_study.nb_sisters))
+        if 'einem Institut' in live_with:
             guardian_str = '%s mit %s' % (live_with[0], live_with[1])
         else:
+            #guardian_str = cls._gen_list_string(live_with, ', ', ' und ')
             guardian_str = cls._gen_list_string(live_with, ', ', ' und ')
-        if 'institut' in guardian_str:
+        if 'Institut' in guardian_str:
             string = '%s lebt in %s. ' % (child.firstname, guardian_str)
         else:
             string = '%s lebt mit %s. ' % (child.firstname, guardian_str)
@@ -260,23 +270,34 @@ class Child_description_de:
                 string = u""
             else:
                 if ('isunemployed' in props_m) and job_f:
-                    string = (u"Ihre %s ist %s und sein %s arbeitslos ist."
-                              % (f_g, job_f[0], m_g))
+                    string = (u" %s %s arbeitet als %s \
+                              und %s %s arbeitslos ist."
+                              % (u'seiner' if child.gender == 'M' else u'ihr',
+                                 f_g, job_f[0], u'seine' if child.gender == 'M'
+                                 else u'ihre', m_g))
                 elif job_m and ('isunemployed' in props_f):
-                    string = (u"Sein %s ist %s und ihre %s arbeitslos ist."
-                              % (m_g, job_m[0], f_g))
+                    string = (u"%s %s arbeitet als %s \
+                              und %s %s arbeitslos ist."
+                              % (u'seiner' if child.gender == 'M'
+                                 else u'ihr', m_g, job_m[0], u'seine'
+                                 if child.gender == 'M' else u'ihre', f_g))
                 elif ('isunemployed' in props_m) and ('isunemployed'
                                                       in props_f):
                     if f_g == "mother" and m_g == "father":
-                        string = u"Ihre Eltern arbeitslos sind."
+                        string = (u"%s Eltern arbeitslos sind."
+                                  % (u'Seinen' if child.gender == 'M'
+                                     else u'Ihren'))
                     else:
-                        string = (u"Sein %s und ihre %s arbeitslos sind."
-                                  % (m_g, f_g))
+                        string = (u"%s %s und %s %s arbeitslos sind."
+                                  % (u'Sein' if child.gender == 'M'
+                                     else u'Ihr', m_g, u'seine'
+                                     if child.gender == 'M'
+                                     else u'ihre', f_g))
                 elif job_m and job_f:
-                    if ((job_f[0][0:7] == job_m[0][0:7])
-                            and (f_g == u"Mutter" and m_g == u"Vater")):
-                        string = u"Ihre Eltern sind %ss." % job_m[0]
-                    else:
-                        string = (u"Ihre %s ist %s und sein %s ist %s."
-                                  % (f_g, job_f[0], m_g, job_m[0]))
+                    string = (u"%s %s arbeitet als %s \
+                              und %s %s arbeitet als %s."
+                              % (u'Seine' if child.gender == 'M'
+                                 else u'Ihre', f_g, job_f[0], u'sein'
+                                 if child.gender == 'M'
+                                 else u'ihr', m_g, job_m[0]))
         return string

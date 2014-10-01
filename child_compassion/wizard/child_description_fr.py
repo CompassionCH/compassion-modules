@@ -162,7 +162,6 @@ class Child_description_fr:
                 string += '.'
         else:
             string += ' ne va pas à l\'école'  # TODO reason
-
         return string
 
     @classmethod
