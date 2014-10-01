@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Cyril Sester <csester@compassion.ch>
+#    @author: Cyril Sester <csester@compassion.ch>, Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __openerp__.py
 #
@@ -35,6 +35,12 @@ class contract_group(orm.Model):
             res.append((gr.id, name))
         return res
 
+    def _get_op_payment_term(self, cr, uid, context=None):
+        ''' Get Permanent Order Payment Term, to set it by default. '''
+        payment_term_id = self.pool.get('account.payment.term').search(
+            cr, uid, [('name', '=', 'Permanent Order')], context=context)
+        return payment_term_id[0]
+
     _columns = {
         'bvr_reference': fields.char(size=32, string=_('BVR Ref'),
                                      track_visibility="onchange"),
@@ -49,9 +55,18 @@ class contract_group(orm.Model):
                    'advance. For example, you can generate the invoices '
                    'for each month of the year and send them to the '
                    'customer in january.'), track_visibility="onchange"),
-        'payment_term_id': fields.many2one('account.payment.term',
-                                           _('Payment Term'),
-                                           track_visibility="onchange"),
+        'payment_term_id': fields.many2one(
+            'account.payment.term', _('Payment Term'),
+            domain=['|', '|', '|', ('name', 'ilike', 'BVR'),
+                    ('name', 'ilike', 'LSV'),
+                    ('name', 'ilike', 'Postfinance'),
+                    ('name', 'ilike', 'Permanent')],
+            track_visibility="onchange"),
+    }
+
+    _defaults = {
+        'payment_term_id': _get_op_payment_term,
+        'advance_billing': 'monthly',
     }
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
@@ -61,7 +76,8 @@ class contract_group(orm.Model):
         partner = self.pool.get('res.partner').browse(cr, uid, partner_id,
                                                       context=context)
         if partner.ref:
-            computed_ref = self._compute_partner_ref(partner)
+            computed_ref = self._compute_partner_ref(cr, uid, partner,
+                                                     context)
             if computed_ref:
                 res['value'] = {'bvr_reference': computed_ref}
             else:
@@ -73,17 +89,34 @@ class contract_group(orm.Model):
                                                'reference for the contract.')}
         return res
 
-    def _compute_partner_ref(self, partner):
-        # TODO : Retrieve existing ref if there is already a contract !
+    def on_change_payment_term(self, cr, uid, ids, payment_term_id,
+                               partner_id, context=None):
+        ''' Generate new bvr_reference if payment term is Permanent Order
+        or BVR '''
+        res = {'value': {'bvr_reference': ''}}
+        need_bvr_ref_term_ids = self.pool.get('account.payment.term').search(
+            cr, uid, [('name', 'in', ('Permanent Order', 'BVR'))],
+            context=context)
+        if payment_term_id in need_bvr_ref_term_ids:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id,
+                                                      context=context)
+            if partner.ref:
+                res['value'].update({
+                    'bvr_reference': self._compute_partner_ref(
+                        cr, uid, partner, context)})
+
+        return res
+            
+    def _compute_partner_ref(self, cr, uid, partner, context=None):
+        """ Generates a new BVR Reference.
+        See file \\nas\it\devel\Code_ref_BVR.xls for more information."""
         result = '0' * (9 + (7 - len(partner.ref))) + partner.ref
-        # TODO : Now, only one reference per partner. We should create another
-        # number if type of payment is not the same as an existing contract
-        # for that partner.
-        result += ('0' * 4) + '1'
-        # TODO : Other types than sponsorship !
+        count_groups = str(self.search(
+            cr, uid, [('partner_id', '=', partner.id)], context=context,
+            count=True))
+        result += '0' * (5 - len(count_groups)) + count_groups 
         # Type '0' = Sponsorship
         result += '0'
-        # TODO : ID child, bordereau or Fonds
         result += '0' * 4
 
         if len(result) == 26:
