@@ -98,7 +98,9 @@ class child_description_wizard(orm.TransientModel):
         self.write(cr, uid, ids, {
             'state': 'descriptions',
             'desc_fr': Child_description_fr.gen_fr_translation(
-                cr, uid, child, case_study, context)
+                cr, uid, child, case_study, context),
+            'desc_de': Child_description_de.gen_de_translation(
+                cr, uid, child, case_study, context),
             }, context)
 
         return {
