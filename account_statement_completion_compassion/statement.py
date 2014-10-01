@@ -109,12 +109,12 @@ class AccountStatementCompletionRule(Model):
         partner = None
 
         # Search Contract
-        contract_obj = self.pool.get('recurring.contract')
-        contract_ids = contract_obj.search(
+        contract_group_obj = self.pool.get('recurring.contract.group')
+        contract_group_ids = contract_obj.search(
             cr, uid, [('bvr_reference', '=', ref)], context=context)
-        if contract_ids:
-            partner = contract_obj.browse(
-                cr, uid, contract_ids, context=context)[0].partner_id
+        if contract_group_ids:
+            partner = contract_group_obj.browse(
+                cr, uid, contract_group_ids, context=context)[0].partner_id
         else:
             # Search open Customer Invoices (with field 'bvr_reference' set)
             invoice_obj = self.pool.get('account.invoice')
