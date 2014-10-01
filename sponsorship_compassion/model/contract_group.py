@@ -61,7 +61,7 @@ class contract_group(orm.Model):
         partner = self.pool.get('res.partner').browse(cr, uid, partner_id,
                                                       context=context)
         if partner.ref:
-            computed_ref = self._compute_partner_ref(partner.ref)
+            computed_ref = self._compute_partner_ref(partner)
             if computed_ref:
                 res['value'] = {'bvr_reference': computed_ref}
             else:
@@ -73,9 +73,9 @@ class contract_group(orm.Model):
                                                'reference for the contract.')}
         return res
 
-    def _compute_partner_ref(self, reference):
+    def _compute_partner_ref(self, partner):
         # TODO : Retrieve existing ref if there is already a contract !
-        result = '0' * (9 + (7 - len(reference))) + reference
+        result = '0' * (9 + (7 - len(partner.ref))) + partner.ref
         # TODO : Now, only one reference per partner. We should create another
         # number if type of payment is not the same as an existing contract
         # for that partner.
