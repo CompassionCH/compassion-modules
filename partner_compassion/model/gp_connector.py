@@ -277,7 +277,7 @@ class GPConnect(mysql_connector):
                 company_ref (string) : the reference of the company partner in MySQL
                 contact_id (long) : the id of the contact in OpenERP
         """
-        return self.query("UPDATE Adresses SET id_erp = {0}, IDUSER = (SELECT ID FROM login WHERE ERP_ID = {2}) WHERE CODEGA = '{1}'", (contact_id,company_ref,uid))
+        return self.query("UPDATE Adresses SET id_erp = %s, IDUSER = (SELECT ID FROM login WHERE ERP_ID = %s) WHERE CODEGA = %s", (contact_id, uid, company_ref))
     
     def unlinkContact(self, uid, company, company_categories):
         """ Unlink a contact from a company and use two different addresses in the MySQL Table. 
