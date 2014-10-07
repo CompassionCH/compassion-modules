@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Author: Cyril Sester. Copyright Compassion Suisse
+#    Author: Kevin Cristi. Copyright Compassion Suisse
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -38,165 +38,122 @@ class Child_description_de:
     @classmethod
     def _gen_christ_act_de(cls, cr, uid, child, case_study, context=None):
         ''' Generate the christian activities description part.
-            possible values:
-                Sunday School/Church
-                Bible Class 
-                Camp
-                Youth Group
-                Vacation Bible School
-                Choir
-                There is also free text for other Christian activities.
         '''
-        if child.gender == 'M':
-            pronoun = 'er'
-        else:
-            pronoun = 'sie'
-
         if not case_study.christian_activities_ids:
             return ''
         activities = [
             activity.value_de if activity.value_de else activity.value_en
             for activity in case_study.christian_activities_ids]
         activities_str = cls._gen_list_string(activities, ', ', ' und ')
-        string = u"In der Kirche macht %s %s. " % (
-            pronoun, activities_str)
+        string = u"In der Kirche macht %s %s %s" % ('er' if child.gender == 'M'
+                 else 'sie', activities_str, 'mit. '
+                 if activities_str > 1 else '. ')
         return string
 
     @classmethod
     def _gen_family_act_info_de(
             cls, cr, uid, child, case_study, context=None):
-        ''' Generate the family duties description part. There are 2 kind of
-            activities:
-             - Standards : introduced by 'erledigt' and having
-                the determinant in value_de
-             - Specials : having the action verb included in value_de
-        possible values:
-                Washing Clothes
-                Making Beds
-                Cleaning
-                Carries Water
-                Kitchen Help
-                Animal Care
-                Running Errands
-                Child Care
-                Buying/Selling in Market
-                Gathers Firewood
-                Gardening/Farming
-                Sewing
-                Teaching Others
-                There is also free text for other family duties.
+        ''' Generate the family duties description part.
+            In German, it always starts with "Zu Hause hilft sie/er beim"
+            It's followed by the family duties.
         '''
         if not case_study.family_duties_ids:
             return ''
-        specials = ['carries water', 'animal care', 'running errands',
-                    'buying/selling in market'
-                    'gathers firewood', 'teaching others']
-        activities = [activity.value_de if activity.value_de
-                      else activity.value_en
-                      for activity in case_study.family_duties_ids
-                      if activity.value_en not in specials]
-        if len(activities):
-            activities[0] = u'erledigt %s' % activities[0]
-        activities.extend([activity.value_de if activity.value_de
-                           else activity.value_en
-                           for activity in case_study.family_duties_ids
-                           if activity.value_en in specials])
+        activities = ([activity.value_de if activity.value_de
+                       else activity.value_en
+                       for activity in case_study.family_duties_ids])
         activities_str = cls._gen_list_string(activities, ', ', ' und ')
-        string = u"Zu Hause, %s %s. " % (child.firstname, activities_str)
+        string = u"Zu Hause hilft %s beim %s. " % ('er' if child.gender == 'M'
+                 else 'sie', activities_str)
         return string
 
     @classmethod
     def _gen_hobbies_info_de(cls, cr, uid, child, case_study, context=None):
         ''' Generate the hobbies description part.
-             There are 2 kind of hobbies :
-             - games, which are introduced by 'spielt gerne' and having
-                the determinant included in value_de
-             - verbs, which are simply printed with 'gern' decoration.
+            There are 3 groups of hobbies :
+            - hobbies starting with "Sie/Er spielt gerne" (sesg)
+            - hobbies starting with "Sie/Er" (se)
+            - hobbies starting with "Sie/Er" and finishing with "gerne" (se_g)
         '''
         if not case_study.hobbies_ids:
             return ''
-        child_hobbies = {
-            'Art/Drawing': 'malen/zeichnen',
-            'Baseball': 'Baseball',
-            'Basketball': 'Basketball',
-            'Bicycling': 'das Radfahren',
-            'Cars': 'Spielzeugautos',
-            'Dolls': 'Puppen',
-            'Group Games': 'Gruppenspiele',
-            'Hide and Seek': 'Verstecken spielen',
-            'Jacks': '',
-            'Jump Rope': 'Springseil',
-            'Listening to Music': 'Musik hören',
-            'Marbles': '',
-            'Musical Instrument': '',
-            'Other Ball Games': '',
-            'Other Sports Or Hobbies': '',
-            'Ping Pong': 'Ping Pong',
-            'Play House': 'Mama und Papa',
-            'Reading': 'liest gerne',
-            'Rolling a hoop': '',
-            'Running': 'zu laufen',
-            'Singing': 'singt gerne',
-            'Soccer/Footbal': 'Fußball',
-            'Story Telling': '',
-            'Swimming': 'gerne Schwimmen',
-            'Volleyball': 'Volleyball',
-            'Walking': 'mag spazieren',
-            }
-        
-        """verbs = ['art/drawing', 'bicycling', 'jump rope', 'listening to music'
-                 'musical instrument', 'reading', 'running'
-                 'singing', 'story telling', 'swimming', 'walking']"""
-        #for key, value in child_hobbies:
-                #if 
-        for activity in case_study.hobbies_ids:
-            if activity.value_de:
-                
-            
-
-        activities = [activity.value_de if activity.value_de
-                      else activity.value_en
-                      for activity in case_study.hobbies_ids
-                      if activity.value_en not in child_hobbies.keys()]
-                      #if activity.value_en not in verbs]
-
-       """ 
-            (1) Sie/Er spielt gerne Baseball 
-            (1) Sie/Er spielt gerne Basketball 
-            (1) Sie/Er spielt gerne Gruppenspiele 
-            (1) Sie/Er spielt gerne Ping Pong 
-            (1) Sie/Er spielt gerne Volleyball 
-            (1) Sie/Er spielt gerne Fußball / Footbal 
-            (?) Sie/Er spielt gerne hört Geschichten
-            Sie/Er spielt gerne Mama und Papa
-            (1) Sie/Er spielt gerne Verstecken spielen 
-            Sie/Er spielt gerne Springseil
-            Sie/Er spielt gerne mit Spielzeugautos
-            Sie/Er spielt gerne mit Puppen 
-            Sie/Er mag malen/zeichnen 
-            Sie/Er geniesst das Radfahren 
-            (?) Jacks (OSSELETS)
-            Sie/Er geniesst Musik hören.
-            (?) Murmelspiel (jouer au billes)
-            (?) Musikinstrument 
-            Sie/Er spielt gerne andere Ballspiele oder Sie/Er spielt gerne Ballspiele.
-            (?) Andere Sportarten oder Hobbys 
-            Sie/Er liest gerne
-            (?) Sie/Er spielt Roll einen Reifen 
-            Sie/Er liebt zu laufen 
-            Sie/Er singt gerne.
-            (?) Sie/Er gerne Schwimmen 
-            Sie/Er mag spazieren
-        """
-        if len(activities):
-            activities[0] = u'spielen %s' % activities[0]
-        activities.extend([activity.value_de if activity.value_de
+        hobbies_sesg = [
+            'baseball', 'basketball', 'cars', 'group games',
+            'hide and seek', 'jacks', 'other ball games', 'ping pong',
+            'play house', 'soccer/footbal', 'volleyball',
+            'dolls', 'marbles', 'rolling a hoop',
+            ]
+        hobbies_se = [
+            'jump rope', 'listening to music', 'bicycling', 'story telling',
+            ]
+        hobbies_se_g = [
+            'art/drawing', 'musical instrument', 'reading', 'running',
+            'other sports or hobbies', 'singing', 'swimming', 'walking',
+            ]
+        activities_sesg = [activity.value_de if activity.value_de
                            else activity.value_en
                            for activity in case_study.hobbies_ids
-                           if activity.value_en in child_hobbies.keys()])
-        activities_str = cls._gen_list_string(activities, ', ', ' und ')
-        string = u"%s liebe %s. " % ('Er' if child.gender == 'M'
-                                     else 'Sie', activities_str)
+                           if activity.value_en in (hobbies_sesg)]
+        activities_se = [activity.value_de if activity.value_de
+                         else activity.value_en
+                         for activity in case_study.hobbies_ids
+                         if activity.value_en in (hobbies_se)]
+        activities_se_g = [activity.value_de if activity.value_de
+                           else activity.value_en
+                           for activity in case_study.hobbies_ids
+                           if activity.value_en in (hobbies_se_g)]
+        string = ''
+        if len(activities_sesg):
+            string_sesg = u"%s spielt gerne " % (
+                'Er' if child.gender == 'M' else 'Sie')
+            if len(activities_sesg) == 1:
+                string_sesg += activities_sesg[0]
+            else:
+                num_loop = 0
+                for activity in activities_sesg:
+                    num_loop += 1
+                    if num_loop == 1:
+                        string_sesg += activity
+                    elif num_loop == len(activities_sesg):
+                        string_sesg += " und " + activity
+                    else:
+                        string_sesg += ", " + activity
+            string_sesg += u". "
+            string += string_sesg
+        if len(activities_se):
+            string_se = u"%s " % (
+                'Er' if child.gender == 'M' else 'Sie')
+            if len(activities_se) == 1:
+                string_se += activities_se[0]
+            else:
+                num_loop = 0
+                for activity in activities_se:
+                    num_loop += 1
+                    if num_loop == 1:
+                        string_se += activity
+                    elif num_loop == len(activities_se):
+                        string_se += " und " + activity
+                    else:
+                        string_se += ", " + activity
+            string_se += u". "
+            string += string_se
+        if len(activities_se_g):
+            string_se_g = u"%s " % (
+                'Er' if child.gender == 'M' else 'Sie')
+            if len(activities_se_g) == 1:
+                string_se_g += activities_se_g[0]
+            else:
+                num_loop = 0
+                for activity in activities_se_g:
+                    num_loop += 1
+                    if num_loop == 1:
+                        string_se_g += activity
+                    elif num_loop == len(activities_se_g):
+                        string_se_g += " und " + activity
+                    else:
+                        string_se_g += ", " + activity
+            string_se_g += u" gerne. "
+            string += string_se_g
         return string
 
     @classmethod
@@ -310,7 +267,7 @@ class Child_description_de:
                         female_guardian = (value if not female_guardian
                                            else female_guardian)
                     else:
-                        live_with.append(u'%s %s' 
+                        live_with.append(u'%s %s'
                                          % (u'seiner' if child.gender == 'M'
                                             else u'ihrer', value))
                         female_guardian = (value if not female_guardian
@@ -399,7 +356,4 @@ class Child_description_de:
                                else u'Ihre', f_g, job_f[0], u'sein'
                                if child.gender == 'M'
                                else u'ihr', m_g, job_m[0]))
-        #ring = child.gender
-        #string = "test" + str(ring) + "test"
-        # test above
         return string
