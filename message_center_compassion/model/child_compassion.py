@@ -9,7 +9,6 @@
 #
 ##############################################################################
 from openerp.osv import orm
-from datetime import date
 
 
 class compassion_child(orm.Model):
