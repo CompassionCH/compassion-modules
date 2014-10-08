@@ -76,7 +76,7 @@
             <field name="name">Postfinance Direct Debit multi-months</field>
             <field name="note">Postfinance direct</field>
         </record>
-        <record id="payment_term_line_postfinance_dd" model="account.payment.term.line">
+        <record id="payment_term_line_postfinance_dd_multi_months" model="account.payment.term.line">
             <field name="name">Postfinance immediate multi-months</field>
             <field name="value">balance</field>
             <field eval="0" name="days"/>
