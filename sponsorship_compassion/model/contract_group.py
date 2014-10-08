@@ -106,7 +106,31 @@ class contract_group(orm.Model):
                         cr, uid, partner, context)})
 
         return res
-            
+
+    def on_change_bvr_ref(self, cr, uid, ids, bvr_reference,
+                          context=None):
+        ''' Test the validity of a reference number. '''
+        is_valid = bvr_reference and bvr_reference.isdigit()
+        if is_valid and len(bvr_reference) == 26:
+            bvr_reference = mod10r(bvr_reference)
+        elif is_valid and len(bvr_reference) == 27:
+            valid_ref = mod10r(bvr_reference[:-1])
+            is_valid = (valid_ref == bvr_reference)
+        else:
+            is_valid = False
+
+        res = {}
+        if is_valid:
+            res['value'] = {'bvr_reference': bvr_reference}
+        elif bvr_reference:
+            res['warning'] = {'title': _('Warning'),
+                              'message': _('The reference of the partner '
+                                           'has not been set, or is in '
+                                           'wrong format. Please make sure'
+                                           ' to enter a valid BVR '
+                                           'reference for the contract.')}
+        return res
+
     def _compute_partner_ref(self, cr, uid, partner, context=None):
         """ Generates a new BVR Reference.
         See file \\nas\it\devel\Code_ref_BVR.xls for more information."""
