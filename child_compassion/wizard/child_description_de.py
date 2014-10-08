@@ -1,7 +1,16 @@
-﻿# -*- coding: utf-8 -*-
+﻿# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Author: Kevin Cristi. Copyright Compassion Suisse
+#       ______ Releasing children from poverty      _
+#      / ____/___  ____ ___  ____  ____ ___________(_)___  ____
+#     / /   / __ \/ __ `__ \/ __ \/ __ `/ ___/ ___/ / __ \/ __ \
+#    / /___/ /_/ / / / / / / /_/ / /_/ (__  |__  ) / /_/ / / / /
+#    \____/\____/_/ /_/ /_/ .___/\__,_/____/____/_/\____/_/ /_/
+#                        /_/
+#                            in Jesus' name
+#
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    @author: Kevin Cristi <kcristi@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -103,7 +112,7 @@ class Child_description_de:
                            for activity in case_study.hobbies_ids
                            if activity.value_en in (hobbies_se_g)]
         string = ''
-        if len(activities_sesg):
+        if activities_sesg:
             string_sesg = u"%s spielt gerne " % (
                 'Er' if child.gender == 'M' else 'Sie')
             if len(activities_sesg) == 1:
@@ -120,7 +129,7 @@ class Child_description_de:
                         string_sesg += ", " + activity
             string_sesg += u". "
             string += string_sesg
-        if len(activities_se):
+        if activities_se:
             string_se = u"%s " % (
                 'Er' if child.gender == 'M' else 'Sie')
             if len(activities_se) == 1:
@@ -137,7 +146,7 @@ class Child_description_de:
                         string_se += ", " + activity
             string_se += u". "
             string += string_se
-        if len(activities_se_g):
+        if activities_se_g:
             string_se_g = u"%s " % (
                 'Er' if child.gender == 'M' else 'Sie')
             if len(activities_se_g) == 1:
