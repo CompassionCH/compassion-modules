@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Cyril Sester <csester@compassion.ch>
+#    @author: Cyril Sester <csester@compassion.ch>, Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __openerp__.py
 #
@@ -168,7 +168,7 @@ class recurring_contract(orm.Model):
         super(recurring_contract, self).unlink(cr, uid, unlink_ids,
                                                context=context)
         return
-        
+
     def write(self, cr, uid, ids, vals, context=None):
         """ Prevent to change next_invoice_date in the past. """
         if 'next_invoice_date' in vals:
@@ -181,6 +181,30 @@ class recurring_contract(orm.Model):
 
         return super(recurring_contract, self).write(cr, uid, ids, vals,
                      context=context)
+
+    def validate_from_gp(self, cr, uid, ids, context=None):
+        """ Used to transition draft sponsorships in waiting state 
+        when exported from GP. """
+        for id in ids:
+            wf_service = netsvc.LocalService('workflow')
+            wf_service.trg_validate(uid, 'recurring.contract', id,
+                                    'contract_validated', cr)
+        return True
+
+    def activate_from_gp(self, cr, uid, ids, context=None):
+        """ Used to transition draft sponsorships in active state 
+        when exported from GP. """
+        self.validate_from_gp(cr, uid, ids, context)
+        self._on_contract_active(cr, uid, ids, context)
+        return True
+
+    def terminate_from_gp(self, cr, uid, ids, context=None):
+        """ Used to delete the workflow of terminated or cancelled
+        sponsorships when exported from GP. """
+        for id in ids:
+            wf_service = netsvc.LocalService('workflow')
+            wf_service.trg_delete(uid, 'recurring.contract', id, cr)
+        return True
 
 
 # just to modify access rights...
