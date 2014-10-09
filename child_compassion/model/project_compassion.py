@@ -3,8 +3,7 @@
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Cyril Sester <csester@compassion.ch>,
-#             Kevin Cristi <kcristi@compassion.ch>
+#    @author: Cyril Sester <csester@compassion.ch>, Kevin Cristi <kcristi@compassion.ch>
 #
 #    The licence is in the file __openerp__.py
 #
@@ -13,6 +12,7 @@
 import requests
 import json
 import logging
+import pdb
 logger = logging.getLogger(__name__)
 
 from openerp.osv import orm, fields
@@ -67,7 +67,7 @@ class compassion_project(orm.Model):
         # dynamic translations and reuse them if multiple projects refer
         # to a same value. Property_name filter is important to give a context
         # to words.
-        'closest_city_ids': fields.char(_('Closest city')),
+        'closest_city': fields.char(_('Closest city')),
         'terrain_description_ids': fields.many2many(
             'compassion.child.property.value', 'project_property_to_value',
             'property_id', 'value_id', _('Terrain description'),
@@ -104,10 +104,10 @@ class compassion_project(orm.Model):
             'property_id', 'value_id', _('Primary occupation'),
             domain=[('property_name', '=', 'primary_occupation')]),
         'monthly_income': fields.float(_('Monthly income')),
-        'economic_needs_ids': fields.text(_('Economic needs')),
-        'education_needs_ids': fields.text(_('Education needs')),
-        'social_needs_ids': fields.text(_('Social needs')),
-        'spiritual_needs_ids': fields.text(_('Spiritual needs')),
+        'economic_needs': fields.text(_('Economic needs')),
+        'education_needs': fields.text(_('Education needs')),
+        'social_needs': fields.text(_('Social needs')),
+        'spiritual_needs': fields.text(_('Spiritual needs')),
         'organization_name': fields.char(_('Organization name')),
         }
 
@@ -116,7 +116,9 @@ class compassion_project(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
         country_obj = self.pool.get('compassion.country')
+        logger.info("Les IDs sont: " + str(ids))
         for project in self.browse(cr, uid, ids, context):
+            logger.info("Le projet est: " + str(project))
             values, country, type, community_id = self._update_program_info(
                 cr, uid, project, context)
             community_values, community_multi_values = (
@@ -138,8 +140,9 @@ class compassion_project(orm.Model):
         return True
 
     def _update_program_info(self, cr, uid, project, context=None):
-        url = self._get_url(project.code, 'programimplementor')
+        url = self._get_url(project.code, 'programimplementors')
         r = requests.get(url)
+        pdb.set_trace()
         if not r.status_code/100 == 2:
             return None
         prog_impl = json.loads(r.text)
@@ -173,7 +176,7 @@ class compassion_project(orm.Model):
             @param cr: OpenERP database cursor. Used for object browsing
             @param uid: Current user id. Standard parameter.
             @param json_values: json parsed values retrieved from
-                https://api2.compassion.com/ci/v1/programimplementor/ . Please
+                https://api2.compassion.com/ci/v1/programimplementors/ . Please
                 look at http://bit.ly/YKrD4d to see full description
             @param context: Standard strategy used in OpenERP to share and set
                 default values in the views. This should be part of most
