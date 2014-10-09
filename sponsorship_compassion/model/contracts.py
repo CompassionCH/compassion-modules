@@ -185,8 +185,8 @@ class recurring_contract(orm.Model):
     def validate_from_gp(self, cr, uid, ids, context=None):
         """ Used to transition draft sponsorships in waiting state 
         when exported from GP. """
+        wf_service = netsvc.LocalService('workflow')
         for id in ids:
-            wf_service = netsvc.LocalService('workflow')
             wf_service.trg_validate(uid, 'recurring.contract', id,
                                     'contract_validated', cr)
         return True
@@ -201,8 +201,8 @@ class recurring_contract(orm.Model):
     def terminate_from_gp(self, cr, uid, ids, context=None):
         """ Used to delete the workflow of terminated or cancelled
         sponsorships when exported from GP. """
+        wf_service = netsvc.LocalService('workflow')
         for id in ids:
-            wf_service = netsvc.LocalService('workflow')
             wf_service.trg_delete(uid, 'recurring.contract', id, cr)
         return True
 
