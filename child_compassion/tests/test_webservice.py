@@ -8,6 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+
 from openerp.tests import common
 from openerp.tools.config import config
 import logging

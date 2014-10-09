@@ -36,9 +36,9 @@ class Child_description_de:
             activity.value_de if activity.value_de else activity.value_en
             for activity in case_study.christian_activities_ids]
         activities_str = cls._gen_list_string(activities, ', ', ' und ')
-        string = u"In der Kirche macht %s %s %s" % ('er' if child.gender == 'M'
-                 else 'sie', activities_str, 'mit. '
-                 if activities_str > 1 else '. ')
+        string = (u"In der Kirche macht %s %s %s" % ('er' if child.gender == 'M'
+                  else 'sie', activities_str, 'mit. '
+                  if activities_str > 1 else '. '))
         return string
 
     @classmethod
@@ -54,8 +54,8 @@ class Child_description_de:
                        else activity.value_en
                        for activity in case_study.family_duties_ids])
         activities_str = cls._gen_list_string(activities, ', ', ' und ')
-        string = u"Zu Hause hilft %s beim %s. " % ('er' if child.gender == 'M'
-                 else 'sie', activities_str)
+        string = (u"Zu Hause hilft %s beim %s. " % ('er' if child.gender == 'M'
+                  else 'sie', activities_str))
         return string
 
     @classmethod
@@ -175,7 +175,7 @@ class Child_description_de:
             'K': u'Kindergarten',
             'P': u'Primarschule',
             }
-                    # the value of us_school_level can also be blank
+        # the value of us_school_level can also be blank
         string = u'Er' if child.gender == 'M' else u'Sie'
         if case_study.attending_school_flag:
             if (case_study.us_school_level and case_study.us_school_level in
@@ -191,10 +191,10 @@ class Child_description_de:
                 string += u' geht zur Schule'
             if case_study.school_performance:
                 # not sure about the "hat ... Ergebnisse."
-                string += u' und %s hat %s Ergebnisse. ' % (child.firstname,
-                          case_study.school_performance[0].value_de
-                          if case_study.school_performance[0].value_de
-                          else case_study.school_performance[0].value_en)
+                string += (u' und %s hat %s Ergebnisse. ' % (child.firstname,
+                           case_study.school_performance[0].value_de
+                           if case_study.school_performance[0].value_de
+                           else case_study.school_performance[0].value_en))
             elif case_study.school_best_subject:
                 string += u' und mag: %s. ' \
                           % (case_study.school_best_subject[0].value_de
