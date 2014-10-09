@@ -1,29 +1,12 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#       ______ Releasing children from poverty      _
-#      / ____/___  ____ ___  ____  ____ ___________(_)___  ____
-#     / /   / __ \/ __ `__ \/ __ \/ __ `/ ___/ ___/ / __ \/ __ \
-#    / /___/ /_/ / / / / / / /_/ / /_/ (__  |__  ) / /_/ / / / /
-#    \____/\____/_/ /_/ /_/ .___/\__,_/____/____/_/\____/_/ /_/
-#                        /_/
-#                            in Jesus' name
-#
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
-#    @author: Cyril Sester <csester@compassion.ch>, Kevin Cristi <kcristi@compassion.ch>
+#    Releasing children from poverty in Jesus' name
+#    @author: Cyril Sester <csester@compassion.ch>,
+#             Kevin Cristi <kcristi@compassion.ch>
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    The licence is in the file __openerp__.py
 #
 ##############################################################################
 
@@ -36,12 +19,13 @@ from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
 
+
 class compassion_project(orm.Model):
     """ A compassion project """
     _name = 'compassion.project'
     _columns = {
-        'name': fields.char(_("Name"),size=128,required=True),
-        'code': fields.char(_("Project code"),size=128,required=True),
+        'name': fields.char(_("Name"), size=128, required=True),
+        'code': fields.char(_("Project code"), size=128, required=True),
         'type': fields.selection([
             ('CDSP', 'CDSP'),
             ('CSP', 'CSP')], _('Program type')),
@@ -83,49 +67,50 @@ class compassion_project(orm.Model):
         # dynamic translations and reuse them if multiple projects refer
         # to a same value. Property_name filter is important to give a context
         # to words.
-		'closest_city_ids': fields.char(_('Closest city')),
-		'terrain_description_ids': fields.many2many(
-			'compassion.child.property.value', 'project_property_to_value',
-			'property_id', 'value_id', _('Terrain description'),
-			domain=[('property_name', '=', 'terrain_description')]),
-		'community_population': fields.integer(_('Community population')),
-		'floor_material_ids': fields.many2many(
+        'closest_city_ids': fields.char(_('Closest city')),
+        'terrain_description_ids': fields.many2many(
+            'compassion.child.property.value', 'project_property_to_value',
+            'property_id', 'value_id', _('Terrain description'),
+            domain=[('property_name', '=', 'terrain_description')]),
+        'community_population': fields.integer(_('Community population')),
+        'floor_material_ids': fields.many2many(
             'compassion.child.property.value', 'project_property_to_value',
             'property_id', 'value_id', _('Floor material'),
             domain=[('property_name', '=', 'floor_material')]),
-		'wall_material_ids': fields.many2many(
-			'compassion.child.property.value', 'project_property_to_value',
- 			'property_id', 'value_id', _('Wall material'),
-			domain=[('property_name', '=', 'wall_material')]),
-		'roof_material_ids': fields.many2many(
-			'compassion.child.property.value', 'project_property_to_value',
- 			'property_id', 'value_id', _('Roof material'),
-			domain=[('property_name', '=', 'roof_material')]),
-		'spoken_languages_ids': fields.many2many(
-			'compassion.child.property.value', 'project_property_to_value',
- 			'property_id', 'value_id', _('Spoken languages'),
-			domain=[('property_name', '=', 'spoken_languages')]),
-		'primary_diet_ids': fields.many2many(
+        'wall_material_ids': fields.many2many(
+            'compassion.child.property.value', 'project_property_to_value',
+            'property_id', 'value_id', _('Wall material'),
+            domain=[('property_name', '=', 'wall_material')]),
+        'roof_material_ids': fields.many2many(
+            'compassion.child.property.value', 'project_property_to_value',
+            'property_id', 'value_id', _('Roof material'),
+            domain=[('property_name', '=', 'roof_material')]),
+        'spoken_languages_ids': fields.many2many(
+            'compassion.child.property.value', 'project_property_to_value',
+            'property_id', 'value_id', _('Spoken languages'),
+            domain=[('property_name', '=', 'spoken_languages')]),
+        'primary_diet_ids': fields.many2many(
             'compassion.child.property.value', 'project_property_to_value',
             'property_id', 'value_id', _('Primary diet'),
             domain=[('property_name', '=', 'primary_diet')]),
         'country_id': fields.many2one('compassion.country', _('Country')),
-		'health_problems_ids': fields.many2many(
+        'health_problems_ids': fields.many2many(
             'compassion.child.property.value', 'project_property_to_value',
             'property_id', 'value_id', _('Health problems'),
             domain=[('property_name', '=', 'health_problems')]),
-		'unemployment_rate': fields.float(_('Unemployment rate')),
-		'primary_occupation_ids': fields.many2many(
+        'unemployment_rate': fields.float(_('Unemployment rate')),
+        'primary_occupation_ids': fields.many2many(
             'compassion.child.property.value', 'project_property_to_value',
             'property_id', 'value_id', _('Primary occupation'),
             domain=[('property_name', '=', 'primary_occupation')]),
-		'monthly_income': fields.float(_('Monthly income')),
-		'economic_needs_ids': fields.text(_('Economic needs')),
-		'education_needs_ids': fields.text(_('Education needs')),
-		'social_needs_ids': fields.text(_('Social needs')),
-		'spiritual_needs_ids': fields.text(_('Spiritual needs')),
-		'organization_name': fields.char(_('Organization name')),
-	}
+        'monthly_income': fields.float(_('Monthly income')),
+        'economic_needs_ids': fields.text(_('Economic needs')),
+        'education_needs_ids': fields.text(_('Education needs')),
+        'social_needs_ids': fields.text(_('Social needs')),
+        'spiritual_needs_ids': fields.text(_('Spiritual needs')),
+        'organization_name': fields.char(_('Organization name')),
+        }
+
     def update_informations(self, cr, uid, ids, context=None):
         ''' Get the most recent informations for selected projects '''
         if not isinstance(ids, list):
@@ -134,8 +119,8 @@ class compassion_project(orm.Model):
         for project in self.browse(cr, uid, ids, context):
             values, country, type, community_id = self._update_program_info(
                 cr, uid, project, context)
-            community_values, community_multi_values=
-                self._update_community_info(cr, uid, community_id, context)
+            community_values, community_multi_values = (
+                self._update_community_info(cr, uid, community_id, context))
             values.update(community_values)
             if type == 'CDSP':
                 values.update(self._update_cdsp_info(cr, uid,
@@ -158,9 +143,9 @@ class compassion_project(orm.Model):
         if not r.status_code/100 == 2:
             return None
         prog_impl = json.loads(r.text)
-        
+
         values = self._get_program_values(cr, uid, prog_impl, context)
-        
+
         coutry_code = prog_impl.get('ISOCountryCode')
         type = prog_impl.get('ProgramImplementorTypeCode')
         community_id = prog_impl.get('CommunityID')
@@ -187,7 +172,7 @@ class compassion_project(orm.Model):
             @param self: Python equivalent for "this"
             @param cr: OpenERP database cursor. Used for object browsing
             @param uid: Current user id. Standard parameter.
-            @param json_values: json parsed values retrieved from 
+            @param json_values: json parsed values retrieved from
                 https://api2.compassion.com/ci/v1/programimplementor/ . Please
                 look at http://bit.ly/YKrD4d to see full description
             @param context: Standard strategy used in OpenERP to share and set
@@ -221,7 +206,7 @@ class compassion_project(orm.Model):
         # dynamic translations and reuse them if multiple projects refer
         # to a same value. Property_name filter is important to give a context
         # to words.
-        
+
         values['unemployment_rate'] = json_values['UnemploymentRate']
         values['community_population'] = json_values['CommunityPopulation']
         values['monthly_income'] = json_values['FamilyMonthlyIncome']
@@ -230,30 +215,31 @@ class compassion_project(orm.Model):
         values['social_needs'] = json_values['SocialNeeds']
         values['spiritual_needs'] = json_values['SpiritualNeeds']
         values['closest_city'] = json_values['ClosestCityName']
-        # Dictionary key -> JSON field name, tuple -> Odoo field name and the separator
+        # Dictionary key -> JSON field name, tuple -> Odoo field name
+        # and the separator
         json_misc_tags = {
-        'DistanceFromClosestCity': ('closest',','),
-        'TerrainDescription': ('terrain_description','/'),
-        'TypicalFloorBuildingMaterialDescription': ('floor_material','/'),
-        'TypicalWallBuildingMaterialDescription': ('wall_material','/'),
-        'TypicalRoofBuildingMaterialDescription': ('roof_material','/'),
-        'PrimaryEthnicGroup': ('spoken_languages',','),
-        'PrimaryDiet': ('primary_diet',','),
-        'CommonHealthProblems': ('health_problems',','),
-        'PrimaryOccupation': ('primary_occupation','/'),
+            'DistanceFromClosestCity': ('closest', ','),
+            'TerrainDescription': ('terrain_description', '/'),
+            'TypicalFloorBuildingMaterialDescription': ('floor_material', '/'),
+            'TypicalWallBuildingMaterialDescription': ('wall_material', '/'),
+            'TypicalRoofBuildingMaterialDescription': ('roof_material', '/'),
+            'PrimaryEthnicGroup': ('spoken_languages', ','),
+            'PrimaryDiet': ('primary_diet', ','),
+            'CommonHealthProblems': ('health_problems', ','),
+            'PrimaryOccupation': ('primary_occupation', '/'),
         }
         """
-        multi_value = self._get_values(cr, uid,
-                                        json_values['DistanceFromClosestCity'].split(','),
-                                        'closest_city', context)
+        multi_value = (self._get_values(cr, uid,
+                       json_values['DistanceFromClosestCity'].split(','),
+                       'closest_city', context))
         """
         multi_value = []
         for json_key, field_tuple in json_misc_tags.iteritems():
             field_name = field_tuple[0]
             separator = field_tuple[1]
             multi_value.extend(self._get_values(cr, uid,
-                                                 json_values[json_key].split(separator),
-                                                 field_name, context))
+                               json_values[json_key].split(separator),
+                               field_name, context))
         return values, multi_value
 
     def _get_cdsp_values(self, cr, uid, json_values, context=None):
@@ -295,7 +281,8 @@ class compassion_project(orm.Model):
         prop_val_obj = self.pool.get('compassion.child.property.value')
         value = value.lower()
         val_ids = prop_val_obj.search(cr, uid, [('value_en', '=like', value),
-                                                ('property_name', '=', property_name)],
+                                                ('property_name', '=',
+                                                 property_name)],
                                       context=context)
         if val_ids:
             return val_ids[0]
@@ -312,5 +299,6 @@ class compassion_project(orm.Model):
                                    'in conf file'))
         if url.endswith('/'):
             url = url[:-1]
-        url += '/ci/v1/' + api_mess + '/' + project_code + '?api_key=' + api_key
+        url += ('/ci/v1/' + api_mess + '/' + project_code + '?api_key='
+                + api_key)
         return url
