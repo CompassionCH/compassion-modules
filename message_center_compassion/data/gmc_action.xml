@@ -42,7 +42,13 @@
         </record>
         
         <!-- Project Messages -->
-        <!-- Please add project messages -->
+        <record id="update_project" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">UpdateProject</field>
+            <field name="model">compassion.project</field>
+            <field name="type">update</field>
+            <field name="description">This will retrieve the updated informations of a project.</field>
+        </record>
         
         <!-- Commitment Messages -->
         <record id="create_commitment" model="gmc.action">

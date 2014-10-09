@@ -12,7 +12,6 @@ from openerp.osv import orm
 
 
 class compassion_child(orm.Model):
-
     """ Add allocation and deallocation methods on the children. """
     _inherit = 'compassion.child'
 
@@ -22,12 +21,20 @@ class compassion_child(orm.Model):
         return self.get_basic_informations(cr, uid, child_id, context=context)
 
     def deallocate(self, cr, uid, id, context=None):
-        # TODO : should be done from GP or see what to do.
+        """Deallocate is uncertain, because it may disappear from GMC messages
+        when the childpool will be global (same children for all countries).
+        Until we don't need it, we don't implement it."""
         return True
 
     def depart(self, cr, uid, id, context=None):
-        # TODO : terminate the contract, mark the child as departed and the
-        # user should do the right communication from GP.
+        """For the depart method, we don't have enough information on the
+        children right now to do it (state), plus we would need the user
+        to be aware of procedure to do in this case. So it is a bit early
+        to have it implemented, we should carefully separe functionnalities
+        between GP and Odoo before."""
+        # TODO : possibly terminate the contract, mark the child as departed
+        # and the user should do the right communication
+        # to the sponsor from GP.
         return True
 
     def update(self, cr, uid, id, context=None):
@@ -36,14 +43,13 @@ class compassion_child(orm.Model):
         self.get_last_case_study(cr, uid, id, context=context)
         return True
 
-compassion_child()
-
 
 class compassion_project(orm.Model):
-
     """ Add update method. """
     _inherit = 'compassion.project'
 
     def update(self, cr, uid, id, context=None):
-        # TODO : add a method that calls webservice like get_last_case_study.
+        """ When we receive a notification that a project has been updated,
+        we fetch the last informations. """
+        self.update_informations(cr, uid, id, context)
         return True
