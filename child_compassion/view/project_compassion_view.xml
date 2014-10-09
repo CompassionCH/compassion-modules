@@ -50,7 +50,7 @@
 								<group>
 									<group> 
 										<field name="primary_diet_ids" widget="many2many_tags" />
-										<field name="closest_city_ids" widget="many2many_tags" />
+										<field name="closest_city" />
 										<field name="terrain_description_ids" widget="many2many_tags" />
 										<field name="community_population" />
 										<field name="floor_material_ids" widget="many2many_tags" />
@@ -63,10 +63,10 @@
 										<field name="unemployment_rate" />
 										<field name="primary_occupation_ids" widget="many2many_tags" />
 										<field name="monthly_income" />
-										<field name="economic_needs_ids" widget="many2many_tags" />
-										<field name="education_needs_ids" widget="many2many_tags" />
-										<field name="social_needs_ids" widget="many2many_tags" />
-										<field name="spiritual_needs_ids" widget="many2many_tags" />
+										<field name="economic_needs" />
+										<field name="education_needs" />
+										<field name="social_needs" />
+										<field name="spiritual_needs" />
 										<field name="organization_name" />
 									</group>
 								</group>

@@ -3,8 +3,7 @@
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Cyril Sester <csester@compassion.ch>,
-#             Kevin Cristi <kcristi@compassion.ch>
+#    @author: Cyril Sester <csester@compassion.ch>, Kevin Cristi <kcristi@compassion.ch>
 #
 #    The licence is in the file __openerp__.py
 #
@@ -126,7 +125,6 @@ class Child_description_fr:
             'K': u'deuxième enfantine',
             'P': u'primaire',
             }
-                    # the value of us_school_level can also be blank
         string = u'Il' if child.gender == 'M' else u'Elle'
         if case_study.attending_school_flag:
             if (case_study.us_school_level and case_study.us_school_level in
@@ -141,10 +139,10 @@ class Child_description_fr:
             else:
                 string += u' va à l\'école'
             if case_study.school_performance:
-                string += u' et %s a des résultats %s. ' % (child.firstname,
-                          case_study.school_performance[0].value_fr
-                          if case_study.school_performance[0].value_fr
-                          else case_study.school_performance[0].value_en)
+                string += (u' et %s a des résultats %s. ' % (child.firstname,
+                           case_study.school_performance[0].value_fr
+                           if case_study.school_performance[0].value_fr
+                           else case_study.school_performance[0].value_en))
             elif case_study.school_best_subject:
                 string += u' et aime bien %s. ' \
                           % (case_study.school_best_subject[0].value_fr
