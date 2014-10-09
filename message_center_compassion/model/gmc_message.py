@@ -8,8 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp.osv.orm import Model
-from openerp.osv import fields, osv
+from openerp.osv import fields, orm
 from openerp.tools.translate import _
 from openerp.tools.config import config
 import requests
@@ -20,7 +19,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class gmc_message_pool_process(osv.orm.TransientModel):
+class gmc_message_pool_process(orm.TransientModel):
     _name = 'gmc.message.pool.process'
 
     def process_messages(self, cr, uid, ids, context=None):
@@ -40,8 +39,7 @@ class gmc_message_pool_process(osv.orm.TransientModel):
         return action
 
 
-class gmc_message_pool(Model):
-
+class gmc_message_pool(orm.Model):
     """ Pool of messages exchanged between Compassion CH and GMC. """
     _name = 'gmc.message.pool'
 
@@ -105,11 +103,8 @@ class gmc_message_pool(Model):
 
         return True
 
-gmc_message_pool()
 
-
-class gmc_action(Model):
-
+class gmc_action(orm.Model):
     """
     A GMC Action defines what has to be done for a specific OffRamp
     message of the Compassion International specification.
@@ -201,9 +196,10 @@ class gmc_action(Model):
             return super(gmc_action, self).create(cr, uid, values,
                                                   context=context)
         else:
-            raise osv.except_osv(_("Creation aborted."), _(
-                "Invalid action (%s, %s, %s).") % (
-                direction, model, action_type))
+            raise orm.except_orm(
+                _("Creation aborted."),
+                _("Invalid action (%s, %s, %s).") % (
+                    direction, model, action_type))
 
     def _perform_incoming_action(self, cr, uid, action, object_id, args={},
                                  context=None):
@@ -217,8 +213,9 @@ class gmc_action(Model):
             res = getattr(model_obj, action.type)(
                 cr, uid, object_id, context=context)
         else:
-            raise osv.except_osv(_("Invalid Action"), _(
-                "No implementation found for method '%s'.") % (action.type))
+            raise orm.except_orm(
+                _("Invalid Action"),
+                _("No implementation found for method '%s'.") % (action.type))
 
         return res
 
@@ -231,7 +228,7 @@ class gmc_action(Model):
             session.verify = False
             server_url = config.get('middleware_url')
             if not server_url:
-                raise osv.orm.except_orm(
+                raise orm.except_orm(
                     'ConfigError', _('No middleware server url specified in '
                                      'conf file'))
             url = server_url + action.type + '/' + \
@@ -273,7 +270,7 @@ class gmc_action(Model):
                 [('object_id', '=', partner.id), ('state', '=', 'sent')],
                 context=context)
             if not message_ids:
-                raise osv.except_osv(_(
+                raise orm.except_orm(_(
                     "Constituent (%s) not sent to GMC") % partner.name, _(
                     "Please send the new constituents to GMC before sending "
                     "the commitments."))
@@ -281,9 +278,10 @@ class gmc_action(Model):
             # Check that the contract is linked to a child
             child_id = contract.child_id
             if not child_id:
-                raise osv.except_osv(_("Contract is not a sponsorship."), _(
-                    "The new commitment of %s is not linked to a child and "
-                    "should not be sent to GMC.") % partner.name)
+                raise orm.except_orm(
+                    _("Contract is not a sponsorship."),
+                    _("The new commitment of %s is not linked to a child and "
+                      "should not be sent to GMC.") % partner.name)
             else:
                 # Check that there are no previous sponsorship cancellation
                 # pending.
@@ -293,7 +291,7 @@ class gmc_action(Model):
                         ('child_id', '=', child_id.id),
                         ('state', '=', 'pending')], context=context)
                 if message_ids:
-                    raise osv.except_osv(_(
+                    raise orm.except_orm(_(
                         "Commitment not sent (%s).") % child_id.code, _(
                         "Please send the previous commitment cancellation "
                         "before the creation of a new commitment."))
@@ -310,16 +308,17 @@ class gmc_action(Model):
                         ('object_id', '=', contract.id),
                         ('state', '=', 'sent')], context=context)
                 if not message_ids:
-                    raise osv.except_osv(_(
+                    raise orm.except_orm(_(
                         "Commitment not sent to GMC (%s - %s)") % (
                         contract.partner_id.ref, contract.child_id.code), _(
                         "The commitment the gift refers to was not "
                         "sent to GMC."))
             else:
-                raise osv.except_osv(_("Unknown sponsorship."), _(
-                    "The gift (%s - %s) is not related to a sponsorship so it"
-                    " should not be sent to GMC.") % (
-                    invoice_line.partner_id.name, invoice_line.name))
+                raise orm.except_orm(
+                    _("Unknown sponsorship."),
+                    _("The gift (%s - %s) is not related to a sponsorship so "
+                      "it should not be sent to GMC.") % (
+                        invoice_line.partner_id.name, invoice_line.name))
 
         elif action.name == 'CancelCommitment':
             # Check that the commitment is known by GMC.
@@ -329,12 +328,10 @@ class gmc_action(Model):
                     ('object_id', '=', object_id), ('state', '=', 'sent')],
                 context=context)
             if not message_ids:
-                raise osv.except_osv(_(
+                raise orm.except_orm(_(
                     "Commitment not sent to GMC (%s - %s)") % (
                     contract.partner_id.ref, contract.child_id.code), _(
                     "The commitment was not sent to GMC and therefore cannot "
                     "be cancelled."))
 
         return True
-
-gmc_action()
