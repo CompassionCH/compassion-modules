@@ -20,7 +20,7 @@ from openerp.tools.config import config
 class compassion_country(orm.Model):
     _name = 'compassion.country'
     _rec_name = 'name'
-    
+
     _columns = {
         'iso_code': fields.char(_('ISO code'), size=2, required=True),
         'name': fields.char(_('Name')),
@@ -52,7 +52,7 @@ class compassion_country(orm.Model):
         values['description_en'] = json_data['CountryDescription']
 
         return values
-         
+
     def _get_url(self, api_mess, api_value):
         url = config.get('compass_url')
         api_key = config.get('compass_api_key')
@@ -62,5 +62,6 @@ class compassion_country(orm.Model):
                                    'in conf file'))
         if url.endswith('/'):
             url = url[:-1]
-        url += '/ci/v1/country/' + api_mess + '/' + api_value + '?api_key=' + api_key
+        url += ('/ci/v1/country/' + api_mess + '/' + api_value +
+                '?api_key=' + api_key)
         return url

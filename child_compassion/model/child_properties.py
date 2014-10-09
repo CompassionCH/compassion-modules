@@ -17,10 +17,11 @@ from openerp.tools.translate import _
 class child_property(orm.Model):
     _name = 'compassion.child.property'
     _order = 'child_id, info_date desc'
-    
+
     _columns = {
         'child_id': fields.many2one(
-            'compassion.child', _('Concerned child'), required=True, ondelete='cascade'),
+            'compassion.child', _('Concerned child'),
+            required=True, ondelete='cascade'),
         'info_date': fields.date(_('Date of case study')),
         'name': fields.char(_('Name')),
         'firstname': fields.char(_('Firstname')),
@@ -95,14 +96,16 @@ class child_property(orm.Model):
 class child_property_value(orm.Model):
     _name = 'compassion.child.property.value'
     _rec_name = 'value_en'
-    
+
     _columns = {
         'is_tag': fields.boolean(_('Tag')),
         'property_ids': fields.many2many(
             'compassion.child.property', 'child_property_to_value',
             'value_id', 'property_id', _('Properties')),
-        'property_name': fields.char(_('Is value for'), required=True, readonly=True),
-        'value_en': fields.char(_('English value'), required=True, readonly=True),
+        'property_name': fields.char(_('Is value for'), required=True,
+                                     readonly=True),
+        'value_en': fields.char(_('English value'), required=True,
+                                readonly=True),
         'value_fr': fields.char(_('French translation')),
         'value_de': fields.char(_('German translation')),
         'value_it': fields.char(_('Italian translation')),
