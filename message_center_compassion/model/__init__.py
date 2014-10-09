@@ -11,5 +11,4 @@
 
 from . import gmc_message
 from . import child_compassion
-from . import partner_compassion
 from . import contracts
