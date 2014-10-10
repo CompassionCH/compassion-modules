@@ -116,9 +116,7 @@ class compassion_project(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
         country_obj = self.pool.get('compassion.country')
-        logger.info("Les IDs sont: " + str(ids))
         for project in self.browse(cr, uid, ids, context):
-            logger.info("Le projet est: " + str(project))
             values, country, type, community_id = self._update_program_info(
                 cr, uid, project, context)
             community_values, community_multi_values = (
@@ -142,11 +140,9 @@ class compassion_project(orm.Model):
     def _update_program_info(self, cr, uid, project, context=None):
         url = self._get_url(project.code, 'programimplementors')
         r = requests.get(url)
-        pdb.set_trace()
         if not r.status_code/100 == 2:
-            return None
+            raise orm.except_orm(r.text)
         prog_impl = json.loads(r.text)
-
         values = self._get_program_values(cr, uid, prog_impl, context)
 
         coutry_code = prog_impl.get('ISOCountryCode')
@@ -158,7 +154,7 @@ class compassion_project(orm.Model):
         url = self._get_url(community_id, 'community')
         r = requests.get(url)
         if not r.status_code/100 == 2:
-            return None
+            raise orm.except_orm(r.text)
         json_data = json.loads(r.text)
         return self._get_community_values(cr, uid, json_data, context)
 
@@ -166,7 +162,7 @@ class compassion_project(orm.Model):
         url = self._get_url(project.code, 'cdspimplementor')
         r = requests.get(url)
         if not r.status_code/100 == 2:
-            return None
+            raise orm.except_orm(r.text)
         cdsp_impl = json.loads(r.text)
         return self._get_cdsp_values(cr, uid, cdsp_impl, context)
 
@@ -302,6 +298,14 @@ class compassion_project(orm.Model):
                                    'in conf file'))
         if url.endswith('/'):
             url = url[:-1]
+        testType2 = type(url)
+        test2 = url
+        testTypeApiMess = type(api_mess)
+        testTypeProjectCode = type(project_code)
+        testTypeApiKey = type(api_key)
+        logger.info(testTypeApiMess)
+        logger.info(testTypeApiKey)
+        logger.info(testTypeProjectCode)
         url += ('/ci/v1/' + api_mess + '/' + project_code + '?api_key='
                 + api_key)
         return url
