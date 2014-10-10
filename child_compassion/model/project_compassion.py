@@ -298,14 +298,6 @@ class compassion_project(orm.Model):
                                    'in conf file'))
         if url.endswith('/'):
             url = url[:-1]
-        testType2 = type(url)
-        test2 = url
-        testTypeApiMess = type(api_mess)
-        testTypeProjectCode = type(project_code)
-        testTypeApiKey = type(api_key)
-        logger.info(testTypeApiMess)
-        logger.info(testTypeApiKey)
-        logger.info(testTypeProjectCode)
         url += ('/ci/v1/' + api_mess + '/' + project_code + '?api_key='
                 + api_key)
         return url
