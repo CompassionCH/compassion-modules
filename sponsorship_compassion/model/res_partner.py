@@ -25,13 +25,16 @@ class res_partner(orm.Model):
         for id in ids:
             correspondant_ids = contract_obj.search(
                 cr, uid, [('correspondant_id', '=', id),
-                          ('fully_managed', '=', False)], context={})
+                          ('fully_managed', '=', False)],
+                order='start_date desc', context={})
             paid_ids = contract_obj.search(
                 cr, uid, [('partner_id', '=', id),
-                          ('fully_managed', '=', False)], context={})
+                          ('fully_managed', '=', False)],
+                order='start_date desc', context={})
             fully_managed_ids = contract_obj.search(
                 cr, uid, [('partner_id', '=', id),
-                          ('fully_managed', '=', True)], context={})
+                          ('fully_managed', '=', True)],
+                order='start_date desc', context={})
 
             if field_name == 'contracts_fully_managed':
                 res[id] = fully_managed_ids
@@ -56,7 +59,8 @@ class res_partner(orm.Model):
             _get_related_contracts, type="one2many",
             obj="recurring.contract",
             fnct_inv=_write_related_contracts,
-            string=_('Contracts')),
+            string=_('Contracts'),
+            order="state asc",),
         'contracts_paid': fields.function(
             _get_related_contracts, type="one2many",
             obj="recurring.contract",

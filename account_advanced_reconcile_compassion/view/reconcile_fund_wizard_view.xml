@@ -9,7 +9,7 @@
                     <sheet>
                         <group>
                             <field name="fund_id" />
-                            <field name="contract_ids" context="{'tree_view_ref' : 'recurring_contract.view_contracts_tree_simplified'}" />
+                            <field name="contract_ids" context="{'tree_view_ref': 'account_advanced_reconcile_compassion.view_contracts_tree_simplified'}" />
                         </group>
                     </sheet>
                     <footer>
@@ -29,19 +29,15 @@
         <record id="view_contracts_tree_simplified" model="ir.ui.view">
             <field name="name">view.contracts.simplified.tree</field>
             <field name="model">recurring.contract</field>
-            <field name="inherit_id" ref="sponsorship_compassion.view_recurring_contract_tree_compassion"/>
             <field eval="20" name="priority"/>
             <field name="arch" type="xml">
-                <data>
-                    <tree string="Contracts" position="attributes">
-                        <attribute name="delete">false</attribute>
-                        <attribute name="create">false</attribute>
-                    </tree>
-                    <field name="child_name" position="replace" />
-                    <field name="start_date" position="replace" />
-                    <field name="end_date" position="replace" />
-                </data>
-                
+                <tree string="Contracts" delete="false" create="false">
+                    <field name="partner_id" />
+                    <field name="child_code" />
+                    <field name="payment_term_id" />
+                    <field name="total_amount" />
+                    <field name="state" />
+                </tree>
             </field>
         </record>
     </data>

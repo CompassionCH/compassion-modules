@@ -17,7 +17,8 @@ from openerp.tools import mod10r
 
 
 class contract_group(orm.Model):
-    ''' Add BVR on groups and add BVR ref and analytics_id in invoices '''
+    ''' Add BVR on groups and add BVR ref and analytics_id
+    in invoices '''
     _inherit = 'recurring.contract.group'
 
     def name_get(self, cr, uid, ids, context=None):
@@ -50,11 +51,8 @@ class contract_group(orm.Model):
             ('quarterly', _('Quarterly')),
             ('fourmonthly', _('Four-monthly')),
             ('biannual', _('Bi-annual')),
-            ('annual', _('Annual'))], _('Frequency'),
-            help=_('Advance billing allows you to generate invoices in '
-                   'advance. For example, you can generate the invoices '
-                   'for each month of the year and send them to the '
-                   'customer in january.'), track_visibility="onchange"),
+            ('annual', _('Annual'))], string=_('Frequency'),
+            track_visibility="onchange"),
         'payment_term_id': fields.many2one(
             'account.payment.term', _('Payment Term'),
             domain=['|', '|', '|', ('name', 'ilike', 'BVR'),

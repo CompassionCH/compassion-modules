@@ -18,6 +18,12 @@
 					<field name="partner_id" position="before">
 						<field name="partner_codega" invisible="context.get('partner_contracts_view')" />
 					</field>
+                    <field name="payment_term_id" position="after">
+                        <field name="frequency" />
+                    </field>
+                    <field name="state" position="after">
+                        <button name="open_contract" type="object" invisible="not context.get('partner_contracts_view')" icon="STOCK_JUMP_TO" />
+                    </field>
 					<field name="reference" position="replace" />
 				</data>
 			</field>

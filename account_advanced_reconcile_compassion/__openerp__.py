@@ -50,7 +50,7 @@
     'data': ['view/easy_reconcile_view.xml',
              'view/reconcile_fund_wizard_view.xml',
              'view/reconcile_split_payment_wizard_view.xml',
-            ],
+             ],
     'js': ['static/src/js/account_move_reconciliation.js'],
     'qweb': ['static/src/xml/account_move_reconciliation.xml'],
     'demo': [],
