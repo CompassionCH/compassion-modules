@@ -33,7 +33,7 @@
     'version': '1.0.0',
     'category': 'Other',
     'description': """
-        This module does nothing but install a bunch of useful modules developped for Compassion CH.
+        This module does nothing but install a bunch of useful modules developed for Compassion CH.
         
         Warning : This module requires python-MySQLdb to be installed on the server.
     """,
@@ -49,6 +49,7 @@
                 'mail_thread_compassion',
                 'password_pusher_compassion',
                 'l10n_ch_account_statement_base_import',
+                'message_center_compassion',
                 ],
     'data': [],
     'demo': [],

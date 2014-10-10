@@ -314,9 +314,9 @@ class AccountStatementCompletionRule(Model):
                 cr, uid, [
                     ('partner_id', '=', partner_id),
                     ('num_pol_ga', '=', contract_number)], context=context)
-            if contract_ids:
+            if contract_ids and len(contract_ids) == 1:
                 contract = contract_obj.browse(
-                    cr, uid, contract_ids, context=context)
+                    cr, uid, contract_ids[0], context=context)
                 inv_line_data['contract_id'] = contract.id
                 inv_line_data['name'] = contract.child_id.code
                 inv_line_data['name'] += " - " + contract.child_id.birthdate \

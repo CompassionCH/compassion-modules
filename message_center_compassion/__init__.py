@@ -3,14 +3,10 @@
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Cyril Sester, Emanuel Cino
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
 
-from . import contract_group
-from . import contracts
-from . import invoice_line
-from . import res_partner
-from . import product
+from . import model
