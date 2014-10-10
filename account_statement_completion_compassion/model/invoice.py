@@ -9,10 +9,7 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp import netsvc
-import time
-import pdb
+from openerp.osv import orm
 
 
 class account_invoice(orm.Model):
@@ -25,7 +22,7 @@ class account_invoice(orm.Model):
         partner_obj = self.pool.get('res.partner')
         partner_ids = [self.browse(cr, uid, ids[0], context).partner_id.id]
         return partner_obj.show_lines(cr, uid, partner_ids, context)
-    
+
     def show_move_lines(self, cr, uid, ids, context=None):
         partner_id = self.browse(cr, uid, ids[0], context).partner_id.id
         action = {
@@ -34,7 +31,7 @@ class account_invoice(orm.Model):
             'view_mode': 'tree',
             'res_model': 'account.move.line',
             'src_model': 'account.invoice',
-            'context': {'search_default_partner_id':[partner_id],
+            'context': {'search_default_partner_id': [partner_id],
                         'default_partner_id': partner_id,
                         'search_default_unreconciled': 1},
         }
