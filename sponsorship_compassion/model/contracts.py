@@ -115,6 +115,9 @@ class recurring_contract(orm.Model):
         'num_pol_ga': fields.integer(
             'Partner Contract Number', required=True
         ),
+        'frequency': fields.related(
+            'group_id', 'advance_billing', type="char", readonly=True,
+            string=_('Frequency'), store=False),
     }
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
@@ -182,6 +185,19 @@ class recurring_contract(orm.Model):
 
         return super(recurring_contract, self).write(cr, uid, ids, vals,
                                                      context=context)
+
+    def open_contract(self, cr, uid, ids, contect=None):
+        """ Used to bypass opening a contract in popup mode from
+        res_partner view. """
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Contract',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': self._name,
+            'res_id': ids[0],
+            'target': 'current',
+        }
 
     def validate_from_gp(self, cr, uid, ids, context=None):
         """ Used to transition draft sponsorships in waiting state
