@@ -270,10 +270,10 @@ class gmc_action(orm.Model):
                 [('object_id', '=', partner.id), ('state', '=', 'sent')],
                 context=context)
             if not message_ids:
-                raise orm.except_orm(_(
-                    "Constituent (%s) not sent to GMC") % partner.name, _(
-                    "Please send the new constituents to GMC before sending "
-                    "the commitments."))
+                raise orm.except_orm(
+                    _("Constituent (%s) not sent to GMC") % partner.name,
+                    _("Please send the new constituents to GMC before sending"
+                      " the commitments."))
 
             # Check that the contract is linked to a child
             child_id = contract.child_id
@@ -291,10 +291,10 @@ class gmc_action(orm.Model):
                         ('child_id', '=', child_id.id),
                         ('state', '=', 'pending')], context=context)
                 if message_ids:
-                    raise orm.except_orm(_(
-                        "Commitment not sent (%s).") % child_id.code, _(
-                        "Please send the previous commitment cancellation "
-                        "before the creation of a new commitment."))
+                    raise orm.except_orm(
+                        _("Commitment not sent (%s).") % child_id.code,
+                        _("Please send the previous commitment cancellation "
+                          "before the creation of a new commitment."))
 
         elif action.name == 'CreateGift':
             # Check that the commitment is known by GMC.
@@ -308,11 +308,11 @@ class gmc_action(orm.Model):
                         ('object_id', '=', contract.id),
                         ('state', '=', 'sent')], context=context)
                 if not message_ids:
-                    raise orm.except_orm(_(
-                        "Commitment not sent to GMC (%s - %s)") % (
-                        contract.partner_id.ref, contract.child_id.code), _(
-                        "The commitment the gift refers to was not "
-                        "sent to GMC."))
+                    raise orm.except_orm(
+                        _("Commitment not sent to GMC (%s - %s)") % (
+                            contract.partner_id.ref, contract.child_id.code),
+                        _("The commitment the gift refers to was not "
+                          "sent to GMC."))
             else:
                 raise orm.except_orm(
                     _("Unknown sponsorship."),
@@ -328,10 +328,10 @@ class gmc_action(orm.Model):
                     ('object_id', '=', object_id), ('state', '=', 'sent')],
                 context=context)
             if not message_ids:
-                raise orm.except_orm(_(
-                    "Commitment not sent to GMC (%s - %s)") % (
-                    contract.partner_id.ref, contract.child_id.code), _(
-                    "The commitment was not sent to GMC and therefore cannot "
-                    "be cancelled."))
+                raise orm.except_orm(
+                    _("Commitment not sent to GMC (%s - %s)") % (
+                        contract.partner_id.ref, contract.child_id.code),
+                    _("The commitment was not sent to GMC and therefore "
+                      "cannot be cancelled."))
 
         return True
