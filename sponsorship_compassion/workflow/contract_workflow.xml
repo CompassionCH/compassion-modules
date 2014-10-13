@@ -19,7 +19,8 @@
 		<field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
 		<field name="name">cancelled</field>
 		<field name="kind">function</field>
-		<field name="action">contract_cancelled()</field>
+		<field name="action">contract_cancelled()
+                             clean_invoices()</field>
         <field name="flow_stop" eval='True' />
     </record>
 

@@ -134,7 +134,7 @@ class recurring_contract(orm.Model):
             'res.partner', string=_('Partner'), required=True,
             readonly=True, states={'draft': [('readonly', False)]}),
         'group_id': fields.many2one(
-            'recurring.contract.group', _('Group'),
+            'recurring.contract.group', _('Payment Options'),
             required=True, ondelete='cascade',
             track_visibility="onchange"),
         'invoice_line_ids': fields.one2many(

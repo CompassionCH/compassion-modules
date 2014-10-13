@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Cyril Sester <csester@compassion.ch>
+#    @author: Cyril Sester, Emanuel Cino
 #
 #    The licence is in the file __openerp__.py
 #
@@ -159,7 +159,7 @@ class recurring_contract(orm.Model):
         for t in contracts:
             # We can only delete draft contracts.
             if t['state'] != 'draft':
-                raise orm.except_orm('Warning',
+                raise orm.except_orm(_('Warning'),
                                      _('You cannot delete a contract that is '
                                        'still active. Terminate it first.'))
             else:
@@ -168,6 +168,43 @@ class recurring_contract(orm.Model):
         super(recurring_contract, self).unlink(cr, uid, unlink_ids,
                                                context=context)
         return
+
+    def write(self, cr, uid, ids, vals, context=None):
+        """ Prevent to change next_invoice_date in the past. """
+        if 'next_invoice_date' in vals:
+            new_date = vals['next_invoice_date']
+            for contract in self.browse(cr, uid, ids, context=context):
+                if new_date < contract.next_invoice_date:
+                    raise orm.except_orm(_('Warning'),
+                                         _('You cannot rewind the next '
+                                           'invoice date.'))
+
+        return super(recurring_contract, self).write(cr, uid, ids, vals,
+                     context=context)
+
+    def validate_from_gp(self, cr, uid, ids, context=None):
+        """ Used to transition draft sponsorships in waiting state 
+        when exported from GP. """
+        wf_service = netsvc.LocalService('workflow')
+        for id in ids:
+            wf_service.trg_validate(uid, 'recurring.contract', id,
+                                    'contract_validated', cr)
+        return True
+
+    def activate_from_gp(self, cr, uid, ids, context=None):
+        """ Used to transition draft sponsorships in active state 
+        when exported from GP. """
+        self.validate_from_gp(cr, uid, ids, context)
+        self._on_contract_active(cr, uid, ids, context)
+        return True
+
+    def terminate_from_gp(self, cr, uid, ids, context=None):
+        """ Used to delete the workflow of terminated or cancelled
+        sponsorships when exported from GP. """
+        wf_service = netsvc.LocalService('workflow')
+        for id in ids:
+            wf_service.trg_delete(uid, 'recurring.contract', id, cr)
+        return True
 
 
 # just to modify access rights...
