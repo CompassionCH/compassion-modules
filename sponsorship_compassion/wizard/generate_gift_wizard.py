@@ -22,7 +22,6 @@ GIFT_TYPES = {'Birthday Gift': '1', 'General Gift': '2', 'Family Gift': '3',
 
 
 class generate_gift_wizard(orm.TransientModel):
-
     """ This wizard generates a Gift Invoice for a given contract. """
     _name = 'generate.gift.wizard'
 
