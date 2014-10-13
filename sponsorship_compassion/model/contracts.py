@@ -186,7 +186,7 @@ class recurring_contract(orm.Model):
         return super(recurring_contract, self).write(cr, uid, ids, vals,
                                                      context=context)
 
-    def open_contract(self, cr, uid, ids, contect=None):
+    def open_contract(self, cr, uid, ids, context=None):
         """ Used to bypass opening a contract in popup mode from
         res_partner view. """
         return {

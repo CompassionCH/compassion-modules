@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+    <record id="view_generate_gift" model="ir.ui.view">
+        <field name="name">contract.generate.gift.form</field>
+        <field name="model">generate.gift.wizard</field>
+        <field eval="18" name="priority"/>
+        <field name="arch" type="xml">
+            <form string="Gift Generation" version="7.0">
+                <separator string="Gift generation from contract"/>
+                <group>
+                    <field name="product_id" />
+                    <field name="amount" />
+                    <field name="invoice_date" />
+                </group>
+                <footer>
+                    <button name="generate_invoice" string="Generate" type="object" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</data>
+</openerp>

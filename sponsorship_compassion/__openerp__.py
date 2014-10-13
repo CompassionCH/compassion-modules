@@ -52,6 +52,7 @@ To add a new locale :
              'view/contract_view.xml',
              'view/invoice_line_view.xml',
              'view/res_partner_view.xml',
+             'view/generate_gift_view.xml',
              'data/product.xml',
              'data/payment_terms.xml',
              'data/lang.xml',
