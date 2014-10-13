@@ -141,20 +141,20 @@ class compassion_project(orm.Model):
         url = self._get_url(project.code, 'programimplementors')
         r = requests.get(url)
         if not r.status_code/100 == 2:
-            raise orm.except_orm(r.text)
+            raise orm.except_orm('ValueError1', r.text)
         prog_impl = json.loads(r.text)
         values = self._get_program_values(cr, uid, prog_impl, context)
 
         coutry_code = prog_impl.get('ISOCountryCode')
         type = prog_impl.get('ProgramImplementorTypeCode')
-        community_id = prog_impl.get('CommunityID')
+        community_id = prog_impl.get('communityID')
         return values, coutry_code, type, community_id
 
     def _update_community_info(self, cr, uid, community_id, context=None):
-        url = self._get_url(community_id, 'community')
+        url = self._get_url(community_id, 'communities')
         r = requests.get(url)
         if not r.status_code/100 == 2:
-            raise orm.except_orm(r.text)
+            raise orm.except_orm('ValueError2', r.text)
         json_data = json.loads(r.text)
         return self._get_community_values(cr, uid, json_data, context)
 
@@ -162,7 +162,7 @@ class compassion_project(orm.Model):
         url = self._get_url(project.code, 'cdspimplementor')
         r = requests.get(url)
         if not r.status_code/100 == 2:
-            raise orm.except_orm(r.text)
+            raise orm.except_orm('ValueError3', r.text)
         cdsp_impl = json.loads(r.text)
         return self._get_cdsp_values(cr, uid, cdsp_impl, context)
 
@@ -205,27 +205,26 @@ class compassion_project(orm.Model):
         # dynamic translations and reuse them if multiple projects refer
         # to a same value. Property_name filter is important to give a context
         # to words.
-
-        values['unemployment_rate'] = json_values['UnemploymentRate']
-        values['community_population'] = json_values['CommunityPopulation']
-        values['monthly_income'] = json_values['FamilyMonthlyIncome']
-        values['economic_needs'] = json_values['EconomicNeed']
-        values['educational_needs'] = json_values['EducationalNeeds']
-        values['social_needs'] = json_values['SocialNeeds']
-        values['spiritual_needs'] = json_values['SpiritualNeeds']
-        values['closest_city'] = json_values['ClosestCityName']
+        values['unemployment_rate'] = json_values['unemploymentRate']
+        values['community_population'] = json_values['communityPopulation']
+        values['monthly_income'] = json_values['familyMonthlyIncome']
+        values['economic_needs'] = json_values['economicNeeds']
+        values['educational_needs'] = json_values['educationalNeeds']
+        values['social_needs'] = json_values['socialNeeds']
+        values['spiritual_needs'] = json_values['spiritualNeeds']
+        values['closest_city'] = json_values['closestCityName']
         # Dictionary key -> JSON field name, tuple -> Odoo field name
         # and the separator
         json_misc_tags = {
-            'DistanceFromClosestCity': ('closest', ','),
-            'TerrainDescription': ('terrain_description', '/'),
-            'TypicalFloorBuildingMaterialDescription': ('floor_material', '/'),
-            'TypicalWallBuildingMaterialDescription': ('wall_material', '/'),
-            'TypicalRoofBuildingMaterialDescription': ('roof_material', '/'),
-            'PrimaryEthnicGroup': ('spoken_languages', ','),
-            'PrimaryDiet': ('primary_diet', ','),
-            'CommonHealthProblems': ('health_problems', ','),
-            'PrimaryOccupation': ('primary_occupation', '/'),
+            'distanceFromClosestCity': ('closest', ','),
+            'terrainDescription': ('terrain_description', '/'),
+            'typicalFloorBuildingMaterialDescription': ('floor_material', '/'),
+            'typicalWallBuildingMaterialDescription': ('wall_material', '/'),
+            'typicalRoofBuildingMaterialDescription': ('roof_material', '/'),
+            'primaryEthnicGroup': ('spoken_languages', ','),
+            'primaryDiet': ('primary_diet', ','),
+            'commonHealthProblems': ('health_problems', ','),
+            'primaryOccupationTitle': ('primary_occupation', '/'),
         }
         """
         multi_value = (self._get_values(cr, uid,
