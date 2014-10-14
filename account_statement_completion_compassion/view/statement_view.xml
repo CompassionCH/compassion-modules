@@ -16,37 +16,5 @@
              </data>
          </field>
      </record>
-     
-     <!-- Remove Useless Bank Statements Menus -->
-     <delete model="ir.ui.menu" id="account_banking.menu_action_account_banking_imported_files"  />
-     <delete model="ir.ui.menu" id="account_banking.menu_account_banking_import_wizard" />
-     
-     <!-- Remove Useless Statement Lines Fields -->
-     <record id="bank_statement_view_form_compassion_remove_1" model="ir.ui.view">
-         <field name="name">bank_statement_compassion.view_form_remove</field>
-         <field name="model">account.bank.statement</field>
-         <field name="inherit_id" ref="account_banking.view_banking_bank_statement_form_1" />
-         <field name="type">form</field>
-         <field name="arch" type="xml">
-             <data>
-                <field name="match_type" position="attributes">
-                    <attribute name="invisible">True</attribute>
-                </field>
-                <field name="residual" position="replace" />
-                <field name="invoice_id" position="replace" />
-                <field name="reconcile_id" position="replace" />
-                <button name="match_wizard" position="replace" />
-                <button name="confirm" position="replace" />
-                <button name="cancel" position="replace" />
-                
-                <xpath expr="//field[@name='line_ids']/form//field[@name='state']" position="attributes">
-                    <attribute name="invisible">True</attribute>
-                </xpath>
-                <xpath expr="//field[@name='line_ids']/tree//field[@name='state']" position="attributes">
-                    <attribute name="invisible">True</attribute>
-                </xpath>
-             </data>
-         </field>
-     </record>
 </data>
 </openerp>
