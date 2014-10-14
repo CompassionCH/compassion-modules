@@ -61,5 +61,7 @@ class l10n_ch_import(common.TransactionCase):
         self.assertEqual(project.start_date, "2002-04-16")
         self.assertEqual(project.local_church_name,
                          "Tanzania Assembly of God Karatu")
-        self.assertEqual(project.closest_city_ids, "Arusha")
+        self.assertEqual(project.closest_city, "Arusha")
         self.assertEqual(project.terrain_description_ids[0].value_en, "hilly")
+        self.assertEqual(project.country_id.name, 'Tanzania')
+        self.assertTrue(project.country_id.description_en)
