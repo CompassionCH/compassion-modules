@@ -8,4 +8,8 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+<<<<<<< HEAD
 from . import model
+=======
+import model
+>>>>>>> PEP8 + headers correction on module lsv_compassion

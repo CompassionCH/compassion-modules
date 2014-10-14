@@ -10,7 +10,7 @@
 #                            in Jesus' name
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
-#    @author: Cyril Sester <cyril.sester@outlook.com>
+#    @author: Cyril Sester, Emanuel Cino
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -28,9 +28,9 @@
 ##############################################################################
 
 {
-    'name': 'LSV Compassion',
-    'summary': 'Customize LSV to fit Compassion needs',
-    'version': '0.1',
+    'name': 'LSV-DD Compassion',
+    'summary': 'Customize LSV-DD to fit Compassion needs',
+    'version': '0.2',
     'license': 'AGPL-3',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -42,9 +42,11 @@
     ],
     'demo': [],
     'description': '''
-        fr_CH, it_IT, de_DE, en_US and es_ES locales have to be installed on
-        your openerp server. You can see which locales are installed by typing
-        locale -a.
+        Customize LSV-DD to fit Compassion needs.
+        Adds filters by payment term in direct debit orders.
+        Note : fr_CH, it_IT, de_DE, en_US and es_ES locales have to be
+               installed on your openerp server. You can see which locales
+               are installed by typing locale -a.
     ''',
     'active': False,
     'installable': True,

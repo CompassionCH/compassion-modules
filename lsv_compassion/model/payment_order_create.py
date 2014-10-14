@@ -25,5 +25,5 @@ class payment_order_create(orm.TransientModel):
                 ('invoice.payment_term', 'in',
                  [term.id for term in payment_order.mode.payment_term_ids]
                  )
-                ]
+            ]
         return True
