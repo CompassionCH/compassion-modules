@@ -36,7 +36,8 @@ class Child_description_de:
             activity.value_de if activity.value_de else activity.value_en
             for activity in case_study.christian_activities_ids]
         activities_str = cls._gen_list_string(activities, ', ', ' und ')
-        string = (u"In der Kirche macht %s %s %s" % ('er' if child.gender == 'M'
+        string = (u"In der Kirche macht %s %s %s" % (
+                  'er' if child.gender == 'M'
                   else 'sie', activities_str, 'mit. '
                   if activities_str > 1 else '. '))
         return string

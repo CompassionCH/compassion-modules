@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Cyril Sester <csester@compassion.ch>, Kevin Cristi <kcristi@compassion.ch>
+#    @author: Cyril Sester, Kevin Cristi
 #
 #    The licence is in the file __openerp__.py
 #
@@ -11,9 +11,6 @@
 
 import requests
 import json
-import logging
-import pdb
-logger = logging.getLogger(__name__)
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
@@ -108,7 +105,6 @@ class compassion_project(orm.Model):
         'education_needs': fields.text(_('Education needs')),
         'social_needs': fields.text(_('Social needs')),
         'spiritual_needs': fields.text(_('Spiritual needs')),
-        'organization_name': fields.char(_('Organization name')),
         }
 
     def update_informations(self, cr, uid, ids, context=None):
@@ -125,10 +121,13 @@ class compassion_project(orm.Model):
             if type == 'CDSP':
                 values.update(self._update_cdsp_info(cr, uid,
                                                      project, context))
+            values['type'] = type
             values['primary_diet_ids'] = [(6, 0, community_multi_values)]
-            country_id = country_obj.search(
+            country_ids = country_obj.search(
                 cr, uid, [('iso_code', '=', country)], context=context)
-            if not country_id:
+            if country_ids:
+                    country_id = country_ids[0]
+            else:
                 country_id = country_obj.create(
                     cr, uid, {'iso_code': country}, context=context)
                 country_obj.update_informations(cr, uid, [country_id],
@@ -145,8 +144,8 @@ class compassion_project(orm.Model):
         prog_impl = json.loads(r.text)
         values = self._get_program_values(cr, uid, prog_impl, context)
 
-        coutry_code = prog_impl.get('ISOCountryCode')
-        type = prog_impl.get('ProgramImplementorTypeCode')
+        coutry_code = prog_impl.get('iSOCountryCode')
+        type = prog_impl.get('programImplementorTypeCode')
         community_id = prog_impl.get('communityID')
         return values, coutry_code, type, community_id
 
@@ -159,7 +158,7 @@ class compassion_project(orm.Model):
         return self._get_community_values(cr, uid, json_data, context)
 
     def _update_cdsp_info(self, cr, uid, project, context=None):
-        url = self._get_url(project.code, 'cdspimplementor')
+        url = self._get_url(project.code, 'cdspimplementors')
         r = requests.get(url)
         if not r.status_code/100 == 2:
             raise orm.except_orm('ValueError3', r.text)
@@ -181,14 +180,13 @@ class compassion_project(orm.Model):
         values = {}
         # For example, we map a bunch of fields
         json_field_mapping = {
-            'ProgramImplementorTypeCode': 'type',
-            'OrganizationName': 'local_church_name',
-            'HIVCategory': 'hiv_category',
-            'MonthSchoolYearBegins': 'month_school_year_begins',
-            'CountryDenomination': 'country_denomination',
-            'WesternDenomination': 'western_denomination',
-            'CommunityName': 'community_name',
-            'OrganizationName': 'organization_name',
+            'programImplementorTypeCode': 'type',
+            'organizationName': 'local_church_name',
+            'hIVCategory': 'hiv_category',
+            'monthSchoolYearBegins': 'month_school_year_begins',
+            'countryDenomination': 'country_denomination',
+            'westernDenomination': 'western_denomination',
+            'communityName': 'community_name',
             }
         for json_name, field in json_field_mapping.iteritems():
             if json_values.get(json_name):
@@ -246,16 +244,16 @@ class compassion_project(orm.Model):
         '''
         values = {}
         json_field_mapping = {
-            'Name': 'name',
-            'StartDate': 'start_date',
-            'StopDate': 'stop_date',
-            'LastUpdateDate': 'last_update_date',
-            'Status': 'status',
-            'StatusDate': 'status_date',
-            'StatusComment': 'status_comment',
-            'Description': 'description_en',
-            'GPSCoordinateLatitudeHighPrecision': 'gps_latitude',
-            'GPSCoordinateLongitudeHighPrecision': 'gps_longitude',
+            'name': 'name',
+            'startDate': 'start_date',
+            'stopDate': 'stop_date',
+            'lastUpdateDate': 'last_update_date',
+            'status': 'status',
+            'statusDate': 'status_date',
+            'statusComment': 'status_comment',
+            'description': 'description_en',
+            'gPSCoordinateLatitudeHighPrecision': 'gps_latitude',
+            'gPSCoordinateLongitudeHighPrecision': 'gps_longitude',
             }
         for json_name, field in json_field_mapping.iteritems():
             if json_values.get(json_name):

@@ -67,7 +67,6 @@
 										<field name="education_needs" />
 										<field name="social_needs" />
 										<field name="spiritual_needs" />
-										<field name="organization_name" />
 									</group>
 								</group>
 							</page>
