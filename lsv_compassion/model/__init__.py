@@ -10,3 +10,5 @@
 ##############################################################################
 from . import lsv_export_wizard
 from . import dd_export_wizard
+from . import payment_order_create
+from . import payment_mode
