@@ -47,9 +47,9 @@ class compassion_country(orm.Model):
     def _get_val_from_json(self, cr, uid, json_data, context=None):
         values = {}
 
-        values['name'] = json_data['CountryCommonName']
-        values['language'] = json_data['OfficialLanguage']
-        values['description_en'] = json_data['CountryDescription']
+        values['name'] = json_data['countryCommonName']
+        values['language'] = json_data['officialLanguage']
+        values['description_en'] = json_data['countryDescription']
 
         return values
 
@@ -62,6 +62,6 @@ class compassion_country(orm.Model):
                                    'in conf file'))
         if url.endswith('/'):
             url = url[:-1]
-        url += ('/ci/v1/country/' + api_mess + '/' + api_value +
+        url += ('/ci/v1/countries/' + api_mess + '/' + api_value +
                 '?api_key=' + api_key)
         return url
