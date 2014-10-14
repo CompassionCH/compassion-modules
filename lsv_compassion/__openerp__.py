@@ -35,9 +35,10 @@
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'category': 'Other',
-    'depends': ['l10n_ch_lsv_dd', 'account_banking_payment'],
+    'depends': ['l10n_ch_lsv_dd', 'account_banking_payment_export'],
     'external_dependencies': {},
     'data': [
+        'view/payment_mode.xml'
     ],
     'demo': [],
     'description': '''

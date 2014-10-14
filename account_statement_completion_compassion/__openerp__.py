@@ -35,7 +35,6 @@
     "website": "http://www.compassion.ch",
     "depends": ['account_statement_base_completion',
                 'sponsorship_compassion',
-                'account_banking_payment',
                 ],
     "data": ['view/statement_view.xml',
              'view/invoice_view.xml',
