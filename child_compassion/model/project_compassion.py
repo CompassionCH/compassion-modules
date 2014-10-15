@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Cyril Sester, Kevin Cristi
+#    @author: Cyril Sester, Kevin Cristi, Emanuel Cino
 #
 #    The licence is in the file __openerp__.py
 #
@@ -20,9 +20,14 @@ from openerp.tools.config import config
 class compassion_project(orm.Model):
     """ A compassion project """
     _name = 'compassion.project'
+
     _columns = {
+        ######################################################################
+        #                      1. General Information
+        ######################################################################
         'name': fields.char(_("Name"), size=128, required=True),
         'code': fields.char(_("Project code"), size=128, required=True),
+        'country_id': fields.many2one('compassion.country', _('Country')),
         'type': fields.selection([
             ('CDSP', 'CDSP'),
             ('CSP', 'CSP')], _('Program type')),
@@ -39,12 +44,18 @@ class compassion_project(orm.Model):
             ('T', _('Terminated'))], _('Status')),
         'status_date': fields.date(_('Last status change')),
         'status_comment': fields.char(_('Status comment')),
+
+        ######################################################################
+        #                      2. Project Descriptions
+        ######################################################################
         'description_en': fields.text(_('English description')),
         'description_fr': fields.text(_('French description')),
         'description_de': fields.text(_('German description')),
         'description_it': fields.text(_('Italian description')),
-        'gps_latitude': fields.float(_('GPS latitude')),
-        'gps_longitude': fields.float(_('GPS longitude')),
+
+        ######################################################################
+        #                      3. Community Information
+        ######################################################################
         'local_church_name': fields.char(_('Local church name')),
         'hiv_category': fields.selection([
             ('AFFCTD', _('Affected')),
@@ -59,48 +70,52 @@ class compassion_project(orm.Model):
         'country_denomination': fields.char(_('Local denomination')),
         'western_denomination': fields.char(_('Western denomination')),
         'community_name': fields.char(_('Community name')),
-        # Example of a field used for description generation. It should refer
-        # to a value in the child.property.value model. This way, we can set
-        # dynamic translations and reuse them if multiple projects refer
-        # to a same value. Property_name filter is important to give a context
-        # to words.
-        'closest_city': fields.char(_('Closest city')),
-        'terrain_description_ids': fields.many2many(
-            'compassion.child.property.value', 'project_property_to_value',
-            'property_id', 'value_id', _('Terrain description'),
-            domain=[('property_name', '=', 'terrain_description')]),
-        'community_population': fields.integer(_('Community population')),
+
+        ######################################################################
+        #                    4. Miscellaneous Information
+        #                       (retrieved from community API)
+        ######################################################################
+        # a. Automatic translated values
         'floor_material_ids': fields.many2many(
-            'compassion.child.property.value', 'project_property_to_value',
+            'compassion.translated.value', 'project_property_to_value',
             'property_id', 'value_id', _('Floor material'),
             domain=[('property_name', '=', 'floor_material')]),
         'wall_material_ids': fields.many2many(
-            'compassion.child.property.value', 'project_property_to_value',
+            'compassion.translated.value', 'project_property_to_value',
             'property_id', 'value_id', _('Wall material'),
             domain=[('property_name', '=', 'wall_material')]),
         'roof_material_ids': fields.many2many(
-            'compassion.child.property.value', 'project_property_to_value',
+            'compassion.translated.value', 'project_property_to_value',
             'property_id', 'value_id', _('Roof material'),
             domain=[('property_name', '=', 'roof_material')]),
         'spoken_languages_ids': fields.many2many(
-            'compassion.child.property.value', 'project_property_to_value',
+            'compassion.translated.value', 'project_property_to_value',
             'property_id', 'value_id', _('Spoken languages'),
             domain=[('property_name', '=', 'spoken_languages')]),
         'primary_diet_ids': fields.many2many(
-            'compassion.child.property.value', 'project_property_to_value',
+            'compassion.translated.value', 'project_property_to_value',
             'property_id', 'value_id', _('Primary diet'),
             domain=[('property_name', '=', 'primary_diet')]),
-        'country_id': fields.many2one('compassion.country', _('Country')),
         'health_problems_ids': fields.many2many(
-            'compassion.child.property.value', 'project_property_to_value',
+            'compassion.translated.value', 'project_property_to_value',
             'property_id', 'value_id', _('Health problems'),
             domain=[('property_name', '=', 'health_problems')]),
-        'unemployment_rate': fields.float(_('Unemployment rate')),
         'primary_occupation_ids': fields.many2many(
-            'compassion.child.property.value', 'project_property_to_value',
+            'compassion.translated.value', 'project_property_to_value',
             'property_id', 'value_id', _('Primary occupation'),
             domain=[('property_name', '=', 'primary_occupation')]),
+        'terrain_description_ids': fields.many2many(
+            'compassion.translated.value', 'project_property_to_value',
+            'property_id', 'value_id', _('Terrain description'),
+            domain=[('property_name', '=', 'terrain_description')]),
+        # b. Static Values
+        'gps_latitude': fields.float(_('GPS latitude')),
+        'gps_longitude': fields.float(_('GPS longitude')),
+        'unemployment_rate': fields.float(_('Unemployment rate')),
+        'closest_city': fields.char(_('Closest city')),
+        'community_population': fields.integer(_('Community population')),
         'monthly_income': fields.float(_('Monthly income')),
+        # c. Non translated text
         'economic_needs': fields.text(_('Economic needs')),
         'education_needs': fields.text(_('Education needs')),
         'social_needs': fields.text(_('Social needs')),
@@ -108,185 +123,157 @@ class compassion_project(orm.Model):
         }
 
     def update_informations(self, cr, uid, ids, context=None):
-        ''' Get the most recent informations for selected projects '''
+        """ Get the most recent informations for selected projects and update
+            them accordingly. """
         if not isinstance(ids, list):
             ids = [ids]
-        country_obj = self.pool.get('compassion.country')
+
         for project in self.browse(cr, uid, ids, context):
-            values, country, type, community_id = self._update_program_info(
+            values, community_id = self._update_program_info(
                 cr, uid, project, context)
-            community_values, community_multi_values = (
+            values.update(
                 self._update_community_info(cr, uid, community_id, context))
-            values.update(community_values)
-            if type == 'CDSP':
+            if values['type'] == 'CDSP':
                 values.update(self._update_cdsp_info(cr, uid,
-                                                     project, context))
-            values['type'] = type
-            values['primary_diet_ids'] = [(6, 0, community_multi_values)]
-            country_ids = country_obj.search(
-                cr, uid, [('iso_code', '=', country)], context=context)
-            if country_ids:
-                    country_id = country_ids[0]
-            else:
-                country_id = country_obj.create(
-                    cr, uid, {'iso_code': country}, context=context)
-                country_obj.update_informations(cr, uid, [country_id],
-                                                context=context)
-            values['country_id'] = country_id
+                                                     project.code, context))
+
             self.write(cr, uid, [project.id], values, context=context)
         return True
 
     def _update_program_info(self, cr, uid, project, context=None):
-        url = self._get_url(project.code, 'programimplementors')
-        r = requests.get(url)
-        if not r.status_code/100 == 2:
-            raise orm.except_orm('ValueError1', r.text)
-        prog_impl = json.loads(r.text)
-        values = self._get_program_values(cr, uid, prog_impl, context)
+        """ Calls the "ProgramImplemetors" REST API.
+            Returns the information in a dictionary of the form
+            {'field_name': 'value'}, and the community_id used
+            to call the GetCommunity API.
+            See http://developer.compassion.com/docs/read/
+                private_cornerstone_test/REST_Get_Program_Implementor
+            for more information.
+        """
+        prog_impl = self._send_request(project.code, 'programimplementors')
+        values = {
+            'type': prog_impl.get('programImplementorTypeCode'),
+            'local_church_name': prog_impl.get('organizationName'),
+            'hiv_category': prog_impl.get('hIVCategory'),
+            'month_school_year_begins': prog_impl.get(
+                'monthSchoolYearBegins'),
+            'country_denomination': prog_impl.get('countryDenomination'),
+            'western_denomination': prog_impl.get('westernDenomination'),
+            'community_name': prog_impl.get('communityName'),
+            'country_id': self._update_country(
+                cr, uid, prog_impl.get('iSOCountryCode'), context),
+        }
 
-        coutry_code = prog_impl.get('iSOCountryCode')
-        type = prog_impl.get('programImplementorTypeCode')
         community_id = prog_impl.get('communityID')
-        return values, coutry_code, type, community_id
+        return dict(
+            (field_name, value) for field_name, value in values.iteritems()
+            if value), community_id
+
+    def _update_country(self, cr, uid, country_code, context=None):
+        """ Finds the country having the given country_code or
+            creates one.
+            Returns the country_id of the country object.
+        """
+        country_obj = self.pool.get('compassion.country')
+        country_ids = country_obj.search(
+            cr, uid, [('iso_code', '=', country_code)], context=context)
+        if country_ids:
+            country_id = country_ids[0]
+        else:
+            country_id = country_obj.create(
+                cr, uid, {'iso_code': country_code}, context=context)
+            country_obj.update_informations(cr, uid, [country_id], context)
+
+        return country_id
 
     def _update_community_info(self, cr, uid, community_id, context=None):
-        url = self._get_url(community_id, 'communities')
-        r = requests.get(url)
-        if not r.status_code/100 == 2:
-            raise orm.except_orm('ValueError2', r.text)
-        json_data = json.loads(r.text)
-        return self._get_community_values(cr, uid, json_data, context)
+        """ Call the "REST Get Community" API from Compassion.
+        See http://developer.compassion.com/docs/read/
+            private_cornerstone_test/REST_Get_Community for more information.
+        Returns: the information in a dictionary of the form
+                 {'field_name': 'value'}
+        """
+        # Standard fields retrieval
+        json_values = self._send_request(community_id, 'communities')
+        values = {
+            'unemployment_rate': json_values['unemploymentRate'],
+            'community_population': json_values['communityPopulation'],
+            'monthly_income': json_values['familyMonthlyIncome'],
+            'economic_needs': json_values['economicNeeds'],
+            'education_needs': json_values['educationalNeeds'],
+            'social_needs': json_values['socialNeeds'],
+            'spiritual_needs': json_values['spiritualNeeds'],
+            'closest_city': json_values['closestCityName'],
+        }
 
-    def _update_cdsp_info(self, cr, uid, project, context=None):
-        url = self._get_url(project.code, 'cdspimplementors')
-        r = requests.get(url)
-        if not r.status_code/100 == 2:
-            raise orm.except_orm('ValueError3', r.text)
-        cdsp_impl = json.loads(r.text)
-        return self._get_cdsp_values(cr, uid, cdsp_impl, context)
-
-    def _get_program_values(self, cr, uid, json_values, context=None):
-        ''' Map JSON values to openERP fields.
-            @param self: Python equivalent for "this"
-            @param cr: OpenERP database cursor. Used for object browsing
-            @param uid: Current user id. Standard parameter.
-            @param json_values: json parsed values retrieved from
-                https://api2.compassion.com/ci/v1/programimplementors/ . Please
-                look at http://bit.ly/YKrD4d to see full description
-            @param context: Standard strategy used in OpenERP to share and set
-                default values in the views. This should be part of most
-                function signatures
-        '''
-        values = {}
-        # For example, we map a bunch of fields
-        json_field_mapping = {
-            'programImplementorTypeCode': 'type',
-            'organizationName': 'local_church_name',
-            'hIVCategory': 'hiv_category',
-            'monthSchoolYearBegins': 'month_school_year_begins',
-            'countryDenomination': 'country_denomination',
-            'westernDenomination': 'western_denomination',
-            'communityName': 'community_name',
-            }
-        for json_name, field in json_field_mapping.iteritems():
-            if json_values.get(json_name):
-                values[field] = json_values[json_name]
-        return values
-
-    def _get_community_values(self, cr, uid, json_values, context=None):
-        ''' Map JSON values to fields.
-            REST_Get_Community
-        '''
-        values = {}
-        # Example of a field used for description generation. It should refer
-        # to a value in the child.property.value model. This way, we can set
-        # dynamic translations and reuse them if multiple projects refer
-        # to a same value. Property_name filter is important to give a context
-        # to words.
-        values['unemployment_rate'] = json_values['unemploymentRate']
-        values['community_population'] = json_values['communityPopulation']
-        values['monthly_income'] = json_values['familyMonthlyIncome']
-        values['economic_needs'] = json_values['economicNeeds']
-        values['educational_needs'] = json_values['educationalNeeds']
-        values['social_needs'] = json_values['socialNeeds']
-        values['spiritual_needs'] = json_values['spiritualNeeds']
-        values['closest_city'] = json_values['closestCityName']
-        # Dictionary key -> JSON field name, tuple -> Odoo field name
-        # and the separator
+        # Automatic translated fields retrieval
+        # Dictionary key -> JSON field name;
+        # Dictionary value -> (Odoo field name, separator between values)
         json_misc_tags = {
-            'distanceFromClosestCity': ('closest', ','),
             'terrainDescription': ('terrain_description', '/'),
             'typicalFloorBuildingMaterialDescription': ('floor_material', '/'),
             'typicalWallBuildingMaterialDescription': ('wall_material', '/'),
             'typicalRoofBuildingMaterialDescription': ('roof_material', '/'),
-            'primaryEthnicGroup': ('spoken_languages', ','),
-            'primaryDiet': ('primary_diet', ','),
-            'commonHealthProblems': ('health_problems', ','),
+            'primaryEthnicGroup': ('spoken_languages', ', '),
+            'primaryDiet': ('primary_diet', ', '),
+            'commonHealthProblems': ('health_problems', ', '),
             'primaryOccupationTitle': ('primary_occupation', '/'),
         }
-        """
-        multi_value = (self._get_values(cr, uid,
-                       json_values['DistanceFromClosestCity'].split(','),
-                       'closest_city', context))
-        """
+
+        # Get the property values ids
+        # (ids of 'compassion.translated.value' objects)
         multi_value = []
+        value_obj = self.pool.get('compassion.translated.value')
         for json_key, field_tuple in json_misc_tags.iteritems():
             field_name = field_tuple[0]
             separator = field_tuple[1]
-            multi_value.extend(self._get_values(cr, uid,
+
+            multi_value.extend(value_obj.get_value_ids(cr, uid,
                                json_values[json_key].split(separator),
                                field_name, context))
-        return values, multi_value
 
-    def _get_cdsp_values(self, cr, uid, json_values, context=None):
-        ''' Map JSON values to fields.
-            Get_CDSP_Implementor method.
-        '''
-        values = {}
-        json_field_mapping = {
-            'name': 'name',
-            'startDate': 'start_date',
-            'stopDate': 'stop_date',
-            'lastUpdateDate': 'last_update_date',
-            'status': 'status',
-            'statusDate': 'status_date',
-            'statusComment': 'status_comment',
-            'description': 'description_en',
-            'gPSCoordinateLatitudeHighPrecision': 'gps_latitude',
-            'gPSCoordinateLongitudeHighPrecision': 'gps_longitude',
-            }
-        for json_name, field in json_field_mapping.iteritems():
-            if json_values.get(json_name):
-                values[field] = json_values[json_name]
-        return values
+        """ Only one field need to get all the many2many relations.
+        Then all other fields will get their correct values
+        because of the domain set on the property_name.
+        This is because there is only one physical underlying
+        many2many relation.
+        [(6, 0, [ids])] is a standard way to set a many2many field in Odoo.
+        """
+        values['primary_diet_ids'] = [(6, 0, multi_value)]
 
-    # Same as in child. Should we create a tool class handing this use-case ?
-    def _get_values(self, cr, uid, _list, property_name, context):
-        value_ids = []
-        if isinstance(_list, list):
-            for elem in _list:
-                value_ids.append(self._get_value_id(cr, uid, elem,
-                                                    property_name, context))
-        elif isinstance(_list, basestring):
-            value_ids.append(self._get_value_id(cr, uid, _list, property_name,
-                                                context))
-        return value_ids
+        return dict(
+            (field_name, value) for field_name, value in values.iteritems()
+            if value)
 
-    def _get_value_id(self, cr, uid, value, property_name, context=None):
-        ''' Get id for value having property_name, else create one '''
-        prop_val_obj = self.pool.get('compassion.child.property.value')
-        value = value.lower()
-        val_ids = prop_val_obj.search(cr, uid, [('value_en', '=like', value),
-                                                ('property_name', '=',
-                                                 property_name)],
-                                      context=context)
-        if val_ids:
-            return val_ids[0]
-        prop_id = prop_val_obj.create(cr, uid, {'property_name': property_name,
-                                                'value_en': value})
-        return prop_id
+    def _update_cdsp_info(self, cr, uid, project_code, context=None):
+        """ Call the "REST Get CDSP" API from Compassion.
+        See http://developer.compassion.com/docs/read/
+            private_cornerstone_test/Get_CDSP_Implementor
+            for more information.
+        Returns: the information in a dictionary of the form
+                 {'field_name': 'value'}
+        """
+        json_values = self._send_request(project_code, 'cdspimplementors')
+        values = {
+            'name': json_values.get('name'),
+            'start_date': json_values.get('startDate'),
+            'stop_date': json_values.get('stopDate'),
+            'last_update_date': json_values.get('lastUpdateDate'),
+            'status': json_values.get('status'),
+            'status_date': json_values.get('statusDate'),
+            'status_comment': json_values.get('statusComment'),
+            'description_en': json_values.get('description'),
+            'gps_latitude': json_values.get(
+                'gPSCoordinateLatitudeHighPrecision'),
+            'gps_longitude': json_values.get(
+                'gPSCoordinateLongitudeHighPrecision'),
+        }
+        return dict(
+            (field_name, value) for field_name, value in values.iteritems()
+            if value)
 
-    def _get_url(self, project_code, api_mess):
+    def _send_request(self, project_code, api_mess):
+        """ Construct the correct URL to call Compassion Cornerstone APIs.
+        Returns the JSON object of the response."""
         url = config.get('compass_url')
         api_key = config.get('compass_api_key')
         if not url or not api_key:
@@ -297,4 +284,12 @@ class compassion_project(orm.Model):
             url = url[:-1]
         url += ('/ci/v1/' + api_mess + '/' + project_code + '?api_key='
                 + api_key)
-        return url
+
+        # Send the request and retrieve the result.
+        r = requests.get(url)
+        if not r.status_code == 200:
+            raise orm.except_orm(
+                _('Error calling Cornerstone Service'),
+                r.text)
+        json_result = json.loads(r.text)
+        return json_result
