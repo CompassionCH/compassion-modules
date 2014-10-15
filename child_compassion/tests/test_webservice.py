@@ -22,6 +22,7 @@ class l10n_ch_import(common.TransactionCase):
     def setUp(self):
         super(l10n_ch_import, self).setUp()
         self.project_id = self._create_project("TZ112", "Project 1")
+        self.child_id = self._create_child("TZ1120316", "Happiness Joseph")
 
     def _create_project(self, project_code, project_name):
         project_obj = self.registry('compassion.project')
@@ -30,6 +31,14 @@ class l10n_ch_import(common.TransactionCase):
             'code': project_code,
         })
         return project_id
+
+    def _create_child(self, child_code, child_name):
+        child_obj = self.registry('compassion.child')
+        child_id = child_obj.create(self.cr, self.uid, {
+            'code': child_code,
+            'name': child_name,
+        })
+        return child_id
 
     def test_config_set(self):
         """Test that the config is properly set on the server
@@ -65,3 +74,29 @@ class l10n_ch_import(common.TransactionCase):
         self.assertEqual(project.terrain_description_ids[0].value_en, "hilly")
         self.assertEqual(project.country_id.name, 'Tanzania')
         self.assertTrue(project.country_id.description_en)
+
+    def test_child_tz1120316(self):
+        """ Test the webservice on child TZ1120316"""
+        # Test the basics
+        self.assertTrue(self.child_id)
+        child_obj = self.registry('compassion.child')
+        child = child_obj.browse(self.cr, self.uid, self.child_id)
+        self.assertTrue(child)
+        self.assertEqual(child.name, "Happiness Joseph")
+        self.assertEqual(child.id, self.child_id)
+        logger.info("child id: " + str(child.id))
+
+        # Retrieve the informations from the webservice
+        child_obj.get_last_case_study(self.cr, self.uid, child.id)
+        child_obj.get_basic_informations(self.cr, self.uid, child.id)
+        child = child_obj.browse(self.cr, self.uid, self.child_id)
+        portrait = child_obj.get_portrait(self.cr, self.uid, [self.child_id], None, None)
+
+        # Test the data
+        self.assertEqual(child.code, "TZ1120316")
+        self.assertEqual(child.name, "Happiness Joseph")
+        self.assertEqual(child.firstname, "Happiness")
+        self.assertEqual(child.gender, "F")
+        self.assertEqual(child.birthdate, "2005-04-17")
+        self.assertTrue(child.case_study_ids[0])
+        self.assertTrue(portrait[self.child_id])

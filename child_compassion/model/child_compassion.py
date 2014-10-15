@@ -95,7 +95,6 @@ class compassion_child(orm.Model):
         ''' Get the most recent case study and updates portrait picture '''
         if not isinstance(ids, list):
             ids = [ids]
-
         ret = {}
         for child in self.browse(cr, uid, ids, context):
             ret[child.id] = self._get_case_study(cr, uid, child, context)
@@ -114,7 +113,6 @@ class compassion_child(orm.Model):
                                  _('Cannot generate a description '
                                    'for a child without a case study'))
         case_study = child.case_study_ids[-1]
-
         context['child_id'] = child_id
         context['property_id'] = case_study.id
 
@@ -146,11 +144,11 @@ class compassion_child(orm.Model):
         case_study = json.loads(r.text)
         vals = {
             'child_id': child.id,
-            'info_date': case_study['ChildCaseStudyDate'],
-            'name': case_study['ChildName'],
-            'firstname': case_study['ChildPersonalName'],
-            'gender': case_study['Gender'],
-            'birthdate': case_study['BirthDate'],
+            'info_date': case_study['childCaseStudyDate'],
+            'name': case_study['childName'],
+            'firstname': case_study['childPersonalName'],
+            'gender': case_study['gender'],
+            'birthdate': case_study['birthDate'],
         }
         values = []
 
@@ -165,15 +163,15 @@ class compassion_child(orm.Model):
             REST_Get_Child_Case_Study
         """
         cs_sections_mapping = {
-            'christian_activities': ['ChristianActivities',
-                                     'ChristianActivity',
-                                     'OtherChristianActivities'],
-            'family_duties': ['FamilyDuties', 'FamilyDuty',
-                              'OtherFamilyDuties'],
-            'hobbies': ['HobbiesAndSports', 'Hobby', 'OtherHobbies'],
-            'health_conditions': ['HealthConditions', 'HealthCondition',
-                                  'OtherHealthConditions'],
-            'guardians': ['Guardians', 'Guardian', False],
+            'christian_activities': ['christianActivities',
+                                     'christianActivity',
+                                     'otherChristianActivities'],
+            'family_duties': ['familyDuties', 'familyDuty',
+                              'otherFamilyDuties'],
+            'hobbies': ['hobbiesAndSports', 'hobby', 'otherHobbies'],
+            'health_conditions': ['healthConditions', 'healthCondition',
+                                  'otherHealthConditions'],
+            'guardians': ['guardians', 'guardian', False],
         }
         value_obj = self.pool.get('compassion.translated.value')
         for prop_name, cs_attributes in cs_sections_mapping.iteritems():
@@ -195,9 +193,9 @@ class compassion_child(orm.Model):
              'CaseStudyKey_female']}
         """
         npe_sections_mapping = {
-            'NaturalParents': ['father', 'mother', 'Father', 'Mother'],
-            'Employment': ['male_guardian', 'female_guardian',
-                           'FatherOrMaleGuardian', 'MotherOrFemaleGuardian'],
+            'naturalParents': ['father', 'mother', 'Father', 'Mother'],
+            'employment': ['male_guardian', 'female_guardian',
+                           'fatherOrMaleGuardian', 'motherOrFemaleGuardian'],
         }
         for section, prop_names in npe_sections_mapping.iteritems():
             for key, value in case_study[section].iteritems():
@@ -218,27 +216,26 @@ class compassion_child(orm.Model):
                               property_name, context))
 
         # Other sections
-        values.append(value_obj.get_value_ids(
-            cr, uid, case_study['NaturalParents']['MaritalStatusOfParents'],
-            'marital_status', context))
-        vals['us_school_level'] = case_study['Schooling']\
-                                            ['USSchoolEquivalent']
-        values.append(value_obj.get_value_ids(cr, uid, case_study['Schooling']
-                                              ['SchoolPerformance'],
-                                              'school_performance', context))
-        values.append(value_obj.get_value_ids(cr, uid, case_study['Schooling']
-                                              ['ChildsBestSubject'],
-                                              'school_best_subject', context))
-        vals['attending_school_flag'] = bool(case_study['Schooling']
-                                             ['ChildAttendingSchool'])
-        vals['nb_children_family'] = int(case_study['FamilySize']
-                                         ['TotalFamilyFemalesUnder18'])
-        vals['nb_sisters'] = int(case_study['FamilySize']
-                                 ['TotalFamilyFemalesUnder18'])
-        vals['nb_children_family'] += int(case_study['FamilySize']
-                                          ['TotalFamilyMalesUnder18'])-1
-        vals['nb_brothers'] = int(case_study['FamilySize']
-                                  ['TotalFamilyMalesUnder18'])
+        values.append(self._get_value_id(cr, uid, case_study['naturalParents']
+                                         ['maritalStatusOfParents'],
+                                         'marital_status', context))
+        vals['us_school_level'] = case_study['schooling']['uSSchoolEquivalent']
+        values.append(self._get_value_id(cr, uid, case_study['schooling']
+                                         ['schoolPerformance'],
+                                         'school_performance', context))
+        values.append(self._get_value_id(cr, uid, case_study['schooling']
+                                         ['childsBestSubject'],
+                                         'school_best_subject', context))
+        vals['attending_school_flag'] = bool(case_study['schooling']
+                                             ['childAttendingSchool'])
+        vals['nb_children_family'] = int(case_study['familySize']
+                                         ['totalFamilyFemalesUnder18'])
+        vals['nb_sisters'] = int(case_study['familySize']
+                                 ['totalFamilyFemalesUnder18'])
+        vals['nb_children_family'] += int(case_study['familySize']
+                                          ['totalFamilyMalesUnder18'])-1
+        vals['nb_brothers'] = int(case_study['familySize']
+                                  ['totalFamilyMalesUnder18'])
         if child.gender == 'M':
             vals['nb_brothers'] -= 1
         else:
@@ -259,8 +256,7 @@ class compassion_child(orm.Model):
             raise orm.except_orm('NetworkError',
                                  _('An error occured while fetching the last '
                                    'picture for child %s.') % child.code)
-        data = json.loads(r.text)['Image']['ImageData']
-
+        data = json.loads(r.text)['image']['imageData']
         attachment_obj = self.pool.get('ir.attachment')
         if not context:
             context = {}
@@ -282,6 +278,7 @@ class compassion_child(orm.Model):
                                    'in conf file'))
         if url.endswith('/'):
             url = url[:-1]
-        url += ('/ci/v1/child/' + child_code + '/' + api_mess + '?api_key='
+        #url += ('/ci/v1/child/' + child_code + '/' + api_mess + '?api_key='
+        url += ('/ci/v1/children/' + child_code + '/' + api_mess + '?api_key='
                 + api_key)
         return url
