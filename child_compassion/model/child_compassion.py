@@ -214,18 +214,18 @@ class compassion_child(orm.Model):
                              '').replace(prop_names[3], ''))
                 values.append(value_obj.get_value_ids(cr, uid, value,
                               property_name, context))
-
         # Other sections
-        values.append(self._get_value_id(cr, uid, case_study['naturalParents']
-                                         ['maritalStatusOfParents'],
-                                         'marital_status', context))
-        vals['us_school_level'] = case_study['schooling']['uSSchoolEquivalent']
-        values.append(self._get_value_id(cr, uid, case_study['schooling']
-                                         ['schoolPerformance'],
-                                         'school_performance', context))
-        values.append(self._get_value_id(cr, uid, case_study['schooling']
-                                         ['childsBestSubject'],
-                                         'school_best_subject', context))
+        values.append(value_obj.get_value_ids(
+            cr, uid, case_study['naturalParents']['maritalStatusOfParents'],
+            'marital_status', context))
+        vals['us_school_level'] = case_study['schooling']\
+                                            ['uSSchoolEquivalent']
+        values.append(value_obj.get_value_ids(cr, uid, case_study['schooling']
+                                              ['schoolPerformance'],
+                                              'school_performance', context))
+        values.append(value_obj.get_value_ids(cr, uid, case_study['schooling']
+                                              ['childsBestSubject'],
+                                              'school_best_subject', context))
         vals['attending_school_flag'] = bool(case_study['schooling']
                                              ['childAttendingSchool'])
         vals['nb_children_family'] = int(case_study['familySize']
