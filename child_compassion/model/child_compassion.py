@@ -175,17 +175,18 @@ class compassion_child(orm.Model):
                                   'OtherHealthConditions'],
             'guardians': ['Guardians', 'Guardian', False],
         }
+        value_obj = self.pool.get('compassion.translated.value')
         for prop_name, cs_attributes in cs_sections_mapping.iteritems():
             section = case_study[cs_attributes[0]]
             section_attr = cs_attributes[1]
             other_attrs = (case_study[cs_attributes[2]] if cs_attributes[2]
                            else 'None')
             if type(section) is dict and section.get(section_attr):
-                values.extend(self._get_values(cr, uid, section[section_attr],
-                              prop_name, context))
+                values.extend(value_obj.get_value_ids(
+                    cr, uid, section[section_attr], prop_name, context))
             if other_attrs != 'None':
-                values.append(self._get_values(cr, uid, other_attrs, prop_name,
-                              context))
+                values.append(value_obj.get_value_ids(cr, uid, other_attrs,
+                              prop_name, context))
 
         """ Natural Parents and Employment Section.
             nps_sections_mapping is of the form:
@@ -213,20 +214,21 @@ class compassion_child(orm.Model):
                 elif value == 'true':
                     value = (key.replace(prop_names[2],
                              '').replace(prop_names[3], ''))
-                values.append(self._get_value_id(cr, uid, value,
+                values.append(value_obj.get_value_ids(cr, uid, value,
                               property_name, context))
 
         # Other sections
-        values.append(self._get_value_id(cr, uid, case_study['NaturalParents']
-                                         ['MaritalStatusOfParents'],
-                                         'marital_status', context))
-        vals['us_school_level'] = case_study['Schooling']['USSchoolEquivalent']
-        values.append(self._get_value_id(cr, uid, case_study['Schooling']
-                                         ['SchoolPerformance'],
-                                         'school_performance', context))
-        values.append(self._get_value_id(cr, uid, case_study['Schooling']
-                                         ['ChildsBestSubject'],
-                                         'school_best_subject', context))
+        values.append(value_obj.get_value_ids(
+            cr, uid, case_study['NaturalParents']['MaritalStatusOfParents'],
+            'marital_status', context))
+        vals['us_school_level'] = case_study['Schooling']\
+                                            ['USSchoolEquivalent']
+        values.append(value_obj.get_value_ids(cr, uid, case_study['Schooling']
+                                              ['SchoolPerformance'],
+                                              'school_performance', context))
+        values.append(value_obj.get_value_ids(cr, uid, case_study['Schooling']
+                                              ['ChildsBestSubject'],
+                                              'school_best_subject', context))
         vals['attending_school_flag'] = bool(case_study['Schooling']
                                              ['ChildAttendingSchool'])
         vals['nb_children_family'] = int(case_study['FamilySize']
@@ -263,35 +265,13 @@ class compassion_child(orm.Model):
         if not context:
             context = {}
         context['store_fname'] = type + '.' + format
-        attachment_obj.create(cr, uid, {'datas_fname': type + '.' + format,
-                              'res_model': 'compassion.child.property',
-                              'res_id': child.case_study_ids[-1].id,
-                              'datas': data,
-                              'name': type + '.' + format}, context)
+        attachment_obj.create(cr, uid,
+                              {'datas_fname': type + '.' + format,
+                               'res_model': 'compassion.child.property',
+                               'res_id': child.case_study_ids[-1].id,
+                               'datas': data,
+                               'name': type + '.' + format}, context)
         return False
-
-    def _get_values(self, cr, uid, _list, property_name, context):
-        value_ids = []
-        if isinstance(_list, list):
-            for elem in _list:
-                value_ids.append(self._get_value_id(cr, uid, elem,
-                                                    property_name, context))
-        elif isinstance(_list, basestring):
-            value_ids.append(self._get_value_id(cr, uid, _list, property_name,
-                                                context))
-        return value_ids
-
-    def _get_value_id(self, cr, uid, value, property_name, context=None):
-        prop_val_obj = self.pool.get('compassion.child.property.value')
-        value = value.lower()
-        val_ids = prop_val_obj.search(cr, uid, [('value_en', '=like', value),
-                                      ('property_name', '=', property_name)],
-                                      context=context)
-        if val_ids:
-            return val_ids[0]
-        prop_id = prop_val_obj.create(cr, uid, {'property_name': property_name,
-                                                'value_en': value})
-        return prop_id
 
     def _get_url(self, child_code, api_mess):
         url = config.get('compass_url')
