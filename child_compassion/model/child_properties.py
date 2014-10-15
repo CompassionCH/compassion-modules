@@ -89,5 +89,4 @@ class child_property(orm.Model):
         'nb_children_family': fields.integer(_('Children in family')),
         'nb_brothers': fields.integer(_('Brothers')),
         'nb_sisters': fields.integer(_('Sisters')),
-        'fullshot_image_uri': fields.char(_('Image URI')),
     }
