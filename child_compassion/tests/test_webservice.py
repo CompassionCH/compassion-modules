@@ -90,7 +90,8 @@ class l10n_ch_import(common.TransactionCase):
         child_obj.get_last_case_study(self.cr, self.uid, child.id)
         child_obj.get_basic_informations(self.cr, self.uid, child.id)
         child = child_obj.browse(self.cr, self.uid, self.child_id)
-        portrait = child_obj.get_portrait(self.cr, self.uid, [self.child_id], None, None)
+        portrait = (child_obj.get_portrait(self.cr, self.uid,
+                    [self.child_id], None, None))
 
         # Test the data
         self.assertEqual(child.code, "TZ1120316")
