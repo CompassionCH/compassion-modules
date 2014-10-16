@@ -1,6 +1,6 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-"access_recurring_contract","Full access on recurring.contract","model_recurring_contract","group_sponsorship",1,1,1,1
-"access_recurring_contract_line","Full access on recurring.contract.line","model_recurring_contract_line","group_sponsorship",1,1,1,1
-"access_recurring_contract_group","Full access on recurring.contract.group","model_recurring_contract_group","group_sponsorship",1,1,1,1
-"access_recurring_invoicer","Full access on recurring.invoicer","model_recurring_invoicer","group_sponsorship",1,1,1,1
-"acces_account_invoice","Full access on account.invoice","model_account_invoice","group_sponsorship",1,1,1,1
+"access_recurring_contract","Full access on recurring.contract","model_recurring_contract","child_compassion.group_sponsorship",1,1,1,1
+"access_recurring_contract_line","Full access on recurring.contract.line","model_recurring_contract_line","child_compassion.group_sponsorship",1,1,1,1
+"access_recurring_contract_group","Full access on recurring.contract.group","model_recurring_contract_group","child_compassion.group_sponsorship",1,1,1,1
+"access_recurring_invoicer","Full access on recurring.invoicer","model_recurring_invoicer","child_compassion.group_sponsorship",1,1,1,1
+"acces_account_invoice","Full access on account.invoice","model_account_invoice","child_compassion.group_sponsorship",1,1,1,1
