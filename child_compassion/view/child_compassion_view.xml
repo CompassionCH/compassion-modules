@@ -4,6 +4,7 @@
 		<!-- Top menu item -->
 		<menuitem name="Sponsorship"
 			id="menu_sponsorship_root"
+            groups="group_sponsorship"
 			sequence="5"/>
 		<menuitem id="menu_sponsorship_section" parent="menu_sponsorship_root" name="Sponsorship" sequence="5"/>
 
