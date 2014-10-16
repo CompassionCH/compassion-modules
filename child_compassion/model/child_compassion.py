@@ -278,7 +278,6 @@ class compassion_child(orm.Model):
                                    'in conf file'))
         if url.endswith('/'):
             url = url[:-1]
-        #url += ('/ci/v1/child/' + child_code + '/' + api_mess + '?api_key='
         url += ('/ci/v1/children/' + child_code + '/' + api_mess + '?api_key='
                 + api_key)
         return url
