@@ -218,8 +218,7 @@ class compassion_child(orm.Model):
         values.append(value_obj.get_value_ids(
             cr, uid, case_study['naturalParents']['maritalStatusOfParents'],
             'marital_status', context))
-        vals['us_school_level'] = case_study['schooling']\
-                                            ['uSSchoolEquivalent']
+        vals['us_school_level'] = case_study['schooling']['uSSchoolEquivalent']
         values.append(value_obj.get_value_ids(cr, uid, case_study['schooling']
                                               ['schoolPerformance'],
                                               'school_performance', context))
