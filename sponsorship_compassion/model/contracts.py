@@ -12,6 +12,10 @@
 from openerp.osv import orm, fields
 from openerp import netsvc
 from openerp.tools.translate import _
+import pdb
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class recurring_contract(orm.Model):
@@ -47,6 +51,7 @@ class recurring_contract(orm.Model):
         """ Hook for doing something when contract is activated. """
         wf_service = netsvc.LocalService('workflow')
         for id in ids:
+            logger.info("Contract " + str(id) + " activated.")
             wf_service.trg_validate(uid, 'recurring.contract', id,
                                     'contract_active', cr)
 
@@ -203,7 +208,10 @@ class recurring_contract(orm.Model):
         """ Used to transition draft sponsorships in waiting state
         when exported from GP. """
         wf_service = netsvc.LocalService('workflow')
+        if not isinstance(ids, list):
+            ids = [ids]
         for id in ids:
+            logger.info("Contract " + str(id) + " validated.")
             wf_service.trg_validate(uid, 'recurring.contract', id,
                                     'contract_validated', cr)
         return True
@@ -211,6 +219,8 @@ class recurring_contract(orm.Model):
     def activate_from_gp(self, cr, uid, ids, context=None):
         """ Used to transition draft sponsorships in active state
         when exported from GP. """
+        if not isinstance(ids, list):
+            ids = [ids]
         self.validate_from_gp(cr, uid, ids, context)
         self._on_contract_active(cr, uid, ids, context)
         return True
@@ -218,8 +228,11 @@ class recurring_contract(orm.Model):
     def terminate_from_gp(self, cr, uid, ids, context=None):
         """ Used to delete the workflow of terminated or cancelled
         sponsorships when exported from GP. """
+        if not isinstance(ids, list):
+            ids = [ids]
         wf_service = netsvc.LocalService('workflow')
         for id in ids:
+            logger.info("Contract " + str(id) + " terminated.")
             wf_service.trg_delete(uid, 'recurring.contract', id, cr)
         return True
 
