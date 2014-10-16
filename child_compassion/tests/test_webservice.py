@@ -22,7 +22,7 @@ class l10n_ch_import(common.TransactionCase):
     def setUp(self):
         super(l10n_ch_import, self).setUp()
         self.project_id = self._create_project("TZ112", "Project 1")
-        self.child_id = self._create_child("TZ1120316", "Happiness Joseph")
+        self.child_id = self._create_child("TZ1120316", "Child 1")
 
     def _create_project(self, project_code, project_name):
         project_obj = self.registry('compassion.project')
@@ -82,7 +82,8 @@ class l10n_ch_import(common.TransactionCase):
         child_obj = self.registry('compassion.child')
         child = child_obj.browse(self.cr, self.uid, self.child_id)
         self.assertTrue(child)
-        self.assertEqual(child.name, "Happiness Joseph")
+        self.assertEqual(child.name, "Child 1")
+        logger.info("child name: " + str(child.name))
         self.assertEqual(child.id, self.child_id)
         logger.info("child id: " + str(child.id))
 
