@@ -78,6 +78,6 @@
         
         <!-- Move the Contracts Menu to the Sponsorship Section -->
         <menuitem id="recurring_contract.menu_contracts_section" parent="child_compassion.menu_sponsorship_root" 
-                  name="Contracts" groups="group_sponsorship" sequence="1"/>
+                  name="Contracts" groups="child_compassion.group_sponsorship" sequence="1"/>
 	</data>
 </openerp>

@@ -36,7 +36,7 @@ class child_description_wizard(orm.TransientModel):
 
         query = '''SELECT rel.value_id
                    FROM child_property_to_value as rel,
-                        compassion_child_property_value as val
+                        compassion_translated_value as val
                    WHERE rel.property_id = %s
                    AND rel.value_id = val.id
                    AND val.is_tag = false
@@ -53,7 +53,7 @@ class child_description_wizard(orm.TransientModel):
         return self._get_value_ids(cr, uid, [0], '', '', context)[0]
 
     def _write_values(self, cr, uid, id, name, value, inv_arg, context=None):
-        value_obj = self.pool.get('compassion.child.property.value')
+        value_obj = self.pool.get('compassion.translated.value')
         for line in value:
             if line[0] == 1:  # on2many update
                 value_id = line[1]
@@ -71,7 +71,7 @@ class child_description_wizard(orm.TransientModel):
         'desc_en': fields.text(_('English description')),
         'child_property_value_ids': fields.function(
             _get_value_ids, type='one2many',
-            relation='compassion.child.property.value',
+            relation='compassion.translated.value',
             fnct_inv=_write_values),
         'state': fields.selection(
             [('values', _('Values completion')),

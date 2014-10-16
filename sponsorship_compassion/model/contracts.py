@@ -218,21 +218,5 @@ class account_invoice(orm.Model):
     _name = 'account.invoice'
 
 
-class compassion_child(orm.Model):
-    _inherit = 'compassion.child'
-
-
-class compassion_project(orm.Model):
-    _inherit = 'compassion.project'
-
-
 class contract_line(orm.Model):
     _inherit = 'recurring.contract.line'
-
-
-class compassion_child_property(orm.Model):
-    _inherit = 'compassion.child.property'
-
-
-class compassion_child_property_value(orm.Model):
-    _inherit = 'compassion.child.property.value'
