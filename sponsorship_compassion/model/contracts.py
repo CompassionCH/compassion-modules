@@ -12,7 +12,6 @@
 from openerp.osv import orm, fields
 from openerp import netsvc
 from openerp.tools.translate import _
-import pdb
 import logging
 
 logger = logging.getLogger(__name__)
