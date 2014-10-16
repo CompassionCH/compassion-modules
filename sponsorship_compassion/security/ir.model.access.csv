@@ -4,7 +4,3 @@
 "access_recurring_contract_group","Full access on recurring.contract.group","model_recurring_contract_group","group_sponsorship",1,1,1,1
 "access_recurring_invoicer","Full access on recurring.invoicer","model_recurring_invoicer","group_sponsorship",1,1,1,1
 "acces_account_invoice","Full access on account.invoice","model_account_invoice","group_sponsorship",1,1,1,1
-"access_compassion_project","Full access on compassion_project","model_compassion_project","group_sponsorship",1,1,1,1
-"access_compassion_child","Full access on compassion_child","model_compassion_child","group_sponsorship",1,1,1,1
-"access_compassion_child_property","Full access on compassion_child_property","model_compassion_child_property","group_sponsorship",1,1,1,1
-"access_compassion_child_property_value","Full access on compassion_child_property_value","model_compassion_child_property_value","group_sponsorship",1,1,1,1
