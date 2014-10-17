@@ -30,10 +30,19 @@ class contract_group(orm.Model):
     def _get_next_invoice_date(self, cr, uid, ids, name, args, context=None):
         res = {}
         for group in self.browse(cr, uid, ids, context):
+<<<<<<< HEAD
             res[group.id] = min([c.next_invoice_date
                                  for c in group.contract_ids
                                  if c.state in self._get_gen_states()]
                                 or [False])
+=======
+            res[group.id] = min(
+                [c.next_invoice_date for c in group.contract_ids]
+                or [group.next_invoice_date]) # When a draft contract is
+                                              # deleted, contract_ids
+                                              # may be empty
+
+>>>>>>> Small bug fix.
         return res
 
     def _get_groups_from_contract(self, cr, uid, ids, context=None):
