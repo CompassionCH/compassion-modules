@@ -27,7 +27,10 @@ class contract_group(orm.Model):
         res = {}
         for group in self.browse(cr, uid, ids, context):
             res[group.id] = min(
-                [c.next_invoice_date for c in group.contract_ids])
+                [c.next_invoice_date for c in group.contract_ids]
+                or [group.next_invoice_date]) # When a draft contract is
+                                              # deleted, contract_ids
+                                              # may be empty
 
         return res
 

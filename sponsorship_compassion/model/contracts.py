@@ -33,6 +33,9 @@ class recurring_contract(orm.Model):
                                           context=context):
             if invoice.state == 'paid':
                 self._invoice_paid(cr, uid, invoice, context=context)
+                last_pay_date = max([move_line.date
+                                     for move_line in invoice.payment_ids
+                                     if move_line.credit > 0])
                 for invoice_line in invoice.invoice_line:
                     contract = invoice_line.contract_id
                     if contract.state == 'waiting':
@@ -40,8 +43,7 @@ class recurring_contract(orm.Model):
                         # first_payment_date
                         res.append(invoice_line.contract_id.id)
                         self.write(cr, uid, contract.id,
-                                   {'first_payment_date':
-                                    invoice.payment_ids[0].date},
+                                   {'first_payment_date': last_pay_date},
                                    context=context)
 
         return res
@@ -139,7 +141,7 @@ class recurring_contract(orm.Model):
         return res
 
     def contract_waiting(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'waiting'})
+        self.write(cr, uid, ids, {'state': 'waiting'}, context)
         return True
 
     def contract_cancelled(self, cr, uid, ids, context=None):
