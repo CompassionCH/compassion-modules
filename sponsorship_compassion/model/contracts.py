@@ -145,7 +145,7 @@ class recurring_contract(orm.Model):
         return True
 
     def contract_cancelled(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'cancelled'})
+        self.write(cr, uid, ids, {'state': 'cancelled'}, context)
         return True
 
     def copy(self, cr, uid, id, default=None, context=None):
