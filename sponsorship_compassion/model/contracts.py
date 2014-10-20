@@ -131,11 +131,11 @@ class recurring_contract(orm.Model):
         })
         return res
 
-    def contract_waiting(self, cr, uid, ids):
+    def contract_waiting(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'waiting'})
         return True
 
-    def contract_cancelled(self, cr, uid, ids):
+    def contract_cancelled(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'cancelled'})
         return True
 

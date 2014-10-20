@@ -141,14 +141,14 @@ class compassion_child(orm.Model):
                                  _('An error occured while fetching the last '
                                    'case study for child %s.') % child.code)
 
-        case_study = json.loads(r.text)
+        json_data = json.loads(r.text)
         vals = {
             'child_id': child.id,
-            'info_date': case_study['childCaseStudyDate'],
-            'name': case_study['childName'],
-            'firstname': case_study['childPersonalName'],
-            'gender': case_study['gender'],
-            'birthdate': case_study['birthDate'],
+            'info_date': json_data['childCaseStudyDate'],
+            'name': json_data['childName'],
+            'firstname': json_data['childPersonalName'],
+            'gender': json_data['gender'],
+            'birthdate': json_data['birthDate'],
         }
         values = []
 
@@ -175,9 +175,9 @@ class compassion_child(orm.Model):
         }
         value_obj = self.pool.get('compassion.translated.value')
         for prop_name, cs_attributes in cs_sections_mapping.iteritems():
-            section = case_study[cs_attributes[0]]
+            section = json_data[cs_attributes[0]]
             section_attr = cs_attributes[1]
-            other_attrs = (case_study[cs_attributes[2]] if cs_attributes[2]
+            other_attrs = (json_data[cs_attributes[2]] if cs_attributes[2]
                            else 'None')
             if type(section) is dict and section.get(section_attr):
                 values.extend(value_obj.get_value_ids(
@@ -198,7 +198,7 @@ class compassion_child(orm.Model):
                            'fatherOrMaleGuardian', 'motherOrFemaleGuardian'],
         }
         for section, prop_names in npe_sections_mapping.iteritems():
-            for key, value in case_study[section].iteritems():
+            for key, value in json_data[section].iteritems():
                 property_name = ''
                 if key.startswith('Father'):
                     property_name = prop_names[0]
@@ -216,24 +216,24 @@ class compassion_child(orm.Model):
                               property_name, context))
         # Other sections
         values.append(value_obj.get_value_ids(
-            cr, uid, case_study['naturalParents']['maritalStatusOfParents'],
+            cr, uid, json_data['naturalParents']['maritalStatusOfParents'],
             'marital_status', context))
-        vals['us_school_level'] = case_study['schooling']['uSSchoolEquivalent']
-        values.append(value_obj.get_value_ids(cr, uid, case_study['schooling']
+        vals['us_school_level'] = json_data['schooling']['uSSchoolEquivalent']
+        values.append(value_obj.get_value_ids(cr, uid, json_data['schooling']
                                               ['schoolPerformance'],
                                               'school_performance', context))
-        values.append(value_obj.get_value_ids(cr, uid, case_study['schooling']
+        values.append(value_obj.get_value_ids(cr, uid, json_data['schooling']
                                               ['childsBestSubject'],
                                               'school_best_subject', context))
-        vals['attending_school_flag'] = bool(case_study['schooling']
+        vals['attending_school_flag'] = bool(json_data['schooling']
                                              ['childAttendingSchool'])
-        vals['nb_children_family'] = int(case_study['familySize']
+        vals['nb_children_family'] = int(json_data['familySize']
                                          ['totalFamilyFemalesUnder18'])
-        vals['nb_sisters'] = int(case_study['familySize']
+        vals['nb_sisters'] = int(json_data['familySize']
                                  ['totalFamilyFemalesUnder18'])
-        vals['nb_children_family'] += int(case_study['familySize']
+        vals['nb_children_family'] += int(json_data['familySize']
                                           ['totalFamilyMalesUnder18'])-1
-        vals['nb_brothers'] = int(case_study['familySize']
+        vals['nb_brothers'] = int(json_data['familySize']
                                   ['totalFamilyMalesUnder18'])
         if child.gender == 'M':
             vals['nb_brothers'] -= 1
