@@ -55,6 +55,11 @@
                                     <field name="desc_it" />
                                 </group>
                             </page>
+                            <page string="Exit Details" states="F">
+                                <group>
+                                    <field name="exit_description" />
+                                </group>
+                            </page>
                         </notebook>
                     </sheet>
                 </form>
