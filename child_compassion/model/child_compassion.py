@@ -20,6 +20,8 @@ class compassion_child(orm.Model):
     """ A sponsored child """
     _name = 'compassion.child'
     _rec_name = 'code'
+    _inherit = ['mail.thread']
+    _description = "Child"
 
     def get_portrait(self, cr, uid, ids, name, args, context=None):
         attachment_obj = self.pool.get('ir.attachment')
@@ -45,6 +47,9 @@ class compassion_child(orm.Model):
         return ret
 
     _columns = {
+        ######################################################################
+        #                      1. General Information
+        ######################################################################
         'name': fields.char(_("Name"), size=128),
         'firstname': fields.char(_("Firstname"), size=128),
         'code': fields.char(_("Child code"), size=128, required=True),
@@ -70,10 +75,56 @@ class compassion_child(orm.Model):
             readonly=False),  # FIXME readonly
         'portrait': fields.function(get_portrait, type='binary',
                                     string=_('Portrait')),
+        'state': fields.selection([
+            ('N', _('Available')),
+            ('P', _('Sponsored')),
+            ('D', _('Delegated')),
+            ('I', _('On Internet')),
+            ('R', _('Waiting new sponsor')),
+            ('F', _('Departed'))], _("Status"), select=True, readonly=True,
+            track_visibility='onchange', required=True), 
+
+        ######################################################################
+        #                      2. Exit Details
+        ######################################################################
+        'exit_date': fields.date(_("Exit date")),
+        'last_attended_project': fields.date(_("Last time attended project")),
+        'presented_gospel': fields.boolean(_("Has been presented with gospel")),
+        'professes_faith': fields.boolean(_("Child made profession of faith")),
+        'faith_description': fields.text(_("Description of faith")),
+        'primary_school': fields.boolean(_("Has completed primary school")),
+        'us_grade_completed': fields.char(_("US Grade level completed"), size=5),
+        'study_area': fields.many2many(
+            'compassion.translated.value', 'child_exit_to_value',
+            'property_id', 'value_id', _('Primary area of study in school'),
+            domain=[('property_name', '=', 'study_area')]),
+        'vocational_training': fields.boolean(_("Has received vocational training")),
+        'vocational_skills': fields.many2many(
+            'compassion.translated.value', 'child_exit_to_value',
+            'property_id', 'value_id', _('Skills learned'),
+            domain=[('property_name', '=', 'vocational_skills')]),
+        'disease_free': fields.boolean(_("Free from diseases")),
+        'health_description': fields.text(_("Health description")),
+        'social_description': fields.text(_("Social behaviour description")),
+        'exit_description': fields.text(_("Exit description")),
+        'steps_prevent_description': fields.text(_("Steps taken to prevent exit")),
+        # TODO : See if future plans can be an automated translated field
+        'future_plans_description': fields.text(_("Child future plans")),
+        'new_situation_description': fields.text(_("New situation")),
+        'exit_reason': fields.many2many(
+            'compassion.translated.value', 'child_exit_to_value',
+            'property_id', 'value_id', _('Other exit reason'),
+            domain=[('property_name', '=', 'exit_reason')]),
+        'other_exit_reason': fields.many2many(
+            'compassion.translated.value', 'child_exit_to_value',
+            'property_id', 'value_id', _('Exit reason'),
+            domain=[('property_name', '=', 'other_exit_reason')]),
+        'last_letter_sent': fields.boolean(_("Last letter was sent")),
     }
 
     _defaults = {
-        'type': 'CDSP'
+        'type': 'CDSP',
+        'state': 'N',
     }
 
     def get_basic_informations(self, cr, uid, ids, context=None):
