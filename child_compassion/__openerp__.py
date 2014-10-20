@@ -38,7 +38,7 @@ Webservice information retrieving is also done in this module.
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': [],
+    'depends': ['mail'],
     'data': [
         'security/sponsorship_groups.xml',
         'security/ir.model.access.csv',
