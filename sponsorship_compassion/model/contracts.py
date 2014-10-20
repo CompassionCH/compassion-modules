@@ -101,6 +101,23 @@ class recurring_contract(orm.Model):
         for contract in self.browse(cr, uid, ids, context=context):
             res[contract.id] = contract.partner_id == contract.correspondant_id
         return res
+        
+    def _get_ending_reasons(self, cr, uid, context=None):
+        # Returns all the ending reasons of sponsorships
+        return [
+            ('1', _("Depart of child")),
+            ('2', _("Mistake from our staff")),
+            ('3', _("Death of sponsor")),
+            ('4', _("Moved to foreign country")),
+            ('5', _("Not satisfied")),
+            ('6', _("Doesn't pay")),
+            ('8', _("Personal reasons")),
+            ('9', _("Never paid")),
+            ('10', _("Subreject")),
+            ('11', _("Exchange of sponsor")),
+            ('12', _("Financial reasons")),
+            ('25', _("Not given")),
+        ]
 
     def get_ending_reasons(self, cr, uid, context=None):
         """Returns all the ending reasons of sponsorships"""
