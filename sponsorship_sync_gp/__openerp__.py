@@ -42,7 +42,7 @@ from GP.
                 'mysql_connector',
                 'account_voucher',
                 ],
-    'data': [],
+    'data': ['view/contract_view.xml'],
     'demo': [],
     'installable': True,
     'auto_install': False,
