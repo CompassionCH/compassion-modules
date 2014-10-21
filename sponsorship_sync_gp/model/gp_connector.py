@@ -11,8 +11,9 @@
 
 from openerp.osv import orm
 from openerp.tools.translate import _
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from mysql_connector.model.mysql_connector import mysql_connector
-from datetime import date
+from datetime import datetime, date
 import logging
 
 logger = logging.getLogger(__name__)
@@ -42,7 +43,7 @@ class GPConnect(mysql_connector):
         'Bank Transfer': 'VIR',
     }
 
-    def create_contract(self, uid, contract):
+    def create_or_update_contract(self, uid, contract):
         """ Read new contract information and convert it to GP Poles
             structure. """
         typevers = self._find_typevers(contract.group_id.payment_term_id.name)
@@ -75,13 +76,15 @@ class GPConnect(mysql_connector):
             'id_erp': contract.id,
         }
 
-        # TODO : Parrainage Plus ???
-        insert_string = "INSERT INTO Poles (%s) VALUES(%s);"
+        insert_string = "INSERT INTO Poles (%s) VALUES(%s) "\
+                        "ON DUPLICATE KEY UPDATE %s;"
         col_string = ",".join(fields_create.keys())
         values_string = ",".join([
             "'" + value + "'" if isinstance(value, basestring) else str(value)
             for value in fields_create.values()])
-        sql_query = insert_string % (col_string, values_string)
+        update_string = ",".join([key + "=VALUES(" + key + ")" 
+                                  for key in fields_create.keys()])
+        sql_query = insert_string % (col_string, values_string, update_string)
         logger.info(sql_query)
 
         return self.query(sql_query)
@@ -114,13 +117,32 @@ class GPConnect(mysql_connector):
             gp_fund_ids = [str(line.product_id.gp_fund_id)
                            for line in contract.contract_line_ids
                            if line.product_id.gp_fund_id]
-            rows = self.selectAll(find_fund_query % ",".join(gp_fund_ids))
+            if gp_fund_ids:
+                rows = self.selectAll(find_fund_query % ",".join(gp_fund_ids))
+            else:
+                # If no fund is selected, it means a sponsorship should be set
+                raise orm.except_orm(
+                    _("Missing child"),
+                    _("You forgot to specify the child for this sponsorship.")
+                )
             return [row.get('CODESPE') for row in rows]
 
     def cancel_contract(self, contract_id):
         return self.query(
             "UPDATE Poles SET typep='A', datefin=curdate() WHERE id_erp = %s",
             contract_id)
+            
+    def validate_contract(self, contract):
+        """ Compute for which month the sponsor will pay, based on
+        next_invoice_date.
+        """
+        next_invoice_date = datetime.strptime(contract.next_invoice_date,
+                                              DF).date()
+        month = next_invoice_date.month-1 if next_invoice_date.day <= 15 else next_invoice_date.month
+        date_start = next_invoice_date.replace(day=1)
+        return self.query(
+            "UPDATE Poles SET mois=%s, datedebut=%s WHERE id_erp=%s",
+            [month, date_start, contract.id])
 
     def activate_contract(self, contract):
         sql_query = "UPDATE Poles SET typep=%s, bascule=curdate(), "\
