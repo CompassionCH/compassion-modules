@@ -69,7 +69,8 @@ class GPConnect(mysql_connector):
             'freqpaye': self.freq_mapping[contract.group_id.advance_billing],
             'datecreation': date.today().strftime('%Y-%m-%d'),
             'datedebut': contract.start_date,
-            'ref': contract.group_id.bvr_reference,
+            'ref': contract.group_id.bvr_reference or \
+                   contract.group_id.compute_partner_bvr_ref(),
             'typeprojet': typeprojet,
             'num_pol_ga': contract.num_pol_ga,
             'codega_fin': contract.partner_id.ref,
@@ -119,12 +120,13 @@ class GPConnect(mysql_connector):
                            if line.product_id.gp_fund_id]
             if gp_fund_ids:
                 rows = self.selectAll(find_fund_query % ",".join(gp_fund_ids))
-            else:
+            elif not contract.state == 'draft':
                 # If no fund is selected, it means a sponsorship should be set
                 raise orm.except_orm(
                     _("Missing child"),
                     _("You forgot to specify the child for this sponsorship.")
                 )
+            else: return [""]
             return [row.get('CODESPE') for row in rows]
 
     def cancel_contract(self, contract_id):
@@ -136,6 +138,8 @@ class GPConnect(mysql_connector):
         """ Compute for which month the sponsor will pay, based on
         next_invoice_date.
         """
+        # Check that the codespe is correct
+        self._find_codespe(contract)
         next_invoice_date = datetime.strptime(contract.next_invoice_date,
                                               DF).date()
         month = next_invoice_date.month-1 if next_invoice_date.day <= 15 else next_invoice_date.month

@@ -69,7 +69,7 @@ class recurring_contract(orm.Model):
         for contract in self.browse(cr, uid, ids, context=context):
             res[contract.id] = contract.partner_id == contract.correspondant_id
         return res
-        
+
     def _get_ending_reasons(self, cr, uid, context=None):
         # Returns all the ending reasons of sponsorships
         return [
