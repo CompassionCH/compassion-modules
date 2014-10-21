@@ -77,9 +77,9 @@ class compassion_child(orm.Model):
                                     string=_('Portrait')),
         'state': fields.selection([
             ('N', _('Available')),
-            ('P', _('Sponsored')),
             ('D', _('Delegated')),
             ('I', _('On Internet')),
+            ('P', _('Sponsored')),
             ('R', _('Waiting new sponsor')),
             ('F', _('Departed'))], _("Status"), select=True, readonly=True,
             track_visibility='onchange', required=True), 

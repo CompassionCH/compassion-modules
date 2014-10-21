@@ -9,7 +9,7 @@
 			<field name="arch" type="xml">
                 <!-- Add synced field -->
                 <field name="next_invoice_date" position="after">
-                    <field name="synced" />
+                    <field name="synced_with_gp" />
                 </field>
 			</field>
 		</record>

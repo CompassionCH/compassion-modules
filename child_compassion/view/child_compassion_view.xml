@@ -14,10 +14,10 @@
 			<field name="model">compassion.child</field>
 			<field name="arch" type="xml">
 				<form string="Child" version="7.0">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="N,P,F" />
+                    </header>
 					<sheet>
-                        <header>
-                            <field name="state" widget="statusbar" statusbar_visible="N,P,F" />
-                        </header>
 						<field name="portrait" widget='image' class="oe_left oe_avatar" options='{"size": [90, 90]}' />
 						<div class="oe_title">
 							<label for="name" class="oe_edit_only"/>
