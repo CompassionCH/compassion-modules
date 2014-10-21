@@ -74,8 +74,8 @@ class contract_group(orm.Model):
         partner = self.pool.get('res.partner').browse(cr, uid, partner_id,
                                                       context=context)
         if partner.ref:
-            computed_ref = self._compute_partner_ref(cr, uid, partner,
-                                                     context)
+            computed_ref = self.compute_partner_bvr_ref(cr, uid, ids,
+                                                        partner, context)
             if computed_ref:
                 res['value'] = {'bvr_reference': computed_ref}
             else:
@@ -100,8 +100,8 @@ class contract_group(orm.Model):
                                                           context=context)
             if partner.ref:
                 res['value'].update({
-                    'bvr_reference': self._compute_partner_ref(
-                        cr, uid, partner, context)})
+                    'bvr_reference': self.compute_partner_bvr_ref(
+                        cr, uid, ids, partner, context)})
 
         return res
 
@@ -129,9 +129,11 @@ class contract_group(orm.Model):
                                            'reference for the contract.')}
         return res
 
-    def _compute_partner_ref(self, cr, uid, partner, context=None):
+    def compute_partner_bvr_ref(self, cr, uid, ids, partner=None,
+                                context=None):
         """ Generates a new BVR Reference.
         See file \\nas\it\devel\Code_ref_BVR.xls for more information."""
+        partner = partner or self.browse(cr, uid, ids[0], context).partner_id
         result = '0' * (9 + (7 - len(partner.ref))) + partner.ref
         count_groups = str(self.search(
             cr, uid, [('partner_id', '=', partner.id)], context=context,
