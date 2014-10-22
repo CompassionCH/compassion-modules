@@ -14,6 +14,7 @@ import json
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
+import pdb
 
 
 class compassion_child(orm.Model):
@@ -150,13 +151,15 @@ class compassion_child(orm.Model):
             'gender': json_data['gender'],
             'birthdate': json_data['birthDate'],
         }
+
+        value_obj = self.pool.get('compassion.translated.value')
         values = []
 
         """ cs_sections_mapping holds the mapping of sections in case study
             to property.
             cs_sections_mapping is a dict of lists of the following form:
             {'property_name': ['CaseStudySectionName',
-            'CaseStudySectionAttribute', 'OtherSectionAttribute']}
+                               'OtherSectionAttribute']}
             For more information see documentation of compass at
             the following link (2 lines):
             http://developer.compassion.com/docs/read/private_cornerstone_test/
@@ -164,27 +167,25 @@ class compassion_child(orm.Model):
         """
         cs_sections_mapping = {
             'christian_activities': ['christianActivities',
-                                     'christianActivity',
                                      'otherChristianActivities'],
-            'family_duties': ['familyDuties', 'familyDuty',
+            'family_duties': ['familyDuties',
                               'otherFamilyDuties'],
-            'hobbies': ['hobbiesAndSports', 'hobby', 'otherHobbies'],
-            'health_conditions': ['healthConditions', 'healthCondition',
+            'hobbies': ['hobbiesAndSports', 'otherHobbies'],
+            'health_conditions': ['healthConditions',
                                   'otherHealthConditions'],
-            'guardians': ['guardians', 'guardian', False],
+            'guardians': ['guardians', False],
         }
-        value_obj = self.pool.get('compassion.translated.value')
-        for prop_name, cs_attributes in cs_sections_mapping.iteritems():
-            section = json_data[cs_attributes[0]]
-            section_attr = cs_attributes[1]
-            other_attrs = (json_data[cs_attributes[2]] if cs_attributes[2]
-                           else 'None')
-            if type(section) is dict and section.get(section_attr):
-                values.extend(value_obj.get_value_ids(
-                    cr, uid, section[section_attr], prop_name, context))
-            if other_attrs != 'None':
-                values.append(value_obj.get_value_ids(cr, uid, other_attrs,
-                              prop_name, context))
+
+        for prop_name, cs_section in cs_sections_mapping.iteritems():
+            section_values = json_data[cs_section[0]]
+            if cs_section[1]:
+                other_values = json_data[cs_section[1]]
+                if isinstance(other_values, list):
+                    section_values += json_data[cs_section[1]]
+                elif not other_values == 'None':
+                    section_values.append(other_values)
+            values.extend(value_obj.get_value_ids(cr, uid, section_values,
+                                                  prop_name, context))
 
         """ Natural Parents and Employment Section.
             nps_sections_mapping is of the form:
@@ -193,25 +194,28 @@ class compassion_child(orm.Model):
              'CaseStudyKey_female']}
         """
         npe_sections_mapping = {
-            'naturalParents': ['father', 'mother', 'Father', 'Mother'],
+            'naturalParents': ['father', 'mother', 'father', 'mother'],
             'employment': ['male_guardian', 'female_guardian',
                            'fatherOrMaleGuardian', 'motherOrFemaleGuardian'],
         }
         for section, prop_names in npe_sections_mapping.iteritems():
             for key, value in json_data[section].iteritems():
                 property_name = ''
-                if key.startswith('Father'):
+                if key.startswith('father'):
                     property_name = prop_names[0]
-                elif key.startswith('Mother'):
+                elif key.startswith('mother'):
                     property_name = prop_names[1]
                 else:
                     continue
 
-                if value == 'false' or value == '':
-                    continue
-                elif value == 'true':
+                # otherEmployment is a string,
+                # as well as motherIllnes and some others
+                if value:
                     value = (key.replace(prop_names[2],
                              '').replace(prop_names[3], ''))
+                else:
+                    continue
+
                 values.append(value_obj.get_value_ids(cr, uid, value,
                               property_name, context))
         # Other sections
@@ -239,6 +243,7 @@ class compassion_child(orm.Model):
             vals['nb_brothers'] -= 1
         else:
             vals['nb_sisters'] -= 1
+        pdb.set_trace()
         vals['hobbies_ids'] = [(6, 0, values)]
         child_prop_obj = self.pool.get('compassion.child.property')
         prop_id = child_prop_obj.create(cr, uid, vals, context)
