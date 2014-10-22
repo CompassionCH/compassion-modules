@@ -53,6 +53,7 @@ class contracts(orm.Model):
         """ Keep GP updated when a contract is modified. """
         res = super(contracts, self).write(cr, uid, ids, vals, context)
         gp_connect = gp_connector.GPConnect(cr, uid)
+        ids = [ids] if not isinstance(ids, list) else ids
         for contract in self.browse(cr, uid, ids, context):
             compatible, no_link_whith_gp = self._is_gp_compatible(contract)
             if compatible:
