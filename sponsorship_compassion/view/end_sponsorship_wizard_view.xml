@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+    <data>
+		<record id="end_sponsorship_view" model="ir.ui.view">
+			<field name="name">end.sponsorship.wizard.view</field>
+			<field name="model">end.sponsorship.wizard</field>
+			<field name="arch" type="xml">
+				<form string="End of sponsorship" version="7.0">
+                    <group>
+                        <field name="contract_id" invisible="true"/>
+                        <field name="end_date" />
+                        <field name="end_reason" invisible="{contract_id.child_id: False}"/>
+                        
+                    </group>
+                    
+					<footer>
+						<button name="end_sponsorship" string="End sponsorship" type="object" class="oe_highlight"/>
+						or
+						<button string="Cancel" class="oe_link" special="cancel"/>
+					</footer>
+				</form>
+			</field>
+		</record>
+
+        <record id="action_end_sponsorship" model="ir.actions.act_window">
+             <field name="name">End Sponsorship</field>
+             <field name="res_model">end.sponsorship.wizard</field>
+             <field name="src_model">recurring.contract</field>
+             <field name="type">ir.actions.act_window</field>
+             <field name="view_type">form</field>
+             <field name="view_mode">form</field>
+             <field name="view_id" ref="end_sponsorship_view"/>
+             <field name="context">{'active_id': active_id}</field>
+             <field name="target">new</field>
+       </record>
+
+        
+    </data>
+</openerp>

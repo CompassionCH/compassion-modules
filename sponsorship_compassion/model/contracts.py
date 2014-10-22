@@ -23,6 +23,9 @@ logger = logging.getLogger(__name__)
 class recurring_contract(orm.Model):
     _inherit = "recurring.contract"
 
+    ################################
+    #        PRIVATE METHODS       #
+    ################################
     def _active(self, cr, uid, ids, field_name, args, context=None):
         # Dummy function that sets the active flag.
         self._on_contract_active(cr, uid, ids, context=context)
@@ -64,13 +67,13 @@ class recurring_contract(orm.Model):
         pass
 
     def _is_fully_managed(self, cr, uid, ids, field_name, arg, context):
-        # Tells if the correspondant and the payer is the same person.
+        # Tells if the correspondent and the payer is the same person.
         res = {}
         for contract in self.browse(cr, uid, ids, context=context):
             res[contract.id] = contract.partner_id == contract.correspondant_id
         return res
 
-    def _get_ending_reasons(self, cr, uid, context=None):
+    def get_ending_reasons(self, cr, uid, context=None):
         # Returns all the ending reasons of sponsorships
         return [
             ('1', _("Depart of child")),
@@ -87,6 +90,9 @@ class recurring_contract(orm.Model):
             ('25', _("Not given")),
         ]
 
+    ###########################
+    #        New Fields       #
+    ###########################
     _columns = {
         'child_id': fields.many2one(
             'compassion.child', _('Sponsored child'), readonly=True,
@@ -144,10 +150,13 @@ class recurring_contract(orm.Model):
         'frequency': fields.related(
             'group_id', 'advance_billing', type="char", readonly=True,
             string=_('Frequency'), store=False),
-        'end_reason': fields.selection(_get_ending_reasons, _('End reason'),
+        'end_reason': fields.selection(get_ending_reasons, _('End reason'),
                                        select=True),
     }
 
+    ##########################
+    #        CALLBACKS       #
+    ##########################
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
         ''' On partner change, we update the correspondent and
         set the new pol_number (for gift identification).'''
@@ -162,6 +171,13 @@ class recurring_contract(orm.Model):
         })
         return res
 
+    def contract_draft(self, cr, uid, ids, context=None):
+        # Change the state of the child
+        for contract in self.browse(cr, uid, ids, context):
+            if contract.child_id:
+                contract.child_id.write({'state': 'P'}) 
+        return super(recurring_contract, self).contract_draft
+    
     def contract_waiting(self, cr, uid, ids, context=None):
         for contract in self.browse(cr, uid, ids, context):
             payment_term = contract.group_id.payment_term_id.name
@@ -375,6 +391,9 @@ class recurring_contract(orm.Model):
 
         return True
 
+    ##############################
+    #      CALLBACKS FOR GP      #
+    ##############################
     def validate_from_gp(self, cr, uid, ids, context=None):
         """ Used to transition draft sponsorships in waiting state
         when exported from GP. """
