@@ -28,7 +28,7 @@ import pdb
 class asset_category(orm.Model):
     _inherit = 'account.asset.category'
     
-    columns = {
+    _columns = {
         'analytics_id': fields.many2one('account.analytic.plan.instance', 'Analytic Distribution'),
     }
     
