@@ -29,9 +29,7 @@
     'category': 'Accounting & Finance',
     'depends': ['account_analytic_plans','account_asset_management'],
     'external_dependencies': {},
-    'data': [
-        'view/account_asset_view.xml'
-    ],
+    'data': ['account_asset_view.xml'],
     'demo': [],
     'description': '''
         Replace the account by the analytic account.
