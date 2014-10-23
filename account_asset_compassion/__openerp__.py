@@ -27,13 +27,14 @@
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'category': 'Accounting & Finance',
-    'depends': ['account_asset'],
+    'depends': ['account_analytic_plans','account_asset_management'],
     'external_dependencies': {},
     'data': [
     ],
     'demo': [],
     'description': '''
-        This module overrides the prorata temporis asset process.
+        Replace the account by the analytic account.
+        ! - This module overrides the prorata temporis asset process.
     ''',
     'active': False,
     'installable': True,
