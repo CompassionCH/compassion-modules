@@ -30,6 +30,7 @@
     'depends': ['account_analytic_plans','account_asset_management'],
     'external_dependencies': {},
     'data': [
+        'view/account_asset_view.xml'
     ],
     'demo': [],
     'description': '''
