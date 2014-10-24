@@ -35,10 +35,10 @@ class recurring_contract(orm.Model):
                 self._invoice_paid(cr, uid, invoice, context=context)
                 last_pay_date = max([move_line.date
                                      for move_line in invoice.payment_ids
-                                     if move_line.credit > 0])
+                                     if move_line.credit > 0] or [0])
                 for invoice_line in invoice.invoice_line:
                     contract = invoice_line.contract_id
-                    if contract.state == 'waiting':
+                    if contract.state == 'waiting' and last_pay_date:
                         # We should activate the contract and set the
                         # first_payment_date
                         res.append(invoice_line.contract_id.id)
