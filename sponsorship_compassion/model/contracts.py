@@ -12,7 +12,9 @@
 from openerp.osv import orm, fields
 from openerp import netsvc
 from openerp.tools.translate import _
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import logging
+import pdb
 
 logger = logging.getLogger(__name__)
 
@@ -204,7 +206,63 @@ class recurring_contract(orm.Model):
             'res_id': ids[0],
             'target': 'current',
         }
+        
+    def clean_invoices(self, cr, uid, ids, context=None, since_date=None):
+        """ Take into consideration if sponsor has paid in advance, so that we
+        cancel the paid invoices. """
+        pdb.set_trace()
+        if not since_date:
+            since_date = datetime.today().strftime(DF)
 
+        # Find all paid invoice lines after the given date
+        inv_line_ids = inv_line_obj.search(
+            cr, uid, [('contract_id', 'in', ids),
+                      ('due_date', '>', since_date),
+                      ('state', '=', 'paid')], context=context)
+
+        # Keep track of payment lines of the partners (partner_id:payment_line_id}
+        payment_lines = {}
+        # Unreconcile all move_lines related to the invoices
+        inv_ids = set()
+        move_line_obj = self.pool.get('account.move.line')
+        for inv_line in inv_line_obj.browse(cr, uid, inv_line_ids, context):
+            invoice_id = inv_line.invoice_id.id
+            if not invoice_id in inv_ids:
+                inv_ids.add(invoice_id)
+                move_lines = inv_line.invoice_id.move_id.line_id
+                # Find the reconciled payment lines
+                for line in move_lines:
+                    if line.reconcile_id:
+                        partner_id = line.partner_id.id
+                        if partner_id in payment_lines:
+                            # There can be only one payment_line for the
+                            # split payment + reconcile to work.
+                            payment_lines[partner_id] = False
+                        else:
+                            lines_found = line.reconcile_id.line_id.remove(line.id)
+                            if lines_found and len(lines_found) == 1:
+                                payment_lines[partner_id] = lines_found[0]
+                move_line_obj._remove_move_reconcile(cr, uid, move_lines, context=context)
+
+        # Clean invoices to remove the invoice_lines of the cancelled contract
+        super(recurring_contract, self).clean_invoices(cr, uid, ids, context, since_date)
+
+        # Reconcile again open invoices that still has invoice_lines
+        invoice_obj = self.pool.get('account.invoice')
+        for invoice in invoice_obj.browse(cr, uid, inv_ids, context):
+            if invoice.state == 'open' and invoice.invoice_line:
+                for move_line in invoice.move_id.line_id:
+                    if move_line.debit > 0:
+                        # We must pass the ids in the context, for calling the wizard method
+                        pay_line_id = payment_lines[move_line.partner_id.id]
+                        if pay_line_id:
+                            move_line_ids = [pay_line_id, move_line.id]
+                            move_line_obj.reconcile_split_payment(cr, uid, [], ctx)
+                        else:
+                            # TODO We should set a name in the move line to notify
+                            # the user for next manual reconciliation
+                            move_line.write({'name': "OHH non c'est embêtant!"})
+       
     def validate_from_gp(self, cr, uid, ids, context=None):
         """ Used to transition draft sponsorships in waiting state
         when exported from GP. """
