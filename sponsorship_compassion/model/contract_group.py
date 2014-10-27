@@ -17,6 +17,7 @@ from openerp.tools import mod10r
 
 
 class contract_group(orm.Model):
+
     ''' Add BVR on groups and add BVR ref and analytics_id
     in invoices '''
     _inherit = 'recurring.contract.group'

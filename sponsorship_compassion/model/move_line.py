@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
+from openerp.osv import orm
 from openerp.tools.translate import _
 
 
@@ -24,7 +24,7 @@ class move_line(orm.Model):
         count_credit_lines = 0
         move = False
         move_line = False
-        
+
         for line in self.browse(cr, uid, ids, context):
             residual += line.credit - line.debit
             if line.credit > 0:
@@ -57,4 +57,3 @@ class move_line(orm.Model):
         self.reconcile(cr, uid, ids)
 
         return True
-
