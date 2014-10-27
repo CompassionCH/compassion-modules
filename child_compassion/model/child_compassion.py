@@ -212,7 +212,7 @@ class compassion_child(orm.Model):
         """
         if not isinstance(ids, list):
             ids = [ids]
-        res = {}
+        res = dict()
         proj_obj = self.pool.get('compassion.project')
         for child in self.browse(cr, uid, ids, context):
             res[child.id] = self._get_case_study(cr, uid, child, context)
