@@ -91,16 +91,30 @@ class compassion_child(orm.Model):
                     }, context=context)
         return True
 
-    def get_last_case_study(self, cr, uid, ids, context=None):
-        ''' Get the most recent case study and updates portrait picture '''
+    def get_infos(self, cr, uid, ids, context=None):
+        """
+            Get the most recent case study, basic informations, updates
+            portrait picture and creates the project if it doesn't exist
+        """
         if not isinstance(ids, list):
             ids = [ids]
         ret = {}
+        proj_obj = self.pool.get('compassion.project')
         for child in self.browse(cr, uid, ids, context):
             ret[child.id] = self._get_case_study(cr, uid, child, context)
             self._get_picture(cr, uid, child, 'Fullshot',
                               300, 1500, 1200, context=context)
             self._get_picture(cr, uid, child, context=context)
+            self.get_basic_informations(cr, uid, child.id)
+            project_ids = proj_obj.search(
+                    cr, uid, [('code', '=', child.code[:5])],
+                    context=None)
+            if not project_ids:
+                proj_id = proj_obj.create(cr, uid, {
+                    'code': child.code[:5],
+                    'name': 'Project 1',
+                })
+                proj_obj.update_informations(cr, uid, proj_id)
         return ret
 
     def generate_descriptions(self, cr, uid, child_id, context=None):
