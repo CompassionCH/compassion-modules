@@ -40,7 +40,7 @@ class compassion_child(orm.Model):
     def update(self, cr, uid, id, context=None):
         """ When we receive a notification that child has been updated,
         we fetch the last case study. """
-        self.get_last_case_study(cr, uid, id, context=context)
+        self.get_infos(cr, uid, id, context=context)
         return True
 
 

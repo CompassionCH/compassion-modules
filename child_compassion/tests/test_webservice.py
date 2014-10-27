@@ -27,8 +27,8 @@ class test_webservice(common.TransactionCase):
     def _create_project(self, project_code, project_name):
         project_obj = self.registry('compassion.project')
         project_id = project_obj.create(self.cr, self.uid, {
-            'name': project_name,
             'code': project_code,
+            'name': project_name,
         })
         return project_id
 
@@ -88,7 +88,7 @@ class test_webservice(common.TransactionCase):
         logger.info("child id: " + str(child.id))
 
         # Retrieve the informations from the webservice
-        child_obj.get_last_case_study(self.cr, self.uid, child.id)
+        child_obj.get_infos(self.cr, self.uid, child.id)
         child_obj.get_basic_informations(self.cr, self.uid, child.id)
         child = child_obj.browse(self.cr, self.uid, self.child_id)
         portrait = (child_obj.get_portrait(self.cr, self.uid,
