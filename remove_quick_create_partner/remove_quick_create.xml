@@ -56,6 +56,16 @@
                     </xpath>
                 </field>
         </record>
+        <record id="project_edit_form_remove_quick_create_partner" model="ir.ui.view">
+            <field name="name">project.edit.remove.create.partner</field>
+                <field name="model">project.project</field>
+                <field name="inherit_id" ref="project.edit_project"/>
+                <field name="arch" type="xml">
+                    <xpath expr="//field[@name='partner_id']" position="attributes">
+                        <attribute name="options">{'create': false, 'm2o_dialog': false}</attribute>
+                    </xpath>
+                </field>
+        </record>
         
         <!-- Bank Statements -->
         <record id="bank_statement_form_remove_quick_create_partner" model="ir.ui.view">
@@ -64,6 +74,16 @@
                 <field name="inherit_id" ref="account.view_bank_statement_form"/>
                 <field name="arch" type="xml">
                     <xpath expr="//field[@name='partner_id']" position="attributes">
+                        <attribute name="options">{'create': false, 'm2o_dialog': false}</attribute>
+                    </xpath>
+                </field>
+        </record>
+        <record id="bank_statement_form_remove_quick_create_partner2" model="ir.ui.view">
+            <field name="name">bank.statement.remove.create.partner2</field>
+                <field name="model">account.bank.statement</field>
+                <field name="inherit_id" ref="account_statement_ext.view_treasury_statement_form"/>
+                <field name="arch" type="xml">
+                     <xpath expr="//field[@name='line_ids']/tree/field[@name='partner_id']" position="attributes">
                         <attribute name="options">{'create': false, 'm2o_dialog': false}</attribute>
                     </xpath>
                 </field>

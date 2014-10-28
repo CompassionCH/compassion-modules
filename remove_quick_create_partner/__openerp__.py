@@ -38,7 +38,7 @@ Remove all abilities to quickly create partner without any information.
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['web_m2x_options', 'base', 'crm', 'project',
-                'account'],
+                'account_statement_ext'],
     'data': ['remove_quick_create.xml'],
     'demo': [],
     'installable': True,
