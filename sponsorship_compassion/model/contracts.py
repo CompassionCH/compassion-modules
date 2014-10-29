@@ -144,6 +144,19 @@ class recurring_contract(orm.Model):
         return res
 
     def contract_waiting(self, cr, uid, ids, context=None):
+        for contract in self.browse(cr, uid, ids, context):
+            payment_term = contract.group_id.payment_term_id.name
+            if 'LSV' in payment_term or 'Postfinance' in payment_term:
+                # Check that a valid mandate exists
+                mandate_obj = self.pool.get('account.banking.mandate')  
+                mandate_ids =  mandate_obj.search(cr, uid, [
+                    ('partner_id', '=', contract.partner_id.id),
+                    ('state', '=', 'valid')], context)
+                if not mandate_ids:
+                    raise orm.except_orm(
+                        _("No valid mandate"),
+                        _("You must first have a mandate before validating "
+                          "a LSV/DD contract."))
         self.write(cr, uid, ids, {'state': 'waiting'}, context)
         return True
 
