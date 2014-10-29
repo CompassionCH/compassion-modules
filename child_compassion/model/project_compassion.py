@@ -182,7 +182,6 @@ class compassion_project(orm.Model):
             country_id = country_obj.create(
                 cr, uid, {'iso_code': country_code}, context=context)
             country_obj.update_informations(cr, uid, [country_id], context)
-
         return country_id
 
     def _update_community_info(self, cr, uid, community_id, context=None):
@@ -261,6 +260,9 @@ class compassion_project(orm.Model):
             'status_date': json_values.get('statusDate'),
             'status_comment': json_values.get('statusComment'),
             'description_en': json_values.get('description'),
+            'description_fr': json_values.get('description'),
+            'description_de': json_values.get('description'),
+            'description_it': json_values.get('description'),
             'gps_latitude': json_values.get(
                 'gPSCoordinateLatitudeHighPrecision'),
             'gps_longitude': json_values.get(

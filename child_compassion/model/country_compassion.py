@@ -19,13 +19,18 @@ from openerp.tools.config import config
 
 class compassion_country(orm.Model):
     _name = 'compassion.country'
-    _rec_name = 'name'
 
     _columns = {
+        'description_en': fields.text(_('English description')),
+        'description_fr': fields.text(_('French description')),
+        'description_de': fields.text(_('German description')),
+        'description_it': fields.text(_('Italian description')),
         'iso_code': fields.char(_('ISO code'), size=2, required=True),
         'name': fields.char(_('Name')),
+        'name_fr': fields.char(_('Name')),
+        'name_de': fields.char(_('Name')),
+        'name_it': fields.char(_('Name')),
         'language': fields.char(_('Official language')),
-        'description_en': fields.text(_('English description')),
         'project_ids': fields.one2many(
             'compassion.project', 'country_id', _('Country projects')),
     }
@@ -48,9 +53,11 @@ class compassion_country(orm.Model):
         values = {}
 
         values['name'] = json_data['countryCommonName']
-        values['language'] = json_data['officialLanguage']
         values['description_en'] = json_data['countryDescription']
-
+        values['description_fr'] = json_data['countryDescription']
+        values['description_de'] = json_data['countryDescription']
+        values['description_it'] = json_data['countryDescription']
+        values['language'] = json_data['officialLanguage']
         return values
 
     def _get_url(self, api_mess, api_value):
