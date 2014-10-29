@@ -34,7 +34,7 @@
 										<field name="start_date" />
 										<field name="stop_date" />
 										<field name="last_update_date" />
-										<field name="country_id" />
+                                        <field name="country_id" />
 									</group>
 								</group>
 								<group string="Community">
@@ -71,10 +71,18 @@
 								</group>
 							</page>
 							<page string="Description">
-								<field name="description_en" />
-								<field name="description_fr" />
-								<field name="description_de" />
-								<field name="description_it" />
+                                <group>
+								    <field name="description_en" />
+                                </group>
+                                <group>
+								    <field name="description_fr" />
+                                </group>
+                                <group>
+								    <field name="description_de" />
+                                </group>
+                                <group>
+								    <field name="description_it" />
+                                </group>
 							</page>
 						</notebook>
 					</sheet>
@@ -92,7 +100,7 @@
 				</tree>
 			</field>
 		</record>
-		 
+
 		<record id="open_view_project_tree" model="ir.actions.act_window">
 			<field name="name">projects</field>
 			<field name="res_model">compassion.project</field>

@@ -47,6 +47,7 @@ Webservice information retrieving is also done in this module.
         'view/child_description_wizard_view.xml',
         'view/project_compassion_view.xml',
         'view/child_translated_values_view.xml',
+        'view/country_compassion_view.xml',
     ],
     'css': ['static/src/css/child_compassion.css'],
     'demo': [],
