@@ -99,7 +99,7 @@ class contract_group(orm.Model):
             context=context)
         if payment_term_id in need_bvr_ref_term_ids:
             partner = self.pool.get('res.partner').browse(cr, uid, partner_id,
-                                                      context=context)
+                                                          context=context)
             if partner.ref:
                 res['value'].update({
                     'bvr_reference': self._compute_partner_ref(
@@ -138,7 +138,7 @@ class contract_group(orm.Model):
         count_groups = str(self.search(
             cr, uid, [('partner_id', '=', partner.id)], context=context,
             count=True))
-        result += '0' * (5 - len(count_groups)) + count_groups 
+        result += '0' * (5 - len(count_groups)) + count_groups
         # Type '0' = Sponsorship
         result += '0'
         result += '0' * 4
