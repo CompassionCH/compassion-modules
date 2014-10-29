@@ -118,7 +118,7 @@ class recurring_contract(orm.Model):
     }
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
-        ''' On partner change, we update the correspondent and 
+        ''' On partner change, we update the correspondent and
         set the new pol_number (for gift identification).'''
         res = super(recurring_contract, self).on_change_partner_id(
             cr, uid, ids, partner_id, context)
@@ -148,7 +148,8 @@ class recurring_contract(orm.Model):
             'is_active': False,
             'num_pol_ga': num_pol_ga+1,
         })
-        return super(recurring_contract, self).copy(cr, uid, id, default, context)
+        return super(recurring_contract, self).copy(cr, uid, id, default,
+                                                    context)
 
     def unlink(self, cr, uid, ids, context=None):
         if context is None:
@@ -180,10 +181,10 @@ class recurring_contract(orm.Model):
                                            'invoice date.'))
 
         return super(recurring_contract, self).write(cr, uid, ids, vals,
-                     context=context)
+                                                     context=context)
 
     def validate_from_gp(self, cr, uid, ids, context=None):
-        """ Used to transition draft sponsorships in waiting state 
+        """ Used to transition draft sponsorships in waiting state
         when exported from GP. """
         wf_service = netsvc.LocalService('workflow')
         for id in ids:
@@ -192,7 +193,7 @@ class recurring_contract(orm.Model):
         return True
 
     def activate_from_gp(self, cr, uid, ids, context=None):
-        """ Used to transition draft sponsorships in active state 
+        """ Used to transition draft sponsorships in active state
         when exported from GP. """
         self.validate_from_gp(cr, uid, ids, context)
         self._on_contract_active(cr, uid, ids, context)
