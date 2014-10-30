@@ -107,8 +107,8 @@ class compassion_child(orm.Model):
             self._get_picture(cr, uid, child, context=context)
             self.get_basic_informations(cr, uid, child.id)
             project_ids = proj_obj.search(
-                    cr, uid, [('code', '=', child.code[:5])],
-                    context=None)
+                cr, uid, [('code', '=', child.code[:5])],
+                context=None)
             if not project_ids:
                 proj_id = proj_obj.create(cr, uid, {
                     'code': child.code[:5],
