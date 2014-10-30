@@ -13,6 +13,7 @@ from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from child_description_fr import Child_description_fr
 from child_description_de import Child_description_de
+from child_description_en import Child_description_en
 
 
 class child_description_wizard(orm.TransientModel):
@@ -91,6 +92,8 @@ class child_description_wizard(orm.TransientModel):
             'desc_fr': Child_description_fr.gen_fr_translation(
                 cr, uid, child, case_study, context),
             'desc_de': Child_description_de.gen_de_translation(
+                cr, uid, child, case_study, context),
+            'desc_en': Child_description_en.gen_en_translation(
                 cr, uid, child, case_study, context),
             }, context)
 
