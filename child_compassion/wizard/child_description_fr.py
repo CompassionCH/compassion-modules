@@ -230,6 +230,7 @@ class Child_description_fr:
             job_f = [emp.value_fr if emp.value_fr else emp.value_en
                      for emp in case_study.female_guardian_ids
                      if not emp.value_en.endswith('mployed')]
+            string = u""
             if f_g == 'institutional worker':
                 string = u""
             else:

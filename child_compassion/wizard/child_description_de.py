@@ -62,7 +62,7 @@ class Child_description_de:
     @classmethod
     def _gen_hobbies_info_de(cls, cr, uid, child, case_study, context=None):
         ''' Generate the hobbies description part.
-            There are 3 groups of hobbies :
+            There are 3 groups of hobbies:
             - hobbies starting with "Sie/Er spielt gerne" (sesg)
             - hobbies starting with "Sie/Er" (se)
             - hobbies starting with "Sie/Er" and finishing with "gerne" (se_g)
@@ -305,6 +305,7 @@ class Child_description_de:
             job_f = [emp.value_de if emp.value_de else emp.value_en
                      for emp in case_study.female_guardian_ids
                      if not emp.value_en.endswith('mployed')]
+            string = u""
             if f_g == 'institutional worker':
                 string = u""
             else:

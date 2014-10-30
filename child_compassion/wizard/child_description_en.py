@@ -29,16 +29,67 @@ class Child_description_en:
     @classmethod
     def _gen_christ_act_en(cls, cr, uid, child, case_study, context=None):
         ''' Generate the christian activities description part.
+            There are 2 groups of biblical activities:
+            - activities starting with "she/he goes to" (gt)
+            - activities starting with "she/he is in a" (iia)
         '''
+
         if not case_study.christian_activities_ids:
             return ''
-        activities = [
+        hobbies_gt = [
+            'sunday school/church', 'bible class', 'camp',
+            'vacation bible school',
+        ]
+        hobbies_iia = [
+            'youth group', 'choir',
+        ]
+        activities_gt = [
             activity.value_en
-            for activity in case_study.christian_activities_ids]
-        activities_str = cls._gen_list_string(activities, ', ', ' and ')
-        string = (u"As part of the Church, %s %s %s" % (
-                  'he' if child.gender == 'M' else 'she', activities_str
-                  if activities_str > 1 else '. '))
+            for activity in case_study.christian_activities_ids
+            if activity.value_en in (hobbies_gt)]
+        activities_iia = [
+            activity.value_en
+            for activity in case_study.christian_activities_ids
+            if activity.value_en in (hobbies_iia)]
+
+        string = ''
+        if activities_gt:
+            string_gt = u'%s goes to ' % (
+                u'He' if child.gender == 'M' else u'She')
+            if len(activities_gt) == 1:
+                string_gt += activities_gt[0]
+            else:
+                num_loop = 0
+                for activity in activities_gt:
+                    num_loop += 1
+                    if num_loop == 1:
+                        string_gt += activity
+                    elif num_loop == len(activities_gt):
+                        string_gt += u' and ' + activity
+                    else:
+                        string_gt += u', ' + activity
+            string_gt += u'. '
+            string += string_gt
+
+        if activities_iia:
+            string_iia = u'%s is in a ' % (
+                u'he' if child.gender == 'M' else u'she')
+            if len(activities_iia) == 1:
+                string_iia += activities_iia[0]
+            else:
+                num_loop = 0
+                for activity in activities_iia:
+                    num_loop += 1
+                    if num_loop == 1:
+                        string_iia += activity
+                    elif num_loop == len(activities_iia):
+                        string_iia += u' and ' + activity
+                    else:
+                        string_iia += u', ' + activity
+            string_iia += u'. '
+            string += string_iia
+
+        string = u'As part of the Church, ' + string
         return string
 
     @classmethod
@@ -71,32 +122,32 @@ class Child_description_en:
         if not case_study.hobbies_ids:
             return ''
         hobbies_shepw = [
-            'cars', 'jacks', 'dolls', 'marbles','musical instrument',
-            ]
+            'cars', 'jacks', 'dolls', 'marbles', 'musical instrument',
+        ]
         hobbies_shep = [
             'baseball', 'basketball', 'hide and seek', 'other ball games',
             'ping pong', 'soccer/footbal', 'volleyball',
-            ]
+        ]
         hobbies_shet = [
             'jump rope', 'play house',
-            ]
+        ]
         hobbies_she = [
             'art/drawing', 'bicycling', 'group games', 'listening to music',
             'story telling', 'rolling a hoop', 'reading', 'running',
             'other sports or hobbies', 'singing', 'swimming', 'walking',
-            ]
+        ]
         activities_shepw = [activity.value_en
-                           for activity in case_study.hobbies_ids
-                           if activity.value_en in (hobbies_shepw)]
+                            for activity in case_study.hobbies_ids
+                            if activity.value_en in (hobbies_shepw)]
         activities_shep = [activity.value_en
                            for activity in case_study.hobbies_ids
                            if activity.value_en in (hobbies_shep)]
         activities_shet = [activity.value_en
-                         for activity in case_study.hobbies_ids
-                         if activity.value_en in (hobbies_shet)]
-        activities_she = [activity.value_en
                            for activity in case_study.hobbies_ids
-                           if activity.value_en in (hobbies_she)]
+                           if activity.value_en in (hobbies_shet)]
+        activities_she = [activity.value_en
+                          for activity in case_study.hobbies_ids
+                          if activity.value_en in (hobbies_she)]
         string = ''
         if activities_shepw:
             string_shepw = u"%s enjoys playing with " % (
@@ -206,10 +257,10 @@ class Child_description_en:
                     ordinals):
                 try:
                     int(case_study.us_school_level)
-                    string += (u" 's in the %s year (US)"
+                    string += (u"'s in the %s year (US)"
                                % ordinals[case_study.us_school_level])
                 except:
-                    string += (u" 's in %s (US)"
+                    string += (u"'s in %s (US)"
                                % ordinals[case_study.us_school_level])
             else:
                 string += u' goes to school'
@@ -233,7 +284,6 @@ class Child_description_en:
         string += list[-1]
         return string
 
-    ########################## START HERE #####################################
     @classmethod
     def _get_guardians_info_en(cls, cr, uid, child, case_study, context=None):
         ''' Generate the guardian description part. Guardians jobs are
@@ -269,7 +319,7 @@ class Child_description_en:
                     live_with.append(u' %s' % value)
             else:
                 if female_guardian == 'institutional worker':
-                    live_with.append(u'an institution')  # find btr "institut"
+                    live_with.append(u'an institution')
                 else:
                     if value == 'institutional worker':
                         live_with.append(u'an institution')
@@ -283,7 +333,7 @@ class Child_description_en:
                                            else female_guardian)
         if case_study.nb_brothers == 1:
             live_with.append(u'%s brother' % (u'his' if child.gender == 'M'
-                                             else u'her'))
+                                              else u'her'))
         elif case_study.nb_brothers > 1:
             live_with.append(u'%s %s brothers'
                              % (u'his' if child.gender == 'M'
@@ -320,6 +370,7 @@ class Child_description_en:
             props_f = [emp.value_en for emp in case_study.female_guardian_ids]
             job_f = [emp.value_en for emp in case_study.female_guardian_ids
                      if not emp.value_en.endswith('mployed')]
+            string = u""
             if f_g == 'institutional worker':
                 string = u""
             else:
