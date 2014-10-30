@@ -170,6 +170,20 @@ class recurring_contract(orm.Model):
             'num_pol_ga': num_contracts
         })
         return res
+        
+    def on_change_lines(self, cr, uid, ids, line_ids, child_id, context=None):
+        """ Warn if no sponsorship is selected with no child defined. """
+        res = {}
+        if not child_id:
+            for line in line_ids:
+                if len(line) > 2 and line[2].get('product_id', 0) > 0:
+                    product = self.pool.get('product.product').browse(cr, uid, line[2]['product_id'], context)
+                    if product.name == 'Standard Sponsorship':
+                        res['warning'] = {
+                            'title': _("Please select a child"),
+                            'message': _("You should select a child if you make a new sponsorship!")
+                        }
+        return res
 
     def contract_draft(self, cr, uid, ids, context=None):
         # Change the state of the child
@@ -232,6 +246,7 @@ class recurring_contract(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
         """ Prevent to change next_invoice_date in the past. """
+        # TODOOOO : If vals contains child_id, set the child in sponsored state !
         if 'next_invoice_date' in vals:
             new_date = vals['next_invoice_date']
             for contract in self.browse(cr, uid, ids, context=context):
