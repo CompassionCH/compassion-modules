@@ -48,7 +48,7 @@ To add a new locale :
     'website': 'http://www.compassion.ch',
     'depends': ['recurring_contract', 'l10n_ch_payment_slip',
                 'l10n_ch', 'account_analytic_plans', 'child_compassion',
-                'account_cancel'],
+                'account_cancel', 'web_m2x_options'],
     'data': ['view/contract_group_view.xml',
              'view/contract_view.xml',
              'view/invoice_line_view.xml',

@@ -120,6 +120,7 @@ class compassion_child(orm.Model):
             'property_id', 'value_id', _('Exit reason'),
             domain=[('property_name', '=', 'other_exit_reason')]),
         'last_letter_sent': fields.boolean(_("Last letter was sent")),
+        'transfer_country_id': fields.many2one('res.country', _("Transfered to")),
     }
 
     _defaults = {
