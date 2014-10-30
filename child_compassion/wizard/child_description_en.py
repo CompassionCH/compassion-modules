@@ -41,6 +41,7 @@ class Child_description_en:
             - activities starting with "she/he goes to" (gt)
             - activities starting with "she/he is in a" (iia)
         '''
+
         if not case_study.christian_activities_ids:
             return ''
         hobbies_gt = [
