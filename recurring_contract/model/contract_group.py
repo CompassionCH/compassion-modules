@@ -29,7 +29,7 @@ class contract_group(orm.Model):
             res[group.id] = min(
                 [c.next_invoice_date for c in group.contract_ids
                  if c.state == 'active']
-                 or [group.next_invoice_date])  # When no active contract
+                or [group.next_invoice_date])  # When no active contract
 
         return res
 
@@ -122,7 +122,8 @@ class contract_group(orm.Model):
                 contract_group = self.browse(cr, uid, group_id, context)
                 group_inv_date = contract_group.next_invoice_date
                 contr_ids = []
-                if datetime.strptime(group_inv_date, DF) <= in_one_month:
+                if group_inv_date and \
+                   datetime.strptime(group_inv_date, DF) <= in_one_month:
                     contr_ids = [c.id
                                  for c in contract_group.contract_ids
                                  if c.next_invoice_date <= group_inv_date
