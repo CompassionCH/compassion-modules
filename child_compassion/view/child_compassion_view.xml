@@ -55,16 +55,22 @@
                                     <field name="desc_it" />
                                 </group>
                             </page>
-                            <page string="Exit Details" states="F">
+                            <page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '>', 0)]}">
                                 <group>
                                     <field name="exit_description" />
                                 </group>
                             </page>
-                        </notebook>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+                            <page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '=', False)]}">
+                                <p>Child transferred to a partner country</p>
+                                <group>
+                                    <field name="transfer_country_id" />
+                                </group>
+                            </page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
 
         <record id="view_compassion_child_tree" model="ir.ui.view">
             <field name="name">compassion.child.tree</field>
