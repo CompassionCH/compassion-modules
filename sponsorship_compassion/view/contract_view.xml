@@ -82,6 +82,10 @@
                         <field name="contract_line_ids" widget="one2many_list"
                                on_change="on_change_lines(contract_line_ids, child_id)"/>
                 </field>
+                
+                <field name="contract_line_ids" position="replace">
+                        <field name="contract_line_ids" widget="one2many_list" on_change="on_change_lines(contract_line_ids, child_id)" />
+                </field>
 			</field>
 		</record>
 		

@@ -74,6 +74,12 @@
                                     <field name="transfer_country_id" />
                                 </group>
                             </page>
+                            <page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '=', False)]}">
+                                <p>Child transferred to a partner country</p>
+                                <group>
+                                    <field name="transfer_country_id" />
+                                </group>
+                            </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
