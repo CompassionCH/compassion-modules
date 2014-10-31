@@ -16,30 +16,31 @@ from lxml import etree
 
 # Countries available for the child transfer
 IP_COUNTRIES = ['AU', 'CA', 'DE', 'ES', 'FR', 'GB', 'IT', 'KR', 'NL',
-    'NZ', 'US']
+                'NZ', 'US']
 
 
 class end_sponsorship_wizard(orm.TransientModel):
     _name = 'end.sponsorship.wizard'
-        
+
     def _get_contract_id(self, cr, uid, context=None):
         # Retrieve the id of the contract from context
         return context.get('active_id', False)
-        
+
     def _get_child_id(self, cr, uid, context=None):
         # Retrieve the id of the sponsored child
         contract = self.pool.get('recurring.contract').browse(
             cr, uid, context.get('active_id'), context)
         return contract.child_id.id if contract.child_id else False
-    
+
     def _get_selection(self, cr, uid, context=None):
         return self.pool.get('recurring.contract').get_ending_reasons(cr, uid)
-    
+
     _columns = {
         'end_date': fields.date(_('End date'), required=True),
         'contract_id': fields.many2one('recurring.contract', 'Contract'),
         'child_id': fields.many2one('compassion.child', 'Child'),
-        'end_reason': fields.selection(_get_selection, string=_('End reason'), required=True),
+        'end_reason': fields.selection(_get_selection, string=_('End reason'),
+                                       required=True),
         'state': fields.selection(
             [('end_sponsorship', 'End Sponsorship'),
              ('transfer_child', 'Transfer Child')],
@@ -49,13 +50,13 @@ class end_sponsorship_wizard(orm.TransientModel):
             'res.country', _('Country'),
             domain=[('code', 'in', IP_COUNTRIES)]),
     }
-    
+
     _defaults = {
         'state': 'end_sponsorship',
         'contract_id': _get_contract_id,
         'child_id': _get_child_id,
     }
-    
+
     def fields_view_get(self, cr, user, view_id=None, view_type='form',
                         context=None, toolbar=False, submenu=False):
         res = super(end_sponsorship_wizard, self).fields_view_get(
@@ -69,14 +70,14 @@ class end_sponsorship_wizard(orm.TransientModel):
             res['arch'] = etree.tostring(doc)
 
         return res
-    
+
     def end_sponsorship(self, cr, uid, ids, context=None):
         wizard = self.browse(cr, uid, ids[0], context)
         res = True
-        
+
         if wizard.child_id:
-            child_state = 'R'   # New child state
-            
+            child_update = {'sponsor_id': False}
+
             # If sponsor moves, propose to transfer the child
             if wizard.end_reason == '4':
                 wizard.write({'state': 'transfer_child'})
@@ -90,24 +91,26 @@ class end_sponsorship_wizard(orm.TransientModel):
                     'context': context,
                     'target': 'new',
                 }
-            
-            # If child has left, get the exit details and update status
+
+            # If child has departed, mark it by changing his state
             elif wizard.end_reason == '1':
-                # TODO : Call Child Exit Details method
-                child_state = 'F'
-            
-            wizard.child_id.write({'state': child_state})
-        
+                child_update = {'state': 'F'}
+
+            wizard.child_id.write(child_update)
+
         contract = wizard.contract_id
         contract.write({'end_reason': wizard.end_reason})
         wf_service = netsvc.LocalService('workflow')
-        wf_service.trg_validate(uid, 'recurring.contract', contract.id, 'contract_terminated', cr)
-        
+        wf_service.trg_validate(
+            uid, 'recurring.contract', contract.id, 'contract_terminated', cr)
+
         return res
-        
+
     def transfer_child(self, cr, uid, ids, context=None):
         wizard = self.browse(cr, uid, ids[0], context)
         if wizard.do_transfer and wizard.transfer_country_id:
-            wizard.child_id.write({'state': 'F', 'transfer_country_id': wizard.transfer_country_id.id})
+            wizard.child_id.write({
+                'state': 'F',
+                'transfer_country_id': wizard.transfer_country_id.id})
 
         return True
