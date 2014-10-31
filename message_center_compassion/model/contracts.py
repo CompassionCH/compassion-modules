@@ -79,7 +79,7 @@ class recurring_contract(orm.Model):
 
     def activate_from_gp(self, cr, uid, id, context=None):
         """ Set GMC messages in sent state. """
-        super(recurring_contract, self).activate_from_gp(cr, uid, ids,
+        super(recurring_contract, self).activate_from_gp(cr, uid, id,
                                                          context)
         message_obj = self.pool.get('gmc.message.pool')
         contract = self.browse(cr, uid, id, context)
