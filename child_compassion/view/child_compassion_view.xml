@@ -33,17 +33,17 @@
 							<page string="General Information">
 								<group>
 									<group>
-										<field name="firstname" />
-										<field name="gender" />
 										<field name="code" />
-										<field name="unique_id" />
+										<field name="gender" />
 										<field name="birthdate" />
+										<field name="sponsor_id" />
 									</group>
 									<group>
+										<field name="unique_id" />
 										<field name="type" />
+										<field name="start_date" />
 										<field name="date" />
 										<field name="completion_date" />
-										<field name="start_date" />
 									</group>
 								</group>
 							</page>

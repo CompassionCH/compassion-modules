@@ -57,9 +57,17 @@ class recurring_contract(orm.Model):
     def _on_contract_active(self, cr, uid, ids, context=None):
         """ Hook for doing something when contract is activated. """
         wf_service = netsvc.LocalService('workflow')
+<<<<<<< HEAD
         for id in ids:
             logger.info("Contract " + str(id) + " activated.")
             wf_service.trg_validate(uid, 'recurring.contract', id,
+=======
+        if not isinstance(ids, list):
+            ids = [ids]
+        for contract in self.browse(cr, uid, ids, context):
+            contract.child_id.write({'has_been_sponsored': True})
+            wf_service.trg_validate(uid, 'recurring.contract', contract.id,
+>>>>>>> New workflow for children states.
                                     'contract_active', cr)
 
     def _invoice_paid(self, cr, uid, invoice, context=None):
@@ -170,18 +178,20 @@ class recurring_contract(orm.Model):
             'num_pol_ga': num_contracts
         })
         return res
-        
+
     def on_change_lines(self, cr, uid, ids, line_ids, child_id, context=None):
         """ Warn if no sponsorship is selected with no child defined. """
         res = {}
         if not child_id:
             for line in line_ids:
                 if len(line) > 2 and line[2].get('product_id', 0) > 0:
-                    product = self.pool.get('product.product').browse(cr, uid, line[2]['product_id'], context)
+                    product = self.pool.get('product.product').browse(
+                        cr, uid, line[2]['product_id'], context)
                     if product.name == 'Standard Sponsorship':
                         res['warning'] = {
                             'title': _("Please select a child"),
-                            'message': _("You should select a child if you make a new sponsorship!")
+                            'message': _("You should select a child if you "
+                                         "make a new sponsorship!")
                         }
         return res
 
@@ -189,9 +199,9 @@ class recurring_contract(orm.Model):
         # Change the state of the child
         for contract in self.browse(cr, uid, ids, context):
             if contract.child_id:
-                contract.child_id.write({'state': 'P'}) 
+                contract.child_id.write({'state': 'P'})
         return super(recurring_contract, self).contract_draft
-    
+
     def contract_waiting(self, cr, uid, ids, context=None):
         for contract in self.browse(cr, uid, ids, context):
             payment_term = contract.group_id.payment_term_id.name
@@ -245,8 +255,8 @@ class recurring_contract(orm.Model):
         return
 
     def write(self, cr, uid, ids, vals, context=None):
-        """ Prevent to change next_invoice_date in the past. 
-            Write child state. """
+        """ Prevent to change next_invoice_date in the past.
+            Link/unlink child to sponsor. """
         if 'next_invoice_date' in vals:
             new_date = vals['next_invoice_date']
             for contract in self.browse(cr, uid, ids, context=context):
@@ -261,11 +271,13 @@ class recurring_contract(orm.Model):
             for contract in self.browse(cr, uid, ids, context):
                 if contract.child_id and contract.child_id != child_id:
                     # Free the previously selected child
-                    contract.child_id.write({'state': 'N'})
+                    contract.child_id.write({'sponsor_id': False})
             # Mark the selected child as sponsored
             self.pool.get('compassion.child').write(
-                cr, uid, child_id, {'state': 'P'}, context)
-                
+                cr, uid, child_id, {
+                    'sponsor_id': vals.get('partner_id') or
+                    contract.partner_id.id}, context)
+
         return super(recurring_contract, self).write(cr, uid, ids, vals,
                                                      context=context)
 
@@ -415,6 +427,14 @@ class recurring_contract(orm.Model):
                                 "cancellation, to be reconciled again")})
 
         return True
+
+    def create(self, cr, uid, vals, context=None):
+        """ Link child to sponsor. """
+        if 'child_id' in vals:
+            self.pool.get('compassion.child').write(
+                cr, uid, vals['child_id'], {'sponsor_id': vals['partner_id']},
+                context)
+        return super(recurring_contract, self).create(cr, uid, vals, context)
 
     ##############################
     #      CALLBACKS FOR GP      #

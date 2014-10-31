@@ -48,6 +48,7 @@ Webservice information retrieving is also done in this module.
         'view/project_compassion_view.xml',
         'security/sponsorship_groups.xml',
         'security/ir.model.access.csv',
+        'workflow/child_workflow.xml',
     ],
     'css': ['static/src/css/child_compassion.css'],
     'demo': [],
