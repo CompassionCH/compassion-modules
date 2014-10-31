@@ -81,23 +81,30 @@ class compassion_child(orm.Model):
             ('P', _('Sponsored')),
             ('R', _('Waiting new sponsor')),
             ('F', _('Departed'))], _("Status"), select=True, readonly=True,
-            track_visibility='onchange', required=True), 
+            track_visibility='onchange', required=True),
+        'has_been_sponsored': fields.boolean('Has been sponsored'),
+        'is_delegated': fields.boolean('Is delegated'),
+        'sponsor_id': fields.many2one('res.partner', _('Sponsor')),
 
         ######################################################################
         #                      2. Exit Details
         ######################################################################
         'exit_date': fields.date(_("Exit date")),
         'last_attended_project': fields.date(_("Last time attended project")),
-        'presented_gospel': fields.boolean(_("Has been presented with gospel")),
-        'professes_faith': fields.boolean(_("Child made profession of faith")),
+        'presented_gospel': fields.boolean(
+            _("Has been presented with gospel")),
+        'professes_faith': fields.boolean(
+            _("Child made profession of faith")),
         'faith_description': fields.text(_("Description of faith")),
         'primary_school': fields.boolean(_("Has completed primary school")),
-        'us_grade_completed': fields.char(_("US Grade level completed"), size=5),
+        'us_grade_completed': fields.char(_("US Grade level completed"),
+                                          size=5),
         'study_area': fields.many2many(
             'compassion.translated.value', 'child_exit_to_value',
             'property_id', 'value_id', _('Primary area of study in school'),
             domain=[('property_name', '=', 'study_area')]),
-        'vocational_training': fields.boolean(_("Has received vocational training")),
+        'vocational_training': fields.boolean(
+            _("Has received vocational training")),
         'vocational_skills': fields.many2many(
             'compassion.translated.value', 'child_exit_to_value',
             'property_id', 'value_id', _('Skills learned'),
@@ -106,7 +113,8 @@ class compassion_child(orm.Model):
         'health_description': fields.text(_("Health description")),
         'social_description': fields.text(_("Social behaviour description")),
         'exit_description': fields.text(_("Exit description")),
-        'steps_prevent_description': fields.text(_("Steps taken to prevent exit")),
+        'steps_prevent_description': fields.text(
+            _("Steps taken to prevent exit")),
         # TODO : See if future plans can be an automated translated field
         'future_plans_description': fields.text(_("Child future plans")),
         'new_situation_description': fields.text(_("New situation")),
@@ -119,7 +127,8 @@ class compassion_child(orm.Model):
             'property_id', 'value_id', _('Exit reason'),
             domain=[('property_name', '=', 'other_exit_reason')]),
         'last_letter_sent': fields.boolean(_("Last letter was sent")),
-        'transfer_country_id': fields.many2one('res.country', _("Transfered to")),
+        'transfer_country_id': fields.many2one('res.country',
+                                               _("Transfered to")),
     }
 
     _defaults = {
@@ -349,3 +358,28 @@ class compassion_child(orm.Model):
         url += ('/ci/v1/children/' + child_code + '/' + api_mess + '?api_key='
                 + api_key)
         return url
+
+    ##################################################
+    #        Workflow Activities Callbacks           #
+    ##################################################
+    def child_available(self, cr, uid, ids, context=None):
+        for child in self.browse(cr, uid, ids, context):
+            state = 'N'
+            if child.has_been_sponsored:
+                state = 'R'
+            child.write({'state': state})
+        return True
+
+    def child_sponsored(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'P'}, context)
+        return True
+
+    def child_delegated(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'D'}, context)
+        return True
+
+    def child_departed(self, cr, uid, ids, context=None):
+        """ Is called when a sponsored child changes his status to 'F'. """
+        # TODO Call Webservice to get Exit Details
+        self.write(cr, uid, ids, {'sponsor_id': False}, context)
+        return True
