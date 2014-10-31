@@ -82,7 +82,7 @@ class recurring_contract(orm.Model):
         super(recurring_contract, self).activate_from_gp(cr, uid, ids,
                                                          context)
         message_obj = self.pool.get('gmc.message.pool')
-        contract = self.browse(cr, uid, id, context):
+        contract = self.browse(cr, uid, id, context)
         message_ids = message_obj.search(cr, uid, [
             '|', ('partner_id', '=', contract.partner_id.id),
             ('child_id', '=', contract.child_id.id)], context)
