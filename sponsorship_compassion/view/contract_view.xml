@@ -39,8 +39,9 @@
                 <field name="state" position="attributes">
                     <attribute name="statusbar_visible">draft,active,waiting,terminated</attribute>
                 </field>
+
                 <button name="contract_terminated" position="replace">
-                    <button name="%(action_end_sponsorship)d" states="waiting,active" type="action" string="Terminate" class="oe_highlight" />
+                     <button name="%(action_end_sponsorship)d" states="waiting,active" type="action" string="Terminate" class="oe_highlight" /> -->
                 </button>
                 
 				<!-- Add child_id in contract -->
