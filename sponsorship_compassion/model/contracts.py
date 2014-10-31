@@ -245,8 +245,8 @@ class recurring_contract(orm.Model):
         return
 
     def write(self, cr, uid, ids, vals, context=None):
-        """ Prevent to change next_invoice_date in the past. """
-        # TODOOOO : If vals contains child_id, set the child in sponsored state !
+        """ Prevent to change next_invoice_date in the past. 
+            Write child state. """
         if 'next_invoice_date' in vals:
             new_date = vals['next_invoice_date']
             for contract in self.browse(cr, uid, ids, context=context):
@@ -255,7 +255,17 @@ class recurring_contract(orm.Model):
                     raise orm.except_orm(_('Warning'),
                                          _('You cannot rewind the next '
                                            'invoice date.'))
-
+        # Happens only in draft state
+        if 'child_id' in vals:
+            child_id = vals['child_id']
+            for contract in self.browse(cr, uid, ids, context):
+                if contract.child_id and contract.child_id != child_id:
+                    # Free the previously selected child
+                    contract.child_id.write({'state': 'N'})
+            # Mark the selected child as sponsored
+            self.pool.get('compassion.child').write(
+                cr, uid, child_id, {'state': 'P'}, context)
+                
         return super(recurring_contract, self).write(cr, uid, ids, vals,
                                                      context=context)
 
