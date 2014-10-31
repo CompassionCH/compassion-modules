@@ -129,7 +129,8 @@ class contract_group(orm.Model):
                                  if c.next_invoice_date <= group_inv_date
                                  and c.state in self._get_gen_states()]
                     adv_bill_candidate.update(contr_ids)
-                elif datetime.strptime(group_inv_date, DF) <= limit_date:
+                elif group_inv_date and \
+                     datetime.strptime(group_inv_date, DF) <= limit_date:
                     contr_ids = [c.id
                                  for c in contract_group.contract_ids
                                  if c.next_invoice_date <= group_inv_date
