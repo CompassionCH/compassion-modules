@@ -57,17 +57,12 @@ class recurring_contract(orm.Model):
     def _on_contract_active(self, cr, uid, ids, context=None):
         """ Hook for doing something when contract is activated. """
         wf_service = netsvc.LocalService('workflow')
-<<<<<<< HEAD
-        for id in ids:
-            logger.info("Contract " + str(id) + " activated.")
-            wf_service.trg_validate(uid, 'recurring.contract', id,
-=======
         if not isinstance(ids, list):
             ids = [ids]
         for contract in self.browse(cr, uid, ids, context):
             contract.child_id.write({'has_been_sponsored': True})
+            logger.info("Contract " + str(contract.id) + " activated.")
             wf_service.trg_validate(uid, 'recurring.contract', contract.id,
->>>>>>> New workflow for children states.
                                     'contract_active', cr)
 
     def _invoice_paid(self, cr, uid, invoice, context=None):
