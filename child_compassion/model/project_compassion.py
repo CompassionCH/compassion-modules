@@ -141,7 +141,7 @@ class compassion_project(orm.Model):
         return True
 
     def _update_program_info(self, cr, uid, project, context=None):
-        """ Calls the "ProgramImplemetors" REST API.
+        """ Calls the "ProgramImplementors" REST API.
             Returns the information in a dictionary of the form
             {'field_name': 'value'}, and the community_id used
             to call the GetCommunity API.
