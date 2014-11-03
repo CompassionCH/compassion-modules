@@ -26,11 +26,9 @@ class contract_group(orm.Model):
     def _get_next_invoice_date(self, cr, uid, ids, name, args, context=None):
         res = {}
         for group in self.browse(cr, uid, ids, context):
-            res[group.id] = min(
-                [c.next_invoice_date for c in group.contract_ids
-                 if c.state == 'active']
-                or [group.next_invoice_date])  # When no active contract
-
+            res[group.id] = min([c.next_invoice_date
+                                 for c in group.contract_ids
+                                 if c.state in self._get_gen_states()])
         return res
 
     def _get_groups_from_contract(self, cr, uid, ids, context=None):
@@ -75,7 +73,8 @@ class contract_group(orm.Model):
             string=_('Next invoice date'),
             store={
                 'recurring.contract': (
-                    _get_groups_from_contract, ['next_invoice_date'], 20),
+                    _get_groups_from_contract, ['next_invoice_date',
+                                                'state'], 20),
             }),
     }
 
@@ -129,8 +128,8 @@ class contract_group(orm.Model):
                                  if c.next_invoice_date <= group_inv_date
                                  and c.state in self._get_gen_states()]
                     adv_bill_candidate.update(contr_ids)
-                elif group_inv_date and \
-                     datetime.strptime(group_inv_date, DF) <= limit_date:
+                elif group_inv_date and datetime.strptime(group_inv_date,
+                                                          DF) <= limit_date:
                     contr_ids = [c.id
                                  for c in contract_group.contract_ids
                                  if c.next_invoice_date <= group_inv_date
