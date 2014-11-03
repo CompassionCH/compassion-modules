@@ -119,7 +119,7 @@ class contracts(orm.Model):
 
     def contract_terminated(self, cr, uid, ids, context=None):
         """ When contract is terminated, update it in GP. """
-        super(contracts, self).contract_cancelled(cr, uid, ids)
+        super(contracts, self).contract_terminated(cr, uid, ids)
         gp_connect = gp_connector.GPConnect(cr, uid)
         for contract in self.browse(cr, uid, ids, context):
             synced = gp_connect.finish_contract(contract.id)

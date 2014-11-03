@@ -31,7 +31,7 @@
                             <!-- invisible="[('do_transfer', '=', 'False')]" -->
                             <field name="transfer_country_id" options="{'limit': 20}"
                                    attrs="{'invisible': [('do_transfer', '=', False)],
-                                           'required': [('state', '=', 'transfer_child')]}" />
+                                           'required': [('do_transfer', '=', 'True')]}" />
                         </group>
                     </sheet>
                     
