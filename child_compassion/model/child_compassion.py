@@ -20,7 +20,7 @@ class compassion_child(orm.Model):
     """ A sponsored child """
     _name = 'compassion.child'
     _rec_name = 'code'
-    _inherit = ['mail.thread']
+    _inherit = 'mail.thread'
     _description = "Child"
 
     def get_portrait(self, cr, uid, ids, name, args, context=None):
@@ -63,7 +63,8 @@ class compassion_child(orm.Model):
         'gender': fields.selection(
             [('F', _('Female')),
              ('M', _('Male'))], _('Gender')),
-        'completion_date': fields.date(_("Completion date")),
+        'completion_date': fields.date(_("Completion date"),
+                                       track_visibility="onchange"),
         'desc_en': fields.text(_('English description')),
         'desc_fr': fields.text(_('French description')),
         'desc_de': fields.text(_('German description')),
@@ -71,7 +72,7 @@ class compassion_child(orm.Model):
         'start_date': fields.date(_("Start date")),
         'case_study_ids': fields.one2many(
             'compassion.child.property', 'child_id', string=_('Case studies'),
-            readonly=False),  # FIXME readonly
+            readonly=False, track_visibility="onchange"),  # FIXME readonly
         'portrait': fields.function(get_portrait, type='binary',
                                     string=_('Portrait')),
         'state': fields.selection([
@@ -81,15 +82,16 @@ class compassion_child(orm.Model):
             ('P', _('Sponsored')),
             ('R', _('Waiting new sponsor')),
             ('F', _('Departed'))], _("Status"), select=True, readonly=True,
-            track_visibility='onchange', required=True),
+            track_visibility="onchange", required=True),
         'has_been_sponsored': fields.boolean('Has been sponsored'),
         'is_delegated': fields.boolean('Is delegated'),
-        'sponsor_id': fields.many2one('res.partner', _('Sponsor')),
+        'sponsor_id': fields.many2one('res.partner', _('Sponsor'), readonly=True,
+                                      track_visibility="onchange"),
 
         ######################################################################
         #                      2. Exit Details
         ######################################################################
-        'exit_date': fields.date(_("Exit date")),
+        'exit_date': fields.date(_("Exit date"), track_visibility="onchange"),
         'last_attended_project': fields.date(_("Last time attended project")),
         'presented_gospel': fields.boolean(
             _("Has been presented with gospel")),
