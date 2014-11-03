@@ -425,7 +425,7 @@ class recurring_contract(orm.Model):
 
     def create(self, cr, uid, vals, context=None):
         """ Link child to sponsor. """
-        if 'child_id' in vals:
+        if vals.get('child_id', False):
             self.pool.get('compassion.child').write(
                 cr, uid, vals['child_id'], {'sponsor_id': vals['partner_id']},
                 context)

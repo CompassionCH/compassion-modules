@@ -141,14 +141,15 @@ class contracts(orm.Model):
         gp_connect = gp_connector.GPConnect(cr, uid)
         last_pay_date = max([move_line.date
                              for move_line in invoice.payment_ids
-                             if move_line.credit > 0])
-        for line in invoice.invoice_line:
-            contract = line.contract_id
-            if contract:
-                synced = gp_connect.register_payment(
-                    contract.id, last_pay_date)
-                super(contracts, self).write(cr, uid, contract.id, {'synced_with_gp': synced},
-                           context)
+                             if move_line.credit > 0] or [False])
+        if last_pay_date:
+            for line in invoice.invoice_line:
+                contract = line.contract_id
+                if contract:
+                    synced = gp_connect.register_payment(
+                        contract.id, last_pay_date)
+                    super(contracts, self).write(cr, uid, contract.id, {'synced_with_gp': synced},
+                               context)
 
 class contract_group(orm.Model):
     """ Update all contracts when group is changed. """
