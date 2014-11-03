@@ -79,13 +79,36 @@
 			<field name="name">compassion.child.tree</field>
 			<field name="model">compassion.child</field>
 			<field name="arch" type="xml">
-				<tree string="Children">
-					<field name="name" />
-					<field name="code" />
-					<field name="gender" />
-					<field name="birthdate" />
-					<field name="type" />
+				<tree string="Children"
+                      colors="blue:state == 'N';
+                              black:state in ('P', 'D', 'I');
+                              red:state == 'R';
+                              gray:state == 'F'">
+					<field name="name"/>
+					<field name="code"/>
+                    <field name="sponsor_id"/>
+					<field name="gender"/>
+					<field name="birthdate"/>
+					<field name="type"/>
+                    <field name="state"/>
 				</tree>
+			</field>
+		</record>
+        
+        <record id="view_child_compassion_filter" model="ir.ui.view">
+			<field name="name">compassion.child.select</field>
+			<field name="model">compassion.child</field>
+			<field name="arch" type="xml">
+                <search string="Search child">
+                    <field name="name"/>
+                    <field name="firstname"/>
+                    <field name="code" string="Child code" />
+                    <filter name="available" string="Available" domain="[('state','=','N')]" help="Child available for sponsorship"/>
+                    <filter name="delegated" string="Delegated" domain="[('state','=','D')]" help="Delegated children"/>
+                    <filter name="internet" string="On Internet" domain="[('state','=','I')]" help="Child on compassion website"/>
+                    <filter name="sponsored" string="Sponsored" domain="[('state','=','P')]" help="Sponsored children"/>
+                    <filter name="departed" string="Departed" domain="[('state','=','F')]" help="Departed children"/>
+                </search>
 			</field>
 		</record>
 
