@@ -28,7 +28,8 @@ class contract_group(orm.Model):
         for group in self.browse(cr, uid, ids, context):
             res[group.id] = min([c.next_invoice_date
                                  for c in group.contract_ids
-                                 if c.state in self._get_gen_states()])
+                                 if c.state in self._get_gen_states()]
+                                 or [False])
         return res
 
     def _get_groups_from_contract(self, cr, uid, ids, context=None):
