@@ -14,7 +14,6 @@ import json
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
-import pdb
 
 
 class compassion_child(orm.Model):
@@ -243,7 +242,6 @@ class compassion_child(orm.Model):
             vals['nb_brothers'] -= 1
         else:
             vals['nb_sisters'] -= 1
-        pdb.set_trace()
         vals['hobbies_ids'] = [(6, 0, values)]
         child_prop_obj = self.pool.get('compassion.child.property')
         prop_id = child_prop_obj.create(cr, uid, vals, context)
