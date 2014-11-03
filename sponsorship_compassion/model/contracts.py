@@ -20,7 +20,7 @@ class recurring_contract(orm.Model):
     def _active(self, cr, uid, ids, field_name, args, context=None):
         # Dummy function that sets the active flag.
         self._on_contract_active(cr, uid, ids, context=context)
-        return dict((id, True) for id in ids)
+        return {id: True for id in ids}
 
     def _get_contract_from_invoice(invoice_obj, cr, uid, invoice_ids,
                                    context=None):

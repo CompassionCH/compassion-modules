@@ -21,7 +21,7 @@ class child_description_wizard(orm.TransientModel):
     def _get_value_ids(self, cr, uid, ids, fieldname, args, context=None):
         property_id = context.get('property_id')
         if not property_id:
-            return dict([(id, []) for id in ids])
+            return {id: [] for id in ids}
 
         query = '''SELECT rel.value_id
                    FROM child_property_to_value as rel,
@@ -36,7 +36,7 @@ class child_description_wizard(orm.TransientModel):
                    ORDER BY val.value_en, val.property_name''' % property_id
         cr.execute(query)
         value_ids = [x[0] for x in cr.fetchall()]
-        return dict([(id, value_ids) for id in ids])
+        return {id: value_ids for id in ids}
 
     def _get_default_ids(self, cr, uid, context=None):
         return self._get_value_ids(cr, uid, [0], '', '', context)[0]
