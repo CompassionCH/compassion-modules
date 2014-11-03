@@ -8,56 +8,56 @@
 	            sequence="5"/>
 		<menuitem id="menu_sponsorship_section" parent="menu_sponsorship_root" name="Sponsorship" sequence="5"/>
 
-		<!--Compassion child form view -->
-		<record id="view_compassion_child_form" model="ir.ui.view">
-			<field name="name">compassion.child.form</field>
-			<field name="model">compassion.child</field>
-			<field name="arch" type="xml">
-				<form string="Child" version="7.0">
+        <!--Compassion child form view -->
+        <record id="view_compassion_child_form" model="ir.ui.view">
+            <field name="name">compassion.child.form</field>
+            <field name="model">compassion.child</field>
+            <field name="arch" type="xml">
+                <form string="Child" version="7.0">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="N,P,F" />
                     </header>
-					<sheet>
-						<field name="portrait" widget='image' class="oe_left oe_avatar" options='{"size": [90, 90]}' />
-						<div class="oe_title">
-							<label for="name" class="oe_edit_only"/>
-							<h1>
-								<field name="name"/>
-							</h1>
-						</div>
-						<div class="oe_right oe_button_box" name="buttons">
-							<button name="generate_descriptions" string="Generate descriptions" type="object" />
-							<button name="get_last_case_study" string="get infos" type="object" />
-						</div>
-						<notebook>
-							<page string="General Information">
-								<group>
-									<group>
-										<field name="code" />
-										<field name="gender" />
-										<field name="birthdate" />
-										<field name="sponsor_id" />
-									</group>
-									<group>
-										<field name="unique_id" />
-										<field name="type" />
-										<field name="start_date" />
-										<field name="date" />
-										<field name="completion_date" />
-									</group>
-								</group>
-							</page>
-							<page string="Case studies">
-								<field name="case_study_ids" />
-							</page>
-							<page string="Descriptions">
-								<group>
-									<field name="desc_en" />
-									<field name="desc_fr" />
-									<field name="desc_de" />
-									<field name="desc_it" />
-								</group>
-							</page>
+                    <sheet>
+                        <field name="portrait" widget='image' class="oe_left oe_avatar" options='{"size": [90, 90]}' />
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <div class="oe_right oe_button_box" name="buttons">
+                            <button name="generate_descriptions" string="Generate descriptions" type="object" />
+                            <button name="get_last_case_study" string="get infos" type="object" />
+                        </div>
+                        <notebook>
+                            <page string="General Information">
+                                <group>
+                                    <group>
+                                        <field name="code" />
+                                        <field name="gender" />
+                                        <field name="birthdate" />
+                                        <field name="sponsor_id" />
+                                    </group>
+                                    <group>
+                                        <field name="unique_id" />
+                                        <field name="type" />
+                                        <field name="start_date" />
+                                        <field name="date" />
+                                        <field name="completion_date" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Case studies">
+                                <field name="case_study_ids" />
+                            </page>
+                            <page string="Descriptions">
+                                <group>
+                                    <field name="desc_en" />
+                                    <field name="desc_fr" />
+                                    <field name="desc_de" />
+                                    <field name="desc_it" />
+                                </group>
+                            </page>
                             <page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '>', 0)]}">
                                 <group>
                                     <field name="exit_description" />
@@ -69,36 +69,40 @@
                                     <field name="transfer_country_id" />
                                 </group>
                             </page>
-						</notebook>
-					</sheet>
-				</form>
-			</field>
-		</record>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
 
-		<record id="view_compassion_child_tree" model="ir.ui.view">
-			<field name="name">compassion.child.tree</field>
-			<field name="model">compassion.child</field>
-			<field name="arch" type="xml">
-				<tree string="Children"
+        <record id="view_compassion_child_tree" model="ir.ui.view">
+            <field name="name">compassion.child.tree</field>
+            <field name="model">compassion.child</field>
+            <field name="arch" type="xml">
+                <tree string="Children"
                       colors="blue:state == 'N';
                               black:state in ('P', 'D', 'I');
                               red:state == 'R';
                               gray:state == 'F'">
-					<field name="name"/>
-					<field name="code"/>
+                    <field name="name"/>
+                    <field name="code"/>
                     <field name="sponsor_id"/>
-					<field name="gender"/>
-					<field name="birthdate"/>
-					<field name="type"/>
+                    <field name="gender"/>
+                    <field name="birthdate"/>
+                    <field name="type"/>
                     <field name="state"/>
-				</tree>
-			</field>
-		</record>
+                </tree>
+            </field>
+        </record>
         
         <record id="view_child_compassion_filter" model="ir.ui.view">
-			<field name="name">compassion.child.select</field>
-			<field name="model">compassion.child</field>
-			<field name="arch" type="xml">
+            <field name="name">compassion.child.select</field>
+            <field name="model">compassion.child</field>
+            <field name="arch" type="xml">
                 <search string="Search child">
                     <field name="name"/>
                     <field name="firstname"/>
@@ -109,18 +113,18 @@
                     <filter name="sponsored" string="Sponsored" domain="[('state','=','P')]" help="Sponsored children"/>
                     <filter name="departed" string="Departed" domain="[('state','=','F')]" help="Departed children"/>
                 </search>
-			</field>
-		</record>
+            </field>
+        </record>
 
-		<record id="open_view_children_tree" model="ir.actions.act_window">
-			<field name="name">Children</field>
-			<field name="res_model">compassion.child</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">form,tree</field>
-			<field name="view_id" ref="view_compassion_child_tree"/>
-		</record>
+        <record id="open_view_children_tree" model="ir.actions.act_window">
+            <field name="name">Children</field>
+            <field name="res_model">compassion.child</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="view_compassion_child_tree"/>
+        </record>
 
-		<menuitem id="menu_sponsorship_children" parent="menu_sponsorship_section" name="Children" action="child_compassion.open_view_children_tree" sequence="0"/>
+        <menuitem id="menu_sponsorship_children" parent="menu_sponsorship_section" name="Children" action="child_compassion.open_view_children_tree" sequence="0"/>
 
-	</data>
+    </data>
 </openerp>
