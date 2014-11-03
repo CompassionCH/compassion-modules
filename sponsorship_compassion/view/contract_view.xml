@@ -83,6 +83,12 @@
                                on_change="on_change_lines(contract_line_ids, child_id)"/>
                 </field>
                 
+                <!-- Remove quick create options for related partner -->
+                <field name="partner_id" position="attributes">
+                    <attribute name="options">{'create': false, 'm2o_dialog': false}</attribute>
+                </field>
+                
+                <!-- Track when sponsorship products are added in contract -->
                 <field name="contract_line_ids" position="replace">
                         <field name="contract_line_ids" widget="one2many_list" on_change="on_change_lines(contract_line_ids, child_id)" />
                 </field>
