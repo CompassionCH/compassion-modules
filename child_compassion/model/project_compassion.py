@@ -149,7 +149,7 @@ class compassion_project(orm.Model):
                 private_cornerstone_test/REST_Get_Program_Implementor
             for more information.
         """
-        prog_impl = self._send_request(project.code, 'programimplementors')
+        prog_impl = self._cornerstone_fetch(project.code, 'programimplementors')
         values = {
             'type': prog_impl.get('programImplementorTypeCode'),
             'local_church_name': prog_impl.get('organizationName'),
@@ -164,9 +164,8 @@ class compassion_project(orm.Model):
         }
 
         community_id = prog_impl.get('communityID')
-        return dict(
-            (field_name, value) for field_name, value in values.iteritems()
-            if value), community_id
+        return {field_name: value for field_name, value in values.iteritems()
+                if value}, community_id
 
     def _update_country(self, cr, uid, country_code, context=None):
         """ Finds the country having the given country_code or
@@ -193,7 +192,7 @@ class compassion_project(orm.Model):
                  {'field_name': 'value'}
         """
         # Standard fields retrieval
-        json_values = self._send_request(community_id, 'communities')
+        json_values = self._cornerstone_fetch(community_id, 'communities')
         values = {
             'unemployment_rate': json_values['unemploymentRate'],
             'community_population': json_values['communityPopulation'],
@@ -240,9 +239,8 @@ class compassion_project(orm.Model):
         """
         values['primary_diet_ids'] = [(6, 0, multi_value)]
 
-        return dict(
-            (field_name, value) for field_name, value in values.iteritems()
-            if value)
+        return {field_name: value for field_name, value in values.iteritems()
+                if value}
 
     def _update_cdsp_info(self, cr, uid, project_code, context=None):
         """ Call the "REST Get CDSP" API from Compassion.
@@ -252,7 +250,7 @@ class compassion_project(orm.Model):
         Returns: the information in a dictionary of the form
                  {'field_name': 'value'}
         """
-        json_values = self._send_request(project_code, 'cdspimplementors')
+        json_values = self._cornerstone_fetch(project_code, 'cdspimplementors')
         values = {
             'name': json_values.get('name'),
             'start_date': json_values.get('startDate'),
@@ -267,11 +265,10 @@ class compassion_project(orm.Model):
             'gps_longitude': json_values.get(
                 'gPSCoordinateLongitudeHighPrecision'),
         }
-        return dict(
-            (field_name, value) for field_name, value in values.iteritems()
-            if value)
+        return {field_name: value for field_name, value in values.iteritems()
+                if value}
 
-    def _send_request(self, project_code, api_mess):
+    def _cornerstone_fetch(self, project_code, api_mess):
         """ Construct the correct URL to call Compassion Cornerstone APIs.
         Returns the JSON object of the response."""
         url = config.get('compass_url')
