@@ -148,8 +148,8 @@ class recurring_contract(orm.Model):
             payment_term = contract.group_id.payment_term_id.name
             if 'LSV' in payment_term or 'Postfinance' in payment_term:
                 # Check that a valid mandate exists
-                mandate_obj = self.pool.get('account.banking.mandate')  
-                mandate_ids =  mandate_obj.search(cr, uid, [
+                mandate_obj = self.pool.get('account.banking.mandate')
+                mandate_ids = mandate_obj.search(cr, uid, [
                     ('partner_id', '=', contract.partner_id.id),
                     ('state', '=', 'valid')], context)
                 if not mandate_ids:
