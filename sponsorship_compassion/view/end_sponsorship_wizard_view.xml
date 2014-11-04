@@ -11,6 +11,8 @@
 			<field name="model">end.sponsorship.wizard</field>
 			<field name="arch" type="xml">
 				<form string="End of sponsorship" version="7.0">
+                    <field name="state" invisible="1" />
+                    
                     <!-- End sponsorship form -->
                     <group>
                         <group>

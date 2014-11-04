@@ -35,6 +35,9 @@ class end_sponsorship_wizard(orm.TransientModel):
 
     def _get_end_reason(self, cr, uid, context=None):
         return self.pool.get('recurring.contract').get_ending_reasons(cr, uid)
+        
+    def _get_exit_reason(self, cr, uid, context=None):
+        return self.pool.get('compassion.child').get_gp_exit_reasons(cr, uid)
 
     def _get_exit_reason(self, cr, uid, context=None):
         return self.pool.get('compassion.child').get_gp_exit_reasons(cr, uid)
@@ -98,4 +101,12 @@ class end_sponsorship_wizard(orm.TransientModel):
                     'gp_exit_reason': wizard.gp_exit_reason,
                     'exit_date': wizard.end_date})
 
+        return True
+        
+    def depart_child(self, cr, uid, ids, context=None):
+        wizard = self.browse(cr, uid, ids[0], context)
+        wizard.child_id.write({
+            'state': 'F',
+            'gp_exit_reason': wizard.gp_exit_reason,
+        })
         return True
