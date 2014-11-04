@@ -11,9 +11,10 @@
 			<field name="model">end.sponsorship.wizard</field>
 			<field name="arch" type="xml">
 				<form string="End of sponsorship" version="7.0">
+                    <field name="state" invisible="1" />
+                    
                     <!-- End sponsorship form -->
                     <sheet states="end_sponsorship">
-                        <field name="state" invisible="1" />
                         <group>
                             <field name="contract_id" readonly="1"/>
                             <field name="child_id" readonly="1"/>
@@ -24,7 +25,6 @@
 
                     <!-- Transfer child form -->
                     <sheet states="transfer_child">
-                        <field name="state" invisible="1" />
                         <group>
                             <field name="do_transfer" />
                             <!-- on_change="on_change_do_transfer(do_transfer)" -->
@@ -35,12 +35,21 @@
                         </group>
                     </sheet>
                     
+                    <!-- Child Exit Details form -->
+                    <sheet states="exit_details">
+                        <group>
+                            <field name="gp_exit_reason" attrs="{'required': [('state', '=', 'exit_details')]}"/>
+                        </group>
+                    </sheet>
+                    
                     <!-- Action buttons in footer -->
 					<footer>
 						<button name="end_sponsorship" string="End sponsorship" 
                                 type="object" class="oe_highlight" states="end_sponsorship"/>
                         <button name="transfer_child" string="Confirm"
                                 type="object" class="oe_highlight" states="transfer_child"/>
+                        <button name="depart_child" string="Confirm"
+                                type="object" class="oe_highlight" states="exit_details"/>
 						or
 						<button string="Cancel" class="oe_link" special="cancel"/>
 					</footer>

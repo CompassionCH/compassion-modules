@@ -46,7 +46,7 @@
                 
 				<!-- Add child_id in contract -->
                 <field name="group_id" position="after">
-					<field name="child_id" domain="[('state', '=', 'N')]"
+					<field name="child_id" domain="[('state', 'in', ('N', 'R'))]"
                            options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
 				</field>
                 
