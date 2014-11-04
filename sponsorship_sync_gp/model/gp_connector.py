@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)
 
 
 class GPConnect(mysql_connector):
-
     """ Contains all the utility methods needed to talk with the MySQL server
         used by GP, as well as all mappings
         from OpenERP fields to corresponding MySQL fields. """
@@ -41,6 +40,21 @@ class GPConnect(mysql_connector):
         'Postfinance': 'DD',
         'Permanent Order': 'OP',
         'Bank Transfer': 'VIR',
+    }
+    
+    # Mapping for child transfers to exit_reason_code in GP
+    transfer_mapping = {
+        'AU': '15',
+        'CA': '16',
+        'DE': '17',
+        'ES': '38',
+        'FR': '18',
+        'GB': '20',
+        'IT': '19',
+        'KR': '37',
+        'NL': '35',
+        'NZ': '40',
+        'US': '21',
     }
 
     def create_or_update_contract(self, uid, contract):
@@ -129,11 +143,6 @@ class GPConnect(mysql_connector):
             else: return [""]
             return [row.get('CODESPE') for row in rows]
 
-    def cancel_contract(self, contract_id):
-        return self.query(
-            "UPDATE Poles SET typep='A', datefin=curdate() WHERE id_erp = %s",
-            contract_id)
-            
     def validate_contract(self, contract):
         """ Compute for which month the sponsor will pay, based on
         next_invoice_date.
@@ -154,11 +163,43 @@ class GPConnect(mysql_connector):
         typep = '+' if contract.total_amount > 42 else 'S'
         return self.query(sql_query, [typep, contract.first_payment_date])
 
-    def finish_contract(self, contract_id):
-        return self.query(
-            "UPDATE Poles SET typep='F', datefin=curdate() WHERE id_erp = %s",
-            contract_id)
+    def finish_contract(self, contract):
+        state = 'F' if contract.state == 'terminated' else 'A'
+        end_reason = contract.end_reason
+        res = True
+        # If reason is '1' (child departure), the case is handled in
+        # set_child_sponsor_state method, when the child is marked as departed
+        if end_reason != '1':
+            res = self.query(
+                "UPDATE Poles SET typep=%s, datefin=curdate(), id_motif_fin=%s "
+                "WHERE id_erp = %s", [state, end_reason, contract.id])
+            if contract.child_id:
+                res = res and self.query("UPDATE Enfants SET id_motif_fin=%s "
+                                         "WHERE code=%s",
+                                         [end_reason, contract.child_id.code])
+        return res
 
     def register_payment(self, contract_id, payment_date):
         sql_query = "UPDATE Poles SET datedernier=%s WHERE id_erp=%s"
         return self.query(sql_query, [payment_date, contract_id])
+        
+    def set_child_sponsor_state(self, child):
+        update_string = "UPDATE Enfants SET %s WHERE code='%s'"
+        update_fields = "situation='{}'".format(child.state)
+        if child.sponsor_id:
+            update_fields += ", codega='{}'".format(child.sponsor_id.ref)
+        if child.state == 'F':
+            # Set the child exit reason in Poles and Enfant
+            end_reason = child.gp_exit_reason or \
+                         self.transfer_mapping[child.transfer_country_id.code]
+            update_fields += ", id_motif_fin={}".format(end_reason)
+            if not child.transfer_country_id:   # On ne met pas comme motif
+                                                # de fin dans un pole, un
+                                                # transfert d'enfant.
+                self.query("UPDATE Poles SET id_motif_fin=%s WHERE codespe=%s AND "
+                           "codega=(SELECT codega from Enfants WHERE code=%s) "
+                           "ORDER BY datecreation DESC Limit 1",
+                           [end_reason, child.code, child.code])
+        sql_query = update_string % (update_fields, child.code)
+        logger.info(sql_query)
+        return self.query(sql_query)

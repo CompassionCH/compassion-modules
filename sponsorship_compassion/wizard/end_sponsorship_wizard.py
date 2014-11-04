@@ -11,8 +11,10 @@
 
 from openerp import netsvc
 from openerp.osv import orm, fields
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
 from lxml import etree
+from datetime import datetime
 
 # Countries available for the child transfer
 IP_COUNTRIES = ['AU', 'CA', 'DE', 'ES', 'FR', 'GB', 'IT', 'KR', 'NL',
@@ -32,29 +34,35 @@ class end_sponsorship_wizard(orm.TransientModel):
             cr, uid, context.get('active_id'), context)
         return contract.child_id.id if contract.child_id else False
 
-    def _get_selection(self, cr, uid, context=None):
+    def _get_end_reason(self, cr, uid, context=None):
         return self.pool.get('recurring.contract').get_ending_reasons(cr, uid)
+        
+    def _get_exit_reason(self, cr, uid, context=None):
+        return self.pool.get('compassion.child').get_gp_exit_reasons(cr, uid)
 
     _columns = {
         'end_date': fields.date(_('End date'), required=True),
         'contract_id': fields.many2one('recurring.contract', 'Contract'),
         'child_id': fields.many2one('compassion.child', 'Child'),
-        'end_reason': fields.selection(_get_selection, string=_('End reason'),
+        'end_reason': fields.selection(_get_end_reason, string=_('End reason'),
                                        required=True),
         'state': fields.selection(
             [('end_sponsorship', 'End Sponsorship'),
-             ('transfer_child', 'Transfer Child')],
+             ('transfer_child', 'Transfer Child'),
+             ('exit_details', 'Child Exit Details')],
             'State', required=True, readonly=True),
         'do_transfer': fields.boolean(_("I want to transfer the child")),
         'transfer_country_id': fields.many2one(
             'res.country', _('Country'),
             domain=[('code', 'in', IP_COUNTRIES)]),
+        'gp_exit_reason': fields.selection(_get_exit_reason, string=_('Exit reason')),
     }
 
     _defaults = {
         'state': 'end_sponsorship',
         'contract_id': _get_contract_id,
         'child_id': _get_child_id,
+        'end_date': datetime.today().strftime(DF),
     }
 
     def fields_view_get(self, cr, user, view_id=None, view_type='form',
@@ -92,9 +100,19 @@ class end_sponsorship_wizard(orm.TransientModel):
                     'target': 'new',
                 }
 
-            # If child has departed, mark it by changing his state
+            # If child has departed, go to exit_details step
             elif wizard.end_reason == '1':
-                child_update = {'state': 'F'}
+                wizard.write({'state': 'exit_details'})
+                res = {
+                    'name': _('Child exit details'),
+                    'type': 'ir.actions.act_window',
+                    'res_model': self._name,
+                    'view_mode': 'form',
+                    'view_type': 'form',
+                    'res_id': ids[0],
+                    'context': context,
+                    'target': 'new',
+                }
 
             wizard.child_id.write(child_update)
 
@@ -113,4 +131,12 @@ class end_sponsorship_wizard(orm.TransientModel):
                 'state': 'F',
                 'transfer_country_id': wizard.transfer_country_id.id})
 
+        return True
+        
+    def depart_child(self, cr, uid, ids, context=None):
+        wizard = self.browse(cr, uid, ids[0], context)
+        wizard.child_id.write({
+            'state': 'F',
+            'gp_exit_reason': wizard.gp_exit_reason,
+        })
         return True

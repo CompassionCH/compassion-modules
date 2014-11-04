@@ -112,7 +112,7 @@ class contracts(orm.Model):
         super(contracts, self).contract_cancelled(cr, uid, ids, context)
         gp_connect = gp_connector.GPConnect(cr, uid)
         for contract in self.browse(cr, uid, ids, context):
-            synced = gp_connect.cancel_contract(contract.id)
+            synced = gp_connect.finish_contract(contract)
             super(contracts, self).write(cr, uid, contract.id, {'synced_with_gp': synced},
                                          context)
         return True
@@ -122,7 +122,7 @@ class contracts(orm.Model):
         super(contracts, self).contract_terminated(cr, uid, ids)
         gp_connect = gp_connector.GPConnect(cr, uid)
         for contract in self.browse(cr, uid, ids, context):
-            synced = gp_connect.finish_contract(contract.id)
+            synced = gp_connect.finish_contract(contract)
             super(contracts, self).write(cr, uid, contract.id, {'synced_with_gp': synced},
                                          context)
         return True

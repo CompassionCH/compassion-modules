@@ -45,10 +45,31 @@ class compassion_child(orm.Model):
             ret[child_id] = attachment.datas
 
         return ret
+        
+    def get_gp_exit_reasons(self, cr, uid, context=None):
+        # Returns all ending reasons coming from GP
+        return [
+            ('1', _("Left the project")),
+            ('13', _("Death of a child")),
+            ('14', _("Now lives where a Compassion project is not available")),
+            ('22', _("Unjustified absence for two consecutive years")),
+            ('23', _("End of scholarship")),
+            ('24', _("Cancellation from Compassion")),
+            ('26', _("Project closed")),
+            ('29', _("Financial situation improved")),
+            ('30', _("Parents took out the child from the project")),
+            ('31', _("Sponsored by another organization")),
+            ('32', _("Ran away")),
+            ('33', _("Has found a job")),
+            ('34', _("Got married")),
+            ('36', _("Disrespect of rules")),
+            ('39', _("Fulfilled completion plan")),
+            ('41', _("Reached maximum age")),
+        ]
 
     _columns = {
         ######################################################################
-        #                      1. General Information
+        #                      1. General Information                        #
         ######################################################################
         'name': fields.char(_("Name"), size=128),
         'firstname': fields.char(_("Firstname"), size=128),
@@ -90,7 +111,7 @@ class compassion_child(orm.Model):
                                       track_visibility="onchange"),
 
         ######################################################################
-        #                      2. Exit Details
+        #                      2. Exit Details                               #
         ######################################################################
         'exit_date': fields.date(_("Exit date"), track_visibility="onchange"),
         'last_attended_project': fields.date(_("Last time attended project")),
@@ -123,15 +144,18 @@ class compassion_child(orm.Model):
         'new_situation_description': fields.text(_("New situation")),
         'exit_reason': fields.many2many(
             'compassion.translated.value', 'child_exit_to_value',
-            'property_id', 'value_id', _('Other exit reason'),
+            'property_id', 'value_id', _('Exit reason'),
             domain=[('property_name', '=', 'exit_reason')]),
         'other_exit_reason': fields.many2many(
             'compassion.translated.value', 'child_exit_to_value',
-            'property_id', 'value_id', _('Exit reason'),
+            'property_id', 'value_id', _('Other exit reason'),
             domain=[('property_name', '=', 'other_exit_reason')]),
         'last_letter_sent': fields.boolean(_("Last letter was sent")),
         'transfer_country_id': fields.many2one('res.country',
                                                _("Transfered to")),
+        'gp_exit_reason': fields.selection(
+            get_gp_exit_reasons, _("Exit Reason"), readonly=True,
+            track_visibility="onchange"),
     }
 
     _defaults = {
@@ -368,6 +392,6 @@ class compassion_child(orm.Model):
 
     def child_departed(self, cr, uid, ids, context=None):
         """ Is called when a sponsored child changes his status to 'F'. """
-        # TODO Call Webservice to get Exit Details
+        # TODO Call Webservice to get Exit Details (when service is ready)
         self.write(cr, uid, ids, {'sponsor_id': False}, context)
         return True
