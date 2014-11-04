@@ -36,14 +36,14 @@ class contract_group(orm.Model):
                 name = gr.partner_id.name + ' ' + str(gr.id)
             res.append((gr.id, name))
         return res
-        
+
     def _get_next_invoice_date(self, cr, uid, ids, name, args, context=None):
         res = {}
         for group in self.browse(cr, uid, ids, context):
             res[group.id] = min(
                 [c.next_invoice_date for c in group.contract_ids
-                 if c.state in ('waiting','active')]
-                 or [group.next_invoice_date])  # When no active contract
+                 if c.state in ('waiting', 'active')]
+                or [group.next_invoice_date])  # When no active contract
 
         return res
 
