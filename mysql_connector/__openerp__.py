@@ -1,8 +1,16 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#       ______ Releasing children from poverty      _
+#      / ____/___  ____ ___  ____  ____ ___________(_)___  ____
+#     / /   / __ \/ __ `__ \/ __ \/ __ `/ ___/ ___/ / __ \/ __ \
+#    / /___/ /_/ / / / / / / /_/ / /_/ (__  |__  ) / /_/ / / / /
+#    \____/\____/_/ /_/ /_/ .___/\__,_/____/____/_/\____/_/ /_/
+#                        /_/
+#                            in Jesus' name
+#
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,7 +27,6 @@
 #
 ##############################################################################
 
-
 {
     'name': 'OpenERP MySQL Connector',
     'version': '1.0.0',
@@ -30,12 +37,13 @@
     'external_dependencies': {
         'python': ['MySQLdb'],
     },
-    'description': """ 
+    'description': """
 
 OpenERP MySQL Connector
 =========================
 
-Utility module that enables other modules that depends on it to access a MySQL server that is defined a settings screen.
+Utility module that enables other modules that depends on it to access a
+MySQL server that is defined a settings screen.
 
 Warning : This module requires python-MySQLdb to be installed on the server.
 """,

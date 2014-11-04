@@ -1,59 +1,51 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Author: Emanuel Cino. Copyright Compassion Suisse
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp.osv import osv, fields
+from openerp.osv import orm, fields
 
-class fizzbuzz(osv.osv):
+
+class fizzbuzz(orm.Model):
     """ A fizzbuzz model """
     _name = 'interview.fizzbuzz'
-    
+
     """ Fizzbuzz performer.
         Args :
             - self : OpenObject reference (fizzbuzz).
             - cr : Database Cursor
             - uid : OpenERP User ID
             - ids : Ids of object for which to perform the fizzbuzz run
-            - field_name : Name of the field that should be calculated (will always be 'result' in our case)
+            - field_name : Name of the field that should be calculated
+                           (will always be 'result' in our case)
             - arg : search criterias (not used in our case)
-            - context : a dictionnary containing some context variables (not used in our case)
+            - context : a dictionnary containing some context variables
+                        (not used in our case)
         Returns :
             A dictionnary of the form :
-                {id_1 : 'value_1', id_2 : 'value_2', ...} 
+                {id_1 : 'value_1', id_2 : 'value_2', ...}
     """
     def _perform_fizzbuzz(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for i in ids:
             # Retrieve OpenObject Fields
             fizz_params = self.browse(cr, uid, i)
-            start = fizz_params.start
-            end = fizz_params.end
-            
+            start = fizz_params.start   # nopep8
+            end = fizz_params.end       # nopep8
+
             # Enter your code here
             res[i] = "Fizzbuzz !"
         return res
-    
-    
+
     _columns = {
-        'name': fields.char("Name",size=128,required=True),
-        'start': fields.integer("Start",size=128,required=True),
-        'end': fields.integer("End",size=128),
-        'result': fields.function(_perform_fizzbuzz, type="char", method=True, store=True, string="Result")
+        'name': fields.char("Name", size=128, required=True),
+        'start': fields.integer("Start", size=128, required=True),
+        'end': fields.integer("End", size=128),
+        'result': fields.function(_perform_fizzbuzz, type="char", method=True,
+                                  store=True, string="Result")
     }
-    
-fizzbuzz()

@@ -149,7 +149,8 @@ class compassion_project(orm.Model):
                 private_cornerstone_test/REST_Get_Program_Implementor
             for more information.
         """
-        prog_impl = self._cornerstone_fetch(project.code, 'programimplementors')
+        prog_impl = self._cornerstone_fetch(project.code,
+                                            'programimplementors')
         values = {
             'type': prog_impl.get('programImplementorTypeCode'),
             'local_church_name': prog_impl.get('organizationName'),

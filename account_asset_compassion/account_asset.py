@@ -8,7 +8,6 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-# from calendar import monthrange
 
 from openerp.osv import orm, fields
 
@@ -28,10 +27,10 @@ class account_asset_depreciation_line(orm.Model):
     def _setup_move_line_data(self, depreciation_line, depreciation_date,
                               period_ids, account_id, type, move_id, context):
         """ Add analytic distribution to move_line """
-        move_line_data = super(account_asset_depreciation_line, 
+        move_line_data = super(account_asset_depreciation_line,
                                self)._setup_move_line_data(
-                depreciation_line, depreciation_date, period_ids, account_id,
-                type, move_id, context)
+            depreciation_line, depreciation_date, period_ids, account_id,
+            type, move_id, context)
         if type == 'expense':
             move_line_data.update({
                 'analytics_id':
