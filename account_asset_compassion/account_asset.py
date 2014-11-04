@@ -8,7 +8,6 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-# from calendar import monthrange
 
 from openerp.osv import orm, fields
 

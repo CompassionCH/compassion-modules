@@ -1,8 +1,16 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#       ______ Releasing children from poverty      _
+#      / ____/___  ____ ___  ____  ____ ___________(_)___  ____
+#     / /   / __ \/ __ `__ \/ __ \/ __ `/ ___/ ___/ / __ \/ __ \
+#    / /___/ /_/ / / / / / / /_/ / /_/ (__  |__  ) / /_/ / / / /
+#    \____/\____/_/ /_/ /_/ .___/\__,_/____/____/_/\____/_/ /_/
+#                        /_/
+#                            in Jesus' name
+#
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -35,14 +43,17 @@
                 6. Import new contact titles
                 7. Import Partner Categories
                 8. Add correspondance information
-                
-            B. Synchronize all Partner modifications with the MySQL Database used by Gestion Parrainages Compassion Suisse.
- 
-            Warning : This module requires python-MySQLdb to be installed on the server.
+
+            B. Synchronize all Partner modifications with the MySQL Database
+               used by Gestion Parrainages Compassion Suisse.
+
+            Warning : This module requires python-MySQLdb to be installed on
+                      the server.
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['base','partner_firstname','base_location','email_template','mysql_connector'],
+    'depends': ['base', 'partner_firstname', 'base_location',
+                'email_template', 'mysql_connector'],
     'data': [
         'view/partner_compassion_view.xml',
         'data/partner_title_data.xml',
@@ -52,5 +63,3 @@
     'installable': True,
     'auto_install': False,
 }
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

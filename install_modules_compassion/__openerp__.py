@@ -33,9 +33,10 @@
     'version': '1.0.0',
     'category': 'Other',
     'description': """
-        This module does nothing but install a bunch of useful modules developed for Compassion CH.
-        
-        Warning : This module requires python-MySQLdb to be installed on the server.
+This module does nothing but install a bunch of useful modules developed
+for Compassion CH.
+
+Warning : This module requires python-MySQLdb to be installed on the server.
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -56,5 +57,3 @@
     'installable': True,
     'auto_install': False,
 }
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
