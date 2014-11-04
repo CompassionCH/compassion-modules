@@ -190,13 +190,6 @@ class recurring_contract(orm.Model):
                         }
         return res
 
-    def contract_draft(self, cr, uid, ids, context=None):
-        # Change the state of the child
-        for contract in self.browse(cr, uid, ids, context):
-            if contract.child_id:
-                contract.child_id.write({'state': 'P'})
-        return super(recurring_contract, self).contract_draft
-
     def contract_waiting(self, cr, uid, ids, context=None):
         for contract in self.browse(cr, uid, ids, context):
             payment_term = contract.group_id.payment_term_id.name
@@ -267,11 +260,12 @@ class recurring_contract(orm.Model):
                 if contract.child_id and contract.child_id != child_id:
                     # Free the previously selected child
                     contract.child_id.write({'sponsor_id': False})
-            # Mark the selected child as sponsored
-            self.pool.get('compassion.child').write(
-                cr, uid, child_id, {
-                    'sponsor_id': vals.get('partner_id') or
-                    contract.partner_id.id}, context)
+            if child_id:
+                # Mark the selected child as sponsored
+                self.pool.get('compassion.child').write(
+                    cr, uid, child_id, {
+                        'sponsor_id': vals.get('partner_id') or
+                        contract.partner_id.id}, context)
 
         return super(recurring_contract, self).write(cr, uid, ids, vals,
                                                      context=context)

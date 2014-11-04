@@ -60,7 +60,7 @@
                             </page>
                             <page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '>', 0)]}">
                                 <group>
-                                    <field name="exit_description" />
+                                    <field name="gp_exit_reason" />
                                 </group>
                             </page>
                             <page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '=', False)]}">
