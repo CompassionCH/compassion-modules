@@ -209,7 +209,7 @@ class recurring_contract(orm.Model):
             'invoice_line_ids': False,
         })
         return super(recurring_contract, self).copy(cr, uid, id, default,
-                     context)
+                                                    context)
 
     def _compute_copy_start_date(self, cr, uid, id, context=None):
         today = datetime.today()
