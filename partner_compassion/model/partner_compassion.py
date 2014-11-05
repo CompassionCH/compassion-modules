@@ -10,7 +10,7 @@
 ##############################################################################
 from openerp.osv import fields, orm
 from openerp.tools.translate import _
-import gp_connector
+from . import gp_connector
 
 # fields that are synced if 'use_parent_address' is checked
 ADDRESS_FIELDS = (

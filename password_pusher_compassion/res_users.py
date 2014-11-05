@@ -9,7 +9,7 @@
 #
 ##############################################################################
 from openerp.osv import fields, orm
-import gp_connector
+from . import gp_connector
 
 
 class res_users(orm.Model):
