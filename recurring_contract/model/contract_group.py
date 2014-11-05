@@ -16,6 +16,10 @@ from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class contract_group(orm.Model):
     _name = 'recurring.contract.group'
@@ -89,6 +93,7 @@ class contract_group(orm.Model):
         ''' Checks all contracts and generate invoices if needed.
         Create an invoice per contract group per date.
         '''
+        logger.info("Invoice generation started.")
         inv_obj = self.pool.get('account.invoice')
         journal_obj = self.pool.get('account.journal')
         contract_obj = self.pool.get('recurring.contract')
@@ -110,7 +115,11 @@ class contract_group(orm.Model):
         #
         # The last condition ensures that we won't start to do advance billing
         # for contract who had initial next_invoice_date > today.
+        nb_groups = len(ids)
+        count = 1
         for group_id in ids:
+            logger.info("Generating invoices for group {0}/{1}".format(
+                count, nb_groups))
             adv_bill_candidate = set()
             contract_group = self.browse(cr, uid, group_id, context)
             month_delta = contract_group.advance_billing and \
@@ -150,6 +159,11 @@ class contract_group(orm.Model):
                     self._generate_invoice_lines(cr, uid, contract, invoice_id,
                                                  context)
                 inv_obj.button_compute(cr, uid, [invoice_id], context=context)
+            # After a contract_group is done, we commit all writes in order to
+            # avoid doing it again in case of an error or a timeout
+            cr.commit()
+            count += 1
+        logger.info("Invoice generation successfully finished.")
 
     def _setup_inv_data(self, cr, uid, con_gr, journal_ids,
                         invoicer_id, context=None):
