@@ -16,6 +16,10 @@ from openerp import netsvc
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class recurring_invoicer(orm.Model):
 
@@ -57,9 +61,18 @@ class recurring_invoicer(orm.Model):
                                  _('There is no invoice to validate'))
 
         wf_service = netsvc.LocalService('workflow')
+        logger.info("Invoice validation started.")
+        count = 1
+        nb_invoice = len(ids)
         for invoice in inv_obj.browse(cr, uid, invoice_ids, context):
+            logger.info("Validating invoice {0}/{1}".format(
+                count, nb_invoice))
             wf_service.trg_validate(uid, 'account.invoice', invoice.id,
                                     'invoice_open', cr)
+            # After an invoice is validated, we commit all writes in order to
+            # avoid doing it again in case of an error or a timeout
+            cr.commit()
+            count += 1
         return True
 
     # When an invoice is cancelled, should we adjust next_invoice_date
