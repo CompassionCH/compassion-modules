@@ -90,7 +90,7 @@ class recurring_contract(orm.Model):
             'state': 'sent',
             'process_date': contract.first_payment_date}, context)
         return True
-    
+
     def _invoice_paid(self, cr, uid, invoice, context=None):
         """ Check if invoice paid contains
             a child gift and creates a message to GMC. """
