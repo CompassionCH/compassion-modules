@@ -55,15 +55,26 @@ class recurring_contract(orm.Model):
         return res
 
     def _on_contract_active(self, cr, uid, ids, context=None):
-        """ Hook for doing something when contract is activated. """
+        """ Hook for doing something when contract is activated.
+        Update child to mark it has been sponsored, and update partner
+        to add the 'Sponsor' category.
+        """
         wf_service = netsvc.LocalService('workflow')
         if not isinstance(ids, list):
             ids = [ids]
+        sponsor_cat_id = self.pool.get('res.partner.category').search(
+            cr, uid, [('name', '=', 'Sponsor')], context={'lang':'en_US'})[0]
         for contract in self.browse(cr, uid, ids, context):
             contract.child_id.write({'has_been_sponsored': True})
-            logger.info("Contract " + str(contract.id) + " activated.")
+            partner_categories = set(
+                [cat.id for cat in contract.partner_id.category_id])
+            partner_categories.add(sponsor_cat_id)
+            # Standard way in Odoo to set one2many fields
+            contract.partner_id.write({
+                'category_id': [(6, 0, list(partner_categories))]})
             wf_service.trg_validate(uid, 'recurring.contract', contract.id,
                                     'contract_active', cr)
+            logger.info("Contract " + str(contract.id) + " activated.")
 
     def _invoice_paid(self, cr, uid, invoice, context=None):
         """ Hook for doing something when an invoice line is paid. """
@@ -211,6 +222,31 @@ class recurring_contract(orm.Model):
         today = datetime.today().strftime(DF)
         self.write(cr, uid, ids, {'state': 'cancelled',
                                   'end_date': today}, context)
+        return True
+
+    def contract_terminated(self, cr, uid, ids, context=None):
+        super(recurring_contract, self).contract_terminated(cr, uid, ids,
+                                                            context)
+        partner_obj = self.pool.get('res.partner')
+        category_obj = self.pool.get('res.partner.category')
+        sponsor_cat_id = category_obj.search(
+            cr, uid, [('name', '=', 'Sponsor')], context={'lang':'en_US'})[0]
+        old_sponsor_cat_id = category_obj.search(
+            cr, uid, [('name', '=', 'Old Sponsor')], context={'lang':'en_US'})[0]
+        # Check if the sponsor has still active contracts
+        for contract in self.browse(cr, uid, ids, context):
+            con_ids = self.search(cr, uid, [
+                ('partner_id', '=', contract.partner_id.id),
+                ('state', '=', 'active')], context)
+            if not con_ids:
+                # Replace sponsor categoy by old sponsor category
+                partner_categories = set(
+                    [cat.id for cat in contract.partner_id.category_id])
+                partner_categories.remove(sponsor_cat_id)
+                partner_categories.add(old_sponsor_cat_id)
+                # Standard way in Odoo to set one2many fields
+                contract.partner_id.write({
+                    'category_id': [(6, 0, list(partner_categories))]})
         return True
 
     def copy(self, cr, uid, id, default=None, context=None):
