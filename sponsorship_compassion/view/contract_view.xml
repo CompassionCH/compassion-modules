@@ -51,14 +51,24 @@
 				</field>
                 
                 <!-- Add first payment date -->
-                <field name="end_date" position="after">
+                <field name="end_date" position="before">
                     <field name="first_payment_date" />
+                </field>
+                
+                <!-- Add ending_reason -->
+                <field name="end_date" position="after">
+                    <field name="end_reason" states="terminated,cancelled"/>
                 </field>
                 
                 <!-- Add correspondent and sponsor contract number -->
                 <field name="group_id" position="after">
                     <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}"/>
                     <field name="num_pol_ga" invisible="True" />
+                </field>
+                
+                <!-- Remove next_invoice_date if contract is not active -->
+                <field name="next_invoice_date" position="attributes">
+                    <attribute name="states">draft, waiting, active</attribute>
                 </field>
                 
                 <!-- Remove quick create options for related partner -->
