@@ -107,8 +107,8 @@ class compassion_child(orm.Model):
             track_visibility="onchange", required=True),
         'has_been_sponsored': fields.boolean('Has been sponsored'),
         'is_delegated': fields.boolean('Is delegated'),
-        'sponsor_id': fields.many2one('res.partner', _('Sponsor'), readonly=True,
-                                      track_visibility="onchange"),
+        'sponsor_id': fields.many2one('res.partner', _('Sponsor'),
+                                      readonly=True),
 
         ######################################################################
         #                      2. Exit Details                               #
