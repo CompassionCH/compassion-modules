@@ -60,9 +60,10 @@
                     <field name="end_reason" states="terminated,cancelled"/>
                 </field>
                 
-                <!-- Add correspondent and sponsor contract number -->
-                <field name="group_id" position="after">
+                <!-- Add correspondent, sponsor contract number and origin -->
+                <field name="group_id" position="before">
                     <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}"/>
+                    <field name="origin_id"/>
                     <field name="num_pol_ga" invisible="True" />
                 </field>
                 

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+	<record id="view_contract_origin_tree" model="ir.ui.view">
+		<field name="name">contract.origin.tree</field>
+		<field name="model">recurring.contract.origin</field>
+		<field name="arch" type="xml">
+			<tree string="Origins">
+                <field name="name"/>
+                <field name="type"/>
+                <field name="partner_id"/>
+                <field name="lead_id"/>
+                <field name="analytics_id"/>
+                <field name="contract_id"/>
+                <field name="country_id"/>
+            </tree>
+		</field>
+	</record>
+	
+	<record id="view_contract_origin_form" model="ir.ui.view">
+		<field name="name">contract.origin.form</field>
+		<field name="model">recurring.contract.origin</field>
+		<field name="arch" type="xml">
+            <form string="Origin" version="7.0">
+                <sheet>
+                    <div class="oe_title">
+                        <group>
+                            <field name="name"/>
+                            <field name="type"/>
+                        </group>
+                    </div>
+                    <separator />
+                    <group>
+                        <field name="partner_id" attrs="{'required': [('type', 'in', ('ambassador','sponsor'))]}"/>
+                        <field name="lead_id" attrs="{'invisible': [('type', 'not in', ('event','marketing'))],
+                                                     'required': [('type','=','event')]}"/>
+                        <field name="analytics_id" attrs="{'invisible': [('type', 'not in', ('event','marketing'))],
+                                                           'required': [('type','in',('event','marketing'))]}"/>
+                        <field name="contract_id" attrs="{'invisible': [('type', '!=', 'sub')],
+                                                          'required': [('type','=','sub')]}"/>
+                        <field name="country_id" attrs="{'invisible': [('type', '!=', 'transfert')],
+                                                         'required': [('type','=','transfert')]}"/>
+                        <field name="other_name" attrs="{'invisible': [('type', '!=', 'other')]}"/>
+                    </group>
+                    <notebook>
+                        <page string="Originated Contracts">
+                            <field name="contract_ids" attrs="{'invisible': [('contract_ids', '=', False)]}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                
+            </form>
+		</field>
+	</record>
+</data>
+</openerp>
