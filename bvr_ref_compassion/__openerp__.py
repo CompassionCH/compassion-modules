@@ -1,9 +1,16 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Custom BVR reference for openERP
+#       ______ Releasing children from poverty      _
+#      / ____/___  ____ ___  ____  ____ ___________(_)___  ____
+#     / /   / __ \/ __ `__ \/ __ \/ __ `/ ___/ ___/ / __ \/ __ \
+#    / /___/ /_/ / / / / / / /_/ / /_/ (__  |__  ) / /_/ / / / /
+#    \____/\____/_/ /_/ /_/ .___/\__,_/____/____/_/\____/_/ /_/
+#                        /_/
+#                            in Jesus' name
+#
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
-#    @author: Cyril Sester <csester@compassion.ch>
+#    @author: Cyril Sester <cyril.sester@outlook.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -33,7 +40,7 @@
     ],
     'demo': [],
     'description': '''
-        This module change the BVR ref field in invoices from fields.function 
+        This module change the BVR ref field in invoices from fields.function
         to fields.char. This is because we want to set arbitrary BVR ref.
     ''',
     'active': False,

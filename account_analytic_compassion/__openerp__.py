@@ -32,9 +32,9 @@
     'version': '1.0',
     'category': 'Other',
     'description': """
-        This module installs the needed analytic accounts for Compassion CH.
-        
-        Install this module before 'compassion_sponsorship' in test databases.
+This module installs the needed analytic accounts for Compassion CH.
+
+Install this module before 'compassion_sponsorship' in test databases.
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
