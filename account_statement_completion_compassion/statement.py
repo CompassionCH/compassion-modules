@@ -15,7 +15,6 @@ from openerp.addons.account_statement_base_completion.statement \
     import ErrorTooManyPartner
 from openerp import netsvc
 import time
-import pdb
 
 GIFT_TYPES = ['Birthday Gift', 'General Gift',
               'Family Gift', 'Project Gift', 'Graduation Gift']

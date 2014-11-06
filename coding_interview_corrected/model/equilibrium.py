@@ -1,33 +1,24 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Author: Emanuel Cino. Copyright Compassion Suisse
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp.osv import osv, fields
+from openerp.osv import orm, fields
 import sys
-import pdb
 
-class equilibrium(osv.osv):
+
+class equilibrium(orm.Model):
     """ A equilibrium model """
     _name = 'interview.equilibrium'
-    
-    def _perform_equilibrium(self, cr, uid, ids, fields_name, arg, context=None):
+
+    def _perform_equilibrium(self, cr, uid, ids, fields_name, arg,
+                             context=None):
         res = {}
-        result = ""
         for i in ids:
             A = [int(x) for x in self.browse(cr, uid, ids)[0].list.split(',')]
             minDiff = sys.maxint
@@ -39,13 +30,13 @@ class equilibrium(osv.osv):
                 if diff < minDiff:
                     minDiff = diff
             res[i] = minDiff
-                            
+
         return res
-        
+
     _columns = {
-        'name': fields.char("Name",size=128,required=True),
-        'list': fields.char("List",size=128,required=True),
-        'result': fields.function(_perform_equilibrium, type="integer", method=True, store=True, string="Result")
+        'name': fields.char("Name", size=128, required=True),
+        'list': fields.char("List", size=128, required=True),
+        'result': fields.function(
+            _perform_equilibrium, type="integer", method=True, store=True,
+            string="Result")
     }
-    
-equilibrium()
