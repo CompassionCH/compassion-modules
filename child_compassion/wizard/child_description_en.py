@@ -73,7 +73,7 @@ class Child_description_en:
 
         if activities_iia:
             string_iia = u'%s is in a ' % (
-                u'he' if child.gender == 'M' else u'she')
+                u'He' if child.gender == 'M' else u'She')
             if len(activities_iia) == 1:
                 string_iia += activities_iia[0]
             else:
@@ -96,7 +96,8 @@ class Child_description_en:
     def _gen_family_act_info_en(
             cls, cr, uid, child, case_study, context=None):
         ''' Generate the family duties description part.
-            In English, it always starts with "At home, she/he helps to"
+            In English, it always starts with "At home, she/he helps
+            with family jobs such as"
             It's followed by the family duties.
         '''
         if not case_study.family_duties_ids:
