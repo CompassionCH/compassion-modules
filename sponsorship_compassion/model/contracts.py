@@ -103,6 +103,18 @@ class recurring_contract(orm.Model):
             ('12', _("Financial reasons")),
             ('25', _("Not given")),
         ]
+    
+    def _get_channels(self, cr, uid, context=None):
+        # Returns the available channel through the new sponsor
+        # reached Compassion.
+        return [
+            ('postal', _("By mail")),
+            ('direct', _("Direct")),
+            ('email', _("By e-mail")),
+            ('internet', _("From internet")),
+            ('phone', _("By phone")),
+            ('payment', _("Payment")),
+        ]
 
     ###########################
     #        New Fields       #
@@ -166,7 +178,9 @@ class recurring_contract(orm.Model):
             string=_('Frequency'), store=False),
         'end_reason': fields.selection(get_ending_reasons, _('End reason'),
                                        select=True),
-        'origin_id': fields.many2one('recurring.contract.origin', _("Origin")),
+        'origin_id': fields.many2one('recurring.contract.origin', _("Origin"),
+                                     required=True),
+        'channel': fields.selection(_get_channels, string=_("Channel"), required=True),
     }
 
     ##########################
