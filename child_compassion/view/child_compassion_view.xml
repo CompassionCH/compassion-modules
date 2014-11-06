@@ -87,10 +87,10 @@
             <field name="model">compassion.child</field>
             <field name="arch" type="xml">
                 <tree string="Children"
-                      colors="blue:state == 'N';
-                              black:state in ('P', 'D', 'I');
-                              red:state == 'R';
-                              gray:state in ('F', 'X')">
+                        colors="blue:state == 'N';
+                    black:state in ('P', 'D', 'I');
+                    red:state == 'R';
+                    gray:state in ('F', 'X')">
                     <field name="name"/>
                     <field name="code"/>
                     <field name="sponsor_id"/>
@@ -101,7 +101,7 @@
                 </tree>
             </field>
         </record>
-        
+
         <record id="view_child_compassion_filter" model="ir.ui.view">
             <field name="name">compassion.child.select</field>
             <field name="model">compassion.child</field>

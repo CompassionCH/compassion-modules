@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data>
-		<!--Compassion project form view -->
-		<record id="view_compassion_project_form" model="ir.ui.view">
-			<field name="name">compassion.project.form</field>
-			<field name="model">compassion.project</field>
-			<field name="arch" type="xml">
-				<form string="Project" version="7.0">
-					<header>
-						<field name="status" widget="statusbar" />
-					</header>
-					<sheet>
-						<div class="oe_title">
-							<label for="name" class="oe_edit_only"/>
-							<h1>
-								<field name="name"/>
-							</h1>
-						</div>
-						<div class="oe_right oe_button_box" name="button_box">
-							<button name="update_informations" type="object" string="Update informations" />
-						</div>
-						<notebook>
-							<page string="General Information">
-								<group>
-									<group>
-										<field name="code" />
-										<field name="type" />
-										<field name="suspension" />
-										<field name="status_date" />
-										<field name="status_comment" />
-									</group>
-									<group>
-										<field name="start_date" />
-										<field name="stop_date" />
-										<field name="last_update_date" />
+    <data>
+        <!--Compassion project form view -->
+        <record id="view_compassion_project_form" model="ir.ui.view">
+            <field name="name">compassion.project.form</field>
+            <field name="model">compassion.project</field>
+            <field name="arch" type="xml">
+                <form string="Project" version="7.0">
+                    <header>
+                        <field name="status" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <div class="oe_right oe_button_box" name="button_box">
+                            <button name="update_informations" type="object" string="Update informations" />
+                        </div>
+                        <notebook>
+                            <page string="General Information">
+                                <group>
+                                    <group>
+                                        <field name="code" />
+                                        <field name="type" />
+                                        <field name="suspension" />
+                                        <field name="status_date" />
+                                        <field name="status_comment" />
+                                    </group>
+                                    <group>
+                                        <field name="start_date" />
+                                        <field name="stop_date" />
+                                        <field name="last_update_date" />
                                         <field name="country_id" />
                                     </group>
                                 </group>
