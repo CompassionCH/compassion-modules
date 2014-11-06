@@ -41,7 +41,7 @@ from GP.
     'depends': ['sponsorship_compassion',
                 'mysql_connector',
                 ],
-    'data': ['view/contract_view.xml'],
+    'data': [],
     'demo': [],
     'installable': True,
     'auto_install': False,
