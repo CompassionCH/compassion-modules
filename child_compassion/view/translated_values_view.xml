@@ -10,7 +10,7 @@
             <field name="model">compassion.translated.value</field>
             <field name="arch" type="xml">
                 <tree string="Translations" editable="bottom">
-					<field name="property_name" />
+                    <field name="property_name" />
                     <field name="value_en" />
                     <field name="value_fr" />
                     <field name="value_de" />

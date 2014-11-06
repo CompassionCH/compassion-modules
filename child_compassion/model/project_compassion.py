@@ -313,9 +313,6 @@ class compassion_project(orm.Model):
             'status_date': json_values.get('statusDate'),
             'status_comment': json_values.get('statusComment'),
             'description_en': json_values.get('description'),
-            'description_fr': json_values.get('description'),
-            'description_de': json_values.get('description'),
-            'description_it': json_values.get('description'),
             'gps_latitude': json_values.get(
                 'gPSCoordinateLatitudeHighPrecision'),
             'gps_longitude': json_values.get(
