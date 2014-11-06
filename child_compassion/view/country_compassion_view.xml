@@ -9,7 +9,6 @@
 				<form string="Country" version="7.0">
 					<sheet>
                         <h1>
-                            <label for="name" />
                             <field name="name"/>
                         </h1>
                         <group>
@@ -19,10 +18,8 @@
 						<notebook>
 							<page string="English">
 								<group>
-									<group>
-                                        <field name="name" />
-										<field name="description_en" />
-									</group>
+                                    <field name="name_en" />
+                                    <field name="description_en" />
                                 </group>
 							</page>
 							<page string="French">
