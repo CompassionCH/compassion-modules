@@ -37,16 +37,6 @@ class contract_group(orm.Model):
             res.append((gr.id, name))
         return res
 
-    def _get_next_invoice_date(self, cr, uid, ids, name, args, context=None):
-        res = {}
-        for group in self.browse(cr, uid, ids, context):
-            res[group.id] = min(
-                [c.next_invoice_date for c in group.contract_ids
-                 if c.state in ('waiting', 'active')]
-                or [group.next_invoice_date])  # When no active contract
-
-        return res
-
     def _get_op_payment_term(self, cr, uid, context=None):
         ''' Get Permanent Order Payment Term, to set it by default. '''
         payment_term_id = self.pool.get('account.payment.term').search(
