@@ -63,7 +63,7 @@ class recurring_invoicer(orm.Model):
         wf_service = netsvc.LocalService('workflow')
         logger.info("Invoice validation started.")
         count = 1
-        nb_invoice = len(ids)
+        nb_invoice = len(invoice_ids)
         for invoice in inv_obj.browse(cr, uid, invoice_ids, context):
             logger.info("Validating invoice {0}/{1}".format(
                 count, nb_invoice))
