@@ -27,34 +27,28 @@
 #
 ##############################################################################
 
-
 {
-    'name': 'Install all modules needed for Compassion CH',
-    'version': '1.0.0',
-    'category': 'Other',
-    'description': """
-This module does nothing but install a bunch of useful modules developed
-for Compassion CH.
+    'name': 'Compassion CH - Events',
+    'version': '0.1.0',
+    'category': 'CRM',
+    'sequence': 150,
+    'description': """Compassion Events
+==============================================================================
 
-Warning : This module requires python-MySQLdb to be installed on the server.
-    """,
+This module helps Compassion CH to manage its planned events, by creating a
+new model for tracking upcoming events.
+
+ * Won opportunities create automatically a new events
+ * Each event is linked to an analytic account
+""",
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': [
-        'disable_openerp_online',
-        'account_statement_completion_compassion',
-        'account_advanced_reconcile_compassion',
-        'lsv_compassion',
-        'bvr_ref_compassion',
-        'crm_child_sponsorship',
-        'partner_compassion',
-        'mail_thread_compassion',
-        'password_pusher_compassion',
-        'l10n_ch_account_statement_base_import',
-        'message_center_compassion',
-        'events_compassion',
+    'depends': ['crm_child_sponsorship', 'mail', 'better_zip', 'sponsorship_compassion'],
+    'data': [
+        'security/ir.model.access.csv',
+        'view/event_compassion_view.xml',
+        'view/contract_origin_view.xml',
     ],
-    'data': [],
     'demo': [],
     'installable': True,
     'auto_install': False,

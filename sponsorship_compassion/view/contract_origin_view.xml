@@ -9,7 +9,6 @@
                 <field name="name"/>
                 <field name="type"/>
                 <field name="partner_id"/>
-                <field name="lead_id"/>
                 <field name="analytics_id"/>
                 <field name="contract_id"/>
                 <field name="country_id"/>
@@ -32,8 +31,6 @@
                     <separator />
                     <group>
                         <field name="partner_id" attrs="{'required': [('type', 'in', ('ambassador','sponsor'))]}"/>
-                        <field name="lead_id" attrs="{'invisible': [('type', 'not in', ('event','marketing'))],
-                                                     'required': [('type','=','event')]}"/>
                         <field name="analytics_id" attrs="{'invisible': [('type', 'not in', ('event','marketing'))],
                                                            'required': [('type','in',('event','marketing'))]}"/>
                         <field name="contract_id" attrs="{'invisible': [('type', '!=', 'sub')],
