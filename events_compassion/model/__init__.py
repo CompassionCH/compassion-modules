@@ -1,4 +1,4 @@
-﻿# -*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -9,4 +9,6 @@
 #
 ##############################################################################
 
-from . import model
+from . import event_compassion
+from . import contract_origin
+from . import crm_lead
