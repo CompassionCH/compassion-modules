@@ -10,7 +10,7 @@
 #                            in Jesus' name
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
-#    @author: David Wulliamoz <dwulliamoz@compassion.ch>
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -28,20 +28,28 @@
 ##############################################################################
 
 {
-    'name': 'CRM child sponsorship additions',
-    'version': '1.0',
+    'name': 'Compassion CH - Events',
+    'version': '0.1.0',
     'category': 'CRM',
-    'description': """
-This module add child sponsorship KPI.
+    'sequence': 150,
+    'description': """Compassion Events
 ==============================================================================
 
-        """,
-    'author': 'Compassion',
-    'website': 'http://www.openerp.com',
-    'images': ['images/analytic_plan.jpeg'],
-    'depends': ['crm'],
+This module helps Compassion CH to manage its planned events, by creating a
+new model for tracking upcoming events.
+
+ * Won opportunities create automatically a new events
+ * Each event is linked to an analytic account
+""",
+    'author': 'Compassion CH',
+    'website': 'http://www.compassion.ch',
+    'depends': ['mail', 'better_zip', 'sponsorship_compassion'],
     'data': [
-        'crm_child_sponsorship_view.xml',
+        'security/ir.model.access.csv',
+        'data/account_analytic_data.xml',
+        'view/event_compassion_view.xml',
+        'view/contract_origin_view.xml',
+        'view/crm_lead_view.xml',
     ],
     'demo': [],
     'installable': True,
