@@ -19,50 +19,48 @@ class contract_origin(orm.Model):
 
     def _get_origin_types(self, cr, uid, context=None):
         return [
-            ('ambassador', _("Ambassador")),
-            ('sponsor', _("Contact with sponsor")),
+            ('partner', _("Contact with sponsor/ambassador")),
             ('event', _("Event")),
             ('marketing', _("Marketing campaign")),
             ('sub', _("SUB sponsorship")),
-            ('transfert', _("Transfert")),
+            ('transfer', _("Transfer")),
             ('already_sponsor', _("Is already sponsor")),
             ('other', _("Other")),
         ]
 
     def _define_name(self, cr, uid, ids, field_name, args, context=None):
         """ Returns a good name for related fields. """
-        res = {}
         if not isinstance(ids, list):
             ids = [ids]
-        for origin in self.browse(cr, uid, ids, context):
-            name = ""
-            if origin.type in ('ambassador', 'sponsor'):
-                name = origin.type + ' - ' + origin.partner_id.name
-            elif origin.type in ('event', 'marketing'):
-                name = origin.analytics_id.name
-            elif origin.type == 'sub':
-                name = 'SUB Sponsorship - ' + origin.contract_id.child_id.name
-            elif origin.type == 'transfert':
-                name = 'Transfert from ' + origin.country_id.name
-            elif origin.type == 'already_sponsor':
-                name = 'Was already a sponsor'
-            elif origin.type == 'other':
-                name = origin.other_name or 'Other...'
-            res[origin.id] = name
-        return res
+        return {origin.id: self._name_get(origin) for origin in self.browse(cr, uid, ids, context)}
+        
+    def _name_get(self, origin):
+        name = ""
+        if origin.type == 'partner':
+            name = origin.type + ' - ' + origin.partner_id.name
+        elif origin.type in ('event', 'marketing'):
+            name = origin.analytics_id.name
+        elif origin.type == 'sub':
+            name = 'SUB Sponsorship - ' + origin.contract_id.child_id.name
+        elif origin.type == 'transfer':
+            name = 'Transfer from ' + origin.country_id.name
+        elif origin.type == 'already_sponsor':
+            name = 'Was already a sponsor'
+        elif origin.type == 'other':
+            name = origin.other_name or 'Other...'
+        return name
 
     _columns = {
         'name': fields.function(_define_name, type="char", string=_("Name"), store=True),
         'type': fields.selection(_get_origin_types, _("Type"), help=_(
             "Origin of contract : "
-            " * Ambassador : an ambassador made this new sponsorship"
-            " * Contact with sponsor : an other sponsor told the person about"
+            " * Contact with sponsor/ambassador : an other sponsor told the person about"
             " Compassion."
             " * Event : sponsorship was made during an event"
             " * Marketing campaign : sponsorship was made after specific "
             "campaign (magazine, ad, etc..)"
             " * SUB sponsorship : new sponsorship to replace a finished one."
-            " * Transfert : sponsorship transfered from another country."
+            " * Transfer : sponsorship transferred from another country."
             " * Is already sponsor : the sponsor wanted a new sponsorship."
             " * Other : select only if none other type matches."
             ), required=True),
