@@ -27,13 +27,32 @@ class Child_description_en:
         return desc_en
 
     @classmethod
+    def _gen_activities_string_en(cls, activities, strings):
+        string = ''
+        activities_string = ''
+        if len(activities) == 1:
+            activities_string += activities[0]
+        else:
+            num_loop = 0
+            for activity in activities:
+                num_loop += 1
+                if num_loop == 1:
+                    activities_string += activity
+                elif num_loop == len(activities):
+                    activities_string += " and " + activity
+                else:
+                    activities_string += ", " + activity
+        activities_string += u'. '
+        string += strings + str(activities_string)
+        return string
+
+    @classmethod
     def _gen_christ_act_en(cls, cr, uid, child, case_study, context=None):
         ''' Generate the christian activities description part.
             There are 2 groups of biblical activities:
             - activities starting with "she/he goes to" (gt)
             - activities starting with "she/he is in a" (iia)
         '''
-
         if not case_study.christian_activities_ids:
             return ''
         hobbies_gt = [
@@ -51,44 +70,15 @@ class Child_description_en:
             activity.value_en
             for activity in case_study.christian_activities_ids
             if activity.value_en in (hobbies_iia)]
-
         string = ''
         if activities_gt:
             string_gt = u'%s goes to ' % (
                 u'He' if child.gender == 'M' else u'She')
-            if len(activities_gt) == 1:
-                string_gt += activities_gt[0]
-            else:
-                num_loop = 0
-                for activity in activities_gt:
-                    num_loop += 1
-                    if num_loop == 1:
-                        string_gt += activity
-                    elif num_loop == len(activities_gt):
-                        string_gt += u' and ' + activity
-                    else:
-                        string_gt += u', ' + activity
-            string_gt += u'. '
-            string += string_gt
-
+            string = cls._gen_activities_string_en(activities_gt, string_gt)
         if activities_iia:
             string_iia = u'%s is in a ' % (
                 u'He' if child.gender == 'M' else u'She')
-            if len(activities_iia) == 1:
-                string_iia += activities_iia[0]
-            else:
-                num_loop = 0
-                for activity in activities_iia:
-                    num_loop += 1
-                    if num_loop == 1:
-                        string_iia += activity
-                    elif num_loop == len(activities_iia):
-                        string_iia += u' and ' + activity
-                    else:
-                        string_iia += u', ' + activity
-            string_iia += u'. '
-            string += string_iia
-
+            string = cls._gen_activities_string_en(activities_iia, string_iia)
         string = u'As part of the Church, ' + string
         return string
 
@@ -119,7 +109,6 @@ class Child_description_en:
             - hobbies starting with "She/He enjoys to" (shet)
             - hobbies starting with "She/He enjoys" (she)
         '''
-
         if not case_study.hobbies_ids:
             return ''
         hobbies_shepw = [
@@ -153,74 +142,23 @@ class Child_description_en:
         if activities_shepw:
             string_shepw = u"%s enjoys playing with " % (
                 'He' if child.gender == 'M' else 'She')
-            if len(activities_shepw) == 1:
-                string_shepw += activities_shepw[0]
-            else:
-                num_loop = 0
-                for activity in activities_shepw:
-                    num_loop += 1
-                    if num_loop == 1:
-                        string_shepw += activity
-                    elif num_loop == len(activities_shepw):
-                        string_shepw += " and " + activity
-                    else:
-                        string_shepw += ", " + activity
-            string_shepw += u". "
-            string += string_shepw
-
+            string += cls._gen_activities_string_en(activities_shepw,
+                                                    string_shepw)
         if activities_shep:
             string_shep = u"%s enjoys playing " % (
                 'He' if child.gender == 'M' else 'She')
-            if len(activities_shep) == 1:
-                string_shep += activities_shep[0]
-            else:
-                num_loop = 0
-                for activity in activities_shep:
-                    num_loop += 1
-                    if num_loop == 1:
-                        string_shep += activity
-                    elif num_loop == len(activities_shep):
-                        string_shep += " and " + activity
-                    else:
-                        string_shep += ", " + activity
-            string_shep += u". "
-            string += string_shep
-
+            string += cls._gen_activities_string_en(activities_shep,
+                                                    string_shep)
         if activities_shet:
             string_shet = u"%s enjoys to " % (
                 'He' if child.gender == 'M' else 'She')
-            if len(activities_shet) == 1:
-                string_shet += activities_shet[0]
-            else:
-                num_loop = 0
-                for activity in activities_shet:
-                    num_loop += 1
-                    if num_loop == 1:
-                        string_shet += activity
-                    elif num_loop == len(activities_shet):
-                        string_shet += " and " + activity
-                    else:
-                        string_shet += ", " + activity
-            string_shet += u". "
-            string += string_shet
-
+            string += cls._gen_activities_string_en(activities_shet,
+                                                    string_shet)
         if activities_she:
             string_she = u"%s enjoys " % (
                 'He' if child.gender == 'M' else 'She')
-            if len(activities_she) == 1:
-                string_she += activities_she[0]
-            else:
-                num_loop = 0
-                for activity in activities_she:
-                    num_loop += 1
-                    if num_loop == 1:
-                        string_she += activity
-                    elif num_loop == len(activities_she):
-                        string_she += " and " + activity
-                    else:
-                        string_she += ", " + activity
-            string_she += u". "
-            string += string_she
+            string += cls._gen_activities_string_en(activities_she,
+                                                    string_she)
         return string
 
     @classmethod
@@ -274,7 +212,7 @@ class Child_description_en:
             else:
                 string += '.'
         else:
-            string += " doesn't go to school."  # TODO reason
+            string += " doesn't go to school."
         return string
 
     @classmethod
