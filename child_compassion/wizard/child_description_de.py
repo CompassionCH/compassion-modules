@@ -27,6 +27,26 @@ class Child_description_de:
         return desc_de
 
     @classmethod
+    def _gen_activities_string_de(cls, activities, strings):
+        string = ''
+        activities_string = ''
+        if len(activities) == 1:
+            activities_string += activities[0]
+        else:
+            num_loop = 0
+            for activity in activities:
+                num_loop += 1
+                if num_loop == 1:
+                    activities_string += activity
+                elif num_loop == len(activities):
+                    activities_string += " und " + activity
+                else:
+                    activities_string += ", " + activity
+        activities_string += u'. '
+        string += strings + str(activities_string)
+        return string
+
+    @classmethod
     def _gen_christ_act_de(cls, cr, uid, child, case_study, context=None):
         ''' Generate the christian activities description part.
         '''
@@ -98,54 +118,17 @@ class Child_description_de:
         if activities_sesg:
             string_sesg = u"%s spielt gerne " % (
                 'Er' if child.gender == 'M' else 'Sie')
-            if len(activities_sesg) == 1:
-                string_sesg += activities_sesg[0]
-            else:
-                num_loop = 0
-                for activity in activities_sesg:
-                    num_loop += 1
-                    if num_loop == 1:
-                        string_sesg += activity
-                    elif num_loop == len(activities_sesg):
-                        string_sesg += " und " + activity
-                    else:
-                        string_sesg += ", " + activity
-            string_sesg += u". "
-            string += string_sesg
+            string += cls._gen_activities_string_de(activities_sesg,
+                                                    string_sesg)
         if activities_se:
             string_se = u"%s " % (
                 'Er' if child.gender == 'M' else 'Sie')
-            if len(activities_se) == 1:
-                string_se += activities_se[0]
-            else:
-                num_loop = 0
-                for activity in activities_se:
-                    num_loop += 1
-                    if num_loop == 1:
-                        string_se += activity
-                    elif num_loop == len(activities_se):
-                        string_se += " und " + activity
-                    else:
-                        string_se += ", " + activity
-            string_se += u". "
-            string += string_se
+            string += cls._gen_activities_string_de(activities_se, string_se)
         if activities_se_g:
             string_se_g = u"%s " % (
                 'Er' if child.gender == 'M' else 'Sie')
-            if len(activities_se_g) == 1:
-                string_se_g += activities_se_g[0]
-            else:
-                num_loop = 0
-                for activity in activities_se_g:
-                    num_loop += 1
-                    if num_loop == 1:
-                        string_se_g += activity
-                    elif num_loop == len(activities_se_g):
-                        string_se_g += " und " + activity
-                    else:
-                        string_se_g += ", " + activity
-            string_se_g += u" gerne. "
-            string += string_se_g
+            string += cls._gen_activities_string_de(activities_se_g,
+                                                    string_se_g)
         return string
 
     @classmethod
@@ -204,7 +187,7 @@ class Child_description_de:
             else:
                 string += '.'
         else:
-            string += ' geht in die Schule nicht.'  # TODO reason
+            string += ' geht in die Schule nicht.'
         return string
 
     @classmethod

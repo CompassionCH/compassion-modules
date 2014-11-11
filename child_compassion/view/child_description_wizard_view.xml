@@ -39,7 +39,6 @@
 					<footer>
 						<button name="generate_descriptions" class="oe_highlight" string="Next" type="object" states="values" />
 						<button name="validate_descriptions" class="oe_highlight" string="Finish" type="object" states="descriptions" />
-						or
 						<button string="Cancel" class="oe_link" special="cancel" />
 					</footer>
 				</form>

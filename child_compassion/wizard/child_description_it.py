@@ -27,6 +27,26 @@ class Child_description_it:
         return desc_it
 
     @classmethod
+    def _gen_activities_string_it(cls, activities, strings):
+        string = ''
+        activities_string = ''
+        if len(activities) == 1:
+            activities_string += activities[0]
+        else:
+            num_loop = 0
+            for activity in activities:
+                num_loop += 1
+                if num_loop == 1:
+                    activities_string += activity
+                elif num_loop == len(activities):
+                    activities_string += " e " + activity
+                else:
+                    activities_string += ", " + activity
+        activities_string += u'. '
+        string += strings + str(activities_string)
+        return string
+
+    @classmethod
     def _gen_christ_act_it(cls, cr, uid, child, case_study, context=None):
         ''' Generate the christian activities description part.
             There are 2 groups of biblical activities:
@@ -48,48 +68,19 @@ class Child_description_it:
             activity.value_it if activity.value_it else activity.value_en
             for activity in case_study.christian_activities_ids
             if activity.value_en in (hobbies_v)]
-
         activities_ei = [
             activity.value_it if activity.value_it else activity.value_en
             for activity in case_study.christian_activities_ids
             if activity.value_en in (hobbies_ei)]
-
         string = ''
         if activities_v:
             string_v = u'%s va ' % (
-                u'Egli' if child.gender == 'M' else u'Lei')
-            if len(activities_v) == 1:
-                string_v += activities_v[0]
-            else:
-                num_loop = 0
-                for activity in activities_v:
-                    num_loop += 1
-                    if num_loop == 1:
-                        string_v += activity
-                    elif num_loop == len(activities_v):
-                        string_v += u' e ' + activity
-                    else:
-                        string_v += u', ' + activity
-            string_v += u'. '
-            string += string_v
-
+                u'egli' if child.gender == 'M' else u'lei')
+            string = cls._gen_activities_string_it(activities_v, string_v)
         if activities_ei:
             string_ei = u'%s è in ' % (
-                u'Egli' if child.gender == 'M' else u'Lei')
-            if len(activities_ei) == 1:
-                string_ei += activities_ei[0]
-            else:
-                num_loop = 0
-                for activity in activities_ei:
-                    num_loop += 1
-                    if num_loop == 1:
-                        string_ei += activity
-                    elif num_loop == len(activities_ei):
-                        string_ei += u' e ' + activity
-                    else:
-                        string_ei += u', ' + activity
-            string_ei += u'. '
-            string += string_ei
+                u'egli' if child.gender == 'M' else u'lei')
+            string_ei = cls._gen_activities_string_it(activities_ei, string_ei)
         string = u'Come parte della Chiesa, ' + string
         return string
 
@@ -115,14 +106,11 @@ class Child_description_it:
     def _gen_hobbies_info_it(cls, cr, uid, child, case_study, context=None):
         ''' Generates the hobbies description part.
         '''
-
         if not case_study.hobbies_ids:
             return ''
-
         activities = [activity.value_it if activity.value_it
                       else activity.value_en
                       for activity in case_study.hobbies_ids]
-
         string = ''
         if activities:
             if len(activities) > 1:
@@ -141,7 +129,6 @@ class Child_description_it:
             else:
                 string = u'%s piace: %s.' % (
                     u'Li' if child.gender == 'M' else u'Le', activities)
-
         return string
 
     @classmethod
@@ -173,7 +160,6 @@ class Child_description_it:
             'P': u'primario',
             }
         # the value of us_school_level can also be blank
-
         string = u'Lui' if child.gender == 'M' else u'Lei'
         if case_study.attending_school_flag:
             if (case_study.us_school_level and case_study.us_school_level in
@@ -201,7 +187,7 @@ class Child_description_it:
             else:
                 string += '.'
         else:
-            string += " non frequenta la scuola."  # TODO reason
+            string += " non frequenta la scuola."
         return string
 
     @classmethod
