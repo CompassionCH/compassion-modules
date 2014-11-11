@@ -30,17 +30,17 @@
                     </div>
                     <separator />
                     <group>
-                        <field name="partner_id" attrs="{'required': [('type', 'in', ('ambassador','sponsor'))]}"/>
-                        <field name="analytics_id" attrs="{'invisible': [('type', 'not in', ('event','marketing'))],
-                                                           'required': [('type','in',('event','marketing'))]}"/>
+                        <field name="partner_id" attrs="{'required': [('type', '=', 'partner')]}"/>
+                        <field name="analytics_id" attrs="{'invisible': [('type', '!=', 'marketing')],
+                                                           'required': [('type', '=', 'marketing')]}"/>
                         <field name="contract_id" attrs="{'invisible': [('type', '!=', 'sub')],
                                                           'required': [('type','=','sub')]}"/>
-                        <field name="country_id" attrs="{'invisible': [('type', '!=', 'transfert')],
-                                                         'required': [('type','=','transfert')]}"/>
+                        <field name="country_id" attrs="{'invisible': [('type', '!=', 'transfer')],
+                                                         'required': [('type','=','transfer')]}"/>
                         <field name="other_name" attrs="{'invisible': [('type', '!=', 'other')]}"/>
                     </group>
                     <notebook>
-                        <page string="Originated Contracts">
+                        <page string="Originated Sponsorships">
                             <field name="contract_ids" attrs="{'invisible': [('contract_ids', '=', False)]}"/>
                         </page>
                     </notebook>

@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
-
         <!--
             OPPORTUNITY
         -->
-
+        
         <!-- Opportunities Form View -->
         <record model="ir.ui.view" id="crm_case_form_view_oppor_spons1">
             <field name="name">Opportunities</field>
@@ -14,8 +13,14 @@
             <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
             <field name="arch" type="xml">
                 <label for="planned_revenue" position="before">
-                    <label for="planned_sponsorship"/><h2><field name="planned_sponsorship" /></h2>
+                    <label for="planned_sponsorships"/><h2><field name="planned_sponsorships"/></h2>
                 </label>
+                <field name="categ_ids" position="after">
+                    <field name="event_id"/>
+                </field>
+                <xpath expr="/form/header/button[@name='case_mark_lost']" position="after">
+                    <button string="Create Event" name="create_event" type="object" attrs="{'invisible': [('event_id', '>', 0)]}"/>
+                </xpath>
             </field>
         </record>
 
@@ -28,7 +33,7 @@
             <field name="priority">25</field>
             <field name="arch" type="xml">
                 <field name="planned_revenue" position="before">
-                    <field name="planned_sponsorship" sum="Expected Sponsorship" />
+                    <field name="planned_sponsorships" sum="Expected Sponsorship" />
                 </field>
             </field>
         </record>
@@ -41,9 +46,10 @@
             <field name="priority">25</field>
             <field name="arch" type="xml">
                 <field name="planned_revenue" position="before">
-                    <field name="planned_sponsorship" sum="Expected Sponsorship" />
+                    <field name="planned_sponsorships" sum="Expected Sponsorships"/>
                 </field>
             </field>
         </record>
+        
     </data>
 </openerp>
