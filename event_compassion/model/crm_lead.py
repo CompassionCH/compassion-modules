@@ -9,25 +9,20 @@
 #
 ##############################################################################
 
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-
 from openerp.osv import orm, fields
-from openerp import netsvc
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
-import openerp.addons.decimal_precision as dp
-import pdb
 
 
 class crm_lead(orm.Model):
     _inherit = "crm.lead"
-    
+
     _columns = {
-        'planned_sponsorships': fields.integer(_('Expected new sponsorships'), track_visibility='onchange'),
-        'event_id': fields.many2one('crm.event.compassion', _('Event'), readonly=True),
+        'planned_sponsorships': fields.integer(
+            _('Expected new sponsorships'), track_visibility='onchange'),
+        'event_id': fields.many2one(
+            'crm.event.compassion', _('Event'), readonly=True),
     }
-        
+
     def create_event(self, cr, uid, ids, context=None):
         lead = self.browse(cr, uid, ids[0], context)
         context.update({

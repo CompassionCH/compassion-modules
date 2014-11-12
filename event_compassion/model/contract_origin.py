@@ -14,6 +14,7 @@ from openerp.tools.translate import _
 
 
 class contract_origin(orm.Model):
+
     """ Add event to origin of a contract """
     _inherit = 'recurring.contract.origin'
 
