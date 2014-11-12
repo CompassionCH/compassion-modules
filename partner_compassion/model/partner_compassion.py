@@ -333,19 +333,9 @@ class ResPartner(Model):
         records = [records] if not isinstance(records,list) else records
         gp = gp_connector.GPConnect(cr, uid)
         for record in records:
-            # If it is a company, unlink contact in MySQL if there is any.
-            if record.is_company:
-                for child in record.child_ids:
-                    if child.use_parent_address:
-                        gp.unlinkContact(uid, record, self._get_category_names(record, cr, uid))
-            
-            # If it is a contact, unlink from company.
-            if record.use_parent_address and record.parent_id:
-                gp.unlinkContact(uid, record.parent_id, self._get_category_names(record.parent_id, cr, uid))
-                
             # Unlink from MySQL
             gp.unlink(uid, record.id)
-        
+
         del(gp)
         return super(ResPartner,self).unlink(cr, uid, ids, context)
 ResPartner()
