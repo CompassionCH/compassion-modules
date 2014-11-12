@@ -37,7 +37,7 @@ class reconcile_split_payment_wizard(orm.TransientModel):
                             contract_ids.update([invoice_line.contract_id.id
                                                  for invoice_line in
                                                  invoice.invoice_line])
-        return {id: contract_ids for id in ids}
+        return {id: list(contract_ids) for id in ids}
 
     def _write_contracts(self, cr, uid, ids, field_name, field_value, arg,
                          context):
