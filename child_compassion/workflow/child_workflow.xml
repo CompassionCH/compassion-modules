@@ -29,21 +29,6 @@
 		<field name="action">child_sponsored()</field>
 	</record>
     
-    
-  <!--   <record model="workflow.activity" id="act_waiting_sponsor">
-		<field name="wkf_id" ref="wkf_compassion_child" />
-		<field name="name">waiting sponsor</field>
-		<field name="kind">function</field>
-		<field name="action">child_waiting_sponsor()</field>
-	</record> -->
-
-	<record model="workflow.activity" id="act_delegated">
-		<field name="wkf_id" ref="wkf_compassion_child"/>
-		<field name="name">delegated</field>
-		<field name="kind">function</field>
-		<field name="action">child_delegated()</field>
-	</record>
-    
     <record model="workflow.activity" id="act_departed">
 		<field name="wkf_id" ref="wkf_compassion_child"/>
 		<field name="name">departed</field>
@@ -64,18 +49,6 @@
 		<field name="act_from" ref="act_sponsored" />
 		<field name="act_to" ref="act_available" />
 		<field name="condition">not sponsor_id</field>
-	</record>
-    
-    <record model="workflow.transition" id="delegate">
-		<field name="act_from" ref="act_available" />
-		<field name="act_to" ref="act_delegated" />
-		<field name="condition">is_delegated</field>
-	</record>
-    
-    <record model="workflow.transition" id="undelegate">
-		<field name="act_from" ref="act_delegated" />
-		<field name="act_to" ref="act_available" />
-		<field name="condition">not is_delegated</field>
 	</record>
     
     <record model="workflow.transition" id="depart">

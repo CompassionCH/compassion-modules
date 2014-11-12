@@ -106,7 +106,6 @@ class compassion_child(orm.Model):
             ('F', _('Departed'))], _("Status"), select=True, readonly=True,
             track_visibility="onchange", required=True),
         'has_been_sponsored': fields.boolean('Has been sponsored'),
-        'is_delegated': fields.boolean('Is delegated'),
         'sponsor_id': fields.many2one('res.partner', _('Sponsor'),
                                       readonly=True),
 
@@ -384,10 +383,6 @@ class compassion_child(orm.Model):
 
     def child_sponsored(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'P'}, context)
-        return True
-
-    def child_delegated(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'D'}, context)
         return True
 
     def child_departed(self, cr, uid, ids, context=None):
