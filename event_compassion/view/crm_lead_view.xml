@@ -48,8 +48,13 @@
                 <field name="planned_revenue" position="before">
                     <field name="planned_sponsorships" sum="Expected Sponsorships"/>
                 </field>
+                <field name="message_summary" position="after">
+                    <field name="event_id"/>
+                </field>
+                <xpath expr="//ul[@class='oe_dropdown_menu']/li/a[@name='action_makeMeeting']" position="after">
+                    <t t-if="!record.event_id.raw_value"><li><a name="create_event" type="object">Create Event</a></li></t>
+                </xpath>
             </field>
         </record>
-        
     </data>
 </openerp>
