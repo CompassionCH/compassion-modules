@@ -111,7 +111,7 @@ class recurring_contract(orm.Model):
             ('postal', _("By mail")),
             ('direct', _("Direct")),
             ('email', _("By e-mail")),
-            ('internet', _("From internet")),
+            ('internet', _("From the website")),
             ('phone', _("By phone")),
             ('payment', _("Payment")),
         ]
