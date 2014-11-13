@@ -8,16 +8,19 @@
             <field name="name">Sponsorship Distribution</field>
             <field name="code">SPONSOR</field>
             <field name="journal_id" ref="account.analytic_journal_sale"/>
+            <field name="plan_id">1</field>
         </record>
         <record id="account_analytic_plan_instance_100des" model="account.analytic.plan.instance">
             <field name="name">100% Designated</field>
             <field name="code">100DES</field>
             <field name="journal_id" ref="account.analytic_journal_sale"/>
+            <field name="plan_id">1</field>
         </record>
         <record id="account_analytic_plan_instance_100undes" model="account.analytic.plan.instance">
             <field name="name">100% Undesignated</field>
             <field name="code">100UNDES</field>
             <field name="journal_id" ref="account.analytic_journal_sale"/>
+            <field name="plan_id">1</field>
         </record>
         
        <!--
