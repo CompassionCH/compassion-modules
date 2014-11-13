@@ -7,26 +7,26 @@
         <record id="account_analytic_account_stand" model="account.analytic.account">
             <field name="name">Stand</field>
             <field name="type">normal</field>
-            <field name="code">AA120</field>
-            <field name="parent_id" search="[('name', '=', 'FUND')]"/>
+            <field name="code">AA1181</field>
+            <field name="parent_id" search="[('name', '=', 'Events')]"/>
         </record>
         <record id="account_analytic_account_pres" model="account.analytic.account">
             <field name="name">Presentation</field>
             <field name="type">normal</field>
-            <field name="code">AA121</field>
-            <field name="parent_id" search="[('name', '=', 'FUND')]"/>
+            <field name="code">AA1182</field>
+            <field name="parent_id" search="[('name', '=', 'Events')]"/>
         </record>
         <record id="account_analytic_account_meet" model="account.analytic.account">
             <field name="name">Meeting</field>
             <field name="type">normal</field>
-            <field name="code">AA122</field>
-            <field name="parent_id" search="[('name', '=', 'FUND')]"/>
+            <field name="code">AA1183</field>
+            <field name="parent_id" search="[('name', '=', 'Events')]"/>
         </record>
         <record id="account_analytic_account_sport" model="account.analytic.account">
             <field name="name">Sport</field>
             <field name="type">normal</field>
-            <field name="code">AA123</field>
-            <field name="parent_id" search="[('name', '=', 'FUND')]"/>
+            <field name="code">AA1184</field>
+            <field name="parent_id" search="[('name', '=', 'Events')]"/>
         </record>
         
         <!--

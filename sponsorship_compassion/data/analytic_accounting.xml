@@ -86,5 +86,21 @@
             <field name="analytics_id" ref="account_analytic_plan_instance_100des"/>
             <field name="sequence">100</field>
         </record>
+        
+        <!--
+            Resource: account.analytic.account
+        -->
+        <record id="account_analytic_account_ad" model="account.analytic.account">
+            <field name="name">Advertisement</field>
+            <field name="type">normal</field>
+            <field name="code">AA1031</field>
+            <field name="parent_id" search="[('name', '=', 'FUND')]"/>
+        </record>
+        <record id="account_analytic_account_campaign" model="account.analytic.account">
+            <field name="name">Campaign</field>
+            <field name="type">normal</field>
+            <field name="code">AA1032</field>
+            <field name="parent_id" search="[('name', '=', 'FUND')]"/>
+        </record>
     </data>
 </openerp>

@@ -43,6 +43,7 @@ class event_compassion(orm.Model):
         'name': fields.char(_("Name"), size=128, required=True),
         'type': fields.selection([
             ('stand', _("Stand")),
+            ('concert', _("Concert")),
             ('presentation', _("Presentation")),
             ('meeting', _("Meeting")),
             ('sport', _("Sport event"))], _("Type"), required=True),
@@ -128,7 +129,7 @@ class event_compassion(orm.Model):
         }, context)
         plan_id = self.pool.get('account.analytic.plan.instance').create(
             cr, uid, {
-                'name': year + '-' + event_name + ' Distribution',
+                'name': year + '-' + event_name,
                 'code': acode,
                 'journal_id': self.pool.get('ir.model.data').get_object(
                     cr, uid, 'account', 'analytic_journal_sale', context).id},
