@@ -131,8 +131,10 @@ class event_compassion(orm.Model):
             cr, uid, {
                 'name': year + '-' + event_name,
                 'code': acode,
+                # TODO : Verify that sales journal is ok.
                 'journal_id': self.pool.get('ir.model.data').get_object(
                     cr, uid, 'account', 'analytic_journal_sale', context).id},
+                'plan_id': 1,
             context)
         self.pool.get('account.analytic.plan.instance.line').create(cr, uid, {
             'analytic_account_id': account_id,
