@@ -19,8 +19,8 @@ class mail_thread(osv.AbstractModel):
 
     _inherit = 'mail.thread'
 
-    def message_post_from_gp(self, cr, uid, thread_id, body='', subject=None,
-                             attachments=None):
+    def message_post_from_gp(self, cr, uid, model, thread_id, body='',
+                             subject=None, attachments=None):
         # If any attachments, decode them, as it is send over XML
         decodedAttachments = []
         if (attachments):
@@ -28,6 +28,6 @@ class mail_thread(osv.AbstractModel):
                 decoded = (name, base64.b64decode(str(content)))
                 decodedAttachments.append(decoded)
 
-        return super(mail_thread, self).message_post(
+        return self.message_post(
             cr, uid, thread_id, body, subject, 'comment', None, False,
-            decodedAttachments, {'thread_model': 'res.partner'}, 'html')
+            decodedAttachments, {'thread_model':model}, 'html')
