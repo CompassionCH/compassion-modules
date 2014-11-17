@@ -474,43 +474,61 @@ class recurring_contract(orm.Model):
         """ Link child to sponsor. """
         if vals.get('child_id', False):
             self.pool.get('compassion.child').write(
-                cr, uid, vals['child_id'], {'sponsor_id': vals['partner_id']},
+                cr, uid, int(vals['child_id']), {'sponsor_id': vals['partner_id']},
                 context)
         return super(recurring_contract, self).create(cr, uid, vals, context)
-
+    
     ##############################
     #      CALLBACKS FOR GP      #
     ##############################
-    def validate_from_gp(self, cr, uid, ids, context=None):
+    def validate_from_gp(self, cr, uid, contract_id, context=None):
         """ Used to transition draft sponsorships in waiting state
         when exported from GP. """
         wf_service = netsvc.LocalService('workflow')
-        if not isinstance(ids, list):
-            ids = [ids]
-        for id in ids:
-            logger.info("Contract " + str(id) + " validated.")
-            wf_service.trg_validate(uid, 'recurring.contract', id,
-                                    'contract_validated', cr)
+        logger.info("Contract " + str(contract_id) + " validated.")
+        wf_service.trg_validate(uid, 'recurring.contract', contract_id,
+                                'contract_validated', cr)
         return True
 
-    def activate_from_gp(self, cr, uid, ids, context=None):
+    def activate_from_gp(self, cr, uid, contract_id, context=None):
         """ Used to transition draft sponsorships in active state
         when exported from GP. """
-        if not isinstance(ids, list):
-            ids = [ids]
-        self.validate_from_gp(cr, uid, ids, context)
-        self._on_contract_active(cr, uid, ids, context)
+        self.validate_from_gp(cr, uid, contract_id, context)
+        self._on_contract_active(cr, uid, contract_id, context)
         return True
 
-    def terminate_from_gp(self, cr, uid, ids, context=None):
+    def terminate_from_gp(self, cr, uid, contract_id, end_state, end_reason, child_state, child_exit_code, end_date, transfer_country_code, context=None):
         """ Used to delete the workflow of terminated or cancelled
         sponsorships when exported from GP. """
-        if not isinstance(ids, list):
-            ids = [ids]
+        # Write sponsorship end reason
+        sponsor_reasons = [reason[0] for reason in self.get_ending_reasons(cr, uid, context)]
+        end_reason = str(end_reason)
+        if not end_reason in sponsor_reasons:
+            end_reason = '1'
+        vals = {'state': end_state,
+                'end_reason': str(end_reason),
+                'end_date': end_date}
+        self.write(cr, uid, contract_id, vals, context)
+
+        # Mark child as departed
+        if child_state == 'F':
+            child_exit_code = str(child_exit_code)
+            exit_reasons = [reason[0] for reason in self.pool.get('compassion.child').get_gp_exit_reasons(cr, uid, context)]
+            child_vals = {'state': 'F'}
+            if child_exit_code in exit_reasons:
+                child_vals.update({'gp_exit_reason': str(child_exit_code)})
+            else:
+                country_id = self.pool.get('res.country').search(cr, uid, [('code', '=', transfer_country_code)], context=context)
+                if country_id:
+                    country_id = country_id[0]
+                    child_vals.update({'transfer_country_id': country_id})
+            contract = self.browse(cr, uid, contract_id, context)
+            contract.child_id.write(child_vals)
+
+        # Delete workflow for this contract
         wf_service = netsvc.LocalService('workflow')
-        for id in ids:
-            logger.info("Contract " + str(id) + " terminated.")
-            wf_service.trg_delete(uid, 'recurring.contract', id, cr)
+        wf_service.trg_delete(uid, 'recurring.contract', contract_id, cr)
+        logger.info("Contract " + str(contract_id) + " terminated.")
         return True
 
 

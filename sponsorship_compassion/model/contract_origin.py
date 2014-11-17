@@ -39,13 +39,19 @@ class contract_origin(orm.Model):
     def _name_get(self, origin):
         name = ""
         if origin.type == 'partner':
-            name = origin.type + ' - ' + origin.partner_id.name
+            name = origin.partner_id.name
         elif origin.type in ('event', 'marketing'):
             name = origin.analytics_id.name
         elif origin.type == 'sub':
-            name = 'SUB Sponsorship - ' + origin.contract_id.child_id.name
+            if origin.contract_id:
+                name = 'SUB Sponsorship - ' + origin.contract_id.child_id.code
+            else:
+                name = 'SUB Sponsorship'
         elif origin.type == 'transfer':
-            name = 'Transfer from ' + origin.country_id.name
+            if origin.country_id:
+                name = 'Transfer from ' + origin.country_id.name
+            else:
+                name = 'Transfer from partner country'
         elif origin.type == 'already_sponsor':
             name = 'Was already a sponsor'
         elif origin.type == 'other':

@@ -89,27 +89,26 @@ class event_compassion(orm.Model):
 
         origin_obj = self.pool.get('recurring.contract.origin')
         origin_id = origin_obj.create(cr, uid, {
-            'name': event.name,
+            'name': event.name + " " + event.start_date[:4],
             'type': 'event',
             'partner_id': event.partner_id.id,
             'event_id': new_id,
         }, context)
         event.write({
             'origin_id': origin_id,
-            'analytics_id': self._create_analytics(cr, uid, event.name,
-                                                   event.type, context)
+            'analytics_id': self._create_analytics(cr, uid, event, context)
         })
         return new_id
 
-    def _create_analytics(self, cr, uid, event_name, event_type, context=None):
+    def _create_analytics(self, cr, uid, event, context=None):
         """ Creates an analytic account together with an analytic distribution
         100% in the account, given the name and type of the event.
         """
-        year = date.today().strftime('%y')
+        year = event.start_date[2:4]
         acode = self.pool.get('ir.sequence').get(cr, uid, 'AASEQ')
         analytics_obj = self.pool.get('account.analytic.account')
         categ_id = analytics_obj.search(
-            cr, uid, [('name', 'ilike', event_type)], context=context)[0]
+            cr, uid, [('name', 'ilike', event.type)], context=context)[0]
         acc_ids = analytics_obj.search(
             cr, uid, [('name', '=', year), ('parent_id', '=', categ_id)],
             context=context)
@@ -118,23 +117,23 @@ class event_compassion(orm.Model):
             acc_ids = [analytics_obj.create(cr, uid, {
                 'name': year,
                 'type': 'view',
-                'code': 'AA' + event_type[:2].upper() + year,
+                'code': 'AA' + event.type[:2].upper() + year,
                 'parent_id': categ_id
             }, context)]
         account_id = analytics_obj.create(cr, uid, {
-            'name': event_name,
+            'name': event.name,
             'type': 'normal',
             'code': acode,
             'parent_id': acc_ids[0]
         }, context)
         plan_id = self.pool.get('account.analytic.plan.instance').create(
             cr, uid, {
-                'name': year + '-' + event_name,
+                'name': year + '-' + event.name,
                 'code': acode,
                 # TODO : Verify that sales journal is ok.
                 'journal_id': self.pool.get('ir.model.data').get_object(
-                    cr, uid, 'account', 'analytic_journal_sale', context).id},
-                'plan_id': 1,
+                    cr, uid, 'account', 'analytic_journal_sale', context).id,
+                'plan_id': 1},
             context)
         self.pool.get('account.analytic.plan.instance.line').create(cr, uid, {
             'analytic_account_id': account_id,
