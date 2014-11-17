@@ -28,6 +28,12 @@
             <field name="code">AA1184</field>
             <field name="parent_id" search="[('name', '=', 'Events')]"/>
         </record>
+        <record id="account_analytic_account_sport" model="account.analytic.account">
+            <field name="name">Concert</field>
+            <field name="type">normal</field>
+            <field name="code">AA1185</field>
+            <field name="parent_id" search="[('name', '=', 'Events')]"/>
+        </record>
         
         <!--
             Resource: ir.sequence
