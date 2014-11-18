@@ -69,13 +69,12 @@ class mysql_connector:
             - Dictionary containing the selected field names as keys
               with their values.
               ex : {'SELECT_1':'VALUE_1', ... , 'SELECT_N':'VALUE_N'}
-            - None if the query didn't return a result.
+            - Empty dict if the query didn't return a result.
         """
         with self._con:
             self._cur.execute(statement, args)
-            if self._cur.rowcount > 0:
-                return self._cur.fetchone()
-
+            return self._cur.fetchone() or dict()
+                
     def selectAll(self, statement, args=None):
         """ Performs a MySQL SELECT statement and returns all rows.
          Args:
@@ -95,11 +94,8 @@ class mysql_connector:
         """
         with self._con:
             self._cur.execute(statement, args)
-            if self._cur.rowcount > 0:
-                return self._cur.fetchall()
-
-        return list()
-
+            return self._cur.fetchall() or list()
+                
     def is_alive(self):
         """ Test if the connection is alive. """
         try:

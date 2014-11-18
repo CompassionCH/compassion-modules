@@ -285,7 +285,7 @@ class AccountStatementCompletionRule(orm.Model):
     def _generate_invoice_line(self, cr, uid, invoice_id, product, st_line,
                                partner_id, context=None):
         inv_line_data = {
-            'name': product.name,
+            'name': st_line['name'],
             'account_id': product.property_account_income.id,
             'price_unit': st_line['amount'],
             'quantity': 1,
@@ -316,9 +316,10 @@ class AccountStatementCompletionRule(orm.Model):
                 contract = contract_obj.browse(
                     cr, uid, contract_ids[0], context=context)
                 inv_line_data['contract_id'] = contract.id
-                inv_line_data['name'] = contract.child_id.code
-                inv_line_data['name'] += " - " + contract.child_id.birthdate \
-                    if product.name == GIFT_TYPES[0] else ""
+                if inv_line_data['name'] == '/':
+                    inv_line_data['name'] = contract.child_id.code
+                    inv_line_data['name'] += " - " + contract.child_id.birthdate \
+                        if product.name == GIFT_TYPES[0] else ""
                 res['name'] += " [" + inv_line_data['name'] + "]"
             else:
                 res['name'] += " [Child not found] "
