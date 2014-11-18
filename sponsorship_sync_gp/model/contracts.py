@@ -139,17 +139,26 @@ class contracts(orm.Model):
     def _invoice_paid(self, cr, uid, invoice, context=None):
         """ When an invoice is paid, update last payment date in GP. """
         gp_connect = gp_connector.GPConnect(cr, uid)
+        contract_ids = set()
+        synced = True
         last_pay_date = max([move_line.date
                              for move_line in invoice.payment_ids
                              if move_line.credit > 0] or [False])
-        if last_pay_date:
-            for line in invoice.invoice_line:
-                contract = line.contract_id
-                if contract:
-                    synced = gp_connect.register_payment(
-                        contract.id, last_pay_date)
-                    super(contracts, self).write(cr, uid, contract.id, {'synced_with_gp': synced},
-                               context)
+        for line in invoice.invoice_line:
+            contract = line.contract_id
+            if contract:
+                synced = synced and gp_connect.insert_affectat(uid, line, last_pay_date)
+                if not synced:
+                    raise orm.except_orm(
+                        _("GP Sync Error"),
+                        _("The payment could not be registered into GP. "
+                          "Please contact an IT person."))
+                if line.product_id.name == 'Standard Sponsorship' and not contract.id in contract_ids:
+                    synced = synced and gp_connect.register_payment(contract.id, last_pay_date)
+                    contract_ids.add(contract.id)
+                    super(contracts, self).write(
+                        cr, uid, contract.id, {'synced_with_gp': synced},
+                        context)
 
 class contract_group(orm.Model):
     """ Update all contracts when group is changed. """

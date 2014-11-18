@@ -31,6 +31,7 @@ class generate_gift_wizard(orm.TransientModel):
             'product.product', _("Gift Type"), required=True,
             domain=[('name', 'in', GIFT_TYPES.keys())]),
         'invoice_date': fields.date(_("Invoice date")),
+        'description': fields.char(_("Additional comments"), size=200),
     }
 
     _defaults = {
@@ -93,7 +94,7 @@ class generate_gift_wizard(orm.TransientModel):
         product = wizard.product_id
 
         inv_line_data = {
-            'name': product.name,
+            'name': wizard.description,
             'account_id': product.property_account_income.id,
             'price_unit': wizard.amount,
             'quantity': 1,
@@ -111,9 +112,10 @@ class generate_gift_wizard(orm.TransientModel):
             inv_line_data['analytics_id'] = analytic.analytics_id.id
 
         # Give a better name to invoice_line
-        inv_line_data['name'] = contract.child_id.code
-        inv_line_data['name'] += " - " + contract.child_id.birthdate \
-            if product.name == 'Birthday Gift' else ""
+        if not wizard.description:
+            inv_line_data['name'] = contract.child_id.code
+            inv_line_data['name'] += " - " + contract.child_id.birthdate \
+                if product.name == 'Birthday Gift' else ""
 
         self.pool.get('account.invoice.line').create(
             cr, uid, inv_line_data, context=context)
