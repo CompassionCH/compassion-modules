@@ -29,6 +29,9 @@ class recurring_contract(orm.Model):
         action_id = 0
         message_vals = {}
 
+        if not isinstance(ids, list):
+            ids = [ids]
+
         for contract in self.browse(cr, uid, ids, context=context):
             if contract.child_id:
                 # UpsertConstituent Message
@@ -54,10 +57,10 @@ class recurring_contract(orm.Model):
                 })
                 message_obj.create(cr, uid, message_vals, context=context)
 
-    def contract_terminated(self, cr, uid, ids, context=None):
+    def contract_terminated(self, cr, uid, contract_id, context=None):
         """ Inform GMC when sponsorship is terminated. """
         res = super(recurring_contract, self).contract_terminated(
-            cr, uid, ids)
+            cr, uid, contract_id, context)
         if res:
             message_obj = self.pool.get('gmc.message.pool')
             action_obj = self.pool.get('gmc.action')
@@ -66,23 +69,23 @@ class recurring_contract(orm.Model):
                 limit=1, context=context)[0]
             message_vals = {'action_id': action_id}
 
-            for contract in self.browse(cr, uid, ids, context=context):
-                if contract.child_id:
-                    message_vals.update({
-                        'object_id': contract.id,
-                        'partner_id': contract.partner_id.id,
-                        'child_id': contract.child_id.id,
-                    })
-                    message_obj.create(cr, uid, message_vals)
+            contract = self.browse(cr, uid, contract_id, context=context)
+            if contract.child_id:
+                message_vals.update({
+                    'object_id': contract.id,
+                    'partner_id': contract.partner_id.id,
+                    'child_id': contract.child_id.id,
+                })
+                message_obj.create(cr, uid, message_vals)
 
         return res
 
-    def activate_from_gp(self, cr, uid, id, context=None):
+    def activate_from_gp(self, cr, uid, contract_id, context=None):
         """ Set GMC messages in sent state. """
-        super(recurring_contract, self).activate_from_gp(cr, uid, id,
+        super(recurring_contract, self).activate_from_gp(cr, uid, contract_id,
                                                          context)
         message_obj = self.pool.get('gmc.message.pool')
-        contract = self.browse(cr, uid, id, context)
+        contract = self.browse(cr, uid, contract_id, context)
         message_ids = message_obj.search(cr, uid, [
             '|', ('partner_id', '=', contract.partner_id.id),
             ('child_id', '=', contract.child_id.id)], context)

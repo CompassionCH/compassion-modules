@@ -88,15 +88,17 @@ class event_compassion(orm.Model):
             event.lead_id.write({'event_id': new_id})
 
         origin_obj = self.pool.get('recurring.contract.origin')
+        analytics_id = self._create_analytics(cr, uid, event, context)
         origin_id = origin_obj.create(cr, uid, {
             'name': event.name + " " + event.start_date[:4],
             'type': 'event',
             'partner_id': event.partner_id.id,
             'event_id': new_id,
+            'analytics_id': analytics_id,
         }, context)
         event.write({
             'origin_id': origin_id,
-            'analytics_id': self._create_analytics(cr, uid, event, context)
+            'analytics_id': analytics_id
         })
         return new_id
 
@@ -124,7 +126,9 @@ class event_compassion(orm.Model):
             'name': event.name,
             'type': 'normal',
             'code': acode,
-            'parent_id': acc_ids[0]
+            'parent_id': acc_ids[0],
+            'manager_id': event.user_id.id,
+            'partner_id': event.partner_id.id,
         }, context)
         plan_id = self.pool.get('account.analytic.plan.instance').create(
             cr, uid, {

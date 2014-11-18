@@ -30,7 +30,8 @@
                     </div>
                     <separator />
                     <group>
-                        <field name="partner_id" attrs="{'required': [('type', '=', 'partner')]}"/>
+                        <field name="partner_id" attrs="{'required': [('type', '=', 'partner')]}"
+                               options="{'create': false, 'm2o_dialog': false}"/>
                         <field name="analytics_id" attrs="{'invisible': [('type', '!=', 'marketing')],
                                                            'required': [('type', '=', 'marketing')]}"/>
                         <field name="contract_id" attrs="{'invisible': [('type', '!=', 'sub')],
