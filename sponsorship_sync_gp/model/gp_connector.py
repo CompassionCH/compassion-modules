@@ -18,6 +18,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+GIFT_TYPES = ['Birthday Gift', 'General Gift',
+              'Family Gift', 'Project Gift', 'Graduation Gift']
+
 
 class GPConnect(mysql_connector):
     """ Contains all the utility methods needed to talk with the MySQL server
@@ -63,7 +66,7 @@ class GPConnect(mysql_connector):
         typevers = self._find_typevers(contract.group_id.payment_term_id.name)
         origin = self._find_origin()
         iduser = self.selectOne('SELECT ID FROM login WHERE ERP_ID = %s;', uid)
-        iduser = iduser.get('ID') if iduser else 'EC'
+        iduser = iduser.get('ID', 'EC')
         typeprojet = 'P' if contract.child_id else 'T'
         codespe = self._find_codespe(contract)
         if len(codespe) > 1:
@@ -180,8 +183,67 @@ class GPConnect(mysql_connector):
         return res
 
     def register_payment(self, contract_id, payment_date):
-        sql_query = "UPDATE Poles SET datedernier=%s WHERE id_erp=%s"
+        """ When a new payment is done (invoice paid), update the Sponsorship
+        in GP. """
+        sql_query = "UPDATE Poles SET MOIS=MOIS+1, datedernier=%s WHERE id_erp=%s"
         return self.query(sql_query, [payment_date, contract_id])
+        
+    def insert_affectat(self, uid, invoice_line, payment_date):
+        """ When a new payment is done (invoice paid), update the Sponsorship
+        in GP, and add a line for this payment. """
+        contract = invoice_line.contract_id
+        product = invoice_line.product_id
+        
+        # Determine the nature of the payment (sponsorship, fund)
+        if product.name in GIFT_TYPES + ['Standard Sponsorship']:
+            codespe = contract.child_id.code
+            typeprojet = "P"
+        else:   # Fund donation
+            gp_fund_id = product.gp_fund_id
+            codespe = self.selectOne("SELECT Codespe FROM Libspe WHERE ID_CODE_SPE = %s", gp_fund_id).get("Codespe", "")
+            typeprojet = "T"
+        
+        # Determine if payment was a gift for a supported child
+        cadeau = 0
+        typecadeau = 0
+        libcadeau = ""
+        if product.name in GIFT_TYPES:
+            cadeau = 1
+            typecadeau = GIFT_TYPES.index(product.name) + 1
+            libcadeau = invoice_line.name
+            
+        payment_term = self._find_typevers(invoice_line.invoice_id.payment_term.name)
+        if invoice_line.invoice_id.payment_term.id == 1:  # Generated invoices
+            payment_term = 'BVR'
+        iduser = self.selectOne('SELECT ID FROM login WHERE ERP_ID = %s;', uid).get('ID', 'EC')
+        id_pole = self.selectOne("Select id_pole FROM Poles WHERE id_erp=%s", contract.id).get("id_pole")
+        
+        vals = {
+            'CODEGA': invoice_line.partner_id.ref,
+            'NUMVERS': invoice_line.invoice_id.id,
+            'CODESPE': codespe,
+            'MONTANT': invoice_line.price_subtotal,
+            'DATE': payment_date,
+            'TYPEVERS': payment_term,
+            'JNLVERS': product.property_account_income.code,
+            'CADEAU': cadeau,
+            'TITULAIRE': invoice_line.partner_id.name,
+            'IDUSER': iduser,
+            'PARTICULIER': 1,
+            'TYPEPROJET': typeprojet,
+            'LIBCADEAU': libcadeau,
+            'TYPECADEAU': typecadeau,
+            'REF': invoice_line.invoice_id.bvr_reference,
+            'DATEFISCALE': payment_date,
+            'DATE_SAISIE': date.today().strftime('%Y-%m-%d'),
+            'ID_POLE': id_pole,
+            'MOIS': 1 if cadeau == 0 else 0,
+        }
+        insert_affectat = "INSERT INTO Affectat(%s) VALUES (%s)" % (
+            ",".join(vals.keys()),
+            ",".join(["%s" for i in range(0, len(vals))]))
+        
+        return self.query(insert_affectat, vals.values())
         
     def set_child_sponsor_state(self, child):
         update_string = "UPDATE Enfants SET %s WHERE code='%s'"
