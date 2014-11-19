@@ -11,6 +11,7 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
+import pdb
 
 
 class res_partner(orm.Model):
@@ -100,3 +101,18 @@ class res_partner(orm.Model):
         }
 
         return action
+
+    def create_contract(self, cr, uid, ids, context=None):
+        partner = self.browse(cr, uid, ids[0], context)
+        context.update({
+            'default_partner_id': partner.id
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Contract',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'recurring.contract',
+            'target': 'current',
+            'context': context
+        }

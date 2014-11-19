@@ -13,7 +13,8 @@
             
             <!-- Redefine how contracts are shown. -->
             <xpath expr="//page[@string='Contracts']" position="replace">
-                <page string="Contracts">
+                <page string="Contracts" groups="child_compassion.group_sponsorship">
+                    <button name="create_contract" string="Add" type="object"/>
                     <field name="contracts_fully_managed" invisible="True" />
                     <field name="contracts_paid" invisible="True" />
                     <field name="contracts_correspondant" invisible="True" />
