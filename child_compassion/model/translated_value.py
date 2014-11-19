@@ -23,7 +23,7 @@ class translated_value(orm.Model):
             'compassion.child.property', 'child_property_to_value',
             'value_id', 'property_id', _('Properties')),
         'project_property_ids': fields.many2many(
-            'compassion.project', 'project_property_to_value',
+            'compassion.project.property', 'project_property_to_value',
             'value_id', 'property_id', _('Properties')),
         'property_name': fields.char(_('Is value for'), required=True,
                                      readonly=True),

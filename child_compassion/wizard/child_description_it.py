@@ -113,7 +113,7 @@ class Child_description_it:
                         string += u', ' + activity
             else:
                 string = u'%s piace: %s.' % (
-                    u'Li' if child.gender == 'M' else u'Le', activities)
+                    u'Li' if child.gender == 'M' else u'Le', activities[0])
         return string
 
     @classmethod

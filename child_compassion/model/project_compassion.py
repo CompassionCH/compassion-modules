@@ -53,6 +53,11 @@ class compassion_project(orm.Model):
         'description_de': fields.text(_('German description')),
         'description_it': fields.text(_('Italian description')),
 
+        'needs_description_en': fields.text(_('English needs description')),
+        'needs_description_fr': fields.text(_('French needs description')),
+        'needs_description_de': fields.text(_('German needs description')),
+        'needs_description_it': fields.text(_('Italian needs description')),
+
         ######################################################################
         #                      3. Community Information
         ######################################################################
@@ -70,6 +75,7 @@ class compassion_project(orm.Model):
         'country_denomination': fields.char(_('Local denomination')),
         'western_denomination': fields.char(_('Western denomination')),
         'community_name': fields.char(_('Community name')),
+        'country_common_name': fields.text(_('Country common name')),
 
         ######################################################################
         #                    4. Miscellaneous Information
@@ -108,6 +114,7 @@ class compassion_project(orm.Model):
             'compassion.translated.value', 'project_property_to_value',
             'project_id', 'value_id', _('Terrain description'),
             domain=[('property_name', '=', 'terrain_description')]),
+
         # b. Static Values
         'gps_latitude': fields.float(_('GPS latitude')),
         'gps_longitude': fields.float(_('GPS longitude')),
@@ -120,6 +127,8 @@ class compassion_project(orm.Model):
         'education_needs': fields.text(_('Education needs')),
         'social_needs': fields.text(_('Social needs')),
         'spiritual_needs': fields.text(_('Spiritual needs')),
+        'distance_from_closest_city': fields.text(_('Distance from closest '
+                                                    'city')),
         }
 
     def update_informations(self, cr, uid, ids, context=None):
@@ -162,11 +171,28 @@ class compassion_project(orm.Model):
             'community_name': prog_impl.get('communityName'),
             'country_id': self._update_country(
                 cr, uid, prog_impl.get('isoCountryCode'), context),
+            'country_common_name': prog_impl.get('countryCommonName'),
         }
-
         community_id = prog_impl.get('communityID')
         return {field_name: value for field_name, value in values.iteritems()
                 if value}, community_id
+
+    def generate_descriptions(self, cr, uid, project_id, context=None):
+        project = self.browse(cr, uid, project_id, context)
+        if not project:
+            raise orm.except_orm('ObjectError', _('No valid project id '
+                                                  'given !'))
+        project = project[0]
+
+        return {
+            'name': _('Description generation'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'project.description.wizard',
+            'context': context,
+            'target': 'new',
+        }
 
     def _update_country(self, cr, uid, country_code, context=None):
         """ Finds the country having the given country_code or
@@ -202,6 +228,8 @@ class compassion_project(orm.Model):
             'social_needs': json_values['socialNeeds'],
             'spiritual_needs': json_values['spiritualNeeds'],
             'closest_city': json_values['closestCityName'],
+            'distance_from_closest_city': json_values['distanceFrom'
+                                                      'ClosestCity'],
         }
 
         # Automatic translated fields retrieval
