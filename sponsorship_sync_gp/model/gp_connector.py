@@ -59,12 +59,31 @@ class GPConnect(mysql_connector):
         'NZ': '40',
         'US': '21',
     }
+    
+    channel_mapping = {
+        'postal': 'C',
+        'direct': 'D',
+        'email': 'E',
+        'internet': 'I',
+        'phone': 'T',
+        'payment': 'V'
+    }
+    
+    origin_mapping = {
+        'partner': 'A',
+        'event': 'E',
+        'marketing': 'E',
+        'sub': 'R',
+        'transfer': 'T',
+        'already_sponsor': 'P',
+        'other': 'D'
+    }
 
     def create_or_update_contract(self, uid, contract):
         """ Read new contract information and convert it to GP Poles
             structure. """
         typevers = self._find_typevers(contract.group_id.payment_term_id.name)
-        origin = self._find_origin()
+        origin = self._find_origin(contract)
         iduser = self.selectOne('SELECT ID FROM login WHERE ERP_ID = %s;', uid)
         iduser = iduser.get('ID', 'EC')
         typeprojet = 'P' if contract.child_id else 'T'
@@ -115,9 +134,10 @@ class GPConnect(mysql_connector):
         # If nothing, found return 'OP' by default
         return 'OP'
 
-    def _find_origin(self):
-        # TODO : Implement this !
-        return 'DD'
+    def _find_origin(self, contract):
+        channel = self.channel_mapping[contract.channel]
+        origin = self.origin_mapping[contract.origin_id.type]
+        return channel + origin
 
     def _find_codespe(self, contract):
         """ Finds the given CODESPE from GP given the nature of the contract.
