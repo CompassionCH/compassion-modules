@@ -38,7 +38,7 @@ class recurring_contract(orm.Model):
         for invoice in invoice_obj.browse(cr, uid, invoice_ids,
                                           context=context):
             if invoice.state == 'paid':
-                self._invoice_paid(cr, uid, invoice, context=context)
+                self._invoice_paid(cr, uid, invoice, context)
                 last_pay_date = max([move_line.date
                                      for move_line in invoice.payment_ids
                                      if move_line.credit > 0] or [0])
@@ -51,6 +51,10 @@ class recurring_contract(orm.Model):
                         self.write(cr, uid, contract.id,
                                    {'first_payment_date': last_pay_date},
                                    context=context)
+            elif invoice.state == 'open':
+                self._invoice_open(cr, uid, invoice, context)
+            elif invoice.state == 'cancel':
+                self._invoice_cancel(cr, uid, invoice, context)
 
         return res
 
@@ -77,7 +81,15 @@ class recurring_contract(orm.Model):
             logger.info("Contract " + str(contract.id) + " activated.")
 
     def _invoice_paid(self, cr, uid, invoice, context=None):
-        """ Hook for doing something when an invoice line is paid. """
+        """ Hook for doing something when an invoice is paid. """
+        pass
+
+    def _invoice_open(self, cr, uid, invoice, context=None):
+        """ Hook for doing something when an invoice is open. """
+        pass
+        
+    def _invoice_cancel(self, cr, uid, invoice, context=None):
+        """ Hook for doing something when an invoice is cancel. """
         pass
 
     def _is_fully_managed(self, cr, uid, ids, field_name, arg, context):
