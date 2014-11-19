@@ -82,7 +82,7 @@ class GPConnect(mysql_connector):
     def create_or_update_contract(self, uid, contract):
         """ Read new contract information and convert it to GP Poles
             structure. """
-        typevers = self._find_typevers(contract.group_id.payment_term_id.name)
+        typevers = self._find_typevers(contract.group_id.payment_term_id.name, 'OP')
         origin = self._find_origin(contract)
         iduser = self.selectOne('SELECT ID FROM login WHERE ERP_ID = %s;', uid)
         iduser = iduser.get('ID', 'EC')
@@ -126,13 +126,13 @@ class GPConnect(mysql_connector):
 
         return self.query(sql_query)
 
-    def _find_typevers(self, payment_term_name):
+    def _find_typevers(self, payment_term_name, default):
         for term in self.terms_mapping.keys():
-            if term in payment_term_name:
+            if payment_term_name and term in payment_term_name:
                 return self.terms_mapping[term]
 
-        # If nothing, found return 'OP' by default
-        return 'OP'
+        # If nothing, found return the requested default value
+        return default
 
     def _find_origin(self, contract):
         channel = self.channel_mapping[contract.channel]
@@ -202,11 +202,16 @@ class GPConnect(mysql_connector):
                                          [end_reason, contract.child_id.code])
         return res
 
-    def register_payment(self, contract_id, payment_date):
+    def register_payment(self, contract_id, payment_date=None, amount=1):
         """ When a new payment is done (invoice paid), update the Sponsorship
         in GP. """
-        sql_query = "UPDATE Poles SET MOIS=MOIS+1, datedernier=%s WHERE id_erp=%s"
-        return self.query(sql_query, [payment_date, contract_id])
+        sql_date = ", datedernier='" + payment_date + "'" if payment_date else ""
+        sql_query = "UPDATE Poles SET MOIS=MOIS+" + str(amount) + sql_date + " WHERE id_erp=%s"
+        return self.query(sql_query, contract_id)
+        
+    def undo_payment(self, contract_id):
+        """ Set the MOIS value backwards. """
+        return self.query("UPDATE Poles SET MOIS=MOIS-1 WHERE id_erp=%s", contract_id)
         
     def insert_affectat(self, uid, invoice_line, payment_date):
         """ When a new payment is done (invoice paid), update the Sponsorship
@@ -218,10 +223,12 @@ class GPConnect(mysql_connector):
         if product.name in GIFT_TYPES + ['Standard Sponsorship']:
             codespe = contract.child_id.code
             typeprojet = "P"
+            id_pole = self.selectOne("Select id_pole FROM Poles WHERE id_erp=%s", contract.id).get("id_pole")
         else:   # Fund donation
             gp_fund_id = product.gp_fund_id
             codespe = self.selectOne("SELECT Codespe FROM Libspe WHERE ID_CODE_SPE = %s", gp_fund_id).get("Codespe", "")
             typeprojet = "T"
+            id_pole = 0
         
         # Determine if payment was a gift for a supported child
         cadeau = 0
@@ -232,11 +239,8 @@ class GPConnect(mysql_connector):
             typecadeau = GIFT_TYPES.index(product.name) + 1
             libcadeau = invoice_line.name
             
-        payment_term = self._find_typevers(invoice_line.invoice_id.payment_term.name)
-        if invoice_line.invoice_id.payment_term.id == 1:  # Generated invoices
-            payment_term = 'BVR'
+        payment_term = self._find_typevers(invoice_line.invoice_id.payment_term.name, 'BVR')
         iduser = self.selectOne('SELECT ID FROM login WHERE ERP_ID = %s;', uid).get('ID', 'EC')
-        id_pole = self.selectOne("Select id_pole FROM Poles WHERE id_erp=%s", contract.id).get("id_pole")
         
         vals = {
             'CODEGA': invoice_line.partner_id.ref,
@@ -259,12 +263,17 @@ class GPConnect(mysql_connector):
             'ID_POLE': id_pole,
             'MOIS': 1 if cadeau == 0 else 0,
         }
+        if not id_pole:
+            del vals['ID_POLE']
         insert_affectat = "INSERT INTO Affectat(%s) VALUES (%s)" % (
             ",".join(vals.keys()),
             ",".join(["%s" for i in range(0, len(vals))]))
         
         return self.query(insert_affectat, vals.values())
         
+    def remove_affectat(self, invoice_id, payment_date):
+        return self.query("DELETE FROM Affectat WHERE Numvers=%s AND DATE=%s", [invoice_id, payment_date])
+    
     def set_child_sponsor_state(self, child):
         update_string = "UPDATE Enfants SET %s WHERE code='%s'"
         update_fields = "situation='{}'".format(child.state)

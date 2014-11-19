@@ -97,6 +97,7 @@ class recurring_contract(orm.Model):
     def _invoice_paid(self, cr, uid, invoice, context=None):
         """ Check if invoice paid contains
             a child gift and creates a message to GMC. """
+        super(recurring_contract, self)._invoice_paid(cr, uid, invoice, context)
         gift_product_names = [
             'Birthday Gift', 'General Gift', 'Family Gift',
             'Project Gift', 'Graduation Gift'

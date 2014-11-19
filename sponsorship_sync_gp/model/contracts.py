@@ -11,8 +11,13 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+
+from datetime import datetime
+from dateutil import relativedelta
 
 from . import gp_connector
+import pdb
 
 
 class contracts(orm.Model):
@@ -51,8 +56,22 @@ class contracts(orm.Model):
         
     def write(self, cr, uid, ids, vals, context=None):
         """ Keep GP updated when a contract is modified. """
-        res = super(contracts, self).write(cr, uid, ids, vals, context)
         gp_connect = gp_connector.GPConnect(cr, uid)
+        
+        # If we change the next invoice date, we update GP
+        if vals.get('next_invoice_date'):
+            new_date = datetime.strptime(vals['next_invoice_date'], DF)
+            for contract in self.browse(cr, uid, ids, context=context):
+                old_date = datetime.strptime(contract.next_invoice_date, DF)
+                month_diff = relativedelta.relativedelta(new_date, old_date).months
+                if contract.state in ('active', 'waiting') and month_diff > 0:
+                    if not gp_connect.register_payment(contract.id, amount=month_diff):
+                        raise orm.except_orm(
+                            _("GP Sync Error"),
+                            _("The cancellation could not be registered "
+                              "into GP. Please contact an IT person."))
+                    
+        res = super(contracts, self).write(cr, uid, ids, vals, context)
         ids = [ids] if not isinstance(ids, list) else ids
         for contract in self.browse(cr, uid, ids, context):
             compatible, no_link_whith_gp = self._is_gp_compatible(contract)
@@ -137,28 +156,65 @@ class contracts(orm.Model):
                        context)
 
     def _invoice_paid(self, cr, uid, invoice, context=None):
-        """ When an invoice is paid, update last payment date in GP. """
-        gp_connect = gp_connector.GPConnect(cr, uid)
-        contract_ids = set()
-        synced = True
+        """ When a customer invoice is paid, synchronize GP. """
+        super(contracts, self)._invoice_paid(cr, uid, invoice, context)
+        if invoice.type == 'out_invoice':
+            gp_connect = gp_connector.GPConnect(cr, uid)
+            last_pay_date = max([move_line.date
+                                 for move_line in invoice.payment_ids
+                                 if move_line.credit > 0] or [False])
+            contract_ids = set()
+            for line in invoice.invoice_line:
+                gp_connect.insert_affectat(uid, line, last_pay_date)
+                contract = line.contract_id
+                if contract:
+                    if line.product_id.name == 'Standard Sponsorship' and not contract.id in contract_ids:
+                        if not gp_connect.register_payment(contract.id, last_pay_date):
+                            raise orm.except_orm(
+                                _("GP Sync Error"),
+                                _("The payment could not be registered into GP. "
+                                  "Please contact an IT person."))
+                        contract_ids.add(contract.id)
+
+    def _invoice_open(self, cr, uid, invoice, context=None):
+        """ If an invoice that was paid is set back to open state,
+        remove the payment lines in GP. """
+        super(contracts, self)._invoice_open(cr, uid, invoice, context)
         last_pay_date = max([move_line.date
-                             for move_line in invoice.payment_ids
-                             if move_line.credit > 0] or [False])
-        for line in invoice.invoice_line:
-            contract = line.contract_id
-            if contract:
-                synced = synced and gp_connect.insert_affectat(uid, line, last_pay_date)
-                if not synced:
-                    raise orm.except_orm(
-                        _("GP Sync Error"),
-                        _("The payment could not be registered into GP. "
-                          "Please contact an IT person."))
-                if line.product_id.name == 'Standard Sponsorship' and not contract.id in contract_ids:
-                    synced = synced and gp_connect.register_payment(contract.id, last_pay_date)
+                                 for move_line in invoice.payment_ids
+                                 if move_line.credit > 0] or [False])
+        pdb.set_trace()
+        was_paid = ['Invoice paid' in m.description for m in invoice.message_ids]
+        if invoice.type == 'out_invoice' and was_paid: # TODO NOT WORKING
+            gp_connect = gp_connector.GPConnect(cr, uid)
+            gp_connect.remove_affectat(invoice.id, last_pay_date)
+            
+            contract_ids = set()
+            for line in invoice.invoice_line:
+                contract = line.contract_id
+                if contract and contract.id not in contract_ids:
                     contract_ids.add(contract.id)
-                    super(contracts, self).write(
-                        cr, uid, contract.id, {'synced_with_gp': synced},
-                        context)
+                    if not gp_connect.undo_payment(contract.id):
+                        raise orm.except_orm(
+                                _("GP Sync Error"),
+                                _("The payment could not be removed from GP. "
+                                  "Please contact an IT person."))
+    
+    def _invoice_cancel(self, cr, uid, invoice, context=None):        
+        """ If an invoice was cancelled, update the situation in GP. """
+        super(contracts, self)._invoice_cancel(cr, uid, invoice, context)
+        if invoice.type == 'out_invoice' and invoice.move_id:
+            contract_ids = set()
+            gp_connect = gp_connector.GPConnect(cr, uid)
+            for line in invoice.invoice_line:
+                contract = line.contract_id
+                if contract and contract.id not in contract_ids:
+                    contract_ids.add(contract.id)
+                    if not gp_connect.register_payment(line.contract_id.id):
+                        raise orm.except_orm(
+                            _("GP Sync Error"),
+                            _("The cancellation could not be registered "
+                              "into GP. Please contact an IT person."))
 
 class contract_group(orm.Model):
     """ Update all contracts when group is changed. """
