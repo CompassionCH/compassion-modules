@@ -45,7 +45,7 @@ class compassion_child(orm.Model):
             ret[child_id] = attachment.datas
 
         return ret
-        
+
     def get_gp_exit_reasons(self, cr, uid, context=None):
         # Returns all ending reasons coming from GP
         return [

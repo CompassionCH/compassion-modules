@@ -30,4 +30,4 @@ class mail_thread(osv.AbstractModel):
 
         return self.message_post(
             cr, uid, thread_id, body, subject, 'comment', None, False,
-            decodedAttachments, {'thread_model':model}, 'html')
+            decodedAttachments, {'thread_model': model}, 'html')

@@ -23,6 +23,7 @@ GIFT_TYPES = ['Birthday Gift', 'General Gift',
 
 
 class GPConnect(mysql_connector):
+
     """ Contains all the utility methods needed to talk with the MySQL server
         used by GP, as well as all mappings
         from OpenERP fields to corresponding MySQL fields. """
@@ -44,7 +45,7 @@ class GPConnect(mysql_connector):
         'Permanent Order': 'OP',
         'Bank Transfer': 'VIR',
     }
-    
+
     # Mapping for child transfers to exit_reason_code in GP
     transfer_mapping = {
         'AU': '15',
@@ -59,7 +60,7 @@ class GPConnect(mysql_connector):
         'NZ': '40',
         'US': '21',
     }
-    
+
     channel_mapping = {
         'postal': 'C',
         'direct': 'D',
@@ -68,7 +69,7 @@ class GPConnect(mysql_connector):
         'phone': 'T',
         'payment': 'V'
     }
-    
+
     origin_mapping = {
         'partner': 'A',
         'event': 'E',
@@ -82,9 +83,11 @@ class GPConnect(mysql_connector):
     def create_or_update_contract(self, uid, contract):
         """ Read new contract information and convert it to GP Poles
             structure. """
-        typevers = self._find_typevers(contract.group_id.payment_term_id.name, 'OP')
+        typevers = self._find_typevers(
+            contract.group_id.payment_term_id.name, 'OP')
         origin = self._find_origin(contract)
-        iduser = self.selectOne('SELECT ID FROM login WHERE ERP_ID = %s;', uid)
+        iduser = self.selectOne('SELECT ID FROM login WHERE ERP_ID = %s;',
+                                uid)
         iduser = iduser.get('ID', 'EC')
         typeprojet = 'P' if contract.child_id else 'T'
         codespe = self._find_codespe(contract)
@@ -94,33 +97,38 @@ class GPConnect(mysql_connector):
                 _("GP cannot handle multiple funds in one contract. Please "
                   "make a different contract for each supported fund."))
 
-        fields_create = {
+        vals = {
             'codega': contract.correspondant_id.ref,
-            'codespe': codespe[0],
-            'typep': 'C',
             'base': contract.total_amount,
             'typevers': typevers,
-            'origine': origin,
             'iduser': iduser,
             'freqpaye': self.freq_mapping[contract.group_id.advance_billing],
-            'datecreation': date.today().strftime('%Y-%m-%d'),
-            'datedebut': contract.start_date,
-            'ref': contract.group_id.bvr_reference or \
-                   contract.group_id.compute_partner_bvr_ref(),
-            'typeprojet': typeprojet,
+            'ref': contract.group_id.bvr_reference or
+            contract.group_id.compute_partner_bvr_ref(),
             'num_pol_ga': contract.num_pol_ga,
             'codega_fin': contract.partner_id.ref,
             'id_erp': contract.id,
         }
 
+        if contract.state == 'draft':
+            # Fields updated only in draft state
+            vals.update({
+                'typep': 'C',
+                'codespe': codespe[0],
+                'origine': origin,
+                'datecreation': date.today().strftime('%Y-%m-%d'),
+                'datedebut': contract.start_date,
+                'typeprojet': typeprojet,
+            })
+
         insert_string = "INSERT INTO Poles (%s) VALUES(%s) "\
                         "ON DUPLICATE KEY UPDATE %s;"
-        col_string = ",".join(fields_create.keys())
+        col_string = ",".join(vals.keys())
         values_string = ",".join([
             "'" + value + "'" if isinstance(value, basestring) else str(value)
-            for value in fields_create.values()])
-        update_string = ",".join([key + "=VALUES(" + key + ")" 
-                                  for key in fields_create.keys()])
+            for value in vals.values()])
+        update_string = ",".join([key + "=VALUES(" + key + ")"
+                                  for key in vals.keys()])
         sql_query = insert_string % (col_string, values_string, update_string)
         logger.info(sql_query)
 
@@ -163,7 +171,8 @@ class GPConnect(mysql_connector):
                     _("Missing child"),
                     _("You forgot to specify the child for this sponsorship.")
                 )
-            else: return [""]
+            else:
+                return [""]
             return [row.get('CODESPE') for row in rows]
 
     def validate_contract(self, contract):
@@ -174,7 +183,8 @@ class GPConnect(mysql_connector):
         self._find_codespe(contract)
         next_invoice_date = datetime.strptime(contract.next_invoice_date,
                                               DF).date()
-        month = next_invoice_date.month-1 if next_invoice_date.day <= 15 else next_invoice_date.month
+        month = next_invoice_date.month - \
+            1 if next_invoice_date.day <= 15 else next_invoice_date.month
         date_start = next_invoice_date.replace(day=1)
         return self.query(
             "UPDATE Poles SET mois=%s, datedebut=%s WHERE id_erp=%s",
@@ -194,8 +204,9 @@ class GPConnect(mysql_connector):
         # set_child_sponsor_state method, when the child is marked as departed
         if end_reason != '1':
             res = self.query(
-                "UPDATE Poles SET typep=%s, datefin=curdate(), id_motif_fin=%s "
-                "WHERE id_erp = %s", [state, end_reason, contract.id])
+                "UPDATE Poles SET typep=%s, datefin=curdate(), "
+                "id_motif_fin=%s WHERE id_erp = %s",
+                [state, end_reason, contract.id])
             if contract.child_id:
                 res = res and self.query("UPDATE Enfants SET id_motif_fin=%s "
                                          "WHERE code=%s",
@@ -205,31 +216,38 @@ class GPConnect(mysql_connector):
     def register_payment(self, contract_id, payment_date=None, amount=1):
         """ When a new payment is done (invoice paid), update the Sponsorship
         in GP. """
-        sql_date = ", datedernier='" + payment_date + "'" if payment_date else ""
-        sql_query = "UPDATE Poles SET MOIS=MOIS+" + str(amount) + sql_date + " WHERE id_erp=%s"
+        sql_date = ", datedernier='" + \
+            payment_date + "'" if payment_date else ""
+        sql_query = "UPDATE Poles SET MOIS=MOIS+" + \
+            str(amount) + sql_date + " WHERE id_erp=%s"
         return self.query(sql_query, contract_id)
-        
+
     def undo_payment(self, contract_id):
         """ Set the MOIS value backwards. """
-        return self.query("UPDATE Poles SET MOIS=MOIS-1 WHERE id_erp=%s", contract_id)
-        
+        return self.query("UPDATE Poles SET MOIS=MOIS-1 WHERE id_erp=%s",
+                          contract_id)
+
     def insert_affectat(self, uid, invoice_line, payment_date):
         """ When a new payment is done (invoice paid), update the Sponsorship
         in GP, and add a line for this payment. """
         contract = invoice_line.contract_id
         product = invoice_line.product_id
-        
+
         # Determine the nature of the payment (sponsorship, fund)
         if product.name in GIFT_TYPES + ['Standard Sponsorship']:
             codespe = contract.child_id.code
             typeprojet = "P"
-            id_pole = self.selectOne("Select id_pole FROM Poles WHERE id_erp=%s", contract.id).get("id_pole")
+            id_pole = self.selectOne(
+                "Select id_pole FROM Poles WHERE id_erp=%s",
+                contract.id).get("id_pole")
         else:   # Fund donation
             gp_fund_id = product.gp_fund_id
-            codespe = self.selectOne("SELECT Codespe FROM Libspe WHERE ID_CODE_SPE = %s", gp_fund_id).get("Codespe", "")
+            codespe = self.selectOne(
+                "SELECT Codespe FROM Libspe WHERE ID_CODE_SPE = %s",
+                gp_fund_id).get("Codespe", "")
             typeprojet = "T"
             id_pole = 0
-        
+
         # Determine if payment was a gift for a supported child
         cadeau = 0
         typecadeau = 0
@@ -238,10 +256,12 @@ class GPConnect(mysql_connector):
             cadeau = 1
             typecadeau = GIFT_TYPES.index(product.name) + 1
             libcadeau = invoice_line.name
-            
-        payment_term = self._find_typevers(invoice_line.invoice_id.payment_term.name, 'BVR')
-        iduser = self.selectOne('SELECT ID FROM login WHERE ERP_ID = %s;', uid).get('ID', 'EC')
-        
+
+        payment_term = self._find_typevers(
+            invoice_line.invoice_id.payment_term.name, 'BVR')
+        iduser = self.selectOne(
+            'SELECT ID FROM login WHERE ERP_ID = %s;', uid).get('ID', 'EC')
+
         vals = {
             'CODEGA': invoice_line.partner_id.ref,
             'NUMVERS': invoice_line.invoice_id.id,
@@ -268,12 +288,17 @@ class GPConnect(mysql_connector):
         insert_affectat = "INSERT INTO Affectat(%s) VALUES (%s)" % (
             ",".join(vals.keys()),
             ",".join(["%s" for i in range(0, len(vals))]))
-        
+
         return self.query(insert_affectat, vals.values())
-        
-    def remove_affectat(self, invoice_id, payment_date):
-        return self.query("DELETE FROM Affectat WHERE Numvers=%s AND DATE=%s", [invoice_id, payment_date])
-    
+
+    def remove_affectat(self, invoice_id, invoice_date):
+        max_date = self.selectOne("SELECT MAX(Date) AS Date FROM Affectat "
+                                  "WHERE Numvers=%s",
+                                  invoice_id).get("Date", invoice_date)
+        return self.query(
+            "DELETE FROM Affectat WHERE Numvers=%s AND DATE>=%s",
+            [invoice_id, max_date])
+
     def set_child_sponsor_state(self, child):
         update_string = "UPDATE Enfants SET %s WHERE code='%s'"
         update_fields = "situation='{}'".format(child.state)
@@ -282,14 +307,14 @@ class GPConnect(mysql_connector):
         if child.state == 'F':
             # Set the child exit reason in Poles and Enfant
             end_reason = child.gp_exit_reason or \
-                         self.transfer_mapping[child.transfer_country_id.code]
+                self.transfer_mapping[child.transfer_country_id.code]
             update_fields += ", id_motif_fin={}".format(end_reason)
             if not child.transfer_country_id:   # On ne met pas comme motif
                                                 # de fin dans un pole, un
                                                 # transfert d'enfant.
-                self.query("UPDATE Poles SET id_motif_fin=%s WHERE codespe=%s AND "
-                           "codega=(SELECT codega from Enfants WHERE code=%s) "
-                           "ORDER BY datecreation DESC Limit 1",
+                self.query("UPDATE Poles SET id_motif_fin=%s WHERE codespe=%s"
+                           " AND codega=(SELECT codega from Enfants WHERE "
+                           "code=%s) ORDER BY datecreation DESC Limit 1",
                            [end_reason, child.code, child.code])
         sql_query = update_string % (update_fields, child.code)
         logger.info(sql_query)
