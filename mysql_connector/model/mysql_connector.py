@@ -74,7 +74,7 @@ class mysql_connector:
         with self._con:
             self._cur.execute(statement, args)
             return self._cur.fetchone() or dict()
-                
+
     def selectAll(self, statement, args=None):
         """ Performs a MySQL SELECT statement and returns all rows.
          Args:
@@ -95,7 +95,7 @@ class mysql_connector:
         with self._con:
             self._cur.execute(statement, args)
             return self._cur.fetchall() or list()
-                
+
     def is_alive(self):
         """ Test if the connection is alive. """
         try:
