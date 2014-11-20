@@ -45,16 +45,12 @@ class recurring_contract(orm.Model):
                 for invoice_line in invoice.invoice_line:
                     contract = invoice_line.contract_id
                     if contract.state == 'waiting' and last_pay_date:
-                        # We should activate the contract and set the
+                        # Activate the contract and set the
                         # first_payment_date
                         res.append(invoice_line.contract_id.id)
                         self.write(cr, uid, contract.id,
                                    {'first_payment_date': last_pay_date},
                                    context=context)
-            elif invoice.state == 'open':
-                self._invoice_open(cr, uid, invoice, context)
-            elif invoice.state == 'cancel':
-                self._invoice_cancel(cr, uid, invoice, context)
 
         return res
 
@@ -67,7 +63,7 @@ class recurring_contract(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
         sponsor_cat_id = self.pool.get('res.partner.category').search(
-            cr, uid, [('name', '=', 'Sponsor')], context={'lang':'en_US'})[0]
+            cr, uid, [('name', '=', 'Sponsor')], context={'lang': 'en_US'})[0]
         for contract in self.browse(cr, uid, ids, context):
             contract.child_id.write({'has_been_sponsored': True})
             partner_categories = set(
@@ -82,14 +78,6 @@ class recurring_contract(orm.Model):
 
     def _invoice_paid(self, cr, uid, invoice, context=None):
         """ Hook for doing something when an invoice is paid. """
-        pass
-
-    def _invoice_open(self, cr, uid, invoice, context=None):
-        """ Hook for doing something when an invoice is open. """
-        pass
-        
-    def _invoice_cancel(self, cr, uid, invoice, context=None):
-        """ Hook for doing something when an invoice is cancel. """
         pass
 
     def _is_fully_managed(self, cr, uid, ids, field_name, arg, context):
@@ -115,7 +103,7 @@ class recurring_contract(orm.Model):
             ('12', _("Financial reasons")),
             ('25', _("Not given")),
         ]
-    
+
     def _get_channels(self, cr, uid, context=None):
         # Returns the available channel through the new sponsor
         # reached Compassion.
@@ -192,7 +180,8 @@ class recurring_contract(orm.Model):
                                        select=True),
         'origin_id': fields.many2one('recurring.contract.origin', _("Origin"),
                                      required=True),
-        'channel': fields.selection(_get_channels, string=_("Channel"), required=True),
+        'channel': fields.selection(_get_channels, string=_("Channel"),
+                                    required=True),
     }
 
     ##########################
@@ -254,12 +243,12 @@ class recurring_contract(orm.Model):
     def contract_terminated(self, cr, uid, ids, context=None):
         super(recurring_contract, self).contract_terminated(cr, uid, ids,
                                                             context)
-        partner_obj = self.pool.get('res.partner')
         category_obj = self.pool.get('res.partner.category')
         sponsor_cat_id = category_obj.search(
-            cr, uid, [('name', '=', 'Sponsor')], context={'lang':'en_US'})[0]
+            cr, uid, [('name', '=', 'Sponsor')], context={'lang': 'en_US'})[0]
         old_sponsor_cat_id = category_obj.search(
-            cr, uid, [('name', '=', 'Old Sponsor')], context={'lang':'en_US'})[0]
+            cr, uid, [('name', '=', 'Old Sponsor')],
+            context={'lang': 'en_US'})[0]
         # Check if the sponsor has still active contracts
         for contract in self.browse(cr, uid, ids, context):
             con_ids = self.search(cr, uid, [
@@ -415,81 +404,14 @@ class recurring_contract(orm.Model):
 
         return True
 
-    def clean_invoices(self, cr, uid, ids, context=None, since_date=None):
-        """ Take into consideration if sponsor has paid in advance, so that we
-        cancel the paid invoices. """
-        if not since_date:
-            since_date = datetime.today().strftime(DF)
-
-        # Find all paid invoice lines after the given date
-        inv_line_obj = self.pool.get('account.invoice.line')
-        inv_line_ids = inv_line_obj.search(
-            cr, uid, [('contract_id', 'in', ids),
-                      ('due_date', '>', since_date),
-                      ('state', '=', 'paid')], context=context)
-
-        # Keep track of payment lines of the partners
-        # (partner_id:payment_line_id}
-        payment_lines = {}
-        # Unreconcile all move_lines related to the invoices
-        inv_ids = set()
-        move_line_obj = self.pool.get('account.move.line')
-        for inv_line in inv_line_obj.browse(cr, uid, inv_line_ids, context):
-            invoice_id = inv_line.invoice_id.id
-            if invoice_id not in inv_ids:
-                inv_ids.add(invoice_id)
-                move_lines = inv_line.invoice_id.move_id.line_id
-                # Find the reconciled payment lines
-                for line in move_lines:
-                    partner_id = line.partner_id.id
-                    if line.reconcile_id:
-                        lines_found = [
-                            mvl.id for mvl in line.reconcile_id.line_id]
-                        lines_found.remove(line.id)
-                        if lines_found and len(lines_found) == 1:
-                            pay_id = lines_found[0]
-                            if partner_id in payment_lines:
-                                # There can be only one payment_line for the
-                                # split payment + reconcile to work.
-                                if payment_lines[partner_id] != pay_id:
-                                    payment_lines[partner_id] = False
-                            else:
-                                payment_lines[partner_id] = pay_id
-
-                move_line_obj._remove_move_reconcile(
-                    cr, uid, [mvl.id for mvl in move_lines], context=context)
-
-        # Clean invoices to remove the invoice_lines of the cancelled contract
-        super(recurring_contract, self).clean_invoices(
-            cr, uid, ids, context, since_date)
-
-        # Reconcile again open invoices that can be treated automatically
-        invoice_obj = self.pool.get('account.invoice')
-        for invoice in invoice_obj.browse(cr, uid, list(inv_ids), context):
-            if invoice.state == 'open' and invoice.invoice_line:
-                for move_line in invoice.move_id.line_id:
-                    if move_line.debit > 0:
-                        pay_line_id = payment_lines.get(
-                            move_line.partner_id.id, False)
-                        if pay_line_id:
-                            move_line_ids = [pay_line_id, move_line.id]
-                            move_line_obj.split_payment_and_reconcile(
-                                cr, uid, move_line_ids, context)
-                        else:
-                            move_line.write({'name': _(
-                                "Invoice modified after sponsorship "
-                                "cancellation, to be reconciled again")})
-
-        return True
-
     def create(self, cr, uid, vals, context=None):
         """ Link child to sponsor. """
         if vals.get('child_id', False):
             self.pool.get('compassion.child').write(
-                cr, uid, int(vals['child_id']), {'sponsor_id': vals['partner_id']},
-                context)
+                cr, uid, int(vals['child_id']),
+                {'sponsor_id': vals['partner_id']}, context)
         return super(recurring_contract, self).create(cr, uid, vals, context)
-    
+
     ##############################
     #      CALLBACKS FOR GP      #
     ##############################
@@ -509,13 +431,16 @@ class recurring_contract(orm.Model):
         self._on_contract_active(cr, uid, contract_id, context)
         return True
 
-    def terminate_from_gp(self, cr, uid, contract_id, end_state, end_reason, child_state, child_exit_code, end_date, transfer_country_code, context=None):
+    def terminate_from_gp(self, cr, uid, contract_id, end_state, end_reason,
+                          child_state, child_exit_code, end_date,
+                          transfer_country_code, context=None):
         """ Used to delete the workflow of terminated or cancelled
         sponsorships when exported from GP. """
         # Write sponsorship end reason
-        sponsor_reasons = [reason[0] for reason in self.get_ending_reasons(cr, uid, context)]
+        sponsor_reasons = [reason[0] for reason in self.get_ending_reasons(
+            cr, uid, context)]
         end_reason = str(end_reason)
-        if not end_reason in sponsor_reasons:
+        if end_reason not in sponsor_reasons:
             end_reason = '1'
         vals = {'state': end_state,
                 'end_reason': str(end_reason),
@@ -525,12 +450,15 @@ class recurring_contract(orm.Model):
         # Mark child as departed
         if child_state == 'F':
             child_exit_code = str(child_exit_code)
-            exit_reasons = [reason[0] for reason in self.pool.get('compassion.child').get_gp_exit_reasons(cr, uid, context)]
+            exit_reasons = [reason[0] for reason in self.pool.get(
+                'compassion.child').get_gp_exit_reasons(cr, uid, context)]
             child_vals = {'state': 'F'}
             if child_exit_code in exit_reasons:
                 child_vals.update({'gp_exit_reason': str(child_exit_code)})
             else:
-                country_id = self.pool.get('res.country').search(cr, uid, [('code', '=', transfer_country_code)], context=context)
+                country_id = self.pool.get('res.country').search(
+                    cr, uid, [('code', '=', transfer_country_code)],
+                    context=context)
                 if country_id:
                     country_id = country_id[0]
                     child_vals.update({'transfer_country_id': country_id})

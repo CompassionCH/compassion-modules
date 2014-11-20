@@ -9,8 +9,7 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
+from openerp.osv import orm
 
 from . import gp_connector
 
@@ -18,7 +17,6 @@ from . import gp_connector
 class child_compassion(orm.Model):
     _inherit = 'compassion.child'
 
-        
     def write(self, cr, uid, ids, vals, context=None):
         """ When child state is changed because of
         a sponsorship, update GP. """

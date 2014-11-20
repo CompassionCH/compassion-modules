@@ -36,7 +36,7 @@ class end_sponsorship_wizard(orm.TransientModel):
 
     def _get_end_reason(self, cr, uid, context=None):
         return self.pool.get('recurring.contract').get_ending_reasons(cr, uid)
-        
+
     def _get_exit_reason(self, cr, uid, context=None):
         return self.pool.get('compassion.child').get_gp_exit_reasons(cr, uid)
 
@@ -55,7 +55,8 @@ class end_sponsorship_wizard(orm.TransientModel):
         'transfer_country_id': fields.many2one(
             'res.country', _('Country'),
             domain=[('code', 'in', IP_COUNTRIES)]),
-        'gp_exit_reason': fields.selection(_get_exit_reason, string=_('Exit reason')),
+        'gp_exit_reason': fields.selection(
+            _get_exit_reason, string=_('Exit reason')),
     }
 
     _defaults = {
@@ -132,7 +133,7 @@ class end_sponsorship_wizard(orm.TransientModel):
                 'transfer_country_id': wizard.transfer_country_id.id})
 
         return True
-        
+
     def depart_child(self, cr, uid, ids, context=None):
         wizard = self.browse(cr, uid, ids[0], context)
         wizard.child_id.write({
