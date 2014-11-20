@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 class GPConnect(mysql_connector):
+
     """ Contains all the utility methods needed to talk with the MySQL server
         used by GP, as well as all mappings
         from OpenERP fields to corresponding MySQL fields. """
@@ -42,7 +43,7 @@ class GPConnect(mysql_connector):
         'Permanent Order': 'OP',
         'Bank Transfer': 'VIR',
     }
-    
+
     # Mapping for child transfers to exit_reason_code in GP
     transfer_mapping = {
         'AU': '15',
