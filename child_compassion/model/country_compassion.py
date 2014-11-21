@@ -55,9 +55,6 @@ class compassion_country(orm.Model):
 
         values['name'] = json_data['countryCommonName']
         values['description_en'] = json_data['countryDescription']
-        values['description_fr'] = json_data['countryDescription']
-        values['description_de'] = json_data['countryDescription']
-        values['description_it'] = json_data['countryDescription']
         values['language'] = json_data['officialLanguage']
         return values
 

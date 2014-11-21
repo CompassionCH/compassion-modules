@@ -311,8 +311,6 @@ class Child_description_en:
                      if not emp.value_en.endswith('mployed')]
             string = u""
             if f_g == 'institutional worker':
-                string = u""
-            else:
                 if ('isunemployed' in props_m) and job_f:
                     string = (
                         u" %s %s is %s %s and %s %s is unemployed."

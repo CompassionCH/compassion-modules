@@ -35,80 +35,80 @@
 										<field name="stop_date" />
 										<field name="last_update_date" />
                                         <field name="country_id" />
-									</group>
-								</group>
-								<group string="Community">
-									<field name="local_church_name" />
-									<field name="hiv_category" />
-									<field name="month_school_year_begins" />
-									<field name="country_denomination" />
-									<field name="western_denomination" />
-									<field name="community_name" />
-								</group>
-							</page>
-							<page string="Miscellaneous">
-								<group>
-									<group> 
-										<field name="primary_diet_ids" widget="many2many_tags" />
-										<field name="closest_city" />
-										<field name="terrain_description_ids" widget="many2many_tags" />
-										<field name="community_population" />
-										<field name="floor_material_ids" widget="many2many_tags" />
-										<field name="wall_material_ids" widget="many2many_tags" />
-										<field name="roof_material_ids" widget="many2many_tags" />
-										<field name="spoken_languages_ids" widget="many2many_tags" />
-										<field name="health_problems_ids" widget="many2many_tags" />
-									</group>
-									<group>
-										<field name="unemployment_rate" />
-										<field name="primary_occupation_ids" widget="many2many_tags" />
-										<field name="monthly_income" />
-										<field name="economic_needs" />
-										<field name="education_needs" />
-										<field name="social_needs" />
-										<field name="spiritual_needs" />
-									</group>
-								</group>
-							</page>
-							<page string="Description">
+                                    </group>
+                                </group>
+                                <group string="Community">
+                                    <field name="local_church_name" />
+                                    <field name="hiv_category" />
+                                    <field name="month_school_year_begins" />
+                                    <field name="country_denomination" />
+                                    <field name="western_denomination" />
+                                    <field name="community_name" />
+                                </group>
+                            </page>
+                            <page string="Miscellaneous">
                                 <group>
-								    <field name="description_en" />
+                                    <group> 
+                                        <field name="primary_diet_ids" widget="many2many_tags" />
+                                        <field name="closest_city" />
+                                        <field name="terrain_description_ids" widget="many2many_tags" />
+                                        <field name="community_population" />
+                                        <field name="floor_material_ids" widget="many2many_tags" />
+                                        <field name="wall_material_ids" widget="many2many_tags" />
+                                        <field name="roof_material_ids" widget="many2many_tags" />
+                                        <field name="spoken_languages_ids" widget="many2many_tags" />
+                                        <field name="health_problems_ids" widget="many2many_tags" />
+                                    </group>
+                                    <group>
+                                        <field name="unemployment_rate" />
+                                        <field name="primary_occupation_ids" widget="many2many_tags" />
+                                        <field name="monthly_income" />
+                                        <field name="economic_needs" />
+                                        <field name="education_needs" />
+                                        <field name="social_needs" />
+                                        <field name="spiritual_needs" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Description">
+                                <group>
+                                    <field name="description_en" />
                                 </group>
                                 <group>
-								    <field name="description_fr" />
+                                    <field name="description_fr" />
                                 </group>
                                 <group>
-								    <field name="description_de" />
+                                    <field name="description_de" />
                                 </group>
                                 <group>
-								    <field name="description_it" />
+                                    <field name="description_it" />
                                 </group>
-							</page>
-						</notebook>
-					</sheet>
-				</form>
-			</field>
-		</record>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
-		<record id="view_compassion_project_tree" model="ir.ui.view">
-			<field name="name">compassion.project.tree</field>
-			<field name="model">compassion.project</field>
-			<field name="arch" type="xml">
-				<tree string="project">
-					<field name="name" />
-					<field name="code" />
-				</tree>
-			</field>
-		</record>
+        <record id="view_compassion_project_tree" model="ir.ui.view">
+            <field name="name">compassion.project.tree</field>
+            <field name="model">compassion.project</field>
+            <field name="arch" type="xml">
+                <tree string="project">
+                    <field name="name" />
+                    <field name="code" />
+                </tree>
+            </field>
+        </record>
 
-		<record id="open_view_project_tree" model="ir.actions.act_window">
-			<field name="name">projects</field>
-			<field name="res_model">compassion.project</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">form,tree</field>
-			<field name="view_id" ref="view_compassion_project_tree"/>
-		</record>
+        <record id="open_view_project_tree" model="ir.actions.act_window">
+            <field name="name">projects</field>
+            <field name="res_model">compassion.project</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="view_compassion_project_tree"/>
+        </record>
 
-		<menuitem id="menu_sponsorship_project" parent="menu_sponsorship_section" name="Projects" action="open_view_project_tree" sequence="1"/>
-	</data>
+        <menuitem id="menu_sponsorship_project" parent="menu_sponsorship_section" name="Projects" action="open_view_project_tree" sequence="1"/>
+    </data>
 </openerp>
