@@ -30,18 +30,7 @@ class Child_description_de:
     def _gen_activities_string_de(cls, activities, strings):
         string = ''
         activities_string = ''
-        if len(activities) == 1:
-            activities_string += activities[0]
-        else:
-            num_loop = 0
-            for activity in activities:
-                num_loop += 1
-                if num_loop == 1:
-                    activities_string += activity
-                elif num_loop == len(activities):
-                    activities_string += " und " + activity
-                else:
-                    activities_string += ", " + activity
+        activities_string = cls._gen_list_string(activities, ', ', ' und ')
         activities_string += u'. '
         string += strings + str(activities_string)
         return string
@@ -187,7 +176,7 @@ class Child_description_de:
             else:
                 string += '.'
         else:
-            string += ' geht in die Schule nicht.'
+            string += ' geht nicht in die Schule.'
         return string
 
     @classmethod
@@ -289,9 +278,7 @@ class Child_description_de:
                      for emp in case_study.female_guardian_ids
                      if not emp.value_en.endswith('mployed')]
             string = u""
-            if f_g == 'institutional worker':
-                string = u""
-            else:
+            if f_g != 'institutional worker':
                 if ('isunemployed' in props_m) and job_f:
                     string = (
                         u" %s %s arbeitet als %s und %s %s arbeitslos ist."

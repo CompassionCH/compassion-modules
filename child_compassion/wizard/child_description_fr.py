@@ -222,36 +222,49 @@ class Child_description_fr:
                                case_study, m_g, f_g, context=None):
         ''' Generate the guardians jobs description part. '''
         if case_study.male_guardian_ids or case_study.female_guardian_ids:
+
             props_m = [emp.value_en for emp in case_study.male_guardian_ids]
+
             job_m = [emp.value_fr if emp.value_fr else emp.value_en
                      for emp in case_study.male_guardian_ids
                      if not emp.value_en.endswith('mployed')]
+
             props_f = [emp.value_en for emp in case_study.female_guardian_ids]
+
             job_f = [emp.value_fr if emp.value_fr else emp.value_en
                      for emp in case_study.female_guardian_ids
                      if not emp.value_en.endswith('mployed')]
+
             string = u""
-            if f_g == 'institutional worker':
-                string = u""
-            else:
+
+            if f_g != 'institutional worker':
                 if ('isunemployed' in props_m) and job_f:
                     string = (u"Sa %s est %s et son %s n'a pas d'emploi."
                               % (f_g, job_f[0], m_g))
+
                 elif job_m and ('isunemployed' in props_f):
                     string = (u"Son %s est %s et sa %s n'a pas d'emploi."
                               % (m_g, job_m[0], f_g))
+
                 elif ('isunemployed' in props_m) and ('isunemployed'
                                                       in props_f):
                     if f_g == "mother" and m_g == "father":
                         string = u"Ses parents n'ont pas d'emploi."
+
                     else:
                         string = (u"Son %s et sa %s n'ont pas d'emploi."
                                   % (m_g, f_g))
+
                 elif job_m and job_f:
+
                     if ((job_f[0][0:7] == job_m[0][0:7])
                             and (f_g == u"mère" and m_g == u"père")):
+
                         string = u"Ses parents sont %ss." % job_m[0]
+
                     else:
+
                         string = (u"Sa %s est %s et son %s est %s."
                                   % (f_g, job_f[0], m_g, job_m[0]))
+
         return string
