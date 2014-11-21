@@ -77,6 +77,20 @@ class recurring_contract(orm.Model):
 
         return res
 
+    def activate_from_gp(self, cr, uid, id, context=None):
+        """ Set GMC messages in sent state. """
+        super(recurring_contract, self).activate_from_gp(cr, uid, id,
+                                                         context)
+        message_obj = self.pool.get('gmc.message.pool')
+        contract = self.browse(cr, uid, id, context)
+        message_ids = message_obj.search(cr, uid, [
+            '|', ('partner_id', '=', contract.partner_id.id),
+            ('child_id', '=', contract.child_id.id)], context)
+        message_obj.write(cr, uid, message_ids, {
+            'state': 'sent',
+            'process_date': contract.first_payment_date}, context)
+        return True
+
     def _invoice_paid(self, cr, uid, invoice, context=None):
         """ Check if invoice paid contains
             a child gift and creates a message to GMC. """

@@ -9,8 +9,7 @@
 #
 ##############################################################################
 
-from openerp.osv.orm import Model
-from openerp.osv import fields
+from openerp.osv import orm, fields
 from openerp.addons.account_statement_base_completion.statement \
     import ErrorTooManyPartner
 from openerp import netsvc
@@ -20,7 +19,7 @@ GIFT_TYPES = ['Birthday Gift', 'General Gift',
               'Family Gift', 'Project Gift', 'Graduation Gift']
 
 
-class AccountStatementCompletionRule(Model):
+class AccountStatementCompletionRule(orm.Model):
     """ Add rules to complete account based on the BVR reference of the invoice
         and the reference of the partner."""
 
@@ -330,7 +329,7 @@ class AccountStatementCompletionRule(Model):
         return res
 
 
-class AccountStatement(Model):
+class AccountStatement(orm.Model):
 
     """ Adds a relation to a recurring invoicer. """
 

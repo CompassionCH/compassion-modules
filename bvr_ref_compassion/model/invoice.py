@@ -75,6 +75,8 @@ class account_move(Model):
     _inherit = 'account.move'
 
     def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = {}
         invoice = context.get('invoice')
         if invoice and invoice.bvr_reference:
             vals['ref'] = invoice.bvr_reference

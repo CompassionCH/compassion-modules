@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+﻿# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -14,6 +14,7 @@ from openerp.tools.translate import _
 
 
 class recurring_invoicer_wizard(orm.TransientModel):
+
     ''' This wizard generate invoices from contract groups when launched.
     By default, all contract groups are used.
     '''

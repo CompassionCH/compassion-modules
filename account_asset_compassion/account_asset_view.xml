@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 <data>
+    <!-- Replace analytic_id by analytics_id -->
     <record id="view_asset_category_form_compassion" model="ir.ui.view">
 		<field name="name">account.asset.category.compassion</field>
 		<field name="model">account.asset.category</field>
@@ -10,6 +11,22 @@
 			<field name="account_analytic_id" position="replace">
 				<field name="analytics_id" />
 			</field>
+		</field>
+	</record>
+    
+    <!-- Add button to close old assets -->
+    <record id="view_asset_asset_form_compassion" model="ir.ui.view">
+		<field name="name">account.asset.compassion</field>
+		<field name="model">account.asset.asset</field>
+		<field name="inherit_id" ref="account_asset_management.view_account_asset_asset_form" />
+		<field eval="18" name="priority"/>
+		<field name="arch" type="xml">
+			<button name="set_to_draft" position="after">
+                <field name="is_done" invisible="1"/>
+				<button name="close_old_asset" string="Close Asset" type="object"
+                        attrs="{'invisible': ['|', ('is_done', '=', False), ('state', '!=', 'open')]}"
+                        groups="account.group_account_manager" class="oe_inline"/>
+			</button>
 		</field>
 	</record>
 </data>

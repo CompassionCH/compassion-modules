@@ -18,6 +18,12 @@
 					<field name="partner_id" position="before">
 						<field name="partner_codega" invisible="context.get('partner_contracts_view')" />
 					</field>
+                    <field name="payment_term_id" position="after">
+                        <field name="frequency" />
+                    </field>
+                    <field name="state" position="after">
+                        <button name="open_contract" type="object" invisible="not context.get('partner_contracts_view')" icon="STOCK_JUMP_TO" />
+                    </field>
 					<field name="reference" position="replace" />
 				</data>
 			</field>
@@ -79,5 +85,12 @@
         <!-- Move the Contracts Menu to the Sponsorship Section -->
         <menuitem id="recurring_contract.menu_contracts_section" parent="child_compassion.menu_sponsorship_root" 
                   name="Contracts" groups="child_compassion.group_sponsorship" sequence="1"/>
+                  
+        <!-- Generate Gift -->
+        <act_window id="action_account_invoice_free"
+            key2="client_action_multi" name="Generate Gift"
+            res_model="generate.gift.wizard" src_model="recurring.contract"
+            view_mode="form" target="new" view_type="form"
+            />
 	</data>
 </openerp>

@@ -12,7 +12,7 @@
                             and put the leftover in the client balance.
                         </p>
                         <group>
-                            <field name="contract_ids" context="{'tree_view_ref' : 'recurring_contract.view_contracts_tree_simplified'}"/>
+                            <field name="contract_ids" context="{'tree_view_ref' : 'account_advanced_reconcile_compassion.view_contracts_tree_simplified'}"/>
                         </group>
                     </sheet>
                     

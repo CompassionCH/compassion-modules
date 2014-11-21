@@ -26,20 +26,18 @@ class reconcile_split_payment_wizard(orm.TransientModel):
 
     def _get_contract_ids(self, cr, uid, ids, field_name, arg, context):
         move_line_obj = self.pool.get('account.move.line')
-        contract_ids = []
+        contract_ids = set()
         active_ids = context.get('active_ids')
         if active_ids:
             for move_line in move_line_obj.browse(cr, uid, active_ids,
                                                   context):
                 if move_line and move_line.debit > 0:
                     invoice = move_line.invoice
-                    if invoice:
-                        for invoice_line in invoice.invoice_line:
-                            if invoice_line.price_subtotal == move_line.debit:
-                                contract_ids.append(
-                                    invoice_line.contract_id.id)
-
-        return {id: contract_ids for id in ids}
+                    if invoice and invoice.amount_total == move_line.debit:
+                            contract_ids.update([invoice_line.contract_id.id
+                                                 for invoice_line in
+                                                 invoice.invoice_line])
+        return {id: list(contract_ids) for id in ids}
 
     def _write_contracts(self, cr, uid, ids, field_name, field_value, arg,
                          context):
@@ -68,47 +66,8 @@ class reconcile_split_payment_wizard(orm.TransientModel):
         ''' Split the payment of a partner into two move_lines in order to
         reconcile one of them.
         '''
-        if isinstance(ids, list):
-            ids = ids[0]
-
         move_line_obj = self.pool.get('account.move.line')
-        move_obj = self.pool.get('account.move')
         active_ids = context.get('active_ids')
 
-        residual = 0.0
-        count_credit_lines = 0
-        move = False
-        move_line = False
-
-        for line in move_line_obj.browse(cr, uid, active_ids,
-                                         context):
-            residual += line.credit - line.debit
-            if line.credit > 0:
-                move = line.move_id
-                move_line = line
-                count_credit_lines += 1
-
-        if residual <= 0:
-            raise orm.except_orm(
-                'ResidualError',
-                _('This can only be done if credits > debits'))
-
-        if count_credit_lines != 1:
-            raise orm.except_orm(
-                'CreditLineError',
-                _('This can only be done for one credit line'))
-
-        # Edit move in order to split payment into two move lines
-        move_obj.button_cancel(cr, uid, [move.id], context)
-        move_line_obj.write(cr, uid, move_line.id, {
-            'credit': move_line.credit-residual
-        }, context)
-        move_line_obj.copy(cr, uid, move_line.id, default={
-            'credit': residual
-        }, context=context)
-        move_obj.button_validate(cr, uid, [move.id], context)
-
-        # Perform the reconciliation
-        move_line_obj.reconcile(cr, uid, active_ids)
-
-        return True
+        return move_line_obj.split_payment_and_reconcile(cr, uid, active_ids,
+                                                         context)

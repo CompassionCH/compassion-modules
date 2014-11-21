@@ -255,26 +255,40 @@ class recurring_contract(orm.Model):
             cr, uid, [('contract_id', 'in', ids),
                       ('due_date', '>', since_date),
                       ('state', '!=', 'paid')], context=context)
+
         inv_ids = set()
+        empty_inv_ids = set()
+        to_remove_ids = []   # Invoice lines that will be removed
+
         for inv_line in inv_line_obj.browse(cr, uid, inv_line_ids, context):
-            inv_ids.add(inv_line.invoice_id.id)
+            invoice = inv_line.invoice_id
+            inv_ids.add(invoice.id)
+            # Check if invoice is empty after removing the invoice_lines
+            # of the given contract
+            if invoice.id not in empty_inv_ids:
+                other_lines_ids = [invl.id for invl in invoice.invoice_line]
+                remaining_lines_ids = [invl_id for invl_id in other_lines_ids
+                                       if invl_id not in inv_line_ids]
+                if remaining_lines_ids:
+                    # We can remove the line
+                    to_remove_ids.append(inv_line.id)
+                else:
+                    # The invoice would be empty if we remove the line
+                    empty_inv_ids.add(invoice.id)
 
         if inv_line_ids:  # To prevent remove all inv_lines...
-            inv_line_obj.unlink(cr, uid, inv_line_ids, context)
+            inv_line_obj.unlink(cr, uid, to_remove_ids, context)
 
-        inv_ids = list(inv_ids)
-        inv_obj.action_cancel(cr, uid, inv_ids, context=context)
+        inv_obj.action_cancel(cr, uid, list(inv_ids), context=context)
 
-        empty_inv_ids = []
-        for inv in inv_obj.browse(cr, uid, inv_ids, context):
-            if not inv.invoice_line:
-                empty_inv_ids.append(inv.id)
-        renew_inv_ids = list(set(inv_ids) - set(empty_inv_ids))
-
+        # Invoices to set back in open state
+        renew_inv_ids = list(inv_ids - empty_inv_ids)
         inv_obj.action_cancel_draft(cr, uid, renew_inv_ids)
         for inv in inv_obj.browse(cr, uid, renew_inv_ids, context):
             wf_service.trg_validate(uid, 'account.invoice',
                                     inv.id, 'invoice_open', cr)
+
+        return True
 
     #################################
     #        PRIVATE METHODS        #

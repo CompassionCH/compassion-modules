@@ -29,15 +29,16 @@
 
 {
     "name": "Account Statement Completion Rules for Compassion CH",
-    "version": "0.6",
+    "version": "0.8",
     "author": "Emanuel Cino",
     "category": "Finance",
     "website": "http://www.compassion.ch",
     "depends": ['account_statement_base_completion',
                 'sponsorship_compassion',
-                'account_banking_payment',
                 ],
-    "data": ['statement_view.xml', 'data.xml'],
+    "data": ['view/statement_view.xml',
+             'view/invoice_view.xml',
+             'data/data.xml'],
     "css": ["static/src/css/sheet.css"],
     "description": """
 
