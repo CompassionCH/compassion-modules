@@ -129,7 +129,7 @@ class export_tools():
         return communication
         
         @classmethod
-        def _get_line1(cls, wizard, prod_name, qty, child_name)
+        def _get_line1(cls, wizard, prod_name, qty, child_name):
             if child_name:
                 res = wizard._complete_line(
                     _('%d %s') % (qty, prod_name), 35)
