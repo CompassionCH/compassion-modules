@@ -16,10 +16,22 @@ from dateutil.relativedelta import relativedelta
 import operator
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools.translate import _
-import pdb
 
 
 class export_tools():
+
+    @classmethod
+    def get_line1(cls, wizard, prod_name, qty, child_name):
+        if child_name:
+            if qty == 1:
+                line = _('%d %s') % (qty, prod_name)
+            else:
+                line = _('%d %ss') % (qty, prod_name)
+            res = wizard._complete_line(line, 35)
+                
+        else:
+            res = wizard._complete_line(prod_name, 35)
+        return res
 
     @classmethod
     def get_communications(cls, wizard, cr, uid, line, context=None):
@@ -91,21 +103,19 @@ class export_tools():
         # (name + quantity) and on the last line "x other engagements".      #
         ######################################################################
         nb_products = len(prod_dict_sort)
-        pdb.set_trace()
         if nb_products in [1, 2]:
             cur_date = datetime.strptime(
                 invoice.date_due, DEFAULT_SERVER_DATE_FORMAT)
             for prod_name, qty in prod_dict_sort:
-                communication += cls._get_line1(wizard, prod_name, qty, names[prod_name])
+                communication += cls.get_line1(wizard, prod_name, qty,
+                                               names[prod_name])
                 mx = int(max(qties[prod_name]))
                 if mx == 1:
                     line2 = ''
                     if _('gift') not in prod_name.lower():
                         line2 += _('period: %s ') % cur_date.strftime(
                             "%B").decode('utf-8')
-                    if _('sponsorship') in prod_name.lower() or \
-                            _('gift') in prod_name.lower() \
-                            and prod_dict[prod_name] == 1:
+                    if names[prod_name] and prod_dict[prod_name] == 1:
                         line2 += str(names[prod_name])
 
                     communication += wizard._complete_line(line2, 35)
@@ -117,22 +127,15 @@ class export_tools():
                          cur_date.strftime("%B").decode('utf-8')), 35)
         elif nb_products in [3, 4]:
             for prod_name, qty in prod_dict_sort:
-                communication += cls._get_line1(wizard, prod_name, qty, names[prod_name])
+                communication += cls.get_line1(wizard, prod_name, qty,
+                                               names[prod_name])
         elif nb_products > 4:
             for prod_name, qty in prod_dict_sort[:3]:
-                communication += cls._get_line1(wizard, prod_name, qty, names[prod_name])
+                communication += cls.get_line1(wizard, prod_name, qty,
+                                               names[prod_name])
             communication += wizard._complete_line(
                 _('%d other engagements') %
                 sum([tup[1] for tup in prod_dict_sort[3:]]), 35)
 
         context['lang'] = lang_backup
         return communication
-        
-        @classmethod
-        def _get_line1(cls, wizard, prod_name, qty, child_name):
-            if child_name:
-                res = wizard._complete_line(
-                    _('%d %s') % (qty, prod_name), 35)
-            else:
-                res = wizard._complete_line(prod_name, 35)
-        

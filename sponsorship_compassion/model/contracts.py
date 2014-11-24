@@ -223,15 +223,17 @@ class recurring_contract(orm.Model):
                                          "make a new sponsorship!")
                         }
         return res
-        
+
     def on_change_group_id(self, cr, uid, ids, group_id, context=None):
         """ Compute next invoice_date """
         res = {}
         today = datetime.today()
         if group_id:
-            contract_group = self.pool.get('recurring.contract.group').browse(cr, uid, group_id, context)
+            contract_group = self.pool.get('recurring.contract.group').browse(
+                cr, uid, group_id, context)
             if contract_group.next_invoice_date:
-                next_group_date = datetime.strptime(contract_group.next_invoice_date, DF)
+                next_group_date = datetime.strptime(
+                    contract_group.next_invoice_date, DF)
                 next_invoice_date = today.replace(day=next_group_date.day)
             else:
                 next_invoice_date = today.replace(day=1)
@@ -239,7 +241,7 @@ class recurring_contract(orm.Model):
         else:
             next_invoice_date = today.replace(day=1)
             payment_term = ''
-            
+
         if today.day > 15 or payment_term in ('LSV', 'Postfinance'):
             next_invoice_date = next_invoice_date + relativedelta(months=+1)
         res['value'] = {'next_invoice_date': next_invoice_date.strftime(DF)}
