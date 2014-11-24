@@ -472,7 +472,7 @@ class recurring_contract(orm.Model):
             end_reason = '1'
         vals = {'state': end_state,
                 'end_reason': str(end_reason),
-                'end_date': end_date}
+                'end_date': end_date or False}
         self.write(cr, uid, contract_id, vals, context)
 
         # Mark child as departed
