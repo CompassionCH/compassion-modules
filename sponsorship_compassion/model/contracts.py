@@ -15,6 +15,7 @@ from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import logging
 
 logger = logging.getLogger(__name__)
@@ -48,9 +49,11 @@ class recurring_contract(orm.Model):
                         # Activate the contract and set the
                         # first_payment_date
                         res.append(invoice_line.contract_id.id)
-                        self.write(cr, uid, contract.id,
-                                   {'first_payment_date': last_pay_date},
-                                   context=context)
+                        self.write(
+                            cr, uid, contract.id, {
+                                'first_payment_date':
+                                    datetime.today().strftime(DF)},
+                            context=context)
 
         return res
 
@@ -65,15 +68,17 @@ class recurring_contract(orm.Model):
         sponsor_cat_id = self.pool.get('res.partner.category').search(
             cr, uid, [('name', '=', 'Sponsor')], context={'lang': 'en_US'})[0]
         for contract in self.browse(cr, uid, ids, context):
-            contract.child_id.write({'has_been_sponsored': True})
-            partner_categories = set(
-                [cat.id for cat in contract.partner_id.category_id])
-            partner_categories.add(sponsor_cat_id)
-            # Standard way in Odoo to set one2many fields
-            contract.partner_id.write({
-                'category_id': [(6, 0, list(partner_categories))]})
-            wf_service.trg_validate(uid, 'recurring.contract', contract.id,
-                                    'contract_active', cr)
+            if contract.child_id:
+                contract.child_id.write({'has_been_sponsored': True})
+                partner_categories = set(
+                    [cat.id for cat in contract.partner_id.category_id])
+                partner_categories.add(sponsor_cat_id)
+                # Standard way in Odoo to set one2many fields
+                contract.partner_id.write({
+                    'category_id': [(6, 0, list(partner_categories))]})
+                wf_service.trg_validate(
+                    uid, 'recurring.contract', contract.id,
+                    'contract_active', cr)
             logger.info("Contract " + str(contract.id) + " activated.")
 
     def _invoice_paid(self, cr, uid, invoice, context=None):
@@ -141,7 +146,7 @@ class recurring_contract(orm.Model):
         'correspondant_id': fields.many2one(
             'res.partner', _('Correspondant'), required=True),
         'first_payment_date': fields.date(
-            _('First payment date'), readonly=True),
+            _('Activation date'), readonly=True),
         # Add a waiting state
         'state': fields.selection([
             ('draft', _('Draft')),
@@ -217,6 +222,27 @@ class recurring_contract(orm.Model):
                             'message': _("You should select a child if you "
                                          "make a new sponsorship!")
                         }
+        return res
+        
+    def on_change_group_id(self, cr, uid, ids, group_id, context=None):
+        """ Compute next invoice_date """
+        res = {}
+        today = datetime.today()
+        if group_id:
+            contract_group = self.pool.get('recurring.contract.group').browse(cr, uid, group_id, context)
+            if contract_group.next_invoice_date:
+                next_group_date = datetime.strptime(contract_group.next_invoice_date, DF)
+                next_invoice_date = today.replace(day=next_group_date.day)
+            else:
+                next_invoice_date = today.replace(day=1)
+            payment_term = contract_group.payment_term_id.name
+        else:
+            next_invoice_date = today.replace(day=1)
+            payment_term = ''
+            
+        if today.day > 15 or payment_term in ('LSV', 'Postfinance'):
+            next_invoice_date = next_invoice_date + relativedelta(months=+1)
+        res['value'] = {'next_invoice_date': next_invoice_date.strftime(DF)}
         return res
 
     def contract_waiting(self, cr, uid, ids, context=None):

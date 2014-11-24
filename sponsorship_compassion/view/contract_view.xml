@@ -53,10 +53,11 @@
                                    options="{'create': false, 'm2o_dialog': false}"/>
                             <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}"/>
                             <field name="group_id" domain="[('partner_id', '=', partner_id)]"
-                                   context="{'default_partner_id': partner_id}"/>
+                                   context="{'default_partner_id': partner_id}"
+                                   on_change="on_change_group_id(group_id)"/>
                         </group>
                         <group>
-                            <field name="start_date" on_change="on_change_start_date(start_date)" />
+                            <field name="start_date" string="Creation date"/>
                             <field name="first_payment_date" states="active,terminated,cancelled" />
                             <field name="end_date" />
                             <field name="next_invoice_date" states="draft,waiting,active" />
