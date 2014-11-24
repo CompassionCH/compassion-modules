@@ -44,7 +44,9 @@ class contract_origin(orm.Model):
             name = origin.analytics_id.name
         elif origin.type == 'sub':
             if origin.contract_id:
-                name = 'SUB Sponsorship - ' + origin.contract_id.child_id.code
+                name = 'SUB Sponsorship - {0} ({1})'.format(
+                    origin.contract_id.child_id.code,
+                    origin.contract_id.end_date.strftime("%m/%Y"))
             else:
                 name = 'SUB Sponsorship'
         elif origin.type == 'transfer':
