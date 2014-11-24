@@ -25,7 +25,6 @@ class portal_wizard(osv.osv_memory):
                 cr, uid, [('name', '=', user.partner_id.name)],
                 context=context)
             partner_name = user.partner_id.name
-            
             analytics_obj = self.pool.get('account.analytic.account')
             acc_ids = analytics_obj.search(
                 cr, uid, [('name', '=', partner_name)], context=context)
