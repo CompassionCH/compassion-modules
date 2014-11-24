@@ -476,7 +476,8 @@ class recurring_contract(orm.Model):
         self.write(cr, uid, contract_id, vals, context)
 
         # Mark child as departed
-        if child_state == 'F':
+        contract = self.browse(cr, uid, contract_id, context)
+        if child_state == 'F' and contract.child_id:
             child_exit_code = str(child_exit_code)
             exit_reasons = [reason[0] for reason in self.pool.get(
                 'compassion.child').get_gp_exit_reasons(cr, uid, context)]
@@ -490,7 +491,6 @@ class recurring_contract(orm.Model):
                 if country_id:
                     country_id = country_id[0]
                     child_vals.update({'transfer_country_id': country_id})
-            contract = self.browse(cr, uid, contract_id, context)
             contract.child_id.write(child_vals)
 
         # Delete workflow for this contract
