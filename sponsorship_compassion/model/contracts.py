@@ -179,9 +179,11 @@ class recurring_contract(orm.Model):
         'end_reason': fields.selection(get_ending_reasons, _('End reason'),
                                        select=True),
         'origin_id': fields.many2one('recurring.contract.origin', _("Origin"),
-                                     required=True),
+                                     required=True, readonly=True,
+                                     states={'draft': [('readonly', False)]}),
         'channel': fields.selection(_get_channels, string=_("Channel"),
-                                    required=True),
+                                    required=True, readonly=True,
+                                    states={'draft': [('readonly', False)]}),
     }
 
     ##########################
