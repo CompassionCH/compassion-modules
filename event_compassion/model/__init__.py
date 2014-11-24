@@ -12,3 +12,4 @@
 from . import event_compassion
 from . import contract_origin
 from . import crm_lead
+from . import portal_wizard

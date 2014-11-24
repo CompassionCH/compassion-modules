@@ -24,7 +24,7 @@
             </field>
             <field name="analytics_id" position="attributes">
                 <attribute name="attrs">
-                    {'invisible': [('type', 'not in', ('event', 'marketing'))],
+                    {'invisible': [('type', '!=', 'marketing')],
                      'required': [('type', '=', 'marketing')]}
                 </attribute>
             </field>
