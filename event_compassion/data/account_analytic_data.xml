@@ -34,6 +34,12 @@
             <field name="code">AA1185</field>
             <field name="parent_id" search="[('name', '=', 'Events')]"/>
         </record>
+        <record id="account_analytic_account_ambassadors" model="account.analytic.account">
+            <field name="name">Partners</field>
+            <field name="type">view</field>
+            <field name="code">AA1186</field>
+            <field name="parent_id" search="[('name', '=', 'FUND')]"/>
+        </record>
         
         <!--
             Resource: ir.sequence
