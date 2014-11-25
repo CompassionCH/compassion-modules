@@ -57,10 +57,10 @@ class recurring_contract(orm.Model):
                 })
                 message_obj.create(cr, uid, message_vals, context=context)
 
-    def contract_terminated(self, cr, uid, contract_id, context=None):
+    def contract_terminated(self, cr, uid, ids, context=None):
         """ Inform GMC when sponsorship is terminated. """
         res = super(recurring_contract, self).contract_terminated(
-            cr, uid, contract_id, context)
+            cr, uid, ids, context)
         if res:
             message_obj = self.pool.get('gmc.message.pool')
             action_obj = self.pool.get('gmc.action')
@@ -69,14 +69,14 @@ class recurring_contract(orm.Model):
                 limit=1, context=context)[0]
             message_vals = {'action_id': action_id}
 
-            contract = self.browse(cr, uid, contract_id, context=context)
-            if contract.child_id:
-                message_vals.update({
-                    'object_id': contract.id,
-                    'partner_id': contract.partner_id.id,
-                    'child_id': contract.child_id.id,
-                })
-                message_obj.create(cr, uid, message_vals)
+            for contract in self.browse(cr, uid, ids, context=context):
+                if contract.child_id:
+                    message_vals.update({
+                        'object_id': contract.id,
+                        'partner_id': contract.partner_id.id,
+                        'child_id': contract.child_id.id,
+                    })
+                    message_obj.create(cr, uid, message_vals)
 
         return res
 
