@@ -63,6 +63,7 @@
                             <group>
                                 <field name="lead_id"/>
                                 <field name="planned_sponsorships"/>
+                                <field name="won_sponsorships"/>
                             </group>
                         </group>
                         <notebook>
