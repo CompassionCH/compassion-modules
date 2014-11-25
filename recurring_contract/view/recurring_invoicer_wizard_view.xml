@@ -36,7 +36,8 @@
             name="Launch invoices generation"
             action="action_invoice_automatic_generation"
             id="menu_invoice_automatic_generation"
-            parent="menu_contracts_section" 
+            parent="menu_contracts_section"
+            groups="account.group_account_manager"
 			sequence="10" />
     </data>
 </openerp>

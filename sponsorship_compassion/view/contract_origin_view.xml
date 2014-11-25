@@ -50,5 +50,31 @@
             </form>
 		</field>
 	</record>
+    
+    <record id="view_recurring_contract_filter" model="ir.ui.view">
+		<field name="name">recurring.contract.origin.select</field>
+		<field name="model">recurring.contract.origin</field>
+		<field name="arch" type="xml">
+            <search string="Search origin">
+                <field name="name"/>
+                <field name="type"/>
+                <group expand="0" string="Group By...">
+                    <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <record id="open_view_origin_tree" model="ir.actions.act_window">
+        <field name="name">Origins</field>
+        <field name="res_model">recurring.contract.origin</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form,tree</field>
+        <field name="view_id" ref="view_contract_origin_tree"/>
+    </record>
+    
+    <menuitem id="menu_sponsorship_origin" parent="child_compassion.menu_sponsorship_section"
+              name="Origins" groups="child_compassion.group_sponsorship" sequence="4"
+              action="open_view_origin_tree"/>
 </data>
 </openerp>
