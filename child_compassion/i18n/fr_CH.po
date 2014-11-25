@@ -1,0 +1,1424 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* child_compassion
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0-20140602-231022\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-11-25 10:19+0000\n"
+"PO-Revision-Date: 2014-11-25 11:37+0100\n"
+"Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: fr_CH\n"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:71
+#: field:compassion.project,western_denomination:0
+#, python-format
+msgid "Western denomination"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:63
+#: field:compassion.project,hiv_category:0
+#, python-format
+msgid "HIV/Aids category for project area"
+msgstr ""
+
+#. module: child_compassion
+#: view:child.description.wizard:0
+msgid "Check and select descriptions to validate"
+msgstr "Vérifier et choisir les descriptions à mettre à jour"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:65
+#, python-format
+msgid "Disrespect of rules"
+msgstr "Non respect des règles"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:119
+#: field:compassion.project,economic_needs:0
+#, python-format
+msgid "Economic needs"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:57
+#, python-format
+msgid "Cancellation from Compassion"
+msgstr "Annulation de Compassion"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:154
+#: field:compassion.child,transfer_country_id:0
+#, python-format
+msgid "Transfered to"
+msgstr "Transféré à"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:82
+#: field:compassion.child,date:0
+#, python-format
+msgid "Allocation date"
+msgstr "Date d'allocation"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:38
+#: field:compassion.child.property,not_attending_reason:0
+#, python-format
+msgid "Not attending school reason"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:55
+#: field:compassion.child.property,christian_activities_ids:0
+#, python-format
+msgid "Christian activities"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:70
+#: field:compassion.project,country_denomination:0
+#, python-format
+msgid "Local denomination"
+msgstr ""
+
+#. module: child_compassion
+#: view:child.description.wizard:0
+msgid "Finish"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:65
+#: selection:compassion.project,month_school_year_begins:0
+#, python-format
+msgid "March"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:133
+#: field:compassion.child,vocational_skills:0
+#, python-format
+msgid "Skills learned"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.project:0
+msgid "Update informations"
+msgstr "MAJ informations"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:89
+#: field:compassion.project,roof_material_ids:0
+#, python-format
+msgid "Roof material"
+msgstr ""
+
+#. module: child_compassion
+#: selection:compassion.child,type:0
+msgid "LDP"
+msgstr "LDP"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:114
+#: field:compassion.project,unemployment_rate:0
+#, python-format
+msgid "Unemployment rate"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.child:0
+msgid "Sponsored children"
+msgstr "Enfants parrainés"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:93
+#: field:compassion.project,spoken_languages_ids:0
+#, python-format
+msgid "Spoken languages"
+msgstr "Langues parlées"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:105
+#: selection:compassion.child,state:0
+#, python-format
+msgid "Waiting new sponsor"
+msgstr "Reparrainable"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:43
+#: selection:compassion.project,status:0
+#, python-format
+msgid "Phase-out"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:53
+#, python-format
+msgid "Death of a child"
+msgstr "Mort de l'enfant"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:35
+#: field:compassion.child.property,attending_school_flag:0
+#, python-format
+msgid "Is attending school"
+msgstr ""
+
+# Ne pas traduire
+#. module: child_compassion
+#: model:ir.model,name:child_compassion.model_compassion_child
+msgid "compassion.child"
+msgstr "compassion.child"
+
+#. module: child_compassion
+#: field:compassion.child,message_ids:0
+msgid "Messages"
+msgstr "Messages"
+
+#. module: child_compassion
+#: view:compassion.child:0
+msgid "Exit Details"
+msgstr "Détails du départ"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:152
+#: field:compassion.child,last_letter_sent:0
+#, python-format
+msgid "Last letter was sent"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.project:0
+msgid "Project"
+msgstr "Projet"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:91
+#: field:compassion.child.property,nb_sisters:0
+#, python-format
+msgid "Sisters"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.child:0
+msgid "get infos"
+msgstr "MAJ informations"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:116
+#: field:compassion.project,community_population:0
+#, python-format
+msgid "Community population"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/translated_value.py:31
+#: field:compassion.translated.value,value_en:0
+#, python-format
+msgid "English value"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:83
+#: field:compassion.child.property,father_ids:0
+#, python-format
+msgid "Mother"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/translated_value.py:33
+#: field:compassion.translated.value,value_fr:0
+#, python-format
+msgid "French translation"
+msgstr "Traduction française"
+
+#. module: child_compassion
+#: help:compassion.child,message_unread:0
+msgid "If checked new messages require your attention."
+msgstr ""
+
+#. module: child_compassion
+#: model:ir.actions.act_window,name:child_compassion.open_view_project_tree
+msgid "projects"
+msgstr "projets"
+
+#. module: child_compassion
+#: field:child.description.wizard,keep_desc_en:0
+msgid "Keep english description"
+msgstr "Garder la description anglaise"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:29
+#: field:compassion.project,code:0
+#, python-format
+msgid "Project code"
+msgstr "Code du projet"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:345
+#, python-format
+msgid "An error occured while fetching the last picture for child %s."
+msgstr "Une erreur est survenue lors de la récupération de l'image pour %s."
+
+# Ne pas traduire
+#. module: child_compassion
+#: view:compassion.child:0
+msgid "Search child"
+msgstr "Search child"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:97
+#: field:compassion.project,primary_diet_ids:0
+#, python-format
+msgid "Primary diet"
+msgstr ""
+
+#. module: child_compassion
+#: help:compassion.child,message_summary:0
+msgid ""
+"Holds the Chatter summary (number of messages, ...). This summary is "
+"directly in html format in order to be inserted in kanban views."
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/translated_value.py:22
+#: field:compassion.translated.value,is_tag:0
+#, python-format
+msgid "Tag"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.child:0
+msgid "Child available for sponsorship"
+msgstr "Disponible"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:86
+#: selection:compassion.child,gender:0
+#: selection:compassion.child.property,gender:0
+#, python-format
+msgid "Female"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:63
+#: field:compassion.child.property,hobbies_ids:0
+#, python-format
+msgid "Hobbies"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:72
+#: field:compassion.project,community_name:0
+#, python-format
+msgid "Community name"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:115
+#: field:compassion.child,exit_date:0
+#, python-format
+msgid "Exit date"
+msgstr "Date de départ"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:59
+#: field:compassion.project,local_church_name:0
+#, python-format
+msgid "Local church name"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:83
+#: help:compassion.child,date:0
+#, python-format
+msgid "The date at which Compass allocated this child to Switzerland"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:156
+#: field:compassion.child,gp_exit_reason:0
+#, python-format
+msgid "Exit Reason"
+msgstr "Raison de départ"
+
+#. module: child_compassion
+#: field:child.description.wizard,state:0
+msgid "State"
+msgstr "Etat"
+
+#. module: child_compassion
+#: field:compassion.child,message_follower_ids:0
+msgid "Followers"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:94
+#: field:compassion.child,start_date:0
+#, python-format
+msgid "Start date"
+msgstr "Date de début"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:123
+#: field:compassion.child,us_grade_completed:0
+#, python-format
+msgid "US Grade level completed"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:101
+#: view:compassion.child:0 selection:compassion.child,state:0
+#, python-format
+msgid "Available"
+msgstr "Disponible"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:61
+#: selection:compassion.project,hiv_category:0
+#, python-format
+msgid "Affected"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.project:0
+msgid "Miscellaneous"
+msgstr "Divers"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:138
+#: field:compassion.child,exit_description:0
+#, python-format
+msgid "Exit description"
+msgstr "Description du départ"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:66
+#, python-format
+msgid "Fulfilled completion plan"
+msgstr "Fulfilled completion plan"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:104
+#: view:compassion.child:0 selection:compassion.child,state:0
+#, python-format
+msgid "Sponsored"
+msgstr "Parrainé"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/country_compassion.py:27
+#: field:compassion.country,language:0
+#, python-format
+msgid "Official language"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:87
+#: code:addons/child_compassion/model/child_properties.py:30
+#: field:compassion.child,gender:0 field:compassion.child.property,gender:0
+#, python-format
+msgid "Gender"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:67
+#: selection:compassion.project,month_school_year_begins:0
+#, python-format
+msgid "July"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/country_compassion.py:30
+#: field:compassion.country,project_ids:0
+#, python-format
+msgid "Country projects"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:34
+#: field:compassion.project,start_date:0
+#, python-format
+msgid "Partnership begining"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:113
+#: field:compassion.project,gps_longitude:0
+#, python-format
+msgid "GPS longitude"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:93
+#: code:addons/child_compassion/model/project_compassion.py:54
+#: field:child.description.wizard,desc_it:0 field:compassion.child,desc_it:0
+#: field:compassion.project,description_it:0
+#, python-format
+msgid "Italian description"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:106
+#: code:addons/child_compassion/model/project_compassion.py:44
+#: field:compassion.child,state:0 field:compassion.project,status:0
+#, python-format
+msgid "Status"
+msgstr "Etat"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:140
+#: field:compassion.child,steps_prevent_description:0
+#, python-format
+msgid "Steps taken to prevent exit"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:55
+#, python-format
+msgid "Unjustified absence for two consecutive years"
+msgstr "Absence injustifiée > 2 semaines"
+
+#. module: child_compassion
+#: model:ir.ui.menu,name:child_compassion.menu_sponsorship_root
+#: model:ir.ui.menu,name:child_compassion.menu_sponsorship_section
+msgid "Sponsorship"
+msgstr "Parrainage"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:118
+#: field:compassion.child,presented_gospel:0
+#, python-format
+msgid "Has been presented with gospel"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.child.property:0
+msgid "Children properties"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:52
+#, python-format
+msgid "Left the project"
+msgstr "Fugue"
+
+#. module: child_compassion
+#: view:compassion.child:0
+msgid "Child on compassion website"
+msgstr "Sur le site internet"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:103
+#: view:compassion.child:0 selection:compassion.child,state:0
+#, python-format
+msgid "On Internet"
+msgstr "Sur Internet"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:33
+#: field:compassion.project,type:0
+#, python-format
+msgid "Program type"
+msgstr "Type de programme"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/translated_value.py:34
+#: field:compassion.translated.value,value_de:0
+#, python-format
+msgid "German translation"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:87
+#: selection:compassion.child,gender:0
+#: selection:compassion.child.property,gender:0
+#, python-format
+msgid "Male"
+msgstr ""
+
+#. module: child_compassion
+#: selection:compassion.project,type:0
+msgid "CSP"
+msgstr "CSP"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:365
+#: code:addons/child_compassion/model/country_compassion.py:61
+#: code:addons/child_compassion/model/project_compassion.py:279
+#, python-format
+msgid "Missing compass_url or compass_api_key in conf file"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:90
+#: field:compassion.child.property,nb_brothers:0
+#, python-format
+msgid "Brothers"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:44
+#: selection:compassion.project,status:0
+#, python-format
+msgid "Terminated"
+msgstr "Terminé"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:91
+#: code:addons/child_compassion/model/project_compassion.py:52
+#: field:child.description.wizard,desc_fr:0 field:compassion.child,desc_fr:0
+#: field:compassion.project,description_fr:0
+#, python-format
+msgid "French description"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:88
+#: field:compassion.child,completion_date:0
+#, python-format
+msgid "Completion date"
+msgstr "Date de completion"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:67
+#: selection:compassion.project,month_school_year_begins:0
+#, python-format
+msgid "September"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:68
+#: selection:compassion.project,month_school_year_begins:0
+#, python-format
+msgid "December"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/translated_value.py:35
+#: field:compassion.translated.value,value_it:0
+#, python-format
+msgid "Italian translation"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:39
+#: selection:compassion.project,suspension:0
+#, python-format
+msgid "Suspended & fund retained"
+msgstr "Suspendu avec retenue des fonds"
+
+# Ne pas traduire
+#. module: child_compassion
+#: model:ir.model,name:child_compassion.model_compassion_project
+msgid "compassion.project"
+msgstr "compassion.project"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:146
+#: field:compassion.child,exit_reason:0
+#, python-format
+msgid "Exit reason"
+msgstr "Raison de départ"
+
+#. module: child_compassion
+#: field:compassion.child,message_unread:0
+msgid "Unread Messages"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.child:0
+msgid "Descriptions"
+msgstr "Descriptions"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:38
+#: selection:compassion.project,suspension:0
+#, python-format
+msgid "Suspended"
+msgstr "Suspendu"
+
+#. module: child_compassion
+#: view:compassion.child:0
+#: model:ir.actions.act_window,name:child_compassion.act_translated_tree
+#: model:ir.actions.act_window,name:child_compassion.open_view_children_tree
+#: model:ir.ui.menu,name:child_compassion.menu_sponsorship_children
+msgid "Children"
+msgstr "Enfants"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:99
+#: field:compassion.child,portrait:0
+#, python-format
+msgid "Portrait"
+msgstr "Portrait"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:47
+#: field:compassion.child.property,school_best_subject:0
+#, python-format
+msgid "School best subject"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:121
+#: field:compassion.project,social_needs:0
+#, python-format
+msgid "Social needs"
+msgstr ""
+
+#. module: child_compassion
+#: model:res.groups,name:child_compassion.group_sponsorship
+msgid "Manage sponsorships"
+msgstr "Gestion des parrainages"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:120
+#: field:compassion.child,professes_faith:0
+#, python-format
+msgid "Child made profession of faith"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.child:0
+msgid "Departed children"
+msgstr "Enfants departed"
+
+#. module: child_compassion
+#: selection:compassion.child,type:0 selection:compassion.project,type:0
+msgid "CDSP"
+msgstr "CDSP"
+
+# Ne pas traduire
+#. module: child_compassion
+#: model:ir.model,name:child_compassion.model_compassion_child_property
+msgid "compassion.child.property"
+msgstr "compassion.child.property"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:290
+#, python-format
+msgid "Error calling Cornerstone Service"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:76
+#: view:compassion.child:0 field:compassion.child,code:0
+#, python-format
+msgid "Child code"
+msgstr "Code enfant"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:137
+#: field:compassion.child,social_description:0
+#, python-format
+msgid "Social behaviour description"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:67
+#: field:compassion.child.property,health_ids:0
+#, python-format
+msgid "Health"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:59
+#, python-format
+msgid "Financial situation improved"
+msgstr "Situation financière meilleure"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:36
+#: field:compassion.project,last_update_date:0
+#, python-format
+msgid "Last update"
+msgstr "Dernière mise à jour"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:122
+#: field:compassion.project,spiritual_needs:0
+#, python-format
+msgid "Spiritual needs"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:67
+#: selection:compassion.project,month_school_year_begins:0
+#, python-format
+msgid "August"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.child:0
+msgid "Generate descriptions"
+msgstr "Générer les descriptions"
+
+#. module: child_compassion
+#: field:child.description.wizard,child_property_value_ids:0
+msgid "unknown"
+msgstr "inconnu"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:68
+#: selection:compassion.project,month_school_year_begins:0
+#, python-format
+msgid "October"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:122
+#: field:compassion.child,primary_school:0
+#, python-format
+msgid "Has completed primary school"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:66
+#: selection:compassion.project,month_school_year_begins:0
+#, python-format
+msgid "June"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:34
+#: field:compassion.child.property,handicapped_flag:0
+#, python-format
+msgid "Is handicapped"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:89
+#: field:compassion.child.property,nb_children_family:0
+#, python-format
+msgid "Children in family"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:75
+#: field:compassion.child.property,male_guardian_ids:0
+#, python-format
+msgid "Male guardian"
+msgstr ""
+
+#. module: child_compassion
+#: field:compassion.child,message_is_follower:0
+msgid "Is a Follower"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:59
+#: field:compassion.child.property,family_duties_ids:0
+#, python-format
+msgid "Family duties"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.child:0 view:compassion.child.property:0
+msgid "Child"
+msgstr "Enfant"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:42
+#: selection:compassion.project,status:0
+#, python-format
+msgid "Active"
+msgstr "Actif"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:68
+#: selection:compassion.project,month_school_year_begins:0
+#, python-format
+msgid "November"
+msgstr ""
+
+#. module: child_compassion
+#: field:child.description.wizard,keep_desc_it:0
+msgid "Keep italian description"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:79
+#: field:compassion.child.property,female_guardian_ids:0
+#, python-format
+msgid "Female guardian"
+msgstr ""
+
+#. module: child_compassion
+#: field:child.description.wizard,keep_desc_fr:0
+msgid "Keep french description"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:199
+#, python-format
+msgid "Cannot generate a description for a child without a case study"
+msgstr "Impossible de générer une description sans case study"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:32
+#: field:compassion.child.property,sibling_flag:0
+#, python-format
+msgid "Has sibling"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:65
+#: selection:compassion.project,month_school_year_begins:0
+#, python-format
+msgid "January"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:85
+#: field:compassion.project,wall_material_ids:0
+#, python-format
+msgid "Wall material"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:25
+#: field:compassion.child.property,info_date:0
+#, python-format
+msgid "Date of case study"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:40
+#: field:compassion.child.property,us_school_level:0
+#, python-format
+msgid "US school level"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:78
+#: code:addons/child_compassion/model/child_properties.py:31
+#: field:compassion.child,birthdate:0
+#: field:compassion.child.property,birthdate:0
+#, python-format
+msgid "Birthdate"
+msgstr "Date de naissance"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:116
+#: field:compassion.child,last_attended_project:0
+#, python-format
+msgid "Last time attended project"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:206
+#: view:child.description.wizard:0
+#, python-format
+msgid "Description generation"
+msgstr "Génération de description"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:127
+#: field:compassion.child,study_area:0
+#, python-format
+msgid "Primary area of study in school"
+msgstr ""
+
+#. module: child_compassion
+#: view:child.description.wizard:0
+msgid "Next"
+msgstr "Suivant"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:101
+#: field:compassion.project,health_problems_ids:0
+#, python-format
+msgid "Health problems"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:67
+#, python-format
+msgid "Reached maximum age"
+msgstr "Age maximum atteint"
+
+# Ne pas traduire
+#. module: child_compassion
+#: model:ir.model,name:child_compassion.model_compassion_country
+msgid "compassion.country"
+msgstr "compassion.country"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:106
+#: view:compassion.child:0 selection:compassion.child,state:0
+#, python-format
+msgid "Departed"
+msgstr "Departed"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:62
+#, python-format
+msgid "Ran away"
+msgstr "Fugue"
+
+#. module: child_compassion
+#: view:compassion.child:0
+msgid "Delegated children"
+msgstr "Enfants délégués"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/translated_value.py:25
+#: code:addons/child_compassion/model/translated_value.py:28
+#: field:compassion.translated.value,child_property_ids:0
+#: field:compassion.translated.value,project_property_ids:0
+#, python-format
+msgid "Properties"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.project:0
+msgid "project"
+msgstr "projet"
+
+#. module: child_compassion
+#: view:compassion.child:0 view:compassion.project:0
+msgid "General Information"
+msgstr "Informations générales"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:135
+#: field:compassion.child,disease_free:0
+#, python-format
+msgid "Free from diseases"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/translated_value.py:29
+#: field:compassion.translated.value,property_name:0
+#, python-format
+msgid "Is value for"
+msgstr "Traduction pour"
+
+#. module: child_compassion
+#: view:child.description.wizard:0
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:54
+#, python-format
+msgid "Now lives where a Compassion project is not available"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:33
+#: field:compassion.child.property,orphan_flag:0
+#, python-format
+msgid "Is orphan"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:64
+#, python-format
+msgid "Got married"
+msgstr "Marié"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:120
+#: field:compassion.project,education_needs:0
+#, python-format
+msgid "Education needs"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:121
+#: field:compassion.child,faith_description:0
+#, python-format
+msgid "Description of faith"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:43
+#: field:compassion.child.property,school_performance:0
+#, python-format
+msgid "School performances"
+msgstr ""
+
+#. module: child_compassion
+#: model:ir.ui.menu,name:child_compassion.menu_sponsorship_project
+msgid "Projects"
+msgstr "Projets"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:87
+#: field:compassion.child.property,mother_ids:0
+#, python-format
+msgid "Father"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:23
+#: field:compassion.child.property,child_id:0
+#, python-format
+msgid "Concerned child"
+msgstr "Enfant concerné"
+
+# Ne pas traduire
+#. module: child_compassion
+#: model:ir.model,name:child_compassion.model_compassion_translated_value
+msgid "compassion.translated.value"
+msgstr "compassion.translated.value"
+
+# Ne pas traduire
+#. module: child_compassion
+#: model:ir.model,name:child_compassion.model_child_description_wizard
+msgid "child.description.wizard"
+msgstr "child.description.wizard"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:63
+#, python-format
+msgid "Has found a job"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:60
+#, python-format
+msgid "Parents took out the child from the project"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:130
+#: field:compassion.child,vocational_training:0
+#, python-format
+msgid "Has received vocational training"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:40
+#: field:compassion.project,suspension:0
+#, python-format
+msgid "Suspension"
+msgstr "Suspension"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:69
+#: field:compassion.project,month_school_year_begins:0
+#, python-format
+msgid "Month school begins each year"
+msgstr ""
+
+#. module: child_compassion
+#: view:child.description.wizard:0
+msgid "Complete missing translations if needed"
+msgstr "Complétez les traductions manquantes si nécessaire"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:105
+#: field:compassion.project,primary_occupation_ids:0
+#, python-format
+msgid "Primary occupation"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:109
+#: field:compassion.project,terrain_description_ids:0
+#, python-format
+msgid "Terrain description"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/country_compassion.py:25
+#: field:compassion.country,iso_code:0
+#, python-format
+msgid "ISO code"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:195
+#, python-format
+msgid "No valid child id given !"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.project:0
+msgid "Description"
+msgstr "Description"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:75
+#: code:addons/child_compassion/model/child_properties.py:27
+#: field:compassion.child,firstname:0
+#: field:compassion.child.property,firstname:0
+#, python-format
+msgid "Firstname"
+msgstr "Prénom"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:66
+#: selection:compassion.project,month_school_year_begins:0
+#, python-format
+msgid "May"
+msgstr ""
+
+#. module: child_compassion
+#: selection:child.description.wizard,state:0
+msgid "Values completion"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:81
+#: field:compassion.child,type:0
+#, python-format
+msgid "Type of sponsorship program"
+msgstr "Type de programme parrainage"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:142
+#: field:compassion.child,future_plans_description:0
+#, python-format
+msgid "Child future plans"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:136
+#: field:compassion.child,health_description:0
+#, python-format
+msgid "Health description"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:96
+#: view:compassion.child:0 field:compassion.child,case_study_ids:0
+#, python-format
+msgid "Case studies"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.child:0
+msgid "Child transferred to a partner country"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:109
+#: field:compassion.child,sponsor_id:0
+#, python-format
+msgid "Sponsor"
+msgstr "Parrain"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:112
+#: field:compassion.project,gps_latitude:0
+#, python-format
+msgid "GPS latitude"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:102
+#: view:compassion.child:0 selection:compassion.child,state:0
+#, python-format
+msgid "Delegated"
+msgstr "Délégué"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:61
+#, python-format
+msgid "Sponsored by another organization"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:65
+#: selection:compassion.project,month_school_year_begins:0
+#, python-format
+msgid "February"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:227
+#, python-format
+msgid "An error occured while fetching the last case study for child %s."
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:74
+#: code:addons/child_compassion/model/child_properties.py:26
+#: code:addons/child_compassion/model/country_compassion.py:26
+#: code:addons/child_compassion/model/project_compassion.py:28
+#: field:compassion.child,name:0 field:compassion.child.property,name:0
+#: field:compassion.country,name:0 field:compassion.project,name:0
+#, python-format
+msgid "Name"
+msgstr "Nom"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:62
+#: selection:compassion.project,hiv_category:0
+#, python-format
+msgid "Not affected"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:30
+#: field:compassion.project,country_id:0
+#, python-format
+msgid "Country"
+msgstr "Pays"
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:117
+#: field:compassion.project,monthly_income:0
+#, python-format
+msgid "Monthly income"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:150
+#: field:compassion.child,other_exit_reason:0
+#, python-format
+msgid "Other exit reason"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:66
+#: selection:compassion.project,month_school_year_begins:0
+#, python-format
+msgid "April"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.translated.value:0
+msgid "Values"
+msgstr ""
+
+#. module: child_compassion
+#: field:compassion.child,message_summary:0
+msgid "Summary"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:46
+#: field:compassion.project,status_comment:0
+#, python-format
+msgid "Status comment"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:71
+#: field:compassion.child.property,guardians_ids:0
+#, python-format
+msgid "Guardians"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:143
+#: field:compassion.child,new_situation_description:0
+#, python-format
+msgid "New situation"
+msgstr "Nouvelle situation"
+
+#. module: child_compassion
+#: help:compassion.child,message_ids:0
+msgid "Messages and communication history"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:58
+#, python-format
+msgid "Project closed"
+msgstr "Projet fermé"
+
+#. module: child_compassion
+#: selection:child.description.wizard,state:0
+msgid "Descriptions correction"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:115
+#: field:compassion.project,closest_city:0
+#, python-format
+msgid "Closest city"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:77
+#: field:compassion.child,unique_id:0
+#, python-format
+msgid "Unique ID"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:35
+#: field:compassion.project,stop_date:0
+#, python-format
+msgid "Partnership ending"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:90
+#: code:addons/child_compassion/model/country_compassion.py:28
+#: code:addons/child_compassion/model/project_compassion.py:51
+#: field:child.description.wizard,desc_en:0 field:compassion.child,desc_en:0
+#: field:compassion.country,description_en:0
+#: field:compassion.project,description_en:0
+#, python-format
+msgid "English description"
+msgstr ""
+
+#. module: child_compassion
+#: view:compassion.project:0
+msgid "Community"
+msgstr ""
+
+#. module: child_compassion
+#: view:child.description.wizard:0
+msgid "or"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:92
+#: code:addons/child_compassion/model/project_compassion.py:53
+#: field:child.description.wizard,desc_de:0 field:compassion.child,desc_de:0
+#: field:compassion.project,description_de:0
+#, python-format
+msgid "German description"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:81
+#: field:compassion.project,floor_material_ids:0
+#, python-format
+msgid "Floor material"
+msgstr ""
+
+#. module: child_compassion
+#: field:compassion.child,has_been_sponsored:0
+msgid "Has been sponsored"
+msgstr ""
+
+#. module: child_compassion
+#: field:child.description.wizard,keep_desc_de:0
+msgid "Keep german description"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/project_compassion.py:45
+#: field:compassion.project,status_date:0
+#, python-format
+msgid "Last status change"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_compassion.py:56
+#, python-format
+msgid "End of scholarship"
+msgstr ""
+
+#. module: child_compassion
+#: code:addons/child_compassion/model/child_properties.py:51
+#: field:compassion.child.property,marital_status_id:0
+#, python-format
+msgid "Marital status of parents"
+msgstr ""
