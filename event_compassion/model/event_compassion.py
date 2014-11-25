@@ -37,6 +37,16 @@ class event_compassion(orm.Model):
 
         return res
 
+    def _get_won_sponsorships(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        if not isinstance(ids, list):
+            ids = [ids]
+        for event in self.browse(cr, uid, ids, context):
+            contract_ids = [contract.id for contract in event.contract_ids
+                            if contract.state not in ('draft', 'cancelled')]
+            res[event.id] = len(contract_ids)
+        return res
+
     _columns = {
         'name': fields.char(_("Name"), size=128, required=True),
         'type': fields.selection([
@@ -72,6 +82,8 @@ class event_compassion(orm.Model):
         'planned_sponsorships': fields.integer(_("Expected sponsorships")),
         'lead_id': fields.many2one('crm.lead', _('Opportunity'),
                                    readonly=True),
+        'won_sponsorships': fields.function(
+            _get_won_sponsorships, type="integer", string=_("Won sponsorships"))
     }
 
     def create(self, cr, uid, vals, context=None):
