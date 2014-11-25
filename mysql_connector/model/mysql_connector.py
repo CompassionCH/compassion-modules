@@ -51,10 +51,13 @@ class mysql_connector:
                                     mapping is used, %(key)s must be
                                     used as the placeholder.
         Returns:
-            - long integer rows affected, if any.
+            - long integer rows affected, if any, True otherwise.
         """
         with self._con:
-            return self._cur.execute(statement, args)
+            res = self._cur.execute(statement, args)
+            if res == 0:
+                res = True
+            return res
 
     def selectOne(self, statement, args=None):
         """ Performs a MySQL SELECT statement and returns one single row.
