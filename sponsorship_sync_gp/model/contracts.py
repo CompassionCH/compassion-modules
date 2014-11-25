@@ -22,13 +22,6 @@ from . import gp_connector
 class contracts(orm.Model):
     _inherit = 'recurring.contract'
 
-    _columns = {
-        'synced_with_gp': fields.boolean(
-            _("Synchronized with GP"), help=_("Indicates if the contract "
-                                              "is correctly updated in GP."),
-            readonly=True),
-    }
-
     def create(self, cr, uid, vals, context=None):
         """ When contract is created, push it to GP so that the mailing
         module can access all information. """
@@ -39,10 +32,10 @@ class contracts(orm.Model):
         # (= only sponsorship and/or fund products, nothing else)
         compatible, no_link_whith_gp = self._is_gp_compatible(contract)
         if compatible:
-            if gp_connect.create_or_update_contract(uid, contract):
-                super(contracts, self).write(cr, uid, contract.id,
-                                             {'synced_with_gp': True},
-                                             context)
+            if not gp_connect.create_or_update_contract(uid, contract):
+                raise orm.except_orm(
+                    _("GP Sync Error"),
+                    _("Please contact an IT person."))
         else:
             # Raise error only if one line of contract should have a link
             # with GP.
@@ -57,6 +50,7 @@ class contracts(orm.Model):
     def write(self, cr, uid, ids, vals, context=None):
         """ Keep GP updated when a contract is modified. """
         gp_connect = gp_connector.GPConnect(cr, uid)
+        ids = [ids] if not isinstance(ids, list) else ids
 
         # If we change the next invoice date, we update GP
         if vals.get('next_invoice_date'):
@@ -73,24 +67,23 @@ class contracts(orm.Model):
                               "into GP. Please contact an IT person."))
 
         res = super(contracts, self).write(cr, uid, ids, vals, context)
-        ids = [ids] if not isinstance(ids, list) else ids
         for contract in self.browse(cr, uid, ids, context):
             compatible, no_link_whith_gp = self._is_gp_compatible(contract)
             if compatible:
-                synced = gp_connect.create_or_update_contract(uid, contract)
-                super(contracts, self).write(cr, uid, contract.id,
-                                             {'synced_with_gp': synced},
-                                             context)
+                if not gp_connect.create_or_update_contract(uid, contract):
+                    raise orm.except_orm(
+                        _("GP Sync Error"),
+                        _("Please contact an IT person."))
             elif not no_link_whith_gp:
                 raise orm.except_orm(
                     _("Not compatible with GP"),
                     _("You selected some products that are not available "
-                      "in GP. You cannot save this contract.")
-                )
+                      "in GP. You cannot save this contract."))
             else:
-                super(contracts, self).write(cr, uid, contract.id,
-                                             {'synced_with_gp': False},
-                                             context)
+                raise orm.except_orm(
+                    _("Not compatible with GP"),
+                    _("You selected some products that are not available "
+                      "in GP. You cannot save this contract."))
 
         return res
 
@@ -116,8 +109,7 @@ class contracts(orm.Model):
         """ When contract is validated, calculate which month is due
         and push it to GP.
         """
-        super(contracts, self).write(
-            cr, uid, ids, {'state': 'waiting'}, context)
+        super(contracts, self).contract_waiting(cr, uid, ids, context)
         gp_connect = gp_connector.GPConnect(cr, uid)
         for contract in self.browse(cr, uid, ids, context):
             if not contract.synced_with_gp:
@@ -125,9 +117,11 @@ class contracts(orm.Model):
                     _("Not synchronized with GP"),
                     _("The contract is not synchronized with GP. Please edit "
                       "it before validating."))
-            synced = gp_connect.validate_contract(contract)
-            super(contracts, self).write(cr, uid, contract.id,
-                                         {'synced_with_gp': synced}, context)
+            if not gp_connect.validate_contract(contract):
+                raise orm.except_orm(
+                    _("Not synchronized with GP"),
+                    _("The contract could not be activated. Please contact "
+                      "an IT person."))
         return True
 
     def contract_cancelled(self, cr, uid, ids, context=None):
@@ -135,9 +129,10 @@ class contracts(orm.Model):
         super(contracts, self).contract_cancelled(cr, uid, ids, context)
         gp_connect = gp_connector.GPConnect(cr, uid)
         for contract in self.browse(cr, uid, ids, context):
-            synced = gp_connect.finish_contract(contract)
-            super(contracts, self).write(cr, uid, contract.id,
-                                         {'synced_with_gp': synced}, context)
+            if not gp_connect.finish_contract(contract):
+                raise orm.except_orm(
+                        _("GP Sync Error"),
+                        _("Please contact an IT person."))
         return True
 
     def contract_terminated(self, cr, uid, ids, context=None):
@@ -145,9 +140,10 @@ class contracts(orm.Model):
         super(contracts, self).contract_terminated(cr, uid, ids)
         gp_connect = gp_connector.GPConnect(cr, uid)
         for contract in self.browse(cr, uid, ids, context):
-            synced = gp_connect.finish_contract(contract)
-            super(contracts, self).write(cr, uid, contract.id,
-                                         {'synced_with_gp': synced}, context)
+            if not gp_connect.finish_contract(contract):
+                raise orm.except_orm(
+                    _("GP Sync Error"),
+                    _("Please contact an IT person."))
         return True
 
     def _on_contract_active(self, cr, uid, ids, context=None):
@@ -155,9 +151,10 @@ class contracts(orm.Model):
         super(contracts, self)._on_contract_active(cr, uid, ids, context)
         gp_connect = gp_connector.GPConnect(cr, uid)
         for contract in self.browse(cr, uid, ids, context):
-            synced = gp_connect.activate_contract(contract)
-            super(contracts, self).write(cr, uid, contract.id,
-                                         {'synced_with_gp': synced}, context)
+            if not gp_connect.activate_contract(contract):
+                raise orm.except_orm(
+                    _("GP Sync Error"),
+                    _("Please contact an IT person."))
 
     def _invoice_paid(self, cr, uid, invoice, context=None):
         """ When a customer invoice is paid, synchronize GP. """
