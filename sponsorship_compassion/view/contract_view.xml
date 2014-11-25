@@ -107,7 +107,12 @@
         
         <!-- Move the Contracts Menu to the Sponsorship Section -->
         <menuitem id="recurring_contract.menu_contracts_section" parent="child_compassion.menu_sponsorship_root" 
-                  name="Contracts" groups="child_compassion.group_sponsorship" sequence="1"/>
+                  name="Invoicing" groups="account.group_account_user" sequence="2"/>
+        <menuitem id="recurring_contract.menu_recurring_contract_form" parent="child_compassion.menu_sponsorship_section"
+                  name="Sponsorships" sequence="0"/>
+                  
+        <menuitem id="open_customers" parent="child_compassion.menu_sponsorship_section"
+                  name="Partners" action="base.action_partner_customer_form" sequence="1"/>
                   
         <!-- Generate Gift -->
         <act_window id="action_account_invoice_free"
