@@ -36,6 +36,9 @@ class recurring_contract(orm.Model):
                                    context=None):
         self = invoice_obj.pool.get('recurring.contract')
         res = []
+        # Read data in english
+        if context is None: context = {}
+        context['lang'] = 'en_US'
         for invoice in invoice_obj.browse(cr, uid, invoice_ids,
                                           context=context):
             if invoice.state == 'paid':

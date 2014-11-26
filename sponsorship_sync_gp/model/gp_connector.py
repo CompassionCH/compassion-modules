@@ -232,7 +232,7 @@ class GPConnect(mysql_connector):
         product = invoice_line.product_id
 
         # Determine the nature of the payment (sponsorship, fund)
-        if product.name in GIFT_TYPES + [_('Sponsorship')]:
+        if product.name in GIFT_TYPES + ['Sponsorship']:
             codespe = contract.child_id.code
             typeprojet = "P"
             id_pole = self.selectOne(
@@ -314,6 +314,8 @@ class GPConnect(mysql_connector):
                            " AND codega=(SELECT codega from Enfants WHERE "
                            "code=%s) ORDER BY datecreation DESC Limit 1",
                            [end_reason, child.code, child.code])
+        if child.state == 'P':
+            update_fields += ", datedelegue=NULL, codedelegue=''"
         sql_query = update_string % (update_fields, child.code)
         logger.info(sql_query)
         return self.query(sql_query)

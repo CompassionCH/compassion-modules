@@ -16,6 +16,7 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from sponsorship_compassion.model.product import GIFT_TYPES
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import pdb
 
 from . import gp_connector
 
@@ -28,6 +29,9 @@ class contracts(orm.Model):
         module can access all information. """
         contract_id = super(contracts, self).create(cr, uid, vals, context)
         gp_connect = gp_connector.GPConnect(cr, uid)
+        # Read data in english
+        if context is None: context = {}
+        context['lang'] = 'en_US'
         contract = self.browse(cr, uid, contract_id, context)
         # Check that the contract is compatible with GP
         # (= only sponsorship and/or fund products, nothing else)
@@ -48,6 +52,9 @@ class contracts(orm.Model):
         """ Keep GP updated when a contract is modified. """
         gp_connect = gp_connector.GPConnect(cr, uid)
         ids = [ids] if not isinstance(ids, list) else ids
+        # Read data in english
+        if context is None: context = {}
+        context['lang'] = 'en_US'
 
         # If we change the next invoice date, it means we cancel
         # invoices generation and should thus update the situation
@@ -82,9 +89,10 @@ class contracts(orm.Model):
     def _is_gp_compatible(self, contract):
         """ Tells if the contract is compatible with GP. """
         compatible = True
+        pdb.set_trace()
         for line in contract.contract_line_ids:
             compatible = compatible and (
-                _('Sponsorship') in line.product_id.name
+                'Sponsorship' == line.product_id.name
                 or line.product_id.gp_fund_id > 0)
         return compatible
 
