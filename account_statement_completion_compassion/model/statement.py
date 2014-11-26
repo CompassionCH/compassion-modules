@@ -13,10 +13,9 @@ from openerp.osv import orm, fields
 from openerp.addons.account_statement_base_completion.statement \
     import ErrorTooManyPartner
 from openerp import netsvc
-import time
 
-GIFT_TYPES = ['Birthday Gift', 'General Gift',
-              'Family Gift', 'Project Gift', 'Graduation Gift']
+from sponsorship_compassion.model.product import GIFT_TYPES
+import time
 
 
 class AccountStatementCompletionRule(orm.Model):
