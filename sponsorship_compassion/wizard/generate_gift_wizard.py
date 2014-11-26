@@ -13,12 +13,10 @@ from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools import mod10r
 from openerp.tools.translate import _
+
+from ..model.product import GIFT_TYPES
 from datetime import datetime
 import time
-
-
-GIFT_TYPES = {'Birthday Gift': '1', 'General Gift': '2', 'Family Gift': '3',
-              'Project Gift': '4', 'Graduation Gift': '5'}
 
 
 class generate_gift_wizard(orm.TransientModel):
@@ -29,7 +27,7 @@ class generate_gift_wizard(orm.TransientModel):
         'amount': fields.float(_("Gift Amount"), required=True),
         'product_id': fields.many2one(
             'product.product', _("Gift Type"), required=True,
-            domain=[('name', 'in', GIFT_TYPES.keys())]),
+            domain=[('name', 'in', GIFT_TYPES)]),
         'invoice_date': fields.date(_("Invoice date")),
         'description': fields.char(_("Additional comments"), size=200),
     }
@@ -128,7 +126,7 @@ class generate_gift_wizard(orm.TransientModel):
         num_pol_ga = str(contract.num_pol_ga)
         bvr_reference += '0' * (5 - len(num_pol_ga)) + num_pol_ga
         # Type of gift
-        bvr_reference += GIFT_TYPES.get(product.name, '0')
+        bvr_reference += str(GIFT_TYPES.index(product.name)+1)
         bvr_reference += '0' * 4
 
         if len(bvr_reference) == 26:

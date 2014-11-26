@@ -216,7 +216,7 @@ class recurring_contract(orm.Model):
                 if len(line) > 2 and line[2].get('product_id', 0) > 0:
                     product = self.pool.get('product.product').browse(
                         cr, uid, line[2]['product_id'], context)
-                    if product.name == 'Standard Sponsorship':
+                    if product.name == _('Sponsorship'):
                         res['warning'] = {
                             'title': _("Please select a child"),
                             'message': _("You should select a child if you "
