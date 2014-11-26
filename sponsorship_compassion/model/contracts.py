@@ -308,21 +308,17 @@ class recurring_contract(orm.Model):
                                                     context)
 
     def unlink(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
-        contracts = self.read(cr, uid, ids, ['state'], context=context)
-        unlink_ids = []
-
-        for t in contracts:
+        for contract in self.browse(cr, uid, ids, context):
             # We can only delete draft contracts.
-            if t['state'] != 'draft':
+            if contract.state != 'draft':
                 raise orm.except_orm(_('Warning'),
                                      _('You cannot delete a contract that is '
                                        'still active. Terminate it first.'))
             else:
-                unlink_ids.append(t['id'])
+                if contract.child_id:
+                    contract.child_id.write({'sponsor_id': False})
 
-        super(recurring_contract, self).unlink(cr, uid, unlink_ids,
+        super(recurring_contract, self).unlink(cr, uid, ids,
                                                context=context)
         return
 
@@ -479,20 +475,23 @@ class recurring_contract(orm.Model):
 
         # Mark child as departed
         contract = self.browse(cr, uid, contract_id, context)
+        child_vals = {}
         if child_state == 'F' and contract.child_id:
+            child_vals['state'] = 'F'
             child_exit_code = str(child_exit_code)
             exit_reasons = [reason[0] for reason in self.pool.get(
                 'compassion.child').get_gp_exit_reasons(cr, uid, context)]
-            child_vals = {'state': 'F'}
             if child_exit_code in exit_reasons:
-                child_vals.update({'gp_exit_reason': str(child_exit_code)})
+                child_vals['gp_exit_reason'] = str(child_exit_code)
             else:
                 country_id = self.pool.get('res.country').search(
                     cr, uid, [('code', '=', transfer_country_code)],
                     context=context)
                 if country_id:
                     country_id = country_id[0]
-                    child_vals.update({'transfer_country_id': country_id})
+                    child_vals['transfer_country_id'] = country_id
+        if contract.child_id:
+            child_vals['sponsor_id'] = False
             contract.child_id.write(child_vals)
 
         # Delete workflow for this contract
