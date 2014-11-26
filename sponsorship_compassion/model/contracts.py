@@ -76,9 +76,9 @@ class recurring_contract(orm.Model):
                 # Standard way in Odoo to set one2many fields
                 contract.partner_id.write({
                     'category_id': [(6, 0, list(partner_categories))]})
-                wf_service.trg_validate(
-                    uid, 'recurring.contract', contract.id,
-                    'contract_active', cr)
+            wf_service.trg_validate(
+                uid, 'recurring.contract', contract.id,
+                'contract_active', cr)
             logger.info("Contract " + str(contract.id) + " activated.")
 
     def _invoice_paid(self, cr, uid, invoice, context=None):
