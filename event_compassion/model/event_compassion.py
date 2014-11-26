@@ -27,9 +27,9 @@ class event_compassion(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
         for event in self.browse(cr, uid, ids, context):
-            if event.analytics_id:
+            if event.analytic_id:
                 move_line_ids = mv_line_obj.search(
-                    cr, uid, [('analytics_id', '=', event.analytics_id.id)],
+                    cr, uid, [('analytic_id', '=', event.analytic_id.id)],
                     context=context)
                 res[event.id] = move_line_ids
             else:
@@ -70,8 +70,8 @@ class event_compassion(orm.Model):
             'res.partner', 'partners_to_staff_event', 'event_id',
             'partner_id', _("Staff")),
         'description': fields.text('Description'),
-        'analytics_id': fields.many2one('account.analytic.plan.instance',
-                                        'Analytic Distribution'),
+        'analytic_id': fields.many2one('account.analytic.account',
+                                       'Analytic Account'),
         'origin_id': fields.many2one('recurring.contract.origin', 'Origin'),
         'contract_ids': fields.related(
             'origin_id', 'contract_ids', type="one2many",
@@ -98,23 +98,22 @@ class event_compassion(orm.Model):
             event.lead_id.write({'event_id': new_id})
 
         origin_obj = self.pool.get('recurring.contract.origin')
-        analytics_id = self._create_analytics(cr, uid, event, context)
+        analytic_id = self._create_analytic(cr, uid, event, context)
         origin_id = origin_obj.create(cr, uid, {
             'name': event.name + " " + event.start_date[:4],
             'type': 'event',
             'partner_id': event.partner_id.id,
             'event_id': new_id,
-            'analytics_id': analytics_id,
+            'analytic_id': analytic_id,
         }, context)
         event.write({
             'origin_id': origin_id,
-            'analytics_id': analytics_id
+            'analytic_id': analytic_id
         })
         return new_id
 
-    def _create_analytics(self, cr, uid, event, context=None):
-        """ Creates an analytic account together with an analytic distribution
-        100% in the account, given the name and type of the event.
+    def _create_analytic(self, cr, uid, event, context=None):
+        """ Creates an analytic account, given the name and type of the event.
         """
         year = event.start_date[2:4]
         acode = self.pool.get('ir.sequence').get(cr, uid, 'AASEQ')
@@ -140,19 +139,5 @@ class event_compassion(orm.Model):
             'manager_id': event.user_id.id,
             'partner_id': event.partner_id.id,
         }, context)
-        plan_id = self.pool.get('account.analytic.plan.instance').create(
-            cr, uid, {
-                'name': year + '-' + event.name,
-                'code': acode,
-                # TODO : Verify that sales journal is ok.
-                'journal_id': self.pool.get('ir.model.data').get_object(
-                    cr, uid, 'account', 'analytic_journal_sale', context).id,
-                'plan_id': 1},
-            context)
-        self.pool.get('account.analytic.plan.instance.line').create(cr, uid, {
-            'analytic_account_id': account_id,
-            'rate': 100,
-            'plan_id': plan_id
-        }, context)
 
-        return plan_id
+        return account_id
