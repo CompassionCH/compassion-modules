@@ -50,6 +50,7 @@ new model for tracking upcoming events.
         'view/event_compassion_view.xml',
         'view/contract_origin_view.xml',
         'view/crm_lead_view.xml',
+        'view/move_line_view.xml',
     ],
     'demo': [],
     'installable': True,
