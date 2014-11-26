@@ -35,10 +35,15 @@
     'description': """
 Setup child and projects for sponsorship management.
 Webservice information retrieving is also done in this module.
+
+Warning: Requires 'pysftp' (sudo pip install pysftp)
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['mail'],
+    'external_dependencies': {
+        'python': ['pysftp'],
+    },
     'data': [
         'security/sponsorship_groups.xml',
         'security/ir.model.access.csv',
