@@ -29,7 +29,7 @@ class event_compassion(orm.Model):
         for event in self.browse(cr, uid, ids, context):
             if event.analytic_id:
                 move_line_ids = mv_line_obj.search(
-                    cr, uid, [('analytic_id', '=', event.analytic_id.id)],
+                    cr, uid, [('analytic_account_id', '=', event.analytic_id.id)],
                     context=context)
                 res[event.id] = move_line_ids
             else:
