@@ -398,6 +398,12 @@ class compassion_child(orm.Model):
         return True
 
     def child_sponsored(self, cr, uid, ids, context=None):
+        to_remove_from_web = []
+        for child in self.browse(cr, uid, ids, context):
+            if child.state == 'I':
+                to_remove_from_web.append(child.id)
+        if to_remove_from_web:
+            self.child_remove_from_typo3(cr, uid, to_remove_from_web, context)
         self.write(cr, uid, ids, {'state': 'P'}, context)
         return True
 
@@ -420,8 +426,8 @@ class compassion_child(orm.Model):
         host = config.get('typo3_host')
         username = config.get('typo3_user')
         pwd = config.get('typo3_pwd')
-        path = config.get('typo3_path')
         scripts_url = config.get('typo3_scripts_url')
+        path = config.get('typo3_scripts_path')
         api_key = config.get('typo3_api_key')
         if not (host and username and pwd and path and scripts_url
                 and api_key):
@@ -443,11 +449,11 @@ class compassion_child(orm.Model):
     def _typo3_scripts_fetch(self, url, api_key, action, args=None):
         full_url = url + "?api_key=" + api_key + "&action=" + action
         if args is not None:
-            for k, v in args:
+            for k, v in args.items():
                 full_url += "&" + k + "=" + v
         r = requests.get(full_url)
-        if not r.status_code == 200 or "error" in r.text:
+        if not r.status_code == 200 or "Error" in r.text:
             raise orm.except_orm(
                 _("Typo3 Error"),
-                _("Impossible to communicate  with Typo3"))
+                _("Impossible to communicate  with Typo3") + '\n' + r.text)
         return r.text
