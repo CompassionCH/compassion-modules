@@ -11,6 +11,8 @@
 
 import requests
 import json
+import pysftp
+
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
@@ -390,3 +392,48 @@ class compassion_child(orm.Model):
         # TODO Call Webservice to get Exit Details (when service is ready)
         self.write(cr, uid, ids, {'sponsor_id': False}, context)
         return True
+        
+    def child_remove_from_typo3(self, cr, uid, ids, context=None):
+        child_codes = [child.code for child in self.browse(cr, uid, ids,
+                                                           context)]
+        filename = "upd.sql"
+        file_query = open(filename, "wb")
+        for code in child_codes:
+            file_query.write(
+                "delete from tx_drechildpoolmanagement_domain_model_children "
+                "where child_key='%s';\n" % code)
+        file_query.close()
+        host = config.get('typo3_host')
+        username = config.get('typo3_user')
+        pwd = config.get('typo3_pwd')
+        path = config.get('typo3_path')
+        scripts_url = config.get('typo3_scripts_url')
+        api_key = config.get('typo3_api_key')
+        if not (host and username and pwd and path and scripts_url
+                and api_key):
+            raise orm.except_orm('ConfigError',
+                                 'Missing typo3 settings '
+                                 'in conf file')
+        with pysftp.Connection(host, username=username, password=pwd) as sftp:
+            with sftp.cd(path):
+                sftp.put(filename)
+        
+        self._typo3_scripts_fetch(scripts_url, api_key, "upd_db")
+        self._typo3_scripts_fetch(scripts_url, api_key, "delete_photo", {"children": ",".join(child_codes)})
+        
+        for child in self.browse(cr, uid, ids, context):
+            state = 'R' if child.has_been_sponsored else 'N'
+            child.write({'state': state})
+        return True
+        
+    def _typo3_scripts_fetch(self, url, api_key, action, args=None):
+        full_url = url + "?api_key=" + api_key + "&action=" + action
+        if args is not None:
+            for k, v in args:
+                full_url += "&" + k + "=" + v
+        r = requests.get(full_url)
+        if not r.status_code == 200 or "error" in r.text:
+            raise orm.except_orm(
+                _("Typo3 Error"),
+                _("Impossible to communicate  with Typo3"))
+        return r.text
