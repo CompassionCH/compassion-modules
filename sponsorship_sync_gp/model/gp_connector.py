@@ -13,13 +13,11 @@ from openerp.osv import orm
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from mysql_connector.model.mysql_connector import mysql_connector
+from sponsorship_compassion.model.product import GIFT_TYPES
 from datetime import datetime, date
 import logging
 
 logger = logging.getLogger(__name__)
-
-GIFT_TYPES = ['Birthday Gift', 'General Gift',
-              'Family Gift', 'Project Gift', 'Graduation Gift']
 
 
 class GPConnect(mysql_connector):
@@ -234,7 +232,7 @@ class GPConnect(mysql_connector):
         product = invoice_line.product_id
 
         # Determine the nature of the payment (sponsorship, fund)
-        if product.name in GIFT_TYPES + ['Standard Sponsorship']:
+        if product.name in GIFT_TYPES + [_('Sponsorship')]:
             codespe = contract.child_id.code
             typeprojet = "P"
             id_pole = self.selectOne(
