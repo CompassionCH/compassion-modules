@@ -39,8 +39,8 @@ class contracts(orm.Model):
         else:
             raise orm.except_orm(
                 _("Not compatible with GP"),
-                _("You selected some products that are not available in GP."),
-                _("You cannot create this contract.")
+                _("You selected some products that are not available in GP.")
+                + _("You cannot create this contract.")
             )
         return contract_id
 
@@ -75,8 +75,7 @@ class contracts(orm.Model):
                 raise orm.except_orm(
                     _("Not compatible with GP"),
                     _("You selected some products that are not available "
-                      "in GP."),
-                    _("You cannot save this contract."))
+                      "in GP.") + _("You cannot save this contract."))
 
         return res
 
@@ -99,7 +98,7 @@ class contracts(orm.Model):
             if not gp_connect.validate_contract(contract):
                 raise orm.except_orm(
                     _("GP Sync Error"),
-                    _("The contract could not be validated."),
+                    _("The contract could not be validated.") +
                     _("Please contact an IT person."))
         return True
 
@@ -122,7 +121,7 @@ class contracts(orm.Model):
             if not gp_connect.finish_contract(contract):
                 raise orm.except_orm(
                     _("GP Sync Error"),
-                    _("The contract could not be terminated."),
+                    _("The contract could not be terminated.") +
                     _("Please contact an IT person."))
         return True
 
@@ -134,7 +133,7 @@ class contracts(orm.Model):
             if not gp_connect.activate_contract(contract):
                 raise orm.except_orm(
                     _("GP Sync Error"),
-                    _("The contract could not be activated."),
+                    _("The contract could not be activated.") +
                     _("Please contact an IT person."))
 
     def _invoice_paid(self, cr, uid, invoice, context=None):
@@ -164,15 +163,22 @@ class contracts(orm.Model):
                             raise orm.except_orm(
                                 _("GP Sync Error"),
                                 _("The payment could not be registered into "
-                                  "GP."),
-                                _("Please contact an IT person."))
+                                  "GP.") + _("Please contact an IT person."))
                     elif to_update:
                         contract_ids.add(contract.id)
                         if not gp_connect.undo_payment(contract.id):
                             raise orm.except_orm(
                                 _("GP Sync Error"),
-                                _("The payment could not be removed from GP."),
-                                _("Please contact an IT person."))
+                                _("The payment could not be removed from GP.")
+                                + _("Please contact an IT person."))
+
+    def unlink(self, cr, uid, ids, context=None):
+        super(contracts, self).unlink(cr, uid, ids, context)
+        if not isinstance(ids, list):
+            ids = [ids]
+        gp_connect = gp_connector.GPConnect(cr, uid)
+        gp_connect.delete_contracts(ids)
+        return True
 
 
 class contract_group(orm.Model):
