@@ -40,4 +40,5 @@ class portal_wizard(osv.osv_memory):
                     'parent_id': parent_id,
                     'manager_id': user_ids[0],
                 })
+
         return res

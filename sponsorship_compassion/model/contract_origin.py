@@ -41,7 +41,7 @@ class contract_origin(orm.Model):
         if origin.type == 'partner':
             name = origin.partner_id.name
         elif origin.type in ('event', 'marketing'):
-            name = origin.analytics_id.name
+            name = origin.analytic_id.name
         elif origin.type == 'sub':
             if origin.contract_id:
                 name = 'SUB Sponsorship - {0} ({1})'.format(
@@ -76,8 +76,8 @@ class contract_origin(orm.Model):
             " * Other : select only if none other type matches."
         ), required=True),
         'partner_id': fields.many2one('res.partner', _("Partner")),
-        'analytics_id': fields.many2one('account.analytic.plan.instance',
-                                        _("Analytic Distribution")),
+        'analytic_id': fields.many2one('account.analytic.account',
+                                       _("Analytic Account")),
         'contract_ids': fields.one2many(
             'recurring.contract', 'origin_id', _("Contracts originated"),
             readonly=True),

@@ -71,14 +71,14 @@
 	</record>
     
 	
-    <!-- Replace analytic_id by analytics_id in supplier invoice lines -->
+    <!-- Add analytics_id in supplier invoice lines -->
     <record model="ir.ui.view" id="invoice_supplier_form_compassion">
         <field name="name">account.invoice.supplier.form.compassion</field>
         <field name="model">account.invoice</field>
         <field name="priority">40</field>
         <field name="inherit_id" ref="account.invoice_supplier_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='account_analytic_id']" position="replace">
+            <xpath expr="//field[@name='account_analytic_id']" position="after">
                 <field name="analytics_id" groups="analytic.group_analytic_accounting"/>
             </xpath>
         </field>

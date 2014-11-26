@@ -22,12 +22,6 @@
                                                'required': [('type','=','event')]}"
                        options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
             </field>
-            <field name="analytics_id" position="attributes">
-                <attribute name="attrs">
-                    {'invisible': [('type', '!=', 'marketing')],
-                     'required': [('type', '=', 'marketing')]}
-                </attribute>
-            </field>
 		</field>
 	</record>
 </data>
