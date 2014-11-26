@@ -12,8 +12,8 @@
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
-GIFT_TYPES = [_('Birthday Gift'), _('General Gift'),
-              _('Family Gift'), _('Project Gift'), _('Graduation Gift')]
+GIFT_TYPES = ['Birthday Gift', 'General Gift',
+              'Family Gift', 'Project Gift', 'Graduation Gift']
 
 
 class product(orm.Model):
