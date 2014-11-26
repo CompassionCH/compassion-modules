@@ -9,7 +9,7 @@
                 <field name="name"/>
                 <field name="type"/>
                 <field name="partner_id"/>
-                <field name="analytics_id"/>
+                <field name="analytic_id"/>
                 <field name="contract_id"/>
                 <field name="country_id"/>
             </tree>
@@ -32,8 +32,8 @@
                     <group>
                         <field name="partner_id" attrs="{'required': [('type', '=', 'partner')]}"
                                options="{'create': false, 'm2o_dialog': false}"/>
-                        <field name="analytics_id" attrs="{'invisible': [('type', '!=', 'marketing')],
-                                                           'required': [('type', '=', 'marketing')]}"/>
+                        <field name="analytic_id" attrs="{'invisible': [('type', '!=', 'marketing')],
+                                                          'required': [('type', '=', 'marketing')]}"/>
                         <field name="contract_id" attrs="{'invisible': [('type', '!=', 'sub')],
                                                           'required': [('type','=','sub')]}"/>
                         <field name="country_id" attrs="{'invisible': [('type', '!=', 'transfer')],
