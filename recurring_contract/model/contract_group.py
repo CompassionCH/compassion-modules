@@ -223,7 +223,7 @@ class contract_group(orm.Model):
         next_date = contract_obj._compute_next_invoice_date(contract)
         vals['next_invoice_date'] = next_date.strftime(DF)
 
-        contract_obj.write(cr, uid, [contract.id], vals)
+        contract_obj.write(cr, uid, [contract.id], vals, context)
 
     def _get_gen_states(self):
         return ['active']
