@@ -16,7 +16,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from sponsorship_compassion.model.product import GIFT_TYPES
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-import pdb
 
 from . import gp_connector
 
@@ -55,6 +54,9 @@ class contracts(orm.Model):
         # Read data in english
         if context is None: context = {}
         context['lang'] = 'en_US'
+        # Do nothing during the invoice generation process
+        if context.get('invoice_generation'):
+            return super(contracts, self).write(cr, uid, ids, vals, context)
 
         # If we change the next invoice date, it means we cancel
         # invoices generation and should thus update the situation
@@ -89,7 +91,6 @@ class contracts(orm.Model):
     def _is_gp_compatible(self, contract):
         """ Tells if the contract is compatible with GP. """
         compatible = True
-        pdb.set_trace()
         for line in contract.contract_line_ids:
             compatible = compatible and (
                 'Sponsorship' == line.product_id.name
@@ -204,3 +205,14 @@ class contract_group(orm.Model):
                         _("GP Sync Error"),
                         _("Please contact an IT person."))
         return res
+        
+    def _generate_invoice_lines(self, cr, uid, contract, invoice_id,
+                                context=None):
+        """Add in context the information that the generation process is
+        working so that GP is not updated during it."""
+        if context is None:
+            context = {}
+        context['invoice_generation'] = True
+        context['lang'] = 'en_US'   # Generate everything in english
+        super(contract_group, self)._generate_invoice_lines(
+            cr, uid, contract, invoice_id, context)
