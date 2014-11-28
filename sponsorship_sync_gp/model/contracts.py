@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
+from openerp.osv import orm
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
@@ -29,7 +29,8 @@ class contracts(orm.Model):
         contract_id = super(contracts, self).create(cr, uid, vals, context)
         gp_connect = gp_connector.GPConnect(cr, uid)
         # Read data in english
-        if context is None: context = {}
+        if context is None:
+            context = {}
         context['lang'] = 'en_US'
         contract = self.browse(cr, uid, contract_id, context)
         # Check that the contract is compatible with GP
@@ -52,7 +53,8 @@ class contracts(orm.Model):
         gp_connect = gp_connector.GPConnect(cr, uid)
         ids = [ids] if not isinstance(ids, list) else ids
         # Read data in english
-        if context is None: context = {}
+        if context is None:
+            context = {}
         context['lang'] = 'en_US'
         # Do nothing during the invoice generation process
         if context.get('invoice_generation'):
@@ -118,8 +120,8 @@ class contracts(orm.Model):
         for contract in self.browse(cr, uid, ids, context):
             if not gp_connect.finish_contract(contract):
                 raise orm.except_orm(
-                        _("GP Sync Error"),
-                        _("Please contact an IT person."))
+                    _("GP Sync Error"),
+                    _("Please contact an IT person."))
         return True
 
     def contract_terminated(self, cr, uid, ids, context=None):
@@ -163,8 +165,7 @@ class contracts(orm.Model):
                 if contract:
                     to_update = (line.product_id.name not in
                                  GIFT_TYPES) and (contract.id
-                                                               not in
-                                                               contract_ids)
+                                                  not in contract_ids)
                     if last_pay_date and to_update:
                         contract_ids.add(contract.id)
                         if not gp_connect.register_payment(contract.id,
@@ -205,7 +206,7 @@ class contract_group(orm.Model):
                         _("GP Sync Error"),
                         _("Please contact an IT person."))
         return res
-        
+
     def _generate_invoice_lines(self, cr, uid, contract, invoice_id,
                                 context=None):
         """Add in context the information that the generation process is

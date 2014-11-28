@@ -28,7 +28,7 @@ class export_tools():
             else:
                 line = _('%d %ss') % (qty, prod_name)
             res = wizard._complete_line(line, 35)
-                
+
         else:
             res = wizard._complete_line(prod_name, 35)
         return res

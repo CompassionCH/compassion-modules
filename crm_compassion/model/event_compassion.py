@@ -12,6 +12,7 @@
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
+
 class event_compassion(orm.Model):
 
     """A Compassion event. """
@@ -28,7 +29,8 @@ class event_compassion(orm.Model):
         for event in self.browse(cr, uid, ids, context):
             if event.analytic_id:
                 move_line_ids = mv_line_obj.search(
-                    cr, uid, [('analytic_account_id', '=', event.analytic_id.id)],
+                    cr, uid, [
+                        ('analytic_account_id', '=', event.analytic_id.id)],
                     context=context)
                 res[event.id] = move_line_ids
             else:
@@ -36,7 +38,8 @@ class event_compassion(orm.Model):
 
         return res
 
-    def _get_won_sponsorships(self, cr, uid, ids, field_name, arg, context=None):
+    def _get_won_sponsorships(self, cr, uid, ids, field_name, arg,
+                              context=None):
         res = {}
         if not isinstance(ids, list):
             ids = [ids]
@@ -45,14 +48,14 @@ class event_compassion(orm.Model):
                             if contract.state in ('active', 'terminated')]
             res[event.id] = len(contract_ids)
         return res
-        
+
     def _get_event_from_contract(contract_obj, cr, uid, ids, context=None):
         res = []
         for contract in contract_obj.browse(cr, uid, ids, context):
             if contract.state == 'active' and contract.origin_id.event_id:
                 res.append(contract.origin_id.event_id.id)
         return res
-        
+
     def _get_year(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         if not isinstance(ids, list):
@@ -70,7 +73,8 @@ class event_compassion(orm.Model):
             ('meeting', _("Meeting")),
             ('sport', _("Sport event"))], _("Type"), required=True),
         'start_date': fields.datetime(_("Start date"), required=True),
-        'year': fields.function(_get_year, type='char', string='Year', store=True),
+        'year': fields.function(_get_year, type='char', string='Year',
+                                store=True),
         'end_date': fields.datetime(_("End date")),
         'partner_id': fields.many2one('res.partner', _("Customer")),
         'zip_id': fields.many2one('res.better.zip', 'Address'),
@@ -99,7 +103,7 @@ class event_compassion(orm.Model):
                                    readonly=True),
         'won_sponsorships': fields.function(
             _get_won_sponsorships, type="integer",
-            string=_("Won sponsorships"), store = {
+            string=_("Won sponsorships"), store={
                 'recurring.contract': (
                     _get_event_from_contract,
                     ['state'],
@@ -136,9 +140,10 @@ class event_compassion(orm.Model):
             'project_id': project_id,
         })
         return new_id
-        
+
     def create_from_gp(self, cr, uid, vals, context=None):
-        if context is None: context = {}
+        if context is None:
+            context = {}
         context['use_tasks'] = False
         return self.create(cr, uid, vals, context)
 
@@ -147,7 +152,8 @@ class event_compassion(orm.Model):
         """
         year = event.start_date[2:4]
         # acode = self.pool.get('ir.sequence').get(cr, uid, 'AASEQ')
-        if context is None: context = {}
+        if context is None:
+            context = {}
         context['lang'] = 'en_US'
         analytics_obj = self.pool.get('account.analytic.account')
         categ_id = analytics_obj.search(
@@ -179,18 +185,18 @@ class event_compassion(orm.Model):
             'project_type': event.type,
             'state': 'open' if context.get('use_tasks', True) else 'close',
         }, context)
-        
+
         # account_id = analytics_obj.create(cr, uid, {
-            # 'name': event.name,
-            # 'type': 'normal',
-            # 'code': acode,
-            # 'parent_id': acc_ids[0],
-            # 'manager_id': event.user_id.id,
-            # 'partner_id': event.partner_id.id,
+        # 'name': event.name,
+        # 'type': 'normal',
+        # 'code': acode,
+        # 'parent_id': acc_ids[0],
+        # 'manager_id': event.user_id.id,
+        # 'partner_id': event.partner_id.id,
         # }, context)
 
         return project_id
-        
+
     def show_tasks(self, cr, uid, ids, context=None):
         event = self.browse(cr, uid, ids[0], context)
         project_id = event.project_id.id

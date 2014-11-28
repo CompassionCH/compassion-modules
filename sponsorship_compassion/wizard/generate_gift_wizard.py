@@ -38,7 +38,8 @@ class generate_gift_wizard(orm.TransientModel):
 
     def generate_invoice(self, cr, uid, ids, context=None):
         # Read data in english
-        if context is None: context = {}
+        if context is None:
+            context = {}
         context['lang'] = 'en_US'
         # Id of contract is stored in context
         contract = self.pool.get('recurring.contract').browse(
