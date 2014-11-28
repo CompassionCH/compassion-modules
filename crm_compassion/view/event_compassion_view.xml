@@ -20,6 +20,7 @@
                     <field name="partner_id"/>
                     <field name="city"/>
                     <field name="user_id"/>
+                    <field name="won_sponsorships"/>
                 </tree>
             </field>
         </record>
@@ -35,6 +36,10 @@
                             <h1>
                                 <field name="name" default_focus="1" />
                             </h1>
+                        </div>
+                        <div class="oe_right oe_button_box" name="buttons">
+                            <field name="project_id" invisible="1"/>
+                            <button name="show_tasks" string="Open tasks" type="object"/>
                         </div>
                         <group>
                             <group>
@@ -102,6 +107,7 @@
                         <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
                         <filter string="Customer" domain="[]" context="{'group_by':'partner_id'}"/>
                         <filter string="Responsible" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter string="Year" domain="[]" context="{'group_by':'year'}"/>
                     </group>
                 </search>
             </field>
