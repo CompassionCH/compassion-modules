@@ -37,7 +37,8 @@ class project_project(orm.Model):
 
     def create(self, cr, uid, vals, context=None):
         type = vals.get('project_type')
-        if type in ('stand', 'concert', 'presentation', 'meeting', 'sport'):
+        if type in ('stand', 'concert', 'presentation', 'meeting',
+                    'sport') and not context.get('from_event'):
             raise orm.except_orm(
                 _("Type not allowed for creation"),
                 _("Please create an event. It will automatically create "
