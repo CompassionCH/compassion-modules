@@ -29,10 +29,10 @@
 
 {
     'name': 'Compassion CH - Events',
-    'version': '0.1.0',
+    'version': '0.3.0',
     'category': 'CRM',
     'sequence': 150,
-    'description': """Compassion Events
+    'description': """Compassion CRM - Events and Projects
 ==============================================================================
 
 This module helps Compassion CH to manage its planned events, by creating a
@@ -40,10 +40,11 @@ new model for tracking upcoming events.
 
  * Won opportunities create automatically a new events
  * Each event is linked to an analytic account
+ * Portal users have an analytic account to track sponsorships gained by them
 """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['mail', 'better_zip', 'sponsorship_compassion'],
+    'depends': ['mail', 'better_zip', 'sponsorship_compassion', 'project'],
     'data': [
         'security/ir.model.access.csv',
         'data/account_analytic_data.xml',
@@ -51,6 +52,7 @@ new model for tracking upcoming events.
         'view/contract_origin_view.xml',
         'view/crm_lead_view.xml',
         'view/move_line_view.xml',
+        'view/project_view.xml',
     ],
     'demo': [],
     'installable': True,

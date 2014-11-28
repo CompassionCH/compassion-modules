@@ -50,11 +50,11 @@ class recurring_contract(orm.Model):
                     contract = invoice_line.contract_id
                     if contract.state == 'waiting' and last_pay_date:
                         # Activate the contract and set the
-                        # first_payment_date
+                        # activation_date
                         res.append(invoice_line.contract_id.id)
                         self.write(
                             cr, uid, contract.id, {
-                                'first_payment_date':
+                                'activation_date':
                                     datetime.today().strftime(DF)},
                             context=context)
 
@@ -148,7 +148,7 @@ class recurring_contract(orm.Model):
             _("Type of sponsorship")),
         'correspondant_id': fields.many2one(
             'res.partner', _('Correspondant'), required=True),
-        'first_payment_date': fields.date(
+        'activation_date': fields.date(
             _('Activation date'), readonly=True),
         # Add a waiting state
         'state': fields.selection([
@@ -188,7 +188,8 @@ class recurring_contract(orm.Model):
                                        select=True),
         'origin_id': fields.many2one('recurring.contract.origin', _("Origin"),
                                      required=True, readonly=True,
-                                     states={'draft': [('readonly', False)]}),
+                                     states={'draft': [('readonly', False)]},
+                                     ondelete='restrict'),
         'channel': fields.selection(_get_channels, string=_("Channel"),
                                     required=True, readonly=True,
                                     states={'draft': [('readonly', False)]}),
@@ -303,7 +304,7 @@ class recurring_contract(orm.Model):
         num_pol_ga = self.browse(cr, uid, id, context=context).num_pol_ga
         default.update({
             'child_id': False,
-            'first_payment_date': False,
+            'activation_date': False,
             'is_active': False,
             'num_pol_ga': num_pol_ga + 1,
         })
