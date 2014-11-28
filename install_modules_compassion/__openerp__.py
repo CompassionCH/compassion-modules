@@ -46,7 +46,7 @@ Warning : This module requires python-MySQLdb to be installed on the server.
         'account_advanced_reconcile_compassion',
         'lsv_compassion',
         'bvr_ref_compassion',
-        'event_compassion',
+        'crm_compassion',
         'partner_compassion',
         'mail_thread_compassion',
         'password_pusher_compassion',

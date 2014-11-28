@@ -192,7 +192,7 @@ class GPConnect(mysql_connector):
         sql_query = "UPDATE Poles SET typep=%s, bascule=curdate(), "\
                     "datepremier=%s WHERE id_erp={}".format(contract.id)
         typep = '+' if contract.total_amount > 42 else 'S'
-        return self.query(sql_query, [typep, contract.first_payment_date])
+        return self.query(sql_query, [typep, contract.activation_date])
 
     def finish_contract(self, contract):
         state = 'F' if contract.state == 'terminated' else 'A'

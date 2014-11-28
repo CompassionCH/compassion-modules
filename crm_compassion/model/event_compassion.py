@@ -12,7 +12,6 @@
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
-
 class event_compassion(orm.Model):
 
     """A Compassion event. """
@@ -43,8 +42,23 @@ class event_compassion(orm.Model):
             ids = [ids]
         for event in self.browse(cr, uid, ids, context):
             contract_ids = [contract.id for contract in event.contract_ids
-                            if contract.state not in ('draft', 'cancelled')]
+                            if contract.state in ('active', 'terminated')]
             res[event.id] = len(contract_ids)
+        return res
+        
+    def _get_event_from_contract(contract_obj, cr, uid, ids, context=None):
+        res = []
+        for contract in contract_obj.browse(cr, uid, ids, context):
+            if contract.state == 'active' and contract.origin_id.event_id:
+                res.append(contract.origin_id.event_id.id)
+        return res
+        
+    def _get_year(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        if not isinstance(ids, list):
+            ids = [ids]
+        for event in self.browse(cr, uid, ids, context):
+            res[event.id] = event.start_date[0:4]
         return res
 
     _columns = {
@@ -56,6 +70,7 @@ class event_compassion(orm.Model):
             ('meeting', _("Meeting")),
             ('sport', _("Sport event"))], _("Type"), required=True),
         'start_date': fields.datetime(_("Start date"), required=True),
+        'year': fields.function(_get_year, type='char', string='Year', store=True),
         'end_date': fields.datetime(_("End date")),
         'partner_id': fields.many2one('res.partner', _("Customer")),
         'zip_id': fields.many2one('res.better.zip', 'Address'),
@@ -83,7 +98,14 @@ class event_compassion(orm.Model):
         'lead_id': fields.many2one('crm.lead', _('Opportunity'),
                                    readonly=True),
         'won_sponsorships': fields.function(
-            _get_won_sponsorships, type="integer", string=_("Won sponsorships"))
+            _get_won_sponsorships, type="integer",
+            string=_("Won sponsorships"), store = {
+                'recurring.contract': (
+                    _get_event_from_contract,
+                    ['state'],
+                    10)
+            }),
+        'project_id': fields.many2one('project.project', _("Project"))
     }
 
     def create(self, cr, uid, vals, context=None):
@@ -98,7 +120,9 @@ class event_compassion(orm.Model):
             event.lead_id.write({'event_id': new_id})
 
         origin_obj = self.pool.get('recurring.contract.origin')
-        analytic_id = self._create_analytic(cr, uid, event, context)
+        project_id = self._create_project(cr, uid, event, context)
+        analytic_id = self.pool.get('project.project').browse(
+            cr, uid, project_id, context).analytic_account_id.id
         origin_id = origin_obj.create(cr, uid, {
             'name': event.name + " " + event.start_date[:4],
             'type': 'event',
@@ -108,15 +132,23 @@ class event_compassion(orm.Model):
         }, context)
         event.write({
             'origin_id': origin_id,
-            'analytic_id': analytic_id
+            'analytic_id': analytic_id,
+            'project_id': project_id,
         })
         return new_id
+        
+    def create_from_gp(self, cr, uid, vals, context=None):
+        if context is None: context = {}
+        context['use_tasks'] = False
+        return self.create(cr, uid, vals, context)
 
-    def _create_analytic(self, cr, uid, event, context=None):
-        """ Creates an analytic account, given the name and type of the event.
+    def _create_project(self, cr, uid, event, context=None):
+        """ Creates a project, given the name and type of the event.
         """
         year = event.start_date[2:4]
-        acode = self.pool.get('ir.sequence').get(cr, uid, 'AASEQ')
+        # acode = self.pool.get('ir.sequence').get(cr, uid, 'AASEQ')
+        if context is None: context = {}
+        context['lang'] = 'en_US'
         analytics_obj = self.pool.get('account.analytic.account')
         categ_id = analytics_obj.search(
             cr, uid, [('name', 'ilike', event.type)], context=context)[0]
@@ -131,13 +163,50 @@ class event_compassion(orm.Model):
                 'code': 'AA' + event.type[:2].upper() + year,
                 'parent_id': categ_id
             }, context)]
-        account_id = analytics_obj.create(cr, uid, {
-            'name': event.name,
-            'type': 'normal',
-            'code': acode,
-            'parent_id': acc_ids[0],
-            'manager_id': event.user_id.id,
+        members = self.pool.get('res.users').search(
+            cr, uid,
+            [('partner_id', 'in', [p.id for p in event.staff_ids])],
+            context=context)
+        project_id = self.pool.get('project.project').create(cr, uid, {
+            'name': event.name + ' ' + event.start_date[0:4],
+            'use_tasks': context.get('use_tasks', True),
+            'user_id': event.user_id.id,
             'partner_id': event.partner_id.id,
+            'members': [(6, 0, members)],   # many2many field
+            'date_start': event.start_date,
+            'date': event.end_date,
+            'parent_id': acc_ids[0],
+            'project_type': event.type,
+            'state': 'open' if context.get('use_tasks', True) else 'close',
         }, context)
+        
+        # account_id = analytics_obj.create(cr, uid, {
+            # 'name': event.name,
+            # 'type': 'normal',
+            # 'code': acode,
+            # 'parent_id': acc_ids[0],
+            # 'manager_id': event.user_id.id,
+            # 'partner_id': event.partner_id.id,
+        # }, context)
 
-        return account_id
+        return project_id
+        
+    def show_tasks(self, cr, uid, ids, context=None):
+        event = self.browse(cr, uid, ids[0], context)
+        project_id = event.project_id.id
+        return {
+            'name': 'Project Tasks',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'kanban,tree,form,calendar,gantt,graph',
+            'view_type': 'form',
+            'res_model': 'project.task',
+            'src_model': 'crm.event.compassion',
+            'context': {
+                'search_default_project_id': [project_id],
+                'default_project_id': project_id,
+                'active_test': False},
+            'search_view_id': self.pool.get(
+                'ir.model.data'
+            ).get_object_reference(cr, uid, 'project',
+                                   'view_task_search_form')[1]
+        }

@@ -19,6 +19,8 @@ class portal_wizard(osv.osv_memory):
 
     def action_apply(self, cr, uid, ids, context=None):
         res = super(portal_wizard, self).action_apply(cr, uid, ids, context)
+        if context is None: context = {}
+        context['lang'] = 'en_US'   # Search accounts with english names
         wizard = self.browse(cr, uid, ids[0], context)
         for user in wizard.user_ids:
             user_ids = self.pool.get('res.users').search(

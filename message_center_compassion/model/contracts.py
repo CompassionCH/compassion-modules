@@ -42,7 +42,7 @@ class recurring_contract(orm.Model):
                     'action_id': action_id,
                     'object_id': contract.partner_id.id,
                     'partner_id': contract.partner_id.id,
-                    'date': contract.first_payment_date,
+                    'date': contract.activation_date,
                 }
                 message_obj.create(cr, uid, message_vals, context=context)
 
@@ -91,7 +91,7 @@ class recurring_contract(orm.Model):
             ('child_id', '=', contract.child_id.id)], context)
         message_obj.write(cr, uid, message_ids, {
             'state': 'sent',
-            'process_date': contract.first_payment_date}, context)
+            'process_date': contract.activation_date}, context)
         return True
 
     def _invoice_paid(self, cr, uid, invoice, context=None):

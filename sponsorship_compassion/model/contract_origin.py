@@ -92,3 +92,23 @@ class contract_origin(orm.Model):
         _("You cannot have two origins with same name."
           "The origin does probably already exist.")
     )]
+
+    def create(self, cr, uid, vals, context=None):
+        """Try to find existing origin instead of raising an error."""
+        try:
+            id = super(contract_origin, self).create(cr, uid, vals, context)
+        except Error:
+            # Find the origin
+            found_id = self.search(cr, uid, [
+                ('type', '=', vals.get('type')),
+                ('partner_id', '=', vals.get('type')),
+                ('analytic_id', '=', vals.get('type')),
+                ('contract_id', '=', vals.get('type')),
+                ('country_id', '=', vals.get('type')),
+                ('other_name', '=', vals.get('type')),
+            ], context=context)
+            if found_id:
+                id = found_id[0]
+            else:
+                raise
+        return id

@@ -33,7 +33,8 @@
                         <field name="partner_id" attrs="{'required': [('type', '=', 'partner')]}"
                                options="{'create': false, 'm2o_dialog': false}"/>
                         <field name="analytic_id" attrs="{'invisible': [('type', '!=', 'marketing')],
-                                                          'required': [('type', '=', 'marketing')]}"/>
+                                                          'required': [('type', '=', 'marketing')]}"
+                               domain="[('parent_id.name','=','Campaign')]"/>
                         <field name="contract_id" attrs="{'invisible': [('type', '!=', 'sub')],
                                                           'required': [('type','=','sub')]}"/>
                         <field name="country_id" attrs="{'invisible': [('type', '!=', 'transfer')],
