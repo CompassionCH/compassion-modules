@@ -51,8 +51,6 @@ Warning: Requires 'pysftp' (sudo pip install pysftp)
         'view/child_compassion_property_view.xml',
         'view/child_description_wizard_view.xml',
         'view/project_compassion_view.xml',
-        'security/sponsorship_groups.xml',
-        'security/ir.model.access.csv',
         'workflow/child_workflow.xml',
     ],
     'css': ['static/src/css/child_compassion.css'],

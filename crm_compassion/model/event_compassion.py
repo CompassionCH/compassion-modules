@@ -173,6 +173,7 @@ class event_compassion(orm.Model):
             cr, uid,
             [('partner_id', 'in', [p.id for p in event.staff_ids])],
             context=context)
+        context['from_event'] = True
         project_id = self.pool.get('project.project').create(cr, uid, {
             'name': event.name + ' ' + event.start_date[0:4],
             'use_tasks': context.get('use_tasks', True),
