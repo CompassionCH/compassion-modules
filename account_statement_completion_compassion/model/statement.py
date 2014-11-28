@@ -288,7 +288,7 @@ class AccountStatementCompletionRule(orm.Model):
     def _generate_invoice_line(self, cr, uid, invoice_id, product, st_line,
                                partner_id, context=None):
         inv_line_data = {
-            'name': st_line['name'],
+            'name': product.name,
             'account_id': product.property_account_income.id,
             'price_unit': st_line['amount'],
             'quantity': 1,
