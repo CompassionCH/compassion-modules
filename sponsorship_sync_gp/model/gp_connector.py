@@ -319,7 +319,7 @@ class GPConnect(mysql_connector):
         sql_query = update_string % (update_fields, child.code)
         logger.info(sql_query)
         return self.query(sql_query)
-        
+
     def delete_contracts(self, ids):
         return self.query(
             "DELETE FROM Poles WHERE id_erp IN (%s)", ",".join(

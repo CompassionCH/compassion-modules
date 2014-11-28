@@ -412,7 +412,7 @@ class compassion_child(orm.Model):
         # TODO Call Webservice to get Exit Details (when service is ready)
         self.write(cr, uid, ids, {'sponsor_id': False}, context)
         return True
-        
+
     def child_remove_from_typo3(self, cr, uid, ids, context=None):
         child_codes = [child.code for child in self.browse(cr, uid, ids,
                                                            context)]
@@ -437,15 +437,16 @@ class compassion_child(orm.Model):
         with pysftp.Connection(host, username=username, password=pwd) as sftp:
             with sftp.cd(path):
                 sftp.put(filename)
-        
+
         self._typo3_scripts_fetch(scripts_url, api_key, "upd_db")
-        self._typo3_scripts_fetch(scripts_url, api_key, "delete_photo", {"children": ",".join(child_codes)})
-        
+        self._typo3_scripts_fetch(scripts_url, api_key, "delete_photo",
+                                  {"children": ",".join(child_codes)})
+
         for child in self.browse(cr, uid, ids, context):
             state = 'R' if child.has_been_sponsored else 'N'
             child.write({'state': state})
         return True
-        
+
     def _typo3_scripts_fetch(self, url, api_key, action, args=None):
         full_url = url + "?api_key=" + api_key + "&action=" + action
         if args is not None:

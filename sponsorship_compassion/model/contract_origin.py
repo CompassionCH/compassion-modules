@@ -11,6 +11,7 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
+from psycopg2 import IntegrityError
 
 
 class contract_origin(orm.Model):
@@ -97,15 +98,16 @@ class contract_origin(orm.Model):
         """Try to find existing origin instead of raising an error."""
         try:
             id = super(contract_origin, self).create(cr, uid, vals, context)
-        except Error:
+        except IntegrityError:
             # Find the origin
+            cr.commit()     # Release the lock
             found_id = self.search(cr, uid, [
                 ('type', '=', vals.get('type')),
-                ('partner_id', '=', vals.get('type')),
-                ('analytic_id', '=', vals.get('type')),
-                ('contract_id', '=', vals.get('type')),
-                ('country_id', '=', vals.get('type')),
-                ('other_name', '=', vals.get('type')),
+                ('partner_id', '=', vals.get('partner_id')),
+                ('analytic_id', '=', vals.get('analytic_id')),
+                ('contract_id', '=', vals.get('contract_id')),
+                ('country_id', '=', vals.get('country_id')),
+                ('other_name', '=', vals.get('other_name')),
             ], context=context)
             if found_id:
                 id = found_id[0]

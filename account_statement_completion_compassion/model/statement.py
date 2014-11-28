@@ -218,7 +218,8 @@ class AccountStatementCompletionRule(orm.Model):
         """ Genereates an invoice corresponding to the statement line read
             in order to reconcile the corresponding move lines. """
         # Read data in english
-        if context is None: context = {}
+        if context is None:
+            context = {}
         context['lang'] = 'en_US'
         product = self.pool.get('product.product').browse(
             cr, uid, self._find_product_id(
