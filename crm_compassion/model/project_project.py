@@ -15,7 +15,7 @@ from openerp.tools.translate import _
 
 class project_project(orm.Model):
     _inherit = "project.project"
-    
+
     _columns = {
         'project_type': fields.selection([
             ('stand', _("Stand")),
@@ -25,7 +25,7 @@ class project_project(orm.Model):
             ('sport', _("Sport event")),
             ('marketing', _("Marketing campaign"))], _('Type'))
     }
-    
+
     def on_change_type(self, cr, uid, ids, project_type, context=None):
         res = {}
         if project_type == 'marketing':
@@ -34,7 +34,7 @@ class project_project(orm.Model):
                 context={'lang': 'en_US'})
             res['value'] = {'parent_id': parent_id[0] if parent_id else False}
         return res
-        
+
     def create(self, cr, uid, vals, context=None):
         type = vals.get('project_type')
         if type in ('stand', 'concert', 'presentation', 'meeting', 'sport'):

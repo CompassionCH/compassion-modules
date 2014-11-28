@@ -10,7 +10,6 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
-from openerp.tools.translate import _
 
 GIFT_TYPES = ['Birthday Gift', 'General Gift',
               'Family Gift', 'Project Gift', 'Graduation Gift']
