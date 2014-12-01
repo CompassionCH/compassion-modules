@@ -34,7 +34,7 @@ class contracts(orm.Model):
         context['lang'] = 'en_US'
         # Write contract in GP
         contract = self.browse(cr, uid, contract_id, context)
-        self._write_contract_in_gp(gp_connect, contract)
+        self._write_contract_in_gp(uid, gp_connect, contract)
         # Close MySQL connection
         del(gp_connect)
 
@@ -70,12 +70,12 @@ class contracts(orm.Model):
         # Update GP
         res = super(contracts, self).write(cr, uid, ids, vals, context)
         for contract in self.browse(cr, uid, ids, context):
-            self._write_contract_in_gp(gp_connect, contract)
+            self._write_contract_in_gp(uid, gp_connect, contract)
         # Close MySQL connection
         del(gp_connect)
         return res
 
-    def _write_contract_in_gp(self, gp_connect, contract):
+    def _write_contract_in_gp(self, uid, gp_connect, contract):
         if self._is_gp_compatible(contract):
             if not gp_connect.create_or_update_contract(uid, contract):
                 raise orm.except_orm(
