@@ -10,6 +10,7 @@
 ##############################################################################
 
 from openerp.osv import orm
+from sponsorship_compassion.model.product import GIFT_TYPES
 import logging
 
 logger = logging.getLogger(__name__)
@@ -100,10 +101,6 @@ class recurring_contract(orm.Model):
         super(recurring_contract, self)._invoice_paid(cr, uid, invoice,
                                                       context)
         if invoice.payment_ids:
-            gift_product_names = [
-                'Birthday Gift', 'General Gift', 'Family Gift',
-                'Project Gift', 'Graduation Gift'
-            ]
             message_obj = self.pool.get('gmc.message.pool')
             action_obj = self.pool.get('gmc.action')
             action_id = action_obj.search(
@@ -114,7 +111,7 @@ class recurring_contract(orm.Model):
                 'date': invoice.date_invoice,
             }
             gift_ids = self.pool.get('product.product').search(
-                cr, uid, [('name_template', 'in', gift_product_names)],
+                cr, uid, [('name_template', 'in', GIFT_TYPES)],
                 context={'lang': 'en_US'})
 
             for invoice_line in invoice.invoice_line:
