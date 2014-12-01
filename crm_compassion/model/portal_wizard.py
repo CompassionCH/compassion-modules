@@ -22,7 +22,7 @@ class portal_wizard(osv.osv_memory):
         res = super(portal_wizard, self).action_apply(cr, uid, ids, context)
         if context is None:
             context = {}
-        context['lang'] = 'en_US'   # Search accounts with english names
+        context['lang'] = 'en_US'   # Search accounts with English names
         wizard = self.browse(cr, uid, ids[0], context)
         for user in wizard.user_ids:
             user_ids = self.pool.get('res.users').search(
@@ -33,7 +33,8 @@ class portal_wizard(osv.osv_memory):
             acc_ids = analytics_obj.search(
                 cr, uid, [('name', '=', partner_name)], context=context)
             if not acc_ids and user_ids:
-                acode = self.pool.get('ir.sequence').get(cr, uid, 'AASEQ')
+                acode = self.pool.get('ir.sequence').get(
+                    cr, uid, 'account.analytic.account')
                 parent_id = analytics_obj.search(
                     cr, uid, [('name', '=', 'Partners')],
                     context=context)[0]

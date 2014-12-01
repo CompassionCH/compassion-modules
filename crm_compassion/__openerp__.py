@@ -38,8 +38,9 @@
 This module helps Compassion CH to manage its planned events, by creating a
 new model for tracking upcoming events.
 
- * Won opportunities create automatically a new events
- * Each event is linked to an analytic account
+ * Won opportunities create automatically a new event
+ * Each event is linked to a project and its analytic account
+ * Each event creates a sponsorship origin
  * Portal users have an analytic account to track sponsorships gained by them
 """,
     'author': 'Compassion CH',

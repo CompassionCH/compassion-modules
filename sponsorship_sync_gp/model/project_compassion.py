@@ -22,6 +22,10 @@ class project_compassion(orm.Model):
 
     def suspend_project_from_gp(self, cr, uid, project_id, start, months,
                                 context=None):
+        """ When a project is suspended from GP, We update all contracts of
+        sponsored children in the project, so that we don't create invoices
+        during the period of suspension.
+        """
         date_start = datetime.strptime(start, DF)
         date_end = date_start + relativedelta(months=months)
         project = self.browse(cr, uid, project_id, context)

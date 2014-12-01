@@ -181,6 +181,7 @@ class GPConnect(mysql_connector):
         self._find_codespe(contract)
         next_invoice_date = datetime.strptime(contract.next_invoice_date,
                                               DF).date()
+        # Month corresponds to number of months already paid
         month = next_invoice_date.month - \
             1 if next_invoice_date.day <= 15 else next_invoice_date.month
         date_start = next_invoice_date.replace(day=1)
@@ -214,11 +215,12 @@ class GPConnect(mysql_connector):
     def register_payment(self, contract_id, payment_date=None, amount=1):
         """ When a new payment is done (invoice paid), update the Sponsorship
         in GP. """
-        sql_date = ", datedernier='" + \
-            payment_date + "'" if payment_date else ""
-        sql_query = "UPDATE Poles SET MOIS=MOIS+" + \
-            str(amount) + sql_date + " WHERE id_erp=%s"
-        return self.query(sql_query, contract_id)
+        sql_date = ", datedernier='{}'".format(payment_date) \
+            if payment_date else ""
+        sql_query = "UPDATE Poles SET MOIS=MOIS+{:d}{} " \
+                    "WHERE id_erp={:d}".format(amount, sql_date, contract_id)
+        logger.info(sql_query)
+        return self.query(sql_query)
 
     def undo_payment(self, contract_id):
         """ Set the MOIS value backwards. """
@@ -302,20 +304,27 @@ class GPConnect(mysql_connector):
         update_fields = "situation='{}'".format(child.state)
         if child.sponsor_id:
             update_fields += ", codega='{}'".format(child.sponsor_id.ref)
+
         if child.state == 'F':
-            # Set the child exit reason in Poles and Enfant
+            # If the child is sponsored, mark the sponsorship as terminated in GP
+            # and set the child exit reason in tables Poles and Enfant
             end_reason = child.gp_exit_reason or \
                 self.transfer_mapping[child.transfer_country_id.code]
             update_fields += ", id_motif_fin={}".format(end_reason)
-            if not child.transfer_country_id:   # On ne met pas comme motif
-                                                # de fin dans un pole, un
-                                                # transfert d'enfant.
-                self.query("UPDATE Poles SET id_motif_fin=%s WHERE codespe=%s"
-                           " AND codega=(SELECT codega from Enfants WHERE "
-                           "code=%s) ORDER BY datecreation DESC Limit 1",
-                           [end_reason, child.code, child.code])
+            # We don't put a child transfer in ending reason of a sponsorship
+            if not child.transfer_country_id:
+                pole_sql = "UPDATE Poles SET TYPEP = IF(TYPEP = 'C', " \
+                           "'A', 'F'), id_motif_fin={}, datefin=curdate() " \
+                           "WHERE codespe='{}' AND TYPEP NOT IN " \
+                           "('F','A')".format(end_reason, child.code)
+                logger.info(pole_sql)
+                self.query(pole_sql)
+
         if child.state == 'P':
-            update_fields += ", datedelegue=NULL, codedelegue=''"
+            # Remove delegation and end_reason, if any was set
+            update_fields += ", datedelegue=NULL, codedelegue=''" \
+                             ", id_motif_fin=NULL"
+
         sql_query = update_string % (update_fields, child.code)
         logger.info(sql_query)
         return self.query(sql_query)
