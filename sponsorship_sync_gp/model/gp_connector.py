@@ -306,8 +306,8 @@ class GPConnect(mysql_connector):
             update_fields += ", codega='{}'".format(child.sponsor_id.ref)
 
         if child.state == 'F':
-            # If the child is sponsored, mark the sponsorship as terminated in GP
-            # and set the child exit reason in tables Poles and Enfant
+            # If the child is sponsored, mark the sponsorship as terminated in
+            # GP and set the child exit reason in tables Poles and Enfant
             end_reason = child.gp_exit_reason or \
                 self.transfer_mapping[child.transfer_country_id.code]
             update_fields += ", id_motif_fin={}".format(end_reason)
