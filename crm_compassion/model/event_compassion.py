@@ -115,7 +115,7 @@ class event_compassion(orm.Model):
     def create(self, cr, uid, vals, context=None):
         """ When an event is created:
         - link it to the originating Opportunity,
-        - create an analytic account,
+        - create a project and link to its analytic account,
         - create an origin for sponsorships.
         """
         new_id = super(event_compassion, self).create(cr, uid, vals, context)
@@ -123,10 +123,10 @@ class event_compassion(orm.Model):
         if event.lead_id:
             event.lead_id.write({'event_id': new_id})
 
-        origin_obj = self.pool.get('recurring.contract.origin')
         project_id = self._create_project(cr, uid, event, context)
         analytic_id = self.pool.get('project.project').browse(
             cr, uid, project_id, context).analytic_account_id.id
+        origin_obj = self.pool.get('recurring.contract.origin')
         origin_id = origin_obj.create(cr, uid, {
             'name': event.name + " " + event.start_date[:4],
             'type': 'event',
@@ -144,14 +144,14 @@ class event_compassion(orm.Model):
     def create_from_gp(self, cr, uid, vals, context=None):
         if context is None:
             context = {}
+        # Don't create project tasks for an old Event imported from GP.
         context['use_tasks'] = False
         return self.create(cr, uid, vals, context)
 
     def _create_project(self, cr, uid, event, context=None):
-        """ Creates a project, given the name and type of the event.
+        """ Creates a new project based on the event.
         """
         year = event.start_date[2:4]
-        # acode = self.pool.get('ir.sequence').get(cr, uid, 'AASEQ')
         if context is None:
             context = {}
         context['lang'] = 'en_US'
@@ -175,7 +175,7 @@ class event_compassion(orm.Model):
             context=context)
         context['from_event'] = True
         project_id = self.pool.get('project.project').create(cr, uid, {
-            'name': event.name + ' ' + event.start_date[0:4],
+            'name': event.name + ' ' + event.start_date[:4],
             'use_tasks': context.get('use_tasks', True),
             'user_id': event.user_id.id,
             'partner_id': event.partner_id.id,
@@ -186,15 +186,6 @@ class event_compassion(orm.Model):
             'project_type': event.type,
             'state': 'open' if context.get('use_tasks', True) else 'close',
         }, context)
-
-        # account_id = analytics_obj.create(cr, uid, {
-        # 'name': event.name,
-        # 'type': 'normal',
-        # 'code': acode,
-        # 'parent_id': acc_ids[0],
-        # 'manager_id': event.user_id.id,
-        # 'partner_id': event.partner_id.id,
-        # }, context)
 
         return project_id
 

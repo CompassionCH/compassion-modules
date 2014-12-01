@@ -40,20 +40,5 @@
             <field name="code">AA1186</field>
             <field name="parent_id" search="[('name', '=', 'FUND')]"/>
         </record>
-        
-        <!--
-            Resource: ir.sequence
-        -->
-        <record forcecreate="1" id="aa_seq_type" model="ir.sequence.type">
-            <field name="name">Analytic Account Sequence Type</field>
-            <field name="code">AASEQ</field>
-        </record>
-        <record forcecreate="1" id="aa_sequence" model="ir.sequence">
-            <field name="name">Analytic account codes</field>
-            <field name="code">AASEQ</field>
-            <field name="padding">4</field>
-            <field name="prefix">AA%(y)s</field>
-            <field name="number_next_actual">200</field>
-        </record>
     </data>
 </openerp>
