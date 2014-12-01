@@ -214,7 +214,7 @@ class recurring_contract(orm.Model):
         return res
 
     def on_change_lines(self, cr, uid, ids, line_ids, child_id, context=None):
-        """ Warn if no sponsorship is selected with no child defined. """
+        """ Warn if a sponsorship is selected with no child defined. """
         res = {}
         if not child_id:
             for line in line_ids:
