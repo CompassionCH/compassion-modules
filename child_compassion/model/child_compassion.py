@@ -384,6 +384,7 @@ class compassion_child(orm.Model):
         return True
 
     def child_sponsored(self, cr, uid, ids, context=None):
+        """ Remove children from the website when they are sponsored. """
         to_remove_from_web = []
         for child in self.browse(cr, uid, ids, context):
             if child.state == 'I':

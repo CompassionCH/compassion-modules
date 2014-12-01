@@ -58,7 +58,7 @@ class contract_origin(orm.Model):
         elif origin.type == 'already_sponsor':
             name = 'Was already a sponsor'
         elif origin.type == 'other':
-            name = origin.other_name or 'Other...'
+            name = origin.other_name or 'Other'
         return name
 
     _columns = {
