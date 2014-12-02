@@ -67,15 +67,17 @@ class recurring_contract(orm.Model):
         to add the 'Sponsor' category.
         """
         wf_service = netsvc.LocalService('workflow')
+        ctx = {'lang': 'en_US'}
         if not isinstance(ids, list):
             ids = [ids]
         sponsor_cat_id = self.pool.get('res.partner.category').search(
-            cr, uid, [('name', '=', 'Sponsor')], context={'lang': 'en_US'})[0]
-        for contract in self.browse(cr, uid, ids, context):
+            cr, uid, [('name', '=', 'Sponsor')], context=ctx)[0]
+        for contract in self.browse(cr, uid, ids, context=ctx):
             if contract.child_id:
                 contract.child_id.write({'has_been_sponsored': True})
                 partner_categories = set(
-                    [cat.id for cat in contract.partner_id.category_id])
+                    [cat.id for cat in contract.partner_id.category_id
+                     if cat.name != 'Old Sponsor'])
                 partner_categories.add(sponsor_cat_id)
                 # Standard way in Odoo to set one2many fields
                 contract.partner_id.write({
@@ -90,14 +92,14 @@ class recurring_contract(orm.Model):
         pass
 
     def _is_fully_managed(self, cr, uid, ids, field_name, arg, context):
-        # Tells if the correspondent and the payer is the same person.
+        """Tells if the correspondent and the payer is the same person."""
         res = {}
         for contract in self.browse(cr, uid, ids, context=context):
             res[contract.id] = contract.partner_id == contract.correspondant_id
         return res
 
     def get_ending_reasons(self, cr, uid, context=None):
-        # Returns all the ending reasons of sponsorships
+        """Returns all the ending reasons of sponsorships"""
         return [
             ('1', _("Depart of child")),
             ('2', _("Mistake from our staff")),
@@ -114,8 +116,9 @@ class recurring_contract(orm.Model):
         ]
 
     def _get_channels(self, cr, uid, context=None):
-        # Returns the available channel through the new sponsor
-        # reached Compassion.
+        """Returns the available channel through the new sponsor
+        reached Compassion.
+        """
         return [
             ('postal', _("By mail")),
             ('direct', _("Direct")),
@@ -196,6 +199,45 @@ class recurring_contract(orm.Model):
                                     states={'draft': [('readonly', False)]}),
     }
 
+    def _get_standard_lines(self, cr, uid, context=None):
+        """ Select Sponsorship and General Fund by default """
+        ctx = {'lang': 'en_US'}
+        res = []
+        product_obj = self.pool.get('product.product')
+        sponsorship_id = product_obj.search(
+            cr, uid, [('name', '=', 'Sponsorship')], context=ctx)[0]
+        gen_id = product_obj.search(
+            cr, uid, [('name', '=', 'General Fund')], context=ctx)[0]
+        sponsorship_vals = {
+            'product_id': sponsorship_id,
+            'quantity': 1,
+            'amount': 42,
+            'subtotal': 42
+        }
+        gen_vals = {
+            'product_id': gen_id,
+            'quantity': 1,
+            'amount': 8,
+            'subtotal': 8
+        }
+        res.append([0, 6, sponsorship_vals])
+        res.append([0, 6, gen_vals])
+        return res
+    
+    _defaults = {
+        'contract_line_ids': _get_standard_lines
+    }
+
+    def name_get(self, cr, uid, ids, context=None):
+        """ Gives a friendly name for a sponsorship """
+        res = []
+        for contract in self.browse(cr, uid, ids, context):
+            name = contract.partner_id.ref
+            if contract.child_id:
+                name += ' - ' + contract.child_id.code
+            res.append((contract.id, name))
+        return res
+
     ##########################
     #        CALLBACKS       #
     ##########################
@@ -213,11 +255,13 @@ class recurring_contract(orm.Model):
         })
         return res
 
-    def on_change_lines(self, cr, uid, ids, line_ids, child_id, context=None):
-        """ Warn if a sponsorship is selected with no child defined. """
+    def on_change_lines(self, cr, uid, ids, selected_lines, child_id, context=None):
+        """ Warn if a sponsorship is selected with no child defined. 
+        selected_lines : list([index, False (?), line_values (dict)])
+        """
         res = {}
         if not child_id:
-            for line in line_ids:
+            for line in selected_lines:
                 if len(line) > 2 and line[2].get('product_id', 0) > 0:
                     product = self.pool.get('product.product').browse(
                         cr, uid, line[2]['product_id'], context)
