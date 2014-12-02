@@ -28,22 +28,19 @@ class Child_description_en:
 
     @classmethod
     def _gen_activities_string_en(cls, activities, strings):
-        string = ''
-        activities_string = ''
         if len(activities) == 1:
-            activities_string += activities[0]
+            activities_string = activities[0] + u'. '
         else:
             num_loop = 0
             for activity in activities:
                 num_loop += 1
                 if num_loop == 1:
-                    activities_string += activity
+                    activities_string = activity
                 elif num_loop == len(activities):
-                    activities_string += " and " + activity
+                    activities_string += " and " + activity + u'. '
                 else:
                     activities_string += ", " + activity
-        activities_string += u'. '
-        string += strings + str(activities_string)
+        string = strings + activities_string
         return string
 
     @classmethod
@@ -65,19 +62,18 @@ class Child_description_en:
         activities_gt = [
             activity.value_en
             for activity in case_study.christian_activities_ids
-            if activity.value_en in (hobbies_gt)]
+            if activity.value_en in hobbies_gt]
         activities_iia = [
             activity.value_en
             for activity in case_study.christian_activities_ids
-            if activity.value_en in (hobbies_iia)]
+            if activity.value_en in hobbies_iia]
         string = ''
+        gender_pronoun = 'He' if child.gender == 'M' else 'She'
         if activities_gt:
-            string_gt = u'%s goes to ' % (
-                u'He' if child.gender == 'M' else u'She')
+            string_gt = u'%s goes to ' % gender_pronoun
             string = cls._gen_activities_string_en(activities_gt, string_gt)
         if activities_iia:
-            string_iia = u'%s is in a ' % (
-                u'He' if child.gender == 'M' else u'She')
+            string_iia = u'%s is in a ' % gender_pronoun
             string = cls._gen_activities_string_en(activities_iia, string_iia)
         string = u'As part of the Church, ' + string
         return string
@@ -128,35 +124,32 @@ class Child_description_en:
         ]
         activities_shepw = [activity.value_en
                             for activity in case_study.hobbies_ids
-                            if activity.value_en in (hobbies_shepw)]
+                            if activity.value_en in hobbies_shepw]
         activities_shep = [activity.value_en
                            for activity in case_study.hobbies_ids
-                           if activity.value_en in (hobbies_shep)]
+                           if activity.value_en in hobbies_shep]
         activities_shet = [activity.value_en
                            for activity in case_study.hobbies_ids
-                           if activity.value_en in (hobbies_shet)]
+                           if activity.value_en in hobbies_shet]
         activities_she = [activity.value_en
                           for activity in case_study.hobbies_ids
-                          if activity.value_en in (hobbies_she)]
+                          if activity.value_en in hobbies_she]
         string = ''
+        gender_pronoun = 'He' if child.gender == 'M' else 'She'
         if activities_shepw:
-            string_shepw = u"%s enjoys playing with " % (
-                'He' if child.gender == 'M' else 'She')
+            string_shepw = u"%s enjoys playing with " % gender_pronoun
             string += cls._gen_activities_string_en(activities_shepw,
                                                     string_shepw)
         if activities_shep:
-            string_shep = u"%s enjoys playing " % (
-                'He' if child.gender == 'M' else 'She')
+            string_shep = u"%s enjoys playing " % gender_pronoun
             string += cls._gen_activities_string_en(activities_shep,
                                                     string_shep)
         if activities_shet:
-            string_shet = u"%s enjoys to " % (
-                'He' if child.gender == 'M' else 'She')
+            string_shet = u"%s enjoys to " % gender_pronoun
             string += cls._gen_activities_string_en(activities_shet,
                                                     string_shet)
         if activities_she:
-            string_she = u"%s enjoys " % (
-                'He' if child.gender == 'M' else 'She')
+            string_she = u"%s enjoys " % gender_pronoun
             string += cls._gen_activities_string_en(activities_she,
                                                     string_she)
         return string
