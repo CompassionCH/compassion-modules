@@ -95,7 +95,7 @@ class compassion_child(orm.Model):
         'start_date': fields.date(_("Start date")),
         'case_study_ids': fields.one2many(
             'compassion.child.property', 'child_id', string=_('Case studies'),
-            readonly=False, track_visibility="onchange"),  # FIXME readonly
+            readonly=True, track_visibility="onchange"),
         'portrait': fields.function(get_portrait, type='binary',
                                     string=_('Portrait')),
         'state': fields.selection([
@@ -450,7 +450,7 @@ class compassion_child(orm.Model):
 
     def _typo3_scripts_fetch(self, url, api_key, action, args=None):
         full_url = url + "?api_key=" + api_key + "&action=" + action
-        if args is not None:
+        if args:
             for k, v in args.items():
                 full_url += "&" + k + "=" + v
         r = requests.get(full_url)

@@ -9,11 +9,11 @@
 #
 ##############################################################################
 
-from openerp.osv import osv
+from openerp.osv import orm
 import base64
 
 
-class mail_thread(osv.AbstractModel):
+class mail_thread(orm.AbstractModel):
     """ This class adds a method to mail_thread in order to easily post
     messages from GP."""
 
