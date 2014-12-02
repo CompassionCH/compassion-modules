@@ -78,35 +78,35 @@ class compassion_project(orm.Model):
         # a. Automatic translated values
         'floor_material_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
-            'property_id', 'value_id', _('Floor material'),
+            'project_id', 'value_id', _('Floor material'),
             domain=[('property_name', '=', 'floor_material')]),
         'wall_material_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
-            'property_id', 'value_id', _('Wall material'),
+            'project_id', 'value_id', _('Wall material'),
             domain=[('property_name', '=', 'wall_material')]),
         'roof_material_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
-            'property_id', 'value_id', _('Roof material'),
+            'project_id', 'value_id', _('Roof material'),
             domain=[('property_name', '=', 'roof_material')]),
         'spoken_languages_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
-            'property_id', 'value_id', _('Spoken languages'),
+            'project_id', 'value_id', _('Spoken languages'),
             domain=[('property_name', '=', 'spoken_languages')]),
         'primary_diet_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
-            'property_id', 'value_id', _('Primary diet'),
+            'project_id', 'value_id', _('Primary diet'),
             domain=[('property_name', '=', 'primary_diet')]),
         'health_problems_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
-            'property_id', 'value_id', _('Health problems'),
+            'project_id', 'value_id', _('Health problems'),
             domain=[('property_name', '=', 'health_problems')]),
         'primary_occupation_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
-            'property_id', 'value_id', _('Primary occupation'),
+            'project_id', 'value_id', _('Primary occupation'),
             domain=[('property_name', '=', 'primary_occupation')]),
         'terrain_description_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
-            'property_id', 'value_id', _('Terrain description'),
+            'project_id', 'value_id', _('Terrain description'),
             domain=[('property_name', '=', 'terrain_description')]),
         # b. Static Values
         'gps_latitude': fields.float(_('GPS latitude')),

@@ -28,11 +28,9 @@ class Child_description_de:
 
     @classmethod
     def _gen_activities_string_de(cls, activities, strings):
-        string = ''
-        activities_string = ''
         activities_string = cls._gen_list_string(activities, ', ', ' und ')
         activities_string += u'. '
-        string += strings + str(activities_string)
+        string = strings + str(activities_string)
         return string
 
     @classmethod
@@ -94,28 +92,26 @@ class Child_description_de:
         activities_sesg = [activity.value_de if activity.value_de
                            else activity.value_en
                            for activity in case_study.hobbies_ids
-                           if activity.value_en in (hobbies_sesg)]
+                           if activity.value_en in hobbies_sesg]
         activities_se = [activity.value_de if activity.value_de
                          else activity.value_en
                          for activity in case_study.hobbies_ids
-                         if activity.value_en in (hobbies_se)]
+                         if activity.value_en in hobbies_se]
         activities_se_g = [activity.value_de if activity.value_de
                            else activity.value_en
                            for activity in case_study.hobbies_ids
-                           if activity.value_en in (hobbies_se_g)]
+                           if activity.value_en in hobbies_se_g]
         string = ''
+        gender_pronoun = 'Er' if child.gender == 'M' else 'Sie'
         if activities_sesg:
-            string_sesg = u"%s spielt gerne " % (
-                'Er' if child.gender == 'M' else 'Sie')
+            string_sesg = u"%s spielt gerne " % gender_pronoun
             string += cls._gen_activities_string_de(activities_sesg,
                                                     string_sesg)
         if activities_se:
-            string_se = u"%s " % (
-                'Er' if child.gender == 'M' else 'Sie')
+            string_se = u"%s " % gender_pronoun
             string += cls._gen_activities_string_de(activities_se, string_se)
         if activities_se_g:
-            string_se_g = u"%s " % (
-                'Er' if child.gender == 'M' else 'Sie')
+            string_se_g = u"%s " % gender_pronoun
             string += cls._gen_activities_string_de(activities_se_g,
                                                     string_se_g)
         return string
