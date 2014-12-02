@@ -9,10 +9,10 @@
 #
 ##############################################################################
 
-from openerp.osv import osv
+from openerp.osv import orm
 
 
-class portal_wizard(osv.osv_memory):
+class portal_wizard(orm.TransientModel):
 
     """ This class creates analytic accounts for new portal users."""
 
