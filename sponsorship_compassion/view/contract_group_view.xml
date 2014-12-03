@@ -19,6 +19,9 @@
                         </group>
                     </group>
                 </group>
+                <xpath expr="//h2" position="replace">
+                    <h2>Sponsorships</h2>
+                </xpath>
             </field>
         </record>
     </data>

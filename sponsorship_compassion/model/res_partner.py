@@ -59,13 +59,13 @@ class res_partner(orm.Model):
             _get_related_contracts, type="one2many",
             obj="recurring.contract",
             fnct_inv=_write_related_contracts,
-            string=_('Contracts'),
+            string=_('Sponsorships'),
             order="state asc",),
         'contracts_paid': fields.function(
             _get_related_contracts, type="one2many",
             obj="recurring.contract",
             fnct_inv=_write_related_contracts,
-            string=_('Contracts')),
+            string=_('Sponsorships')),
         'contracts_correspondant': fields.function(
             _get_related_contracts, type="one2many",
             obj="recurring.contract",
@@ -108,7 +108,7 @@ class res_partner(orm.Model):
         })
         return {
             'type': 'ir.actions.act_window',
-            'name': 'Contract',
+            'name': 'Sponsorship',
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'recurring.contract',

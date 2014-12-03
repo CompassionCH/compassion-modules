@@ -10,6 +10,7 @@
 				<data>
 					<tree string="Contracts" position="attributes">
 						<attribute name="colors">blue:state == 'draft';green:state == 'waiting';black:state == 'active';gray:state in ('terminated','cancelled')</attribute>
+						<attribute name="string">Sponsorships</attribute>
 					</tree>
 					<field name="partner_id" position="after">
 						<field name="child_code" />
@@ -115,16 +116,16 @@
                         </attribute>
                     </field>
                     <xpath expr="//filter[@name='draft']" position="after">
-                        <filter name="waiting" string="Waiting" domain="[('state','=','waiting')]" help="Waiting Payment Contracts"/>
+                        <filter name="waiting" string="Waiting" domain="[('state','=','waiting')]" help="Waiting Payment Sponsorships"/>
                     </xpath>
                     <xpath expr="//filter[@name='terminated']" position="after">
-                        <filter name="cancelled" string="Cancelled" domain="[('state','=','cancelled')]" help="Cancelled Contracts"/>
+                        <filter name="cancelled" string="Cancelled" domain="[('state','=','cancelled')]" help="Cancelled Sponsorships"/>
                     </xpath>
 				</data>
 			</field>
 		</record>
         
-        <!-- Move the Contracts Menu to the Sponsorship Section -->
+        <!-- Move the Sponsorships Menu to the Sponsorship Section -->
         <menuitem id="recurring_contract.menu_contracts_section" parent="child_compassion.menu_sponsorship_root" 
                   name="Invoicing" groups="account.group_account_user" sequence="2"/>
         <menuitem id="recurring_contract.menu_recurring_contract_form" parent="child_compassion.menu_sponsorship_section"
