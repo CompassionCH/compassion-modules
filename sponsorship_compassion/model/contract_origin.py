@@ -68,7 +68,7 @@ class contract_origin(orm.Model):
         'analytic_id': fields.many2one('account.analytic.account',
                                        _("Analytic Account")),
         'contract_ids': fields.one2many(
-            'recurring.contract', 'origin_id', _("Contracts originated"),
+            'recurring.contract', 'origin_id', _("Sponsorships originated"),
             readonly=True),
         'country_id': fields.many2one('res.country', _("Country")),
         'other_name': fields.char(_("Give details"), size=128),
