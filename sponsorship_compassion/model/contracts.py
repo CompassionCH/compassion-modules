@@ -39,11 +39,11 @@ class recurring_contract(orm.Model):
         # Read data in english
         if context is None:
             context = {}
-        context['lang'] = 'en_US'
-        for invoice in invoice_obj.browse(cr, uid, invoice_ids,
-                                          context=context):
+        ctx = context.copy()
+        ctx['lang'] = 'en_US'
+        for invoice in invoice_obj.browse(cr, uid, invoice_ids, ctx):
             if invoice.state == 'paid':
-                self._invoice_paid(cr, uid, invoice, context)
+                self._invoice_paid(cr, uid, invoice, ctx)
                 last_pay_date = max([move_line.date
                                      for move_line in invoice.payment_ids
                                      if move_line.credit > 0] or [0])
@@ -66,8 +66,12 @@ class recurring_contract(orm.Model):
         Update child to mark it has been sponsored, and update partner
         to add the 'Sponsor' category.
         """
+        # Read data in english
+        if context is None:
+            context = {}
+        ctx = context.copy()
+        ctx['lang'] = 'en_US'
         wf_service = netsvc.LocalService('workflow')
-        ctx = {'lang': 'en_US'}
         if not isinstance(ids, list):
             ids = [ids]
         sponsor_cat_id = self.pool.get('res.partner.category').search(
@@ -134,7 +138,7 @@ class recurring_contract(orm.Model):
     _columns = {
         'child_id': fields.many2one(
             'compassion.child', _('Sponsored child'), readonly=True,
-            states={'draft': [('readonly', False)]}),
+            states={'draft': [('readonly', False)]}, ondelete='restrict'),
         'child_name': fields.related(
             'child_id', 'name', string=_('Sponsored child name'),
             readonly=True, type='char'),
@@ -223,7 +227,7 @@ class recurring_contract(orm.Model):
         res.append([0, 6, sponsorship_vals])
         res.append([0, 6, gen_vals])
         return res
-    
+
     _defaults = {
         'contract_line_ids': _get_standard_lines
     }
@@ -255,8 +259,9 @@ class recurring_contract(orm.Model):
         })
         return res
 
-    def on_change_lines(self, cr, uid, ids, selected_lines, child_id, context=None):
-        """ Warn if a sponsorship is selected with no child defined. 
+    def on_change_lines(self, cr, uid, ids, selected_lines, child_id,
+                        context=None):
+        """ Warn if a sponsorship is selected with no child defined.
         selected_lines : list([index, False (?), line_values (dict)])
         """
         res = {}
@@ -322,12 +327,13 @@ class recurring_contract(orm.Model):
     def contract_terminated(self, cr, uid, ids, context=None):
         super(recurring_contract, self).contract_terminated(cr, uid, ids,
                                                             context)
+        ctx = {'lang': 'en_US'}
         category_obj = self.pool.get('res.partner.category')
         sponsor_cat_id = category_obj.search(
-            cr, uid, [('name', '=', 'Sponsor')], context={'lang': 'en_US'})[0]
+            cr, uid, [('name', '=', 'Sponsor')], context=ctx)[0]
         old_sponsor_cat_id = category_obj.search(
             cr, uid, [('name', '=', 'Old Sponsor')],
-            context={'lang': 'en_US'})[0]
+            context=ctx)[0]
         # Check if the sponsor has still active contracts
         for contract in self.browse(cr, uid, ids, context):
             con_ids = self.search(cr, uid, [
@@ -342,6 +348,9 @@ class recurring_contract(orm.Model):
                 # Standard way in Odoo to set one2many fields
                 contract.partner_id.write({
                     'category_id': [(6, 0, list(partner_categories))]})
+            # Remove the sponsor of the child
+            if contract.child_id:
+                contract.child_id.write({'sponsor_id': False})
         return True
 
     def copy(self, cr, uid, id, default=None, context=None):

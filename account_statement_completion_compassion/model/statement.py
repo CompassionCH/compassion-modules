@@ -220,10 +220,11 @@ class AccountStatementCompletionRule(orm.Model):
         # Read data in english
         if context is None:
             context = {}
-        context['lang'] = 'en_US'
+        ctx = context.copy()
+        ctx['lang'] = 'en_US'
         product = self.pool.get('product.product').browse(
             cr, uid, self._find_product_id(
-                cr, uid, st_line['ref'], context=context), context=context)
+                cr, uid, st_line['ref'], context=ctx), context=ctx)
         res = {}
 
         if product.id:
@@ -248,11 +249,11 @@ class AccountStatementCompletionRule(orm.Model):
             }
 
             invoice_id = invoice_obj.create(cr, uid, inv_data,
-                                            context=context)
+                                            context=ctx)
             if invoice_id:
                 res.update(self._generate_invoice_line(
                     cr, uid, invoice_id, product, st_line, partner.id,
-                    context=context))
+                    context=ctx))
 
                 if product.name not in GIFT_TYPES:
                     # Validate the invoice

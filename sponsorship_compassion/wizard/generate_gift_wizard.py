@@ -40,11 +40,12 @@ class generate_gift_wizard(orm.TransientModel):
         # Read data in english
         if context is None:
             context = {}
-        context['lang'] = 'en_US'
+        ctx = context.copy()
+        ctx['lang'] = 'en_US'
         # Id of contract is stored in context
         contract = self.pool.get('recurring.contract').browse(
-            cr, uid, context.get('active_id'), context)
-        wizard = self.browse(cr, uid, ids[0], context)
+            cr, uid, context.get('active_id'), ctx)
+        wizard = self.browse(cr, uid, ids[0], ctx)
         partner = contract.partner_id
 
         if contract.child_id and contract.state == 'active':
@@ -69,7 +70,7 @@ class generate_gift_wizard(orm.TransientModel):
                                             context=context)
             if invoice_id:
                 self._generate_invoice_line(
-                    cr, uid, invoice_id, wizard, contract, context=context)
+                    cr, uid, invoice_id, wizard, contract, context=ctx)
         else:
             raise orm.except_orm(
                 _("Generation Error"),
