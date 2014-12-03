@@ -85,8 +85,6 @@ class end_sponsorship_wizard(orm.TransientModel):
         res = True
 
         if wizard.child_id:
-            child_update = {'sponsor_id': False}
-
             # If sponsor moves, propose to transfer the child
             if wizard.end_reason == '4':
                 wizard.write({'state': 'transfer_child'})
@@ -114,8 +112,6 @@ class end_sponsorship_wizard(orm.TransientModel):
                     'context': context,
                     'target': 'new',
                 }
-
-            wizard.child_id.write(child_update)
 
         contract = wizard.contract_id
         contract.write({'end_reason': wizard.end_reason})

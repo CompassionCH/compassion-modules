@@ -154,13 +154,14 @@ class event_compassion(orm.Model):
         year = event.start_date[2:4]
         if context is None:
             context = {}
-        context['lang'] = 'en_US'
+        ctx = context.copy()
+        ctx['lang'] = 'en_US'
         analytics_obj = self.pool.get('account.analytic.account')
         categ_id = analytics_obj.search(
-            cr, uid, [('name', 'ilike', event.type)], context=context)[0]
+            cr, uid, [('name', 'ilike', event.type)], context=ctx)[0]
         acc_ids = analytics_obj.search(
             cr, uid, [('name', '=', year), ('parent_id', '=', categ_id)],
-            context=context)
+            context=ctx)
         if not acc_ids:
             # The category for this year does not yet exist
             acc_ids = [analytics_obj.create(cr, uid, {
@@ -172,11 +173,11 @@ class event_compassion(orm.Model):
         members = self.pool.get('res.users').search(
             cr, uid,
             [('partner_id', 'in', [p.id for p in event.staff_ids])],
-            context=context)
-        context['from_event'] = True
+            context=ctx)
+        ctx['from_event'] = True
         project_id = self.pool.get('project.project').create(cr, uid, {
             'name': event.name + ' ' + event.start_date[:4],
-            'use_tasks': context.get('use_tasks', True),
+            'use_tasks': ctx.get('use_tasks', True),
             'user_id': event.user_id.id,
             'partner_id': event.partner_id.id,
             'members': [(6, 0, members)],   # many2many field
@@ -184,8 +185,8 @@ class event_compassion(orm.Model):
             'date': event.end_date,
             'parent_id': acc_ids[0],
             'project_type': event.type,
-            'state': 'open' if context.get('use_tasks', True) else 'close',
-        }, context)
+            'state': 'open' if ctx.get('use_tasks', True) else 'close',
+        }, ctx)
 
         return project_id
 

@@ -31,9 +31,10 @@ class contracts(orm.Model):
         # Read data in english
         if context is None:
             context = {}
-        context['lang'] = 'en_US'
+        ctx = context.copy()
+        ctx['lang'] = 'en_US'
         # Write contract in GP
-        contract = self.browse(cr, uid, contract_id, context)
+        contract = self.browse(cr, uid, contract_id, ctx)
         self._write_contract_in_gp(uid, gp_connect, contract)
         # Close MySQL connection
         del(gp_connect)
@@ -45,7 +46,8 @@ class contracts(orm.Model):
         # Read data in english
         if context is None:
             context = {}
-        context['lang'] = 'en_US'
+        ctx = context.copy()
+        ctx['lang'] = 'en_US'
         # Do nothing during the invoice generation process
         if context.get('invoice_generation'):
             return super(contracts, self).write(cr, uid, ids, vals, context)
@@ -57,7 +59,7 @@ class contracts(orm.Model):
         # in GP (advance the months paid).
         if vals.get('next_invoice_date'):
             new_date = datetime.strptime(vals['next_invoice_date'], DF)
-            for contract in self.browse(cr, uid, ids, context=context):
+            for contract in self.browse(cr, uid, ids, context=ctx):
                 old_date = datetime.strptime(contract.next_invoice_date, DF)
                 month_diff = relativedelta(new_date, old_date).months
                 if contract.state in ('active', 'waiting') and month_diff > 0:
@@ -69,7 +71,7 @@ class contracts(orm.Model):
 
         # Update GP
         res = super(contracts, self).write(cr, uid, ids, vals, context)
-        for contract in self.browse(cr, uid, ids, context):
+        for contract in self.browse(cr, uid, ids, ctx):
             self._write_contract_in_gp(uid, gp_connect, contract)
         # Close MySQL connection
         del(gp_connect)
@@ -218,7 +220,8 @@ class contract_group(orm.Model):
         working so that GP is not updated during it."""
         if context is None:
             context = {}
-        context['invoice_generation'] = True
-        context['lang'] = 'en_US'   # Generate everything in english
+        ctx = context.copy()
+        ctx['invoice_generation'] = True
+        ctx['lang'] = 'en_US'   # Generate everything in english
         super(contract_group, self)._generate_invoice_lines(
-            cr, uid, contract, invoice_id, context)
+            cr, uid, contract, invoice_id, ctx)

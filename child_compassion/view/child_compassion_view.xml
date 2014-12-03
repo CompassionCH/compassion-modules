@@ -107,7 +107,7 @@
                     <field name="name"/>
                     <field name="firstname"/>
                     <field name="code" string="Child code" />
-                    <filter name="available" string="Available" domain="[('state','=','N')]" help="Child available for sponsorship"/>
+                    <filter name="available" string="Available" domain="[('state','in',('N','R'))]" help="Child available for sponsorship"/>
                     <filter name="delegated" string="Delegated" domain="[('state','=','D')]" help="Delegated children"/>
                     <filter name="internet" string="On Internet" domain="[('state','=','I')]" help="Child on compassion website"/>
                     <filter name="sponsored" string="Sponsored" domain="[('state','=','P')]" help="Sponsored children"/>
