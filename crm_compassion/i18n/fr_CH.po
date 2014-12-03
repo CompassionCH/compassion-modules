@@ -1,0 +1,397 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* event_compassion
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0-20140602-231022\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-12-03 08:57+0000\n"
+"PO-Revision-Date: 2014-12-03 11:08+0100\n"
+"Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
+"Language-Team: \n"
+"Language: fr_CH\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.6.4\n"
+
+#. module: crm_compassion
+#: view:crm.event.compassion:0 field:crm.event.compassion,city:0
+msgid "City"
+msgstr "Ville"
+
+#. module: crm_compassion
+#: view:crm.event.compassion:0
+msgid "Open tasks"
+msgstr "Tâches"
+
+#. module: crm_compassion
+#: model:account.analytic.account,name:crm_compassion.account_analytic_account_ambassadors
+msgid "Partners"
+msgstr "Partenaires"
+
+#. module: crm_compassion
+#: model:ir.actions.act_window,help:crm_compassion.action_events_compassion
+msgid ""
+"<p class=\"oe_view_nocontent_create\">\n"
+"                    No events.\n"
+"                </p>\n"
+"            "
+msgstr ""
+"<p class=\"oe_view_nocontent_create\">\n"
+"                Pas d'événements.\n"
+"            </p>\n"
+"        "
+
+#. module: crm_compassion
+#: model:account.analytic.account,name:crm_compassion.account_analytic_account_pres
+#: code:addons/crm_compassion/model/event_compassion.py:72
+#: code:addons/crm_compassion/model/project_project.py:23
+#: selection:crm.event.compassion,type:0
+#: selection:project.project,project_type:0
+#, python-format
+msgid "Presentation"
+msgstr "Présentation"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/event_compassion.py:87
+#: view:crm.event.compassion:0 field:crm.event.compassion,user_id:0
+#, python-format
+msgid "Responsible"
+msgstr "Responsable"
+
+#. module: crm_compassion
+#: view:crm.event.compassion:0
+msgid "Street..."
+msgstr "Rue..."
+
+#. module: crm_compassion
+#: view:crm.event.compassion:0
+msgid "Group By..."
+msgstr "Grouper par..."
+
+#. module: crm_compassion
+#: view:crm.event.compassion:0 field:crm.event.compassion,state_id:0
+msgid "State"
+msgstr "Etat"
+
+#. module: crm_compassion
+#: field:crm.event.compassion,message_follower_ids:0
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_portal_wizard
+msgid "Portal Access Management"
+msgstr "Gestion des accès au portail"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/event_compassion.py:101
+#: field:crm.event.compassion,planned_sponsorships:0
+#, python-format
+msgid "Expected sponsorships"
+msgstr "Parrainages attendus"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/crm_lead.py:21
+#: field:crm.lead,planned_sponsorships:0
+#, python-format
+msgid "Expected new sponsorships"
+msgstr "Parrainages attendus"
+
+#. module: crm_compassion
+#: view:crm.event.compassion:0
+#: model:ir.actions.act_window,name:crm_compassion.action_events_compassion
+#: model:ir.ui.menu,name:crm_compassion.menu_events_compassion
+msgid "Events"
+msgstr "Evenements"
+
+#. module: crm_compassion
+#: view:crm.event.compassion:0
+msgid "New sponsorships"
+msgstr "Nouveaux parrainages"
+
+#. module: crm_compassion
+#: view:crm.lead:0
+msgid "Create Event"
+msgstr "Créer Evenement"
+
+#. module: crm_compassion
+#: field:crm.event.compassion,message_ids:0
+msgid "Messages"
+msgstr "Messages"
+
+#. module: crm_compassion
+#: field:crm.event.compassion,description:0
+msgid "Description"
+msgstr "Description"
+
+#. module: crm_compassion
+#: field:crm.event.compassion,message_unread:0
+msgid "Unread Messages"
+msgstr "Messages non lus"
+
+#. module: crm_compassion
+#: model:account.analytic.account,name:crm_compassion.account_analytic_account_meet
+#: code:addons/crm_compassion/model/event_compassion.py:73
+#: code:addons/crm_compassion/model/project_project.py:24
+#: selection:crm.event.compassion,type:0
+#: selection:project.project,project_type:0
+#, python-format
+msgid "Meeting"
+msgstr "Rencontre"
+
+# Ne pas traduire
+#. module: crm_compassion
+#: field:crm.event.compassion,street2:0
+msgid "Street2"
+msgstr "Street2"
+
+# Ne pas traduire
+#. module: crm_compassion
+#: view:crm.event.compassion:0
+msgid "Search origin"
+msgstr "Search origin"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/project_project.py:43
+#, python-format
+msgid "Type not allowed for creation"
+msgstr "Type non autorisé"
+
+#. module: crm_compassion
+#: field:crm.event.compassion,contract_ids:0
+#: field:crm.event.compassion,move_line_ids:0
+msgid "unknown"
+msgstr "inconnu"
+
+#. module: crm_compassion
+#: view:crm.event.compassion:0
+msgid "Internal Notes"
+msgstr "Notes"
+
+#. module: crm_compassion
+#: help:crm.event.compassion,message_ids:0
+msgid "Messages and communication history"
+msgstr "Messages et historique de conversation"
+
+# Ne pas traduire
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_recurring_contract_origin
+msgid "recurring.contract.origin"
+msgstr "recurring.contract.origin"
+
+#. module: crm_compassion
+#: field:crm.event.compassion,message_is_follower:0
+msgid "Is a Follower"
+msgstr "Est abonné"
+
+#. module: crm_compassion
+#: view:crm.event.compassion:0 field:crm.event.compassion,zip_id:0
+msgid "Address"
+msgstr "Adresse"
+
+#. module: crm_compassion
+#: view:crm.lead:0
+msgid "Expected Sponsorships"
+msgstr "Parrainages attendus"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/event_compassion.py:106
+#: field:crm.event.compassion,won_sponsorships:0
+#, python-format
+msgid "Won sponsorships"
+msgstr "Parrainages gagnés"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/event_compassion.py:102
+#: field:crm.event.compassion,lead_id:0
+#, python-format
+msgid "Opportunity"
+msgstr "Opportunité"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/event_compassion.py:79
+#: view:crm.event.compassion:0 field:crm.event.compassion,partner_id:0
+#, python-format
+msgid "Customer"
+msgstr "Partenaire"
+
+#. module: crm_compassion
+#: field:crm.event.compassion,origin_id:0
+msgid "Origin"
+msgstr "Provenance"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/project_project.py:44
+#, python-format
+msgid ""
+"Please create an event. It will automatically create an associated Project "
+"for the event."
+msgstr ""
+"Veuillez s.v.p. créer un événement, le projet sera ensuite automatiquement "
+"établi."
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/event_compassion.py:68
+#: field:crm.event.compassion,name:0
+#, python-format
+msgid "Name"
+msgstr "Nom"
+
+#. module: crm_compassion
+#: view:crm.event.compassion:0 field:crm.event.compassion,zip:0
+msgid "ZIP"
+msgstr "NPA"
+
+#. module: crm_compassion
+#: field:crm.event.compassion,country_id:0
+msgid "Country"
+msgstr "Pays"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_crm_event_compassion
+msgid "Compassion event"
+msgstr "Evénement Compassion"
+
+#. module: crm_compassion
+#: view:crm.event.compassion:0
+msgid "Compassion Events"
+msgstr "Evénements Compassion"
+
+#. module: crm_compassion
+#: field:crm.event.compassion,message_summary:0
+msgid "Summary"
+msgstr "Résumé"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/event_compassion.py:112
+#: field:crm.event.compassion,project_id:0
+#: model:ir.model,name:crm_compassion.model_project_project
+#, python-format
+msgid "Project"
+msgstr "Projet"
+
+#. module: crm_compassion
+#: model:account.analytic.account,name:crm_compassion.account_analytic_account_stand
+#: code:addons/crm_compassion/model/event_compassion.py:70
+#: code:addons/crm_compassion/model/project_project.py:21
+#: selection:crm.event.compassion,type:0
+#: selection:project.project,project_type:0
+#, python-format
+msgid "Stand"
+msgstr "Stand"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/project_project.py:26
+#: selection:project.project,project_type:0
+#, python-format
+msgid "Marketing campaign"
+msgstr "Campagne marketing"
+
+#. module: crm_compassion
+#: help:crm.event.compassion,message_unread:0
+msgid "If checked new messages require your attention."
+msgstr "Vous serez notifié des nouveaux messages"
+
+#. module: crm_compassion
+#: view:crm.lead:0
+msgid "Expected Sponsorship"
+msgstr "Parrainages attendus"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/event_compassion.py:78
+#: field:crm.event.compassion,end_date:0
+#, python-format
+msgid "End date"
+msgstr "Date de fin"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/event_compassion.py:74
+#: code:addons/crm_compassion/model/project_project.py:26
+#: view:crm.event.compassion:0 field:crm.event.compassion,type:0
+#: field:project.project,project_type:0
+#, python-format
+msgid "Type"
+msgstr "Type"
+
+#. module: crm_compassion
+#: model:account.analytic.account,name:crm_compassion.account_analytic_account_sport
+#: code:addons/crm_compassion/model/event_compassion.py:71
+#: code:addons/crm_compassion/model/project_project.py:22
+#: selection:crm.event.compassion,type:0
+#: selection:project.project,project_type:0
+#, python-format
+msgid "Concert"
+msgstr "Concert"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/event_compassion.py:75
+#: field:crm.event.compassion,start_date:0
+#, python-format
+msgid "Start date"
+msgstr "Date de début"
+
+#. module: crm_compassion
+#: view:crm.event.compassion:0
+msgid "Expenses"
+msgstr "Dépenses"
+
+#. module: crm_compassion
+#: field:crm.event.compassion,analytic_id:0
+msgid "Analytic Account"
+msgstr "Compte analytique"
+
+# Ne pas traduire
+#. module: crm_compassion
+#: help:crm.event.compassion,message_summary:0
+msgid ""
+"Holds the Chatter summary (number of messages, ...). This summary is "
+"directly in html format in order to be inserted in kanban views."
+msgstr ""
+"Holds the Chatter summary (number of messages, ...). This summary is "
+"directly in html format in order to be inserted in kanban views."
+
+#. module: crm_compassion
+#: field:crm.event.compassion,street:0
+msgid "Street"
+msgstr "Rue"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/event_compassion.py:74
+#: code:addons/crm_compassion/model/project_project.py:25
+#: selection:crm.event.compassion,type:0
+#: selection:project.project,project_type:0
+#, python-format
+msgid "Sport event"
+msgstr "Evénement sportif"
+
+#. module: crm_compassion
+#: view:crm.event.compassion:0 field:crm.event.compassion,year:0
+msgid "Year"
+msgstr "Année"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_crm_lead
+msgid "Lead/Opportunity"
+msgstr "Piste/Opportunité"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/contract_origin.py:22
+#: code:addons/crm_compassion/model/crm_lead.py:23 view:crm.event.compassion:0
+#: field:crm.lead,event_id:0 field:recurring.contract.origin,event_id:0
+#, python-format
+msgid "Event"
+msgstr "Evénement"
+
+#. module: crm_compassion
+#: code:addons/crm_compassion/model/event_compassion.py:90
+#: view:crm.event.compassion:0 field:crm.event.compassion,staff_ids:0
+#, python-format
+msgid "Staff"
+msgstr "Equipe"
+
+#~ msgid "Analytic Distribution"
+#~ msgstr "Distribution analytique"
