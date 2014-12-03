@@ -146,10 +146,6 @@ class compassion_child(orm.Model):
             'compassion.translated.value', 'child_exit_to_value',
             'property_id', 'value_id', _('Exit reason'),
             domain=[('property_name', '=', 'exit_reason')]),
-        'other_exit_reason': fields.many2many(
-            'compassion.translated.value', 'child_exit_to_value',
-            'property_id', 'value_id', _('Other exit reason'),
-            domain=[('property_name', '=', 'other_exit_reason')]),
         'last_letter_sent': fields.boolean(_("Last letter was sent")),
         'transfer_country_id': fields.many2one('res.country',
                                                _("Transfered to")),
@@ -405,7 +401,9 @@ class compassion_child(orm.Model):
                 to_remove_from_web.append(child.id)
         if to_remove_from_web:
             self.child_remove_from_typo3(cr, uid, to_remove_from_web, context)
-        self.write(cr, uid, ids, {'state': 'P'}, context)
+        self.write(cr, uid, ids, {
+            'state': 'P',
+            'has_been_sponsored': True}, context)
         return True
 
     def child_departed(self, cr, uid, ids, context=None):

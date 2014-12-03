@@ -40,6 +40,7 @@ from GP.
     'website': 'http://www.compassion.ch',
     'depends': ['sponsorship_compassion',
                 'mysql_connector',
+                'account_voucher',
                 ],
     'data': [],
     'demo': [],

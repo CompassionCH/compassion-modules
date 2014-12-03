@@ -132,7 +132,8 @@ class recurring_contract(orm.Model):
             states={'draft': [('readonly', False)]}),
         'partner_id': fields.many2one(
             'res.partner', string=_('Partner'), required=True,
-            readonly=True, states={'draft': [('readonly', False)]}),
+            readonly=True, states={'draft': [('readonly', False)]},
+            ondelete='restrict'),
         'group_id': fields.many2one(
             'recurring.contract.group', _('Payment Options'),
             required=True, ondelete='cascade',

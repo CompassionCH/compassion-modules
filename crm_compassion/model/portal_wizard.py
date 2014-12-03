@@ -22,22 +22,23 @@ class portal_wizard(orm.TransientModel):
         res = super(portal_wizard, self).action_apply(cr, uid, ids, context)
         if context is None:
             context = {}
-        context['lang'] = 'en_US'   # Search accounts with English names
-        wizard = self.browse(cr, uid, ids[0], context)
+        ctx = context.copy()
+        ctx['lang'] = 'en_US'   # Search accounts with English names
+        wizard = self.browse(cr, uid, ids[0], ctx)
         for user in wizard.user_ids:
             user_ids = self.pool.get('res.users').search(
                 cr, uid, [('name', '=', user.partner_id.name)],
-                context=context)
+                context=ctx)
             partner_name = user.partner_id.name
             analytics_obj = self.pool.get('account.analytic.account')
             acc_ids = analytics_obj.search(
-                cr, uid, [('name', '=', partner_name)], context=context)
+                cr, uid, [('name', '=', partner_name)], context=ctx)
             if not acc_ids and user_ids:
                 acode = self.pool.get('ir.sequence').get(
                     cr, uid, 'account.analytic.account')
                 parent_id = analytics_obj.search(
                     cr, uid, [('name', '=', 'Partners')],
-                    context=context)[0]
+                    context=ctx)[0]
                 analytics_obj.create(cr, uid, {
                     'name': partner_name,
                     'type': 'normal',
