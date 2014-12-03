@@ -13,21 +13,21 @@
             
             <!-- Redefine how contracts are shown. -->
             <xpath expr="//page[@string='Contracts']" position="replace">
-                <page string="Contracts" groups="child_compassion.group_sponsorship">
+                <page string="Sponsorships" groups="child_compassion.group_sponsorship">
                     <button name="create_contract" string="Add" type="object"/>
                     <field name="contracts_fully_managed" invisible="True" />
                     <field name="contracts_paid" invisible="True" />
                     <field name="contracts_correspondant" invisible="True" />
                     <div attrs="{'invisible' : [('contracts_paid','=', [])]}">
-                        <h3>Contracts as payer only</h3>
+                        <h3>Sponsorships as payer only</h3>
                         <field name="contracts_paid" context="{'partner_contracts_view': True}" />
                     </div>
                     <div attrs="{'invisible' : [('contracts_correspondant','=', [])]}">
-                        <h3>Contracts as correspondent only</h3>
+                        <h3>Sponsorships as correspondent only</h3>
                         <field name="contracts_correspondant" context="{'partner_contracts_view': True}" />
                     </div>
                     <div attrs="{'invisible' : [('contracts_fully_managed','=', [])]}">
-                        <h3>Contracts fully managed</h3>
+                        <h3>Sponsorships fully managed</h3>
                         <field name="contracts_fully_managed" context="{'partner_contracts_view': True}" />
                     </div>
                 </page>

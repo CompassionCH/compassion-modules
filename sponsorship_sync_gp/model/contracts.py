@@ -109,7 +109,7 @@ class contracts(orm.Model):
             if not gp_connect.validate_contract(contract):
                 raise orm.except_orm(
                     _("GP Sync Error"),
-                    _("The contract could not be validated.") +
+                    _("The sponsorship could not be validated.") +
                     _("Please contact an IT person."))
         del(gp_connect)
         return True
@@ -122,7 +122,7 @@ class contracts(orm.Model):
             if not gp_connect.finish_contract(contract):
                 raise orm.except_orm(
                     _("GP Sync Error"),
-                    _("The contract could not be terminated.") +
+                    _("The sponsorship could not be terminated.") +
                     _("Please contact an IT person."))
         del(gp_connect)
         return True
@@ -135,7 +135,7 @@ class contracts(orm.Model):
             if not gp_connect.finish_contract(contract):
                 raise orm.except_orm(
                     _("GP Sync Error"),
-                    _("The contract could not be terminated.") +
+                    _("The sponsorship could not be terminated.") +
                     _("Please contact an IT person."))
         del(gp_connect)
         return True
@@ -148,7 +148,7 @@ class contracts(orm.Model):
             if not gp_connect.activate_contract(contract):
                 raise orm.except_orm(
                     _("GP Sync Error"),
-                    _("The contract could not be activated.") +
+                    _("The sponsorship could not be activated.") +
                     _("Please contact an IT person."))
         del(gp_connect)
 

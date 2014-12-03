@@ -31,7 +31,7 @@
             <field name="model">recurring.contract</field>
             <field eval="20" name="priority"/>
             <field name="arch" type="xml">
-                <tree string="Contracts" delete="false" create="false">
+                <tree string="Sponsorships" delete="false" create="false">
                     <field name="partner_id" />
                     <field name="child_code" />
                     <field name="payment_term_id" />
