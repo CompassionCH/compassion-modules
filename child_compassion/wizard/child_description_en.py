@@ -27,9 +27,9 @@ class Child_description_en:
         return desc_en
 
     @classmethod
-    def _gen_activities_string_en(cls, activities, strings):
+    def _gen_activities_string_en(cls, activities, strings, termination):
         if len(activities) == 1:
-            activities_string = activities[0] + u'. '
+            activities_string = activities[0] + termination
         else:
             num_loop = 0
             for activity in activities:
@@ -37,10 +37,17 @@ class Child_description_en:
                 if num_loop == 1:
                     activities_string = activity
                 elif num_loop == len(activities):
-                    activities_string += " and " + activity + u'. '
+                    activities_string += " and " + activity + termination
                 else:
                     activities_string += ", " + activity
-        string = strings + activities_string
+        return strings + activities_string
+
+    @classmethod
+    def _gen_list_string(cls, list, separator, last_separator):
+        string = separator.join(list[:-1])
+        if len(list) > 1:
+            string += last_separator
+        string += list[-1]
         return string
 
     @classmethod
@@ -71,10 +78,10 @@ class Child_description_en:
         gender_pronoun = 'He' if child.gender == 'M' else 'She'
         if activities_gt:
             string_gt = u'%s goes to ' % gender_pronoun
-            string = cls._gen_activities_string_en(activities_gt, string_gt)
+            string = cls._gen_activities_string_en(activities_gt, string_gt, u'. ')
         if activities_iia:
             string_iia = u'%s is in a ' % gender_pronoun
-            string = cls._gen_activities_string_en(activities_iia, string_iia)
+            string = cls._gen_activities_string_en(activities_iia, string_iia, u'. ')
         string = u'As part of the Church, ' + string
         return string
 
@@ -139,19 +146,19 @@ class Child_description_en:
         if activities_shepw:
             string_shepw = u"%s enjoys playing with " % gender_pronoun
             string += cls._gen_activities_string_en(activities_shepw,
-                                                    string_shepw)
+                                                    string_shepw, u'. ')
         if activities_shep:
             string_shep = u"%s enjoys playing " % gender_pronoun
             string += cls._gen_activities_string_en(activities_shep,
-                                                    string_shep)
+                                                    string_shep, u'. ')
         if activities_shet:
             string_shet = u"%s enjoys to " % gender_pronoun
             string += cls._gen_activities_string_en(activities_shet,
-                                                    string_shet)
+                                                    string_shet, u'. ')
         if activities_she:
             string_she = u"%s enjoys " % gender_pronoun
             string += cls._gen_activities_string_en(activities_she,
-                                                    string_she)
+                                                    string_she, u'. ')
         return string
 
     @classmethod
@@ -206,14 +213,6 @@ class Child_description_en:
                 string += '.'
         else:
             string += " doesn't go to school."
-        return string
-
-    @classmethod
-    def _gen_list_string(cls, list, separator, last_separator):
-        string = separator.join(list[:-1])
-        if len(list) > 1:
-            string += last_separator
-        string += list[-1]
         return string
 
     @classmethod
