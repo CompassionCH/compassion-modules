@@ -9,7 +9,7 @@
          <field name="type">form</field>
          <field name="arch" type="xml">
              <data>
-                 <button name="button_auto_completion" position="after">
+                 <button name="button_dummy" position="after">
                     <field name="recurring_invoicer_id" invisible="1"/>
                     <button name="button_invoices" string="Generated invoices" type="object" class="oe_highlight" attrs="{'invisible' : [('recurring_invoicer_id','=',False)]}" />
                  </button>
