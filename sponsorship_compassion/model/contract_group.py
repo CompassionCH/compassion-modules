@@ -39,7 +39,8 @@ class contract_group(orm.Model):
     def _get_op_payment_term(self, cr, uid, context=None):
         ''' Get Permanent Order Payment Term, to set it by default. '''
         payment_term_id = self.pool.get('account.payment.term').search(
-            cr, uid, [('name', '=', _('Permanent Order'))], context=context)
+            cr, uid, [('name', '=', 'Permanent Order')],
+            context={'lang': 'en_US'})
         return payment_term_id[0]
 
     _columns = {
