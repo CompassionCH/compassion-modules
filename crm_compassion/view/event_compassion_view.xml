@@ -79,7 +79,7 @@
                                 <field name="staff_ids"/>
                             </page>
                             <page string="Expenses">
-                                <field name="move_line_ids"/>
+                                <field name="analytic_line_ids"/>
                             </page>
                             <page string="New sponsorships">
                                 <field name="contract_ids"/>

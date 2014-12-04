@@ -44,8 +44,9 @@ class project_project(orm.Model):
                 _("Please create an event. It will automatically create "
                   "an associated Project for the event."))
         id = super(project_project, self).create(cr, uid, vals, context)
+        project = self.browse(cr, uid, id, context)
+        project.analytic_account_id.write({'use_timesheets': True})
         if type == 'marketing':
-            project = self.browse(cr, uid, id, context)
             self.pool.get('recurring.contract.origin').create(
                 cr, uid, {
                     'type': 'marketing',

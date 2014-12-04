@@ -21,18 +21,18 @@ class event_compassion(orm.Model):
 
     _inherit = ['mail.thread']
 
-    def _get_move_lines(self, cr, uid, ids, field_name, arg, context=None):
+    def _get_analytic_lines(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
-        mv_line_obj = self.pool.get('account.move.line')
+        line_obj = self.pool.get('account.analytic.line')
         if not isinstance(ids, list):
             ids = [ids]
         for event in self.browse(cr, uid, ids, context):
             if event.analytic_id:
-                move_line_ids = mv_line_obj.search(
+                line_ids = line_obj.search(
                     cr, uid, [
-                        ('analytic_account_id', '=', event.analytic_id.id)],
+                        ('account_id', '=', event.analytic_id.id)],
                     context=context)
-                res[event.id] = move_line_ids
+                res[event.id] = line_ids
             else:
                 res[event.id] = False
 
@@ -95,9 +95,9 @@ class event_compassion(orm.Model):
         'contract_ids': fields.related(
             'origin_id', 'contract_ids', type="one2many",
             relation="recurring.contract", readonly=True),
-        'move_line_ids': fields.function(
-            _get_move_lines, type="one2many", relation="account.move.line",
-            readonly=True),
+        'analytic_line_ids': fields.function(
+            _get_analytic_lines, type="one2many",
+            relation="account.analytic.line", readonly=True),
         'planned_sponsorships': fields.integer(_("Expected sponsorships")),
         'lead_id': fields.many2one('crm.lead', _('Opportunity'),
                                    readonly=True),

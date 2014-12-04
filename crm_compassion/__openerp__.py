@@ -45,7 +45,8 @@ new model for tracking upcoming events.
 """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['mail', 'base_location', 'sponsorship_compassion', 'project'],
+    'depends': ['mail', 'base_location', 'sponsorship_compassion', 'project',
+                'hr_timesheet'],
     'data': [
         'security/ir.model.access.csv',
         'data/account_analytic_data.xml',
@@ -54,6 +55,7 @@ new model for tracking upcoming events.
         'view/crm_lead_view.xml',
         'view/move_line_view.xml',
         'view/project_view.xml',
+        'view/hr_timesheet_view.xml',
     ],
     'demo': [],
     'installable': True,
