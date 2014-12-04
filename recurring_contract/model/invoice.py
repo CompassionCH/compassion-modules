@@ -30,7 +30,7 @@ class account_invoice_line(orm.Model):
     def _get_dates(self, cr, uid, ids, name, args, context=None):
         res = {}
         for line in self.browse(cr, uid, ids, context):
-            res[line.id] = line.invoice_id.date_due
+            res[line.id] = line.invoice_id.date_due or False
 
         return res
 
