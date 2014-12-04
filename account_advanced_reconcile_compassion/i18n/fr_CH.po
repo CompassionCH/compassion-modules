@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 7.0-20140602-231022\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-25 14:40+0000\n"
-"PO-Revision-Date: 2014-09-25 16:58+0100\n"
+"POT-Creation-Date: 2014-12-04 12:33+0000\n"
+"PO-Revision-Date: 2014-12-04 13:35+0100\n"
 "Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
 "Language-Team: \n"
 "Language: fr_CH\n"
@@ -18,14 +18,16 @@ msgstr ""
 "X-Generator: Poedit 1.6.4\n"
 
 #. module: account_advanced_reconcile_compassion
-#: view:simple.recurring.contract:0
-msgid "false"
-msgstr ""
-
-#. module: account_advanced_reconcile_compassion
 #: model:ir.model,name:account_advanced_reconcile_compassion.model_reconcile_split_payment_wizard
 msgid "reconcile.split.payment.wizard"
-msgstr ""
+msgstr "reconcile.split.payment.wizard"
+
+#. module: account_advanced_reconcile_compassion
+#. openerp-web
+#: code:addons/account_advanced_reconcile_compassion/static/src/js/account_move_reconciliation.js:68
+#, python-format
+msgid "You must choose at least two records."
+msgstr "Vous devez choisir au moins deux transactions."
 
 #. module: account_advanced_reconcile_compassion
 #: help:reconcile.split.payment.wizard,contract_ids:0
@@ -43,11 +45,6 @@ msgid "Restrict on partners"
 msgstr "Restreindre aux partenaires"
 
 #. module: account_advanced_reconcile_compassion
-#: view:simple.recurring.contract:0
-msgid "Contracts"
-msgstr "Contrats"
-
-#. module: account_advanced_reconcile_compassion
 #: field:easy.reconcile.advanced.bvr_ref,journal_id:0
 msgid "Journal"
 msgstr "Journal"
@@ -60,10 +57,13 @@ msgstr "Compte Profit"
 #. module: account_advanced_reconcile_compassion
 #: model:ir.model,name:account_advanced_reconcile_compassion.model_reconcile_fund_wizard
 msgid "reconcile.fund.wizard"
-msgstr ""
+msgstr "reconcile.fund.wizard"
 
 #. module: account_advanced_reconcile_compassion
+#. openerp-web
+#: code:addons/account_advanced_reconcile_compassion/static/src/xml/account_move_reconciliation.xml:9
 #: model:ir.actions.act_window,name:account_advanced_reconcile_compassion.action_reconcile_split_payment_wizard
+#, python-format
 msgid "Split Payment + Reconcile"
 msgstr "Lettrer + Attribuer à la Balance Client"
 
@@ -71,6 +71,13 @@ msgstr "Lettrer + Attribuer à la Balance Client"
 #: field:reconcile.fund.wizard,fund_id:0
 msgid "Fund"
 msgstr "Fond"
+
+#. module: account_advanced_reconcile_compassion
+#. openerp-web
+#: code:addons/account_advanced_reconcile_compassion/static/src/js/account_move_reconciliation.js:69
+#, python-format
+msgid "Warning"
+msgstr "Avertissement"
 
 #. module: account_advanced_reconcile_compassion
 #: help:easy.reconcile.advanced.bvr_ref,analytic_account_id:0
@@ -81,16 +88,6 @@ msgstr "Compte analytique pour le write-off"
 #: field:easy.reconcile.advanced.bvr_ref,account_id:0
 msgid "Account"
 msgstr "Compte"
-
-#. module: account_advanced_reconcile_compassion
-#: view:reconcile.split.payment.wizard:0
-msgid ""
-"This will separate the payment in two move_lines, reconcile the open "
-"invoices\n"
-"                        and put the leftover in the client balance."
-msgstr ""
-"Cela va séparer le paiement en deux écritures, payer et lettrer la facture "
-"ouverte, et mettre le montant résiduel dans la balance du partenaire."
 
 #. module: account_advanced_reconcile_compassion
 #: view:account.easy.reconcile:0
@@ -132,9 +129,27 @@ msgid "Filter"
 msgstr "Filtre"
 
 #. module: account_advanced_reconcile_compassion
+#. openerp-web
+#: code:addons/account_advanced_reconcile_compassion/static/src/xml/account_move_reconciliation.xml:7
 #: model:ir.actions.act_window,name:account_advanced_reconcile_compassion.action_reconcile_fund_wizard
+#, python-format
 msgid "Reconcile + Put in Fund"
 msgstr "Lettrer + Attribuer au Fond"
+
+#. module: account_advanced_reconcile_compassion
+#: model:ir.model,name:account_advanced_reconcile_compassion.model_account_easy_reconcile_method
+msgid "reconcile method for account_easy_reconcile"
+msgstr "Méthode de lettrage avancée pour le module account_easy_reconcile"
+
+#. module: account_advanced_reconcile_compassion
+#: view:reconcile.split.payment.wizard:0
+msgid ""
+"This will separate the payment in two move_lines, reconcile the open "
+"invoices\n"
+"                            and put the leftover in the client balance."
+msgstr ""
+"Cela va séparer le paiement en deux écritures, payer et lettrer la facture "
+"ouverte, et mettre le montant résiduel dans la balance du partenaire."
 
 #. module: account_advanced_reconcile_compassion
 #: view:account.easy.reconcile:0
@@ -144,7 +159,7 @@ msgstr "Avancé. Règles Compassion"
 #. module: account_advanced_reconcile_compassion
 #: model:ir.model,name:account_advanced_reconcile_compassion.model_easy_reconcile_advanced_bvr_ref
 msgid "easy.reconcile.advanced.bvr_ref"
-msgstr ""
+msgstr "easy.reconcile.advanced.bvr_ref"
 
 #. module: account_advanced_reconcile_compassion
 #: field:easy.reconcile.advanced.bvr_ref,account_lost_id:0
@@ -176,14 +191,24 @@ msgid "Analytic Account"
 msgstr "Compte Analytique"
 
 #. module: account_advanced_reconcile_compassion
+#: view:recurring.contract:0
+msgid "Sponsorships"
+msgstr "Parrainages"
+
+#. module: account_advanced_reconcile_compassion
 #: field:easy.reconcile.advanced.bvr_ref,date_base_on:0
 msgid "Date of reconciliation"
 msgstr "Date de lettrage"
 
 #. module: account_advanced_reconcile_compassion
-#: model:ir.model,name:account_advanced_reconcile_compassion.model_account_easy_reconcile_method
-msgid "reconcile method for account_easy_reconcile"
-msgstr "Méthode de lettrage avancée pour le module account_easy_reconcile"
+#. openerp-web
+#: code:addons/account_advanced_reconcile_compassion/static/src/xml/account_move_reconciliation.xml:13
+#, python-format
+msgid "Open Partner"
+msgstr "Voir partenaire"
+
+#~ msgid "Contracts"
+#~ msgstr "Contrats"
 
 #~ msgid "Advanced. Partner and BVR Ref"
 #~ msgstr "Avancé. Régles de Compassion"
