@@ -56,7 +56,7 @@ class contract_origin(orm.Model):
             else:
                 name = 'Transfer from partner country'
         elif origin.type == 'already_sponsor':
-            name = 'Was already a sponsor'
+            name = 'Is already a sponsor'
         elif origin.type == 'other':
             name = origin.other_name or 'Other'
         return name
