@@ -89,7 +89,6 @@ class test_webservice(common.TransactionCase):
 
         # Retrieve the informations from the webservice
         child_obj.get_infos(self.cr, self.uid, child.id)
-        child_obj.get_basic_informations(self.cr, self.uid, child.id)
         child = child_obj.browse(self.cr, self.uid, self.child_id)
         portrait = (child_obj.get_portrait(self.cr, self.uid,
                     [self.child_id], None, None))

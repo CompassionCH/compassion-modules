@@ -23,7 +23,7 @@ class compassion_child(orm.Model):
 
     def get_portrait(self, cr, uid, ids, name, args, context=None):
         attachment_obj = self.pool.get('ir.attachment')
-        ret = {}
+        res = {}
         for child_id in ids:
             child = self.browse(cr, uid, child_id, context)
             case_study_id = -1
@@ -35,14 +35,13 @@ class compassion_child(orm.Model):
                           ('datas_fname', '=', 'Headshot.jpeg')],
                 limit=1, context=context)
             if not attachment_ids:
-                ret[child_id] = None
+                res[child_id] = None
                 continue
 
             attachment = attachment_obj.browse(cr, uid, attachment_ids[0],
                                                context)
-            ret[child_id] = attachment.datas
-
-        return ret
+            res[child_id] = attachment.datas
+        return res
 
     _columns = {
         'name': fields.char(_("Name"), size=128),
@@ -76,7 +75,7 @@ class compassion_child(orm.Model):
         'type': 'CDSP'
     }
 
-    def get_basic_informations(self, cr, uid, ids, context=None):
+    def _get_basic_informations(self, cr, uid, ids, context=None):
         if not isinstance(ids, list):
             ids = [ids]
 
@@ -98,24 +97,24 @@ class compassion_child(orm.Model):
         """
         if not isinstance(ids, list):
             ids = [ids]
-        ret = {}
+        res = {}
         proj_obj = self.pool.get('compassion.project')
         for child in self.browse(cr, uid, ids, context):
-            ret[child.id] = self._get_case_study(cr, uid, child, context)
+            res[child.id] = self._get_case_study(cr, uid, child, context)
             self._get_picture(cr, uid, child, 'Fullshot',
                               300, 1500, 1200, context=context)
             self._get_picture(cr, uid, child, context=context)
-            self.get_basic_informations(cr, uid, child.id)
+            self._get_basic_informations(cr, uid, child.id)
             project_ids = proj_obj.search(
                 cr, uid, [('code', '=', child.code[:5])],
-                context=None)
+                context=context)
             if not project_ids:
                 proj_id = proj_obj.create(cr, uid, {
                     'code': child.code[:5],
-                    'name': 'Project 1',
+                    'name': child.code[:5],
                 })
                 proj_obj.update_informations(cr, uid, proj_id)
-        return ret
+        return res
 
     def generate_descriptions(self, cr, uid, child_id, context=None):
         child = self.browse(cr, uid, child_id, context)
@@ -129,7 +128,6 @@ class compassion_child(orm.Model):
         case_study = child.case_study_ids[-1]
         context['child_id'] = child_id
         context['property_id'] = case_study.id
-
         return {
             'name': _('Description generation'),
             'type': 'ir.actions.act_window',
@@ -235,7 +233,7 @@ class compassion_child(orm.Model):
         values.append(value_obj.get_value_ids(
             cr, uid, json_data['naturalParents']['maritalStatusOfParents'],
             'marital_status', context))
-        vals['us_school_level'] = json_data['schooling']['uSSchoolEquivalent']
+        vals['us_school_level'] = json_data['schooling']['usSchoolEquivalent']
         values.append(value_obj.get_value_ids(cr, uid, json_data['schooling']
                                               ['schoolPerformance'],
                                               'school_performance', context))

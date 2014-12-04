@@ -27,13 +27,6 @@ class Child_description_de:
         return desc_de
 
     @classmethod
-    def _gen_activities_string_de(cls, activities, strings):
-        activities_string = cls._gen_list_string(activities, ', ', ' und ')
-        activities_string += u'. '
-        string = strings + str(activities_string)
-        return string
-
-    @classmethod
     def _gen_christ_act_de(cls, cr, uid, child, case_study, context=None):
         ''' Generate the christian activities description part.
         '''
@@ -105,15 +98,19 @@ class Child_description_de:
         gender_pronoun = 'Er' if child.gender == 'M' else 'Sie'
         if activities_sesg:
             string_sesg = u"%s spielt gerne " % gender_pronoun
-            string += cls._gen_activities_string_de(activities_sesg,
-                                                    string_sesg)
+            activities_sesg_string = (cls._gen_list_string(
+                                      activities_sesg, ', ', ' und '))
+            string += string_sesg + activities_sesg_string + (u'. ')
         if activities_se:
             string_se = u"%s " % gender_pronoun
-            string += cls._gen_activities_string_de(activities_se, string_se)
+            activities_se_string = (cls._gen_list_string(
+                                      activities_se, ', ', ' und '))
+            string += string_se + activities_se_string + (u'. ')
         if activities_se_g:
             string_se_g = u"%s " % gender_pronoun
-            string += cls._gen_activities_string_de(activities_se_g,
-                                                    string_se_g)
+            activities_se_g_string = (cls._gen_list_string(
+                                      activities_se_g, ', ', ' und '))
+            string += string_se_g + activities_se_g_string + (u'. ')
         return string
 
     @classmethod
