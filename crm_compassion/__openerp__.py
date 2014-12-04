@@ -45,7 +45,7 @@ new model for tracking upcoming events.
 """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['mail', 'better_zip', 'sponsorship_compassion', 'project'],
+    'depends': ['mail', 'base_location', 'sponsorship_compassion', 'project'],
     'data': [
         'security/ir.model.access.csv',
         'data/account_analytic_data.xml',
