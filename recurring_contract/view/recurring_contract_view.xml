@@ -110,8 +110,6 @@
 				<filter name="terminated" string="Terminated" domain="[('state','=','terminated')]" help="Ended Contracts"/>
 				<field name="partner_id" operator="child_of"/>
 				<field name="payment_term_id" string="Payment term"/>
-				<field name="contract_line_ids" string="Contract lines" />
-				<field name="reference" string="Reference" />
 				<group expand="0" string="Group By...">
 					<filter string="Partner" domain="[]" context="{'group_by':'partner_id'}"/>
 					<filter string="Start date" domain="[]"  context="{'group_by':'start_date'}"/>

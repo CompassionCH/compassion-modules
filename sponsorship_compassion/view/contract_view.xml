@@ -55,6 +55,7 @@
                             <field name="group_id" domain="[('partner_id', '=', partner_id)]"
                                    context="{'default_partner_id': partner_id}"
                                    on_change="on_change_group_id(group_id)"/>
+                            <field name="parent_id"/>
                         </group>
                         <group>
                             <field name="start_date" string="Creation date"/>
@@ -90,11 +91,19 @@
 			<field name="inherit_id" ref="recurring_contract.view_recurring_contract_filter" />
 			<field name="arch" type="xml">
 				<data>
-					<search string="Search contract" position="inside">
-						<field name="partner_codega" string="Partner reference"/>
-						<field name="child_code" string="Child code" />
-						<field name="child_name" string="Child name" />
-					</search>
+                    <field name="reference" position="attributes">
+                        <attribute name="filter_domain">
+                            ['|', '|', '|', '|', '|', '|',
+                             ('reference','ilike',self),
+                             ('partner_id','child_of',self),
+                             ('payment_term_id', 'ilike', self),
+                             ('partner_codega', 'ilike', self),
+                             ('child_code', 'ilike', self),
+                             ('child_name', 'ilike', self),
+                             ('origin_id', 'ilike', self),
+                            ]
+                        </attribute>
+                    </field>
                     <xpath expr="//filter[@name='draft']" position="after">
                         <filter name="waiting" string="Waiting" domain="[('state','=','waiting')]" help="Waiting Payment Contracts"/>
                     </xpath>

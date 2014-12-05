@@ -10,7 +10,6 @@
                 <field name="type"/>
                 <field name="partner_id"/>
                 <field name="analytic_id"/>
-                <field name="contract_id"/>
                 <field name="country_id"/>
             </tree>
 		</field>
@@ -35,8 +34,6 @@
                         <field name="analytic_id" attrs="{'invisible': [('type', '!=', 'marketing')],
                                                           'required': [('type', '=', 'marketing')]}"
                                domain="[('parent_id.name','=','Campaign')]"/>
-                        <field name="contract_id" attrs="{'invisible': [('type', '!=', 'sub')],
-                                                          'required': [('type','=','sub')]}"/>
                         <field name="country_id" attrs="{'invisible': [('type', '!=', 'transfer')],
                                                          'required': [('type','=','transfer')]}"/>
                         <field name="other_name" attrs="{'invisible': [('type', '!=', 'other')]}"/>
