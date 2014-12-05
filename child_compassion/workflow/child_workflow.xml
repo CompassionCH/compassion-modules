@@ -56,5 +56,11 @@
 		<field name="act_to" ref="act_departed" />
 		<field name="condition">state == 'F'</field>
 	</record>
+
+    <record model="workflow.transition" id="prematurate_depart">
+		<field name="act_from" ref="act_available" />
+		<field name="act_to" ref="act_departed" />
+		<field name="condition">state == 'F'</field>
+	</record>
 </data>
 </openerp>

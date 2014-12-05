@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+    <data>
+		<record id="depart_view" model="ir.ui.view">
+			<field name="name">child.depart.wizard.view</field>
+			<field name="model">child.depart.wizard</field>
+			<field name="arch" type="xml">
+				<form string="Child Departure" version="7.0">
+                    <!-- Child Exit Details form -->
+                    <group>
+                        <field name="end_date"/>
+                        <field name="gp_exit_reason"/>
+                        <field name="transfer_country_id" attrs="{'required': [('gp_exit_reason', '=', 'transfer')],
+                                                                  'invisible': [('gp_exit_reason', '!=', 'transfer')]}"
+                               options="{'limit': 20}"/>
+                    </group>
+
+                    <!-- Action buttons in footer -->
+					<footer>
+						<button name="child_depart" string="End sponsorship" 
+                                type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+					</footer>
+				</form>
+			</field>
+		</record>
+
+        <record id="action_child_depart" model="ir.actions.act_window">
+             <field name="name">Child Departure</field>
+             <field name="res_model">child.depart.wizard</field>
+             <field name="src_model">compassion.child</field>
+             <field name="type">ir.actions.act_window</field>
+             <field name="view_type">form</field>
+             <field name="view_mode">form</field>
+             <field name="view_id" ref="depart_view"/>
+             <field name="context">{'active_id': active_id}</field>
+             <field name="target">new</field>
+       </record>
+    </data>
+</openerp>
