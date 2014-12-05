@@ -114,7 +114,8 @@ class compassion_child(orm.Model):
         ######################################################################
         #                      2. Exit Details                               #
         ######################################################################
-        'exit_date': fields.date(_("Exit date"), track_visibility="onchange"),
+        'exit_date': fields.date(_("Exit date"), track_visibility="onchange",
+                                 readonly=True),
         'last_attended_project': fields.date(_("Last time attended project")),
         'presented_gospel': fields.boolean(
             _("Has been presented with gospel")),
