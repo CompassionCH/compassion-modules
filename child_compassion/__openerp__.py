@@ -40,13 +40,14 @@ Warning: Requires 'pysftp' (sudo pip install pysftp)
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['mail'],
+    'depends': ['mail', 'web_m2x_options'],
     'external_dependencies': {
         'python': ['pysftp'],
     },
     'data': [
         'security/sponsorship_groups.xml',
         'security/ir.model.access.csv',
+        'view/child_depart_wizard_view.xml',
         'view/child_compassion_view.xml',
         'view/child_compassion_property_view.xml',
         'view/child_description_wizard_view.xml',

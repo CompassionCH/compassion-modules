@@ -10,3 +10,4 @@
 ##############################################################################
 
 from . import child_description_wizard
+from . import child_depart_wizard

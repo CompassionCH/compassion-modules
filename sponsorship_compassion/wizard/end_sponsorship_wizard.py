@@ -13,12 +13,11 @@ from openerp import netsvc
 from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
+
 from lxml import etree
 from datetime import datetime
 
-# Countries available for the child transfer
-IP_COUNTRIES = ['AU', 'CA', 'DE', 'ES', 'FR', 'GB', 'IT', 'KR', 'NL',
-                'NZ', 'US']
+from child_compassion.wizard.child_depart_wizard import IP_COUNTRIES
 
 
 class end_sponsorship_wizard(orm.TransientModel):
@@ -89,13 +88,14 @@ class end_sponsorship_wizard(orm.TransientModel):
             if wizard.do_transfer:
                 wizard.child_id.write({
                     'state': 'F',
-                    'transfer_country_id': wizard.transfer_country_id.id})
+                    'transfer_country_id': wizard.transfer_country_id.id,
+                    'exit_date': wizard.end_date})
 
             # If child has departed, write exit_details
             elif wizard.end_reason == '1':
                 wizard.child_id.write({
                     'state': 'F',
                     'gp_exit_reason': wizard.gp_exit_reason,
-                })
+                    'exit_date': wizard.end_date})
 
         return True
