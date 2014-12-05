@@ -26,7 +26,6 @@ class contract_origin(orm.Model):
             ('marketing', _("Marketing campaign")),
             ('sub', _("SUB sponsorship")),
             ('transfer', _("Transfer")),
-            ('already_sponsor', _("Is already sponsor")),
             ('other', _("Other")),
         ]
 
@@ -43,20 +42,11 @@ class contract_origin(orm.Model):
             name = origin.partner_id.name
         elif origin.type in ('event', 'marketing'):
             name = origin.analytic_id.name
-        elif origin.type == 'sub':
-            if origin.contract_id:
-                name = 'SUB Sponsorship - {0} ({1})'.format(
-                    origin.contract_id.child_id.code,
-                    origin.contract_id.end_date)
-            else:
-                name = 'SUB Sponsorship'
         elif origin.type == 'transfer':
             if origin.country_id:
                 name = 'Transfer from ' + origin.country_id.name
             else:
                 name = 'Transfer from partner country'
-        elif origin.type == 'already_sponsor':
-            name = 'Is already a sponsor'
         elif origin.type == 'other':
             name = origin.other_name or 'Other'
         return name
@@ -71,9 +61,7 @@ class contract_origin(orm.Model):
             " * Event : sponsorship was made during an event"
             " * Marketing campaign : sponsorship was made after specific "
             "campaign (magazine, ad, etc..)"
-            " * SUB sponsorship : new sponsorship to replace a finished one."
             " * Transfer : sponsorship transferred from another country."
-            " * Is already sponsor : the sponsor wanted a new sponsorship."
             " * Other : select only if none other type matches."
         ), required=True),
         'partner_id': fields.many2one('res.partner', _("Partner")),
@@ -82,8 +70,6 @@ class contract_origin(orm.Model):
         'contract_ids': fields.one2many(
             'recurring.contract', 'origin_id', _("Contracts originated"),
             readonly=True),
-        'contract_id': fields.many2one('recurring.contract',
-                                       _("Previous sponsorship")),
         'country_id': fields.many2one('res.country', _("Country")),
         'other_name': fields.char(_("Give details"), size=128),
     }
@@ -105,7 +91,6 @@ class contract_origin(orm.Model):
                 ('type', '=', vals.get('type')),
                 ('partner_id', '=', vals.get('partner_id')),
                 ('analytic_id', '=', vals.get('analytic_id')),
-                ('contract_id', '=', vals.get('contract_id')),
                 ('country_id', '=', vals.get('country_id')),
                 ('other_name', '=', vals.get('other_name')),
             ], context=context)

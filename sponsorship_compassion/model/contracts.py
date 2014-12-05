@@ -201,6 +201,9 @@ class recurring_contract(orm.Model):
         'channel': fields.selection(_get_channels, string=_("Channel"),
                                     required=True, readonly=True,
                                     states={'draft': [('readonly', False)]}),
+        'parent_id': fields.many2one(
+            'recurring.contract', _('Previous sponsorship'), readonly=True,
+            states={'draft': [('readonly', False)]}),
     }
 
     def _get_standard_lines(self, cr, uid, context=None):
@@ -239,6 +242,8 @@ class recurring_contract(orm.Model):
             name = contract.partner_id.ref
             if contract.child_id:
                 name += ' - ' + contract.child_id.code
+            elif contract.contract_line_ids:
+                name += ' - ' + contract.contract_line_ids[0].product_id.name
             res.append((contract.id, name))
         return res
 
