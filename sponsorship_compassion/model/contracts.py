@@ -221,7 +221,8 @@ class recurring_contract(orm.Model):
     }
 
     _defaults = {
-        'contract_line_ids': _get_standard_lines
+        'contract_line_ids': _get_standard_lines,
+        'type': 'ChildSponsorship',
     }
 
     ##########################
