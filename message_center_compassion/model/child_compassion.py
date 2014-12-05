@@ -9,6 +9,7 @@
 #
 ##############################################################################
 from openerp.osv import orm
+import pdb
 
 
 class compassion_child(orm.Model):
@@ -27,27 +28,24 @@ class compassion_child(orm.Model):
         return True
 
     def depart(self, cr, uid, id, context=None):
-        """For the depart method, we don't have enough information on the
-        children right now to do it (state), plus we would need the user
-        to be aware of procedure to do in this case. So it is a bit early
-        to have it implemented, we should carefully separe functionnalities
-        between GP and Odoo before."""
+        """Not yet ready"""
         # TODO : possibly terminate the contract, mark the child as departed
         # and the user should do the right communication
         # to the sponsor from GP.
-        
-        # Try to open the end sponsorship wizard
         child = self.browse(cr, uid, id, context)
-        contract_ids = self.pool.get('recurring.contract').search(
-            cr, uid, [
-                ('child_id', '=', id),
-                ('partner_id', '=', child.sponsor_id.id),
-                ('state', 'in', ('waiting', 'active'))], context=context)
-        if contract_ids:
-        else:
-            # TODO : We should fetch the exit_reason from GMC
-            # but their API is not yet working...
-            child.write({'state': 'F'})
+        if child.sponsor_id:
+            contract_ids = self.pool.get('recurring.contract').search(
+                cr, uid, [
+                    ('child_id', '=', id),
+                    ('partner_id', '=', child.sponsor_id.id),
+                    ('state', 'in', ('waiting', 'active'))], context=context)
+            if contract_ids:
+                # TODO : Terminate contract with information retrieved by the
+                #        GetExitDetails API (which is not yet ready)
+        elif child.state != 'F':
+            # TODO : Mark child as departed with information retrieved
+            #        by GetExitDetails API.
+
         return True
 
     def update(self, cr, uid, id, context=None):

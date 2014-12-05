@@ -74,10 +74,10 @@ class compassion_child(orm.Model):
         #                      1. General Information                        #
         ######################################################################
         'name': fields.char(_("Name"), size=128),
-        'firstname': fields.char(_("Firstname"), size=128),
+        'firstname': fields.char(_("First name"), size=128),
         'code': fields.char(_("Child code"), size=128, required=True),
         'unique_id': fields.char(_("Unique ID"), size=128),
-        'birthdate': fields.date(_("Birthdate")),
+        'birthdate': fields.date(_("Birthday")),
         'type': fields.selection(
             [('CDSP', 'CDSP'),
              ('LDP', 'LDP')], _('Type of sponsorship program'), required=True),
@@ -105,7 +105,8 @@ class compassion_child(orm.Model):
             ('I', _('On Internet')),
             ('P', _('Sponsored')),
             ('R', _('Waiting new sponsor')),
-            ('F', _('Departed'))], _("Status"), select=True, readonly=True,
+            ('F', _('Departed')),
+            ('X', _('Deallocated'))], _("Status"), select=True, readonly=True,
             track_visibility="onchange", required=True),
         'has_been_sponsored': fields.boolean('Has been sponsored'),
         'sponsor_id': fields.many2one('res.partner', _('Sponsor'),
