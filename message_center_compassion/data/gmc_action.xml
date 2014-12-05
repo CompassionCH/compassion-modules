@@ -37,7 +37,7 @@
             <field name="direction">in</field>
             <field name="name">DepartChild</field>
             <field name="model">compassion.child</field>
-            <field name="type">allocate</field>
+            <field name="type">depart</field>
             <field name="description">This won't do anything yet. Please implement the method.</field>
         </record>
         

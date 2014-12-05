@@ -35,6 +35,19 @@ class compassion_child(orm.Model):
         # TODO : possibly terminate the contract, mark the child as departed
         # and the user should do the right communication
         # to the sponsor from GP.
+        
+        # Try to open the end sponsorship wizard
+        child = self.browse(cr, uid, id, context)
+        contract_ids = self.pool.get('recurring.contract').search(
+            cr, uid, [
+                ('child_id', '=', id),
+                ('partner_id', '=', child.sponsor_id.id),
+                ('state', 'in', ('waiting', 'active'))], context=context)
+        if contract_ids:
+        else:
+            # TODO : We should fetch the exit_reason from GMC
+            # but their API is not yet working...
+            child.write({'state': 'F'})
         return True
 
     def update(self, cr, uid, id, context=None):
