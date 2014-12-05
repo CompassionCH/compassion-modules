@@ -91,7 +91,7 @@ class recurring_contract(orm.Model):
             '|', ('partner_id', '=', contract.partner_id.id),
             ('child_id', '=', contract.child_id.id)], context)
         message_obj.write(cr, uid, message_ids, {
-            'state': 'sent',
+            'state': 'success',
             'process_date': contract.activation_date}, context)
         return True
 

@@ -247,7 +247,8 @@ class recurring_contract(orm.Model):
         return res
 
     _defaults = {
-        'contract_line_ids': _get_standard_lines
+        'contract_line_ids': _get_standard_lines,
+        'type': 'ChildSponsorship',
     }
 
     def name_get(self, cr, uid, ids, context=None):

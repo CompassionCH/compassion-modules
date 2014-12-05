@@ -9,6 +9,8 @@
 #
 ##############################################################################
 from openerp.osv import orm
+from openerp import netsvc
+import pdb
 
 
 class compassion_child(orm.Model):
@@ -16,31 +18,59 @@ class compassion_child(orm.Model):
     _inherit = 'compassion.child'
 
     def allocate(self, cr, uid, args, context=None):
-        child_id = self.create(cr, uid, args, context=context)
+        child_id = args.get('object_id')
+        if child_id:
+            # Child already exists, put it back to available state
+            child = self.browse(cr, uid, child_id, context)
+            if child.state == 'P':
+                raise orm.except_orm(
+                    _("Child allocation error"),
+                    _("The child that will be allocated is sponsored. "
+                      "Maybe someone forgot to terminate the sponsorship ? "
+                      "Please verify information of child %s.") % child.code)
+            if child.state in ('F', 'X'):
+                # Start a new workflow making the child available again
+                wf_service = netsvc.LocalService('workflow')
+                wf_service.trg_create(uid, self._name, child_id, cr)
+        else:
+            # Allocate a new child
+            del args['object_id']   # We don't need this for create method
+            child_id = self.create(cr, uid, args, context=context)
         self.update(cr, uid, child_id, context=context)
         return True
 
-    def deallocate(self, cr, uid, id, context=None):
-        """Deallocate is uncertain, because it may disappear from GMC messages
-        when the childpool will be global (same children for all countries).
-        Until we don't need it, we don't implement it."""
-        return True
+    def deallocate(self, cr, uid, args, context=None):
+        """Deallocate child."""
+        return self.write(cr, uid, args.get('object_id'), {
+            'state': 'X', 'exit_date': args.get('date')}, context)
 
-    def depart(self, cr, uid, id, context=None):
-        """For the depart method, we don't have enough information on the
-        children right now to do it (state), plus we would need the user
-        to be aware of procedure to do in this case. So it is a bit early
-        to have it implemented, we should carefully separe functionnalities
-        between GP and Odoo before."""
+    def depart(self, cr, uid, args, context=None):
+        """Not yet ready"""
         # TODO : possibly terminate the contract, mark the child as departed
         # and the user should do the right communication
         # to the sponsor from GP.
+        child = self.browse(cr, uid, args.get('object_id'), context)
+        if child.sponsor_id:
+            contract_ids = self.pool.get('recurring.contract').search(
+                cr, uid, [
+                    ('child_id', '=', child.id),
+                    ('partner_id', '=', child.sponsor_id.id),
+                    ('state', 'in', ('waiting', 'active'))], context=context)
+            if contract_ids:
+                # TODO : Terminate contract with information retrieved by the
+                #        GetExitDetails API (which is not yet ready)
+                return True
+        elif child.state != 'F':
+            # TODO : Mark child as departed with information retrieved
+            #        by GetExitDetails API.
+            return True
+
         return True
 
-    def update(self, cr, uid, id, context=None):
+    def update(self, cr, uid, args, context=None):
         """ When we receive a notification that child has been updated,
         we fetch the last case study. """
-        self.get_infos(cr, uid, id, context=context)
+        self.get_infos(cr, uid, args.get('object_id'), context)
         return True
 
 
@@ -48,8 +78,8 @@ class compassion_project(orm.Model):
     """ Add update method. """
     _inherit = 'compassion.project'
 
-    def update(self, cr, uid, id, context=None):
+    def update(self, cr, uid, context=None):
         """ When we receive a notification that a project has been updated,
         we fetch the last informations. """
-        self.update_informations(cr, uid, id, context)
+        self.update_informations(cr, uid, args.get('object_id'), context)
         return True

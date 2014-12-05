@@ -54,13 +54,13 @@
     <record model="workflow.transition" id="depart">
 		<field name="act_from" ref="act_sponsored" />
 		<field name="act_to" ref="act_departed" />
-		<field name="condition">state == 'F'</field>
+		<field name="condition">state in ('F', 'X')</field>
 	</record>
 
     <record model="workflow.transition" id="prematurate_depart">
 		<field name="act_from" ref="act_available" />
 		<field name="act_to" ref="act_departed" />
-		<field name="condition">state == 'F'</field>
+		<field name="condition">state in ('F', 'X')</field>
 	</record>
 </data>
 </openerp>
