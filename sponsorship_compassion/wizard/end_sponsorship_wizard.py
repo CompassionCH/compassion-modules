@@ -46,11 +46,6 @@ class end_sponsorship_wizard(orm.TransientModel):
         'child_id': fields.many2one('compassion.child', 'Child'),
         'end_reason': fields.selection(_get_end_reason, string=_('End reason'),
                                        required=True),
-        'state': fields.selection(
-            [('end_sponsorship', 'End Sponsorship'),
-             ('transfer_child', 'Transfer Child'),
-             ('exit_details', 'Child Exit Details')],
-            'State', required=True, readonly=True),
         'do_transfer': fields.boolean(_("I want to transfer the child")),
         'transfer_country_id': fields.many2one(
             'res.country', _('Country'),
@@ -60,7 +55,6 @@ class end_sponsorship_wizard(orm.TransientModel):
     }
 
     _defaults = {
-        'state': 'end_sponsorship',
         'contract_id': _get_contract_id,
         'child_id': _get_child_id,
         'end_date': datetime.today().strftime(DF),
@@ -82,58 +76,26 @@ class end_sponsorship_wizard(orm.TransientModel):
 
     def end_sponsorship(self, cr, uid, ids, context=None):
         wizard = self.browse(cr, uid, ids[0], context)
-        res = True
-
-        if wizard.child_id:
-            # If sponsor moves, propose to transfer the child
-            if wizard.end_reason == '4':
-                wizard.write({'state': 'transfer_child'})
-                res = {
-                    'name': _('Transfer child to another country'),
-                    'type': 'ir.actions.act_window',
-                    'res_model': self._name,
-                    'view_mode': 'form',
-                    'view_type': 'form',
-                    'res_id': ids[0],
-                    'context': context,
-                    'target': 'new',
-                }
-
-            # If child has departed, go to exit_details step
-            elif wizard.end_reason == '1':
-                wizard.write({'state': 'exit_details'})
-                res = {
-                    'name': _('Child exit details'),
-                    'type': 'ir.actions.act_window',
-                    'res_model': self._name,
-                    'view_mode': 'form',
-                    'view_type': 'form',
-                    'res_id': ids[0],
-                    'context': context,
-                    'target': 'new',
-                }
-
         contract = wizard.contract_id
+
+        # Terminate contract
         contract.write({'end_reason': wizard.end_reason})
         wf_service = netsvc.LocalService('workflow')
         wf_service.trg_validate(
             uid, 'recurring.contract', contract.id, 'contract_terminated', cr)
 
-        return res
+        if wizard.child_id:
+            # If sponsor moves, the child may be transferred
+            if wizard.do_transfer:
+                wizard.child_id.write({
+                    'state': 'F',
+                    'transfer_country_id': wizard.transfer_country_id.id})
 
-    def transfer_child(self, cr, uid, ids, context=None):
-        wizard = self.browse(cr, uid, ids[0], context)
-        if wizard.do_transfer and wizard.transfer_country_id:
-            wizard.child_id.write({
-                'state': 'F',
-                'transfer_country_id': wizard.transfer_country_id.id})
+            # If child has departed, write exit_details
+            elif wizard.end_reason == '1':
+                wizard.child_id.write({
+                    'state': 'F',
+                    'gp_exit_reason': wizard.gp_exit_reason,
+                })
 
-        return True
-
-    def depart_child(self, cr, uid, ids, context=None):
-        wizard = self.browse(cr, uid, ids[0], context)
-        wizard.child_id.write({
-            'state': 'F',
-            'gp_exit_reason': wizard.gp_exit_reason,
-        })
         return True

@@ -11,47 +11,38 @@
 			<field name="model">end.sponsorship.wizard</field>
 			<field name="arch" type="xml">
 				<form string="End of sponsorship" version="7.0">
-                    <field name="state" invisible="1" />
-                    
                     <!-- End sponsorship form -->
-                    <sheet states="end_sponsorship">
+                    <group>
                         <group>
                             <field name="contract_id" readonly="1"/>
                             <field name="child_id" readonly="1"/>
                             <field name="end_date"/>
                             <field name="end_reason"/>
                         </group>
-                    </sheet>
+                        <group/>
 
-                    <!-- Transfer child form -->
-                    <sheet states="transfer_child">
                         <group>
+                            <!-- Child Exit Details form -->
+                            <field name="gp_exit_reason" attrs="{'required': [('end_reason', '=', '1')],
+                                                                 'invisible': [('end_reason', '!=', '1')]}"/>
+                        </group>
+                        <group/>
+
+                        <group attrs="{'invisible': [('end_reason', '!=', '4')]}">
+                            <!-- Transfer child form -->
                             <field name="do_transfer" />
-                            <!-- on_change="on_change_do_transfer(do_transfer)" -->
-                            <!-- invisible="[('do_transfer', '=', 'False')]" -->
                             <field name="transfer_country_id" options="{'limit': 20}"
                                    attrs="{'invisible': [('do_transfer', '=', False)],
-                                           'required': [('do_transfer', '=', 'True')]}" />
+                                           'required': [('do_transfer', '=', True)]}" />
                         </group>
-                    </sheet>
-                    
-                    <!-- Child Exit Details form -->
-                    <sheet states="exit_details">
-                        <group>
-                            <field name="gp_exit_reason" attrs="{'required': [('state', '=', 'exit_details')]}"/>
-                        </group>
-                    </sheet>
-                    
+                        <group/>
+                    </group>
+
                     <!-- Action buttons in footer -->
 					<footer>
 						<button name="end_sponsorship" string="End sponsorship" 
-                                type="object" class="oe_highlight" states="end_sponsorship"/>
-                        <button name="transfer_child" string="Confirm"
-                                type="object" class="oe_highlight" states="transfer_child"/>
-                        <button name="depart_child" string="Confirm"
-                                type="object" class="oe_highlight" states="exit_details"/>
-						or
-						<button string="Cancel" class="oe_link" special="cancel"/>
+                                type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
 					</footer>
 				</form>
 			</field>
@@ -68,7 +59,5 @@
              <field name="context">{'active_id': active_id}</field>
              <field name="target">new</field>
        </record>
-
-        
     </data>
 </openerp>
