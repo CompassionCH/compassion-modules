@@ -90,7 +90,7 @@
                       colors="blue:state == 'N';
                               black:state in ('P', 'D', 'I');
                               red:state == 'R';
-                              gray:state == 'F'">
+                              gray:state in ('F', 'X')">
                     <field name="name"/>
                     <field name="code"/>
                     <field name="sponsor_id"/>
