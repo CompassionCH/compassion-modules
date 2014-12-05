@@ -230,9 +230,7 @@ class AccountStatementCompletionRule(orm.Model):
         if product.id:
             invoice_obj = self.pool.get('account.invoice')
             journal_ids = self.pool.get('account.journal').search(
-                cr, uid,
-                [('type', '=', 'sale'), ('company_id', '=', 1 or False)],
-                limit=1)
+                cr, uid, [('type', '=', 'sale')], limit=1)
             invoicer_id = self.pool.get('account.bank.statement').browse(
                 cr, uid, st_line['statement_id'][0], context=context
             ).recurring_invoicer_id.id
@@ -241,7 +239,7 @@ class AccountStatementCompletionRule(orm.Model):
                 'account_id': partner.property_account_receivable.id,
                 'type': 'out_invoice',
                 'partner_id': partner.id,
-                'journal_id': len(journal_ids) and journal_ids[0] or False,
+                'journal_id': journal_ids[0] if journal_ids else False,
                 'date_invoice': st_line['date'],
                 'payment_term': 1,  # Immediate payment
                 'bvr_reference': st_line['ref'],
@@ -376,5 +374,6 @@ class AccountStatement(orm.Model):
             'domain': [('recurring_invoicer_id', '=', invoicer_id)],
             'type': 'ir.actions.act_window',
             'target': 'current',
-            'context': {'form_view_ref': 'account.invoice_form'},
+            'context': {'form_view_ref': 'account.invoice_form',
+                        'journal_type': 'sale'},
         }
