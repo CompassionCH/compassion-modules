@@ -395,7 +395,7 @@ class compassion_child(orm.Model):
         return True
 
     def child_departed(self, cr, uid, ids, context=None):
-        """ Is called when a sponsored child changes his status to 'F'. """
+        """ Is called when a child changes his status to 'F' or 'X'."""
         # TODO Call Webservice to get Exit Details (when service is ready)
         self.write(cr, uid, ids, {'sponsor_id': False}, context)
         return True
