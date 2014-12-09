@@ -161,7 +161,7 @@ class compassion_project(orm.Model):
             'western_denomination': prog_impl.get('westernDenomination'),
             'community_name': prog_impl.get('communityName'),
             'country_id': self._update_country(
-                cr, uid, prog_impl.get('iSOCountryCode'), context),
+                cr, uid, prog_impl.get('isoCountryCode'), context),
         }
 
         community_id = prog_impl.get('communityID')
