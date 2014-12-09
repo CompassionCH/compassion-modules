@@ -27,6 +27,14 @@ class Child_description_fr:
         return desc_fr
 
     @classmethod
+    def _gen_list_string(cls, list):
+        string = ', '.join(list[:-1])
+        if len(list) > 1:
+            string += ' et '
+        string += list[-1]
+        return string
+
+    @classmethod
     def _gen_christ_act_fr(cls, cr, uid, child, case_study, context=None):
         ''' Generate the christian activities description part.
             Words as 'à', 'aux', ... are included in value_fr field.
@@ -36,7 +44,7 @@ class Child_description_fr:
         activities = [
             activity.value_fr if activity.value_fr else activity.value_en
             for activity in case_study.christian_activities_ids]
-        activities_str = cls._gen_list_string(activities, ', ', ' et ')
+        activities_str = cls._gen_list_string(activities)
         string = u"A l'Église, %s participe %s. " % (
             child.firstname, activities_str)
         return string
@@ -65,7 +73,7 @@ class Child_description_fr:
                            else activity.value_en
                            for activity in case_study.family_duties_ids
                            if activity.value_en in specials])
-        activities_str = cls._gen_list_string(activities, ', ', ' et ')
+        activities_str = cls._gen_list_string(activities)
         string = u"A la maison, %s %s. " % (child.firstname, activities_str)
         return string
 
@@ -92,7 +100,7 @@ class Child_description_fr:
                            else activity.value_en
                            for activity in case_study.hobbies_ids
                            if activity.value_en in verbs])
-        activities_str = cls._gen_list_string(activities, ', ', ' et ')
+        activities_str = cls._gen_list_string(activities)
         string = u"%s aime beaucoup %s. " % ('Il' if child.gender == 'M'
                                              else 'Elle', activities_str)
         return string
@@ -154,7 +162,7 @@ class Child_description_fr:
         else:
             string += ' ne va pas à l\'école'  # TODO reason
         return string
-
+    """
     @classmethod
     def _gen_list_string(cls, list, separator, last_separator):
         string = separator.join(list[:-1])
@@ -162,6 +170,7 @@ class Child_description_fr:
             string += last_separator
         string += list[-1]
         return string
+    """
 
     @classmethod
     def _get_guardians_info_fr(cls, cr, uid, child, case_study, context=None):
@@ -207,7 +216,7 @@ class Child_description_fr:
         if 'un institut' in live_with:
             guardian_str = '%s avec %s' % (live_with[0], live_with[1])
         else:
-            guardian_str = cls._gen_list_string(live_with, ', ', ' et ')
+            guardian_str = cls._gen_list_string(live_with)
         if 'institut' in guardian_str:
             string = '%s vit dans %s. ' % (child.firstname, guardian_str)
         else:
@@ -222,35 +231,49 @@ class Child_description_fr:
                                case_study, m_g, f_g, context=None):
         ''' Generate the guardians jobs description part. '''
         if case_study.male_guardian_ids or case_study.female_guardian_ids:
+
             props_m = [emp.value_en for emp in case_study.male_guardian_ids]
+
             job_m = [emp.value_fr if emp.value_fr else emp.value_en
                      for emp in case_study.male_guardian_ids
                      if not emp.value_en.endswith('mployed')]
+
             props_f = [emp.value_en for emp in case_study.female_guardian_ids]
+
             job_f = [emp.value_fr if emp.value_fr else emp.value_en
                      for emp in case_study.female_guardian_ids
                      if not emp.value_en.endswith('mployed')]
-            if f_g == 'institutional worker':
-                string = u""
-            else:
+
+            string = u""
+
+            if f_g != 'institutional worker':
                 if ('isunemployed' in props_m) and job_f:
                     string = (u"Sa %s est %s et son %s n'a pas d'emploi."
                               % (f_g, job_f[0], m_g))
+
                 elif job_m and ('isunemployed' in props_f):
                     string = (u"Son %s est %s et sa %s n'a pas d'emploi."
                               % (m_g, job_m[0], f_g))
+
                 elif ('isunemployed' in props_m) and ('isunemployed'
                                                       in props_f):
                     if f_g == "mother" and m_g == "father":
                         string = u"Ses parents n'ont pas d'emploi."
+
                     else:
                         string = (u"Son %s et sa %s n'ont pas d'emploi."
                                   % (m_g, f_g))
+
                 elif job_m and job_f:
+
                     if ((job_f[0][0:7] == job_m[0][0:7])
                             and (f_g == u"mère" and m_g == u"père")):
+
                         string = u"Ses parents sont %ss." % job_m[0]
+
                     else:
+
                         string = (u"Sa %s est %s et son %s est %s."
                                   % (f_g, job_f[0], m_g, job_m[0]))
+
         return string

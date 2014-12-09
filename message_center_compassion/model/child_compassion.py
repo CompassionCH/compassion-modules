@@ -18,7 +18,7 @@ class compassion_child(orm.Model):
     def allocate(self, cr, uid, args, context=None):
         child_id = self.create(cr, uid, args, context=context)
         self.update(cr, uid, child_id, context=context)
-        return self.get_basic_informations(cr, uid, child_id, context=context)
+        return True
 
     def deallocate(self, cr, uid, id, context=None):
         """Deallocate is uncertain, because it may disappear from GMC messages
@@ -40,7 +40,7 @@ class compassion_child(orm.Model):
     def update(self, cr, uid, id, context=None):
         """ When we receive a notification that child has been updated,
         we fetch the last case study. """
-        self.get_last_case_study(cr, uid, id, context=context)
+        self.get_infos(cr, uid, id, context=context)
         return True
 
 
