@@ -36,11 +36,16 @@ class compassion_child(orm.Model):
             # Allocate a new child
             del args['object_id']   # We don't need this for create method
             child_id = self.create(cr, uid, args, context=context)
-        self.update(cr, uid, child_id, context=context)
+        self.update(cr, uid, args, context=context)
         return self.get_basic_informations(cr, uid, child_id, context=context)
 
     def deallocate(self, cr, uid, args, context=None):
-        """Deallocate child."""
+        """Deallocate child.
+        TODO:
+            If child is sponsored, it means it will be transfered to another
+            project. We should not mark end the sponsorship and should
+            warn the sponsor of the change.
+        """
         return self.write(cr, uid, args.get('object_id'), {
             'state': 'X', 'exit_date': args.get('date')}, context)
 
@@ -78,7 +83,7 @@ class compassion_project(orm.Model):
     """ Add update method. """
     _inherit = 'compassion.project'
 
-    def update(self, cr, uid, context=None):
+    def update(self, cr, uid, args, context=None):
         """ When we receive a notification that a project has been updated,
         we fetch the last informations. """
         self.update_informations(cr, uid, args.get('object_id'), context)

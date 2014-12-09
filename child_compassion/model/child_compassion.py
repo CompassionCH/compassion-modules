@@ -374,10 +374,14 @@ class compassion_child(orm.Model):
     #        Workflow Activities Callbacks           #
     ##################################################
     def child_available(self, cr, uid, ids, context=None):
+        """Called on creation of workflow. Determine the state of
+        allocated child."""
         for child in self.browse(cr, uid, ids, context):
             state = 'N'
             if child.has_been_sponsored:
                 state = 'R'
+            if child.sponsor_id:
+                state = 'P'
             child.write({'state': state})
         return True
 
