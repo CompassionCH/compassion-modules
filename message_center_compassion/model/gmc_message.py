@@ -68,7 +68,7 @@ class gmc_message_pool(orm.Model):
         'date': fields.date(_('Message Date'), required=True),
         'action_id': fields.many2one('gmc.action', _('GMC Message'),
                                      ondelete="restrict", required=True),
-        'process_date': fields.date(_('Success Date'), readonly=True),
+        'process_date': fields.date(_('Process Date'), readonly=True),
         'state': fields.selection(
             [('new', _('New')),
              ('pending', _('Pending')),
@@ -255,7 +255,7 @@ class gmc_message_pool(orm.Model):
 
         return True
 
-    def ack(self, cr, uid, request_id, status, message='', context=None):
+    def ack(self, cr, uid, request_id, status, message=None, context=None):
         """Message Acknowledgement meaning GMC has received our outgoing
         request.
         """
@@ -267,6 +267,8 @@ class gmc_message_pool(orm.Model):
                 'process_date': date.today().strftime(DF),
                 'failure_reason': message
             }, context)
+        else:
+            logger.error('Request id not found:' + str(request_id))
         return True
 
 

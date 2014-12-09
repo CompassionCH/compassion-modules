@@ -13,3 +13,4 @@ from . import gmc_message
 from . import child_compassion
 from . import contracts
 from . import res_partner
+from . import invoice_line
