@@ -36,6 +36,7 @@ class compassion_child(orm.Model):
             # Allocate a new child
             del args['object_id']   # We don't need this for create method
             child_id = self.create(cr, uid, args, context=context)
+            args['object_id'] = child_id
         self.update(cr, uid, args, context=context)
         return self.get_basic_informations(cr, uid, child_id, context=context)
 
