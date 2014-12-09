@@ -27,26 +27,10 @@ class Child_description_en:
         return desc_en
 
     @classmethod
-    def _gen_activities_string_en(cls, activities, strings, termination):
-        if len(activities) == 1:
-            activities_string = activities[0] + termination
-        else:
-            num_loop = 0
-            for activity in activities:
-                num_loop += 1
-                if num_loop == 1:
-                    activities_string = activity
-                elif num_loop == len(activities):
-                    activities_string += " and " + activity + termination
-                else:
-                    activities_string += ", " + activity
-        return strings + activities_string
-
-    @classmethod
-    def _gen_list_string(cls, list, separator, last_separator):
-        string = separator.join(list[:-1])
+    def _gen_list_string(cls, list):
+        string = ', '.join(list[:-1])
         if len(list) > 1:
-            string += last_separator
+            string += ' and '
         string += list[-1]
         return string
 
@@ -75,13 +59,13 @@ class Child_description_en:
             for activity in case_study.christian_activities_ids
             if activity.value_en in hobbies_iia]
         string = ''
-        gender_pronoun = 'He' if child.gender == 'M' else 'She'
+        gender_pronoun = 'he' if child.gender == 'M' else 'she'
         if activities_gt:
             string_gt = u'%s goes to ' % gender_pronoun
-            string = cls._gen_activities_string_en(activities_gt, string_gt, u'. ')
+            string = string_gt + cls._gen_list_string(activities_gt) + '. '
         if activities_iia:
             string_iia = u'%s is in a ' % gender_pronoun
-            string = cls._gen_activities_string_en(activities_iia, string_iia, u'. ')
+            string = string_iia + cls._gen_list_string(activities_iia) + '. '
         string = u'As part of the Church, ' + string
         return string
 
@@ -97,7 +81,7 @@ class Child_description_en:
             return ''
         activities = ([activity.value_en
                        for activity in case_study.family_duties_ids])
-        activities_str = cls._gen_list_string(activities, ', ', ' and ')
+        activities_str = cls._gen_list_string(activities)
         string = (u"At home, %s helps with family jobs such as %s. " % (
                   'he' if child.gender == 'M'
                   else 'she', activities_str))
@@ -145,20 +129,20 @@ class Child_description_en:
         gender_pronoun = 'He' if child.gender == 'M' else 'She'
         if activities_shepw:
             string_shepw = u"%s enjoys playing with " % gender_pronoun
-            string += cls._gen_activities_string_en(activities_shepw,
-                                                    string_shepw, u'. ')
+            string = (string_shepw + cls._gen_list_string(
+                      activities_shepw) + '. ')
         if activities_shep:
             string_shep = u"%s enjoys playing " % gender_pronoun
-            string += cls._gen_activities_string_en(activities_shep,
-                                                    string_shep, u'. ')
+            string = (string_shep + cls._gen_list_string(activities_shep)
+                      + '. ')
         if activities_shet:
             string_shet = u"%s enjoys to " % gender_pronoun
-            string += cls._gen_activities_string_en(activities_shet,
-                                                    string_shet, u'. ')
+            string = (string_shet + cls._gen_list_string(activities_shet)
+                      + '. ')
         if activities_she:
             string_she = u"%s enjoys " % gender_pronoun
-            string += cls._gen_activities_string_en(activities_she,
-                                                    string_she, u'. ')
+            string = (string_she + cls._gen_list_string(activities_she)
+                      + '. ')
         return string
 
     @classmethod
@@ -280,7 +264,7 @@ class Child_description_en:
         if 'an institution' in live_with:
             guardian_str = '%s with %s' % (live_with[0], live_with[1])
         else:
-            guardian_str = cls._gen_list_string(live_with, ', ', ' and ')
+            guardian_str = cls._gen_list_string(live_with)
         if 'institution' in guardian_str:
             string = '%s lives in %s. ' % (child.firstname, guardian_str)
         else:

@@ -18,7 +18,7 @@ class compassion_child(orm.Model):
     def allocate(self, cr, uid, args, context=None):
         child_id = self.create(cr, uid, args, context=context)
         self.update(cr, uid, child_id, context=context)
-        return self.get_basic_informations(cr, uid, child_id, context=context)
+        return True
 
     def deallocate(self, cr, uid, id, context=None):
         """Deallocate is uncertain, because it may disappear from GMC messages

@@ -27,7 +27,8 @@ class compassion_country(orm.Model):
         'description_it': fields.text(_('Italian description')),
         'iso_code': fields.char(_('ISO code'), size=2, required=True),
         'name': fields.char(_('Name')),
-        'name_en': fields.related('name', type='char', string=_('English name')),
+        'name_en': fields.related('name', type='char', string=_('English '
+                                                                'name')),
         'name_fr': fields.char(_('French name')),
         'name_de': fields.char(_('German name')),
         'name_it': fields.char(_('Italian name')),
