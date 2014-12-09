@@ -59,7 +59,9 @@ class recurring_contract(orm.Model):
                 message_obj.create(cr, uid, message_vals, context=context)
 
     def contract_terminated(self, cr, uid, ids, context=None):
-        """ Inform GMC when sponsorship is terminated. """
+        """ Inform GMC when sponsorship is terminated,
+        if end reason is from sponsor.
+        """
         res = super(recurring_contract, self).contract_terminated(
             cr, uid, ids, context)
         if res:
@@ -71,7 +73,10 @@ class recurring_contract(orm.Model):
             message_vals = {'action_id': action_id}
 
             for contract in self.browse(cr, uid, ids, context=context):
-                if contract.child_id:
+                # Contract must have child and not terminated by child or by
+                # partner move
+                end_reason = int(contract.end_reason)
+                if contract.child_id and end_reason not in (1, 4):
                     message_vals.update({
                         'object_id': contract.id,
                         'partner_id': contract.partner_id.id,
