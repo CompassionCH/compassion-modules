@@ -47,7 +47,7 @@ class compassion_child(orm.Model):
         'name': fields.char(_("Name"), size=128),
         'firstname': fields.char(_("Firstname"), size=128),
         'code': fields.char(_("Child code"), size=128, required=True),
-        'unique_id': fields.char(_("Unique ID"), size=128),
+        'unique_id': fields.integer(_("Unique ID")),
         'birthdate': fields.date(_("Birthdate")),
         'type': fields.selection(
             [('CDSP', 'CDSP'),
@@ -86,7 +86,8 @@ class compassion_child(orm.Model):
                     'name': case_study.name,
                     'firstname': case_study.firstname,
                     'birthdate': case_study.birthdate,
-                    'gender': case_study.gender
+                    'gender': case_study.gender,
+                    'unique_id': case_study.unique_id,
                     }, context=context)
         return True
 
