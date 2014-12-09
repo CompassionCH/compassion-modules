@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--Compassion country form view -->
+        <record id="view_compassion_country_form" model="ir.ui.view">
+            <field name="name">compassion.country.form</field>
+            <field name="model">compassion.country</field>
+            <field name="arch" type="xml">
+                <form string="Country" version="7.0">
+                    <sheet>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                        <group>
+                            <field name="iso_code" />
+                            <field name="language" />
+                        </group>
+                        <notebook>
+                            <page string="English">
+                                <group>
+                                    <field name="name_en" />
+                                    <field name="description_en" />
+                                </group>
+                            </page>
+                            <page string="French">
+                                <group>
+                                    <field name="name_fr" />
+                                    <field name="description_fr" />
+                                </group>
+                            </page>
+                            <page string="German">
+                                <group>
+                                    <field name="name_de" />
+                                    <field name="description_de" />
+                                </group>
+                            </page>
+                            <page string="Italian">
+                                <group>
+                                    <field name="name_it" />
+                                    <field name="description_it" />
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="open_view_country_form" model="ir.actions.act_window">
+            <field name="name">countries</field>
+            <field name="res_model">compassion.country</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_compassion_country_form"/>
+        </record>
+    </data>
+</openerp>

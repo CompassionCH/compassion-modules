@@ -22,6 +22,7 @@ class child_property(orm.Model):
         'child_id': fields.many2one(
             'compassion.child', _('Concerned child'),
             required=True, ondelete='cascade'),
+        'unique_id': fields.integer(_("Unique ID")),
         'info_date': fields.date(_('Date of case study')),
         'name': fields.char(_('Name')),
         'firstname': fields.char(_('Firstname')),

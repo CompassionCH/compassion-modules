@@ -27,6 +27,14 @@ class Child_description_de:
         return desc_de
 
     @classmethod
+    def _gen_list_string(cls, list):
+        string = ', '.join(list[:-1])
+        if len(list) > 1:
+            string += ' und '
+        string += list[-1]
+        return string
+
+    @classmethod
     def _gen_christ_act_de(cls, cr, uid, child, case_study, context=None):
         ''' Generate the christian activities description part.
         '''
@@ -35,7 +43,7 @@ class Child_description_de:
         activities = [
             activity.value_de if activity.value_de else activity.value_en
             for activity in case_study.christian_activities_ids]
-        activities_str = cls._gen_list_string(activities, ', ', ' und ')
+        activities_str = cls._gen_list_string(activities)
         string = (u"In der Kirche macht %s %s %s" % (
                   'er' if child.gender == 'M'
                   else 'sie', activities_str, 'mit. '
@@ -54,7 +62,7 @@ class Child_description_de:
         activities = ([activity.value_de if activity.value_de
                        else activity.value_en
                        for activity in case_study.family_duties_ids])
-        activities_str = cls._gen_list_string(activities, ', ', ' und ')
+        activities_str = cls._gen_list_string(activities)
         string = (u"Zu Hause hilft %s beim %s. " % ('er' if child.gender == 'M'
                   else 'sie', activities_str))
         return string
@@ -62,7 +70,7 @@ class Child_description_de:
     @classmethod
     def _gen_hobbies_info_de(cls, cr, uid, child, case_study, context=None):
         ''' Generate the hobbies description part.
-            There are 3 groups of hobbies :
+            There are 3 groups of hobbies:
             - hobbies starting with "Sie/Er spielt gerne" (sesg)
             - hobbies starting with "Sie/Er" (se)
             - hobbies starting with "Sie/Er" and finishing with "gerne" (se_g)
@@ -85,67 +93,29 @@ class Child_description_de:
         activities_sesg = [activity.value_de if activity.value_de
                            else activity.value_en
                            for activity in case_study.hobbies_ids
-                           if activity.value_en in (hobbies_sesg)]
+                           if activity.value_en in hobbies_sesg]
         activities_se = [activity.value_de if activity.value_de
                          else activity.value_en
                          for activity in case_study.hobbies_ids
-                         if activity.value_en in (hobbies_se)]
+                         if activity.value_en in hobbies_se]
         activities_se_g = [activity.value_de if activity.value_de
                            else activity.value_en
                            for activity in case_study.hobbies_ids
-                           if activity.value_en in (hobbies_se_g)]
+                           if activity.value_en in hobbies_se_g]
         string = ''
+        gender_pronoun = 'Er' if child.gender == 'M' else 'Sie'
         if activities_sesg:
-            string_sesg = u"%s spielt gerne " % (
-                'Er' if child.gender == 'M' else 'Sie')
-            if len(activities_sesg) == 1:
-                string_sesg += activities_sesg[0]
-            else:
-                num_loop = 0
-                for activity in activities_sesg:
-                    num_loop += 1
-                    if num_loop == 1:
-                        string_sesg += activity
-                    elif num_loop == len(activities_sesg):
-                        string_sesg += " und " + activity
-                    else:
-                        string_sesg += ", " + activity
-            string_sesg += u". "
-            string += string_sesg
+            string_sesg = u"%s spielt gerne " % gender_pronoun
+            activities_sesg_string = cls._gen_list_string(activities_sesg)
+            string += string_sesg + activities_sesg_string + (u'. ')
         if activities_se:
-            string_se = u"%s " % (
-                'Er' if child.gender == 'M' else 'Sie')
-            if len(activities_se) == 1:
-                string_se += activities_se[0]
-            else:
-                num_loop = 0
-                for activity in activities_se:
-                    num_loop += 1
-                    if num_loop == 1:
-                        string_se += activity
-                    elif num_loop == len(activities_se):
-                        string_se += " und " + activity
-                    else:
-                        string_se += ", " + activity
-            string_se += u". "
-            string += string_se
+            string_se = u"%s " % gender_pronoun
+            activities_se_string = cls._gen_list_string(activities_se)
+            string += string_se + activities_se_string + (u'. ')
         if activities_se_g:
-            string_se_g = u"%s " % (
-                'Er' if child.gender == 'M' else 'Sie')
-            if len(activities_se_g) == 1:
-                string_se_g += activities_se_g[0]
-            else:
-                num_loop = 0
-                for activity in activities_se_g:
-                    num_loop += 1
-                    if num_loop == 1:
-                        string_se_g += activity
-                    elif num_loop == len(activities_se_g):
-                        string_se_g += " und " + activity
-                    else:
-                        string_se_g += ", " + activity
-            string_se_g += u" gerne. "
-            string += string_se_g
+            string_se_g = u"%s " % gender_pronoun
+            activities_se_g_string = cls._gen_list_string(activities_se_g)
+            string += string_se_g + activities_se_g_string + (u'. ')
         return string
 
     @classmethod
@@ -191,7 +161,6 @@ class Child_description_de:
             else:
                 string += u' geht zur Schule'
             if case_study.school_performance:
-                # not sure about the "hat ... Ergebnisse."
                 string += (u' und %s hat %s Ergebnisse. ' % (child.firstname,
                            case_study.school_performance[0].value_de
                            if case_study.school_performance[0].value_de
@@ -204,15 +173,7 @@ class Child_description_de:
             else:
                 string += '.'
         else:
-            string += ' geht in die Schule nicht'  # TODO reason
-        return string
-
-    @classmethod
-    def _gen_list_string(cls, list, separator, last_separator):
-        string = separator.join(list[:-1])
-        if len(list) > 1:
-            string += last_separator
-        string += list[-1]
+            string += ' geht nicht in die Schule.'
         return string
 
     @classmethod
@@ -282,7 +243,7 @@ class Child_description_de:
         if 'einem Heim' in live_with:
             guardian_str = '%s mit %s' % (live_with[0], live_with[1])
         else:
-            guardian_str = cls._gen_list_string(live_with, ', ', ' und ')
+            guardian_str = cls._gen_list_string(live_with)
         if 'Heim' in guardian_str:
             string = '%s lebt in %s. ' % (child.firstname, guardian_str)
         else:
@@ -305,9 +266,8 @@ class Child_description_de:
             job_f = [emp.value_de if emp.value_de else emp.value_en
                      for emp in case_study.female_guardian_ids
                      if not emp.value_en.endswith('mployed')]
-            if f_g == 'institutional worker':
-                string = u""
-            else:
+            string = u""
+            if f_g != 'institutional worker':
                 if ('isunemployed' in props_m) and job_f:
                     string = (
                         u" %s %s arbeitet als %s und %s %s arbeitslos ist."

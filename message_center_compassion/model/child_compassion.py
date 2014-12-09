@@ -37,8 +37,7 @@ class compassion_child(orm.Model):
             del args['object_id']   # We don't need this for create method
             child_id = self.create(cr, uid, args, context=context)
             args['object_id'] = child_id
-        self.update(cr, uid, args, context=context)
-        return self.get_basic_informations(cr, uid, child_id, context=context)
+        return self.update(cr, uid, args, context=context)
 
     def deallocate(self, cr, uid, args, context=None):
         """Deallocate child.
@@ -76,7 +75,7 @@ class compassion_child(orm.Model):
     def update(self, cr, uid, args, context=None):
         """ When we receive a notification that child has been updated,
         we fetch the last case study. """
-        self.get_last_case_study(cr, uid, args.get('object_id'), context)
+        self.get_infos(cr, uid, args.get('object_id'), context=context)
         return True
 
 

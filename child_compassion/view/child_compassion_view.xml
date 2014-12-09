@@ -28,7 +28,7 @@
                         </div>
                         <div class="oe_right oe_button_box" name="buttons">
                             <button name="generate_descriptions" string="Generate descriptions" type="object" />
-                            <button name="get_last_case_study" string="get infos" type="object" />
+                            <button name="get_infos" string="get infos" type="object" />
                         </div>
                         <notebook>
                             <page string="General Information">
