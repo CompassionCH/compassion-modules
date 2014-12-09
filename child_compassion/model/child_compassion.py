@@ -23,7 +23,7 @@ class compassion_child(orm.Model):
 
     def get_portrait(self, cr, uid, ids, name, args, context=None):
         attachment_obj = self.pool.get('ir.attachment')
-        res = {}
+        res = dict()
         for child_id in ids:
             child = self.browse(cr, uid, child_id, context)
             case_study_id = -1
