@@ -64,7 +64,7 @@ class gmc_message_pool(orm.Model):
         'child_id': fields.many2one(
             'compassion.child', _("Child")
         ),
-        'request_id': fields.integer('Unique request ID'),
+        'request_id': fields.char('Unique request ID'),
         'date': fields.date(_('Message Date'), required=True),
         'action_id': fields.many2one('gmc.action', _('GMC Message'),
                                      ondelete="restrict", required=True),
@@ -111,7 +111,7 @@ class gmc_message_pool(orm.Model):
 
                 if res:
                     message_update = {'state': 'pending'}
-                    if res > 0:
+                    if isinstance(res, basestring):
                         message_update['request_id'] = res
                     message.write(message_update)
 
@@ -171,7 +171,7 @@ class gmc_message_pool(orm.Model):
             logger.debug(r.text)
             success = json_data.get('success')
             if success == 'yes':
-                return json_data.get('id')
+                return json_data.get('uuid')
 
         return False
 

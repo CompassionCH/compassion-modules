@@ -158,7 +158,7 @@ class test_messages(common.TransactionCase):
         ..data/test_scenario.docx
         """
         # Simulate GMC Allocation of 4 new children
-        child_keys = ["PE3760148", "IN6890248", "ID6000122", "ID6000139"]
+        child_keys = ["PE3760148", "UG8310012", "UG8320012", "UG8350016"]
         child_ids = self._allocate_new_children(child_keys)
 
         # Check all 4 children are available in database
