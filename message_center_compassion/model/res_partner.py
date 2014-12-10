@@ -14,6 +14,7 @@ from datetime import date
 
 
 class res_partner(orm.Model):
+
     """ UPSERT constituents. """
     _inherit = 'res.partner'
 
