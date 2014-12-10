@@ -57,8 +57,10 @@
                             </h1>
                         </div>
                         <group>
+                            <field name="direction" invisible="1" />
                             <field name="date" />
                             <field name="process_date" />
+                            <field name="request_id" attrs="{'invisible':[('direction','=','in')]}" states="pending"/>
                             <field name="partner_id" attrs="{'invisible':[('partner_id','=',False)]}" />
                             <field name="child_id" attrs="{'invisible':[('child_id','=',False)]}" />
                             <field name="incoming_key" attrs="{'invisible':[('incoming_key','=',False)]}" />

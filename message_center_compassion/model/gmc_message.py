@@ -32,6 +32,7 @@ class gmc_message_pool_process(orm.TransientModel):
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree, form',
+            'views': [(False, 'tree'), (False, 'form')],
             'res_model': 'gmc.message.pool',
             'domain': [('id', 'in', active_ids)],
             'target': 'current',
