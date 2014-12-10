@@ -33,9 +33,6 @@ class compassion_child(orm.Model):
                 # Start a new workflow making the child available again
                 wf_service = netsvc.LocalService('workflow')
                 wf_service.trg_create(uid, self._name, child_id, cr)
-            # Write new code of child, if changed
-            if child.code != args.get('code'):
-                child.write({'code': args.get('code')})
         else:
             # Allocate a new child
             del args['object_id']   # We don't need this for create method
@@ -79,7 +76,11 @@ class compassion_child(orm.Model):
     def update(self, cr, uid, args, context=None):
         """ When we receive a notification that child has been updated,
         we fetch the last case study. """
-        self.get_infos(cr, uid, args.get('object_id'), context)
+        # Write new code of child, if changed
+        child = self.browse(cr, uid, args.get('object_id'), context)
+        if child.code != args.get('code'):
+            child.write({'code': args.get('code')})
+        self.get_infos(cr, uid, args.get('object_id'), context=context)
         return True
 
 

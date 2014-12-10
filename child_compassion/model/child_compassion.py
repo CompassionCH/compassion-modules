@@ -17,6 +17,9 @@ from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 class compassion_child(orm.Model):
     """ A sponsored child """
@@ -383,9 +386,9 @@ class compassion_child(orm.Model):
             % (height, width, dpi, format, type)
         r = requests.get(url)
         if not r.status_code/100 == 2:
-            raise orm.except_orm('NetworkError',
-                                 _('An error occured while fetching the last '
-                                   'picture for child %s.') % child.code)
+            logger.error(_('An error occured while fetching the last '
+                           'picture for child %s.') % child.code)
+            return False
         data = json.loads(r.text)['image']['imageData']
         attachment_obj = self.pool.get('ir.attachment')
         if not context:
