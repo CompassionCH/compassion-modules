@@ -8,12 +8,13 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp.osv import orm
 from openerp import netsvc
-import pdb
+from openerp.osv import orm
+from openerp.tools.translate import _
 
 
 class compassion_child(orm.Model):
+
     """ Add allocation and deallocation methods on the children. """
     _inherit = 'compassion.child'
 
@@ -32,13 +33,15 @@ class compassion_child(orm.Model):
                 # Start a new workflow making the child available again
                 wf_service = netsvc.LocalService('workflow')
                 wf_service.trg_create(uid, self._name, child_id, cr)
+            # Write new code of child, if changed
+            if child.code != args.get('code'):
+                child.write({'code': args.get('code')})
         else:
             # Allocate a new child
             del args['object_id']   # We don't need this for create method
             child_id = self.create(cr, uid, args, context=context)
             args['object_id'] = child_id
-        self.update(cr, uid, args, context=context)
-        return True
+        return self.update(cr, uid, args, context=context)
 
     def deallocate(self, cr, uid, args, context=None):
         """Deallocate child.
@@ -81,6 +84,7 @@ class compassion_child(orm.Model):
 
 
 class compassion_project(orm.Model):
+
     """ Add update method. """
     _inherit = 'compassion.project'
 

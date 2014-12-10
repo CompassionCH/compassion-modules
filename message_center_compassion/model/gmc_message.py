@@ -15,7 +15,6 @@ from openerp.tools.config import config
 import requests
 from datetime import date
 import logging
-import pdb
 
 
 logger = logging.getLogger(__name__)
@@ -42,6 +41,7 @@ class gmc_message_pool_process(orm.TransientModel):
 
 
 class gmc_message_pool(orm.Model):
+
     """ Pool of messages exchanged between Compassion CH and GMC. """
     _name = 'gmc.message.pool'
 
@@ -273,6 +273,7 @@ class gmc_message_pool(orm.Model):
 
 
 class gmc_action(orm.Model):
+
     """
     A GMC Action defines what has to be done for a specific OffRamp
     message of the Compassion International specification.
