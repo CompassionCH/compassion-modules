@@ -248,6 +248,7 @@ class compassion_child(orm.Model):
             'firstname': json_data['childPersonalName'],
             'gender': json_data['gender'],
             'birthdate': json_data['birthDate'],
+            'unique_id': json_data['childID']
         }
 
         value_obj = self.pool.get('compassion.translated.value')
