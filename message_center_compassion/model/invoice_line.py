@@ -9,8 +9,7 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
+from openerp.osv import orm
 
 
 class invoice_line(orm.Model):
