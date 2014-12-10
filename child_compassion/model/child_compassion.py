@@ -17,6 +17,9 @@ from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 class compassion_child(orm.Model):
     """ A sponsored child """
