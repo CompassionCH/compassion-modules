@@ -443,7 +443,9 @@ class compassion_child(orm.Model):
     def child_departed(self, cr, uid, ids, context=None):
         """ Is called when a child changes his status to 'F' or 'X'."""
         # TODO Call Webservice to get Exit Details (when service is ready)
-        self.write(cr, uid, ids, {'sponsor_id': False}, context)
+        for child in self.browse(cr, uid, ids, context):
+            if child.state == 'F':
+                child.write({'sponsor_id': False})
         return True
 
     def child_remove_from_typo3(self, cr, uid, ids, context=None):
