@@ -133,6 +133,15 @@ class gmc_message_pool(orm.Model):
             self.ack(cr, uid, message.request_id, 'Failure',
                      "Someone doesn't want this to work.")
         return True
+        
+    def reset_message(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {
+            'request_id': False,
+            'state': 'new',
+            'process_date': False,
+            'failure_reason': False
+        }, context)
+        return True
 
     def _perform_incoming_action(self, cr, uid, message, context=None):
         """ This method defines what has to be done

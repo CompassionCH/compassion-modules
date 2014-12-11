@@ -17,21 +17,21 @@
             <field name="name">AllocateChild</field>
             <field name="model">compassion.child</field>
             <field name="type">allocate</field>
-            <field name="description">This will import a new child in the database.</field>
+            <field name="description">This will import a new child in the database or update all its information.</field>
         </record>
         <record id="deallocate_child" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">DeallocateChild</field>
             <field name="model">compassion.child</field>
             <field name="type">deallocate</field>
-            <field name="description">This won't do anything yet. Please implement the method.</field>
+            <field name="description">This will put the given child in Deallocated state, making him unavailable for new sponsorship.</field>
         </record>
         <record id="update_child" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">UpdateChild</field>
             <field name="model">compassion.child</field>
             <field name="type">update</field>
-            <field name="description">This will retrieve a new case study for a child.</field>
+            <field name="description">This will either retrieve a new case study, retrieve new pictures or new child key depending on the event specified by GMC.</field>
         </record>
         <record id="depart_child" model="gmc.action">
             <field name="direction">in</field>

@@ -71,7 +71,6 @@ class compassion_child(orm.Model):
         ######################################################################
         'name': fields.char(_("Name"), size=128),
         'firstname': fields.char(_("First name"), size=128),
-        'code': fields.char(_("Child code"), size=128, required=True),
         'project_id': fields.function(
             _get_project, type='many2one', obj='compassion.project',
             string=_('Project'), store={
@@ -85,6 +84,8 @@ class compassion_child(orm.Model):
                     10)}),
         'unique_id': fields.char(_("Unique ID"), size=128),
         'birthdate': fields.date(_("Birthday")),
+        'code': fields.char(_("Child code"), size=9, required=True,
+                            track_visibility='onchange'),
         'type': fields.selection(
             [('CDSP', 'CDSP'),
              ('LDP', 'LDP')], _('Type of sponsorship program'), required=True),
@@ -120,7 +121,8 @@ class compassion_child(orm.Model):
             track_visibility="onchange", required=True),
         'has_been_sponsored': fields.boolean('Has been sponsored'),
         'sponsor_id': fields.many2one('res.partner', _('Sponsor'),
-                                      readonly=True),
+                                      readonly=True,
+                                      track_visibility='onchange'),
 
         ######################################################################
         #                      2. Exit Details                               #
@@ -262,7 +264,8 @@ class compassion_child(orm.Model):
             'firstname': json_data['childPersonalName'],
             'gender': json_data['gender'],
             'birthdate': json_data['birthDate'],
-            'unique_id': json_data['childID']
+            'unique_id': json_data['childID'],
+            'code': json_data['childKey']
         }
 
         value_obj = self.pool.get('compassion.translated.value')
