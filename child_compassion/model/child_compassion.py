@@ -9,6 +9,7 @@
 #
 ##############################################################################
 
+import pdb
 import requests
 import pysftp
 
@@ -47,6 +48,45 @@ class compassion_child(orm.Model):
             ('39', _("Fulfilled completion plan")),
             ('41', _("Reached maximum age")),
         ]
+
+    def get_exit_details(self, cr, uid, child_id, context=None):
+        child = self.browse(cr, uid, child_id, context)
+        if not child:
+            raise orm.except_orm('ObjectError', _('No valid child id given !'))
+        url = self._get_url(child.code, 'exitdetails')
+        r = requests.get(url)
+        if not r.status_code/100 == 2:
+            raise orm.except_orm('NetworkError',
+                                 _('An error occured while fetching the '
+                                   'exit details for child %s.') % child.code)
+        json_data = json.loads(r.text)
+        pdb.set_trace()
+        #gp_exit_reason = self.get_gp_exit_reasons(cr, uid, context)
+        # Writing values to child object
+        #"""
+        child.write({
+            'exit_date': json_data['exitDate'],
+            'last_attended_project': json_data['dateLastAttendedProject'],
+            'presented_gospel': json_data['presentedWithGospel'],
+            'professes_faith': json_data['professesFaithInJesusChrist'],
+            'faith_description': json_data['faithDescription'],
+            'primary_school': json_data['completedPrimarySchool'],
+            'us_grade_completed': json_data['usGradeEquivalentCompleted'],
+            'study_area': json_data['areaOfStudy'],
+            'vocational_training': json_data['receivedVocationalTraining'],
+            'vocational_skills': json_data['vocationalSkillsLearned'],
+            'disease_free': json_data['freeOfPovertyRelatedDisease'],
+            'health_description': json_data['healthDescription'],
+            'social_description': json_data['socialBehaviourDescription'],
+            'exit_description': json_data['exitDescription'],
+            'steps_prevent_description': json_data['stepsToPreventExitDescription'],
+            'future_plans_description': json_data['futurPlansDescription'],
+            'new_situation_description': json_data['childNewSituationDescription'],
+            'exit_reason': json_data['exitReason'],
+            'last_letter_sent': json_data['lastChildLetterSent'],
+            })
+        #"""
+        return True
 
     def _get_project(self, cr, uid, ids, field_name, args, context=None):
         res = dict()
@@ -411,6 +451,7 @@ class compassion_child(orm.Model):
         for child in self.browse(cr, uid, ids, context):
             if child.state == 'F':
                 child.write({'sponsor_id': False})
+                self.get_exit_details(cr, uid, child.id, context)
         return True
 
     def child_remove_from_typo3(self, cr, uid, ids, context=None):
