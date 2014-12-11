@@ -49,7 +49,18 @@ class gmc_message_pool(orm.Model):
     _order = 'date desc'
     
     def _get_object_id(self, cr, uid, ids, field_name, args, context=None):
-        return {m.id: m.object_id for m in self.browse(cr, uid, ids, context)}
+        res = dict()
+        model_mapping = {
+            'partner_id': 'res.partner',
+            'child_id': 'compassion.child',
+            'project_id': 'compassion.project'
+        }
+        for message in self.browse(cr, uid, ids, context):
+            if message.action_id.model == model_mapping[field_name]:
+                res[message.id] = message.object_id
+            else:
+                res[message.id] = False
+        return res
 
     _columns = {
         'name': fields.related(
