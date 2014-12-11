@@ -84,6 +84,9 @@ class gmc_message_pool(orm.Model):
                                            "contains the reference of the "
                                            "child or the project that will "
                                            "be created/modified.")),
+        'event': fields.char(_('Incoming Event'), size=24,
+                             help=_("Contains the event that triggered the "
+                                    "incoming message.")),
     }
 
     _defaults = {
@@ -139,7 +142,8 @@ class gmc_message_pool(orm.Model):
         args = {
             'code': message.incoming_key,
             'date': message.date,
-            'object_id': message.object_id
+            'object_id': message.object_id,
+            'event': message.event,
         }
         if action.type in ('allocate', 'deallocate', 'depart', 'update'):
             return getattr(model_obj, action.type)(cr, uid, args, context)

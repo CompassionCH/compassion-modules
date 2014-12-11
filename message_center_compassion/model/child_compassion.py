@@ -35,9 +35,12 @@ class compassion_child(orm.Model):
                 wf_service.trg_create(uid, self._name, child_id, cr)
         else:
             # Allocate a new child
-            del args['object_id']   # We don't need this for create method
-            child_id = self.create(cr, uid, args, context=context)
-            args['object_id'] = child_id
+            child_id = self.create(cr, uid, {
+                'code': args.get('code'),
+                'date': args.get('date')
+            }, context=context)
+        # Update all information of child
+        args['event'] = 'Allocate'
         return self.update(cr, uid, args, context=context)
 
     def deallocate(self, cr, uid, args, context=None):
@@ -80,7 +83,18 @@ class compassion_child(orm.Model):
         child = self.browse(cr, uid, args.get('object_id'), context)
         if child.code != args.get('code'):
             child.write({'code': args.get('code')})
-        self.get_infos(cr, uid, args.get('object_id'), context=context)
+
+        # Perform the required update given the event
+        event = args.get('event')
+        if event == 'Allocate':
+            self.get_infos(cr, uid, args.get('object_id'), context=context)
+        elif event == 'Transfer':
+            # Nothing to do, only the child code has changed
+            return True
+        elif event == 'CaseStudy':
+            self._get_case_study(cr, uid, child, context)
+        elif event == 'NewImage':
+            self._get_picture(cr, uid, child, context)
         return True
 
 
