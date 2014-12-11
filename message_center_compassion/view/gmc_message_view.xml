@@ -65,7 +65,9 @@
                             <field name="request_id" attrs="{'invisible':[('direction','=','in')]}" states="pending"/>
                             <field name="partner_id" attrs="{'invisible':[('partner_id','=',False)]}" />
                             <field name="child_id" attrs="{'invisible':[('child_id','=',False)]}" />
+                            <field name="project_id" attrs="{'invisible':[('project_id','=',False)]}" />
                             <field name="incoming_key" attrs="{'invisible':[('incoming_key','=',False)]}" />
+                            <field name="event" attrs="{'invisible':[('direction','=','out')]}"/>
                             <field name="failure_reason"/>
                         </group>
                         <group></group>
