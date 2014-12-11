@@ -9,16 +9,12 @@
 #
 ##############################################################################
 
-import pdb
 import re
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from project_description_fr import Project_description_fr
 from project_description_de import Project_description_de
 from project_description_it import Project_description_it
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 class project_description_wizard(orm.TransientModel):
