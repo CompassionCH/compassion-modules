@@ -47,6 +47,13 @@ class gmc_message_pool(orm.Model):
     _name = 'gmc.message.pool'
 
     _order = 'date desc'
+    
+    def _get_object_id(self, cr, uid, ids, field_name, args, context=None):
+        res = dict()
+        for message in self.browse(cr, uid, ids, context):
+            model = ''
+            if field_name == 'partner_id':
+                return True     # TODO
 
     _columns = {
         'name': fields.related(

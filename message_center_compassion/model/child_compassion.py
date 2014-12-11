@@ -39,6 +39,7 @@ class compassion_child(orm.Model):
                 'code': args.get('code'),
                 'date': args.get('date')
             }, context=context)
+            args['object_id'] = child_id
         # Update all information of child
         args['event'] = 'Allocate'
         return self.update(cr, uid, args, context=context)
