@@ -50,10 +50,17 @@ class gmc_message_pool(orm.Model):
     
     def _get_object_id(self, cr, uid, ids, field_name, args, context=None):
         res = dict()
+        model_mapping = {
+            'partner_id': 'res.partner',
+            'child_id': 'compassion.child',
+            'project_id': 'compassion.project'
+        }
         for message in self.browse(cr, uid, ids, context):
-            model = ''
-            if field_name == 'partner_id':
-                return True     # TODO
+            if message.action_id.model == model_mapping[field_name]:
+                res[message.id] = message.object_id
+            else:
+                res[message.id] = False
+        return res
 
     _columns = {
         'name': fields.related(
@@ -66,12 +73,15 @@ class gmc_message_pool(orm.Model):
         'direction': fields.related(
             'action_id', 'direction', type="char", store=True
         ),
-        'partner_id': fields.many2one(
-            'res.partner', _("Partner")
-        ),
-        'child_id': fields.many2one(
-            'compassion.child', _("Child")
-        ),
+        'partner_id': fields.function(
+            _get_object_id, type='many2one', obj='res.partner',
+            string=_("Partner")),
+        'child_id': fields.function(
+            _get_object_id, type='many2one', obj='compassion.child',
+            string=_("Child")),
+        'project_id': fields.function(
+            _get_object_id, type='many2one', obj='compassion.project',
+            string=_("Project")),
         'request_id': fields.char('Unique request ID'),
         'date': fields.date(_('Message Date'), required=True),
         'action_id': fields.many2one('gmc.action', _('GMC Message'),
@@ -140,7 +150,7 @@ class gmc_message_pool(orm.Model):
             self.ack(cr, uid, message.request_id, 'Failure',
                      "Someone doesn't want this to work.")
         return True
-        
+
     def reset_message(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {
             'request_id': False,
