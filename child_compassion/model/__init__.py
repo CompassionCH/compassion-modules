@@ -11,6 +11,7 @@
 
 from . import child_compassion
 from . import child_properties
+from . import child_pictures
 from . import country_compassion
 from . import project_compassion
 from . import translated_value
