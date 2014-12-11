@@ -21,9 +21,23 @@ class compassion_project(orm.Model):
     """ A compassion project """
     _name = 'compassion.project'
 
+    def _get_suspension_state(self, cr, uid, ids, field_name, args,
+                              context=None):
+        res = dict()
+        for project in self.browse(cr, uid, ids, context):
+            res[project.id] = 'none'
+            if project.status == 'active' and not (
+                    project.disburse_gifts and project.disburse_gifts and
+                    project.disburse_unsponsored_funds and
+                    project.new_sponsorships_allowed and
+                    project.additionnal_quota_allowed):
+                res[project.id] = 'suspended' if project.disburse_funds \
+                    else 'fund-suspended'
+        return res
+
     _columns = {
         ######################################################################
-        #                      1. General Information
+        #                      1. General Information                        #
         ######################################################################
         'name': fields.char(_("Name"), size=128, required=True),
         'code': fields.char(_("Project code"), size=128, required=True),
@@ -34,19 +48,26 @@ class compassion_project(orm.Model):
         'start_date': fields.date(_('Partnership begining')),
         'stop_date': fields.date(_('Partnership ending')),
         'last_update_date': fields.date(_('Last update')),
-        'suspension': fields.selection([
-            ('suspended', _('Suspended')),
-            ('fund-suspended', _('Suspended & fund retained'))],
-            _('Suspension')),
+        'suspension': fields.function(
+            _get_suspension_state, type='selection', selection=[
+                ('none', _('Not Suspended')),
+                ('suspended', _('Suspended')),
+                ('fund-suspended', _('Suspended & fund retained'))],
+            string=_('Suspension'), store=True),
         'status': fields.selection([
             ('A', _('Active')),
             ('P', _('Phase-out')),
             ('T', _('Terminated'))], _('Status')),
         'status_date': fields.date(_('Last status change')),
         'status_comment': fields.char(_('Status comment')),
+        'disburse_funds': fields.boolean(_('Disburse funds')),
+        'disburse_gifts': fields.boolean(_('Disburse gifts')),
+        'disburse_unsponsored_funds': fields.boolean(_('Disburse unsponsored funds')),
+        'new_sponsorships_allowed': fields.boolean(_('New sponsorships allowed')),
+        'additionnal_quota_allowed': fields.boolean(_('Additional quota allowed')),
 
         ######################################################################
-        #                      2. Project Descriptions
+        #                      2. Project Descriptions                       #
         ######################################################################
         'description_en': fields.text(_('English description')),
         'description_fr': fields.text(_('French description')),
@@ -54,7 +75,7 @@ class compassion_project(orm.Model):
         'description_it': fields.text(_('Italian description')),
 
         ######################################################################
-        #                      3. Community Information
+        #                      3. Community Information                      #
         ######################################################################
         'local_church_name': fields.char(_('Local church name')),
         'hiv_category': fields.selection([
@@ -264,6 +285,14 @@ class compassion_project(orm.Model):
                 'gPSCoordinateLatitudeHighPrecision'),
             'gps_longitude': json_values.get(
                 'gPSCoordinateLongitudeHighPrecision'),
+            'disburse_funds': json_values.get('disburseFunds'),
+            'disburse_gifts': json_values.get('disburseGifts'),
+            'disburse_unsponsored_funds': json_values.get(
+                'disburseUnsponsoredFunds'),
+            'new_sponsorships_allowed': json_values.get(
+                'newSponsorshipsAllowed'),
+            'additionnal_quota_allowed': json_values.get(
+                'additionalQuotaAllowed'),
         }
         return {field_name: value for field_name, value in values.iteritems()
                 if value}

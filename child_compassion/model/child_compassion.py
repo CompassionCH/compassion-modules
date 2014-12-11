@@ -54,7 +54,8 @@ class compassion_child(orm.Model):
         ######################################################################
         'name': fields.char(_("Name"), size=128),
         'firstname': fields.char(_("First name"), size=128),
-        'code': fields.char(_("Child code"), size=128, required=True),
+        'code': fields.char(_("Child code"), size=9, required=True,
+                            track_visibility='onchange'),
         'birthdate': fields.date(_("Birthday")),
         'unique_id': fields.integer(_("Unique ID")),
         'type': fields.selection(
@@ -92,7 +93,8 @@ class compassion_child(orm.Model):
             track_visibility="onchange", required=True),
         'has_been_sponsored': fields.boolean('Has been sponsored'),
         'sponsor_id': fields.many2one('res.partner', _('Sponsor'),
-                                      readonly=True),
+                                      readonly=True,
+                                      track_visibility='onchange'),
 
         ######################################################################
         #                      2. Exit Details                               #
@@ -234,7 +236,8 @@ class compassion_child(orm.Model):
             'firstname': json_data['childPersonalName'],
             'gender': json_data['gender'],
             'birthdate': json_data['birthDate'],
-            'unique_id': json_data['childID']
+            'unique_id': json_data['childID'],
+            'code': json_data['childKey']
         }
 
         value_obj = self.pool.get('compassion.translated.value')

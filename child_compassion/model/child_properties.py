@@ -25,6 +25,7 @@ class child_property(orm.Model):
         'unique_id': fields.integer(_("Unique ID")),
         'info_date': fields.date(_('Date of case study')),
         'name': fields.char(_('Name')),
+        'code': fields.char(_("Child code"), size=9),
         'firstname': fields.char(_('Firstname')),
         'gender': fields.selection([
             ('M', 'Male'),
