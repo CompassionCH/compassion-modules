@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp.osv import orm
+from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import date
 
@@ -17,6 +17,16 @@ class res_partner(orm.Model):
 
     """ UPSERT constituents. """
     _inherit = 'res.partner'
+
+    """ Add write_date for the middleware to have the information. """
+    def _get_write_date(self, cr, uid, ids, field_name, args, context=None):
+        metadata = self.perm_read(cr, uid, ids, context)
+        return {md['id']: md['write_date'][:10] for md in metadata}
+
+    _columns = {
+        'write_date': fields.function(_get_write_date, 'Write date',
+                                      type='date')
+    }
 
     def write(self, cr, uid, ids, vals, context=None):
         """If partner has active contracts, UPSERT Constituent in GMC."""

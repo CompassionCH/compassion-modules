@@ -47,6 +47,9 @@
                                         <field name="completion_date" />
                                         <field name="exit_date" />
                                     </group>
+                                    <group colspan="2">
+                                        <field name="pictures_ids"/>
+                                    </group>
                                 </group>
                             </page>
                             <page string="Case studies">
