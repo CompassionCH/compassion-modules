@@ -45,7 +45,7 @@ class compassion_child(orm.Model):
         if self.update(cr, uid, args, context=context):
             mess_obj = self.pool.get('gmc.message.pool')
             mess_ids = mess_obj.search(
-                cr, uid, [('incoming_reference', '=', args.get('code')),
+                cr, uid, [('incoming_key', '=', args.get('code')),
                           ('object_id', '=', 0)],
                 context=context)
             mess_obj.write(cr, uid, mess_ids, {'object_id': child_id}, context)
