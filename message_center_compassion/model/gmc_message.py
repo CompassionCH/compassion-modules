@@ -49,7 +49,7 @@ class gmc_message_pool(orm.Model):
     _order = 'date desc'
     
     def _get_object_id(self, cr, uid, ids, field_name, args, context=None):
-        return {m.object_id for m in self.browse(cr, uid, ids, context)}
+        return {m.id: m.object_id for m in self.browse(cr, uid, ids, context)}
 
     _columns = {
         'name': fields.related(
