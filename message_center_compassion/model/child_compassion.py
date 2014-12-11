@@ -94,7 +94,7 @@ class compassion_child(orm.Model):
         elif event == 'CaseStudy':
             self._get_case_study(cr, uid, child, context)
         elif event == 'NewImage':
-            self._get_picture(cr, uid, child, context)
+            self._get_last_pictures(cr, uid, child.id, context)
         return True
 
 

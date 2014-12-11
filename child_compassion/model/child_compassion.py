@@ -10,7 +10,6 @@
 ##############################################################################
 
 import requests
-import json
 import pysftp
 
 from openerp.osv import orm, fields
@@ -27,28 +26,6 @@ class compassion_child(orm.Model):
     _rec_name = 'code'
     _inherit = 'mail.thread'
     _description = "Child"
-
-    def get_portrait(self, cr, uid, ids, name, args, context=None):
-        attachment_obj = self.pool.get('ir.attachment')
-        res = dict()
-        for child_id in ids:
-            child = self.browse(cr, uid, child_id, context)
-            case_study_id = -1
-            if child.case_study_ids:
-                case_study_id = child.case_study_ids[-1].id
-            attachment_ids = attachment_obj.search(
-                cr, uid, [('res_model', '=', 'compassion.child.property'),
-                          ('res_id', '=', case_study_id),
-                          ('datas_fname', '=', 'Headshot.jpeg')],
-                limit=1, context=context)
-            if not attachment_ids:
-                res[child_id] = None
-                continue
-
-            attachment = attachment_obj.browse(cr, uid, attachment_ids[0],
-                                               context)
-            res[child_id] = attachment.datas
-        return res
 
     def get_gp_exit_reasons(self, cr, uid, context=None):
         # Returns all ending reasons coming from GP
@@ -127,8 +104,11 @@ class compassion_child(orm.Model):
         'case_study_ids': fields.one2many(
             'compassion.child.property', 'child_id', string=_('Case studies'),
             readonly=True, track_visibility="onchange"),
-        'portrait': fields.function(get_portrait, type='binary',
-                                    string=_('Portrait')),
+        'pictures_ids': fields.one2many(
+            'compassion.child.pictures', 'child_id',
+            string=_('Child pictures'), track_visibility="onchange"),
+        'portrait': fields.related(
+            'pictures_ids', 'headshot', type='binary'),
         'state': fields.selection([
             ('N', _('Available')),
             ('D', _('Delegated')),
@@ -219,9 +199,7 @@ class compassion_child(orm.Model):
         proj_obj = self.pool.get('compassion.project')
         for child in self.browse(cr, uid, ids, context):
             res[child.id] = self._get_case_study(cr, uid, child, context)
-            self._get_picture(cr, uid, child, 'Fullshot',
-                              300, 1500, 1200, context=context)
-            self._get_picture(cr, uid, child, context=context)
+            self._get_last_pictures(cr, uid, child.id, context)
             self._get_basic_informations(cr, uid, child.id)
             project_ids = proj_obj.search(
                 cr, uid, [('code', '=', child.code[:5])],
@@ -256,6 +234,11 @@ class compassion_child(orm.Model):
             'target': 'new',
         }
 
+    def _get_last_pictures(self, cr, uid, child_id, context=None):
+        self.pool.get('compassion.child.pictures').create(
+            cr, uid, {'child_id': child_id}, context)
+        return True
+
     ##################################################
     #            Case study retrieving               #
     ##################################################
@@ -264,14 +247,14 @@ class compassion_child(orm.Model):
             the json response.
             Returns id of generated case_study or None if failed
         '''
-        url = self._get_url(child.code, 'casestudy')
+        url = self.get_url(child.code, 'casestudy')
         r = requests.get(url)
         if not r.status_code/100 == 2:
             raise orm.except_orm('NetworkError',
                                  _('An error occured while fetching the last '
                                    'case study for child %s.') % child.code)
 
-        json_data = json.loads(r.text)
+        json_data = r.json()
         vals = {
             'child_id': child.id,
             'info_date': json_data['childCaseStudyDate'],
@@ -378,31 +361,7 @@ class compassion_child(orm.Model):
         prop_id = child_prop_obj.create(cr, uid, vals, context)
         return prop_id
 
-    def _get_picture(self, cr, uid, child, type='Headshot', dpi=72, width=400,
-                     height=400, format='jpeg', context=None):
-        ''' Gets a picture from Compassion webservice '''
-        url = self._get_url(child.code, 'image')
-        url += '&Height=%s&Width=%s&DPI=%s&ImageFormat=%s&ImageType=%s' \
-            % (height, width, dpi, format, type)
-        r = requests.get(url)
-        if not r.status_code/100 == 2:
-            logger.error(_('An error occured while fetching the last '
-                           'picture for child %s.') % child.code)
-            return False
-        data = json.loads(r.text)['image']['imageData']
-        attachment_obj = self.pool.get('ir.attachment')
-        if not context:
-            context = {}
-        context['store_fname'] = type + '.' + format
-        attachment_obj.create(cr, uid,
-                              {'datas_fname': type + '.' + format,
-                               'res_model': 'compassion.child.property',
-                               'res_id': child.case_study_ids[-1].id,
-                               'datas': data,
-                               'name': type + '.' + format}, context)
-        return False
-
-    def _get_url(self, child_code, api_mess):
+    def get_url(self, child_code, api_mess):
         url = config.get('compass_url')
         api_key = config.get('compass_api_key')
         if not url or not api_key:
