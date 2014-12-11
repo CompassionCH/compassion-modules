@@ -48,7 +48,9 @@ class compassion_child(orm.Model):
                 cr, uid, [('incoming_key', '=', args.get('code')),
                           ('object_id', '=', 0)],
                 context=context)
-            mess_obj.write(cr, uid, mess_ids, {'object_id': child_id}, context)
+            if mess_ids:
+                mess_obj.write(cr, uid, mess_ids, {'object_id': child_id},
+                               context)
         return True
 
     def deallocate(self, cr, uid, args, context=None):
@@ -87,6 +89,11 @@ class compassion_child(orm.Model):
     def update(self, cr, uid, args, context=None):
         """ When we receive a notification that child has been updated,
         we fetch the last case study. """
+        if not args.get('object_id'):
+            raise orm.except_orm(
+                _("Child not found"),
+                _("Child %s was not found. Please process the allocate "
+                  "message.") % args.get('code'))
         # Write new code of child, if changed
         child = self.browse(cr, uid, args.get('object_id'), context)
         if child.code != args.get('code'):
