@@ -62,9 +62,12 @@ class compassion_project(orm.Model):
         'status_comment': fields.char(_('Status comment')),
         'disburse_funds': fields.boolean(_('Disburse funds')),
         'disburse_gifts': fields.boolean(_('Disburse gifts')),
-        'disburse_unsponsored_funds': fields.boolean(_('Disburse unsponsored funds')),
-        'new_sponsorships_allowed': fields.boolean(_('New sponsorships allowed')),
-        'additionnal_quota_allowed': fields.boolean(_('Additional quota allowed')),
+        'disburse_unsponsored_funds': fields.boolean(_('Disburse unsponsored '
+                                                       'funds')),
+        'new_sponsorships_allowed': fields.boolean(_('New sponsorships '
+                                                     'allowed')),
+        'additionnal_quota_allowed': fields.boolean(_('Additional quota '
+                                                      'allowed')),
 
         ######################################################################
         #                      2. Project Descriptions                       #

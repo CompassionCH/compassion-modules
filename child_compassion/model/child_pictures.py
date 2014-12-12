@@ -17,6 +17,9 @@ from openerp.tools.config import config
 from datetime import date
 import requests
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class child_pictures(orm.Model):
