@@ -9,7 +9,6 @@
 #
 ##############################################################################
 
-import pdb
 import requests
 import pysftp
 
@@ -17,9 +16,6 @@ from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
 
-import logging
-
-logger = logging.getLogger(__name__)
 
 class compassion_child(orm.Model):
     """ A sponsored child """
@@ -53,17 +49,14 @@ class compassion_child(orm.Model):
         child = self.browse(cr, uid, child_id, context)
         if not child:
             raise orm.except_orm('ObjectError', _('No valid child id given !'))
-        url = self._get_url(child.code, 'exitdetails')
+        url = self.get_url(child.code, 'exitdetails')
         r = requests.get(url)
         if not r.status_code/100 == 2:
             raise orm.except_orm('NetworkError',
                                  _('An error occured while fetching the '
                                    'exit details for child %s.') % child.code)
-        json_data = json.loads(r.text)
-        pdb.set_trace()
-        #gp_exit_reason = self.get_gp_exit_reasons(cr, uid, context)
-        # Writing values to child object
-        #"""
+        json_data = r.json()
+
         child.write({
             'exit_date': json_data['exitDate'],
             'last_attended_project': json_data['dateLastAttendedProject'],
@@ -77,15 +70,17 @@ class compassion_child(orm.Model):
             'vocational_skills': json_data['vocationalSkillsLearned'],
             'disease_free': json_data['freeOfPovertyRelatedDisease'],
             'health_description': json_data['healthDescription'],
-            'social_description': json_data['socialBehaviourDescription'],
+            'social_description': json_data['socialBehaviorDescription'],
             'exit_description': json_data['exitDescription'],
-            'steps_prevent_description': json_data['stepsToPreventExitDescription'],
-            'future_plans_description': json_data['futurPlansDescription'],
-            'new_situation_description': json_data['childNewSituationDescription'],
+            'steps_prevent_description': json_data['stepsToPrevent'
+                                                   'ExitDescription'],
+            'future_plans_description': json_data['futurePlansDescription'],
+            'new_situation_description': json_data['childNewSituation'
+                                                   'Description'],
             'exit_reason': json_data['exitReason'],
             'last_letter_sent': json_data['lastChildLetterSent'],
             })
-        #"""
+
         return True
 
     def _get_project(self, cr, uid, ids, field_name, args, context=None):
@@ -190,7 +185,7 @@ class compassion_child(orm.Model):
             domain=[('property_name', '=', 'vocational_skills')]),
         'disease_free': fields.boolean(_("Free from diseases")),
         'health_description': fields.text(_("Health description")),
-        'social_description': fields.text(_("Social behaviour description")),
+        'social_description': fields.text(_("Social behavior description")),
         'exit_description': fields.text(_("Exit description")),
         'steps_prevent_description': fields.text(
             _("Steps taken to prevent exit")),
@@ -447,7 +442,6 @@ class compassion_child(orm.Model):
 
     def child_departed(self, cr, uid, ids, context=None):
         """ Is called when a child changes his status to 'F' or 'X'."""
-        # TODO Call Webservice to get Exit Details (when service is ready)
         for child in self.browse(cr, uid, ids, context):
             if child.state == 'F':
                 child.write({'sponsor_id': False})
