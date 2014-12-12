@@ -9,7 +9,7 @@
 			<field name="arch" type="xml">
 				<data>
 					<tree string="Contracts" position="attributes">
-						<attribute name="colors">blue:state == 'draft';green:state == 'waiting';black:state == 'active';gray:state in ('terminated','cancelled')</attribute>
+						<attribute name="colors">blue:state == 'draft';red:state == 'mandate';green:state == 'waiting';black:state == 'active';gray:state in ('terminated','cancelled')</attribute>
 						<attribute name="string">Sponsorships</attribute>
 					</tree>
 					<field name="partner_id" position="after">
@@ -43,7 +43,7 @@
 
                 <!-- Replace terminate button to call the end_sponsorship wizard -->
                 <button name="contract_terminated" position="replace">
-                     <button name="%(action_end_sponsorship)d" states="waiting,active" type="action" string="Terminate" class="oe_highlight" />
+                     <button name="%(action_end_sponsorship)d" states="waiting,mandate,active" type="action" string="Terminate" class="oe_highlight" />
                 </button>
                 
 				<!-- Redefine the top group view (lot of changes) -->
@@ -62,7 +62,7 @@
                             <field name="start_date" string="Creation date"/>
                             <field name="activation_date" states="active,terminated,cancelled" />
                             <field name="end_date" />
-                            <field name="next_invoice_date" states="draft,waiting,active" />
+                            <field name="next_invoice_date" states="draft,waiting,mandate,active" />
                         </group>
                         
                         <group>
@@ -106,10 +106,11 @@
                         </attribute>
                     </field>
                     <xpath expr="//filter[@name='draft']" position="after">
-                        <filter name="waiting" string="Waiting" domain="[('state','=','waiting')]" help="Waiting Payment Sponsorships"/>
+                        <filter name="waiting" string="Waiting" domain="[('state','=','waiting')]"/>
+                        <filter name="mandate" string="Waiting Mandate" domain="[('state','=','mandate')]"/>
                     </xpath>
                     <xpath expr="//filter[@name='terminated']" position="after">
-                        <filter name="cancelled" string="Cancelled" domain="[('state','=','cancelled')]" help="Cancelled Sponsorships"/>
+                        <filter name="cancelled" string="Cancelled" domain="[('state','=','cancelled')]"/>
                     </xpath>
 				</data>
 			</field>

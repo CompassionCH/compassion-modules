@@ -36,3 +36,23 @@ class account_invoice(orm.Model):
                                   "into GP. Please contact an IT person."))
         return super(account_invoice, self).action_cancel(cr, uid, ids,
                                                           context)
+                                                          
+    def action_move_create(self, cr, uid, ids, context=None):
+        """ If an invoice was cancelled,
+            and validated again, update the situation in GP.
+        """
+        res = super(account_invoice, self).action_move_create(cr, uid, ids,
+                                                              context)
+        for invoice in self.browse(cr, uid, ids, context):
+            if invoice.type == 'out_invoice' and invoice.internal_number:
+                contract_ids = set()
+                gp_connect = gp_connector.GPConnect(cr, uid)
+                for line in invoice.invoice_line:
+                    contract = line.contract_id
+                    if contract and contract.id not in contract_ids:
+                        contract_ids.add(contract.id)
+                        if not gp_connect.undo_payment(contract.id):
+                            raise orm.except_orm(
+                                _("GP Sync Error"),
+                                _("Please contact an IT person."))
+        return res

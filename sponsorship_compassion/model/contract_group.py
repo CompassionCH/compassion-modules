@@ -186,3 +186,22 @@ class contract_group(orm.Model):
 
     def _get_gen_states(self):
         return ['waiting', 'active']
+        
+    def write(self, cr, uid, ids, vals, context=None):
+        """If sponsor changes his payment term to LSV or DD,
+        change the state of related contracts so that we wait
+        for a valid mandate before generating new invoices.
+        """
+        res = super(contract_group, self).write(cr, uid, ids, vals, context)
+        if 'payment_term_id' in vals:
+            payment_term = self.pool.get('account.payment.term').browse(
+                cr, uid, vals['payment_term_id'], context)
+            payment_name = payment_term.name
+            if 'LSV' in payment_name or 'Postfinance' in payment_name:
+                wf_service = netsvc.LocalService('workflow')
+                for group in self.browse(cr, uid, ids, context):
+                    for contract in group.contract_ids:
+                        wf_service.trg_validate(
+                            uid, 'recurring.contract', contract.id,
+                            'will_pay_by_lsv_dd', cr)
+        return res

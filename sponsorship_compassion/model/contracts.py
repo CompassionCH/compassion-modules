@@ -13,6 +13,7 @@ from openerp.osv import orm, fields
 from openerp import netsvc
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+import pdb
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -41,6 +42,7 @@ class recurring_contract(orm.Model):
             context = {}
         ctx = context.copy()
         ctx['lang'] = 'en_US'
+        pdb.set_trace()
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, ctx):
             if invoice.state == 'paid':
                 self._invoice_paid(cr, uid, invoice, ctx)
@@ -158,9 +160,10 @@ class recurring_contract(orm.Model):
             'res.partner', _('Correspondant'), required=True),
         'activation_date': fields.date(
             _('Activation date'), readonly=True),
-        # Add a waiting state
+        # Add a waiting and waiting mandate states
         'state': fields.selection([
             ('draft', _('Draft')),
+            ('mandate', _('Waiting Mandate')),
             ('waiting', _('Waiting Payment')),
             ('active', _('Active')),
             ('terminated', _('Terminated')),
@@ -285,23 +288,28 @@ class recurring_contract(orm.Model):
 
     def on_change_group_id(self, cr, uid, ids, group_id, context=None):
         """ Compute next invoice_date """
-        res = {}
-        today = datetime.today()
+        res = dict()
+        current_date = datetime.today()
+        if ids:
+            contract = self.browse(cr, uid, ids[0], context)
+            if contract.state not in (
+                    'draft', 'mandate') and contract.next_invoice_date:
+                current_date = datetime.strptime(contract.next_invoice_date, DF)
         if group_id:
             contract_group = self.pool.get('recurring.contract.group').browse(
                 cr, uid, group_id, context)
             if contract_group.next_invoice_date:
                 next_group_date = datetime.strptime(
                     contract_group.next_invoice_date, DF)
-                next_invoice_date = today.replace(day=next_group_date.day)
+                next_invoice_date = current_date.replace(day=next_group_date.day)
             else:
-                next_invoice_date = today.replace(day=1)
+                next_invoice_date = current_date.replace(day=1)
             payment_term = contract_group.payment_term_id.name
         else:
-            next_invoice_date = today.replace(day=1)
+            next_invoice_date = current_date.replace(day=1)
             payment_term = ''
 
-        if today.day > 15 or payment_term in ('LSV', 'Postfinance'):
+        if current_date.day > 15 or payment_term in ('LSV', 'Postfinance'):
             next_invoice_date = next_invoice_date + relativedelta(months=+1)
         res['value'] = {'next_invoice_date': next_invoice_date.strftime(DF)}
         return res
@@ -310,16 +318,26 @@ class recurring_contract(orm.Model):
         for contract in self.browse(cr, uid, ids, context):
             payment_term = contract.group_id.payment_term_id.name
             if 'LSV' in payment_term or 'Postfinance' in payment_term:
-                # Check that a valid mandate exists
-                mandate_obj = self.pool.get('account.banking.mandate')
-                mandate_ids = mandate_obj.search(cr, uid, [
-                    ('partner_id', '=', contract.partner_id.id),
-                    ('state', '=', 'valid')], context)
-                if not mandate_ids:
-                    raise orm.except_orm(
-                        _("No valid mandate"),
-                        _("You must first have a mandate before validating "
-                          "a LSV/DD contract."))
+                # Recompute next_invoice_date
+                today = datetime.today()
+                next_invoice_date = datetime.strptime(
+                    contract.next_invoice_date, DF).replace(month=today.month)
+                if today.day > 15 and next_invoice_date.day < 15:
+                    next_invoice_date = next_invoice_date + relativedelta(
+                        months=+1)
+                contract.write({
+                    'next_invoice_date': next_invoice_date.strftime(DF)})
+
+            # Check that a child is selected for Sponsorship product
+            if not contract.child_id:
+                for line in contract.contract_line_ids:
+                    if line.product_id.name == 'Sponsorship' or \
+                            'LDP' in line.product_id.name:
+                        raise orm.except_orm(
+                            _("Please select a child"),
+                            _("You should select a child if you "
+                              "make a new sponsorship!"))
+            
         self.write(cr, uid, ids, {'state': 'waiting'}, context)
         return True
 
@@ -358,6 +376,44 @@ class recurring_contract(orm.Model):
                 contract.child_id.write({'sponsor_id': False})
         return True
 
+    def contract_waiting_mandate(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'mandate'}, context)
+        # Clean open invoices so that we generate them again with proper
+        # payment term.
+        nb_invoices_canceled = super(recurring_contract, self).clean_invoices(
+            cr, uid, ids, context)
+        for contract in self.browse(cr, uid, ids, context):
+            # Check that a child is selected for Sponsorship product
+            if not contract.child_id:
+                for line in contract.contract_line_ids:
+                    if line.product_id.name == 'Sponsorship' or \
+                            'LDP' in line.product_id.name:
+                        raise orm.except_orm(
+                            _("Please select a child"),
+                            _("You should select a child if you "
+                              "make a new sponsorship!"))
+
+            # Search for an existing valid mandate
+            mandate_ids = self.pool.get('account.banking.mandate').search(
+                cr, uid, [('partner_id', '=', contract.partner_id.id),
+                          ('state', '=', 'valid')], context=context)
+            if mandate_ids:
+                wf_service = netsvc.LocalService('workflow')
+                wf_service.trg_validate(
+                    uid, 'recurring.contract', contract.id,
+                    'mandate_validated', cr)
+
+            if nb_invoices_canceled:
+                # Rewind the next_invoice_date for the contracts
+                next_invoice_date = datetime.strptime(
+                    contract.next_invoice_date, DF)
+                next_invoice_date = next_invoice_date + relativedelta(
+                    months=-nb_invoices_canceled)
+                self.write(cr, uid, contract.id, {
+                    'next_invoice_date': next_invoice_date.strftime(DF)
+                    }, context={'rewind': True})
+        return True
+
     def copy(self, cr, uid, id, default=None, context=None):
         default = default or {}
         num_pol_ga = self.browse(cr, uid, id, context=context).num_pol_ga
@@ -388,10 +444,10 @@ class recurring_contract(orm.Model):
     def write(self, cr, uid, ids, vals, context=None):
         """ Prevent to change next_invoice_date in the past.
             Link/unlink child to sponsor. """
-        if 'next_invoice_date' in vals:
+        if 'next_invoice_date' in vals and not context.get('rewind'):
             new_date = vals['next_invoice_date']
             for contract in self.browse(cr, uid, ids, context=context):
-                if contract.state != 'draft' \
+                if contract.state not in ('draft', 'mandate') \
                    and new_date < contract.next_invoice_date:
                     raise orm.except_orm(_('Warning'),
                                          _('You cannot rewind the next '
@@ -409,6 +465,26 @@ class recurring_contract(orm.Model):
                     cr, uid, child_id, {
                         'sponsor_id': vals.get('partner_id') or
                         contract.partner_id.id}, context)
+
+        # Change state of contract if payment is changed to/from LSV or DD
+        if 'group_id' in vals:
+            wf_service = netsvc.LocalService('workflow')
+            group = self.pool.get('recurring.contract.group').browse(
+                cr, uid, vals['group_id'], context)
+            payment_name = group.payment_term_id.name
+            if 'LSV' in payment_name or 'Postfinance' in payment_name:
+                for id in ids:
+                    wf_service.trg_validate(
+                        uid, 'recurring.contract', id,
+                        'will_pay_by_lsv_dd', cr)
+            else:
+                # Check if old payment_term was LSV or DD
+                for contract in self.browse(cr, uid, ids, context=context):
+                    payment_name = contract.group_id.payment_term_id.name
+                    if 'LSV' in payment_name or 'Postfinance' in payment_name:
+                        wf_service.trg_validate(
+                            uid, 'recurring.contract', contract.id,
+                            'mandate_validated', cr)
 
         return super(recurring_contract, self).write(cr, uid, ids, vals,
                                                      context=context)
