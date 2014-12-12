@@ -34,6 +34,7 @@
                                 <group>
                                     <group>
                                         <field name="code" />
+                                        <field name="project_id" />
                                         <field name="gender" />
                                         <field name="birthdate" />
                                         <field name="sponsor_id" />

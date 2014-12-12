@@ -68,6 +68,15 @@ class compassion_child(orm.Model):
             ('41', _("Reached maximum age")),
         ]
 
+    def _get_project(self, cr, uid, ids, field_name, args, context=None):
+        res = dict()
+        for child in self.browse(cr, uid, ids, context):
+            project_ids = self.pool.get('compassion.project').search(
+                cr, uid, [('code', '=', child.code[:5])], context=context)
+            if project_ids:
+                res[child.id] = project_ids[0]
+        return res
+
     _columns = {
         ######################################################################
         #                      1. General Information                        #
@@ -75,6 +84,9 @@ class compassion_child(orm.Model):
         'name': fields.char(_("Name"), size=128),
         'firstname': fields.char(_("Firstname"), size=128),
         'code': fields.char(_("Child code"), size=128, required=True),
+        'project_id': fields.function(
+            _get_project, type='many2one', obj='compassion.project',
+            string=_('Project'), store=True),
         'unique_id': fields.integer(_("Unique ID")),
         'birthdate': fields.date(_("Birthdate")),
         'type': fields.selection(

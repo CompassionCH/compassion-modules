@@ -577,3 +577,23 @@ class account_invoice(orm.Model):
 
 class contract_line(orm.Model):
     _inherit = 'recurring.contract.line'
+
+
+class account_move(orm.Model):
+    _inherit = 'account.move'
+
+
+class account_move_line(orm.Model):
+    _inherit = 'account.move.line'
+
+
+class payment_line(orm.Model):
+    _inherit = 'payment.line'
+
+
+class account_journal(orm.Model):
+    _inherit = 'account.journal'
+
+
+class account_asset_depreciation_line(orm.Model):
+    _inherit = 'account.asset.depreciation.line'
