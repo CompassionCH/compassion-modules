@@ -72,9 +72,11 @@ class compassion_child(orm.Model):
             'health_description': json_data['healthDescription'],
             'social_description': json_data['socialBehaviorDescription'],
             'exit_description': json_data['exitDescription'],
-            'steps_prevent_description': json_data['stepsToPreventExitDescription'],
+            'steps_prevent_description': json_data['stepsToPrevent'
+                                                   'ExitDescription'],
             'future_plans_description': json_data['futurePlansDescription'],
-            'new_situation_description': json_data['childNewSituationDescription'],
+            'new_situation_description': json_data['childNewSituation'
+                                                   'Description'],
             'exit_reason': json_data['exitReason'],
             'last_letter_sent': json_data['lastChildLetterSent'],
             })
@@ -412,7 +414,6 @@ class compassion_child(orm.Model):
 
     def child_departed(self, cr, uid, ids, context=None):
         """ Is called when a child changes his status to 'F' or 'X'."""
-        # TODO Call Webservice to get Exit Details (when service is ready)
         for child in self.browse(cr, uid, ids, context):
             if child.state == 'F':
                 child.write({'sponsor_id': False})
