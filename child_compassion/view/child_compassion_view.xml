@@ -66,6 +66,27 @@
                             <page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '>', 0)]}">
                                 <group>
                                     <field name="gp_exit_reason" />
+                                    <field name="exit_date" />
+                                    <field name="last_attended_project" />
+                                    <field name="presented_gospel" />
+                                    <field name="professes_faith" />
+                                    <field name="faith_description" />
+                                    <field name="primary_school" />
+                                    <field name="us_grade_completed" />
+                                    <field name="study_area" />
+                                    <field name="vocational_training" />
+                                </group>
+                                <group>
+                                    <field name="vocational_skills" />
+                                    <field name="disease_free" />
+                                    <field name="health_description" />
+                                    <field name="social_description" />
+                                    <field name="exit_description" />
+                                    <field name="steps_prevent_description" />
+                                    <field name="future_plans_description" />
+                                    <field name="new_situation_description" />
+                                    <field name="exit_reason" />
+                                    <field name="last_letter_sent" />
                                 </group>
                             </page>
                             <page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '=', False)]}">

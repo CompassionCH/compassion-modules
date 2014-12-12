@@ -53,7 +53,6 @@ class compassion_child(orm.Model):
         child = self.browse(cr, uid, child_id, context)
         if not child:
             raise orm.except_orm('ObjectError', _('No valid child id given !'))
-        #exit_reason = get_gp_exit_reasons(cr, uid, context)
         url = self._get_url(child.code, 'exitdetails')
         r = requests.get(url)
         if not r.status_code/100 == 2:
@@ -62,11 +61,10 @@ class compassion_child(orm.Model):
                                    'exit details for child %s.') % child.code)
         json_data = json.loads(r.text)
         pdb.set_trace()
-
-        #JSON_DATA output is ok
-
-        """ Writing values
-        self.write(cr, uid, [child.id], {
+        #gp_exit_reason = self.get_gp_exit_reasons(cr, uid, context)
+        # Writing values to child object
+        #"""
+        child.write({
             'exit_date': json_data['exitDate'],
             'last_attended_project': json_data['dateLastAttendedProject'],
             'presented_gospel': json_data['presentedWithGospel'],
@@ -86,10 +84,8 @@ class compassion_child(orm.Model):
             'new_situation_description': json_data['childNewSituationDescription'],
             'exit_reason': json_data['exitReason'],
             'last_letter_sent': json_data['lastChildLetterSent'],
-            'transfer_country_id': ,
-            'gp_exit_reason': ,
-            }, context=context)
-        """
+            })
+        #"""
         return True
 
     _columns = {
