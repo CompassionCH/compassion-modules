@@ -17,6 +17,9 @@ from openerp.tools.config import config
 from datetime import date
 import requests
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class child_pictures(orm.Model):
@@ -80,8 +83,9 @@ class child_pictures(orm.Model):
             return False
         return res_id
 
-    def _get_picture(self, cr, uid, child_code, attach_id, type='Headshot', dpi=72, width=400,
-                     height=400, format='jpeg', context=None):
+    def _get_picture(self, cr, uid, child_code, attach_id, type='Headshot',
+                     dpi=72, width=400, height=400, format='jpeg',
+                     context=None):
         ''' Gets a picture from Compassion webservice '''
         url = self.pool.get('compassion.child').get_url(child_code, 'image')
         url += '&Height=%s&Width=%s&DPI=%s&ImageFormat=%s&ImageType=%s' \

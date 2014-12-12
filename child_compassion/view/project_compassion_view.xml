@@ -44,7 +44,7 @@
                                         <field name="disburse_gifts"/>
                                         <field name="disburse_unsponsored_funds"/>
                                         <field name="new_sponsorships_allowed"/>
-                                        <field name="additionnal_quota_allowed"/>
+                                        <field name="additional_quota_allowed"/>
                                     </group>
                                     <group string="Community" colspan="2">
                                         <field name="local_church_name" />
