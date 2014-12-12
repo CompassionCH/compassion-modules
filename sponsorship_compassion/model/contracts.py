@@ -99,7 +99,7 @@ class recurring_contract(orm.Model):
 
     def _is_fully_managed(self, cr, uid, ids, field_name, arg, context):
         """Tells if the correspondent and the payer is the same person."""
-        res = {}
+        res = dict()
         for contract in self.browse(cr, uid, ids, context=context):
             res[contract.id] = contract.partner_id == contract.correspondant_id
         return res
@@ -267,25 +267,6 @@ class recurring_contract(orm.Model):
         })
         return res
 
-    def on_change_lines(self, cr, uid, ids, selected_lines, child_id,
-                        context=None):
-        """ Warn if a sponsorship is selected with no child defined.
-        selected_lines : list([index, False (?), line_values (dict)])
-        """
-        res = {}
-        if not child_id:
-            for line in selected_lines:
-                if len(line) > 2 and line[2].get('product_id', 0) > 0:
-                    product = self.pool.get('product.product').browse(
-                        cr, uid, line[2]['product_id'], context)
-                    if product.name == _('Sponsorship'):
-                        res['warning'] = {
-                            'title': _("Please select a child"),
-                            'message': _("You should select a child if you "
-                                         "make a new sponsorship!")
-                        }
-        return res
-
     def on_change_group_id(self, cr, uid, ids, group_id, context=None):
         """ Compute next invoice_date """
         res = dict()
@@ -315,7 +296,7 @@ class recurring_contract(orm.Model):
         return res
 
     def contract_waiting(self, cr, uid, ids, context=None):
-        for contract in self.browse(cr, uid, ids, context):
+        for contract in self.browse(cr, uid, ids, {'lang': 'en_US'}):
             payment_term = contract.group_id.payment_term_id.name
             if 'LSV' in payment_term or 'Postfinance' in payment_term:
                 # Recompute next_invoice_date
@@ -415,7 +396,8 @@ class recurring_contract(orm.Model):
         return True
 
     def copy(self, cr, uid, id, default=None, context=None):
-        default = default or {}
+        if not default:
+            default = dict()
         num_pol_ga = self.browse(cr, uid, id, context=context).num_pol_ga
         default.update({
             'child_id': False,
@@ -452,7 +434,7 @@ class recurring_contract(orm.Model):
                     raise orm.except_orm(_('Warning'),
                                          _('You cannot rewind the next '
                                            'invoice date.'))
-        # Happens only in draft state
+        # Link/unlink child to sponsor
         if 'child_id' in vals:
             child_id = vals['child_id']
             for contract in self.browse(cr, uid, ids, context):
@@ -570,11 +552,13 @@ class recurring_contract(orm.Model):
         return True
 
     def create(self, cr, uid, vals, context=None):
-        """ Link child to sponsor. """
-        if vals.get('child_id', False):
+        """Link child to sponsor.
+        """
+        child_id = vals.get('child_id')
+        if child_id:
             self.pool.get('compassion.child').write(
-                cr, uid, int(vals['child_id']),
-                {'sponsor_id': vals['partner_id']}, context)
+                cr, uid, child_id, {
+                    'sponsor_id': vals['partner_id']}, context)
         return super(recurring_contract, self).create(cr, uid, vals, context)
 
     ##############################

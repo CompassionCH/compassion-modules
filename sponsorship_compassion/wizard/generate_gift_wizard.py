@@ -27,7 +27,7 @@ class generate_gift_wizard(orm.TransientModel):
         'amount': fields.float(_("Gift Amount"), required=True),
         'product_id': fields.many2one(
             'product.product', _("Gift Type"), required=True,
-            domain=[('name', 'in', GIFT_TYPES)]),
+            domain=[('name', 'in', [_(name) for name in GIFT_TYPES])]),
         'invoice_date': fields.date(_("Invoice date")),
         'description': fields.char(_("Additional comments"), size=200),
     }
