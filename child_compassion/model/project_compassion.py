@@ -26,11 +26,11 @@ class compassion_project(orm.Model):
         res = dict()
         for project in self.browse(cr, uid, ids, context):
             res[project.id] = 'none'
-            if project.status == 'active' and not (
-                    project.disburse_gifts and project.disburse_gifts and
-                    project.disburse_unsponsored_funds and
-                    project.new_sponsorships_allowed and
-                    project.additionnal_quota_allowed):
+            if project.status == 'A' and not (
+               project.disburse_gifts and project.disburse_funds and
+               project.disburse_unsponsored_funds and
+               project.new_sponsorships_allowed and
+               project.additional_quota_allowed):
                 res[project.id] = 'suspended' if project.disburse_funds \
                     else 'fund-suspended'
         return res
@@ -66,8 +66,8 @@ class compassion_project(orm.Model):
                                                        'funds')),
         'new_sponsorships_allowed': fields.boolean(_('New sponsorships '
                                                      'allowed')),
-        'additionnal_quota_allowed': fields.boolean(_('Additional quota '
-                                                      'allowed')),
+        'additional_quota_allowed': fields.boolean(_('Additional quota '
+                                                     'allowed')),
 
         ######################################################################
         #                      2. Project Descriptions                       #
@@ -294,7 +294,7 @@ class compassion_project(orm.Model):
                 'disburseUnsponsoredFunds'),
             'new_sponsorships_allowed': json_values.get(
                 'newSponsorshipsAllowed'),
-            'additionnal_quota_allowed': json_values.get(
+            'additional_quota_allowed': json_values.get(
                 'additionalQuotaAllowed'),
         }
         return {field_name: value for field_name, value in values.iteritems()
