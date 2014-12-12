@@ -75,8 +75,6 @@
                                     <field name="us_grade_completed" />
                                     <field name="study_area" />
                                     <field name="vocational_training" />
-                                </group>
-                                <group>
                                     <field name="vocational_skills" />
                                     <field name="disease_free" />
                                     <field name="health_description" />

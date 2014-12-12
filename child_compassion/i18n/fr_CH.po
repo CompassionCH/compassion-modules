@@ -725,7 +725,7 @@ msgstr ""
 #: code:addons/child_compassion/model/child_compassion.py:139
 #: field:compassion.child,social_description:0
 #, python-format
-msgid "Social behaviour description"
+msgid "Social behavior description"
 msgstr ""
 
 #. module: child_compassion
