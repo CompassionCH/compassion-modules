@@ -49,7 +49,7 @@ To add a new locale :
     'depends': ['recurring_contract', 'l10n_ch_payment_slip', 'crm',
                 'l10n_ch', 'account_analytic_plans', 'child_compassion',
                 'account_cancel', 'account_banking_mandate',
-                'account_asset_compassion'],
+                'account_asset_compassion', 'partner_compassion'],
     'data': ['view/contract_group_view.xml',
              'view/end_sponsorship_wizard_view.xml',
              'view/contract_view.xml',

@@ -8,7 +8,7 @@
 			<field eval="18" name="priority"/>
 			<field name="arch" type="xml">
 				<data>
-					<tree string="Contracts" position="attributes">
+					<tree string="Sponsorships" position="attributes">
 						<attribute name="colors">blue:state == 'draft';red:state == 'mandate';green:state == 'waiting';black:state == 'active';gray:state in ('terminated','cancelled')</attribute>
 						<attribute name="string">Sponsorships</attribute>
 					</tree>
