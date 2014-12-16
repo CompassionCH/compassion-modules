@@ -22,7 +22,8 @@ class account_mandate(orm.Model):
             wf_service = netsvc.LocalService('workflow')
             for mandate in self.browse(cr, uid, ids, context):
                 contract_ids = self.pool.get('recurring.contract').search(
-                    cr, uid, [('partner_id', '=', mandate.partner_id.id), ('state', '=', 'mandate')], context=context)
+                    cr, uid, [('partner_id', '=', mandate.partner_id.id),
+                              ('state', '=', 'mandate')], context=context)
                 for con_id in contract_ids:
                     wf_service.trg_validate(
                         uid, 'recurring.contract', con_id,

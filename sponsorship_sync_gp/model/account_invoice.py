@@ -36,7 +36,7 @@ class account_invoice(orm.Model):
                                   "into GP. Please contact an IT person."))
         return super(account_invoice, self).action_cancel(cr, uid, ids,
                                                           context)
-                                                          
+
     def action_move_create(self, cr, uid, ids, context=None):
         """ If an invoice was cancelled,
             and validated again, update the situation in GP.

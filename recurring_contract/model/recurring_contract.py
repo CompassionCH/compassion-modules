@@ -137,8 +137,7 @@ class recurring_contract(orm.Model):
         'group_id': fields.many2one(
             'recurring.contract.group', _('Payment Options'),
             required=True, ondelete='cascade',
-            track_visibility="onchange",
-            readonly=True, states={'draft': [('readonly', False)]}),    # FIXME when waiting mandate is ready
+            track_visibility="onchange"),
         'invoice_line_ids': fields.one2many(
             'account.invoice.line', 'contract_id',
             _('Related invoice lines'), readonly=True),

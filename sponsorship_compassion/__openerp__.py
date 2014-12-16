@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Sponsorships',
-    'version': '0.2',
+    'version': '1.1',
     'category': 'Other',
     'description': """
 Sponsorship management module. This module makes the link between child and
@@ -48,7 +48,8 @@ To add a new locale :
     'website': 'http://www.compassion.ch',
     'depends': ['recurring_contract', 'l10n_ch_payment_slip', 'crm',
                 'l10n_ch', 'account_analytic_plans', 'child_compassion',
-                'account_cancel', 'account_banking_mandate'],
+                'account_cancel', 'account_banking_mandate',
+                'account_asset_compassion'],
     'data': ['view/contract_group_view.xml',
              'view/end_sponsorship_wizard_view.xml',
              'view/contract_view.xml',
@@ -69,5 +70,3 @@ To add a new locale :
     'installable': True,
     'auto_install': False,
 }
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

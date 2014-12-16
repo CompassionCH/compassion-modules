@@ -13,7 +13,6 @@ from openerp.osv import orm, fields
 from openerp import netsvc
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-import pdb
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -36,13 +35,12 @@ class recurring_contract(orm.Model):
     def _get_contract_from_invoice(invoice_obj, cr, uid, invoice_ids,
                                    context=None):
         self = invoice_obj.pool.get('recurring.contract')
-        res = []
+        res = set()
         # Read data in english
         if context is None:
             context = {}
         ctx = context.copy()
         ctx['lang'] = 'en_US'
-        pdb.set_trace()
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, ctx):
             if invoice.state == 'paid':
                 self._invoice_paid(cr, uid, invoice, ctx)
@@ -51,17 +49,15 @@ class recurring_contract(orm.Model):
                                      if move_line.credit > 0] or [0])
                 for invoice_line in invoice.invoice_line:
                     contract = invoice_line.contract_id
-                    if contract.state == 'waiting' and last_pay_date:
+                    if contract.id not in res and (contract.state == 'waiting'
+                                                   and last_pay_date):
                         # Activate the contract and set the
                         # activation_date
-                        res.append(invoice_line.contract_id.id)
-                        self.write(
-                            cr, uid, contract.id, {
-                                'activation_date':
-                                    datetime.today().strftime(DF)},
-                            context=context)
+                        res.add(contract.id)
+                        contract.write({
+                            'activation_date': datetime.today().strftime(DF)})
 
-        return res
+        return list(res)
 
     def _on_contract_active(self, cr, uid, ids, context=None):
         """ Hook for doing something when contract is activated.
@@ -134,6 +130,16 @@ class recurring_contract(orm.Model):
             ('payment', _("Payment")),
         ]
 
+    def _has_mandate(self, cr, uid, ids, field_name, args, context=None):
+        # Search for an existing valid mandate
+        res = dict()
+        for contract in self.browse(cr, uid, ids, context):
+            count = self.pool.get('account.banking.mandate').search(cr, uid, [
+                ('partner_id', '=', contract.partner_id.id),
+                ('state', '=', 'valid')], count=True, context=context)
+            res[contract.id] = bool(count)
+        return res
+
     ###########################
     #        New Fields       #
     ###########################
@@ -185,7 +191,7 @@ class recurring_contract(orm.Model):
                 'account.invoice': (_get_contract_from_invoice, ['state'], 50)
             },
             help="It indicates that the first invoice has been paid and the "
-                 "contract is active."),
+                 "contract was activated."),
         'fully_managed': fields.function(
             _is_fully_managed, type="boolean", store=True),
         # Field used for identifying gifts from sponsor (because of bad GP)
@@ -198,15 +204,16 @@ class recurring_contract(orm.Model):
         'end_reason': fields.selection(get_ending_reasons, _('End reason'),
                                        select=True),
         'origin_id': fields.many2one('recurring.contract.origin', _("Origin"),
-                                     required=True, readonly=True,
-                                     states={'draft': [('readonly', False)]},
-                                     ondelete='restrict'),
+                                     required=True, ondelete='restrict',
+                                     track_visibility='onchange'),
         'channel': fields.selection(_get_channels, string=_("Channel"),
                                     required=True, readonly=True,
                                     states={'draft': [('readonly', False)]}),
         'parent_id': fields.many2one(
             'recurring.contract', _('Previous sponsorship'), readonly=True,
             states={'draft': [('readonly', False)]}),
+        'has_mandate': fields.function(
+            _has_mandate, type='boolean', string='Has mandate'),
     }
 
     def _get_standard_lines(self, cr, uid, context=None):
@@ -275,14 +282,16 @@ class recurring_contract(orm.Model):
             contract = self.browse(cr, uid, ids[0], context)
             if contract.state not in (
                     'draft', 'mandate') and contract.next_invoice_date:
-                current_date = datetime.strptime(contract.next_invoice_date, DF)
+                current_date = datetime.strptime(contract.next_invoice_date,
+                                                 DF)
         if group_id:
             contract_group = self.pool.get('recurring.contract.group').browse(
                 cr, uid, group_id, context)
             if contract_group.next_invoice_date:
                 next_group_date = datetime.strptime(
                     contract_group.next_invoice_date, DF)
-                next_invoice_date = current_date.replace(day=next_group_date.day)
+                next_invoice_date = current_date.replace(
+                    day=next_group_date.day)
             else:
                 next_invoice_date = current_date.replace(day=1)
             payment_term = contract_group.payment_term_id.name
@@ -318,7 +327,7 @@ class recurring_contract(orm.Model):
                             _("Please select a child"),
                             _("You should select a child if you "
                               "make a new sponsorship!"))
-            
+
         self.write(cr, uid, ids, {'state': 'waiting'}, context)
         return True
 
@@ -358,11 +367,6 @@ class recurring_contract(orm.Model):
         return True
 
     def contract_waiting_mandate(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'mandate'}, context)
-        # Clean open invoices so that we generate them again with proper
-        # payment term.
-        nb_invoices_canceled = super(recurring_contract, self).clean_invoices(
-            cr, uid, ids, context)
         for contract in self.browse(cr, uid, ids, context):
             # Check that a child is selected for Sponsorship product
             if not contract.child_id:
@@ -373,27 +377,24 @@ class recurring_contract(orm.Model):
                             _("Please select a child"),
                             _("You should select a child if you "
                               "make a new sponsorship!"))
+        self.write(cr, uid, ids, {'state': 'mandate'}, context)
+        return True
 
-            # Search for an existing valid mandate
-            mandate_ids = self.pool.get('account.banking.mandate').search(
-                cr, uid, [('partner_id', '=', contract.partner_id.id),
-                          ('state', '=', 'valid')], context=context)
-            if mandate_ids:
-                wf_service = netsvc.LocalService('workflow')
-                wf_service.trg_validate(
-                    uid, 'recurring.contract', contract.id,
-                    'mandate_validated', cr)
-
-            if nb_invoices_canceled:
+    def reset_open_invoices(self, cr, uid, ids, context=None):
+        """Clean the open invoices in order to generate new invoices.
+        This can be useful if contract was updated when active."""
+        nb_invoices_canceled = super(recurring_contract, self).clean_invoices(
+            cr, uid, ids, context)
+        if nb_invoices_canceled:
+            for contract in self.browse(cr, uid, ids, context):
                 # Rewind the next_invoice_date for the contracts
                 next_invoice_date = datetime.strptime(
                     contract.next_invoice_date, DF)
                 next_invoice_date = next_invoice_date + relativedelta(
                     months=-nb_invoices_canceled)
-                self.write(cr, uid, contract.id, {
+                super(recurring_contract, self).write(cr, uid, contract.id, {
                     'next_invoice_date': next_invoice_date.strftime(DF)
-                    }, context={'rewind': True})
-        return True
+                    }, context)
 
     def copy(self, cr, uid, id, default=None, context=None):
         if not default:
@@ -424,9 +425,9 @@ class recurring_contract(orm.Model):
         return
 
     def write(self, cr, uid, ids, vals, context=None):
-        """ Prevent to change next_invoice_date in the past.
-            Link/unlink child to sponsor. """
-        if 'next_invoice_date' in vals and not context.get('rewind'):
+        """ Perform various checks when a contract is modified. """
+        # Prevent to change next_invoice_date in the past for active contract.
+        if 'next_invoice_date' in vals:
             new_date = vals['next_invoice_date']
             for contract in self.browse(cr, uid, ids, context=context):
                 if contract.state not in ('draft', 'mandate') \
@@ -434,6 +435,7 @@ class recurring_contract(orm.Model):
                     raise orm.except_orm(_('Warning'),
                                          _('You cannot rewind the next '
                                            'invoice date.'))
+
         # Link/unlink child to sponsor
         if 'child_id' in vals:
             child_id = vals['child_id']
@@ -468,8 +470,14 @@ class recurring_contract(orm.Model):
                             uid, 'recurring.contract', contract.id,
                             'mandate_validated', cr)
 
-        return super(recurring_contract, self).write(cr, uid, ids, vals,
-                                                     context=context)
+        res = super(recurring_contract, self).write(cr, uid, ids, vals,
+                                                    context=context)
+
+        # Cancel open invoices and generate them again
+        if 'group_id' in vals or 'contract_line_ids' in vals:
+            self.reset_open_invoices(cr, uid, ids, context)
+
+        return res
 
     def open_contract(self, cr, uid, ids, context=None):
         """ Used to bypass opening a contract in popup mode from
