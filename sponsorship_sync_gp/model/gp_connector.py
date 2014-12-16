@@ -267,7 +267,7 @@ class GPConnect(mysql_connector):
             'NUMVERS': invoice_line.invoice_id.id,
             'CODESPE': codespe,
             'MONTANT': invoice_line.price_subtotal,
-            'DATE': payment_date,
+            'DATE': invoice_line.invoice_id.date_invoice,
             'TYPEVERS': payment_term,
             'JNLVERS': product.property_account_income.code,
             'CADEAU': cadeau,
