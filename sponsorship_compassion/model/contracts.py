@@ -311,7 +311,8 @@ class recurring_contract(orm.Model):
                 # Recompute next_invoice_date
                 today = datetime.today()
                 next_invoice_date = datetime.strptime(
-                    contract.next_invoice_date, DF).replace(month=today.month)
+                    contract.next_invoice_date, DF).replace(month=today.month,
+                                                            year=today.year)
                 if today.day > 15 and next_invoice_date.day < 15:
                     next_invoice_date = next_invoice_date + relativedelta(
                         months=+1)
