@@ -58,6 +58,15 @@ class gmc_message_pool(orm.Model):
         for message in self.browse(cr, uid, ids, context):
             if message.action_id.model == model_mapping[field_name]:
                 res[message.id] = message.object_id
+            elif message.action_id.model == 'recurring.contract':
+                contract = self.pool.get('recurring.contract').browse(
+                    cr, uid, message.object_id, context)
+                if field_name == 'partner_id':
+                    res[message.id] = contract.partner_id.id
+                elif field_name == 'child_id':
+                    res[message.id] = contract.child_id.id
+                else:
+                    res[message.id] = False
             else:
                 res[message.id] = False
         return res
@@ -75,10 +84,10 @@ class gmc_message_pool(orm.Model):
         ),
         'partner_id': fields.function(
             _get_object_id, type='many2one', obj='res.partner',
-            string=_("Partner")),
+            string=_("Partner"), store=True),
         'child_id': fields.function(
             _get_object_id, type='many2one', obj='compassion.child',
-            string=_("Child")),
+            string=_("Child"), store=True),
         'project_id': fields.function(
             _get_object_id, type='many2one', obj='compassion.project',
             string=_("Project")),
@@ -215,10 +224,10 @@ class gmc_message_pool(orm.Model):
                 cr, uid, object_id, context=context)
             # Check that the constituent is known by GMC.
             partner = contract.partner_id
-            message_ids = self.search(
-                cr, uid,
-                [('object_id', '=', partner.id), ('state', '=', 'success')],
-                context=context)
+            message_ids = self.search(cr, uid, [
+                ('name', '=', 'CreateConstituent'),
+                ('partner_id', '=', partner.id),
+                ('state', '=', 'success')], context=context)
             if not message_ids:
                 raise orm.except_orm(
                     _("Constituent (%s) not sent to GMC") % partner.name,
