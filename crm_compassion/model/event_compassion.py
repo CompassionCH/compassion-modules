@@ -107,6 +107,10 @@ class event_compassion(orm.Model):
                 'recurring.contract': (
                     _get_event_from_contract,
                     ['state'],
+                    10),
+                'crm.event.compassion': (
+                    lambda self, cr, uid, ids, context=None: ids,
+                    ['contract_ids', 'description'],
                     10)
             }),
         'project_id': fields.many2one('project.project', _("Project"))
