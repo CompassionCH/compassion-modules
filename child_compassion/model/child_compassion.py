@@ -11,6 +11,9 @@
 
 import requests
 import pysftp
+import logging
+
+logger = logging.getLogger(__name__)
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
@@ -51,12 +54,11 @@ class compassion_child(orm.Model):
             raise orm.except_orm('ObjectError', _('No valid child id given !'))
         url = self.get_url(child.code, 'exitdetails')
         r = requests.get(url)
-        if not r.status_code/100 == 2:
-            raise orm.except_orm('NetworkError',
-                                 _('An error occured while fetching the '
-                                   'exit details for child %s.') % child.code)
         json_data = r.json()
-
+        if not r.status_code == 200:
+            logger.error("Impossible to fetch exit details of child %s: "
+                         % child.code + json_data['error']['message'])
+            return False
         child.write({
             'exit_date': json_data['exitDate'],
             'last_attended_project': json_data['dateLastAttendedProject'],
@@ -286,12 +288,13 @@ class compassion_child(orm.Model):
         '''
         url = self.get_url(child.code, 'casestudy')
         r = requests.get(url)
+        json_data = r.json()
         if not r.status_code/100 == 2:
             raise orm.except_orm('NetworkError',
                                  _('An error occured while fetching the last '
-                                   'case study for child %s.') % child.code)
+                                   'case study for child %s. ') % child.code
+                                 + json_data['error']['message'])
 
-        json_data = r.json()
         vals = {
             'child_id': child.id,
             'info_date': json_data['childCaseStudyDate'],
