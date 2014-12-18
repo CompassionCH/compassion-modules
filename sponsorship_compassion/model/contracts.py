@@ -666,3 +666,19 @@ class account_journal(orm.Model):
 
 class account_asset_depreciation_line(orm.Model):
     _inherit = 'account.asset.depreciation.line'
+
+
+class account_analytic_plan_instance(orm.Model):
+    _inherit = 'account.analytic.plan.instance'
+
+
+class account_analytic_plan_instance_line(orm.Model):
+    _inherit = 'account.analytic.plan.instance.line'
+
+
+class account_period(orm.Model):
+    _inherit = 'account.period'
+    
+
+class account_account_type(orm.Model):
+    _inherit = 'account.account.type'
