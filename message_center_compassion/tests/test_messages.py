@@ -63,7 +63,8 @@ class test_messages(common.TransactionCase):
             })
         return self.message_obj.create(self.cr, self.uid, message_vals)
 
-    def _create_incoming_message(self, type, model, object_id):
+    def _create_incoming_message(self, type, model, object_id, child_key='',
+                                 event=''):
         """Generic method for creating an incoming message and process it.
         Args:
             - type: one of ('update','deallocate',depart')
@@ -75,7 +76,9 @@ class test_messages(common.TransactionCase):
         message_vals = {
             'date': self.today,
             'action_id': action_id,
-            'object_id': object_id
+            'object_id': object_id,
+            'incoming_key': child_key,
+            'event': event
         }
         mess_id = self.message_obj.create(self.cr, self.uid, message_vals)
         self.message_obj.process_messages(self.cr, self.uid, [mess_id])
@@ -166,7 +169,7 @@ class test_messages(common.TransactionCase):
         ..data/test_scenario.docx
         """
         # Simulate GMC Allocation of 4 new children
-        child_keys = ["PE3760148", "UG8310012"]    # "UG8320012", "UG8350016"]
+        child_keys = ["PE3760148", "IO6790210"]    # "UG8320012", "UG8350016"]
         child_ids = self._allocate_new_children(child_keys)
 
         # Check all 4 children are available in database
@@ -229,9 +232,10 @@ class test_messages(common.TransactionCase):
         # Test UpdateChild and UpdateProject messages
         # We only need to check that no error is raised
         self._create_incoming_message(
-            'update', 'compassion.child', child_departed_id)
+            'update', 'compassion.child', child_departed_id, child_keys[1],
+            'CaseStudy')
         project_id = self.registry('compassion.project').search(
-            self.cr, self.uid, [('code', '=', 'UG831')])[0]
+            self.cr, self.uid, [('code', '=', child_keys[1][:5])])[0]
         self._create_incoming_message(
             'update', 'compassion.project', project_id)
 
