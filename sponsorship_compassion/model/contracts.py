@@ -678,7 +678,7 @@ class account_analytic_plan_instance_line(orm.Model):
 
 class account_period(orm.Model):
     _inherit = 'account.period'
-    
+
 
 class account_account_type(orm.Model):
     _inherit = 'account.account.type'

@@ -121,7 +121,7 @@ class test_contracts(common.TransactionCase):
             month_paid = next_invoice_date.month
             today = date.today()
             if next_invoice_date.day <= 15:
-                month_paid -=1
+                month_paid -= 1
             if month_paid == 0 and today.month == 12:
                 month_paid = 12
             self._check_contract_sync(contract, 'C', month_paid)
