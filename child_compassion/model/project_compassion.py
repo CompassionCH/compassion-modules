@@ -9,6 +9,7 @@
 #
 ##############################################################################
 
+import pdb
 import requests
 import json
 
@@ -114,7 +115,6 @@ class compassion_project(orm.Model):
             'compassion.translated.value', 'project_property_to_value',
             'project_id', 'value_id', _('Terrain description'),
             domain=[('property_name', '=', 'terrain_description')]),
-
         # b. Static Values
         'gps_latitude': fields.float(_('GPS latitude')),
         'gps_longitude': fields.float(_('GPS longitude')),
@@ -129,11 +129,16 @@ class compassion_project(orm.Model):
         'spiritual_needs': fields.text(_('Spiritual needs')),
         'distance_from_closest_city': fields.text(_('Distance from closest '
                                                     'city')),
+        # d. Age groups section
+        'age_group_ids': fields.one2many(
+            'compassion.project.age.group', 'project_id',
+            _('Age group'),
+            readonly=True, track_visibility="onchange"),
         }
-
+    """
     def update_informations(self, cr, uid, ids, context=None):
-        """ Get the most recent informations for selected projects and update
-            them accordingly. """
+        ''' Get the most recent informations for selected projects and update
+            them accordingly. '''
         if not isinstance(ids, list):
             ids = [ids]
 
@@ -146,6 +151,27 @@ class compassion_project(orm.Model):
                 values.update(self._update_cdsp_info(cr, uid,
                                                      project.code, context))
 
+            self.write(cr, uid, [project.id], values, context=context)
+        return True
+    """
+    # FIXME
+
+    def update_informations(self, cr, uid, ids, context=None):
+        """ Get the most recent informations for selected projects and update
+            them accordingly. """
+        if not isinstance(ids, list):
+            ids = [ids]
+        for project in self.browse(cr, uid, ids, context):
+            group_ids = self._get_age_groups(cr, uid, project, context)
+            values, community_id = self._update_program_info(
+                cr, uid, project, context)
+            # values['age_group_ids'] = group_ids
+            values.update(
+                self._update_community_info(cr, uid, community_id, context))
+            if values['type'] == 'CDSP':
+                values.update(self._update_cdsp_info(cr, uid,
+                                                     project.code, context))
+            # pdb.set_trace()
             self.write(cr, uid, [project.id], values, context=context)
         return True
 
@@ -173,6 +199,7 @@ class compassion_project(orm.Model):
                 cr, uid, prog_impl.get('isoCountryCode'), context),
             'country_common_name': prog_impl.get('countryCommonName'),
         }
+        # pdb.set_trace()
         community_id = prog_impl.get('communityID')
         return {field_name: value for field_name, value in values.iteritems()
                 if value}, community_id
@@ -208,7 +235,60 @@ class compassion_project(orm.Model):
             country_id = country_obj.create(
                 cr, uid, {'iso_code': country_code}, context=context)
             country_obj.update_informations(cr, uid, [country_id], context)
+        # pdb.set_trace()
         return country_id
+
+    def _get_age_groups(self, cr, uid, project, context=None):
+        """ Get age group from compassion webservice and l
+            Returns id of generated age_group or None if failed """
+        json_data = self._cornerstone_fetch(project.code + '/agegroups',
+                                            'cdspimplementors')
+        value_obj = self.pool.get('compassion.translated.value')
+        # pdb.set_trace()
+        res = list()
+        for group in json_data['projectAgeGroupCollection']:
+            # pdb.set_trace()
+            values = list()
+            vals = {
+                'project_id': project.id,
+                'low_age': group['lowAge'],
+                'high_age': group['highAge'],
+                'school_hours': group['schoolHours'],
+            }
+
+            values.append(value_obj.get_value_ids(
+                cr, uid, group['schoolDays'],
+                'school_days', context))
+            values.append(value_obj.get_value_ids(
+                cr, uid, group['schoolMonths'],
+                'school_months', context))
+
+            vals['school_days_ids'] = [(6, 0, values)]
+            age_project_obj = self.pool.get('compassion.project.age.group')
+            group_id = age_project_obj.create(cr, uid, vals, context)
+            res.append(group_id)
+            # pdb.set_trace()
+
+        return res
+
+        # json_data['projectAgeGroupCollection'][3]['highAge']
+        # for group in range(int(json_data['rowcount'])):
+
+        '''
+        vals = {
+            'low_age': json_data['lowAge'],
+            'high_age': json_data['highAge'],
+            'school_hours': json_data['schoolHours'],
+            'school_months_ids': fields.many2many(
+                'compassion.translated.value', 'project_property_to_value',
+                'project_id', 'value_id', _('School months'),
+                domain=[('property_name', '=', 'school_months')]),
+            'school_days_ids': fields.many2many(
+                'compassion.translated.value', 'project_property_to_value',
+                'project_id', 'value_id', _('School days'),
+                domain=[('property_name', '=', 'school_days')]),
+        }
+        '''
 
     def _update_community_info(self, cr, uid, community_id, context=None):
         """ Call the "REST Get Community" API from Compassion.
@@ -307,6 +387,7 @@ class compassion_project(orm.Model):
                                    'in conf file'))
         if url.endswith('/'):
             url = url[:-1]
+
         url += ('/ci/v1/' + api_mess + '/' + project_code + '?api_key='
                 + api_key)
 
@@ -317,4 +398,5 @@ class compassion_project(orm.Model):
                 _('Error calling Cornerstone Service'),
                 r.text)
         json_result = json.loads(r.text)
+        #pdb.set_trace()
         return json_result
