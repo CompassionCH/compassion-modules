@@ -107,12 +107,15 @@
             <field name="model">compassion.child</field>
             <field name="arch" type="xml">
                 <search string="Search child">
-                    <field name="name"/>
-                    <field name="firstname"/>
-                    <field name="code" string="Child code" />
-                    <filter name="available" string="Available" domain="[('state','=','N')]" help="Child available for sponsorship"/>
-                    <filter name="delegated" string="Delegated" domain="[('state','=','D')]" help="Delegated children"/>
-                    <filter name="internet" string="On Internet" domain="[('state','=','I')]" help="Child on compassion website"/>
+                    <field name="name" filter_domain="['|', '|', '|',
+                                                       ('name', 'ilike', self),
+                                                       ('firstname', 'ilike', self),
+                                                       ('code', 'ilike', self),
+                                                       ('sponsor_id.ref', 'ilike', self),
+                                                       ]"/>
+                    <field name="state"/>
+                    <field name="type"/>
+                    <filter name="available" string="Available" domain="[('state','in',('N','D','I','R'))]" context="{'group_by':'state'}"/>
                     <filter name="sponsored" string="Sponsored" domain="[('state','=','P')]" help="Sponsored children"/>
                     <filter name="departed" string="Departed" domain="[('state','=','F')]" help="Departed children"/>
                 </search>
