@@ -30,7 +30,7 @@
 
 {
     'name': 'Sync Compassion Sponsorships with GP',
-    'version': '0.5',
+    'version': '1.1',
     'category': 'Other',
     'description': """
 This module syncs all contracts with GP so that the information can be seen

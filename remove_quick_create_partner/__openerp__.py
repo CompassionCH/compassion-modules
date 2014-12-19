@@ -30,7 +30,7 @@
 
 {
     'name': 'Remove Quick Create Partners',
-    'version': '0.2',
+    'version': '1.0',
     'category': 'Other',
     'description': """
 Remove all abilities to quickly create partner without any information.

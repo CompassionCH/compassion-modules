@@ -30,7 +30,7 @@
 {
     'name': 'Recurring contract',
     'summary': 'Contract for recurring invoicing',
-    'version': '0.1',
+    'version': '1.1',
     'license': 'AGPL-3',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',

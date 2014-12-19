@@ -29,7 +29,7 @@
 {
     'name': 'BVR reference Compassion',
     'summary': 'Change BVR field type',
-    'version': '0.1',
+    'version': '1.0',
     'license': 'AGPL-3',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',

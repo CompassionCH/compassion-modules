@@ -30,7 +30,7 @@
 
 {
     'name': 'Install all modules needed for Compassion CH',
-    'version': '1.0.0',
+    'version': '1.1',
     'category': 'Other',
     'description': """
 This module does nothing but install a bunch of useful modules developed

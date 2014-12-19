@@ -29,7 +29,7 @@
 
 {
     'name': 'Mail Thread for Compassion',
-    'version': '0.0.1',
+    'version': '1.0',
     'category': 'Mailing',
     'description': """
             Small add-on in order to log notes from GP easily.

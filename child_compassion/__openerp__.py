@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Children',
-    'version': '1.0',
+    'version': '1.1',
     'category': 'Other',
     'description': """
 Setup child and projects for sponsorship management.
