@@ -140,6 +140,9 @@ class recurring_contract(orm.Model):
             res[contract.id] = bool(count)
         return res
 
+    def _name_get(self, cr, uid, ids, field_name, args, context=None):
+        return {c[0]: c[1] for c in self.name_get(cr, uid, ids, context)}
+
     ###########################
     #        New Fields       #
     ###########################
@@ -214,6 +217,7 @@ class recurring_contract(orm.Model):
             states={'draft': [('readonly', False)]}),
         'has_mandate': fields.function(
             _has_mandate, type='boolean', string='Has mandate'),
+        'name': fields.function(_name_get, type='char')
     }
 
     def _get_standard_lines(self, cr, uid, context=None):

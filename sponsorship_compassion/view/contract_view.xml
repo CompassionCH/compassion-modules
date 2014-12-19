@@ -45,7 +45,12 @@
                 <button name="contract_terminated" position="replace">
                      <button name="%(action_end_sponsorship)d" states="waiting,mandate,active" type="action" string="Terminate" class="oe_highlight" />
                 </button>
-                
+
+                <!-- Hide reference -->
+                <field name="reference" position="replace">
+                    <field name="name"/>
+                </field>
+
 				<!-- Redefine the top group view (lot of changes) -->
                 <xpath expr="//sheet/group[1]" position="replace">
                     <group>
