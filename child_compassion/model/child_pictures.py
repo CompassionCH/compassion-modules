@@ -12,11 +12,9 @@
 from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
-from openerp.tools.config import config
 
 from datetime import date
 import requests
-import json
 import logging
 
 logger = logging.getLogger(__name__)

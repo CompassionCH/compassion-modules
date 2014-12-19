@@ -24,7 +24,7 @@ class invoice_line(orm.Model):
                     need_key = need_key[:5]
                 res[inv_line.id] = need_key
         return res
-    
+
     def get_gift_details(self, cr, uid, line_id, context=None):
         inv_line = self.browse(cr, uid, line_id, context)
         need_key = inv_line.contract_id.child_code
@@ -39,7 +39,7 @@ class invoice_line(orm.Model):
             'TransactionDate': inv_line.invoice_id.date_invoice
         }
         return res
-        
+
     _columns = {
         'need_key': fields.function(_get_gift_info, type='char')
     }
