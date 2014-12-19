@@ -77,6 +77,14 @@ class compassion_child(orm.Model):
                 res[child.id] = project_ids[0]
         return res
 
+    def _get_child_from_project(project_obj, cr, uid, ids, context=None):
+        self = project_obj.pool.get('compassion.child')
+        child_ids = list()
+        for project in project_obj.browse(cr, uid, ids, context):
+            child_ids += self.search(
+                cr, uid, [('code', 'like', project.code)], context=context)
+        return child_ids
+
     _columns = {
         ######################################################################
         #                      1. General Information                        #
@@ -86,7 +94,15 @@ class compassion_child(orm.Model):
         'code': fields.char(_("Child code"), size=128, required=True),
         'project_id': fields.function(
             _get_project, type='many2one', obj='compassion.project',
-            string=_('Project'), store=True),
+            string=_('Project'), store={
+                'compassion.project': (
+                    _get_child_from_project,
+                    ['code'],
+                    10),
+                'compassion.child': (
+                    lambda self, cr, uid, ids, context=None: ids,
+                    ['code'],
+                    10)}),
         'unique_id': fields.integer(_("Unique ID")),
         'birthdate': fields.date(_("Birthdate")),
         'type': fields.selection(
