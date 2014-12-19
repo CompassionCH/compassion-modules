@@ -145,6 +145,29 @@ class event_compassion(orm.Model):
         })
         return new_id
 
+    def write(self, cr, uid, ids, vals, context=None):
+        """ Push values to linked project. """
+        super(event_compassion, self).write(cr, uid, ids, vals, context)
+        project_vals = dict()
+        ctx = context.copy()
+        if 'type' in vals:
+            project_vals.update({'project_type': vals['type']})
+            ctx['from_event'] = True
+        if 'user_id' in vals:
+            project_vals.update({'user_id': vals['user_id']})
+        if 'partner_id' in vals:
+            project_vals.update({'partner_id': vals['partner_id']})
+        if project_vals:
+            for event in self.browse(cr, uid, ids, context):
+                if 'type' in vals:
+                    # Change parent of analytic account
+                    project_vals.update({
+                        'parent_id': self._find_parent_analytic(
+                            cr, uid, vals['type'], event.year, context)})
+                event.project_id.write(project_vals, context=ctx)
+
+        return True
+
     def create_from_gp(self, cr, uid, vals, context=None):
         if context is None:
             context = {}
@@ -155,25 +178,10 @@ class event_compassion(orm.Model):
     def _create_project(self, cr, uid, event, context=None):
         """ Creates a new project based on the event.
         """
-        year = event.start_date[2:4]
         if context is None:
             context = {}
         ctx = context.copy()
         ctx['lang'] = 'en_US'
-        analytics_obj = self.pool.get('account.analytic.account')
-        categ_id = analytics_obj.search(
-            cr, uid, [('name', 'ilike', event.type)], context=ctx)[0]
-        acc_ids = analytics_obj.search(
-            cr, uid, [('name', '=', year), ('parent_id', '=', categ_id)],
-            context=ctx)
-        if not acc_ids:
-            # The category for this year does not yet exist
-            acc_ids = [analytics_obj.create(cr, uid, {
-                'name': year,
-                'type': 'view',
-                'code': 'AA' + event.type[:2].upper() + year,
-                'parent_id': categ_id
-            }, context)]
         members = self.pool.get('res.users').search(
             cr, uid,
             [('partner_id', 'in', [p.id for p in event.staff_ids])],
@@ -187,12 +195,30 @@ class event_compassion(orm.Model):
             'members': [(6, 0, members)],   # many2many field
             'date_start': event.start_date,
             'date': event.end_date,
-            'parent_id': acc_ids[0],
+            'parent_id': self._find_parent_analytic(cr, uid, event.type,
+                                                    event.year, ctx),
             'project_type': event.type,
             'state': 'open' if ctx.get('use_tasks', True) else 'close',
         }, ctx)
 
         return project_id
+
+    def _find_parent_analytic(self, cr, uid, event_type, year, context=None):
+        analytics_obj = self.pool.get('account.analytic.account')
+        categ_id = analytics_obj.search(
+            cr, uid, [('name', 'ilike', event_type)], context=context)[0]
+        acc_ids = analytics_obj.search(
+            cr, uid, [('name', '=', year), ('parent_id', '=', categ_id)],
+            context=context)
+        if not acc_ids:
+            # The category for this year does not yet exist
+            acc_ids = [analytics_obj.create(cr, uid, {
+                'name': year,
+                'type': 'view',
+                'code': 'AA' + event_type[:2].upper() + year,
+                'parent_id': categ_id
+            }, context)]
+        return acc_ids[0]
 
     def show_tasks(self, cr, uid, ids, context=None):
         event = self.browse(cr, uid, ids[0], context)
