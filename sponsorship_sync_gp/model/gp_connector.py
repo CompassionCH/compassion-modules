@@ -182,8 +182,12 @@ class GPConnect(mysql_connector):
         next_invoice_date = datetime.strptime(contract.next_invoice_date,
                                               DF).date()
         # Month corresponds to number of months already paid
-        month = next_invoice_date.month - \
-            1 if next_invoice_date.day <= 15 else next_invoice_date.month
+        month = next_invoice_date.month
+        today = date.today()
+        if next_invoice_date.day <= 15:
+            month -= 1
+        if month == 0 and today.month == 12:
+            month = 12
         date_start = next_invoice_date.replace(day=1)
         return self.query(
             "UPDATE Poles SET mois=%s, datedebut=%s WHERE id_erp=%s",
@@ -267,7 +271,7 @@ class GPConnect(mysql_connector):
             'NUMVERS': invoice_line.invoice_id.id,
             'CODESPE': codespe,
             'MONTANT': invoice_line.price_subtotal,
-            'DATE': payment_date,
+            'DATE': invoice_line.invoice_id.date_invoice,
             'TYPEVERS': payment_term,
             'JNLVERS': product.property_account_income.code,
             'CADEAU': cadeau,

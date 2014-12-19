@@ -16,3 +16,4 @@ from . import res_partner
 from . import product
 from . import move_line
 from . import contract_origin
+from . import account_banking_mandate

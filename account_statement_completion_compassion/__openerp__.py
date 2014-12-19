@@ -29,7 +29,7 @@
 
 {
     "name": "Account Statement Completion Rules for Compassion CH",
-    "version": "0.8",
+    "version": "1.1",
     "author": "Emanuel Cino",
     "category": "Finance",
     "website": "http://www.compassion.ch",

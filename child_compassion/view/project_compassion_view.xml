@@ -100,6 +100,19 @@
                 </tree>
             </field>
         </record>
+        
+        <record id="view_compassion_project_filter" model="ir.ui.view">
+            <field name="name">compassion.project.select</field>
+            <field name="model">compassion.project</field>
+            <field name="arch" type="xml">
+                <search string="Search project">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="status"/>
+                    <filter name="suspended" string="Suspended" domain="[('suspension','in',('suspended','fund-suspended'))]"/>
+                </search>
+            </field>
+        </record>
 
         <record id="open_view_project_tree" model="ir.actions.act_window">
             <field name="name">projects</field>

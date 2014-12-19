@@ -9,7 +9,7 @@
 			<field name="arch" type="xml">
 				<data>
 					<tree string="Contracts" position="attributes">
-						<attribute name="colors">blue:state == 'draft';green:state == 'waiting';black:state == 'active';gray:state in ('terminated','cancelled')</attribute>
+						<attribute name="colors">blue:state == 'draft';red:state == 'mandate';green:state == 'waiting';black:state == 'active';gray:state in ('terminated','cancelled')</attribute>
 						<attribute name="string">Sponsorships</attribute>
 					</tree>
 					<field name="partner_id" position="after">
@@ -43,9 +43,14 @@
 
                 <!-- Replace terminate button to call the end_sponsorship wizard -->
                 <button name="contract_terminated" position="replace">
-                     <button name="%(action_end_sponsorship)d" states="waiting,active" type="action" string="Terminate" class="oe_highlight" />
+                     <button name="%(action_end_sponsorship)d" states="waiting,mandate,active" type="action" string="Terminate" class="oe_highlight" />
                 </button>
-                
+
+                <!-- Hide reference -->
+                <field name="reference" position="replace">
+                    <field name="name"/>
+                </field>
+
 				<!-- Redefine the top group view (lot of changes) -->
                 <xpath expr="//sheet/group[1]" position="replace">
                     <group>
@@ -62,7 +67,7 @@
                             <field name="start_date" string="Creation date"/>
                             <field name="activation_date" states="active,terminated,cancelled" />
                             <field name="end_date" />
-                            <field name="next_invoice_date" states="draft,waiting,active" />
+                            <field name="next_invoice_date" states="draft,waiting,mandate,active" />
                         </group>
                         
                         <group>
@@ -70,7 +75,7 @@
                             <field name="channel"/>
                         </group>
                         <group>
-                            <field name="child_id" domain="[('state', 'not in', ('F', 'P'))]"
+                            <field name="child_id" domain="[('state', 'not in', ('F', 'P')), ('project_id.suspension', 'not in', ('suspended','fund-suspended'))]"
                                    options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
                             <field name="end_reason" states="terminated,cancelled"/>
                             <field name="num_pol_ga" invisible="1"/>
@@ -80,8 +85,7 @@
                 
                 <!-- Track when sponsorship products are added in contract -->
                 <field name="contract_line_ids" position="replace">
-                        <field name="contract_line_ids" widget="one2many_list"
-                               on_change="on_change_lines(contract_line_ids, child_id)"/>
+                        <field name="contract_line_ids" widget="one2many_list"/>
                 </field>
 			</field>
 		</record>
@@ -106,10 +110,11 @@
                         </attribute>
                     </field>
                     <xpath expr="//filter[@name='draft']" position="after">
-                        <filter name="waiting" string="Waiting" domain="[('state','=','waiting')]" help="Waiting Payment Sponsorships"/>
+                        <filter name="waiting" string="Waiting" domain="[('state','=','waiting')]"/>
+                        <filter name="mandate" string="Waiting Mandate" domain="[('state','=','mandate')]"/>
                     </xpath>
                     <xpath expr="//filter[@name='terminated']" position="after">
-                        <filter name="cancelled" string="Cancelled" domain="[('state','=','cancelled')]" help="Cancelled Sponsorships"/>
+                        <filter name="cancelled" string="Cancelled" domain="[('state','=','cancelled')]"/>
                     </xpath>
 				</data>
 			</field>

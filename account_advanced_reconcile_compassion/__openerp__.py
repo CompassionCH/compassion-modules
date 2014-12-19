@@ -38,7 +38,7 @@
     current invoice (last invoice that is not in future).
     Then it reconciles the other invoices from last invoice to first.
     """,
-    'version': '1.0',
+    'version': '1.1',
     'author': 'Compassion CH',
     'category': 'Finance',
     'website': 'http://www.compassion.ch',

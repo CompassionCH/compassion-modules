@@ -35,7 +35,7 @@ class recurring_contract(orm.Model):
     def _get_contract_from_invoice(invoice_obj, cr, uid, invoice_ids,
                                    context=None):
         self = invoice_obj.pool.get('recurring.contract')
-        res = []
+        res = set()
         # Read data in english
         if context is None:
             context = {}
@@ -49,17 +49,15 @@ class recurring_contract(orm.Model):
                                      if move_line.credit > 0] or [0])
                 for invoice_line in invoice.invoice_line:
                     contract = invoice_line.contract_id
-                    if contract.state == 'waiting' and last_pay_date:
+                    if contract.id not in res and (contract.state == 'waiting'
+                                                   and last_pay_date):
                         # Activate the contract and set the
                         # activation_date
-                        res.append(invoice_line.contract_id.id)
-                        self.write(
-                            cr, uid, contract.id, {
-                                'activation_date':
-                                    datetime.today().strftime(DF)},
-                            context=context)
+                        res.add(contract.id)
+                        contract.write({
+                            'activation_date': datetime.today().strftime(DF)})
 
-        return res
+        return list(res)
 
     def _on_contract_active(self, cr, uid, ids, context=None):
         """ Hook for doing something when contract is activated.
@@ -97,7 +95,7 @@ class recurring_contract(orm.Model):
 
     def _is_fully_managed(self, cr, uid, ids, field_name, arg, context):
         """Tells if the correspondent and the payer is the same person."""
-        res = {}
+        res = dict()
         for contract in self.browse(cr, uid, ids, context=context):
             res[contract.id] = contract.partner_id == contract.correspondant_id
         return res
@@ -132,6 +130,19 @@ class recurring_contract(orm.Model):
             ('payment', _("Payment")),
         ]
 
+    def _has_mandate(self, cr, uid, ids, field_name, args, context=None):
+        # Search for an existing valid mandate
+        res = dict()
+        for contract in self.browse(cr, uid, ids, context):
+            count = self.pool.get('account.banking.mandate').search(cr, uid, [
+                ('partner_id', '=', contract.partner_id.id),
+                ('state', '=', 'valid')], count=True, context=context)
+            res[contract.id] = bool(count)
+        return res
+
+    def _name_get(self, cr, uid, ids, field_name, args, context=None):
+        return {c[0]: c[1] for c in self.name_get(cr, uid, ids, context)}
+
     ###########################
     #        New Fields       #
     ###########################
@@ -158,9 +169,10 @@ class recurring_contract(orm.Model):
             'res.partner', _('Correspondant'), required=True),
         'activation_date': fields.date(
             _('Activation date'), readonly=True),
-        # Add a waiting state
+        # Add a waiting and waiting mandate states
         'state': fields.selection([
             ('draft', _('Draft')),
+            ('mandate', _('Waiting Mandate')),
             ('waiting', _('Waiting Payment')),
             ('active', _('Active')),
             ('terminated', _('Terminated')),
@@ -182,7 +194,7 @@ class recurring_contract(orm.Model):
                 'account.invoice': (_get_contract_from_invoice, ['state'], 50)
             },
             help="It indicates that the first invoice has been paid and the "
-                 "contract is active."),
+                 "contract was activated."),
         'fully_managed': fields.function(
             _is_fully_managed, type="boolean", store=True),
         # Field used for identifying gifts from sponsor (because of bad GP)
@@ -195,15 +207,17 @@ class recurring_contract(orm.Model):
         'end_reason': fields.selection(get_ending_reasons, _('End reason'),
                                        select=True),
         'origin_id': fields.many2one('recurring.contract.origin', _("Origin"),
-                                     required=True, readonly=True,
-                                     states={'draft': [('readonly', False)]},
-                                     ondelete='restrict'),
+                                     required=True, ondelete='restrict',
+                                     track_visibility='onchange'),
         'channel': fields.selection(_get_channels, string=_("Channel"),
                                     required=True, readonly=True,
                                     states={'draft': [('readonly', False)]}),
         'parent_id': fields.many2one(
             'recurring.contract', _('Previous sponsorship'), readonly=True,
             states={'draft': [('readonly', False)]}),
+        'has_mandate': fields.function(
+            _has_mandate, type='boolean', string='Has mandate'),
+        'name': fields.function(_name_get, type='char')
     }
 
     def _get_standard_lines(self, cr, uid, context=None):
@@ -264,62 +278,61 @@ class recurring_contract(orm.Model):
         })
         return res
 
-    def on_change_lines(self, cr, uid, ids, selected_lines, child_id,
-                        context=None):
-        """ Warn if a sponsorship is selected with no child defined.
-        selected_lines : list([index, False (?), line_values (dict)])
-        """
-        res = {}
-        if not child_id:
-            for line in selected_lines:
-                if len(line) > 2 and line[2].get('product_id', 0) > 0:
-                    product = self.pool.get('product.product').browse(
-                        cr, uid, line[2]['product_id'], context)
-                    if product.name == _('Sponsorship'):
-                        res['warning'] = {
-                            'title': _("Please select a child"),
-                            'message': _("You should select a child if you "
-                                         "make a new sponsorship!")
-                        }
-        return res
-
     def on_change_group_id(self, cr, uid, ids, group_id, context=None):
         """ Compute next invoice_date """
-        res = {}
-        today = datetime.today()
+        res = dict()
+        current_date = datetime.today()
+        if ids:
+            contract = self.browse(cr, uid, ids[0], context)
+            if contract.state not in (
+                    'draft', 'mandate') and contract.next_invoice_date:
+                current_date = datetime.strptime(contract.next_invoice_date,
+                                                 DF)
         if group_id:
             contract_group = self.pool.get('recurring.contract.group').browse(
                 cr, uid, group_id, context)
             if contract_group.next_invoice_date:
                 next_group_date = datetime.strptime(
                     contract_group.next_invoice_date, DF)
-                next_invoice_date = today.replace(day=next_group_date.day)
+                next_invoice_date = current_date.replace(
+                    day=next_group_date.day)
             else:
-                next_invoice_date = today.replace(day=1)
+                next_invoice_date = current_date.replace(day=1)
             payment_term = contract_group.payment_term_id.name
         else:
-            next_invoice_date = today.replace(day=1)
+            next_invoice_date = current_date.replace(day=1)
             payment_term = ''
 
-        if today.day > 15 or payment_term in ('LSV', 'Postfinance'):
+        if current_date.day > 15 or payment_term in ('LSV', 'Postfinance'):
             next_invoice_date = next_invoice_date + relativedelta(months=+1)
         res['value'] = {'next_invoice_date': next_invoice_date.strftime(DF)}
         return res
 
     def contract_waiting(self, cr, uid, ids, context=None):
-        for contract in self.browse(cr, uid, ids, context):
+        for contract in self.browse(cr, uid, ids, {'lang': 'en_US'}):
             payment_term = contract.group_id.payment_term_id.name
             if 'LSV' in payment_term or 'Postfinance' in payment_term:
-                # Check that a valid mandate exists
-                mandate_obj = self.pool.get('account.banking.mandate')
-                mandate_ids = mandate_obj.search(cr, uid, [
-                    ('partner_id', '=', contract.partner_id.id),
-                    ('state', '=', 'valid')], context)
-                if not mandate_ids:
-                    raise orm.except_orm(
-                        _("No valid mandate"),
-                        _("You must first have a mandate before validating "
-                          "a LSV/DD contract."))
+                # Recompute next_invoice_date
+                today = datetime.today()
+                next_invoice_date = datetime.strptime(
+                    contract.next_invoice_date, DF).replace(month=today.month,
+                                                            year=today.year)
+                if today.day > 15 and next_invoice_date.day < 15:
+                    next_invoice_date = next_invoice_date + relativedelta(
+                        months=+1)
+                contract.write({
+                    'next_invoice_date': next_invoice_date.strftime(DF)})
+
+            # Check that a child is selected for Sponsorship product
+            if not contract.child_id:
+                for line in contract.contract_line_ids:
+                    if line.product_id.name == 'Sponsorship' or \
+                            'LDP' in line.product_id.name:
+                        raise orm.except_orm(
+                            _("Please select a child"),
+                            _("You should select a child if you "
+                              "make a new sponsorship!"))
+
         self.write(cr, uid, ids, {'state': 'waiting'}, context)
         return True
 
@@ -358,8 +371,39 @@ class recurring_contract(orm.Model):
                 contract.child_id.write({'sponsor_id': False})
         return True
 
+    def contract_waiting_mandate(self, cr, uid, ids, context=None):
+        for contract in self.browse(cr, uid, ids, context):
+            # Check that a child is selected for Sponsorship product
+            if not contract.child_id:
+                for line in contract.contract_line_ids:
+                    if line.product_id.name == 'Sponsorship' or \
+                            'LDP' in line.product_id.name:
+                        raise orm.except_orm(
+                            _("Please select a child"),
+                            _("You should select a child if you "
+                              "make a new sponsorship!"))
+        self.write(cr, uid, ids, {'state': 'mandate'}, context)
+        return True
+
+    def reset_open_invoices(self, cr, uid, ids, context=None):
+        """Clean the open invoices in order to generate new invoices.
+        This can be useful if contract was updated when active."""
+        nb_invoices_canceled = super(recurring_contract, self).clean_invoices(
+            cr, uid, ids, context)
+        if nb_invoices_canceled:
+            for contract in self.browse(cr, uid, ids, context):
+                # Rewind the next_invoice_date for the contracts
+                next_invoice_date = datetime.strptime(
+                    contract.next_invoice_date, DF)
+                next_invoice_date = next_invoice_date + relativedelta(
+                    months=-nb_invoices_canceled)
+                super(recurring_contract, self).write(cr, uid, contract.id, {
+                    'next_invoice_date': next_invoice_date.strftime(DF)
+                    }, context)
+
     def copy(self, cr, uid, id, default=None, context=None):
-        default = default or {}
+        if not default:
+            default = dict()
         num_pol_ga = self.browse(cr, uid, id, context=context).num_pol_ga
         default.update({
             'child_id': False,
@@ -386,17 +430,18 @@ class recurring_contract(orm.Model):
         return
 
     def write(self, cr, uid, ids, vals, context=None):
-        """ Prevent to change next_invoice_date in the past.
-            Link/unlink child to sponsor. """
+        """ Perform various checks when a contract is modified. """
+        # Prevent to change next_invoice_date in the past for active contract.
         if 'next_invoice_date' in vals:
             new_date = vals['next_invoice_date']
             for contract in self.browse(cr, uid, ids, context=context):
-                if contract.state != 'draft' \
+                if contract.state not in ('draft', 'mandate') \
                    and new_date < contract.next_invoice_date:
                     raise orm.except_orm(_('Warning'),
                                          _('You cannot rewind the next '
                                            'invoice date.'))
-        # Happens only in draft state
+
+        # Link/unlink child to sponsor
         if 'child_id' in vals:
             child_id = vals['child_id']
             for contract in self.browse(cr, uid, ids, context):
@@ -410,8 +455,34 @@ class recurring_contract(orm.Model):
                         'sponsor_id': vals.get('partner_id') or
                         contract.partner_id.id}, context)
 
-        return super(recurring_contract, self).write(cr, uid, ids, vals,
-                                                     context=context)
+        # Change state of contract if payment is changed to/from LSV or DD
+        if 'group_id' in vals:
+            wf_service = netsvc.LocalService('workflow')
+            group = self.pool.get('recurring.contract.group').browse(
+                cr, uid, vals['group_id'], context)
+            payment_name = group.payment_term_id.name
+            if 'LSV' in payment_name or 'Postfinance' in payment_name:
+                for id in ids:
+                    wf_service.trg_validate(
+                        uid, 'recurring.contract', id,
+                        'will_pay_by_lsv_dd', cr)
+            else:
+                # Check if old payment_term was LSV or DD
+                for contract in self.browse(cr, uid, ids, context=context):
+                    payment_name = contract.group_id.payment_term_id.name
+                    if 'LSV' in payment_name or 'Postfinance' in payment_name:
+                        wf_service.trg_validate(
+                            uid, 'recurring.contract', contract.id,
+                            'mandate_validated', cr)
+
+        res = super(recurring_contract, self).write(cr, uid, ids, vals,
+                                                    context=context)
+
+        # Cancel open invoices and generate them again
+        if 'group_id' in vals or 'contract_line_ids' in vals:
+            self.reset_open_invoices(cr, uid, ids, context)
+
+        return res
 
     def open_contract(self, cr, uid, ids, context=None):
         """ Used to bypass opening a contract in popup mode from
@@ -494,11 +565,13 @@ class recurring_contract(orm.Model):
         return True
 
     def create(self, cr, uid, vals, context=None):
-        """ Link child to sponsor. """
-        if vals.get('child_id', False):
+        """Link child to sponsor.
+        """
+        child_id = vals.get('child_id')
+        if child_id:
             self.pool.get('compassion.child').write(
-                cr, uid, int(vals['child_id']),
-                {'sponsor_id': vals['partner_id']}, context)
+                cr, uid, child_id, {
+                    'sponsor_id': vals['partner_id']}, context)
         return super(recurring_contract, self).create(cr, uid, vals, context)
 
     ##############################
@@ -577,3 +650,39 @@ class account_invoice(orm.Model):
 
 class contract_line(orm.Model):
     _inherit = 'recurring.contract.line'
+
+
+class account_move(orm.Model):
+    _inherit = 'account.move'
+
+
+class account_move_line(orm.Model):
+    _inherit = 'account.move.line'
+
+
+class payment_line(orm.Model):
+    _inherit = 'payment.line'
+
+
+class account_journal(orm.Model):
+    _inherit = 'account.journal'
+
+
+class account_asset_depreciation_line(orm.Model):
+    _inherit = 'account.asset.depreciation.line'
+
+
+class account_analytic_plan_instance(orm.Model):
+    _inherit = 'account.analytic.plan.instance'
+
+
+class account_analytic_plan_instance_line(orm.Model):
+    _inherit = 'account.analytic.plan.instance.line'
+
+
+class account_period(orm.Model):
+    _inherit = 'account.period'
+
+
+class account_account_type(orm.Model):
+    _inherit = 'account.account.type'

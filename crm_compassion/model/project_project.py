@@ -45,7 +45,9 @@ class project_project(orm.Model):
                   "an associated Project for the event."))
         id = super(project_project, self).create(cr, uid, vals, context)
         project = self.browse(cr, uid, id, context)
-        project.analytic_account_id.write({'use_timesheets': True})
+        project.analytic_account_id.write({
+            'use_timesheets': True,
+            'manager_id': project.user_id.id})
         if type == 'marketing':
             self.pool.get('recurring.contract.origin').create(
                 cr, uid, {
@@ -54,3 +56,17 @@ class project_project(orm.Model):
                     'analytic_id': project.analytic_account_id.id,
                 }, context)
         return id
+
+    def write(self, cr, uid, ids, vals, context=None):
+        super(project_project, self).write(cr, uid, ids, vals, context)
+        if 'project_type' in vals and not context.get('from_event'):
+            raise orm.except_orm(
+                _("Type cannot be changed"),
+                _("You cannot change the type of the project. If the project "
+                  "is linked to an event, change the type of the event."))
+        if 'user_id' in vals:
+            for project in self.browse(cr, uid, ids, context):
+                project.analytic_account_id.write({
+                    'manager_id': vals['user_id']
+                })
+        return True

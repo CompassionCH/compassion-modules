@@ -26,8 +26,7 @@ class generate_gift_wizard(orm.TransientModel):
     _columns = {
         'amount': fields.float(_("Gift Amount"), required=True),
         'product_id': fields.many2one(
-            'product.product', _("Gift Type"), required=True,
-            domain=[('name', 'in', GIFT_TYPES)]),
+            'product.product', _("Gift Type"), required=True),
         'invoice_date': fields.date(_("Invoice date")),
         'description': fields.char(_("Additional comments"), size=200),
     }
@@ -136,3 +135,18 @@ class generate_gift_wizard(orm.TransientModel):
 
         if len(bvr_reference) == 26:
             return mod10r(bvr_reference)
+
+    def fields_view_get(self, cr, user, view_id=None, view_type='form',
+                        context=None, toolbar=False, submenu=False):
+        """ Dynamically compute the domain of field product_id to return
+        only Gifts products.
+        """
+        res = super(generate_gift_wizard, self).fields_view_get(
+            cr, user, view_id, view_type, context, toolbar, submenu)
+        if view_type == 'form':
+            gifts_ids = self.pool.get('product.product').search(
+                cr, user, [('name', 'in', GIFT_TYPES)],
+                context={'lang': 'en_US'})
+            res['fields']['product_id']['domain'] = [('id', 'in', gifts_ids)]
+
+        return res

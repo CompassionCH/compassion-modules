@@ -31,7 +31,7 @@
                     <group>
                         <field name="partner_id" attrs="{'required': [('type', '=', 'partner')]}"
                                options="{'create': false, 'm2o_dialog': false}"/>
-                        <field name="analytic_id" attrs="{'invisible': [('type', '!=', 'marketing')],
+                        <field name="analytic_id" attrs="{'invisible': [('type', 'not in', ('marketing','partner'))],
                                                           'required': [('type', '=', 'marketing')]}"
                                domain="[('parent_id.name','=','Campaign')]"/>
                         <field name="country_id" attrs="{'invisible': [('type', '!=', 'transfer')],

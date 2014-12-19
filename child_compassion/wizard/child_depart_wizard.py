@@ -59,6 +59,8 @@ class end_sponsorship_wizard(orm.TransientModel):
         else:
             vals['gp_exit_reason'] = wizard.gp_exit_reason
 
+        if child.state == 'I':
+            child.child_remove_from_typo3()
         child.write(vals)
 
         return True

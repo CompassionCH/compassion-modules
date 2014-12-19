@@ -14,6 +14,7 @@ import time
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools import mod10r
+from openerp import netsvc
 
 
 class contract_group(orm.Model):
@@ -186,3 +187,32 @@ class contract_group(orm.Model):
 
     def _get_gen_states(self):
         return ['waiting', 'active']
+
+    def write(self, cr, uid, ids, vals, context=None):
+        """If sponsor changes his payment term to LSV or DD,
+        change the state of related contracts so that we wait
+        for a valid mandate before generating new invoices.
+        """
+        contract_ids = list()
+        if 'payment_term_id' in vals:
+            payment_term = self.pool.get('account.payment.term').browse(
+                cr, uid, vals['payment_term_id'], context)
+            payment_name = payment_term.name
+            wf_service = netsvc.LocalService('workflow')
+            for group in self.browse(cr, uid, ids, context):
+                old_term = group.payment_term_id.name
+                for contract in group.contract_ids:
+                    contract_ids.append(contract.id)
+                    if 'LSV' in payment_name or 'Postfinance' in payment_name:
+                        wf_service.trg_validate(
+                            uid, 'recurring.contract', contract.id,
+                            'will_pay_by_lsv_dd', cr)
+                    elif 'LSV' in old_term or 'Postfinance' in old_term:
+                        wf_service.trg_validate(
+                            uid, 'recurring.contract', contract.id,
+                            'mandate_validated', cr)
+        res = super(contract_group, self).write(cr, uid, ids, vals, context)
+        if contract_ids:
+            self.pool.get('recurring.contract').reset_open_invoices(
+                cr, uid, contract_ids, context)
+        return res

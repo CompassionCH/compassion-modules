@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion CH Message Center',
-    'version': '0.5.0',
+    'version': '1.0',
     'category': 'Other',
     'description': """
         Message Center that offers a queue of messages that have to be sent
