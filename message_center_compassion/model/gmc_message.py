@@ -47,7 +47,7 @@ class gmc_message_pool(orm.Model):
     _name = 'gmc.message.pool'
 
     _order = 'date desc'
-    
+
     def _get_object_id(self, cr, uid, ids, field_name, args, context=None):
         res = dict()
         model_mapping = {
