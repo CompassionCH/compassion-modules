@@ -83,9 +83,9 @@
                                         <field name="social_needs" />
                                         <field name="spiritual_needs" />
                                     </group>
+                                </group>
                                 <group>
                                     <field name="age_group_ids" />
-                                </group>
                                 </group>
                             </page>
                         </notebook>
