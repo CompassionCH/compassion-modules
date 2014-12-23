@@ -104,6 +104,10 @@ class project_description_wizard(orm.TransientModel):
     }
 
     def generate_needs_descriptions(self, cr, uid, ids, context=None):
+        """ This method generates the last part, called "needs",
+            of the project description.
+            But if this part already exists, it will retrieve it.
+        """
         project_obj = self.pool.get('compassion.project')
         project = project_obj.browse(cr, uid, context.get('active_id'),
                                      context)
@@ -116,32 +120,42 @@ class project_description_wizard(orm.TransientModel):
         remember_needs_en = (project_description_wizard._get_needs_en(
                              cr, uid, project, context))
         remember_needs_fr = (Project_description_fr._get_needs_pattern_fr(
-                             cr, uid, context))
+                             cr, uid, project, context))
         remember_needs_de = (Project_description_de._get_needs_pattern_de(
-                             cr, uid, context))
+                             cr, uid, project, context))
         remember_needs_it = (Project_description_it._get_needs_pattern_it(
-                             cr, uid, context))
+                             cr, uid, project, context))
         keep_needs_en = keep_needs_fr = keep_needs_de = keep_needs_it = True
 
         if project.description_en:
-            string = project.description_en
-            match = re.search('per month.?\s?', string)
-            remember_needs_en = string[match.end():]
+            remember_needs_en = self._get_needs_en(cr, uid, project, context)
 
         if project.description_fr:
             string = project.description_fr
             match = re.search('par mois.?\s?', string)
-            remember_needs_fr = string[match.end():]
+            try:
+                remember_needs_fr = string[match.end():]
+            except AttributeError:
+                match = re.search(u'Cette communauté.?', string)
+                remember_needs_fr = string[match.start():]
 
         if project.description_de:
             string = project.description_de
             match = re.search('pro Monat.?\s?', string)
-            remember_needs_de = string[match.end():]
+            try:
+                remember_needs_de = string[match.end():]
+            except AttributeError:
+                match = re.search(u'Ihre Patenschaft.?', string)
+                remember_needs_de = string[match.start():]
 
         if project.description_it:
             string = project.description_it
             match = re.search('mensile di.+?.\s', string)
-            remember_needs_it = string[match.end():]
+            try:
+                remember_needs_it = string[match.end():]
+            except AttributeError:
+                match = re.search(u'Questa comunitá.?', string)
+                remember_needs_it = string[match.start():]
 
         self.write(cr, uid, ids, {
             'state': 'needs',
@@ -167,7 +181,6 @@ class project_description_wizard(orm.TransientModel):
             }
 
     def generate_descriptions(self, cr, uid, ids, context=None):
-        project_id = ids
         project_obj = self.pool.get('compassion.project')
         project = project_obj.browse(cr, uid, context.get('active_id'),
                                      context)
@@ -186,19 +199,19 @@ class project_description_wizard(orm.TransientModel):
 
         if not project.description_fr:
             complete_desc_fr = (Project_description_fr.gen_fr_translation(
-                                cr, uid, project_id, project, context) +
+                                cr, uid, project, context) +
                                 wizard.needs_desc_fr
                                 if wizard.keep_needs_desc_fr else "")
 
         if not project.description_de:
             complete_desc_de = (Project_description_de.gen_de_translation(
-                                cr, uid, project_id, project, context) +
+                                cr, uid, project, context) +
                                 wizard.needs_desc_de
                                 if wizard.keep_needs_desc_de else "")
 
         if not project.description_it:
             complete_desc_it = (Project_description_it.gen_it_translation(
-                                cr, uid, project_id, project, context) +
+                                cr, uid, project, context) +
                                 wizard.needs_desc_it
                                 if wizard.keep_needs_desc_it else "")
 
@@ -247,7 +260,6 @@ class project_description_wizard(orm.TransientModel):
                                  Please select one or click cancel '
                                    'to abort current task.'))
         wizard.project_id.write(vals)
-
         return {
             'type': 'ir.actions.client',
             'tag': 'reload',

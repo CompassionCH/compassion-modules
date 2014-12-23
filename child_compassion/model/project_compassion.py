@@ -186,8 +186,6 @@ class compassion_project(orm.Model):
         if not project:
             raise orm.except_orm('ObjectError', _('No valid project id '
                                                   'given !'))
-        project = project[0]
-
         return {
             'name': _('Description generation'),
             'type': 'ir.actions.act_window',

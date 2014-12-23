@@ -14,17 +14,17 @@ class Project_description_it:
 
     @classmethod
     def gen_it_translation(
-            cls, cr, uid, project_id, project, context=None):
+            cls, cr, uid, project, context=None):
         desc_it = cls._gen_intro_it(
-            cr, uid, project_id, project, context)
+            cr, uid, project, context)
         desc_it += cls._gen_build_mat_it(
-            cr, uid, project_id, project, context)
+            cr, uid, project, context)
         desc_it += cls._gen_primary_diet_it(
-            cr, uid, project_id, project, context)
+            cr, uid, project, context)
         desc_it += cls._gen_health_prob_it(
-            cr, uid, project_id, project, context)
+            cr, uid, project, context)
         desc_it += cls._gen_primary_occup_it(
-            cr, uid, project_id, project, context)
+            cr, uid, project, context)
 
         return desc_it
 
@@ -38,7 +38,7 @@ class Project_description_it:
         return string
 
     @classmethod
-    def _gen_intro_it(cls, cr, uid, project_id, project, context=None):
+    def _gen_intro_it(cls, cr, uid, project, context=None):
         """ Generate the project name, the localization and infos
             about the community
         """
@@ -54,7 +54,7 @@ class Project_description_it:
         return string
 
     @classmethod
-    def _gen_build_mat_it(cls, cr, uid, project_id, project, context=None):
+    def _gen_build_mat_it(cls, cr, uid, project, context=None):
         """ Generate house build materials, there are no specificities
             in this part
         """
@@ -74,7 +74,7 @@ class Project_description_it:
         return string
 
     @classmethod
-    def _gen_primary_diet_it(cls, cr, uid, project_id, project, context=None):
+    def _gen_primary_diet_it(cls, cr, uid, project, context=None):
         """ Generate spoken languages(s) and primary diet, there are
             no specificities in this part
         """
@@ -92,33 +92,34 @@ class Project_description_it:
         return string
 
     @classmethod
-    def _gen_health_prob_it(cls, cr, uid, project_id, project, context=None):
+    def _gen_health_prob_it(cls, cr, uid, project, context=None):
         """ Generate health problemes of this region, there
             are no specificities in this part
         """
         health_prob = [prob.value_it if prob.value_it else prob.value_en
                        for prob in project.health_problems_ids]
 
-        string = (u"%s piú comuni in questa zona %s. " % (u"Le malattie"
-                  if len(health_prob) > 1 else u"La malattia", u"sono " +
-                  cls._gen_list_string(health_prob, ', ', ' e ')
-                  if len(health_prob) > 1 else u"è " + health_prob[0]))
+        sing_plur_subj = (u"Le malattie"
+                          if len(health_prob) > 1 else u"La malattia")
+
+        sing_plur_verb = (u"sono " +
+                          cls._gen_list_string(health_prob, ', ', ' e ')
+                          if len(health_prob) > 1 else u"è " + health_prob[0])
+
+        string = (u"%s piú comuni in questa zona %s. " % (sing_plur_subj,
+                  sing_plur_verb))
 
         return string
 
     @classmethod
-    def _gen_primary_occup_it(cls, cr, uid, project_id, project, context=None):
+    def _gen_primary_occup_it(cls, cr, uid, project, context=None):
         """ Generate primary occupation and monthly income, check if need to
             round the income
         """
         primary_occup = [occup.value_it if occup.value_it else occup.value_en
                          for occup in project.primary_occupation_ids]
 
-        if project.monthly_income % 1 > 0.5:
-            monthly_income = (project.monthly_income +
-                              (1 - project.monthly_income % 1))
-
-        monthly_income = int(project.monthly_income)
+        monthly_income = int(round(project.monthly_income))
         string = (u"La maggior parte degli adulti é disoccupata ma alcuni "
                   u"svolgono %s, con un guadagno mensile di $%s. " % (
                       primary_occup[0], monthly_income))
@@ -126,11 +127,12 @@ class Project_description_it:
         return string
 
     @classmethod
-    def _get_needs_pattern_it(cls, cr, uid, context=None):
+    def _get_needs_pattern_it(cls, cr, uid, project, context=None):
         """ Create the needs' description pattern to fill by hand
         """
         string = (u"Questa comunitá ha bisogno di (...). Grazie al suo "
-                  u"sostegno il personale del (Centro...) di (...) potrá "
-                  u"offrire al bambino un'educazione cristiana, (...).")
+                  u"sostegno il personale del %s di (...) potrá "
+                  u"offrire al bambino un'educazione cristiana, (...).") % (
+                      project.name)
 
         return string

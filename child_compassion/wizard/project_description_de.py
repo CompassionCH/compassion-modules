@@ -14,17 +14,17 @@ class Project_description_de:
 
     @classmethod
     def gen_de_translation(
-            cls, cr, uid, project_id, project, context=None):
+            cls, cr, uid, project, context=None):
         desc_de = cls._gen_intro_de(
-            cr, uid, project_id, project, context)
+            cr, uid, project, context)
         desc_de += cls._gen_build_mat_de(
-            cr, uid, project_id, project, context)
+            cr, uid, project, context)
         desc_de += cls._gen_primary_diet_de(
-            cr, uid, project_id, project, context)
+            cr, uid, project, context)
         desc_de += cls._gen_health_prob_de(
-            cr, uid, project_id, project, context)
+            cr, uid, project, context)
         desc_de += cls._gen_primary_occup_de(
-            cr, uid, project_id, project, context)
+            cr, uid, project, context)
 
         return desc_de
 
@@ -38,7 +38,7 @@ class Project_description_de:
         return string
 
     @classmethod
-    def _gen_intro_de(cls, cr, uid, project_id, project, context=None):
+    def _gen_intro_de(cls, cr, uid, project, context=None):
         """ Generate the project name, the localization and infos
             about the community
         """
@@ -57,7 +57,7 @@ class Project_description_de:
         return string
 
     @classmethod
-    def _gen_build_mat_de(cls, cr, uid, project_id, project, context=None):
+    def _gen_build_mat_de(cls, cr, uid, project, context=None):
         """ Generate house build materials, there are no specificities
             in this part
         """
@@ -77,7 +77,7 @@ class Project_description_de:
         return string
 
     @classmethod
-    def _gen_primary_diet_de(cls, cr, uid, project_id, project, context=None):
+    def _gen_primary_diet_de(cls, cr, uid, project, context=None):
         """ Generate spoken languages(s) and primary diet, there are
             no specificities in this part
         """
@@ -98,7 +98,7 @@ class Project_description_de:
         return string
 
     @classmethod
-    def _gen_health_prob_de(cls, cr, uid, project_id, project, context=None):
+    def _gen_health_prob_de(cls, cr, uid, project, context=None):
         """ Generate health problemes of this region, there
             are no specificities in this part
         """
@@ -112,18 +112,14 @@ class Project_description_de:
         return string
 
     @classmethod
-    def _gen_primary_occup_de(cls, cr, uid, project_id, project, context=None):
+    def _gen_primary_occup_de(cls, cr, uid, project, context=None):
         """ Generate primary occupation and monthly income, check if need to
             round the income
         """
         primary_occup = [occup.value_de if occup.value_de else occup.value_en
                          for occup in project.primary_occupation_ids]
 
-        if project.monthly_income % 1 > 0.5:
-            monthly_income = (project.monthly_income +
-                              (1 - project.monthly_income % 1))
-
-        monthly_income = int(project.monthly_income)
+        monthly_income = int(round(project.monthly_income))
         string = (u"Die Mehrheit der Erwachsenen von Lome ist %s und "
                   u"verdienen etwa %s Dollar pro Monat. " % (
                       primary_occup[0], monthly_income))
@@ -131,13 +127,14 @@ class Project_description_de:
         return string
 
     @classmethod
-    def _get_needs_pattern_de(cls, cr, uid, context=None):
+    def _get_needs_pattern_de(cls, cr, uid, project, context=None):
         """ Create the needs' description pattern to fill by hand
         """
         string = (u"Diese Region braucht (...). Ihre Patenschaft erlaubt "
-                  u"den Mitarbeitern des (Projektcentrum...), Ihr Patenkind "
+                  u"den Mitarbeitern des %s, Ihr Patenkind "
                   u"mit (...). Zusätzlich bieten die Zentrumsangestellten "
                   u"verschiedene Treffen für die Eltern oder "
-                  u"Erziehungsberechtigten Ihres Patenkindes an.")
+                  u"Erziehungsberechtigten Ihres Patenkindes an.") % (
+                      project.name)
 
         return string
