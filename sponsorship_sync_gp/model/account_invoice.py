@@ -13,6 +13,7 @@ from openerp.osv import orm
 from openerp.tools.translate import _
 
 from . import gp_connector
+from sponsorship_compassion.model.product import GIFT_TYPES
 
 
 class account_invoice(orm.Model):
@@ -20,14 +21,15 @@ class account_invoice(orm.Model):
 
     def action_cancel(self, cr, uid, ids, context=None):
         """ If an invoice was cancelled, update the situation in GP. """
-        for invoice in self.browse(cr, uid, ids, context):
+        for invoice in self.browse(cr, uid, ids, {'lang': 'en_US'}):
             # Customer invoice going from 'open' to 'cancel' state
             if invoice.type == 'out_invoice' and invoice.state == 'open':
                 contract_ids = set()
                 gp_connect = gp_connector.GPConnect(cr, uid)
                 for line in invoice.invoice_line:
                     contract = line.contract_id
-                    if contract and contract.id not in contract_ids:
+                    if contract and contract.id not in contract_ids \
+                            and line.product_id.name not in GIFT_TYPES:
                         contract_ids.add(contract.id)
                         if not gp_connect.register_payment(contract.id):
                             raise orm.except_orm(
@@ -43,13 +45,14 @@ class account_invoice(orm.Model):
         """
         res = super(account_invoice, self).action_move_create(cr, uid, ids,
                                                               context)
-        for invoice in self.browse(cr, uid, ids, context):
+        for invoice in self.browse(cr, uid, ids, {'lang': 'en_US'}):
             if invoice.type == 'out_invoice' and invoice.internal_number:
                 contract_ids = set()
                 gp_connect = gp_connector.GPConnect(cr, uid)
                 for line in invoice.invoice_line:
                     contract = line.contract_id
-                    if contract and contract.id not in contract_ids:
+                    if contract and contract.id not in contract_ids \
+                            and line.product_id.name not in GIFT_TYPES:
                         contract_ids.add(contract.id)
                         if not gp_connect.undo_payment(contract.id):
                             raise orm.except_orm(
