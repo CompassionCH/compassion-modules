@@ -226,10 +226,10 @@ class GPConnect(mysql_connector):
         logger.info(sql_query)
         return self.query(sql_query)
 
-    def undo_payment(self, contract_id):
+    def undo_payment(self, contract_id, amount=1):
         """ Set the MOIS value backwards. """
-        return self.query("UPDATE Poles SET MOIS=MOIS-1 WHERE id_erp=%s",
-                          contract_id)
+        return self.query("UPDATE Poles SET MOIS=MOIS-{:d} WHERE id_erp={:d}"
+                          .format(amount, contract_id))
 
     def insert_affectat(self, uid, invoice_line, payment_date):
         """ When a new payment is done (invoice paid), update the Sponsorship

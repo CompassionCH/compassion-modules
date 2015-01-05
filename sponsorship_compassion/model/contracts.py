@@ -400,6 +400,7 @@ class recurring_contract(orm.Model):
                 super(recurring_contract, self).write(cr, uid, contract.id, {
                     'next_invoice_date': next_invoice_date.strftime(DF)
                     }, context)
+        return nb_invoices_canceled
 
     def copy(self, cr, uid, id, default=None, context=None):
         if not default:
