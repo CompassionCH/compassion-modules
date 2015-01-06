@@ -74,15 +74,16 @@ class AccountStatementCompletionRule(orm.Model):
             if len(partner_ids) == 1:
                 partner = partner_obj.browse(
                     cr, uid, partner_ids[0], context=context)
-                partner = partner_obj._find_accounting_partner(partner)
-                res['partner_id'] = partner.id
-                res['account_id'] = partner.property_account_receivable.id
                 # If we fall under this rule of completion, it means there is
                 # no open invoice corresponding to the payment. We may need to
                 # generate one depending on the payment type.
                 res.update(
                     self._generate_invoice(
                         cr, uid, st_line, partner, context=context))
+                # Get the accounting partner (company)
+                partner = partner_obj._find_accounting_partner(partner)
+                res['partner_id'] = partner.id
+                res['account_id'] = partner.property_account_receivable.id
             else:
                 raise ErrorTooManyPartner(
                     ('Line named "%s" (Ref:%s) was matched by more '
@@ -151,16 +152,20 @@ class AccountStatementCompletionRule(orm.Model):
                 [('type', '=', 'in_invoice'), ('state', '=', 'open'),
                  ('amount_total', '=', abs(amount))], context=context)
             res = {}
+            partner_obj = self.pool.get('res.partner')
             if invoice_ids:
                 if len(invoice_ids) == 1:
                     invoice = invoice_obj.browse(
                         cr, uid, invoice_ids[0], context=context)
-                    res['partner_id'] = invoice.partner_id.id
+                    partner = invoice.partner_id
+                    res['partner_id'] = partner_obj._find_accounting_partner(
+                        partner)
                     res['account_id'] = invoice.account_id.id
                 else:
                     invoices = invoice_obj.browse(
                         cr, uid, invoice_ids, context=context)
-                    partner_id = invoices[0].partner_id.id
+                    partner = invoices[0].partner_id
+                    partner_id = partner.id
                     for invoice in invoices:
                         if invoice.partner_id.id != partner_id:
                             raise ErrorTooManyPartner(
@@ -168,7 +173,8 @@ class AccountStatementCompletionRule(orm.Model):
                                  'more than one invoice while looking on open'
                                  ' supplier invoices') %
                                 (st_line['name'], st_line['ref']))
-                    res['partner_id'] = partner_id
+                    res['partner_id'] = partner_obj._find_accounting_partner(
+                        partner)
                     res['account_id'] = invoices[0].account_id.id
 
         return res
