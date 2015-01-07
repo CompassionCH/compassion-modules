@@ -89,18 +89,18 @@ class contract_group(orm.Model):
                                                'reference for the contract.')}
         return res
 
-    def on_change_payment_term(self, cr, uid, ids, payment_term_id,
+    def on_change_payment_term(self, cr, uid, ids, payment_term_id, bvr_ref,
                                partner_id, context=None):
         ''' Generate new bvr_reference if payment term is Permanent Order
         or BVR '''
-        res = {'value': {'bvr_reference': ''}}
+        res = {'value': {}}
         need_bvr_ref_term_ids = self.pool.get('account.payment.term').search(
             cr, uid, [('name', 'in', ('Permanent Order', 'BVR'))],
             context=context)
         if payment_term_id in need_bvr_ref_term_ids:
             partner = self.pool.get('res.partner').browse(cr, uid, partner_id,
                                                           context=context)
-            if partner.ref:
+            if partner.ref and not bvr_ref:
                 res['value'].update({
                     'bvr_reference': self.compute_partner_bvr_ref(
                         cr, uid, ids, partner, context)})
