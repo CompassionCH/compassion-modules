@@ -255,7 +255,8 @@ class recurring_contract(orm.Model):
         inv_line_ids = inv_line_obj.search(
             cr, uid, [('contract_id', 'in', ids),
                       ('due_date', '>', since_date),
-                      ('state', '!=', 'paid')], context=context)
+                      ('state', 'not in', ('paid', 'cancel'))],
+            context=context)
 
         inv_ids = set()
         empty_inv_ids = set()
