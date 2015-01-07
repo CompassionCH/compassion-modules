@@ -58,6 +58,10 @@ class compassion_project(orm.Model):
         'needs_description_de': fields.text(_('German needs description')),
         'needs_description_it': fields.text(_('Italian needs description')),
 
+        'needs_fr': fields.text(_('French needs')),
+        'needs_de': fields.text(_('German needs')),
+        'needs_it': fields.text(_('Italian needs')),
+
         ######################################################################
         #                      3. Community Information
         ######################################################################
@@ -215,6 +219,9 @@ class compassion_project(orm.Model):
     def _get_age_groups(self, cr, uid, project, context=None):
         """ Get age group from compassion webservice and l
             Returns id of generated age_group or None if failed """
+        # Delete old age_groups
+        for age_group in project.age_group_ids:
+            project.write({'age_group_ids': [(2, age_group.id)]})
         json_data = self._cornerstone_fetch(project.code + '/agegroups',
                                             'cdspimplementors')
         value_obj = self.pool.get('compassion.translated.value')
@@ -227,15 +234,14 @@ class compassion_project(orm.Model):
                 'high_age': group['highAge'],
                 'school_hours': group['schoolHours'],
             }
-
-            values.append(value_obj.get_value_ids(
-                cr, uid, group['schoolDays'],
+            values.extend(value_obj.get_value_ids(
+                cr, uid, group['schoolDays'].split(','),
                 'school_days', context))
-            values.append(value_obj.get_value_ids(
-                cr, uid, group['schoolMonths'],
+            values.extend(value_obj.get_value_ids(
+                cr, uid, group['schoolMonths'].split(','),
                 'school_months', context))
 
-            vals['school_days'] = [(6, 0, values)]
+            vals['school_days_ids'] = [(6, 0, values)]
             age_project_obj = self.pool.get('compassion.project.age.group')
             group_id = age_project_obj.create(cr, uid, vals, context)
             res.append(group_id)

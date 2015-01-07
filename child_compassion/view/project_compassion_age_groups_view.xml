@@ -8,12 +8,15 @@
 				<form string="Age group" version="7.0">
 					<sheet>
 						<div class="oe_title">
-							<group>
-								<field name="low_age" />
-                                <!--<field name="info_date" />-->
-							</group>
 						</div>
 						<group>
+							<group>
+								<field name="low_age" />
+                                <field name="high_age" />
+                                <field name="school_hours" />
+                                <field name="school_days_ids" />
+                                <field name="school_months_ids" />
+							</group>
 						</group>
 						<group>
 						</group>
@@ -28,21 +31,6 @@
 			<field name="arch" type="xml">
 				<tree string="Project age group">
 					<field name="low_age" />
-                    <!--<field name="info_date" />-->
-				</tree>
-			</field>
-		</record>
-
-		<record id="view_translated_value_tree" model="ir.ui.view">
-			<field name="name">compassion.translated.value.tree</field>
-			<field name="model">compassion.translated.value</field>
-			<field name="arch" type="xml">
-				<tree string="Values" editable="top" create="false" delete="false">
-					<field name="property_name" />
-					<field name="value_en" />
-					<field name="value_fr" />
-					<field name="value_de" />
-					<field name="value_it" />
 				</tree>
 			</field>
 		</record>

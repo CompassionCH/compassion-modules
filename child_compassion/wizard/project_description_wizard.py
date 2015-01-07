@@ -9,6 +9,7 @@
 #
 ##############################################################################
 
+import pdb
 import re
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
@@ -117,56 +118,41 @@ class project_description_wizard(orm.TransientModel):
         if isinstance(project, list):
             project = project[-1]
 
-        remember_needs_en = (project_description_wizard._get_needs_en(
-                             cr, uid, project, context))
-        remember_needs_fr = (Project_description_fr._get_needs_pattern_fr(
-                             cr, uid, project, context))
-        remember_needs_de = (Project_description_de._get_needs_pattern_de(
-                             cr, uid, project, context))
-        remember_needs_it = (Project_description_it._get_needs_pattern_it(
-                             cr, uid, project, context))
-        keep_needs_en = keep_needs_fr = keep_needs_de = keep_needs_it = True
-
         if project.description_en:
-            remember_needs_en = self._get_needs_en(cr, uid, project, context)
+            string = project.description_en
+            match = re.search('per month.?\s?', string)
+            needs_en = string[match.end():]
 
-        if project.description_fr:
-            string = project.description_fr
-            match = re.search('par mois.?\s?', string)
-            try:
-                remember_needs_fr = string[match.end():]
-            except AttributeError:
-                match = re.search(u'Cette communauté.?', string)
-                remember_needs_fr = string[match.start():]
+        if project.needs_fr:
+            remember_needs_fr = project.needs_fr
+        else:
+            remember_needs_fr = (
+                Project_description_fr._get_needs_pattern_fr(
+                    cr, uid, project, context))
 
-        if project.description_de:
-            string = project.description_de
-            match = re.search('pro Monat.?\s?', string)
-            try:
-                remember_needs_de = string[match.end():]
-            except AttributeError:
-                match = re.search(u'Ihre Patenschaft.?', string)
-                remember_needs_de = string[match.start():]
+        if project.needs_de:
+            remember_needs_de = project.needs_de
+        else:
+            remember_needs_de = (
+                Project_description_de._get_needs_pattern_de(
+                    cr, uid, project, context))
 
-        if project.description_it:
-            string = project.description_it
-            match = re.search('mensile di.+?.\s', string)
-            try:
-                remember_needs_it = string[match.end():]
-            except AttributeError:
-                match = re.search(u'Questa comunitá.?', string)
-                remember_needs_it = string[match.start():]
+        if project.needs_it:
+            remember_needs_it = project.needs_it
+        else:
+            remember_needs_it = (
+                Project_description_it._get_needs_pattern_it(
+                    cr, uid, project, context))
 
         self.write(cr, uid, ids, {
             'state': 'needs',
-            'needs_desc_en': remember_needs_en,
+            'needs_desc_en': needs_en,
             'needs_desc_fr': remember_needs_fr,
             'needs_desc_de': remember_needs_de,
             'needs_desc_it': remember_needs_it,
-            'keep_needs_desc_en': keep_needs_en,
-            'keep_needs_desc_fr': keep_needs_fr,
-            'keep_needs_desc_de': keep_needs_de,
-            'keep_needs_desc_it': keep_needs_it,
+            'keep_needs_desc_fr': True,
+            'keep_needs_desc_de': True,
+            'keep_needs_desc_it': True,
             }, context)
 
         return {
@@ -191,38 +177,27 @@ class project_description_wizard(orm.TransientModel):
         if isinstance(project, list):
             project = project[-1]
 
-        keep_desc_fr = keep_desc_de = keep_desc_it = True
+        complete_desc_fr = self._get_needs_desc(
+            cr, uid, project, wizard, "fr", context)
+        complete_desc_de = self._get_needs_desc(
+            cr, uid, project, wizard, "de", context)
+        complete_desc_it = self._get_needs_desc(
+            cr, uid, project, wizard, "it", context)
 
-        complete_desc_fr = project.description_fr
-        complete_desc_de = project.description_de
-        complete_desc_it = project.description_it
-
-        if not project.description_fr:
-            complete_desc_fr = (Project_description_fr.gen_fr_translation(
-                                cr, uid, project, context) +
-                                wizard.needs_desc_fr
-                                if wizard.keep_needs_desc_fr else "")
-
-        if not project.description_de:
-            complete_desc_de = (Project_description_de.gen_de_translation(
-                                cr, uid, project, context) +
-                                wizard.needs_desc_de
-                                if wizard.keep_needs_desc_de else "")
-
-        if not project.description_it:
-            complete_desc_it = (Project_description_it.gen_it_translation(
-                                cr, uid, project, context) +
-                                wizard.needs_desc_it
-                                if wizard.keep_needs_desc_it else "")
+        project.write({
+            'needs_fr': wizard.needs_desc_fr,
+            'needs_de': wizard.needs_desc_de,
+            'needs_it': wizard.needs_desc_it,
+            })
 
         self.write(cr, uid, ids, {
             'state': 'descriptions',
             'desc_fr': complete_desc_fr,
             'desc_de': complete_desc_de,
             'desc_it': complete_desc_it,
-            'keep_desc_fr': keep_desc_fr,
-            'keep_desc_de': keep_desc_de,
-            'keep_desc_it': keep_desc_it,
+            'keep_desc_fr': True,
+            'keep_desc_de': True,
+            'keep_desc_it': True,
             }, context)
 
         return {
@@ -236,11 +211,77 @@ class project_description_wizard(orm.TransientModel):
             'target': 'new',
             }
 
-    @classmethod
-    def _get_needs_en(cls, cr, uid, project, context=None):
-        string = project.description_en
-        match = re.search('per month.?\s?', string)
-        return string[match.end():]
+    def _get_needs_desc(self, cr, uid, project, wizard, lang, context=None):
+        if lang == 'fr':
+            if not project.description_fr:
+                if ((wizard.keep_needs_desc_fr and not wizard.needs_desc_fr) or
+                    (wizard.keep_needs_desc_fr and (wizard.needs_desc_fr in
+                     Project_description_fr.gen_fr_translation
+                     (cr, uid, project, context))) or
+                   not wizard.keep_needs_desc_fr):
+                    complete_desc = (
+                        Project_description_fr.gen_fr_translation(
+                            cr, uid, project, context))
+                else:
+                    complete_desc = (
+                        Project_description_fr.gen_fr_translation(
+                            cr, uid, project, context) + wizard.needs_desc_fr)
+            elif not wizard.keep_needs_desc_fr:
+                complete_desc = project.description_fr
+            else:
+                try:
+                    complete_desc = (project.description_fr +
+                                     wizard.needs_desc_fr)
+                except TypeError:
+                    complete_desc = project.description_fr
+
+        if lang == 'de':
+            if not project.description_de:
+                if ((wizard.keep_needs_desc_de and not wizard.needs_desc_de) or
+                    (wizard.keep_needs_desc_de and (wizard.needs_desc_de in
+                     Project_description_de.gen_de_translation
+                     (cr, uid, project, context))) or
+                   not wizard.keep_needs_desc_de):
+                    complete_desc = (
+                        Project_description_de.gen_de_translation(
+                            cr, uid, project, context))
+                else:
+                    complete_desc = (
+                        Project_description_de.gen_de_translation(
+                            cr, uid, project, context) + wizard.needs_desc_de)
+            elif not wizard.keep_needs_desc_de:
+                complete_desc = project.description_de
+            else:
+                try:
+                    complete_desc = (project.description_de +
+                                     wizard.needs_desc_de)
+                except TypeError:
+                    complete_desc = project.description_de
+
+        if lang == 'it':
+            if not project.description_it:
+                if ((wizard.keep_needs_desc_it and not wizard.needs_desc_it) or
+                    (wizard.keep_needs_desc_it and (wizard.needs_desc_it in
+                     Project_description_it.gen_it_translation
+                     (cr, uid, project, context))) or
+                   not wizard.keep_needs_desc_it):
+                    complete_desc = (
+                        Project_description_it.gen_it_translation(
+                            cr, uid, project, context))
+                else:
+                    complete_desc = (
+                        Project_description_it.gen_it_translation(
+                            cr, uid, project, context) + wizard.needs_desc_it)
+            elif not wizard.keep_needs_desc_it:
+                complete_desc = project.description_it
+            else:
+                try:
+                    complete_desc = (project.description_it +
+                                     wizard.needs_desc_it)
+                except TypeError:
+                    complete_desc = project.description_it
+
+        return complete_desc
 
     def validate_descriptions(self, cr, uid, ids, context=None):
         wizard = self.browse(cr, uid, ids, context)[0]

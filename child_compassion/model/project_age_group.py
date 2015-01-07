@@ -20,7 +20,7 @@ class project_age_group(orm.Model):
 
     _columns = {
         'project_id': fields.many2one(
-            'compassion.project', _('Age group'),
+            'compassion.project', _('Project'),
             required=True, ondelete='cascade'),
         'low_age': fields.integer(_('Low age')),
         'high_age': fields.integer(_('High age')),
