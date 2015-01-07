@@ -11,6 +11,7 @@
 
 import locale
 import collections
+from unidecode import unidecode
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import operator
@@ -116,7 +117,7 @@ class export_tools():
                         line2 += _('period: %s ') % cur_date.strftime(
                             "%B").decode('utf-8')
                     if names[prod_name] and prod_dict[prod_name] == 1:
-                        line2 += str(names[prod_name])
+                        line2 += str(unidecode(names[prod_name]))
 
                     communication += wizard._complete_line(line2, 35)
                 else:
