@@ -340,6 +340,10 @@ class recurring_contract(orm.Model):
         today = datetime.today().strftime(DF)
         self.write(cr, uid, ids, {'state': 'cancelled',
                                   'end_date': today}, context)
+        # Remove the sponsor of the child
+        for contract in self.browse(cr, uid, ids, context):
+            if contract.child_id:
+                contract.child_id.write({'sponsor_id': False})
         return True
 
     def contract_terminated(self, cr, uid, ids, context=None):
