@@ -9,7 +9,6 @@
 #
 ##############################################################################
 
-import pdb
 import re
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
@@ -178,11 +177,22 @@ class project_description_wizard(orm.TransientModel):
             project = project[-1]
 
         complete_desc_fr = self._get_needs_desc(
-            cr, uid, project, wizard, "fr", context)
+            wizard.needs_desc_fr, wizard.keep_needs_desc_fr,
+            project.description_fr,
+            Project_description_fr.gen_fr_translation(cr, uid,
+                                                      project, context))
+
         complete_desc_de = self._get_needs_desc(
-            cr, uid, project, wizard, "de", context)
+            wizard.needs_desc_de, wizard.keep_needs_desc_de,
+            project.description_de,
+            Project_description_de.gen_de_translation(cr, uid,
+                                                      project, context))
+
         complete_desc_it = self._get_needs_desc(
-            cr, uid, project, wizard, "it", context)
+            wizard.needs_desc_it, wizard.keep_needs_desc_it,
+            project.description_it,
+            Project_description_it.gen_it_translation(cr, uid,
+                                                      project, context))
 
         project.write({
             'needs_fr': wizard.needs_desc_fr,
@@ -211,76 +221,20 @@ class project_description_wizard(orm.TransientModel):
             'target': 'new',
             }
 
-    def _get_needs_desc(self, cr, uid, project, wizard, lang, context=None):
-        if lang == 'fr':
-            if not project.description_fr:
-                if ((wizard.keep_needs_desc_fr and not wizard.needs_desc_fr) or
-                    (wizard.keep_needs_desc_fr and (wizard.needs_desc_fr in
-                     Project_description_fr.gen_fr_translation
-                     (cr, uid, project, context))) or
-                   not wizard.keep_needs_desc_fr):
-                    complete_desc = (
-                        Project_description_fr.gen_fr_translation(
-                            cr, uid, project, context))
-                else:
-                    complete_desc = (
-                        Project_description_fr.gen_fr_translation(
-                            cr, uid, project, context) + wizard.needs_desc_fr)
-            elif not wizard.keep_needs_desc_fr:
-                complete_desc = project.description_fr
+    def _get_needs_desc(self, needs, keep_needs, desc, desc_trans):
+        if not desc:
+            if ((keep_needs and not needs) or (keep_needs and
+               (needs in desc_trans)) or not keep_needs):
+                complete_desc = desc_trans
             else:
-                try:
-                    complete_desc = (project.description_fr +
-                                     wizard.needs_desc_fr)
-                except TypeError:
-                    complete_desc = project.description_fr
-
-        if lang == 'de':
-            if not project.description_de:
-                if ((wizard.keep_needs_desc_de and not wizard.needs_desc_de) or
-                    (wizard.keep_needs_desc_de and (wizard.needs_desc_de in
-                     Project_description_de.gen_de_translation
-                     (cr, uid, project, context))) or
-                   not wizard.keep_needs_desc_de):
-                    complete_desc = (
-                        Project_description_de.gen_de_translation(
-                            cr, uid, project, context))
-                else:
-                    complete_desc = (
-                        Project_description_de.gen_de_translation(
-                            cr, uid, project, context) + wizard.needs_desc_de)
-            elif not wizard.keep_needs_desc_de:
-                complete_desc = project.description_de
-            else:
-                try:
-                    complete_desc = (project.description_de +
-                                     wizard.needs_desc_de)
-                except TypeError:
-                    complete_desc = project.description_de
-
-        if lang == 'it':
-            if not project.description_it:
-                if ((wizard.keep_needs_desc_it and not wizard.needs_desc_it) or
-                    (wizard.keep_needs_desc_it and (wizard.needs_desc_it in
-                     Project_description_it.gen_it_translation
-                     (cr, uid, project, context))) or
-                   not wizard.keep_needs_desc_it):
-                    complete_desc = (
-                        Project_description_it.gen_it_translation(
-                            cr, uid, project, context))
-                else:
-                    complete_desc = (
-                        Project_description_it.gen_it_translation(
-                            cr, uid, project, context) + wizard.needs_desc_it)
-            elif not wizard.keep_needs_desc_it:
-                complete_desc = project.description_it
-            else:
-                try:
-                    complete_desc = (project.description_it +
-                                     wizard.needs_desc_it)
-                except TypeError:
-                    complete_desc = project.description_it
-
+                complete_desc = desc_trans + needs
+        elif not keep_needs:
+            complete_desc = desc
+        else:
+            try:
+                complete_desc = desc + needs
+            except TypeError:
+                complete_desc = desc
         return complete_desc
 
     def validate_descriptions(self, cr, uid, ids, context=None):

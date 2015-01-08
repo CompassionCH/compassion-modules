@@ -145,10 +145,10 @@ class compassion_project(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
         for project in self.browse(cr, uid, ids, context):
-            group_ids = self._get_age_groups(cr, uid, project, context)
+            # mock variable
+            values = self._get_age_groups(cr, uid, project, context)
             values, community_id = self._update_program_info(
                 cr, uid, project, context)
-            # values['age_group_ids'] = group_ids
             values.update(
                 self._update_community_info(cr, uid, community_id, context))
             if values['type'] == 'CDSP':

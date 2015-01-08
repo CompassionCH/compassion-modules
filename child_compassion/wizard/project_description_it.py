@@ -132,7 +132,7 @@ class Project_description_it:
         """
         string = (u"Questa comunitá ha bisogno di (...). Grazie al suo "
                   u"sostegno il personale del %s di (...) potrá "
-                  u"offrire al bambino un'educazione cristiana, (...).") % (
-                      project.name)
+                  u"offrire al bambino un'educazione cristiana, " +
+                  "(...).") % (project.name)
 
         return string

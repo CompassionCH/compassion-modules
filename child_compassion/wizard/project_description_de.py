@@ -134,7 +134,7 @@ class Project_description_de:
                   u"den Mitarbeitern des %s, Ihr Patenkind "
                   u"mit (...). Zusätzlich bieten die Zentrumsangestellten "
                   u"verschiedene Treffen für die Eltern oder "
-                  u"Erziehungsberechtigten Ihres Patenkindes an.") % (
-                      project.name)
+                  u"Erziehungsberechtigten Ihres Patenkindes " +
+                  "an.") % (project.name)
 
         return string
