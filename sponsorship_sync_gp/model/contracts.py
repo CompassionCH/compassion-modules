@@ -155,7 +155,7 @@ class contracts(orm.Model):
     def _invoice_paid(self, cr, uid, invoice, context=None):
         """ When a customer invoice is paid, synchronize GP. """
         super(contracts, self)._invoice_paid(cr, uid, invoice, context)
-        if invoice.type == 'out_invoice' and not context.get('no_gp_sync'):
+        if invoice.type == 'out_invoice':
             gp_connect = gp_connector.GPConnect(cr, uid)
             last_pay_date = max([move_line.date
                                  for move_line in invoice.payment_ids
