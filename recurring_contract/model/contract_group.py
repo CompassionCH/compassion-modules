@@ -120,7 +120,6 @@ class contract_group(orm.Model):
         for group_id in ids:
             logger.info("Generating invoices for group {0}/{1}".format(
                 count, nb_groups))
-            adv_bill_candidate = set()
             contract_group = self.browse(cr, uid, group_id, context)
             month_delta = contract_group.advance_billing and \
                 delay_dict.get(contract_group.advance_billing) or 0
@@ -131,19 +130,11 @@ class contract_group(orm.Model):
                 contract_group = self.browse(cr, uid, group_id, context)
                 group_inv_date = contract_group.next_invoice_date
                 contr_ids = []
-                if group_inv_date and \
-                   datetime.strptime(group_inv_date, DF) <= in_one_month:
+                if group_inv_date and datetime.strptime(group_inv_date,
+                                                        DF) <= limit_date:
                     contr_ids = [c.id
                                  for c in contract_group.contract_ids
                                  if c.next_invoice_date <= group_inv_date
-                                 and c.state in self._get_gen_states()]
-                    adv_bill_candidate.update(contr_ids)
-                elif group_inv_date and datetime.strptime(group_inv_date,
-                                                          DF) <= limit_date:
-                    contr_ids = [c.id
-                                 for c in contract_group.contract_ids
-                                 if c.next_invoice_date <= group_inv_date
-                                 and c.id in adv_bill_candidate
                                  and c.state in self._get_gen_states()]
 
                 if not contr_ids:

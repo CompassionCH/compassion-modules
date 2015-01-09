@@ -486,6 +486,16 @@ class recurring_contract(orm.Model):
         # Cancel open invoices and generate them again
         if 'group_id' in vals or 'contract_line_ids' in vals:
             self.reset_open_invoices(cr, uid, ids, context)
+            for contract in self.browse(cr, uid, ids, context=context):
+                # Update next_invoice_date of group if necessary
+                next_invoice_date = datetime.strptime(
+                    contract.next_invoice_date, DF)
+                group_date = datetime.strptime(
+                    contract.group_id.next_invoice_date, DF)
+                if group_date > next_invoice_date:
+                    # This will trigger group_date computation
+                    contract.write({
+                        'next_invoice_date': contract.next_invoice_date})
 
         return res
 
