@@ -96,6 +96,7 @@ class contracts(orm.Model):
         for line in contract.contract_line_ids:
             compatible = compatible and (
                 'Sponsorship' == line.product_id.name
+                or 'LDP Sponsorship' == line.product_id.name
                 or line.product_id.gp_fund_id > 0)
         return compatible
 
