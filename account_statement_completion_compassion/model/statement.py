@@ -12,9 +12,12 @@
 from openerp.osv import orm, fields
 from openerp.addons.account_statement_base_completion.statement \
     import ErrorTooManyPartner
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp import netsvc
 
 from sponsorship_compassion.model.product import GIFT_TYPES
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import time
 
 
@@ -265,6 +268,26 @@ class AccountStatementCompletionRule(orm.Model):
                     wf_service.trg_validate(
                         uid, 'account.invoice', invoice_id, 'invoice_open',
                         cr)
+                elif product.name == GIFT_TYPES[0]:
+                    # Set date of invoice two months before child's birthdate
+                    child_birthdate = res.get('child_birthdate')
+                    if child_birthdate:
+                        inv_date = datetime.strptime(st_line['date'], DF)
+                        birthdate = datetime.strptime(child_birthdate, DF)
+                        new_date = inv_date
+                        if birthdate.month >= inv_date.month + 2:
+                            new_date = inv_date.replace(
+                                day=28,
+                                month=birthdate.month-2)
+                        elif birthdate.month + 3 < inv_date.month:
+                            new_date = birthdate.replace(
+                                day=28, year=inv_date.year+1) + relativedelta(
+                                months=-2)
+                            new_date = max(new_date, inv_date)
+                        invoice_obj.write(
+                            cr, uid, invoice_id, {
+                                'date_invoice': new_date.strftime(DF)
+                            }, context)
 
         return res
 
@@ -319,16 +342,23 @@ class AccountStatementCompletionRule(orm.Model):
             contract_ids = contract_obj.search(
                 cr, uid, [
                     ('partner_id', '=', partner_id),
-                    ('num_pol_ga', '=', contract_number)], context=context)
+                    ('num_pol_ga', '=', contract_number),
+                    ('state', 'not in', ('terminated', 'cancelled'))],
+                context=context)
             if contract_ids and len(contract_ids) == 1:
                 contract = contract_obj.browse(
                     cr, uid, contract_ids[0], context=context)
                 inv_line_data['contract_id'] = contract.id
-                if inv_line_data['name'] == '/':
-                    inv_line_data['name'] = contract.child_id.code
-                    inv_line_data['name'] += " - " + contract.child_id.birthdate \
-                        if product.name == GIFT_TYPES[0] else ""
-                res['name'] += " [" + inv_line_data['name'] + "]"
+                # Retrieve the birthday of child
+                birthdate = ""
+                if product.name == GIFT_TYPES[0]:
+                    birthdate = contract.child_id.birthdate
+                    res['child_birthdate'] = birthdate
+                    birthdate = datetime.strptime(birthdate, DF).strftime(
+                        "%d %b")
+                    inv_line_data['name'] += " " + birthdate
+                res['name'] += "[" + contract.child_id.code
+                res['name'] += " (" + birthdate + ")]" if birthdate else "]"
             else:
                 res['name'] += " [Child not found] "
 
