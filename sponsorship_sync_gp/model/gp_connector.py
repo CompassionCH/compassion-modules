@@ -238,8 +238,10 @@ class GPConnect(mysql_connector):
         product = invoice_line.product_id
 
         # Determine the nature of the payment (sponsorship, fund)
-        if product.name in GIFT_TYPES + ['Sponsorship']:
+        if product.name in GIFT_TYPES + ['Sponsorship', 'LDP Sponsorship']:
             codespe = contract.child_id.code
+            if 'LDP' in product.name:
+                codespe = 'LDP'
             typeprojet = "P"
             id_pole = self.selectOne(
                 "Select id_pole FROM Poles WHERE id_erp=%s",
