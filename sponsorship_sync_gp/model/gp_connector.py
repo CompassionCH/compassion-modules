@@ -42,6 +42,7 @@ class GPConnect(mysql_connector):
         'Postfinance': 'DD',
         'Permanent Order': 'OP',
         'Bank Transfer': 'VIR',
+        'Web Payment': 'WEB',
     }
 
     # Mapping for child transfers to exit_reason_code in GP
