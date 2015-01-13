@@ -97,6 +97,7 @@ class contracts(orm.Model):
             compatible = compatible and (
                 'Sponsorship' == line.product_id.name
                 or 'LDP Sponsorship' == line.product_id.name
+                or line.product_id.name in GIFT_TYPES
                 or line.product_id.gp_fund_id > 0)
         return compatible
 
