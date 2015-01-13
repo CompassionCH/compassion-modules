@@ -162,7 +162,7 @@ class AccountStatementCompletionRule(orm.Model):
                         cr, uid, invoice_ids[0], context=context)
                     partner = invoice.partner_id
                     res['partner_id'] = partner_obj._find_accounting_partner(
-                        partner)
+                        partner).id
                     res['account_id'] = invoice.account_id.id
                 else:
                     invoices = invoice_obj.browse(
@@ -177,7 +177,7 @@ class AccountStatementCompletionRule(orm.Model):
                                  ' supplier invoices') %
                                 (st_line['name'], st_line['ref']))
                     res['partner_id'] = partner_obj._find_accounting_partner(
-                        partner)
+                        partner).id
                     res['account_id'] = invoices[0].account_id.id
 
         return res
