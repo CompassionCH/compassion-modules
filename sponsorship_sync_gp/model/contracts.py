@@ -19,6 +19,8 @@ from dateutil.relativedelta import relativedelta
 
 from . import gp_connector
 
+SPONSORSHIP_TYPES = ['Sponsorship', 'LDP Sponsorship']
+
 
 class contracts(orm.Model):
     _inherit = 'recurring.contract'
@@ -95,9 +97,7 @@ class contracts(orm.Model):
         compatible = True
         for line in contract.contract_line_ids:
             compatible = compatible and (
-                'Sponsorship' == line.product_id.name
-                or 'LDP Sponsorship' == line.product_id.name
-                or line.product_id.name in GIFT_TYPES
+                line.product_id.name in SPONSORSHIP_TYPES+GIFT_TYPES
                 or line.product_id.gp_fund_id > 0)
         return compatible
 
@@ -170,9 +170,9 @@ class contracts(orm.Model):
                     gp_connect.remove_affectat(invoice.id, line.due_date)
                 contract = line.contract_id
                 if contract:
-                    to_update = (line.product_id.name not in
-                                 GIFT_TYPES) and (contract.id
-                                                  not in contract_ids)
+                    to_update = (line.product_id.name in
+                                 SPONSORSHIP_TYPES) and (contract.id
+                                                         not in contract_ids)
                     if last_pay_date and to_update:
                         contract_ids.add(contract.id)
                         if not gp_connect.register_payment(contract.id,
@@ -202,24 +202,25 @@ class contracts(orm.Model):
     def reset_open_invoices(self, cr, uid, ids, context=None):
         """Set back GP month status of cancelled invoices because they
         will be replaced by new generated invoices."""
-        amount = super(contracts, self).reset_open_invoices(
-            cr, uid, ids, context)
-        inv_line_obj = self.pool.get('account.invoice.line')
-        inv_line_ids = inv_line_obj.search(cr, uid, [
-            ('contract_id', 'in', ids),
-            ('due_date', '>', datetime.today().strftime(DF)),
-            ('state', '=', 'cancel')], context=context)
-        gp_connect = gp_connector.GPConnect(cr, uid)
-        contract_ids = set()
-        for line in inv_line_obj.browse(cr, uid, inv_line_ids, context):
-            contract = line.contract_id
-            if contract and contract.id not in contract_ids:
-                contract_ids.add(contract.id)
-                if not gp_connect.undo_payment(contract.id, amount):
-                    raise orm.except_orm(
-                        _("GP Sync Error"),
-                        _("Please contact an IT person."))
-        del(gp_connect)
+        # amount = super(contracts, self).reset_open_invoices(
+            # cr, uid, ids, context)
+        # inv_line_obj = self.pool.get('account.invoice.line')
+        # inv_line_ids = inv_line_obj.search(cr, uid, [
+            # ('contract_id', 'in', ids),
+            # ('due_date', '>', datetime.today().strftime(DF)),
+            # ('state', '=', 'cancel')], context=context)
+        # gp_connect = gp_connector.GPConnect(cr, uid)
+        # contract_ids = set()
+        # for line in inv_line_obj.browse(cr, uid, inv_line_ids, context):
+            # contract = line.contract_id
+            # if contract and contract.id not in contract_ids:
+                # contract_ids.add(contract.id)
+                # if not gp_connect.undo_payment(contract.id, amount):
+                    # raise orm.except_orm(
+                        # _("GP Sync Error"),
+                        # _("Please contact an IT person."))
+        # del(gp_connect)
+        super(contracts, self).reset_open_invoices(cr, uid, ids, context)
 
 
 class contract_group(orm.Model):
