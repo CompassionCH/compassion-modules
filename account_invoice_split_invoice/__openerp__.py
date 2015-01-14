@@ -34,10 +34,10 @@
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'category': 'Accounting',
-    'depends': ['account_invoice'],
+    'depends': ['account'],
     'external_dependencies': {},
     'data': [
-        'view/account_invoice_view.xml',
+        'view/account_invoice_split_wizard_view.xml',
     ],
     'demo': [],
     'description': '''
