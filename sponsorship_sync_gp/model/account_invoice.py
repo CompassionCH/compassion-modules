@@ -11,9 +11,10 @@
 
 from openerp.osv import orm
 from openerp.tools.translate import _
+import pdb
 
 from . import gp_connector
-from sponsorship_compassion.model.product import GIFT_TYPES
+from .contracts import SPONSORSHIP_TYPES
 
 
 class account_invoice(orm.Model):
@@ -28,8 +29,9 @@ class account_invoice(orm.Model):
                 gp_connect = gp_connector.GPConnect(cr, uid)
                 for line in invoice.invoice_line:
                     contract = line.contract_id
+                    pdb.set_trace()
                     if contract and contract.id not in contract_ids \
-                            and line.product_id.name not in GIFT_TYPES:
+                            and line.product_id.name in SPONSORSHIP_TYPES:
                         contract_ids.add(contract.id)
                         if not gp_connect.register_payment(contract.id):
                             raise orm.except_orm(
@@ -52,7 +54,7 @@ class account_invoice(orm.Model):
                 for line in invoice.invoice_line:
                     contract = line.contract_id
                     if contract and contract.id not in contract_ids \
-                            and line.product_id.name not in GIFT_TYPES:
+                            and line.product_id.name in SPONSORSHIP_TYPES:
                         contract_ids.add(contract.id)
                         if not gp_connect.undo_payment(contract.id):
                             raise orm.except_orm(

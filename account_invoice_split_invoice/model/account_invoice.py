@@ -11,16 +11,25 @@
 import logging
 
 from openerp.osv.orm import Model, fields
-from openerp.tools import mod10r
+from openerp.tools.translate import _
 
 logger = logging.getLogger(__name__)
 
 
-class account_invoice(Model):
+class account_invoice_line(Model):
 
-    ''' Inherit account.invoice in order to change BVR ref field type '''
-    _inherit = "account.invoice"
+    ''' Adds a field for moving a line to a new invoice'''
+    _inherit = "account.invoice.line"
+
+    def _get_split_line(self, cr, uid, ids, field_name, args, context=None):
+        return {invl.id: not invl.invoice_id for invl in self.browse(
+            cr, uid, ids, context)}
+            
+    def _write_lines(self, cr, uid, ids, field_name, field_value, arg,
+                     context):
+        # The line will be moved by the split_wizard object.
+        return True
 
     _columns = {
-        # 'bvr_reference': fields.char("BVR REF.", size=32,)
+        'split': fields.function(_get_split_line, fnct_inv=_write_lines, type='boolean', string=_('Put line into new invoice'))
     }
