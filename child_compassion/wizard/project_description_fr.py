@@ -44,13 +44,15 @@ class Project_description_fr:
         terrain_desc = [desc.value_fr if desc.value_fr else desc.value_en
                         for desc in project.terrain_description_ids]
         string = (u"Project: %s-%s, %s.\nEmplacement: %s, %s, %s.\n"
-                  u"L'enfant que vous parrainez, vit à %s dans une "
-                  u"région %s. %s compte environ %s habitants. " % (
+                  u"L'enfant que vous parrainez, vit à %s"
+                  u"%s. %s compte environ %s habitants. " % (
                       project.code[:2].upper(), project.code[2:],
                       project.name, project.community_name,
                       project.distance_from_closest_city,
                       project.country_common_name,
-                      project.community_name, terrain_desc[0],
+                      project.community_name,
+                      "" if not terrain_desc[0] else u" dans une région " +
+                      terrain_desc[0],
                       project.community_name, project.community_population))
 
         return string
@@ -69,9 +71,33 @@ class Project_description_fr:
         roof_mat = [mat.value_fr if mat.value_fr else mat.value_en
                     for mat in project.roof_material_ids]
 
-        string = (u"Les maison typiques sont construites de sols en %s, "
-                  u"de murs en %s et de toits en %s. " % (
-                      floor_mat[0], wall_mat[0], roof_mat[0]))
+        string = u"Les maison typiques sont construites "
+
+        if wall_mat[0] and floor_mat[0] and roof_mat[0]:
+            string += (u"de sols en %s, de murs en %s et de toits en %s. " % (
+                       wall_mat[0], floor_mat[0], roof_mat[0]))
+
+        elif ((wall_mat[0] and floor_mat[0]) or (wall_mat[0] and
+              roof_mat[0]) or (floor_mat[0] and roof_mat[0])):
+            if not wall_mat[0]:
+                string += (u"de sols en %s et de toits en %s. " % (
+                           floor_mat[0], roof_mat[0]))
+            elif not floor_mat[0]:
+                string += (u"de murs en %s et de toits en %s. " % (
+                           wall_mat[0], roof_mat[0]))
+            elif not roof_mat[0]:
+                string += (u"de sols en %s et de murs en %s. " % (
+                           floor_mat[0], wall_mat[0]))
+
+        elif (wall_mat[0] or floor_mat[0] or roof_mat[0]):
+            if wall_mat[0]:
+                string += u"de murs en %s. " % wall_mat[0]
+            elif floor_mat[0]:
+                string += u"de sols en %s. " % floor_mat[0]
+            elif roof_mat[0]:
+                string += u"de toits en %s. " % roof_mat[0]
+        else:
+            string = ""
 
         return string
 
@@ -85,11 +111,14 @@ class Project_description_fr:
         spoken_languages = [lang.value_fr if lang.value_fr else lang.value_en
                             for lang in project.spoken_languages_ids]
 
-        string = (u"La langue la plus parlée à cet endroit est le %s. "
-                  u"La nourriture de base se compose de %s. " % (
-                      spoken_languages[0],
-                      cls._gen_list_string(primary_diet, ', ',
-                                           ' et ')))
+        if spoken_languages[0]:
+            string = (u"La langue la plus parlée à cet endroit est "
+                      u"le %s. " % (spoken_languages[0]))
+        else:
+            string = ""
+
+        string += (u"La nourriture de base se compose de %s. " % (
+                   cls._gen_list_string(primary_diet, ', ', ' et ')))
 
         return string
 
@@ -101,16 +130,19 @@ class Project_description_fr:
         health_prob = [prob.value_fr if prob.value_fr else prob.value_en
                        for prob in project.health_problems_ids]
 
-        sing_plur_subj = (u"Les problèmes"
-                          if len(health_prob) > 1 else u"Le problème")
+        if health_prob[0]:
+            sing_plur_subj = (u"Les problèmes"
+                              if len(health_prob) > 1 else u"Le problème")
 
-        sing_plur_verb = (u"sont " +
-                          cls._gen_list_string(health_prob, ', ', ' et ')
-                          if len(health_prob) > 1 else u"est" +
-                          health_prob[0])
+            sing_plur_verb = (u"sont " +
+                              cls._gen_list_string(health_prob, ', ', ' et ')
+                              if len(health_prob) > 1 else u"est" +
+                              health_prob[0])
 
-        string = (u"%s de santé de la région %s. " % (sing_plur_subj,
-                  sing_plur_verb))
+            string = (u"%s de santé de la région %s. " % (sing_plur_subj,
+                      sing_plur_verb))
+        else:
+            string = ""
 
         return string
 
@@ -123,9 +155,14 @@ class Project_description_fr:
                          for occup in project.primary_occupation_ids]
 
         monthly_income = int(round(project.monthly_income))
-        string = (u"La plupart des adultes travaillent comme %s et gagnent "
-                  u"environ $%s par mois. " % (
-                      primary_occup[0], monthly_income))
+
+        if primary_occup[0]:
+            string = (u"La plupart des adultes travaillent comme %s et gagnent"
+                      u" environ $%s par mois. " % (
+                          primary_occup[0], monthly_income))
+        else:
+            string = (u"Le salaire moyen d'un travailleur est d'environ "
+                      u"$%s par mois. " % monthly_income)
 
         return string
 

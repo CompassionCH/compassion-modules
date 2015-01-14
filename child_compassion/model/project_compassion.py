@@ -53,11 +53,6 @@ class compassion_project(orm.Model):
         'description_de': fields.text(_('German description')),
         'description_it': fields.text(_('Italian description')),
 
-        'needs_description_en': fields.text(_('English needs description')),
-        'needs_description_fr': fields.text(_('French needs description')),
-        'needs_description_de': fields.text(_('German needs description')),
-        'needs_description_it': fields.text(_('Italian needs description')),
-
         'needs_fr': fields.text(_('French needs')),
         'needs_de': fields.text(_('German needs')),
         'needs_it': fields.text(_('Italian needs')),
@@ -145,8 +140,7 @@ class compassion_project(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
         for project in self.browse(cr, uid, ids, context):
-            # mock variable
-            values = self._get_age_groups(cr, uid, project, context)
+            self._get_age_groups(cr, uid, project, context)
             values, community_id = self._update_program_info(
                 cr, uid, project, context)
             values.update(
@@ -186,8 +180,7 @@ class compassion_project(orm.Model):
                 if value}, community_id
 
     def generate_descriptions(self, cr, uid, project_id, context=None):
-        project = self.browse(cr, uid, project_id, context)
-        if not project:
+        if not project_id:
             raise orm.except_orm('ObjectError', _('No valid project id '
                                                   'given !'))
         return {
@@ -218,14 +211,14 @@ class compassion_project(orm.Model):
 
     def _get_age_groups(self, cr, uid, project, context=None):
         """ Get age group from compassion webservice and l
-            Returns id of generated age_group or None if failed """
+            Returns ids of generated age_groups or None if failed """
         # Delete old age_groups
         for age_group in project.age_group_ids:
             project.write({'age_group_ids': [(2, age_group.id)]})
         json_data = self._cornerstone_fetch(project.code + '/agegroups',
                                             'cdspimplementors')
         value_obj = self.pool.get('compassion.translated.value')
-        res = list()
+        age_project_obj = self.pool.get('compassion.project.age.group')
         for group in json_data['projectAgeGroupCollection']:
             values = list()
             vals = {
@@ -242,10 +235,8 @@ class compassion_project(orm.Model):
                 'school_months', context))
 
             vals['school_days_ids'] = [(6, 0, values)]
-            age_project_obj = self.pool.get('compassion.project.age.group')
-            group_id = age_project_obj.create(cr, uid, vals, context)
-            res.append(group_id)
-        return res
+            age_project_obj.create(cr, uid, vals, context)
+        return True
 
     def _update_community_info(self, cr, uid, community_id, context=None):
         """ Call the "REST Get Community" API from Compassion.

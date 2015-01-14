@@ -67,9 +67,33 @@ class Project_description_it:
         roof_mat = [mat.value_it if mat.value_it else mat.value_en
                     for mat in project.roof_material_ids]
 
-        string = (u"Le case hanno il pavimento in %s, "
-                  u"le mura in %s e il tetto in %s. " % (
-                      floor_mat[0], wall_mat[0], roof_mat[0]))
+        string = u"Le case hanno "
+
+        if wall_mat[0] and floor_mat[0] and roof_mat[0]:
+            string += (u"il pavimento in %s, le mura in %s e il tetto "
+                       u"in %s. " % (wall_mat[0], floor_mat[0], roof_mat[0]))
+
+        elif ((wall_mat[0] and floor_mat[0]) or (wall_mat[0] and
+              roof_mat[0]) or (floor_mat[0] and roof_mat[0])):
+            if not wall_mat[0]:
+                string += (u"il pavimento in %s e il tetto in %s. " % (
+                           floor_mat[0], roof_mat[0]))
+            elif not floor_mat[0]:
+                string += (u"le mura in %s e il tetto in %s. " % (
+                           wall_mat[0], roof_mat[0]))
+            elif not roof_mat[0]:
+                string += (u"le mura in %s e il pavimento in %s. " % (
+                           wall_mat[0], floor_mat[0]))
+
+        elif (wall_mat[0] or floor_mat[0] or roof_mat[0]):
+            if wall_mat[0]:
+                string += u"le mura in %s. " % wall_mat[0]
+            elif floor_mat[0]:
+                string += u"il pavimento in %s. " % floor_mat[0]
+            elif roof_mat[0]:
+                string += u"il tetto in %s. " % roof_mat[0]
+        else:
+            string = ""
 
         return string
 
@@ -84,10 +108,13 @@ class Project_description_it:
         spoken_languages = [lang.value_it if lang.value_it else lang.value_en
                             for lang in project.spoken_languages_ids]
 
-        string = (u"La lingua parlata é il %s. "
-                  u"La dieta regionale consiste di: %s. " % (
-                      spoken_languages[0],
-                      cls._gen_list_string(primary_diet, ', ', ' et ')))
+        if spoken_languages[0]:
+            string = u"La lingua parlata é il %s. " % (spoken_languages[0])
+        else:
+            string = ""
+
+        string += (u"La dieta regionale consiste di: %s. " % (
+                   cls._gen_list_string(primary_diet, ', ', ' et ')))
 
         return string
 
@@ -99,15 +126,19 @@ class Project_description_it:
         health_prob = [prob.value_it if prob.value_it else prob.value_en
                        for prob in project.health_problems_ids]
 
-        sing_plur_subj = (u"Le malattie"
-                          if len(health_prob) > 1 else u"La malattia")
+        if health_prob[0]:
+            sing_plur_subj = (u"Le malattie"
+                              if len(health_prob) > 1 else u"La malattia")
 
-        sing_plur_verb = (u"sono " +
-                          cls._gen_list_string(health_prob, ', ', ' e ')
-                          if len(health_prob) > 1 else u"è " + health_prob[0])
+            sing_plur_verb = (u"sono " +
+                              cls._gen_list_string(health_prob, ', ', ' e ')
+                              if len(health_prob) > 1 else u"è " +
+                              health_prob[0])
 
-        string = (u"%s piú comuni in questa zona %s. " % (sing_plur_subj,
-                  sing_plur_verb))
+            string = (u"%s piú comuni in questa zona %s. " % (sing_plur_subj,
+                      sing_plur_verb))
+        else:
+            string = ""
 
         return string
 
@@ -120,9 +151,14 @@ class Project_description_it:
                          for occup in project.primary_occupation_ids]
 
         monthly_income = int(round(project.monthly_income))
-        string = (u"La maggior parte degli adulti é disoccupata ma alcuni "
-                  u"svolgono %s, con un guadagno mensile di $%s. " % (
-                      primary_occup[0], monthly_income))
+
+        if primary_occup[0]:
+            string = (u"La maggior parte degli adulti é disoccupata ma alcuni "
+                      u"svolgono %s, con un guadagno mensile di $%s. " % (
+                          primary_occup[0], monthly_income))
+        else:
+            string = (u"Lo stipendio medio di un operaio è di circa "
+                      u"$%s al mese. " % monthly_income)
 
         return string
 

@@ -45,13 +45,15 @@ class Project_description_de:
         terrain_desc = [desc.value_de if desc.value_de else desc.value_en
                         for desc in project.terrain_description_ids]
         string = (u"Projekt: %s-%s, %s.\nOrt: %s, %s, %s.\n"
-                  u"Das von Ihnen unterstütze Kind lebt in %s einer %s "
+                  u"Das von Ihnen unterstütze Kind lebt in %s%s "
                   u"mit ungefähr %s Einwohnern. " % (
                       project.code[:2].upper(), project.code[2:],
                       project.name, project.community_name,
                       project.distance_from_closest_city,
                       project.country_common_name,
-                      project.community_name, terrain_desc[0],
+                      project.community_name,
+                      "" if not terrain_desc[0] else
+                      " einer " + terrain_desc[0],
                       project.community_population))
 
         return string
@@ -70,9 +72,33 @@ class Project_description_de:
         roof_mat = [mat.value_de if mat.value_de else mat.value_en
                     for mat in project.roof_material_ids]
 
-        string = (u"Die Häuser sind typischerweise mit %s gebaut "
-                  u"und haben %s, sowie %s. " % (
-                      wall_mat[0], floor_mat[0], roof_mat[0]))
+        string = u"Die Häuser sind typischerweise mit "
+
+        if wall_mat[0] and floor_mat[0] and roof_mat[0]:
+            string += (u"%s gebaut und haben %s, sowie %s. " % (
+                       wall_mat[0], floor_mat[0], roof_mat[0]))
+
+        elif ((wall_mat[0] and floor_mat[0]) or (wall_mat[0] and
+              roof_mat[0]) or (floor_mat[0] and roof_mat[0])):
+            if not wall_mat[0]:
+                string += (u"%s gebaut und haben %s. " % (
+                           floor_mat[0], roof_mat[0]))
+            elif not floor_mat[0]:
+                string += (u"%s gebaut und haben %s. " % (
+                           wall_mat[0], roof_mat[0]))
+            elif not roof_mat[0]:
+                string += (u"%s gebaut und haben %s. " % (
+                           wall_mat[0], floor_mat[0]))
+
+        elif (wall_mat[0] or floor_mat[0] or roof_mat[0]):
+            if wall_mat[0]:
+                string += u"%s gebaut. " % wall_mat[0]
+            elif floor_mat[0]:
+                string += u"%s gebaut. " % floor_mat[0]
+            elif roof_mat[0]:
+                string += u"%s gebaut. " % roof_mat[0]
+        else:
+            string = ""
 
         return string
 
@@ -87,13 +113,18 @@ class Project_description_de:
         spoken_languages = [lang.value_de if lang.value_de else lang.value_en
                             for lang in project.spoken_languages_ids]
 
-        string = (u"Die ethnischen Merheiten %s %s und die meist "
-                  u"gesprochene Sprache ist %s. Die regionale "
-                  u"Ernährung beinhaltet %s. " % (
-                      u"sind" if len(spoken_languages) > 1 else u"ist",
-                      cls._gen_list_string(spoken_languages, ', ', ' und '),
-                      spoken_languages[0],
-                      cls._gen_list_string(primary_diet, ', ', ' und ')))
+        string = (u"Die ethnischen Merheiten %s %s" % (
+                  u"sind" if len(spoken_languages) > 1 else u"ist",
+                  cls._gen_list_string(spoken_languages, ', ', ' und ')))
+
+        if spoken_languages[0]:
+            string += (u" und die meist gesprochene Sprache ist %s. " % (
+                       spoken_languages[0]))
+        else:
+            string += ". "
+
+        string += (u"Die regionale Ernährung beinhaltet %s. " % (
+                   cls._gen_list_string(primary_diet, ', ', ' und ')))
 
         return string
 
@@ -120,9 +151,13 @@ class Project_description_de:
                          for occup in project.primary_occupation_ids]
 
         monthly_income = int(round(project.monthly_income))
-        string = (u"Die Mehrheit der Erwachsenen von Lome ist %s und "
-                  u"verdienen etwa %s Dollar pro Monat. " % (
-                      primary_occup[0], monthly_income))
+        if primary_occup[0]:
+            string = (u"Die Mehrheit der Erwachsenen von Lome ist %s und "
+                      u"verdienen etwa %s Dollar pro Monat. " % (
+                          primary_occup[0], monthly_income))
+        else:
+            string = (u"Das durchschnittseinkommen eines arbeiters ist "
+                      u"ungefähr %s Dollar pro Monat. " % monthly_income)
 
         return string
 
