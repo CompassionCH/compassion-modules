@@ -194,7 +194,9 @@ class contract_group(orm.Model):
         for a valid mandate before generating new invoices.
         """
         contract_ids = list()
+        inv_vals = dict()
         if 'payment_term_id' in vals:
+            inv_vals['payment_term'] = vals['payment_term_id']
             payment_term = self.pool.get('account.payment.term').browse(
                 cr, uid, vals['payment_term_id'], context)
             payment_name = payment_term.name
@@ -211,8 +213,28 @@ class contract_group(orm.Model):
                         wf_service.trg_validate(
                             uid, 'recurring.contract', contract.id,
                             'mandate_validated', cr)
+        if 'bvr_reference' in vals:
+            inv_vals['bvr_reference'] = vals['bvr_reference']
+            for group in self.browse(cr, uid, ids, context):
+                contract_ids.append(c.id for c in group.contract_ids)
+
         res = super(contract_group, self).write(cr, uid, ids, vals, context)
+
         if contract_ids:
-            self.pool.get('recurring.contract').reset_open_invoices(
-                cr, uid, contract_ids, context)
+            # Update related open invoices to reflect the changes
+            inv_line_obj = self.pool.get('account.invoice.line')
+            inv_obj = self.pool.get('account.invoice')
+            inv_line_ids = inv_line_obj.search(cr, uid, [
+                ('contract_id', 'in', contract_ids),
+                ('state', 'not in', ('paid', 'cancel'))], context=context)
+            invoice_ids = list(set([inv_l.invoice_id.id for inv_l in
+                                    inv_line_obj.browse(cr, uid, inv_line_ids,
+                                                        context)]))
+            inv_obj.action_cancel(cr, uid, invoice_ids, context)
+            inv_obj.action_cancel_draft(cr, uid, invoice_ids)
+            inv_obj.write(cr, uid, invoice_ids, inv_vals, context)
+            wf_service = netsvc.LocalService('workflow')
+            for invoice_id in invoice_ids:
+                wf_service.trg_validate(uid, 'account.invoice', invoice_id,
+                                        'invoice_open', cr)
         return res

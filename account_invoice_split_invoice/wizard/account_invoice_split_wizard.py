@@ -15,7 +15,8 @@ from openerp import netsvc
 
 
 class split_invoice_wizard(orm.TransientModel):
-    """..."""
+    """Wizard for selecting invoice lines to be moved
+    onto a new invoice."""
     _name = 'account.invoice.split.wizard'
 
     def _get_invoice_id(self, cr, uid, context=None):
@@ -67,11 +68,10 @@ class split_invoice_wizard(orm.TransientModel):
                 wf_service.trg_validate(
                     uid, 'account.invoice', invoice_id, 'invoice_open', cr)
         return True
-        
+
     def _copy_invoice(self, cr, uid, ids, context=None):
         # Create new invoice
         invoice_obj = self.pool.get('account.invoice')
-        
         old_invoice = self.browse(cr, uid, ids[0], context).invoice_id
         invoice_obj.copy(cr, uid, old_invoice.id, {
             'date_invoice': old_invoice.date_invoice})
