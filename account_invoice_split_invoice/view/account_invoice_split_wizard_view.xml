@@ -34,15 +34,5 @@
                     view_type="form" view_mode="form"
                     target="new" 
         />
-
-        <!--<record id="view_invoice_form" model="ir.ui.view">
-            <field name="name">account.invoice.form</field>
-            <field name="model">account.invoice</field>
-            <field name="inherit_id" ref="account.invoice_form" />
-            <field eval="18" name="priority"/>
-            <field name="arch" type="xml">
-            </field>
-        </record> -->
-
     </data>
 </openerp>

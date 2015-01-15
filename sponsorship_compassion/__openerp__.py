@@ -9,7 +9,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    @author: Cyril Sester, Emanuel Cino
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Sponsorships',
-    'version': '1.1',
+    'version': '1.3',
     'category': 'Other',
     'description': """
 Sponsorship management module. This module makes the link between child and
@@ -50,7 +50,7 @@ To add a new locale :
                 'l10n_ch', 'account_analytic_plans', 'child_compassion',
                 'account_cancel', 'account_banking_mandate',
                 'account_asset_compassion', 'partner_compassion',
-                'web_m2x_options'],
+                'web_m2x_options', 'account_invoice_split_invoice'],
     'data': ['view/contract_group_view.xml',
              'view/end_sponsorship_wizard_view.xml',
              'view/contract_view.xml',
@@ -59,6 +59,7 @@ To add a new locale :
              'view/generate_gift_view.xml',
              'view/contract_origin_view.xml',
              'view/activate_contract_view.xml',
+             'view/account_invoice_split_wizard_view.xml',
              'data/product.xml',
              'data/payment_terms.xml',
              'data/lang.xml',
