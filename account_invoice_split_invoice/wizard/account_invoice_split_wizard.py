@@ -106,6 +106,5 @@ class split_invoice_wizard(orm.TransientModel):
     }
 
     def split_invoice(self, cr, uid, ids, context=None):
-        '''...
-        '''
+        # Nothing to do here
         return True
