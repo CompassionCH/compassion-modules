@@ -422,9 +422,17 @@ class ResPartner(orm.Model):
         del(gp)
         return super(ResPartner, self).unlink(cr, uid, ids, context)
 
-    def get_client_balance(self, cr, uid, partner_id, context=None):
-        """Returns the accounting partner client balance"""
+    def get_unreconciled_amount(self, cr, uid, partner_id, context=None):
+        """Returns the amount of unreconciled credits in Account 1050"""
         partner = self._find_accounting_partner(self.browse(
             cr, uid, partner_id, context))
-        res = partner.credit if partner.credit < 0 else 0
+        mv_line_obj = self.pool.get('account.move.line')
+        move_line_ids = mv_line_obj.search(cr, uid, [
+            ('partner_id', '=', partner.id),
+            ('account_id.code', '=', '1050'),
+            ('credit', '>', '0'),
+            ('reconcile_id', '=', False)], context=context)
+        res = 0
+        for move_line in mv_line_obj.browse(cr, uid, move_line_ids, context):
+            res += move_line.credit
         return res
