@@ -24,12 +24,14 @@ class account_invoice_line(Model):
     def _get_split_line(self, cr, uid, ids, field_name, args, context=None):
         return {invl.id: not invl.invoice_id for invl in self.browse(
             cr, uid, ids, context)}
-            
+
     def _write_lines(self, cr, uid, ids, field_name, field_value, arg,
                      context):
         # The line will be moved by the split_wizard object.
         return True
 
     _columns = {
-        'split': fields.function(_get_split_line, fnct_inv=_write_lines, type='boolean', string=_('Put line into new invoice'))
+        'split': fields.function(
+            _get_split_line, fnct_inv=_write_lines, type='boolean',
+            string=_('Put line into new invoice'))
     }
