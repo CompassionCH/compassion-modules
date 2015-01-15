@@ -11,7 +11,6 @@
 
 from openerp.osv import orm
 from openerp.tools.translate import _
-import pdb
 
 from . import gp_connector
 from .contracts import SPONSORSHIP_TYPES
@@ -29,7 +28,6 @@ class account_invoice(orm.Model):
                 gp_connect = gp_connector.GPConnect(cr, uid)
                 for line in invoice.invoice_line:
                     contract = line.contract_id
-                    pdb.set_trace()
                     if contract and contract.id not in contract_ids \
                             and line.product_id.name in SPONSORSHIP_TYPES:
                         contract_ids.add(contract.id)

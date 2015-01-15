@@ -126,7 +126,7 @@ class contract_group(orm.Model):
                 count, nb_groups))
             contract_group = self.browse(cr, uid, group_id, context)
             month_delta = contract_group.advance_billing and \
-                delay_dict.get(contract_group.advance_billing) or 0
+                delay_dict.get(contract_group.advance_billing) or 1
             limit_date = datetime.today() + relativedelta(months=+month_delta)
             while True:  # Emulate a do-while loop
                 # contract_group update 'cause next_inv_date has been modified
