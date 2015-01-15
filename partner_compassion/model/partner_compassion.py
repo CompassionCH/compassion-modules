@@ -421,3 +421,10 @@ class ResPartner(orm.Model):
 
         del(gp)
         return super(ResPartner, self).unlink(cr, uid, ids, context)
+
+    def get_client_balance(self, cr, uid, partner_id, context=None):
+        """Returns the accounting partner client balance"""
+        partner = self._find_accounting_partner(self.browse(
+            cr, uid, partner_id, context))
+        res = partner.credit if partner.credit < 0 else 0
+        return res
