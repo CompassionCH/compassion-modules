@@ -11,5 +11,6 @@
 
 from . import statement
 from . import invoice
+from . import completion_rules
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
