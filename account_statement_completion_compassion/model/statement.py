@@ -120,14 +120,15 @@ class AccountStatementLine(orm.Model):
             b_line.statement_id.id) + str(b_line.id)).ljust(26, '0'))
         journal_ids = self.pool.get('account.journal').search(
             cr, uid, [('type', '=', 'sale')], limit=1)
-
+        payment_term_ids = self.pool.get('account.payment.term').search(cr ,uid,
+            [('name', '=', 'Bank Transfer')], context={'lang': 'en_US'})
         inv_data = {
             'account_id': b_line.partner_id.property_account_receivable.id,
             'type': 'out_invoice',
             'partner_id': b_line.partner_id.id,
             'journal_id': journal_ids[0] if journal_ids else False,
             'date_invoice': b_line.date,
-            'payment_term': 1,  # Immediate payment
+            'payment_term': payment_term_ids and payment_term_ids[0] or 1,
             'bvr_reference': ref,
             'recurring_invoicer_id': invoicer.id,
         }
