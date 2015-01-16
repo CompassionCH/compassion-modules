@@ -135,9 +135,9 @@ class AccountStatementLine(orm.Model):
                 and b_line.contract_id.child_id and \
                 b_line.contract_id.child_id.birthdate:
             inv_data['date_invoice'] = self.pool.get(
-               'account.statement.'
-               'completion.rule').compute_date_birthday_invoice(
-               b_line.contract_id.child_id.birthdate, b_line.date)
+                'account.statement.'
+                'completion.rule').compute_date_birthday_invoice(
+                b_line.contract_id.child_id.birthdate, b_line.date)
         invoice_id = invoice_obj.create(cr, uid, inv_data, context)
 
         inv_line_data = {
@@ -145,8 +145,8 @@ class AccountStatementLine(orm.Model):
             'account_id': b_line.product_id.property_account_income.id,
             'price_unit': b_line.amount,
             'price_subtotal': b_line.amount,
-            'contract_id': b_line.contract_id and \
-                b_line.contract_id.id or False,
+            'contract_id': b_line.contract_id and
+            b_line.contract_id.id or False,
             'quantity': 1,
             'uos_id': False,
             'product_id': b_line.product_id.id,
