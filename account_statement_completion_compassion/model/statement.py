@@ -83,25 +83,29 @@ class AccountStatementLine(orm.Model):
 
     _columns = {
         'product_id': fields.many2one('product.product', _('Product')),
+        'contract_id': fields.many2one('recurring.contract', _('Sponsorship')),
         'invoice_id': fields.many2one('account.invoice', 'Invoice')
     }
 
     def write(self, cr, uid, ids, vals, context=None):
         """Generate invoice if a product is selected."""
-        if 'product_id' in vals:
+        if 'product_id' in vals or 'contract_id' in vals:
             for line in self.browse(cr, uid, ids, context):
                 # Remove old invoice
                 if line.invoice_id:
                     line.invoice_id.unlink()
         res = super(AccountStatementLine, self).write(cr, uid, ids, vals,
                                                       context)
-        if 'product_id' in vals:
+        if 'product_id' in vals or 'contract_id' in vals:
             # Generate new invoices
             [self._create_invoice_from_line(cr, uid, line, context)
-             for line in self.browse(cr, uid, ids, context)]
+             for line in self.browse(cr, uid, ids, {'lang': 'en_US'})]
         return res
 
     def _create_invoice_from_line(self, cr, uid, b_line, context=None):
+        if not b_line.product_id:
+            raise orm.except_orm(_('Missing product'),
+                                 _('Please select a product'))
         # Get the attached recurring invoicer
         invoicer = b_line.statement_id.recurring_invoicer_id
         invoice_obj = self.pool.get('account.invoice')
@@ -127,13 +131,22 @@ class AccountStatementLine(orm.Model):
             'bvr_reference': ref,
             'recurring_invoicer_id': invoicer.id,
         }
+        if b_line.product_id.name == 'Birthday Gift' and b_line.contract_id \
+                and b_line.contract_id.child_id and \
+                b_line.contract_id.child_id.birthdate:
+            inv_data['date_invoice'] = self.pool.get(
+               'account.statement.'
+               'completion.rule').compute_date_birthday_invoice(
+               b_line.contract_id.child_id.birthdate, b_line.date)
         invoice_id = invoice_obj.create(cr, uid, inv_data, context)
 
         inv_line_data = {
-            'name': b_line.product_id.name,
+            'name': b_line.name,
             'account_id': b_line.product_id.property_account_income.id,
             'price_unit': b_line.amount,
             'price_subtotal': b_line.amount,
+            'contract_id': b_line.contract_id and \
+                b_line.contract_id.id or False,
             'quantity': 1,
             'uos_id': False,
             'product_id': b_line.product_id.id,
