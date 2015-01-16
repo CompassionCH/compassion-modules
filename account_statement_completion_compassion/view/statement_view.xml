@@ -15,7 +15,9 @@
                  </button>
                  <xpath expr="//tree/field[@name='amount']" position="before">
                     <field name="product_id"/>
+                    <field name="contract_id" domain="[('partner_id', '=', partner_id)]"/>
                  </xpath>
+                 <xpath expr="//tree/field[@name='voucher_id']" position="replace"/>
              </data>
          </field>
      </record>

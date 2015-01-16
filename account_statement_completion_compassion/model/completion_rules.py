@@ -269,27 +269,29 @@ class AccountStatementCompletionRule(orm.Model):
                         uid, 'account.invoice', invoice_id, 'invoice_open',
                         cr)
                 elif product.name == GIFT_TYPES[0]:
-                    # Set date of invoice two months before child's birthdate
                     child_birthdate = res.get('child_birthdate')
                     if child_birthdate:
-                        inv_date = datetime.strptime(st_line['date'], DF)
-                        birthdate = datetime.strptime(child_birthdate, DF)
-                        new_date = inv_date
-                        if birthdate.month >= inv_date.month + 2:
-                            new_date = inv_date.replace(
-                                day=28,
-                                month=birthdate.month-2)
-                        elif birthdate.month + 3 < inv_date.month:
-                            new_date = birthdate.replace(
-                                day=28, year=inv_date.year+1) + relativedelta(
-                                months=-2)
-                            new_date = max(new_date, inv_date)
+                        inv_date = self.compute_date_birthday_invoice(
+                            child_birthdate, st_line['date'])
                         invoice_obj.write(
                             cr, uid, invoice_id, {
-                                'date_invoice': new_date.strftime(DF)
+                                'date_invoice': inv_date
                             }, context)
 
         return res
+
+    def compute_date_birthday_invoice(self, child_birthdate, payment_date):
+        """Set date of invoice two months before child's birthdate"""
+        inv_date = datetime.strptime(payment_date, DF)
+        birthdate = datetime.strptime(child_birthdate, DF)
+        new_date = inv_date
+        if birthdate.month >= inv_date.month + 2:
+            new_date = inv_date.replace(day=28, month=birthdate.month-2)
+        elif birthdate.month + 3 < inv_date.month:
+            new_date = birthdate.replace(
+                day=28, year=inv_date.year+1) + relativedelta(months=-2)
+            new_date = max(new_date, inv_date)
+        return new_date.strftime(DF)
 
     def _find_product_id(self, cr, uid, ref, context=None):
         """ Finds what kind of payment it is,
