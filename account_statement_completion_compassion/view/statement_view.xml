@@ -13,6 +13,9 @@
                     <field name="recurring_invoicer_id" invisible="1"/>
                     <button name="button_invoices" string="Generated invoices" type="object" class="oe_highlight" attrs="{'invisible' : [('recurring_invoicer_id','=',False)]}" />
                  </button>
+                 <xpath expr="//tree/field[@name='amount']" position="before">
+                    <field name="product_id"/>
+                 </xpath>
              </data>
          </field>
      </record>
