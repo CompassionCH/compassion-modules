@@ -180,9 +180,6 @@ class compassion_project(orm.Model):
                 if value}, community_id
 
     def generate_descriptions(self, cr, uid, project_id, context=None):
-        if not project_id:
-            raise orm.except_orm('ObjectError', _('No valid project id '
-                                                  'given !'))
         return {
             'name': _('Description generation'),
             'type': 'ir.actions.act_window',
