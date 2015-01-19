@@ -8,7 +8,7 @@
     <data>
         <!-- GMC Message Pool tree view -->
         <record id="view_gmc_message_pool_incoming_tree" model="ir.ui.view">
-            <field name="name">gmc.message.pool.tree</field>
+            <field name="name">gmc.message.pool.incoming.tree</field>
             <field name="model">gmc.message.pool</field>
             <field name="priority">17</field>
             <field name="arch" type="xml">
@@ -24,7 +24,7 @@
             </field>
         </record>
         <record id="view_gmc_message_pool_outgoing_tree" model="ir.ui.view">
-            <field name="name">gmc.message.pool.tree</field>
+            <field name="name">gmc.message.pool.outgoing.tree</field>
             <field name="model">gmc.message.pool</field>
             <field name="priority">12</field>
             <field name="arch" type="xml">
@@ -34,6 +34,24 @@
                     <field name="process_date" />
                     <field name="partner_id" />
                     <field name="child_id" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+        <record id="view_gmc_message_pool_gift_tree" model="ir.ui.view">
+            <field name="name">gmc.message.pool.gift.tree</field>
+            <field name="model">gmc.message.pool</field>
+            <field name="priority">19</field>
+            <field name="arch" type="xml">
+                <tree string="Message Pool" colors="blue:state == 'pending';black:state == 'sent'" create="false">
+                    <field name="action_id" />
+                    <field name="date" />
+                    <field name="process_date" />
+                    <field name="partner_id" />
+                    <field name="child_id" />
+                    <field name="gift_type" />
+                    <field name="gift_instructions" />
+                    <field name="gift_amount" />
                     <field name="state" />
                 </tree>
             </field>
@@ -70,7 +88,11 @@
                             <field name="event" attrs="{'invisible':[('direction','=','out')]}"/>
                             <field name="failure_reason"/>
                         </group>
-                        <group></group>
+                        <group attrs="{'invisible':[('invoice_line_id','=',False)]}">
+                            <field name="gift_type" />
+                            <field name="gift_instructions" />
+                            <field name="gift_amount" />
+                        </group>
                         <group>
                             <field name="description" colspan="4"/>
                         </group>
@@ -209,6 +231,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_gmc_message_pool_gift_tree" />
             <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
             <field name="context">{'search_default_gift':1, 'search_default_pending':1}</field>
             <field name="help" type="html">
