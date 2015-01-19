@@ -67,6 +67,13 @@ class gmc_message_pool(orm.Model):
                     res[message.id] = contract.child_id.id
                 else:
                     res[message.id] = False
+
+    def _get_invoice_line(self, cr, uid, ids, field_name, args, context=None):
+        """Finds the attached invoice line for Gift Messages Types"""
+        res = dict()
+        for message in self.browse(cr, uid, ids, context):
+            if message.action_id.model == 'account.invoice.line':
+                res[message.id] = message.object_id
             else:
                 res[message.id] = False
         return res
@@ -113,6 +120,18 @@ class gmc_message_pool(orm.Model):
         'event': fields.char(_('Incoming Event'), size=24,
                              help=_("Contains the event that triggered the "
                                     "incoming message.")),
+        # Gift Type Messages information
+        'invoice_line_id': fields.function(
+            _get_invoice_line, type='many2one', obj='account.invoice.line'),
+        'gift_type': fields.related(
+            'invoice_line_id', 'product_id', 'name', type='char',
+            string=_('Gift type')),
+        'gift_instructions': fields.related(
+            'invoice_line_id', 'gift_instructions', type='char',
+            string=_('Gift instructions')),
+        'gift_amount': fields.related(
+            'invoice_line_id', 'price_subtotal', type='integer',
+            string=_('Gift amount')),
     }
 
     _defaults = {
