@@ -166,7 +166,8 @@ class recurring_contract(orm.Model):
             ('ChildCorrespondenceSponsorship', 'Correspondence')],
             _("Type of sponsorship")),
         'correspondant_id': fields.many2one(
-            'res.partner', _('Correspondant'), required=True),
+            'res.partner', _('Correspondant'), required=True, readonly=True,
+            states={'draft': [('readonly', False)]}),
         'activation_date': fields.date(
             _('Activation date'), readonly=True),
         # Add a waiting and waiting mandate states
@@ -213,8 +214,8 @@ class recurring_contract(orm.Model):
                                     required=True, readonly=True,
                                     states={'draft': [('readonly', False)]}),
         'parent_id': fields.many2one(
-            'recurring.contract', _('Previous sponsorship'), readonly=True,
-            states={'draft': [('readonly', False)]}),
+            'recurring.contract', _('Previous sponsorship'),
+            track_visibility='onchange'),
         'has_mandate': fields.function(
             _has_mandate, type='boolean', string='Has mandate'),
         'name': fields.function(_name_get, type='char')

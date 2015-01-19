@@ -61,7 +61,7 @@
                             <field name="group_id" domain="[('partner_id', '=', partner_id)]"
                                    context="{'default_partner_id': partner_id}"
                                    on_change="on_change_group_id(group_id)"/>
-                            <field name="parent_id"/>
+                            <field name="parent_id" domain="[('partner_id', '=', partner_id), ('child_id', '!=', child_id)]"/>
                         </group>
                         <group>
                             <field name="start_date" string="Creation date"/>
