@@ -242,7 +242,7 @@ class gmc_message_pool(orm.Model):
             contract = self.pool.get(action.model).browse(
                 cr, uid, object_id, context=context)
             # Check that the constituent is known by GMC.
-            partner = contract.partner_id
+            partner = contract.correspondant_id
             message_ids = self.search(cr, uid, [
                 ('name', '=', 'CreateConstituent'),
                 ('partner_id', '=', partner.id),
@@ -279,7 +279,7 @@ class gmc_message_pool(orm.Model):
             invoice_line = self.pool.get(action.model).browse(
                 cr, uid, object_id, context=context)
             contract = invoice_line.contract_id
-            if contract and contract.partner_id and contract.child_id:
+            if contract and contract.correspondant_id and contract.child_id:
                 message_ids = self.search(
                     cr, uid, [
                         ('name', '=', 'CreateCommitment'),
