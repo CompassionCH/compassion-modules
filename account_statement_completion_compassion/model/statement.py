@@ -14,6 +14,8 @@ from openerp.tools import mod10r
 from openerp.tools.translate import _
 from openerp import netsvc
 
+import time
+
 
 class AccountStatement(orm.Model):
 
@@ -120,8 +122,9 @@ class AccountStatementLine(orm.Model):
             b_line.statement_id.id) + str(b_line.id)).ljust(26, '0'))
         journal_ids = self.pool.get('account.journal').search(
             cr, uid, [('type', '=', 'sale')], limit=1)
-        payment_term_ids = self.pool.get('account.payment.term').search(cr ,uid,
-            [('name', '=', 'Bank Transfer')], context={'lang': 'en_US'})
+        payment_term_ids = self.pool.get('account.payment.term').search(
+            cr, uid, [('name', '=', 'Bank Transfer')],
+            context={'lang': 'en_US'})
         inv_data = {
             'account_id': b_line.partner_id.property_account_receivable.id,
             'type': 'out_invoice',
@@ -153,6 +156,11 @@ class AccountStatementLine(orm.Model):
             'product_id': b_line.product_id.id,
             'invoice_id': invoice_id,
         }
+        analytic = self.pool.get('account.analytic.default').account_get(
+            cr, uid, b_line.product_id.id, b_line.partner_id.id, uid,
+            time.strftime('%Y-%m-%d'), context=context)
+        if analytic and analytic.analytics_id:
+            inv_line_data['analytics_id'] = analytic.analytics_id.id
         self.pool.get('account.invoice.line').create(
             cr, uid, inv_line_data, context)
 
