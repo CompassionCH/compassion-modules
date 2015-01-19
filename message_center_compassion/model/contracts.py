@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 
 class recurring_contract(orm.Model):
-
     """ We add here creation of messages concerning commitments. """
     _inherit = "recurring.contract"
 
@@ -41,8 +40,8 @@ class recurring_contract(orm.Model):
                     limit=1, context=context)[0]
                 message_vals = {
                     'action_id': action_id,
-                    'object_id': contract.partner_id.id,
-                    'partner_id': contract.partner_id.id,
+                    'object_id': contract.correspondant_id.id,
+                    'partner_id': contract.correspondant_id.id,
                     'date': contract.activation_date,
                 }
                 message_obj.create(cr, uid, message_vals, context=context)
@@ -79,7 +78,7 @@ class recurring_contract(orm.Model):
                 if contract.child_id and end_reason not in (1, 4):
                     message_vals.update({
                         'object_id': contract.id,
-                        'partner_id': contract.partner_id.id,
+                        'partner_id': contract.correspondant_id.id,
                         'child_id': contract.child_id.id,
                     })
                     message_obj.create(cr, uid, message_vals)
@@ -111,7 +110,7 @@ class recurring_contract(orm.Model):
                     if contract:
                         message_vals.update({
                             'object_id': invoice_line.id,
-                            'partner_id': invoice_line.partner_id.id,
+                            'partner_id': contract.correspondant_id.id,
                             'child_id': contract.child_id.id,
                         })
                         message_obj.create(cr, uid, message_vals)
