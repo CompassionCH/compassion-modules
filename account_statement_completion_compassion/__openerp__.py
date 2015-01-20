@@ -28,8 +28,8 @@
 ##############################################################################
 
 {
-    "name": "Account Statement Completion Rules for Compassion CH",
-    "version": "1.1",
+    "name": "Account Statement Additions for Compassion CH",
+    "version": "1.3",
     "author": "Emanuel Cino",
     "category": "Finance",
     "website": "http://www.compassion.ch",
@@ -38,11 +38,12 @@
                 ],
     "data": ['view/statement_view.xml',
              'view/invoice_view.xml',
+             'view/move_line_view.xml',
              'data/data.xml'],
     "css": ["static/src/css/sheet.css"],
     "description": """
 
-Account Statement Completion Rules for Compassion CH
+Account Statement Additions for Compassion CH
 =========================
 
 - Add three completion methods :
@@ -56,6 +57,10 @@ Account Statement Completion Rules for Compassion CH
   BVR reference, then second rule is applied, and an invoice is generated
   on-the-fly for gifts or funds donations.
 - The third rule is useful only for supplier invoices.
+
+- Adds ability to generate invoices from the bank statement
+
+- Adds field analytic account to move_line view
 
 """,
     "demo": [],
