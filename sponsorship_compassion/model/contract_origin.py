@@ -51,6 +51,23 @@ class contract_origin(orm.Model):
             name = origin.other_name or 'Other'
         return name
 
+    def _get_won_sponsorships(self, cr, uid, ids, field, arg, context=None):
+        res = dict()
+        if not isinstance(ids, list):
+            ids = [ids]
+        for origin in self.browse(cr, uid, ids, context):
+            contract_ids = [contract.id for contract in origin.contract_ids
+                            if contract.state in ('active', 'terminated')]
+            res[origin.id] = len(contract_ids)
+        return res
+
+    def _get_origin_from_contract(contract_obj, cr, uid, ids, context=None):
+        res = []
+        for contract in contract_obj.browse(cr, uid, ids, context):
+            if contract.state == 'active' and contract.origin_id:
+                res.append(contract.origin_id.id)
+        return res
+
     _columns = {
         'name': fields.function(_define_name, type="char", string=_("Name"),
                                 store=True),
@@ -72,6 +89,13 @@ class contract_origin(orm.Model):
             readonly=True),
         'country_id': fields.many2one('res.country', _("Country")),
         'other_name': fields.char(_("Give details"), size=128),
+        'won_sponsorships': fields.function(
+            _get_won_sponsorships, type="integer",
+            string=_("Won sponsorships"), store={
+                'recurring.contract': (
+                    _get_origin_from_contract,
+                    ['state', 'origin_id'],
+                    10)}),
     }
 
     _sql_constraints = [(

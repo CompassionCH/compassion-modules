@@ -218,7 +218,7 @@ class recurring_contract(orm.Model):
             track_visibility='onchange'),
         'has_mandate': fields.function(
             _has_mandate, type='boolean', string='Has mandate'),
-        'name': fields.function(_name_get, type='char')
+        'name': fields.function(_name_get, type='char'),
     }
 
     def _get_standard_lines(self, cr, uid, context=None):

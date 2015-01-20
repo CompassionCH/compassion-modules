@@ -21,6 +21,7 @@
 					</field>
                     <field name="payment_term_id" position="after">
                         <field name="frequency" />
+                        <field name="origin_id" />
                     </field>
                     <field name="state" position="after">
                         <button name="open_contract" type="object" invisible="not context.get('partner_contracts_view')" icon="STOCK_JUMP_TO" />
@@ -109,12 +110,18 @@
                             ]
                         </attribute>
                     </field>
+                    <field name="payment_term_id" position="after">
+                        <field name="origin_id"/>
+                    </field>
                     <xpath expr="//filter[@name='draft']" position="after">
                         <filter name="waiting" string="Waiting" domain="[('state','=','waiting')]"/>
                         <filter name="mandate" string="Waiting Mandate" domain="[('state','=','mandate')]"/>
                     </xpath>
                     <xpath expr="//filter[@name='terminated']" position="after">
                         <filter name="cancelled" string="Cancelled" domain="[('state','=','cancelled')]"/>
+                    </xpath>
+                    <xpath expr="//filter[@string='Status']" position="after">
+                        <filter string="Origin" domain="[]"  context="{'group_by':'origin_id'}"/>
                     </xpath>
 				</data>
 			</field>
