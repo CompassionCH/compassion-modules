@@ -13,7 +13,7 @@ from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.config import config
 import requests
-from datetime import date
+from datetime import datetime
 import logging
 
 
@@ -42,7 +42,6 @@ class gmc_message_pool_process(orm.TransientModel):
 
 
 class gmc_message_pool(orm.Model):
-
     """ Pool of messages exchanged between Compassion CH and GMC. """
     _name = 'gmc.message.pool'
 
@@ -53,7 +52,8 @@ class gmc_message_pool(orm.Model):
         model_mapping = {
             'partner_id': 'res.partner',
             'child_id': 'compassion.child',
-            'project_id': 'compassion.project'
+            'project_id': 'compassion.project',
+            'invoice_line_id': 'account.invoice.line'
         }
         for message in self.browse(cr, uid, ids, context):
             if message.action_id.model == model_mapping[field_name]:
@@ -67,15 +67,6 @@ class gmc_message_pool(orm.Model):
                     res[message.id] = contract.child_id.id
                 else:
                     res[message.id] = False
-
-    def _get_invoice_line(self, cr, uid, ids, field_name, args, context=None):
-        """Finds the attached invoice line for Gift Messages Types"""
-        res = dict()
-        for message in self.browse(cr, uid, ids, context):
-            if message.action_id.model == 'account.invoice.line':
-                res[message.id] = message.object_id
-            else:
-                res[message.id] = False
         return res
 
     _columns = {
@@ -122,7 +113,7 @@ class gmc_message_pool(orm.Model):
                                     "incoming message.")),
         # Gift Type Messages information
         'invoice_line_id': fields.function(
-            _get_invoice_line, type='many2one', obj='account.invoice.line'),
+            _get_object_id, type='many2one', obj='account.invoice.line'),
         'gift_type': fields.related(
             'invoice_line_id', 'product_id', 'name', type='char',
             string=_('Gift type')),
@@ -135,7 +126,7 @@ class gmc_message_pool(orm.Model):
     }
 
     _defaults = {
-        'date': str(date.today()),
+        'date': str(datetime.today()),
         'state': 'new'
     }
 
@@ -146,8 +137,10 @@ class gmc_message_pool(orm.Model):
 
     def process_messages(self, cr, uid, ids, context=None):
         """ Process given messages in pool. """
+        today = datetime.today()
         for message in self.browse(cr, uid, ids, context=context):
-            if message.state == 'new':
+            mess_date = datetime.strptime(message.date, DF)
+            if message.state == 'new' and mess_date <= today:
                 action = message.action_id
                 if action.direction == 'in':
                     res = self._perform_incoming_action(cr, uid, message,
@@ -323,7 +316,7 @@ class gmc_message_pool(orm.Model):
         if message_ids:
             self.write(cr, uid, message_ids, {
                 'state': status.lower(),
-                'process_date': date.today().strftime(DF),
+                'process_date': datetime.today().strftime(DF),
                 'failure_reason': message
             }, context)
         else:
