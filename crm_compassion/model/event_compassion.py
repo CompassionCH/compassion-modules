@@ -167,6 +167,22 @@ class event_compassion(orm.Model):
                 event.project_id.write(project_vals, context=ctx)
 
         return True
+        
+    def unlink(self, cr, uid, ids, context=None):
+        """Check that the event is not linked with expenses or won
+        sponsorships."""
+        for event in self.browse(cr, uid, ids, context):
+            if event.contract_ids or event.analytic_line_ids:
+                raise orm.except_orm(
+                    _('Not authorized action'),
+                    _('The event is linked to expenses or sponsorships. '
+                      'You cannot delete it.'))
+            else:
+                if event.project_id:
+                    event.project_id.unlink()
+                if event.analytic_id:
+                    event.analytic_id.unlink()
+        return super(event_compassion, self).unlink(cr, uid, ids, context)
 
     def create_from_gp(self, cr, uid, vals, context=None):
         if context is None:

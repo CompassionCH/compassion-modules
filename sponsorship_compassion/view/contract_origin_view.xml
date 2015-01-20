@@ -38,6 +38,7 @@
                         <field name="country_id" attrs="{'invisible': [('type', '!=', 'transfer')],
                                                          'required': [('type','=','transfer')]}"/>
                         <field name="other_name" attrs="{'invisible': [('type', '!=', 'other')]}"/>
+                        <field name="won_sponsorships"/>
                     </group>
                     <notebook>
                         <page string="Originated Sponsorships">
