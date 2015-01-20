@@ -22,6 +22,7 @@ class compassion_child(orm.Model):
         child_id = args.get('object_id')
         if child_id:
             # Child already exists, put it back to available state
+            # and erase exit details
             child = self.browse(cr, uid, child_id, context)
             if child.state == 'P':
                 raise orm.except_orm(
@@ -33,6 +34,10 @@ class compassion_child(orm.Model):
                 # Start a new workflow making the child available again
                 wf_service = netsvc.LocalService('workflow')
                 wf_service.trg_create(uid, self._name, child_id, cr)
+                child.write({
+                    'exit_date': False,
+                    'exit_reason': False,
+                    'gp_exit_reason': False})
         else:
             # Allocate a new child
             child_id = self.create(cr, uid, {

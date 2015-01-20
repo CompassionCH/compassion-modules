@@ -45,7 +45,7 @@ class account_invoice_line(orm.Model):
     def _get_instructions(self, cr, uid, ids, field, args, context=None):
         res = dict()
         ctx = context.copy()
-        for inv_line in self.browse(cr, uid, ids, context):
+        for inv_line in self.browse(cr, uid, ids, {'lang': 'en_US'}):
             ctx['lang'] = inv_line.partner_id.lang
             product = self.pool.get('product.product').browse(
                 cr, uid, inv_line.product_id.id, ctx)
