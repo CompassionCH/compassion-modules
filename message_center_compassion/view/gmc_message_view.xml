@@ -43,7 +43,7 @@
             <field name="model">gmc.message.pool</field>
             <field name="priority">19</field>
             <field name="arch" type="xml">
-                <tree string="Message Pool" colors="blue:state == 'pending';black:state == 'sent'" create="false">
+                <tree string="Message Pool" colors="blue:state == 'new';black:state == 'pending';gray:state == 'success';red:state == 'failure'" create="false">
                     <field name="action_id" />
                     <field name="date" />
                     <field name="process_date" />
@@ -84,6 +84,7 @@
                             <field name="partner_id" attrs="{'invisible':[('partner_id','=',False)]}" />
                             <field name="child_id" attrs="{'invisible':[('child_id','=',False)]}" />
                             <field name="project_id" attrs="{'invisible':[('project_id','=',False)]}" />
+                            <field name="invoice_line_id" invisible="1" />
                             <field name="incoming_key" attrs="{'invisible':[('incoming_key','=',False)]}" />
                             <field name="event" attrs="{'invisible':[('direction','=','out')]}"/>
                             <field name="failure_reason"/>
