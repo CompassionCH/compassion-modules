@@ -167,7 +167,7 @@ class event_compassion(orm.Model):
                 event.project_id.write(project_vals, context=ctx)
 
         return True
-        
+
     def unlink(self, cr, uid, ids, context=None):
         """Check that the event is not linked with expenses or won
         sponsorships."""
