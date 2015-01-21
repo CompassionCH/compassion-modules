@@ -157,7 +157,7 @@ class recurring_contract(orm.Model):
             'child_id', 'code', string=_('Sponsored child code'),
             readonly=True, type='char'),
         'partner_codega': fields.related(
-            'partner_id', 'ref', string=_('Partner ref'), readonly=True,
+            'correspondant_id', 'ref', string=_('Partner ref'), readonly=True,
             type='char'),
         # This field is only for the middleware testing purpose.
         # In the future, the type will be identified in another way.
