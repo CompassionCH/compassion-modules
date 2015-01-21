@@ -135,12 +135,5 @@
                   
         <menuitem id="open_customers" parent="child_compassion.menu_sponsorship_section"
                   name="Partners" action="base.action_partner_customer_form" sequence="1"/>
-                  
-        <!-- Generate Gift -->
-        <act_window id="action_account_invoice_free"
-            key2="client_action_multi" name="Generate Gift"
-            res_model="generate.gift.wizard" src_model="recurring.contract"
-            view_mode="form" target="new" view_type="form"
-            />
 	</data>
 </openerp>

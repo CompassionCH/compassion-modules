@@ -607,7 +607,7 @@ class recurring_contract(orm.Model):
         """ Used to transition draft sponsorships in active state
         when exported from GP. """
         self.validate_from_gp(cr, uid, contract_id, context)
-        self._on_contract_active(cr, uid, contract_id, context)
+        self._on_contract_active(cr, uid, [contract_id], context)
         return True
 
     def terminate_from_gp(self, cr, uid, contract_id, end_state, end_reason,

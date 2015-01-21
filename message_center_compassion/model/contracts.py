@@ -89,7 +89,7 @@ class recurring_contract(orm.Model):
         contract = self.browse(cr, uid, contract_id, context)
         message_ids = message_obj.search(cr, uid, [
             '|', ('partner_id', '=', contract.partner_id.id),
-            ('child_id', '=', contract.child_id.id)], context)
+            ('child_id', '=', contract.child_id.id)], context=context)
         message_obj.write(cr, uid, message_ids, {
             'state': 'sent',
             'process_date': contract.activation_date}, context)
