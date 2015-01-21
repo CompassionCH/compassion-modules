@@ -17,7 +17,6 @@ from openerp import netsvc
 
 from sponsorship_compassion.model.product import GIFT_TYPES
 from datetime import datetime
-from dateutil.relativedelta import relativedelta
 import time
 
 
