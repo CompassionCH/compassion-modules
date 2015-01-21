@@ -600,8 +600,18 @@ class recurring_contract(orm.Model):
         }
 
     def clean_invoices(self, cr, uid, ids, context=None, since_date=None):
-        """ Take into consideration if sponsor has paid in advance, so that we
-        cancel the paid invoices. """
+        """ Take into consideration when the sponsor has paid in advance,
+        so that we cancel/modify the paid invoices and let the user decide
+        what to do with the payment.
+
+        - The process bypasses the ORM by directly removing the invoice_lines
+          concerning the cancelled contract. It also splits the sponsor's
+          payment in order to be able to change the attribution of the amount
+          that was destined to the cancelled contract.
+
+        Note: direct access to database avoids to unreconcile and reconcile
+              again invoices, which is a huge performance gain.
+        """
         if not since_date:
             since_date = datetime.today().strftime(DF)
 
@@ -612,59 +622,101 @@ class recurring_contract(orm.Model):
                       ('due_date', '>', since_date),
                       ('state', '=', 'paid')], context=context)
 
-        # Keep track of payment lines of the partners
-        # (partner_id:payment_line_id}
-        payment_lines = {}
-        # Unreconcile all move_lines related to the invoices
-        inv_ids = set()
-        move_line_obj = self.pool.get('account.move.line')
+        # Invoice and move lines that need to be removed/updated
+        remove_inv_ids = set()
+        to_remove_mvl = list()
+        to_update_mvl = dict()
+        payment_mvl = set()
+        amount_deleted = 0
+
+        # Store data that is removed to pass it in sub_modules
+        # Dictionary is in the following format :
+        # {invoice_line_id: [invoice_id, child_code, product_name, amount]}
+        invl_rm_data = dict()
+
+        # 1. Determine which action has to be done for each invoice_line
         for inv_line in inv_line_obj.browse(cr, uid, inv_line_ids, context):
-            invoice_id = inv_line.invoice_id.id
-            if invoice_id not in inv_ids:
-                inv_ids.add(invoice_id)
-                move_lines = inv_line.invoice_id.move_id.line_id
-                # Find the reconciled payment lines
-                for line in move_lines:
-                    partner_id = line.partner_id.id
-                    if line.reconcile_id:
-                        lines_found = [
-                            mvl.id for mvl in line.reconcile_id.line_id]
-                        lines_found.remove(line.id)
-                        if lines_found and len(lines_found) == 1:
-                            pay_id = lines_found[0]
-                            if partner_id in payment_lines:
-                                # There can be only one payment_line for the
-                                # split payment + reconcile to work.
-                                if payment_lines[partner_id] != pay_id:
-                                    payment_lines[partner_id] = False
-                            else:
-                                payment_lines[partner_id] = pay_id
+            invoice = inv_line.invoice_id
+            if inv_line.contract_id.child_id:
+                # Store data before removal
+                invl_rm_data[inv_line.id] = [
+                    invoice.id, inv_line.contract_id.child_code,
+                    inv_line.product_id.name, inv_line.price_subtotal]
+            mvl_found = False
+            amount_deleted += inv_line.price_subtotal
+            for mvl in inv_line.invoice_id.move_id.line_id:
+                if not mvl_found and \
+                        mvl.product_id.id == inv_line.product_id.id \
+                        and mvl.credit == inv_line.price_subtotal \
+                        and mvl.id not in to_remove_mvl:
+                    # Mark credit line to be removed
+                    to_remove_mvl.append(mvl.id)
+                    mvl_found = True
+                elif mvl.debit > 0 and mvl.account_id.code == '1050':
+                    # Remove amount of invoice_line from debit line
+                    to_update_mvl[mvl.id] = mvl.debit - \
+                        inv_line.price_subtotal
+                    payment_mvl.add([
+                        pml for pml in mvl.reconcile_id.line_id
+                        if pml.credit > 0])
+            if not mvl_found:
+                raise orm.except_orm('Cancel error',
+                                     'Move line not found.')
+            # Mark empty invoice to be removed
+            other_lines_ids = [invl.id for invl in invoice.invoice_line]
+            remaining_lines_ids = [invl_id for invl_id in other_lines_ids
+                                   if invl_id not in inv_line_ids]
+            if not remaining_lines_ids:
+                remove_inv_ids.add(invoice.id)
 
-                move_line_obj._remove_move_reconcile(
-                    cr, uid, [mvl.id for mvl in move_lines], context=context)
+        # 2. Manually remove invoice_lines, move_lines and empty invoices
+        cr.execute(
+            "DELETE FROM account_invoice_line WHERE id in ({0})"
+            .format(','.join(inv_line_ids)))
+        cr.execute(
+            "DELETE FROM account_invoice WHERE id in ({0})"
+            .format(','.join(remove_inv_ids)))
+        cr.execute(
+            "DELETE FROM account_move_line WHERE id in ({0})"
+            .format(','.join(to_remove_mvl)))
+        for mvl, amount in to_update_mvl.iteritems():
+            cr.execute(
+                "UPDATE account_move_line SET debit={0} WHERE id = {1}"
+                .format(amount, mvl))
 
-        # Clean invoices to remove the invoice_lines of the cancelled contract
+        # 3. Split a payment so that the amount deleted is isolated
+        #    in one move line that can be easily reconciled later.
+        #    If this fails, the process is aborted and has to be done by user
+        split_success = False
+        for payment_line in payment_mvl:
+            if not split_success and payment_line.credit > amount_deleted:
+                payment_line.write({
+                    'credit': payment_line.credit - amount_deleted})
+                payment_line.copy(default={
+                    'reconcile_id': False,
+                    'credit': amount_deleted}, context=context)
+                split_success = True
+        if not split_success:
+            raise orm.except_orm(
+                _('Cancel Invoice Error'),
+                _('The sponsor has already paid in advance for this '
+                  'sponsorship, but the system was unable to automatically '
+                  'cancel the invoices. Please refer to an accountant for '
+                  'changing the attribution of his payment before cancelling '
+                  'the sponsorship.'))
+
+        # 4. Call the hook for letting other modules handle the removal.
+        self._on_invoice_line_removal(cr, uid, invl_rm_data, context)
+
+        # 5. Clean open invoices
         super(recurring_contract, self).clean_invoices(
             cr, uid, ids, context, since_date)
 
-        # Reconcile again open invoices that can be treated automatically
-        invoice_obj = self.pool.get('account.invoice')
-        for invoice in invoice_obj.browse(cr, uid, list(inv_ids), context):
-            if invoice.state == 'open' and invoice.invoice_line:
-                for move_line in invoice.move_id.line_id:
-                    if move_line.debit > 0:
-                        pay_line_id = payment_lines.get(
-                            move_line.partner_id.id, False)
-                        if pay_line_id:
-                            move_line_ids = [pay_line_id, move_line.id]
-                            move_line_obj.split_payment_and_reconcile(
-                                cr, uid, move_line_ids, context)
-                        else:
-                            move_line.write({'name': _(
-                                "Invoice modified after sponsorship "
-                                "cancellation, to be reconciled again")})
-
         return True
+
+    def _on_invoice_line_removal(self, cr, uid, invoice_line, context=None):
+        # Hook for doing something before invoice_line deletion
+        pass
 
     def create(self, cr, uid, vals, context=None):
         """Link child to sponsor.
