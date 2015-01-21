@@ -139,8 +139,7 @@ class AccountStatementLine(orm.Model):
                 and b_line.contract_id.child_id and \
                 b_line.contract_id.child_id.birthdate:
             inv_data['date_invoice'] = self.pool.get(
-                'account.statement.'
-                'completion.rule').compute_date_birthday_invoice(
+                'generate.gift.wizard').compute_date_birthday_invoice(
                 b_line.contract_id.child_id.birthdate, b_line.date)
         invoice_id = invoice_obj.create(cr, uid, inv_data, context)
 

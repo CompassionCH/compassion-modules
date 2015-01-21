@@ -55,6 +55,12 @@ class generate_gift_wizard(orm.TransientModel):
                     [('type', '=', 'sale'), ('company_id', '=', 1 or False)],
                     limit=1)
 
+                if wizard.product_id.name == GIFT_TYPES[0]:   # Birthday Gift
+                    invoice_date = self.compute_date_birthday_invoice(
+                        contract.child_id.birthdate, wizard.invoice_date)
+                else:
+                    invoice_date = wizard.invoice_date
+
                 inv_data = {
                     'account_id': partner.property_account_receivable.id,
                     'type': 'out_invoice',
@@ -76,9 +82,7 @@ class generate_gift_wizard(orm.TransientModel):
                 raise orm.except_orm(
                     _("Generation Error"),
                     _("You can only generate gifts for active child "
-                      "sponsorships"),
-                )
-
+                      "sponsorships"))
         return {
             'name': _('Generated Invoices'),
             'view_mode': 'tree,form',
@@ -148,3 +152,16 @@ class generate_gift_wizard(orm.TransientModel):
             res['fields']['product_id']['domain'] = [('id', 'in', gifts_ids)]
 
         return res
+
+    def compute_date_birthday_invoice(self, child_birthdate, payment_date):
+        """Set date of invoice two months before child's birthdate"""
+        inv_date = datetime.strptime(payment_date, DF)
+        birthdate = datetime.strptime(child_birthdate, DF)
+        new_date = inv_date
+        if birthdate.month >= inv_date.month + 2:
+            new_date = inv_date.replace(day=28, month=birthdate.month-2)
+        elif birthdate.month + 3 < inv_date.month:
+            new_date = birthdate.replace(
+                day=28, year=inv_date.year+1) + relativedelta(months=-2)
+            new_date = max(new_date, inv_date)
+        return new_date.strftime(DF)
