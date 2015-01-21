@@ -16,6 +16,7 @@ from openerp.tools.translate import _
 
 from ..model.product import GIFT_TYPES
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import time
 
 
@@ -66,7 +67,7 @@ class generate_gift_wizard(orm.TransientModel):
                     'type': 'out_invoice',
                     'partner_id': partner.id,
                     'journal_id': len(journal_ids) and journal_ids[0] or False,
-                    'date_invoice': wizard.invoice_date,
+                    'date_invoice': invoice_date,
                     'payment_term': 1,  # Immediate payment
                     'bvr_reference': self._generate_bvr_reference(
                         contract, wizard.product_id),
