@@ -10,7 +10,6 @@
 ##############################################################################
 
 from openerp.osv import orm
-import pdb
 
 
 class generate_gift_wizard(orm.TransientModel):
