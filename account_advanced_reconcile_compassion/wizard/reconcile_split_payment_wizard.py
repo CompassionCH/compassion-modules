@@ -34,9 +34,10 @@ class reconcile_split_payment_wizard(orm.TransientModel):
                 if move_line and move_line.debit > 0:
                     invoice = move_line.invoice
                     if invoice and invoice.amount_total == move_line.debit:
-                            contract_ids.update([invoice_line.contract_id.id
-                                                 for invoice_line in
-                                                 invoice.invoice_line])
+                        contract_ids.update([invoice_line.contract_id.id
+                                             for invoice_line in
+                                             invoice.invoice_line
+                                             if invoice_line.contract_id])
         return {id: list(contract_ids) for id in ids}
 
     def _write_contracts(self, cr, uid, ids, field_name, field_value, arg,
