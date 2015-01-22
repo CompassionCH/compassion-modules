@@ -64,9 +64,19 @@ class project_project(orm.Model):
                 _("Type cannot be changed"),
                 _("You cannot change the type of the project. If the project "
                   "is linked to an event, change the type of the event."))
+        event_vals = dict()
         if 'user_id' in vals:
+            event_vals['user_id'] = vals['user_id']
             for project in self.browse(cr, uid, ids, context):
                 project.analytic_account_id.write({
                     'manager_id': vals['user_id']
                 })
+        if 'name' in vals:
+            event_vals['name'] = vals['name']
+        if event_vals and not context.get('from_event'):
+            event_obj = self.pool.get('crm.event.compassion')
+            event_ids = event_obj.search(
+                cr, uid, [('project_id', 'in', ids)], context=context)
+            if event_ids:
+                event_obj.write(cr, uid, event_ids, event_vals, context)
         return True
