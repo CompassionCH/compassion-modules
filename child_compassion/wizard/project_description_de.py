@@ -117,7 +117,7 @@ class Project_description_de:
                   u"sind" if len(spoken_languages) > 1 else u"ist",
                   cls._gen_list_string(spoken_languages, ', ', ' und ')))
 
-        if spoken_languages[0]:
+        if spoken_languages:
             string += (u" und die meist gesprochene Sprache ist %s. " % (
                        spoken_languages[0]))
         else:
@@ -130,15 +130,18 @@ class Project_description_de:
 
     @classmethod
     def _gen_health_prob_de(cls, cr, uid, project, context=None):
-        """ Generate health problemes of this region, there
+        """ Generate health problems of this region, there
             are no specificities in this part
         """
         health_prob = [prob.value_de if prob.value_de else prob.value_en
                        for prob in project.health_problems_ids]
 
-        string = (u"Verbereitete Gesundheitsporbleme %s %s. " % (
-                  u"sind" if len(health_prob) > 1 else u"ist",
-                  cls._gen_list_string(health_prob, ', ', ' und ')))
+        if health_prob:
+            string = (u"Verbereitete Gesundheitsporbleme %s %s. " % (
+                      u"sind" if len(health_prob) > 1 else u"ist",
+                      cls._gen_list_string(health_prob, ', ', ' und ')))
+        else:
+            string = ""
 
         return string
 
@@ -151,7 +154,7 @@ class Project_description_de:
                          for occup in project.primary_occupation_ids]
 
         monthly_income = int(round(project.monthly_income))
-        if primary_occup[0]:
+        if primary_occup:
             string = (u"Die Mehrheit der Erwachsenen von Lome ist %s und "
                       u"verdienen etwa %s Dollar pro Monat. " % (
                           primary_occup[0], monthly_income))

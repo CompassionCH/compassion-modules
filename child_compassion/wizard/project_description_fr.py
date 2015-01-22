@@ -51,7 +51,7 @@ class Project_description_fr:
                       project.distance_from_closest_city,
                       project.country_common_name,
                       project.community_name,
-                      "" if not terrain_desc[0] else u" dans une région " +
+                      "" if not terrain_desc else u" dans une région " +
                       terrain_desc[0],
                       project.community_name, project.community_population))
 
@@ -64,38 +64,21 @@ class Project_description_fr:
         """
         floor_mat = [mat.value_fr if mat.value_fr else mat.value_en
                      for mat in project.floor_material_ids]
-
         wall_mat = [mat.value_fr if mat.value_fr else mat.value_en
                     for mat in project.wall_material_ids]
-
         roof_mat = [mat.value_fr if mat.value_fr else mat.value_en
                     for mat in project.roof_material_ids]
 
-        string = u"Les maison typiques sont construites "
-
-        if wall_mat[0] and floor_mat[0] and roof_mat[0]:
-            string += (u"de sols en %s, de murs en %s et de toits en %s. " % (
-                       wall_mat[0], floor_mat[0], roof_mat[0]))
-
-        elif ((wall_mat[0] and floor_mat[0]) or (wall_mat[0] and
-              roof_mat[0]) or (floor_mat[0] and roof_mat[0])):
-            if not wall_mat[0]:
-                string += (u"de sols en %s et de toits en %s. " % (
-                           floor_mat[0], roof_mat[0]))
-            elif not floor_mat[0]:
-                string += (u"de murs en %s et de toits en %s. " % (
-                           wall_mat[0], roof_mat[0]))
-            elif not roof_mat[0]:
-                string += (u"de sols en %s et de murs en %s. " % (
-                           floor_mat[0], wall_mat[0]))
-
-        elif (wall_mat[0] or floor_mat[0] or roof_mat[0]):
-            if wall_mat[0]:
-                string += u"de murs en %s. " % wall_mat[0]
-            elif floor_mat[0]:
-                string += u"de sols en %s. " % floor_mat[0]
-            elif roof_mat[0]:
-                string += u"de toits en %s. " % roof_mat[0]
+        materials = []
+        if floor_mat:
+            materials.append(u"de sols en %s" % floor_mat[0])
+        if wall_mat:
+            materials.append(u"de murs en %s" % wall_mat[0])
+        if roof_mat:
+            materials.append(u"de toits en %s" % roof_mat[0])
+        if materials:
+            string = (u"Les maison typiques sont construites " +
+                      cls._gen_list_string(materials, ', ', ' et ') + ". ")
         else:
             string = ""
 
@@ -107,11 +90,10 @@ class Project_description_fr:
         """
         primary_diet = [diet.value_fr if diet.value_fr else diet.value_en
                         for diet in project.primary_diet_ids]
-
         spoken_languages = [lang.value_fr if lang.value_fr else lang.value_en
                             for lang in project.spoken_languages_ids]
 
-        if spoken_languages[0]:
+        if spoken_languages:
             string = (u"La langue la plus parlée à cet endroit est "
                       u"le %s. " % (spoken_languages[0]))
         else:
@@ -130,7 +112,7 @@ class Project_description_fr:
         health_prob = [prob.value_fr if prob.value_fr else prob.value_en
                        for prob in project.health_problems_ids]
 
-        if health_prob[0]:
+        if health_prob:
             sing_plur_subj = (u"Les problèmes"
                               if len(health_prob) > 1 else u"Le problème")
 
@@ -153,10 +135,9 @@ class Project_description_fr:
         """
         primary_occup = [occup.value_fr if occup.value_fr else occup.value_en
                          for occup in project.primary_occupation_ids]
-
         monthly_income = int(round(project.monthly_income))
 
-        if primary_occup[0]:
+        if primary_occup:
             string = (u"La plupart des adultes travaillent comme %s et gagnent"
                       u" environ $%s par mois. " % (
                           primary_occup[0], monthly_income))

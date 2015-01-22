@@ -15,8 +15,8 @@ from openerp.tools.translate import _
 
 
 class project_age_group(orm.Model):
+    """ The rate of participation in school by age """
     _name = 'compassion.project.age.group'
-    # 'compassion.project', 'age_groups_id', _('Age groups')),
 
     _columns = {
         'project_id': fields.many2one(
