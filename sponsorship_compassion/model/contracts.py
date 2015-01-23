@@ -594,7 +594,7 @@ class recurring_contract(orm.Model):
     ##############################
     #      CALLBACKS FOR GP      #
     ##############################
-    def validate_from_gp(self, cr, uid, contract_id, context=None):
+    def force_validation(self, cr, uid, contract_id, context=None):
         """ Used to transition draft sponsorships in waiting state
         when exported from GP. """
         wf_service = netsvc.LocalService('workflow')
@@ -603,14 +603,14 @@ class recurring_contract(orm.Model):
                                 'contract_validated', cr)
         return True
 
-    def activate_from_gp(self, cr, uid, contract_id, context=None):
+    def force_activation(self, cr, uid, contract_id, context=None):
         """ Used to transition draft sponsorships in active state
         when exported from GP. """
-        self.validate_from_gp(cr, uid, contract_id, context)
+        self.force_validation(cr, uid, contract_id, context)
         self._on_contract_active(cr, uid, [contract_id], context)
         return True
 
-    def terminate_from_gp(self, cr, uid, contract_id, end_state, end_reason,
+    def force_termination(self, cr, uid, contract_id, end_state, end_reason,
                           child_state, child_exit_code, end_date,
                           transfer_country_code, context=None):
         """ Used to delete the workflow of terminated or cancelled
