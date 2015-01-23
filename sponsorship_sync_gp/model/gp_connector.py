@@ -238,14 +238,13 @@ class GPConnect(mysql_connector):
         contract = invoice_line.contract_id
         product = invoice_line.product_id
 
-        if not contract:
-            raise orm.except_orm(
-                _('Missing sponsorship'),
-                _('Invoice line for sponsor %s is missing a sponsorship')
-                % invoice_line.partner_id.name)
-
         # Determine the nature of the payment (sponsorship, fund)
         if product.name in GIFT_TYPES + ['Sponsorship', 'LDP Sponsorship']:
+            if not contract:
+                raise orm.except_orm(
+                    _('Missing sponsorship'),
+                    _('Invoice line for sponsor %s is missing a sponsorship')
+                    % invoice_line.partner_id.name)
             codespe = contract.child_id.code
             if 'LDP' in product.name:
                 codespe = 'LDP'
