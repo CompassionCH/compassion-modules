@@ -222,10 +222,13 @@ class project_description_wizard(orm.TransientModel):
             }
 
     def _get_needs_desc(self, needs, keep_needs, desc, desc_trans):
-        """ This method verify if checkboxes about "needs"
-            are checked, and if "needs" fields are filled,
-            in any case, it will return the appropriate
-            project description.
+        """ This method:
+            - display a pattern of "project needs" of the project
+              description (it's a cloze text to fill in).
+            - store the modified pattern
+            - verify if checkboxes about "project needs" are checked
+            - verify if "project needs" fields are filled
+            - return the appropriate project description
         """
         if not desc:
             if ((keep_needs and not needs) or (keep_needs and

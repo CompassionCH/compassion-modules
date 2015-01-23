@@ -15,7 +15,10 @@ from openerp.tools.translate import _
 
 
 class project_age_group(orm.Model):
-    """ The rate of participation in school by age """
+    """ This section provides the school schedule of children
+        according to their age.
+        It will display the school days and school months. """
+
     _name = 'compassion.project.age.group'
 
     _columns = {
