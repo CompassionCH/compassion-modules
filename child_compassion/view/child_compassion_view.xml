@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data>
-		<!-- Top menu item -->
-		<menuitem name="Sponsorship"
-	              id="menu_sponsorship_root"
-	              groups="group_sponsorship"
-	              sequence="5"/>
-		<menuitem id="menu_sponsorship_section" parent="menu_sponsorship_root" name="Sponsorship" sequence="1"/>
+    <data>
+        <!-- Top menu item -->
+        <menuitem name="Sponsorship"
+            id="menu_sponsorship_root"
+            groups="group_sponsorship"
+            sequence="5"/>
+        <menuitem id="menu_sponsorship_section" parent="menu_sponsorship_root" name="Sponsorship" sequence="1"/>
 
         <!--Compassion child form view -->
         <record id="view_compassion_child_form" model="ir.ui.view">
