@@ -238,6 +238,12 @@ class GPConnect(mysql_connector):
         contract = invoice_line.contract_id
         product = invoice_line.product_id
 
+        if not contract:
+            raise orm.except_orm(
+                _('Missing sponsorship'),
+                _('Invoice line for sponsor %s is missing a sponsorship')
+                % invoice_line.partner_id.name)
+
         # Determine the nature of the payment (sponsorship, fund)
         if product.name in GIFT_TYPES + ['Sponsorship', 'LDP Sponsorship']:
             codespe = contract.child_id.code
@@ -289,14 +295,21 @@ class GPConnect(mysql_connector):
             'DATE_SAISIE': date.today().strftime('%Y-%m-%d'),
             'ID_POLE': id_pole,
             'MOIS': 1 if cadeau == 0 else 0,
+            'ID_ERP': invoice_line.id,
         }
         if not id_pole:
             del vals['ID_POLE']
-        insert_affectat = "INSERT INTO Affectat(%s) VALUES (%s)" % (
-            ",".join(vals.keys()),
-            ",".join(["%s" for i in range(0, len(vals))]))
+        insert_affectat = "INSERT INTO Affectat(%s) VALUES (%s) " \
+            "ON DUPLICATE KEY UPDATE %s" 
+        update_string = ",".join([key + "=VALUES(" + key + ")"
+                                  for key in vals.keys()])
+        sql_query = insert_affectat % (
+                ",".join(vals.keys()),
+                ",".join(vals.values()),
+                update_string)
+        logger.info(sql_query)
 
-        return self.query(insert_affectat, vals.values())
+        return self.query(sql_query, )
 
     def remove_affectat(self, invoice_id, invoice_date):
         max_date = self.selectOne("SELECT MAX(Date) AS Date FROM Affectat "
