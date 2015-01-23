@@ -305,11 +305,10 @@ class GPConnect(mysql_connector):
                                   for key in vals.keys()])
         sql_query = insert_affectat % (
                 ",".join(vals.keys()),
-                ",".join(vals.values()),
+                ",".join(["%s" for i in range(0, len(vals))]),
                 update_string)
-        logger.info(sql_query)
 
-        return self.query(sql_query, )
+        return self.query(sql_query, vals.values())
 
     def remove_affectat(self, invoice_id, invoice_date):
         max_date = self.selectOne("SELECT MAX(Date) AS Date FROM Affectat "
