@@ -99,21 +99,12 @@ class Child_description_it:
                       for activity in case_study.hobbies_ids]
         string = ''
         if activities:
+            pronoun = u'Li' if child.gender == 'M' else u'Le'
             if len(activities) > 1:
-                string = u'%s piacciono: ' % (u'Li' if child.gender == 'M'
-                                              else u'Le')
-                num_loop = 0
-                for activity in activities:
-                    num_loop += 1
-                    if num_loop == 1:
-                        string += activity
-                    elif num_loop == len(activities):
-                        string += u' e ' + activity + u'. '
-                    else:
-                        string += u', ' + activity
+                string = (u'%s piacciono: ' +
+                          cls._gen_list_string(activities) + '. ') % pronoun
             else:
-                string = u'%s piace: %s.' % (
-                    u'Li' if child.gender == 'M' else u'Le', activities)
+                string = u'%s piace: %s.' % (pronoun, activities[0])
         return string
 
     @classmethod

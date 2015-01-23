@@ -1,39 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data>
-		<!--Compassion project form view -->
-		<record id="view_compassion_project_form" model="ir.ui.view">
-			<field name="name">compassion.project.form</field>
-			<field name="model">compassion.project</field>
-			<field name="arch" type="xml">
-				<form string="Project" version="7.0">
-					<header>
-						<field name="status" widget="statusbar" />
-					</header>
-					<sheet>
-						<div class="oe_title">
-							<label for="name" class="oe_edit_only"/>
-							<h1>
-								<field name="name"/>
-							</h1>
-						</div>
-						<div class="oe_right oe_button_box" name="button_box">
-							<button name="update_informations" type="object" string="Update informations" />
-						</div>
-						<notebook>
-							<page string="General Information">
-								<group>
-									<group>
-										<field name="code" />
-										<field name="type" />
-										<field name="suspension" />
-										<field name="status_date" />
-										<field name="status_comment" />
-									</group>
-									<group>
-										<field name="start_date" />
-										<field name="stop_date" />
-										<field name="last_update_date" />
+    <data>
+        <!--Compassion project form view -->
+        <record id="view_compassion_project_form" model="ir.ui.view">
+            <field name="name">compassion.project.form</field>
+            <field name="model">compassion.project</field>
+            <field name="arch" type="xml">
+                <form string="Project" version="7.0">
+                    <header>
+                        <field name="status" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <div class="oe_right oe_button_box" name="button_box">
+                            <button name="update_informations" type="object" string="Update informations" />
+                            <button name="generate_descriptions" string="Generate descriptions" type="object" />
+                        </div>
+                        <notebook>
+                            <page string="General Information">
+                                <group>
+                                    <group>
+                                        <field name="code" />
+                                        <field name="type" />
+                                        <field name="suspension" />
+                                        <field name="status_date" />
+                                        <field name="status_comment" />
+                                    </group>
+                                    <group>
+                                        <field name="start_date" />
+                                        <field name="stop_date" />
+                                        <field name="last_update_date" />
                                         <field name="country_id" />
                                     </group>
                                 </group>
@@ -44,6 +45,20 @@
                                     <field name="country_denomination" />
                                     <field name="western_denomination" />
                                     <field name="community_name" />
+                                </group>
+                            </page>
+                            <page string="Description">
+                                <group>
+                                    <field name="description_en" />
+                                </group>
+                                <group>
+                                    <field name="description_fr" />
+                                </group>
+                                <group>
+                                    <field name="description_de" />
+                                </group>
+                                <group>
+                                    <field name="description_it" />
                                 </group>
                             </page>
                             <page string="Miscellaneous">
@@ -69,19 +84,8 @@
                                         <field name="spiritual_needs" />
                                     </group>
                                 </group>
-                            </page>
-                            <page string="Description">
                                 <group>
-                                    <field name="description_en" />
-                                </group>
-                                <group>
-                                    <field name="description_fr" />
-                                </group>
-                                <group>
-                                    <field name="description_de" />
-                                </group>
-                                <group>
-                                    <field name="description_it" />
+                                    <field name="age_group_ids" />
                                 </group>
                             </page>
                         </notebook>
@@ -122,6 +126,6 @@
             <field name="view_id" ref="view_compassion_project_tree"/>
         </record>
 
-		<menuitem id="menu_sponsorship_project" parent="menu_sponsorship_section" name="Projects" action="open_view_project_tree" sequence="3"/>
-	</data>
+        <menuitem id="menu_sponsorship_project" parent="menu_sponsorship_section" name="Projects" action="open_view_project_tree" sequence="3"/>
+    </data>
 </openerp>

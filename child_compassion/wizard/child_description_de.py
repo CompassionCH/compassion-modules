@@ -80,7 +80,7 @@ class Child_description_de:
         hobbies_sesg = [
             'baseball', 'basketball', 'cars', 'group games',
             'hide and seek', 'jacks', 'other ball games', 'ping pong',
-            'play house', 'soccer/footbal', 'volleyball',
+            'play house', 'soccer/football', 'volleyball',
             'dolls', 'marbles', 'rolling a hoop',
             ]
         hobbies_se = [

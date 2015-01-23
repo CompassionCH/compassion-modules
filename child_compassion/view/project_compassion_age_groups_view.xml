@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_project_age_group_form" model="ir.ui.view">
+            <field name="name">compassion.project.age.group.form</field>
+            <field name="model">compassion.project.age.group</field>
+            <field name="arch" type="xml">
+                <form string="Age group" version="7.0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="low_age" />
+                                <field name="high_age" />
+                                <field name="school_hours" />
+                                <field name="school_days_ids" />
+                                <field name="school_months_ids" />
+                            </group>
+                        </group>
+                        <group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_project_age_group_tree" model="ir.ui.view">
+            <field name="name">compassion.project.age.group.tree</field>
+            <field name="model">compassion.project.age.group</field>
+            <field name="arch" type="xml">
+                <tree string="Project age group">
+                    <field name="low_age" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="act_translated_tree" model="ir.actions.act_window">
+            <field name="name">Age group</field>
+            <field name="res_model">compassion.project.age.group</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="view_project_age_group_tree"/>
+        </record>
+    </data>
+</openerp>
