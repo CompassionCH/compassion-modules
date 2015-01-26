@@ -299,13 +299,13 @@ class GPConnect(mysql_connector):
         if not id_pole:
             del vals['ID_POLE']
         insert_affectat = "INSERT INTO Affectat(%s) VALUES (%s) " \
-            "ON DUPLICATE KEY UPDATE %s" 
+            "ON DUPLICATE KEY UPDATE %s"
         update_string = ",".join([key + "=VALUES(" + key + ")"
                                   for key in vals.keys()])
         sql_query = insert_affectat % (
-                ",".join(vals.keys()),
-                ",".join(["%s" for i in range(0, len(vals))]),
-                update_string)
+            ",".join(vals.keys()),
+            ",".join(["%s" for i in range(0, len(vals))]),
+            update_string)
 
         return self.query(sql_query, vals.values())
 
