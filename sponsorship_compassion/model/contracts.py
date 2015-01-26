@@ -366,7 +366,8 @@ class recurring_contract(orm.Model):
                 # Replace sponsor categoy by old sponsor category
                 partner_categories = set(
                     [cat.id for cat in contract.partner_id.category_id])
-                partner_categories.remove(sponsor_cat_id)
+                if sponsor_cat_id in partner_categories:
+                    partner_categories.remove(sponsor_cat_id)
                 partner_categories.add(old_sponsor_cat_id)
                 # Standard way in Odoo to set one2many fields
                 contract.partner_id.write({

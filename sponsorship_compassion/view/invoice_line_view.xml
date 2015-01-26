@@ -20,7 +20,7 @@
             <field eval="18" name="priority"/>
             <field name="arch" type="xml">
                 <xpath expr="//tree[@string='Invoice Lines']/field[@name='name']" position="after">
-                    <field name="contract_id" domain="[('partner_id', '=', parent.partner_id), ('state', 'in', ('waiting','active'))]"/>
+                    <field name="contract_id" domain="[('partner_id', '=', parent.partner_id), ('state', '!=', 'draft')]"/>
                     <field name="child_name" />
                 </xpath>
 
