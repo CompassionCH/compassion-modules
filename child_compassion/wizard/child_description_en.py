@@ -103,7 +103,7 @@ class Child_description_en:
         ]
         hobbies_shep = [
             'baseball', 'basketball', 'hide and seek', 'other ball games',
-            'ping pong', 'soccer/footbal', 'volleyball',
+            'ping pong', 'soccer/football', 'volleyball',
         ]
         hobbies_shet = [
             'jump rope', 'play house',

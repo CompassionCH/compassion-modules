@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_project_description_wizard" model="ir.ui.view">
+            <field name="name">compassion.project.description.wizard</field>
+            <field name="model">project.description.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Description generation" version="7.0">
+                    <sheet states="values">
+                        <field name="state" invisible="1" />
+                        <group string="Complete missing translations if needed">
+                            <field name="project_property_value_ids" nolabel="1" />
+                        </group>
+                    </sheet>
+                    <sheet states="needs">
+                        <separator string="Complete needs descriptions" />
+                        <div>
+                            <label for="needs_desc_en" class="oe_checklist_label" />
+                            <field name="needs_desc_en" class="oe_checklist_value" readonly="1"/>
+                        </div>
+                        <div>
+                            <field name="keep_needs_desc_fr" class="oe_checklist_box" />
+                            <label for="needs_desc_fr" class="oe_checklist_label" />
+                            <field name="needs_desc_fr" class="oe_checklist_value"/>
+                        </div>
+                        <div class="oe_checklist_div">
+                            <field name="keep_needs_desc_de" class="oe_checklist_box" />
+                            <label for="needs_desc_de" class="oe_checklist_label" />
+                            <field name="needs_desc_de" class="oe_checklist_value"/>
+                        </div>
+                        <div>
+                            <field name="keep_needs_desc_it" class="oe_checklist_box" />
+                            <label for="needs_desc_it" class="oe_checklist_label" />
+                            <field name="needs_desc_it" class="oe_checklist_value"/>
+                        </div>
+                    </sheet>
+                    <sheet states="descriptions">
+                        <separator string="Check and select descriptions to validate" />
+                        <div>
+                            <field name="keep_desc_fr" class="oe_checklist_box" />
+                            <label for="desc_fr" class="oe_checklist_label" />
+                            <field name="desc_fr" class="oe_checklist_value"/>
+                        </div>
+                        <div class="oe_checklist_div">
+                            <field name="keep_desc_de" class="oe_checklist_box" />
+                            <label for="desc_de" class="oe_checklist_label" />
+                            <field name="desc_de" class="oe_checklist_value"/>
+                        </div>
+                        <div>
+                            <field name="keep_desc_it" class="oe_checklist_box" />
+                            <label for="desc_it" class="oe_checklist_label" />
+                            <field name="desc_it" class="oe_checklist_value"/>
+                        </div>
+                    </sheet>
+                    <footer>
+                        <button name="generate_needs_descriptions" class="oe_highlight" string="Next" type="object" states="values" />
+                        <button name="generate_descriptions" class="oe_highlight" string="Next" type="object" states="needs" />
+                        <button name="validate_descriptions" class="oe_highlight" string="Finish" type="object" states="descriptions" />
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

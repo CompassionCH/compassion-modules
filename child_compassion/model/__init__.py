@@ -14,3 +14,4 @@ from . import child_properties
 from . import country_compassion
 from . import project_compassion
 from . import translated_value
+from . import project_age_group

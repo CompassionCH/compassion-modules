@@ -53,6 +53,10 @@ class compassion_project(orm.Model):
         'description_de': fields.text(_('German description')),
         'description_it': fields.text(_('Italian description')),
 
+        'needs_fr': fields.text(_('French needs')),
+        'needs_de': fields.text(_('German needs')),
+        'needs_it': fields.text(_('Italian needs')),
+
         ######################################################################
         #                      3. Community Information
         ######################################################################
@@ -70,6 +74,7 @@ class compassion_project(orm.Model):
         'country_denomination': fields.char(_('Local denomination')),
         'western_denomination': fields.char(_('Western denomination')),
         'community_name': fields.char(_('Community name')),
+        'country_common_name': fields.text(_('Country common name')),
 
         ######################################################################
         #                    4. Miscellaneous Information
@@ -120,6 +125,13 @@ class compassion_project(orm.Model):
         'education_needs': fields.text(_('Education needs')),
         'social_needs': fields.text(_('Social needs')),
         'spiritual_needs': fields.text(_('Spiritual needs')),
+        'distance_from_closest_city': fields.text(_('Distance from closest '
+                                                    'city')),
+        # d. Age groups section
+        'age_group_ids': fields.one2many(
+            'compassion.project.age.group', 'project_id',
+            _('Age group'),
+            readonly=True, track_visibility="onchange"),
         }
 
     def update_informations(self, cr, uid, ids, context=None):
@@ -127,8 +139,8 @@ class compassion_project(orm.Model):
             them accordingly. """
         if not isinstance(ids, list):
             ids = [ids]
-
         for project in self.browse(cr, uid, ids, context):
+            self._get_age_groups(cr, uid, project, context)
             values, community_id = self._update_program_info(
                 cr, uid, project, context)
             values.update(
@@ -136,7 +148,6 @@ class compassion_project(orm.Model):
             if values['type'] == 'CDSP':
                 values.update(self._update_cdsp_info(cr, uid,
                                                      project.code, context))
-
             self.write(cr, uid, [project.id], values, context=context)
         return True
 
@@ -162,11 +173,22 @@ class compassion_project(orm.Model):
             'community_name': prog_impl.get('communityName'),
             'country_id': self._update_country(
                 cr, uid, prog_impl.get('isoCountryCode'), context),
+            'country_common_name': prog_impl.get('countryCommonName'),
         }
-
         community_id = prog_impl.get('communityID')
         return {field_name: value for field_name, value in values.iteritems()
                 if value}, community_id
+
+    def generate_descriptions(self, cr, uid, project_id, context=None):
+        return {
+            'name': _('Description generation'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'project.description.wizard',
+            'context': context,
+            'target': 'new',
+        }
 
     def _update_country(self, cr, uid, country_code, context=None):
         """ Finds the country having the given country_code or
@@ -183,6 +205,35 @@ class compassion_project(orm.Model):
                 cr, uid, {'iso_code': country_code}, context=context)
             country_obj.update_informations(cr, uid, [country_id], context)
         return country_id
+
+    def _get_age_groups(self, cr, uid, project, context=None):
+        """ Get age group from compassion webservice and l
+            Returns ids of generated age_groups or None if failed """
+        # Delete old age_groups
+        for age_group in project.age_group_ids:
+            project.write({'age_group_ids': [(2, age_group.id)]})
+        json_data = self._cornerstone_fetch(project.code + '/agegroups',
+                                            'cdspimplementors')
+        value_obj = self.pool.get('compassion.translated.value')
+        age_project_obj = self.pool.get('compassion.project.age.group')
+        for group in json_data['projectAgeGroupCollection']:
+            values = list()
+            vals = {
+                'project_id': project.id,
+                'low_age': group['lowAge'],
+                'high_age': group['highAge'],
+                'school_hours': group['schoolHours'],
+            }
+            values.extend(value_obj.get_value_ids(
+                cr, uid, group['schoolDays'].split(','),
+                'school_days', context))
+            values.extend(value_obj.get_value_ids(
+                cr, uid, group['schoolMonths'].split(','),
+                'school_months', context))
+
+            vals['school_days_ids'] = [(6, 0, values)]
+            age_project_obj.create(cr, uid, vals, context)
+        return True
 
     def _update_community_info(self, cr, uid, community_id, context=None):
         """ Call the "REST Get Community" API from Compassion.
@@ -202,6 +253,8 @@ class compassion_project(orm.Model):
             'social_needs': json_values['socialNeeds'],
             'spiritual_needs': json_values['spiritualNeeds'],
             'closest_city': json_values['closestCityName'],
+            'distance_from_closest_city': json_values['distanceFrom'
+                                                      'ClosestCity'],
         }
 
         # Automatic translated fields retrieval
@@ -279,6 +332,7 @@ class compassion_project(orm.Model):
                                    'in conf file'))
         if url.endswith('/'):
             url = url[:-1]
+
         url += ('/ci/v1/' + api_mess + '/' + project_code + '?api_key='
                 + api_key)
 
