@@ -222,6 +222,11 @@ class recurring_contract(orm.Model):
         'has_mandate': fields.function(
             _has_mandate, type='boolean', string='Has mandate'),
         'name': fields.function(_name_get, type='char'),
+        'partner_id': fields.many2one(
+            'res.partner', string=_('Partner'), required=True,
+            readonly=False, states={'terminated': [('readonly', True)]},
+            ondelete='restrict',
+            track_visibility='onchange'),
     }
 
     def _get_standard_lines(self, cr, uid, context=None):
@@ -276,8 +281,20 @@ class recurring_contract(orm.Model):
         num_contracts = self.search(
             cr, uid, [('partner_id', '=', partner_id)], context=context,
             count=True)
+        # If contract created check state
+        if ids:
+            contract = self.browse(cr, uid, ids[0], context)
+            # If state draft correspondant_id=parent_id
+            if (contract.state == 'draft'):
+                res['value'].update({
+                    'correspondant_id': partner_id,
+                })
+        # Else correspondant_id=parent_id
+        else:
+            res['value'].update({
+                'correspondant_id': partner_id,
+            })
         res['value'].update({
-            'correspondant_id': partner_id,
             'num_pol_ga': num_contracts
         })
         return res
@@ -541,6 +558,9 @@ class recurring_contract(orm.Model):
 
         res = super(recurring_contract, self).write(cr, uid, ids, vals,
                                                     context=context)
+
+        if 'partner_id' in vals:
+            self.reset_open_invoices(cr, uid, ids, context)
 
         # Modify open invoices
         if 'contract_line_ids' in vals:
@@ -830,6 +850,8 @@ class recurring_contract(orm.Model):
         wf_service.trg_delete(uid, 'recurring.contract', contract_id, cr)
         logger.info("Contract " + str(contract_id) + " terminated.")
         return True
+
+        # def _change_partner_id ():
 
 
 # just to modify access rights...
