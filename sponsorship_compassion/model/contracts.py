@@ -207,6 +207,9 @@ class recurring_contract(orm.Model):
             string=_('Frequency'), store=False),
         'end_reason': fields.selection(get_ending_reasons, _('End reason'),
                                        select=True),
+        'end_date': fields.date(
+            _('End date'), readonly=True,
+            track_visibility="onchange"),
         'origin_id': fields.many2one('recurring.contract.origin', _("Origin"),
                                      required=True, ondelete='restrict',
                                      track_visibility='onchange'),

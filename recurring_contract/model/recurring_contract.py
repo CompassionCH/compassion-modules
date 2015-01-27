@@ -124,7 +124,8 @@ class recurring_contract(orm.Model):
             states={'draft': [('readonly', False)]},
             track_visibility="onchange"),
         'end_date': fields.date(
-            _('End date'), readonly=True,
+            _('End date'), readonly=False,
+            states={'terminated': [('readonly', True)]},
             track_visibility="onchange"),
         'next_invoice_date': fields.date(
             _('Next invoice date'), readonly=False,
