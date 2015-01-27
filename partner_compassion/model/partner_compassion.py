@@ -29,7 +29,7 @@ class ResPartner(orm.Model):
         lang_pool = self.pool.get('res.lang')
         ids = lang_pool.search(cr, uid, [], context=context)
         res = lang_pool.read(cr, uid, ids, ['code', 'name'], context)
-        return [(False, '')] + [(r['code'], r['name']) for r in res]
+        return [(r['code'], r['name']) for r in res]
 
     def _is_church(self, cr, uid, ids, field_name, arg, context=None):
         """ Tell if the given Partners are Church Partners
@@ -337,7 +337,6 @@ class ResPartner(orm.Model):
         'christmas_card': True,
         'birthday_reminder': True,
         'opt_out': True,
-        'lang': lambda self, cr, uid, ctx: 'fr_CH'
     }
 
     def _fill_fields(self, record, vals):
