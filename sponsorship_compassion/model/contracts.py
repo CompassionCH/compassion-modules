@@ -207,6 +207,9 @@ class recurring_contract(orm.Model):
             string=_('Frequency'), store=False),
         'end_reason': fields.selection(get_ending_reasons, _('End reason'),
                                        select=True),
+        'end_date': fields.date(
+            _('End date'), readonly=True,
+            track_visibility="onchange"),
         'origin_id': fields.many2one('recurring.contract.origin', _("Origin"),
                                      required=True, ondelete='restrict',
                                      track_visibility='onchange'),
@@ -338,9 +341,7 @@ class recurring_contract(orm.Model):
         return True
 
     def contract_cancelled(self, cr, uid, ids, context=None):
-        today = datetime.today().strftime(DF)
-        self.write(cr, uid, ids, {'state': 'cancelled',
-                                  'end_date': today}, context)
+        self.write(cr, uid, ids, {'state': 'cancelled'}, context)
         # Remove the sponsor of the child
         for contract in self.browse(cr, uid, ids, context):
             if contract.child_id:
@@ -348,8 +349,8 @@ class recurring_contract(orm.Model):
         return True
 
     def contract_terminated(self, cr, uid, ids, context=None):
-        super(recurring_contract, self).contract_terminated(cr, uid, ids,
-                                                            context)
+        self.write(cr, uid, ids, {'state': 'terminated'})
+
         ctx = {'lang': 'en_US'}
         category_obj = self.pool.get('res.partner.category')
         sponsor_cat_id = category_obj.search(

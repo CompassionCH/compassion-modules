@@ -17,10 +17,10 @@
                 <field name="inherit_id" ref="partner_firstname.view_partner_form_firstname"/>
                 <field name="arch" type="xml">
                     <!-- Restore default view of the contact and remove the ability to create a society as contact -->
-                    <xpath expr="//form[@string='Contact']/sheet//field[@name='is_company']" position="attributes">
+                    <!-- <xpath expr="//form[@string='Contact']/sheet//field[@name='is_company']" position="attributes">
                         <attribute name="invisible">1</attribute>
                     </xpath>
-                    <xpath expr="//form[@string='Contact']/sheet//label[@for='is_company']" position="replace" />
+                    <xpath expr="//form[@string='Contact']/sheet//label[@for='is_company']" position="replace" /> -->
                     <xpath expr="//form[@string='Contact']/sheet//field[@name='lastname']" position="before">
                         <field name="title" />
                     </xpath>
@@ -43,7 +43,7 @@
                 <!-- Add all necessary fields in inner contact form of child_ids -->
                 <xpath expr="//form[@string='Contact']/sheet/group[1]" position="after">
                     <group>
-                        <field name="lang" invisible="1" />
+                        <field name="lang"  /><!-- invisible="1" -->
                         <field name="opt_out"/>
                         <field name="tax_certificate"/>
                         <field name="thankyou_letter"/>
@@ -57,7 +57,8 @@
 
                 <!-- Set default value for lang and street3 in contact form (and keep others) -->
                 <xpath expr="//page[@string='Contacts']//field[@name='child_ids']" position="attributes">
-                    <attribute name="context">{'default_parent_id': active_id, 'default_street': street, 'default_street2': street2, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_supplier': supplier, 'default_lang': lang, 'default_street3':street3}</attribute>
+                    <attribute name="context">{'default_parent_id': active_id, 'default_street': street, 'default_street2': street2, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_supplier': supplier, 'default_lang': lang,
+                    'default_street3':street3}</attribute>
             	</xpath>
                 
                 <!-- Add the church field -->
