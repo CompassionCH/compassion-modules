@@ -124,8 +124,7 @@ class recurring_contract(orm.Model):
             states={'draft': [('readonly', False)]},
             track_visibility="onchange"),
         'end_date': fields.date(
-            _('End date'), readonly=False,
-            states={'terminated': [('readonly', True)]},
+            _('End date'), readonly=True,
             track_visibility="onchange"),
         'next_invoice_date': fields.date(
             _('Next invoice date'), readonly=False,
@@ -343,8 +342,7 @@ class recurring_contract(orm.Model):
         return True
 
     def contract_terminated(self, cr, uid, ids, context=None):
-        today = datetime.today().strftime(DF)
-        self.write(cr, uid, ids, {'state': 'terminated', 'end_date': today})
+        self.write(cr, uid, ids, {'state': 'terminated'})
         return True
 
     def end_date_reached(self, cr, uid, context=None):

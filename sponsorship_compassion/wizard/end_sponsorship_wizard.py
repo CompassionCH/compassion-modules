@@ -78,7 +78,9 @@ class end_sponsorship_wizard(orm.TransientModel):
         contract = wizard.contract_id
 
         # Terminate contract
-        contract.write({'end_reason': wizard.end_reason})
+        contract.write({'end_reason': wizard.end_reason,
+                        'end_date': wizard.end_date})
+
         wf_service = netsvc.LocalService('workflow')
         wf_service.trg_validate(
             uid, 'recurring.contract', contract.id, 'contract_terminated', cr)
