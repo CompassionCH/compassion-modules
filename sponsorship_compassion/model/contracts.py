@@ -346,8 +346,8 @@ class recurring_contract(orm.Model):
         return True
 
     def contract_terminated(self, cr, uid, ids, context=None):
-        super(recurring_contract, self).contract_terminated(cr, uid, ids,
-                                                            context)
+        self.write(cr, uid, ids, {'state': 'terminated'})
+
         ctx = {'lang': 'en_US'}
         category_obj = self.pool.get('res.partner.category')
         sponsor_cat_id = category_obj.search(

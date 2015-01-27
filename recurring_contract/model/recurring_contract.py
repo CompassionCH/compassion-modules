@@ -342,6 +342,8 @@ class recurring_contract(orm.Model):
         return True
 
     def contract_terminated(self, cr, uid, ids, context=None):
+        today = datetime.today().strftime(DF)
+        self.write(cr, uid, ids, {'state': 'terminated', 'end_date': today})
         self.write(cr, uid, ids, {'state': 'terminated'})
         return True
 
