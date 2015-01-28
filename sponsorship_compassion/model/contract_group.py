@@ -209,6 +209,10 @@ class contract_group(orm.Model):
                         wf_service.trg_validate(
                             uid, 'recurring.contract', contract.id,
                             'will_pay_by_lsv_dd', cr)
+                        # Update reference to put a valid one for LSV
+                        if group.bvr_reference:
+                            vals['bvr_reference'] = mod10r(
+                                '004874969' + group.bvr_reference[9:-1])
                     elif 'LSV' in old_term or 'Postfinance' in old_term:
                         wf_service.trg_validate(
                             uid, 'recurring.contract', contract.id,

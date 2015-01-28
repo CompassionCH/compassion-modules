@@ -588,8 +588,9 @@ class recurring_contract(orm.Model):
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
             # Update payment term and generate new invoice_lines
             invoice.write({
-                'payment_term_id': contract.group_id.payment_term_id and
-                contract.group_id.payment_term_id.id or False})
+                'payment_term': contract.group_id.payment_term_id and
+                contract.group_id.payment_term_id.id or False,
+                'bvr_reference': contract.group_id.bvr_reference})
             old_lines_ids = [invl.id for invl in invoice.invoice_line
                              if invl.contract_id.id == contract.id]
             inv_line_obj.unlink(cr, uid, old_lines_ids)

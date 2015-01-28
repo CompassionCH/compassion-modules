@@ -11,6 +11,7 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
+from openerp.tools import mod10r
 
 
 class invoice_line(orm.Model):
@@ -63,3 +64,21 @@ class invoice_line(orm.Model):
             store={'account.invoice': (_get_invoice_lines,
                                        ['payment_ids', 'state'], 20)}),
     }
+
+
+class account_invoice(orm.Model):
+    """Generate automatically a BVR Reference for LSV Invoices"""
+    _inherit = 'account.invoice'
+
+    def action_date_assign(self, cr, uid, ids, context=None):
+        """Method called when invoice is validated. Add BVR Reference
+        if payment term is LSV and no reference is set.
+        """
+        for invoice in self.browse(cr, uid, ids, context):
+            if invoice.payment_term and 'LSV' in invoice.payment_term.name \
+                    and not invoice.bvr_reference:
+                seq = self.pool.get('ir.sequence')
+                ref = mod10r(seq.next_by_code(cr, uid, 'contract.bvr.ref'))
+                invoice.write({'bvr_reference': ref})
+        return super(account_invoice, self).action_date_assign(cr, uid, ids,
+                                                               context)

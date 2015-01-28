@@ -44,14 +44,6 @@ class account_invoice(Model):
         'Error: BVR ref should only contain number (max. 27) and spaces.',
         ['bvr_reference'])]
 
-    def _get_bvr_ref(self, cr, uid, invoice, context=None):
-        ''' Overload to take manual bvr ref if exists '''
-        if invoice.bvr_reference:
-            return invoice.bvr_reference
-        else:
-            return super(account_invoice, self)._get_bvr_ref(cr, uid, invoice,
-                                                             context)
-
 
 class account_move_line(Model):
     _inherit = 'account.move.line'

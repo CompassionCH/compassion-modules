@@ -136,6 +136,9 @@ class generate_gift_wizard(orm.TransientModel):
         bvr_reference += str(GIFT_TYPES.index(product.name)+1)
         bvr_reference += '0' * 4
 
+        if contract.group_id.payment_term_id and \
+                'LSV' in contract.group_id.payment_term_id.name:
+            bvr_reference = '004874969' + bvr_reference[9:]
         if len(bvr_reference) == 26:
             return mod10r(bvr_reference)
 
