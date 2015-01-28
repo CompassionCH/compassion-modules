@@ -231,7 +231,7 @@ class contract_group(orm.Model):
         if 'bvr_reference' in vals:
             inv_vals['bvr_reference'] = vals['bvr_reference']
             for group in self.browse(cr, uid, ids, context):
-                contract_ids.append(c.id for c in group.contract_ids)
+                contract_ids.update([c.id for c in group.contract_ids])
 
         res = super(contract_group, self).write(cr, uid, ids, vals, context)
 
