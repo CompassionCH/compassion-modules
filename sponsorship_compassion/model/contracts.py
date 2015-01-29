@@ -811,7 +811,7 @@ class recurring_contract(orm.Model):
 
         if 'contract_line_ids' in vals:
             self._on_contract_lines_changed(cr, uid, ids, context)
-        if 'group_id' or 'partner_id' in vals:
+        if 'group_id' in vals or 'partner_id' in vals:
             self._on_group_id_changed(cr, uid, ids, context)
 
         return res
