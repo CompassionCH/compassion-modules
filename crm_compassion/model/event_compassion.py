@@ -84,7 +84,8 @@ class event_compassion(orm.Model):
         'state_id': fields.many2one('res.country.state', 'State'),
         'zip': fields.char('ZIP', size=24),
         'country_id': fields.many2one('res.country', 'Country'),
-        'user_id': fields.many2one('res.users', _("Responsible")),
+        'user_id': fields.many2one('res.users', _("Responsible"),
+                                   track_visibility='onchange'),
         'staff_ids': fields.many2many(
             'res.partner', 'partners_to_staff_event', 'event_id',
             'partner_id', _("Staff")),
@@ -131,10 +132,15 @@ class event_compassion(orm.Model):
         analytic_id = self.pool.get('project.project').browse(
             cr, uid, project_id, context).analytic_account_id.id
         origin_obj = self.pool.get('recurring.contract.origin')
+        # Avoid putting twice the date in origin name
+        event_year = event.start_date[:4]
+        if event.name[-4:] == event_year:
+            event_year = ""
+        else:
+            event_year = " " + event_year
         origin_id = origin_obj.create(cr, uid, {
-            'name': event.name + " " + event.start_date[:4],
+            'name': event.name + event_year,
             'type': 'event',
-            'partner_id': event.partner_id.id,
             'event_id': new_id,
             'analytic_id': analytic_id,
         }, context)
