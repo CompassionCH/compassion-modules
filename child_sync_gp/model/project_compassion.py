@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -19,7 +19,7 @@ from dateutil.relativedelta import relativedelta
 
 class project_compassion(orm.Model):
     _inherit = 'compassion.project'
-
+    
     def suspend_project_from_gp(self, cr, uid, project_id, start, months,
                                 context=None):
         """ When a project is suspended from GP, We update all contracts of

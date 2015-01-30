@@ -114,7 +114,7 @@ class contracts(orm.Model):
 
     def _write_contract_in_gp(self, uid, gp_connect, contract):
         if self._is_gp_compatible(contract):
-            if not gp_connect.create_or_update_contract(uid, contract):
+            if not gp_connect.upsert_contract(uid, contract):
                 raise orm.except_orm(
                     _("GP Sync Error"),
                     _("Please contact an IT person."))
@@ -244,7 +244,7 @@ class contract_group(orm.Model):
         gp_connect = gp_connector.GPConnect(cr, uid)
         for group in self.browse(cr, uid, ids, context):
             for contract in group.contract_ids:
-                if not gp_connect.create_or_update_contract(uid, contract):
+                if not gp_connect.upsert_contract(uid, contract):
                     raise orm.except_orm(
                         _("GP Sync Error"),
                         _("Please contact an IT person."))

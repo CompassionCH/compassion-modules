@@ -9,6 +9,4 @@
 #
 ##############################################################################
 
-from . import gp_connector
-from . import contracts
-from . import account_invoice
+from . import model
