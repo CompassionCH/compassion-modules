@@ -70,8 +70,6 @@ class contracts(orm.Model):
         # Write contract in GP
         contract = self.browse(cr, uid, contract_id, ctx)
         self._write_contract_in_gp(uid, gp_connect, contract)
-        # Close MySQL connection
-        del(gp_connect)
 
         return contract_id
 
@@ -108,8 +106,6 @@ class contracts(orm.Model):
         res = super(contracts, self).write(cr, uid, ids, vals, context)
         for contract in self.browse(cr, uid, ids, ctx):
             self._write_contract_in_gp(uid, gp_connect, contract)
-        # Close MySQL connection
-        del(gp_connect)
         return res
 
     def _write_contract_in_gp(self, uid, gp_connect, contract):
@@ -123,7 +119,6 @@ class contracts(orm.Model):
                 _("Not compatible with GP"),
                 _("You selected some products that are not available "
                   "in GP.") + _("You cannot save this contract."))
-        del(gp_connect)
 
     def _is_gp_compatible(self, contract):
         """ Tells if the contract is compatible with GP. """
@@ -146,7 +141,6 @@ class contracts(orm.Model):
                     _("GP Sync Error"),
                     _("The sponsorship could not be validated.") +
                     _("Please contact an IT person."))
-        del(gp_connect)
         return True
 
     def contract_cancelled(self, cr, uid, ids, context=None):
@@ -159,7 +153,6 @@ class contracts(orm.Model):
                     _("GP Sync Error"),
                     _("The sponsorship could not be terminated.") +
                     _("Please contact an IT person."))
-        del(gp_connect)
         return True
 
     def contract_terminated(self, cr, uid, ids, context=None):
@@ -172,7 +165,6 @@ class contracts(orm.Model):
                     _("GP Sync Error"),
                     _("The sponsorship could not be terminated.") +
                     _("Please contact an IT person."))
-        del(gp_connect)
         return True
 
     def _on_contract_active(self, cr, uid, ids, context=None):
@@ -185,7 +177,6 @@ class contracts(orm.Model):
                     _("GP Sync Error"),
                     _("The sponsorship could not be activated.") +
                     _("Please contact an IT person."))
-        del(gp_connect)
 
     def _invoice_paid(self, cr, uid, invoice, context=None):
         """ When a customer invoice is paid, synchronize GP. """
@@ -222,7 +213,6 @@ class contracts(orm.Model):
                                 _("GP Sync Error"),
                                 _("The payment could not be removed from GP.")
                                 + _("Please contact an IT person."))
-            del(gp_connect)
 
     def unlink(self, cr, uid, ids, context=None):
         super(contracts, self).unlink(cr, uid, ids, context)
@@ -230,7 +220,6 @@ class contracts(orm.Model):
             ids = [ids]
         gp_connect = gp_connector.GPConnect()
         gp_connect.delete_contracts(ids)
-        del(gp_connect)
         return True
 
 

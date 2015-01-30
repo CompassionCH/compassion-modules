@@ -26,7 +26,6 @@ class child_compassion(orm.Model):
             for child in self.browse(cr, uid, ids, context):
                 gp_connect.set_child_sponsor_state(child)
 
-        del(gp_connect)
         return res
 
     def create(self, cr, uid, vals, context=None):
@@ -35,7 +34,6 @@ class child_compassion(orm.Model):
         child = self.browse(cr, uid, new_id, context)
         gp_connect = gp_connector.GPConnect()
         gp_connect.upsert_child(uid, child)
-        del(gp_connect)
         return new_id
 
 
@@ -48,7 +46,6 @@ class child_properties(orm.Model):
         case_study = self.browse(cr, uid, new_id, context)
         gp_connect = gp_connector.GPConnect()
         gp_connect.upsert_case_study(uid, case_study)
-        del(gp_connect)
         return new_id
 
     def write(self, cr, uid, ids, vals, context=None):
@@ -57,5 +54,4 @@ class child_properties(orm.Model):
         gp_connect = gp_connector.GPConnect()
         for case_study in self.browse(cr, uid, ids, context):
             gp_connect.upsert_case_study(uid, case_study)
-        del(gp_connect)
         return res
