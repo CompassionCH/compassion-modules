@@ -234,10 +234,9 @@ class compassion_child(orm.Model):
         """
         if not isinstance(ids, list):
             ids = [ids]
-        res = dict()
         proj_obj = self.pool.get('compassion.project')
         for child in self.browse(cr, uid, ids, context):
-            res[child.id] = self._get_case_study(cr, uid, child, context)
+            self._get_case_study(cr, uid, child, context)
             self._get_last_pictures(cr, uid, child.id, context)
             self._get_basic_informations(cr, uid, child.id)
             project_ids = proj_obj.search(
@@ -249,7 +248,7 @@ class compassion_child(orm.Model):
                     'name': child.code[:5],
                 })
                 proj_obj.update_informations(cr, uid, proj_id)
-        return res
+        return True
 
     def generate_descriptions(self, cr, uid, child_id, context=None):
         child = self.browse(cr, uid, child_id, context)
@@ -295,9 +294,16 @@ class compassion_child(orm.Model):
                                    'case study for child %s. ') % child.code
                                  + json_data['error']['message'])
 
+        child_prop_obj = self.pool.get('compassion.child.property')
+        info_date = json_data['childCaseStudyDate']
+        study_ids = child_prop_obj.search(cr, uid, [
+            ('child_id', '=', child.id),
+            ('info_date', '=', info_date)], context=context)
         vals = {
             'child_id': child.id,
-            'info_date': json_data['childCaseStudyDate'],
+            'info_date': info_date,
+            'last_modification_date': json_data[
+                'childCaseStudyLastModifiedDate'],
             'name': json_data['childName'],
             'firstname': json_data['childPersonalName'],
             'gender': json_data['gender'],
@@ -398,9 +404,13 @@ class compassion_child(orm.Model):
         else:
             vals['nb_sisters'] -= 1
         vals['hobbies_ids'] = [(6, 0, values)]
-        child_prop_obj = self.pool.get('compassion.child.property')
-        prop_id = child_prop_obj.create(cr, uid, vals, context)
-        return prop_id
+
+        # Write values to existing case_study or create a new one
+        if study_ids:
+            child_prop_obj.write(cr, uid, study_ids, vals, context)
+        else:
+            child_prop_obj.create(cr, uid, vals, context)
+        return True
 
     def get_url(self, child_code, api_mess):
         url = config.get('compass_url')
