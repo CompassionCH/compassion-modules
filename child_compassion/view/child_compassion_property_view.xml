@@ -53,6 +53,7 @@
 			<field name="arch" type="xml">
 				<tree string="Children properties">
 					<field name="info_date" />
+					<field name="last_modification_date" />
 				</tree>
 			</field>
 		</record>
