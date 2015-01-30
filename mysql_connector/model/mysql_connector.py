@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -12,6 +12,9 @@
 import MySQLdb as mdb
 import logging
 from openerp.tools.config import config
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class mysql_connector:
@@ -106,3 +109,29 @@ class mysql_connector:
             return True
         except Exception:
             return False
+
+    def _get_gp_uid(self, uid):
+        """Returns the GP user id given the Odoo user id."""
+        iduser = self.selectOne('SELECT ID FROM login WHERE ERP_ID = %s;',
+                                uid)
+        return iduser.get('ID', 'XX')
+        
+    def upsert(self, table, vals):
+        """Constructs an UPSERT query given a table name and the values to
+        insert/update (given in a dictionary)
+        """
+        query_string = "INSERT INTO {0}({1}) VALUES ({2}) ON DUPLICATE KEY " \
+            "UPDATE {3}"
+
+        cols = vals.keys()
+        col_string = ",".join(cols)
+        val_string = ",".join(["%s" for i in range(0, len(vals))])
+        update_string = ",".join([
+            key + "=VALUES(" + key + ")" for key in cols)])
+
+        sql_query = query_string.format(table, col_string, val_string,
+                                        update_string)
+        values = vals.values()
+        log_string = "UPSERT {0}({1}) WITH VALUES ({2})"
+        logger.info(log_string.format(table, col_string, val_string) % values)
+        return self.query(sql_query, values)
