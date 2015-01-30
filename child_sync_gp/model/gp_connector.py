@@ -44,6 +44,11 @@ class GPConnect(mysql_connector):
         information in the destination structure."""
         vals = dict()
         return self.upsert("Enfants", vals)
+        
+    def upsert_case_study(self, uid, case_study):
+        """Push or update Case Study in GP."""
+        vals = dict()
+        return self.upsert("Fichiersenfants", vals)
 
     def set_child_sponsor_state(self, child):
         update_string = "UPDATE Enfants SET %s WHERE code='%s'"
@@ -74,3 +79,5 @@ class GPConnect(mysql_connector):
         sql_query = update_string % (update_fields, child.code)
         logger.info(sql_query)
         return self.query(sql_query)
+        
+    

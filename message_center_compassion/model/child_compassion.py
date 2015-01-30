@@ -14,7 +14,6 @@ from openerp.tools.translate import _
 
 
 class compassion_child(orm.Model):
-
     """ Add allocation and deallocation methods on the children. """
     _inherit = 'compassion.child'
 
