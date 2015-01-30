@@ -25,7 +25,7 @@ class account_invoice(orm.Model):
             # Customer invoice going from 'open' to 'cancel' state
             if invoice.type == 'out_invoice' and invoice.state == 'open':
                 contract_ids = set()
-                gp_connect = gp_connector.GPConnect(cr, uid)
+                gp_connect = gp_connector.GPConnect()
                 for line in invoice.invoice_line:
                     contract = line.contract_id
                     if contract and contract.id not in contract_ids \
@@ -49,7 +49,7 @@ class account_invoice(orm.Model):
         for invoice in self.browse(cr, uid, ids, {'lang': 'en_US'}):
             if invoice.type == 'out_invoice' and invoice.internal_number:
                 contract_ids = set()
-                gp_connect = gp_connector.GPConnect(cr, uid)
+                gp_connect = gp_connector.GPConnect()
                 for line in invoice.invoice_line:
                     contract = line.contract_id
                     if contract and contract.id not in contract_ids \

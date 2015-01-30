@@ -19,7 +19,7 @@ from dateutil.relativedelta import relativedelta
 
 class project_compassion(orm.Model):
     _inherit = 'compassion.project'
-    
+
     def suspend_project_from_gp(self, cr, uid, project_id, start, months,
                                 context=None):
         """ When a project is suspended from GP, We update all contracts of

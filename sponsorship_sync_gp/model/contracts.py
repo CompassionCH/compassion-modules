@@ -61,7 +61,7 @@ class contracts(orm.Model):
         """ When contract is created, push it to GP so that the mailing
         module can access all information. """
         contract_id = super(contracts, self).create(cr, uid, vals, context)
-        gp_connect = gp_connector.GPConnect(cr, uid)
+        gp_connect = gp_connector.GPConnect()
         # Read data in english
         if context is None:
             context = {}
@@ -87,7 +87,7 @@ class contracts(orm.Model):
             return super(contracts, self).write(cr, uid, ids, vals, context)
 
         ids = [ids] if not isinstance(ids, list) else ids
-        gp_connect = gp_connector.GPConnect(cr, uid)
+        gp_connect = gp_connector.GPConnect()
         # If we change the next invoice date, it means we cancel
         # invoices generation and should thus update the situation
         # in GP (advance the months paid).
@@ -139,7 +139,7 @@ class contracts(orm.Model):
         and push it to GP.
         """
         super(contracts, self).contract_waiting(cr, uid, ids, context)
-        gp_connect = gp_connector.GPConnect(cr, uid)
+        gp_connect = gp_connector.GPConnect()
         for contract in self.browse(cr, uid, ids, context):
             if not gp_connect.validate_contract(contract):
                 raise orm.except_orm(
@@ -152,7 +152,7 @@ class contracts(orm.Model):
     def contract_cancelled(self, cr, uid, ids, context=None):
         """ When contract is cancelled, update it in GP. """
         super(contracts, self).contract_cancelled(cr, uid, ids, context)
-        gp_connect = gp_connector.GPConnect(cr, uid)
+        gp_connect = gp_connector.GPConnect()
         for contract in self.browse(cr, uid, ids, context):
             if not gp_connect.finish_contract(contract):
                 raise orm.except_orm(
@@ -165,7 +165,7 @@ class contracts(orm.Model):
     def contract_terminated(self, cr, uid, ids, context=None):
         """ When contract is terminated, update it in GP. """
         super(contracts, self).contract_terminated(cr, uid, ids)
-        gp_connect = gp_connector.GPConnect(cr, uid)
+        gp_connect = gp_connector.GPConnect()
         for contract in self.browse(cr, uid, ids, context):
             if not gp_connect.finish_contract(contract):
                 raise orm.except_orm(
@@ -178,7 +178,7 @@ class contracts(orm.Model):
     def _on_contract_active(self, cr, uid, ids, context=None):
         """ When contract is active, update it in GP. """
         super(contracts, self)._on_contract_active(cr, uid, ids, context)
-        gp_connect = gp_connector.GPConnect(cr, uid)
+        gp_connect = gp_connector.GPConnect()
         for contract in self.browse(cr, uid, ids, context):
             if not gp_connect.activate_contract(contract):
                 raise orm.except_orm(
@@ -191,7 +191,7 @@ class contracts(orm.Model):
         """ When a customer invoice is paid, synchronize GP. """
         super(contracts, self)._invoice_paid(cr, uid, invoice, context)
         if invoice.type == 'out_invoice':
-            gp_connect = gp_connector.GPConnect(cr, uid)
+            gp_connect = gp_connector.GPConnect()
             last_pay_date = max([move_line.date
                                  for move_line in invoice.payment_ids
                                  if move_line.credit > 0] or [False])
@@ -228,7 +228,7 @@ class contracts(orm.Model):
         super(contracts, self).unlink(cr, uid, ids, context)
         if not isinstance(ids, list):
             ids = [ids]
-        gp_connect = gp_connector.GPConnect(cr, uid)
+        gp_connect = gp_connector.GPConnect()
         gp_connect.delete_contracts(ids)
         del(gp_connect)
         return True
@@ -241,7 +241,7 @@ class contract_group(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
         res = super(contract_group, self).write(cr, uid, ids, vals, context)
-        gp_connect = gp_connector.GPConnect(cr, uid)
+        gp_connect = gp_connector.GPConnect()
         for group in self.browse(cr, uid, ids, context):
             for contract in group.contract_ids:
                 if not gp_connect.upsert_contract(uid, contract):
