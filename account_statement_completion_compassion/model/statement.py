@@ -157,28 +157,19 @@ class AccountStatementCompletionRule(orm.Model):
             res = {}
             partner_obj = self.pool.get('res.partner')
             if invoice_ids:
-                if len(invoice_ids) == 1:
-                    invoice = invoice_obj.browse(
-                        cr, uid, invoice_ids[0], context=context)
-                    partner = invoice.partner_id
-                    res['partner_id'] = partner_obj._find_accounting_partner(
-                        partner).id
-                    res['account_id'] = invoice.account_id.id
-                else:
-                    invoices = invoice_obj.browse(
-                        cr, uid, invoice_ids, context=context)
-                    partner = invoices[0].partner_id
-                    partner_id = partner.id
-                    for invoice in invoices:
-                        if invoice.partner_id.id != partner_id:
-                            raise ErrorTooManyPartner(
-                                ('Line named "%s" (Ref:%s) was matched by '
-                                 'more than one invoice while looking on open'
-                                 ' supplier invoices') %
-                                (st_line['name'], st_line['ref']))
-                    res['partner_id'] = partner_obj._find_accounting_partner(
-                        partner).id
-                    res['account_id'] = invoices[0].account_id.id
+                invoices = invoice_obj.browse(cr, uid, invoice_ids, context)
+                partner = invoices[0].partner_id
+                partner_id = partner.id
+                for invoice in invoices:
+                    if invoice.partner_id.id != partner_id:
+                        raise ErrorTooManyPartner(
+                            ('Line named "%s" (Ref:%s) was matched by '
+                             'more than one invoice while looking on open'
+                             ' supplier invoices') %
+                            (st_line['name'], st_line['ref']))
+                res['partner_id'] = partner_obj._find_accounting_partner(
+                    partner).id
+                res['account_id'] = invoices[0].account_id.id
 
         return res
 
@@ -268,6 +259,7 @@ class AccountStatementCompletionRule(orm.Model):
                     wf_service.trg_validate(
                         uid, 'account.invoice', invoice_id, 'invoice_open',
                         cr)
+                # GIFT_TYPES[0] = 'Birthday Gift'
                 elif product.name == GIFT_TYPES[0]:
                     # Set date of invoice two months before child's birthdate
                     child_birthdate = res.get('child_birthdate')

@@ -18,7 +18,6 @@ ADDRESS_FIELDS = (
 
 
 class ResPartner(orm.Model):
-
     """ This class upgrade the partners to match Compassion needs.
         It also synchronize all changes with the MySQL server of GP.
     """
@@ -26,9 +25,9 @@ class ResPartner(orm.Model):
     _inherit = 'res.partner'
 
     def _lang_get(self, cr, uid, context=None):
-        lang_pool = self.pool.get('res.lang')
-        ids = lang_pool.search(cr, uid, [], context=context)
-        res = lang_pool.read(cr, uid, ids, ['code', 'name'], context)
+        lang_obj = self.pool.get('res.lang')
+        ids = lang_obj.search(cr, uid, [], context=context)
+        res = lang_obj.read(cr, uid, ids, ['code', 'name'], context)
         return [(r['code'], r['name']) for r in res]
 
     def _is_church(self, cr, uid, ids, field_name, arg, context=None):
