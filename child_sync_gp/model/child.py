@@ -10,21 +10,29 @@
 ##############################################################################
 
 from openerp.osv import orm
+from openerp.tools.config import config
+
+from smb.SMBConnection import SMBConnection
+from smb.smb_structs import OperationFailure
+from tempfile import TemporaryFile
 
 from . import gp_connector
+import base64
 
 
 class child_compassion(orm.Model):
     _inherit = 'compassion.child'
 
     def write(self, cr, uid, ids, vals, context=None):
-        """ When child state is changed because of
-        a sponsorship, update GP. """
+        """Update GP with the last information of the child."""
         res = super(child_compassion, self).write(cr, uid, ids, vals, context)
+        gp_connect = gp_connector.GPConnect()
         if 'state' in vals:
-            gp_connect = gp_connector.GPConnect()
             for child in self.browse(cr, uid, ids, context):
                 gp_connect.set_child_sponsor_state(child)
+
+        for child in self.browse(cr, uid, ids, context):
+            gp_connect.upsert_child(uid, child)
 
         return res
 
@@ -37,21 +45,42 @@ class child_compassion(orm.Model):
         return new_id
 
 
-class child_properties(orm.Model):
-    _inherit = 'compassion.child.properties'
+class child_pictures(orm.Model):
+    _inherit = 'compassion.child.pictures'
 
     def create(self, cr, uid, vals, context=None):
-        """Push new case study into GP."""
-        new_id = super(child_properties, self).create(cr, uid, vals, context)
-        case_study = self.browse(cr, uid, new_id, context)
-        gp_connect = gp_connector.GPConnect()
-        gp_connect.upsert_case_study(uid, case_study)
-        return new_id
+        """Push a new picture to GP."""
+        pic_id = super(child_pictures, self).create(cr, uid, vals, context)
+        pic_data = self.get_picture(cr, uid, [pic_id], 'fullshot', '',
+                                    context)[pic_id]
 
-    def write(self, cr, uid, ids, vals, context=None):
-        """ Update GP with new values of Case Study. """
-        res = super(child_properties, self).write(cr, uid, ids, vals, context)
-        gp_connect = gp_connector.GPConnect()
-        for case_study in self.browse(cr, uid, ids, context):
-            gp_connect.upsert_case_study(uid, case_study)
-        return res
+        if pic_data:
+            # Retrieve configuration
+            smb_user = config.get('smb_user')
+            smb_pass = config.get('smb_pwd')
+            smb_ip = config.get('smb_ip')
+            child = self.pool.get('compassion.child').browse(
+                cr, uid, vals['child_id'], context)
+            # In GP, pictures are linked to Case Study
+            date_cs = child.case_study_ids[-1].info_date.replace('-', '')
+            gp_pic_path = "{}{}/".format(config.get('gp_pictures'),
+                                         child.code[:2])
+            file_name = "{}_{}.jpg".format(child.codecode, date_cs)
+            picture_file = TemporaryFile()
+            picture_file.write(base64.b64decode(pic_data))
+            picture_file.flush()
+            picture_file.seek(0)
+
+            # Upload file to shared folder
+            smb_conn = SMBConnection(smb_user, smb_pass, 'openerp', 'nas')
+            if smb_conn.connect(smb_ip, 139):
+                try:
+                    smb_conn.storeFile(
+                        'GP', gp_pic_path + file_name, picture_file)
+                except OperationFailure:
+                    # Directory may not exist
+                    smb_conn.createDirectory('GP', gp_pic_path)
+                    smb_conn.storeFile(
+                        'GP', gp_pic_path + file_name, picture_file)
+
+        return pic_id

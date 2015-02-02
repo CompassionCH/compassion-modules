@@ -131,5 +131,5 @@ class mysql_connector:
         values = vals.values()
         log_string = "UPSERT {0}({1}) WITH VALUES ({2})"
         logger.info(
-            log_string.format(table, col_string, val_string) % values)
+            log_string.format(table, col_string, val_string) % tuple(values))
         return self.query(sql_query, values)

@@ -9,11 +9,9 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
-from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from mysql_connector.model.mysql_connector import mysql_connector
-from datetime import datetime, date
+from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
@@ -42,13 +40,52 @@ class GPConnect(mysql_connector):
     def upsert_child(self, uid, child):
         """Push or update child in GP after converting all relevant
         information in the destination structure."""
-        vals = dict()
+        name = child.name
+        if name.endswith(child.firstname):
+            name = name[:-len(child.firstname)]
+        vals = {
+            'CODE': child.code,
+            'NOM': name,
+            'PRENOM': child.firstname,
+            'SEXE': child.gender,
+            'DATENAISSANCE': child.birthdate,
+            'SITUATION': child.state,
+            'ID': self._get_gp_uid(uid),
+            'COMPLETION_DATE': child.completion_date,
+            'id_erp': child.id
+        }
+        if child.case_study_ids:
+            # Upsert last Case Study
+            id_fichier = self.upsert_case_study(
+                uid, child.case_study_ids[-1])
+            if id_fichier:
+                vals['ID_DERNIER_FICHIER'] = id_fichier
+        if child.gp_exit_reason:
+            vals['ID_MOTIF_FIN'] = int(child.gp_exit_reason)
         return self.upsert("Enfants", vals)
-        
+
     def upsert_case_study(self, uid, case_study):
         """Push or update Case Study in GP."""
-        vals = dict()
-        return self.upsert("Fichiersenfants", vals)
+        if case_study.child_id.pictures_ids:
+            date_photo = case_study.child_id.pictures_ids[-1].date
+        else:
+            date_photo = '0000-00-00'
+        vals = {
+            'DATE_PHOTO': date_photo,
+            'COMMENTAIRE_FR': case_study.child_id.desc_fr or '',
+            'COMMENTAIRE_DE': case_study.child_id.desc_de or '',
+            'COMMENTAIRE_ITA': case_study.child_id.desc_it or '',
+            'COMMENTAIRE_EN': case_study.child_id.desc_en or '',
+            'IDUSER': self._get_gp_uid(uid),
+            'CODE': case_study.code,
+            'DATE_INFO': case_study.info_date,
+            'DATE_IMPORTATION': datetime.today().strftime(DF),
+        }
+        if self.upsert("Fichiersenfants", vals):
+            return self.selectOne(
+                "SELECT MAX(Id_Fichier_Enfant) AS id FROM Fichiersenfants "
+                "WHERE Code = %s", case_study.code).get('id')
+        return False
 
     def set_child_sponsor_state(self, child):
         update_string = "UPDATE Enfants SET %s WHERE code='%s'"
@@ -79,5 +116,3 @@ class GPConnect(mysql_connector):
         sql_query = update_string % (update_fields, child.code)
         logger.info(sql_query)
         return self.query(sql_query)
-        
-    
