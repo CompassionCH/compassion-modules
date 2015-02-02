@@ -42,6 +42,9 @@ can be seen from GP.
                 'mysql_connector',
                 'account_voucher',
                 ],
+    'external_dependencies': {
+        'python': ['smb'],
+    },
     'data': [],
     'demo': [],
     'installable': True,

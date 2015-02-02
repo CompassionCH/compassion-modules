@@ -21,7 +21,6 @@ logger = logging.getLogger(__name__)
 
 
 class child_pictures(orm.Model):
-
     """ Holds two pictures of a given child
         - Headshot
         - Fullshot
