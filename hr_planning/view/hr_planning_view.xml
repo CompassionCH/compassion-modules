@@ -46,6 +46,7 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="department_id"/>
+                    <field name="employee_id"/>
                 </search>
             </field>
         </record>
