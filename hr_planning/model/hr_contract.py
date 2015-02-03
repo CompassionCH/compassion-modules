@@ -18,15 +18,23 @@ class hr_contract(orm.Model):
     def create(self, cr, uid, vals, context=None):
         res = super(hr_contract, self).create(
             cr, uid, vals, context=context)
-
-        self.pool.get('hr.planning.wizard').generate(
-            cr, uid, [], context=context)
+        if('working_hours' in vals):
+            self._generate(cr, uid, [res], context)
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
         res = super(hr_contract, self).write(
             cr, uid, ids, vals, context=context)
-        self.pool.get('hr.planning.wizard').generate(
-            cr, uid, [], context=context)
-
+        if('working_hours' in vals):
+            self._generate(cr, uid, ids, context)
         return res
+
+    def _generate(self, cr, uid, ids, context=None):
+        contracts = self.browse(cr, uid, ids, context=context)
+
+        for contract in contracts:
+            employee_ids = []
+            employee_ids.append(contract.employee_id.id)
+
+            self.pool.get('hr.planning.wizard').generate(
+                cr, uid, employee_ids, context=context)

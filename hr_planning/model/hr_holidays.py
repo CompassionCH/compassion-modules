@@ -18,14 +18,21 @@ class hr_holidays(orm.Model):
     def create(self, cr, uid, vals, context=None):
         res = super(hr_holidays, self).create(
             cr, uid, vals, context=context)
-        self.pool.get('hr.planning.wizard').generate(
-            cr, uid, [], context=context)
+        self._generate(cr, uid, [res], context)
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
         res = super(hr_holidays, self).write(
             cr, uid, ids, vals, context=context)
-        self.pool.get('hr.planning.wizard').generate(
-            cr, uid, [], context=context)
-
+        self._generate(cr, uid, ids, context)
         return res
+
+    def _generate(self, cr, uid, ids, context=None):
+        holidays = self.browse(cr, uid, ids, context=context)
+
+        for holiday in holidays:
+            employee_ids = []
+            employee_ids.append(holiday.employee_id.id)
+
+            self.pool.get('hr.planning.wizard').generate(
+                cr, uid, employee_ids, context=context)

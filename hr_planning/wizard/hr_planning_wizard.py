@@ -19,13 +19,15 @@ from datetime import datetime, timedelta
 class hr_planning_wizard(orm.TransientModel):
     _name = 'hr.planning.wizard'
 
+    def regenerate(self, cr, uid, ids, context=None):
+        self.generate(cr, uid, [], context)
+
     def generate(self, cr, uid, ids, context=None):
         employee_obj = self.pool.get('hr.employee')
         planning_day_obj = self.pool.get('hr.planning.day')
 
         # Get employees
-        employee_ids = employee_obj.search(cr, uid, [], context=context)
-        employees = employee_obj.browse(cr, uid, employee_ids, context=context)
+        employees = employee_obj.browse(cr, uid, ids, context=context)
 
         today = datetime.today()
 
