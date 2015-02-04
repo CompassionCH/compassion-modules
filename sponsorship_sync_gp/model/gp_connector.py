@@ -115,8 +115,8 @@ class GPConnect(mysql_connector):
                 'typep': 'C',
                 'codespe': codespe[0],
                 'origine': origin,
-                'datecreation': date.today().strftime('%Y-%m-%d'),
-                'datedebut': contract.start_date,
+                'datecreation': contract.start_date,
+                'datedebut': contract.next_invoice_date,
                 'typeprojet': typeprojet,
             })
 
