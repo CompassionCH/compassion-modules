@@ -153,6 +153,7 @@ class AccountStatementLine(orm.Model):
             'quantity': 1,
             'uos_id': False,
             'product_id': b_line.product_id.id,
+            'partner_id': b_line.partner_id.id,
             'invoice_id': invoice_id,
         }
         analytic = self.pool.get('account.analytic.default').account_get(
