@@ -86,18 +86,21 @@ class easy_reconcile_advanced_bvr_ref(orm.TransientModel):
         If the amount of the credit line cannot fully reconcile an integer
         number of invoices, skip the reconciliation.
         """
-        if move_line.get('ref') and move_line.get('partner_id'):
+        partner_id = move_line.get('partner_id')
+        if move_line.get('ref') and partner_id:
             # Search for related customer invoices (same bvr reference).
             invoice_obj = self.pool.get('account.invoice')
             present_invoice_ids = invoice_obj.search(
                 cr, uid, [('bvr_reference', '=', move_line['ref']),
                           ('state', '=', 'open'),
-                          ('date_due', '<=', datetime.date.today())],
+                          ('date_due', '<=', datetime.date.today()),
+                          ('partner_id', '=', partner_id],
                 order='date_due desc', context=context)
             future_invoice_ids = invoice_obj.search(
                 cr, uid, [('bvr_reference', '=', move_line['ref']),
                           ('state', '=', 'open'),
-                          ('date_due', '>', datetime.date.today())],
+                          ('date_due', '>', datetime.date.today()),
+                          ('partner_id', '=', partner_id],
                 order='date_due asc', context=context)
             invoices = invoice_obj.browse(
                 cr, uid, present_invoice_ids + future_invoice_ids,
