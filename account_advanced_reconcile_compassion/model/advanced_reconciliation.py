@@ -94,13 +94,13 @@ class easy_reconcile_advanced_bvr_ref(orm.TransientModel):
                 cr, uid, [('bvr_reference', '=', move_line['ref']),
                           ('state', '=', 'open'),
                           ('date_due', '<=', datetime.date.today()),
-                          ('partner_id', '=', partner_id],
+                          ('partner_id', '=', partner_id)],
                 order='date_due desc', context=context)
             future_invoice_ids = invoice_obj.search(
                 cr, uid, [('bvr_reference', '=', move_line['ref']),
                           ('state', '=', 'open'),
                           ('date_due', '>', datetime.date.today()),
-                          ('partner_id', '=', partner_id],
+                          ('partner_id', '=', partner_id)],
                 order='date_due asc', context=context)
             invoices = invoice_obj.browse(
                 cr, uid, present_invoice_ids + future_invoice_ids,
