@@ -116,3 +116,43 @@ class GPConnect(mysql_connector):
         sql_query = update_string % (update_fields, child.code)
         logger.info(sql_query)
         return self.query(sql_query)
+
+    def upsert_project(self, uid, project):
+        """Update a given Compassion project in GP."""
+        vals = {
+            'CODE_PROJET': project.code,
+            'DESCRIPTION_FR': project.description_fr,
+            'DESCRIPTION_DE': project.description_de,
+            'DESCRIPTION_EN': project.description_en,
+            'DESCRIPTION_IT': project.description_it,
+            'NOM': project.name,
+            'IDUSER': self._get_gp_uid(uid),
+            'DATE_MAJ': project.last_update_date,
+            'SITUATION': self._get_project_state(project),
+            'PAYS': project.code[:2],
+            'LIEU_EN': project.community_name + ', ' +
+            project.country_id.name,
+            'date_situation': project.status_date,
+            'ProgramImplementorTypeCode': project.type,
+            'StartDate': project.start_date,
+            'LastReviewDate': project.last_update_date,
+            'OrganizationName': project.local_church_name,
+            'WesternDenomination': project.western_denomination,
+            'CountryDenomination': project.country_denomination,
+            'CommunityName': project.community_name
+        }
+        return self.upsert("Projet", vals)
+
+    def _get_project_state(self, project):
+        """ Returns the state of a project in GP format. """
+        gp_state = 'Actif'
+        if project.status == 'A':
+            active_status_mapping = {
+                'suspended': 'Suspension',
+                'fund-suspended': 'Suspension avec retenue'}
+            gp_state = active_status_mapping.get(project.suspension, 'Actif')
+        elif project.status == 'P':
+            gp_state = 'Phase out'
+        elif project.status == 'T':
+            gp_state = 'Terminé'
+        return gp_state

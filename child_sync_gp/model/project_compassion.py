@@ -16,6 +16,8 @@ from openerp import netsvc
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
+from . import gp_connector
+
 
 class project_compassion(orm.Model):
     _inherit = 'compassion.project'
@@ -77,3 +79,11 @@ class project_compassion(orm.Model):
                 context={'thread_model': 'recurring.contract'})
 
         return True
+
+        def write(self, cr, uid, ids, vals, context=None):
+            """Update Project in GP."""
+            res = super(project_compassion).write(cr, uid, ids, vals, context)
+            gp_connect = gp_connector.GPConnect()
+            for project in self.browse(cr, uid, ids, context):
+                gp_connect.upsert_project(uid, project)
+            return res
