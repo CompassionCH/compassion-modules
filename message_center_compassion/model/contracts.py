@@ -90,27 +90,35 @@ class recurring_contract(orm.Model):
             a child gift and creates a message to GMC. """
         super(recurring_contract, self)._invoice_paid(cr, uid, invoice,
                                                       context)
-        if invoice.payment_ids:
-            message_obj = self.pool.get('gmc.message.pool')
-            action_obj = self.pool.get('gmc.action')
-            action_id = action_obj.search(
-                cr, uid, [('name', '=', 'CreateGift')], limit=1,
-                context=context)[0]
-            message_vals = {
-                'action_id': action_id,
-                'date': invoice.date_invoice,
-            }
-            gift_ids = self.pool.get('product.product').search(
-                cr, uid, [('name_template', 'in', GIFT_TYPES)],
-                context={'lang': 'en_US'})
+        message_obj = self.pool.get('gmc.message.pool')
+        action_obj = self.pool.get('gmc.action')
+        action_id = action_obj.search(
+            cr, uid, [('name', '=', 'CreateGift')], limit=1,
+            context=context)[0]
+        message_vals = {
+            'action_id': action_id,
+            'date': invoice.date_invoice,
+        }
+        gift_ids = self.pool.get('product.product').search(
+            cr, uid, [('name_template', 'in', GIFT_TYPES)],
+            context={'lang': 'en_US'})
 
-            for invoice_line in invoice.invoice_line:
-                if invoice_line.product_id.id in gift_ids:
-                    contract = invoice_line.contract_id
-                    if contract:
-                        message_vals.update({
-                            'object_id': invoice_line.id,
-                            'partner_id': contract.correspondant_id.id,
-                            'child_id': contract.child_id.id,
-                        })
-                        message_obj.create(cr, uid, message_vals)
+        for invoice_line in invoice.invoice_line:
+            contract = invoice_line.contract_id
+            if invoice_line.product_id.id in gift_ids and contract:
+                if invoice.payment_ids:
+                    message_vals.update({
+                        'object_id': invoice_line.id,
+                        'partner_id': contract.correspondant_id.id,
+                        'child_id': contract.child_id.id,
+                    })
+                    message_obj.create(cr, uid, message_vals)
+                else:
+                    # Invoice goes from paid to open state ->
+                    # delete CreateGift message
+                    mess_ids = message_obj.search(cr, uid, [
+                        ('action_id', '=', action_id),
+                        ('date', '=', invoice.date_invoice),
+                        ('state', '=', 'new')], context=context)
+                    message_obj.unlink(cr, uid, mess_ids, context)
+                
