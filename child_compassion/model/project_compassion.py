@@ -255,7 +255,7 @@ class compassion_project(orm.Model):
                 cr, uid, group['schoolMonths'].split(','),
                 'school_months', context))
 
-            vals['school_days_ids'] = [(6, 0, values)]
+            vals['school_days_ids'] = [(6, 0, [v for v in values if v])]
             age_project_obj.create(cr, uid, vals, context)
         return True
 
@@ -314,7 +314,7 @@ class compassion_project(orm.Model):
         many2many relation.
         [(6, 0, [ids])] is a standard way to set a many2many field in Odoo.
         """
-        values['primary_diet_ids'] = [(6, 0, multi_value)]
+        values['primary_diet_ids'] = [(6, 0, [v for v in multi_value if v])]
 
         return {field_name: value for field_name, value in values.iteritems()
                 if value}
