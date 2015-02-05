@@ -66,13 +66,14 @@ class easy_reconcile_advanced_bvr_ref(orm.TransientModel):
         from_future = from_current
         where_future, params_future = self._where(rec)
         where_future += (" AND account_move_line.debit > 0 AND "
-                         "account_move_line.date_maturity > CURRENT_DATE) "
-                         "FUTURE_MOVE ")
+                         "account_move_line.date_maturity > CURRENT_DATE ")
+        order_future = " ORDER BY date_maturity ASC ) FUTURE_MOVE "
         where2_future, params2_future = where2_current, params2_current
 
         query = ' '.join((select_current, from_current, where_current,
                           where2_current, order_current, select_future,
-                          from_future, where_future, where2_future))
+                          from_future, where_future, where2_future,
+                          order_future))
 
         cr.execute(
             query,
