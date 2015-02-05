@@ -146,7 +146,7 @@ class Child_description_fr:
                     string += (u' est en %s (US)'
                                % ordinals[case_study.us_school_level])
             else:
-                string += u' va à l\'école'
+                string += u" va à l'école"
             if case_study.school_performance:
                 string += (u' et %s a des résultats %s. ' % (child.firstname,
                            case_study.school_performance[0].value_fr
@@ -160,17 +160,8 @@ class Child_description_fr:
             else:
                 string += '.'
         else:
-            string += ' ne va pas à l\'école'  # TODO reason
+            string += u" ne va pas à l'école"  # TODO reason
         return string
-    """
-    @classmethod
-    def _gen_list_string(cls, list, separator, last_separator):
-        string = separator.join(list[:-1])
-        if len(list) > 1:
-            string += last_separator
-        string += list[-1]
-        return string
-    """
 
     @classmethod
     def _get_guardians_info_fr(cls, cr, uid, child, case_study, context=None):

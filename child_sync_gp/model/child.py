@@ -65,7 +65,7 @@ class child_pictures(orm.Model):
             date_cs = child.case_study_ids[-1].info_date.replace('-', '')
             gp_pic_path = "{}{}/".format(config.get('gp_pictures'),
                                          child.code[:2])
-            file_name = "{}_{}.jpg".format(child.codecode, date_cs)
+            file_name = "{}_{}.jpg".format(child.code, date_cs)
             picture_file = TemporaryFile()
             picture_file.write(base64.b64decode(pic_data))
             picture_file.flush()
