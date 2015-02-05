@@ -368,11 +368,11 @@ class compassion_child(orm.Model):
                 else:
                     continue
 
-                # otherEmployment is a string,
-                # as well as motherIllnes and some others
+                # Boolean Values (True) are replaced by the name of the tag.
                 if value:
-                    value = (key.replace(prop_names[2],
-                             '').replace(prop_names[3], ''))
+                    if not isinstance(value, basestring):
+                        value = (key.replace(prop_names[2],
+                                 '').replace(prop_names[3], ''))
                 else:
                     continue
 
@@ -403,7 +403,7 @@ class compassion_child(orm.Model):
             vals['nb_brothers'] -= 1
         else:
             vals['nb_sisters'] -= 1
-        vals['hobbies_ids'] = [(6, 0, values)]
+        vals['hobbies_ids'] = [(6, 0, [v for v in values if v])]
 
         # Write values to existing case_study or create a new one
         if study_ids:
