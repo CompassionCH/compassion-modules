@@ -251,10 +251,11 @@ class compassion_child(orm.Model):
         return True
 
     def generate_descriptions(self, cr, uid, child_id, context=None):
+        if child_id and isinstance(child_id, list):
+            child_id = child_id[0]
         child = self.browse(cr, uid, child_id, context)
         if not child:
             raise orm.except_orm('ObjectError', _('No valid child id given !'))
-        child = child[0]
         if not child.case_study_ids:
             raise orm.except_orm('ValueError',
                                  _('Cannot generate a description '
@@ -371,8 +372,13 @@ class compassion_child(orm.Model):
                 # Boolean Values (True) are replaced by the name of the tag.
                 if value:
                     if not isinstance(value, basestring):
+                        # Specify the translated value is a tag
+                        context['default_is_tag'] = True
                         value = (key.replace(prop_names[2],
                                  '').replace(prop_names[3], ''))
+                    else:
+                        # Specify the translated value is not a tag
+                        context['default_is_tag'] = False
                 else:
                     continue
 

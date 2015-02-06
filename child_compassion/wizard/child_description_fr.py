@@ -239,11 +239,11 @@ class Child_description_fr:
 
             if f_g != 'institutional worker':
                 if ('isunemployed' in props_m) and job_f:
-                    string = (u"Sa %s est %s et son %s n'a pas d'emploi."
+                    string = (u"Sa %s est %s et son %s n'a pas d'emploi. "
                               % (f_g, job_f[0], m_g))
 
                 elif job_m and ('isunemployed' in props_f):
-                    string = (u"Son %s est %s et sa %s n'a pas d'emploi."
+                    string = (u"Son %s est %s et sa %s n'a pas d'emploi. "
                               % (m_g, job_m[0], f_g))
 
                 elif ('isunemployed' in props_m) and ('isunemployed'
@@ -252,7 +252,7 @@ class Child_description_fr:
                         string = u"Ses parents n'ont pas d'emploi."
 
                     else:
-                        string = (u"Son %s et sa %s n'ont pas d'emploi."
+                        string = (u"Son %s et sa %s n'ont pas d'emploi. "
                                   % (m_g, f_g))
 
                 elif job_m and job_f:
@@ -260,11 +260,11 @@ class Child_description_fr:
                     if ((job_f[0][0:7] == job_m[0][0:7])
                             and (f_g == u"mère" and m_g == u"père")):
 
-                        string = u"Ses parents sont %ss." % job_m[0]
+                        string = u"Ses parents sont %ss. " % job_m[0]
 
                     else:
 
-                        string = (u"Sa %s est %s et son %s est %s."
+                        string = (u"Sa %s est %s et son %s est %s. "
                                   % (f_g, job_f[0], m_g, job_m[0]))
 
         return string

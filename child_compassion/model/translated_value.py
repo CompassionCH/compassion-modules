@@ -72,5 +72,5 @@ class translated_value(orm.Model):
         if val_ids:
             return val_ids[0]
         prop_id = self.create(cr, uid, {'property_name': property_name,
-                                        'value_en': value})
+                                        'value_en': value}, context)
         return prop_id
