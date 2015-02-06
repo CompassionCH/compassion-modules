@@ -33,7 +33,7 @@ class contracts(orm.Model):
             "SELECT c.id as contract_id, "
             "12 * (EXTRACT(year FROM next_invoice_date) - "
             "      EXTRACT(year FROM current_date))"
-            " + EXTRACT(month FROM c.next_invoice_date)"
+            " + EXTRACT(month FROM c.next_invoice_date) - 1"
             " - COALESCE(due.total, 0) as paidmonth "
             "FROM recurring_contract c left join ("
             # Open invoices to find how many months are due
