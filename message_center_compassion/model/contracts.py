@@ -121,4 +121,3 @@ class recurring_contract(orm.Model):
                         ('date', '=', invoice.date_invoice),
                         ('state', '=', 'new')], context=context)
                     message_obj.unlink(cr, uid, mess_ids, context)
-                

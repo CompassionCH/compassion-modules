@@ -100,12 +100,12 @@ class child_property(orm.Model):
             track_visibility='onchange'),
         'father_ids': fields.many2many(
             'compassion.translated.value', 'child_property_to_value',
-            'property_id', 'value_id', _('Mother'),
+            'property_id', 'value_id', _('Father'),
             domain=[('property_name', '=', 'father')],
             track_visibility='onchange'),
         'mother_ids': fields.many2many(
             'compassion.translated.value', 'child_property_to_value',
-            'property_id', 'value_id', _('Father'),
+            'property_id', 'value_id', _('Mother'),
             domain=[('property_name', '=', 'mother')],
             track_visibility='onchange'),
         'nb_children_family': fields.integer(_('Children in family'),

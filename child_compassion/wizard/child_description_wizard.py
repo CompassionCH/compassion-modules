@@ -35,7 +35,7 @@ class child_description_wizard(orm.TransientModel):
                         val.value_fr is Null
                         OR val.value_de is Null
                         OR val.value_it is Null)
-                   ORDER BY val.value_en, val.property_name''' % property_id
+                   ORDER BY val.property_name, val.value_en''' % property_id
         cr.execute(query)
         value_ids = [x[0] for x in cr.fetchall()]
         return {id: value_ids for id in ids}
@@ -43,7 +43,7 @@ class child_description_wizard(orm.TransientModel):
     def _get_default_ids(self, cr, uid, context=None):
         return self._get_value_ids(cr, uid, [0], '', '', context)[0]
 
-    def _write_values(self, cr, uid, id, name, value, inv_arg, context=None):
+    def _write_values(self, cr, uid, ids, name, value, inv_arg, context=None):
         value_obj = self.pool.get('compassion.translated.value')
         for line in value:
             if line[0] == 1:  # on2many update
@@ -51,7 +51,27 @@ class child_description_wizard(orm.TransientModel):
                 value_obj.write(cr, uid, [value_id], line[2])
         return True
 
+    def _get_desc(self, cr, uid, lang, context):
+        child = self.pool.get('compassion.child').browse(
+            cr, uid, context.get('child_id'), context)
+        case_study = child.case_study_ids[-1]
+        res = False
+        if lang == 'fr':
+            res = Child_description_fr.gen_fr_translation(
+                cr, uid, child, case_study, context)
+        elif lang == 'de':
+            res = Child_description_de.gen_de_translation(
+                cr, uid, child, case_study, context)
+        elif lang == 'it':
+            res = Child_description_it.gen_it_translation(
+                cr, uid, child, case_study, context)
+        elif lang == 'en':
+            res = Child_description_en.gen_en_translation(
+                cr, uid, child, case_study, context)
+        return res
+
     _columns = {
+        'child_id': fields.many2one('compassion.child', 'Child'),
         'keep_desc_fr': fields.boolean(_('Keep french description')),
         'desc_fr': fields.text(_('French description')),
         'keep_desc_de': fields.boolean(_('Keep german description')),
@@ -64,32 +84,33 @@ class child_description_wizard(orm.TransientModel):
             _get_value_ids, type='one2many',
             relation='compassion.translated.value',
             fnct_inv=_write_values),
-        'state': fields.selection(
-            [('values', _('Values completion')),
-             ('descriptions', _('Descriptions correction'))],
-            _('State'), required=True, readonly=True),
     }
 
     _defaults = {
-        'state': 'values',
+        'child_id': lambda self, cr, uid, context: context.get('child_id'),
         'keep_desc_fr': False,
         'keep_desc_de': False,
         'keep_desc_it': False,
         'keep_desc_en': False,
+        'desc_fr': lambda self, cr, uid, context: self._get_desc(
+            cr, uid, 'fr', context),
+        'desc_de': lambda self, cr, uid, context: self._get_desc(
+            cr, uid, 'de', context),
+        'desc_en': lambda self, cr, uid, context: self._get_desc(
+            cr, uid, 'en', context),
+        'desc_it': lambda self, cr, uid, context: self._get_desc(
+            cr, uid, 'it', context),
         'child_property_value_ids': lambda self, cr, uid, context:
         self._get_default_ids(cr, uid, context),
     }
 
     def generate_descriptions(self, cr, uid, ids, context=None):
-        child_obj = self.pool.get('compassion.child')
-        child = child_obj.browse(cr, uid, context.get('child_id'), context)
+        wizard = self.browse(cr, uid, ids[0], context)
+        child = wizard.child_id
         if not child:
             raise orm.except_orm('ObjectError', _('No valid child id given !'))
-        if isinstance(child, list):
-            child = child[0]
         case_study = child.case_study_ids[-1]
         self.write(cr, uid, ids, {
-            'state': 'descriptions',
             'desc_fr': Child_description_fr.gen_fr_translation(
                 cr, uid, child, case_study, context),
             'desc_de': Child_description_de.gen_de_translation(
@@ -128,31 +149,9 @@ class child_description_wizard(orm.TransientModel):
                                  _('No description selected. \
                                  Please select one or click cancel '
                                    'to abort current task.'))
-        child_obj = self.pool.get('compassion.child')
-        child_obj.write(cr, uid, context['child_id'], vals, context)
+        wizard.child_id.write(vals)
 
         return {
             'type': 'ir.actions.client',
             'tag': 'reload',
         }
-
-    def fields_view_get(self, cr, uid, view_id=None,
-                        view_type='form', context=None,
-                        toolbar=False, submenu=False):
-        ret = super(child_description_wizard, self).fields_view_get(
-            cr, uid, view_id, view_type,
-            context, toolbar, submenu)
-        fr, de, it, en = self._get_helps(cr, uid, context)
-        ret['fields']['desc_fr']['help'] = fr
-        ret['fields']['desc_de']['help'] = de
-        ret['fields']['desc_it']['help'] = it
-        ret['fields']['desc_en']['help'] = en
-        return ret
-
-    def _get_helps(self, cr, uid, context=None):
-        if not context or not context.get('child_id'):
-            return '', '', '', ''
-        child_obj = self.pool.get('compassion.child')
-        child = child_obj.browse(
-            cr, uid, context['child_id'], context=context)[0]
-        return child.desc_fr, child.desc_de, child.desc_it, child.desc_en
