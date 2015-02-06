@@ -290,7 +290,7 @@ class compassion_project(orm.Model):
             'typicalWallBuildingMaterialDescription': ('wall_material', '/'),
             'typicalRoofBuildingMaterialDescription': ('roof_material', '/'),
             'primaryEthnicGroup': ('spoken_languages', ', '),
-            'primaryDiet': ('primary_diet', ', '),
+            'primaryDiet': ('primary_diet', ','),
             'commonHealthProblems': ('health_problems', ', '),
             'primaryOccupationTitle': ('primary_occupation', '/'),
         }
