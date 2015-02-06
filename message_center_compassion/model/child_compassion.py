@@ -10,7 +10,10 @@
 ##############################################################################
 from openerp import netsvc
 from openerp.osv import orm
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
+
+from datetime import datetime
 
 
 class compassion_child(orm.Model):
@@ -60,7 +63,7 @@ class compassion_child(orm.Model):
     def deallocate(self, cr, uid, args, context=None):
         """Deallocate child.
         TODO:
-            If child is sponsored, it means it will be transfered to another
+            If child is sponsored, it means it will be transferred to another
             project. We should not mark end the sponsorship and should
             warn the sponsor of the change.
         """
@@ -68,25 +71,44 @@ class compassion_child(orm.Model):
             'state': 'X', 'exit_date': args.get('date')}, context)
 
     def depart(self, cr, uid, args, context=None):
-        """Not yet ready"""
-        # TODO : possibly terminate the contract, mark the child as departed
-        # and the user should do the right communication
+        """When a depart is done automatically when processing a message:
+        1. If the child is sponsored, the sponsorship is terminated with the
+           'Child Departure' ending reason.
+        2. The child is marked as departed (GetExitDetails API is called)
+        3. GP_Exit_Reason is inferred if possible.
+        """
+        # TODO : the user should do the right communication
         # to the sponsor from GP.
         child = self.browse(cr, uid, args.get('object_id'), context)
         if child.sponsor_id:
-            contract_ids = self.pool.get('recurring.contract').search(
+            contract_obj = self.pool.get('recurring.contract')
+            contract_ids = contract_obj.search(
                 cr, uid, [
                     ('child_id', '=', child.id),
                     ('partner_id', '=', child.sponsor_id.id),
-                    ('state', 'in', ('waiting', 'active'))], context=context)
+                    ('state', 'in', ('waiting', 'active', 'mandate'))],
+                context=context)
             if contract_ids:
-                # TODO : Terminate contract with information retrieved by the
-                #        GetExitDetails API (which is not yet ready)
-                return True
-        elif child.state != 'F':
-            # TODO : Mark child as departed with information retrieved
-            #        by GetExitDetails API.
-            return True
+                # Terminate contract
+                contract_obj.write(cr, uid, contract_ids[0], {
+                    'end_reason': '1',  # Child departure
+                    'end_date': datetime.today().strftime(DF)})
+
+                wf_service = netsvc.LocalService('workflow')
+                wf_service.trg_validate(
+                    uid, 'recurring.contract', contract_ids[0], 'contract_terminated', cr)
+
+        if child.state != 'F':
+            child.write({'state': 'F'})
+            # Reload child to get the ExitDetails information, and infer
+            # GP Exit reason
+            ctx = context.copy()
+            ctx['lang'] = 'en_US'
+            child = self.browse(cr, uid, child.id, ctx)
+            for gp_exit in self.get_gp_exit_reasons(cr, uid, ctx):
+                if child.exit_reason.startswith(gp_exit[1]):
+                    child.write({'gp_exit_reason': gp_exit[0]})
+                    break
 
         return True
 
