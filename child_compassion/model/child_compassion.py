@@ -175,29 +175,22 @@ class compassion_child(orm.Model):
         'primary_school': fields.boolean(_("Has completed primary school")),
         'us_grade_completed': fields.char(_("US Grade level completed"),
                                           size=5),
-        'study_area': fields.many2many(
-            'compassion.translated.value', 'child_exit_to_value',
-            'property_id', 'value_id', _('Primary area of study in school'),
-            domain=[('property_name', '=', 'study_area')]),
+        # study_area may become an automated translated field if needed
+        'study_area': fields.char(_('Primary area of study in school')),
         'vocational_training': fields.boolean(
             _("Has received vocational training")),
-        'vocational_skills': fields.many2many(
-            'compassion.translated.value', 'child_exit_to_value',
-            'property_id', 'value_id', _('Skills learned'),
-            domain=[('property_name', '=', 'vocational_skills')]),
+        # Vocational skills may become an automated translated field if needed
+        'vocational_skills': fields.char(_('Skills learned')),
         'disease_free': fields.boolean(_("Free from diseases")),
         'health_description': fields.text(_("Health description")),
         'social_description': fields.text(_("Social behavior description")),
         'exit_description': fields.text(_("Exit description")),
         'steps_prevent_description': fields.text(
             _("Steps taken to prevent exit")),
-        # TODO : See if future plans can be an automated translated field
+        # Future plans may become an automated translated field if needed
         'future_plans_description': fields.text(_("Child future plans")),
         'new_situation_description': fields.text(_("New situation")),
-        'exit_reason': fields.many2many(
-            'compassion.translated.value', 'child_exit_to_value',
-            'property_id', 'value_id', _('Exit reason'),
-            domain=[('property_name', '=', 'exit_reason')]),
+        'exit_reason': fields.char(_('Exit reason')),
         'last_letter_sent': fields.boolean(_("Last letter was sent")),
         'transfer_country_id': fields.many2one('res.country',
                                                _("Transfered to")),
