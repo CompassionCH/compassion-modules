@@ -16,6 +16,7 @@ from openerp.tools.translate import _
 class translated_value(orm.Model):
     _name = 'compassion.translated.value'
     _rec_name = 'value_en'
+    _order = 'property_name asc'
 
     _columns = {
         'is_tag': fields.boolean(_('Tag')),
