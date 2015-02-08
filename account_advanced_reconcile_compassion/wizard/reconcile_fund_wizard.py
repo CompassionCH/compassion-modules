@@ -37,9 +37,10 @@ class reconcile_fund_wizard(orm.TransientModel):
                 if move_line and move_line.debit > 0:
                     invoice = move_line.invoice
                     if invoice and invoice.amount_total == move_line.debit:
-                            contract_ids.update([invoice_line.contract_id.id
-                                                 for invoice_line in
-                                                 invoice.invoice_line])
+                        contract_ids.update([invoice_line.contract_id.id
+                                             for invoice_line in
+                                             invoice.invoice_line
+                                             if invoice_line.contract_id])
         return {id: list(contract_ids) for id in ids}
 
     def _write_contracts(self, cr, uid, ids, field_name, field_value, arg,
@@ -83,43 +84,30 @@ class reconcile_fund_wizard(orm.TransientModel):
         res = {}
         invoice_obj = self.pool.get('account.invoice')
         move_line_obj = self.pool.get('account.move.line')
-        journal_obj = self.pool.get('account.journal')
-
-        journal_ids = journal_obj.search(
-            cr, uid, [('type', '=', 'sale'), ('company_id', '=', 1 or False)],
-            limit=1)
-
-        date_invoice = None
+        invoice_found = False
         residual = 0.0
+
         for line in move_line_obj.browse(cr, uid, active_ids,
                                          context):
             residual += line.credit - line.debit
-            if line.credit > 0:
-                date_invoice = line.date
+            if not invoice_found and line.debit > 0:
+                invoice_id = line.invoice.id
+                account_id = line.invoice.account_id.id
+                partner_id = line.partner_id.id
+                invoice_found = True
+                active_ids.remove(line.id)
 
         if residual <= 0:
             raise orm.except_orm(
                 'ResidualError',
                 _('This can only be done if credits > debits'))
 
-        move_line = move_line_obj.browse(
-            cr, uid, context.get('active_id'), context)
-        partner = move_line.partner_id
-        inv_data = {
-            'account_id': partner.property_account_receivable.id,
-            'type': 'out_invoice',
-            'partner_id': partner.id,
-            'journal_id': len(journal_ids) and journal_ids[0] or False,
-            'date_invoice': date_invoice,
-            'payment_term': 1,  # Immediate payment
-            'bvr_reference': '',
-        }
-
-        invoice_id = invoice_obj.create(cr, uid, inv_data, context=context)
         if invoice_id:
+            invoice_obj.action_cancel(cr, uid, [invoice_id], context)
+            invoice_obj.action_cancel_draft(cr, uid, [invoice_id], context)
             res.update(self._generate_invoice_line(
                 cr, uid, invoice_id, wizard.fund_id,
-                residual, partner.id, context=context))
+                residual, partner_id, context=context))
 
             # Validate the invoice
             wf_service = netsvc.LocalService('workflow')
@@ -128,11 +116,11 @@ class reconcile_fund_wizard(orm.TransientModel):
             invoice = invoice_obj.browse(cr, uid, invoice_id, context)
             move_line_ids = move_line_obj.search(
                 cr, uid, [('move_id', '=', invoice.move_id.id),
-                          ('account_id', '=', inv_data['account_id'])],
+                          ('account_id', '=', account_id)],
                 context=context)
             active_ids.extend(move_line_ids)
-        move_line_obj.reconcile(cr, uid, active_ids, 'manual',
-                                context=context)
+            move_line_obj.reconcile(cr, uid, active_ids, 'manual',
+                                    context=context)
 
         return {'type': 'ir.actions.act_window_close'}
 

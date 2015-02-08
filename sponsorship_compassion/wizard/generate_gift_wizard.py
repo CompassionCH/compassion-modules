@@ -41,53 +41,51 @@ class generate_gift_wizard(orm.TransientModel):
             context = {}
         ctx = context.copy()
         ctx['lang'] = 'en_US'
-        # Id of contract is stored in context
-        contract = self.pool.get('recurring.contract').browse(
-            cr, uid, context.get('active_id'), ctx)
+        # Ids of contracts are stored in context
         wizard = self.browse(cr, uid, ids[0], ctx)
-        partner = contract.partner_id
+        invoice_ids = list()
+        for contract in self.pool.get('recurring.contract').browse(
+                cr, uid, context.get('active_ids', list()), ctx):
+            partner = contract.partner_id
 
-        if contract.child_id and contract.state == 'active':
-            invoice_obj = self.pool.get('account.invoice')
-            journal_ids = self.pool.get('account.journal').search(
-                cr, uid,
-                [('type', '=', 'sale'), ('company_id', '=', 1 or False)],
-                limit=1)
+            if contract.child_id and contract.state == 'active':
+                invoice_obj = self.pool.get('account.invoice')
+                journal_ids = self.pool.get('account.journal').search(
+                    cr, uid,
+                    [('type', '=', 'sale'), ('company_id', '=', 1 or False)],
+                    limit=1)
 
-            inv_data = {
-                'account_id': partner.property_account_receivable.id,
-                'type': 'out_invoice',
-                'partner_id': partner.id,
-                'journal_id': len(journal_ids) and journal_ids[0] or False,
-                'date_invoice': wizard.invoice_date,
-                'payment_term': 1,  # Immediate payment
-                'bvr_reference': self._generate_bvr_reference(
-                    contract, wizard.product_id),
-            }
+                inv_data = {
+                    'account_id': partner.property_account_receivable.id,
+                    'type': 'out_invoice',
+                    'partner_id': partner.id,
+                    'journal_id': len(journal_ids) and journal_ids[0] or False,
+                    'date_invoice': wizard.invoice_date,
+                    'payment_term': 1,  # Immediate payment
+                    'bvr_reference': self._generate_bvr_reference(
+                        contract, wizard.product_id),
+                }
 
-            invoice_id = invoice_obj.create(cr, uid, inv_data,
-                                            context=context)
-            if invoice_id:
-                self._generate_invoice_line(
-                    cr, uid, invoice_id, wizard, contract, context=ctx)
-        else:
-            raise orm.except_orm(
-                _("Generation Error"),
-                _("You can only generate gifts for active child "
-                  "sponsorships"),
-            )
+                invoice_id = invoice_obj.create(cr, uid, inv_data,
+                                                context=context)
+                if invoice_id:
+                    self._generate_invoice_line(
+                        cr, uid, invoice_id, wizard, contract, context=ctx)
+                    invoice_ids.append(invoice_id)
+            else:
+                raise orm.except_orm(
+                    _("Generation Error"),
+                    _("You can only generate gifts for active child "
+                      "sponsorships"),
+                )
 
-        ir_model_data = self.pool.get('ir.model.data')
-        invoice_view_id = ir_model_data.get_object_reference(
-            cr, uid, 'account',
-            'invoice_form')[1]
         return {
-            'name': 'Generated Invoice',
-            'view_mode': 'form',
-            'view_type': 'form,tree',
-            'view_id': invoice_view_id,
-            'res_id': invoice_id,  # id of the object to which to redirect
-            'res_model': 'account.invoice',  # object name
+            'name': _('Generated Invoices'),
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'res_model': 'account.invoice',
+            'domain': [('id', 'in', invoice_ids)],
+            'context': {'form_view_ref': 'account.invoice_form'},
             'type': 'ir.actions.act_window',
         }
 

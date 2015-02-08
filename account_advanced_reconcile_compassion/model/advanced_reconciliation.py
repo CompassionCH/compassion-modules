@@ -178,3 +178,9 @@ class easy_reconcile_advanced_bvr_ref(orm.TransientModel):
         })
 
         return False
+
+    def _reconcile_lines(self, cr, uid, rec, lines, allow_partial=False,
+                         context=None):
+        """ Never allow partial reconciliation. """
+        return super(easy_reconcile_advanced_bvr_ref, self)._reconcile_lines(
+            cr, uid, rec, lines, False, context)

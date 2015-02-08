@@ -14,7 +14,6 @@ from openerp.tools.translate import _
 
 
 class contract_origin(orm.Model):
-
     """ Add event to origin of a contract """
     _inherit = 'recurring.contract.origin'
 
@@ -28,3 +27,34 @@ class contract_origin(orm.Model):
         else:
             name = super(contract_origin, self)._name_get(origin)
         return name
+
+
+class contracts(orm.Model):
+    """ Adds the Salesperson to the contract. """
+
+    _inherit = 'recurring.contract'
+
+    def _get_user_id(self, cr, uid, ids, field_name, args, context=None):
+        """ Finds the Salesperson of the contract. """
+        res = dict()
+        for contract in self.browse(cr, uid, ids, context):
+            origin = contract.origin_id
+            user_id = False
+            if origin.partner_id:
+                user_id = origin.partner_id.id
+            elif origin.analytic_id and origin.analytic_id.manager_id:
+                user_id = origin.analytic_id.manager_id.partner_id.id
+            elif origin.event_id and origin.event_id.user_id:
+                user_id = origin.event_id.user_id.partner_id.id
+            res[contract.id] = user_id
+        return res
+
+    _columns = {
+        'user_id': fields.function(
+            _get_user_id, type='many2one', obj='res.partner',
+            string=_('Salesperson'), store={
+                'recurring.contract': (
+                    lambda self, cr, uid, ids, context=None: ids,
+                    ['origin_id'],
+                    10)}),
+    }

@@ -11,6 +11,7 @@
                 <field name="partner_id"/>
                 <field name="analytic_id"/>
                 <field name="country_id"/>
+                <field name="won_sponsorships"/>
             </tree>
 		</field>
 	</record>
@@ -37,6 +38,7 @@
                         <field name="country_id" attrs="{'invisible': [('type', '!=', 'transfer')],
                                                          'required': [('type','=','transfer')]}"/>
                         <field name="other_name" attrs="{'invisible': [('type', '!=', 'other')]}"/>
+                        <field name="won_sponsorships"/>
                     </group>
                     <notebook>
                         <page string="Originated Sponsorships">

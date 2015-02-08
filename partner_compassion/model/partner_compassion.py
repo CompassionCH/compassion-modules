@@ -24,6 +24,12 @@ class ResPartner(orm.Model):
 
     _inherit = 'res.partner'
 
+    def _lang_get(self, cr, uid, context=None):
+        lang_obj = self.pool.get('res.lang')
+        ids = lang_obj.search(cr, uid, [], context=context)
+        res = lang_obj.read(cr, uid, ids, ['code', 'name'], context)
+        return [(r['code'], r['name']) for r in res]
+
     def _is_church(self, cr, uid, ids, field_name, arg, context=None):
         """ Tell if the given Partners are Church Partners
             (by looking at their categories). """
@@ -313,6 +319,13 @@ class ResPartner(orm.Model):
             _('Abroad/Only e-mail'),
             help=_("Indicates if the partner is abroad and should only be "
                    "updated by e-mail")),
+        'lang': fields.selection(
+            _lang_get,
+            'Language',
+            required=True,
+            help="If the selected language is loaded in the system, all "
+            "documents related to this contact will be printed in this "
+            "language. If not, it will be English."),
     }
 
     _defaults = {
@@ -421,3 +434,18 @@ class ResPartner(orm.Model):
 
         del(gp)
         return super(ResPartner, self).unlink(cr, uid, ids, context)
+
+    def get_unreconciled_amount(self, cr, uid, partner_id, context=None):
+        """Returns the amount of unreconciled credits in Account 1050"""
+        partner = self._find_accounting_partner(self.browse(
+            cr, uid, partner_id, context))
+        mv_line_obj = self.pool.get('account.move.line')
+        move_line_ids = mv_line_obj.search(cr, uid, [
+            ('partner_id', '=', partner.id),
+            ('account_id.code', '=', '1050'),
+            ('credit', '>', '0'),
+            ('reconcile_id', '=', False)], context=context)
+        res = 0
+        for move_line in mv_line_obj.browse(cr, uid, move_line_ids, context):
+            res += move_line.credit
+        return res

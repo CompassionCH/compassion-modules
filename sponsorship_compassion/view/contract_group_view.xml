@@ -13,9 +13,9 @@
                             <field name="advance_billing" />
                         </group>
                         <group>
-                            <field name="partner_id" domain="[('customer', '=', True)]" on_change="on_change_partner_id(partner_id)" />
+                            <field name="partner_id" domain="[('customer', '=', True)]" on_change="on_change_partner_id(partner_id)" readonly="1"/>
                             <field name="bvr_reference" on_change="on_change_bvr_ref(bvr_reference)" />
-                            <field name="payment_term_id" on_change="on_change_payment_term(payment_term_id, partner_id)" />
+                            <field name="payment_term_id" on_change="on_change_payment_term(payment_term_id, bvr_reference, partner_id)" />
                         </group>
                     </group>
                 </group>

@@ -95,7 +95,7 @@
         </record>
 
         <!-- Search view -->
-        <record id="view_recurring_contract_filter" model="ir.ui.view">
+        <record id="view_event_filter" model="ir.ui.view">
             <field name="name">crm.event.compassion.select</field>
             <field name="model">crm.event.compassion</field>
             <field name="arch" type="xml">

@@ -166,7 +166,8 @@ class recurring_contract(orm.Model):
             ('ChildCorrespondenceSponsorship', 'Correspondence')],
             _("Type of sponsorship")),
         'correspondant_id': fields.many2one(
-            'res.partner', _('Correspondant'), required=True),
+            'res.partner', _('Correspondant'), required=True, readonly=True,
+            states={'draft': [('readonly', False)]}),
         'activation_date': fields.date(
             _('Activation date'), readonly=True),
         # Add a waiting and waiting mandate states
@@ -206,6 +207,9 @@ class recurring_contract(orm.Model):
             string=_('Frequency'), store=False),
         'end_reason': fields.selection(get_ending_reasons, _('End reason'),
                                        select=True),
+        'end_date': fields.date(
+            _('End date'), readonly=True,
+            track_visibility="onchange"),
         'origin_id': fields.many2one('recurring.contract.origin', _("Origin"),
                                      required=True, ondelete='restrict',
                                      track_visibility='onchange'),
@@ -213,11 +217,11 @@ class recurring_contract(orm.Model):
                                     required=True, readonly=True,
                                     states={'draft': [('readonly', False)]}),
         'parent_id': fields.many2one(
-            'recurring.contract', _('Previous sponsorship'), readonly=True,
-            states={'draft': [('readonly', False)]}),
+            'recurring.contract', _('Previous sponsorship'),
+            track_visibility='onchange'),
         'has_mandate': fields.function(
             _has_mandate, type='boolean', string='Has mandate'),
-        'name': fields.function(_name_get, type='char')
+        'name': fields.function(_name_get, type='char'),
     }
 
     def _get_standard_lines(self, cr, uid, context=None):
@@ -337,14 +341,16 @@ class recurring_contract(orm.Model):
         return True
 
     def contract_cancelled(self, cr, uid, ids, context=None):
-        today = datetime.today().strftime(DF)
-        self.write(cr, uid, ids, {'state': 'cancelled',
-                                  'end_date': today}, context)
+        self.write(cr, uid, ids, {'state': 'cancelled'}, context)
+        # Remove the sponsor of the child
+        for contract in self.browse(cr, uid, ids, context):
+            if contract.child_id:
+                contract.child_id.write({'sponsor_id': False})
         return True
 
     def contract_terminated(self, cr, uid, ids, context=None):
-        super(recurring_contract, self).contract_terminated(cr, uid, ids,
-                                                            context)
+        self.write(cr, uid, ids, {'state': 'terminated'})
+
         ctx = {'lang': 'en_US'}
         category_obj = self.pool.get('res.partner.category')
         sponsor_cat_id = category_obj.search(
@@ -361,7 +367,8 @@ class recurring_contract(orm.Model):
                 # Replace sponsor categoy by old sponsor category
                 partner_categories = set(
                     [cat.id for cat in contract.partner_id.category_id])
-                partner_categories.remove(sponsor_cat_id)
+                if sponsor_cat_id in partner_categories:
+                    partner_categories.remove(sponsor_cat_id)
                 partner_categories.add(old_sponsor_cat_id)
                 # Standard way in Odoo to set one2many fields
                 contract.partner_id.write({
@@ -400,6 +407,7 @@ class recurring_contract(orm.Model):
                 super(recurring_contract, self).write(cr, uid, contract.id, {
                     'next_invoice_date': next_invoice_date.strftime(DF)
                     }, context)
+        return nb_invoices_canceled
 
     def copy(self, cr, uid, id, default=None, context=None):
         if not default:
@@ -481,6 +489,17 @@ class recurring_contract(orm.Model):
         # Cancel open invoices and generate them again
         if 'group_id' in vals or 'contract_line_ids' in vals:
             self.reset_open_invoices(cr, uid, ids, context)
+            for contract in self.browse(cr, uid, ids, context=context):
+                # Update next_invoice_date of group if necessary
+                if contract.group_id.next_invoice_date:
+                    next_invoice_date = datetime.strptime(
+                        contract.next_invoice_date, DF)
+                    group_date = datetime.strptime(
+                        contract.group_id.next_invoice_date, DF)
+                    if group_date > next_invoice_date:
+                        # This will trigger group_date computation
+                        contract.write({
+                            'next_invoice_date': contract.next_invoice_date})
 
         return res
 
@@ -577,7 +596,7 @@ class recurring_contract(orm.Model):
     ##############################
     #      CALLBACKS FOR GP      #
     ##############################
-    def validate_from_gp(self, cr, uid, contract_id, context=None):
+    def force_validation(self, cr, uid, contract_id, context=None):
         """ Used to transition draft sponsorships in waiting state
         when exported from GP. """
         wf_service = netsvc.LocalService('workflow')
@@ -586,14 +605,14 @@ class recurring_contract(orm.Model):
                                 'contract_validated', cr)
         return True
 
-    def activate_from_gp(self, cr, uid, contract_id, context=None):
+    def force_activation(self, cr, uid, contract_id, context=None):
         """ Used to transition draft sponsorships in active state
         when exported from GP. """
-        self.validate_from_gp(cr, uid, contract_id, context)
-        self._on_contract_active(cr, uid, contract_id, context)
+        self.force_validation(cr, uid, contract_id, context)
+        self._on_contract_active(cr, uid, [contract_id], context)
         return True
 
-    def terminate_from_gp(self, cr, uid, contract_id, end_state, end_reason,
+    def force_termination(self, cr, uid, contract_id, end_state, end_reason,
                           child_state, child_exit_code, end_date,
                           transfer_country_code, context=None):
         """ Used to delete the workflow of terminated or cancelled

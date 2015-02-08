@@ -58,6 +58,7 @@ To add a new locale :
              'view/res_partner_view.xml',
              'view/generate_gift_view.xml',
              'view/contract_origin_view.xml',
+             'view/activate_contract_view.xml',
              'data/product.xml',
              'data/payment_terms.xml',
              'data/lang.xml',

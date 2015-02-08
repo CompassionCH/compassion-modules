@@ -109,5 +109,18 @@
             <field eval="0" name="days2"/>
             <field eval="payment_term_virement" name="payment_id"/>
         </record>
+        
+        <!-- Paiement web -->
+		<record id="payment_term_web" model="account.payment.term">
+            <field name="name">Web Payment</field>
+            <field name="note">Web Payment Immediate</field>
+        </record>
+        <record id="payment_term_web_virement" model="account.payment.term.line">
+            <field name="name">Web Payment Immediate</field>
+            <field name="value">balance</field>
+            <field eval="0" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_term_web" name="payment_id"/>
+        </record>
     </data>
 </openerp>

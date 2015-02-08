@@ -12,9 +12,12 @@
 from openerp.osv import orm, fields
 from openerp.addons.account_statement_base_completion.statement \
     import ErrorTooManyPartner
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp import netsvc
 
 from sponsorship_compassion.model.product import GIFT_TYPES
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import time
 
 
@@ -74,15 +77,16 @@ class AccountStatementCompletionRule(orm.Model):
             if len(partner_ids) == 1:
                 partner = partner_obj.browse(
                     cr, uid, partner_ids[0], context=context)
-                partner = partner_obj._find_accounting_partner(partner)
-                res['partner_id'] = partner.id
-                res['account_id'] = partner.property_account_receivable.id
                 # If we fall under this rule of completion, it means there is
                 # no open invoice corresponding to the payment. We may need to
                 # generate one depending on the payment type.
                 res.update(
                     self._generate_invoice(
                         cr, uid, st_line, partner, context=context))
+                # Get the accounting partner (company)
+                partner = partner_obj._find_accounting_partner(partner)
+                res['partner_id'] = partner.id
+                res['account_id'] = partner.property_account_receivable.id
             else:
                 raise ErrorTooManyPartner(
                     ('Line named "%s" (Ref:%s) was matched by more '
@@ -151,25 +155,21 @@ class AccountStatementCompletionRule(orm.Model):
                 [('type', '=', 'in_invoice'), ('state', '=', 'open'),
                  ('amount_total', '=', abs(amount))], context=context)
             res = {}
+            partner_obj = self.pool.get('res.partner')
             if invoice_ids:
-                if len(invoice_ids) == 1:
-                    invoice = invoice_obj.browse(
-                        cr, uid, invoice_ids[0], context=context)
-                    res['partner_id'] = invoice.partner_id.id
-                    res['account_id'] = invoice.account_id.id
-                else:
-                    invoices = invoice_obj.browse(
-                        cr, uid, invoice_ids, context=context)
-                    partner_id = invoices[0].partner_id.id
-                    for invoice in invoices:
-                        if invoice.partner_id.id != partner_id:
-                            raise ErrorTooManyPartner(
-                                ('Line named "%s" (Ref:%s) was matched by '
-                                 'more than one invoice while looking on open'
-                                 ' supplier invoices') %
-                                (st_line['name'], st_line['ref']))
-                    res['partner_id'] = partner_id
-                    res['account_id'] = invoices[0].account_id.id
+                invoices = invoice_obj.browse(cr, uid, invoice_ids, context)
+                partner = invoices[0].partner_id
+                partner_id = partner.id
+                for invoice in invoices:
+                    if invoice.partner_id.id != partner_id:
+                        raise ErrorTooManyPartner(
+                            ('Line named "%s" (Ref:%s) was matched by '
+                             'more than one invoice while looking on open'
+                             ' supplier invoices') %
+                            (st_line['name'], st_line['ref']))
+                res['partner_id'] = partner_obj._find_accounting_partner(
+                    partner).id
+                res['account_id'] = invoices[0].account_id.id
 
         return res
 
@@ -259,6 +259,27 @@ class AccountStatementCompletionRule(orm.Model):
                     wf_service.trg_validate(
                         uid, 'account.invoice', invoice_id, 'invoice_open',
                         cr)
+                # GIFT_TYPES[0] = 'Birthday Gift'
+                elif product.name == GIFT_TYPES[0]:
+                    # Set date of invoice two months before child's birthdate
+                    child_birthdate = res.get('child_birthdate')
+                    if child_birthdate:
+                        inv_date = datetime.strptime(st_line['date'], DF)
+                        birthdate = datetime.strptime(child_birthdate, DF)
+                        new_date = inv_date
+                        if birthdate.month >= inv_date.month + 2:
+                            new_date = inv_date.replace(
+                                day=28,
+                                month=birthdate.month-2)
+                        elif birthdate.month + 3 < inv_date.month:
+                            new_date = birthdate.replace(
+                                day=28, year=inv_date.year+1) + relativedelta(
+                                months=-2)
+                            new_date = max(new_date, inv_date)
+                        invoice_obj.write(
+                            cr, uid, invoice_id, {
+                                'date_invoice': new_date.strftime(DF)
+                            }, context)
 
         return res
 
@@ -313,16 +334,23 @@ class AccountStatementCompletionRule(orm.Model):
             contract_ids = contract_obj.search(
                 cr, uid, [
                     ('partner_id', '=', partner_id),
-                    ('num_pol_ga', '=', contract_number)], context=context)
+                    ('num_pol_ga', '=', contract_number),
+                    ('state', 'not in', ('terminated', 'cancelled'))],
+                context=context)
             if contract_ids and len(contract_ids) == 1:
                 contract = contract_obj.browse(
                     cr, uid, contract_ids[0], context=context)
                 inv_line_data['contract_id'] = contract.id
-                if inv_line_data['name'] == '/':
-                    inv_line_data['name'] = contract.child_id.code
-                    inv_line_data['name'] += " - " + contract.child_id.birthdate \
-                        if product.name == GIFT_TYPES[0] else ""
-                res['name'] += " [" + inv_line_data['name'] + "]"
+                # Retrieve the birthday of child
+                birthdate = ""
+                if product.name == GIFT_TYPES[0]:
+                    birthdate = contract.child_id.birthdate
+                    res['child_birthdate'] = birthdate
+                    birthdate = datetime.strptime(birthdate, DF).strftime(
+                        "%d %b")
+                    inv_line_data['name'] += " " + birthdate
+                res['name'] += "[" + contract.child_id.code
+                res['name'] += " (" + birthdate + ")]" if birthdate else "]"
             else:
                 res['name'] += " [Child not found] "
 

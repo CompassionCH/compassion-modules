@@ -374,6 +374,7 @@
 			<field name="description"></field>
             <field name="property_account_income" search="[('code','=','6010')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">135</field>
         </record>
 		<record id="product_fund_c13" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_c13" />
@@ -385,7 +386,7 @@
 			are bringing to them through your help.</field>
             <field name="property_account_income" search="[('code','=','6014')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
-            <field name="gp_fund_id">135</field>
+            <field name="gp_fund_id">173</field>
         </record>
 		<record id="product_fund_c20" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_c20" />

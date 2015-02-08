@@ -21,6 +21,7 @@
 					</field>
                     <field name="payment_term_id" position="after">
                         <field name="frequency" />
+                        <field name="origin_id" />
                     </field>
                     <field name="state" position="after">
                         <button name="open_contract" type="object" invisible="not context.get('partner_contracts_view')" icon="STOCK_JUMP_TO" />
@@ -61,12 +62,12 @@
                             <field name="group_id" domain="[('partner_id', '=', partner_id)]"
                                    context="{'default_partner_id': partner_id}"
                                    on_change="on_change_group_id(group_id)"/>
-                            <field name="parent_id"/>
+                            <field name="parent_id" domain="[('partner_id', '=', partner_id), ('child_id', '!=', child_id)]"/>
                         </group>
                         <group>
                             <field name="start_date" string="Creation date"/>
                             <field name="activation_date" states="active,terminated,cancelled" />
-                            <field name="end_date" />
+                            <field name="end_date" attrs="{'invisible':[('end_date', '=', False)]}" />
                             <field name="next_invoice_date" states="draft,waiting,mandate,active" />
                         </group>
                         
@@ -109,12 +110,18 @@
                             ]
                         </attribute>
                     </field>
+                    <field name="payment_term_id" position="after">
+                        <field name="origin_id"/>
+                    </field>
                     <xpath expr="//filter[@name='draft']" position="after">
                         <filter name="waiting" string="Waiting" domain="[('state','=','waiting')]"/>
                         <filter name="mandate" string="Waiting Mandate" domain="[('state','=','mandate')]"/>
                     </xpath>
                     <xpath expr="//filter[@name='terminated']" position="after">
                         <filter name="cancelled" string="Cancelled" domain="[('state','=','cancelled')]"/>
+                    </xpath>
+                    <xpath expr="//filter[@string='Status']" position="after">
+                        <filter string="Origin" domain="[]"  context="{'group_by':'origin_id'}"/>
                     </xpath>
 				</data>
 			</field>
@@ -128,12 +135,5 @@
                   
         <menuitem id="open_customers" parent="child_compassion.menu_sponsorship_section"
                   name="Partners" action="base.action_partner_customer_form" sequence="1"/>
-                  
-        <!-- Generate Gift -->
-        <act_window id="action_account_invoice_free"
-            key2="client_action_multi" name="Generate Gift"
-            res_model="generate.gift.wizard" src_model="recurring.contract"
-            view_mode="form" target="new" view_type="form"
-            />
 	</data>
 </openerp>

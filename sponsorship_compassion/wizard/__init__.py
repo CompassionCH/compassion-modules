@@ -12,3 +12,4 @@
 from . import recurring_invoicer_wizard
 from . import generate_gift_wizard
 from . import end_sponsorship_wizard
+from . import activate_contract_wizard

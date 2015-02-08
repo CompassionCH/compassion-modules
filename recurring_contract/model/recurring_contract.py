@@ -240,12 +240,12 @@ class recurring_contract(orm.Model):
 
     def clean_invoices(self, cr, uid, ids, context=None, since_date=None):
         ''' This method deletes invoices lines generated for a given contract
-            having a due date > since_date. If the invoice_line was the only
-            line in the invoice, we cancel the invoice. In the other case, we
-            have to revalidate the invoice to update the move lines.
+            having a due date >= current month. If the invoice_line was the
+            only line in the invoice, we cancel the invoice. In the other
+            case, we have to revalidate the invoice to update the move lines.
         '''
         if not since_date:
-            since_date = datetime.today().strftime(DF)
+            since_date = datetime.today().replace(day=1).strftime(DF)
 
         inv_line_obj = self.pool.get('account.invoice.line')
         inv_obj = self.pool.get('account.invoice')
@@ -254,8 +254,9 @@ class recurring_contract(orm.Model):
         # Find all unpaid invoice lines after the given date
         inv_line_ids = inv_line_obj.search(
             cr, uid, [('contract_id', 'in', ids),
-                      ('due_date', '>', since_date),
-                      ('state', '!=', 'paid')], context=context)
+                      ('due_date', '>=', since_date),
+                      ('state', 'not in', ('paid', 'cancel'))],
+            context=context)
 
         inv_ids = set()
         empty_inv_ids = set()

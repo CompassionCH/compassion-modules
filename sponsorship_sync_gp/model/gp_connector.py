@@ -42,6 +42,7 @@ class GPConnect(mysql_connector):
         'Postfinance': 'DD',
         'Permanent Order': 'OP',
         'Bank Transfer': 'VIR',
+        'Web Payment': 'WEB',
     }
 
     # Mapping for child transfers to exit_reason_code in GP
@@ -226,10 +227,10 @@ class GPConnect(mysql_connector):
         logger.info(sql_query)
         return self.query(sql_query)
 
-    def undo_payment(self, contract_id):
+    def undo_payment(self, contract_id, amount=1):
         """ Set the MOIS value backwards. """
-        return self.query("UPDATE Poles SET MOIS=MOIS-1 WHERE id_erp=%s",
-                          contract_id)
+        return self.query("UPDATE Poles SET MOIS=MOIS-{:d} WHERE id_erp={:d}"
+                          .format(amount, contract_id))
 
     def insert_affectat(self, uid, invoice_line, payment_date):
         """ When a new payment is done (invoice paid), update the Sponsorship
@@ -238,8 +239,15 @@ class GPConnect(mysql_connector):
         product = invoice_line.product_id
 
         # Determine the nature of the payment (sponsorship, fund)
-        if product.name in GIFT_TYPES + ['Sponsorship']:
+        if product.name in GIFT_TYPES + ['Sponsorship', 'LDP Sponsorship']:
+            if not contract:
+                raise orm.except_orm(
+                    _('Missing sponsorship'),
+                    _('Invoice line for sponsor %s is missing a sponsorship')
+                    % invoice_line.partner_id.name)
             codespe = contract.child_id.code
+            if 'LDP' in product.name:
+                codespe = 'LDP'
             typeprojet = "P"
             id_pole = self.selectOne(
                 "Select id_pole FROM Poles WHERE id_erp=%s",
@@ -286,14 +294,20 @@ class GPConnect(mysql_connector):
             'DATE_SAISIE': date.today().strftime('%Y-%m-%d'),
             'ID_POLE': id_pole,
             'MOIS': 1 if cadeau == 0 else 0,
+            'ID_ERP': invoice_line.id,
         }
         if not id_pole:
             del vals['ID_POLE']
-        insert_affectat = "INSERT INTO Affectat(%s) VALUES (%s)" % (
+        insert_affectat = "INSERT INTO Affectat(%s) VALUES (%s) " \
+            "ON DUPLICATE KEY UPDATE %s"
+        update_string = ",".join([key + "=VALUES(" + key + ")"
+                                  for key in vals.keys()])
+        sql_query = insert_affectat % (
             ",".join(vals.keys()),
-            ",".join(["%s" for i in range(0, len(vals))]))
+            ",".join(["%s" for i in range(0, len(vals))]),
+            update_string)
 
-        return self.query(insert_affectat, vals.values())
+        return self.query(sql_query, vals.values())
 
     def remove_affectat(self, invoice_id, invoice_date):
         max_date = self.selectOne("SELECT MAX(Date) AS Date FROM Affectat "
