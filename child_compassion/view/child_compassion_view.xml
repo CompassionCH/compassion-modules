@@ -64,6 +64,9 @@
                                     <field name="desc_it" />
                                 </group>
                             </page>
+                            <page string="Sponsorships">
+                                <field name="contract_ids"/>
+                            </page>
                             <page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '>', 0)]}">
                                 <group>
                                     <field name="gp_exit_reason" />
@@ -115,6 +118,7 @@
                     gray:state in ('F', 'X')">
                     <field name="name"/>
                     <field name="code"/>
+                    <field name="date"/>
                     <field name="sponsor_id"/>
                     <field name="gender"/>
                     <field name="birthdate"/>
@@ -137,9 +141,12 @@
                                                        ]"/>
                     <field name="state"/>
                     <field name="type"/>
-                    <filter name="available" string="Available" domain="[('state','in',('N','D','I','R'))]" context="{'group_by':'state'}"/>
+                    <filter name="available" string="Available" domain="[('state','in',('N','D','I','R','E'))]" context="{'group_by':'state'}"/>
                     <filter name="sponsored" string="Sponsored" domain="[('state','=','P')]" help="Sponsored children"/>
                     <filter name="departed" string="Departed" domain="[('state','=','F')]" help="Departed children"/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Allocation Date" domain="[]" context="{'group_by':'date'}"/>
+                    </group>
                 </search>
             </field>
         </record>
