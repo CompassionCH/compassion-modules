@@ -553,9 +553,6 @@ class compassion_child(orm.Model):
         reload(sys)
         sys.setdefaultencoding('UTF8')
 
-        # To avoid readding children
-        self.child_remove_from_typo3(cr, uid, ids, context=None)
-
         for child in self.browse(cr, uid, ids, context):
 
             child_gender = self._get_gender(cr, uid, child.gender, context)
