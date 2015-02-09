@@ -325,7 +325,6 @@ class gmc_message_pool(orm.Model):
 
 
 class gmc_action(orm.Model):
-
     """
     A GMC Action defines what has to be done for a specific OffRamp
     message of the Compassion International specification.

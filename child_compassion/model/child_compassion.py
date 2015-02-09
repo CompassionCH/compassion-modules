@@ -102,6 +102,15 @@ class compassion_child(orm.Model):
                 cr, uid, [('code', 'like', project.code)], context=context)
         return child_ids
 
+    def _get_related_contracts(self, cr, uid, ids, field_name, args,
+                               context=None):
+        con_obj = self.pool.get('recurring.contract')
+        return {
+            child_id: con_obj.search(cr, uid, [('child_id', '=', child_id)],
+                                     context=context)
+            for child_id in ids
+        }
+
     _columns = {
         ######################################################################
         #                      1. General Information                        #
@@ -151,6 +160,7 @@ class compassion_child(orm.Model):
             ('N', _('Available')),
             ('D', _('Delegated')),
             ('I', _('On Internet')),
+            ('E', _('Reinstated')),
             ('P', _('Sponsored')),
             ('R', _('Waiting new sponsor')),
             ('F', _('Departed')),
@@ -160,6 +170,9 @@ class compassion_child(orm.Model):
         'sponsor_id': fields.many2one('res.partner', _('Sponsor'),
                                       readonly=True,
                                       track_visibility='onchange'),
+        'contract_ids': fields.function(
+            _get_related_contracts, type='one2many', obj='recurring.contract',
+            string=_("Sponsorships"), readonly=True),
 
         ######################################################################
         #                      2. Exit Details                               #
@@ -433,8 +446,14 @@ class compassion_child(orm.Model):
         for child in self.browse(cr, uid, ids, context):
             state = 'N'
             if child.has_been_sponsored:
-                state = 'R'
+                if child.state == 'F':
+                    # Child reinstatement
+                    state = 'E'
+                else:
+                    # Child is waiting a new sponsor
+                    state = 'R'
             if child.sponsor_id:
+                # Child is already sponsored
                 state = 'P'
             child.write({'state': state})
         return True
