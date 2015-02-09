@@ -36,7 +36,7 @@
     "depends": ['account_statement_base_completion',
                 'sponsorship_compassion',
                 ],
-    "data": ['view/statement_view.xml',
+    "data": [# 'view/statement_view.xml',
              'view/invoice_view.xml',
              'data/data.xml'],
     "css": ["static/src/css/sheet.css"],

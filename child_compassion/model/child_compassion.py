@@ -595,7 +595,8 @@ class compassion_child(orm.Model):
                 with sftp.cd(path):
                     sftp.put(head_image)
                     sftp.put(full_image)
-        
+                    
+        self.write(cr, uid, ids,{'state':'I'})
     
     def _get_gender(self, cr, uid, gender, context=None):
         if gender=='M':
