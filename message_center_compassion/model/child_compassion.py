@@ -62,10 +62,8 @@ class compassion_child(orm.Model):
 
     def deallocate(self, cr, uid, args, context=None):
         """Deallocate child.
-        TODO:
-            If child is sponsored, it means it will be transferred to another
-            project. We should not mark end the sponsorship and should
-            warn the sponsor of the change.
+        This happens only for unsponsored children that are no longer
+        assigned to Switzerland.
         """
         return self.write(cr, uid, args.get('object_id'), {
             'state': 'X', 'exit_date': args.get('date')}, context)
@@ -140,7 +138,6 @@ class compassion_child(orm.Model):
 
 
 class compassion_project(orm.Model):
-
     """ Add update method. """
     _inherit = 'compassion.project'
 
