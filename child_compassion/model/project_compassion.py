@@ -11,14 +11,16 @@
 
 import requests
 import json
-import pdb
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from openerp import netsvc
+
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+
 
 class compassion_project(orm.Model):
     """ A compassion project """
@@ -37,12 +39,13 @@ class compassion_project(orm.Model):
                project.additional_quota_allowed):
                 res[project.id] = 'suspended' if project.disburse_funds \
                     else 'fund-suspended'
-                if (res[project.id] == 'fund-suspended'): 
-                    self.suspend_project(cr, uid, project.id, project.status_date, 3, context)
+                if (res[project.id] == 'fund-suspended'):
+                    self.suspend_project(cr, uid, project.id,
+                                         project.status_date, 3, context)
         return res
 
-    def suspend_project(self, cr, uid, project_id, start, months,
-                                context=None):
+    def suspend_project(self, cr, uid, project_id,
+                        start, months, context=None):
         """ When a project is suspended from GP, We update all contracts of
         sponsored children in the project, so that we don't create invoices
         during the period of suspension.
@@ -97,8 +100,8 @@ class compassion_project(orm.Model):
                 "Project Suspended", 'comment',
                 context={'thread_model': 'recurring.contract'})
 
-        return True    
-        
+        return True
+
     _columns = {
         ######################################################################
         #                      1. General Information                        #
@@ -117,12 +120,10 @@ class compassion_project(orm.Model):
                 ('none', _('Not Suspended')),
                 ('suspended', _('Suspended')),
                 ('fund-suspended', _('Suspended & fund retained'))],
-            string=_('Suspension'), 
-            store=
-            {'compassion.project': 
-                (lambda self, cr, uid, ids, c={}:
-                    ids, ['last_update_date'], 20)}
-                    ),
+            string=_('Suspension'),
+            store={'compassion.project':
+                    (lambda self, cr, uid, ids, c={}:
+                        ids, ['last_update_date'], 20)}),
         'status': fields.selection([
             ('A', _('Active')),
             ('P', _('Phase-out')),
@@ -445,4 +446,3 @@ class compassion_project(orm.Model):
                 r.text)
         json_result = json.loads(r.text)
         return json_result
-        
