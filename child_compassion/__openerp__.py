@@ -57,6 +57,7 @@ Warning: Requires 'pysftp' (sudo pip install pysftp)
         'view/delegate_child_wizard.xml',
         'view/undelegate_child_wizard.xml',
         'view/child_on_internet_wizard.xml',
+        'view/child_remove_from_internet.xml',
         'view/project_description_wizard_view.xml',
         'view/project_compassion_age_groups_view.xml',
         'workflow/child_workflow.xml',
