@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+        <record id="child_on_internet_wizard_view" model="ir.ui.view">
+            <field name="name">compassion.child.on.internet.wizard</field>
+			<field name="model">child.on.internet.wizard</field>
+            <field name="type">form</field>
+			<field name="arch" type="xml">
+                <form string="Put child on internet" version="7.0">
+                    <footer>
+                        <button name="put_child_on_internet" string="Validate" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        
+        <act_window id="action_child_on_internet_wizard"
+                    multi="True"
+                    name="On internet"
+                    key2="client_action_multi"
+                    src_model="compassion.child"
+                    res_model="child.on.internet.wizard"
+                    view_mode="form" view_type="form" target="new"/>        
+
+     </data>
+</openerp>
