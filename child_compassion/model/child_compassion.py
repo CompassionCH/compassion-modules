@@ -534,10 +534,10 @@ class compassion_child(orm.Model):
             child_image = child.code+"_f.jpg,"+child.code+"_h.jpg"
             child_birth_date = calendar.timegm(
                 datetime.strptime(child.birthdate, DF).utctimetuple())
-                
-            if(not(child_desc_fr and child_desc_de)):
+
+            if(not(child.desc_de and child.desc_fr)):
                 raise orm.except_orm(
-                        _('Warning'), _('Missing descriptions'))
+                    _('Warning'), _('Missing descriptions'))
 
             child_desc_de = child.desc_de.replace('\'', '\'\'')
             child_desc_fr = child.desc_fr.replace('\'', '\'\'')
