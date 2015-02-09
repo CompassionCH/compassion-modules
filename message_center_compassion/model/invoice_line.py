@@ -26,22 +26,6 @@ class account_invoice_line(orm.Model):
                 res[inv_line.id] = need_key
         return res
 
-    def get_gift_details(self, cr, uid, line_id, context=None):
-        # TODO : See with Stuart if we can remove this method
-        inv_line = self.browse(cr, uid, line_id, context)
-        need_key = inv_line.contract_id.child_code
-        if inv_line.product_id.gmc_name == 'ProjectGift':
-            need_key = need_key[:5]
-        res = {
-            'ConstituentId': inv_line.partner_id.id,
-            'NeedKey': inv_line.contract_id.child_code,
-            'GiftType': inv_line.product_id.gmc_name,
-            'GiftAmount': inv_line.price_subtotal,
-            'GiftInstructions': inv_line.gift_instructions,
-            'TransactionDate': inv_line.invoice_id.date_invoice
-        }
-        return res
-
     def _get_instructions(self, cr, uid, ids, field, args, context=None):
         res = dict()
         ctx = context.copy()
