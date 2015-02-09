@@ -9,17 +9,16 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
-import pdb
+from openerp.osv import orm
+
 
 class undelegate_child_wizard(orm.TransientModel):
     _name = 'undelegate.child.wizard'
 
-    def undelegate(self, cr, uid, ids, context=None): 
+    def undelegate(self, cr, uid, ids, context=None):
         child_obj = self.pool.get('compassion.child')
         childrens = child_obj.browse(
-                cr, uid, context.get('active_ids', list()), context)
+            cr, uid, context.get('active_ids', list()), context)
 
         for child in childrens:
             if (child.state == 'D'):
@@ -28,6 +27,6 @@ class undelegate_child_wizard(orm.TransientModel):
                     newstate = 'R'
 
                 self.pool.get('compassion.child').write(
-                        cr, uid, child.id,
-                        {'state':newstate},
-                        context=context)
+                    cr, uid, child.id,
+                    {'state': newstate},
+                    context=context)
