@@ -17,11 +17,13 @@ logger = logging.getLogger(__name__)
 
 
 class account_invoice_line(Model):
-
     ''' Adds a field for moving a line to a new invoice'''
     _inherit = "account.invoice.line"
 
     def _get_split_line(self, cr, uid, ids, field_name, args, context=None):
+        """Boolean value telling that the invoice line will be moved to
+        another invoice. It is set to true if the invoice_line is
+        currently attached to no invoice."""
         return {invl.id: not invl.invoice_id for invl in self.browse(
             cr, uid, ids, context)}
 
