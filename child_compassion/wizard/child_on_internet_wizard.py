@@ -26,4 +26,9 @@ class child_on_internet_wizard(orm.TransientModel):
             if child.state in possible_states:
                 child_ids.append(child.id)
 
+                if(not(child.desc_de and child.desc_fr)):
+                    raise orm.except_orm(
+                        _('Warning'), _('Missing descriptions'))
+
+
         child_obj.child_add_to_typo3(cr, uid, child_ids, context=None)
