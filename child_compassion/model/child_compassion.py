@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+﻿# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -12,13 +12,18 @@
 import requests
 import pysftp
 import logging
+import sys
+import calendar
+import json
+import pdb
 
 logger = logging.getLogger(__name__)
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
-
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from datetime import datetime
 
 class compassion_child(orm.Model):
     """ A sponsored child """
@@ -147,6 +152,8 @@ class compassion_child(orm.Model):
             string=_('Child pictures'), track_visibility="onchange"),
         'portrait': fields.related(
             'pictures_ids', 'headshot', type='binary'),
+        'fullshot': fields.related(
+            'pictures_ids', 'fullshot', type='binary'),
         'state': fields.selection([
             ('N', _('Available')),
             ('D', _('Delegated')),
@@ -204,6 +211,8 @@ class compassion_child(orm.Model):
         'gp_exit_reason': fields.selection(
             get_gp_exit_reasons, _("Exit Reason"), readonly=True,
             track_visibility="onchange"),
+        'delegated_to':fields.many2one('res.partner',_("Delegated to")),
+        'delegated_comment':fields.text(_("Delegated comment")),
     }
 
     _defaults = {
@@ -249,7 +258,7 @@ class compassion_child(orm.Model):
                     'name': child.code[:5],
                 })
                 proj_obj.update_informations(cr, uid, proj_id)
-        return res
+        return True
 
     def generate_descriptions(self, cr, uid, child_id, context=None):
         child = self.browse(cr, uid, child_id, context)
@@ -450,23 +459,32 @@ class compassion_child(orm.Model):
                 child.write({'sponsor_id': False})
                 self.get_exit_details(cr, uid, child.id, context)
         return True
-
-    def child_remove_from_typo3(self, cr, uid, ids, context=None):
-        child_codes = [child.code for child in self.browse(cr, uid, ids,
-                                                           context)]
-        filename = "upd.sql"
-        file_query = open(filename, "wb")
-        for code in child_codes:
-            file_query.write(
-                "delete from tx_drechildpoolmanagement_domain_model_children "
-                "where child_key='%s';\n" % code)
-        file_query.close()
+        
+    def _get_typo3_child_id(self, cr, uid, child_code, context=None):
+        res = self._sel_request_to_typo3(
+            cr, uid,
+            "select * "
+            "from tx_drechildpoolmanagement_domain_model_children "
+            "where child_key='%s'" % child_code,
+            context)
+        
+        return json.loads(res)[0]['uid']
+        
+    def _sel_request_to_typo3(self, cr, uid, request, context=None):
+        
+        filename = "sel.sql"
+        
         host = config.get('typo3_host')
         username = config.get('typo3_user')
         pwd = config.get('typo3_pwd')
         scripts_url = config.get('typo3_scripts_url')
         path = config.get('typo3_scripts_path')
         api_key = config.get('typo3_api_key')
+        
+        file_query = open(filename, "wb")
+        file_query.write(request)
+        file_query.close()
+        
         if not (host and username and pwd and path and scripts_url
                 and api_key):
             raise orm.except_orm('ConfigError',
@@ -476,7 +494,129 @@ class compassion_child(orm.Model):
             with sftp.cd(path):
                 sftp.put(filename)
 
-        self._typo3_scripts_fetch(scripts_url, api_key, "upd_db")
+        return self._typo3_scripts_fetch(scripts_url, api_key, "sel_db")
+        
+    def _update_request_to_typo3(self, cr, uid, request, context=None):
+        filename = "upd.sql"
+
+        host = config.get('typo3_host')
+        username = config.get('typo3_user')
+        pwd = config.get('typo3_pwd')
+        scripts_url = config.get('typo3_scripts_url')
+        path = config.get('typo3_scripts_path')
+        api_key = config.get('typo3_api_key')
+        
+        file_query = open(filename, "wb")
+        file_query.write(request)
+        file_query.close()
+        
+        if not (host and username and pwd and path and scripts_url
+                and api_key):
+            raise orm.except_orm('ConfigError',
+                                 'Missing typo3 settings '
+                                 'in conf file')
+        with pysftp.Connection(host, username=username, password=pwd) as sftp:
+            with sftp.cd(path):
+                sftp.put(filename)
+
+        return self._typo3_scripts_fetch(scripts_url, api_key, "upd_db")
+        
+    def child_add_to_typo3(self, cr, uid, ids, context=None):
+        reload(sys)
+        sys.setdefaultencoding('UTF8')
+        
+        # To avoid readding children
+        self.child_remove_from_typo3(cr, uid, ids, context=None)
+        
+        for child in self.browse(cr, uid, ids,context):
+            
+            child_gender = self._get_gender(cr,uid,child.gender,context)
+            child_image = child.code+"_f.jpg,"+child.code+"_h.jpg"
+            child_birth_date = calendar.timegm(datetime.strptime(child.birthdate,DF).utctimetuple())
+            
+            child_desc_de = child.desc_de
+            child_desc_fr = child.desc_fr
+            # pdb.set_trace()
+            # German description (parent)
+            self._update_request_to_typo3(
+                cr, uid, 
+                "insert into "
+                "tx_drechildpoolmanagement_domain_model_children"
+                "(child_key,child_name_full,child_name_personal,child_gender,child_biography,"
+                "l10n_parent,image,child_birth_date) "
+                "values ('%s','%s','%s','%s','%s','%s','%s','%s');" 
+                % (child.code,child.name,child.firstname,child_gender,child_desc_de,0,child_image,child_birth_date),
+                context)
+                
+            parent_id = self._get_typo3_child_id(cr, uid, child.code, context) 
+            
+            # French description
+            self._update_request_to_typo3(
+                cr, uid, 
+                "insert into "
+                "tx_drechildpoolmanagement_domain_model_children"
+                "(child_key,child_name_full,child_name_personal,child_gender,child_biography,"
+                "l10n_parent,image,child_birth_date) "
+                "values ('{}','{}','{}','{}','{}','{}','{}','{}');".format(
+                    child.code,child.name,child.firstname,
+                    child_gender,child_desc_fr,parent_id,
+                    child_image,child_birth_date),
+                context)
+            
+        self._add_child_pictures_to_typo3(cr, uid, ids, context)
+        
+        
+    def _add_child_pictures_to_typo3(self, cr, uid, ids, context=None):
+        for child in self.browse(cr, uid, ids,context):
+            head_image = child.code+"_h.jpg"
+            full_image = child.code+"_f.jpg"
+            
+            
+            if not(child.portrait and child.fullshot):
+                self.pool.get('compassion.child.pictures').create(cr, uid, {'child_id':child.id}, context)
+                
+                if not(child.portrait and child.fullshot):
+                    raise orm.except_orm(_('Warning'),_('Child has no picture'))
+
+            file_head = open(head_image, "wb")
+            file_head.write(child.portrait)  
+            file_head.close()
+        
+            file_fullshot = open(full_image, "wb")
+            file_fullshot.write(child.fullshot)
+            file_fullshot.close()
+        
+            host = config.get('typo3_host')
+            username = config.get('typo3_user')
+            pwd = config.get('typo3_pwd')
+            path = config.get('typo3_images_path')
+
+            with pysftp.Connection(host, username=username, password=pwd) as sftp:
+                with sftp.cd(path):
+                    sftp.put(head_image)
+                    sftp.put(full_image)
+        
+    
+    def _get_gender(self, cr, uid, gender, context=None):
+        if gender=='M':
+            return 1
+        else:
+            return 2
+        
+    def child_remove_from_typo3(self, cr, uid, ids, context=None):
+        child_codes = [child.code for child in self.browse(cr, uid, ids,
+                                                           context)]
+
+        for code in child_codes:
+            self._update_request_to_typo3(
+                cr, uid, 
+                "delete from tx_drechildpoolmanagement_domain_model_children "
+                "where child_key='%s';" % code,
+                context)
+        
+        scripts_url = config.get('typo3_scripts_url')
+        api_key = config.get('typo3_api_key')
+        
         self._typo3_scripts_fetch(scripts_url, api_key, "delete_photo",
                                   {"children": ",".join(child_codes)})
 
@@ -484,7 +624,7 @@ class compassion_child(orm.Model):
             state = 'R' if child.has_been_sponsored else 'N'
             child.write({'state': state})
         return True
-
+    
     def _typo3_scripts_fetch(self, url, api_key, action, args=None):
         full_url = url + "?api_key=" + api_key + "&action=" + action
         if args:

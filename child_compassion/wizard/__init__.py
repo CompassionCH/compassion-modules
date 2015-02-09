@@ -11,3 +11,7 @@
 
 from . import child_description_wizard
 from . import child_depart_wizard
+from . import project_description_wizard
+from . import delegate_child_wizard
+from . import undelegate_child_wizard
+from . import child_on_internet_wizard
