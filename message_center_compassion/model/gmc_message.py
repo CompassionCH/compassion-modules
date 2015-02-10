@@ -111,6 +111,7 @@ class gmc_message_pool(orm.Model):
         'event': fields.char(_('Incoming Event'), size=24,
                              help=_("Contains the event that triggered the "
                                     "incoming message.")),
+        'partner_country_code': fields.char(_('Partner Country Code'), size=2),
         # Gift Type Messages information
         'invoice_line_id': fields.function(
             _get_object_id, type='many2one', obj='account.invoice.line'),
@@ -143,8 +144,16 @@ class gmc_message_pool(orm.Model):
             if message.state == 'new' and mess_date <= today:
                 action = message.action_id
                 if action.direction == 'in':
-                    res = self._perform_incoming_action(cr, uid, message,
-                                                        context)
+                    # TODO replace 'CH' by company iso_code
+                    if message.partner_country_code == 'CH':
+                        res = self._perform_incoming_action(cr, uid, message,
+                                                            context)
+                    else:
+                        message.write({
+                            'state': 'failure',
+                            'failure_reason': 'Wrong Partner Country'})
+                        res = False
+
                 elif action.direction == 'out':
                     res = self._perform_outgoing_action(cr, uid, message,
                                                         context)
