@@ -75,26 +75,20 @@ class compassion_child(orm.Model):
         2. The child is marked as departed (GetExitDetails API is called)
         3. GP_Exit_Reason is inferred if possible.
         """
-        # TODO : the user should do the right communication
-        # to the sponsor from GP.
         child = self.browse(cr, uid, args.get('object_id'), context)
         if child.sponsor_id:
-            contract_obj = self.pool.get('recurring.contract')
-            contract_ids = contract_obj.search(
-                cr, uid, [
-                    ('child_id', '=', child.id),
-                    ('partner_id', '=', child.sponsor_id.id),
-                    ('state', 'in', ('waiting', 'active', 'mandate'))],
-                context=context)
-            if contract_ids:
-                # Terminate contract
-                contract_obj.write(cr, uid, contract_ids[0], {
-                    'end_reason': '1',  # Child departure
-                    'end_date': datetime.today().strftime(DF)})
+            for contract in child.contract_ids:
+                if contract.state in ('waiting', 'active', 'mandate'):
+                    # Terminate contract and mark the departure
+                    contract.write({
+                        'end_reason': '1',  # Child departure
+                        'end_date': datetime.today().strftime(DF),
+                        'gmc_state': 'depart'})
 
-                wf_service = netsvc.LocalService('workflow')
-                wf_service.trg_validate(
-                    uid, 'recurring.contract', contract_ids[0], 'contract_terminated', cr)
+                    wf_service = netsvc.LocalService('workflow')
+                    wf_service.trg_validate(
+                        uid, 'recurring.contract', contract.id,
+                        'contract_terminated', cr)
 
         if child.state != 'F':
             child.write({'state': 'F'})
@@ -127,13 +121,24 @@ class compassion_child(orm.Model):
         event = args.get('event')
         if event == 'Allocate':
             self.get_infos(cr, uid, args.get('object_id'), context=context)
-        elif event == 'Transfer':
-            # Nothing to do, only the child code has changed
-            return True
+        # elif event == 'Transfer':  (TODO) See if update_info is needed
         elif event == 'CaseStudy':
             self._get_case_study(cr, uid, child, context)
         elif event == 'NewImage':
             self._get_last_pictures(cr, uid, child.id, context)
+
+        # Notify the change if the child is sponsored
+        if child.sponsor_id:
+            # Maps the event to the gmc state value of contract
+            gmc_states = {
+                'Transfer': 'transfer',
+                'CaseStudy': 'biennial',
+                'NewImage': 'biennial',
+            }
+            for contract in child.contract_ids:
+                if contract.state in ('waiting', 'active', 'mandate'):
+                    contract.write({'gmc_state': gmc_states[event]})
+
         return True
 
 

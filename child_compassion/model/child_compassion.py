@@ -215,7 +215,7 @@ class compassion_child(orm.Model):
         'transfer_country_id': fields.many2one('res.country',
                                                _("Transfered to")),
         'gp_exit_reason': fields.selection(
-            get_gp_exit_reasons, _("Exit Reason"), readonly=True,
+            get_gp_exit_reasons, _("Exit Reason"),
             track_visibility="onchange"),
         'delegated_to': fields.many2one('res.partner', _("Delegated to")),
         'delegated_comment': fields.text(_("Delegated comment")),
@@ -292,6 +292,11 @@ class compassion_child(orm.Model):
     def _get_last_pictures(self, cr, uid, child_id, context=None):
         self.pool.get('compassion.child.pictures').create(
             cr, uid, {'child_id': child_id}, context)
+        # Add a note in child
+        self.pool.get('mail.thread').message_post(
+            cr, uid, child_id, "Picture update",
+            "The picture has been updated.", 'comment',
+            context={'thread_model': self._name})
         return True
 
     ##################################################
@@ -432,6 +437,12 @@ class compassion_child(orm.Model):
             child_prop_obj.write(cr, uid, study_ids, vals, context)
         else:
             child_prop_obj.create(cr, uid, vals, context)
+
+        # Add a note in child
+        self.pool.get('mail.thread').message_post(
+            cr, uid, child.id, "Case Study update",
+            "The case study has been updated.", 'comment',
+            context={'thread_model': self._name})
         return True
 
     def get_url(self, child_code, api_mess):
