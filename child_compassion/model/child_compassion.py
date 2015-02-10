@@ -578,10 +578,6 @@ class compassion_child(orm.Model):
             head_image = child.code+"_h.jpg"
             full_image = child.code+"_f.jpg"
 
-            if not(child.portrait and child.fullshot):
-                self.pool.get('compassion.child.pictures').create(
-                    cr, uid, {'child_id': child.id}, context)
-
             file_head = open(head_image, "wb")
             file_head.write(child.portrait)
             file_head.close()
