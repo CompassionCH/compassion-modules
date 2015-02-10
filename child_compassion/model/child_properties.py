@@ -18,6 +18,7 @@ class child_property(orm.Model):
     _name = 'compassion.child.property'
     _order = 'child_id, info_date desc'
     _inherit = 'mail.thread'
+    _description = "Case Study"
 
     _columns = {
         'child_id': fields.many2one(

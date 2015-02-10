@@ -294,8 +294,8 @@ class compassion_child(orm.Model):
             cr, uid, {'child_id': child_id}, context)
         # Add a note in child
         self.pool.get('mail.thread').message_post(
-            cr, uid, child_id, "Picture update",
-            "The picture has been updated.", 'comment',
+            cr, uid, child_id, "The picture has been updated.",
+            "Picture update", 'comment',
             context={'thread_model': self._name})
         return True
 
@@ -440,8 +440,8 @@ class compassion_child(orm.Model):
 
         # Add a note in child
         self.pool.get('mail.thread').message_post(
-            cr, uid, child.id, "Case Study update",
-            "The case study has been updated.", 'comment',
+            cr, uid, child.id, "The case study has been updated.",
+            "Case Study update", 'comment',
             context={'thread_model': self._name})
         return True
 
