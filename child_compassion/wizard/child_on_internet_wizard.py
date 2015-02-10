@@ -56,8 +56,11 @@ class child_on_internet_wizard(orm.TransientModel):
 
             # Check for pictures
             if not(child.portrait and child.fullshot):
-                raise orm.except_orm(
-                    _('Warning'), _('Child has no picture'))
+                self.pool.get('compassion.child.pictures').create(
+                    cr, uid, {'child_id': child.id}, context)
+                if not(child.portrait and child.fullshot):
+                    raise orm.except_orm(
+                        _('Warning'), _('Child has no picture'))
 
         self.pool.get('compassion.child').child_add_to_typo3(
             cr, uid, child_ids, context=None)
