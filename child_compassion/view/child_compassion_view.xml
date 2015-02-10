@@ -50,6 +50,7 @@
                                     </group>
                                     <group>
                                         <field name="delegated_to" />
+                                        <field name="date_delegation"/>
                                         <field name="delegated_comment" />
                                     </group>
                                     <group colspan="2">
@@ -129,6 +130,7 @@
                     <field name="type"/>
                     <field name="state"/>
                     <field name="delegated_to"/>
+                    <field name="date_delegation"/>
                     <field name="delegated_comment"/>
                 </tree>
             </field>

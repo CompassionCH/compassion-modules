@@ -219,6 +219,7 @@ class compassion_child(orm.Model):
             track_visibility="onchange"),
         'delegated_to': fields.many2one('res.partner', _("Delegated to")),
         'delegated_comment': fields.text(_("Delegated comment")),
+        'date_delegation': fields.datetime(_("Delegated date")),
     }
 
     _defaults = {
@@ -489,43 +490,17 @@ class compassion_child(orm.Model):
         return True
 
     def _get_typo3_child_id(self, cr, uid, child_code, context=None):
-        res = self._sel_request_to_typo3(
+        res = self._request_to_typo3(
             cr, uid,
             "select * "
             "from tx_drechildpoolmanagement_domain_model_children "
-            "where child_key='%s'" % child_code,
+            "where child_key='%s'" % child_code, 'sel',
             context)
 
         return json.loads(res)[0]['uid']
 
-    def _sel_request_to_typo3(self, cr, uid, request, context=None):
-
-        filename = "sel.sql"
-
-        host = config.get('typo3_host')
-        username = config.get('typo3_user')
-        pwd = config.get('typo3_pwd')
-        scripts_url = config.get('typo3_scripts_url')
-        path = config.get('typo3_scripts_path')
-        api_key = config.get('typo3_api_key')
-
-        file_query = open(filename, "wb")
-        file_query.write(request)
-        file_query.close()
-
-        if not (host and username and pwd and path and scripts_url
-                and api_key):
-            raise orm.except_orm('ConfigError',
-                                 'Missing typo3 settings '
-                                 'in conf file')
-        with pysftp.Connection(host, username=username, password=pwd) as sftp:
-            with sftp.cd(path):
-                sftp.put(filename)
-
-        return self._typo3_scripts_fetch(scripts_url, api_key, "sel_db")
-
-    def _update_request_to_typo3(self, cr, uid, request, context=None):
-        filename = "upd.sql"
+    def _request_to_typo3(self, cr, uid, request, request_type, context=None):
+        filename = request_type+".sql"
 
         host = config.get('typo3_host')
         username = config.get('typo3_user')
@@ -547,9 +522,11 @@ class compassion_child(orm.Model):
             with sftp.cd(path):
                 sftp.put(filename)
 
-        return self._typo3_scripts_fetch(scripts_url, api_key, "upd_db")
+        return self._typo3_scripts_fetch(
+            scripts_url, api_key, request_type+"_db")
 
     def child_add_to_typo3(self, cr, uid, ids, context=None):
+        # Solve the encoding problems on child's descriptions
         reload(sys)
         sys.setdefaultencoding('UTF8')
 
@@ -560,11 +537,12 @@ class compassion_child(orm.Model):
             child_birth_date = calendar.timegm(
                 datetime.strptime(child.birthdate, DF).utctimetuple())
 
+            # Fix ' in description
             child_desc_de = child.desc_de.replace('\'', '\'\'')
             child_desc_fr = child.desc_fr.replace('\'', '\'\'')
 
             # German description (parent)
-            self._update_request_to_typo3(
+            self._request_to_typo3(
                 cr, uid,
                 "insert into "
                 "tx_drechildpoolmanagement_domain_model_children"
@@ -573,13 +551,13 @@ class compassion_child(orm.Model):
                 "l10n_parent,image,child_birth_date) "
                 "values ('{}','{}','{}','{}','{}','{}','{}','{}');".format(
                     child.code, child.name, child.firstname, child_gender,
-                    child_desc_de, 0, child_image, child_birth_date),
+                    child_desc_de, 0, child_image, child_birth_date), 'upd',
                 context)
 
             parent_id = self._get_typo3_child_id(cr, uid, child.code, context)
 
             # French description
-            self._update_request_to_typo3(
+            self._request_to_typo3(
                 cr, uid,
                 "insert into "
                 "tx_drechildpoolmanagement_domain_model_children"
@@ -589,23 +567,20 @@ class compassion_child(orm.Model):
                 "values ('{}','{}','{}','{}','{}','{}','{}','{}');".format(
                     child.code, child.name, child.firstname,
                     child_gender, child_desc_fr, parent_id,
-                    child_image, child_birth_date),
+                    child_image, child_birth_date), 'upd',
                 context)
 
         self._add_child_pictures_to_typo3(cr, uid, ids, context)
 
     def _add_child_pictures_to_typo3(self, cr, uid, ids, context=None):
         for child in self.browse(cr, uid, ids, context):
+
             head_image = child.code+"_h.jpg"
             full_image = child.code+"_f.jpg"
 
             if not(child.portrait and child.fullshot):
                 self.pool.get('compassion.child.pictures').create(
                     cr, uid, {'child_id': child.id}, context)
-
-                if not(child.portrait and child.fullshot):
-                    raise orm.except_orm(
-                        _('Warning'), _('Child has no picture'))
 
             file_head = open(head_image, "wb")
             file_head.write(child.portrait)
@@ -640,10 +615,10 @@ class compassion_child(orm.Model):
                                                            context)]
 
         for code in child_codes:
-            self._update_request_to_typo3(
+            self._request_to_typo3(
                 cr, uid,
                 "delete from tx_drechildpoolmanagement_domain_model_children "
-                "where child_key='%s';" % code,
+                "where child_key='%s';" % code, 'upd',
                 context)
 
         scripts_url = config.get('typo3_scripts_url')

@@ -7,6 +7,7 @@
             <field name="type">form</field>
 			<field name="arch" type="xml">
                 <form string="Delegate child(s)" version="7.0">
+                    <field name="child_ids"/>
                     <group>
                         <field name="partner"/>
                          <field name="comment"/>
