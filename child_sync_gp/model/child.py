@@ -29,21 +29,23 @@ class child_compassion(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
         gp_connect = gp_connector.GPConnect()
+
+        for child in self.browse(cr, uid, ids, context):
+            if child.code and child.firstname:
+                gp_connect.upsert_child(uid, child)
+
         if 'state' in vals:
             for child in self.browse(cr, uid, ids, context):
                 gp_connect.set_child_sponsor_state(child)
-
-        for child in self.browse(cr, uid, ids, context):
-            gp_connect.upsert_child(uid, child)
-
         return res
 
     def create(self, cr, uid, vals, context=None):
         """Push new child into GP."""
         new_id = super(child_compassion, self).create(cr, uid, vals, context)
-        child = self.browse(cr, uid, new_id, context)
-        gp_connect = gp_connector.GPConnect()
-        gp_connect.upsert_child(uid, child)
+        # child = self.browse(cr, uid, new_id, context)
+        # gp_connect = gp_connector.GPConnect()
+        # gp_connect.upsert_child(uid, child)
+        # return new_id
         return new_id
 
 

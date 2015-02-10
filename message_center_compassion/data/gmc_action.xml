@@ -7,7 +7,7 @@
             <field name="direction">out</field>
             <field name="name">UpsertConstituent</field>
             <field name="model">res.partner</field>
-            <field name="type">upsert</field>
+            <field name="type">update</field>
             <field name="description">This will notify GMC of a creation or modification of a partner.</field>
         </record>
         
