@@ -152,7 +152,9 @@ class gmc_message_pool(orm.Model):
                     raise NotImplementedError
 
                 if res:
-                    message_update = {'state': 'pending'}
+                    message_update = {
+                        'state': 'pending' if action.direction == 'out'
+                        else 'success'}
                     if isinstance(res, basestring):
                         message_update['request_id'] = res
                     message.write(message_update)
@@ -161,15 +163,18 @@ class gmc_message_pool(orm.Model):
 
     def simulate_ack(self, cr, uid, ids, context=None):
         """Simulate ACK received for given messages."""
-        for message in self.browse(cr, uid, ids, context):
-            self.ack(cr, uid, message.request_id, 'Success')
+        self.write(cr, uid, ids, {
+            'state': 'success',
+            'process_date': datetime.today().strftime(DF)}, context)
         return True
 
     def simulate_fail(self, cr, uid, ids, context=None):
         """Simulate ACK received for given messages."""
-        for message in self.browse(cr, uid, ids, context):
-            self.ack(cr, uid, message.request_id, 'Failure',
-                     "Someone doesn't want this to work.")
+        self.write(cr, uid, ids, {
+            'state': 'failure',
+            'process_date': datetime.today().strftime(DF),
+            'failure_reason': "Someone doesn't want this to work."
+        }, context)
         return True
 
     def reset_message(self, cr, uid, ids, context=None):

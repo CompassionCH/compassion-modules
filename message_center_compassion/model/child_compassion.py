@@ -97,10 +97,11 @@ class compassion_child(orm.Model):
             ctx = context.copy()
             ctx['lang'] = 'en_US'
             child = self.browse(cr, uid, child.id, ctx)
-            for gp_exit in self.get_gp_exit_reasons(cr, uid, ctx):
-                if child.exit_reason.startswith(gp_exit[1]):
-                    child.write({'gp_exit_reason': gp_exit[0]})
-                    break
+            if child.exit_reason:
+                for gp_exit in self.get_gp_exit_reasons(cr, uid, ctx):
+                    if child.exit_reason.startswith(gp_exit[1]):
+                        child.write({'gp_exit_reason': gp_exit[0]})
+                        break
 
         return True
 

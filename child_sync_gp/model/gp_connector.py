@@ -97,7 +97,8 @@ class GPConnect(mysql_connector):
             # If the child is sponsored, mark the sponsorship as terminated in
             # GP and set the child exit reason in tables Poles and Enfant
             end_reason = child.gp_exit_reason or \
-                self.transfer_mapping[child.transfer_country_id.code]
+                self.transfer_mapping[child.transfer_country_id.code] \
+                if child.transfer_country_id else 'NULL'
             update_fields += ", id_motif_fin={}".format(end_reason)
             # We don't put a child transfer in ending reason of a sponsorship
             if not child.transfer_country_id:
