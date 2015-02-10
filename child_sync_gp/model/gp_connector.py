@@ -41,7 +41,7 @@ class GPConnect(mysql_connector):
         """Push or update child in GP after converting all relevant
         information in the destination structure."""
         name = child.name
-        if name.endswith(child.firstname):
+        if child.firstname and name.endswith(child.firstname):
             name = name[:-len(child.firstname)]
         vals = {
             'CODE': child.code,

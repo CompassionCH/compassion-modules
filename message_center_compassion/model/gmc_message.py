@@ -251,7 +251,7 @@ class gmc_message_pool(orm.Model):
             # Check that the constituent is known by GMC.
             partner = contract.correspondant_id
             message_ids = self.search(cr, uid, [
-                ('name', '=', 'CreateConstituent'),
+                ('name', '=', 'UpsertConstituent'),
                 ('partner_id', '=', partner.id),
                 ('state', '=', 'success')], context=context)
             if not message_ids:
