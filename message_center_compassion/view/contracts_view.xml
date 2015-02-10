@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2015 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+    <data>
+        <!-- Search Filters -->
+        <record id="view_gmc_contract_filter" model="ir.ui.view">
+            <field name="name">gmc.contract.filter</field>
+            <field name="model">recurring.contract</field>
+            <field name="inherit_id" ref="sponsorship_compassion.view_recurring_contract_compassion_filter" />
+            <field name="arch" type="xml">
+                <data>
+                    <filter name="cancelled" position="after">
+                        <separator/>
+                        <filter name="biennial" string="Biennial" domain="[('gmc_state', '=', 'biennial')]"/>
+                        <filter name="depart" string="Departure" domain="[('gmc_state', '=', 'depart')]"/>
+                        <filter name="transfer" string="Child Transfer" domain="[('gmc_state', '=', 'transfer')]"/>
+                        <filter name="suspension" string="Project Suspended" domain="[('gmc_state', '=', 'suspension')]"/>
+                    </filter>
+                </data>
+            </field>
+        </record>
+    </data>
+</openerp>

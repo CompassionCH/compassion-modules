@@ -38,7 +38,7 @@
             <field name="name">DepartChild</field>
             <field name="model">compassion.child</field>
             <field name="type">depart</field>
-            <field name="description">This won't do anything yet. Please implement the method.</field>
+            <field name="description">Departs the child and ends the sponsorship if the child is sponsored. Will fetch the Exit Details from GMC.</field>
         </record>
         
         <!-- Project Messages -->

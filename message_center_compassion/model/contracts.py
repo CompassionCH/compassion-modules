@@ -9,7 +9,8 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
 from sponsorship_compassion.model.product import GIFT_TYPES
 import logging
 
@@ -19,6 +20,15 @@ logger = logging.getLogger(__name__)
 class recurring_contract(orm.Model):
     """ We add here creation of messages concerning commitments. """
     _inherit = "recurring.contract"
+
+    _columns = {
+        # Field to identify contracts modified by gmc.
+        'gmc_state': fields.selection([
+            ('biennial', _('Biennial')),
+            ('depart', _('Child Departed')),
+            ('transfer', _('Child Transfer')),
+            ('suspension', _('Project Suspended'))], _('GMC State'))
+    }
 
     def _on_contract_active(self, cr, uid, ids, context=None):
         """ Create messages to GMC when new sponsorship is activated. """
