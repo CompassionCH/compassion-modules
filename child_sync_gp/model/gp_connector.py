@@ -76,14 +76,10 @@ class GPConnect(mysql_connector):
             date_photo = '0000-00-00'
         vals = {
             'DATE_PHOTO': date_photo,
-            'COMMENTAIRE_FR': case_study.child_id.desc_fr.replace(
-                '\'', '\'\'') or '',
-            'COMMENTAIRE_DE': case_study.child_id.desc_de.replace(
-                '\'', '\'\'') or '',
-            'COMMENTAIRE_ITA': case_study.child_id.desc_it.replace(
-                '\'', '\'\'') or '',
-            'COMMENTAIRE_EN': case_study.child_id.desc_en.replace(
-                '\'', '\'\'') or '',
+            'COMMENTAIRE_FR': case_study.child_id.desc_fr or '',
+            'COMMENTAIRE_DE': case_study.child_id.desc_de or '',
+            'COMMENTAIRE_ITA': case_study.child_id.desc_it or '',
+            'COMMENTAIRE_EN': case_study.child_id.desc_en or '',
             'IDUSER': self._get_gp_uid(uid),
             'CODE': case_study.code,
             'DATE_INFO': case_study.info_date,
@@ -131,10 +127,10 @@ class GPConnect(mysql_connector):
         vals = {
             'CODE_PROJET': project.code,
             # Fix ' in descriptions
-            'DESCRIPTION_FR': project.description_fr.replace('\'', '\'\''),
-            'DESCRIPTION_DE': project.description_de.replace('\'', '\'\''),
-            'DESCRIPTION_EN': project.description_en.replace('\'', '\'\''),
-            'DESCRIPTION_IT': project.description_it.replace('\'', '\'\''),
+            'DESCRIPTION_FR': project.description_fr or '',
+            'DESCRIPTION_DE': project.description_de or '',
+            'DESCRIPTION_EN': project.description_en or '',
+            'DESCRIPTION_IT': project.description_it or '',
             'NOM': project.name,
             'IDUSER': self._get_gp_uid(uid),
             'DATE_MAJ': project.last_update_date,
