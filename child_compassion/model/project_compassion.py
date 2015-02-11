@@ -11,11 +11,11 @@
 
 import requests
 import json
-import datetime
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
+from datetime import datetime
 
 
 class compassion_project(orm.Model):
