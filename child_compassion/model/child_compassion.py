@@ -180,6 +180,9 @@ class compassion_child(orm.Model):
         'contract_ids': fields.function(
             _get_related_contracts, type='one2many', obj='recurring.contract',
             string=_("Sponsorships"), readonly=True),
+        'delegated_to': fields.many2one('res.partner', _("Delegated to")),
+        'delegated_comment': fields.text(_("Delegated comment")),
+        'date_delegation': fields.date(_("Delegated date")),
 
         ######################################################################
         #                      2. Exit Details                               #
@@ -217,9 +220,6 @@ class compassion_child(orm.Model):
         'gp_exit_reason': fields.selection(
             get_gp_exit_reasons, _("Exit Reason"),
             track_visibility="onchange"),
-        'delegated_to': fields.many2one('res.partner', _("Delegated to")),
-        'delegated_comment': fields.text(_("Delegated comment")),
-        'date_delegation': fields.datetime(_("Delegated date")),
     }
 
     _defaults = {
