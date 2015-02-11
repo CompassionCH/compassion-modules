@@ -48,6 +48,11 @@
                                         <field name="completion_date" />
                                         <field name="exit_date" />
                                     </group>
+                                    <group>
+                                        <field name="delegated_to" />
+                                        <field name="date_delegation"/>
+                                        <field name="delegated_comment" />
+                                    </group>
                                     <group colspan="2">
                                         <field name="pictures_ids"/>
                                     </group>
@@ -124,6 +129,9 @@
                     <field name="birthdate"/>
                     <field name="type"/>
                     <field name="state"/>
+                    <field name="delegated_to"/>
+                    <field name="date_delegation"/>
+                    <field name="delegated_comment"/>
                 </tree>
             </field>
         </record>
