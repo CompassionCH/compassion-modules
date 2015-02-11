@@ -11,6 +11,7 @@
 
 import requests
 import json
+import datetime
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
@@ -36,7 +37,7 @@ class compassion_project(orm.Model):
                     else 'fund-suspended'
                 if (res[project.id] == 'fund-suspended'):
                     self.suspend_project(cr, uid, project.id,
-                                         project.status_date, context)
+                                         datetime.today(), context)
         return res
 
     def suspend_project(self, cr, uid, project_id, start, context=None):
@@ -62,10 +63,7 @@ class compassion_project(orm.Model):
                 ('none', _('Not Suspended')),
                 ('suspended', _('Suspended')),
                 ('fund-suspended', _('Suspended & fund retained'))],
-            string=_('Suspension'),
-            store={'compassion.project':
-                    (lambda self, cr, uid, ids, c={}:
-                        ids, ['last_update_date'], 20)}),
+            string=_('Suspension'), store=True),
         'status': fields.selection([
             ('A', _('Active')),
             ('P', _('Phase-out')),

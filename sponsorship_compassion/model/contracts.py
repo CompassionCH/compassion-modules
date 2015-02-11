@@ -822,10 +822,10 @@ class recurring_contract(orm.Model):
         """Cancels the number of invoices specified starting
         from a given date. This is useful to suspend a contract for a given
         period."""
-        date_end = datetime.strptime(start, DF) + relativedelta(months=months)
+        date_end = start + relativedelta(months=months)
 
         # Cancel invoices in the period of suspension
-        self.clean_invoices(cr, uid, ids, context, start,
+        self.clean_invoices(cr, uid, ids, context, start.strftime(DF),
                             date_end.strftime(DF))
 
         for contract in self.browse(cr, uid, ids, context):
