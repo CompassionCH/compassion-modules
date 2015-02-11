@@ -362,8 +362,7 @@ class compassion_project(orm.Model):
             'additional_quota_allowed': json_values.get(
                 'additionalQuotaAllowed'),
         }
-        return {field_name: value for field_name, value in values.iteritems()
-                if value}
+        return {field_name: value for field_name, value in values.iteritems()}
 
     def _cornerstone_fetch(self, project_code, api_mess):
         """ Construct the correct URL to call Compassion Cornerstone APIs.
