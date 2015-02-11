@@ -54,18 +54,23 @@ class GPConnect(mysql_connector):
             'COMPLETION_DATE': child.completion_date,
             'DATEDELEGUE': child.date_delegation,
             'CODEDELEGUE': child.delegated_to.ref,
-            'REMARQUEDELEGUE': child.delegated_comment,
+            'REMARQUEDELEGUE': child.delegated_comment or '',
             'id_erp': child.id
         }
+        if child.gp_exit_reason:
+            vals['ID_MOTIF_FIN'] = int(child.gp_exit_reason)
+        res = self.upsert("Enfants", vals)
         if child.case_study_ids:
             # Upsert last Case Study
             id_fichier = self.upsert_case_study(
                 uid, child.case_study_ids[-1])
             if id_fichier:
-                vals['ID_DERNIER_FICHIER'] = id_fichier
-        if child.gp_exit_reason:
-            vals['ID_MOTIF_FIN'] = int(child.gp_exit_reason)
-        return self.upsert("Enfants", vals)
+                vals = {
+                    'ID_DERNIER_FICHIER': id_fichier,
+                    'CODE': child.code,
+                    'id_erp': child.id}
+                self.upsert("Enfants", vals)
+        return res
 
     def upsert_case_study(self, uid, case_study):
         """Push or update Case Study in GP."""
