@@ -39,15 +39,6 @@ class child_compassion(orm.Model):
                 gp_connect.set_child_sponsor_state(child)
         return res
 
-    def create(self, cr, uid, vals, context=None):
-        """Push new child into GP."""
-        new_id = super(child_compassion, self).create(cr, uid, vals, context)
-        # child = self.browse(cr, uid, new_id, context)
-        # gp_connect = gp_connector.GPConnect()
-        # gp_connect.upsert_child(uid, child)
-        # return new_id
-        return new_id
-
 
 class child_pictures(orm.Model):
     _inherit = 'compassion.child.pictures'
