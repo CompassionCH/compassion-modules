@@ -39,21 +39,20 @@
 						<notebook>
 							<page string="General Information">
                                 <group>
-                                    <group string="Suspension Details" colspan="2"
-                                           attrs="{'invisible': [('suspension','not in',('suspended','fund-suspended'))]}">
-                                        <field name="disburse_funds"/>
-                                        <field name="disburse_gifts"/>
-                                        <field name="disburse_unsponsored_funds"/>
-                                        <field name="new_sponsorships_allowed"/>
-                                        <field name="additional_quota_allowed"/>
-                                    </group>
-                                    <group string="Community" colspan="2">
+                                    <group string="Community">
                                         <field name="local_church_name" />
                                         <field name="hiv_category" />
                                         <field name="month_school_year_begins" />
                                         <field name="country_denomination" />
                                         <field name="western_denomination" />
                                         <field name="community_name" />
+                                    </group>
+                                    <group string="Suspension Status">
+                                        <field name="disburse_funds"/>
+                                        <field name="disburse_gifts"/>
+                                        <field name="disburse_unsponsored_funds"/>
+                                        <field name="new_sponsorships_allowed"/>
+                                        <field name="additional_quota_allowed"/>
                                     </group>
                                 </group>
                             </page>
