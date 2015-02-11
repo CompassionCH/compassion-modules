@@ -141,14 +141,3 @@ class compassion_child(orm.Model):
                     contract.write({'gmc_state': gmc_states[event]})
 
         return True
-
-
-class compassion_project(orm.Model):
-    """ Add update method. """
-    _inherit = 'compassion.project'
-
-    def update(self, cr, uid, args, context=None):
-        """ When we receive a notification that a project has been updated,
-        we fetch the last informations. """
-        self.update_informations(cr, uid, args.get('object_id'), context)
-        return True

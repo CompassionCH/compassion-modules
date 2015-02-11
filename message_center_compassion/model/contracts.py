@@ -131,3 +131,9 @@ class recurring_contract(orm.Model):
                         ('date', '=', invoice.date_invoice),
                         ('state', '=', 'new')], context=context)
                     message_obj.unlink(cr, uid, mess_ids, context)
+
+    def suspend_contract(self, cr, uid, ids, start, months, context=None):
+        """ Mark the state of contract when it is suspended. """
+        self.write(cr, uid, ids, {'gmc_state': 'suspension'}, context)
+        return super(recurring_contract, self).suspend_contract(
+            cr, uid, ids, start, months, context)
