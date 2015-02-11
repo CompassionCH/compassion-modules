@@ -342,11 +342,11 @@ class compassion_project(orm.Model):
         json_values = self._cornerstone_fetch(project_code, 'cdspimplementors')
         values = {
             'name': json_values.get('name'),
-            'start_date': json_values.get('startDate'),
-            'stop_date': json_values.get('stopDate'),
-            'last_update_date': json_values.get('lastUpdateDate'),
+            'start_date': json_values.get('startDate') or False,
+            'stop_date': json_values.get('stopDate') or False,
+            'last_update_date': json_values.get('lastUpdateDate') or False,
             'status': json_values.get('status'),
-            'status_date': json_values.get('statusDate'),
+            'status_date': json_values.get('statusDate') or False,
             'status_comment': json_values.get('statusComment'),
             'description_en': json_values.get('description'),
             'gps_latitude': json_values.get(
