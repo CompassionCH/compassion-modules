@@ -63,7 +63,13 @@ class compassion_project(orm.Model):
                 ('none', _('Not Suspended')),
                 ('suspended', _('Suspended')),
                 ('fund-suspended', _('Suspended & fund retained'))],
-            string=_('Suspension'), store=True),
+            string=_('Suspension'),
+            store={'compassion.project':
+                    (lambda self, cr, uid, ids, c=None:
+                        ids, ['disburse_funds', 'disburse_gifts',
+                              'disburse_unsponsored_funds',
+                              'new_sponsorships_allowed',
+                              'additional_quota_allowed'], 20)}),
         'status': fields.selection([
             ('A', _('Active')),
             ('P', _('Phase-out')),
