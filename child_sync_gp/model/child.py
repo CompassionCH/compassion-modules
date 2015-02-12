@@ -39,10 +39,9 @@ class child_compassion(orm.Model):
 
         for child in self.browse(cr, uid, ids, context):
             gp_connect.upsert_child(uid, child)
-
-        if 'state' in vals:
-            for child in self.browse(cr, uid, ids, context):
+            if 'state' in vals:
                 gp_connect.set_child_sponsor_state(child)
+
         return res
 
 
