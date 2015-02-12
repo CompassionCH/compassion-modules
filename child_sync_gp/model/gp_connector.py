@@ -47,7 +47,7 @@ class GPConnect(mysql_connector):
         vals = {
             'CODE': child.code,
             'NOM': name,
-            'PRENOM': child.firstname,
+            'PRENOM': child.firstname or '',
             'SEXE': child.gender,
             'DATENAISSANCE': child.birthdate,
             'SITUATION': child.state,
@@ -60,21 +60,11 @@ class GPConnect(mysql_connector):
         }
         if child.gp_exit_reason:
             vals['ID_MOTIF_FIN'] = int(child.gp_exit_reason)
-        res = self.upsert("Enfants", vals)
-        if child.case_study_ids:
-            # Upsert last Case Study
-            id_fichier = self.upsert_case_study(
-                uid, child.case_study_ids[-1])
-            if id_fichier:
-                vals = {
-                    'ID_DERNIER_FICHIER': id_fichier,
-                    'CODE': child.code,
-                    'id_erp': child.id}
-                self.upsert("Enfants", vals)
-        return res
+        return self.upsert("Enfants", vals)
 
     def upsert_case_study(self, uid, case_study):
-        """Push or update Case Study in GP."""
+        """Push or update latest Case Study in GP."""
+        id_fichier = False
         if case_study.child_id.pictures_ids:
             date_photo = case_study.child_id.pictures_ids[-1].date
         else:
@@ -91,10 +81,16 @@ class GPConnect(mysql_connector):
             'DATE_IMPORTATION': datetime.today().strftime(DF),
         }
         if self.upsert("Fichiersenfants", vals):
-            return self.selectOne(
+            id_fichier = self.selectOne(
                 "SELECT MAX(Id_Fichier_Enfant) AS id FROM Fichiersenfants "
                 "WHERE Code = %s", case_study.code).get('id')
-        return False
+            if id_fichier:
+                vals = {
+                    'ID_DERNIER_FICHIER': id_fichier,
+                    'CODE': case_study.child_id.code,
+                    'id_erp': case_study.child_id.id}
+                self.upsert("Enfants", vals)
+        return id_fichier
 
     def set_child_sponsor_state(self, child):
         update_string = "UPDATE Enfants SET %s WHERE code='%s'"
