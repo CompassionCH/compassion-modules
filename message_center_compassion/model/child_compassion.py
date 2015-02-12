@@ -9,7 +9,7 @@
 #
 ##############################################################################
 from openerp import netsvc
-from openerp.osv import orm
+from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
 
@@ -19,6 +19,22 @@ from datetime import datetime
 class compassion_child(orm.Model):
     """ Add allocation and deallocation methods on the children. """
     _inherit = 'compassion.child'
+
+    def _get_child_states(self, cr, uid, context=None):
+        """ Add new error state used when an incoming message for a child
+        could not be processed. """
+        res = super(compassion_child, self)._get_child_states(cr, uid, context)
+        res.append(('E', _('Error')))
+        return res
+
+    _columns = {
+        # New field to save previous state if child goes
+        # in error state
+        'previous_state': fields.char('Previous state', size=1),
+        'state': fields.selection(
+            _get_child_states, _("Status"), select=True, readonly=True,
+            track_visibility="onchange", required=True),
+    }
 
     def allocate(self, cr, uid, args, context=None):
         child_id = args.get('object_id')
@@ -41,24 +57,20 @@ class compassion_child(orm.Model):
                     'exit_reason': False,
                     'gp_exit_reason': False})
         else:
-            # Allocate a new child
-            child_id = self.create(cr, uid, {
+            # Allocate new child
+            child_vals = {
                 'code': args.get('code'),
-                'date': args.get('date')
-            }, context=context)
-            args['object_id'] = child_id
+                'date': args.get('date')}
+            args['object_id'] = self._insert_new_child(cr, uid, child_vals,
+                                                       context)
+
+        # Commit the allocation, in case update information triggers an
+        # error, so that the child is still saved in database.
+        cr.commit()
+
         # Update all information of child
         args['event'] = 'Allocate'
-        if self.update(cr, uid, args, context=context):
-            mess_obj = self.pool.get('gmc.message.pool')
-            mess_ids = mess_obj.search(
-                cr, uid, [('incoming_key', '=', args.get('code')),
-                          ('object_id', '=', 0)],
-                context=context)
-            if mess_ids:
-                mess_obj.write(cr, uid, mess_ids, {'object_id': child_id},
-                               context)
-        return True
+        return self.update(cr, uid, args, context=context)
 
     def deallocate(self, cr, uid, args, context=None):
         """Deallocate child.
@@ -107,7 +119,8 @@ class compassion_child(orm.Model):
 
     def update(self, cr, uid, args, context=None):
         """ When we receive a notification that child has been updated,
-        we fetch the last case study. """
+        we fetch the information of child given what was updated. """
+        res = True
         if not args.get('object_id'):
             raise orm.except_orm(
                 _("Child not found"),
@@ -120,13 +133,17 @@ class compassion_child(orm.Model):
 
         # Perform the required update given the event
         event = args.get('event')
-        if event == 'Allocate':
-            self.get_infos(cr, uid, args.get('object_id'), context=context)
-        # elif event == 'Transfer':  (TODO) See if update_info is needed
+        if event in ('Allocate', 'Transfer'):
+            res = self.get_infos(cr, uid, args.get('object_id'), context)
         elif event == 'CaseStudy':
-            self._get_case_study(cr, uid, child, context)
+            res = self._get_case_study(cr, uid, child, context)
         elif event == 'NewImage':
-            self._get_last_pictures(cr, uid, child.id, context)
+            res = self._get_last_pictures(cr, uid, child.id, context)
+
+        if not res:
+            raise orm.except_orm(_("Update Child Error"),
+                                 _("The child %s could not be updated")
+                                 % args.get('code'))
 
         # Notify the change if the child is sponsored
         if child.sponsor_id:
@@ -140,4 +157,28 @@ class compassion_child(orm.Model):
                 if contract.state in ('waiting', 'active', 'mandate'):
                     contract.write({'gmc_state': gmc_states[event]})
 
+        if child.state == 'E':
+            # Put the child back to normal state
+            child.write({'state': child.previous_state})
+
         return True
+
+        ######################################################################
+        #                          PRIVATE METHODS                           #
+        ######################################################################
+
+    def _insert_new_child(self, cr, uid, vals, context=None):
+        """Creates a non-existing child and link messages
+        referencing it."""
+        child_id = self.create(cr, uid, vals, context)
+        # Link existing messages to the child
+        mess_obj = self.pool.get('gmc.message.pool')
+        mess_ids = mess_obj.search(
+            cr, uid, [('incoming_key', '=', vals.get('code')),
+                      ('object_id', '=', 0)],
+            context=context)
+        if mess_ids:
+            mess_obj.write(cr, uid, mess_ids, {
+                'object_id': child_id,
+                'child_id': child_id}, context)
+        return child_id

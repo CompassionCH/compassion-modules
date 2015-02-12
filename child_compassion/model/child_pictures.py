@@ -15,9 +15,6 @@ from openerp.tools.translate import _
 
 from datetime import date
 import requests
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 class child_pictures(orm.Model):
@@ -69,30 +66,35 @@ class child_pictures(orm.Model):
         child = self.pool.get('compassion.child').browse(
             cr, uid, vals['child_id'], context)
         # Retrieve Fullshot
-        success = self._get_picture(cr, uid, child.code, res_id, 'Fullshot',
-                                    300, 1500, 1200, context=context)
+        success = self._get_picture(
+            cr, uid, child.id, child.code, res_id, 'Fullshot',
+            dpi=300, width=1500, height=1200, context=context)
         # Retrieve Headshot
-        success = success and self._get_picture(cr, uid, child.code, res_id,
-                                                context=context)
+        success = success and self._get_picture(cr, uid, child.id, child.code,
+                                                res_id, context=context)
         if not success:
             # We could not retrieve a picture, we cancel the creation
             self.unlink(cr, uid, res_id, context)
             return False
         return res_id
 
-    def _get_picture(self, cr, uid, child_code, attach_id, type='Headshot',
-                     dpi=72, width=400, height=400, format='jpeg',
-                     context=None):
+    def _get_picture(self, cr, uid, child_id, child_code, attach_id,
+                     type='Headshot', dpi=72, width=400, height=400,
+                     format='jpeg', context=None):
         ''' Gets a picture from Compassion webservice '''
         url = self.pool.get('compassion.child').get_url(child_code, 'image')
         url += '&Height=%s&Width=%s&DPI=%s&ImageFormat=%s&ImageType=%s' \
             % (height, width, dpi, format, type)
         r = requests.get(url)
+        json_data = r.json()
         if not r.status_code/100 == 2:
-            logger.error(_('An error occured while fetching the last '
-                           'picture for child %s.') % child_code)
+            self.pool.get('mail.thread').message_post(
+                cr, uid, child_id,
+                json_data['error']['message'],
+                _('Picture update error'), 'comment',
+                context={'thread_model': 'compassion.child'})
             return False
-        data = r.json()['image']['imageData']
+
         attachment_obj = self.pool.get('ir.attachment')
         if not context:
             context = dict()
@@ -101,5 +103,5 @@ class child_pictures(orm.Model):
             'datas_fname': type + '.' + format,
             'res_model': self._name,
             'res_id': attach_id,
-            'datas': data,
+            'datas': json_data['image']['imageData'],
             'name': type + '.' + format}, context)

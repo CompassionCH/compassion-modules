@@ -21,6 +21,7 @@ from datetime import datetime
 class compassion_project(orm.Model):
     """ A compassion project """
     _name = 'compassion.project'
+    _inherit = 'mail.thread'
 
     def _get_suspension_state(self, cr, uid, ids, field_name, args,
                               context=None):
@@ -69,21 +70,24 @@ class compassion_project(orm.Model):
                         ids, ['disburse_funds', 'disburse_gifts',
                               'disburse_unsponsored_funds',
                               'new_sponsorships_allowed',
-                              'additional_quota_allowed'], 20)}),
+                              'additional_quota_allowed'], 20)},
+            track_visibility='onchange'),
         'status': fields.selection([
             ('A', _('Active')),
             ('P', _('Phase-out')),
-            ('T', _('Terminated'))], _('Status')),
-        'status_date': fields.date(_('Last status change')),
+            ('T', _('Terminated'))], _('Status'),
+            track_visibility='onchange'),
+        'status_date': fields.date(_('Last status change'),
+                                   track_visibility='onchange'),
         'status_comment': fields.char(_('Status comment')),
         'disburse_funds': fields.boolean(_('Disburse funds')),
         'disburse_gifts': fields.boolean(_('Disburse gifts')),
-        'disburse_unsponsored_funds': fields.boolean(_('Disburse unsponsored '
-                                                       'funds')),
-        'new_sponsorships_allowed': fields.boolean(_('New sponsorships '
-                                                     'allowed')),
-        'additional_quota_allowed': fields.boolean(_('Additional quota '
-                                                     'allowed')),
+        'disburse_unsponsored_funds': fields.boolean(
+            _('Disburse unsponsored funds'), track_visibility='onchange'),
+        'new_sponsorships_allowed': fields.boolean(
+            _('New sponsorships allowed'), track_visibility='onchange'),
+        'additional_quota_allowed': fields.boolean(
+            _('Additional quota allowed'), track_visibility='onchange'),
 
         ######################################################################
         #                      2. Project Descriptions                       #
@@ -180,15 +184,23 @@ class compassion_project(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
         for project in self.browse(cr, uid, ids, context):
-            self._get_age_groups(cr, uid, project, context)
-            values, community_id = self._update_program_info(
-                cr, uid, project, context)
-            values.update(
-                self._update_community_info(cr, uid, community_id, context))
-            if values['type'] == 'CDSP':
-                values.update(self._update_cdsp_info(cr, uid,
-                                                     project.code, context))
-            self.write(cr, uid, [project.id], values, context=context)
+            try:
+                values, community_id = self._update_program_info(
+                    cr, uid, project, context)
+                values.update(
+                    self._update_community_info(cr, uid, community_id, context))
+                if values['type'] == 'CDSP':
+                    values.update(self._update_cdsp_info(cr, uid,
+                                                         project.code, context))
+                self._get_age_groups(cr, uid, project, context)
+            except orm.except_orm as e:
+                # Log error
+                self.pool.get('mail.thread').message_post(
+                    cr, uid, project.id, e[1], e[0], 'comment',
+                    context={'thread_model': self._name})
+            finally:
+                if values:
+                    self.write(cr, uid, [project.id], values, context)
         return True
 
     def _update_program_info(self, cr, uid, project, context=None):
@@ -385,9 +397,9 @@ class compassion_project(orm.Model):
 
         # Send the request and retrieve the result.
         r = requests.get(url)
+        json_result = r.json()
         if not r.status_code == 200:
             raise orm.except_orm(
-                _('Error calling Cornerstone Service'),
-                r.text)
-        json_result = json.loads(r.text)
+                'Error calling %s for project %s' % (api_mess, project_code),
+                json_result['error']['message'])
         return json_result

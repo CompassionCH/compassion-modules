@@ -116,6 +116,18 @@ class compassion_child(orm.Model):
             for child_id in ids
         }
 
+    def _get_child_states(self, cr, uid, context=None):
+        return [
+            ('N', _('Available')),
+            ('D', _('Delegated')),
+            ('I', _('On Internet')),
+            ('Z', _('Reinstated')),
+            ('P', _('Sponsored')),
+            ('R', _('Waiting new sponsor')),
+            ('F', _('Departed')),
+            ('X', _('Deallocated'))
+        ]
+
     _columns = {
         ######################################################################
         #                      1. General Information                        #
@@ -163,15 +175,8 @@ class compassion_child(orm.Model):
             'pictures_ids', 'headshot', type='binary'),
         'fullshot': fields.related(
             'pictures_ids', 'fullshot', type='binary'),
-        'state': fields.selection([
-            ('N', _('Available')),
-            ('D', _('Delegated')),
-            ('I', _('On Internet')),
-            ('E', _('Reinstated')),
-            ('P', _('Sponsored')),
-            ('R', _('Waiting new sponsor')),
-            ('F', _('Departed')),
-            ('X', _('Deallocated'))], _("Status"), select=True, readonly=True,
+        'state': fields.selection(
+            _get_child_states, _("Status"), select=True, readonly=True,
             track_visibility="onchange", required=True),
         'has_been_sponsored': fields.boolean('Has been sponsored'),
         'sponsor_id': fields.many2one('res.partner', _('Sponsor'),
@@ -251,9 +256,9 @@ class compassion_child(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
         proj_obj = self.pool.get('compassion.project')
+        res = True
         for child in self.browse(cr, uid, ids, context):
-            self._get_case_study(cr, uid, child, context)
-            self._get_last_pictures(cr, uid, child.id, context)
+            res = res and self._get_case_study(cr, uid, child, context)
             self._get_basic_informations(cr, uid, child.id)
             project_ids = proj_obj.search(
                 cr, uid, [('code', '=', child.code[:5])],
@@ -264,7 +269,8 @@ class compassion_child(orm.Model):
                     'name': child.code[:5],
                 })
                 proj_obj.update_informations(cr, uid, proj_id)
-        return True
+            res = res and self._get_last_pictures(cr, uid, child.id, context)
+        return res
 
     def generate_descriptions(self, cr, uid, child_id, context=None):
         if child_id and isinstance(child_id, list):
@@ -290,14 +296,15 @@ class compassion_child(orm.Model):
         }
 
     def _get_last_pictures(self, cr, uid, child_id, context=None):
-        self.pool.get('compassion.child.pictures').create(
+        pic_id = self.pool.get('compassion.child.pictures').create(
             cr, uid, {'child_id': child_id}, context)
-        # Add a note in child
-        self.pool.get('mail.thread').message_post(
-            cr, uid, child_id, "The picture has been updated.",
-            "Picture update", 'comment',
-            context={'thread_model': self._name})
-        return True
+        if pic_id:
+            # Add a note in child
+            self.pool.get('mail.thread').message_post(
+                cr, uid, child_id, "The picture has been updated.",
+                "Picture update", 'comment',
+                context={'thread_model': self._name})
+        return pic_id
 
     ##################################################
     #            Case study retrieving               #
@@ -469,7 +476,7 @@ class compassion_child(orm.Model):
             if child.has_been_sponsored:
                 if child.state == 'F':
                     # Child reinstatement
-                    state = 'E'
+                    state = 'Z'
                 else:
                     # Child is waiting a new sponsor
                     state = 'R'

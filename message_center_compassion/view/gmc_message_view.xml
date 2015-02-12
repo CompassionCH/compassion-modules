@@ -66,8 +66,6 @@
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="new,pending,success" />
                         <button name="process_messages" type="object" class="oe_highlight" string="Process Message" states="new" />
-                        <button name="simulate_ack" type="object" class="oe_highlight" string="Success" attrs="{'invisible':[('direction','=','out'),('state','!=','pending')]}"/>
-                        <button name="simulate_fail" type="object" class="oe_highlight" string="Fail" attrs="{'invisible':[('direction','=','out'),('state','!=','pending')]}"/>
                         <button name="reset_message" type="object" string="Set back to New" states="failure"/>
                     </header>
                     <sheet>
