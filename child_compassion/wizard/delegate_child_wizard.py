@@ -25,7 +25,7 @@ class delegate_child_wizard(orm.TransientModel):
             cr, uid, context.get('active_ids'), context)
 
         for child in childrens:
-            possible_states = ['N', 'R', 'D', 'I']
+            possible_states = ['N', 'R', 'D', 'I', 'Z']
             if (child.state in possible_states):
                 child_ids.append(child.id)
 

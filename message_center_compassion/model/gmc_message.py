@@ -15,6 +15,7 @@ from openerp.tools.config import config
 import requests
 from datetime import datetime
 import logging
+import traceback
 
 
 logger = logging.getLogger(__name__)
@@ -142,12 +143,27 @@ class gmc_message_pool(orm.Model):
         for message in self.browse(cr, uid, ids, context=context):
             mess_date = datetime.strptime(message.date, DF)
             if message.state == 'new' and mess_date <= today:
+                res = False
                 action = message.action_id
                 if action.direction == 'in':
                     # TODO replace 'CH' by company iso_code
                     if message.partner_country_code == 'CH':
-                        res = self._perform_incoming_action(cr, uid, message,
-                                                            context)
+                        try:
+                            res = self._perform_incoming_action(
+                                cr, uid, message, context)
+                        except Exception as e:
+                            # Abort all pending changes
+                            cr.rollback()
+                            message = self.browse(cr, uid, message.id,
+                                                  context)
+                            message.write({
+                                'state': 'failure',
+                                'failure_reason': traceback.format_exc()})
+                            if message.child_id:
+                                # Put child in error state
+                                message.child_id.write({
+                                    'previous_state': message.child_id.state,
+                                    'state': 'E'})
                     else:
                         message.write({
                             'state': 'failure',
@@ -167,23 +183,10 @@ class gmc_message_pool(orm.Model):
                     if isinstance(res, basestring):
                         message_update['request_id'] = res
                     message.write(message_update)
+                    # Commit all changes of triggered by message before
+                    # processing the next message.
+                    cr.commit()
 
-        return True
-
-    def simulate_ack(self, cr, uid, ids, context=None):
-        """Simulate ACK received for given messages."""
-        self.write(cr, uid, ids, {
-            'state': 'success',
-            'process_date': datetime.today().strftime(DF)}, context)
-        return True
-
-    def simulate_fail(self, cr, uid, ids, context=None):
-        """Simulate ACK received for given messages."""
-        self.write(cr, uid, ids, {
-            'state': 'failure',
-            'process_date': datetime.today().strftime(DF),
-            'failure_reason': "Someone doesn't want this to work."
-        }, context)
         return True
 
     def reset_message(self, cr, uid, ids, context=None):

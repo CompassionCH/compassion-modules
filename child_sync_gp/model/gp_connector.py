@@ -130,7 +130,6 @@ class GPConnect(mysql_connector):
         """Update a given Compassion project in GP."""
         vals = {
             'CODE_PROJET': project.code,
-            # Fix ' in descriptions
             'DESCRIPTION_FR': project.description_fr or '',
             'DESCRIPTION_DE': project.description_de or '',
             'DESCRIPTION_EN': project.description_en or '',
