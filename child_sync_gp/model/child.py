@@ -23,6 +23,13 @@ import base64
 class child_compassion(orm.Model):
     _inherit = 'compassion.child'
 
+    def create(self, cr, uid, vals, context=None):
+        new_id = super(child_compassion, self).create(cr, uid, vals, context)
+        child = self.browse(cr, uid, new_id, context)
+        gp_connect = gp_connector.GPConnect()
+        gp_connect.upsert_child(uid, child)
+        return new_id
+
     def write(self, cr, uid, ids, vals, context=None):
         """Update GP with the last information of the child."""
         res = super(child_compassion, self).write(cr, uid, ids, vals, context)
@@ -31,8 +38,7 @@ class child_compassion(orm.Model):
         gp_connect = gp_connector.GPConnect()
 
         for child in self.browse(cr, uid, ids, context):
-            if child.code and child.firstname:
-                gp_connect.upsert_child(uid, child)
+            gp_connect.upsert_child(uid, child)
 
         if 'state' in vals:
             for child in self.browse(cr, uid, ids, context):
@@ -79,3 +85,22 @@ class child_pictures(orm.Model):
                         'GP', gp_pic_path + file_name, picture_file)
 
         return pic_id
+
+
+class child_property(orm.Model):
+    """ Upsert Case Studies """
+    _inherit = 'compassion.child.property'
+
+    def create(self, cr, uid, vals, context=None):
+        new_id = super(child_property, self).create(cr, uid, vals, context)
+        case_study = self.browse(cr, uid, new_id, context)
+        gp_connect = gp_connector.GPConnect()
+        gp_connect.upsert_case_study(uid, case_study)
+        return new_id
+
+    def write(self, cr, uid, ids, vals, context=None):
+        gp_connect = gp_connector.GPConnect()
+        super(child_property, self).write(cr, uid, ids, vals, context)
+        for case_study in self.browse(cr, uid, ids, context):
+            gp_connect.upsert_case_study(uid, case_study)
+        return True

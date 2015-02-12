@@ -61,8 +61,10 @@ class compassion_child(orm.Model):
         r = requests.get(url)
         json_data = r.json()
         if not r.status_code == 200:
-            logger.error("Impossible to fetch exit details of child %s: "
-                         % child.code + json_data['error']['message'])
+            self.pool.get('mail.thread').message_post(
+                cr, uid, child_id, json_data['error']['message'],
+                "Error fetching exit details", 'comment',
+                context={'thread_model': self._name})
             return False
         child.write({
             'exit_date': json_data['exitDate'],
