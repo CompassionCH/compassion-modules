@@ -58,6 +58,7 @@ class GPConnect(mysql_connector):
         'NL': '35',
         'NZ': '40',
         'US': '21',
+        'NO': '42',
     }
 
     channel_mapping = {

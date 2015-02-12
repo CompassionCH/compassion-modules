@@ -16,7 +16,7 @@ from datetime import datetime
 
 # Countries available for the child transfer
 IP_COUNTRIES = ['AU', 'CA', 'DE', 'ES', 'FR', 'GB', 'IT', 'KR', 'NL',
-                'NZ', 'US']
+                'NZ', 'US', 'NO']
 
 
 class end_sponsorship_wizard(orm.TransientModel):
