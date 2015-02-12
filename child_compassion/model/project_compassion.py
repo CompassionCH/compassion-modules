@@ -80,8 +80,10 @@ class compassion_project(orm.Model):
         'status_date': fields.date(_('Last status change'),
                                    track_visibility='onchange'),
         'status_comment': fields.char(_('Status comment')),
-        'disburse_funds': fields.boolean(_('Disburse funds')),
-        'disburse_gifts': fields.boolean(_('Disburse gifts')),
+        'disburse_funds': fields.boolean(
+            _('Disburse funds'), , track_visibility='onchange')),
+        'disburse_gifts': fields.boolean(
+            _('Disburse gifts'), , track_visibility='onchange')),
         'disburse_unsponsored_funds': fields.boolean(
             _('Disburse unsponsored funds'), track_visibility='onchange'),
         'new_sponsorships_allowed': fields.boolean(
