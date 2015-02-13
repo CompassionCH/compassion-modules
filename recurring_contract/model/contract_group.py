@@ -101,6 +101,10 @@ class contract_group(orm.Model):
         if not ids:
             ids = self.search(cr, uid, [], context=context)
 
+        if not invoicer_id:
+            invoicer_id = self.pool.get('recurring.invoicer').create(
+                cr, uid, {}, context)
+
         journal_ids = journal_obj.search(
             cr, uid, [('type', '=', 'sale'), ('company_id', '=', 1 or False)],
             limit=1)
@@ -122,7 +126,7 @@ class contract_group(orm.Model):
                 count, nb_groups))
             contract_group = self.browse(cr, uid, group_id, context)
             month_delta = contract_group.advance_billing and \
-                delay_dict.get(contract_group.advance_billing) or 0
+                delay_dict.get(contract_group.advance_billing) or 1
             limit_date = datetime.today() + relativedelta(months=+month_delta)
             while True:  # Emulate a do-while loop
                 # contract_group update 'cause next_inv_date has been modified
@@ -154,6 +158,7 @@ class contract_group(orm.Model):
             cr.commit()
             count += 1
         logger.info("Invoice generation successfully finished.")
+        return invoicer_id
 
     def _setup_inv_data(self, cr, uid, con_gr, journal_ids,
                         invoicer_id, context=None):
@@ -207,13 +212,12 @@ class contract_group(orm.Model):
                                                       invoice_id, context)
             inv_line_obj.create(cr, uid, inv_line_data, context=context)
 
-        vals = {}
-
-        contract_obj = self.pool.get('recurring.contract')
-        next_date = contract_obj._compute_next_invoice_date(contract)
-        vals['next_invoice_date'] = next_date.strftime(DF)
-
-        contract_obj.write(cr, uid, [contract.id], vals, context)
+        if not context.get('no_next_date_update'):
+            vals = {}
+            contract_obj = self.pool.get('recurring.contract')
+            next_date = contract_obj._compute_next_invoice_date(contract)
+            vals['next_invoice_date'] = next_date.strftime(DF)
+            contract_obj.write(cr, uid, [contract.id], vals, context)
 
     def _get_gen_states(self):
         return ['active']

@@ -58,6 +58,7 @@ class GPConnect(mysql_connector):
         'NL': '35',
         'NZ': '40',
         'US': '21',
+        'NO': '42',
     }
 
     channel_mapping = {
@@ -115,8 +116,8 @@ class GPConnect(mysql_connector):
                 'typep': 'C',
                 'codespe': codespe[0],
                 'origine': origin,
-                'datecreation': date.today().strftime('%Y-%m-%d'),
-                'datedebut': contract.start_date,
+                'datecreation': contract.start_date,
+                'datedebut': contract.next_invoice_date,
                 'typeprojet': typeprojet,
             })
 
@@ -217,13 +218,13 @@ class GPConnect(mysql_connector):
                                          [end_reason, contract.child_id.code])
         return res
 
-    def register_payment(self, contract_id, payment_date=None, amount=1):
+    def register_payment(self, contract_id, month, payment_date=None):
         """ When a new payment is done (invoice paid), update the Sponsorship
         in GP. """
         sql_date = ", datedernier='{}'".format(payment_date) \
             if payment_date else ""
-        sql_query = "UPDATE Poles SET MOIS=MOIS+{:d}{} " \
-                    "WHERE id_erp={:d}".format(amount, sql_date, contract_id)
+        sql_query = "UPDATE Poles SET MOIS={:d}{} " \
+                    "WHERE id_erp={:d}".format(month, sql_date, contract_id)
         logger.info(sql_query)
         return self.query(sql_query)
 
