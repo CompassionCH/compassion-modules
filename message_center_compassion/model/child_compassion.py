@@ -87,6 +87,8 @@ class compassion_child(orm.Model):
         2. The child is marked as departed (GetExitDetails API is called)
         3. GP_Exit_Reason is inferred if possible.
         """
+        if context is None:
+            context = dict()
         child = self.browse(cr, uid, args.get('object_id'), context)
         if child.sponsor_id:
             for contract in child.contract_ids:

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -23,7 +23,6 @@ logger = logging.getLogger(__name__)
 
 
 class test_messages(common.TransactionCase):
-
     """Test and simulate reception of GMC Messages.
     Warning : Please make sure module sponsorship_sync_gp is not installed
               in order to be sure no information is sent to GP.
@@ -54,7 +53,8 @@ class test_messages(common.TransactionCase):
         message_vals = {
             'date': self.today,
             'action_id': action_id,
-            'incoming_key': child_key
+            'incoming_key': child_key,
+            'partner_country_code': 'CH'
         }
         if child_id:
             message_vals.update({
@@ -67,7 +67,7 @@ class test_messages(common.TransactionCase):
                                  event=''):
         """Generic method for creating an incoming message and process it.
         Args:
-            - type: one of ('update','deallocate',depart')
+            - type: one of ('update','deallocate','depart')
             - model: either 'compassion.child' or 'compassion.project'
             - object_id: id of related child or project object
         """
@@ -78,6 +78,7 @@ class test_messages(common.TransactionCase):
             'action_id': action_id,
             'object_id': object_id,
             'incoming_key': child_key,
+            'partner_country_code': 'CH',
             'event': event
         }
         mess_id = self.message_obj.create(self.cr, self.uid, message_vals)
@@ -106,25 +107,28 @@ class test_messages(common.TransactionCase):
         }
         con_obj = self.registry('recurring.contract')
         con_id = con_obj.create(self.cr, self.uid, contract_vals)
-        con_obj.activate_from_gp(self.cr, self.uid, con_id)
+        con_obj.force_activation(self.cr, self.uid, con_id)
         return con_id
 
     def _send_messages(self, message_type, failure_reason='', will_fail=False):
         """Looks for existing outgoing messages of given message_type
         and process (send) them. Simulate reception of a confirmation
         message from GMC which can be success or failure."""
+        context = {'test_mode': True}
         mess_ids = self.message_obj.search(self.cr, self.uid, [
             ('direction', '=', 'out'), ('name', '=', message_type)])
         self.assertTrue(mess_ids)
         if will_fail:
             with self.assertRaises(orm.except_orm):
-                self.message_obj.process_messages(self.cr, self.uid, mess_ids)
+                self.message_obj.process_messages(self.cr, self.uid, mess_ids,
+                                                  context)
         else:
-            self.message_obj.process_messages(self.cr, self.uid, mess_ids)
+            self.message_obj.process_messages(self.cr, self.uid, mess_ids,
+                                              context)
             status = 'success' if not failure_reason else 'failure'
             for message in self.message_obj.browse(self.cr, self.uid,
                                                    mess_ids):
-                # Messages must be pending and have a valid request_id
+                # Messages must be pending
                 self.assertEqual(message.state, 'pending')
                 self.assertTrue(message.request_id)
                 self.message_obj.ack(self.cr, self.uid, message.request_id,
@@ -141,7 +145,7 @@ class test_messages(common.TransactionCase):
         Generate Gift Wizard of module sponsorship_compassion
         """
         gift_id = self.registry('product.product').search(
-            self.cr, self.uid, [('name', '=', 'Birthday Gift')])[0]
+            self.cr, self.uid, [('name', '=', 'Project Gift')])[0]
         gift_wizard = self.registry('generate.gift.wizard')
         wizard_id = gift_wizard.create(
             self.cr, self.uid, {
@@ -151,12 +155,12 @@ class test_messages(common.TransactionCase):
                 'description': 'gift for bicycle'
             })
         res = gift_wizard.generate_invoice(self.cr, self.uid, [wizard_id],
-                                           {'active_id': contract_id})
-        inv_id = res['res_id']
+                                           {'active_ids': [contract_id]})
+        inv_ids = res['domain'][0][2]
         wf_service = netsvc.LocalService('workflow')
         wf_service.trg_validate(
-            self.uid, 'account.invoice', inv_id, 'invoice_open', self.cr)
-        self._pay_invoice(inv_id)
+            self.uid, 'account.invoice', inv_ids[0], 'invoice_open', self.cr)
+        self._pay_invoice(inv_ids[0])
 
     def test_config_set(self):
         """Test that the config is properly set on the server.
@@ -169,7 +173,7 @@ class test_messages(common.TransactionCase):
         ..data/test_scenario.docx
         """
         # Simulate GMC Allocation of 4 new children
-        child_keys = ["PE3760148", "IO6790210"]    # "UG8320012", "UG8350016"]
+        child_keys = ["PE3760148", "IO6790210"]  # , "UG8320012", "UG8350016"]
         child_ids = self._allocate_new_children(child_keys)
 
         # Check all 4 children are available in database
@@ -184,23 +188,28 @@ class test_messages(common.TransactionCase):
         # Create a commitment for one child
         con_id = self._create_active_contract(child_ids[0])
 
-        # Test child departure and reinstatement
-        # TODO: When GetExitDetails will be working, test this
-        #       scenario on sponsored child. For now, we test it
-        #       on an available child for simplicity.
-        child_departed_id = child_ids[1]
+        ######################################################################
+        #               Test child departure and reinstatement               #
+        ######################################################################
+        child_departed_id = child_ids[0]
         self._create_incoming_message(
             'depart', 'compassion.child', child_departed_id)
-        # For now the action does not automatically mark the child as departed.
-        self.child_obj.write(
-            self.cr, self.uid, child_departed_id, {'state': 'F'})
+        child = self.child_obj.browse(self.cr, self.uid, child_departed_id)
+        self.assertEqual(child.state, 'F')
 
-        # The child is reinstated and should again be available
+        # The child reinstated should be in the correct state
         mess_id = self._create_allocate_message(
-            child_keys[1], child_departed_id)
+            child_keys[0], child_departed_id)
         self.message_obj.process_messages(self.cr, self.uid, [mess_id])
         child = self.child_obj.browse(self.cr, self.uid, child_departed_id)
-        self.assertEqual(child.state, 'N')
+        self.assertEqual(child.state, 'Z')
+
+        # The sponsorship should be terminated
+        contract_obj = self.registry('recurring.contract')
+        contract = contract_obj.browse(self.cr, self.uid, con_id)
+        self.assertEqual(contract.state, 'terminated')
+        self.assertEqual(contract.gmc_state, 'depart')
+        self.assertEqual(contract.end_reason, '1')  # child departure
 
         # Test child deallocation
         self._create_incoming_message(
@@ -208,32 +217,35 @@ class test_messages(common.TransactionCase):
         child = self.child_obj.browse(self.cr, self.uid, child_departed_id)
         self.assertEqual(child.state, 'X')
 
-        # Test transfer scenario (deallocate -> allocate with new child_key)
-        # for a sponsored child.
-        # we simulate a different key by manually writing another code
+        ######################################################################
+        # Test transfer scenario (update message with new child_key)         #
+        # for a sponsored child.                                             #
+        # we simulate a different key by manually writing another code       #
+        ######################################################################
+        con_id = self._create_active_contract(child_ids[1])
         self._create_incoming_message(
-            'deallocate', 'compassion.child', child_ids[0])
-        child = self.child_obj.browse(self.cr, self.uid, child_ids[0])
-        contract_obj = self.registry('recurring.contract')
+            'update', 'compassion.child', child_ids[1], 'UG8360007',
+            'Transfer')
+        child = self.child_obj.browse(self.cr, self.uid, child_ids[1])
         contract = contract_obj.browse(self.cr, self.uid, con_id)
         self.assertEqual(contract.state, 'active')
-        self.assertEqual(child.state, 'X')
-
-        mess_id = self._create_allocate_message('UG8360007', child_ids[0])
-        self.message_obj.process_messages(self.cr, self.uid, [mess_id])
-        child = self.child_obj.browse(self.cr, self.uid, child_ids[0])
-        contract = contract_obj.browse(self.cr, self.uid, con_id)
         self.assertEqual(child.state, 'P')
         self.assertEqual(child.code, 'UG8360007')
         self.assertEqual(child.sponsor_id.id, contract.partner_id.id)
         self.assertEqual(contract.state, 'active')
+        self.assertEqual(contract.gmc_state, 'transfer')
         self.assertEqual(contract.child_id.id, child.id)
 
-        # Test UpdateChild and UpdateProject messages
-        # We only need to check that no error is raised
+        ######################################################################
+        #            Test UpdateChild and UpdateProject messages             #
+        #           We only need to check that no error is raised            #
+        ######################################################################
         self._create_incoming_message(
-            'update', 'compassion.child', child_departed_id, child_keys[1],
+            'update', 'compassion.child', child_ids[1], child_keys[1],
             'CaseStudy')
+        contract = contract_obj.browse(self.cr, self.uid, con_id)
+        self.assertEqual(contract.gmc_state, 'biennial')
+
         project_id = self.registry('compassion.project').search(
             self.cr, self.uid, [('code', '=', child_keys[1][:5])])[0]
         self._create_incoming_message(
@@ -241,6 +253,12 @@ class test_messages(common.TransactionCase):
 
         # Test sending gifts
         self._create_gift(con_id)
+        # Send gift before commitment
+        self._send_messages('CreateGift', will_fail=True)
+        # Send Constituent and Commitment
+        self._send_messages('UpsertConstituent')
+        self._send_messages('CreateCommitment')
+        # Send Gift
         self._send_messages('CreateGift')
 
         # Sponsor cancels the sponsorship

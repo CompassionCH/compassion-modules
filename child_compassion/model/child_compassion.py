@@ -289,6 +289,8 @@ class compassion_child(orm.Model):
             the json response.
             Returns id of generated case_study or None if failed
         '''
+        if context is None:
+            context = dict()
         url = self.get_url(child.code, 'casestudy')
         r = requests.get(url)
         json_data = r.json()
