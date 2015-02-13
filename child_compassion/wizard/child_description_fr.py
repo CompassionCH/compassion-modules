@@ -169,32 +169,36 @@ class Child_description_fr:
         ''' Generate the guardian description part. Guardians jobs are
             also included here.
         '''
+        string = u''
         if not case_study.guardians_ids:
             return ''
         male_values = ['father', 'uncle', 'brother', 'grandfather',
                        'stepfather', 'godfather']
         plur_values = ['friends', 'other relatives', 'foster parents']
-        live_with = []
-        male_guardian = dict()
-        female_guardian = dict()
+        live_with = list()
+        male_guardians = list()
+        female_guardians = list()
+        live_in_institut = False
+
         for guardian in case_study.guardians_ids:
-            value = (guardian.value_fr if guardian.value_fr
-                     else guardian.value_en)
-            if guardian.value_en in male_values:
-                live_with.append(u'son %s' % value)
-                male_guardian = [guardian.value_en, value]
-            elif guardian.value_en in plur_values:
-                live_with.append(u'des %s' % value)
-            else:
-                if female_guardian == 'institutional worker':
-                    live_with.append(u'un institut')  # find better "institut"
+            value = guardian.value_fr or guardian.value_en
+
+            if value != 'institutional worker':
+                if guardian.value_en in male_values:
+                    male_guardians.append([guardian.value_en, value])
+                    if guardian.value_en != 'brother':
+                        live_with.append(u'son {}'.format(value))
+                elif guardian.value_en in plur_values:
+                    male_guardians.append([guardian.value_en, value])
+                    female_guardians.append([guardian.value_en, value])
+                    live_with.append(u'ses {}'.format(value))
                 else:
-                    if value == 'institutional worker':
-                        live_with.append(u'un institut')
-                        female_guardian = [guardian.value_en, value]
-                    else:
-                        live_with.append(u'sa %s' % value)
-                        female_guardian = [guardian.value_en, value]
+                    female_guardians.append([guardian.value_en, value])
+                    if guardian.value_en != 'sister':
+                        live_with.append(u'sa {}'.format(value))
+            else:
+                live_in_institut = True
+
         if case_study.nb_brothers == 1:
             live_with.append(u'son frère')
         elif case_study.nb_brothers > 1:
@@ -203,18 +207,19 @@ class Child_description_fr:
             live_with.append(u'sa soeur')
         elif case_study.nb_sisters > 1:
             live_with.append(u'ses %s soeurs' % case_study.nb_sisters)
-        if 'un institut' in live_with:
-            guardian_str = '%s avec %s' % (live_with[0], live_with[1])
-        else:
-            guardian_str = cls._gen_list_string(live_with)
-        if 'institut' in guardian_str:
-            string = '%s vit dans %s. ' % (child.firstname, guardian_str)
-        else:
-            string = '%s vit avec %s. ' % (child.firstname, guardian_str)
 
-        string += cls._get_guardians_jobs_fr(cr, uid, child, case_study,
-                                             male_guardian, female_guardian,
-                                             context)
+        if live_in_institut:
+            string = '%s vit dans un internat avec %s. ' % (
+                child.firstname, cls._gen_list_string(live_with))
+        else:
+            string = '%s vit avec %s. ' % (
+                child.firstname, cls._gen_list_string(live_with))
+
+        string += cls._get_guardians_jobs_fr(
+            cr, uid, child, case_study,
+            male_guardians[0] if male_guardians else False,
+            female_guardians[0] if female_guardians else False,
+            context)
         return string
 
     @classmethod
@@ -333,6 +338,8 @@ class Child_description_fr:
             mf_g = u'Ses grand-parents'
         elif (f_g[0] == u'mother' and m_g[0] == u'father'):
             mf_g = u'Ses parents'
+        elif(f_g[0] == m_g[0]):
+            mf_g = u'Ses {}'.format(m_g)
         else:
             mf_g = u'Son {} et sa {}'.format(m_g[1], f_g[1])
 
@@ -344,8 +351,8 @@ class Child_description_fr:
             m_g, f_g, type, context=None):
         string = u''
 
-        prefix_f = u'Sa {}'.format(f_g[1]) if f_g else None
-        prefix_m = u'Son {}'.format(m_g[1])if m_g else None
+        prefix_f = u'Sa {}'.format(f_g[1] if f_g else u'mère')
+        prefix_m = u'Son {}'.format(m_g[1] if m_g else u'père')
         prefix_mf = cls._get_mf_g(
             cr, uid, m_g, f_g, context) if f_g and m_g else None
 
@@ -368,9 +375,7 @@ class Child_description_fr:
             'isachurchworker': u'à l\'église',
             'isaprojectworker': u'au centre d\'accueil',
         }
-        # laborer_tag = {
-        # 'isalaborer': [u'est ouvrier', u'est ouvrière', u'sont ouvriers']
-        # }
+
         unconsidered_tag = [u'isattimesemployed', u'isemployed']
 
         # Case unemployed
@@ -398,10 +403,11 @@ class Child_description_fr:
                        multiple_job_work_as):
                         string += u'{} {} {}'.format(
                             prefix[type], is_employed[type],
-                            job_tag_isemployed[type])
+                            job_tags_isemployed[job_tag_isemployed])
                         multiple_job_isemployed = True
                     else:
-                        string += u' et {}'.format(job_tag_isemployed[type])
+                        string += u' et {}'.format(
+                            job_tags_isemployed[job_tag_isemployed])
 
             multiple_job = False
             for prop in props_en[type]:
