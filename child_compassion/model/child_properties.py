@@ -115,4 +115,8 @@ class child_property(orm.Model):
                                       track_visibility='onchange'),
         'nb_sisters': fields.integer(_('Sisters'),
                                      track_visibility='onchange'),
+        'desc_en': fields.text(_('English description')),
+        'desc_fr': fields.text(_('French description')),
+        'desc_de': fields.text(_('German description')),
+        'desc_it': fields.text(_('Italian description')),
     }

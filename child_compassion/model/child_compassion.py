@@ -53,45 +53,6 @@ class compassion_child(orm.Model):
             ('41', _("Reached maximum age")),
         ]
 
-    def get_exit_details(self, cr, uid, child_id, context=None):
-        child = self.browse(cr, uid, child_id, context)
-        if not child:
-            raise orm.except_orm('ObjectError', _('No valid child id given !'))
-        url = self.get_url(child.code, 'exitdetails')
-        r = requests.get(url)
-        json_data = r.json()
-        if not r.status_code == 200:
-            self.pool.get('mail.thread').message_post(
-                cr, uid, child_id, json_data['error']['message'],
-                "Error fetching exit details", 'comment',
-                context={'thread_model': self._name})
-            return False
-        child.write({
-            'exit_date': json_data['exitDate'],
-            'last_attended_project': json_data['dateLastAttendedProject'],
-            'presented_gospel': json_data['presentedWithGospel'],
-            'professes_faith': json_data['professesFaithInJesusChrist'],
-            'faith_description': json_data['faithDescription'],
-            'primary_school': json_data['completedPrimarySchool'],
-            'us_grade_completed': json_data['usGradeEquivalentCompleted'],
-            'study_area': json_data['areaOfStudy'],
-            'vocational_training': json_data['receivedVocationalTraining'],
-            'vocational_skills': json_data['vocationalSkillsLearned'],
-            'disease_free': json_data['freeOfPovertyRelatedDisease'],
-            'health_description': json_data['healthDescription'],
-            'social_description': json_data['socialBehaviorDescription'],
-            'exit_description': json_data['exitDescription'],
-            'steps_prevent_description': json_data['stepsToPrevent'
-                                                   'ExitDescription'],
-            'future_plans_description': json_data['futurePlansDescription'],
-            'new_situation_description': json_data['childNewSituation'
-                                                   'Description'],
-            'exit_reason': json_data['exitReason'],
-            'last_letter_sent': json_data['lastChildLetterSent'],
-            })
-
-        return True
-
     def _get_project(self, cr, uid, ids, field_name, args, context=None):
         res = dict()
         for child in self.browse(cr, uid, ids, context):
@@ -162,10 +123,22 @@ class compassion_child(orm.Model):
              ('M', _('Male'))], _('Gender')),
         'completion_date': fields.date(_("Completion date"),
                                        track_visibility="onchange"),
-        'desc_en': fields.text(_('English description')),
-        'desc_fr': fields.text(_('French description')),
-        'desc_de': fields.text(_('German description')),
-        'desc_it': fields.text(_('Italian description')),
+        # TODO : We store the descriptions in child database since we
+        # imported the descriptions from GP in this field. When all children
+        # will have a new case study fetched from Cornerstone,
+        # we can remove the field from db by removing store=True.
+        'desc_en': fields.related(
+            'case_study_ids', 'desc_en', type='text',
+            string=_('English description'), store=True),
+        'desc_fr': fields.related(
+            'case_study_ids', 'desc_fr', type='text',
+            string=_('French description'), store=True),
+        'desc_de': fields.related(
+            'case_study_ids', 'desc_de', type='text',
+            string=_('German description'), store=True),
+        'desc_it': fields.related(
+            'case_study_ids', 'desc_it', type='text',
+            string=_('Italian description'), store=True),
         'start_date': fields.date(_("Start date")),
         'case_study_ids': fields.one2many(
             'compassion.child.property', 'child_id', string=_('Case studies'),
@@ -518,6 +491,45 @@ class compassion_child(orm.Model):
             context)
 
         return json.loads(res)[0]['uid']
+
+    def get_exit_details(self, cr, uid, child_id, context=None):
+        child = self.browse(cr, uid, child_id, context)
+        if not child:
+            raise orm.except_orm('ObjectError', _('No valid child id given !'))
+        url = self.get_url(child.code, 'exitdetails')
+        r = requests.get(url)
+        json_data = r.json()
+        if not r.status_code == 200:
+            self.pool.get('mail.thread').message_post(
+                cr, uid, child_id, json_data['error']['message'],
+                "Error fetching exit details", 'comment',
+                context={'thread_model': self._name})
+            return False
+        child.write({
+            'exit_date': json_data['exitDate'],
+            'last_attended_project': json_data['dateLastAttendedProject'],
+            'presented_gospel': json_data['presentedWithGospel'],
+            'professes_faith': json_data['professesFaithInJesusChrist'],
+            'faith_description': json_data['faithDescription'],
+            'primary_school': json_data['completedPrimarySchool'],
+            'us_grade_completed': json_data['usGradeEquivalentCompleted'],
+            'study_area': json_data['areaOfStudy'],
+            'vocational_training': json_data['receivedVocationalTraining'],
+            'vocational_skills': json_data['vocationalSkillsLearned'],
+            'disease_free': json_data['freeOfPovertyRelatedDisease'],
+            'health_description': json_data['healthDescription'],
+            'social_description': json_data['socialBehaviorDescription'],
+            'exit_description': json_data['exitDescription'],
+            'steps_prevent_description': json_data['stepsToPrevent'
+                                                   'ExitDescription'],
+            'future_plans_description': json_data['futurePlansDescription'],
+            'new_situation_description': json_data['childNewSituation'
+                                                   'Description'],
+            'exit_reason': json_data['exitReason'],
+            'last_letter_sent': json_data['lastChildLetterSent'],
+            })
+
+        return True
 
     def _request_to_typo3(self, cr, uid, request, request_type, context=None):
         filename = request_type+".sql"
