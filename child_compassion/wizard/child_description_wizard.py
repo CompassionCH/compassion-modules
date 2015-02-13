@@ -149,7 +149,7 @@ class child_description_wizard(orm.TransientModel):
                                  _('No description selected. \
                                  Please select one or click cancel '
                                    'to abort current task.'))
-        wizard.child_id.write(vals)
+        wizard.child_id.case_study_ids[-1].write(vals)
 
         return {
             'type': 'ir.actions.client',
