@@ -182,7 +182,7 @@ class Child_description_de:
     @classmethod
     def _get_guardians_info_de(cls, cr, uid, child, case_study, context=None):
         ''' Generate the guardian description part. Guardians jobs are
-            also included here.
+            also included here. (comments in child_description_fr)
         '''
         string = u''
         if not case_study.guardians_ids:
@@ -247,6 +247,7 @@ class Child_description_de:
     @classmethod
     def _get_parents_info(cls, cr, uid, child,
                           case_study, context=None):
+        # Comments for this function in child_description_fr
         string = u''
 
         props_m = [tag.value_en for tag in case_study.father_ids]
@@ -271,6 +272,7 @@ class Child_description_de:
     @classmethod
     def _get_parent_info_string(
             cls, cr, uid, child, props, type, context=None):
+        # Comments for this function in child_description_fr
         string = u''
 
         if (child.gender == 'M'):
@@ -327,6 +329,7 @@ class Child_description_de:
     @classmethod
     def _get_guardians_jobs_de(cls, cr, uid, child,
                                case_study, m_g, f_g, context=None):
+        # Comments for this function in child_description_fr
         if case_study.male_guardian_ids or case_study.female_guardian_ids:
 
             props_en_m = [emp.value_en for emp in case_study.male_guardian_ids]
@@ -360,6 +363,7 @@ class Child_description_de:
 
     @classmethod
     def _get_mf_g(cls, cr, uid, child, m_g, f_g, context=None):
+        # Comments for this function in child_description_fr
         mf_g = u''
 
         if child.gender == 'M':
@@ -382,6 +386,7 @@ class Child_description_de:
     def _get_guardian_job_string(
             cls, cr, uid, child, props_en, props_de,
             m_g, f_g, type, context=None):
+        # Comments for this function in child_description_fr
         string = u''
 
         if(child.gender == 'M'):
