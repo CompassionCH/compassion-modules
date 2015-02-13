@@ -10,7 +10,6 @@
 ##############################################################################
 
 import requests
-import json
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
@@ -189,11 +188,11 @@ class compassion_project(orm.Model):
             try:
                 values, community_id = self._update_program_info(
                     cr, uid, project, context)
-                values.update(
-                    self._update_community_info(cr, uid, community_id, context))
+                values.update(self._update_community_info(
+                    cr, uid, community_id, context))
                 if values['type'] == 'CDSP':
-                    values.update(self._update_cdsp_info(cr, uid,
-                                                         project.code, context))
+                    values.update(self._update_cdsp_info(
+                        cr, uid, project.code, context))
                 self._get_age_groups(cr, uid, project, context)
             except orm.except_orm as e:
                 # Log error

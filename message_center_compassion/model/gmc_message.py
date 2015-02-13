@@ -151,7 +151,7 @@ class gmc_message_pool(orm.Model):
                         try:
                             res = self._perform_incoming_action(
                                 cr, uid, message, context)
-                        except Exception as e:
+                        except Exception:
                             # Abort all pending changes
                             cr.rollback()
                             message = self.browse(cr, uid, message.id,
