@@ -23,17 +23,19 @@ logger = logging.getLogger(__name__)
 
 
 class test_contracts(common.TransactionCase):
-
-    """ Test Contracts Synchronization with GP """
+    """ Test Contracts Synchronization with GP.
+    WARNING : Please be sure to install module child_sync_gp as well
+              to be sure that the child is also synchronized.
+    """
 
     def setUp(self):
         super(test_contracts, self).setUp()
-        self.gp_connect = gp_connector.GPConnect(self.cr, self.uid)
+        self.gp_connect = gp_connector.GPConnect()
 
     def _create_contract_for_cino(self, child_id):
         """ Creates a new contract for partner Emanuel Cino """
         cino_id = self.registry('res.partner').search(
-            self.cr, self.uid, [('name', 'like', 'Cino Emanuel')])
+            self.cr, self.uid, [('ref', '=', '1510668')])
         con_obj = self.registry('recurring.contract')
         cino_con_id = con_obj.search(self.cr, self.uid,
                                      [('partner_id', 'in', cino_id)])
@@ -113,7 +115,7 @@ class test_contracts(common.TransactionCase):
             self._check_contract_sync(contract, 'C', 0)
 
             # Validate contract and test synchronization
-            contract_obj.validate_from_gp(self.cr, self.uid, con_id)
+            contract_obj.force_validation(self.cr, self.uid, con_id)
             contract = contract_obj.browse(self.cr, self.uid, con_id)
             self.assertEqual(contract.state, 'waiting')
             next_invoice_date = datetime.strptime(contract.next_invoice_date,

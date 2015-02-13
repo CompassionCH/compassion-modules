@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion CH Message Center',
-    'version': '1.0',
+    'version': '1.4',
     'category': 'Other',
     'description': """
         Message Center that offers a queue of messages that have to be sent
@@ -55,5 +55,3 @@
     'installable': True,
     'auto_install': False,
 }
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -199,8 +199,10 @@ class contracts(orm.Model):
                                                          not in contract_ids)
                     if last_pay_date and to_update:
                         contract_ids.add(contract.id)
+                        # Set the months_paid to months_paid+1, as the new
+                        # paid invoice is not yet counted.
                         if not gp_connect.register_payment(
-                                contract.id, contract.months_paid,
+                                contract.id, contract.months_paid+1,
                                 last_pay_date):
                             raise orm.except_orm(
                                 _("GP Sync Error"),

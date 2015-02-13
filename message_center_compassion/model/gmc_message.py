@@ -12,8 +12,11 @@ from openerp.osv import fields, orm
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.config import config
-import requests
+
+from random import randint
 from datetime import datetime
+
+import requests
 import logging
 import traceback
 
@@ -153,7 +156,7 @@ class gmc_message_pool(orm.Model):
                                 cr, uid, message, context)
                         except Exception:
                             # Abort all pending changes
-                            cr.rollback()
+                            # cr.rollback()
                             message = self.browse(cr, uid, message.id,
                                                   context)
                             message.write({
@@ -223,6 +226,9 @@ class gmc_message_pool(orm.Model):
         action = message.action_id
         object_id = message.object_id
         if self._validate_outgoing_action(cr, uid, message, context):
+            if context.get('test_mode'):
+                # Don't send the request when testing.
+                return 'test-uid' + str(randint(0, 999))
             server_url = config.get('middleware_url')
             if not server_url:
                 raise orm.except_orm(
