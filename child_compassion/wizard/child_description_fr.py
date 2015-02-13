@@ -410,7 +410,7 @@ class Child_description_fr:
                    prop not in job_tags_isemployed):
                     # Multiple job check
                     if (not multiple_job_work_as and not
-                       multiple_job_isemployed and
+                       multiple_job_isemployed and not
                        multiple_job):
                             string += prefix[type]
                             multiple_job = True
