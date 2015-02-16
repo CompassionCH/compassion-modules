@@ -395,6 +395,10 @@ class compassion_child(orm.Model):
                     property_name = prop_names[1]
                 else:
                     continue
+                if value:
+                    if isinstance(value, bool):
+                        value = (key.replace(prop_names[2], '').replace(
+                            prop_names[3], ''))
 
                 values.append(value_obj.get_value_ids(cr, uid, value,
                               property_name, context))
