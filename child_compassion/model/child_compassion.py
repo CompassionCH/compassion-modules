@@ -395,19 +395,10 @@ class compassion_child(orm.Model):
                     property_name = prop_names[1]
                 else:
                     continue
-
-                # Boolean Values (True) are replaced by the name of the tag.
                 if value:
-                    if not isinstance(value, basestring):
-                        # Specify the translated value is a tag
-                        context['default_is_tag'] = True
-                        value = (key.replace(prop_names[2],
-                                 '').replace(prop_names[3], ''))
-                    else:
-                        # Specify the translated value is not a tag
-                        context['default_is_tag'] = False
-                else:
-                    continue
+                    if isinstance(value, bool):
+                        value = (key.replace(prop_names[2], '').replace(
+                            prop_names[3], ''))
 
                 values.append(value_obj.get_value_ids(cr, uid, value,
                               property_name, context))
@@ -416,6 +407,7 @@ class compassion_child(orm.Model):
             cr, uid, json_data['naturalParents']['maritalStatusOfParents'],
             'marital_status', context))
         vals['us_school_level'] = json_data['schooling']['usSchoolEquivalent']
+
         values.append(value_obj.get_value_ids(cr, uid, json_data['schooling']
                                               ['schoolPerformance'],
                                               'school_performance', context))

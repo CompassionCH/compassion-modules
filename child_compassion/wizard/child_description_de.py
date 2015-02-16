@@ -19,8 +19,10 @@ class Child_description_de:
             cr, uid, child, case_study, context)
         desc_de += cls._get_parents_info(
             cr, uid, child, case_study, context)
+        desc_de += u'\r\n\r\n'
         desc_de += cls._get_school_info_de(
             cr, uid, child, case_study, context)
+        desc_de += u'\r\n\r\n'
         desc_de += cls._gen_christ_act_de(cr, uid, child, case_study, context)
         desc_de += cls._gen_family_act_info_de(
             cr, uid, child, case_study, context)
@@ -130,47 +132,49 @@ class Child_description_de:
              - School favourite subject if relevant and existing
         '''
         ordinals = {
-            '1': u'ersten',
-            '2': u'zweiten',
-            '3': u'dreiten',
-            '4': u'vierten',
-            '5': u'fünften',
-            '6': u'sechsten',
-            '7': u'siebsten',
-            '8': u'achten',
-            '9': u'neunten',
-            '10': u'zehnten',
-            '11': u'elften',
-            '12': u'zwölften',
-            '13': u'dreizehnten',
-            '14': u'vierzehnten',
-            'PK': u'Spielgruppe',
-            'K': u'Kindergarten',
-            'P': u'Primarschule',
+            '1': u'dreiten',
+            '2': u'vierten',
+            '3': u'fünften',
+            '4': u'sechsten',
+            '5': u'siebsten',
+            '6': u'achten',
+            '7': u'neunten',
+            '8': u'zehnten',
+            '9': u'elften',
+            '10': u'ersten Jahr der High School',
+            '11': u'zweiten Jahr der High School',
+            '12': u'dreiten Jahr der High School',
+            '13': u'der High School',
+            '14': u'der High School',
+            'PK': u'Kindergarten',
+            'K': u'zweiten',
+            'P': u'ersten',
         }
+
         # the value of us_school_level can also be blank
-        string = u'Er' if child.gender == 'M' else u'Sie'
+        string = child.firstname
         if case_study.attending_school_flag:
             if (case_study.us_school_level and case_study.us_school_level in
                     ordinals):
                 try:
                     int(case_study.us_school_level)
-                    string += (u' ist in der %s Klasse (US)'
+                    string += (u' ist in der %s'
                                % ordinals[case_study.us_school_level])
                 except:
-                    string += (u' ist in der %s (US)'
+                    string += (u' ist in der %s'
                                % ordinals[case_study.us_school_level])
             else:
                 string += u' geht zur Schule'
             if case_study.school_performance:
                 string += (u' und %s hat %s Ergebnisse. ' % (
-                    child.firstname,
+                    u'er' if child.gender == 'M' else u'sie',
                     case_study.school_performance[0].value_de
                     if case_study.school_performance[0].value_de
                     else case_study.school_performance[0].value_en))
-            elif case_study.school_best_subject:
-                string += u' und mag: %s. ' \
-                          % (case_study.school_best_subject[0].value_de
+            if case_study.school_best_subject:
+                string += u'%s mag %s. ' \
+                          % (u'Er' if child.gender == 'M' else u'Sie',
+                             case_study.school_best_subject[0].value_de
                              if case_study.school_best_subject[0].value_de
                              else case_study.school_best_subject[0].value_en)
             else:
@@ -195,54 +199,74 @@ class Child_description_de:
         else:
             prefix = [u'ihr', u'ihre', u'ihre']
 
-        live_with = list()
-        male_guardians = list()
-        female_guardians = list()
+        live_with = dict()
+        male_guardians = dict()
+        female_guardians = dict()
         live_in_institut = False
 
         for guardian in case_study.guardians_ids:
             value = guardian.value_de or guardian.value_en
 
-            if value != 'institutional worker':
+            if guardian.value_en != 'institutional worker':
                 if guardian.value_en in male_values:
-                    male_guardians.append([guardian.value_en, value])
+                    male_guardians[guardian.value_en] = value
                     if guardian.value_en != 'brother':
-                        live_with.append(u'{} {}'.format(prefix[0], value))
+                        live_with[guardian.value_en] = u'{} {}'.format(
+                            prefix[0], value)
                 elif guardian.value_en in plur_values:
-                    male_guardians.append([guardian.value_en, value])
-                    female_guardians.append([guardian.value_en, value])
-                    live_with.append(u'{} {}'.format(prefix[2], value))
+                    male_guardians[guardian.value_en] = value
+                    female_guardians[guardian.value_en] = value
+                    live_with[guardian.value_en] = u'{} {}'.format(
+                        prefix[2], value)
                 else:
-                    female_guardians.append([guardian.value_en, value])
+                    female_guardians[guardian.value_en] = value
                     if guardian.value_en != 'sister':
-                        live_with.append(u'{} {}'.format(prefix[1], value))
+                        live_with[guardian.value_en] = u'{} {}'.format(
+                            prefix[1], value)
             else:
                 live_in_institut = True
 
         if case_study.nb_brothers == 1:
-            live_with.append(u'{} Bruder'.format(prefix[0]))
+            live_with[guardian.value_en] = u'{} Bruder'.format(prefix[0])
         elif case_study.nb_brothers > 1:
-            live_with.append(
-                u'{} {} Brüder'.format(prefix[2], case_study.nb_brothers))
+            live_with[guardian.value_en] = u'{} {} Brüder'.format(
+                prefix[2], case_study.nb_brothers)
         if case_study.nb_sisters == 1:
-            live_with.append(u'{} Schwester'.format(prefix[1]))
+            live_with[guardian.value_en] = u'{} Schwester'.format(prefix[1])
         elif case_study.nb_sisters > 1:
-            live_with.append(
-                u'{} {} Schwestern'.format(prefix[2], case_study.nb_sisters))
+            live_with[guardian.value_en] = u'{} {} Schwestern'.format(
+                prefix[2], case_study.nb_sisters)
+
+        # Regroup parents and grandparents
+        live_with = cls._regroup_parents(cr, uid, live_with, prefix, context)
 
         if live_in_institut:
             string = '%s lebt in einem Internat mit %s. ' % (
-                child.firstname, cls._gen_list_string(live_with))
+                child.firstname, cls._gen_list_string(live_with.values()))
         else:
             string = '%s lebt mit %s. ' % (
-                child.firstname, cls._gen_list_string(live_with))
+                child.firstname, cls._gen_list_string(live_with.values()))
 
         string += cls._get_guardians_jobs_de(
             cr, uid, child, case_study,
-            male_guardians[0] if male_guardians else False,
-            female_guardians[0] if female_guardians else False,
+            male_guardians.items()[0] if male_guardians else False,
+            female_guardians.items()[0] if female_guardians else False,
             context)
         return string
+
+    @classmethod
+    def _regroup_parents(cls, cr, uid, dict, prefix, context=None):
+        if (u'mother' in dict and
+                u'father' in dict):
+            dict.pop(u'mother')
+            dict.pop(u'father')
+            dict[u'parents'] = u'{} Eltern'.format(prefix[2])
+        if (u'grandmother' in dict and
+                u'grandfather' in dict):
+            dict.pop(u'grandmother')
+            dict.pop(u'grandfather')
+            dict[u'parents'] = u'{} Großeltern'.format(prefix[2])
+        return dict
 
     @classmethod
     def _get_parents_info(cls, cr, uid, child,
@@ -264,8 +288,8 @@ class Child_description_de:
                                               uid, child, props, 1, context)
 
         # Parents info
-        string += cls._get_parent_info_string(cr,
-                                              uid, child, props, 2, context)
+        string = cls._get_parent_info_string(
+            cr, uid, child, props, 2, context) or string
 
         return string
 
@@ -329,6 +353,8 @@ class Child_description_de:
     @classmethod
     def _get_guardians_jobs_de(cls, cr, uid, child,
                                case_study, m_g, f_g, context=None):
+        string = u""
+
         # Comments for this function in child_description_fr
         if case_study.male_guardian_ids or case_study.female_guardian_ids:
 
@@ -346,7 +372,6 @@ class Child_description_de:
                 [False] * (len(props_en_mf) - len(props_de_mf))
             props_de = [props_de_m, props_de_f, props_de_mf]
 
-            string = u""
             # Male job
             string += cls._get_guardian_job_string(
                 cr, uid, child, props_en, props_de, m_g, f_g, 0, context)
@@ -418,9 +443,7 @@ class Child_description_de:
             'isachurchworker': u'in der Kirche',
             'isaprojectworker': u'im Kinderprojektzentrum',
         }
-        # laborer_tag = {
-        # 'isalaborer': [u'est ouvrier', u'est ouvrière', u'sont ouvriers']
-        # }
+
         unconsidered_tag = [u'isattimesemployed', u'isemployed']
 
         # Case unemployed
