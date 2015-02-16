@@ -94,7 +94,9 @@ class compassion_child(orm.Model):
 
                 wf_service = netsvc.LocalService('workflow')
                 wf_service.trg_validate(
-                    uid, 'recurring.contract', contract_ids[0], 'contract_terminated', cr)
+                    uid, 'recurring.contract',
+                    contract_ids[0],
+                    'contract_terminated', cr)
 
         if child.state != 'F':
             child.write({'state': 'F'})
