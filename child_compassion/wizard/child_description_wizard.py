@@ -31,10 +31,10 @@ class child_description_wizard(orm.TransientModel):
                    WHERE rel.property_id = %s
                    AND rel.value_id = val.id
                    AND val.is_tag = false
-                   AND (
-                        val.value_fr is Null
-                        OR val.value_de is Null
-                        OR val.value_it is Null)
+                   -- AND (
+                   --     val.value_fr is Null
+                   --     OR val.value_de is Null
+                   --     OR val.value_it is Null)
                    ORDER BY val.property_name, val.value_en''' % property_id
         cr.execute(query)
         value_ids = [x[0] for x in cr.fetchall()]
@@ -54,7 +54,7 @@ class child_description_wizard(orm.TransientModel):
     def _get_desc(self, cr, uid, lang, context):
         child = self.pool.get('compassion.child').browse(
             cr, uid, context.get('child_id'), context)
-        case_study = child.case_study_ids[-1]
+        case_study = child.case_study_ids[0]
         res = False
         if lang == 'fr':
             res = Child_description_fr.gen_fr_translation(
@@ -109,7 +109,7 @@ class child_description_wizard(orm.TransientModel):
         child = wizard.child_id
         if not child:
             raise orm.except_orm('ObjectError', _('No valid child id given !'))
-        case_study = child.case_study_ids[-1]
+        case_study = child.case_study_ids[0]
         self.write(cr, uid, ids, {
             'desc_fr': Child_description_fr.gen_fr_translation(
                 cr, uid, child, case_study, context),
@@ -149,7 +149,7 @@ class child_description_wizard(orm.TransientModel):
                                  _('No description selected. \
                                  Please select one or click cancel '
                                    'to abort current task.'))
-        wizard.child_id.case_study_ids[-1].write(vals)
+        wizard.child_id.case_study_ids[0].write(vals)
 
         return {
             'type': 'ir.actions.client',

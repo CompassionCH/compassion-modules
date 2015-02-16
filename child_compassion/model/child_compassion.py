@@ -91,6 +91,12 @@ class compassion_child(orm.Model):
             ('X', _('Deallocated'))
         ]
 
+    def _get_child_from_case_study(prop_obj, cr, uid, ids, context=None):
+        child_ids = list()
+        for case_study in prop_obj.browse(cr, uid, ids, context):
+            child_ids.append(case_study.child_id.id)
+        return child_ids
+
     _columns = {
         ######################################################################
         #                      1. General Information                        #
@@ -129,16 +135,32 @@ class compassion_child(orm.Model):
         # we can remove the field from db by removing store=True.
         'desc_en': fields.related(
             'case_study_ids', 'desc_en', type='text',
-            string=_('English description'), store=True),
+            string=_('English description'), store={
+                'compassion.child.property': (
+                    _get_child_from_case_study,
+                    ['desc_en', 'desc_fr', 'desc_de', 'desc_it'],
+                    10)}),
         'desc_fr': fields.related(
             'case_study_ids', 'desc_fr', type='text',
-            string=_('French description'), store=True),
+            string=_('French description'), store={
+                'compassion.child.property': (
+                    _get_child_from_case_study,
+                    ['desc_en', 'desc_fr', 'desc_de', 'desc_it'],
+                    10)}),
         'desc_de': fields.related(
             'case_study_ids', 'desc_de', type='text',
-            string=_('German description'), store=True),
+            string=_('German description'), store={
+                'compassion.child.property': (
+                    _get_child_from_case_study,
+                    ['desc_en', 'desc_fr', 'desc_de', 'desc_it'],
+                    10)}),
         'desc_it': fields.related(
             'case_study_ids', 'desc_it', type='text',
-            string=_('Italian description'), store=True),
+            string=_('Italian description'), store={
+                'compassion.child.property': (
+                    _get_child_from_case_study,
+                    ['desc_en', 'desc_fr', 'desc_de', 'desc_it'],
+                    10)}),
         'start_date': fields.date(_("Start date")),
         'case_study_ids': fields.one2many(
             'compassion.child.property', 'child_id', string=_('Case studies'),
@@ -212,7 +234,7 @@ class compassion_child(orm.Model):
             ids = [ids]
 
         for child in self.browse(cr, uid, ids, context):
-            case_study = child.case_study_ids[-1]
+            case_study = child.case_study_ids[0]
             if case_study:
                 self.write(cr, uid, [child.id], {
                     'name': case_study.name,
@@ -257,7 +279,7 @@ class compassion_child(orm.Model):
             raise orm.except_orm('ValueError',
                                  _('Cannot generate a description '
                                    'for a child without a case study'))
-        case_study = child.case_study_ids[-1]
+        case_study = child.case_study_ids[0]
         context['child_id'] = child_id
         context['property_id'] = case_study.id
         return {
