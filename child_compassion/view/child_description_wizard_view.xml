@@ -7,30 +7,33 @@
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="Description generation" version="7.0">
-                    <group string="Complete missing translations if needed">
-                        <field name="child_property_value_ids" nolabel="1" />
+                    <group>
+                        <group string="Complete missing translations if needed">
+                            <field name="child_property_value_ids" nolabel="1" />
+                        </group>
+                        <group string="Check and select descriptions to validate">
+                            <div>
+                                <field name="keep_desc_fr" class="oe_checklist_box" />
+                                <label for="desc_fr" class="oe_checklist_label" />
+                                <field name="desc_fr" class="oe_checklist_value"/>
+                            </div>
+                            <div class="oe_checklist_div">
+                                <field name="keep_desc_de" class="oe_checklist_box" />
+                                <label for="desc_de" class="oe_checklist_label" />
+                                <field name="desc_de" class="oe_checklist_value"/>
+                            </div>
+                            <div>
+                                <field name="keep_desc_it" class="oe_checklist_box" />
+                                <label for="desc_it" class="oe_checklist_label" />
+                                <field name="desc_it" class="oe_checklist_value"/>
+                            </div>
+                            <div>
+                                <field name="keep_desc_en" class="oe_checklist_box" />
+                                <label for="desc_en" class="oe_checklist_label" />
+                                <field name="desc_en" class="oe_checklist_value"/>
+                            </div>
+                        </group>
                     </group>
-                    <separator string="Check and select descriptions to validate" />
-                    <div>
-                        <field name="keep_desc_fr" class="oe_checklist_box" />
-                        <label for="desc_fr" class="oe_checklist_label" />
-                        <field name="desc_fr" class="oe_checklist_value"/>
-                    </div>
-                    <div class="oe_checklist_div">
-                        <field name="keep_desc_de" class="oe_checklist_box" />
-                        <label for="desc_de" class="oe_checklist_label" />
-                        <field name="desc_de" class="oe_checklist_value"/>
-                    </div>
-                    <div>
-                        <field name="keep_desc_it" class="oe_checklist_box" />
-                        <label for="desc_it" class="oe_checklist_label" />
-                        <field name="desc_it" class="oe_checklist_value"/>
-                    </div>
-                    <div>
-                        <field name="keep_desc_en" class="oe_checklist_box" />
-                        <label for="desc_en" class="oe_checklist_label" />
-                        <field name="desc_en" class="oe_checklist_value"/>
-                    </div>
 					<footer>
 						<button name="generate_descriptions" string="Generate" type="object" />
 						<button name="validate_descriptions" class="oe_highlight" string="Finish" type="object" />
