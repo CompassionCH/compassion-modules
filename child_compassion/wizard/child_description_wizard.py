@@ -37,10 +37,12 @@ class child_description_wizard(orm.TransientModel):
                         OR val.value_it is Null)
                    ORDER BY val.property_name, val.value_en''' % property_id
         cr.execute(query)
+
         value_ids = [x[0] for x in cr.fetchall()]
         return {id: value_ids for id in ids}
 
     def _get_default_ids(self, cr, uid, context=None):
+
         return self._get_value_ids(cr, uid, [0], '', '', context)[0]
 
     def _write_values(self, cr, uid, ids, name, value, inv_arg, context=None):

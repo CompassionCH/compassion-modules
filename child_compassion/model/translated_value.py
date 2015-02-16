@@ -67,6 +67,16 @@ class translated_value(orm.Model):
         value = value.lower().strip()
         if not value:
             return False
+
+        # Boolean Values (True) are replaced by the name of the tag.
+        else:
+            if not isinstance(value, basestring):
+                # Specify the translated value is a tag
+                context['default_is_tag'] = True
+            else:
+                # Specify the translated value is not a tag
+                context['default_is_tag'] = False
+
         val_ids = self.search(cr, uid, [('value_en', '=like', value),
                                         ('property_name', '=', property_name)],
                               context=context)
