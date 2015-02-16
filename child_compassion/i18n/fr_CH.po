@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: OpenERP Server 7.0-20140602-231022\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-16 14:29+0000\n"
-"PO-Revision-Date: 2015-02-16 17:00+0100\n"
+"PO-Revision-Date: 2015-02-16 17:15+0100\n"
 "Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
 "Language-Team: \n"
 "Language: fr_CH\n"
@@ -56,7 +56,7 @@ msgstr "Non respect des règles"
 #. module: child_compassion
 #: model:ir.ui.menu,name:child_compassion.menu_sponsorship_project
 msgid "Projects"
-msgstr "Projets"
+msgstr "Centres d'accueil"
 
 #. module: child_compassion
 #: code:addons/addons/compassion-modules/child_compassion/model/project_compassion.py:169
