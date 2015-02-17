@@ -17,8 +17,6 @@ class Child_description_de:
             cls, cr, uid, child, case_study, context=None):
         desc_de = cls._get_guardians_info_de(
             cr, uid, child, case_study, context)
-        desc_de += cls._get_parents_info(
-            cr, uid, child, case_study, context)
         desc_de += u'\r\n\r\n'
         desc_de += cls._get_school_info_de(
             cr, uid, child, case_study, context)
@@ -81,45 +79,15 @@ class Child_description_de:
         '''
         if not case_study.hobbies_ids:
             return ''
-        hobbies_sesg = [
-            'baseball', 'basketball', 'cars', 'group games',
-            'hide and seek', 'jacks', 'other ball games', 'ping pong',
-            'play house', 'soccer/football', 'volleyball',
-            'dolls', 'marbles', 'rolling a hoop',
-        ]
-        hobbies_se = [
-            'jump rope', 'listening to music', 'bicycling', 'story telling',
-        ]
-        hobbies_se_g = [
-            'art/drawing', 'musical instrument', 'reading', 'running',
-            'other sports or hobbies', 'singing', 'swimming', 'walking',
-        ]
-        activities_sesg = [activity.value_de if activity.value_de
-                           else activity.value_en
-                           for activity in case_study.hobbies_ids
-                           if activity.value_en in hobbies_sesg]
-        activities_se = [activity.value_de if activity.value_de
-                         else activity.value_en
-                         for activity in case_study.hobbies_ids
-                         if activity.value_en in hobbies_se]
-        activities_se_g = [activity.value_de if activity.value_de
-                           else activity.value_en
-                           for activity in case_study.hobbies_ids
-                           if activity.value_en in hobbies_se_g]
-        string = ''
         gender_pronoun = 'Er' if child.gender == 'M' else 'Sie'
-        if activities_sesg:
-            string_sesg = u"%s spielt gerne " % gender_pronoun
-            activities_sesg_string = cls._gen_list_string(activities_sesg)
-            string += string_sesg + activities_sesg_string + (u'. ')
-        if activities_se:
-            string_se = u"%s " % gender_pronoun
-            activities_se_string = cls._gen_list_string(activities_se)
-            string += string_se + activities_se_string + (u'. ')
-        if activities_se_g:
-            string_se_g = u"%s " % gender_pronoun
-            activities_se_g_string = cls._gen_list_string(activities_se_g)
-            string += string_se_g + activities_se_g_string + (u'. ')
+
+        activities = [
+            activity.value_de if activity.value_de
+            else activity.value_en for activity in case_study.hobbies_ids]
+
+        string = u"{} mag {}".format(
+            gender_pronoun, cls._gen_list_string(activities))
+
         return string
 
     @classmethod
@@ -225,6 +193,8 @@ class Child_description_de:
                             prefix[1], value)
             else:
                 live_in_institut = True
+        # Regroup parents and grandparents
+        live_with = cls._regroup_parents(cr, uid, live_with, prefix, context)
 
         if case_study.nb_brothers == 1:
             live_with[guardian.value_en] = u'{} Bruder'.format(prefix[0])
@@ -237,16 +207,14 @@ class Child_description_de:
             live_with[guardian.value_en] = u'{} {} Schwestern'.format(
                 prefix[2], case_study.nb_sisters)
 
-        # Regroup parents and grandparents
-        live_with = cls._regroup_parents(cr, uid, live_with, prefix, context)
-
         if live_in_institut:
             string = '%s lebt in einem Internat mit %s. ' % (
                 child.firstname, cls._gen_list_string(live_with.values()))
         else:
             string = '%s lebt mit %s. ' % (
                 child.firstname, cls._gen_list_string(live_with.values()))
-
+        string += cls._get_parents_info(
+            cr, uid, child, case_study, context)
         string += cls._get_guardians_jobs_de(
             cr, uid, child, case_study,
             male_guardians.items()[0] if male_guardians else False,
@@ -427,17 +395,17 @@ class Child_description_de:
         prefix = [prefix_m, prefix_f, prefix_mf]
 
         work_as = [
-            u'arbeitet als', u'arbeitet als', u'travaillent comme']
-        is_employed = [u'arbeitet', u'arbeitet', u'sont employés']
+            u'arbeitet als', u'arbeitet als', u'arbeiten als']
+        is_employed = [u'arbeitet', u'arbeitet', u'arbeiten']
         is_unemployed = [
-            u"ist arbeitslos", u"ist arbeitslos", u"n'ont pas d'emploi"]
+            u"ist arbeitslos", u"ist arbeitslos", u"sind arbeitslos"]
 
         job_tags_work_as = {
             'isafarmer': [u'Landwirt', u'Landwirtin', u'fermiers'],
             'isateacher': [u'Lehrer', u'Lehrerin', u'enseignants'],
             'sellsinmarket': [u'Marktverkäufer',
                               u'Marktverkäuferin',
-                              u'vendeurs au marché'],
+                              u'Marktverkäufer'],
         }
         job_tags_isemployed = {
             'isachurchworker': u'in der Kirche',
