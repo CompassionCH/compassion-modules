@@ -37,7 +37,7 @@
         </record>
         
         <!-- Menu item -->
-        <menuitem action="action_hr_planning" id="hr_menu_planning" parent="hr.menu_hr_main" name="Planning" sequence="4" groups="base.group_hr_manager"/>
+        <menuitem action="action_hr_planning" id="hr_menu_planning" parent="hr.menu_hr_main" name="Planning" sequence="4" groups="base.group_user"/>
         
         <!-- Search view -->
         <record id="view_hr_planning_filter" model="ir.ui.view">
@@ -47,6 +47,7 @@
                 <search>
                     <field name="department_id"/>
                     <field name="employee_id"/>
+                    <field name="category_ids"/>
                 </search>
             </field>
         </record>

@@ -27,4 +27,8 @@ class hr_planning_day(orm.Model):
             'employee_id', 'department_id',
             string=_('Department'), type="many2one",
             relation='hr.department', store=True, readonly=True),
+        'category_ids': fields.related(
+            'employee_id', 'category_ids',
+            string=_('Category'), type='many2many',
+            relation='hr.employee.category', store=False, readonly=True),
     }
