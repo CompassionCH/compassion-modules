@@ -96,8 +96,8 @@ class contracts(orm.Model):
                 month_diff = relativedelta(new_date, old_date).months
                 if contract.state in ('active', 'waiting') and month_diff > 0:
                     if not gp_connect.register_payment(contract.id,
-                                                       contract.months_paid
-                                                       + month_diff):
+                                                       contract.months_paid +
+                                                       month_diff):
                         raise orm.except_orm(
                             _("GP Sync Error"),
                             _("Please contact an IT person."))
@@ -125,8 +125,8 @@ class contracts(orm.Model):
         compatible = True
         for line in contract.contract_line_ids:
             compatible = compatible and (
-                line.product_id.name in SPONSORSHIP_TYPES+GIFT_TYPES
-                or line.product_id.gp_fund_id > 0)
+                line.product_id.name in SPONSORSHIP_TYPES+GIFT_TYPES or
+                line.product_id.gp_fund_id > 0)
         return compatible
 
     def contract_waiting(self, cr, uid, ids, context=None):
@@ -199,8 +199,10 @@ class contracts(orm.Model):
                                                          not in contract_ids)
                     if last_pay_date and to_update:
                         contract_ids.add(contract.id)
+                        # Set the months_paid to months_paid+1, as the new
+                        # paid invoice is not yet counted.
                         if not gp_connect.register_payment(
-                                contract.id, contract.months_paid,
+                                contract.id, contract.months_paid+1,
                                 last_pay_date):
                             raise orm.except_orm(
                                 _("GP Sync Error"),
@@ -211,8 +213,9 @@ class contracts(orm.Model):
                         if not gp_connect.undo_payment(contract.id):
                             raise orm.except_orm(
                                 _("GP Sync Error"),
-                                _("The payment could not be removed from GP.")
-                                + _("Please contact an IT person."))
+                                _("The payment could not be removed "
+                                  "from GP.") + _("Please contact an IT "
+                                                  "person."))
 
     def unlink(self, cr, uid, ids, context=None):
         super(contracts, self).unlink(cr, uid, ids, context)

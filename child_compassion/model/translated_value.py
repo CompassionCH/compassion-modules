@@ -65,13 +65,19 @@ class translated_value(orm.Model):
         """ Find or create a translated_value for a given property.
         Returns the translated_value id."""
         value = value.lower().strip()
+        property_vals = {
+            'property_name': property_name,
+            'value_en': value}
         if not value:
             return False
+
+        if isinstance(value, bool):
+            property_vals['is_tag'] = True
+
         val_ids = self.search(cr, uid, [('value_en', '=like', value),
                                         ('property_name', '=', property_name)],
                               context=context)
         if val_ids:
             return val_ids[0]
-        prop_id = self.create(cr, uid, {'property_name': property_name,
-                                        'value_en': value}, context)
+        prop_id = self.create(cr, uid, property_vals, context)
         return prop_id

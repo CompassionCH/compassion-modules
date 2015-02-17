@@ -8,10 +8,15 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+from openerp.osv import orm
 
-from . import gmc_message
-from . import child_compassion
-from . import project_compassion
-from . import contracts
-from . import res_partner
-from . import invoice_line
+
+class compassion_project(orm.Model):
+    """ Add update method. """
+    _inherit = 'compassion.project'
+
+    def update(self, cr, uid, args, context=None):
+        """ When we receive a notification that a project has been updated,
+        we fetch the last informations. """
+        self.update_informations(cr, uid, args.get('object_id'), context)
+        return True

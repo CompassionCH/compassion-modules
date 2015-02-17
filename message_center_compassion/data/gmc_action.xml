@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="True">
+    <data>
 		
         <!-- Constituent Messages -->
         <record id="upsert_constituent" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">UpsertConstituent</field>
             <field name="model">res.partner</field>
-            <field name="type">upsert</field>
+            <field name="type">update</field>
             <field name="description">This will notify GMC of a creation or modification of a partner.</field>
         </record>
         
@@ -38,7 +38,7 @@
             <field name="name">DepartChild</field>
             <field name="model">compassion.child</field>
             <field name="type">depart</field>
-            <field name="description">This won't do anything yet. Please implement the method.</field>
+            <field name="description">Departs the child and ends the sponsorship if the child is sponsored. Will fetch the Exit Details from GMC.</field>
         </record>
         
         <!-- Project Messages -->

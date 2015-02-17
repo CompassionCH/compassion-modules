@@ -10,21 +10,17 @@
 ##############################################################################
 
 import requests
-import json
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from openerp import netsvc
-
 from datetime import datetime
-from dateutil.relativedelta import relativedelta
 
 
 class compassion_project(orm.Model):
     """ A compassion project """
     _name = 'compassion.project'
+    _inherit = 'mail.thread'
 
     def _get_suspension_state(self, cr, uid, ids, field_name, args,
                               context=None):
@@ -41,66 +37,13 @@ class compassion_project(orm.Model):
                     else 'fund-suspended'
                 if (res[project.id] == 'fund-suspended'):
                     self.suspend_project(cr, uid, project.id,
-                                         project.status_date, 3, context)
+                                         datetime.today(), context)
         return res
 
-    def suspend_project(self, cr, uid, project_id,
-                        start, months, context=None):
-        """ When a project is suspended from GP, We update all contracts of
-        sponsored children in the project, so that we don't create invoices
-        during the period of suspension.
+    def suspend_project(self, cr, uid, project_id, start, context=None):
+        """ Hook to perform some action when project is suspended.
         """
-        date_start = datetime.strptime(start, DF)
-        date_end = date_start + relativedelta(months=months)
-        project = self.browse(cr, uid, project_id, context)
-        contract_obj = self.pool.get('recurring.contract')
-        contract_ids = contract_obj.search(
-            cr, uid, [('child_code', 'like', project.code),
-                      ('state', 'in', ('active', 'waiting'))], context=context)
-        invl_obj = self.pool.get('account.invoice.line')
-        inv_line_ids = invl_obj.search(cr, uid, [
-            ('contract_id', 'in', contract_ids),
-            ('state', 'in', ('open', 'paid')),
-            ('due_date', '>=', date_start.strftime(DF)),
-            ('due_date', '<', date_end.strftime(DF))], context=context)
-        inv_ids = set()
-        # Cancel invoices in the period of suspension
-        for inv_line in invl_obj.browse(cr, uid, inv_line_ids, context):
-            invoice = inv_line.invoice_id
-            if invoice.id not in inv_ids:
-                inv_ids.add(invoice.id)
-                if invoice.state == 'paid':
-                    # Unreconcile entries
-                    move_ids = [move.id for move in invoice.payment_ids]
-                    self.pool.get('account.move.line')._remove_move_reconcile(
-                        cr, uid, move_ids, context=context)
-                    cr.commit()
-                # Cancel invoice
-                wf_service = netsvc.LocalService('workflow')
-                wf_service.trg_validate(uid, 'account.invoice', invoice.id,
-                                        'invoice_cancel', cr)
-        # Advance next invoice date after end of suspension
-        for contract in contract_obj.browse(cr, uid, contract_ids, context):
-            next_inv_date = datetime.strptime(contract.next_invoice_date, DF)
-            month_diff = relativedelta(date_end, next_inv_date).months
-            if month_diff > 0:
-                # If sponsorship is late, don't advance it too much
-                if month_diff > months:
-                    month_diff = months
-                new_date = next_inv_date + relativedelta(months=month_diff)
-                contract.write({'next_invoice_date': new_date.strftime(DF)})
-
-            # Add a note in the contract
-            self.pool.get('mail.thread').message_post(
-                cr, uid, contract.id,
-                "The project {0} was suspended and funds are retained <b>"
-                "until {1}</b>.<br/>Invoices due in the suspension period "
-                "are automatically cancelled.".format(
-                    project.code, date_end.strftime("%B %Y")),
-                "Project Suspended", 'comment',
-                context={'thread_model': 'recurring.contract'})
-
-        return True
+        pass
 
     _columns = {
         ######################################################################
@@ -122,22 +65,30 @@ class compassion_project(orm.Model):
                 ('fund-suspended', _('Suspended & fund retained'))],
             string=_('Suspension'),
             store={'compassion.project':
-                    (lambda self, cr, uid, ids, c={}:
-                        ids, ['last_update_date'], 20)}),
+                    (lambda self, cr, uid, ids, c=None:
+                        ids, ['disburse_funds', 'disburse_gifts',
+                              'disburse_unsponsored_funds',
+                              'new_sponsorships_allowed',
+                              'additional_quota_allowed'], 20)},
+            track_visibility='onchange'),
         'status': fields.selection([
             ('A', _('Active')),
             ('P', _('Phase-out')),
-            ('T', _('Terminated'))], _('Status')),
-        'status_date': fields.date(_('Last status change')),
+            ('T', _('Terminated'))], _('Status'),
+            track_visibility='onchange'),
+        'status_date': fields.date(_('Last status change'),
+                                   track_visibility='onchange'),
         'status_comment': fields.char(_('Status comment')),
-        'disburse_funds': fields.boolean(_('Disburse funds')),
-        'disburse_gifts': fields.boolean(_('Disburse gifts')),
-        'disburse_unsponsored_funds': fields.boolean(_('Disburse unsponsored '
-                                                       'funds')),
-        'new_sponsorships_allowed': fields.boolean(_('New sponsorships '
-                                                     'allowed')),
-        'additional_quota_allowed': fields.boolean(_('Additional quota '
-                                                     'allowed')),
+        'disburse_funds': fields.boolean(
+            _('Disburse funds'), track_visibility='onchange'),
+        'disburse_gifts': fields.boolean(
+            _('Disburse gifts'), track_visibility='onchange'),
+        'disburse_unsponsored_funds': fields.boolean(
+            _('Disburse unsponsored funds'), track_visibility='onchange'),
+        'new_sponsorships_allowed': fields.boolean(
+            _('New sponsorships allowed'), track_visibility='onchange'),
+        'additional_quota_allowed': fields.boolean(
+            _('Additional quota allowed'), track_visibility='onchange'),
 
         ######################################################################
         #                      2. Project Descriptions                       #
@@ -234,15 +185,23 @@ class compassion_project(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
         for project in self.browse(cr, uid, ids, context):
-            self._get_age_groups(cr, uid, project, context)
-            values, community_id = self._update_program_info(
-                cr, uid, project, context)
-            values.update(
-                self._update_community_info(cr, uid, community_id, context))
-            if values['type'] == 'CDSP':
-                values.update(self._update_cdsp_info(cr, uid,
-                                                     project.code, context))
-            self.write(cr, uid, [project.id], values, context=context)
+            try:
+                values, community_id = self._update_program_info(
+                    cr, uid, project, context)
+                values.update(self._update_community_info(
+                    cr, uid, community_id, context))
+                if values['type'] == 'CDSP':
+                    values.update(self._update_cdsp_info(
+                        cr, uid, project.code, context))
+                self._get_age_groups(cr, uid, project, context)
+            except orm.except_orm as e:
+                # Log error
+                self.pool.get('mail.thread').message_post(
+                    cr, uid, project.id, e[1], e[0], 'comment',
+                    context={'thread_model': self._name})
+            finally:
+                if values:
+                    self.write(cr, uid, [project.id], values, context)
         return True
 
     def _update_program_info(self, cr, uid, project, context=None):
@@ -400,11 +359,11 @@ class compassion_project(orm.Model):
         json_values = self._cornerstone_fetch(project_code, 'cdspimplementors')
         values = {
             'name': json_values.get('name'),
-            'start_date': json_values.get('startDate'),
-            'stop_date': json_values.get('stopDate'),
-            'last_update_date': json_values.get('lastUpdateDate'),
+            'start_date': json_values.get('startDate') or False,
+            'stop_date': json_values.get('stopDate') or False,
+            'last_update_date': json_values.get('lastUpdateDate') or False,
             'status': json_values.get('status'),
-            'status_date': json_values.get('statusDate'),
+            'status_date': json_values.get('statusDate') or False,
             'status_comment': json_values.get('statusComment'),
             'description_en': json_values.get('description'),
             'gps_latitude': json_values.get(
@@ -420,8 +379,7 @@ class compassion_project(orm.Model):
             'additional_quota_allowed': json_values.get(
                 'additionalQuotaAllowed'),
         }
-        return {field_name: value for field_name, value in values.iteritems()
-                if value}
+        return {field_name: value for field_name, value in values.iteritems()}
 
     def _cornerstone_fetch(self, project_code, api_mess):
         """ Construct the correct URL to call Compassion Cornerstone APIs.
@@ -435,14 +393,14 @@ class compassion_project(orm.Model):
         if url.endswith('/'):
             url = url[:-1]
 
-        url += ('/ci/v1/' + api_mess + '/' + project_code + '?api_key='
-                + api_key)
+        url += ('/ci/v1/' + api_mess + '/' + project_code + '?api_key=' +
+                api_key)
 
         # Send the request and retrieve the result.
         r = requests.get(url)
+        json_result = r.json()
         if not r.status_code == 200:
             raise orm.except_orm(
-                _('Error calling Cornerstone Service'),
-                r.text)
-        json_result = json.loads(r.text)
+                'Error calling %s for project %s' % (api_mess, project_code),
+                json_result['error']['message'])
         return json_result

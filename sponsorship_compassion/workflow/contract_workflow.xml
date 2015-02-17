@@ -60,6 +60,18 @@
             <field name="act_to" ref="act_cancelled" />
             <field name="signal">contract_terminated</field>
         </record>
+        <record model="workflow.transition" id="t3a">
+            <field name="act_from" ref="act_mandate" />
+            <field name="act_to" ref="act_cancelled" />
+            <field name="signal">contract_terminated</field>
+            <field name="condition">not is_active</field>
+        </record>
+        <record model="workflow.transition" id="t3b">
+            <field name="act_from" ref="act_mandate" />
+            <field name="act_to" ref="recurring_contract.act_terminated" />
+            <field name="signal">contract_terminated</field>
+            <field name="condition">is_active</field>
+        </record>
         <record model="workflow.transition" id="t4a">
             <field name="act_from" ref="act_validation" />
             <field name="act_to" ref="act_banking_validation" />

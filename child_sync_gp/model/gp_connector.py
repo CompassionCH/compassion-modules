@@ -41,51 +41,55 @@ class GPConnect(mysql_connector):
         """Push or update child in GP after converting all relevant
         information in the destination structure."""
         name = child.name
-        if name.endswith(child.firstname):
+        if child.firstname and name.endswith(child.firstname):
             name = name[:-len(child.firstname)]
         vals = {
             'CODE': child.code,
             'NOM': name,
-            'PRENOM': child.firstname,
+            'PRENOM': child.firstname or '',
             'SEXE': child.gender,
             'DATENAISSANCE': child.birthdate,
             'SITUATION': child.state,
             'ID': self._get_gp_uid(uid),
             'COMPLETION_DATE': child.completion_date,
+            'DATEDELEGUE': child.date_delegation,
+            'CODEDELEGUE': child.delegated_to.ref,
+            'REMARQUEDELEGUE': child.delegated_comment or '',
             'id_erp': child.id
         }
-        if child.case_study_ids:
-            # Upsert last Case Study
-            id_fichier = self.upsert_case_study(
-                uid, child.case_study_ids[-1])
-            if id_fichier:
-                vals['ID_DERNIER_FICHIER'] = id_fichier
         if child.gp_exit_reason:
             vals['ID_MOTIF_FIN'] = int(child.gp_exit_reason)
         return self.upsert("Enfants", vals)
 
     def upsert_case_study(self, uid, case_study):
-        """Push or update Case Study in GP."""
+        """Push or update latest Case Study in GP."""
+        id_fichier = False
         if case_study.child_id.pictures_ids:
             date_photo = case_study.child_id.pictures_ids[-1].date
         else:
             date_photo = '0000-00-00'
         vals = {
             'DATE_PHOTO': date_photo,
-            'COMMENTAIRE_FR': case_study.child_id.desc_fr or '',
-            'COMMENTAIRE_DE': case_study.child_id.desc_de or '',
-            'COMMENTAIRE_ITA': case_study.child_id.desc_it or '',
-            'COMMENTAIRE_EN': case_study.child_id.desc_en or '',
+            'COMMENTAIRE_FR': case_study.desc_fr or '',
+            'COMMENTAIRE_DE': case_study.desc_de or '',
+            'COMMENTAIRE_ITA': case_study.desc_it or '',
+            'COMMENTAIRE_EN': case_study.desc_en or '',
             'IDUSER': self._get_gp_uid(uid),
             'CODE': case_study.code,
             'DATE_INFO': case_study.info_date,
             'DATE_IMPORTATION': datetime.today().strftime(DF),
         }
         if self.upsert("Fichiersenfants", vals):
-            return self.selectOne(
+            id_fichier = self.selectOne(
                 "SELECT MAX(Id_Fichier_Enfant) AS id FROM Fichiersenfants "
                 "WHERE Code = %s", case_study.code).get('id')
-        return False
+            if id_fichier:
+                vals = {
+                    'ID_DERNIER_FICHIER': id_fichier,
+                    'CODE': case_study.child_id.code,
+                    'id_erp': case_study.child_id.id}
+                self.upsert("Enfants", vals)
+        return id_fichier
 
     def set_child_sponsor_state(self, child):
         update_string = "UPDATE Enfants SET %s WHERE code='%s'"
@@ -97,7 +101,8 @@ class GPConnect(mysql_connector):
             # If the child is sponsored, mark the sponsorship as terminated in
             # GP and set the child exit reason in tables Poles and Enfant
             end_reason = child.gp_exit_reason or \
-                self.transfer_mapping[child.transfer_country_id.code]
+                self.transfer_mapping[child.transfer_country_id.code] \
+                if child.transfer_country_id else 'NULL'
             update_fields += ", id_motif_fin={}".format(end_reason)
             # We don't put a child transfer in ending reason of a sponsorship
             if not child.transfer_country_id:
@@ -121,17 +126,18 @@ class GPConnect(mysql_connector):
         """Update a given Compassion project in GP."""
         vals = {
             'CODE_PROJET': project.code,
-            'DESCRIPTION_FR': project.description_fr,
-            'DESCRIPTION_DE': project.description_de,
-            'DESCRIPTION_EN': project.description_en,
-            'DESCRIPTION_IT': project.description_it,
+            'DESCRIPTION_FR': project.description_fr or '',
+            'DESCRIPTION_DE': project.description_de or '',
+            'DESCRIPTION_EN': project.description_en or '',
+            'DESCRIPTION_IT': project.description_it or '',
             'NOM': project.name,
             'IDUSER': self._get_gp_uid(uid),
             'DATE_MAJ': project.last_update_date,
             'SITUATION': self._get_project_state(project),
             'PAYS': project.code[:2],
             'LIEU_EN': project.community_name + ', ' +
-            project.country_id.name,
+            project.country_id.name if project.community_name and
+            project.country_id.name else '',
             'date_situation': project.status_date,
             'ProgramImplementorTypeCode': project.type,
             'StartDate': project.start_date,

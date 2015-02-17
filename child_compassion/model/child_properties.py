@@ -18,6 +18,7 @@ class child_property(orm.Model):
     _name = 'compassion.child.property'
     _order = 'child_id, info_date desc'
     _inherit = 'mail.thread'
+    _description = "Case Study"
 
     _columns = {
         'child_id': fields.many2one(
@@ -114,4 +115,8 @@ class child_property(orm.Model):
                                       track_visibility='onchange'),
         'nb_sisters': fields.integer(_('Sisters'),
                                      track_visibility='onchange'),
+        'desc_en': fields.text(_('English description')),
+        'desc_fr': fields.text(_('French description')),
+        'desc_de': fields.text(_('German description')),
+        'desc_it': fields.text(_('Italian description')),
     }

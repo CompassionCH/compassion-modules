@@ -1,4 +1,4 @@
-﻿# -*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -16,13 +16,13 @@ import sys
 import calendar
 import json
 
-logger = logging.getLogger(__name__)
-
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 
 class compassion_child(orm.Model):
@@ -53,43 +53,6 @@ class compassion_child(orm.Model):
             ('41', _("Reached maximum age")),
         ]
 
-    def get_exit_details(self, cr, uid, child_id, context=None):
-        child = self.browse(cr, uid, child_id, context)
-        if not child:
-            raise orm.except_orm('ObjectError', _('No valid child id given !'))
-        url = self.get_url(child.code, 'exitdetails')
-        r = requests.get(url)
-        json_data = r.json()
-        if not r.status_code == 200:
-            logger.error("Impossible to fetch exit details of child %s: "
-                         % child.code + json_data['error']['message'])
-            return False
-        child.write({
-            'exit_date': json_data['exitDate'],
-            'last_attended_project': json_data['dateLastAttendedProject'],
-            'presented_gospel': json_data['presentedWithGospel'],
-            'professes_faith': json_data['professesFaithInJesusChrist'],
-            'faith_description': json_data['faithDescription'],
-            'primary_school': json_data['completedPrimarySchool'],
-            'us_grade_completed': json_data['usGradeEquivalentCompleted'],
-            'study_area': json_data['areaOfStudy'],
-            'vocational_training': json_data['receivedVocationalTraining'],
-            'vocational_skills': json_data['vocationalSkillsLearned'],
-            'disease_free': json_data['freeOfPovertyRelatedDisease'],
-            'health_description': json_data['healthDescription'],
-            'social_description': json_data['socialBehaviorDescription'],
-            'exit_description': json_data['exitDescription'],
-            'steps_prevent_description': json_data['stepsToPrevent'
-                                                   'ExitDescription'],
-            'future_plans_description': json_data['futurePlansDescription'],
-            'new_situation_description': json_data['childNewSituation'
-                                                   'Description'],
-            'exit_reason': json_data['exitReason'],
-            'last_letter_sent': json_data['lastChildLetterSent'],
-            })
-
-        return True
-
     def _get_project(self, cr, uid, ids, field_name, args, context=None):
         res = dict()
         for child in self.browse(cr, uid, ids, context):
@@ -115,6 +78,24 @@ class compassion_child(orm.Model):
                                      context=context)
             for child_id in ids
         }
+
+    def _get_child_states(self, cr, uid, context=None):
+        return [
+            ('N', _('Available')),
+            ('D', _('Delegated')),
+            ('I', _('On Internet')),
+            ('Z', _('Reinstated')),
+            ('P', _('Sponsored')),
+            ('R', _('Waiting new sponsor')),
+            ('F', _('Departed')),
+            ('X', _('Deallocated'))
+        ]
+
+    def _get_child_from_case_study(prop_obj, cr, uid, ids, context=None):
+        child_ids = list()
+        for case_study in prop_obj.browse(cr, uid, ids, context):
+            child_ids.append(case_study.child_id.id)
+        return child_ids
 
     _columns = {
         ######################################################################
@@ -148,10 +129,38 @@ class compassion_child(orm.Model):
              ('M', _('Male'))], _('Gender')),
         'completion_date': fields.date(_("Completion date"),
                                        track_visibility="onchange"),
-        'desc_en': fields.text(_('English description')),
-        'desc_fr': fields.text(_('French description')),
-        'desc_de': fields.text(_('German description')),
-        'desc_it': fields.text(_('Italian description')),
+        # TODO : We store the descriptions in child database since we
+        # imported the descriptions from GP in this field. When all children
+        # will have a new case study fetched from Cornerstone,
+        # we can remove the field from db by removing store=True.
+        'desc_en': fields.related(
+            'case_study_ids', 'desc_en', type='text',
+            string=_('English description'), store={
+                'compassion.child.property': (
+                    _get_child_from_case_study,
+                    ['desc_en', 'desc_fr', 'desc_de', 'desc_it'],
+                    10)}),
+        'desc_fr': fields.related(
+            'case_study_ids', 'desc_fr', type='text',
+            string=_('French description'), store={
+                'compassion.child.property': (
+                    _get_child_from_case_study,
+                    ['desc_en', 'desc_fr', 'desc_de', 'desc_it'],
+                    10)}),
+        'desc_de': fields.related(
+            'case_study_ids', 'desc_de', type='text',
+            string=_('German description'), store={
+                'compassion.child.property': (
+                    _get_child_from_case_study,
+                    ['desc_en', 'desc_fr', 'desc_de', 'desc_it'],
+                    10)}),
+        'desc_it': fields.related(
+            'case_study_ids', 'desc_it', type='text',
+            string=_('Italian description'), store={
+                'compassion.child.property': (
+                    _get_child_from_case_study,
+                    ['desc_en', 'desc_fr', 'desc_de', 'desc_it'],
+                    10)}),
         'start_date': fields.date(_("Start date")),
         'case_study_ids': fields.one2many(
             'compassion.child.property', 'child_id', string=_('Case studies'),
@@ -163,15 +172,8 @@ class compassion_child(orm.Model):
             'pictures_ids', 'headshot', type='binary'),
         'fullshot': fields.related(
             'pictures_ids', 'fullshot', type='binary'),
-        'state': fields.selection([
-            ('N', _('Available')),
-            ('D', _('Delegated')),
-            ('I', _('On Internet')),
-            ('E', _('Reinstated')),
-            ('P', _('Sponsored')),
-            ('R', _('Waiting new sponsor')),
-            ('F', _('Departed')),
-            ('X', _('Deallocated'))], _("Status"), select=True, readonly=True,
+        'state': fields.selection(
+            _get_child_states, _("Status"), select=True, readonly=True,
             track_visibility="onchange", required=True),
         'has_been_sponsored': fields.boolean('Has been sponsored'),
         'sponsor_id': fields.many2one('res.partner', _('Sponsor'),
@@ -180,6 +182,9 @@ class compassion_child(orm.Model):
         'contract_ids': fields.function(
             _get_related_contracts, type='one2many', obj='recurring.contract',
             string=_("Sponsorships"), readonly=True),
+        'delegated_to': fields.many2one('res.partner', _("Delegated to")),
+        'delegated_comment': fields.text(_("Delegated comment")),
+        'date_delegation': fields.date(_("Delegated date")),
 
         ######################################################################
         #                      2. Exit Details                               #
@@ -215,11 +220,8 @@ class compassion_child(orm.Model):
         'transfer_country_id': fields.many2one('res.country',
                                                _("Transfered to")),
         'gp_exit_reason': fields.selection(
-            get_gp_exit_reasons, _("Exit Reason"), readonly=True,
+            get_gp_exit_reasons, _("Exit Reason"),
             track_visibility="onchange"),
-        'delegated_to': fields.many2one('res.partner', _("Delegated to")),
-        'delegated_comment': fields.text(_("Delegated comment")),
-        'date_delegation': fields.datetime(_("Delegated date")),
     }
 
     _defaults = {
@@ -232,7 +234,7 @@ class compassion_child(orm.Model):
             ids = [ids]
 
         for child in self.browse(cr, uid, ids, context):
-            case_study = child.case_study_ids[-1]
+            case_study = child.case_study_ids[0]
             if case_study:
                 self.write(cr, uid, [child.id], {
                     'name': case_study.name,
@@ -251,9 +253,9 @@ class compassion_child(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
         proj_obj = self.pool.get('compassion.project')
+        res = True
         for child in self.browse(cr, uid, ids, context):
-            self._get_case_study(cr, uid, child, context)
-            self._get_last_pictures(cr, uid, child.id, context)
+            res = res and self._get_case_study(cr, uid, child, context)
             self._get_basic_informations(cr, uid, child.id)
             project_ids = proj_obj.search(
                 cr, uid, [('code', '=', child.code[:5])],
@@ -264,7 +266,8 @@ class compassion_child(orm.Model):
                     'name': child.code[:5],
                 })
                 proj_obj.update_informations(cr, uid, proj_id)
-        return True
+            res = res and self._get_last_pictures(cr, uid, child.id, context)
+        return res
 
     def generate_descriptions(self, cr, uid, child_id, context=None):
         if child_id and isinstance(child_id, list):
@@ -276,7 +279,7 @@ class compassion_child(orm.Model):
             raise orm.except_orm('ValueError',
                                  _('Cannot generate a description '
                                    'for a child without a case study'))
-        case_study = child.case_study_ids[-1]
+        case_study = child.case_study_ids[0]
         context['child_id'] = child_id
         context['property_id'] = case_study.id
         return {
@@ -290,9 +293,15 @@ class compassion_child(orm.Model):
         }
 
     def _get_last_pictures(self, cr, uid, child_id, context=None):
-        self.pool.get('compassion.child.pictures').create(
+        pic_id = self.pool.get('compassion.child.pictures').create(
             cr, uid, {'child_id': child_id}, context)
-        return True
+        if pic_id:
+            # Add a note in child
+            self.pool.get('mail.thread').message_post(
+                cr, uid, child_id, "The picture has been updated.",
+                "Picture update", 'comment',
+                context={'thread_model': self._name})
+        return pic_id
 
     ##################################################
     #            Case study retrieving               #
@@ -302,14 +311,16 @@ class compassion_child(orm.Model):
             the json response.
             Returns id of generated case_study or None if failed
         '''
+        if context is None:
+            context = dict()
         url = self.get_url(child.code, 'casestudy')
         r = requests.get(url)
         json_data = r.json()
         if not r.status_code/100 == 2:
             raise orm.except_orm('NetworkError',
                                  _('An error occured while fetching the last '
-                                   'case study for child %s. ') % child.code
-                                 + json_data['error']['message'])
+                                   'case study for child %s. ') % child.code +
+                                 json_data['error']['message'])
 
         child_prop_obj = self.pool.get('compassion.child.property')
         info_date = json_data['childCaseStudyDate']
@@ -384,19 +395,10 @@ class compassion_child(orm.Model):
                     property_name = prop_names[1]
                 else:
                     continue
-
-                # Boolean Values (True) are replaced by the name of the tag.
                 if value:
-                    if not isinstance(value, basestring):
-                        # Specify the translated value is a tag
-                        context['default_is_tag'] = True
-                        value = (key.replace(prop_names[2],
-                                 '').replace(prop_names[3], ''))
-                    else:
-                        # Specify the translated value is not a tag
-                        context['default_is_tag'] = False
-                else:
-                    continue
+                    if isinstance(value, bool):
+                        value = (key.replace(prop_names[2], '').replace(
+                            prop_names[3], ''))
 
                 values.append(value_obj.get_value_ids(cr, uid, value,
                               property_name, context))
@@ -405,6 +407,7 @@ class compassion_child(orm.Model):
             cr, uid, json_data['naturalParents']['maritalStatusOfParents'],
             'marital_status', context))
         vals['us_school_level'] = json_data['schooling']['usSchoolEquivalent']
+
         values.append(value_obj.get_value_ids(cr, uid, json_data['schooling']
                                               ['schoolPerformance'],
                                               'school_performance', context))
@@ -432,6 +435,12 @@ class compassion_child(orm.Model):
             child_prop_obj.write(cr, uid, study_ids, vals, context)
         else:
             child_prop_obj.create(cr, uid, vals, context)
+
+        # Add a note in child
+        self.pool.get('mail.thread').message_post(
+            cr, uid, child.id, "The case study has been updated.",
+            "Case Study update", 'comment',
+            context={'thread_model': self._name})
         return True
 
     def get_url(self, child_code, api_mess):
@@ -443,8 +452,8 @@ class compassion_child(orm.Model):
                                    'in conf file'))
         if url.endswith('/'):
             url = url[:-1]
-        url += ('/ci/v1/children/' + child_code + '/' + api_mess + '?api_key='
-                + api_key)
+        url += ('/ci/v1/children/' + child_code + '/' + api_mess +
+                '?api_key=' + api_key)
         return url
 
     ##################################################
@@ -458,7 +467,7 @@ class compassion_child(orm.Model):
             if child.has_been_sponsored:
                 if child.state == 'F':
                     # Child reinstatement
-                    state = 'E'
+                    state = 'Z'
                 else:
                     # Child is waiting a new sponsor
                     state = 'R'
@@ -499,6 +508,45 @@ class compassion_child(orm.Model):
 
         return json.loads(res)[0]['uid']
 
+    def get_exit_details(self, cr, uid, child_id, context=None):
+        child = self.browse(cr, uid, child_id, context)
+        if not child:
+            raise orm.except_orm('ObjectError', _('No valid child id given !'))
+        url = self.get_url(child.code, 'exitdetails')
+        r = requests.get(url)
+        json_data = r.json()
+        if not r.status_code == 200:
+            self.pool.get('mail.thread').message_post(
+                cr, uid, child_id, json_data['error']['message'],
+                "Error fetching exit details", 'comment',
+                context={'thread_model': self._name})
+            return False
+        child.write({
+            'exit_date': json_data['exitDate'],
+            'last_attended_project': json_data['dateLastAttendedProject'],
+            'presented_gospel': json_data['presentedWithGospel'],
+            'professes_faith': json_data['professesFaithInJesusChrist'],
+            'faith_description': json_data['faithDescription'],
+            'primary_school': json_data['completedPrimarySchool'],
+            'us_grade_completed': json_data['usGradeEquivalentCompleted'],
+            'study_area': json_data['areaOfStudy'],
+            'vocational_training': json_data['receivedVocationalTraining'],
+            'vocational_skills': json_data['vocationalSkillsLearned'],
+            'disease_free': json_data['freeOfPovertyRelatedDisease'],
+            'health_description': json_data['healthDescription'],
+            'social_description': json_data['socialBehaviorDescription'],
+            'exit_description': json_data['exitDescription'],
+            'steps_prevent_description': json_data['stepsToPrevent'
+                                                   'ExitDescription'],
+            'future_plans_description': json_data['futurePlansDescription'],
+            'new_situation_description': json_data['childNewSituation'
+                                                   'Description'],
+            'exit_reason': json_data['exitReason'],
+            'last_letter_sent': json_data['lastChildLetterSent'],
+            })
+
+        return True
+
     def _request_to_typo3(self, cr, uid, request, request_type, context=None):
         filename = request_type+".sql"
 
@@ -513,8 +561,8 @@ class compassion_child(orm.Model):
         file_query.write(request)
         file_query.close()
 
-        if not (host and username and pwd and path and scripts_url
-                and api_key):
+        if not (host and username and pwd and path and
+                scripts_url and api_key):
             raise orm.except_orm('ConfigError',
                                  'Missing typo3 settings '
                                  'in conf file')

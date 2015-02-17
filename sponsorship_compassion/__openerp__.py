@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Sponsorships',
-    'version': '1.3',
+    'version': '1.4',
     'category': 'Other',
     'description': """
 Sponsorship management module. This module makes the link between child and

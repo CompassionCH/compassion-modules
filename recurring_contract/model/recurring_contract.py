@@ -238,25 +238,26 @@ class recurring_contract(orm.Model):
                                                context=context)
         return
 
-    def clean_invoices(self, cr, uid, ids, context=None, since_date=None):
+    def clean_invoices(self, cr, uid, ids, context=None, since_date=None,
+                       to_date=None):
         ''' This method deletes invoices lines generated for a given contract
             having a due date >= current month. If the invoice_line was the
             only line in the invoice, we cancel the invoice. In the other
             case, we have to revalidate the invoice to update the move lines.
         '''
-        if not since_date:
-            since_date = datetime.today().replace(day=1).strftime(DF)
-
+        invl_search = [('contract_id', 'in', ids),
+                       ('state', 'not in', ('paid', 'cancel'))]
+        if since_date:
+            invl_search.append(('due_date', '>', since_date))
+        if to_date:
+            invl_search.append(('due_date', '<=', to_date))
         inv_line_obj = self.pool.get('account.invoice.line')
         inv_obj = self.pool.get('account.invoice')
         wf_service = netsvc.LocalService('workflow')
 
         # Find all unpaid invoice lines after the given date
-        inv_line_ids = inv_line_obj.search(
-            cr, uid, [('contract_id', 'in', ids),
-                      ('due_date', '>=', since_date),
-                      ('state', 'not in', ('paid', 'cancel'))],
-            context=context)
+        inv_line_ids = inv_line_obj.search(cr, uid, invl_search,
+                                           context=context)
 
         inv_ids = set()
         empty_inv_ids = set()

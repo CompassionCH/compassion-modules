@@ -49,8 +49,8 @@ class recurring_contract(orm.Model):
                                      if move_line.credit > 0] or [0])
                 for invoice_line in invoice.invoice_line:
                     contract = invoice_line.contract_id
-                    if contract.id not in res and (contract.state == 'waiting'
-                                                   and last_pay_date):
+                    if contract.id not in res and (
+                            contract.state == 'waiting' and last_pay_date):
                         # Activate the contract and set the
                         # activation_date
                         res.add(contract.id)
@@ -293,8 +293,8 @@ class recurring_contract(orm.Model):
             next_invoice_date = current_date.replace(day=1)
             payment_term = ''
 
-        if current_date.day > 15 or (payment_term in ('LSV', 'Postfinance')
-                                     and not is_active):
+        if current_date.day > 15 or (
+                payment_term in ('LSV', 'Postfinance') and not is_active):
             next_invoice_date = next_invoice_date + relativedelta(months=+1)
         res['value'] = {'next_invoice_date': next_invoice_date.strftime(DF)}
         return res
@@ -392,7 +392,8 @@ class recurring_contract(orm.Model):
             'target': 'current',
         }
 
-    def clean_invoices(self, cr, uid, ids, context=None, since_date=None):
+    def clean_invoices(self, cr, uid, ids, context=None, since_date=None,
+                       to_date=None):
         """ Take into consideration when the sponsor has paid in advance,
         so that we cancel/modify the paid invoices and let the user decide
         what to do with the payment.
@@ -407,13 +408,15 @@ class recurring_contract(orm.Model):
         """
         if not since_date:
             since_date = datetime.today().strftime(DF)
+        invl_search = [('contract_id', 'in', ids), ('state', '=', 'paid'),
+                       ('due_date', '>', since_date)]
+        if to_date:
+            invl_search.append(('due_date', '<=', to_date))
 
         # Find all paid invoice lines after the given date
         inv_line_obj = self.pool.get('account.invoice.line')
-        inv_line_ids = inv_line_obj.search(
-            cr, uid, [('contract_id', 'in', ids),
-                      ('due_date', '>', since_date),
-                      ('state', '=', 'paid')], context=context)
+        inv_line_ids = inv_line_obj.search(cr, uid, invl_search,
+                                           context=context)
 
         # Invoice and move lines that need to be removed/updated
         to_remove_inv = set()
@@ -533,7 +536,7 @@ class recurring_contract(orm.Model):
 
         # 3. Clean open invoices
         super(recurring_contract, self).clean_invoices(
-            cr, uid, ids, context, since_date)
+            cr, uid, ids, context, since_date, to_date)
 
         return True
 
@@ -620,15 +623,13 @@ class recurring_contract(orm.Model):
             cr, uid, ids, context)
         if invoices_canceled:
             invoice_obj = self.pool.get('account.invoice')
-            since_date = datetime.today().replace(day=1).strftime(DF)
             inv_update_ids = set()
             for contract in self.browse(cr, uid, ids, context):
                 # If some invoices are left cancelled, we update them
                 # with new contract information and validate them
                 cancel_ids = invoice_obj.search(cr, uid, [
                     ('state', '=', 'cancel'),
-                    ('id', 'in', list(invoices_canceled)),
-                    ('date_invoice', '>=', since_date)], context=context)
+                    ('id', 'in', list(invoices_canceled))], context=context)
                 if cancel_ids:
                     inv_update_ids.update(cancel_ids)
                     invoice_obj.action_cancel_draft(cr, uid, cancel_ids)
@@ -816,6 +817,50 @@ class recurring_contract(orm.Model):
             self._on_group_id_changed(cr, uid, ids, context)
 
         return res
+
+    def suspend_contract(self, cr, uid, ids, start, months, context=None):
+        """Cancels the number of invoices specified starting
+        from a given date. This is useful to suspend a contract for a given
+        period."""
+        date_end = start + relativedelta(months=months)
+
+        # Cancel invoices in the period of suspension
+        self.clean_invoices(cr, uid, ids, context, start.strftime(DF),
+                            date_end.strftime(DF))
+
+        for contract in self.browse(cr, uid, ids, context):
+            # Advance next invoice date after end of suspension
+            next_inv_date = datetime.strptime(contract.next_invoice_date, DF)
+            month_diff = relativedelta(date_end, next_inv_date).months
+            if month_diff > 0:
+                # If sponsorship is late, don't advance it too much
+                if month_diff > months:
+                    month_diff = months
+                new_date = next_inv_date + relativedelta(months=month_diff)
+                contract.write({'next_invoice_date': new_date.strftime(DF)})
+
+            # Add a note in the contract and in the partner.
+            project_code = contract.child_id.project_id.code
+            self.pool.get('mail.thread').message_post(
+                cr, uid, contract.id,
+                "The project {0} was suspended and funds are retained <b>"
+                "until {1}</b>.<br/>Invoices due in the suspension period "
+                "are automatically cancelled.".format(
+                    project_code, date_end.strftime("%B %Y")),
+                "Project Suspended", 'comment',
+                context={'thread_model': 'recurring.contract'})
+            self.pool.get('mail.thread').message_post(
+                cr, uid, contract.partner_id.id,
+                "The project {0} was suspended and funds are retained "
+                "for child {2} <b>"
+                "until {1}</b>.<br/>Invoices due in the suspension period "
+                "are automatically cancelled.".format(
+                    project_code, date_end.strftime("%B %Y"),
+                    contract.child_id.code),
+                "Project Suspended", 'comment',
+                context={'thread_model': 'res.partner'})
+
+        return True
 
     ##############################
     #      CALLBACKS FOR GP      #

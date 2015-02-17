@@ -170,9 +170,9 @@ class contract_group(orm.Model):
         ref = ''
         if con_gr.bvr_reference:
             ref = con_gr.bvr_reference
-        elif (con_gr.payment_term_id
-              and (_('LSV') in con_gr.payment_term_id.name
-                   or _('Direct Debit') in con_gr.payment_term_id.name)):
+        elif (con_gr.payment_term_id and
+              (_('LSV') in con_gr.payment_term_id.name or
+               _('Direct Debit') in con_gr.payment_term_id.name)):
             seq = self.pool['ir.sequence']
             ref = mod10r(seq.next_by_code(cr, uid, 'contract.bvr.ref'))
         inv_data.update({
