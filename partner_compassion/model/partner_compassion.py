@@ -393,11 +393,11 @@ class ResPartner(orm.Model):
             'state_code': address.state_id and address.state_id.code or '',
             'state_name': address.state_id and address.state_id.name or '',
             'country_code':
-                address.country_id and address.country_id.code or '',
+            address.country_id and address.country_id.code or '',
             'country_name':
-                address.country_id and address.country_id.name or '',
+            address.country_id and address.country_id.name or '',
             'company_name':
-                address.parent_id and address.parent_id.name or '',
+            address.parent_id and address.parent_id.name or '',
         }
 
         for field in self._address_fields(cr, uid, context=context):
