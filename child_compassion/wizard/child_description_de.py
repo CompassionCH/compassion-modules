@@ -8,6 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+from collections import OrderedDict
 
 
 class Child_description_de:
@@ -167,7 +168,7 @@ class Child_description_de:
         else:
             prefix = [u'ihr', u'ihre', u'ihre']
 
-        live_with = dict()
+        live_with = OrderedDict()
         male_guardians = dict()
         female_guardians = dict()
         live_in_institut = False
@@ -193,18 +194,19 @@ class Child_description_de:
                             prefix[1], value)
             else:
                 live_in_institut = True
+
         # Regroup parents and grandparents
         live_with = cls._regroup_parents(cr, uid, live_with, prefix, context)
 
         if case_study.nb_brothers == 1:
-            live_with[guardian.value_en] = u'{} Bruder'.format(prefix[0])
+            live_with['brothers'] = u'{} Bruder'.format(prefix[0])
         elif case_study.nb_brothers > 1:
-            live_with[guardian.value_en] = u'{} {} Brüder'.format(
+            live_with['brothers'] = u'{} {} Brüder'.format(
                 prefix[2], case_study.nb_brothers)
         if case_study.nb_sisters == 1:
-            live_with[guardian.value_en] = u'{} Schwester'.format(prefix[1])
+            live_with['sisters'] = u'{} Schwester'.format(prefix[1])
         elif case_study.nb_sisters > 1:
-            live_with[guardian.value_en] = u'{} {} Schwestern'.format(
+            live_with['sisters'] = u'{} {} Schwestern'.format(
                 prefix[2], case_study.nb_sisters)
 
         if live_in_institut:
@@ -224,13 +226,11 @@ class Child_description_de:
 
     @classmethod
     def _regroup_parents(cls, cr, uid, dict, prefix, context=None):
-        if (u'mother' in dict and
-                u'father' in dict):
+        if (u'mother' in dict and u'father' in dict):
             dict.pop(u'mother')
             dict.pop(u'father')
             dict[u'parents'] = u'{} Eltern'.format(prefix[2])
-        if (u'grandmother' in dict and
-                u'grandfather' in dict):
+        if (u'grandmother' in dict and u'grandfather' in dict):
             dict.pop(u'grandmother')
             dict.pop(u'grandfather')
             dict[u'parents'] = u'{} Großeltern'.format(prefix[2])

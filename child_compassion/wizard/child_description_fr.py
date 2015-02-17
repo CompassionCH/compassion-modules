@@ -8,6 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+from collections import OrderedDict
 
 
 class Child_description_fr:
@@ -161,7 +162,7 @@ class Child_description_fr:
                        'stepfather', 'godfather']
         plur_values = ['friends', 'other relatives', 'foster parents']
         prefix = [u'son', u'sa', u'ses']
-        live_with = dict()
+        live_with = OrderedDict()
         male_guardians = dict()
         female_guardians = dict()
         live_in_institut = False
