@@ -8,6 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+from collections import OrderedDict
 
 
 class Child_description_it:
@@ -186,7 +187,7 @@ class Child_description_it:
             prefix = [u'suo', u'suo', u'suoi']
         else:
             prefix = [u'sua', u'sua', u'sue']
-        live_with = dict()
+        live_with = OrderedDict()
         male_guardians = dict()
         female_guardians = dict()
         live_in_institut = False

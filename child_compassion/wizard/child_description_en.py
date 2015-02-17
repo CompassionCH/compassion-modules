@@ -8,6 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+from collections import OrderedDict
 
 
 class Child_description_en:
@@ -180,7 +181,7 @@ class Child_description_en:
         else:
             prefix = [u'her', u'her', u'her']
 
-        live_with = dict()
+        live_with = OrderedDict()
         male_guardians = dict()
         female_guardians = dict()
         live_in_institut = False
@@ -211,16 +212,16 @@ class Child_description_en:
         live_with = cls._regroup_parents(cr, uid, live_with, prefix, context)
 
         if case_study.nb_brothers == 1:
-            live_with[guardian.value_en] = u'{} brother'.format(
+            live_with['brothers'] = u'{} brother'.format(
                 prefix[0])
         elif case_study.nb_brothers > 1:
-            live_with[guardian.value_en] = u'{} {} brother'.format(
+            live_with['brothers'] = u'{} {} brother'.format(
                 prefix[2], case_study.nb_brothers)
         if case_study.nb_sisters == 1:
-            live_with[guardian.value_en] = u'{} sister'.format(
+            live_with['sisters'] = u'{} sister'.format(
                 prefix[1])
         elif case_study.nb_sisters > 1:
-            live_with[guardian.value_en] = u'{} {} sister'.format(
+            live_with['sisters'] = u'{} {} sister'.format(
                 prefix[2], case_study.nb_sisters)
 
         if live_in_institut:
