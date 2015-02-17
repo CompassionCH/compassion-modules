@@ -35,8 +35,9 @@ class res_partner(orm.Model):
                 cr, uid, [('partner_id', '=', partner.id),
                           ('state', 'not in', ('terminated', 'cancelled'))],
                 context=context)
-            if contract_ids and (vals.get('firstname') or vals.get('lastname')
-                                 or vals.get('name')):
+            if contract_ids and (
+                    vals.get('firstname') or vals.get('lastname') or
+                    vals.get('name')):
                 # UpsertConstituent Message
                 action_id = self.pool.get('gmc.action').search(
                     cr, uid, [('name', '=', 'UpsertConstituent')],

@@ -32,8 +32,8 @@ class contract_group(orm.Model):
         for group in self.browse(cr, uid, ids, context):
             res[group.id] = min([c.next_invoice_date
                                  for c in group.contract_ids
-                                 if c.state in self._get_gen_states()]
-                                or [False])
+                                 if c.state in self._get_gen_states()] or
+                                [False])
         return res
 
     def _get_groups_from_contract(self, cr, uid, ids, context=None):
@@ -137,8 +137,8 @@ class contract_group(orm.Model):
                                                         DF) <= limit_date:
                     contr_ids = [c.id
                                  for c in contract_group.contract_ids
-                                 if c.next_invoice_date <= group_inv_date
-                                 and c.state in self._get_gen_states()]
+                                 if c.next_invoice_date <= group_inv_date and
+                                 c.state in self._get_gen_states()]
 
                 if not contr_ids:
                     break
@@ -173,12 +173,12 @@ class contract_group(orm.Model):
             'type': 'out_invoice',
             'partner_id': partner.id,
             'journal_id': len(journal_ids) and journal_ids[0] or False,
-            'currency_id': partner.property_product_pricelist.currency_id.id
-            or False,
+            'currency_id':
+            partner.property_product_pricelist.currency_id.id or False,
             'date_invoice': con_gr.next_invoice_date,
             'recurring_invoicer_id': invoicer_id,
-            'payment_term': con_gr.payment_term_id
-            and con_gr.payment_term_id.id or False,
+            'payment_term': con_gr.payment_term_id and
+            con_gr.payment_term_id.id or False,
         }
 
         return inv_data

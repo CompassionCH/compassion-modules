@@ -137,8 +137,8 @@ class GPConnect(mysql_connector):
             'SITUATION': self._get_project_state(project),
             'PAYS': project.code[:2],
             'LIEU_EN': project.community_name + ', ' +
-            project.country_id.name if project.community_name
-            and project.country_id.name else '',
+            project.country_id.name if project.community_name and
+            project.country_id.name else '',
             'date_situation': project.status_date,
             'ProgramImplementorTypeCode': project.type,
             'StartDate': project.start_date,
