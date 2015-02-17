@@ -17,8 +17,6 @@ class Child_description_it:
             cls, cr, uid, child, case_study, context=None):
         desc_it = cls._get_guardians_info_it(
             cr, uid, child, case_study, context)
-        desc_it += cls._get_parents_info(
-            cr, uid, child, case_study, context)
         desc_it += u'\r\n\r\n'
         desc_it += cls._get_school_info_it(
             cr, uid, child, case_study, context)
@@ -196,7 +194,7 @@ class Child_description_it:
         # Separate male_guardian female_guardians and add guardians to
         # live_with
         for guardian in case_study.guardians_ids:
-            value = guardian.value_fr or guardian.value_en
+            value = guardian.value_it or guardian.value_en
 
             if guardian.value_en != 'institutional worker':
                 # Male guardian
@@ -246,6 +244,8 @@ class Child_description_it:
             string = '%s vive con %s. ' % (
                 child.firstname, cls._gen_list_string(live_with.values()))
 
+        string += cls._get_parents_info(
+            cr, uid, child, case_study, context)
         # Generate guardians job
         string += cls._get_guardians_jobs_it(
             cr, uid, child, case_study,

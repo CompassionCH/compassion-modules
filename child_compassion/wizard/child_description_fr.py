@@ -17,8 +17,6 @@ class Child_description_fr:
             cls, cr, uid, child, case_study, context=None):
         desc_fr = cls._get_guardians_info_fr(
             cr, uid, child, case_study, context)
-        desc_fr += cls._get_parents_info(
-            cr, uid, child, case_study, context)
         desc_fr += u'\r\n\r\n'
         desc_fr += cls._get_school_info_fr(
             cr, uid, child, case_study, context)
@@ -221,6 +219,8 @@ class Child_description_fr:
             string = '%s vit avec %s. ' % (
                 child.firstname, cls._gen_list_string(live_with.values()))
 
+        string += cls._get_parents_info(
+            cr, uid, child, case_study, context)
         # Generate guardians job
         string += cls._get_guardians_jobs_fr(
             cr, uid, child, case_study,
