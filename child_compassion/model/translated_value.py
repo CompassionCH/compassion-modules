@@ -12,7 +12,6 @@
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
-import pdb
 
 class translated_value(orm.Model):
     _name = 'compassion.translated.value'
