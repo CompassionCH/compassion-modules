@@ -319,8 +319,8 @@ class compassion_child(orm.Model):
         if not r.status_code/100 == 2:
             raise orm.except_orm('NetworkError',
                                  _('An error occured while fetching the last '
-                                   'case study for child %s. ') % child.code
-                                 + json_data['error']['message'])
+                                   'case study for child %s. ') % child.code +
+                                 json_data['error']['message'])
 
         child_prop_obj = self.pool.get('compassion.child.property')
         info_date = json_data['childCaseStudyDate']
@@ -452,8 +452,8 @@ class compassion_child(orm.Model):
                                    'in conf file'))
         if url.endswith('/'):
             url = url[:-1]
-        url += ('/ci/v1/children/' + child_code + '/' + api_mess + '?api_key='
-                + api_key)
+        url += ('/ci/v1/children/' + child_code + '/' + api_mess +
+                '?api_key=' + api_key)
         return url
 
     ##################################################
@@ -561,8 +561,8 @@ class compassion_child(orm.Model):
         file_query.write(request)
         file_query.close()
 
-        if not (host and username and pwd and path and scripts_url
-                and api_key):
+        if not (host and username and pwd and path and
+                scripts_url and api_key):
             raise orm.except_orm('ConfigError',
                                  'Missing typo3 settings '
                                  'in conf file')

@@ -393,8 +393,8 @@ class compassion_project(orm.Model):
         if url.endswith('/'):
             url = url[:-1]
 
-        url += ('/ci/v1/' + api_mess + '/' + project_code + '?api_key='
-                + api_key)
+        url += ('/ci/v1/' + api_mess + '/' + project_code + '?api_key=' +
+                api_key)
 
         # Send the request and retrieve the result.
         r = requests.get(url)

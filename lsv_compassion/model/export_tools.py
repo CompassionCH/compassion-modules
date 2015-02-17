@@ -71,11 +71,11 @@ class export_tools():
         invoice = invoice_obj.browse(cr, uid, ids[0], context)
         products = [(l.product_id.product_tmpl_id.name, l.quantity,
                      l.child_name) for l in invoice.invoice_line
-                    if l.product_id.name_template
-                    and (l.child_name and
-                         'sponsorship' in l.product_id.name_template.lower()
-                         or 'gift' in l.product_id.name_template.lower())
-                    or not l.child_name]
+                    if l.product_id.name_template and
+                    (l.child_name and
+                     'sponsorship' in l.product_id.name_template.lower() or
+                     'gift' in l.product_id.name_template.lower()) or not
+                    l.child_name]
         if not products:
             context['lang'] = lang_backup
             return ''

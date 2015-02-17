@@ -49,8 +49,8 @@ class recurring_contract(orm.Model):
                                      if move_line.credit > 0] or [0])
                 for invoice_line in invoice.invoice_line:
                     contract = invoice_line.contract_id
-                    if contract.id not in res and (contract.state == 'waiting'
-                                                   and last_pay_date):
+                    if contract.id not in res and (
+                            contract.state == 'waiting' and last_pay_date):
                         # Activate the contract and set the
                         # activation_date
                         res.add(contract.id)
@@ -293,8 +293,8 @@ class recurring_contract(orm.Model):
             next_invoice_date = current_date.replace(day=1)
             payment_term = ''
 
-        if current_date.day > 15 or (payment_term in ('LSV', 'Postfinance')
-                                     and not is_active):
+        if current_date.day > 15 or (
+                payment_term in ('LSV', 'Postfinance') and not is_active):
             next_invoice_date = next_invoice_date + relativedelta(months=+1)
         res['value'] = {'next_invoice_date': next_invoice_date.strftime(DF)}
         return res
