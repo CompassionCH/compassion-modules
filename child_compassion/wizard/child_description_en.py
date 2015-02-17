@@ -17,8 +17,6 @@ class Child_description_en:
             cls, cr, uid, child, case_study, context=None):
         desc_en = cls._get_guardians_info_en(
             cr, uid, child, case_study, context)
-        desc_en += cls._get_parents_info(
-            cr, uid, child, case_study, context)
         desc_en += u'\r\n\r\n'
         desc_en += cls._get_school_info_en(
             cr, uid, child, case_study, context)
@@ -232,6 +230,8 @@ class Child_description_en:
             string = '%s lives with %s. ' % (
                 child.firstname, cls._gen_list_string(live_with.values()))
 
+        string += cls._get_parents_info(
+            cr, uid, child, case_study, context)
         string += cls._get_guardians_jobs_en(
             cr, uid, child, case_study,
             male_guardians.items()[0] if male_guardians else False,
