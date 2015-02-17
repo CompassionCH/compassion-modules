@@ -46,10 +46,11 @@
         'python': ['requests'],
     },
     'data': [
+        'security/gmc_groups.xml',
+        'security/ir.model.access.csv',
         'view/gmc_message_view.xml',
         'view/contracts_view.xml',
         'data/gmc_action.xml',
-        'security/ir.model.access.csv',
     ],
     'demo': [],
     'installable': True,

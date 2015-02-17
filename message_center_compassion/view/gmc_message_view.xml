@@ -242,7 +242,7 @@
         
         
         <!-- Menu Items -->
-        <menuitem id="menu_message_center" parent="child_compassion.menu_sponsorship_root" name="Message Center" sequence="15" />
+        <menuitem id="menu_message_center" parent="child_compassion.menu_sponsorship_root" name="Message Center" groups="group_gmc" sequence="15" />
         <menuitem id="menu_message_incoming" parent="menu_message_center" action="action_gmc_message_incoming_form" sequence="1" />
         <menuitem id="menu_message_outgoing" name="Outgoing Messages" parent="menu_message_center" sequence="2"/>
         <menuitem id="menu_message_constituent" parent="menu_message_outgoing" action="action_gmc_message_constituent_form" sequence="5"/>
