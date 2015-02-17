@@ -27,7 +27,7 @@ class compassion_project(orm.Model):
         res = dict()
 
         for project in self.browse(cr, uid, ids, context):
-            res[project.id] = 'none'
+            res[project.id] = False
             if project.status == 'A' and not (
                project.disburse_gifts and project.disburse_funds and
                project.disburse_unsponsored_funds and
@@ -60,7 +60,6 @@ class compassion_project(orm.Model):
         'last_update_date': fields.date(_('Last update')),
         'suspension': fields.function(
             _get_suspension_state, type='selection', selection=[
-                ('none', _('Not Suspended')),
                 ('suspended', _('Suspended')),
                 ('fund-suspended', _('Suspended & fund retained'))],
             string=_('Suspension'),

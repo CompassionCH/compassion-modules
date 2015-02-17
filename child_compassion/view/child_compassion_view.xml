@@ -39,7 +39,6 @@
                                         <field name="gender" />
                                         <field name="birthdate" />
                                         <field name="sponsor_id" />
-                                        <field name="start_date" />
                                     </group>
                                     <group>
                                         <field name="unique_id" />
@@ -48,7 +47,7 @@
                                         <field name="completion_date" />
                                         <field name="exit_date" />
                                     </group>
-                                    <group>
+                                    <group attrs="{'invisible': [('delegated_to', '=', False)]}">
                                         <field name="delegated_to" />
                                         <field name="date_delegation"/>
                                         <field name="delegated_comment" />

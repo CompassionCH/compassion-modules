@@ -161,7 +161,6 @@ class compassion_child(orm.Model):
                     _get_child_from_case_study,
                     ['desc_en', 'desc_fr', 'desc_de', 'desc_it'],
                     10)}),
-        'start_date': fields.date(_("Start date")),
         'case_study_ids': fields.one2many(
             'compassion.child.property', 'child_id', string=_('Case studies'),
             readonly=True, track_visibility="onchange"),

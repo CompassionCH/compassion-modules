@@ -25,7 +25,7 @@
                             <group>
                                 <field name="code" />
                                 <field name="type" />
-                                <field name="suspension" attrs="{'invisible': [('suspension','not in',('suspended','fund-suspended'))]}" />
+                                <field name="suspension" />
                                 <field name="status_date" />
                                 <field name="status_comment" />
                             </group>
@@ -47,7 +47,7 @@
                                         <field name="western_denomination" />
                                         <field name="community_name" />
                                     </group>
-                                    <group string="Suspension Status">
+                                    <group string="Suspension Status" attrs="{'invisible': [('suspension', 'not in', ('suspended', 'fund-suspended'))]}">
                                         <field name="disburse_funds"/>
                                         <field name="disburse_gifts"/>
                                         <field name="disburse_unsponsored_funds"/>
@@ -114,6 +114,8 @@
                 <tree string="project">
                     <field name="name" />
                     <field name="code" />
+                    <field name="last_update_date" />
+                    <field name="suspension" />
                 </tree>
             </field>
         </record>
