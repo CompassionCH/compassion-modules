@@ -140,6 +140,9 @@ class compassion_child(orm.Model):
         elif event == 'CaseStudy':
             res = self._get_case_study(cr, uid, child, context)
         elif event == 'NewImage':
+            if not child.case_study_ids:
+                # Get a case study for the update picture to be successful
+                self._get_case_study(cr, uid, child, context)
             res = self._get_last_pictures(cr, uid, child.id, context)
 
         if not res:

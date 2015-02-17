@@ -62,7 +62,7 @@ class child_pictures(orm.Model):
             child = self.pool.get('compassion.child').browse(
                 cr, uid, vals['child_id'], context)
             # In GP, pictures are linked to Case Study
-            date_cs = child.case_study_ids[-1].info_date.replace('-', '')
+            date_cs = child.case_study_ids[0].info_date.replace('-', '')
             gp_pic_path = "{}{}/".format(config.get('gp_pictures'),
                                          child.code[:2])
             file_name = "{}_{}.jpg".format(child.code, date_cs)
