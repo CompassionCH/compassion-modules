@@ -397,11 +397,13 @@ class compassion_child(orm.Model):
                     continue
                 if value:
                     if isinstance(value, bool):
+                        context['default_is_tag'] = True
                         value = (key.replace(prop_names[2], '').replace(
                             prop_names[3], ''))
 
                 values.append(value_obj.get_value_ids(cr, uid, value,
                               property_name, context))
+                context['default_is_tag'] = False
         # Other sections
         values.append(value_obj.get_value_ids(
             cr, uid, json_data['naturalParents']['maritalStatusOfParents'],

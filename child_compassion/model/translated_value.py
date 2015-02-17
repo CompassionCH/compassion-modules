@@ -12,6 +12,7 @@
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
+import pdb
 
 class translated_value(orm.Model):
     _name = 'compassion.translated.value'
@@ -70,9 +71,6 @@ class translated_value(orm.Model):
             'value_en': value}
         if not value:
             return False
-
-        if isinstance(value, bool):
-            property_vals['is_tag'] = True
 
         val_ids = self.search(cr, uid, [('value_en', '=like', value),
                                         ('property_name', '=', property_name)],
