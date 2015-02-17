@@ -25,7 +25,9 @@ class hr_contract(orm.Model):
     def write(self, cr, uid, ids, vals, context=None):
         res = super(hr_contract, self).write(
             cr, uid, ids, vals, context=context)
-        if('working_hours' in vals):
+        if('working_hours' in vals or
+           'date_start' in vals or
+           'date_end' in vals):
             self._generate(cr, uid, ids, context)
         return res
 
