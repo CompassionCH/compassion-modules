@@ -103,6 +103,7 @@ class test_messages(common.TransactionCase):
             'channel': 'direct',
             'num_pol_ga': randint(700, 999),
             'child_id': child_id,
+            'next_invoice_date': self.today,
             'activation_date': self.today,
         }
         con_obj = self.registry('recurring.contract')
