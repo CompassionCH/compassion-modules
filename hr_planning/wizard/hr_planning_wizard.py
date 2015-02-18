@@ -103,18 +103,20 @@ class hr_planning_wizard(orm.TransientModel):
                                 holiday_stop = datetime.strptime(
                                     holiday.date_to, DTF)
 
-                                if holiday_start.date() == d.date():
+                                if (holiday_start.date() == d.date() and
+                                   start_date < holiday_start):
                                     planning_day_obj.create(cr, uid, {
                                         'employee_id': employee.id,
                                         'contract_id': contract.id,
                                         'start_date': start_date,
                                         'end_date': holiday_start})
-                                elif holiday_stop.date() == d.date():
-                                    planning_day_obj.create(cr, uid, {
-                                        'employee_id': employee.id,
-                                        'contract_id': contract.id,
-                                        'start_date': holiday_stop,
-                                        'end_date': stop_date})
+                                elif (holiday_stop.date() == d.date() and
+                                        stop_date > holiday_stop):
+                                            planning_day_obj.create(cr, uid, {
+                                                'employee_id': employee.id,
+                                                'contract_id': contract.id,
+                                                'start_date': holiday_stop,
+                                                'end_date': stop_date})
                         d += delta
 
     def _get_time_zone(self, cr, uid, context=None):
