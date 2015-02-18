@@ -154,8 +154,8 @@ class compassion_child(orm.Model):
             # Maps the event to the gmc state value of contract
             gmc_states = {
                 'Transfer': 'transfer',
-                'CaseStudy': 'biennial',
-                'NewImage': 'biennial',
+                'CaseStudy': 'casestudy',
+                'NewImage': 'picture',
             }
             for contract in child.contract_ids:
                 if contract.state in ('waiting', 'active', 'mandate'):
