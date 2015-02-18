@@ -67,10 +67,14 @@ class GPConnect(mysql_connector):
         id_fichier = False
         vals = {
             'DATE_PHOTO': case_study.info_date,
-            'COMMENTAIRE_FR': case_study.desc_fr or '',
-            'COMMENTAIRE_DE': case_study.desc_de or '',
-            'COMMENTAIRE_ITA': case_study.desc_it or '',
-            'COMMENTAIRE_EN': case_study.desc_en or '',
+            'COMMENTAIRE_FR': case_study.desc_fr or
+            case_study.child_id.desc_fr or '',
+            'COMMENTAIRE_DE': case_study.desc_de or
+            case_study.child_id.desc_de or '',
+            'COMMENTAIRE_ITA': case_study.desc_it or
+            case_study.child_id.desc_it or '',
+            'COMMENTAIRE_EN': case_study.desc_en or
+            case_study.child_id.desc_en or '',
             'IDUSER': self._get_gp_uid(uid),
             'CODE': case_study.code,
             'DATE_INFO': case_study.info_date,
