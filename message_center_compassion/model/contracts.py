@@ -24,7 +24,8 @@ class recurring_contract(orm.Model):
     _columns = {
         # Field to identify contracts modified by gmc.
         'gmc_state': fields.selection([
-            ('biennial', _('Biennial')),
+            ('picture', _('New Picture')),
+            ('casestudy', _('New Case Study')),
             ('depart', _('Child Departed')),
             ('transfer', _('Child Transfer')),
             ('suspension', _('Project Suspended'))], _('GMC State'))

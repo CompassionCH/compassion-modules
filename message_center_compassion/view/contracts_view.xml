@@ -15,7 +15,7 @@
                 <data>
                     <filter name="cancelled" position="after">
                         <separator/>
-                        <filter name="biennial" string="Biennial" domain="[('gmc_state', '=', 'biennial')]"/>
+                        <filter name="biennial" string="Biennial" domain="[('gmc_state', 'in', ('picture', 'casestudy'))]" context="{'group_by': 'gmc_state'}"/>
                         <filter name="depart" string="Departure" domain="[('gmc_state', '=', 'depart')]"/>
                         <filter name="transfer" string="Child Transfer" domain="[('gmc_state', '=', 'transfer')]"/>
                         <filter name="suspension" string="Project Suspended" domain="[('gmc_state', '=', 'suspension')]"/>

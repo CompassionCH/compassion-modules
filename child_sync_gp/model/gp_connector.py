@@ -150,7 +150,6 @@ class GPConnect(mysql_connector):
         }
         return self.upsert("Projet", vals)
 
-
     def _get_project_state(self, project):
         """ Returns the state of a project in GP format. """
         gp_state = 'Actif'
