@@ -65,12 +65,8 @@ class GPConnect(mysql_connector):
     def upsert_case_study(self, uid, case_study):
         """Push or update latest Case Study in GP."""
         id_fichier = False
-        if case_study.child_id.pictures_ids:
-            date_photo = case_study.child_id.pictures_ids[-1].date
-        else:
-            date_photo = '0000-00-00'
         vals = {
-            'DATE_PHOTO': date_photo,
+            'DATE_PHOTO': case_study.info_date,
             'COMMENTAIRE_FR': case_study.desc_fr or '',
             'COMMENTAIRE_DE': case_study.desc_de or '',
             'COMMENTAIRE_ITA': case_study.desc_it or '',
@@ -149,6 +145,7 @@ class GPConnect(mysql_connector):
             'CommunityName': project.community_name
         }
         return self.upsert("Projet", vals)
+
 
     def _get_project_state(self, project):
         """ Returns the state of a project in GP format. """

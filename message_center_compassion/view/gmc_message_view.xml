@@ -129,6 +129,9 @@
             <field name="model">gmc.message.pool</field>
             <field name="arch" type="xml">
                 <search string="Search Partner">
+                    <field name="action_id"/>
+                    <field name="date"/>
+                    <field name="process_date"/>
                     <filter string="Incoming" name="incoming" domain="[('direction','=','in')]" context="{'group_by':'action_id'}" />
                     <filter string="Constituent" name="constituent" domain="['|',('name','like','Constituent'),('name','like','Email')]" />
                     <filter string="Child" name="child" domain="['|',('name','like','Child'),('name','like','Project')]" />
@@ -137,8 +140,11 @@
                     <separator />
                     <filter string="Pending" name="pending" domain="['|', ('state','=','pending'), ('state','=','new')]" />
                     <filter string="Failed" name="failure" domain="[('state','=','failure')]" />
+                    <filter string="Success" name="failure" domain="[('state','=','success')]" />
                     <group expand="0" string="Group By...">
                         <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Date" domain="[]" context="{'group_by':'date'}"/>
+                        <filter string="Process Date" domain="[]" context="{'group_by':'process_date'}"/>
                     </group>
                 </search>
             </field>
