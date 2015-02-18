@@ -19,11 +19,6 @@
                         <field name="employee_id">
                             <field name="name"/>
                         </field>
-                        <field name="contract_id">
-                            <field name="working_hours">
-                                <field name="name"/>
-                            </field>
-                        </field>
                 </calendar>
             </field>
         </record>

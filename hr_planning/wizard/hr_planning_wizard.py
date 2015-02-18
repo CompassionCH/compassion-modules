@@ -11,10 +11,12 @@
 
 from openerp.osv import orm
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
 from openerp import SUPERUSER_ID
 import pytz
 from datetime import datetime, timedelta
 
+import pdb
 
 class hr_planning_wizard(orm.TransientModel):
     _name = 'hr.planning.wizard'
@@ -87,14 +89,30 @@ class hr_planning_wizard(orm.TransientModel):
                                 ('state', '=', 'validate')],
                                 context=context)
 
-                            if(len(holidays) == 0):
+                            if not holidays:
                                 # Create a planning day
                                 planning_day_obj.create(cr, uid, {
                                     'employee_id': employee.id,
                                     'contract_id': contract.id,
                                     'start_date': start_date,
                                     'end_date': stop_date})
+                            elif len(holidays) == 1:
+                                holiday = holiday_obj.browse(cr, uid, holidays, context)[0]
+                                holiday_start = datetime.strptime(holiday.date_from, DTF)
+                                holiday_stop = datetime.strptime(holiday.date_to, DTF)
 
+                                if holiday_start.date() == d.date():
+                                    planning_day_obj.create(cr, uid, {
+                                    'employee_id': employee.id,
+                                    'contract_id': contract.id,
+                                    'start_date': start_date,
+                                    'end_date': holiday_start})
+                                elif holiday_stop.date() == d.date():
+                                    planning_day_obj.create(cr, uid, {
+                                    'employee_id': employee.id,
+                                    'contract_id': contract.id,
+                                    'start_date': holiday_stop,
+                                    'end_date': stop_date})
                         d += delta
 
     def _get_time_zone(self, cr, uid, context=None):
