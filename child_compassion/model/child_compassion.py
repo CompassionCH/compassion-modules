@@ -679,7 +679,7 @@ class compassion_child(orm.Model):
         return True
 
     def _typo3_scripts_fetch(self, url, api_key, action, args=None):
-        full_url = url + "?api_key=" + api_key + "&action=" + action
+        full_url = url + "?apikey=" + api_key + "&action=" + action
         if args:
             for k, v in args.items():
                 full_url += "&" + k + "=" + v
