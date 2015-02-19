@@ -140,8 +140,6 @@ class compassion_child(orm.Model):
         elif event == 'CaseStudy':
             res = self._get_case_study(cr, uid, child, context)
         elif event == 'NewImage':
-            # Get the last case study for attaching it in GP
-            self._get_case_study(cr, uid, child, context)
             res = self._get_last_pictures(cr, uid, child.id, context)
 
         if not res:

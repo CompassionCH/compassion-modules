@@ -10,11 +10,13 @@
 ##############################################################################
 
 from openerp.osv import orm
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.config import config
 
 from smb.SMBConnection import SMBConnection
 from smb.smb_structs import OperationFailure
 from tempfile import TemporaryFile
+from datetime import datetime
 
 from . import gp_connector
 import base64
@@ -62,6 +64,9 @@ class child_pictures(orm.Model):
             child = self.pool.get('compassion.child').browse(
                 cr, uid, vals['child_id'], context)
             # In GP, pictures are linked to Case Study
+            if not child.case_study_ids:
+                self.pool.get('compassion.child')._get_case_study(
+                    cr, uid, child, context)
             date_cs = child.case_study_ids[0].info_date.replace('-', '')
             gp_pic_path = "{}{}/".format(config.get('gp_pictures'),
                                          child.code[:2])
