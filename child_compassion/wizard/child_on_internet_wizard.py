@@ -46,9 +46,9 @@ class child_on_internet_wizard(orm.TransientModel):
 
     def put_child_on_internet(self, cr, uid, ids, context=None):
         child_ids = self._default_child_ids(cr, uid, context)
+        child_obj = self.pool.get('compassion.child')
 
-        for child in self.pool.get('compassion.child').browse(
-                cr, uid, child_ids, context):
+        for child in child_obj.browse(cr, uid, child_ids, context):
             # Check for descriptions
             if(not(child.desc_de) or not(child.desc_fr)):
                 raise orm.except_orm(
@@ -58,6 +58,7 @@ class child_on_internet_wizard(orm.TransientModel):
             if not(child.portrait and child.fullshot):
                 self.pool.get('compassion.child.pictures').create(
                     cr, uid, {'child_id': child.id}, context)
+                child = child_obj.browse(cr, uid, child.id, context)
                 if not(child.portrait and child.fullshot):
                     raise orm.except_orm(
                         _('Warning'), _('Child has no picture'))
