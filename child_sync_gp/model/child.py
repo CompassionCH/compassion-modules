@@ -61,12 +61,12 @@ class child_pictures(orm.Model):
             smb_user = config.get('smb_user')
             smb_pass = config.get('smb_pwd')
             smb_ip = config.get('smb_ip')
-            child = self.pool.get('compassion.child').browse(
-                cr, uid, vals['child_id'], context)
+            child_obj = self.pool.get('compassion.child')
+            child = child_obj.browse(cr, uid, vals['child_id'], context)
             # In GP, pictures are linked to Case Study
             if not child.case_study_ids:
-                self.pool.get('compassion.child')._get_case_study(
-                    cr, uid, child, context)
+                child_obj._get_case_study(cr, uid, child, context)
+                child = child_obj.browse(cr, uid, child.id, context)
             date_cs = child.case_study_ids[0].info_date.replace('-', '')
             gp_pic_path = "{}{}/".format(config.get('gp_pictures'),
                                          child.code[:2])

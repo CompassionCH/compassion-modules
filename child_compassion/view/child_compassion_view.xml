@@ -16,7 +16,7 @@
                 <form string="Child" version="7.0">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="N,P,F" />
-                        <button name="%(action_child_depart)d" class="oe_highlight" string="Depart" type="action" states="N,R,D,I"/>
+                        <button name="%(action_child_depart)d" class="oe_highlight" string="Depart" type="action" invisible="1"/>
                     </header>
                     <sheet>
                         <field name="portrait" widget='image' class="oe_left oe_avatar" options='{"size": [90, 90]}' />
