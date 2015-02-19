@@ -34,7 +34,7 @@
             name="Launch planning generation" 
             action="action_planning_days_automatic_generation" 
             id="hr_menu_planning_generation" 
-            parent="hr.menu_hr_main" 
+            parent="menu_planning" 
             groups="base.group_hr_manager"
             sequence="10" /> 
     </data>

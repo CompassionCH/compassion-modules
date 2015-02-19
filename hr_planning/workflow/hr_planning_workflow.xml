@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<openerp>
+<data>
+    <!-- Workflow header -->
+    <record model="workflow" id="wkf_hr_planning_day_move_request">
+		<field name="name">hr.planning.day.move.request.wkf</field>
+		<field name="osv">hr.planning.day.move.request</field>
+		<field name="on_create" eval='True'/>
+	</record>
+    
+    <record model="workflow.activity" id="act_to_be_approved">
+        <field name="wkf_id" ref="wkf_hr_planning_day_move_request"/>
+        <field name="flow_start" eval='True'/>
+        <field name="name">To be approved</field>
+        <field name="kind">dummy</field>
+    </record>
+    
+    <record model="workflow.activity" id="act_approved">
+		<field name="wkf_id" ref="wkf_hr_planning_day_move_request"/>      
+        <field name="flow_stop" eval='True'/>
+        <field name="kind">dummy</field>
+	</record>
+    
+    <record id="trans_draft_to_be_approuved" model="workflow.transition">
+        <field name="act_from" ref="act_to_be_approved"/>
+        <field name="act_to" ref="act_approved"/>
+    </record>
+</data>
+</openerp>
