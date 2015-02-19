@@ -44,7 +44,7 @@ class res_partner(orm.Model):
             if partner.firstname != new_firstname or \
                     partner.lastname != new_lastname:
                 to_update_ids.append(partner.id)
-        self._upsert_constituent(cr, uid, ids, context)
+        self._upsert_constituent(cr, uid, to_update_ids, context)
         return super(res_partner, self).write(cr, uid, ids, vals, context)
 
     def _upsert_constituent(self, cr, uid, ids, context=None):
