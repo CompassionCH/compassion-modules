@@ -29,15 +29,32 @@ class res_partner(orm.Model):
     }
 
     def write(self, cr, uid, ids, vals, context=None):
+        if vals.get('firstname') or vals.get('lastname') or \
+                vals.get('name'):
+            self._upsert_constituent(cr, uid, ids, context)
+        return super(res_partner, self).write(cr, uid, ids, vals, context)
+
+    def write_from_gp(self, cr, uid, ids, vals, context=None):
+        """ GP always send firstname and lastname. We check if they changed.
+        """
+        to_update_ids = list()
+        for partner in self.browse(cr, uid, ids, context):
+            new_firstname = vals.get('fisrtname', partner.firstname)
+            new_lastname = vals.get('lastname', partner.lastname)
+            if partner.firstname != new_firstname or \
+                    partner.lastname != new_lastname:
+                to_update_ids.append(partner.id)
+        self._upsert_constituent(cr, uid, ids, context)
+        return super(res_partner, self).write(cr, uid, ids, vals, context)
+
+    def _upsert_constituent(self, cr, uid, ids, context=None):
         """If partner has active contracts, UPSERT Constituent in GMC."""
         for partner in self.browse(cr, uid, ids, context):
             contract_ids = self.pool.get('recurring.contract').search(
                 cr, uid, [('partner_id', '=', partner.id),
                           ('state', 'not in', ('terminated', 'cancelled'))],
                 context=context)
-            if contract_ids and (
-                    vals.get('firstname') or vals.get('lastname') or
-                    vals.get('name')):
+            if contract_ids:
                 # UpsertConstituent Message
                 action_id = self.pool.get('gmc.action').search(
                     cr, uid, [('name', '=', 'UpsertConstituent')],
@@ -50,4 +67,3 @@ class res_partner(orm.Model):
                 }
                 self.pool.get('gmc.message.pool').create(
                     cr, uid, message_vals, context=context)
-        return super(res_partner, self).write(cr, uid, ids, vals, context)
