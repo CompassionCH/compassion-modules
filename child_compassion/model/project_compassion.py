@@ -35,12 +35,21 @@ class compassion_project(orm.Model):
                project.additional_quota_allowed):
                 res[project.id] = 'suspended' if project.disburse_funds \
                     else 'fund-suspended'
-                if (res[project.id] == 'fund-suspended'):
-                    self.suspend_project(cr, uid, project.id,
-                                         datetime.today(), context)
+                # Remove children from internet
+                child_obj = self.pool.get('compassion.child')
+                child_ids = child_obj.search(cr, uid, [
+                    ('code', 'like', project.code),
+                    ('state', '=', 'I')], context=context)
+                if child_ids:
+                    child_obj.child_remove_from_typo3(cr, uid, child_ids,
+                                                      context)
+                if res[project.id] == 'fund-suspended' and \
+                        project.suspension != 'fund-suspended':
+                    self.suspend_funds(cr, uid, project.id,
+                                       datetime.today(), context)
         return res
 
-    def suspend_project(self, cr, uid, project_id, start, context=None):
+    def suspend_funds(self, cr, uid, project_id, start, context=None):
         """ Hook to perform some action when project is suspended.
         """
         pass
@@ -108,7 +117,8 @@ class compassion_project(orm.Model):
         'hiv_category': fields.selection([
             ('AFFCTD', _('Affected')),
             ('NOTAFF', _('Not affected'))],
-            _('HIV/Aids category for project area')),
+            _('HIV/Aids category for project area'),
+            track_visibility='onchange'),
         'month_school_year_begins': fields.selection([
             ('1', _('January')), ('2', _('February')), ('3', _('March')),
             ('4', _('April')), ('5', _('May')), ('6', _('June')),
@@ -128,42 +138,53 @@ class compassion_project(orm.Model):
         'floor_material_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
             'project_id', 'value_id', _('Floor material'),
-            domain=[('property_name', '=', 'floor_material')]),
+            domain=[('property_name', '=', 'floor_material')],
+            track_visibility='onchange'),
         'wall_material_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
             'project_id', 'value_id', _('Wall material'),
-            domain=[('property_name', '=', 'wall_material')]),
+            domain=[('property_name', '=', 'wall_material')],
+            track_visibility='onchange'),
         'roof_material_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
             'project_id', 'value_id', _('Roof material'),
-            domain=[('property_name', '=', 'roof_material')]),
+            domain=[('property_name', '=', 'roof_material')],
+            track_visibility='onchange'),
         'spoken_languages_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
             'project_id', 'value_id', _('Spoken languages'),
-            domain=[('property_name', '=', 'spoken_languages')]),
+            domain=[('property_name', '=', 'spoken_languages')],
+            track_visibility='onchange'),
         'primary_diet_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
             'project_id', 'value_id', _('Primary diet'),
-            domain=[('property_name', '=', 'primary_diet')]),
+            domain=[('property_name', '=', 'primary_diet')],
+            track_visibility='onchange'),
         'health_problems_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
             'project_id', 'value_id', _('Health problems'),
-            domain=[('property_name', '=', 'health_problems')]),
+            domain=[('property_name', '=', 'health_problems')],
+            track_visibility='onchange'),
         'primary_occupation_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
             'project_id', 'value_id', _('Primary occupation'),
-            domain=[('property_name', '=', 'primary_occupation')]),
+            domain=[('property_name', '=', 'primary_occupation')],
+            track_visibility='onchange'),
         'terrain_description_ids': fields.many2many(
             'compassion.translated.value', 'project_property_to_value',
             'project_id', 'value_id', _('Terrain description'),
-            domain=[('property_name', '=', 'terrain_description')]),
+            domain=[('property_name', '=', 'terrain_description')],
+            track_visibility='onchange'),
         # b. Static Values
         'gps_latitude': fields.float(_('GPS latitude')),
         'gps_longitude': fields.float(_('GPS longitude')),
-        'unemployment_rate': fields.float(_('Unemployment rate')),
+        'unemployment_rate': fields.float(_('Unemployment rate'),
+                                          track_visibility='onchange'),
         'closest_city': fields.char(_('Closest city')),
-        'community_population': fields.integer(_('Community population')),
-        'monthly_income': fields.float(_('Monthly income')),
+        'community_population': fields.integer(_('Community population'),
+                                               track_visibility='onchange'),
+        'monthly_income': fields.float(_('Monthly income'),
+                                       track_visibility='onchange'),
         # c. Non translated text
         'economic_needs': fields.text(_('Economic needs')),
         'education_needs': fields.text(_('Education needs')),

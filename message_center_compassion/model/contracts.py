@@ -28,7 +28,8 @@ class recurring_contract(orm.Model):
             ('casestudy', _('New Case Study')),
             ('depart', _('Child Departed')),
             ('transfer', _('Child Transfer')),
-            ('suspension', _('Project Suspended'))], _('GMC State'))
+            ('suspension', _('Project Fund-Suspended')),
+            ('reactivation', _('Project Reactivated'))], _('GMC State'))
     }
 
     def _on_contract_active(self, cr, uid, ids, context=None):

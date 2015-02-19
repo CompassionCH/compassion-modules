@@ -20,3 +20,24 @@ class compassion_project(orm.Model):
         we fetch the last informations. """
         self.update_informations(cr, uid, args.get('object_id'), context)
         return True
+
+    def _get_suspension_state(self, cr, uid, ids, field_name, args,
+                              context=None):
+        """ Mark sponsorships as reactivated if the project was reactivated.
+        """
+        contract_obj = self.pool.get('recurring.contract')
+        res = super(compassion_project, self)._get_suspension_state(
+            cr, uid, ids, field_name, args, context)
+
+        for project in self.browse(cr, uid, ids, context):
+            if project.status == 'A' and not res[project.id] and \
+                    project.suspension == 'fund-suspended':
+                # Project is activated
+                contract_ids = contract_obj.search(cr, uid, [
+                    ('child_code', 'like', project.code),
+                    ('state', 'in', ('active', 'waiting', 'mandate'))],
+                    context=context)
+                contract_obj.write(cr, uid, contract_ids, {
+                    'gmc_state': 'reactivation'}, context)
+
+        return res
