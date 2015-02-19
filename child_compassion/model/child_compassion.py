@@ -684,7 +684,7 @@ class compassion_child(orm.Model):
             for k, v in args.items():
                 full_url += "&" + k + "=" + v
         r = requests.get(full_url)
-        if not r.status_code == 200 or "Error" in r.text:
+        if not r.text or "Error" in r.text:
             raise orm.except_orm(
                 _("Typo3 Error"),
                 _("Impossible to communicate  with Typo3") + '\n' + r.text)
