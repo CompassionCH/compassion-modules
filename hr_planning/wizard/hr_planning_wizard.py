@@ -15,7 +15,7 @@ from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
 from openerp import SUPERUSER_ID
 import pytz
 from datetime import datetime, timedelta, time
-import pdb
+
 
 class hr_planning_wizard(orm.TransientModel):
     _name = 'hr.planning.wizard'
@@ -49,7 +49,7 @@ class hr_planning_wizard(orm.TransientModel):
                 cr, uid, planning_days_to_remove, context=context)
 
             for contract in employee.contract_ids:
-                if not contract.working_hours.attendance_ids: 
+                if not contract.working_hours.attendance_ids:
                     continue
                 for attendance in contract.working_hours.attendance_ids:
 
@@ -59,7 +59,7 @@ class hr_planning_wizard(orm.TransientModel):
                         d = today
 
                     if (not(contract.date_end)):
-                        end_date = d+timedelta(days=365)
+                        end_date = d + timedelta(days=365)
                     else:
                         end_date = datetime.strptime(
                             contract.date_end, DF) + timedelta(days=1)
@@ -108,7 +108,7 @@ class hr_planning_wizard(orm.TransientModel):
                                     holiday.date_to, DTF)
 
                                 if (holiday_start.date() == d.date() and
-                                   start_date < holiday_start):
+                                        start_date < holiday_start):
                                     planning_day_obj.create(cr, uid, {
                                         'employee_id': employee.id,
                                         'contract_id': contract.id,
@@ -116,65 +116,79 @@ class hr_planning_wizard(orm.TransientModel):
                                         'end_date': holiday_start})
                                 elif (holiday_stop.date() == d.date() and
                                         stop_date > holiday_stop):
-                                            planning_day_obj.create(cr, uid, {
-                                                'employee_id': employee.id,
-                                                'contract_id': contract.id,
-                                                'start_date': holiday_stop,
-                                                'end_date': stop_date})
+                                    planning_day_obj.create(cr, uid, {
+                                        'employee_id': employee.id,
+                                        'contract_id': contract.id,
+                                        'start_date': holiday_stop,
+                                        'end_date': stop_date})
                         d += delta
             self._move_planning_days(cr, uid, employee, context)
 
     def _move_planning_days(self, cr, uid, employee, context=None):
-        planning_day_move_request_obj = self.pool.get('hr.planning.day.move.request')
+        planning_day_move_request_obj = self.pool.get(
+            'hr.planning.day.move.request')
         planning_day_move_requests_ids = planning_day_move_request_obj.search(
-            cr, uid, [('employee_id','=',employee.id),('state','=','validate')], context=context)
+            cr, uid,
+            [('employee_id', '=', employee.id), ('state', '=', 'validate')],
+            context=context)
         planning_day_move_requests = planning_day_move_request_obj.browse(
             cr, uid, planning_day_move_requests_ids, context=context)
-        
+
         planning_day_obj = self.pool.get('hr.planning.day')
-        planning_days_ids = planning_day_obj.search(cr, uid, [('employee_id','=',employee.id)], context=context)
+        planning_days_ids = planning_day_obj.search(
+            cr, uid, [('employee_id', '=', employee.id)], context=context)
         planning_days = planning_day_obj.browse(
             cr, uid, planning_days_ids, context)
-        
+
         for planning_day_move_request in planning_day_move_requests:
             if (planning_day_move_request.type == 'move'):
                 for planning_day in planning_days:
-                    if (datetime.strptime(planning_day_move_request.old_date, DF).date() 
-                        == datetime.strptime(planning_day.start_date, DTF).date()):
+                    if (datetime.strptime(
+                            planning_day_move_request.old_date, DF).date()
+                            == datetime.strptime(
+                                planning_day.start_date, DTF).date()):
                         new_start_date = datetime.combine(
-                            datetime.strptime(planning_day_move_request.new_date, DF).date(),
-                            datetime.strptime(planning_day.start_date, DTF).time()
+                            datetime.strptime(
+                                planning_day_move_request.new_date, DF).date(),
+                            datetime.strptime(
+                                planning_day.start_date, DTF).time()
                         )
                         new_end_date = datetime.combine(
-                            datetime.strptime(planning_day_move_request.new_date, DF).date(),
-                            datetime.strptime(planning_day.end_date, DTF).time()
+                            datetime.strptime(
+                                planning_day_move_request.new_date, DF).date(),
+                            datetime.strptime(
+                                planning_day.end_date, DTF).time()
                         )
-                        
-                        planning_day_obj.write(cr, uid, planning_day.id, {'start_date':new_start_date,'end_date':new_end_date}, context=context)
+
+                        planning_day_obj.write(
+                            cr, uid, planning_day.id, {
+                                'start_date': new_start_date,
+                                'end_date': new_end_date},
+                            context=context)
             else:
                 start_hour, start_minutes = self._time_from_float(
-                            cr, uid, planning_day_move_request.hour_from, context)
+                    cr, uid, planning_day_move_request.hour_from, context)
                 end_hour, end_minutes = self._time_from_float(
-                            cr, uid, planning_day_move_request.hour_to, context)
+                    cr, uid, planning_day_move_request.hour_to, context)
                 new_start_date = datetime.combine(
                     datetime.strptime(
                         planning_day_move_request.new_date, DF).date(),
-                    time(start_hour,start_minutes)
+                    time(start_hour, start_minutes)
                 )
                 new_end_date = datetime.combine(
                     datetime.strptime(
                         planning_day_move_request.new_date, DF).date(),
-                    time(end_hour,end_minutes)
+                    time(end_hour, end_minutes)
                 )
                 tz = self._get_time_zone(cr, uid, context)
                 new_start_date = new_start_date - tz.utcoffset(new_start_date)
                 new_end_date = new_end_date - tz.utcoffset(new_end_date)
 
                 planning_day_obj.create(
-                    cr, uid, 
-                    {'start_date':new_start_date,
-                    'end_date':new_end_date,
-                    'employee_id':employee.id}, 
+                    cr, uid,
+                    {'start_date': new_start_date,
+                     'end_date': new_end_date,
+                     'employee_id': employee.id},
                     context=context)
 
     def _get_time_zone(self, cr, uid, context=None):
@@ -185,5 +199,5 @@ class hr_planning_wizard(orm.TransientModel):
 
     def _time_from_float(self, cr, uid, flt_time, context=None):
         hour = int(flt_time)
-        minute = int((flt_time - hour)*60)
+        minute = int((flt_time - hour) * 60)
         return(hour, minute)
