@@ -35,9 +35,16 @@ class res_partner(orm.Model):
         return super(res_partner, self).write(cr, uid, ids, vals, context)
 
     def write_from_gp(self, cr, uid, ids, vals, context=None):
-        if vals.get('firstname') or vals.get('lastname') or \
-                vals.get('name'):
-            self._upsert_constituent(cr, uid, ids, context)
+        """ GP always send firstname and lastname. We check if they changed.
+        """
+        to_update_ids = list()
+        for partner in self.browse(cr, uid, ids, context):
+            new_firstname = vals.get('fisrtname', partner.firstname)
+            new_lastname = vals.get('lastname', partner.lastname)
+            if partner.firstname != new_firstname or \
+                    partner.lastname != new_lastname:
+                to_update_ids.append(partner.id)
+        self._upsert_constituent(cr, uid, ids, context)
         return super(res_partner, self).write(cr, uid, ids, vals, context)
 
     def _upsert_constituent(self, cr, uid, ids, context=None):
