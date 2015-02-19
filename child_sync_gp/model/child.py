@@ -10,13 +10,11 @@
 ##############################################################################
 
 from openerp.osv import orm
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.config import config
 
 from smb.SMBConnection import SMBConnection
 from smb.smb_structs import OperationFailure
 from tempfile import TemporaryFile
-from datetime import datetime
 
 from . import gp_connector
 import base64
