@@ -504,7 +504,7 @@ class compassion_child(orm.Model):
             cr, uid,
             "select * "
             "from tx_drechildpoolmanagement_domain_model_children "
-            "where child_key='%s'" % child_code, 'sel',
+            "where child_key='%s';" % child_code, 'sel',
             context)
 
         return json.loads(res)[0]['uid']
