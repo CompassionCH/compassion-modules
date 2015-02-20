@@ -19,7 +19,8 @@ class hr_planning_day_move_request(orm.Model):
     _name = "hr.planning.day.move.request"
 
     def _employee_get(self, cr, uid, context=None):
-        ids = self.pool.get('hr.employee').search(cr, uid, [('user_id', '=', uid)], context=context)
+        ids = self.pool.get('hr.employee').search(
+            cr, uid, [('user_id', '=', uid)], context=context)
         if ids:
             return ids[0]
         return False
@@ -126,6 +127,7 @@ class hr_planning_day_move_request(orm.Model):
         self.pool.get('hr.planning.wizard').generate(
             cr, uid, employee_ids, context)
         return True
+
     def unlink(self, cr, uid, ids, context=None):
         employee_ids = [move_request.employee_id.id
                         for move_request in self.browse(

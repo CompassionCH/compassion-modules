@@ -38,4 +38,3 @@ class hr_holidays(orm.Model):
             cr, uid, ids, context=context)
         self._generate(cr, uid, ids, context)
         return res
-        
