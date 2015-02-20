@@ -14,6 +14,7 @@ import sys
 import calendar
 import json
 import requests
+import base64
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
