@@ -16,6 +16,7 @@
                     <header>
                         <field name="state" widget="statusbar" />
                         <button name="approve" class="oe_highlight" string="Approve" type="object" states="to_approve"/>
+                        <button name="refuse" class="oe_highlight" string="Refuse" type="object" states="validate"/>
                     </header>
                     <sheet>
                         <group>

@@ -111,6 +111,14 @@ class hr_planning_day_move_request(orm.Model):
             cr, uid, employee_ids, context)
         return True
 
+    def refuse(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'to_approve'}, context)
+        employee_ids = [move_request.employee_id.id
+                        for move_request in self.browse(
+                            cr, uid, ids, context)]
+        self.pool.get('hr.planning.wizard').generate(
+            cr, uid, employee_ids, context)
+        return True
     def unlink(self, cr, uid, ids, context=None):
         employee_ids = [move_request.employee_id.id
                         for move_request in self.browse(
