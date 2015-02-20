@@ -19,7 +19,7 @@
                         <filter name="depart" string="Departure" domain="[('gmc_state', '=', 'depart')]"/>
                         <filter name="transfer" string="Child Transfer" domain="[('gmc_state', '=', 'transfer')]"/>
                         <filter name="suspension" string="Project Suspended" domain="[('gmc_state', '=', 'suspension')]"/>
-                        <filter name="Reactivation" string="Project Suspended" domain="[('gmc_state', '=', 'reactivation')]"/>
+                        <filter name="reactivation" string="Project Reactivated" domain="[('gmc_state', '=', 'reactivation')]"/>
                     </filter>
                 </data>
             </field>

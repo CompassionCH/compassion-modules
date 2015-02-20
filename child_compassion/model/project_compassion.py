@@ -50,11 +50,11 @@ class compassion_project(orm.Model):
                                                       context)
                 if res[project.id] == 'fund-suspended' and \
                         project.suspension != 'fund-suspended':
-                    self.suspend_funds(cr, uid, project.id,
-                                       datetime.today(), context)
+                    self.suspend_funds(cr, uid, project.id, context)
         return res
 
-    def suspend_funds(self, cr, uid, project_id, start, context=None):
+    def suspend_funds(self, cr, uid, project_id, context=None,
+                      date_start=None, date_end=None):
         """ Hook to perform some action when project is suspended.
         """
         pass

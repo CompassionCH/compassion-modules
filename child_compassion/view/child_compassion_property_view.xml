@@ -20,33 +20,35 @@
                         <notebook>
                             <page string="Case Study">
                                 <group>
-                                    <group>
-                                        <field name="sibling_flag" />
-                                        <field name="orphan_flag" />
-                                        <field name="us_school_level" />
-                                        <field name="school_performance" widget="many2many_tags" />
+                                    <group string="Living with">
+                                        <field name="guardians_ids" widget="many2many_tags" />
+                                        <field name="nb_brothers" />
+                                        <field name="nb_sisters" />
+                                        <field name="male_guardian_ids" widget="many2many_tags" />
+                                        <field name="female_guardian_ids" widget="many2many_tags" />
                                     </group>
-                                    <group>
+                                    <group string="Family">
+                                        <field name="orphan_flag" />
                                         <field name="handicapped_flag" />
-                                        <field name="attending_school_flag" />
-                                        <field name="nb_children_family" />
-                                        <field name="school_best_subject" widget="many2many_tags" />
+                                        <field name="marital_status_id" widget="many2many_tags" />
+                                        <field name="father_ids" widget="many2many_tags" />
+                                        <field name="mother_ids" widget="many2many_tags" />
+                                        <field name="sibling_project_1" attrs="{'invisible': [('sibling_project_1', '=', False)]}"/>
+                                        <field name="sibling_project_2" attrs="{'invisible': [('sibling_project_2', '=', False)]}"/>
                                     </group>
                                 </group>
                                 <group>
-                                    <group>
+                                    <group string="Schooling">
+                                        <field name="attending_school_flag" />
+                                        <field name="us_school_level" />
+                                        <field name="school_performance" widget="many2many_tags" />
+                                        <field name="school_best_subject" widget="many2many_tags" />
+                                    </group>
+                                    <group string="Activities and Hobbies">
                                         <field name="christian_activities_ids" widget="many2many_tags" />
                                         <field name="family_duties_ids" widget="many2many_tags" />
                                         <field name="hobbies_ids" widget="many2many_tags" />
                                         <field name="health_ids" widget="many2many_tags" />
-                                    </group>
-                                    <group>
-                                        <field name="marital_status_id" widget="many2many_tags" />
-                                        <field name="guardians_ids" widget="many2many_tags" />
-                                        <field name="father_ids" widget="many2many_tags" />
-                                        <field name="mother_ids" widget="many2many_tags" />
-                                        <field name="male_guardian_ids" widget="many2many_tags" />
-                                        <field name="female_guardian_ids" widget="many2many_tags" />
                                     </group>
                                 </group>
                             </page>

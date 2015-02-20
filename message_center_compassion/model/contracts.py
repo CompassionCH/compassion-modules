@@ -84,10 +84,10 @@ class recurring_contract(orm.Model):
             message_vals = {'action_id': action_id}
 
             for contract in self.browse(cr, uid, ids, context=context):
-                # Contract must have child and not terminated by child or by
+                # Contract must have child and not terminated by
                 # partner move
                 end_reason = int(contract.end_reason)
-                if contract.child_id and end_reason not in (1, 4):
+                if contract.child_id and end_reason != 4:
                     message_vals.update({
                         'object_id': contract.id,
                         'partner_id': contract.correspondant_id.id,

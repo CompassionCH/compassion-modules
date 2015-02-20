@@ -419,18 +419,21 @@ class compassion_child(orm.Model):
                                               'school_best_subject', context))
         vals['attending_school_flag'] = bool(json_data['schooling']
                                              ['childAttendingSchool'])
-        vals['nb_children_family'] = int(json_data['familySize']
-                                         ['totalFamilyFemalesUnder18'])
+        # Brothers and sisters
         vals['nb_sisters'] = int(json_data['familySize']
                                  ['totalFamilyFemalesUnder18'])
-        vals['nb_children_family'] += int(json_data['familySize']
-                                          ['totalFamilyMalesUnder18']) - 1
         vals['nb_brothers'] = int(json_data['familySize']
                                   ['totalFamilyMalesUnder18'])
-        if child.gender == 'M':
+        if json_data['gender'] == 'M':
             vals['nb_brothers'] -= 1
         else:
             vals['nb_sisters'] -= 1
+        vals['sibling_project_1'] = json_data[
+            'familySize']['firstBrotherOrSister']
+        vals['sibling_project_2'] = json_data[
+            'familySize']['secondBrotherOrSister']
+
+        # Attach many2many values
         vals['hobbies_ids'] = [(6, 0, [v for v in values if v])]
 
         # Write values to existing case_study or create a new one

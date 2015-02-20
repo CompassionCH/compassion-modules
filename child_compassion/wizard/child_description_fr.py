@@ -49,7 +49,7 @@ class Child_description_fr:
             for activity in case_study.christian_activities_ids]
         activities_str = cls._gen_list_string(activities)
         string = u"A l'Église, %s participe %s. " % (
-            child.firstname, activities_str)
+            'il' if child.gender == 'M' else 'elle', activities_str)
         return string
 
     @classmethod
@@ -68,8 +68,9 @@ class Child_description_fr:
                       else activity.value_en
                       for activity in case_study.family_duties_ids]
 
-        string = u"A la maison, %s aide à %s. " % (
-            child.firstname, cls._gen_list_string(activities))
+        string = u"A la maison, %s aide %s. " % (
+            'il' if child.gender == 'M' else 'elle',
+            cls._gen_list_string(activities))
         return string
 
     @classmethod
@@ -102,23 +103,23 @@ class Child_description_fr:
              - School favourite subject if relevant and existing
         '''
         ordinals = {
-            '1': u'en troisième',
-            '2': u'en quatrième',
-            '3': u'en cinquième',
-            '4': u'en sixième',
-            '5': u'en septième',
-            '6': u'en huitième',
-            '7': u'en neuvième',
-            '8': u'en dixième',
-            '9': u'en onzième',
-            '10': u'en première de lycée',
-            '11': u'en deuxième de lycée',
-            '12': u'en troisième de lycée',
+            '1': u'en troisième année',
+            '2': u'en quatrième année',
+            '3': u'en cinquième année',
+            '4': u'en sixième année',
+            '5': u'en septième année',
+            '6': u'en huitième année',
+            '7': u'en neuvième année',
+            '8': u'en dixième année',
+            '9': u'en onzième année',
+            '10': u'en première année de lycée',
+            '11': u'en deuxième année de lycée',
+            '12': u'en troisième année de lycée',
             '13': u'au lycée',
             '14': u'au lycée',
             'PK': u'à la crèche',
-            'K': u'en deuxième',
-            'P': u'en première',
+            'K': u'en deuxième année',
+            'P': u'en première année',
         }
         # the value of us_school_level can also be blank
         string = child.firstname

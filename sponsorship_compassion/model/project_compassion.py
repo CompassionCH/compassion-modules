@@ -9,13 +9,18 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
+from openerp.osv import orm, fields
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from openerp.tools.translate import _
+
+from datetime import datetime
 
 
 class project_compassion(orm.Model):
     _inherit = 'compassion.project'
 
-    def suspend_funds(self, cr, uid, project_id, start, context=None):
+    def suspend_funds(self, cr, uid, project_id, context=None,
+                      date_start=None, date_end=None):
         """ When a project is suspended, We update all contracts of
         sponsored children in the project, so that we don't create invoices
         during the period of suspension.
@@ -27,7 +32,37 @@ class project_compassion(orm.Model):
             ('child_code', 'like', project.code),
             ('state', 'in', ('active', 'waiting', 'mandate'))],
             context=context)
-        # For now, suspend the contract for 3 months
-        contract_obj.suspend_contract(cr, uid, contract_ids, start, 3,
-                                      context)
+        contract_obj.suspend_contract(cr, uid, contract_ids, context,
+                                      date_start, date_end)
+        return True
+
+
+class suspension_wizard(orm.TransientModel):
+    """ Wizard to extend suspensions of projects. """
+    _name = 'compassion.project.suspension.wizard'
+
+    _columns = {
+        'date_end': fields.date(_('End of suspension')),
+    }
+
+    def perform_suspension(self, cr, uid, ids, context=None):
+        project_id = context.get('active_id')
+        if not project_id:
+            raise orm.except_orm(
+                _('No project selected'),
+                _('Please select a project to suspend'))
+
+        project_obj = self.pool.get('compassion.project')
+        project = project_obj.browse(cr, uid, project_id, context)
+        if project.suspension != 'fund-suspended':
+            raise orm.except_orm(
+                _('Suspension error'),
+                _('The project is not fund-suspended. '
+                  'You cannot extend the suspension.'))
+
+        wizard = self.browse(cr, uid, ids, context)
+        project_obj.suspend_funds(
+            cr, uid, project_id, context,
+            date_end=datetime.strptime(wizard.date_end, DF))
+
         return True

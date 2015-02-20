@@ -818,19 +818,25 @@ class recurring_contract(orm.Model):
 
         return res
 
-    def suspend_contract(self, cr, uid, ids, start, months, context=None):
+    def suspend_contract(self, cr, uid, ids, context=None, date_start=None,
+                         date_end=None):
         """Cancels the number of invoices specified starting
         from a given date. This is useful to suspend a contract for a given
         period."""
-        date_end = start + relativedelta(months=months)
+        # By default, we suspend the contract for 3 months starting from today
+        if not date_start:
+            date_start = datetime.today()
+        if not date_end:
+            date_end = date_start + relativedelta(months=3)
 
         # Cancel invoices in the period of suspension
-        self.clean_invoices(cr, uid, ids, context, start.strftime(DF),
+        self.clean_invoices(cr, uid, ids, context, date_start.strftime(DF),
                             date_end.strftime(DF))
 
         for contract in self.browse(cr, uid, ids, context):
             # Advance next invoice date after end of suspension
             next_inv_date = datetime.strptime(contract.next_invoice_date, DF)
+            months = relativedelta(date_end, date_start).months
             month_diff = relativedelta(date_end, next_inv_date).months
             if month_diff > 0:
                 # If sponsorship is late, don't advance it too much
