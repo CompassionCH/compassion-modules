@@ -432,12 +432,15 @@ class compassion_project(orm.Model):
         return json_result
 
     def get_project_from_typo3(self, cr, uid, project_code, context=None):
-        res = Sync_typo3.request_to_typo3(
+        res = json.loads(Sync_typo3.request_to_typo3(
             "select * "
             "from tx_drechildpoolmanagement_domain_model_projects "
             "where project_key='%s'" % project_code, 'sel',
-            context)
-        return json.loads(res)
+            context))
+        if res:
+            return res[0]['uid']
+
+        return False
 
     def project_add_to_typo3(self, cr, uid, ids, context=None):
         # Solve the encoding problems on child's descriptions
@@ -470,7 +473,7 @@ class compassion_project(orm.Model):
                 context)
 
             parent_id = self.get_project_from_typo3(
-                cr, uid, project.code, context)[0]['uid']
+                cr, uid, project.code, context)
             res.append(parent_id)
 
             # French description
