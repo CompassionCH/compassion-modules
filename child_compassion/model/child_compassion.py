@@ -9,23 +9,25 @@
 #
 ##############################################################################
 
-import requests
-import pysftp
 import logging
 import sys
 import calendar
 import json
+import requests
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from datetime import datetime
+
+from datetime import datetime, timedelta
+from sync_typo3 import Sync_typo3
 
 logger = logging.getLogger(__name__)
 
 
 class compassion_child(orm.Model):
+
     """ A sponsored child """
     _name = 'compassion.child'
     _rec_name = 'code'
@@ -241,7 +243,7 @@ class compassion_child(orm.Model):
                     'birthdate': case_study.birthdate,
                     'gender': case_study.gender,
                     'unique_id': case_study.unique_id,
-                    }, context=context)
+                }, context=context)
         return True
 
     def get_infos(self, cr, uid, ids, context=None):
@@ -315,7 +317,7 @@ class compassion_child(orm.Model):
         url = self.get_url(child.code, 'casestudy')
         r = requests.get(url)
         json_data = r.json()
-        if not r.status_code/100 == 2:
+        if not r.status_code / 100 == 2:
             raise orm.except_orm('NetworkError',
                                  _('An error occured while fetching the last '
                                    'case study for child %s. ') % child.code +
@@ -401,7 +403,7 @@ class compassion_child(orm.Model):
                             prop_names[3], ''))
 
                 values.append(value_obj.get_value_ids(cr, uid, value,
-                              property_name, context))
+                                                      property_name, context))
                 context['default_is_tag'] = False
         # Other sections
         values.append(value_obj.get_value_ids(
@@ -422,7 +424,7 @@ class compassion_child(orm.Model):
         vals['nb_sisters'] = int(json_data['familySize']
                                  ['totalFamilyFemalesUnder18'])
         vals['nb_children_family'] += int(json_data['familySize']
-                                          ['totalFamilyMalesUnder18'])-1
+                                          ['totalFamilyMalesUnder18']) - 1
         vals['nb_brothers'] = int(json_data['familySize']
                                   ['totalFamilyMalesUnder18'])
         if child.gender == 'M':
@@ -499,16 +501,6 @@ class compassion_child(orm.Model):
                 self.get_exit_details(cr, uid, child.id, context)
         return True
 
-    def _get_typo3_child_id(self, cr, uid, child_code, context=None):
-        res = self._request_to_typo3(
-            cr, uid,
-            "select * "
-            "from tx_drechildpoolmanagement_domain_model_children "
-            "where child_key='%s'" % child_code, 'sel',
-            context)
-
-        return json.loads(res)[0]['uid']
-
     def get_exit_details(self, cr, uid, child_id, context=None):
         child = self.browse(cr, uid, child_id, context)
         if not child:
@@ -544,35 +536,19 @@ class compassion_child(orm.Model):
                                                    'Description'],
             'exit_reason': json_data['exitReason'],
             'last_letter_sent': json_data['lastChildLetterSent'],
-            })
+        })
 
         return True
 
-    def _request_to_typo3(self, cr, uid, request, request_type, context=None):
-        filename = request_type+".sql"
+    def _get_typo3_child_id(self, cr, uid, child_code, context=None):
+        res = Sync_typo3.request_to_typo3(
+            cr, uid,
+            "select * "
+            "from tx_drechildpoolmanagement_domain_model_children "
+            "where child_key='%s'" % child_code, 'sel',
+            context)
 
-        host = config.get('typo3_host')
-        username = config.get('typo3_user')
-        pwd = config.get('typo3_pwd')
-        scripts_url = config.get('typo3_scripts_url')
-        path = config.get('typo3_scripts_path')
-        api_key = config.get('typo3_api_key')
-
-        file_query = open(filename, "wb")
-        file_query.write(request)
-        file_query.close()
-
-        if not (host and username and pwd and path and
-                scripts_url and api_key):
-            raise orm.except_orm('ConfigError',
-                                 'Missing typo3 settings '
-                                 'in conf file')
-        with pysftp.Connection(host, username=username, password=pwd) as sftp:
-            with sftp.cd(path):
-                sftp.put(filename)
-
-        return self._typo3_scripts_fetch(
-            scripts_url, api_key, request_type+"_db")
+        return json.loads(res)[0]['uid']
 
     def child_add_to_typo3(self, cr, uid, ids, context=None):
         # Solve the encoding problems on child's descriptions
@@ -580,52 +556,96 @@ class compassion_child(orm.Model):
         sys.setdefaultencoding('UTF8')
 
         for child in self.browse(cr, uid, ids, context):
+            project_obj = self.pool.get('compassion.project')
+            project = project_obj.get_project_from_typo3(
+                cr, uid, child.project_id.code, context)
+
+            if len(project) == 0:
+                if (child.project_id.description_fr and
+                        child.project_id.description_de):
+                    project_obj.project_add_to_typo3(
+                        cr, uid, [child.project_id.id], context)
+                else:
+                    raise orm.except_orm(
+                        _("Warning"),
+                        _("Missing description for project : {}").format(
+                            child.project_id.code))
 
             child_gender = self._get_gender(cr, uid, child.gender, context)
-            child_image = child.code+"_f.jpg,"+child.code+"_h.jpg"
+            child_image = child.code + "_f.jpg," + child.code + "_h.jpg"
             child_birth_date = calendar.timegm(
                 datetime.strptime(child.birthdate, DF).utctimetuple())
+
+            today_ts = calendar.timegm(
+                datetime.today().utctimetuple())
+            three_month_ts = timedelta(days=200).total_seconds()
 
             # Fix ' in description
             child_desc_de = child.desc_de.replace('\'', '\'\'')
             child_desc_fr = child.desc_fr.replace('\'', '\'\'')
 
             # German description (parent)
-            self._request_to_typo3(
+            Sync_typo3.request_to_typo3(
                 cr, uid,
                 "insert into "
                 "tx_drechildpoolmanagement_domain_model_children"
                 "(child_key, child_name_full, child_name_personal,"
                 "child_gender, child_biography,"
+                "consignment_date, tstamp, crdate, consignment_expiry_date,"
                 "l10n_parent,image,child_birth_date) "
-                "values ('{}','{}','{}','{}','{}','{}','{}','{}');".format(
-                    child.code, child.name, child.firstname, child_gender,
-                    child_desc_de, 0, child_image, child_birth_date), 'upd',
+                "values ('{}','{}','{}','{}','{}','{}',"
+                "'{}','{}','{}','{}','{}','{}');".format(
+                    child.code, child.name, child.firstname,
+                    child_gender, child_desc_de,
+                    today_ts, today_ts, today_ts, today_ts + three_month_ts,
+                    0, child_image, child_birth_date), 'upd',
                 context)
 
             parent_id = self._get_typo3_child_id(cr, uid, child.code, context)
 
             # French description
-            self._request_to_typo3(
+            Sync_typo3.request_to_typo3(
                 cr, uid,
                 "insert into "
                 "tx_drechildpoolmanagement_domain_model_children"
                 "(child_key,child_name_full,child_name_personal,"
                 "child_gender,child_biography,"
+                "consignment_date, tstamp, crdate, consignment_expiry_date,"
                 "l10n_parent,image,child_birth_date) "
-                "values ('{}','{}','{}','{}','{}','{}','{}','{}');".format(
+                "values ('{}','{}','{}','{}','{}','{}','{}',"
+                "'{}','{}','{}','{}','{}');".format(
                     child.code, child.name, child.firstname,
-                    child_gender, child_desc_fr, parent_id,
-                    child_image, child_birth_date), 'upd',
+                    child_gender, child_desc_fr,
+                    today_ts, today_ts, today_ts, today_ts + three_month_ts,
+                    parent_id, child_image, child_birth_date), 'upd',
                 context)
 
         self._add_child_pictures_to_typo3(cr, uid, ids, context)
 
+    def child_remove_from_typo3(self, cr, uid, ids, context=None):
+        child_codes = [child.code for child in self.browse(cr, uid, ids,
+                                                           context)]
+
+        for code in child_codes:
+            Sync_typo3.request_to_typo3(
+                cr, uid,
+                "delete from tx_drechildpoolmanagement_domain_model_children "
+                "where child_key='%s';" % code, 'upd',
+                context)
+
+        Sync_typo3.delete_child_photos(child_codes)
+
+        for child in self.browse(cr, uid, ids, context):
+            state = 'R' if child.has_been_sponsored else 'N'
+            child.write({'state': state})
+
+        return True
+
     def _add_child_pictures_to_typo3(self, cr, uid, ids, context=None):
         for child in self.browse(cr, uid, ids, context):
 
-            head_image = child.code+"_h.jpg"
-            full_image = child.code+"_f.jpg"
+            head_image = child.code + "_h.jpg"
+            full_image = child.code + "_f.jpg"
 
             file_head = open(head_image, "wb")
             file_head.write(child.portrait)
@@ -635,17 +655,7 @@ class compassion_child(orm.Model):
             file_fullshot.write(child.fullshot)
             file_fullshot.close()
 
-            host = config.get('typo3_host')
-            username = config.get('typo3_user')
-            pwd = config.get('typo3_pwd')
-            path = config.get('typo3_images_path')
-
-            with pysftp.Connection(
-                host, username=username,
-                    password=pwd) as sftp:
-                        with sftp.cd(path):
-                            sftp.put(head_image)
-                            sftp.put(full_image)
+            Sync_typo3.add_child_photos(head_image, full_image)
 
         self.write(cr, uid, ids, {'state': 'I'})
 
@@ -654,38 +664,3 @@ class compassion_child(orm.Model):
             return 1
         else:
             return 2
-
-    def child_remove_from_typo3(self, cr, uid, ids, context=None):
-        child_codes = [child.code for child in self.browse(cr, uid, ids,
-                                                           context)]
-
-        for code in child_codes:
-            self._request_to_typo3(
-                cr, uid,
-                "delete from tx_drechildpoolmanagement_domain_model_children "
-                "where child_key='%s';" % code, 'upd',
-                context)
-
-        scripts_url = config.get('typo3_scripts_url')
-        api_key = config.get('typo3_api_key')
-
-        self._typo3_scripts_fetch(scripts_url, api_key, "delete_photo",
-                                  {"children": ",".join(child_codes)})
-
-        for child in self.browse(cr, uid, ids, context):
-            state = 'R' if child.has_been_sponsored else 'N'
-            child.write({'state': state})
-
-        return True
-
-    def _typo3_scripts_fetch(self, url, api_key, action, args=None):
-        full_url = url + "?api_key=" + api_key + "&action=" + action
-        if args:
-            for k, v in args.items():
-                full_url += "&" + k + "=" + v
-        r = requests.get(full_url)
-        if not r.status_code == 200 or "Error" in r.text:
-            raise orm.except_orm(
-                _("Typo3 Error"),
-                _("Impossible to communicate  with Typo3") + '\n' + r.text)
-        return r.text
