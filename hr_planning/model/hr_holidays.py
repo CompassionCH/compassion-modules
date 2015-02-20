@@ -29,10 +29,13 @@ class hr_holidays(orm.Model):
 
     def _generate(self, cr, uid, ids, context=None):
         holidays = self.browse(cr, uid, ids, context=context)
+        employee_ids = [holiday.employee_id.id for holiday in holidays]
+        self.pool.get('hr.planning.wizard').generate(
+            cr, uid, employee_ids, context=context)
 
-        for holiday in holidays:
-            employee_ids = []
-            employee_ids.append(holiday.employee_id.id)
-
-            self.pool.get('hr.planning.wizard').generate(
-                cr, uid, employee_ids, context=context)
+    def holidays_refuse(self, cr, uid, ids, context=None):
+        res = super(hr_holidays, self).holidays_refuse(
+            cr, uid, ids, context=context)
+        self._generate(cr, uid, ids, context)
+        return res
+        
