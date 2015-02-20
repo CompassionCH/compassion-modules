@@ -144,8 +144,8 @@ class hr_planning_wizard(orm.TransientModel):
             if (planning_day_move_request.type == 'move'):
                 for planning_day in planning_days:
                     if (datetime.strptime(
-                            planning_day_move_request.old_date, DF).date()
-                            == datetime.strptime(
+                            planning_day_move_request.old_date, DF).date() ==
+                            datetime.strptime(
                                 planning_day.start_date, DTF).date()):
                         new_start_date = datetime.combine(
                             datetime.strptime(
