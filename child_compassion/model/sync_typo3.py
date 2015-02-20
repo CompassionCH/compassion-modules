@@ -47,12 +47,12 @@ class Sync_typo3:
 
     @classmethod
     def _typo3_scripts_fetch(self, url, api_key, action, args=None):
-        full_url = url + "?api_key=" + api_key + "&action=" + action
+        full_url = url + "?apikey=" + api_key + "&action=" + action
         if args:
             for k, v in args.items():
                 full_url += "&" + k + "=" + v
         r = requests.get(full_url)
-        if not r.status_code == 200 or "Error" in r.text:
+        if not r.text or "Error" in r.text:
             raise orm.except_orm(
                 _("Typo3 Error"),
                 _("Impossible to communicate  with Typo3") + '\n' + r.text)

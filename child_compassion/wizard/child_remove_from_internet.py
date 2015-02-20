@@ -47,3 +47,4 @@ class child_remove_from_internet(orm.TransientModel):
     def remove_child_from_internet(self, cr, uid, ids, context=None):
         self.pool.get('compassion.child').child_remove_from_typo3(
             cr, uid, self._default_child_ids(cr, uid, context), context=None)
+        return True

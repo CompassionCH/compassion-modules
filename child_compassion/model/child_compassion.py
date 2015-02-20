@@ -548,7 +548,7 @@ class compassion_child(orm.Model):
             cr, uid,
             "select * "
             "from tx_drechildpoolmanagement_domain_model_children "
-            "where child_key='%s'" % child_code, 'sel',
+            "where child_key='%s';" % child_code, 'sel',
             context)
 
         return json.loads(res)[0]['uid']
@@ -626,21 +626,19 @@ class compassion_child(orm.Model):
         self._add_child_pictures_to_typo3(cr, uid, ids, context)
 
     def child_remove_from_typo3(self, cr, uid, ids, context=None):
-        child_codes = [child.code for child in self.browse(cr, uid, ids,
-                                                           context)]
+        child_codes = list()
 
-        for code in child_codes:
+        for child in self.browse(cr, uid, ids, context):
             Sync_typo3.request_to_typo3(
                 cr, uid,
                 "delete from tx_drechildpoolmanagement_domain_model_children "
-                "where child_key='%s';" % code, 'upd',
+                "where child_key='%s';" % child.code, 'upd',
                 context)
-
-        Sync_typo3.delete_child_photos(child_codes)
-
-        for child in self.browse(cr, uid, ids, context):
             state = 'R' if child.has_been_sponsored else 'N'
             child.write({'state': state})
+            child_codes.append(child.code)
+
+        Sync_typo3.delete_child_photos(child_codes)
 
         return True
 
