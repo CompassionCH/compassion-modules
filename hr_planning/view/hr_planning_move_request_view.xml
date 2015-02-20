@@ -15,15 +15,16 @@
                 <form string="Move request" version="7.0">
                     <header>
                         <field name="state" widget="statusbar" />
-                        <button name="approve" class="oe_highlight" string="Approve" type="object" states="to_approve"/>
-                        <button name="refuse" class="oe_highlight" string="Refuse" type="object" states="validate"/>
+                        <button name="approve" class="oe_highlight" string="Approve" type="object" states="to_approve" groups='base.group_hr_manager'/>
+                        <button name="refuse" class="oe_highlight" string="Refuse" type="object" states="validate"
+                        groups='base.group_hr_manager'/>
                     </header>
                     <sheet>
                         <group>
                             <group>
                                 <field name="type"/>
                                 <field name="name"/>
-                                <field name="employee_id"/>
+                                <field name="employee_id" groups="base.group_hr_manager"/>
                             </group>
                             <group>
                                 <group>

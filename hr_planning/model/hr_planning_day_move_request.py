@@ -18,6 +18,12 @@ from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
 class hr_planning_day_move_request(orm.Model):
     _name = "hr.planning.day.move.request"
 
+    def _employee_get(self, cr, uid, context=None):
+        ids = self.pool.get('hr.employee').search(cr, uid, [('user_id', '=', uid)], context=context)
+        if ids:
+            return ids[0]
+        return False
+
     _columns = {
         'name': fields.char(
             _('Name'), required=True,
@@ -45,6 +51,7 @@ class hr_planning_day_move_request(orm.Model):
     }
     _defaults = {
         'state': 'to_approve',
+        'employee_id': _employee_get,
     }
 
     def create(self, cr, uid, vals, context=None):
