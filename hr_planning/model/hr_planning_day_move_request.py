@@ -110,3 +110,13 @@ class hr_planning_day_move_request(orm.Model):
         self.pool.get('hr.planning.wizard').generate(
             cr, uid, employee_ids, context)
         return True
+
+    def unlink(self, cr, uid, ids, context=None):
+        employee_ids = [move_request.employee_id.id
+                        for move_request in self.browse(
+                            cr, uid, ids, context)]
+        res = super(hr_planning_day_move_request, self).unlink(
+            cr, uid, ids, context)
+        self.pool.get('hr.planning.wizard').generate(
+            cr, uid, employee_ids, context)
+        return res
