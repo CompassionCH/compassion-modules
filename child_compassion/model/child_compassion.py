@@ -645,11 +645,11 @@ class compassion_child(orm.Model):
             full_image = child.code + "_f.jpg"
 
             file_head = open(head_image, "wb")
-            file_head.write(child.portrait)
+            file_head.write(base64.b64decode(child.portrait))
             file_head.close()
 
             file_fullshot = open(full_image, "wb")
-            file_fullshot.write(child.fullshot)
+            file_fullshot.write(base64.b64decode(child.fullshot))
             file_fullshot.close()
 
             Sync_typo3.add_child_photos(head_image, full_image)
