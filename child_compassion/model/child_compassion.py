@@ -544,12 +544,11 @@ class compassion_child(orm.Model):
 
         return True
 
-    def _get_typo3_child_id(self, cr, uid, child_code, context=None):
+    def _get_typo3_child_id(self, cr, uid, child_code):
         res = Sync_typo3.request_to_typo3(
             "select * "
             "from tx_drechildpoolmanagement_domain_model_children "
-            "where child_key='%s';" % child_code, 'sel',
-            context)
+            "where child_key='%s';" % child_code, 'sel')
 
         return json.loads(res)[0]['uid']
 
@@ -561,7 +560,7 @@ class compassion_child(orm.Model):
         for child in self.browse(cr, uid, ids, context):
             project_obj = self.pool.get('compassion.project')
             project = project_obj.get_project_from_typo3(
-                cr, uid, child.project_id.code, context)
+                cr, uid, child.project_id.code)
 
             if not project:
                 if (child.project_id.description_fr and
@@ -600,10 +599,9 @@ class compassion_child(orm.Model):
                     child.code, child.name, child.firstname,
                     child_gender, child_desc_de,
                     today_ts, today_ts, today_ts, today_ts + three_month_ts,
-                    0, child_image, child_birth_date, project), 'upd',
-                context)
+                    0, child_image, child_birth_date, project), 'upd')
 
-            parent_id = self._get_typo3_child_id(cr, uid, child.code, context)
+            parent_id = self._get_typo3_child_id(cr, uid, child.code)
 
             # French description
             Sync_typo3.request_to_typo3(
@@ -638,9 +636,12 @@ class compassion_child(orm.Model):
         child_codes = list()
 
         for child in self.browse(cr, uid, ids, context):
+            child_uid = self._get_typo3_child_id(cr, uid, child.code)
             Sync_typo3.request_to_typo3(
+                "delete from tx_drechildpoolmanagement_childpools_children_mm"
+                " where uid_foreign={};"
                 "delete from tx_drechildpoolmanagement_domain_model_children "
-                "where child_key='%s';" % child.code, 'upd')
+                "where child_key='{}';".format(child_uid, child.code), 'upd')
             state = 'R' if child.has_been_sponsored else 'N'
             child.write({'state': state})
             child_codes.append(child.code)

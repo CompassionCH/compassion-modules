@@ -431,12 +431,11 @@ class compassion_project(orm.Model):
                 json_result['error']['message'])
         return json_result
 
-    def get_project_from_typo3(self, cr, uid, project_code, context=None):
+    def get_project_from_typo3(self, cr, uid, project_code):
         res = json.loads(Sync_typo3.request_to_typo3(
             "select * "
             "from tx_drechildpoolmanagement_domain_model_projects "
-            "where project_key='%s'" % project_code, 'sel',
-            context))
+            "where project_key='%s'" % project_code, 'sel'))
         if res:
             return res[0]['uid']
 
@@ -469,11 +468,10 @@ class compassion_project(orm.Model):
                 "values ('{}','{}','{}','{}','{}','{}');".format(
                     project.code, project.country_id.name,
                     project_desc_de, today_ts,
-                    today_ts, 0), 'upd',
-                context)
+                    today_ts, 0), 'upd')
 
             parent_id = self.get_project_from_typo3(
-                cr, uid, project.code, context)
+                cr, uid, project.code)
             res.append(parent_id)
 
             # French description
@@ -485,7 +483,6 @@ class compassion_project(orm.Model):
                 "values ('{}','{}','{}','{}','{}','{}',1);".format(
                     project.code, project.country_id.name,
                     project_desc_fr, today_ts,
-                    today_ts, parent_id), 'upd',
-                context)
+                    today_ts, parent_id), 'upd')
 
             return res
