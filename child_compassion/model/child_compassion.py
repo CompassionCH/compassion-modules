@@ -618,8 +618,19 @@ class compassion_child(orm.Model):
                     child.code, child.name, child.firstname,
                     child_gender, child_desc_fr,
                     today_ts, today_ts, today_ts, today_ts + three_month_ts,
-                    parent_id, child_image, child_birth_date, project), 'upd',
-                context)
+                    parent_id, child_image, child_birth_date, project), 'upd')
+
+            # Assign child to childpool
+            max_sorting = int(json.loads(Sync_typo3.request_to_typo3(
+                "select max(sorting) as max from "
+                "tx_drechildpoolmanagement_childpools_children_mm",
+                'sel'))[0]['max'])
+            Sync_typo3.request_to_typo3(
+                "insert into "
+                "tx_drechildpoolmanagement_childpools_children_mm"
+                "(uid_foreign,sorting) "
+                "values ({},{})".format(parent_id, max_sorting),
+                'upd')
 
         self._add_child_pictures_to_typo3(cr, uid, ids, context)
 
@@ -629,8 +640,7 @@ class compassion_child(orm.Model):
         for child in self.browse(cr, uid, ids, context):
             Sync_typo3.request_to_typo3(
                 "delete from tx_drechildpoolmanagement_domain_model_children "
-                "where child_key='%s';" % child.code, 'upd',
-                context)
+                "where child_key='%s';" % child.code, 'upd')
             state = 'R' if child.has_been_sponsored else 'N'
             child.write({'state': state})
             child_codes.append(child.code)
