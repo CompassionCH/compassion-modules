@@ -13,25 +13,35 @@ from openerp.tools.translate import _
 from datetime import datetime
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
-import pdb
 
 
 class hr_planning_day_move_request(orm.Model):
     _name = "hr.planning.day.move.request"
 
     _columns = {
-        'name': fields.char(_('Name'), required=True,  states={'validate': [('readonly', True)]}),
-        'old_date': fields.date(_('Old date'), states={'validate': [('readonly', True)]}),
-        'new_date': fields.date(_('New date'), required=True, states={'validate': [('readonly', True)]}),
-        'hour_from': fields.float(_('From'), states={'validate': [('readonly', True)]}),
-        'hour_to': fields.float(_('To'), states={'validate': [('readonly', True)]}),
+        'name': fields.char(
+            _('Name'), required=True,
+            states={'validate': [('readonly', True)]}),
+        'old_date': fields.date(
+            _('Old date'),
+            states={'validate': [('readonly', True)]}),
+        'new_date': fields.date(
+            _('New date'), required=True,
+            states={'validate': [('readonly', True)]}),
+        'hour_from': fields.float(
+            _('From'), states={'validate': [('readonly', True)]}),
+        'hour_to': fields.float(
+            _('To'), states={'validate': [('readonly', True)]}),
         'employee_id': fields.many2one(
-            'hr.employee', 'Employee', required=True, states={'validate': [('readonly', True)]}),
-        'state': fields.selection([('to_approve', 'To Approve'), ('validate', 'Approved')],
-                                  'Status', track_visibility="onchange", readonly=True),
+            'hr.employee', 'Employee', required=True,
+            states={'validate': [('readonly', True)]}),
+        'state': fields.selection(
+            [('to_approve', 'To Approve'), ('validate', 'Approved')],
+            'Status', track_visibility="onchange", readonly=True),
         'type': fields.selection(
-            [('add', 'Add'),('move', 'Move')],
-            _('Type'), required=True, states={'validate': [('readonly', True)]}),
+            [('add', 'Add'), ('move', 'Move')],
+            _('Type'), required=True,
+            states={'validate': [('readonly', True)]}),
     }
     _defaults = {
         'state': 'to_approve',
