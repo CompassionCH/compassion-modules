@@ -10,14 +10,20 @@
 ##############################################################################
 
 import requests
+import json
+import calendar
+import sys
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
+
 from datetime import datetime
+from sync_typo3 import Sync_typo3
 
 
 class compassion_project(orm.Model):
+
     """ A compassion project """
     _name = 'compassion.project'
     _inherit = 'mail.thread'
@@ -73,11 +79,11 @@ class compassion_project(orm.Model):
                 ('fund-suspended', _('Suspended & fund retained'))],
             string=_('Suspension'),
             store={'compassion.project':
-                    (lambda self, cr, uid, ids, c=None:
-                        ids, ['disburse_funds', 'disburse_gifts',
-                              'disburse_unsponsored_funds',
-                              'new_sponsorships_allowed',
-                              'additional_quota_allowed'], 20)},
+                   (lambda self, cr, uid, ids, c=None:
+                    ids, ['disburse_funds', 'disburse_gifts',
+                          'disburse_unsponsored_funds',
+                          'new_sponsorships_allowed',
+                          'additional_quota_allowed'], 20)},
             track_visibility='onchange'),
         'status': fields.selection([
             ('A', _('Active')),
@@ -124,7 +130,7 @@ class compassion_project(orm.Model):
             ('4', _('April')), ('5', _('May')), ('6', _('June')),
             ('7', _('July')), ('8', _('August')), ('9', _('September')),
             ('10', _('October')), ('11', _('November')), ('12', _('December'))
-            ], _('Month school begins each year')),
+        ], _('Month school begins each year')),
         'country_denomination': fields.char(_('Local denomination')),
         'western_denomination': fields.char(_('Western denomination')),
         'community_name': fields.char(_('Community name')),
@@ -197,7 +203,7 @@ class compassion_project(orm.Model):
             'compassion.project.age.group', 'project_id',
             _('Age group'),
             readonly=True, track_visibility="onchange"),
-        }
+    }
 
     def update_informations(self, cr, uid, ids, context=None):
         """ Get the most recent informations for selected projects and update
@@ -352,9 +358,10 @@ class compassion_project(orm.Model):
             field_name = field_tuple[0]
             separator = field_tuple[1]
 
-            multi_value.extend(value_obj.get_value_ids(cr, uid,
-                               json_values[json_key].split(separator),
-                               field_name, context))
+            multi_value.extend(value_obj.get_value_ids(
+                cr, uid,
+                json_values[json_key].split(separator),
+                field_name, context))
 
         """ Only one field need to get all the many2many relations.
         Then all other fields will get their correct values
@@ -424,3 +431,53 @@ class compassion_project(orm.Model):
                 'Error calling %s for project %s' % (api_mess, project_code),
                 json_result['error']['message'])
         return json_result
+
+    def get_project_from_typo3(self, cr, uid, project_code, context=None):
+        res = Sync_typo3.request_to_typo3(
+            cr, uid,
+            "select * "
+            "from tx_drechildpoolmanagement_domain_model_projects "
+            "where project_key='%s'" % project_code, 'sel',
+            context)
+        return json.loads(res)
+
+    def project_add_to_typo3(self, cr, uid, ids, context=None):
+        # Solve the encoding problems on child's descriptions
+        reload(sys)
+        sys.setdefaultencoding('UTF8')
+
+        today_ts = calendar.timegm(
+            datetime.today().utctimetuple())
+
+        for project in self.browse(cr, uid, ids, context):
+            project_desc_de = project.description_de.replace('\'', '\'\'')
+            project_desc_fr = project.description_fr.replace('\'', '\'\'')
+
+            # German description (parent)
+            Sync_typo3.request_to_typo3(
+                cr, uid,
+                "insert into "
+                "tx_drechildpoolmanagement_domain_model_projects"
+                "(project_key, country, description,"
+                "tstamp, crdate, l10n_parent) "
+                "values ('{}','{}','{}','{}','{}','{}');".format(
+                    project.code, project.country_id.name,
+                    project_desc_de, today_ts,
+                    today_ts, 0), 'upd',
+                context)
+
+            parent_id = self.get_project_from_typo3(
+                cr, uid, project.code, context)[0]['uid']
+
+            # French description
+            Sync_typo3.request_to_typo3(
+                cr, uid,
+                "insert into "
+                "tx_drechildpoolmanagement_domain_model_projects"
+                "(project_key, country, description,"
+                "tstamp, crdate, l10n_parent) "
+                "values ('{}','{}','{}','{}','{}','{}');".format(
+                    project.code, project.country_id.name,
+                    project_desc_fr, today_ts,
+                    today_ts, parent_id), 'upd',
+                context)
