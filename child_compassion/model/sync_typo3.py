@@ -19,7 +19,7 @@ from openerp.tools.translate import _
 class Sync_typo3:
 
     @classmethod
-    def request_to_typo3(self, cr, uid, request, request_type, context=None):
+    def request_to_typo3(self, request, request_type, context=None):
         filename = request_type+".sql"
 
         host = config.get('typo3_host')

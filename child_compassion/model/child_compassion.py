@@ -566,8 +566,8 @@ class compassion_child(orm.Model):
             if not project:
                 if (child.project_id.description_fr and
                         child.project_id.description_de):
-                    project_obj.project_add_to_typo3(
-                        cr, uid, [child.project_id.id], context)
+                    project = project_obj.project_add_to_typo3(
+                        cr, uid, [child.project_id.id], context)[0]
                 else:
                     raise orm.except_orm(
                         _("Warning"),
@@ -595,13 +595,13 @@ class compassion_child(orm.Model):
                 "(child_key, child_name_full, child_name_personal,"
                 "child_gender, child_biography,"
                 "consignment_date, tstamp, crdate, consignment_expiry_date,"
-                "l10n_parent,image,child_birth_date) "
+                "l10n_parent,image,child_birth_date,project) "
                 "values ('{}','{}','{}','{}','{}','{}',"
-                "'{}','{}','{}','{}','{}','{}');".format(
+                "'{}','{}','{}','{}','{}','{}',{});".format(
                     child.code, child.name, child.firstname,
                     child_gender, child_desc_de,
                     today_ts, today_ts, today_ts, today_ts + three_month_ts,
-                    0, child_image, child_birth_date), 'upd',
+                    0, child_image, child_birth_date, project), 'upd',
                 context)
 
             parent_id = self._get_typo3_child_id(cr, uid, child.code, context)
@@ -612,15 +612,15 @@ class compassion_child(orm.Model):
                 "insert into "
                 "tx_drechildpoolmanagement_domain_model_children"
                 "(child_key,child_name_full,child_name_personal,"
-                "child_gender,child_biography,"
-                "consignment_date, tstamp, crdate, consignment_expiry_date,"
-                "l10n_parent,image,child_birth_date) "
+                "child_gender,child_biography,consignment_date,tstamp,crdate,"
+                "consignment_expiry_date,l10n_parent,image,child_birth_date,"
+                "project,sys_language_uid) "
                 "values ('{}','{}','{}','{}','{}','{}','{}',"
-                "'{}','{}','{}','{}','{}');".format(
+                "'{}','{}','{}','{}','{}',{},1);".format(
                     child.code, child.name, child.firstname,
                     child_gender, child_desc_fr,
                     today_ts, today_ts, today_ts, today_ts + three_month_ts,
-                    parent_id, child_image, child_birth_date), 'upd',
+                    parent_id, child_image, child_birth_date, project), 'upd',
                 context)
 
         self._add_child_pictures_to_typo3(cr, uid, ids, context)

@@ -448,13 +448,18 @@ class compassion_project(orm.Model):
         today_ts = calendar.timegm(
             datetime.today().utctimetuple())
 
+        # Returns the german projects (parents) ids on typo3
+        res = list()
+
         for project in self.browse(cr, uid, ids, context):
             project_desc_de = project.description_de.replace('\'', '\'\'')
             project_desc_fr = project.description_fr.replace('\'', '\'\'')
+            if not project.country_id:
+                project.update_informations()
+                project = self.browse(cr, uid, project.id, context)
 
             # German description (parent)
             Sync_typo3.request_to_typo3(
-                cr, uid,
                 "insert into "
                 "tx_drechildpoolmanagement_domain_model_projects"
                 "(project_key, country, description,"
@@ -467,16 +472,18 @@ class compassion_project(orm.Model):
 
             parent_id = self.get_project_from_typo3(
                 cr, uid, project.code, context)[0]['uid']
+            res.append(parent_id)
 
             # French description
             Sync_typo3.request_to_typo3(
-                cr, uid,
                 "insert into "
                 "tx_drechildpoolmanagement_domain_model_projects"
                 "(project_key, country, description,"
-                "tstamp, crdate, l10n_parent) "
-                "values ('{}','{}','{}','{}','{}','{}');".format(
+                "tstamp, crdate, l10n_parent, sys_language_uid) "
+                "values ('{}','{}','{}','{}','{}','{}',1);".format(
                     project.code, project.country_id.name,
                     project_desc_fr, today_ts,
                     today_ts, parent_id), 'upd',
                 context)
+
+            return res
