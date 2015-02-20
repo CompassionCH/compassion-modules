@@ -560,7 +560,7 @@ class compassion_child(orm.Model):
             project = project_obj.get_project_from_typo3(
                 cr, uid, child.project_id.code, context)
 
-            if len(project) == 0:
+            if not project:
                 if (child.project_id.description_fr and
                         child.project_id.description_de):
                     project_obj.project_add_to_typo3(

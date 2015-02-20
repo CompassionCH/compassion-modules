@@ -23,7 +23,6 @@ from sync_typo3 import Sync_typo3
 
 
 class compassion_project(orm.Model):
-
     """ A compassion project """
     _name = 'compassion.project'
     _inherit = 'mail.thread'
