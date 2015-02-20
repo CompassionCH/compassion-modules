@@ -31,12 +31,18 @@ class hr_contract(orm.Model):
             self._generate(cr, uid, ids, context)
         return res
 
+    def unlink(self, cr, uid, ids, context=None):
+        planning_day_ids = self.pool.get('hr.planning.day').search(
+            cr, uid, [('contract_id', 'in', ids)], context=context)
+        self.pool.get('hr.planning.day').unlink(cr, uid, planning_day_ids, context)
+        res = super(hr_contract, self).unlink(
+            cr, uid, ids, context=context)
+        return res
+
     def _generate(self, cr, uid, ids, context=None):
         contracts = self.browse(cr, uid, ids, context=context)
+        employee_ids = [contract.employee_id.id 
+                        for contract in contracts]
 
-        for contract in contracts:
-            employee_ids = []
-            employee_ids.append(contract.employee_id.id)
-
-            self.pool.get('hr.planning.wizard').generate(
-                cr, uid, employee_ids, context=context)
+        self.pool.get('hr.planning.wizard').generate(
+            cr, uid, employee_ids, context=context)
