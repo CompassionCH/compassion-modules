@@ -545,7 +545,6 @@ class compassion_child(orm.Model):
 
     def _get_typo3_child_id(self, cr, uid, child_code, context=None):
         res = Sync_typo3.request_to_typo3(
-            cr, uid,
             "select * "
             "from tx_drechildpoolmanagement_domain_model_children "
             "where child_key='%s';" % child_code, 'sel',
@@ -589,7 +588,6 @@ class compassion_child(orm.Model):
 
             # German description (parent)
             Sync_typo3.request_to_typo3(
-                cr, uid,
                 "insert into "
                 "tx_drechildpoolmanagement_domain_model_children"
                 "(child_key, child_name_full, child_name_personal,"
@@ -608,7 +606,6 @@ class compassion_child(orm.Model):
 
             # French description
             Sync_typo3.request_to_typo3(
-                cr, uid,
                 "insert into "
                 "tx_drechildpoolmanagement_domain_model_children"
                 "(child_key,child_name_full,child_name_personal,"
@@ -630,7 +627,6 @@ class compassion_child(orm.Model):
 
         for child in self.browse(cr, uid, ids, context):
             Sync_typo3.request_to_typo3(
-                cr, uid,
                 "delete from tx_drechildpoolmanagement_domain_model_children "
                 "where child_key='%s';" % child.code, 'upd',
                 context)
