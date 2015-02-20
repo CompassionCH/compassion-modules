@@ -433,7 +433,6 @@ class compassion_project(orm.Model):
 
     def get_project_from_typo3(self, cr, uid, project_code, context=None):
         res = Sync_typo3.request_to_typo3(
-            cr, uid,
             "select * "
             "from tx_drechildpoolmanagement_domain_model_projects "
             "where project_key='%s'" % project_code, 'sel',
