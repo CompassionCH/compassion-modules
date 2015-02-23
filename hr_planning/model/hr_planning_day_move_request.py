@@ -15,7 +15,16 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
 
 
-class hr_planning_day_move_request(orm.Model):
+class hr_planning_day_move_request(orm.Model)
+    ''' Add possibility to create request to modify the planning
+        - Move a planning day
+        - Create a new planning day
+        Requests needed to be approved. 
+        Request can be created or approved in this cases only:
+        - An employee does not work twice a day
+        - An employee move a working day only
+        - An employee cannot add a working day during his/her holiday
+    '''
     _name = "hr.planning.day.move.request"
 
     def _employee_get(self, cr, uid, context=None):
@@ -56,22 +65,26 @@ class hr_planning_day_move_request(orm.Model):
     }
 
     def create(self, cr, uid, vals, context=None):
+        # Move request
         if vals['type'] == 'move':
+            # Check if this employee is working this day
             if (self._check_is_working(
                     cr, uid, vals['employee_id'], vals['old_date'], context)):
                 return super(hr_planning_day_move_request, self).create(
                     cr, uid, vals, context=context)
+            # Check if the move will have no effect
             elif vals['old_date'] == vals['new_date']:
-                raise orm.except_orm('Warning',
-                                     _(u'You choose the same date'))
+                raise orm.except_orm(_('Warning'),
+                                     _(u'You chose the same date'))
             else:
                 employee_name = self.pool.get('hr.employee').browse(
                     cr, uid, vals['employee_id'], context).name
                 raise orm.except_orm(
-                    'Warning',
+                    _('Warning'),
                     _(u'{} does not work this day : {}').format(
                         employee_name, vals['old_date'])
                 )
+        # Add request
         else:
             vals['old_date'] = False
             return super(hr_planning_day_move_request, self).create(
@@ -83,12 +96,13 @@ class hr_planning_day_move_request(orm.Model):
                 vals['old_date'] = False
         return super(hr_planning_day_move_request, self).write(
             cr, uid, ids, vals, context)
-
+    
     def _check_is_working(self, cr, uid, employee_id, date, context=None):
         planning_day_obj = self.pool.get('hr.planning.day')
         planning_day_ids = planning_day_obj.search(
             cr, uid, [('employee_id', '=', employee_id)], context=context)
-
+        
+        # Find in the planning day
         for planning_day in planning_day_obj.browse(
                 cr, uid, planning_day_ids, context):
             if (datetime.strptime(
@@ -110,8 +124,8 @@ class hr_planning_day_move_request(orm.Model):
                     move_request.new_date,
                     context)):
                 raise orm.except_orm(
-                    'Warning',
-                    _(u'{} already work this day : {}').format(
+                    _('Warning'),
+                    _(u'{} already works this day : {}').format(
                         move_request.employee_id.name,
                         move_request.new_date)
                 )
