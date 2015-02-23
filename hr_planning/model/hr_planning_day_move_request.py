@@ -15,7 +15,7 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
 
 
-class hr_planning_day_move_request(orm.Model)
+class hr_planning_day_move_request(orm.Model):
     ''' Add possibility to create request to modify the planning
         - Move a planning day
         - Create a new planning day
