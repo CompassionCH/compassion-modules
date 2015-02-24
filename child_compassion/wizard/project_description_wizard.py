@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Kevin Cristi
+#    @author: Kevin Cristi, Emanuel Cino
 #
 #    The licence is in the file __openerp__.py
 #
@@ -55,159 +55,116 @@ class project_description_wizard(orm.TransientModel):
                 value_obj.write(cr, uid, [value_id], line[2])
         return True
 
+    def _get_needs(self, cr, uid, lang, context):
+        """ Returns the needs descrption of the given language.
+        It will either generate it from a pattern or retrieve the
+        last saved description if one exist. """
+        project = self.pool.get('compassion.project').browse(
+            cr, uid, context.get('active_id'), context)
+        res = False
+        if lang == 'fr':
+            res = project.needs_fr or \
+                Project_description_fr._get_needs_pattern_fr(cr, uid, project,
+                                                             context)
+        elif lang == 'de':
+            res = project.needs_de or \
+                Project_description_de._get_needs_pattern_de(cr, uid, project,
+                                                             context)
+        elif lang == 'it':
+            res = project.needs_it or \
+                Project_description_it._get_needs_pattern_it(cr, uid, project,
+                                                             context)
+        elif lang == 'en' and project.description_en:
+            # Fetch the part of the needs in the original description
+            string = project.description_en
+            match = re.search('per month.?\s?', string)
+            res = string[match.end():] or False
+
+        return res
+
     _columns = {
         'project_id': fields.many2one('compassion.project', 'Project code'),
+        # Complete descriptions
         'keep_desc_fr': fields.boolean(_('Keep french description')),
-        'desc_fr': fields.text(_('French description')),
         'keep_desc_de': fields.boolean(_('Keep german description')),
-        'desc_de': fields.text(_('German description')),
         'keep_desc_it': fields.boolean(_('Keep italian description')),
+        'desc_fr': fields.text(_('French description')),
+        'desc_de': fields.text(_('German description')),
         'desc_it': fields.text(_('Italian description')),
-        'keep_desc_en': fields.boolean(_('Keep english description')),
         'desc_en': fields.text(_('English description')),
-        'keep_needs_desc_en': fields.boolean(_('Keep english needs '
-                                               'description')),
-        'needs_desc_en': fields.text(_('English needs description')),
+        # Needs descriptions
         'keep_needs_desc_fr': fields.boolean(_('Keep french needs '
                                                'description')),
-        'needs_desc_fr': fields.text(_('French needs description')),
         'keep_needs_desc_de': fields.boolean(_('Keep german needs '
                                                'description')),
-        'needs_desc_de': fields.text(_('German needs description')),
         'keep_needs_desc_it': fields.boolean(_('Keep italian needs '
                                                'description')),
+        'needs_desc_en': fields.text(_('English needs description')),
+        'needs_desc_fr': fields.text(_('French needs description')),
+        'needs_desc_de': fields.text(_('German needs description')),
         'needs_desc_it': fields.text(_('Italian needs description')),
         'project_property_value_ids': fields.function(
             _get_value_ids, type='one2many',
             relation='compassion.translated.value',
             fnct_inv=_write_values),
         'state': fields.selection(
-            [('values', _('Values completion')),
-             ('needs', _('Needs completion')),
+            [('needs', _('Needs completion')),
              ('descriptions', _('Descriptions correction'))],
             _('State'), required=True, readonly=True),
     }
 
     _defaults = {
         'project_id': _get_project_id,
-        'state': 'values',
-        'keep_desc_fr': False,
-        'keep_desc_de': False,
-        'keep_desc_it': False,
-        'keep_desc_en': False,
-        'keep_needs_desc_fr': False,
-        'keep_needs_desc_de': False,
-        'keep_needs_desc_it': False,
-        'keep_needs_desc_en': False,
+        'state': 'needs',
+        'needs_desc_fr': lambda self, cr, uid, context: self._get_needs(
+            cr, uid, 'fr', context),
+        'needs_desc_de': lambda self, cr, uid, context: self._get_needs(
+            cr, uid, 'de', context),
+        'needs_desc_it': lambda self, cr, uid, context: self._get_needs(
+            cr, uid, 'it', context),
+        'needs_desc_en': lambda self, cr, uid, context: self._get_needs(
+            cr, uid, 'en', context),
         'project_property_value_ids': lambda self, cr, uid, context:
         self._get_default_ids(cr, uid, context),
     }
 
-    def generate_needs_descriptions(self, cr, uid, ids, context=None):
-        """ This method generates the last part, called "needs",
-            of the project description.
-            But if this part already exists, it will retrieve it.
-        """
-        project_obj = self.pool.get('compassion.project')
-        project = project_obj.browse(cr, uid, context.get('active_id'),
-                                     context)
-        if not project:
-            raise orm.except_orm('ObjectError', _('No valid project id '
-                                 'given !'))
-        if isinstance(project, list):
-            project = project[-1]
+    def validate_needs(self, cr, uid, ids, context=None):
+        """ Save the needs description in the project. """
+        wizard = self.browse(cr, uid, ids, context)[0]
+        project_vals = dict()
+        if wizard.keep_needs_desc_fr:
+            project_vals['needs_fr'] = wizard.needs_desc_fr
+        if wizard.keep_needs_desc_de:
+            project_vals['needs_de'] = wizard.needs_desc_de
+        if wizard.keep_needs_desc_it:
+            project_vals['needs_it'] = wizard.needs_desc_it
+        if project_vals:
+            wizard.project_id.write(project_vals)
 
-        if project.description_en:
-            string = project.description_en
-            match = re.search('per month.?\s?', string)
-            needs_en = string[match.end():]
-
-        if project.needs_fr:
-            remember_needs_fr = project.needs_fr
-        else:
-            remember_needs_fr = (
-                Project_description_fr._get_needs_pattern_fr(
-                    cr, uid, project, context))
-
-        if project.needs_de:
-            remember_needs_de = project.needs_de
-        else:
-            remember_needs_de = (
-                Project_description_de._get_needs_pattern_de(
-                    cr, uid, project, context))
-
-        if project.needs_it:
-            remember_needs_it = project.needs_it
-        else:
-            remember_needs_it = (
-                Project_description_it._get_needs_pattern_it(
-                    cr, uid, project, context))
-
-        self.write(cr, uid, ids, {
-            'state': 'needs',
-            'needs_desc_en': needs_en,
-            'needs_desc_fr': remember_needs_fr,
-            'needs_desc_de': remember_needs_de,
-            'needs_desc_it': remember_needs_it,
-            'keep_needs_desc_fr': True,
-            'keep_needs_desc_de': True,
-            'keep_needs_desc_it': True,
-            }, context)
-
-        return {
-            'name': _('Descriptions generation'),
-            'type': 'ir.actions.act_window',
-            'res_model': self._name,
-            'view_mode': 'form',
-            'view_type': 'form',
-            'res_id': ids[0],
-            'context': context,
-            'target': 'new',
-            }
+        return self.generate_descriptions(cr, uid, ids, context)
 
     def generate_descriptions(self, cr, uid, ids, context=None):
-        project_obj = self.pool.get('compassion.project')
-        project = project_obj.browse(cr, uid, context.get('active_id'),
-                                     context)
         wizard = self.browse(cr, uid, ids, context)[0]
-        if not project:
-            raise orm.except_orm('ObjectError', _('No valid project '
-                                                  'id given !'))
-        if isinstance(project, list):
-            project = project[-1]
+        project = wizard.project_id
 
-        complete_desc_fr = self._get_needs_desc(
-            wizard.needs_desc_fr, wizard.keep_needs_desc_fr,
-            project.description_fr,
-            Project_description_fr.gen_fr_translation(cr, uid,
-                                                      project, context))
+        complete_desc_fr = self._get_complete_desc(
+            wizard.needs_desc_fr, Project_description_fr.gen_fr_translation(
+                cr, uid, project, context))
 
-        complete_desc_de = self._get_needs_desc(
-            wizard.needs_desc_de, wizard.keep_needs_desc_de,
-            project.description_de,
-            Project_description_de.gen_de_translation(cr, uid,
-                                                      project, context))
+        complete_desc_de = self._get_complete_desc(
+            wizard.needs_desc_de, Project_description_de.gen_de_translation(
+                cr, uid, project, context))
 
-        complete_desc_it = self._get_needs_desc(
-            wizard.needs_desc_it, wizard.keep_needs_desc_it,
-            project.description_it,
-            Project_description_it.gen_it_translation(cr, uid,
-                                                      project, context))
-
-        project.write({
-            'needs_fr': wizard.needs_desc_fr,
-            'needs_de': wizard.needs_desc_de,
-            'needs_it': wizard.needs_desc_it,
-            })
+        complete_desc_it = self._get_complete_desc(
+            wizard.needs_desc_it, Project_description_it.gen_it_translation(
+                cr, uid, project, context))
 
         self.write(cr, uid, ids, {
             'state': 'descriptions',
             'desc_fr': complete_desc_fr,
             'desc_de': complete_desc_de,
             'desc_it': complete_desc_it,
-            'keep_desc_fr': True,
-            'keep_desc_de': True,
-            'keep_desc_it': True,
+            'desc_en': project.description_en,
             }, context)
 
         return {
@@ -221,31 +178,18 @@ class project_description_wizard(orm.TransientModel):
             'target': 'new',
             }
 
-    def _get_needs_desc(self, needs, keep_needs, desc, desc_trans):
-        """ This method:
-            - display a pattern of "project needs" of the project
-              description (it's a cloze text to fill in).
-            - store the modified pattern
-            - verify if checkboxes about "project needs" are checked
-            - verify if "project needs" fields are filled
-            - return the appropriate project description
+    def _get_complete_desc(self, needs, description):
+        """ Returns the appropriate project description
         """
-        if not desc:
-            if ((keep_needs and not needs) or (keep_needs and
-               (needs in desc_trans)) or not keep_needs):
-                complete_desc = desc_trans
-            else:
-                complete_desc = desc_trans + needs
-        elif not keep_needs:
-            complete_desc = desc
+        if needs and (needs not in description):
+            complete_desc = description + '\n\n' + needs
         else:
-            try:
-                complete_desc = desc + needs
-            except TypeError:
-                complete_desc = desc
+            complete_desc = description
+
         return complete_desc
 
     def validate_descriptions(self, cr, uid, ids, context=None):
+        """ Save the selected descriptions in the project. """
         wizard = self.browse(cr, uid, ids, context)[0]
         vals = {}
         if wizard.keep_desc_fr:
@@ -254,14 +198,12 @@ class project_description_wizard(orm.TransientModel):
             vals['description_de'] = wizard.desc_de
         if wizard.keep_desc_it:
             vals['description_it'] = wizard.desc_it
-        if wizard.keep_desc_en:
-            vals['description_en'] = wizard.desc_en
 
         if not vals:
-            raise orm.except_orm('ValueError',
-                                 _('No description selected. \
-                                 Please select one or click cancel '
-                                   'to abort current task.'))
+            raise orm.except_orm(
+                'ValueError',
+                _('No description selected. Please select one or click cancel'
+                  ' to abort current task.'))
         wizard.project_id.write(vals)
         return {
             'type': 'ir.actions.client',

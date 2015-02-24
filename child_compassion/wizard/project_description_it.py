@@ -30,10 +30,12 @@ class Project_description_it:
 
     @classmethod
     def _gen_list_string(cls, list, separator, last_separator):
-        string = separator.join(list[:-1])
-        if len(list) > 1:
-            string += last_separator
-        string += list[-1]
+        string = ''
+        if list:
+            string = separator.join(list[:-1])
+            if len(list) > 1:
+                string += last_separator
+            string += list[-1]
 
         return string
 
@@ -42,7 +44,7 @@ class Project_description_it:
         """ Generate the project name, the localization and infos
             about the community
         """
-        string = (u"Centro: %s-%s, %s.\nLuogo: %s, %s, %s.\n"
+        string = (u"Centro: %s-%s, %s.\nLuogo: %s, %s, %s.\n\n"
                   u"Questo bambino vive in una comunitá del %s dove "
                   u"risiendono circa %s abitanti." % (
                       project.code[:2].upper(), project.code[2:],

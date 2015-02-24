@@ -31,10 +31,12 @@ class Child_description_fr:
 
     @classmethod
     def _gen_list_string(cls, list):
-        string = ', '.join(list[:-1])
-        if len(list) > 1:
-            string += ' et '
-        string += list[-1]
+        string = ''
+        if list:
+            string = ', '.join(list[:-1])
+            if len(list) > 1:
+                string += ' et '
+            string += list[-1]
         return string
 
     @classmethod

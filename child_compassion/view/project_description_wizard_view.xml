@@ -7,12 +7,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Description generation" version="7.0">
-                    <sheet states="values">
-                        <field name="state" invisible="1" />
-                        <group string="Complete missing translations if needed">
-                            <field name="project_property_value_ids" nolabel="1" />
-                        </group>
-                    </sheet>
+                    <field name="state" invisible="1"/>
                     <sheet states="needs">
                         <separator string="Complete needs descriptions" />
                         <div>
@@ -35,27 +30,35 @@
                             <field name="needs_desc_it" class="oe_checklist_value"/>
                         </div>
                     </sheet>
-                    <sheet states="descriptions">
-                        <separator string="Check and select descriptions to validate" />
-                        <div>
-                            <field name="keep_desc_fr" class="oe_checklist_box" />
-                            <label for="desc_fr" class="oe_checklist_label" />
-                            <field name="desc_fr" class="oe_checklist_value"/>
-                        </div>
-                        <div class="oe_checklist_div">
-                            <field name="keep_desc_de" class="oe_checklist_box" />
-                            <label for="desc_de" class="oe_checklist_label" />
-                            <field name="desc_de" class="oe_checklist_value"/>
-                        </div>
-                        <div>
-                            <field name="keep_desc_it" class="oe_checklist_box" />
-                            <label for="desc_it" class="oe_checklist_label" />
-                            <field name="desc_it" class="oe_checklist_value"/>
-                        </div>
-                    </sheet>
+                    <group states="descriptions">
+                        <group string="Complete missing translations if needed">
+                            <field name="project_property_value_ids" nolabel="1" />
+                        </group>
+                        <group string="Check and select descriptions to validate">
+                            <div>
+                                <label for="desc_en"/>
+                                <field name="desc_en" readonly="1"/>
+                            </div>
+                            <div class="oe_checklist_div">
+                                <field name="keep_desc_fr" class="oe_checklist_box" />
+                                <label for="desc_fr" class="oe_checklist_label" />
+                                <field name="desc_fr" class="oe_checklist_value"/>
+                            </div>
+                            <div>
+                                <field name="keep_desc_de" class="oe_checklist_box" />
+                                <label for="desc_de" class="oe_checklist_label" />
+                                <field name="desc_de" class="oe_checklist_value"/>
+                            </div>
+                            <div class="oe_checklist_div">
+                                <field name="keep_desc_it" class="oe_checklist_box" />
+                                <label for="desc_it" class="oe_checklist_label" />
+                                <field name="desc_it" class="oe_checklist_value"/>
+                            </div>
+                        </group>
+                    </group>
                     <footer>
-                        <button name="generate_needs_descriptions" class="oe_highlight" string="Next" type="object" states="values" />
-                        <button name="generate_descriptions" class="oe_highlight" string="Next" type="object" states="needs" />
+                        <button name="validate_needs" class="oe_highlight" string="Next" type="object" states="needs" />
+                        <button name="generate_descriptions" string="Generate" type="object" states="descriptions" />
                         <button name="validate_descriptions" class="oe_highlight" string="Finish" type="object" states="descriptions" />
                         <button string="Cancel" class="oe_link" special="cancel" />
                     </footer>

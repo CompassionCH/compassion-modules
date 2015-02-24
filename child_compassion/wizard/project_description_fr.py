@@ -29,10 +29,12 @@ class Project_description_fr:
 
     @classmethod
     def _gen_list_string(cls, list, separator, last_separator):
-        string = separator.join(list[:-1])
-        if len(list) > 1:
-            string += last_separator
-        string += list[-1]
+        string = ''
+        if list:
+            string = separator.join(list[:-1])
+            if len(list) > 1:
+                string += last_separator
+            string += list[-1]
 
         return string
 
@@ -43,7 +45,7 @@ class Project_description_fr:
         """
         terrain_desc = [desc.value_fr if desc.value_fr else desc.value_en
                         for desc in project.terrain_description_ids]
-        string = (u"Project: %s-%s, %s.\nEmplacement: %s, %s, %s.\n"
+        string = (u"Project: %s-%s, %s.\nEmplacement: %s, %s, %s.\n\n"
                   u"L'enfant que vous parrainez, vit à %s"
                   u"%s. %s compte environ %s habitants. " % (
                       project.code[:2].upper(), project.code[2:],
