@@ -45,7 +45,8 @@ class res_partner(orm.Model):
                     partner.lastname != new_lastname:
                 to_update_ids.append(partner.id)
         self._upsert_constituent(cr, uid, to_update_ids, context)
-        return super(res_partner, self).write(cr, uid, ids, vals, context)
+        return super(res_partner, self).write_from_gp(cr, uid, ids, vals,
+                                                      context)
 
     def _upsert_constituent(self, cr, uid, ids, context=None):
         """If partner has active contracts, UPSERT Constituent in GMC."""

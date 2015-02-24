@@ -18,8 +18,7 @@
                         <filter name="biennial" string="Biennial" domain="[('gmc_state', 'in', ('picture', 'casestudy'))]" context="{'group_by': 'gmc_state'}"/>
                         <filter name="depart" string="Departure" domain="[('gmc_state', '=', 'depart')]"/>
                         <filter name="transfer" string="Child Transfer" domain="[('gmc_state', '=', 'transfer')]"/>
-                        <filter name="suspension" string="Project Suspended" domain="[('gmc_state', '=', 'suspension')]"/>
-                        <filter name="reactivation" string="Project Reactivated" domain="[('gmc_state', '=', 'reactivation')]"/>
+                        <filter name="suspension" string="Suspension" domain="[('gmc_state', 'in', ('suspension', 'suspension-extension', 'reactivation'))]" context="{'group_by': 'gmc_state'}"/>
                     </filter>
                 </data>
             </field>

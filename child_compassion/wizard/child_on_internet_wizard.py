@@ -52,7 +52,14 @@ class child_on_internet_wizard(orm.TransientModel):
             # Check for descriptions
             if(not(child.desc_de) or not(child.desc_fr)):
                 raise orm.except_orm(
-                    _('Warning'), _('Missing descriptions'))
+                    _('Warning'),
+                    _('Missing descriptions for child %s') % child.code)
+            if not (child.project_id.description_fr and
+                    child.project_id.description_de):
+                raise orm.except_orm(
+                    _('Warning'),
+                    _('Missing descriptions for project %s') %
+                    child.project_id.code)
 
             # Check for pictures
             if not(child.portrait and child.fullshot):

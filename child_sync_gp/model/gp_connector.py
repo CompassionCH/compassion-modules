@@ -146,7 +146,8 @@ class GPConnect(mysql_connector):
             'OrganizationName': project.local_church_name,
             'WesternDenomination': project.western_denomination,
             'CountryDenomination': project.country_denomination,
-            'CommunityName': project.community_name
+            'CommunityName': project.community_name,
+            'disburse_gifts': project.disburse_gifts,
         }
         return self.upsert("Projet", vals)
 

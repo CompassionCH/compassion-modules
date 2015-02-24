@@ -60,7 +60,7 @@ class suspension_wizard(orm.TransientModel):
                 _('The project is not fund-suspended. '
                   'You cannot extend the suspension.'))
 
-        wizard = self.browse(cr, uid, ids, context)
+        wizard = self.browse(cr, uid, ids[0], context)
         project_obj.suspend_funds(
             cr, uid, project_id, context,
             date_end=datetime.strptime(wizard.date_end, DF))

@@ -68,9 +68,6 @@
                                     <field name="desc_it" />
                                 </group>
                             </page>
-                            <page string="Sponsorships">
-                                <field name="contract_ids"/>
-                            </page>
                             <page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '>', 0)]}">
                                 <group>
                                     <field name="gp_exit_reason" />

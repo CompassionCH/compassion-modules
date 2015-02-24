@@ -73,15 +73,6 @@ class compassion_child(orm.Model):
                 cr, uid, [('code', 'like', project.code)], context=context)
         return child_ids
 
-    def _get_related_contracts(self, cr, uid, ids, field_name, args,
-                               context=None):
-        con_obj = self.pool.get('recurring.contract')
-        return {
-            child_id: con_obj.search(cr, uid, [('child_id', '=', child_id)],
-                                     context=context)
-            for child_id in ids
-        }
-
     def _get_child_states(self, cr, uid, context=None):
         return [
             ('N', _('Available')),
@@ -132,6 +123,8 @@ class compassion_child(orm.Model):
              ('M', _('Male'))], _('Gender')),
         'completion_date': fields.date(_("Completion date"),
                                        track_visibility="onchange"),
+        # Dummy field which is overwritten in module sponsorship_compassion
+        'unsponsored_since': fields.date('Unsponsored since'),
         # TODO : We store the descriptions in child database since we
         # imported the descriptions from GP in this field. When all children
         # will have a new case study fetched from Cornerstone,
@@ -181,9 +174,6 @@ class compassion_child(orm.Model):
         'sponsor_id': fields.many2one('res.partner', _('Sponsor'),
                                       readonly=True,
                                       track_visibility='onchange'),
-        'contract_ids': fields.function(
-            _get_related_contracts, type='one2many', obj='recurring.contract',
-            string=_("Sponsorships"), readonly=True),
         'delegated_to': fields.many2one('res.partner', _("Delegated to")),
         'delegated_comment': fields.text(_("Delegated comment")),
         'date_delegation': fields.date(_("Delegated date")),
@@ -563,24 +553,26 @@ class compassion_child(orm.Model):
                 cr, uid, child.project_id.code)
 
             if not project:
-                if (child.project_id.description_fr and
-                        child.project_id.description_de):
-                    project = project_obj.project_add_to_typo3(
-                        cr, uid, [child.project_id.id], context)[0]
-                else:
-                    raise orm.except_orm(
-                        _("Warning"),
-                        _("Missing description for project : {}").format(
-                            child.project_id.code))
+                project = project_obj.project_add_to_typo3(
+                    cr, uid, [child.project_id.id], context)[0]
 
             child_gender = self._get_gender(cr, uid, child.gender, context)
             child_image = child.code + "_f.jpg," + child.code + "_h.jpg"
-            child_birth_date = calendar.timegm(
-                datetime.strptime(child.birthdate, DF).utctimetuple())
 
             today_ts = calendar.timegm(
                 datetime.today().utctimetuple())
             three_month_ts = timedelta(days=200).total_seconds()
+            if child.birthdate:
+                child_birth_date = calendar.timegm(
+                    datetime.strptime(child.birthdate, DF).utctimetuple())
+            else:
+                child_birth_date = 0
+            if child.unsponsored_since:
+                child_unsponsored_date = calendar.timegm(
+                    datetime.strptime(child.unsponsored_since,
+                                      DF).utctimetuple())
+            else:
+                child_unsponsored_date = today_ts
 
             # Fix ' in description
             child_desc_de = child.desc_de.replace('\'', '\'\'')
@@ -591,44 +583,47 @@ class compassion_child(orm.Model):
                 "insert into "
                 "tx_drechildpoolmanagement_domain_model_children"
                 "(child_key, child_name_full, child_name_personal,"
-                "child_gender, child_biography,"
-                "consignment_date, tstamp, crdate, consignment_expiry_date,"
-                "l10n_parent,image,child_birth_date,project) "
+                " child_gender, child_biography,"
+                " consignment_date, tstamp, crdate, consignment_expiry_date,"
+                " l10n_parent,image,child_birth_date,"
+                " child_unsponsored_since_date,project) "
                 "values ('{}','{}','{}','{}','{}','{}',"
-                "'{}','{}','{}','{}','{}','{}',{});".format(
+                "        '{}','{}','{}','{}','{}','{}','{}',{});".format(
                     child.code, child.name, child.firstname,
                     child_gender, child_desc_de,
                     today_ts, today_ts, today_ts, today_ts + three_month_ts,
-                    0, child_image, child_birth_date, project), 'upd')
+                    0, child_image, child_birth_date, child_unsponsored_date,
+                    project), 'upd')
 
             parent_id = self._get_typo3_child_id(cr, uid, child.code)
 
             # French description
-            Sync_typo3.request_to_typo3(
-                "insert into "
-                "tx_drechildpoolmanagement_domain_model_children"
-                "(child_key,child_name_full,child_name_personal,"
-                "child_gender,child_biography,consignment_date,tstamp,crdate,"
-                "consignment_expiry_date,l10n_parent,image,child_birth_date,"
-                "project,sys_language_uid) "
-                "values ('{}','{}','{}','{}','{}','{}','{}',"
-                "'{}','{}','{}','{}','{}',{},1);".format(
+            query = "insert into " \
+                "tx_drechildpoolmanagement_domain_model_children" \
+                "(child_key,child_name_full,child_name_personal," \
+                " child_gender,child_biography,consignment_date,tstamp," \
+                " crdate,consignment_expiry_date,l10n_parent,image," \
+                " child_birth_date,child_unsponsored_since_date," \
+                " project,sys_language_uid) " \
+                "values ('{}','{}','{}','{}','{}','{}','{}'," \
+                "        '{}','{}','{}','{}','{}','{}',{},1);".format(
                     child.code, child.name, child.firstname,
                     child_gender, child_desc_fr,
                     today_ts, today_ts, today_ts, today_ts + three_month_ts,
-                    parent_id, child_image, child_birth_date, project), 'upd')
+                    parent_id, child_image, child_birth_date,
+                    child_unsponsored_date, project)
 
             # Assign child to childpool
             max_sorting = int(json.loads(Sync_typo3.request_to_typo3(
                 "select max(sorting) as max from "
                 "tx_drechildpoolmanagement_childpools_children_mm",
                 'sel'))[0]['max'])
-            Sync_typo3.request_to_typo3(
-                "insert into "
-                "tx_drechildpoolmanagement_childpools_children_mm"
-                "(uid_foreign,sorting) "
-                "values ({},{})".format(parent_id, max_sorting),
-                'upd')
+            query += "insert into " \
+                "tx_drechildpoolmanagement_childpools_children_mm" \
+                "(uid_foreign,sorting) " \
+                "values ({},{})".format(parent_id, max_sorting)
+
+            Sync_typo3.request_to_typo3(query, 'upd')
 
         self._add_child_pictures_to_typo3(cr, uid, ids, context)
 

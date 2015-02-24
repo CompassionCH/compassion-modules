@@ -29,6 +29,7 @@ class recurring_contract(orm.Model):
             ('depart', _('Child Departed')),
             ('transfer', _('Child Transfer')),
             ('suspension', _('Project Fund-Suspended')),
+            ('suspension-extension', _('Fund suspension extension')),
             ('reactivation', _('Project Reactivated'))], _('GMC State'))
     }
 

@@ -187,7 +187,6 @@
             <field name="res_model">gmc.message.pool</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_mode">tree,form</field>
             <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
             <field name="context">{'search_default_constituent':1, 'search_default_pending':1}</field>
             <field name="help" type="html">
@@ -202,7 +201,6 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">gmc.message.pool</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
             <field name="view_mode">tree,form</field>
             <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
             <field name="context">{'search_default_child':1, 'search_default_pending':1}</field>
@@ -219,7 +217,6 @@
             <field name="res_model">gmc.message.pool</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_mode">tree,form</field>
             <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
             <field name="context">{'search_default_commitment':1, 'search_default_pending':1}</field>
             <field name="help" type="html">
@@ -234,7 +231,6 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">gmc.message.pool</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_gmc_message_pool_gift_tree" />
             <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
