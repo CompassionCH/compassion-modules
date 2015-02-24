@@ -20,6 +20,7 @@ from datetime import datetime, timedelta, time
 class hr_planning_wizard(orm.TransientModel):
     _name = 'hr.planning.wizard'
 
+    # Global regeneration from wizard
     def regenerate(self, cr, uid, ids, context=None):
         employee_obj = self.pool.get('hr.employee')
         employee_ids = employee_obj.search(cr, uid, [], context=context)
@@ -48,24 +49,28 @@ class hr_planning_wizard(orm.TransientModel):
             planning_day_obj.unlink(
                 cr, uid, planning_days_to_remove, context=context)
 
+            # Loop on each contract related to the employee
             for contract in employee.contract_ids:
                 if not contract.working_hours.attendance_ids:
                     continue
+                # Loop on each day of the schedule
                 for attendance in contract.working_hours.attendance_ids:
 
                     d = datetime.strptime(contract.date_start, DF)
 
                     if (d < today):
                         d = today
-
+                    # CDI
                     if (not(contract.date_end)):
                         end_date = d + timedelta(days=365)
+                    # CDD
                     else:
                         end_date = datetime.strptime(
                             contract.date_end, DF) + timedelta(days=1)
 
                     delta = timedelta(days=1)
 
+                    # Loop until the end_date is reached
                     while d <= end_date:
                         start_hour, start_minutes = self._time_from_float(
                             cr, uid, attendance.hour_from, context)
@@ -79,6 +84,7 @@ class hr_planning_wizard(orm.TransientModel):
                         stop_date = datetime(
                             d.year, d.month, d.day, end_hour, end_minutes)
 
+                        # Fix time zone issue
                         start_date = start_date - tz.utcoffset(start_date)
                         stop_date = stop_date - tz.utcoffset(stop_date)
 
@@ -91,7 +97,7 @@ class hr_planning_wizard(orm.TransientModel):
                                 ('date_to', '>=', stop_date.strftime(DF)),
                                 ('state', '=', 'validate')],
                                 context=context)
-
+                            # If no holidays on the full day
                             if not holidays:
                                 # Create a planning day
                                 planning_day_obj.create(cr, uid, {
@@ -99,6 +105,7 @@ class hr_planning_wizard(orm.TransientModel):
                                     'contract_id': contract.id,
                                     'start_date': start_date,
                                     'end_date': stop_date})
+                            # If holidays on a part of the day
                             elif len(holidays) == 1:
                                 holiday = holiday_obj.browse(
                                     cr, uid, holidays, context)[0]
@@ -122,11 +129,13 @@ class hr_planning_wizard(orm.TransientModel):
                                         'start_date': holiday_stop,
                                         'end_date': stop_date})
                         d += delta
+            # Planning days exceptions
             self._move_planning_days(cr, uid, employee, context)
 
     def _move_planning_days(self, cr, uid, employee, context=None):
         planning_day_move_request_obj = self.pool.get(
             'hr.planning.day.move.request')
+        # Search for validated request
         planning_day_move_requests_ids = planning_day_move_request_obj.search(
             cr, uid,
             [('employee_id', '=', employee.id), ('state', '=', 'validate')],
@@ -141,7 +150,9 @@ class hr_planning_wizard(orm.TransientModel):
             cr, uid, planning_days_ids, context)
 
         for planning_day_move_request in planning_day_move_requests:
+            # Move case
             if (planning_day_move_request.type == 'move'):
+                # Find the day to move
                 for planning_day in planning_days:
                     if (datetime.strptime(
                             planning_day_move_request.old_date, DF).date() ==
@@ -159,12 +170,13 @@ class hr_planning_wizard(orm.TransientModel):
                             datetime.strptime(
                                 planning_day.end_date, DTF).time()
                         )
-
+                        # Update the day
                         planning_day_obj.write(
                             cr, uid, planning_day.id, {
                                 'start_date': new_start_date,
                                 'end_date': new_end_date},
                             context=context)
+            # Add case
             else:
                 start_hour, start_minutes = self._time_from_float(
                     cr, uid, planning_day_move_request.hour_from, context)
@@ -184,6 +196,7 @@ class hr_planning_wizard(orm.TransientModel):
                 new_start_date = new_start_date - tz.utcoffset(new_start_date)
                 new_end_date = new_end_date - tz.utcoffset(new_end_date)
 
+                # Create a new planning day
                 planning_day_obj.create(
                     cr, uid,
                     {'start_date': new_start_date,

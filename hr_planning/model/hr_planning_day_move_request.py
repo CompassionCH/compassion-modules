@@ -112,12 +112,14 @@ class hr_planning_day_move_request(orm.Model):
 
         return False
 
+    # Approve a request
     def approve(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'validate'}, context)
         employee_ids = list()
 
         for move_request in self.browse(cr, uid, ids, context=context):
             employee_ids.append(move_request.employee_id.id)
+            # Avoid to approve a request if the employee is already working
             if(self._check_is_working(
                     cr, uid,
                     move_request.employee_id.id,
@@ -133,6 +135,7 @@ class hr_planning_day_move_request(orm.Model):
             cr, uid, employee_ids, context)
         return True
 
+    # Refuse a request
     def refuse(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'to_approve'}, context)
         employee_ids = [move_request.employee_id.id
@@ -142,6 +145,7 @@ class hr_planning_day_move_request(orm.Model):
             cr, uid, employee_ids, context)
         return True
 
+    # Delete a request
     def unlink(self, cr, uid, ids, context=None):
         employee_ids = [move_request.employee_id.id
                         for move_request in self.browse(

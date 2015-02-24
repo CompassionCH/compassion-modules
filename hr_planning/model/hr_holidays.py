@@ -22,7 +22,7 @@ class hr_holidays(orm.Model):
             cr, uid, employee_ids, context=context)
 
     def holidays_validate(self, cr, uid, ids, context=None):
-        res = super(hr_holidays, self).holidays_refuse(
+        res = super(hr_holidays, self).holidays_validate(
             cr, uid, ids, context=context)
         self._generate(cr, uid, ids, context)
         return res
