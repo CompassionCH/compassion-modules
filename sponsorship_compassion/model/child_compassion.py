@@ -83,5 +83,7 @@ class child_compassion(orm.Model):
 
     def get_infos(self, cr, uid, ids, context=None):
         """ Update unsponsored date. """
+        if not isinstance(ids, list):
+            ids = [ids]
         self._recompute_unsponsored(cr, uid, ids, context)
         return super(child_compassion, self).get_infos(cr, uid, ids, context)

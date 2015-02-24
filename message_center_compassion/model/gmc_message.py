@@ -322,6 +322,8 @@ class gmc_message_pool(orm.Model):
                     ('object_id', '=', object_id), ('state', '=', 'success')],
                 context=context)
             if not message_ids:
+                contract = self.pool.get(action.model).browse(
+                    cr, uid, object_id, context=context)
                 raise orm.except_orm(
                     _("Commitment not sent to GMC (%s - %s)") % (
                         contract.partner_id.ref, contract.child_id.code),
