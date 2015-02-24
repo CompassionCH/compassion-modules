@@ -6,16 +6,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 7.0-20140602-231022\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-16 14:30+0000\n"
-"PO-Revision-Date: 2015-02-16 16:13+0100\n"
+"POT-Creation-Date: 2015-02-24 14:57+0000\n"
+"PO-Revision-Date: 2015-02-24 16:22+0100\n"
 "Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
 "Language-Team: \n"
+"Language: fr_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 1.6.4\n"
-"Language: fr_CH\n"
 
 #. module: message_center_compassion
 #: model:ir.actions.act_window,name:message_center_compassion.action_gmc_message_incoming_form
@@ -54,14 +54,6 @@ msgstr "N° requête unique"
 #, python-format
 msgid "Gift instructions"
 msgstr "Instructions pour le cadeau"
-
-#. module: message_center_compassion
-#: code:addons/addons/compassion-modules/message_center_compassion/model/contracts.py:30
-#: code:addons/message_center_compassion/model/contracts.py:30
-#: view:recurring.contract:0 selection:recurring.contract,gmc_state:0
-#, python-format
-msgid "Project Suspended"
-msgstr "Centre d'accueil suspendu"
 
 #. module: message_center_compassion
 #: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:277
@@ -112,12 +104,12 @@ msgid "compassion.child"
 msgstr "compassion.child"
 
 #. module: message_center_compassion
-#: code:addons/addons/compassion-modules/message_center_compassion/model/contracts.py:29
-#: code:addons/message_center_compassion/model/contracts.py:29
-#: view:recurring.contract:0 selection:recurring.contract,gmc_state:0
+#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:100
+#: code:addons/message_center_compassion/model/gmc_message.py:100
+#: view:gmc.message.pool:0 field:gmc.message.pool,process_date:0
 #, python-format
-msgid "Child Transfer"
-msgstr "Transfert d'enfant"
+msgid "Process Date"
+msgstr "Date du traitement"
 
 #. module: message_center_compassion
 #: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:140
@@ -136,10 +128,7 @@ msgid "Project"
 msgstr "Centre d'accueil"
 
 #. module: message_center_compassion
-#: code:addons/addons/compassion-modules/message_center_compassion/model/contracts.py:27
-#: code:addons/message_center_compassion/model/contracts.py:27
-#: view:recurring.contract:0 selection:recurring.contract,gmc_state:0
-#, python-format
+#: view:recurring.contract:0
 msgid "Biennial"
 msgstr "Rapport Biennal"
 
@@ -183,8 +172,16 @@ msgid "Partner"
 msgstr "Partenaire"
 
 #. module: message_center_compassion
-#: code:addons/addons/compassion-modules/message_center_compassion/model/child_compassion.py:146
-#: code:addons/message_center_compassion/model/child_compassion.py:146
+#: code:addons/addons/compassion-modules/message_center_compassion/model/contracts.py:32
+#: code:addons/message_center_compassion/model/contracts.py:32
+#: selection:recurring.contract,gmc_state:0
+#, python-format
+msgid "Fund suspension extension"
+msgstr "Prolongation de la suspension de fonds"
+
+#. module: message_center_compassion
+#: code:addons/addons/compassion-modules/message_center_compassion/model/child_compassion.py:148
+#: code:addons/message_center_compassion/model/child_compassion.py:148
 #, python-format
 msgid "Update Child Error"
 msgstr "Echec de la mise à jour de l'enfant"
@@ -198,8 +195,8 @@ msgid "Contains the event that triggered the incoming message."
 msgstr "Contient l'événement qui a généré le message."
 
 #. module: message_center_compassion
-#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:401
-#: code:addons/message_center_compassion/model/gmc_message.py:401
+#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:403
+#: code:addons/message_center_compassion/model/gmc_message.py:403
 #: field:gmc.action,direction:0
 #, python-format
 msgid "Message Direction"
@@ -254,8 +251,8 @@ msgid "Gift amount"
 msgstr "Montant du cadeau"
 
 #. module: message_center_compassion
-#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:398
-#: code:addons/message_center_compassion/model/gmc_message.py:398
+#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:400
+#: code:addons/message_center_compassion/model/gmc_message.py:400
 #: selection:gmc.action,direction:0
 #, python-format
 msgid "Incoming Message"
@@ -272,8 +269,8 @@ msgid "Search Partner"
 msgstr "Recherche de partnaire"
 
 #. module: message_center_compassion
-#: code:addons/addons/compassion-modules/message_center_compassion/model/contracts.py:30
-#: code:addons/message_center_compassion/model/contracts.py:30
+#: code:addons/addons/compassion-modules/message_center_compassion/model/contracts.py:33
+#: code:addons/message_center_compassion/model/contracts.py:33
 #: field:recurring.contract,gmc_state:0
 #, python-format
 msgid "GMC State"
@@ -329,6 +326,14 @@ msgid "gmc.action"
 msgstr "gmc.action"
 
 #. module: message_center_compassion
+#: code:addons/addons/compassion-modules/message_center_compassion/model/contracts.py:28
+#: code:addons/message_center_compassion/model/contracts.py:28
+#: selection:recurring.contract,gmc_state:0
+#, python-format
+msgid "New Case Study"
+msgstr "Nouveau Case Study"
+
+#. module: message_center_compassion
 #: model:ir.model,name:message_center_compassion.model_compassion_project
 msgid "compassion.project"
 msgstr "compassion.project"
@@ -363,17 +368,17 @@ msgid "This will execute the action defined for each new message in the pool."
 msgstr "Cela va exécuter les actions définies pour chaque message sélectionné."
 
 #. module: message_center_compassion
-#: code:addons/addons/compassion-modules/message_center_compassion/model/child_compassion.py:147
-#: code:addons/message_center_compassion/model/child_compassion.py:147
+#: code:addons/addons/compassion-modules/message_center_compassion/model/child_compassion.py:149
+#: code:addons/message_center_compassion/model/child_compassion.py:149
 #, python-format
 msgid "The child %s could not be updated"
 msgstr "L'enfant %s n'a pas pu être mis à jour"
 
 #. module: message_center_compassion
 #: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:306
-#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:326
+#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:328
 #: code:addons/message_center_compassion/model/gmc_message.py:306
-#: code:addons/message_center_compassion/model/gmc_message.py:326
+#: code:addons/message_center_compassion/model/gmc_message.py:328
 #, python-format
 msgid "Commitment not sent to GMC (%s - %s)"
 msgstr "Echec de l'envoi du parrainage (%s - %s) à GMC"
@@ -384,8 +389,8 @@ msgid "Invoice Line"
 msgstr "Ligne de facture"
 
 #. module: message_center_compassion
-#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:405
-#: code:addons/message_center_compassion/model/gmc_message.py:405
+#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:407
+#: code:addons/message_center_compassion/model/gmc_message.py:407
 #: field:gmc.action,type:0
 #, python-format
 msgid "Action Type"
@@ -443,6 +448,13 @@ msgid "Previous state"
 msgstr "Etat précédent"
 
 #. module: message_center_compassion
+#: model:res.groups,comment:message_center_compassion.group_gmc
+msgid ""
+"The user will have access to the message center of Compassion and process "
+"messages received from GMC."
+msgstr "L'utilisateur aura accès au centre de messages GMC"
+
+#. module: message_center_compassion
 #: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:92
 #: code:addons/message_center_compassion/model/gmc_message.py:92
 #: view:gmc.message.pool:0 field:gmc.message.pool,child_id:0
@@ -450,6 +462,11 @@ msgstr "Etat précédent"
 #, python-format
 msgid "Child"
 msgstr "Enfant"
+
+#. module: message_center_compassion
+#: view:gmc.message.pool:0
+msgid "Date"
+msgstr "Date"
 
 #. module: message_center_compassion
 #: view:gmc.message.pool:0
@@ -461,10 +478,18 @@ msgstr "Constituent"
 #. module: message_center_compassion
 #: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:104
 #: code:addons/message_center_compassion/model/gmc_message.py:104
-#: selection:gmc.message.pool,state:0
+#: view:gmc.message.pool:0 selection:gmc.message.pool,state:0
 #, python-format
 msgid "Success"
 msgstr "Succès"
+
+#. module: message_center_compassion
+#: code:addons/addons/compassion-modules/message_center_compassion/model/contracts.py:27
+#: code:addons/message_center_compassion/model/contracts.py:27
+#: selection:recurring.contract,gmc_state:0
+#, python-format
+msgid "New Picture"
+msgstr "Nouvelle Photo"
 
 #. module: message_center_compassion
 #: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:118
@@ -475,25 +500,25 @@ msgid "Partner Country Code"
 msgstr "Code pays du partenaire"
 
 #. module: message_center_compassion
-#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:328
-#: code:addons/message_center_compassion/model/gmc_message.py:328
+#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:330
+#: code:addons/message_center_compassion/model/gmc_message.py:330
 #, python-format
 msgid "The commitment was not sent to GMC and therefore cannot be cancelled."
 msgstr ""
 "Le parrainage n'a pas été envoyé à GMC et ne ne peut donc pas être annulé."
 
 #. module: message_center_compassion
-#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:421
-#: code:addons/message_center_compassion/model/gmc_message.py:421
+#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:423
+#: code:addons/message_center_compassion/model/gmc_message.py:423
 #, python-format
 msgid "Invalid action (%s, %s, %s)."
 msgstr "Action invalide (%s, %s, %s)."
 
 #. module: message_center_compassion
 #: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:98
-#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:403
+#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:405
 #: code:addons/message_center_compassion/model/gmc_message.py:98
-#: code:addons/message_center_compassion/model/gmc_message.py:403
+#: code:addons/message_center_compassion/model/gmc_message.py:405
 #: field:gmc.action,name:0 view:gmc.message.pool:0
 #: field:gmc.message.pool,action_id:0
 #, python-format
@@ -508,11 +533,19 @@ msgid "Error"
 msgstr "Erreur"
 
 #. module: message_center_compassion
-#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:420
-#: code:addons/message_center_compassion/model/gmc_message.py:420
+#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:422
+#: code:addons/message_center_compassion/model/gmc_message.py:422
 #, python-format
 msgid "Creation aborted."
 msgstr "Création annulée."
+
+#. module: message_center_compassion
+#: code:addons/addons/compassion-modules/message_center_compassion/model/contracts.py:33
+#: code:addons/message_center_compassion/model/contracts.py:33
+#: selection:recurring.contract,gmc_state:0
+#, python-format
+msgid "Project Reactivated"
+msgstr "Centre d'accueil réactivé"
 
 #. module: message_center_compassion
 #: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:268
@@ -554,8 +587,8 @@ msgid "An error occured while sending message."
 msgstr "Une erreur est survenue lors de l'envoi du message"
 
 #. module: message_center_compassion
-#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:399
-#: code:addons/message_center_compassion/model/gmc_message.py:399
+#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:401
+#: code:addons/message_center_compassion/model/gmc_message.py:401
 #: selection:gmc.action,direction:0
 #, python-format
 msgid "Outgoing Message"
@@ -570,9 +603,9 @@ msgstr "Commitment non envoyé (%s)."
 
 #. module: message_center_compassion
 #: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:82
-#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:407
+#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:409
 #: code:addons/message_center_compassion/model/gmc_message.py:82
-#: code:addons/message_center_compassion/model/gmc_message.py:407
+#: code:addons/message_center_compassion/model/gmc_message.py:409
 #: field:gmc.action,description:0 field:gmc.message.pool,description:0
 #, python-format
 msgid "Action to execute"
@@ -584,12 +617,17 @@ msgid "Contract for recurring invoicing"
 msgstr "Contrat à facturation récurrente"
 
 #. module: message_center_compassion
-#: code:addons/addons/compassion-modules/message_center_compassion/model/contracts.py:28
-#: code:addons/message_center_compassion/model/contracts.py:28
+#: code:addons/addons/compassion-modules/message_center_compassion/model/contracts.py:29
+#: code:addons/message_center_compassion/model/contracts.py:29
 #: selection:recurring.contract,gmc_state:0
 #, python-format
 msgid "Child Departed"
 msgstr "Enfant Departed"
+
+#. module: message_center_compassion
+#: view:recurring.contract:0
+msgid "Suspension"
+msgstr "Suspension"
 
 #. module: message_center_compassion
 #: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:111
@@ -632,12 +670,20 @@ msgid "Referrenced Object Id"
 msgstr "Identifiant de l'objet lié"
 
 #. module: message_center_compassion
-#: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:100
-#: code:addons/message_center_compassion/model/gmc_message.py:100
-#: field:gmc.message.pool,process_date:0
+#: code:addons/addons/compassion-modules/message_center_compassion/model/contracts.py:30
+#: code:addons/message_center_compassion/model/contracts.py:30
+#: view:recurring.contract:0 selection:recurring.contract,gmc_state:0
 #, python-format
-msgid "Process Date"
-msgstr "Date du traitement"
+msgid "Child Transfer"
+msgstr "Transfert d'enfant"
+
+#. module: message_center_compassion
+#: code:addons/addons/compassion-modules/message_center_compassion/model/contracts.py:31
+#: code:addons/message_center_compassion/model/contracts.py:31
+#: selection:recurring.contract,gmc_state:0
+#, python-format
+msgid "Project Fund-Suspended"
+msgstr "Centre d'accueil suspendu avec retenue des fonds"
 
 #. module: message_center_compassion
 #: code:addons/addons/compassion-modules/message_center_compassion/model/gmc_message.py:308
@@ -653,6 +699,11 @@ msgstr "Le parrainage que le cadeau référence n'a pas été envoyé à GMC."
 #, python-format
 msgid "Incoming Reference"
 msgstr "Référence entrante"
+
+#. module: message_center_compassion
+#: model:res.groups,name:message_center_compassion.group_gmc
+msgid "GMC Manager"
+msgstr "Gestionnaire des messages GMC"
 
 #. module: message_center_compassion
 #: model:ir.model,name:message_center_compassion.model_gmc_message_pool
