@@ -19,7 +19,7 @@ class hr_planning_day_move_request(orm.Model):
     ''' Add possibility to create request to modify the planning
         - Move a planning day
         - Create a new planning day
-        Requests needed to be approved. 
+        Requests needed to be approved.
         Request can be created or approved in this cases only:
         - An employee does not work twice a day
         - An employee move a working day only
@@ -96,12 +96,12 @@ class hr_planning_day_move_request(orm.Model):
                 vals['old_date'] = False
         return super(hr_planning_day_move_request, self).write(
             cr, uid, ids, vals, context)
-    
+
     def _check_is_working(self, cr, uid, employee_id, date, context=None):
         planning_day_obj = self.pool.get('hr.planning.day')
         planning_day_ids = planning_day_obj.search(
             cr, uid, [('employee_id', '=', employee_id)], context=context)
-        
+
         # Find in the planning day
         for planning_day in planning_day_obj.browse(
                 cr, uid, planning_day_ids, context):
