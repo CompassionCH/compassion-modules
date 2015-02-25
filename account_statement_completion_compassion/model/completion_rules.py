@@ -227,57 +227,58 @@ class AccountStatementCompletionRule(orm.Model):
             in order to reconcile the corresponding move lines. """
         # Read data in english
         if context is None:
-            context = {}
+            context = dict()
         ctx = context.copy()
         ctx['lang'] = 'en_US'
+        res = dict()
+        product_id = self._find_product_id(cr, uid, st_line['ref'],
+                                           context=ctx)
+        if not product_id:
+            return res
+
+        # Setup invoice data
+        journal_ids = self.pool.get('account.journal').search(
+            cr, uid, [('type', '=', 'sale')], limit=1)
+        invoicer_id = self.pool.get('account.bank.statement').browse(
+            cr, uid, st_line['statement_id'][0], context=context
+        ).recurring_invoicer_id.id
+
+        inv_data = {
+            'account_id': partner.property_account_receivable.id,
+            'type': 'out_invoice',
+            'partner_id': partner.id,
+            'journal_id': journal_ids[0] if journal_ids else False,
+            'date_invoice': st_line['date'],
+            'payment_term': 1,  # Immediate payment
+            'bvr_reference': st_line['ref'],
+            'recurring_invoicer_id': invoicer_id,
+        }
+
+        # Create invoice and generate invoice lines
+        invoice_obj = self.pool.get('account.invoice')
+        invoice_id = invoice_obj.create(cr, uid, inv_data, context=ctx)
         product = self.pool.get('product.product').browse(
-            cr, uid, self._find_product_id(
-                cr, uid, st_line['ref'], context=ctx), context=ctx)
-        res = {}
+            cr, uid, product_id, context=ctx)
 
-        if product.id:
-            invoice_obj = self.pool.get('account.invoice')
-            journal_ids = self.pool.get('account.journal').search(
-                cr, uid, [('type', '=', 'sale')], limit=1)
-            invoicer_id = self.pool.get('account.bank.statement').browse(
-                cr, uid, st_line['statement_id'][0], context=context
-            ).recurring_invoicer_id.id
+        res.update(self._generate_invoice_line(
+            cr, uid, invoice_id, product, st_line, partner.id, context=ctx))
 
-            inv_data = {
-                'account_id': partner.property_account_receivable.id,
-                'type': 'out_invoice',
-                'partner_id': partner.id,
-                'journal_id': journal_ids[0] if journal_ids else False,
-                'date_invoice': st_line['date'],
-                'payment_term': 1,  # Immediate payment
-                'bvr_reference': st_line['ref'],
-                'recurring_invoicer_id': invoicer_id,
-            }
+        if product.name not in GIFT_TYPES:
+            # Validate the invoice
+            wf_service = netsvc.LocalService('workflow')
+            wf_service.trg_validate(
+                uid, 'account.invoice', invoice_id, 'invoice_open', cr)
 
-            invoice_id = invoice_obj.create(cr, uid, inv_data,
-                                            context=ctx)
-            if invoice_id:
-                res.update(self._generate_invoice_line(
-                    cr, uid, invoice_id, product, st_line, partner.id,
-                    context=ctx))
-
-                if product.name not in GIFT_TYPES:
-                    # Validate the invoice
-                    wf_service = netsvc.LocalService('workflow')
-                    wf_service.trg_validate(
-                        uid, 'account.invoice', invoice_id, 'invoice_open',
-                        cr)
-                elif product.name == GIFT_TYPES[0]:
-                    child_birthdate = res.get('child_birthdate')
-                    if child_birthdate:
-                        inv_date = self.pool.get(
-                            'generate.gift.wizard'
-                        ).compute_date_birthday_invoice(
-                            child_birthdate, st_line['date'])
-                        invoice_obj.write(
-                            cr, uid, invoice_id, {
-                                'date_invoice': inv_date
-                            }, context)
+        # Birthday Gift
+        elif product.name == GIFT_TYPES[0]:
+            # Compute the date of the invoice
+            child_birthdate = res.get('child_birthdate')
+            if child_birthdate:
+                gift_wizard_obj = self.pool.get('generate.gift.wizard')
+                inv_date = gift_wizard_obj.compute_date_birthday_invoice(
+                    child_birthdate, st_line['date'])
+                invoice_obj.write(cr, uid, invoice_id, {
+                    'date_invoice': inv_date}, context)
 
         return res
 
