@@ -290,7 +290,7 @@ class recurring_contract(orm.Model):
             wf_service.trg_validate(uid, 'account.invoice',
                                     inv.id, 'invoice_open', cr)
 
-        return len(inv_ids)
+        return inv_ids
 
     #################################
     #        PRIVATE METHODS        #

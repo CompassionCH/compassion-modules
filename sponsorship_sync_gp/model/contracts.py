@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
+from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
@@ -19,9 +19,43 @@ from dateutil.relativedelta import relativedelta
 
 from . import gp_connector
 
+SPONSORSHIP_TYPES = ['Sponsorship', 'LDP Sponsorship']
+
 
 class contracts(orm.Model):
     _inherit = 'recurring.contract'
+
+    def _get_number_months_paid(self, cr, uid, ids, field_name, args,
+                                context=None):
+        """This is a query returning the number of months paid for a
+        sponsorship. It is useful to know it in GP."""
+        cr.execute(
+            "SELECT c.id as contract_id, "
+            "12 * (EXTRACT(year FROM next_invoice_date) - "
+            "      EXTRACT(year FROM current_date))"
+            " + EXTRACT(month FROM c.next_invoice_date) - 1"
+            " - COALESCE(due.total, 0) as paidmonth "
+            "FROM recurring_contract c left join ("
+            # Open invoices to find how many months are due
+            "   select contract_id, count(distinct invoice_id) as total "
+            "   from account_invoice_line"
+            "   where state='open' and "
+            # Exclude gifts from count
+            "   product_id not in (43,44,45,46,47)"
+            "   group by contract_id"
+            ") due on due.contract_id = c.id "
+            "WHERE c.id in (%s)" % ",".join([str(id) for id in ids])
+        )
+        res = cr.dictfetchall()
+        return {row['contract_id']: int(row['paidmonth']) for row in res}
+
+    def get_month_paid_from_gp(self, cr, uid, con_id, context=None):
+        """Helper called from GP"""
+        return self.browse(cr, uid, con_id, '', '', context).months_paid
+
+    _columns = {
+        'months_paid': fields.function(_get_number_months_paid, type='int')
+    }
 
     def create(self, cr, uid, vals, context=None):
         """ When contract is created, push it to GP so that the mailing
@@ -64,7 +98,8 @@ class contracts(orm.Model):
                 month_diff = relativedelta(new_date, old_date).months
                 if contract.state in ('active', 'waiting') and month_diff > 0:
                     if not gp_connect.register_payment(contract.id,
-                                                       amount=month_diff):
+                                                       contract.months_paid
+                                                       + month_diff):
                         raise orm.except_orm(
                             _("GP Sync Error"),
                             _("Please contact an IT person."))
@@ -95,9 +130,7 @@ class contracts(orm.Model):
         compatible = True
         for line in contract.contract_line_ids:
             compatible = compatible and (
-                'Sponsorship' == line.product_id.name
-                or 'LDP Sponsorship' == line.product_id.name
-                or line.product_id.name in GIFT_TYPES
+                line.product_id.name in SPONSORSHIP_TYPES+GIFT_TYPES
                 or line.product_id.gp_fund_id > 0)
         return compatible
 
@@ -170,13 +203,14 @@ class contracts(orm.Model):
                     gp_connect.remove_affectat(invoice.id, line.due_date)
                 contract = line.contract_id
                 if contract:
-                    to_update = (line.product_id.name not in
-                                 GIFT_TYPES) and (contract.id
-                                                  not in contract_ids)
+                    to_update = (line.product_id.name in
+                                 SPONSORSHIP_TYPES) and (contract.id
+                                                         not in contract_ids)
                     if last_pay_date and to_update:
                         contract_ids.add(contract.id)
-                        if not gp_connect.register_payment(contract.id,
-                                                           last_pay_date):
+                        if not gp_connect.register_payment(
+                                contract.id, contract.months_paid,
+                                last_pay_date):
                             raise orm.except_orm(
                                 _("GP Sync Error"),
                                 _("The payment could not be registered into "
@@ -198,28 +232,6 @@ class contracts(orm.Model):
         gp_connect.delete_contracts(ids)
         del(gp_connect)
         return True
-
-    def reset_open_invoices(self, cr, uid, ids, context=None):
-        """Set back GP month status of cancelled invoices because they
-        will be replaced by new generated invoices."""
-        amount = super(contracts, self).reset_open_invoices(
-            cr, uid, ids, context)
-        inv_line_obj = self.pool.get('account.invoice.line')
-        inv_line_ids = inv_line_obj.search(cr, uid, [
-            ('contract_id', 'in', ids),
-            ('due_date', '>', datetime.today().strftime(DF)),
-            ('state', '=', 'cancel')], context=context)
-        gp_connect = gp_connector.GPConnect(cr, uid)
-        contract_ids = set()
-        for line in inv_line_obj.browse(cr, uid, inv_line_ids, context):
-            contract = line.contract_id
-            if contract and contract.id not in contract_ids:
-                contract_ids.add(contract.id)
-                if not gp_connect.undo_payment(contract.id, amount):
-                    raise orm.except_orm(
-                        _("GP Sync Error"),
-                        _("Please contact an IT person."))
-        del(gp_connect)
 
 
 class contract_group(orm.Model):

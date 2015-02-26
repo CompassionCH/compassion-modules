@@ -66,13 +66,14 @@ class easy_reconcile_advanced_bvr_ref(orm.TransientModel):
         from_future = from_current
         where_future, params_future = self._where(rec)
         where_future += (" AND account_move_line.debit > 0 AND "
-                         "account_move_line.date_maturity > CURRENT_DATE) "
-                         "FUTURE_MOVE ")
+                         "account_move_line.date_maturity > CURRENT_DATE ")
+        order_future = " ORDER BY date_maturity ASC ) FUTURE_MOVE "
         where2_future, params2_future = where2_current, params2_current
 
         query = ' '.join((select_current, from_current, where_current,
                           where2_current, order_current, select_future,
-                          from_future, where_future, where2_future))
+                          from_future, where_future, where2_future,
+                          order_future))
 
         cr.execute(
             query,
@@ -86,18 +87,21 @@ class easy_reconcile_advanced_bvr_ref(orm.TransientModel):
         If the amount of the credit line cannot fully reconcile an integer
         number of invoices, skip the reconciliation.
         """
-        if move_line.get('ref') and move_line.get('partner_id'):
+        partner_id = move_line.get('partner_id')
+        if move_line.get('ref') and partner_id:
             # Search for related customer invoices (same bvr reference).
             invoice_obj = self.pool.get('account.invoice')
             present_invoice_ids = invoice_obj.search(
                 cr, uid, [('bvr_reference', '=', move_line['ref']),
                           ('state', '=', 'open'),
-                          ('date_due', '<=', datetime.date.today())],
+                          ('date_due', '<=', datetime.date.today()),
+                          ('partner_id', '=', partner_id)],
                 order='date_due desc', context=context)
             future_invoice_ids = invoice_obj.search(
                 cr, uid, [('bvr_reference', '=', move_line['ref']),
                           ('state', '=', 'open'),
-                          ('date_due', '>', datetime.date.today())],
+                          ('date_due', '>', datetime.date.today()),
+                          ('partner_id', '=', partner_id)],
                 order='date_due asc', context=context)
             invoices = invoice_obj.browse(
                 cr, uid, present_invoice_ids + future_invoice_ids,

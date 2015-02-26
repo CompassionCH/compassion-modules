@@ -93,17 +93,26 @@ class contract_group(orm.Model):
                                partner_id, context=None):
         ''' Generate new bvr_reference if payment term is Permanent Order
         or BVR '''
+        if not context:
+            ctx = dict()
+        else:
+            ctx = context.copy()
+            ctx['lang'] = 'en_US'
         res = {'value': {}}
-        need_bvr_ref_term_ids = self.pool.get('account.payment.term').search(
-            cr, uid, [('name', 'in', ('Permanent Order', 'BVR'))],
-            context=context)
+        payment_term_obj = self.pool.get('account.payment.term')
+        need_bvr_ref_term_ids = payment_term_obj.search(cr, uid, [
+            '|', ('name', 'in', ('Permanent Order', 'BVR')),
+            ('name', 'like', 'multi-months')], context=ctx)
+        lsv_term_ids = payment_term_obj.search(
+            cr, uid, [('name', 'like', 'LSV')], context=ctx)
         if payment_term_id in need_bvr_ref_term_ids:
+            is_lsv = payment_term_id in lsv_term_ids
             partner = self.pool.get('res.partner').browse(cr, uid, partner_id,
                                                           context=context)
-            if partner.ref and not bvr_ref:
+            if partner.ref and (not bvr_ref or is_lsv):
                 res['value'].update({
                     'bvr_reference': self.compute_partner_bvr_ref(
-                        cr, uid, ids, partner, context)})
+                        cr, uid, ids, partner, is_lsv, context)})
 
         return res
 
@@ -132,7 +141,7 @@ class contract_group(orm.Model):
         return res
 
     def compute_partner_bvr_ref(self, cr, uid, ids, partner=None,
-                                context=None):
+                                is_lsv=False, context=None):
         """ Generates a new BVR Reference.
         See file \\nas\it\devel\Code_ref_BVR.xls for more information."""
         partner = partner or self.browse(cr, uid, ids[0], context).partner_id
@@ -145,6 +154,8 @@ class contract_group(orm.Model):
         result += '0'
         result += '0' * 4
 
+        if is_lsv:
+            result = '004874969' + result[9:]
         if len(result) == 26:
             return mod10r(result)
 
@@ -194,9 +205,11 @@ class contract_group(orm.Model):
         for a valid mandate before generating new invoices.
         """
         contract_ids = list()
+        inv_vals = dict()
         if 'payment_term_id' in vals:
+            inv_vals['payment_term'] = vals['payment_term_id']
             payment_term = self.pool.get('account.payment.term').browse(
-                cr, uid, vals['payment_term_id'], context)
+                cr, uid, vals['payment_term_id'], {'lang': 'en_US'})
             payment_name = payment_term.name
             wf_service = netsvc.LocalService('workflow')
             for group in self.browse(cr, uid, ids, context):
@@ -207,12 +220,36 @@ class contract_group(orm.Model):
                         wf_service.trg_validate(
                             uid, 'recurring.contract', contract.id,
                             'will_pay_by_lsv_dd', cr)
+                        # LSV/DD Contracts need no reference
+                        if group.bvr_reference and \
+                                'multi-months' not in payment_name:
+                            vals['bvr_reference'] = False
                     elif 'LSV' in old_term or 'Postfinance' in old_term:
                         wf_service.trg_validate(
                             uid, 'recurring.contract', contract.id,
                             'mandate_validated', cr)
+        if 'bvr_reference' in vals:
+            inv_vals['bvr_reference'] = vals['bvr_reference']
+            for group in self.browse(cr, uid, ids, context):
+                contract_ids.extend([c.id for c in group.contract_ids])
+
         res = super(contract_group, self).write(cr, uid, ids, vals, context)
+
         if contract_ids:
-            self.pool.get('recurring.contract').reset_open_invoices(
-                cr, uid, contract_ids, context)
+            # Update related open invoices to reflect the changes
+            inv_line_obj = self.pool.get('account.invoice.line')
+            inv_obj = self.pool.get('account.invoice')
+            inv_line_ids = inv_line_obj.search(cr, uid, [
+                ('contract_id', 'in', contract_ids),
+                ('state', 'not in', ('paid', 'cancel'))], context=context)
+            invoice_ids = list(set([inv_l.invoice_id.id for inv_l in
+                                    inv_line_obj.browse(cr, uid, inv_line_ids,
+                                                        context)]))
+            inv_obj.action_cancel(cr, uid, invoice_ids, context)
+            inv_obj.action_cancel_draft(cr, uid, invoice_ids)
+            inv_obj.write(cr, uid, invoice_ids, inv_vals, context)
+            wf_service = netsvc.LocalService('workflow')
+            for invoice_id in invoice_ids:
+                wf_service.trg_validate(uid, 'account.invoice', invoice_id,
+                                        'invoice_open', cr)
         return res

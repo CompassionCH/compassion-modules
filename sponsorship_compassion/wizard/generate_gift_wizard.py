@@ -16,6 +16,7 @@ from openerp.tools.translate import _
 
 from ..model.product import GIFT_TYPES
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import time
 
 
@@ -55,12 +56,18 @@ class generate_gift_wizard(orm.TransientModel):
                     [('type', '=', 'sale'), ('company_id', '=', 1 or False)],
                     limit=1)
 
+                if wizard.product_id.name == GIFT_TYPES[0]:   # Birthday Gift
+                    invoice_date = self.compute_date_birthday_invoice(
+                        contract.child_id.birthdate, wizard.invoice_date)
+                else:
+                    invoice_date = wizard.invoice_date
+
                 inv_data = {
                     'account_id': partner.property_account_receivable.id,
                     'type': 'out_invoice',
                     'partner_id': partner.id,
                     'journal_id': len(journal_ids) and journal_ids[0] or False,
-                    'date_invoice': wizard.invoice_date,
+                    'date_invoice': invoice_date,
                     'payment_term': 1,  # Immediate payment
                     'bvr_reference': self._generate_bvr_reference(
                         contract, wizard.product_id),
@@ -76,9 +83,7 @@ class generate_gift_wizard(orm.TransientModel):
                 raise orm.except_orm(
                     _("Generation Error"),
                     _("You can only generate gifts for active child "
-                      "sponsorships"),
-                )
-
+                      "sponsorships"))
         return {
             'name': _('Generated Invoices'),
             'view_mode': 'tree,form',
@@ -131,6 +136,9 @@ class generate_gift_wizard(orm.TransientModel):
         bvr_reference += str(GIFT_TYPES.index(product.name)+1)
         bvr_reference += '0' * 4
 
+        if contract.group_id.payment_term_id and \
+                'LSV' in contract.group_id.payment_term_id.name:
+            bvr_reference = '004874969' + bvr_reference[9:]
         if len(bvr_reference) == 26:
             return mod10r(bvr_reference)
 
@@ -148,3 +156,16 @@ class generate_gift_wizard(orm.TransientModel):
             res['fields']['product_id']['domain'] = [('id', 'in', gifts_ids)]
 
         return res
+
+    def compute_date_birthday_invoice(self, child_birthdate, payment_date):
+        """Set date of invoice two months before child's birthdate"""
+        inv_date = datetime.strptime(payment_date, DF)
+        birthdate = datetime.strptime(child_birthdate, DF)
+        new_date = inv_date
+        if birthdate.month >= inv_date.month + 2:
+            new_date = inv_date.replace(day=28, month=birthdate.month-2)
+        elif birthdate.month + 3 < inv_date.month:
+            new_date = birthdate.replace(
+                day=28, year=inv_date.year+1) + relativedelta(months=-2)
+            new_date = max(new_date, inv_date)
+        return new_date.strftime(DF)
