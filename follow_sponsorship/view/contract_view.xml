@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Compassion (http://www.compassion.ch)
+    @author David Coninckx <david@coninckx.com>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+	<data>
+        <record id="view_follow_contract_form_compassion" model="ir.ui.view">
+			<field name="name">follow.contract.compassion.form</field>
+			<field name="model">recurring.contract</field>
+			<field name="arch" type="xml">
+                <form string="Follow contract" version="7.0" >
+                    <header>
+                        <field name="sds_state" widget="statusbar" statusbar_visible="draft,start,waiting_welcome,active,cancelled" />
+                        <button name="contract_validated" class="oe_highlight" attrs="{'invisible':[('sds_state','!=','draft')]}" string="Validate"/>
+                        <button name="%(sponsorship_compassion.action_end_sponsorship)d" class="oe_highlight" string="Terminate" states="waiting,mandate,active" type="action"/>
+                        <button name="mail_sent" class="oe_highlight" string="Mail sent" attrs="{'invisible':[('sds_state','!=','start')]}"/>
+                        <button name="welcome_sent" class="oe_highlight" string="Welcome sent" attrs="{'invisible':[('sds_state','!=','waiting_welcome')]}"/>
+                        <button name="no_sub" class="oe_highlight" string="No sub" attrs="{'invisible':[('sds_state','!=','sub_waiting')]}"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="id"/>
+                                <field name="partner_id"/>
+                                <field name="correspondant_id"/>
+                                <field name="parent_id"/>
+                            </group>
+                            <group>
+                                <field name="origin_id"/>
+                                <field name="channel"/>
+                            </group>
+
+                            <group>
+                                <field name="start_date"/>
+                                <field name="activation_date"/>
+                                <field name="date_welcome"/>
+                                <field name="end_date"/>
+                            </group>
+                            <group>
+                                <field name="child_id"/>
+                                <field name="end_reason"/>
+                                <field name="state" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+			</field>
+		</record>
+
+        <record id="view_follow_contract_tree_compassion" model="ir.ui.view">
+			<field name="name">follow.contract.compassion.tree</field>
+			<field name="model">recurring.contract</field>
+			<field name="arch" type="xml">
+                <tree string="Follow contracts" create="false" >
+                    <field name="partner_codega"/>
+                    <field name="partner_id"/>
+                    
+                    <field name="child_code"/>
+                    <field name="child_name"/>
+                    
+                    <field name="start_date"/>
+                    <field name="date_welcome"/>
+                    <field name="end_date"/>
+                    <field name="origin_id"/>
+                    <field name="state" invisible="1"/>
+                    <field name="sds_state"/>
+                </tree>
+			</field>
+		</record>
+       
+        
+        <record model="ir.actions.act_window" id="action_follow_contract">
+            <field name="name">Follow contracts</field>
+            <field name="res_model">recurring.contract</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_follow_contract_tree">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_follow_contract_tree_compassion"/>
+            <field name="act_window_id" ref="action_follow_contract"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_follow_contract_form">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_follow_contract_form_compassion"/>
+            <field name="act_window_id" ref="action_follow_contract"/>
+        </record>
+        
+        <!-- Filters -->
+        <record id="follow_contract_filter" model="ir.ui.view">
+			<field name="name">follow.contract.select</field>
+			<field name="model">recurring.contract</field>
+			<field name="inherit_id" ref="recurring_contract.view_recurring_contract_filter" />
+			<field name="arch" type="xml">
+                    <field name="payment_term_id" position="after">
+                        <field name="sds_state"/>
+                    </field>
+            </field>
+		</record>
+        
+        <menuitem action="action_follow_contract" id="recurring_contract.menu_follow_contract" parent="child_compassion.menu_sponsorship_section"
+                  name="Follow sponsorships" sequence="0"/>
+	</data>
+</openerp>
