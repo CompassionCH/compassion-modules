@@ -46,7 +46,7 @@ Sponsorship following module
         'data/no_sub_cron.xml',
         'data/sub_accept_reject_cron.xml',
         'view/install.xml',
-             ],
+        ],
     'demo': [],
     'installable': True,
     'auto_install': False,

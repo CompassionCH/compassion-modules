@@ -270,8 +270,8 @@ class recurring_contract(orm.Model):
         if same_partner_contracts:
             for same_partner_contract in same_partner_contracts:
                 if not (self.search(
-                            cr, uid,
-                            [('parent_id', '=', same_partner_contract.id)],
-                            context=context)):
+                        cr, uid,
+                        [('parent_id', '=', same_partner_contract.id)],
+                        context=context)):
                         return same_partner_contract.id
         return False
