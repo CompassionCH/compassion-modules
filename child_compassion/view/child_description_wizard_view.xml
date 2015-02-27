@@ -8,6 +8,9 @@
 			<field name="arch" type="xml">
 				<form string="Description generation" version="7.0">
                     <group>
+                        <group colspan="2">
+                            <field name="comments" attrs="{'invisible': [('comments', '=', False)]}"/>
+                        </group>
                         <group string="Complete missing translations if needed">
                             <field name="child_property_value_ids" nolabel="1" />
                         </group>

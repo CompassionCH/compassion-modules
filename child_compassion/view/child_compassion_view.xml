@@ -121,13 +121,15 @@
                     <field name="code"/>
                     <field name="date"/>
                     <field name="sponsor_id"/>
-                    <field name="gender"/>
-                    <field name="birthdate"/>
-                    <field name="type"/>
                     <field name="state"/>
                     <field name="delegated_to"/>
                     <field name="date_delegation"/>
                     <field name="delegated_comment"/>
+                    <field name="date_info"/>
+                    <field name="has_desc_fr"/>
+                    <field name="has_desc_de"/>
+                    <field name="has_desc_it"/>
+                    <field name="has_desc_en"/>
                 </tree>
             </field>
         </record>

@@ -91,6 +91,18 @@ class compassion_child(orm.Model):
             child_ids.append(case_study.child_id.id)
         return child_ids
 
+    def _has_desc(self, cr, uid, ids, field_names, args, context=None):
+        res = dict()
+        field_res = dict()
+        for child in self.browse(cr, uid, ids, context):
+            field_res['has_desc_fr'] = bool(child.desc_fr)
+            field_res['has_desc_de'] = bool(child.desc_de)
+            field_res['has_desc_it'] = bool(child.desc_it)
+            field_res['has_desc_en'] = bool(child.desc_en)
+            res[child.id] = field_res.copy()
+
+        return res
+
     _columns = {
         ######################################################################
         #                      1. General Information                        #
@@ -157,6 +169,14 @@ class compassion_child(orm.Model):
                     _get_child_from_case_study,
                     ['desc_en', 'desc_fr', 'desc_de', 'desc_it'],
                     10)}),
+        'has_desc_fr': fields.function(
+            _has_desc, string='FR', type='boolean', multi=True),
+        'has_desc_de': fields.function(
+            _has_desc, string='DE', type='boolean', multi=True),
+        'has_desc_it': fields.function(
+            _has_desc, string='IT', type='boolean', multi=True),
+        'has_desc_en': fields.function(
+            _has_desc, string='EN', type='boolean', multi=True),
         'case_study_ids': fields.one2many(
             'compassion.child.property', 'child_id', string=_('Case studies'),
             readonly=True, track_visibility="onchange"),
@@ -179,6 +199,8 @@ class compassion_child(orm.Model):
         'delegated_to': fields.many2one('res.partner', _("Delegated to")),
         'delegated_comment': fields.text(_("Delegated comment")),
         'date_delegation': fields.date(_("Delegated date")),
+        'date_info': fields.related('case_study_ids', 'info_date',
+                                    type='date', string=_("Last info")),
 
         ######################################################################
         #                      2. Exit Details                               #
@@ -331,7 +353,8 @@ class compassion_child(orm.Model):
             'gender': json_data['gender'],
             'birthdate': json_data['birthDate'],
             'unique_id': json_data['childID'],
-            'code': json_data['childKey']
+            'code': json_data['childKey'],
+            'comments': json_data['basicChildInternalComment'],
         }
 
         value_obj = self.pool.get('compassion.translated.value')
