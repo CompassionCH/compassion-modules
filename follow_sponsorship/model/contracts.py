@@ -19,7 +19,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import pdb
 
 class recurring_contract(orm.Model):
     _inherit = "recurring.contract"
@@ -43,36 +42,35 @@ class recurring_contract(orm.Model):
         res = cr.fetchall()
         wkf_id = res[0][0]
 
-        self._insert_wkf_items(
+        self._ins_wkf_items(
             cr, uid, 'act_draft',
             wkf_id, draft_contract_ids, context)
-        self._insert_wkf_items(
+        self._ins_wkf_items(
             cr, uid, 'act_active',
             wkf_id, active_contract_ids, context)
 
-    def _insert_wkf_items(
-        self, cr, uid, activity_id, wkf_id, contract_ids, context=None):
-        ir_model_data = self.pool.get('ir.model.data')
-        wkf_activity_id = ir_model_data.get_object_reference(
-            cr, uid, 'follow_sponsorship',
-            activity_id)[1]
+    def _ins_wkf_items(self, cr, uid, act_id, wkf_id, cont_ids, context=None):
+            ir_model_data = self.pool.get('ir.model.data')
+            wkf_activity_id = ir_model_data.get_object_reference(
+                cr, uid, 'follow_sponsorship',
+                act_id)[1]
 
-        wkf_instance_ids = list()
-        for contract_id in contract_ids:    
-            cr.execute(
-                '''
-                SELECT id FROM wkf_instance
-                WHERE wkf_id = {} AND res_id = {}
-                '''.format(wkf_id, contract_id))
-            wkf_instance_ids.append(cr.fetchall()[0][0])
-        
-        for wkf_instance_id in wkf_instance_ids:
-            cr.execute(
-                '''
-                INSERT INTO wkf_workitem(act_id, inst_id)
-                VALUES ('{}', '{}')
-                '''.format(wkf_activity_id, wkf_instance_id)
-            )
+            wkf_instance_ids = list()
+            for contract_id in cont_ids:
+                cr.execute(
+                    '''
+                    SELECT id FROM wkf_instance
+                    WHERE wkf_id = {} AND res_id = {}
+                    '''.format(wkf_id, contract_id))
+                wkf_instance_ids.append(cr.fetchall()[0][0])
+
+            for wkf_instance_id in wkf_instance_ids:
+                cr.execute(
+                    '''
+                    INSERT INTO wkf_workitem(act_id, inst_id)
+                    VALUES ('{}', '{}')
+                    '''.format(wkf_activity_id, wkf_instance_id)
+                )
 
     # Only at module installation
     def _set_sds_state(self, cr, uid, ids=None, context=None):
@@ -254,7 +252,7 @@ class recurring_contract(orm.Model):
             context=context)
         parent_id = self.define_parent_id(cr, uid, partner_id, context)
         origin_id = origin_ids[0] if parent_id else False
-        
+
         res['value'].update({
             'parent_id': parent_id,
             'origin_id': origin_id
