@@ -22,7 +22,6 @@
                     <sheet>
                         <group>
                             <group>
-                                <field name="id"/>
                                 <field name="partner_id"/>
                                 <field name="correspondant_id"/>
                                 <field name="parent_id"/>
@@ -41,7 +40,7 @@
                             <group>
                                 <field name="child_id"/>
                                 <field name="end_reason"/>
-                                <field name="state" invisible="1"/>
+                                <field name="state"/>
                             </group>
                         </group>
                     </sheet>
@@ -64,7 +63,7 @@
                     <field name="date_welcome"/>
                     <field name="end_date"/>
                     <field name="origin_id"/>
-                    <field name="state" invisible="1"/>
+                    <field name="state"/>
                     <field name="sds_state"/>
                 </tree>
 			</field>
