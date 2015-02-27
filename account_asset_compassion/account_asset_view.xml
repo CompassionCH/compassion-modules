@@ -22,9 +22,8 @@
 		<field eval="18" name="priority"/>
 		<field name="arch" type="xml">
 			<button name="set_to_draft" position="after">
-                <field name="is_done" invisible="1"/>
 				<button name="close_old_asset" string="Close Asset" type="object"
-                        attrs="{'invisible': ['|', ('is_done', '=', False), ('state', '!=', 'open')]}"
+                        attrs="{'invisible': ['|', ('value_residual', '=', 0.0), ('state', '!=', 'open')]}"
                         groups="account.group_account_manager" class="oe_inline"/>
 			</button>
 		</field>
