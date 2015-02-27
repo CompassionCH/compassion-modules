@@ -30,6 +30,22 @@ class Child_description_it:
         return desc_it
 
     @classmethod
+    def _number_to_string(cls, number):
+        conversion_dict = {
+            1:'un',
+            2:'deux',
+            3:'trois',
+            4:'quatre',
+            5:'cinq',
+            6:'six',
+            7:'sept',
+            8:'huit',
+            9:'neuf'
+        }
+        if number in conversion_dict: return conversion_dict[number]
+        else : return number
+
+    @classmethod
     def _gen_list_string(cls, list):
         string = ''
         if list:
@@ -170,7 +186,9 @@ class Child_description_it:
             else:
                 string += '.'
         else:
-            string += " non frequenta la scuola."
+            child_age = (date.today() - datetime.strptime(child.birthdate, DF).date()).days/365
+            if child_age <= 5: string += " non frequenta la scuola."
+            else : string += " non frequenta la scuola."
         return string
 
     @classmethod
@@ -232,12 +250,12 @@ class Child_description_it:
             live_with['brothers'] = u'{} fratello'.format(prefix[0])
         elif case_study.nb_brothers > 1:
             live_with['brothers'] = u'{} {} confratelli'.format(
-                prefix[2], case_study.nb_brothers)
+                prefix[2], cls._number_to_string(case_study.nb_brothers))
         if case_study.nb_sisters == 1:
             live_with['sisters'] = u'{} sorella'.format(prefix[1])
         elif case_study.nb_sisters > 1:
             live_with['sisters'] = u'{} {} sorelle'.format(
-                prefix[2], case_study.nb_sisters)
+                prefix[2], cls._number_to_string(case_study.nb_sisters))
 
         # Live in institute or not
         if live_in_institut:

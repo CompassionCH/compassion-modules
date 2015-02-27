@@ -45,17 +45,18 @@ class Project_description_fr:
         """
         terrain_desc = [desc.value_fr if desc.value_fr else desc.value_en
                         for desc in project.terrain_description_ids]
+        project_community_name = project.community_name.split('-')[0]
         string = (u"Project: %s-%s, %s.\nEmplacement: %s, %s, %s.\n\n"
-                  u"L'enfant que vous parrainez, vit à %s"
+                  u"Cet enfant vit à %s"
                   u"%s. %s compte environ %s habitants. " % (
                       project.code[:2].upper(), project.code[2:],
-                      project.name, project.community_name,
+                      project.name, project_community_name,
                       project.distance_from_closest_city,
                       project.country_common_name,
-                      project.community_name,
+                      project_community_name,
                       "" if not terrain_desc else u" dans une région " +
                       terrain_desc[0],
-                      project.community_name, project.community_population))
+                      project_community_name, project.community_population))
 
         return string
 
@@ -79,7 +80,7 @@ class Project_description_fr:
         if roof_mat:
             materials.append(u"de toits en %s" % roof_mat[0])
         if materials:
-            string = (u"Les maison typiques sont construites " +
+            string = (u"Les maisons typiques sont construites " +
                       cls._gen_list_string(materials, ', ', ' et ') + ". ")
         else:
             string = ""
@@ -154,7 +155,7 @@ class Project_description_fr:
         """ Create the needs' description pattern to fill by hand
         """
         string = (u"Cette communauté a besoin (de...). Votre parrainage "
-                  u"permet au personnel du %s d'offrir à cet "
+                  u"permet au personnel du centre d'accueil %s d'offrir à cet "
                   u"enfant (des enseignements bibliques...). (Des rencontres "
                   u"sont aussi organisées...)." % project.name)
 

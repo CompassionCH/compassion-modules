@@ -44,14 +44,15 @@ class Project_description_it:
         """ Generate the project name, the localization and infos
             about the community
         """
+        project_community_name = project.community_name.split('-')[0]
         string = (u"Centro: %s-%s, %s.\nLuogo: %s, %s, %s.\n\n"
                   u"Questo bambino vive in una comunitá del %s dove "
                   u"risiendono circa %s abitanti." % (
                       project.code[:2].upper(), project.code[2:],
-                      project.name, project.community_name,
+                      project.name, project_community_name,
                       project.distance_from_closest_city,
                       project.country_common_name,
-                      project.community_name, project.community_population))
+                      project_community_name, project.community_population))
 
         return string
 
