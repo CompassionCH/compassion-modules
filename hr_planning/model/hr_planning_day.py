@@ -15,7 +15,9 @@ from openerp.tools.translate import _
 
 class hr_planning_day(orm.Model):
     _name = "hr.planning.day"
-
+    '''
+        Simple model for a working day for an employee.
+    '''
     _columns = {
         'employee_id': fields.many2one(
             'hr.employee', 'Employee', readonly=True),

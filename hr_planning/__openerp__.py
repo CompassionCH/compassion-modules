@@ -46,8 +46,11 @@ This module helps Compassion CH to manage the schedule of HR.
     'data': [
         'view/hr_planning_view.xml',
         'view/hr_planning_wizard_view.xml',
+        'view/hr_planning_move_request_view.xml',
         'security/ir.model.access.csv',
+        'security/ir_rule.xml',
     ],
+    'css': ['static/src/css/hr_planning.css'],
     'demo': [],
     'installable': True,
     'auto_install': False,

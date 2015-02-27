@@ -10,6 +10,7 @@
 ##############################################################################
 
 from . import hr_planning_day
+from . import hr_planning_day_move_request
 from . import hr_contract
 from . import hr_holidays
 from . import resource_calendar
