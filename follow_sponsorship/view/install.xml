@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Compassion (http://www.compassion.ch)
+    @author David Coninckx <david@coninckx.com>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+	<data noupdate='1'>
+        <function model="recurring.contract" name="_set_sds_state"/>
+        <function model="recurring.contract" name="_insert_wkf_items_for_sds_state"/>
+    </data>
+</openerp>
