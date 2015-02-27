@@ -41,19 +41,6 @@ class account_asset_depreciation_line(orm.Model):
 class asset(orm.Model):
     _inherit = 'account.asset.asset'
 
-    def _is_done(self, cr, uid, ids, field_name, args, context=None):
-        res = {}
-        for asset in self.browse(cr, uid, ids, context):
-            if self._residual_compute(cr, uid, asset) == 0.0:
-                res[asset.id] = True
-            else:
-                res[asset.id] = False
-        return res
-
-    _columns = {
-        'is_done': fields.function(_is_done, type='boolean', store=False),
-    }
-
     def close_old_asset(self, cr, uid, ids, context=None):
         for asset in self.browse(cr, uid, ids, context):
             asset.write({
