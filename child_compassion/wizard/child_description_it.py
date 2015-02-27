@@ -9,6 +9,8 @@
 #
 ##############################################################################
 from collections import OrderedDict
+from datetime import datetime, date
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 
 class Child_description_it:
@@ -32,18 +34,20 @@ class Child_description_it:
     @classmethod
     def _number_to_string(cls, number):
         conversion_dict = {
-            1:'un',
-            2:'deux',
-            3:'trois',
-            4:'quatre',
-            5:'cinq',
-            6:'six',
-            7:'sept',
-            8:'huit',
-            9:'neuf'
+            1: 'uno',
+            2: 'due',
+            3: 'tre',
+            4: 'quattro',
+            5: 'cinque',
+            6: 'sei',
+            7: 'sette',
+            8: 'otto',
+            9: 'nove'
         }
-        if number in conversion_dict: return conversion_dict[number]
-        else : return number
+        if number in conversion_dict:
+            return conversion_dict[number]
+        else:
+            return number
 
     @classmethod
     def _gen_list_string(cls, list):
@@ -186,9 +190,13 @@ class Child_description_it:
             else:
                 string += '.'
         else:
-            child_age = (date.today() - datetime.strptime(child.birthdate, DF).date()).days/365
-            if child_age <= 5: string += " non frequenta la scuola."
-            else : string += " non frequenta la scuola."
+            child_age = (
+                date.today() - datetime.strptime(
+                    child.birthdate, DF).date()).days / 365
+            if child_age <= 5:
+                string += " non frequenta la scuola."
+            else:
+                string += " non frequenta la scuola."
         return string
 
     @classmethod

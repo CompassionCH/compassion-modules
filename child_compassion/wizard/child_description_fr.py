@@ -12,7 +12,6 @@ from collections import OrderedDict
 from datetime import datetime, date
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
-import pdb
 
 class Child_description_fr:
 
@@ -31,22 +30,24 @@ class Child_description_fr:
         desc_fr += cls._gen_hobbies_info_fr(
             cr, uid, child, case_study, context)
         return desc_fr
-        
+
     @classmethod
     def _number_to_string(cls, number):
         conversion_dict = {
-            1:'un',
-            2:'deux',
-            3:'trois',
-            4:'quatre',
-            5:'cinq',
-            6:'six',
-            7:'sept',
-            8:'huit',
-            9:'neuf'
+            1: 'un',
+            2: 'deux',
+            3: 'trois',
+            4: 'quatre',
+            5: 'cinq',
+            6: 'six',
+            7: 'sept',
+            8: 'huit',
+            9: 'neuf'
         }
-        if number in conversion_dict: return conversion_dict[number]
-        else : return number
+        if number in conversion_dict:
+            return conversion_dict[number]
+        else:
+            return number
 
     @classmethod
     def _gen_list_string(cls, list):
@@ -170,9 +171,13 @@ class Child_description_fr:
             else:
                 string += '.'
         else:
-            child_age = (date.today() - datetime.strptime(child.birthdate, DF).date()).days/365
-            if child_age <= 5: string += u" ne va pas encore à l'école."
-            else : string += u" ne va pas à l'école."
+            child_age = (
+                date.today() - datetime.strptime(
+                    child.birthdate, DF).date()).days / 365
+            if child_age <= 5:
+                string += u" ne va pas encore à l'école."
+            else:
+                string += u" ne va pas à l'école."
         return string
 
     @classmethod
@@ -235,7 +240,7 @@ class Child_description_fr:
             live_with['sisters'] = u'{} soeur'.format(prefix[1])
         elif case_study.nb_sisters > 1:
             live_with['sisters'] = u'{} {} soeurs'.format(
-                prefix[2],cls._number_to_string(case_study.nb_sisters))
+                prefix[2], cls._number_to_string(case_study.nb_sisters))
 
         # Live in institute or not
         if live_in_institut:
