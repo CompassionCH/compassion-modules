@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 class recurring_contract(orm.Model):
     _inherit = "recurring.contract"
+    _order = "start_date desc"
 
     ################################
     #        FIELDS METHODS        #
@@ -560,7 +561,12 @@ class recurring_contract(orm.Model):
             cr, uid, [('name', '=', 'Sponsor')], context=ctx)[0]
         for contract in self.browse(cr, uid, ids, context=ctx):
             if contract.child_id:
-                contract.child_id.write({'has_been_sponsored': True})
+                # Remove child delegation and set sponsored state
+                contract.child_id.write({
+                    'has_been_sponsored': True,
+                    'delegated_to': False,
+                    'delegated_comment': False,
+                    'date_delegation': False})
                 partner_categories = set(
                     [cat.id for cat in contract.partner_id.category_id
                      if cat.name != 'Old Sponsor'])
@@ -690,8 +696,10 @@ class recurring_contract(orm.Model):
             contract.child_id.write({'sponsor_id': False})
         if child_id:
             # Mark the selected child as sponsored
-            self.pool.get('compassion.child').write(cr, uid, child_id, {
-                'sponsor_id': partner_id or contract.partner_id.id}, context)
+            self.pool.get('compassion.child').write(
+                cr, uid, child_id, {
+                    'sponsor_id': partner_id or contract.correspondant_id.id},
+                context)
 
     def _on_change_group_id(self, cr, uid, ids, group_id, context=None):
         """ Change state of contract if payment is changed to/from LSV or DD.
@@ -807,7 +815,7 @@ class recurring_contract(orm.Model):
                 cr, uid, ids, vals['next_invoice_date'], context)
         if 'child_id' in vals:
             self._on_change_child_id(cr, uid, ids, vals['child_id'],
-                                     vals.get('partner_id'), context)
+                                     vals.get('correspondant_id'), context)
         if 'group_id' in vals:
             self._on_change_group_id(cr, uid, ids, vals['group_id'], context)
 
@@ -876,8 +884,7 @@ class recurring_contract(orm.Model):
     #      CALLBACKS FOR GP      #
     ##############################
     def force_validation(self, cr, uid, contract_id, context=None):
-        """ Used to transition draft sponsorships in waiting state
-        when exported from GP. """
+        """ Used to transition draft sponsorships in waiting state. """
         wf_service = netsvc.LocalService('workflow')
         logger.info("Contract " + str(contract_id) + " validated.")
         wf_service.trg_validate(uid, 'recurring.contract', contract_id,
@@ -885,10 +892,10 @@ class recurring_contract(orm.Model):
         return True
 
     def force_activation(self, cr, uid, contract_id, context=None):
-        """ Used to transition draft sponsorships in active state
-        when exported from GP. """
+        """ Used to transition draft sponsorships in active state. """
         self.force_validation(cr, uid, contract_id, context)
         self._on_contract_active(cr, uid, [contract_id], context)
+        self.write(cr, uid, contract_id, {'is_active': True}, context)
         return True
 
     def force_termination(self, cr, uid, contract_id, end_state, end_reason,

@@ -137,12 +137,10 @@
             <field name="model">compassion.child</field>
             <field name="arch" type="xml">
                 <search string="Search child">
-                    <field name="name" filter_domain="['|', '|', '|',
-                                                       ('name', 'ilike', self),
-                                                       ('firstname', 'ilike', self),
-                                                       ('code', 'ilike', self),
-                                                       ('sponsor_id.ref', 'ilike', self),
-                                                       ]"/>
+                    <field name="name" filter_domain="['|', ('name', 'ilike', self), ('firstname', 'ilike', self)]"/>
+                    <field name="code"/>
+                    <field name="sponsor_id"/>
+                    <field name="sponsor_ref"/>
                     <field name="state"/>
                     <field name="type"/>
                     <filter name="available" string="Available" domain="[('state','in',('N','D','I','R','E'))]" context="{'group_by':'state'}"/>

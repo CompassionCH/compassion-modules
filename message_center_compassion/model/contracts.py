@@ -51,13 +51,20 @@ class recurring_contract(orm.Model):
                 action_id = action_obj.search(
                     cr, uid, [('name', '=', 'UpsertConstituent')],
                     limit=1, context=context)[0]
+                partner_id = contract.correspondant_id.id
                 message_vals = {
                     'action_id': action_id,
-                    'object_id': contract.correspondant_id.id,
-                    'partner_id': contract.correspondant_id.id,
+                    'object_id': partner_id,
+                    'partner_id': partner_id,
                     'date': contract.activation_date,
                 }
-                message_obj.create(cr, uid, message_vals, context=context)
+                # Look if one Upsert is already pending for the same partner
+                mess_ids = message_obj.search(cr, uid, [
+                    ('action_id', '=', action_id),
+                    ('partner_id', '=', partner_id),
+                    ('state', '=', 'new')], context=context)
+                if not mess_ids:
+                    message_obj.create(cr, uid, message_vals, context=context)
 
                 # CreateCommitment Message
                 action_id = action_obj.search(

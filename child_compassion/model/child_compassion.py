@@ -174,6 +174,8 @@ class compassion_child(orm.Model):
         'sponsor_id': fields.many2one('res.partner', _('Sponsor'),
                                       readonly=True,
                                       track_visibility='onchange'),
+        'sponsor_ref': fields.related('sponsor_id', 'ref', type='char',
+                                      string=_('Sponsor reference')),
         'delegated_to': fields.many2one('res.partner', _("Delegated to")),
         'delegated_comment': fields.text(_("Delegated comment")),
         'date_delegation': fields.date(_("Delegated date")),
@@ -626,6 +628,10 @@ class compassion_child(orm.Model):
             Sync_typo3.request_to_typo3(query, 'upd')
 
         self._add_child_pictures_to_typo3(cr, uid, ids, context)
+        # This URL synchronizes the typo3 search index
+        # (not dramatic if we call it from test database)
+        requests.get('http://compassionch.customers.t3gardens.com/?type=778')
+        self.write(cr, uid, ids, {'state': 'I'})
 
     def child_remove_from_typo3(self, cr, uid, ids, context=None):
         child_codes = list()
@@ -642,6 +648,7 @@ class compassion_child(orm.Model):
             child_codes.append(child.code)
 
         Sync_typo3.delete_child_photos(child_codes)
+        requests.get('http://compassionch.customers.t3gardens.com/?type=778')
 
         return True
 
@@ -660,8 +667,6 @@ class compassion_child(orm.Model):
             file_fullshot.close()
 
             Sync_typo3.add_child_photos(head_image, full_image)
-
-        self.write(cr, uid, ids, {'state': 'I'})
 
     def _get_gender(self, cr, uid, gender, context=None):
         if gender == 'M':

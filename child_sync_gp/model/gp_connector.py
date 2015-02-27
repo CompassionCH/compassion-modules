@@ -164,3 +164,9 @@ class GPConnect(mysql_connector):
         elif project.status == 'T':
             gp_state = 'Terminé'
         return gp_state
+
+    def update_child_sponsorship(self, child_code, con_ids):
+        """ Updates the child code of a sponsorship """
+        con_ids_string = ','.join([str(c) for c in con_ids])
+        sql_query = "UPDATE Poles SET CODESPE = %s WHERE id_erp IN (%s)"
+        return self.query(sql_query, [child_code, con_ids_string])
