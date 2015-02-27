@@ -45,7 +45,7 @@ Sponsorship following module
         'workflow/contract_workflow.xml',
         'data/no_sub_cron.xml',
         'data/sub_accept_reject_cron.xml',
-        'view/install.xml',
+        'data/install.xml',
         ],
     'demo': [],
     'installable': True,
