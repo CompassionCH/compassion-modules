@@ -9,7 +9,6 @@
 #
 ##############################################################################
 
-import re
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from project_description_fr import Project_description_fr
@@ -74,32 +73,38 @@ class project_description_wizard(orm.TransientModel):
             res = project.needs_it or \
                 Project_description_it._get_needs_pattern_it(cr, uid, project,
                                                              context)
-        elif lang == 'en' and project.description_en:
-            # Fetch the part of the needs in the original description
-            string = project.description_en
-            match = re.search('per month.?\s?', string)
-            res = string[match.end():] or False
+
+        return res
+
+    def _get_desc(self, cr, uid, lang, context):
+        project = self.pool.get('compassion.project').browse(
+            cr, uid, context.get('active_id'), context)
+        res = False
+        if lang == 'fr':
+            res = Project_description_fr.gen_fr_translation(
+                cr, uid, project, context)
+        elif lang == 'de':
+            res = Project_description_de.gen_de_translation(
+                cr, uid, project, context)
+        elif lang == 'it':
+            res = Project_description_it.gen_it_translation(
+                cr, uid, project, context)
+        elif lang == 'en':
+            res = project.description_en
 
         return res
 
     _columns = {
         'project_id': fields.many2one('compassion.project', 'Project code'),
         # Complete descriptions
-        'keep_desc_fr': fields.boolean(_('Keep french description')),
-        'keep_desc_de': fields.boolean(_('Keep german description')),
-        'keep_desc_it': fields.boolean(_('Keep italian description')),
+        'keep_desc_fr': fields.boolean(_('Update french description')),
+        'keep_desc_de': fields.boolean(_('Update german description')),
+        'keep_desc_it': fields.boolean(_('Update italian description')),
         'desc_fr': fields.text(_('French description')),
         'desc_de': fields.text(_('German description')),
         'desc_it': fields.text(_('Italian description')),
         'desc_en': fields.text(_('English description')),
         # Needs descriptions
-        'keep_needs_desc_fr': fields.boolean(_('Keep french needs '
-                                               'description')),
-        'keep_needs_desc_de': fields.boolean(_('Keep german needs '
-                                               'description')),
-        'keep_needs_desc_it': fields.boolean(_('Keep italian needs '
-                                               'description')),
-        'needs_desc_en': fields.text(_('English needs description')),
         'needs_desc_fr': fields.text(_('French needs description')),
         'needs_desc_de': fields.text(_('German needs description')),
         'needs_desc_it': fields.text(_('Italian needs description')),
@@ -107,64 +112,45 @@ class project_description_wizard(orm.TransientModel):
             _get_value_ids, type='one2many',
             relation='compassion.translated.value',
             fnct_inv=_write_values),
-        'state': fields.selection(
-            [('needs', _('Needs completion')),
-             ('descriptions', _('Descriptions correction'))],
-            _('State'), required=True, readonly=True),
     }
 
     _defaults = {
         'project_id': _get_project_id,
-        'state': 'needs',
+        'desc_fr': lambda self, cr, uid, context: self._get_desc(
+            cr, uid, 'fr', context),
+        'desc_de': lambda self, cr, uid, context: self._get_desc(
+            cr, uid, 'de', context),
+        'desc_it': lambda self, cr, uid, context: self._get_desc(
+            cr, uid, 'it', context),
+        'desc_en': lambda self, cr, uid, context: self._get_desc(
+            cr, uid, 'en', context),
         'needs_desc_fr': lambda self, cr, uid, context: self._get_needs(
             cr, uid, 'fr', context),
         'needs_desc_de': lambda self, cr, uid, context: self._get_needs(
             cr, uid, 'de', context),
         'needs_desc_it': lambda self, cr, uid, context: self._get_needs(
             cr, uid, 'it', context),
-        'needs_desc_en': lambda self, cr, uid, context: self._get_needs(
-            cr, uid, 'en', context),
         'project_property_value_ids': lambda self, cr, uid, context:
         self._get_default_ids(cr, uid, context),
     }
-
-    def validate_needs(self, cr, uid, ids, context=None):
-        """ Save the needs description in the project. """
-        wizard = self.browse(cr, uid, ids, context)[0]
-        project_vals = dict()
-        if wizard.keep_needs_desc_fr:
-            project_vals['needs_fr'] = wizard.needs_desc_fr
-        if wizard.keep_needs_desc_de:
-            project_vals['needs_de'] = wizard.needs_desc_de
-        if wizard.keep_needs_desc_it:
-            project_vals['needs_it'] = wizard.needs_desc_it
-        if project_vals:
-            wizard.project_id.write(project_vals)
-
-        return self.generate_descriptions(cr, uid, ids, context)
 
     def generate_descriptions(self, cr, uid, ids, context=None):
         wizard = self.browse(cr, uid, ids, context)[0]
         project = wizard.project_id
 
-        complete_desc_fr = self._get_complete_desc(
-            wizard.needs_desc_fr, Project_description_fr.gen_fr_translation(
-                cr, uid, project, context))
-
-        complete_desc_de = self._get_complete_desc(
-            wizard.needs_desc_de, Project_description_de.gen_de_translation(
-                cr, uid, project, context))
-
-        complete_desc_it = self._get_complete_desc(
-            wizard.needs_desc_it, Project_description_it.gen_it_translation(
-                cr, uid, project, context))
+        desc_fr = Project_description_fr.gen_fr_translation(
+            cr, uid, project, context)
+        desc_de = Project_description_de.gen_de_translation(
+            cr, uid, project, context)
+        desc_it = Project_description_it.gen_it_translation(
+            cr, uid, project, context)
 
         self.write(cr, uid, ids, {
-            'state': 'descriptions',
-            'desc_fr': complete_desc_fr,
-            'desc_de': complete_desc_de,
-            'desc_it': complete_desc_it,
-            'desc_en': project.description_en,
+            'desc_fr': desc_fr,
+            'desc_de': desc_de,
+            'desc_it': desc_it,
+            'desc_en': project.description_en.replace(
+                wizard.needs_desc_en, ''),
             }, context)
 
         return {
@@ -178,26 +164,19 @@ class project_description_wizard(orm.TransientModel):
             'target': 'new',
             }
 
-    def _get_complete_desc(self, needs, description):
-        """ Returns the appropriate project description
-        """
-        if needs and (needs not in description):
-            complete_desc = description + '\n\n' + needs
-        else:
-            complete_desc = description
-
-        return complete_desc
-
     def validate_descriptions(self, cr, uid, ids, context=None):
         """ Save the selected descriptions in the project. """
         wizard = self.browse(cr, uid, ids, context)[0]
-        vals = {}
+        vals = dict()
         if wizard.keep_desc_fr:
-            vals['description_fr'] = wizard.desc_fr
+            vals['description_fr'] = wizard.desc_fr + wizard.needs_desc_fr
+            vals['needs_fr'] = wizard.needs_desc_fr
         if wizard.keep_desc_de:
-            vals['description_de'] = wizard.desc_de
+            vals['description_de'] = wizard.desc_de + wizard.needs_desc_de
+            vals['needs_de'] = wizard.needs_desc_de
         if wizard.keep_desc_it:
-            vals['description_it'] = wizard.desc_it
+            vals['description_it'] = wizard.desc_it + wizard.needs_desc_it
+            vals['needs_it'] = wizard.needs_desc_it
 
         if not vals:
             raise orm.except_orm(

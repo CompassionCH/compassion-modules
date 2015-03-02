@@ -28,7 +28,6 @@ logger = logging.getLogger(__name__)
 
 
 class compassion_child(orm.Model):
-
     """ A sponsored child """
     _name = 'compassion.child'
     _rec_name = 'code'
@@ -90,6 +89,18 @@ class compassion_child(orm.Model):
         for case_study in prop_obj.browse(cr, uid, ids, context):
             child_ids.append(case_study.child_id.id)
         return child_ids
+
+    def _has_desc(self, cr, uid, ids, field_names, args, context=None):
+        res = dict()
+        field_res = dict()
+        for child in self.browse(cr, uid, ids, context):
+            field_res['has_desc_fr'] = bool(child.desc_fr)
+            field_res['has_desc_de'] = bool(child.desc_de)
+            field_res['has_desc_it'] = bool(child.desc_it)
+            field_res['has_desc_en'] = bool(child.desc_en)
+            res[child.id] = field_res.copy()
+
+        return res
 
     _columns = {
         ######################################################################
@@ -157,6 +168,14 @@ class compassion_child(orm.Model):
                     _get_child_from_case_study,
                     ['desc_en', 'desc_fr', 'desc_de', 'desc_it'],
                     10)}),
+        'has_desc_fr': fields.function(
+            _has_desc, string='FR', type='boolean', multi='has_desc'),
+        'has_desc_de': fields.function(
+            _has_desc, string='DE', type='boolean', multi='has_desc'),
+        'has_desc_it': fields.function(
+            _has_desc, string='IT', type='boolean', multi='has_desc'),
+        'has_desc_en': fields.function(
+            _has_desc, string='EN', type='boolean', multi='has_desc'),
         'case_study_ids': fields.one2many(
             'compassion.child.property', 'child_id', string=_('Case studies'),
             readonly=True, track_visibility="onchange"),
@@ -174,9 +193,13 @@ class compassion_child(orm.Model):
         'sponsor_id': fields.many2one('res.partner', _('Sponsor'),
                                       readonly=True,
                                       track_visibility='onchange'),
+        'sponsor_ref': fields.related('sponsor_id', 'ref', type='char',
+                                      string=_('Sponsor reference')),
         'delegated_to': fields.many2one('res.partner', _("Delegated to")),
         'delegated_comment': fields.text(_("Delegated comment")),
         'date_delegation': fields.date(_("Delegated date")),
+        'date_info': fields.related('case_study_ids', 'info_date',
+                                    type='date', string=_("Last info")),
 
         ######################################################################
         #                      2. Exit Details                               #
@@ -329,7 +352,8 @@ class compassion_child(orm.Model):
             'gender': json_data['gender'],
             'birthdate': json_data['birthDate'],
             'unique_id': json_data['childID'],
-            'code': json_data['childKey']
+            'code': json_data['childKey'],
+            'comments': json_data['basicChildInternalComment'],
         }
 
         value_obj = self.pool.get('compassion.translated.value')
@@ -535,12 +559,19 @@ class compassion_child(orm.Model):
         return True
 
     def _get_typo3_child_id(self, cr, uid, child_code):
-        res = Sync_typo3.request_to_typo3(
+        res_query = Sync_typo3.request_to_typo3(
             "select * "
             "from tx_drechildpoolmanagement_domain_model_children "
             "where child_key='%s';" % child_code, 'sel')
+        res = 0
+        try:
+            res = json.loads(res_query)[0]['uid']
+        except:
+            raise orm.except_orm(
+                _('Typo3 Error'),
+                _('Child %s not found on typo3') % child_code)
 
-        return json.loads(res)[0]['uid']
+        return res
 
     def child_add_to_typo3(self, cr, uid, ids, context=None):
         # Solve the encoding problems on child's descriptions
@@ -561,7 +592,7 @@ class compassion_child(orm.Model):
 
             today_ts = calendar.timegm(
                 datetime.today().utctimetuple())
-            three_month_ts = timedelta(days=200).total_seconds()
+            consign_ts = timedelta(days=200).total_seconds()
             if child.birthdate:
                 child_birth_date = calendar.timegm(
                     datetime.strptime(child.birthdate, DF).utctimetuple())
@@ -591,7 +622,7 @@ class compassion_child(orm.Model):
                 "        '{}','{}','{}','{}','{}','{}','{}',{});".format(
                     child.code, child.name, child.firstname,
                     child_gender, child_desc_de,
-                    today_ts, today_ts, today_ts, today_ts + three_month_ts,
+                    today_ts, today_ts, today_ts, today_ts + consign_ts,
                     0, child_image, child_birth_date, child_unsponsored_date,
                     project), 'upd')
 
@@ -609,7 +640,7 @@ class compassion_child(orm.Model):
                 "        '{}','{}','{}','{}','{}','{}',{},1);".format(
                     child.code, child.name, child.firstname,
                     child_gender, child_desc_fr,
-                    today_ts, today_ts, today_ts, today_ts + three_month_ts,
+                    today_ts, today_ts, today_ts, today_ts + consign_ts,
                     parent_id, child_image, child_birth_date,
                     child_unsponsored_date, project)
 
@@ -626,6 +657,10 @@ class compassion_child(orm.Model):
             Sync_typo3.request_to_typo3(query, 'upd')
 
         self._add_child_pictures_to_typo3(cr, uid, ids, context)
+        # This URL synchronizes the typo3 search index
+        # (not dramatic if we call it from test database)
+        requests.get('http://compassionch.customers.t3gardens.com/?type=778')
+        self.write(cr, uid, ids, {'state': 'I'})
 
     def child_remove_from_typo3(self, cr, uid, ids, context=None):
         child_codes = list()
@@ -642,6 +677,7 @@ class compassion_child(orm.Model):
             child_codes.append(child.code)
 
         Sync_typo3.delete_child_photos(child_codes)
+        requests.get('http://compassionch.customers.t3gardens.com/?type=778')
 
         return True
 
@@ -660,8 +696,6 @@ class compassion_child(orm.Model):
             file_fullshot.close()
 
             Sync_typo3.add_child_photos(head_image, full_image)
-
-        self.write(cr, uid, ids, {'state': 'I'})
 
     def _get_gender(self, cr, uid, gender, context=None):
         if gender == 'M':

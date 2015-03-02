@@ -121,13 +121,15 @@
                     <field name="code"/>
                     <field name="date"/>
                     <field name="sponsor_id"/>
-                    <field name="gender"/>
-                    <field name="birthdate"/>
-                    <field name="type"/>
                     <field name="state"/>
                     <field name="delegated_to"/>
                     <field name="date_delegation"/>
                     <field name="delegated_comment"/>
+                    <field name="date_info"/>
+                    <field name="has_desc_fr"/>
+                    <field name="has_desc_de"/>
+                    <field name="has_desc_it"/>
+                    <field name="has_desc_en"/>
                 </tree>
             </field>
         </record>
@@ -137,12 +139,10 @@
             <field name="model">compassion.child</field>
             <field name="arch" type="xml">
                 <search string="Search child">
-                    <field name="name" filter_domain="['|', '|', '|',
-                                                       ('name', 'ilike', self),
-                                                       ('firstname', 'ilike', self),
-                                                       ('code', 'ilike', self),
-                                                       ('sponsor_id.ref', 'ilike', self),
-                                                       ]"/>
+                    <field name="name" filter_domain="['|', ('name', 'ilike', self), ('firstname', 'ilike', self)]"/>
+                    <field name="code"/>
+                    <field name="sponsor_id"/>
+                    <field name="sponsor_ref"/>
                     <field name="state"/>
                     <field name="type"/>
                     <filter name="available" string="Available" domain="[('state','in',('N','D','I','R','E'))]" context="{'group_by':'state'}"/>

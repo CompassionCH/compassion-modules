@@ -11,6 +11,7 @@
                             <group>
                                 <field name="info_date" />
                                 <field name="last_modification_date" />
+                                <field name="comments" colspan="2" attrs="{'invisible': [('comments', '=', False)]}" />
                             </group>
                             <group>
                                 <field name="name" />

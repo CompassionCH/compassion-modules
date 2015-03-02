@@ -115,6 +115,10 @@
                     <field name="name" />
                     <field name="code" />
                     <field name="last_update_date" />
+                    <field name="has_desc_fr" />
+                    <field name="has_desc_de" />
+                    <field name="has_desc_it" />
+                    <field name="has_desc_en" />
                     <field name="suspension" />
                 </tree>
             </field>

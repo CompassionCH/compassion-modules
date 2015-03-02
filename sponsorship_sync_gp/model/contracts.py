@@ -177,6 +177,8 @@ class contracts(orm.Model):
                     _("GP Sync Error"),
                     _("The sponsorship could not be activated.") +
                     _("Please contact an IT person."))
+            # Update the months paid in GP
+            gp_connect.register_payment(contract.id, contract.months_paid)
 
     def _invoice_paid(self, cr, uid, invoice, context=None):
         """ When a customer invoice is paid, synchronize GP. """

@@ -17,6 +17,7 @@
                     <field name="date" />
                     <field name="process_date" />
                     <field name="child_id" />
+                    <field name="project_id" />
                     <field name="incoming_key"/>
                     <field name="event"/>
                     <field name="state" />
@@ -135,7 +136,7 @@
                     <filter string="Incoming" name="incoming" domain="[('direction','=','in')]" context="{'group_by':'action_id'}" />
                     <filter string="Constituent" name="constituent" domain="['|',('name','like','Constituent'),('name','like','Email')]" />
                     <filter string="Child" name="child" domain="['|',('name','like','Child'),('name','like','Project')]" />
-                    <filter string="Commitment" name="commitment" domain="[('name','like','Commitment')]" />
+                    <filter string="Commitment" name="commitment" domain="[('name','like','Commitment')]" context="{'group_by':'action_id'}"/>
                     <filter string="CreateGift" name="gift" domain="[('name','=','CreateGift')]" />
                     <separator />
                     <filter string="Pending" name="pending" domain="['|', ('state','=','pending'), ('state','=','new')]" />

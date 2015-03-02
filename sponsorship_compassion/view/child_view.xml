@@ -7,7 +7,7 @@
 			<field name="inherit_id" ref="child_compassion.view_compassion_child_tree"/>
 			<field eval="18" name="priority"/>
 			<field name="arch" type="xml">
-                <field name="state" position="after">
+                <field name="date" position="after">
                     <field name="unsponsored_since"/>
                 </field>
 			</field>

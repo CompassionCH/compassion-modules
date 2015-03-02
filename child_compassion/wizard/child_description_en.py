@@ -9,6 +9,8 @@
 #
 ##############################################################################
 from collections import OrderedDict
+from datetime import datetime, date
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 
 class Child_description_en:
@@ -28,6 +30,24 @@ class Child_description_en:
         desc_en += cls._gen_hobbies_info_en(
             cr, uid, child, case_study, context)
         return desc_en
+
+    @classmethod
+    def _number_to_string(cls, number):
+        conversion_dict = {
+            1: 'one',
+            2: 'two',
+            3: 'three',
+            4: 'four',
+            5: 'five',
+            6: 'six',
+            7: 'seven',
+            8: 'height',
+            9: 'nine'
+        }
+        if number in conversion_dict:
+            return conversion_dict[number]
+        else:
+            return number
 
     @classmethod
     def _gen_list_string(cls, list):
@@ -164,7 +184,13 @@ class Child_description_en:
             else:
                 string += '.'
         else:
-            string += " doesn't go to school."
+            child_age = (
+                date.today() - datetime.strptime(
+                    child.birthdate, DF).date()).days / 365
+            if child_age <= 5:
+                string += u" doesn't go to school for now."
+            else:
+                string += u" doesn't go to school."
         return string
 
     @classmethod
@@ -218,13 +244,13 @@ class Child_description_en:
                 prefix[0])
         elif case_study.nb_brothers > 1:
             live_with['brothers'] = u'{} {} brother'.format(
-                prefix[2], case_study.nb_brothers)
+                prefix[2], cls._number_to_string(case_study.nb_brothers))
         if case_study.nb_sisters == 1:
             live_with['sisters'] = u'{} sister'.format(
                 prefix[1])
         elif case_study.nb_sisters > 1:
             live_with['sisters'] = u'{} {} sister'.format(
-                prefix[2], case_study.nb_sisters)
+                prefix[2], cls._number_to_string(case_study.nb_sisters))
 
         if live_in_institut:
             string = '%s lives in boarding with %s. ' % (

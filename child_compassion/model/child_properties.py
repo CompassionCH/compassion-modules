@@ -35,6 +35,7 @@ class child_property(orm.Model):
             ('M', 'Male'),
             ('F', 'Female')], _('Gender')),
         'birthdate': fields.date(_('Birthdate'), track_visibility='onchange'),
+        'comments': fields.text(_('Comments'), track_visibility='onchange'),
         'orphan_flag': fields.boolean(_('Is orphan'),
                                       track_visibility='onchange'),
         'handicapped_flag': fields.boolean(_('Is handicapped'),

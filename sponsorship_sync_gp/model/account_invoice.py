@@ -31,8 +31,9 @@ class account_invoice(orm.Model):
                     if contract and contract.id not in contract_ids \
                             and line.product_id.name in SPONSORSHIP_TYPES:
                         contract_ids.add(contract.id)
+                        # Removes one month due in GP.
                         if not gp_connect.register_payment(
-                                contract.id, contract.months_paid):
+                                contract.id, contract.months_paid+1):
                             raise orm.except_orm(
                                 _("GP Sync Error"),
                                 _("The cancellation could not be registered "

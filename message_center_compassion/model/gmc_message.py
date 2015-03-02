@@ -155,8 +155,6 @@ class gmc_message_pool(orm.Model):
                             res = self._perform_incoming_action(
                                 cr, uid, message, context)
                         except Exception:
-                            # Abort all pending changes
-                            # cr.rollback()
                             message = self.browse(cr, uid, message.id,
                                                   context)
                             message.write({
@@ -182,7 +180,8 @@ class gmc_message_pool(orm.Model):
                 if res:
                     message_update = {
                         'state': 'pending' if action.direction == 'out'
-                        else 'success'}
+                        else 'success',
+                        'process_date': datetime.today().strftime(DF)}
                     if isinstance(res, basestring):
                         message_update['request_id'] = res
                     message.write(message_update)
@@ -341,7 +340,6 @@ class gmc_message_pool(orm.Model):
         if message_ids:
             self.write(cr, uid, message_ids, {
                 'state': status.lower(),
-                'process_date': datetime.today().strftime(DF),
                 'failure_reason': message
             }, context)
         else:

@@ -25,6 +25,7 @@ from sync_typo3 import Sync_typo3
 class compassion_project(orm.Model):
     """ A compassion project """
     _name = 'compassion.project'
+    _rec_name = 'code'
     _inherit = 'mail.thread'
 
     def _get_suspension_state(self, cr, uid, ids, field_name, args,
@@ -58,6 +59,18 @@ class compassion_project(orm.Model):
         """ Hook to perform some action when project is suspended.
         """
         pass
+
+    def _has_desc(self, cr, uid, ids, field_names, args, context=None):
+        res = dict()
+        field_res = dict()
+        for child in self.browse(cr, uid, ids, context):
+            field_res['has_desc_fr'] = bool(child.description_fr)
+            field_res['has_desc_de'] = bool(child.description_de)
+            field_res['has_desc_it'] = bool(child.description_it)
+            field_res['has_desc_en'] = bool(child.description_en)
+            res[child.id] = field_res.copy()
+
+        return res
 
     _columns = {
         ######################################################################
@@ -110,6 +123,15 @@ class compassion_project(orm.Model):
         'description_fr': fields.text(_('French description')),
         'description_de': fields.text(_('German description')),
         'description_it': fields.text(_('Italian description')),
+
+        'has_desc_fr': fields.function(
+            _has_desc, string='FR', type='boolean', multi='has_desc'),
+        'has_desc_de': fields.function(
+            _has_desc, string='DE', type='boolean', multi='has_desc'),
+        'has_desc_it': fields.function(
+            _has_desc, string='IT', type='boolean', multi='has_desc'),
+        'has_desc_en': fields.function(
+            _has_desc, string='EN', type='boolean', multi='has_desc'),
 
         'needs_fr': fields.text(_('French needs')),
         'needs_de': fields.text(_('German needs')),
@@ -210,6 +232,7 @@ class compassion_project(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
         for project in self.browse(cr, uid, ids, context):
+            values = None
             try:
                 values, community_id = self._update_program_info(
                     cr, uid, project, context)

@@ -678,20 +678,16 @@ class recurring_contract(orm.Model):
                             context=None):
         """Link/unlink child to sponsor
         """
-        if not isinstance(ids, list):
-            ids = [ids]
-        elif len(ids) != 1:
-            raise orm.except_orm(
-                _('Invalid operation'),
-                _('You cannot apply these changes to several sponsorships.'))
-        contract = self.browse(cr, uid, ids[0], context)
-        if contract.child_id and contract.child_id != child_id:
-            # Free the previously selected child
-            contract.child_id.write({'sponsor_id': False})
-        if child_id:
-            # Mark the selected child as sponsored
-            self.pool.get('compassion.child').write(cr, uid, child_id, {
-                'sponsor_id': partner_id or contract.partner_id.id}, context)
+        for contract in self.browse(cr, uid, ids, context):
+            if contract.child_id and contract.child_id != child_id:
+                # Free the previously selected child
+                contract.child_id.write({'sponsor_id': False})
+            if child_id:
+                # Mark the selected child as sponsored
+                self.pool.get('compassion.child').write(
+                    cr, uid, child_id, {
+                        'sponsor_id': partner_id or contract.partner_id.id},
+                    context)
 
     def _on_change_group_id(self, cr, uid, ids, group_id, context=None):
         """ Change state of contract if payment is changed to/from LSV or DD.
@@ -984,3 +980,7 @@ class account_period(orm.Model):
 
 class account_account_type(orm.Model):
     _inherit = 'account.account.type'
+
+
+class account_move_reconcile(orm.Model):
+    _inherit = 'account.move.reconcile'

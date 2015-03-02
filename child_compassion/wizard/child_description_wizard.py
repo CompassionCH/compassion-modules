@@ -72,20 +72,31 @@ class child_description_wizard(orm.TransientModel):
                 cr, uid, child, case_study, context)
         return res
 
+    def _get_comments(self, cr, uid, ids, fieldname, args, context=None):
+        child = self.pool.get('compassion.child').browse(
+            cr, uid, context.get('active_id'), context)
+        if child and child.case_study_ids:
+            res = child.case_study_ids[0].comments
+        else:
+            res = False
+        return {id: res for id in ids}
+
     _columns = {
         'child_id': fields.many2one('compassion.child', 'Child'),
-        'keep_desc_fr': fields.boolean(_('Keep french description')),
+        'keep_desc_fr': fields.boolean(_('Update french description')),
         'desc_fr': fields.text(_('French description')),
-        'keep_desc_de': fields.boolean(_('Keep german description')),
+        'keep_desc_de': fields.boolean(_('Update german description')),
         'desc_de': fields.text(_('German description')),
-        'keep_desc_it': fields.boolean(_('Keep italian description')),
+        'keep_desc_it': fields.boolean(_('Update italian description')),
         'desc_it': fields.text(_('Italian description')),
-        'keep_desc_en': fields.boolean(_('Keep english description')),
+        'keep_desc_en': fields.boolean(_('Update english description')),
         'desc_en': fields.text(_('English description')),
         'child_property_value_ids': fields.function(
             _get_value_ids, type='one2many',
             relation='compassion.translated.value',
             fnct_inv=_write_values),
+        'comments': fields.function(_get_comments, type='text',
+                                    string=_('Comments'), readonly=True),
     }
 
     _defaults = {
@@ -104,6 +115,8 @@ class child_description_wizard(orm.TransientModel):
             cr, uid, 'it', context),
         'child_property_value_ids': lambda self, cr, uid, context:
         self._get_default_ids(cr, uid, context),
+        'comments': lambda self, cr, uid, context:
+        self._get_comments(cr, uid, [0], '', '', context)[0]
     }
 
     def generate_descriptions(self, cr, uid, ids, context=None):
