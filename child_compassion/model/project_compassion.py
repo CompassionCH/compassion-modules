@@ -211,6 +211,7 @@ class compassion_project(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
         for project in self.browse(cr, uid, ids, context):
+            values = None
             try:
                 values, community_id = self._update_program_info(
                     cr, uid, project, context)
