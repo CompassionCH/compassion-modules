@@ -15,7 +15,7 @@ from child_description_fr import Child_description_fr
 from child_description_de import Child_description_de
 from child_description_en import Child_description_en
 from child_description_it import Child_description_it
-
+import pdb
 
 class child_description_wizard(orm.TransientModel):
     _name = 'child.description.wizard'
@@ -71,6 +71,14 @@ class child_description_wizard(orm.TransientModel):
             res = Child_description_en.gen_en_translation(
                 cr, uid, child, case_study, context)
         return res
+        
+    def _get_last_case_study(self, cr, uid, ids, fieldname, args, context=None):
+        last_case_study = self.browse(cr, uid, ids, context)[0].child_id.case_study_ids[0]
+        pdb.set_trace()
+        return {id :[last_case_study.id]}
+
+    # def _default_case_study(self, cr, uid, context):
+        # return self._get_last_case_study(cr, uid, [0], None, None, context)[0]
 
     _columns = {
         'child_id': fields.many2one('compassion.child', 'Child'),
@@ -86,6 +94,9 @@ class child_description_wizard(orm.TransientModel):
             _get_value_ids, type='one2many',
             relation='compassion.translated.value',
             fnct_inv=_write_values),
+        'case_study_ids': fields.function(
+            _get_last_case_study, type='one2many',
+            obj='compassion.child.property'),
     }
 
     _defaults = {
@@ -104,6 +115,7 @@ class child_description_wizard(orm.TransientModel):
             cr, uid, 'it', context),
         'child_property_value_ids': lambda self, cr, uid, context:
         self._get_default_ids(cr, uid, context),
+        # 'case_study_ids': _default_case_study,
     }
 
     def generate_descriptions(self, cr, uid, ids, context=None):
