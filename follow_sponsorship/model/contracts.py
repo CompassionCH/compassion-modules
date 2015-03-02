@@ -67,9 +67,9 @@ class recurring_contract(orm.Model):
             for wkf_instance_id in wkf_instance_ids:
                 cr.execute(
                     '''
-                    INSERT INTO wkf_workitem(act_id, inst_id)
-                    VALUES ('{}', '{}')
-                    '''.format(wkf_activity_id, wkf_instance_id)
+                    INSERT INTO wkf_workitem(act_id, inst_id, state)
+                    VALUES ('{}', '{}', '{}')
+                    '''.format(wkf_activity_id, wkf_instance_id, 'complete')
                 )
 
     # Only at module installation
