@@ -7,59 +7,30 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Description generation" version="7.0">
-                    <field name="state" invisible="1"/>
-                    <sheet states="needs">
-                        <separator string="Complete needs descriptions" />
-                        <div>
-                            <label for="needs_desc_en" class="oe_checklist_label" />
-                            <field name="needs_desc_en" class="oe_checklist_value" readonly="1"/>
-                        </div>
-                        <div>
-                            <field name="keep_needs_desc_fr" class="oe_checklist_box" />
-                            <label for="needs_desc_fr" class="oe_checklist_label" />
-                            <field name="needs_desc_fr" class="oe_checklist_value"/>
-                        </div>
-                        <div class="oe_checklist_div">
-                            <field name="keep_needs_desc_de" class="oe_checklist_box" />
-                            <label for="needs_desc_de" class="oe_checklist_label" />
-                            <field name="needs_desc_de" class="oe_checklist_value"/>
-                        </div>
-                        <div>
-                            <field name="keep_needs_desc_it" class="oe_checklist_box" />
-                            <label for="needs_desc_it" class="oe_checklist_label" />
-                            <field name="needs_desc_it" class="oe_checklist_value"/>
-                        </div>
-                    </sheet>
-                    <group states="descriptions">
+                    <group col='2'>
                         <group string="Complete missing translations if needed">
                             <field name="project_property_value_ids" nolabel="1" />
                         </group>
                         <group string="Check and select descriptions to validate">
-                            <div>
-                                <label for="desc_en"/>
-                                <field name="desc_en" readonly="1"/>
-                            </div>
-                            <div class="oe_checklist_div">
-                                <field name="keep_desc_fr" class="oe_checklist_box" />
-                                <label for="desc_fr" class="oe_checklist_label" />
-                                <field name="desc_fr" class="oe_checklist_value"/>
-                            </div>
-                            <div>
-                                <field name="keep_desc_de" class="oe_checklist_box" />
-                                <label for="desc_de" class="oe_checklist_label" />
-                                <field name="desc_de" class="oe_checklist_value"/>
-                            </div>
-                            <div class="oe_checklist_div">
-                                <field name="keep_desc_it" class="oe_checklist_box" />
-                                <label for="desc_it" class="oe_checklist_label" />
-                                <field name="desc_it" class="oe_checklist_value"/>
-                            </div>
+                            <group col='1' colspan='2'><field name="desc_en" readonly="True"/></group>
+                            <group col='1' colspan='2'><field name="needs_desc_en" readonly="True"/></group>
+                            
+                            <field name="keep_desc_fr"/>
+                            <group col='1' colspan='2'><field name="desc_fr" attrs="{'invisible':[('keep_desc_fr','=',False)]}"/></group>
+                            <group col='1' colspan='2'><field name="needs_desc_fr" attrs="{'invisible':[('keep_desc_fr','=',False)]}"/></group>
+
+                            <field name="keep_desc_de"/>
+                            <group col='1' colspan='2'><field name="desc_de" attrs="{'invisible':[('keep_desc_de','=',False)]}"/></group>
+                            <group col='1' colspan='2'><field name="needs_desc_de" attrs="{'invisible':[('keep_desc_de','=',False)]}"/></group>
+
+                            <field name="keep_desc_it"/>
+                            <group col='1' colspan='2'><field name="desc_it" attrs="{'invisible':[('keep_desc_it','=',False)]}"/></group>
+                            <group col='1' colspan='2'><field name="needs_desc_it" attrs="{'invisible':[('keep_desc_it','=',False)]}"/></group>
                         </group>
                     </group>
                     <footer>
-                        <button name="validate_needs" class="oe_highlight" string="Next" type="object" states="needs" />
-                        <button name="generate_descriptions" string="Generate" type="object" states="descriptions" />
-                        <button name="validate_descriptions" class="oe_highlight" string="Finish" type="object" states="descriptions" />
+                        <button name="generate_descriptions" string="Generate" type="object"/>
+                        <button name="validate_descriptions" class="oe_highlight" string="Finish" type="object"/>
                         <button string="Cancel" class="oe_link" special="cancel" />
                     </footer>
                 </form>

@@ -8,15 +8,9 @@
 			<field name="arch" type="xml">
 				<form string="Description generation" version="7.0">
                     <group col='2'>
-                        <notebook>
-                            <page string="Translations">
-                                <group string="Complete missing translations if needed">
-                                    <field name="child_property_value_ids" nolabel="1" />
-                                </group>
-                            </page>
-                            <page string="Case studies">
-                                <field name="case_study_ids"/>
-                            </page>
+                            <group string="Complete missing translations if needed">
+                                <field name="child_property_value_ids" nolabel="1" />
+                            </group>
                         </notebook>
                         <group string="Check and select descriptions to validate" col='2'>
                             <field name="keep_desc_fr"/>
