@@ -24,6 +24,7 @@ class child_pictures(orm.Model):
     """
 
     _name = 'compassion.child.pictures'
+    _order = 'date desc'
 
     def get_picture(self, cr, uid, ids, field_name, args, context=None):
         """Get the picture given field_name (headshot or fullshot)"""

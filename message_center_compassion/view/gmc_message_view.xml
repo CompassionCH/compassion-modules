@@ -17,6 +17,7 @@
                     <field name="date" />
                     <field name="process_date" />
                     <field name="child_id" />
+                    <field name="project_id" />
                     <field name="incoming_key"/>
                     <field name="event"/>
                     <field name="state" />

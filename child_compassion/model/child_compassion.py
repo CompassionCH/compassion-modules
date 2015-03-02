@@ -28,7 +28,6 @@ logger = logging.getLogger(__name__)
 
 
 class compassion_child(orm.Model):
-
     """ A sponsored child """
     _name = 'compassion.child'
     _rec_name = 'code'
@@ -170,13 +169,13 @@ class compassion_child(orm.Model):
                     ['desc_en', 'desc_fr', 'desc_de', 'desc_it'],
                     10)}),
         'has_desc_fr': fields.function(
-            _has_desc, string='FR', type='boolean', multi=True),
+            _has_desc, string='FR', type='boolean', multi='has_desc'),
         'has_desc_de': fields.function(
-            _has_desc, string='DE', type='boolean', multi=True),
+            _has_desc, string='DE', type='boolean', multi='has_desc'),
         'has_desc_it': fields.function(
-            _has_desc, string='IT', type='boolean', multi=True),
+            _has_desc, string='IT', type='boolean', multi='has_desc'),
         'has_desc_en': fields.function(
-            _has_desc, string='EN', type='boolean', multi=True),
+            _has_desc, string='EN', type='boolean', multi='has_desc'),
         'case_study_ids': fields.one2many(
             'compassion.child.property', 'child_id', string=_('Case studies'),
             readonly=True, track_visibility="onchange"),
@@ -560,12 +559,19 @@ class compassion_child(orm.Model):
         return True
 
     def _get_typo3_child_id(self, cr, uid, child_code):
-        res = Sync_typo3.request_to_typo3(
+        res_query = Sync_typo3.request_to_typo3(
             "select * "
             "from tx_drechildpoolmanagement_domain_model_children "
             "where child_key='%s';" % child_code, 'sel')
+        res = 0
+        try:
+            res = json.loads(res_query)[0]['uid']
+        except:
+            raise orm.except_orm(
+                _('Typo3 Error'),
+                _('Child %s not found on typo3') % child_code)
 
-        return json.loads(res)[0]['uid']
+        return res
 
     def child_add_to_typo3(self, cr, uid, ids, context=None):
         # Solve the encoding problems on child's descriptions
@@ -586,7 +592,7 @@ class compassion_child(orm.Model):
 
             today_ts = calendar.timegm(
                 datetime.today().utctimetuple())
-            three_month_ts = timedelta(days=200).total_seconds()
+            consign_ts = timedelta(days=200).total_seconds()
             if child.birthdate:
                 child_birth_date = calendar.timegm(
                     datetime.strptime(child.birthdate, DF).utctimetuple())
@@ -616,7 +622,7 @@ class compassion_child(orm.Model):
                 "        '{}','{}','{}','{}','{}','{}','{}',{});".format(
                     child.code, child.name, child.firstname,
                     child_gender, child_desc_de,
-                    today_ts, today_ts, today_ts, today_ts + three_month_ts,
+                    today_ts, today_ts, today_ts, today_ts + consign_ts,
                     0, child_image, child_birth_date, child_unsponsored_date,
                     project), 'upd')
 
@@ -634,7 +640,7 @@ class compassion_child(orm.Model):
                 "        '{}','{}','{}','{}','{}','{}',{},1);".format(
                     child.code, child.name, child.firstname,
                     child_gender, child_desc_fr,
-                    today_ts, today_ts, today_ts, today_ts + three_month_ts,
+                    today_ts, today_ts, today_ts, today_ts + consign_ts,
                     parent_id, child_image, child_birth_date,
                     child_unsponsored_date, project)
 
