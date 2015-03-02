@@ -23,7 +23,6 @@ logger = logging.getLogger(__name__)
 
 class recurring_contract(orm.Model):
     _inherit = "recurring.contract"
-    _order = "start_date desc"
 
     ################################
     #        FIELDS METHODS        #
@@ -561,12 +560,7 @@ class recurring_contract(orm.Model):
             cr, uid, [('name', '=', 'Sponsor')], context=ctx)[0]
         for contract in self.browse(cr, uid, ids, context=ctx):
             if contract.child_id:
-                # Remove child delegation and set sponsored state
-                contract.child_id.write({
-                    'has_been_sponsored': True,
-                    'delegated_to': False,
-                    'delegated_comment': False,
-                    'date_delegation': False})
+                contract.child_id.write({'has_been_sponsored': True})
                 partner_categories = set(
                     [cat.id for cat in contract.partner_id.category_id
                      if cat.name != 'Old Sponsor'])
@@ -684,22 +678,16 @@ class recurring_contract(orm.Model):
                             context=None):
         """Link/unlink child to sponsor
         """
-        if not isinstance(ids, list):
-            ids = [ids]
-        elif len(ids) != 1:
-            raise orm.except_orm(
-                _('Invalid operation'),
-                _('You cannot apply these changes to several sponsorships.'))
-        contract = self.browse(cr, uid, ids[0], context)
-        if contract.child_id and contract.child_id != child_id:
-            # Free the previously selected child
-            contract.child_id.write({'sponsor_id': False})
-        if child_id:
-            # Mark the selected child as sponsored
-            self.pool.get('compassion.child').write(
-                cr, uid, child_id, {
-                    'sponsor_id': partner_id or contract.correspondant_id.id},
-                context)
+        for contract in self.browse(cr, uid, ids, context):
+            if contract.child_id and contract.child_id != child_id:
+                # Free the previously selected child
+                contract.child_id.write({'sponsor_id': False})
+            if child_id:
+                # Mark the selected child as sponsored
+                self.pool.get('compassion.child').write(
+                    cr, uid, child_id, {
+                        'sponsor_id': partner_id or contract.partner_id.id},
+                    context)
 
     def _on_change_group_id(self, cr, uid, ids, group_id, context=None):
         """ Change state of contract if payment is changed to/from LSV or DD.
@@ -815,7 +803,7 @@ class recurring_contract(orm.Model):
                 cr, uid, ids, vals['next_invoice_date'], context)
         if 'child_id' in vals:
             self._on_change_child_id(cr, uid, ids, vals['child_id'],
-                                     vals.get('correspondant_id'), context)
+                                     vals.get('partner_id'), context)
         if 'group_id' in vals:
             self._on_change_group_id(cr, uid, ids, vals['group_id'], context)
 
@@ -884,7 +872,8 @@ class recurring_contract(orm.Model):
     #      CALLBACKS FOR GP      #
     ##############################
     def force_validation(self, cr, uid, contract_id, context=None):
-        """ Used to transition draft sponsorships in waiting state. """
+        """ Used to transition draft sponsorships in waiting state
+        when exported from GP. """
         wf_service = netsvc.LocalService('workflow')
         logger.info("Contract " + str(contract_id) + " validated.")
         wf_service.trg_validate(uid, 'recurring.contract', contract_id,
@@ -892,10 +881,10 @@ class recurring_contract(orm.Model):
         return True
 
     def force_activation(self, cr, uid, contract_id, context=None):
-        """ Used to transition draft sponsorships in active state. """
+        """ Used to transition draft sponsorships in active state
+        when exported from GP. """
         self.force_validation(cr, uid, contract_id, context)
         self._on_contract_active(cr, uid, [contract_id], context)
-        self.write(cr, uid, contract_id, {'is_active': True}, context)
         return True
 
     def force_termination(self, cr, uid, contract_id, end_state, end_reason,
@@ -991,3 +980,7 @@ class account_period(orm.Model):
 
 class account_account_type(orm.Model):
     _inherit = 'account.account.type'
+
+
+class account_move_reconcile(orm.Model):
+    _inherit = 'account.move.reconcile'

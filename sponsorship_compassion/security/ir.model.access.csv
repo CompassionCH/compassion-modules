@@ -16,3 +16,4 @@
 "acces_account_analytic_plan_instance_line","Read access on account.analytic.plan.instance.line","model_account_analytic_plan_instance_line","child_compassion.group_sponsorship",1,0,0,0
 "acces_account_period","Read access on account.period","model_account_period","child_compassion.group_sponsorship",1,0,0,0
 "acces_account_account_type","Read access on account.account.type","model_account_account_type","child_compassion.group_sponsorship",1,0,0,0
+"acces_account_move_reconcile","Read access on account.move.reconcile","model_account_move_reconcile","child_compassion.group_sponsorship",1,0,0,0
