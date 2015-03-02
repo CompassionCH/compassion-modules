@@ -60,6 +60,18 @@ class compassion_project(orm.Model):
         """
         pass
 
+    def _has_desc(self, cr, uid, ids, field_names, args, context=None):
+        res = dict()
+        field_res = dict()
+        for child in self.browse(cr, uid, ids, context):
+            field_res['has_desc_fr'] = bool(child.description_fr)
+            field_res['has_desc_de'] = bool(child.description_de)
+            field_res['has_desc_it'] = bool(child.description_it)
+            field_res['has_desc_en'] = bool(child.description_en)
+            res[child.id] = field_res.copy()
+
+        return res
+
     _columns = {
         ######################################################################
         #                      1. General Information                        #
@@ -111,6 +123,15 @@ class compassion_project(orm.Model):
         'description_fr': fields.text(_('French description')),
         'description_de': fields.text(_('German description')),
         'description_it': fields.text(_('Italian description')),
+
+        'has_desc_fr': fields.function(
+            _has_desc, string='FR', type='boolean', multi='has_desc'),
+        'has_desc_de': fields.function(
+            _has_desc, string='DE', type='boolean', multi='has_desc'),
+        'has_desc_it': fields.function(
+            _has_desc, string='IT', type='boolean', multi='has_desc'),
+        'has_desc_en': fields.function(
+            _has_desc, string='EN', type='boolean', multi='has_desc'),
 
         'needs_fr': fields.text(_('French needs')),
         'needs_de': fields.text(_('German needs')),
