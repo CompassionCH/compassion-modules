@@ -46,14 +46,10 @@ class Project_description_de:
         """
         terrain_desc = [desc.value_de if desc.value_de else desc.value_en
                         for desc in project.terrain_description_ids]
-        string = (u"Projekt: %s-%s, %s.\nOrt: %s, %s, %s.\n\n"
-                  u"Das von Ihnen unterstütze Kind lebt in %s%s "
+        project_community_name = project.community_name.split('-')[0]
+        string = (u"Das Kind lebt in %s%s "
                   u"mit ungefähr %s Einwohnern. " % (
-                      project.code[:2].upper(), project.code[2:],
-                      project.name, project.community_name,
-                      project.distance_from_closest_city,
-                      project.country_common_name,
-                      project.community_name,
+                      project_community_name,
                       "" if not terrain_desc else
                       " einer " + terrain_desc[0],
                       project.community_population))

@@ -7,34 +7,23 @@
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="Description generation" version="7.0">
-                    <group>
-                        <group colspan="2">
+                    <group col='2'>
+                            <group string="Complete missing translations if needed">
+                                <field name="child_property_value_ids" nolabel="1" />
+                            </group>
+                        <group string="Check and select descriptions to validate" col='2'>
                             <field name="comments" attrs="{'invisible': [('comments', '=', False)]}"/>
-                        </group>
-                        <group string="Complete missing translations if needed">
-                            <field name="child_property_value_ids" nolabel="1" />
-                        </group>
-                        <group string="Check and select descriptions to validate">
-                            <div>
-                                <field name="keep_desc_fr" class="oe_checklist_box" />
-                                <label for="desc_fr" class="oe_checklist_label" />
-                                <field name="desc_fr" class="oe_checklist_value"/>
-                            </div>
-                            <div class="oe_checklist_div">
-                                <field name="keep_desc_de" class="oe_checklist_box" />
-                                <label for="desc_de" class="oe_checklist_label" />
-                                <field name="desc_de" class="oe_checklist_value"/>
-                            </div>
-                            <div>
-                                <field name="keep_desc_it" class="oe_checklist_box" />
-                                <label for="desc_it" class="oe_checklist_label" />
-                                <field name="desc_it" class="oe_checklist_value"/>
-                            </div>
-                            <div>
-                                <field name="keep_desc_en" class="oe_checklist_box" />
-                                <label for="desc_en" class="oe_checklist_label" />
-                                <field name="desc_en" class="oe_checklist_value"/>
-                            </div>
+                            <field name="keep_desc_fr"/>
+                            <field name="desc_fr" attrs="{'invisible':[('keep_desc_fr','=',False)]}" nolabel="1" colspan="2"/>
+                  
+                            <field name="keep_desc_de"/>
+                            <field name="desc_de" attrs="{'invisible':[('keep_desc_de','=',False)]}" nolabel="1" colspan="2"/>
+                     
+                            <field name="keep_desc_it"/>
+                            <field name="desc_it" attrs="{'invisible':[('keep_desc_it','=',False)]}" nolabel="1" colspan="2"/>
+                      
+                            <field name="keep_desc_en"/>
+                            <field name="desc_en" attrs="{'invisible':[('keep_desc_en','=',False)]}" nolabel="1" colspan="2"/>
                         </group>
                     </group>
 					<footer>

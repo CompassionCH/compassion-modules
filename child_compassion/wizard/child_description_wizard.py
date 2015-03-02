@@ -83,13 +83,13 @@ class child_description_wizard(orm.TransientModel):
 
     _columns = {
         'child_id': fields.many2one('compassion.child', 'Child'),
-        'keep_desc_fr': fields.boolean(_('Keep french description')),
+        'keep_desc_fr': fields.boolean(_('Update french description')),
         'desc_fr': fields.text(_('French description')),
-        'keep_desc_de': fields.boolean(_('Keep german description')),
+        'keep_desc_de': fields.boolean(_('Update german description')),
         'desc_de': fields.text(_('German description')),
-        'keep_desc_it': fields.boolean(_('Keep italian description')),
+        'keep_desc_it': fields.boolean(_('Update italian description')),
         'desc_it': fields.text(_('Italian description')),
-        'keep_desc_en': fields.boolean(_('Keep english description')),
+        'keep_desc_en': fields.boolean(_('Update english description')),
         'desc_en': fields.text(_('English description')),
         'child_property_value_ids': fields.function(
             _get_value_ids, type='one2many',
