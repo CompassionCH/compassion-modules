@@ -9,7 +9,6 @@
 #
 ##############################################################################
 
-import re
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from project_description_fr import Project_description_fr
