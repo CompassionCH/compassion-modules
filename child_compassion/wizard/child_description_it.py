@@ -34,20 +34,20 @@ class Child_description_it:
     @classmethod
     def _number_to_string(cls, number):
         conversion_dict = {
-            1: 'uno',
-            2: 'due',
-            3: 'tre',
-            4: 'quattro',
-            5: 'cinque',
-            6: 'sei',
-            7: 'sette',
-            8: 'otto',
-            9: 'nove'
+            1: u'uno',
+            2: u'due',
+            3: u'tre',
+            4: u'quattro',
+            5: u'cinque',
+            6: u'sei',
+            7: u'sette',
+            8: u'otto',
+            9: u'nove'
         }
         if number in conversion_dict:
             return conversion_dict[number]
         else:
-            return number
+            return str(number)
 
     @classmethod
     def _gen_list_string(cls, list):

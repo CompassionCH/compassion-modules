@@ -70,7 +70,7 @@ class child_description_wizard(orm.TransientModel):
         elif lang == 'en':
             res = Child_description_en.gen_en_translation(
                 cr, uid, child, case_study, context)
-        return res
+        return res + '\n\n'     # Fix for displaying the textfield
 
     def _get_comments(self, cr, uid, ids, fieldname, args, context=None):
         child = self.pool.get('compassion.child').browse(
@@ -155,13 +155,13 @@ class child_description_wizard(orm.TransientModel):
         wizard = self.browse(cr, uid, ids, context)[0]
         vals = {}
         if wizard.keep_desc_fr:
-            vals['desc_fr'] = wizard.desc_fr
+            vals['desc_fr'] = wizard.desc_fr.strip('\n')
         if wizard.keep_desc_de:
-            vals['desc_de'] = wizard.desc_de
+            vals['desc_de'] = wizard.desc_de.strip('\n')
         if wizard.keep_desc_it:
-            vals['desc_it'] = wizard.desc_it
+            vals['desc_it'] = wizard.desc_it.strip('\n')
         if wizard.keep_desc_en:
-            vals['desc_en'] = wizard.desc_en
+            vals['desc_en'] = wizard.desc_en.strip('\n')
 
         if not vals:
             raise orm.except_orm('ValueError',
