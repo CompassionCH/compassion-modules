@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: David Coninckx
 #
@@ -16,7 +16,7 @@ from openerp.tools.translate import _
 
 from datetime import datetime, date, timedelta
 import logging
-
+import pdb
 logger = logging.getLogger(__name__)
 
 
@@ -52,7 +52,7 @@ class recurring_contract(orm.Model):
     def _ins_wkf_items(self, cr, uid, act_id, wkf_id, cont_ids, context=None):
             ir_model_data = self.pool.get('ir.model.data')
             wkf_activity_id = ir_model_data.get_object_reference(
-                cr, uid, 'follow_sponsorship',
+                cr, uid, 'sponsorship_tracking',
                 act_id)[1]
 
             wkf_instance_ids = list()
@@ -121,7 +121,7 @@ class recurring_contract(orm.Model):
         'date_sub': fields.related(
             'parent_id', 'start_date',
             type='date', string=_('Date sub'),
-            store=False, readonly=True),
+            store=True, readonly=True),
     }
 
     def copy(self, cr, uid, id, default=None, context=None):
@@ -133,7 +133,10 @@ class recurring_contract(orm.Model):
         })
         return super(recurring_contract, self).copy(
             cr, uid, id, default, context)
-
+    
+    def draft(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'sds_state': 'draft'}, context)
+        return True
     def start(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'sds_state': 'start'}, context)
         return True
@@ -263,7 +266,7 @@ class recurring_contract(orm.Model):
         same_partner_contracts_ids = self.search(
             cr, uid,
             [('partner_id', '=', partner_id),
-             ('state', '=', 'terminated')],
+             ('sds_state', '=', 'sub_waiting')],
             context=context)
         same_partner_contracts = self.browse(
             cr, uid, same_partner_contracts_ids, context)
