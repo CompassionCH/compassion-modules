@@ -77,7 +77,7 @@
         />
         
         <!-- Filter -->
-        <record id="view_hr_planning_filter" model="ir.ui.view">
+        <record id="view_hr_planning_move_request_filter" model="ir.ui.view">
             <field name="name">hr.planning.days.move.request.select</field>
             <field name="model">hr.planning.day.move.request</field>
             <field name="arch" type="xml">
