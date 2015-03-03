@@ -9,7 +9,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    @author: David Coninckx
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -29,11 +29,13 @@
 
 
 {
-    'name': 'Compassion Sponsorships',
+    'name': 'Compassion Sponsorships Tracking',
     'version': '1.1',
     'category': 'Other',
     'description': """
-Sponsorship following module
+Module to track the sponsorships. 
+It is based on a new state :sds_state.
+It adds a new tree and form view to track sponsorships.
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -43,8 +45,7 @@ Sponsorship following module
     'data': [
         'view/contract_view.xml',
         'workflow/contract_workflow.xml',
-        'data/no_sub_cron.xml',
-        'data/sub_accept_reject_cron.xml',
+        'data/contract_cron.xml',
         'data/install.xml',
         ],
     'demo': [],
