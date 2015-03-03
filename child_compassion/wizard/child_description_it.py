@@ -211,10 +211,8 @@ class Child_description_it:
                        'stepfather', 'godfather']
         plur_values = ['friends', 'other relatives', 'foster parents']
 
-        if child.gender == 'M':
-            prefix = [u'suo', u'suo', u'suoi']
-        else:
-            prefix = [u'sua', u'sua', u'sue']
+        prefix = [u'suo', u'sua', u'i suoi']
+
         live_with = OrderedDict()
         male_guardians = dict()
         female_guardians = dict()
@@ -263,7 +261,7 @@ class Child_description_it:
             live_with['sisters'] = u'{} sorella'.format(prefix[1])
         elif case_study.nb_sisters > 1:
             live_with['sisters'] = u'{} {} sorelle'.format(
-                prefix[2], cls._number_to_string(case_study.nb_sisters))
+                u'sue', cls._number_to_string(case_study.nb_sisters))
 
         # Live in institute or not
         if live_in_institut:
@@ -328,10 +326,7 @@ class Child_description_it:
         # Comments for this function in child_description_fr
         string = u''
 
-        if (child.gender == 'M'):
-            prefix = [u'Suo padre', u'Sua madre', u'Suoi genitori']
-        else:
-            prefix = [u'Sua padre', u'Sua madre', u'Sue genitori']
+        prefix = [u'Suo padre', u'Sua madre', u'Suoi genitori']
 
         be = [u'è', u'è', u'sono']
         dead = [u'é deceduto', u'é deceduto', u'sono deceduto']
@@ -420,12 +415,8 @@ class Child_description_it:
         # Comments for this function in child_description_fr
         mf_g = u''
 
-        if child.gender == 'M':
-            prefix_m = u'Suo'
-            prefix_f = u'Suo'
-        else:
-            prefix_m = u'Sua'
-            prefix_f = u'Sua'
+        prefix_m = u'Suo'
+        prefix_f = u'Sua'
 
         if (f_g[0] == u'grandmother' and m_g[0] == u'grandfather'):
             mf_g = u'{} nonni'.format(prefix_f)
@@ -443,12 +434,8 @@ class Child_description_it:
         # Comments for this function in child_description_fr
         string = u''
 
-        if(child.gender == 'M'):
-            prefix_f = u'Suo {}'.format(f_g[1] if f_g else u'madre')
-            prefix_m = u'Suo {}'.format(m_g[1]if m_g else u'padre')
-        else:
-            prefix_f = u'Sua {}'.format(f_g[1] if f_g else u'madre')
-            prefix_m = u'Sua {}'.format(m_g[1]if m_g else u'padre')
+        prefix_f = u'Sua {}'.format(f_g[1] if f_g else u'madre')
+        prefix_m = u'Suo {}'.format(m_g[1]if m_g else u'padre')
 
         prefix_mf = cls._get_mf_g(
             cr, uid, child, m_g, f_g, context) if f_g and m_g else None
