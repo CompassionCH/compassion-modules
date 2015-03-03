@@ -62,6 +62,8 @@ class hr_planning_day_move_request(orm.Model):
     _defaults = {
         'state': 'to_approve',
         'employee_id': _employee_get,
+        'hour_from': 8,
+        'hour_to': 17,
     }
 
     def create(self, cr, uid, vals, context=None):
