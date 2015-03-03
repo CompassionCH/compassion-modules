@@ -33,7 +33,7 @@
     'version': '1.1',
     'category': 'Other',
     'description': """
-Module to track the sponsorships. 
+Module to track the sponsorships.
 It is based on a new state :sds_state.
 It adds a new tree and form view to track sponsorships.
     """,
