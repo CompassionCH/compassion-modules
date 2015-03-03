@@ -7,42 +7,66 @@
 			<field name="arch" type="xml">
 				<form string="Child" version="7.0">
 					<sheet>
-						<div class="oe_title">
-							<group>
-								<field name="info_date" />
-							</group>
-						</div>
-						<group>
-							<group>
-								<field name="sibling_flag" />
-								<field name="orphan_flag" />
-								<field name="us_school_level" />
-								<field name="school_performance" widget="many2many_tags" />
-							</group>
-							<group>
-								<field name="handicapped_flag" />
-								<field name="attending_school_flag" />
-								<field name="nb_children_family" />
-								<field name="school_best_subject" widget="many2many_tags" />
-							</group>
-						</group>
-						<group>
-							<group>
-								<field name="christian_activities_ids" widget="many2many_tags" />
-								<field name="family_duties_ids" widget="many2many_tags" />
-								<field name="hobbies_ids" widget="many2many_tags" />
-								<field name="health_ids" widget="many2many_tags" />
-							</group>
-							<group>
-								<field name="marital_status_id" widget="many2many_tags" />
-								<field name="guardians_ids" widget="many2many_tags" />
-								<field name="father_ids" widget="many2many_tags" />
-								<field name="mother_ids" widget="many2many_tags" />
-								<field name="male_guardian_ids" widget="many2many_tags" />
-								<field name="female_guardian_ids" widget="many2many_tags" />
-							</group>
-						</group>
+                        <group>
+                            <group>
+                                <field name="info_date" />
+                                <field name="last_modification_date" />
+                                <field name="comments" colspan="2" attrs="{'invisible': [('comments', '=', False)]}" />
+                            </group>
+                            <group>
+                                <field name="name" />
+                                <field name="code" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Case Study">
+                                <group>
+                                    <group string="Living with">
+                                        <field name="guardians_ids" widget="many2many_tags" />
+                                        <field name="nb_brothers" />
+                                        <field name="nb_sisters" />
+                                        <field name="male_guardian_ids" widget="many2many_tags" />
+                                        <field name="female_guardian_ids" widget="many2many_tags" />
+                                    </group>
+                                    <group string="Family">
+                                        <field name="orphan_flag" />
+                                        <field name="handicapped_flag" />
+                                        <field name="marital_status_id" widget="many2many_tags" />
+                                        <field name="father_ids" widget="many2many_tags" />
+                                        <field name="mother_ids" widget="many2many_tags" />
+                                        <field name="sibling_project_1" attrs="{'invisible': [('sibling_project_1', '=', False)]}"/>
+                                        <field name="sibling_project_2" attrs="{'invisible': [('sibling_project_2', '=', False)]}"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Schooling">
+                                        <field name="attending_school_flag" />
+                                        <field name="us_school_level" />
+                                        <field name="school_performance" widget="many2many_tags" />
+                                        <field name="school_best_subject" widget="many2many_tags" />
+                                    </group>
+                                    <group string="Activities and Hobbies">
+                                        <field name="christian_activities_ids" widget="many2many_tags" />
+                                        <field name="family_duties_ids" widget="many2many_tags" />
+                                        <field name="hobbies_ids" widget="many2many_tags" />
+                                        <field name="health_ids" widget="many2many_tags" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Descriptions">
+                                <group colspan="2">
+                                    <field name="desc_en"/>
+                                    <field name="desc_fr"/>
+                                    <field name="desc_de"/>
+                                    <field name="desc_it"/>
+                                </group>
+                            </page>
+                        </notebook>
 					</sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
 				</form>
 			</field>
 		</record>
@@ -53,6 +77,7 @@
 			<field name="arch" type="xml">
 				<tree string="Children properties">
 					<field name="info_date" />
+					<field name="last_modification_date" />
 				</tree>
 			</field>
 		</record>

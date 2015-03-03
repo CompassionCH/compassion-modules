@@ -16,6 +16,7 @@ from openerp.tools.translate import _
 class translated_value(orm.Model):
     _name = 'compassion.translated.value'
     _rec_name = 'value_en'
+    _order = 'property_name asc'
 
     _columns = {
         'is_tag': fields.boolean(_('Tag')),
@@ -63,12 +64,17 @@ class translated_value(orm.Model):
     def _get_value_id(self, cr, uid, value, property_name, context=None):
         """ Find or create a translated_value for a given property.
         Returns the translated_value id."""
-        value = value.lower()
+        value = value.lower().strip()
+        property_vals = {
+            'property_name': property_name,
+            'value_en': value}
+        if not value:
+            return False
+
         val_ids = self.search(cr, uid, [('value_en', '=like', value),
                                         ('property_name', '=', property_name)],
                               context=context)
         if val_ids:
             return val_ids[0]
-        prop_id = self.create(cr, uid, {'property_name': property_name,
-                                        'value_en': value})
+        prop_id = self.create(cr, uid, property_vals, context)
         return prop_id

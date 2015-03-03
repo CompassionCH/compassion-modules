@@ -30,10 +30,12 @@ class Project_description_de:
 
     @classmethod
     def _gen_list_string(cls, list, separator, last_separator):
-        string = separator.join(list[:-1])
-        if len(list) > 1:
-            string += last_separator
-        string += list[-1]
+        string = ''
+        if list:
+            string = separator.join(list[:-1])
+            if len(list) > 1:
+                string += last_separator
+            string += list[-1]
 
         return string
 
@@ -44,15 +46,11 @@ class Project_description_de:
         """
         terrain_desc = [desc.value_de if desc.value_de else desc.value_en
                         for desc in project.terrain_description_ids]
-        string = (u"Projekt: %s-%s, %s.\nOrt: %s, %s, %s.\n"
-                  u"Das von Ihnen unterstütze Kind lebt in %s%s "
+        project_community_name = project.community_name.split('-')[0]
+        string = (u"Das Kind lebt in %s%s "
                   u"mit ungefähr %s Einwohnern. " % (
-                      project.code[:2].upper(), project.code[2:],
-                      project.name, project.community_name,
-                      project.distance_from_closest_city,
-                      project.country_common_name,
-                      project.community_name,
-                      "" if not terrain_desc[0] else
+                      project_community_name,
+                      "" if not terrain_desc else
                       " einer " + terrain_desc[0],
                       project.community_population))
 
@@ -74,28 +72,28 @@ class Project_description_de:
 
         string = u"Die Häuser sind typischerweise mit "
 
-        if wall_mat[0] and floor_mat[0] and roof_mat[0]:
+        if wall_mat and floor_mat and roof_mat:
             string += (u"%s gebaut und haben %s, sowie %s. " % (
                        wall_mat[0], floor_mat[0], roof_mat[0]))
 
-        elif ((wall_mat[0] and floor_mat[0]) or (wall_mat[0] and
-              roof_mat[0]) or (floor_mat[0] and roof_mat[0])):
-            if not wall_mat[0]:
+        elif ((wall_mat and floor_mat) or (wall_mat and
+              roof_mat) or (floor_mat and roof_mat)):
+            if not wall_mat:
                 string += (u"%s gebaut und haben %s. " % (
                            floor_mat[0], roof_mat[0]))
-            elif not floor_mat[0]:
+            elif not floor_mat:
                 string += (u"%s gebaut und haben %s. " % (
                            wall_mat[0], roof_mat[0]))
-            elif not roof_mat[0]:
+            elif not roof_mat:
                 string += (u"%s gebaut und haben %s. " % (
                            wall_mat[0], floor_mat[0]))
 
-        elif (wall_mat[0] or floor_mat[0] or roof_mat[0]):
-            if wall_mat[0]:
+        elif (wall_mat or floor_mat or roof_mat):
+            if wall_mat:
                 string += u"%s gebaut. " % wall_mat[0]
-            elif floor_mat[0]:
+            elif floor_mat:
                 string += u"%s gebaut. " % floor_mat[0]
-            elif roof_mat[0]:
+            elif roof_mat:
                 string += u"%s gebaut. " % roof_mat[0]
         else:
             string = ""

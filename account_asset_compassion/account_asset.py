@@ -34,7 +34,7 @@ class account_asset_depreciation_line(orm.Model):
         if type == 'expense':
             move_line_data.update({
                 'analytics_id':
-                    depreciation_line.asset_id.category_id.analytics_id.id})
+                depreciation_line.asset_id.category_id.analytics_id.id})
         return move_line_data
 
 

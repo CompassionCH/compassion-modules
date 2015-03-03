@@ -90,8 +90,6 @@ class test_webservice(common.TransactionCase):
         # Retrieve the informations from the webservice
         child_obj.get_infos(self.cr, self.uid, child.id)
         child = child_obj.browse(self.cr, self.uid, self.child_id)
-        portrait = (child_obj.get_portrait(self.cr, self.uid,
-                    [self.child_id], None, None))
 
         # Test the data
         self.assertEqual(child.code, "TZ1120316")
@@ -100,4 +98,4 @@ class test_webservice(common.TransactionCase):
         self.assertEqual(child.gender, "F")
         self.assertEqual(child.birthdate, "2005-04-17")
         self.assertTrue(child.case_study_ids[0])
-        self.assertTrue(portrait[self.child_id])
+        self.assertTrue(child.portrait)

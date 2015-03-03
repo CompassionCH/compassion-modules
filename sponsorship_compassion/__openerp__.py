@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Sponsorships',
-    'version': '1.3',
+    'version': '1.4',
     'category': 'Other',
     'description': """
 Sponsorship management module. This module makes the link between child and
@@ -60,6 +60,8 @@ To add a new locale :
              'view/contract_origin_view.xml',
              'view/activate_contract_view.xml',
              'view/account_invoice_split_wizard_view.xml',
+             'view/suspension_wizard_view.xml',
+             'view/child_view.xml',
              'data/product.xml',
              'data/payment_terms.xml',
              'data/lang.xml',

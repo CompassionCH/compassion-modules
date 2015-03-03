@@ -27,7 +27,7 @@ class project_age_group(orm.Model):
             required=True, ondelete='cascade'),
         'low_age': fields.integer(_('Low age')),
         'high_age': fields.integer(_('High age')),
-        'school_hours': fields.integer(_('School hours')),
+        'school_hours': fields.integer(_('Weekly school hours')),
         'school_months_ids': fields.many2many(
             'compassion.translated.value', 'project_age_group_to_value',
             'project_age_group_id', 'value_id', _('School months'),

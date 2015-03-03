@@ -111,13 +111,14 @@ class easy_reconcile_advanced_bvr_ref(orm.TransientModel):
             for invoice in invoices:
                 total_due += invoice.amount_total
                 if total_due == credit_amount:
-                    """ The credit line can fully reconcile an integer number of
-                        open invoices, it can be reconciled automatically. """
+                    """ The credit line can fully reconcile an integer number
+                        of open invoices, it can be reconciled automatically.
+                    """
                     return False
 
             if credit_amount < total_due:
-                """ Check for other unreconciled credit lines that could complete
-                    the payment and reconcile all invoices. """
+                """ Check for other unreconciled credit lines that could
+                    complete the payment and reconcile all invoices. """
                 credit_lines = self._query_credit(
                     cr, uid, rec, context=context)
                 for other_credit in credit_lines:

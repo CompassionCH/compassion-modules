@@ -45,22 +45,6 @@ class GPConnect(mysql_connector):
         'Web Payment': 'WEB',
     }
 
-    # Mapping for child transfers to exit_reason_code in GP
-    transfer_mapping = {
-        'AU': '15',
-        'CA': '16',
-        'DE': '17',
-        'ES': '38',
-        'FR': '18',
-        'GB': '20',
-        'IT': '19',
-        'KR': '37',
-        'NL': '35',
-        'NZ': '40',
-        'US': '21',
-        'NO': '42',
-    }
-
     channel_mapping = {
         'postal': 'C',
         'direct': 'D',
@@ -80,15 +64,12 @@ class GPConnect(mysql_connector):
         'other': 'D'
     }
 
-    def create_or_update_contract(self, uid, contract):
+    def upsert_contract(self, uid, contract):
         """ Read new contract information and convert it to GP Poles
             structure. """
         typevers = self._find_typevers(
             contract.group_id.payment_term_id.name, 'OP')
         origin = self._find_origin(contract)
-        iduser = self.selectOne('SELECT ID FROM login WHERE ERP_ID = %s;',
-                                uid)
-        iduser = iduser.get('ID', 'EC')
         typeprojet = 'P' if contract.child_id else 'T'
         codespe = self._find_codespe(contract)
         if len(codespe) > 1:
@@ -101,7 +82,7 @@ class GPConnect(mysql_connector):
             'codega': contract.correspondant_id.ref,
             'base': contract.total_amount,
             'typevers': typevers,
-            'iduser': iduser,
+            'iduser': self._get_gp_uid(uid),
             'freqpaye': self.freq_mapping[contract.group_id.advance_billing],
             'ref': contract.group_id.bvr_reference or
             contract.group_id.compute_partner_bvr_ref(),
@@ -121,18 +102,7 @@ class GPConnect(mysql_connector):
                 'typeprojet': typeprojet,
             })
 
-        insert_string = "INSERT INTO Poles (%s) VALUES(%s) "\
-                        "ON DUPLICATE KEY UPDATE %s;"
-        col_string = ",".join(vals.keys())
-        values_string = ",".join([
-            "'" + value + "'" if isinstance(value, basestring) else str(value)
-            for value in vals.values()])
-        update_string = ",".join([key + "=VALUES(" + key + ")"
-                                  for key in vals.keys()])
-        sql_query = insert_string % (col_string, values_string, update_string)
-        logger.info(sql_query)
-
-        return self.query(sql_query)
+        return self.upsert("Poles", vals)
 
     def _find_typevers(self, payment_term_name, default):
         for term in self.terms_mapping.keys():
@@ -272,8 +242,6 @@ class GPConnect(mysql_connector):
 
         payment_term = self._find_typevers(
             invoice_line.invoice_id.payment_term.name, 'BVR')
-        iduser = self.selectOne(
-            'SELECT ID FROM login WHERE ERP_ID = %s;', uid).get('ID', 'EC')
 
         vals = {
             'CODEGA': invoice_line.partner_id.ref,
@@ -285,7 +253,7 @@ class GPConnect(mysql_connector):
             'JNLVERS': product.property_account_income.code,
             'CADEAU': cadeau,
             'TITULAIRE': invoice_line.partner_id.name,
-            'IDUSER': iduser,
+            'IDUSER': self._get_gp_uid(uid),
             'PARTICULIER': 1,
             'TYPEPROJET': typeprojet,
             'LIBCADEAU': libcadeau,
@@ -299,16 +267,8 @@ class GPConnect(mysql_connector):
         }
         if not id_pole:
             del vals['ID_POLE']
-        insert_affectat = "INSERT INTO Affectat(%s) VALUES (%s) " \
-            "ON DUPLICATE KEY UPDATE %s"
-        update_string = ",".join([key + "=VALUES(" + key + ")"
-                                  for key in vals.keys()])
-        sql_query = insert_affectat % (
-            ",".join(vals.keys()),
-            ",".join(["%s" for i in range(0, len(vals))]),
-            update_string)
 
-        return self.query(sql_query, vals.values())
+        return self.upsert("Affectat", vals)
 
     def remove_affectat(self, invoice_id, invoice_date):
         max_date = self.selectOne("SELECT MAX(Date) AS Date FROM Affectat "
@@ -317,36 +277,6 @@ class GPConnect(mysql_connector):
         return self.query(
             "DELETE FROM Affectat WHERE Numvers=%s AND DATE>=%s",
             [invoice_id, max_date])
-
-    def set_child_sponsor_state(self, child):
-        update_string = "UPDATE Enfants SET %s WHERE code='%s'"
-        update_fields = "situation='{}'".format(child.state)
-        if child.sponsor_id:
-            update_fields += ", codega='{}'".format(child.sponsor_id.ref)
-
-        if child.state == 'F':
-            # If the child is sponsored, mark the sponsorship as terminated in
-            # GP and set the child exit reason in tables Poles and Enfant
-            end_reason = child.gp_exit_reason or \
-                self.transfer_mapping[child.transfer_country_id.code]
-            update_fields += ", id_motif_fin={}".format(end_reason)
-            # We don't put a child transfer in ending reason of a sponsorship
-            if not child.transfer_country_id:
-                pole_sql = "UPDATE Poles SET TYPEP = IF(TYPEP = 'C', " \
-                           "'A', 'F'), id_motif_fin={}, datefin=curdate() " \
-                           "WHERE codespe='{}' AND TYPEP NOT IN " \
-                           "('F','A')".format(end_reason, child.code)
-                logger.info(pole_sql)
-                self.query(pole_sql)
-
-        if child.state == 'P':
-            # Remove delegation and end_reason, if any was set
-            update_fields += ", datedelegue=NULL, codedelegue=''" \
-                             ", id_motif_fin=NULL"
-
-        sql_query = update_string % (update_fields, child.code)
-        logger.info(sql_query)
-        return self.query(sql_query)
 
     def delete_contracts(self, ids):
         return self.query(

@@ -106,8 +106,8 @@ class AccountStatementLine(orm.Model):
 
     def _create_invoice_from_line(self, cr, uid, b_line, context=None):
         if not b_line.product_id:
-            raise orm.except_orm(_('Missing product'),
-                                 _('Please select a product'))
+            return True
+
         # Get the attached recurring invoicer
         invoicer = b_line.statement_id.recurring_invoicer_id
         invoice_obj = self.pool.get('account.invoice')

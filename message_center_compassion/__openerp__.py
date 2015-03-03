@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion CH Message Center',
-    'version': '1.0',
+    'version': '1.4',
     'category': 'Other',
     'description': """
         Message Center that offers a queue of messages that have to be sent
@@ -46,13 +46,13 @@
         'python': ['requests'],
     },
     'data': [
-        'view/gmc_message_view.xml',
-        'data/gmc_action.xml',
+        'security/gmc_groups.xml',
         'security/ir.model.access.csv',
+        'view/gmc_message_view.xml',
+        'view/contracts_view.xml',
+        'data/gmc_action.xml',
     ],
     'demo': [],
     'installable': True,
     'auto_install': False,
 }
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

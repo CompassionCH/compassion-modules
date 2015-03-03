@@ -75,7 +75,7 @@ class ResPartner(orm.Model):
             to sync the two databases.
         """
 
-        gp = gp_connector.GPConnect(cr, uid)
+        gp = gp_connector.GPConnect()
         fieldsUpdate = vals.keys()
 
         # If the reference is not defined, we automatically set it.
@@ -161,7 +161,7 @@ class ResPartner(orm.Model):
         records = self.browse(cr, uid, ids, context)
         records = [records] if not isinstance(records, list) else records
         create = False
-        gp = gp_connector.GPConnect(cr, uid)
+        gp = gp_connector.GPConnect()
 
         for record in records:
             if record.ref:
@@ -393,11 +393,11 @@ class ResPartner(orm.Model):
             'state_code': address.state_id and address.state_id.code or '',
             'state_name': address.state_id and address.state_id.name or '',
             'country_code':
-                address.country_id and address.country_id.code or '',
+            address.country_id and address.country_id.code or '',
             'country_name':
-                address.country_id and address.country_id.name or '',
+            address.country_id and address.country_id.name or '',
             'company_name':
-                address.parent_id and address.parent_id.name or '',
+            address.parent_id and address.parent_id.name or '',
         }
 
         for field in self._address_fields(cr, uid, context=context):
@@ -413,7 +413,7 @@ class ResPartner(orm.Model):
         """ We want to perform some checks before deleting a partner ! """
         records = self.browse(cr, uid, ids, context)
         records = [records] if not isinstance(records, list) else records
-        gp = gp_connector.GPConnect(cr, uid)
+        gp = gp_connector.GPConnect()
         for record in records:
             # If it is a company, unlink contact in MySQL if there is any.
             if record.is_company:

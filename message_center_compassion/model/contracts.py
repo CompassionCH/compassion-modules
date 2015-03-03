@@ -9,7 +9,8 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
 from sponsorship_compassion.model.product import GIFT_TYPES
 import logging
 
@@ -17,9 +18,20 @@ logger = logging.getLogger(__name__)
 
 
 class recurring_contract(orm.Model):
-
     """ We add here creation of messages concerning commitments. """
     _inherit = "recurring.contract"
+
+    _columns = {
+        # Field to identify contracts modified by gmc.
+        'gmc_state': fields.selection([
+            ('picture', _('New Picture')),
+            ('casestudy', _('New Case Study')),
+            ('depart', _('Child Departed')),
+            ('transfer', _('Child Transfer')),
+            ('suspension', _('Project Fund-Suspended')),
+            ('suspension-extension', _('Fund suspension extension')),
+            ('reactivation', _('Project Reactivated'))], _('GMC State'))
+    }
 
     def _on_contract_active(self, cr, uid, ids, context=None):
         """ Create messages to GMC when new sponsorship is activated. """
@@ -39,13 +51,20 @@ class recurring_contract(orm.Model):
                 action_id = action_obj.search(
                     cr, uid, [('name', '=', 'UpsertConstituent')],
                     limit=1, context=context)[0]
+                partner_id = contract.correspondant_id.id
                 message_vals = {
                     'action_id': action_id,
-                    'object_id': contract.partner_id.id,
-                    'partner_id': contract.partner_id.id,
+                    'object_id': partner_id,
+                    'partner_id': partner_id,
                     'date': contract.activation_date,
                 }
-                message_obj.create(cr, uid, message_vals, context=context)
+                # Look if one Upsert is already pending for the same partner
+                mess_ids = message_obj.search(cr, uid, [
+                    ('action_id', '=', action_id),
+                    ('partner_id', '=', partner_id),
+                    ('state', '=', 'new')], context=context)
+                if not mess_ids:
+                    message_obj.create(cr, uid, message_vals, context=context)
 
                 # CreateCommitment Message
                 action_id = action_obj.search(
@@ -59,7 +78,9 @@ class recurring_contract(orm.Model):
                 message_obj.create(cr, uid, message_vals, context=context)
 
     def contract_terminated(self, cr, uid, ids, context=None):
-        """ Inform GMC when sponsorship is terminated. """
+        """ Inform GMC when sponsorship is terminated,
+        if end reason is from sponsor.
+        """
         res = super(recurring_contract, self).contract_terminated(
             cr, uid, ids, context)
         if res:
@@ -71,10 +92,13 @@ class recurring_contract(orm.Model):
             message_vals = {'action_id': action_id}
 
             for contract in self.browse(cr, uid, ids, context=context):
-                if contract.child_id:
+                # Contract must have child and not terminated by
+                # partner move
+                end_reason = int(contract.end_reason)
+                if contract.child_id and end_reason != 4:
                     message_vals.update({
                         'object_id': contract.id,
-                        'partner_id': contract.partner_id.id,
+                        'partner_id': contract.correspondant_id.id,
                         'child_id': contract.child_id.id,
                     })
                     message_obj.create(cr, uid, message_vals)
@@ -86,27 +110,40 @@ class recurring_contract(orm.Model):
             a child gift and creates a message to GMC. """
         super(recurring_contract, self)._invoice_paid(cr, uid, invoice,
                                                       context)
-        if invoice.payment_ids:
-            message_obj = self.pool.get('gmc.message.pool')
-            action_obj = self.pool.get('gmc.action')
-            action_id = action_obj.search(
-                cr, uid, [('name', '=', 'CreateGift')], limit=1,
-                context=context)[0]
-            message_vals = {
-                'action_id': action_id,
-                'date': invoice.date_invoice,
-            }
-            gift_ids = self.pool.get('product.product').search(
-                cr, uid, [('name_template', 'in', GIFT_TYPES)],
-                context={'lang': 'en_US'})
+        message_obj = self.pool.get('gmc.message.pool')
+        action_obj = self.pool.get('gmc.action')
+        action_id = action_obj.search(
+            cr, uid, [('name', '=', 'CreateGift')], limit=1,
+            context=context)[0]
+        message_vals = {
+            'action_id': action_id,
+            'date': invoice.date_invoice,
+        }
+        gift_ids = self.pool.get('product.product').search(
+            cr, uid, [('name_template', 'in', GIFT_TYPES)],
+            context={'lang': 'en_US'})
 
-            for invoice_line in invoice.invoice_line:
-                if invoice_line.product_id.id in gift_ids:
-                    contract = invoice_line.contract_id
-                    if contract:
-                        message_vals.update({
-                            'object_id': invoice_line.id,
-                            'partner_id': invoice_line.partner_id.id,
-                            'child_id': contract.child_id.id,
-                        })
-                        message_obj.create(cr, uid, message_vals)
+        for invoice_line in invoice.invoice_line:
+            contract = invoice_line.contract_id
+            if invoice_line.product_id.id in gift_ids and contract:
+                if invoice.payment_ids:
+                    message_vals.update({
+                        'object_id': invoice_line.id,
+                        'partner_id': contract.correspondant_id.id,
+                        'child_id': contract.child_id.id,
+                    })
+                    message_obj.create(cr, uid, message_vals)
+                else:
+                    # Invoice goes from paid to open state ->
+                    # delete CreateGift message
+                    mess_ids = message_obj.search(cr, uid, [
+                        ('action_id', '=', action_id),
+                        ('date', '=', invoice.date_invoice),
+                        ('state', '=', 'new')], context=context)
+                    message_obj.unlink(cr, uid, mess_ids, context)
+
+    def suspend_contract(self, cr, uid, ids, start, months, context=None):
+        """ Mark the state of contract when it is suspended. """
+        self.write(cr, uid, ids, {'gmc_state': 'suspension'}, context)
+        return super(recurring_contract, self).suspend_contract(
+            cr, uid, ids, start, months, context)

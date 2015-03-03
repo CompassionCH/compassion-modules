@@ -29,6 +29,8 @@
             <field name="arch" type="xml">
                 <tree string="Project age group">
                     <field name="low_age" />
+                    <field name="high_age" />
+                    <field name="school_hours" />
                 </tree>
             </field>
         </record>

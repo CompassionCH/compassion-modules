@@ -56,8 +56,8 @@ class hr_planning_wizard(orm.TransientModel):
                     if (not(contract.date_end)):
                         end_date = d+timedelta(days=365)
                     else:
-                        end_date = datetime.strptime(contract.date_end, DF)
-                        + timedelta(days=1)
+                        end_date = datetime.strptime(
+                            contract.date_end, DF) + timedelta(days=1)
 
                     delta = timedelta(days=1)
 

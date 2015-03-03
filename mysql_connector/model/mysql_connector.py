@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -13,17 +13,17 @@ import MySQLdb as mdb
 import logging
 from openerp.tools.config import config
 
+logger = logging.getLogger(__name__)
+
 
 class mysql_connector:
+
     """ Contains all the utility methods needed to talk with a MySQL server
     which connection settings are stored in the object mysql.config.settings.
     """
 
-    def __init__(self, cr, uid):
-        """ Establishes the connection to the MySQL server used by GP.
-            Args:
-                - cr : a database cursor to the Postgres database of OpenERP.
-                - uid : OpenERP user id. """
+    def __init__(self):
+        """Establishes the connection to the MySQL server used by GP."""
         mysql_host = config.get('mysql_host')
         mysql_user = config.get('mysql_user')
         mysql_pw = config.get('mysql_pw')
@@ -34,7 +34,7 @@ class mysql_connector:
                                     mysql_db)
             self._cur = self._con.cursor(mdb.cursors.DictCursor)
         except mdb.Error, e:
-            logging.debug("Error %d: %s" % (e.args[0], e.args[1]))
+            logger.debug("Error %d: %s" % (e.args[0], e.args[1]))
 
     def __del__(self):
         """ Close the MySQL connection. """
@@ -106,3 +106,30 @@ class mysql_connector:
             return True
         except Exception:
             return False
+
+    def _get_gp_uid(self, uid):
+        """Returns the GP user id given the Odoo user id."""
+        iduser = self.selectOne('SELECT ID FROM login WHERE ERP_ID = %s;',
+                                uid)
+        return iduser.get('ID', 'XX')
+
+    def upsert(self, table, vals):
+        """Constructs an UPSERT query given a table name and the values to
+        insert/update (given in a dictionary)
+        """
+        query_string = "INSERT INTO {0}({1}) VALUES ({2}) ON DUPLICATE KEY " \
+            "UPDATE {3}"
+
+        cols = vals.keys()
+        col_string = ",".join(cols)
+        val_string = ",".join(["%s" for i in range(0, len(vals))])
+        update_string = ",".join([
+            key + "=VALUES(" + key + ")" for key in cols])
+
+        sql_query = query_string.format(table, col_string, val_string,
+                                        update_string)
+        values = vals.values()
+        log_string = "UPSERT {0}({1}) WITH VALUES ({2})"
+        logger.info(
+            log_string.format(table, col_string, val_string) % tuple(values))
+        return self.query(sql_query, values)

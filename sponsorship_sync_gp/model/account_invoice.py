@@ -25,14 +25,15 @@ class account_invoice(orm.Model):
             # Customer invoice going from 'open' to 'cancel' state
             if invoice.type == 'out_invoice' and invoice.state == 'open':
                 contract_ids = set()
-                gp_connect = gp_connector.GPConnect(cr, uid)
+                gp_connect = gp_connector.GPConnect()
                 for line in invoice.invoice_line:
                     contract = line.contract_id
                     if contract and contract.id not in contract_ids \
                             and line.product_id.name in SPONSORSHIP_TYPES:
                         contract_ids.add(contract.id)
+                        # Removes one month due in GP.
                         if not gp_connect.register_payment(
-                                contract.id, contract.months_paid):
+                                contract.id, contract.months_paid+1):
                             raise orm.except_orm(
                                 _("GP Sync Error"),
                                 _("The cancellation could not be registered "
@@ -49,7 +50,7 @@ class account_invoice(orm.Model):
         for invoice in self.browse(cr, uid, ids, {'lang': 'en_US'}):
             if invoice.type == 'out_invoice' and invoice.internal_number:
                 contract_ids = set()
-                gp_connect = gp_connector.GPConnect(cr, uid)
+                gp_connect = gp_connector.GPConnect()
                 for line in invoice.invoice_line:
                     contract = line.contract_id
                     if contract and contract.id not in contract_ids \

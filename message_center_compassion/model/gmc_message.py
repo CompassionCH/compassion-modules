@@ -10,10 +10,15 @@
 ##############################################################################
 from openerp.osv import fields, orm
 from openerp.tools.translate import _
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.config import config
+
+from random import randint
+from datetime import datetime
+
 import requests
-from datetime import date
 import logging
+import traceback
 
 
 logger = logging.getLogger(__name__)
@@ -31,6 +36,7 @@ class gmc_message_pool_process(orm.TransientModel):
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree, form',
+            'views': [(False, 'tree'), (False, 'form')],
             'res_model': 'gmc.message.pool',
             'domain': [('id', 'in', active_ids)],
             'target': 'current',
@@ -43,6 +49,30 @@ class gmc_message_pool(orm.Model):
     """ Pool of messages exchanged between Compassion CH and GMC. """
     _name = 'gmc.message.pool'
 
+    _order = 'date desc'
+
+    def _get_object_id(self, cr, uid, ids, field_name, args, context=None):
+        res = dict()
+        model_mapping = {
+            'partner_id': 'res.partner',
+            'child_id': 'compassion.child',
+            'project_id': 'compassion.project',
+            'invoice_line_id': 'account.invoice.line'
+        }
+        for message in self.browse(cr, uid, ids, context):
+            if message.action_id.model == model_mapping[field_name]:
+                res[message.id] = message.object_id
+            elif message.action_id.model == 'recurring.contract':
+                contract = self.pool.get('recurring.contract').browse(
+                    cr, uid, message.object_id, context)
+                if field_name == 'partner_id':
+                    res[message.id] = contract.partner_id.id
+                elif field_name == 'child_id':
+                    res[message.id] = contract.child_id.id
+                else:
+                    res[message.id] = False
+        return res
+
     _columns = {
         'name': fields.related(
             'action_id', 'name', type="char", store=False, readonly=True
@@ -54,53 +84,266 @@ class gmc_message_pool(orm.Model):
         'direction': fields.related(
             'action_id', 'direction', type="char", store=True
         ),
-        'partner_id': fields.many2one(
-            'res.partner', _("Partner")
-        ),
-        'child_id': fields.many2one(
-            'compassion.child', _("Child")
-        ),
+        'partner_id': fields.function(
+            _get_object_id, type='many2one', obj='res.partner',
+            string=_("Partner"), store=True),
+        'child_id': fields.function(
+            _get_object_id, type='many2one', obj='compassion.child',
+            string=_("Child"), store=True),
+        'project_id': fields.function(
+            _get_object_id, type='many2one', obj='compassion.project',
+            string=_("Project")),
+        'request_id': fields.char('Unique request ID'),
         'date': fields.date(_('Message Date'), required=True),
         'action_id': fields.many2one('gmc.action', _('GMC Message'),
                                      ondelete="restrict", required=True),
         'process_date': fields.date(_('Process Date'), readonly=True),
         'state': fields.selection(
-            [('pending', _('Pending')),
-             ('sent', _('Processed'))],
+            [('new', _('New')),
+             ('pending', _('Pending')),
+             ('success', _('Success')),
+             ('failure', _('Failure'))],
             _('State'), readonly=True
         ),
+        'failure_reason': fields.text(_("Failure details")),
         'object_id': fields.integer(_('Referrenced Object Id')),
         'incoming_key': fields.char(_('Incoming Reference'), size=9,
                                     help=_("In case of incoming message, "
                                            "contains the reference of the "
                                            "child or the project that will "
                                            "be created/modified.")),
+        'event': fields.char(_('Incoming Event'), size=24,
+                             help=_("Contains the event that triggered the "
+                                    "incoming message.")),
+        'partner_country_code': fields.char(_('Partner Country Code'), size=2),
+        # Gift Type Messages information
+        'invoice_line_id': fields.function(
+            _get_object_id, type='many2one', obj='account.invoice.line'),
+        'gift_type': fields.related(
+            'invoice_line_id', 'product_id', 'name', type='char',
+            string=_('Gift type')),
+        'gift_instructions': fields.related(
+            'invoice_line_id', 'gift_instructions', type='char',
+            string=_('Gift instructions')),
+        'gift_amount': fields.related(
+            'invoice_line_id', 'price_subtotal', type='integer',
+            string=_('Gift amount')),
     }
 
     _defaults = {
-        'date': str(date.today()),
-        'state': 'pending'
+        'date': str(datetime.today()),
+        'state': 'new'
     }
+
+    _sql_constraints = [(
+        'request_id_uniq', 'UNIQUE(request_id)',
+        _("You cannot have two requests with same id.")
+    )]
 
     def process_messages(self, cr, uid, ids, context=None):
         """ Process given messages in pool. """
-        success_ids = []
+        today = datetime.today()
         for message in self.browse(cr, uid, ids, context=context):
-            if message.state == 'pending':
-                message_args = {'code': message.incoming_key,
-                                'date': message.date}
-                if self.pool.get(
-                    'gmc.action').execute(cr, uid, message.action_id.id,
-                                          message.object_id, message_args,
-                                          context=context):
-                    success_ids.append(message.id)
+            mess_date = datetime.strptime(message.date, DF)
+            if message.state == 'new' and mess_date <= today:
+                res = False
+                action = message.action_id
+                if action.direction == 'in':
+                    # TODO replace 'CH' by company iso_code
+                    if message.partner_country_code == 'CH':
+                        try:
+                            res = self._perform_incoming_action(
+                                cr, uid, message, context)
+                        except Exception:
+                            message = self.browse(cr, uid, message.id,
+                                                  context)
+                            message.write({
+                                'state': 'failure',
+                                'failure_reason': traceback.format_exc()})
+                            if message.child_id:
+                                # Put child in error state
+                                message.child_id.write({
+                                    'previous_state': message.child_id.state,
+                                    'state': 'E'})
+                    else:
+                        message.write({
+                            'state': 'failure',
+                            'failure_reason': 'Wrong Partner Country'})
+                        res = False
 
-        if success_ids:
-            self.write(
-                cr, uid, success_ids,
-                {'state': 'sent', 'process_date': date.today()},
+                elif action.direction == 'out':
+                    res = self._perform_outgoing_action(cr, uid, message,
+                                                        context)
+                else:
+                    raise NotImplementedError
+
+                if res:
+                    message_update = {
+                        'state': 'pending' if action.direction == 'out'
+                        else 'success',
+                        'process_date': datetime.today().strftime(DF)}
+                    if isinstance(res, basestring):
+                        message_update['request_id'] = res
+                    message.write(message_update)
+                    # Commit all changes of triggered by message before
+                    # processing the next message.
+                    cr.commit()
+
+        return True
+
+    def reset_message(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {
+            'request_id': False,
+            'state': 'new',
+            'process_date': False,
+            'failure_reason': False
+        }, context)
+        return True
+
+    def _perform_incoming_action(self, cr, uid, message, context=None):
+        """ This method defines what has to be done
+        for each incoming message type. """
+        action = message.action_id
+        model_obj = self.pool.get(action.model)
+        args = {
+            'code': message.incoming_key,
+            'date': message.date,
+            'object_id': message.object_id,
+            'event': message.event,
+        }
+        if action.type in ('allocate', 'deallocate', 'depart', 'update'):
+            return getattr(model_obj, action.type)(cr, uid, args, context)
+        else:
+            raise orm.except_orm(
+                _("Invalid Action"),
+                _("No implementation found for method '%s'.") % (action.type))
+
+    def _perform_outgoing_action(self, cr, uid, message, context=None):
+        """ Process an outgoing message by sending it to the middleware.
+            Returns : unique id of generated request, or False.
+        """
+        action = message.action_id
+        object_id = message.object_id
+        if self._validate_outgoing_action(cr, uid, message, context):
+            if context.get('test_mode'):
+                # Don't send the request when testing.
+                return 'test-uid' + str(randint(0, 999))
+            server_url = config.get('middleware_url')
+            if not server_url:
+                raise orm.except_orm(
+                    'ConfigError', _('No middleware server url specified in '
+                                     'conf file'))
+            url = server_url + action.type + '/' + \
+                action.model + '/' + str(object_id)
+            r = requests.get(url)
+            if not r.status_code == 200:
+                logger.error('Failing url: ' + url)
+                raise orm.except_orm(
+                    _('NetworkError'),
+                    _('An error occured while sending message.'))
+            json_data = r.json()
+            logger.debug(r.text)
+            success = json_data.get('success')
+            if success == 'yes':
+                return json_data.get('uuid')
+
+        return False
+
+    def _validate_outgoing_action(self, cr, uid, message, context=None):
+        """ Validation of outgoing messages before sending them to GMC. """
+        action = message.action_id
+        object_id = message.object_id
+        if action.name == 'CreateCommitment':
+            contract = self.pool.get(action.model).browse(
+                cr, uid, object_id, context=context)
+            # Check that the constituent is known by GMC.
+            partner = contract.correspondant_id
+            message_ids = self.search(cr, uid, [
+                ('name', '=', 'UpsertConstituent'),
+                ('partner_id', '=', partner.id),
+                ('state', '=', 'success')], context=context)
+            if not message_ids:
+                raise orm.except_orm(
+                    _("Constituent (%s) not sent to GMC") % partner.name,
+                    _("Please send the new constituents to GMC before sending"
+                      " the commitments."))
+
+            # Check that the contract is linked to a child
+            child_id = contract.child_id
+            if not child_id:
+                raise orm.except_orm(
+                    _("Contract is not a sponsorship."),
+                    _("The new commitment of %s is not linked to a child and "
+                      "should not be sent to GMC.") % partner.name)
+            else:
+                # Check that there are no previous sponsorship cancellation
+                # pending.
+                message_ids = self.search(
+                    cr, uid, [
+                        ('name', '=', 'CancelCommitment'),
+                        ('child_id', '=', child_id.id),
+                        ('state', 'in', ('new', 'pending'))], context=context)
+                if message_ids:
+                    raise orm.except_orm(
+                        _("Commitment not sent (%s).") % child_id.code,
+                        _("Please send the previous commitment cancellation "
+                          "before the creation of a new commitment."))
+
+        elif action.name == 'CreateGift':
+            # Check that the commitment is known by GMC.
+            invoice_line = self.pool.get(action.model).browse(
+                cr, uid, object_id, context=context)
+            contract = invoice_line.contract_id
+            if contract and contract.correspondant_id and contract.child_id:
+                message_ids = self.search(
+                    cr, uid, [
+                        ('name', '=', 'CreateCommitment'),
+                        ('object_id', '=', contract.id),
+                        ('state', '=', 'success')], context=context)
+                if not message_ids:
+                    raise orm.except_orm(
+                        _("Commitment not sent to GMC (%s - %s)") % (
+                            contract.partner_id.ref, contract.child_id.code),
+                        _("The commitment the gift refers to was not "
+                          "sent to GMC."))
+            else:
+                raise orm.except_orm(
+                    _("Unknown sponsorship."),
+                    _("The gift (%s - %s) is not related to a sponsorship so "
+                      "it should not be sent to GMC.") % (
+                        invoice_line.partner_id.name, invoice_line.name))
+
+        elif action.name == 'CancelCommitment':
+            # Check that the commitment is known by GMC.
+            message_ids = self.search(
+                cr, uid, [
+                    ('name', '=', 'CreateCommitment'),
+                    ('object_id', '=', object_id), ('state', '=', 'success')],
                 context=context)
+            if not message_ids:
+                contract = self.pool.get(action.model).browse(
+                    cr, uid, object_id, context=context)
+                raise orm.except_orm(
+                    _("Commitment not sent to GMC (%s - %s)") % (
+                        contract.partner_id.ref, contract.child_id.code),
+                    _("The commitment was not sent to GMC and therefore "
+                      "cannot be cancelled."))
 
+        return True
+
+    def ack(self, cr, uid, request_id, status, message=None, context=None):
+        """Message Acknowledgement meaning GMC has received our outgoing
+        request.
+        """
+        message_ids = self.search(
+            cr, uid, [('request_id', '=', request_id)], context=context)
+        if message_ids:
+            self.write(cr, uid, message_ids, {
+                'state': status.lower(),
+                'failure_reason': message
+            }, context)
+        else:
+            logger.error('Request id not found:' + str(request_id))
         return True
 
 
@@ -164,29 +407,6 @@ class gmc_action(orm.Model):
         'description': fields.text(_('Action to execute')),
     }
 
-    def execute(self, cr, uid, id, object_id, args={}, context=None):
-        """ Executes the action on the given object_id.
-
-            Args:
-                - id: id of the action to be executed.
-                - object_id: for incoming messages, object on which to
-                             perform the action.
-                             for outgoing messages, object from which to
-                             read data.
-                - args (dict): for incoming messages, optional arguments
-                               to be passed in the executed method.
-        """
-        action = self.browse(cr, uid, id, context=context)
-
-        if action.direction == 'in':
-            return self._perform_incoming_action(cr, uid, action, object_id,
-                                                 args=args, context=context)
-        elif action.direction == 'out':
-            return self._perform_outgoing_action(cr, uid, action, object_id,
-                                                 context=context)
-        else:
-            raise NotImplementedError
-
     def create(self, cr, uid, values, context={}):
         direction = values.get('direction', False)
         model = values.get('model', False)
@@ -201,49 +421,6 @@ class gmc_action(orm.Model):
                 _("Invalid action (%s, %s, %s).") % (
                     direction, model, action_type))
 
-    def _perform_incoming_action(self, cr, uid, action, object_id, args={},
-                                 context=None):
-        """ This method defines what has to be done
-        for each incoming message type. """
-        res = False
-        model_obj = self.pool.get(action.model)
-        if action.type == 'allocate':
-            res = model_obj.allocate(cr, uid, args, context=context)
-        elif action.type in ('deallocate', 'depart', 'update'):
-            res = getattr(model_obj, action.type)(
-                cr, uid, object_id, context=context)
-        else:
-            raise orm.except_orm(
-                _("Invalid Action"),
-                _("No implementation found for method '%s'.") % (action.type))
-
-        return res
-
-    def _perform_outgoing_action(self, cr, uid, action, object_id,
-                                 context=None):
-        """ Process an outgoing message by sending it to the middleware. """
-        if self._validate_outgoing_action(cr, uid, action, object_id,
-                                          context=context):
-            session = requests.Session()
-            session.verify = False
-            server_url = config.get('middleware_url')
-            if not server_url:
-                raise orm.except_orm(
-                    'ConfigError', _('No middleware server url specified in '
-                                     'conf file'))
-            url = server_url + action.type + '/' + \
-                action.model + '/' + str(object_id)
-            resp = session.get(url)
-            content = resp.content
-
-            # TODO : Parse response content to see if the operation succeeded
-            logger.info("middleware response : " + content)
-
-            return True
-
-        else:
-            return False
-
     def _validate_action(self, direction, model, action_type, context=None):
         """ Test if the action can be performed on given model. """
         if direction and model and action_type:
@@ -254,84 +431,3 @@ class gmc_action(orm.Model):
                 return True
 
         return False
-
-    def _validate_outgoing_action(self, cr, uid, action, object_id,
-                                  context=None):
-        """ Validation of outgoing messages before sending them to GMC. """
-        message_obj = self.pool.get('gmc.message.pool')
-
-        if action.name == 'CreateCommitment':
-            contract = self.pool.get(action.model).browse(
-                cr, uid, object_id, context=context)
-            # Check that the constituent is known by GMC.
-            partner = contract.partner_id
-            message_ids = message_obj.search(
-                cr, uid,
-                [('object_id', '=', partner.id), ('state', '=', 'sent')],
-                context=context)
-            if not message_ids:
-                raise orm.except_orm(
-                    _("Constituent (%s) not sent to GMC") % partner.name,
-                    _("Please send the new constituents to GMC before sending"
-                      " the commitments."))
-
-            # Check that the contract is linked to a child
-            child_id = contract.child_id
-            if not child_id:
-                raise orm.except_orm(
-                    _("Contract is not a sponsorship."),
-                    _("The new commitment of %s is not linked to a child and "
-                      "should not be sent to GMC.") % partner.name)
-            else:
-                # Check that there are no previous sponsorship cancellation
-                # pending.
-                message_ids = message_obj.search(
-                    cr, uid, [
-                        ('name', '=', 'CancelCommitment'),
-                        ('child_id', '=', child_id.id),
-                        ('state', '=', 'pending')], context=context)
-                if message_ids:
-                    raise orm.except_orm(
-                        _("Commitment not sent (%s).") % child_id.code,
-                        _("Please send the previous commitment cancellation "
-                          "before the creation of a new commitment."))
-
-        elif action.name == 'CreateGift':
-            # Check that the commitment is known by GMC.
-            invoice_line = self.pool.get(action.model).browse(
-                cr, uid, object_id, context=context)
-            contract = invoice_line.contract_id
-            if contract and contract.partner_id and contract.child_id:
-                message_ids = message_obj.search(
-                    cr, uid, [
-                        ('name', '=', 'CreateCommitment'),
-                        ('object_id', '=', contract.id),
-                        ('state', '=', 'sent')], context=context)
-                if not message_ids:
-                    raise orm.except_orm(
-                        _("Commitment not sent to GMC (%s - %s)") % (
-                            contract.partner_id.ref, contract.child_id.code),
-                        _("The commitment the gift refers to was not "
-                          "sent to GMC."))
-            else:
-                raise orm.except_orm(
-                    _("Unknown sponsorship."),
-                    _("The gift (%s - %s) is not related to a sponsorship so "
-                      "it should not be sent to GMC.") % (
-                        invoice_line.partner_id.name, invoice_line.name))
-
-        elif action.name == 'CancelCommitment':
-            # Check that the commitment is known by GMC.
-            message_ids = message_obj.search(
-                cr, uid, [
-                    ('name', '=', 'CreateCommitment'),
-                    ('object_id', '=', object_id), ('state', '=', 'sent')],
-                context=context)
-            if not message_ids:
-                raise orm.except_orm(
-                    _("Commitment not sent to GMC (%s - %s)") % (
-                        contract.partner_id.ref, contract.child_id.code),
-                    _("The commitment was not sent to GMC and therefore "
-                      "cannot be cancelled."))
-
-        return True

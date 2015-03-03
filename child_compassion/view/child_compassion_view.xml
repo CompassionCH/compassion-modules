@@ -16,7 +16,7 @@
                 <form string="Child" version="7.0">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="N,P,F" />
-                        <button name="%(action_child_depart)d" class="oe_highlight" string="Depart" type="action" states="N,R,D,I"/>
+                        <button name="%(action_child_depart)d" class="oe_highlight" string="Depart" type="action" invisible="1"/>
                     </header>
                     <sheet>
                         <field name="portrait" widget='image' class="oe_left oe_avatar" options='{"size": [90, 90]}' />
@@ -39,7 +39,6 @@
                                         <field name="gender" />
                                         <field name="birthdate" />
                                         <field name="sponsor_id" />
-                                        <field name="start_date" />
                                     </group>
                                     <group>
                                         <field name="unique_id" />
@@ -47,6 +46,14 @@
                                         <field name="date" />
                                         <field name="completion_date" />
                                         <field name="exit_date" />
+                                    </group>
+                                    <group attrs="{'invisible': [('delegated_to', '=', False)]}">
+                                        <field name="delegated_to" />
+                                        <field name="date_delegation"/>
+                                        <field name="delegated_comment" />
+                                    </group>
+                                    <group colspan="2">
+                                        <field name="pictures_ids"/>
                                     </group>
                                 </group>
                             </page>
@@ -64,6 +71,25 @@
                             <page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '>', 0)]}">
                                 <group>
                                     <field name="gp_exit_reason" />
+                                    <field name="exit_date" />
+                                    <field name="last_attended_project" />
+                                    <field name="presented_gospel" />
+                                    <field name="professes_faith" />
+                                    <field name="faith_description" />
+                                    <field name="primary_school" />
+                                    <field name="us_grade_completed" />
+                                    <field name="study_area" />
+                                    <field name="vocational_training" />
+                                    <field name="vocational_skills" />
+                                    <field name="disease_free" />
+                                    <field name="health_description" />
+                                    <field name="social_description" />
+                                    <field name="exit_description" />
+                                    <field name="steps_prevent_description" />
+                                    <field name="future_plans_description" />
+                                    <field name="new_situation_description" />
+                                    <field name="exit_reason" />
+                                    <field name="last_letter_sent" />
                                 </group>
                             </page>
                             <page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '=', False)]}">
@@ -87,37 +113,44 @@
             <field name="model">compassion.child</field>
             <field name="arch" type="xml">
                 <tree string="Children"
-                      colors="blue:state == 'N';
-                              black:state in ('P', 'D', 'I');
-                              red:state == 'R';
-                              gray:state == 'F'">
+                        colors="blue:state == 'N';
+                    black:state in ('P', 'D', 'I');
+                    red:state == 'R';
+                    gray:state in ('F', 'X')">
                     <field name="name"/>
                     <field name="code"/>
+                    <field name="date"/>
                     <field name="sponsor_id"/>
-                    <field name="gender"/>
-                    <field name="birthdate"/>
-                    <field name="type"/>
                     <field name="state"/>
+                    <field name="delegated_to"/>
+                    <field name="date_delegation"/>
+                    <field name="delegated_comment"/>
+                    <field name="date_info"/>
+                    <field name="has_desc_fr"/>
+                    <field name="has_desc_de"/>
+                    <field name="has_desc_it"/>
+                    <field name="has_desc_en"/>
                 </tree>
             </field>
         </record>
-        
+
         <record id="view_child_compassion_filter" model="ir.ui.view">
             <field name="name">compassion.child.select</field>
             <field name="model">compassion.child</field>
             <field name="arch" type="xml">
                 <search string="Search child">
-                    <field name="name" filter_domain="['|', '|', '|',
-                                                       ('name', 'ilike', self),
-                                                       ('firstname', 'ilike', self),
-                                                       ('code', 'ilike', self),
-                                                       ('sponsor_id.ref', 'ilike', self),
-                                                       ]"/>
+                    <field name="name" filter_domain="['|', ('name', 'ilike', self), ('firstname', 'ilike', self)]"/>
+                    <field name="code"/>
+                    <field name="sponsor_id"/>
+                    <field name="sponsor_ref"/>
                     <field name="state"/>
                     <field name="type"/>
-                    <filter name="available" string="Available" domain="[('state','in',('N','D','I','R'))]" context="{'group_by':'state'}"/>
+                    <filter name="available" string="Available" domain="[('state','in',('N','D','I','R','E'))]" context="{'group_by':'state'}"/>
                     <filter name="sponsored" string="Sponsored" domain="[('state','=','P')]" help="Sponsored children"/>
                     <filter name="departed" string="Departed" domain="[('state','=','F')]" help="Departed children"/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Allocation Date" domain="[]" context="{'group_by':'date'}"/>
+                    </group>
                 </search>
             </field>
         </record>
@@ -128,6 +161,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">form,tree</field>
             <field name="view_id" ref="view_compassion_child_tree"/>
+            <field name="context">{'search_default_available':1}</field>
         </record>
 
         <menuitem id="menu_sponsorship_children" parent="menu_sponsorship_section" name="Children" action="child_compassion.open_view_children_tree" sequence="2"/>
