@@ -281,6 +281,16 @@ class compassion_project(orm.Model):
                 if value}, community_id
 
     def generate_descriptions(self, cr, uid, project_id, context=None):
+        if isinstance(project_id, list):
+            project_id = project_id[0]
+        project = self.browse(cr, uid, project_id, context)
+        if not project.last_update_date:
+            raise orm.except_orm(
+                _('Generation error'),
+                _('Missing information for project %s. Please update its '
+                  'information before generating the descriptions') %
+                project.code)
+
         return {
             'name': _('Description generation'),
             'type': 'ir.actions.act_window',

@@ -1,4 +1,4 @@
-﻿# -*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -34,20 +34,20 @@ class Child_description_en:
     @classmethod
     def _number_to_string(cls, number):
         conversion_dict = {
-            1: 'one',
-            2: 'two',
-            3: 'three',
-            4: 'four',
-            5: 'five',
-            6: 'six',
-            7: 'seven',
-            8: 'height',
-            9: 'nine'
+            1: u'one',
+            2: u'two',
+            3: u'three',
+            4: u'four',
+            5: u'five',
+            6: u'six',
+            7: u'seven',
+            8: u'height',
+            9: u'nine'
         }
         if number in conversion_dict:
             return conversion_dict[number]
         else:
-            return number
+            return str(number)
 
     @classmethod
     def _gen_list_string(cls, list):

@@ -74,7 +74,7 @@ class project_description_wizard(orm.TransientModel):
                 Project_description_it._get_needs_pattern_it(cr, uid, project,
                                                              context)
 
-        return res
+        return res + '\n\n'     # Fix for display of the textfield
 
     def _get_desc(self, cr, uid, lang, context):
         project = self.pool.get('compassion.project').browse(
@@ -92,7 +92,7 @@ class project_description_wizard(orm.TransientModel):
         elif lang == 'en':
             res = project.description_en
 
-        return res
+        return res + '\n\n'     # Fix for display of the textfield
 
     _columns = {
         'project_id': fields.many2one('compassion.project', 'Project code'),
@@ -169,13 +169,16 @@ class project_description_wizard(orm.TransientModel):
         wizard = self.browse(cr, uid, ids, context)[0]
         vals = dict()
         if wizard.keep_desc_fr:
-            vals['description_fr'] = wizard.desc_fr + wizard.needs_desc_fr
+            vals['description_fr'] = wizard.desc_fr + \
+                wizard.needs_desc_fr.strip('\n')
             vals['needs_fr'] = wizard.needs_desc_fr
         if wizard.keep_desc_de:
-            vals['description_de'] = wizard.desc_de + wizard.needs_desc_de
+            vals['description_de'] = wizard.desc_de + \
+                wizard.needs_desc_de.strip('\n')
             vals['needs_de'] = wizard.needs_desc_de
         if wizard.keep_desc_it:
-            vals['description_it'] = wizard.desc_it + wizard.needs_desc_it
+            vals['description_it'] = wizard.desc_it + \
+                wizard.needs_desc_it.strip('\n')
             vals['needs_it'] = wizard.needs_desc_it
 
         if not vals:
