@@ -8,10 +8,11 @@
 			<field name="arch" type="xml">
 				<form string="Description generation" version="7.0">
                     <group col='2'>
-                            <group string="Complete missing translations if needed">
-                                <field name="child_property_value_ids" nolabel="1" />
-                            </group>
+                        <group string="Complete missing translations if needed">
+                            <field name="child_property_value_ids" nolabel="1" />
+                        </group>
                         <group string="Check and select descriptions to validate" col='2'>
+                            <field name="case_study_id"/>
                             <field name="comments" attrs="{'invisible': [('comments', '=', False)]}"/>
                             <field name="keep_desc_fr"/>
                             <field name="desc_fr" attrs="{'invisible':[('keep_desc_fr','=',False)]}" nolabel="1" colspan="2"/>

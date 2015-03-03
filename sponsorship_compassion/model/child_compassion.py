@@ -13,6 +13,10 @@ from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
 import requests
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class child_compassion(orm.Model):
@@ -46,13 +50,14 @@ class child_compassion(orm.Model):
                 url = self.get_url(child.code, 'information')
                 r = requests.get(url)
                 json_data = r.json()
-                if not r.status_code / 100 == 2:
-                    raise orm.except_orm(
-                        'NetworkError',
-                        _('An error occured while fetching the unsponsored '
-                          ' date of child %s.') % child.code +
+                if r.status_code == 200:
+                    res[child.id] = json_data['beginWaitTime'] or False
+                else:
+                    logger.error(
+                        'An error occured while fetching the unsponsored '
+                        ' date of child %s.' % child.code +
                         json_data['error']['message'])
-                res[child.id] = json_data['beginWaitTime'] or False
+                    res[child.id] = False
             else:
                 res[child.id] = False
 

@@ -97,10 +97,14 @@ class child_description_wizard(orm.TransientModel):
             fnct_inv=_write_values),
         'comments': fields.function(_get_comments, type='text',
                                     string=_('Comments'), readonly=True),
+        'case_study_id': fields.many2one('compassion.child.property',
+                                         'Case Study'),
     }
 
     _defaults = {
         'child_id': lambda self, cr, uid, context: context.get('child_id'),
+        'case_study_id': lambda self, cr, uid, context: context.get(
+            'property_id'),
         'keep_desc_fr': False,
         'keep_desc_de': False,
         'keep_desc_it': False,
