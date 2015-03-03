@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright (C) 2014 Compassion (http://www.compassion.ch)
+    Copyright (C) 2015 Compassion (http://www.compassion.ch)
     @author David Coninckx <david@coninckx.com>
     The licence is in the file __openerp__.py
 -->
@@ -10,9 +10,9 @@
 			<field name="name">follow.contract.compassion.form</field>
 			<field name="model">recurring.contract</field>
 			<field name="arch" type="xml">
-                <form string="Follow contract" version="7.0" >
+                <form string="Follow contract" version="7.0" create="false" edit="false">
                     <header>
-                        <field name="sds_state" widget="statusbar" statusbar_visible="draft,start,waiting_welcome,active,cancelled" />
+                        <field name="sds_state" widget="statusbar" statusbar_visible="draft,start,waiting_welcome,active,sub,sub_accept" />
                         <button name="contract_validated" class="oe_highlight" attrs="{'invisible':[('sds_state','!=','draft')]}" string="Validate"/>
                         <button name="%(sponsorship_compassion.action_end_sponsorship)d" class="oe_highlight" string="Terminate" states="waiting,mandate,active" type="action"/>
                         <button name="mail_sent" class="oe_highlight" string="Mail sent" attrs="{'invisible':[('sds_state','!=','start')]}"/>
@@ -52,7 +52,8 @@
 			<field name="name">follow.contract.compassion.tree</field>
 			<field name="model">recurring.contract</field>
 			<field name="arch" type="xml">
-                <tree string="Follow contracts" create="false" >
+                <tree string="Follow contracts" create="false" 
+                    colors ="blue:sds_state == 'draft';red:sds_state == 'start';green:sds_state == 'waiting_welcome';black:sds_state == 'active';gray:state in ('cancelled')">
                     <field name="partner_codega"/>
                     <field name="partner_id"/>
                     
@@ -71,10 +72,11 @@
        
         
         <record model="ir.actions.act_window" id="action_follow_contract">
-            <field name="name">Follow contracts</field>
+            <field name="name">Track contracts</field>
             <field name="res_model">recurring.contract</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="contract_tracking_filter"/>
         </record>
 
         <record model="ir.actions.act_window.view" id="act_follow_contract_tree">
@@ -92,18 +94,35 @@
         </record>
         
         <!-- Filters -->
-        <record id="follow_contract_filter" model="ir.ui.view">
-			<field name="name">follow.contract.select</field>
+        <record id="contract_tracking_filter" model="ir.ui.view">
+			<field name="name">contract.tracking.select</field>
 			<field name="model">recurring.contract</field>
-			<field name="inherit_id" ref="recurring_contract.view_recurring_contract_filter" />
 			<field name="arch" type="xml">
-                    <field name="payment_term_id" position="after">
-                        <field name="sds_state"/>
-                    </field>
+                <search string="Search contracts">
+                    <field name="reference"/>
+                    <field name="child_id"/>
+                    <field name="partner_id"/>
+                    <field name="sds_state"/>
+
+                    <filter name="biennial" string="Biennial" domain="[('gmc_state', 'in', ('picture', 'casestudy'))]" context="{'group_by': 'gmc_state'}"/>
+                    <filter name="depart" string="Departure" domain="[('gmc_state', '=', 'depart')]"/>
+                    <filter name="transfer" string="Child Transfer" domain="[('gmc_state', '=', 'transfer')]"/>
+                    <filter name="suspension" string="Project Suspended" domain="[('gmc_state', '=', 'suspension')]"/>
+                    <filter name="reactivation" string="Project Reactivated" domain="[('gmc_state', '=', 'reactivation')]"/>
+
+                    <group expand="0" string="Group By...">
+                        <filter string="Start date" domain="[]"  context="{'group_by':'start_date'}"/>
+                        <filter string="End date" domain="[]" context="{'group_by':'end_date'}"/>
+                        <filter string="Welcome due date" domain="[]" context="{'group_by':'date_welcome'}"/>
+                        <filter string="Sub date" domain="[]" context="{'group_by':'date_sub'}"/>
+                        <filter string="Status" domain="[]"  context="{'group_by':'state'}"/>
+                        <filter string="SDS Status" domain="[]"  context="{'group_by':'sds_state'}"/>
+                    </group>
+                </search>
             </field>
 		</record>
         
         <menuitem action="action_follow_contract" id="recurring_contract.menu_follow_contract" parent="child_compassion.menu_sponsorship_section"
-                  name="Follow sponsorships" sequence="0"/>
+                  name="Track sponsorships" sequence="0"/>
 	</data>
 </openerp>
