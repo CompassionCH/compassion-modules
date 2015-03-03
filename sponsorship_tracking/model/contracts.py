@@ -16,7 +16,7 @@ from openerp.tools.translate import _
 
 from datetime import datetime, date, timedelta
 import logging
-import pdb
+
 logger = logging.getLogger(__name__)
 
 
@@ -133,10 +133,11 @@ class recurring_contract(orm.Model):
         })
         return super(recurring_contract, self).copy(
             cr, uid, id, default, context)
-    
+
     def draft(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'sds_state': 'draft'}, context)
         return True
+
     def start(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'sds_state': 'start'}, context)
         return True
