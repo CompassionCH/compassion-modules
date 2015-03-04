@@ -574,8 +574,15 @@ class recurring_contract(orm.Model):
             logger.info("Contract " + str(contract.id) + " activated.")
 
     def _invoice_paid(self, cr, uid, invoice, context=None):
-        """ Hook for doing something when an invoice is paid. """
-        pass
+        """ Prevent to reconcile invoices for fund-suspended projects. """
+        for invl in invoice.invoice_line:
+            if invl.contract_id and invl.contract_id.child_id:
+                project = invl.contract_id.child_id.project_id
+                if project.suspension == 'fund-suspended':
+                    raise orm.except_orm(
+                        _("Reconcile error"),
+                        _("The project %s is fund-suspended. You cannot "
+                          "reconcile this invoice.") % project.code)
 
     def _update_invoice_lines(self, cr, uid, contract, invoice_ids,
                               context=None):
@@ -980,7 +987,3 @@ class account_period(orm.Model):
 
 class account_account_type(orm.Model):
     _inherit = 'account.account.type'
-
-
-class account_move_reconcile(orm.Model):
-    _inherit = 'account.move.reconcile'

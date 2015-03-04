@@ -69,6 +69,12 @@ class gmc_message_pool(orm.Model):
                     res[message.id] = contract.partner_id.id
                 elif field_name == 'child_id':
                     res[message.id] = contract.child_id.id
+                elif field_name == 'invoice_line_id':
+                    invl_ids = self.pool.get('account.invoice.line').search(
+                        cr, uid, [('contract_id', '=', contract.id),
+                                  ('last_payment', '!=', False)],
+                        order='due_date asc', context=context)
+                    res[message.id] = invl_ids[0] if invl_ids else False
                 else:
                     res[message.id] = False
         return res
@@ -92,7 +98,7 @@ class gmc_message_pool(orm.Model):
             string=_("Child"), store=True),
         'project_id': fields.function(
             _get_object_id, type='many2one', obj='compassion.project',
-            string=_("Project")),
+            string=_("Project"), store=True),
         'request_id': fields.char('Unique request ID'),
         'date': fields.date(_('Message Date'), required=True),
         'action_id': fields.many2one('gmc.action', _('GMC Message'),
@@ -118,7 +124,8 @@ class gmc_message_pool(orm.Model):
         'partner_country_code': fields.char(_('Partner Country Code'), size=2),
         # Gift Type Messages information
         'invoice_line_id': fields.function(
-            _get_object_id, type='many2one', obj='account.invoice.line'),
+            _get_object_id, type='many2one', obj='account.invoice.line',
+            store=True),
         'gift_type': fields.related(
             'invoice_line_id', 'product_id', 'name', type='char',
             string=_('Gift type')),

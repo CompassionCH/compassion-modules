@@ -1,4 +1,4 @@
-﻿# -*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -10,6 +10,8 @@
 ##############################################################################
 
 from openerp.osv import orm
+from openerp.tools.translate import _
+
 import datetime
 
 """ We keep track of reconciled debit lines so that we don't
@@ -90,6 +92,7 @@ class easy_reconcile_advanced_bvr_ref(orm.TransientModel):
         partner_id = move_line.get('partner_id')
         if move_line.get('ref') and partner_id:
             # Search for related customer invoices (same bvr reference).
+            # and order them to reconcile them in specific order.
             invoice_obj = self.pool.get('account.invoice')
             present_invoice_ids = invoice_obj.search(
                 cr, uid, [('bvr_reference', '=', move_line['ref']),
@@ -109,6 +112,20 @@ class easy_reconcile_advanced_bvr_ref(orm.TransientModel):
             total_due = 0.0
             credit_amount = move_line['credit']
             for invoice in invoices:
+                """ If invoice contain a child in a suspended project,
+                we prevent the reconciliation and write in move line for
+                users being able to decide how to assign the payment. """
+                for invl in invoice.invoice_line:
+                    if invl.contract_id and invl.contract_id.child_id:
+                        project = invl.contract_id.child_id.project_id
+                        if project.suspension == 'fund-suspended':
+                            self.pool.get('account.move.line').write(
+                                cr, uid, move_line['id'], {
+                                    'name': _('Project %s is '
+                                              'fund-suspended.') %
+                                    project.code}, context)
+                            return True
+
                 total_due += invoice.amount_total
                 if total_due == credit_amount:
                     """ The credit line can fully reconcile an integer number

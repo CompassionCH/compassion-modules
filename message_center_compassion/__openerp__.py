@@ -51,6 +51,7 @@
         'view/gmc_message_view.xml',
         'view/contracts_view.xml',
         'data/gmc_action.xml',
+        'workflow/contract_workflow.xml',
     ],
     'demo': [],
     'installable': True,
