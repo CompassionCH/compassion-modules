@@ -62,7 +62,7 @@ class suspension_wizard(orm.TransientModel):
 
         wizard = self.browse(cr, uid, ids[0], context)
         project_obj.suspend_funds(
-            cr, uid, project_id, context,
+            cr, uid, project_id, context=context,
             date_end=datetime.strptime(wizard.date_end, DF))
 
         return True
