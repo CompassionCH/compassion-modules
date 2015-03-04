@@ -73,12 +73,14 @@ class child_pictures(orm.Model):
         # Retrieve Headshot
         success = success and self._get_picture(cr, uid, child.id, child.code,
                                                 res_id, context=context)
-        if not success:
-            # We could not retrieve a picture, we cancel the creation
-            self.unlink(cr, uid, res_id, context)
-            return False
         child_picture = self.browse(
             cr, uid, res_id, context)
+        if not success:
+            # We could not retrieve a picture, we cancel the creation
+            self._unlink_related_attachment(cr, uid, child_picture.id, context)
+            self.unlink(cr, uid, res_id, context)
+            return False
+
         same_picture_ids = self._find_same_picture(
             cr, uid, child.id,
             child_picture.fullshot, child_picture.headshot,
