@@ -47,8 +47,16 @@ class suspension_wizard(orm.TransientModel):
                                 help=_("will add 3 months if empty")),
     }
 
+    def _get_start_date(self, cr, uid, context=None):
+        project = self.pool.get('compassion.project').browse(
+            cr, uid, context.get('active_id'), context)
+        if project:
+            return project.status_date
+        else:
+            return datetime.today().strftime(DF)
+
     _defaults = {
-        'date_start': datetime.today().strftime(DF)
+        'date_start': _get_start_date
     }
 
     def perform_suspension(self, cr, uid, ids, context=None):
