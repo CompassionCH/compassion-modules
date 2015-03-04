@@ -69,30 +69,7 @@
                 </tree>
 			</field>
 		</record>
-       
-        
-        <record model="ir.actions.act_window" id="action_follow_contract">
-            <field name="name">Track contracts</field>
-            <field name="res_model">recurring.contract</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="contract_tracking_filter"/>
-        </record>
 
-        <record model="ir.actions.act_window.view" id="act_follow_contract_tree">
-            <field eval="1" name="sequence"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="view_follow_contract_tree_compassion"/>
-            <field name="act_window_id" ref="action_follow_contract"/>
-        </record>
-
-        <record model="ir.actions.act_window.view" id="act_follow_contract_form">
-            <field eval="2" name="sequence"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="view_follow_contract_form_compassion"/>
-            <field name="act_window_id" ref="action_follow_contract"/>
-        </record>
-        
         <!-- Filters -->
         <record id="contract_tracking_filter" model="ir.ui.view">
 			<field name="name">contract.tracking.select</field>
@@ -121,6 +98,28 @@
                 </search>
             </field>
 		</record>
+        
+        <record model="ir.actions.act_window" id="action_follow_contract">
+            <field name="name">Track contracts</field>
+            <field name="res_model">recurring.contract</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="contract_tracking_filter"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_follow_contract_tree">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_follow_contract_tree_compassion"/>
+            <field name="act_window_id" ref="action_follow_contract"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_follow_contract_form">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_follow_contract_form_compassion"/>
+            <field name="act_window_id" ref="action_follow_contract"/>
+        </record>
         
         <menuitem action="action_follow_contract" id="recurring_contract.menu_follow_contract" parent="child_compassion.menu_sponsorship_section"
                   name="Track sponsorships" sequence="0"/>
