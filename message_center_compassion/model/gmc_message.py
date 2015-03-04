@@ -139,13 +139,14 @@ class gmc_message_pool(orm.Model):
         'request_id_uniq', 'UNIQUE(request_id)',
         _("You cannot have two requests with same id.")
     )]
-    
+
     def process_update_messages(self, cr, uid, context=None):
         gmc_action_ids = self.pool.get('gmc.action').search(
             cr, uid,
             [('type', 'in', ['allocate', 'update']), ('direction', '=', 'in')],
             context=context)
-        gmc_update_messages_ids = self.search(cr, uid, [('action_id', 'in', gmc_action_ids)], context=context)
+        gmc_update_messages_ids = self.search(
+            cr, uid, [('action_id', 'in', gmc_action_ids)], context=context)
         self.process_messages(cr, uid, gmc_update_messages_ids, context)
 
     def process_messages(self, cr, uid, ids, context=None):

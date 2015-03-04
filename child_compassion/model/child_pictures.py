@@ -15,7 +15,7 @@ from openerp.tools.translate import _
 
 from datetime import date
 import requests
-import pdb
+
 
 class child_pictures(orm.Model):
     """ Holds two pictures of a given child
@@ -80,29 +80,33 @@ class child_pictures(orm.Model):
         child_picture = self.browse(
             cr, uid, res_id, context)
         same_picture_ids = self._find_same_picture(
-            cr, uid, child.id, child_picture.fullshot, child_picture.headshot, context)
+            cr, uid, child.id,
+            child_picture.fullshot, child_picture.headshot,
+            context)
         same_picture_ids.remove(child_picture.id)
-        
+
         if same_picture_ids:
             self._unlink_related_attachment(cr, uid, child_picture.id, context)
             self.unlink(cr, uid, res_id, context)
             self.write(
-                cr, uid, same_picture_ids, 
+                cr, uid, same_picture_ids,
                 {'date': date.today()}, context)
             return False
         return res_id
-        
+
     def _unlink_related_attachment(self, cr, uid, res_id, context=None):
         attachment_obj = self.pool.get('ir.attachment')
         attachment_ids = attachment_obj.search(
             cr, uid,
             [('res_model', '=', 'compassion.child.pictures'),
-            ('res_id', '=', res_id)],
+                ('res_id', '=', res_id)],
             context=context)
         attachment_obj.unlink(cr, uid, attachment_ids, context)
 
-    def _find_same_picture(self, cr, uid, child_id, fullshot, headshot, context):
-        pict_ids = self.search(cr, uid, [('child_id', '=', child_id)], context=context)
+    def _find_same_picture(
+            self, cr, uid, child_id, fullshot, headshot, context):
+        pict_ids = self.search(
+            cr, uid, [('child_id', '=', child_id)], context=context)
         same_pict_ids = list()
         for picture in self.browse(cr, uid, pict_ids, context):
             if picture.fullshot == fullshot:
