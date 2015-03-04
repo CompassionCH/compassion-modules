@@ -93,6 +93,10 @@ class child_pictures(orm.Model):
             self.write(
                 cr, uid, same_picture_ids,
                 {'date': date.today()}, context)
+            self.pool.get('mail.thread').message_post(
+                cr, uid, child.id,
+                _('Same picture'), 'Picture date updated',
+                context={'thread_model': 'compassion.child'})
             return False
         return res_id
 
