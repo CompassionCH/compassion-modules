@@ -94,10 +94,10 @@ class gmc_message_pool(orm.Model):
             _get_object_id, type='many2one', obj='compassion.project',
             string=_("Project")),
         'request_id': fields.char('Unique request ID'),
-        'date': fields.date(_('Message Date'), required=True),
+        'date': fields.datetime(_('Message Date'), required=True),
         'action_id': fields.many2one('gmc.action', _('GMC Message'),
                                      ondelete="restrict", required=True),
-        'process_date': fields.date(_('Process Date'), readonly=True),
+        'process_date': fields.datetime(_('Process Date'), readonly=True),
         'state': fields.selection(
             [('new', _('New')),
              ('pending', _('Pending')),
@@ -139,6 +139,14 @@ class gmc_message_pool(orm.Model):
         'request_id_uniq', 'UNIQUE(request_id)',
         _("You cannot have two requests with same id.")
     )]
+    
+    def process_update_messages(self, cr, uid, context=None):
+        gmc_action_ids = self.pool.get('gmc.action').search(
+            cr, uid,
+            [('type', 'in', ['allocate', 'update']), ('direction', '=', 'in')],
+            context=context)
+        gmc_update_messages_ids = self.search(cr, uid, [('action_id', 'in', gmc_action_ids)], context=context)
+        self.process_messages(cr, uid, gmc_update_messages_ids, context)
 
     def process_messages(self, cr, uid, ids, context=None):
         """ Process given messages in pool. """
