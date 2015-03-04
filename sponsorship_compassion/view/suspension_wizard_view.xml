@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
         <record id="view_suspension_wizard" model="ir.ui.view">
@@ -9,6 +9,7 @@
                 <form string="Project suspension extension" version="7.0">
                     <p>This will extend the suspension of the project to the defined date.</p>
                     <group>
+                        <field name="date_start"/>
                         <field name="date_end"/>
                     </group>
                     <footer>
