@@ -137,8 +137,19 @@ class recurring_contract(orm.Model):
                 })
                 message_obj.create(cr, uid, message_vals)
             elif not invoice.payment_ids:
-                # Invoice goes from paid to open state ->
-                # delete CreateGift and CreateCommitment messages
+                # Invoice goes from paid to open state
+                # 1. Check if a GIFT was sent to GMC and prevent unrec
+                mess_ids = message_obj.search(cr, uid, [
+                    ('invoice_line_id', '=', invoice_line.id),
+                    ('state', '=', 'success'),
+                    ('action_id', '=', action_id)], context=context)
+                if mess_ids:
+                    raise orm.except_orm(
+                        _("Unreconcile error"),
+                        _("You are not allowed to unreconcile this invoice. "
+                          "The Gift was already sent to GMC ! "))
+
+                # 2. Delete pending CreateGift and CreateCommitment messages
                 mess_ids = message_obj.search(cr, uid, [
                     ('invoice_line_id', '=', invoice_line.id),
                     ('state', 'in', ['new', 'failure'])], context=context)
