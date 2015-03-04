@@ -20,7 +20,6 @@ import requests
 import logging
 import traceback
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -151,6 +150,14 @@ class gmc_message_pool(orm.Model):
 
     def process_messages(self, cr, uid, ids, context=None):
         """ Process given messages in pool. """
+
+        # Find company country codes
+        company_obj = self.pool.get('res.company')
+        company_ids = company_obj.search(cr, uid, [], context=context)
+        companies = company_obj.browse(cr, uid, company_ids, context)
+        country_codes = [company.partner_id.country_id.code
+                         for company in companies]
+
         today = datetime.today()
         for message in self.browse(cr, uid, ids, context=context):
             mess_date = datetime.strptime(message.date, DF)
@@ -158,8 +165,7 @@ class gmc_message_pool(orm.Model):
                 res = False
                 action = message.action_id
                 if action.direction == 'in':
-                    # TODO replace 'CH' by company iso_code
-                    if message.partner_country_code == 'CH':
+                    if message.partner_country_code in country_codes:
                         try:
                             res = self._perform_incoming_action(
                                 cr, uid, message, context)
