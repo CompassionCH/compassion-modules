@@ -9,6 +9,7 @@
 #
 ##############################################################################
 
+from openerp import netsvc
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from sponsorship_compassion.model.product import GIFT_TYPES
@@ -75,7 +76,7 @@ class recurring_contract(orm.Model):
                     'object_id': contract.id,
                     'child_id': contract.child_id.id,
                 })
-                message_obj.create(cr, uid, message_vals, context=context)
+                message_obj.create(cr, uid, message_vals, context)
 
     def contract_terminated(self, cr, uid, ids, context=None):
         """ Inform GMC when sponsorship is terminated,
@@ -125,25 +126,34 @@ class recurring_contract(orm.Model):
 
         for invoice_line in invoice.invoice_line:
             contract = invoice_line.contract_id
-            if invoice_line.product_id.id in gift_ids and contract:
-                if invoice.payment_ids:
-                    message_vals.update({
-                        'object_id': invoice_line.id,
-                        'partner_id': contract.correspondant_id.id,
-                        'child_id': contract.child_id.id,
-                    })
-                    message_obj.create(cr, uid, message_vals)
-                else:
-                    # Invoice goes from paid to open state ->
-                    # delete CreateGift message
-                    mess_ids = message_obj.search(cr, uid, [
-                        ('action_id', '=', action_id),
-                        ('date', '=', invoice.date_invoice),
-                        ('state', '=', 'new')], context=context)
-                    message_obj.unlink(cr, uid, mess_ids, context)
+            if not contract:
+                break
+            if invoice_line.product_id.id in gift_ids and invoice.payment_ids:
+                # CreateGift
+                message_vals.update({
+                    'object_id': invoice_line.id,
+                    'partner_id': contract.correspondant_id.id,
+                    'child_id': contract.child_id.id,
+                })
+                message_obj.create(cr, uid, message_vals)
+            elif not invoice.payment_ids:
+                # Invoice goes from paid to open state ->
+                # delete CreateGift and CreateCommitment messages
+                mess_ids = message_obj.search(cr, uid, [
+                    ('invoice_line_id', '=', invoice_line.id),
+                    ('state', 'in', ['new', 'failure'])], context=context)
+                for message in message_obj.browse(cr, uid, mess_ids, context):
+                    if message.action_id.name == 'CreateCommitment':
+                        # We set back the sponsorship in waiting state
+                        wf_service = netsvc.LocalService('workflow')
+                        wf_service.trg_validate(
+                            uid, 'recurring.contract', contract.id,
+                            'contract_activation_cancelled', cr)
+                message_obj.unlink(cr, uid, mess_ids, context)
 
-    def suspend_contract(self, cr, uid, ids, start, months, context=None):
+    def suspend_contract(self, cr, uid, ids, context=None,
+                         date_start=None, date_end=None):
         """ Mark the state of contract when it is suspended. """
         self.write(cr, uid, ids, {'gmc_state': 'suspension'}, context)
         return super(recurring_contract, self).suspend_contract(
-            cr, uid, ids, start, months, context)
+            cr, uid, ids, context, date_start, date_end)
