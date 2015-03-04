@@ -409,7 +409,7 @@ class recurring_contract(orm.Model):
         if not since_date:
             since_date = datetime.today().strftime(DF)
         invl_search = [('contract_id', 'in', ids), ('state', '=', 'paid'),
-                       ('due_date', '>', since_date)]
+                       ('due_date', '>=', since_date)]
         if to_date:
             invl_search.append(('due_date', '<=', to_date))
 

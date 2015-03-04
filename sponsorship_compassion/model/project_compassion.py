@@ -42,7 +42,13 @@ class suspension_wizard(orm.TransientModel):
     _name = 'compassion.project.suspension.wizard'
 
     _columns = {
-        'date_end': fields.date(_('End of suspension')),
+        'date_start': fields.date(_('Start of suspension')),
+        'date_end': fields.date(_('End of suspension'),
+                                help=_("will add 3 months if empty")),
+    }
+
+    _defaults = {
+        'date_start': datetime.today().strftime(DF)
     }
 
     def perform_suspension(self, cr, uid, ids, context=None):
@@ -61,8 +67,13 @@ class suspension_wizard(orm.TransientModel):
                   'You cannot extend the suspension.'))
 
         wizard = self.browse(cr, uid, ids[0], context)
+        date_start = datetime.strptime(wizard.date_start, DF) if \
+            wizard.date_start else None
+        date_end = datetime.strptime(wizard.date_end, DF) if \
+            wizard.date_end else None
         project_obj.suspend_funds(
             cr, uid, project_id, context=context,
-            date_end=datetime.strptime(wizard.date_end, DF))
+            date_start=date_start,
+            date_end=date_end)
 
         return True
