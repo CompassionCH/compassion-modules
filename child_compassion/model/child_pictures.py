@@ -111,8 +111,8 @@ class child_pictures(orm.Model):
             cr, uid, [('child_id', '=', child_id)], context=context)
         same_pict_ids = list()
         for picture in self.browse(cr, uid, pict_ids, context):
-            if picture.fullshot == fullshot:
-                if picture.headshot == headshot:
+            if (picture.fullshot == fullshot and
+               picture.headshot == headshot):
                     same_pict_ids.append(picture.id)
         return same_pict_ids
 
