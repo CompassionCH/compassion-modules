@@ -73,11 +73,52 @@ class child_pictures(orm.Model):
         # Retrieve Headshot
         success = success and self._get_picture(cr, uid, child.id, child.code,
                                                 res_id, context=context)
+        child_picture = self.browse(
+            cr, uid, res_id, context)
         if not success:
             # We could not retrieve a picture, we cancel the creation
+            self._unlink_related_attachment(cr, uid, child_picture.id, context)
             self.unlink(cr, uid, res_id, context)
             return False
+
+        same_picture_ids = self._find_same_picture(
+            cr, uid, child.id,
+            child_picture.fullshot, child_picture.headshot,
+            context)
+        same_picture_ids.remove(child_picture.id)
+
+        if same_picture_ids:
+            self._unlink_related_attachment(cr, uid, child_picture.id, context)
+            self.unlink(cr, uid, res_id, context)
+            self.write(
+                cr, uid, same_picture_ids,
+                {'date': date.today()}, context)
+            self.pool.get('mail.thread').message_post(
+                cr, uid, child.id,
+                _('The picture was the same'), 'Picture update',
+                context={'thread_model': 'compassion.child'})
+            return False
         return res_id
+
+    def _unlink_related_attachment(self, cr, uid, res_id, context=None):
+        attachment_obj = self.pool.get('ir.attachment')
+        attachment_ids = attachment_obj.search(
+            cr, uid,
+            [('res_model', '=', 'compassion.child.pictures'),
+                ('res_id', '=', res_id)],
+            context=context)
+        attachment_obj.unlink(cr, uid, attachment_ids, context)
+
+    def _find_same_picture(
+            self, cr, uid, child_id, fullshot, headshot, context):
+        pict_ids = self.search(
+            cr, uid, [('child_id', '=', child_id)], context=context)
+        same_pict_ids = list()
+        for picture in self.browse(cr, uid, pict_ids, context):
+            if (picture.fullshot == fullshot and
+               picture.headshot == headshot):
+                    same_pict_ids.append(picture.id)
+        return same_pict_ids
 
     def _get_picture(self, cr, uid, child_id, child_code, attach_id,
                      type='Headshot', dpi=72, width=400, height=400,
@@ -100,6 +141,7 @@ class child_pictures(orm.Model):
         if not context:
             context = dict()
         context['store_fname'] = type + '.' + format
+
         return attachment_obj.create(cr, uid, {
             'datas_fname': type + '.' + format,
             'res_model': self._name,
