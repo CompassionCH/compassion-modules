@@ -10,13 +10,13 @@
 ##############################################################################
 import logging
 
-from openerp.osv.orm import Model, fields
+from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
 logger = logging.getLogger(__name__)
 
 
-class account_invoice_line(Model):
+class account_invoice_line(orm.Model):
     ''' Adds a field for moving a line to a new invoice'''
     _inherit = "account.invoice.line"
 

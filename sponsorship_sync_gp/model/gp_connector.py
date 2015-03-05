@@ -270,13 +270,9 @@ class GPConnect(mysql_connector):
 
         return self.upsert("Affectat", vals)
 
-    def remove_affectat(self, invoice_id, invoice_date):
-        max_date = self.selectOne("SELECT MAX(Date) AS Date FROM Affectat "
-                                  "WHERE Numvers=%s",
-                                  invoice_id).get("Date", invoice_date)
+    def remove_affectat(self, invoice_line_id):
         return self.query(
-            "DELETE FROM Affectat WHERE Numvers=%s AND DATE>=%s",
-            [invoice_id, max_date])
+            "DELETE FROM Affectat WHERE id_erp=%s", invoice_line_id)
 
     def delete_contracts(self, ids):
         return self.query(

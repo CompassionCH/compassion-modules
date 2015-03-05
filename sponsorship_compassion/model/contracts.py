@@ -487,7 +487,11 @@ class recurring_contract(orm.Model):
                 to_remove_inv.add(invoice.id)
 
         # 2. Manually remove invoice_lines, move_lines, empty invoices/moves
+        #    and reconcile refs that are no longer valid
         if inv_line_ids:
+            # 2.1 Call the hook for letting other modules handle the removal.
+            self._on_invoice_line_removal(cr, uid, invl_rm_data, context)
+
             cr.execute(
                 "DELETE FROM account_invoice_line WHERE id in ({0})"
                 .format(','.join(str(id) for id in inv_line_ids)))
@@ -495,9 +499,14 @@ class recurring_contract(orm.Model):
                 cr.execute(
                     "DELETE FROM account_invoice WHERE id in ({0})"
                     .format(','.join(str(id) for id in to_remove_inv)))
+            # Remove move lines and invalid reconcile refs
+            mvl_ids_string = ','.join(str(id) for id in to_remove_mvl)
             cr.execute(
-                "DELETE FROM account_move_line WHERE id in ({0})"
-                .format(','.join(str(id) for id in to_remove_mvl)))
+                "DELETE FROM account_move_line WHERE id in ({0});"
+                "DELETE FROM account_move_reconcile rec WHERE ("
+                "   SELECT count(*) FROM account_move_line "
+                "   WHERE reconcile_id = rec.id) < 2;"
+                .format(mvl_ids_string))
             if to_remove_move:
                 cr.execute(
                     "DELETE FROM account_move WHERE id IN ({0})"
@@ -511,7 +520,7 @@ class recurring_contract(orm.Model):
             self.pool.get('account.invoice').button_compute(
                 cr, uid, list(to_update_inv), context=context, set_total=True)
 
-            # 2.1. Split a payment so that the amount deleted is isolated
+            # 2.2. Split a payment so that the amount deleted is isolated
             #      in one move line that can be easily reconciled later.
             mvl_obj = self.pool.get('account.move.line')
             for pml_id, amount_deleted in payment_mvl.iteritems():
@@ -530,9 +539,6 @@ class recurring_contract(orm.Model):
                 cr.execute(
                     "DELETE FROM account_move_line WHERE id in ({0})"
                     .format(','.join(str(id) for id in to_remove_pml)))
-
-            # 2.2 Call the hook for letting other modules handle the removal.
-            self._on_invoice_line_removal(cr, uid, invl_rm_data, context)
 
         # 3. Clean open invoices
         super(recurring_contract, self).clean_invoices(
@@ -610,8 +616,11 @@ class recurring_contract(orm.Model):
                                               invoice.id, context)
             del(context['no_next_date_update'])
 
-    def _on_invoice_line_removal(self, cr, uid, invoice_line, context=None):
-        # Hook for doing something before invoice_line deletion
+    def _on_invoice_line_removal(self, cr, uid, invoice_lines, context=None):
+        """ Hook for doing something before invoice_line deletion
+            @param: invoice_lines (dict): {
+                line_id: [invoice_id, child_code, product_name, amount]}
+        """
         pass
 
     def _clean_error(self):

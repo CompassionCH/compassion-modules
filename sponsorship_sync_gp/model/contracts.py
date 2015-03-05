@@ -193,7 +193,7 @@ class contracts(orm.Model):
                 if last_pay_date:
                     gp_connect.insert_affectat(uid, line, last_pay_date)
                 else:   # Invoice will go back in open state
-                    gp_connect.remove_affectat(invoice.id, line.due_date)
+                    gp_connect.remove_affectat(line.id)
                 contract = line.contract_id
                 if contract:
                     to_update = (line.product_id.name in
@@ -226,6 +226,17 @@ class contracts(orm.Model):
         gp_connect = gp_connector.GPConnect()
         gp_connect.delete_contracts(ids)
         return True
+
+    def _on_invoice_line_removal(self, cr, uid, invoice_lines, context=None):
+        """ Removes the corresponding Affectats in GP.
+            @param: invoice_lines (dict): {
+                line_id: [invoice_id, child_code, product_name, amount]}
+        """
+        super(contracts, self)._on_invoice_line_removal(cr, uid, invoice_lines,
+                                                        context)
+        gp_connect = gp_connector.GPConnect()
+        for line_id in invoice_lines.keys():
+            gp_connect.remove_affectat(line_id)
 
 
 class contract_group(orm.Model):

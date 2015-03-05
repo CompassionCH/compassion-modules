@@ -165,9 +165,9 @@ class gmc_message_pool(orm.Model):
         country_codes = [company.partner_id.country_id.code
                          for company in companies]
 
-        today = datetime.today()
+        today = datetime.now()
         for message in self.browse(cr, uid, ids, context=context):
-            mess_date = datetime.strptime(message.date, DF)
+            mess_date = datetime.strptime(message.date, DF + ' %H:%M:%S')
             if message.state == 'new' and mess_date <= today:
                 res = False
                 action = message.action_id
@@ -203,7 +203,7 @@ class gmc_message_pool(orm.Model):
                     message_update = {
                         'state': 'pending' if action.direction == 'out'
                         else 'success',
-                        'process_date': datetime.today().strftime(DF)}
+                        'process_date': today}
                     if isinstance(res, basestring):
                         message_update['request_id'] = res
                     message.write(message_update)
