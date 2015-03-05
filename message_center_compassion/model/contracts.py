@@ -150,17 +150,7 @@ class recurring_contract(orm.Model):
                           "The Gift was already sent to GMC ! "))
 
                 # 2. Delete pending CreateGift and CreateCommitment messages
-                mess_ids = message_obj.search(cr, uid, [
-                    ('invoice_line_id', '=', invoice_line.id),
-                    ('state', 'in', ['new', 'failure'])], context=context)
-                for message in message_obj.browse(cr, uid, mess_ids, context):
-                    if message.action_id.name == 'CreateCommitment':
-                        # We set back the sponsorship in waiting state
-                        wf_service = netsvc.LocalService('workflow')
-                        wf_service.trg_validate(
-                            uid, 'recurring.contract', contract.id,
-                            'contract_activation_cancelled', cr)
-                message_obj.unlink(cr, uid, mess_ids, context)
+                self._clean_messages(cr, uid, invoice_line.id, context)
 
     def suspend_contract(self, cr, uid, ids, context=None,
                          date_start=None, date_end=None):
@@ -168,3 +158,31 @@ class recurring_contract(orm.Model):
         self.write(cr, uid, ids, {'gmc_state': 'suspension'}, context)
         return super(recurring_contract, self).suspend_contract(
             cr, uid, ids, context, date_start, date_end)
+
+    def _on_invoice_line_removal(self, cr, uid, invoice_lines, context=None):
+        """ Removes the corresponding Affectats in GP.
+            @param: invoice_lines (dict): {
+                line_id: [invoice_id, child_code, product_name, amount]}
+        """
+        super(recurring_contract, self)._on_invoice_line_removal(
+            cr, uid, invoice_lines, context)
+        self._clean_messages(cr, uid, invoice_lines.keys(), context)
+
+    def _clean_messages(self, cr, uid, invoice_line_ids, context=None):
+        """ Removes the pending messages linked to an invoice line_id
+        that was unreconciled. """
+        if not isinstance(invoice_line_ids, list):
+            invoice_line_ids = [invoice_line_ids]
+        message_obj = self.pool.get('gmc.message.pool')
+        wf_service = netsvc.LocalService('workflow')
+
+        mess_ids = message_obj.search(cr, uid, [
+            ('invoice_line_id', 'in', invoice_line_ids),
+            ('state', 'in', ['new', 'failure'])], context=context)
+        for message in message_obj.browse(cr, uid, mess_ids, context):
+            if message.action_id.name == 'CreateCommitment':
+                # We set back the sponsorship in waiting state
+                wf_service.trg_validate(
+                    uid, 'recurring.contract', message.object_id,
+                    'contract_activation_cancelled', cr)
+        message_obj.unlink(cr, uid, mess_ids, context)
