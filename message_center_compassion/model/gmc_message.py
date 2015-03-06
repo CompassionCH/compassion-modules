@@ -98,10 +98,11 @@ class gmc_message_pool(orm.Model):
         'project_id': fields.function(
             _get_object_id, type='many2one', obj='compassion.project',
             string=_("Project"), store=True),
-        'request_id': fields.char('Unique request ID'),
+        'request_id': fields.char('Unique request ID', readonly=True),
         'date': fields.datetime(_('Message Date'), required=True),
-        'action_id': fields.many2one('gmc.action', _('GMC Message'),
-                                     ondelete="restrict", required=True),
+        'action_id': fields.many2one(
+            'gmc.action', _('GMC Message'), ondelete="restrict",
+            required=True, readonly=True),
         'process_date': fields.datetime(_('Process Date'), readonly=True),
         'state': fields.selection(
             [('new', _('New')),
@@ -112,12 +113,11 @@ class gmc_message_pool(orm.Model):
         ),
         'failure_reason': fields.text(_("Failure details")),
         'object_id': fields.integer(_('Referrenced Object Id')),
-        'incoming_key': fields.char(_('Incoming Reference'), size=9,
-                                    help=_("In case of incoming message, "
-                                           "contains the reference of the "
-                                           "child or the project that will "
-                                           "be created/modified.")),
-        'event': fields.char(_('Incoming Event'), size=24,
+        'incoming_key': fields.char(
+            _('Incoming Reference'), size=9, readonly=True,
+            help=_("In case of incoming message, contains the reference of "
+                   "the child or project that will be created/modified.")),
+        'event': fields.char(_('Incoming Event'), size=24, readonly=True,
                              help=_("Contains the event that triggered the "
                                     "incoming message.")),
         'partner_country_code': fields.char(_('Partner Country Code'), size=2),
@@ -127,13 +127,13 @@ class gmc_message_pool(orm.Model):
             store=True),
         'gift_type': fields.related(
             'invoice_line_id', 'product_id', 'name', type='char',
-            string=_('Gift type')),
+            string=_('Gift type'), readonly=True),
         'gift_instructions': fields.related(
             'invoice_line_id', 'gift_instructions', type='char',
             string=_('Gift instructions')),
         'gift_amount': fields.related(
             'invoice_line_id', 'price_subtotal', type='integer',
-            string=_('Gift amount')),
+            string=_('Gift amount'), readonly=True),
     }
 
     _defaults = {
@@ -167,7 +167,7 @@ class gmc_message_pool(orm.Model):
 
         today = datetime.now()
         for message in self.browse(cr, uid, ids, context=context):
-            mess_date = datetime.strptime(message.date, DF + ' %H:%M:%S')
+            mess_date = datetime.strptime(message.date[:10], DF)
             if message.state == 'new' and mess_date <= today:
                 res = False
                 action = message.action_id
@@ -367,6 +367,33 @@ class gmc_message_pool(orm.Model):
         else:
             logger.error('Request id not found:' + str(request_id))
         return True
+
+    def create(self, cr, uid, vals, context=None):
+        """ Directly put CreateGift messages which have a too long instruction
+        in Failed state. """
+        res_id = super(gmc_message_pool, self).create(cr, uid, vals, context)
+        message = self.browse(cr, uid, res_id, context)
+        if len(message.gift_instructions) > 60:
+            message.write({
+                'state': 'failure',
+                'failure_reason': _('Gift instructions is more than 60 '
+                                    'characters length')})
+        return res_id
+
+    def write(self, cr, uid, ids, vals, context=None):
+        """Propagate Gift instruction into invoice object."""
+        if 'gift_instructions' in vals:
+            if len(vals['gift_instructions']) > 60:
+                vals.update({
+                    'state': 'failure',
+                    'failure_reason': _('Gift instructions is more than 60 '
+                                        'characters length')})
+            for message in self.browse(cr, uid, ids, context):
+                message.invoice_line_id.write({
+                    'name': vals['gift_instructions']})
+
+        return super(gmc_message_pool, self).write(cr, uid, ids, vals,
+                                                   context)
 
 
 class gmc_action(orm.Model):

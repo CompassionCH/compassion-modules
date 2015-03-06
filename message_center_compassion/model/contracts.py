@@ -57,7 +57,6 @@ class recurring_contract(orm.Model):
                     'action_id': action_id,
                     'object_id': partner_id,
                     'partner_id': partner_id,
-                    'date': contract.activation_date,
                 }
                 # Look if one Upsert is already pending for the same partner
                 mess_ids = message_obj.search(cr, uid, [

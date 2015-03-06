@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 class recurring_contract(orm.Model):
     _inherit = "recurring.contract"
+    _order = 'start_date desc'
 
     ################################
     #        FIELDS METHODS        #
@@ -584,7 +585,8 @@ class recurring_contract(orm.Model):
         for invl in invoice.invoice_line:
             if invl.contract_id and invl.contract_id.child_id:
                 project = invl.contract_id.child_id.project_id
-                if project.suspension == 'fund-suspended':
+                if project.suspension == 'fund-suspended' and \
+                        invl.last_payment >= project.status_date:
                     raise orm.except_orm(
                         _("Reconcile error"),
                         _("The project %s is fund-suspended. You cannot "
