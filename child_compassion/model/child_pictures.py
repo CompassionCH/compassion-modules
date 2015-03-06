@@ -97,7 +97,7 @@ class child_pictures(orm.Model):
                 cr, uid, child.id,
                 _('The picture was the same'), 'Picture update',
                 context={'thread_model': 'compassion.child'})
-            return False
+            return same_picture_ids[0]
         return res_id
 
     def _unlink_related_attachment(self, cr, uid, res_id, context=None):
