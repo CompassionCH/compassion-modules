@@ -182,7 +182,8 @@ class gmc_message_pool(orm.Model):
                             message.write({
                                 'state': 'failure',
                                 'failure_reason': traceback.format_exc()})
-                            if message.child_id:
+                            if message.child_id and \
+                                    message.child_id.state != 'E':
                                 # Put child in error state
                                 message.child_id.write({
                                     'previous_state': message.child_id.state,
