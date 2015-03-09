@@ -10,3 +10,4 @@
 ##############################################################################
 
 from . import contracts
+from . import project_compassion

@@ -18,6 +18,7 @@ from datetime import datetime, date, timedelta
 import logging
 
 logger = logging.getLogger(__name__)
+import pdb
 
 
 class recurring_contract(orm.Model):
@@ -33,7 +34,14 @@ class recurring_contract(orm.Model):
             cr, uid,
             [('sds_state', '=', 'draft')],
             context)
-
+        project_active_contracts_ids = self.search(
+            cr, uid,
+            [('project_state', '=', 'active')],
+            context)
+        project_suspended_contracts_ids = self.search(
+            cr, uid,
+            [('project_state', '=', 'suspended')],
+            context)
         cr.execute(
             '''
             SELECT id FROM wkf
@@ -48,6 +56,12 @@ class recurring_contract(orm.Model):
         self._ins_wkf_items(
             cr, uid, 'act_active',
             wkf_id, active_contract_ids, context)
+        self._ins_wkf_items(
+            cr, uid, 'act_project_active',
+            wkf_id, project_active_contracts_ids, context)
+        self._ins_wkf_items(
+            cr, uid, 'act_project_suspended',
+            wkf_id, project_suspended_contracts_ids, context)
 
     def _ins_wkf_items(self, cr, uid, act_id, wkf_id, cont_ids, context=None):
             ir_model_data = self.pool.get('ir.model.data')
@@ -62,7 +76,8 @@ class recurring_contract(orm.Model):
                     SELECT id FROM wkf_instance
                     WHERE wkf_id = {} AND res_id = {}
                     '''.format(wkf_id, contract_id))
-                wkf_instance_ids.append(cr.fetchall()[0][0])
+                res = cr.fetchall()
+                if res: wkf_instance_ids.append(res[0][0])
 
             for wkf_instance_id in wkf_instance_ids:
                 cr.execute(
@@ -71,6 +86,15 @@ class recurring_contract(orm.Model):
                     VALUES ('{}', '{}', '{}')
                     '''.format(wkf_activity_id, wkf_instance_id, 'complete')
                 )
+    def _get_contract_ids(prop_obj, cr, uid, ids, context=None):
+        contract_ids_to_update = list()
+        for project in prop_obj.browse(cr, uid, ids, context):
+            contract_obj = prop_obj.pool.get('recurring.contract')
+            child_obj = prop_obj.pool.get('compassion.child')
+            child_ids = child_obj.search(cr, uid, [('code', 'like', project.code)], context=context)
+            contract_ids = contract_obj.search(cr, uid, [('child_id', 'in', child_ids)], context=context)
+            contract_ids_to_update.extend(contract_ids)
+        return contract_ids_to_update
 
     # Only at module installation
     def _set_sds_state(self, cr, uid, ids=None, context=None):
@@ -91,7 +115,6 @@ class recurring_contract(orm.Model):
                 WHERE id = '{}'
                 '''.format(active_contract_id)
                 )
-
         for draft_contract_id in draft_contract_ids:
             cr.execute(
                 '''
@@ -100,6 +123,39 @@ class recurring_contract(orm.Model):
                 WHERE id = '{}'
                 '''.format(draft_contract_id)
                 )
+    # Only at module installation            
+    def _set_project_state(self, cr, uid, ids=None, context=None):
+        suspended_project_ids = self.pool.get('compassion.project').search(cr, uid, [('status', '=', 'S')], context=context)
+        suspended_project_contract_ids = self.search(
+            cr, uid,
+            [('project_id', 'in', suspended_project_ids),
+            ('state', 'not in', ['terminated', 'cancelled'])],
+            context)
+
+        active_project_ids = self.pool.get('compassion.project').search(cr, uid, [('status', '=', 'A')], context=context)
+        active_project_contract_ids = self.search(
+            cr, uid,
+            [('project_id', 'in', active_project_ids),
+            ('state', 'not in', ['terminated', 'cancelled'])],
+            context)
+
+        for suspended_project_contract_id in suspended_project_contract_ids:
+            cr.execute(
+                '''
+                UPDATE recurring_contract
+                SET project_state = 'suspended'
+                WHERE id = '{}'
+                '''.format(suspended_project_contract_id)
+                )
+
+        for active_project_contract_id in active_project_contract_ids:
+            cr.execute(
+                '''
+                UPDATE recurring_contract
+                SET project_state = 'active'
+                WHERE id = '{}'
+                '''.format(active_project_contract_id)
+                )
 
     _columns = {
         'sds_state': fields.selection([
@@ -107,7 +163,6 @@ class recurring_contract(orm.Model):
             ('start', _('Start')),
             ('waiting_welcome', _('Waiting welcome')),
             ('active', _('Active')),
-            ('project_suspended', _('Project suspended')),
             ('field_memo', _('Field memo')),
             ('cancelled', _('Cancelled')),
             ('sub_waiting', _('Sub waiting')),
@@ -122,8 +177,22 @@ class recurring_contract(orm.Model):
             'parent_id', 'start_date',
             type='date', string=_('Date sub'),
             store=True, readonly=True),
+        'project_id': fields.related(
+            'child_id', 'project_id', type='many2one', string=_('Project'), readonly=True
+            ),
+        'project_state': fields.selection([
+            ('active', _('Active')),
+            ('inform_suspended', _('Inform suspended')),
+            ('suspended', _('Suspended')),
+            ('inform_reactivation', _('Inform reactivation')),
+            ('waiting_attribution', _('Waiting attribution')),
+            ('inform_suspended_reactivation', _('Inform suspended and reactivation')),
+            ('inform_project_terminated', _('Inform project terminated')),
+            ('phase_out', _('Phase out')),
+            ('terminated', _('Terminated'))], _('Project Status'), select=True,
+            readonly=True, track_visibility='onchange',
+            help=_('')),
     }
-
     def copy(self, cr, uid, id, default=None, context=None):
         if not default:
             default = dict()
@@ -182,6 +251,27 @@ class recurring_contract(orm.Model):
 
     def sub_reject(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'sds_state': 'sub_reject'}, context)
+        
+    def inform_project_suspended(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'project_state': 'inform_suspended'}, context)
+        
+    def inform_project_terminated(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'project_state': 'inform_project_terminated'}, context)
+        
+    def inform_project_reactivation(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'project_state': 'inform_reactivation'}, context)
+        
+    def suspended(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'project_state': 'suspended'}, context)
+    
+    def project_active(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'project_state': 'project_active'}, context)
+    
+    def project_terminated(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'project_state': 'terminated'}, context)  
+        
+    def project_phase_out(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'project_state': 'phase_out'}, context)  
 
     def welcome_sent(self, cr, uid, contract_id, context=None):
         wf_service = netsvc.LocalService('workflow')
@@ -196,6 +286,30 @@ class recurring_contract(orm.Model):
         wf_service.trg_validate(uid, 'recurring.contract', contract_id,
                                 'mail_sent', cr)
         return True
+
+    def reactivate_project(self, cr, uid, contract_id, context=None):
+        wf_service = netsvc.LocalService('workflow')
+        logger.info("Contract " + str(contract_id) + " project reactivated.")
+        wf_service.trg_validate(uid, 'recurring.contract', contract_id,
+                                'project_reactivation', cr)
+
+    def terminate_project(self, cr, uid, contract_id, context=None):
+        wf_service = netsvc.LocalService('workflow')
+        logger.info("Contract " + str(contract_id) + " project terminated.")
+        wf_service.trg_validate(uid, 'recurring.contract', contract_id,
+                                'project_terminated', cr)
+
+    def phase_out_project(self, cr, uid, contract_id, context=None):
+        wf_service = netsvc.LocalService('workflow')
+        logger.info("Contract " + str(contract_id) + " project phase out.")
+        wf_service.trg_validate(uid, 'recurring.contract', contract_id,
+                                'project_phase_out', cr)
+
+    def suspend_project(self, cr, uid, contract_id, context=None):
+        wf_service = netsvc.LocalService('workflow')
+        logger.info("Contract " + str(contract_id) + " project suspended.")
+        wf_service.trg_validate(uid, 'recurring.contract', contract_id,
+                                'project_suspended', cr)     
 
     def check_sub_waiting_duration(self, cr, uid, context=None):
         contract_ids = self.search(
@@ -279,3 +393,13 @@ class recurring_contract(orm.Model):
                         context=context)):
                         return same_partner_contract.id
         return False
+
+    def switch_contract_view(self, cr, uid, contract_id, context=None):
+        return {
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'recurring.contract',
+            'type': 'ir.actions.act_window',
+            'target': 'current',
+            "res_id": contract_id[0],
+        }

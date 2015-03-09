@@ -47,7 +47,8 @@
                                         <field name="western_denomination" />
                                         <field name="community_name" />
                                     </group>
-                                    <group string="Suspension Status" attrs="{'invisible': [('suspension', 'not in', ('suspended', 'fund-suspended'))]}">
+                                    <group string="Suspension Status" >
+                                    <!-- attrs="{'invisible': [('suspension', 'not in', ('suspended', 'fund-suspended'))]}"> -->
                                         <field name="disburse_funds"/>
                                         <field name="disburse_gifts"/>
                                         <field name="disburse_unsponsored_funds"/>

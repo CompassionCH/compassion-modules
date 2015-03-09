@@ -7,6 +7,7 @@
 <openerp>
 	<data noupdate='1'>
         <function model="recurring.contract" name="_set_sds_state"/>
+        <function model="recurring.contract" name="_set_project_state"/>
         <function model="recurring.contract" name="_insert_wkf_items_for_sds_state"/>
     </data>
 </openerp>

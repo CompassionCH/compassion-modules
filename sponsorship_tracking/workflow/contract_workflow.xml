@@ -155,7 +155,8 @@
             <field name="act_to" ref="act_sub_accept" />
             <field name="signal">sub_accept</field>
         </record>
-                <record model="workflow.transition" id="t8b">
+        
+        <record model="workflow.transition" id="t8b">
             <field name="act_from" ref="act_sub" />
             <field name="act_to" ref="act_sub_reject" />
             <field name="signal">sub_reject</field>
