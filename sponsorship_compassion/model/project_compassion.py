@@ -26,15 +26,17 @@ class project_compassion(orm.Model):
         during the period of suspension.
         We also remove the children on internet.
         """
+        res = super(project_compassion, self).suspend_funds(
+            cr, uid, project_id, context, date_start, date_end)
         project = self.browse(cr, uid, project_id, context)
         contract_obj = self.pool.get('recurring.contract')
         contract_ids = contract_obj.search(cr, uid, [
             ('child_code', 'like', project.code),
             ('state', 'in', ('active', 'waiting', 'mandate'))],
             context=context)
-        contract_obj.suspend_contract(cr, uid, contract_ids, context,
-                                      date_start, date_end)
-        return True
+        res = res and contract_obj.suspend_contract(
+            cr, uid, contract_ids, context, date_start, date_end)
+        return res
 
 
 class suspension_wizard(orm.TransientModel):

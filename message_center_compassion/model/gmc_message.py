@@ -374,7 +374,7 @@ class gmc_message_pool(orm.Model):
         in Failed state. """
         res_id = super(gmc_message_pool, self).create(cr, uid, vals, context)
         message = self.browse(cr, uid, res_id, context)
-        if len(message.gift_instructions) > 60:
+        if message.gift_instructions and len(message.gift_instructions) > 60:
             message.write({
                 'state': 'failure',
                 'failure_reason': _('Gift instructions is more than 60 '

@@ -8,7 +8,8 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp.osv import orm
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
 
 
 class compassion_project(orm.Model):
@@ -59,3 +60,19 @@ class compassion_project(orm.Model):
                     'gmc_state': 'reactivation'}, context)
 
         return res
+
+    # Redefine suspension field in order to call the inherited function
+    _columns = {
+        'suspension': fields.function(
+            _get_suspension_state, type='selection', selection=[
+                ('suspended', _('Suspended')),
+                ('fund-suspended', _('Suspended & fund retained'))],
+            string=_('Suspension'),
+            store={'compassion.project':
+                   (lambda self, cr, uid, ids, c=None:
+                    ids, ['disburse_funds', 'disburse_gifts',
+                          'disburse_unsponsored_funds',
+                          'new_sponsorships_allowed',
+                          'additional_quota_allowed'], 20)},
+            track_visibility='onchange'),
+    }

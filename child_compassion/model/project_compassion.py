@@ -57,8 +57,16 @@ class compassion_project(orm.Model):
     def suspend_funds(self, cr, uid, project_id, context=None,
                       date_start=None, date_end=None):
         """ Hook to perform some action when project is suspended.
+        By default: log a message.
         """
-        pass
+        self.pool.get('mail.thread').message_post(
+                cr, uid, project_id,
+                "The project was suspended and funds are retained<b>"
+                "{}</b>.<br/>".format(
+                    date_end.strftime(" until %B %Y") if date_end else ""),
+                "Project Suspended", 'comment',
+                context={'thread_model': self._name})
+        return True
 
     def _has_desc(self, cr, uid, ids, field_names, args, context=None):
         res = dict()
