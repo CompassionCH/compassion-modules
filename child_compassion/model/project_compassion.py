@@ -52,6 +52,8 @@ class compassion_project(orm.Model):
                 if res[project.id] == 'fund-suspended' and \
                         project.suspension != 'fund-suspended':
                     self.suspend_funds(cr, uid, project.id, context)
+            else:
+                self.reactivate_project(cr, uid, project.id, context)
         return res
 
     def suspend_funds(self, cr, uid, project_id, context=None,
@@ -60,6 +62,10 @@ class compassion_project(orm.Model):
         """
         pass
 
+    def reactivate_project(self, cr, uid, project_id, context=None):
+        """ To perform some actions when project is reactivated """
+        pass
+        
     def _has_desc(self, cr, uid, ids, field_names, args, context=None):
         res = dict()
         field_res = dict()
@@ -71,6 +77,13 @@ class compassion_project(orm.Model):
             res[child.id] = field_res.copy()
 
         return res
+
+    def _get_state(self, cr, uid, context=None):
+        return [
+           ('A', _('Active')),
+           ('P', _('Phase-out')),
+           ('T', _('Terminated'))
+        ]
 
     _columns = {
         ######################################################################
@@ -97,10 +110,7 @@ class compassion_project(orm.Model):
                           'new_sponsorships_allowed',
                           'additional_quota_allowed'], 20)},
             track_visibility='onchange'),
-        'status': fields.selection([
-            ('A', _('Active')),
-            ('P', _('Phase-out')),
-            ('T', _('Terminated'))], _('Status'),
+        'status': fields.selection(_get_state, _('Status'),
             track_visibility='onchange'),
         'status_date': fields.date(_('Last status change'),
                                    track_visibility='onchange'),
