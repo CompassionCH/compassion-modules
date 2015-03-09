@@ -1,5 +1,0 @@
-"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-"access_recurring_contract","Full access on recurring.contract","model_recurring_contract","base.group_sale_manager",1,1,1,1
-"access_recurring_contract_line","Full access on recurring.contract.line","model_recurring_contract_line","base.group_sale_manager",1,1,1,1
-"access_recurring_contract_group","Full access on recurring.contract.group","model_recurring_contract_group","base.group_sale_manager",1,1,1,1
-"access_recurring_invoicer","Full access on recurring.invoicer","model_recurring_invoicer","base.group_sale_manager",1,1,1,1
