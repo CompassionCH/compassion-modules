@@ -48,7 +48,7 @@ class Project_description_de:
                         for desc in project.terrain_description_ids]
         project_community_name = project.community_name.split('-')[0]
         string = (u"Das Kind lebt in %s%s "
-                  u"mit ungefähr %s Einwohnern. " % (
+                  u"von ungefähr %s Einwohnern. " % (
                       project_community_name,
                       "" if not terrain_desc else
                       " einer " + terrain_desc[0],
@@ -70,10 +70,10 @@ class Project_description_de:
         roof_mat = [mat.value_de if mat.value_de else mat.value_en
                     for mat in project.roof_material_ids]
 
-        string = u"Die Häuser sind typischerweise mit "
+        string = u"Die Häuser sind typischerweise aus "
 
         if wall_mat and floor_mat and roof_mat:
-            string += (u"%s gebaut und haben %s, sowie %s. " % (
+            string += (u"%s gebaut und haben %s, und %s. " % (
                        wall_mat[0], floor_mat[0], roof_mat[0]))
 
         elif ((wall_mat and floor_mat) or (wall_mat and
@@ -111,7 +111,7 @@ class Project_description_de:
         spoken_languages = [lang.value_de if lang.value_de else lang.value_en
                             for lang in project.spoken_languages_ids]
 
-        string = (u"Die ethnischen Merheiten %s %s" % (
+        string = (u"Die ethnischen Mehrheiten %s %s" % (
                   u"sind" if len(spoken_languages) > 1 else u"ist",
                   cls._gen_list_string(spoken_languages, ', ', ' und ')))
 
@@ -121,7 +121,7 @@ class Project_description_de:
         else:
             string += ". "
 
-        string += (u"Die regionale Ernährung beinhaltet %s. " % (
+        string += (u"Die regionale Ernährung besteht aus %s. " % (
                    cls._gen_list_string(primary_diet, ', ', ' und ')))
 
         return string
@@ -135,7 +135,7 @@ class Project_description_de:
                        for prob in project.health_problems_ids]
 
         if health_prob:
-            string = (u"Verbereitete Gesundheitsporbleme %s %s. " % (
+            string = (u"Verbreitete Gesundheitsprobleme %s %s. " % (
                       u"sind" if len(health_prob) > 1 else u"ist",
                       cls._gen_list_string(health_prob, ', ', ' und ')))
         else:
