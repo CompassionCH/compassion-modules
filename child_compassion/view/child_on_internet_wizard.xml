@@ -9,7 +9,6 @@
                 <form string="Put child on internet" version="7.0">
                     <field name="child_ids"/>
                     <p>Validate this to put the selected child on the website.</p>
-                    <p>!IMPORTANT! After you've validated this you need to update the index on the website.</p>
                     <footer>
                         <button name="put_child_on_internet" string="Validate" type="object" class="oe_highlight"/>
                         or

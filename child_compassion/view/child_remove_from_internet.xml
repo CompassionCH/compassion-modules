@@ -9,7 +9,6 @@
                 <form string="Remove child from internet" version="7.0">
                     <field name="child_ids"/>
                     <p>Validate this to remove the selected child from the website.</p>
-                    <p>!IMPORTANT! After you've validated this you need to update the index on the website.</p>
                     <footer>
                         <button name="remove_child_from_internet" string="Validate" type="object" class="oe_highlight"/>
                         or
