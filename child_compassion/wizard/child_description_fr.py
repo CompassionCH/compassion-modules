@@ -159,7 +159,7 @@ class Child_description_fr:
             else:
                 string += u" va à l'école"
             if case_study.school_performance:
-                string += u' et %s a des résultats %s. ' % (
+                string += u' et %s a des résultats %s' % (
                     u'il' if child.gender == 'M' else u'elle',
                     case_study.school_performance[0].value_fr or
                     case_study.school_performance[0].value_en)

@@ -131,9 +131,10 @@ class Project_description_it:
 
         if primary_occup:
             if project.unemployment_rate > 0.5:
-                string = (u"La maggior parte degli adulti é disoccupata ma alcuni "
-                          u"svolgono %s, con un guadagno mensile di $%s. " % (
-                              primary_occup[0], monthly_income))
+                string = (
+                    u"La maggior parte degli adulti é disoccupata ma alcuni "
+                    "svolgono %s, con un guadagno mensile di $%s. " % (
+                        primary_occup[0], monthly_income))
             else:
                 string = (
                     u"La maggior parte degli adulti lavora come"

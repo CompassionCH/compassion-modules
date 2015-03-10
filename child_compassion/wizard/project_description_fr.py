@@ -92,7 +92,7 @@ class Project_description_fr:
                             for lang in project.spoken_languages_ids]
 
         if spoken_languages:
-            string = (u"La langue la plus parlée à cet endroit est "
+            string = (u"La langue commune de la region est "
                       u"le %s. " % (spoken_languages[0]))
         else:
             string = ""

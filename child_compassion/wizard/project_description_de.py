@@ -158,12 +158,16 @@ class Project_description_de:
                     u"Die meisten Erwachsenen in %s sind arbeitslos"
                     ", doch einige arbeiten als %s "
                     "und verdienen etwa %s Dollar pro Monat. " % (
-                        project.closest_city, primary_occup[0], monthly_income))
+                        project.closest_city,
+                        primary_occup[0],
+                        monthly_income))
             else:
-                 string = (
+                string = (
                     u"Die meisten Erwachsenen in %s sind %s "
                     "und verdienen etwa %s Dollar pro Monat. " % (
-                        project.closest_city, primary_occup[0], monthly_income))
+                        project.closest_city,
+                        primary_occup[0],
+                        monthly_income))
         else:
             string = (u"Das durchschnittseinkommen eines arbeiters ist "
                       u"ungefähr %s Dollar pro Monat. " % monthly_income)
