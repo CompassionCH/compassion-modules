@@ -88,9 +88,9 @@ class compassion_project(orm.Model):
 
     def _get_state(self, cr, uid, context=None):
         return [
-           ('A', _('Active')),
-           ('P', _('Phase-out')),
-           ('T', _('Terminated'))
+            ('A', _('Active')),
+            ('P', _('Phase-out')),
+            ('T', _('Terminated'))
         ]
 
     _columns = {

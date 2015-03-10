@@ -10,59 +10,59 @@
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">project_active</field>
             <field name="kind">function</field>
-            <field name="action">project_active()</field>
+            <field name="action">write({'project_state': 'active'})</field>
             <field name="flow_start" eval='True' />
         </record>
         <record model="workflow.activity" id="act_inform_suspended">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">inform_project_suspended</field>
             <field name="kind">function</field>
-            <field name="action">inform_project_suspended()</field>
+            <field name="action">write({'project_state': 'inform_suspended'})</field>
         </record>
         <record model="workflow.activity" id="act_project_suspended">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">project_suspended</field>
             <field name="kind">function</field>
-            <field name="action">suspended()</field>
+            <field name="action">write({'project_state': 'suspended'})</field>
         </record>
         <record model="workflow.activity" id="act_inform_terminated">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">inform_project_terminated</field>
             <field name="kind">function</field>
-            <field name="action">inform_project_terminated()</field>
+            <field name="action">write({'project_state': 'inform_project_terminated'})</field>
         </record>
         <record model="workflow.activity" id="act_inform_reactivation">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">inform_project_reactivation</field>
             <field name="kind">function</field>
-            <field name="action">inform_project_reactivation()</field>
+            <field name="action">write({'project_state': 'inform_reactivation'})</field>
         </record>
         <record model="workflow.activity" id="act_inform_suspended_reactivation">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">inform_project_suspended_reactivation</field>
             <field name="kind">function</field>
-            <field name="action">inform_project_suspended_reactivation()</field>
+            <field name="action">write({'project_state': 'inform_suspended_reactivation'})</field>
         </record>
 
         <record model="workflow.activity" id="act_waiting_attribution">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">waiting_attribution</field>
             <field name="kind">function</field>
-            <field name="action">waiting_attribution()</field>
+            <field name="action">write({'project_state': 'waiting_attribution'})</field>
         </record>
         
         <record model="workflow.activity" id="act_project_phase_out">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">projet_phase_out</field>
             <field name="kind">function</field>
-            <field name="action">project_phase_out()</field>
+            <field name="action">write({'project_state': 'phase_out'})</field>
         </record>
                 
         <record model="workflow.activity" id="act_project_terminated">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">project_terminated</field>
             <field name="kind">function</field>
-            <field name="action">project_terminated()</field>
+            <field name="action">write({'project_state': 'terminated'})</field>
             <field name="flow_stop" eval='True' />
         </record>
         
