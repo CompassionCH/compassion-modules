@@ -120,6 +120,7 @@
                     <field name="child_id"/>
                     <field name="partner_id"/>
                     <field name="sds_state"/>
+                    <field name="project_state"/>
 
                     <filter name="biennial" string="Biennial" domain="[('gmc_state', 'in', ('picture', 'casestudy'))]" context="{'group_by': 'gmc_state'}"/>
                     <filter name="depart" string="Departure" domain="[('gmc_state', '=', 'depart')]"/>
