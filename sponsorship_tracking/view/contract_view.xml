@@ -111,6 +111,7 @@
                         <filter string="Sub date" domain="[]" context="{'group_by':'date_sub'}"/>
                         <filter string="Status" domain="[]"  context="{'group_by':'state'}"/>
                         <filter string="SDS Status" domain="[]"  context="{'group_by':'sds_state'}"/>
+                        <filter string="Project Status" domain="[]"  context="{'group_by':'sds_state'}"/>
                     </group>
                 </search>
             </field>
