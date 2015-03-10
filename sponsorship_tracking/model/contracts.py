@@ -45,7 +45,6 @@ class recurring_contract(orm.Model):
             type='many2one', string=_('Project'),
             readonly=True
         ),
-        'attribution_instructions': fields.char(_('Attribution instructions')),
         'project_state': fields.selection([
             ('active', _('Active')),
             ('inform_suspended', _('Inform suspended')),
