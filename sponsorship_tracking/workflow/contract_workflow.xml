@@ -19,7 +19,7 @@
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">draft</field>
             <field name="kind">function</field>
-            <field name="action">draft()</field>
+            <field name="action">write({'sds_state': 'draft'})</field>
             <field name="flow_start" eval='True' />
         </record>
         
@@ -27,63 +27,63 @@
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">start</field>
             <field name="kind">function</field>
-            <field name="action">start()</field>
+            <field name="action">write({'sds_state': 'start'})</field>
         </record>
         
         <record model="workflow.activity" id="act_waiting_welcome">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">waiting_welcome</field>
             <field name="kind">function</field>
-            <field name="action">waiting_welcome()</field>
+            <field name="action"> write({'sds_state': 'waiting_welcome'})</field>
         </record>
         
         <record model="workflow.activity" id="act_active">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">active</field>
             <field name="kind">function</field>
-            <field name="action">activate()</field>
+            <field name="action">write({'sds_state': 'active'})</field>
         </record>
 
         <record model="workflow.activity" id="act_cancelled">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">cancelled</field>
             <field name="kind">function</field>
-            <field name="action">cancel()</field>
+            <field name="action">write({'sds_state': 'cancelled'})</field>
         </record>
         
         <record model="workflow.activity" id="act_sub_waiting">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">sub_waiting</field>
             <field name="kind">function</field>
-            <field name="action">waiting_for_sub()</field>
+            <field name="action">write({'sds_state': 'sub_waiting'})</field>
         </record>
         
         <record model="workflow.activity" id="act_no_sub">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">no_sub</field>
             <field name="kind">function</field>
-            <field name="action">no_sub()</field>
+            <field name="action">write({'sds_state': 'no_sub'})</field>
         </record>
         
         <record model="workflow.activity" id="act_sub">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">sub</field>
             <field name="kind">function</field>
-            <field name="action">sub()</field>
+            <field name="action">write({'sds_state': 'sub'})</field>
         </record>
         
         <record model="workflow.activity" id="act_sub_accept">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">sub_accept</field>
             <field name="kind">function</field>
-            <field name="action">sub_accept()</field>
+            <field name="action">write({'sds_state': 'sub_accept'})</field>
         </record>
         
         <record model="workflow.activity" id="act_sub_reject">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">sub_reject</field>
             <field name="kind">function</field>
-            <field name="action">sub_reject()</field>
+            <field name="action">write({'sds_state': 'sub_reject'})</field>
         </record>
 
         <!-- Transitions -->
