@@ -61,6 +61,7 @@ class compassion_project(orm.Model):
         pass
 
     def _has_desc(self, cr, uid, ids, field_names, args, context=None):
+
         res = dict()
         field_res = dict()
         for child in self.browse(cr, uid, ids, context):
