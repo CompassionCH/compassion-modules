@@ -11,20 +11,6 @@
 			<field name="model">compassion.project</field>
             <field name="inherit_id" ref="child_compassion.view_compassion_project_form"/>
 			<field name="arch" type="xml">
-                <header position="inside">
-                    <button 
-                            name="project_phase_out" 
-                            class="oe_highlight" 
-                            string="Phase-out" 
-                            type="object"
-                            attrs="{'invisible':[('status','!=','A'),('status','!=','S')]}"/>
-                    <button 
-                            name="project_terminated" 
-                            class="oe_highlight" 
-                            string="Terminated" 
-                            type="object"
-                            />
-                </header>
                 <field name="status" widget="statusbar" position="attributes">
                     <attribute name="statusbar_visible">A,S,P,T</attribute>
                 </field>
