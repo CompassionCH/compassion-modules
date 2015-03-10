@@ -59,3 +59,5 @@ class undelegate_child_wizard(orm.TransientModel):
                     {'state': newstate, 'delegated_to': None,
                         'delegated_comment': None, 'date_delegation': None},
                     context=context)
+
+        return True

@@ -7,18 +7,25 @@
             <field name="type">form</field>
 			<field name="arch" type="xml">
                 <form string="Put child on internet" version="7.0">
-                    <field name="child_ids"/>
-                    <p>Validate this to put the selected child on the website.</p>
+                    <field name="state" invisible="1"/>
+                    <sheet states="default">
+                        <field name="child_ids"/>
+                        <p>Validate this to put the selected child on the website.</p>
+                    </sheet>
+                    <sheet states="error">
+                        <p>There was an error when updating Typo3 Index. Please do it by opening the following URL:</p>
+                        <a href="http://compassionch.customers.t3gardens.com/?type=778" target="_blank">Update index</a>
+                    </sheet>
                     <footer>
-                        <button name="put_child_on_internet" string="Validate" type="object" class="oe_highlight"/>
+                        <button name="put_child_on_internet" string="Validate" type="object" class="oe_highlight" states="default"/>
+                        <button name="close" string="Close" special="cancel" states="error"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>
                 </form>
             </field>
         </record>
-        
-        
+
         <act_window id="action_child_on_internet_wizard"
                     multi="True"
                     name="On internet"

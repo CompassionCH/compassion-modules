@@ -11,6 +11,7 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
+from ..model.sync_typo3 import Sync_typo3
 
 
 class child_remove_from_internet(orm.TransientModel):
@@ -45,6 +46,6 @@ class child_remove_from_internet(orm.TransientModel):
     }
 
     def remove_child_from_internet(self, cr, uid, ids, context=None):
-        self.pool.get('compassion.child').child_remove_from_typo3(
+        res = self.pool.get('compassion.child').child_remove_from_typo3(
             cr, uid, self._default_child_ids(cr, uid, context), context=None)
-        return True
+        return res or Sync_typo3.typo3_index_error(cr, uid, self, context)

@@ -50,6 +50,8 @@ class res_partner(orm.Model):
 
     def _upsert_constituent(self, cr, uid, ids, context=None):
         """If partner has active contracts, UPSERT Constituent in GMC."""
+        if not isinstance(ids, list):
+            ids = [ids]
         for partner in self.browse(cr, uid, ids, context):
             contract_ids = self.pool.get('recurring.contract').search(
                 cr, uid, [('partner_id', '=', partner.id),

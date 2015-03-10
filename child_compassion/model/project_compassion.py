@@ -60,12 +60,12 @@ class compassion_project(orm.Model):
         By default: log a message.
         """
         self.pool.get('mail.thread').message_post(
-                cr, uid, project_id,
-                "The project was suspended and funds are retained<b>"
-                "{}</b>.<br/>".format(
-                    date_end.strftime(" until %B %Y") if date_end else ""),
-                "Project Suspended", 'comment',
-                context={'thread_model': self._name})
+            cr, uid, project_id,
+            "The project was suspended and funds are retained<b>"
+            "{}</b>.<br/>".format(
+                date_end.strftime(" until %B %Y") if date_end else ""),
+            "Project Suspended", 'comment',
+            context={'thread_model': self._name})
         return True
 
     def _has_desc(self, cr, uid, ids, field_names, args, context=None):
@@ -232,6 +232,10 @@ class compassion_project(orm.Model):
             'compassion.project.age.group', 'project_id',
             _('Age group'),
             readonly=True, track_visibility="onchange"),
+    }
+
+    _defaults = {
+        'name': '/'
     }
 
     def update_informations(self, cr, uid, ids, context=None):

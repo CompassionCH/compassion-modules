@@ -34,6 +34,9 @@ class child_on_internet_wizard(orm.TransientModel):
         return self._get_active_ids(cr, uid, [0], None, None, context)[0]
 
     _columns = {
+        'state': fields.selection((
+            ('default', 'Default'),
+            ('error', 'Error')), 'state'),
         'child_ids': fields.function(
             _get_active_ids, type='one2many',
             obj='compassion.child',
@@ -41,7 +44,8 @@ class child_on_internet_wizard(orm.TransientModel):
     }
 
     _defaults = {
-        'child_ids': (_default_child_ids)
+        'child_ids': (_default_child_ids),
+        'state': 'default'
     }
 
     def put_child_on_internet(self, cr, uid, ids, context=None):
@@ -70,5 +74,21 @@ class child_on_internet_wizard(orm.TransientModel):
                     raise orm.except_orm(
                         _('Warning'), _('Child has no picture'))
 
-        self.pool.get('compassion.child').child_add_to_typo3(
+        res = self.pool.get('compassion.child').child_add_to_typo3(
             cr, uid, child_ids, context=None)
+
+        if not res:
+            # Display the warning that typo3 index is not synchronized
+            self.write(cr, uid, ids, {'state': 'error'}, context)
+            return {
+                'name': _('Put child on internet'),
+                'type': 'ir.actions.act_window',
+                'res_model': self._name,
+                'view_mode': 'form',
+                'view_type': 'form',
+                'res_id': ids[0],
+                'context': context,
+                'target': 'new',
+            }
+        else:
+            return True
