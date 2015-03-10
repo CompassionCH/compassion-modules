@@ -65,7 +65,7 @@ class compassion_project(orm.Model):
     def reactivate_project(self, cr, uid, project_id, context=None):
         """ To perform some actions when project is reactivated """
         pass
-        
+
     def _has_desc(self, cr, uid, ids, field_names, args, context=None):
         res = dict()
         field_res = dict()
@@ -110,7 +110,8 @@ class compassion_project(orm.Model):
                           'new_sponsorships_allowed',
                           'additional_quota_allowed'], 20)},
             track_visibility='onchange'),
-        'status': fields.selection(_get_state, _('Status'),
+        'status': fields.selection(
+            _get_state, _('Status'),
             track_visibility='onchange'),
         'status_date': fields.date(_('Last status change'),
                                    track_visibility='onchange'),
