@@ -154,14 +154,16 @@ class Project_description_de:
         monthly_income = int(round(project.monthly_income))
         if primary_occup:
             if len(primary_occup) == 1:
-                string = (u"Die meisten Erwachsenen in Lome sind %s "
-                            "und verdienen etwa %s Dollar pro Monat. " % (
-                              primary_occup[0], monthly_income))
+                string = (
+                    u"Die meisten Erwachsenen in Lome sind %s "
+                    "und verdienen etwa %s Dollar pro Monat. " % (
+                        primary_occup[0], monthly_income))
             else:
-                string = (u"Die meisten Erwachsenen in Lome sind %s "
-                            ", doch einige arbeiten als %s "
-                            "und verdienen etwa %s Dollar pro Monat. " % (
-                              primary_occup[0], primary_occup[1], monthly_income))
+                string = (
+                    u"Die meisten Erwachsenen in Lome sind %s "
+                    ", doch einige arbeiten als %s "
+                    "und verdienen etwa %s Dollar pro Monat. " % (
+                        primary_occup[0], primary_occup[1], monthly_income))
         else:
             string = (u"Das durchschnittseinkommen eines arbeiters ist "
                       u"ungefähr %s Dollar pro Monat. " % monthly_income)
