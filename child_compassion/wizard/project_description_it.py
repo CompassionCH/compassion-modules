@@ -130,9 +130,15 @@ class Project_description_it:
         monthly_income = int(round(project.monthly_income))
 
         if primary_occup:
-            string = (u"La maggior parte degli adulti é disoccupata ma alcuni "
-                      u"svolgono %s, con un guadagno mensile di $%s. " % (
-                          primary_occup[0], monthly_income))
+            if project.unemployment_rate > 0.5:
+                string = (u"La maggior parte degli adulti é disoccupata ma alcuni "
+                          u"svolgono %s, con un guadagno mensile di $%s. " % (
+                              primary_occup[0], monthly_income))
+            else:
+                string = (
+                    u"La maggior parte degli adulti lavora come"
+                    "%s, con un guadagno mensile di $%s. " % (
+                        primary_occup[0], monthly_income))
         else:
             string = (u"Lo stipendio medio di un operaio è di circa "
                       u"$%s al mese. " % monthly_income)
