@@ -34,10 +34,6 @@ class project_description_wizard(orm.TransientModel):
                    WHERE rel.project_id = %s
                    AND rel.value_id = val.id
                    AND val.is_tag = false
-                   AND (
-                        val.value_fr is Null
-                        OR val.value_de is Null
-                        OR val.value_it is Null)
                    ORDER BY val.value_en, val.property_name''' % project_id
         cr.execute(query)
         value_ids = [x[0] for x in cr.fetchall()]
