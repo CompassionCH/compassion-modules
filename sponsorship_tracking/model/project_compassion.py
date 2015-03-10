@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -7,8 +8,6 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-
-
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
