@@ -149,8 +149,7 @@ class project_description_wizard(orm.TransientModel):
             'desc_fr': desc_fr,
             'desc_de': desc_de,
             'desc_it': desc_it,
-            'desc_en': project.description_en.replace(
-                wizard.needs_desc_en, ''),
+            'desc_en': wizard.desc_en,
             }, context)
 
         return {
