@@ -16,6 +16,14 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 class Child_description_fr:
 
     @classmethod
+    def _get_translated_value(cls, value):
+        id = value.value_en
+        translated_value = value.value_fr or value.value_en
+        color = 'red' if not value.value_fr else 'blue'
+        return u'<span id="{}" style="color:{}">{}</span>'.format(
+            id, color, translated_value)
+
+    @classmethod
     def gen_fr_translation(
             cls, cr, uid, child, case_study, context=None):
         desc_fr = cls._get_guardians_info_fr(
@@ -67,7 +75,7 @@ class Child_description_fr:
         if not case_study.christian_activities_ids:
             return ''
         activities = [
-            activity.value_fr if activity.value_fr else activity.value_en
+            cls._get_translated_value(activity)
             for activity in case_study.christian_activities_ids]
         activities_str = cls._gen_list_string(activities)
         string = u"A l'Église, %s participe %s. " % (
@@ -86,8 +94,7 @@ class Child_description_fr:
         if not case_study.family_duties_ids:
             return ''
 
-        activities = [activity.value_fr if activity.value_fr
-                      else activity.value_en
+        activities = [cls._get_translated_value(activity)
                       for activity in case_study.family_duties_ids]
 
         string = u"A la maison, %s aide %s. " % (
@@ -106,8 +113,7 @@ class Child_description_fr:
         if not case_study.hobbies_ids:
             return ''
 
-        activities = [activity.value_fr if activity.value_fr
-                      else activity.value_en
+        activities = [cls._get_translated_value(activity)
                       for activity in case_study.hobbies_ids]
 
         string = u"%s aime %s. " % (
@@ -161,13 +167,13 @@ class Child_description_fr:
             if case_study.school_performance:
                 string += u' et %s a des résultats %s' % (
                     u'il' if child.gender == 'M' else u'elle',
-                    case_study.school_performance[0].value_fr or
-                    case_study.school_performance[0].value_en)
+                    cls._get_translated_value(
+                        case_study.school_performance[0]))
             if case_study.school_best_subject:
-                string += u'%s aime bien %s. ' \
-                          % (u'Il' if child.gender == 'M' else u'Elle',
-                             case_study.school_best_subject[0].value_fr or
-                             case_study.school_best_subject[0].value_en)
+                string += u'%s aime bien %s. ' % (
+                    u'Il' if child.gender == 'M' else u'Elle',
+                    cls._get_translated_value(
+                        case_study.school_best_subject[0]))
             else:
                 string += '.'
         else:
@@ -200,7 +206,7 @@ class Child_description_fr:
         # Separate male_guardian female_guardians and add guardians to
         # live_with
         for guardian in case_study.guardians_ids:
-            value = guardian.value_fr or guardian.value_en
+            value = cls._get_translated_value(guardian)
 
             if guardian.value_en != 'institutional worker':
                 # Male guardian
@@ -495,8 +501,13 @@ class Child_description_fr:
                     else:
                         string += u' et'
 
-                    string += u' {}'.format(
-                        props_fr[type][props_en[type].index(prop)] or prop)
+                    color = 'red' if not props_fr[type][
+                        props_en[type].index(prop)] else 'blue'
+                    translated_prop = props_fr[type][
+                        props_en[type].index(prop)] or prop
+
+                    string += (u' <span id="{}" style="color:{}">{}'
+                               '</span>').format(prop, color, translated_prop)
 
         # Endpoint
         if string:

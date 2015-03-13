@@ -14,6 +14,13 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 
 class Child_description_de:
+    @classmethod
+    def _get_translated_value(cls, value):
+        id = value.value_en
+        translated_value = value.value_de or value.value_en
+        color = 'red' if not value.value_de else 'blue'
+        return u'<span id="{}" style="color:{}">{}</span>'.format(
+            id, color, translated_value)
 
     @classmethod
     def gen_de_translation(
@@ -66,7 +73,7 @@ class Child_description_de:
         if not case_study.christian_activities_ids:
             return ''
         activities = [
-            activity.value_de if activity.value_de else activity.value_en
+            cls._get_translated_value(activity)
             for activity in case_study.christian_activities_ids]
         activities_str = cls._gen_list_string(activities)
         string = (u"In der Kirche macht %s %s %s" % (
@@ -84,8 +91,7 @@ class Child_description_de:
         '''
         if not case_study.family_duties_ids:
             return ''
-        activities = ([activity.value_de if activity.value_de
-                       else activity.value_en
+        activities = ([cls._get_translated_value(activity)
                        for activity in case_study.family_duties_ids])
         activities_str = cls._gen_list_string(activities)
         string = (u"Zu Hause hilft %s %s. " % (
@@ -105,8 +111,8 @@ class Child_description_de:
         gender_pronoun = 'Er' if child.gender == 'M' else 'Sie'
 
         activities = [
-            activity.value_de if activity.value_de
-            else activity.value_en for activity in case_study.hobbies_ids]
+            cls._get_translated_value(activity)
+            for activity in case_study.hobbies_ids]
 
         string = u"{} mag {}".format(
             gender_pronoun, cls._gen_list_string(activities))
@@ -123,7 +129,7 @@ class Child_description_de:
              - School favourite subject if relevant and existing
         '''
         ordinals = {
-            '1': u'dreiten Klasse',
+            '1': u'dritten Klasse',
             '2': u'vierten Klasse',
             '3': u'fünften Klasse',
             '4': u'sechsten Klasse',
@@ -158,17 +164,16 @@ class Child_description_de:
                 string += u' geht zur Schule'
             if case_study.school_performance:
                 string += (u' und hat %s Ergebnisse. ' % (
-                    case_study.school_performance[0].value_de
-                    if case_study.school_performance[0].value_de
-                    else case_study.school_performance[0].value_en))
-            if case_study.school_best_subject:
-                string += u'%s mag %s. ' \
-                          % (u'Er' if child.gender == 'M' else u'Sie',
-                             case_study.school_best_subject[0].value_de
-                             if case_study.school_best_subject[0].value_de
-                             else case_study.school_best_subject[0].value_en)
+                    cls._get_translated_value(
+                        case_study.school_performance[0])))
             else:
                 string += '.'
+            if case_study.school_best_subject:
+                string += u'%s mag %s. ' % (
+                    u'Er' if child.gender == 'M' else u'Sie',
+                    cls._get_translated_value(
+                        case_study.school_best_subject[0]))
+
         else:
             child_age = (
                 date.today() - datetime.strptime(
@@ -192,9 +197,9 @@ class Child_description_de:
                        'stepfather', 'godfather']
         plur_values = ['friends', 'other relatives', 'foster parents']
         if child.gender == 'M':
-            prefix = [u'sein', u'seine', u'seine']
+            prefix = [u'seinem', u'seiner', u'seinen']
         else:
-            prefix = [u'ihr', u'ihrer', u'ihren']
+            prefix = [u'ihrem', u'ihrer', u'ihren']
 
         live_with = OrderedDict()
         male_guardians = dict()
@@ -202,7 +207,7 @@ class Child_description_de:
         live_in_institut = False
 
         for guardian in case_study.guardians_ids:
-            value = guardian.value_de or guardian.value_en
+            value = cls._get_translated_value(guardian)
 
             if guardian.value_en != 'institutional worker':
                 if guardian.value_en in male_values:
@@ -487,8 +492,12 @@ class Child_description_de:
                     else:
                         string += u' und'
 
-                    string += u' {}'.format(
-                        props_de[type][props_en[type].index(prop)] or prop)
+                    prop_de = props_de[type][props_en[type].index(prop)]
+                    color = 'red' if not prop_de else 'blue'
+                    translated_prop = prop_de or prop
+
+                    string += (u' <span id="{}" style="color:{}">{}'
+                               '</span>').format(prop, color, translated_prop)
 
         if string:
             string += u'. '

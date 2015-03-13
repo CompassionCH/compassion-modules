@@ -9,7 +9,7 @@
 				<form string="Description generation" version="7.0">
                     <group col='2'>
                         <group string="Complete missing translations if needed">
-                            <field name="child_property_value_ids" nolabel="1" />
+                            <field name="child_property_value_ids" nolabel="1" on_change="on_change_translation(child_property_value_ids)"/>
                         </group>
                         <group string="Check and select descriptions to validate" col='2'>
                             <field name="case_study_id"/>

@@ -16,6 +16,14 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 class Child_description_it:
 
     @classmethod
+    def _get_translated_value(cls, value):
+        id = value.value_en
+        translated_value = value.value_it or value.value_en
+        color = 'red' if not value.value_it else 'blue'
+        return u'<span id="{}" style="color:{}">{}</span>'.format(
+            id, color, translated_value)
+
+    @classmethod
     def gen_it_translation(
             cls, cr, uid, child, case_study, context=None):
         desc_it = cls._get_guardians_info_it(
@@ -70,30 +78,12 @@ class Child_description_it:
         '''
         if not case_study.christian_activities_ids:
             return ''
-        hobbies_v = [
-            'sunday school/church', 'bible class', 'camp',
-            'vacation bible school',
-        ]
-        hobbies_ei = [
-            'youth group', 'choir',
-        ]
-        activities_v = [
-            activity.value_it if activity.value_it else activity.value_en
-            for activity in case_study.christian_activities_ids
-            if activity.value_en in hobbies_v]
-        activities_ei = [
-            activity.value_it if activity.value_it else activity.value_en
-            for activity in case_study.christian_activities_ids
-            if activity.value_en in hobbies_ei]
-        string = ''
-        gender_pronoun = u'egli' if child.gender == 'M' else u'lei'
-        if activities_v:
-            string_v = u'%s va ' % gender_pronoun
-            string = string_v + cls._gen_list_string(activities_v) + '. '
-        if activities_ei:
-            string_ei = u'%s è in ' % gender_pronoun
-            string = string_ei + cls._gen_list_string(activities_ei) + '. '
-        return u'Come parte della Chiesa, ' + string
+        activities = [
+            cls._get_translated_value(activity)
+            for activity in case_study.christian_activities_ids]
+        activities_str = cls._gen_list_string(activities)
+        string = u"In chiesa, frequenta %s. " % (activities_str)
+        return string
 
     @classmethod
     def _gen_family_act_info_it(
@@ -105,11 +95,10 @@ class Child_description_it:
         '''
         if not case_study.family_duties_ids:
             return ''
-        activities = ([activity.value_it if activity.value_it
-                       else activity.value_en
+        activities = ([cls._get_translated_value(activity)
                        for activity in case_study.family_duties_ids])
         activities_str = cls._gen_list_string(activities)
-        string = ((u"A casa, aiuta con lavori domestici come %s. ") % (
+        string = ((u"A casa, aiuta %s. ") % (
             activities_str))
         return string
 
@@ -119,14 +108,13 @@ class Child_description_it:
         '''
         if not case_study.hobbies_ids:
             return ''
-        activities = [activity.value_it if activity.value_it
-                      else activity.value_en
+        activities = [cls._get_translated_value(activity)
                       for activity in case_study.hobbies_ids]
         string = ''
         if activities:
-            pronoun = u'Li' if child.gender == 'M' else u'Le'
+            pronoun = u'A lui' if child.gender == 'M' else u'A lei'
             if len(activities) > 1:
-                string = (u'%s piacciono: ' +
+                string = (u'%s piace: ' +
                           cls._gen_list_string(activities) + '. ') % pronoun
             else:
                 string = u'%s piace: %s.' % (pronoun, activities[0])
@@ -142,23 +130,23 @@ class Child_description_it:
              - School favourite subject if relevant and existing
         '''
         ordinals = {
-            '1': u'in terzo',
-            '2': u'in quarto',
-            '3': u'in quinto',
-            '4': u'in sesto',
-            '5': u'in settimo',
-            '6': u'in ottavo',
-            '7': u'in nono',
-            '8': u'in decimo',
-            '9': u'in undicesimo',
-            '10': u'in primo anno di scuola superiore',
-            '11': u'in secondo anno di scuola superiore',
-            '12': u'in terzo anno di scuola superiore',
-            '13': u'al liceo',
-            '14': u'al liceo',
+            '1': u'terzo anno di scuola',
+            '2': u'quarto anno di scuola',
+            '3': u'quinto anno di scuola',
+            '4': u'sesto anno di scuola',
+            '5': u'settimo anno di scuola',
+            '6': u'ottavo anno di scuola',
+            '7': u'nono anno di scuola',
+            '8': u'decimo anno di scuola',
+            '9': u'undicesimo anno di scuola',
+            '10': u'primo anno di scuola superiore',
+            '11': u'secondo anno di scuola superiore',
+            '12': u'terzo anno di scuola superiore',
+            '13': u'liceo',
+            '14': u'liceo',
             'PK': u'nella scuola materna',
-            'K': u'in secondo',
-            'P': u'in primo',
+            'K': u'secondo anno di scuola',
+            'P': u'primo anno di scuola',
         }
         # the value of us_school_level can also be blank
         string = child.firstname
@@ -167,7 +155,7 @@ class Child_description_it:
                     ordinals):
                 try:
                     int(case_study.us_school_level)
-                    string += (u" è %s" % (
+                    string += (u" frequenta il %s" % (
                         ordinals[case_study.us_school_level]))
                 except:
                     string += (u" frequenta la scuola %s (US)"
@@ -175,18 +163,16 @@ class Child_description_it:
             else:
                 string += u' frequenta la scuola'
             if case_study.school_performance:
-                string += (u' e %s ha voti %s. ' % (
+                string += (u' ed %s ha voti %s. ' % (
                     u'Lui' if child.gender == 'M' else u'Lei',
-                           case_study.school_performance[0].value_it
-                           if case_study.school_performance[0].value_it
-                           else case_study.school_performance[0].value_en))
+                    cls._get_translated_value(
+                        case_study.school_performance[0])))
 
             if case_study.school_best_subject:
-                string += u'%s piace %s. ' \
-                          % (u'Li' if child.gender == 'M' else u'Le',
-                             case_study.school_best_subject[0].value_it
-                             if case_study.school_best_subject[0].value_it
-                             else case_study.school_best_subject[0].value_en)
+                string += u'%s piace %s. ' % (
+                    u'Li' if child.gender == 'M' else u'Le',
+                    cls._get_translated_value(
+                        case_study.school_best_subject[0]))
             else:
                 string += '.'
         else:
@@ -221,7 +207,7 @@ class Child_description_it:
         # Separate male_guardian female_guardians and add guardians to
         # live_with
         for guardian in case_study.guardians_ids:
-            value = guardian.value_it or guardian.value_en
+            value = cls._get_translated_value(guardian)
 
             if guardian.value_en != 'institutional worker':
                 # Male guardian
@@ -388,25 +374,25 @@ class Child_description_it:
             props_en_mf = list(set(props_en_m) & set(props_en_f))
             props_en = [props_en_m, props_en_f, props_en_mf]
 
-            props_de_m = [emp.value_de for emp in case_study.male_guardian_ids]
-            props_de_f = [
-                emp.value_de for emp in case_study.female_guardian_ids]
-            props_de_mf = list(set(props_de_m) & set(props_de_f))
-            props_de_mf = props_de_mf + \
-                [False] * (len(props_en_mf) - len(props_de_mf))
-            props_de = [props_de_m, props_de_f, props_de_mf]
+            props_it_m = [emp.value_it for emp in case_study.male_guardian_ids]
+            props_it_f = [
+                emp.value_it for emp in case_study.female_guardian_ids]
+            props_it_mf = list(set(props_it_m) & set(props_it_f))
+            props_it_mf = props_it_mf + \
+                [False] * (len(props_en_mf) - len(props_it_mf))
+            props_it = [props_it_m, props_it_f, props_it_mf]
 
             # Male job
             string += cls._get_guardian_job_string(
-                cr, uid, child, props_en, props_de, m_g, f_g, 0, context)
+                cr, uid, child, props_en, props_it, m_g, f_g, 0, context)
 
             # Female job
             string += cls._get_guardian_job_string(
-                cr, uid, child, props_en, props_de, m_g, f_g, 1, context)
+                cr, uid, child, props_en, props_it, m_g, f_g, 1, context)
 
             # Same job
             string = cls._get_guardian_job_string(
-                cr, uid, child, props_en, props_de,
+                cr, uid, child, props_en, props_it,
                 m_g, f_g, 2, context) or string
         return string
 
@@ -429,7 +415,7 @@ class Child_description_it:
 
     @classmethod
     def _get_guardian_job_string(
-            cls, cr, uid, child, props_en, props_de,
+            cls, cr, uid, child, props_en, props_it,
             m_g, f_g, type, context=None):
         # Comments for this function in child_description_fr
         string = u''
@@ -441,12 +427,13 @@ class Child_description_it:
             cr, uid, child, m_g, f_g, context) if f_g and m_g else None
 
         prefix = [prefix_m, prefix_f, prefix_mf]
+        prefix = [prefix_m, prefix_f, prefix_mf]
 
         work_as = [
             u'lavora come', u'lavora come', u'lavoro come']
         is_employed = [u'lavora', u'lavora', u'lavoro']
         is_unemployed = [
-            u"é disoccupato", u"é disoccupato", u"sono disoccupati"]
+            u"è disoccupato", u"è disoccupata", u"sono disoccupati"]
 
         job_tags_work_as = {
             'isafarmer': [u'agricoltore', u'agricoltore', u'agricoltori'],
@@ -507,8 +494,12 @@ class Child_description_it:
                     else:
                         string += u' und'
 
-                    string += u' {}'.format(
-                        props_de[type][props_en[type].index(prop)] or prop)
+                    prop_it = props_it[type][props_en[type].index(prop)]
+                    color = 'red' if not prop_it else 'blue'
+                    translated_prop = prop_it or prop
+
+                    string += (u' <span id="{}" style="color:{}">{}'
+                               '</span>').format(prop, color, translated_prop)
 
         if string:
             string += u'. '

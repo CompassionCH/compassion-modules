@@ -46,12 +46,14 @@ class Project_description_fr:
         terrain_desc = [desc.value_fr if desc.value_fr else desc.value_en
                         for desc in project.terrain_description_ids]
         project_community_name = project.community_name.split('-')[0]
-        string = (u"Cet enfant vit à %s"
-                  u"%s. %s compte environ %s habitants. " % (
+        project_community_population = u"{:,}".format(
+            project.community_population).replace(',', "'")
+        string = (u"Cet enfant vit à {}"
+                  u"{}. {} compte environ {} habitants. ".format(
                       project_community_name,
                       "" if not terrain_desc else u" dans une région " +
                       terrain_desc[0],
-                      project_community_name, project.community_population))
+                      project_community_name, project_community_population))
 
         return string
 
@@ -119,8 +121,8 @@ class Project_description_fr:
                               if len(health_prob) > 1 else u"est" +
                               health_prob[0])
 
-            string = (u"%s de santé de la région %s. " % (sing_plur_subj,
-                      sing_plur_verb))
+            string = (u"%s de santé de la région %s. " % (
+                sing_plur_subj, sing_plur_verb))
         else:
             string = ""
 

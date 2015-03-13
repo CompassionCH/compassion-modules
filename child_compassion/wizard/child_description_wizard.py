@@ -15,6 +15,7 @@ from child_description_fr import Child_description_fr
 from child_description_de import Child_description_de
 from child_description_en import Child_description_en
 from child_description_it import Child_description_it
+import re
 
 
 class child_description_wizard(orm.TransientModel):
@@ -84,13 +85,13 @@ class child_description_wizard(orm.TransientModel):
     _columns = {
         'child_id': fields.many2one('compassion.child', 'Child'),
         'keep_desc_fr': fields.boolean(_('Update french description')),
-        'desc_fr': fields.text(_('French description')),
+        'desc_fr': fields.html(_('French description')),
         'keep_desc_de': fields.boolean(_('Update german description')),
-        'desc_de': fields.text(_('German description')),
+        'desc_de': fields.html(_('German description')),
         'keep_desc_it': fields.boolean(_('Update italian description')),
-        'desc_it': fields.text(_('Italian description')),
+        'desc_it': fields.html(_('Italian description')),
         'keep_desc_en': fields.boolean(_('Update english description')),
-        'desc_en': fields.text(_('English description')),
+        'desc_en': fields.html(_('English description')),
         'child_property_value_ids': fields.function(
             _get_value_ids, type='one2many',
             relation='compassion.translated.value',
@@ -129,6 +130,7 @@ class child_description_wizard(orm.TransientModel):
         if not child:
             raise orm.except_orm('ObjectError', _('No valid child id given !'))
         case_study = child.case_study_ids[0]
+
         self.write(cr, uid, ids, {
             'desc_fr': Child_description_fr.gen_fr_translation(
                 cr, uid, child, case_study, context),
@@ -138,8 +140,7 @@ class child_description_wizard(orm.TransientModel):
                 cr, uid, child, case_study, context),
             'desc_it': Child_description_it.gen_it_translation(
                 cr, uid, child, case_study, context),
-            }, context)
-
+        }, context)
         return {
             'name': _('Descriptions generation'),
             'type': 'ir.actions.act_window',
@@ -149,19 +150,20 @@ class child_description_wizard(orm.TransientModel):
             'res_id': ids[0],
             'context': context,
             'target': 'new',
-            }
+        }
 
     def validate_descriptions(self, cr, uid, ids, context=None):
         wizard = self.browse(cr, uid, ids, context)[0]
         vals = {}
+        p = re.compile(r'<.*?>')  # Remove HTML markers
         if wizard.keep_desc_fr:
-            vals['desc_fr'] = wizard.desc_fr.strip('\n')
+            vals['desc_fr'] = p.sub('', wizard.desc_fr.strip('\n'))
         if wizard.keep_desc_de:
-            vals['desc_de'] = wizard.desc_de.strip('\n')
+            vals['desc_de'] = p.sub('', wizard.desc_de.strip('\n'))
         if wizard.keep_desc_it:
-            vals['desc_it'] = wizard.desc_it.strip('\n')
+            vals['desc_it'] = p.sub('', wizard.desc_it.strip('\n'))
         if wizard.keep_desc_en:
-            vals['desc_en'] = wizard.desc_en.strip('\n')
+            vals['desc_en'] = p.sub('', wizard.desc_en.strip('\n'))
 
         if not vals:
             raise orm.except_orm('ValueError',
@@ -173,4 +175,69 @@ class child_description_wizard(orm.TransientModel):
         return {
             'type': 'ir.actions.client',
             'tag': 'reload',
+        }
+
+    def on_change_translation(
+            self, cr, uid, ids, child_property_value_ids, context=None):
+
+        translated_value_obj = self.pool.get('compassion.translated.value')
+        wizard_ids = self.search(cr, uid, [], context=context)
+
+        if not wizard_ids:
+            return {}
+
+        wizard = self.browse(cr, uid, wizard_ids, context)[-1]
+
+        new_desc_fr = wizard.desc_fr
+        new_desc_de = wizard.desc_de
+        new_desc_it = wizard.desc_it
+
+        for child_property_value in child_property_value_ids:
+
+            translated_value = translated_value_obj.browse(
+                cr, uid, child_property_value[1], context)
+            if child_property_value[2]:
+                old_value = (r'(<span id="{}" style="color:).*?(".*?>).*?'
+                             '(</span>)').format(translated_value.value_en)
+
+                if 'value_fr' in child_property_value[2]:
+                    if child_property_value[2]['value_fr']:
+                        new_color = 'blue'
+                    else:
+                        new_color = 'red'
+                    new_value = r'\1{}\2{}\3'.format(
+                        new_color,
+                        child_property_value[2]['value_fr'] or
+                        translated_value.value_en)
+                    new_desc_fr = re.sub(old_value, new_value, new_desc_fr)
+
+                if 'value_de' in child_property_value[2]:
+                    if child_property_value[2]['value_de']:
+                        new_color = 'blue'
+                    else:
+                        new_color = 'red'
+                    new_value = r'\1{}\2{}\3'.format(
+                        new_color,
+                        child_property_value[2]['value_de'] or
+                        translated_value.value_en)
+                    new_desc_de = re.sub(old_value, new_value, new_desc_de)
+
+                if 'value_it' in child_property_value[2]:
+                    if child_property_value[2]['value_it']:
+                        new_color = 'blue'
+                    else:
+                        new_color = 'red'
+                    new_value = r'\1{}\2{}\3'.format(
+                        new_color,
+                        child_property_value[2]['value_it'] or
+                        translated_value.value_en)
+                    new_desc_it = re.sub(old_value, new_value, new_desc_it)
+
+        return {
+            'value':
+            {
+                'desc_fr': new_desc_fr,
+                'desc_de': new_desc_de,
+                'desc_it': new_desc_it,
+            }
         }
