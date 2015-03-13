@@ -13,6 +13,14 @@
 class Project_description_it:
 
     @classmethod
+    def _get_translated_value(cls, value):
+        id = value.value_en
+        translated_value = value.value_it or value.value_en
+        color = 'red' if not value.value_it else 'blue'
+        return u'<span id="{}" style="color:{}">{}</span>'.format(
+            id, color, translated_value)
+
+    @classmethod
     def gen_it_translation(
             cls, cr, uid, project, context=None):
         desc_it = cls._gen_intro_it(
@@ -45,9 +53,11 @@ class Project_description_it:
             about the community
         """
         project_community_name = project.community_name.split('-')[0]
+        project_community_population = u"{:,}".format(
+            project.community_population).replace(',', "'")
         string = (u"Questo bambino vive in una comunitá del %s dove "
                   u"risiendono circa %s abitanti." % (
-                      project_community_name, project.community_population))
+                      project_community_name, project_community_population))
 
         return string
 
@@ -65,11 +75,14 @@ class Project_description_it:
 
         materials = []
         if floor_mat:
-            materials.append(u"il pavimento in %s" % floor_mat[0])
+            materials.append(u"il pavimento in %s" % 
+                cls._gen_list_string(floor_mat, ', ', ' e '))
         if wall_mat:
-            materials.append(u"le mura in %s" % wall_mat[0])
+            materials.append(u"le mura in %s" % 
+                cls._gen_list_string(wall_mat, ', ', ' e '))
         if roof_mat:
-            materials.append(u"il tetto in %s" % roof_mat[0])
+            materials.append(u"il tetto in %s" % 
+                cls._gen_list_string(roof_mat, ', ', ' e '))
         if materials:
             string = (u"Le case hanno " +
                       cls._gen_list_string(materials, ', ', ' e ') + ". ")
@@ -83,9 +96,9 @@ class Project_description_it:
         """ Generate spoken languages(s) and primary diet, there are
             no specificities in this part
         """
-        primary_diet = [diet.value_it if diet.value_it else diet.value_en
+        primary_diet = [cls._get_translated_value(diet)
                         for diet in project.primary_diet_ids]
-        spoken_languages = [lang.value_it if lang.value_it else lang.value_en
+        spoken_languages = [cls._get_translated_value(lang)
                             for lang in project.spoken_languages_ids]
 
         if spoken_languages:
@@ -103,7 +116,7 @@ class Project_description_it:
         """ Generate health problemes of this region, there
             are no specificities in this part
         """
-        health_prob = [prob.value_it if prob.value_it else prob.value_en
+        health_prob = [cls._get_translated_value(prob)
                        for prob in project.health_problems_ids]
 
         if health_prob:
@@ -125,7 +138,7 @@ class Project_description_it:
         """ Generate primary occupation and monthly income, check if need to
             round the income
         """
-        primary_occup = [occup.value_it if occup.value_it else occup.value_en
+        primary_occup = [cls._get_translated_value(occup)
                          for occup in project.primary_occupation_ids]
         monthly_income = int(round(project.monthly_income))
 
@@ -137,7 +150,7 @@ class Project_description_it:
                         primary_occup[0], monthly_income))
             else:
                 string = (
-                    u"La maggior parte degli adulti lavora come"
+                    u"La maggior parte degli adulti lavora come "
                     "%s, con un guadagno mensile di $%s. " % (
                         primary_occup[0], monthly_income))
         else:
