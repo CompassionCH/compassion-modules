@@ -75,14 +75,14 @@ class Project_description_it:
 
         materials = []
         if floor_mat:
-            materials.append(u"il pavimento in %s" % 
-                cls._gen_list_string(floor_mat, ', ', ' e '))
+            materials.append(u"il pavimento in %s" %
+                             cls._gen_list_string(floor_mat, ', ', ' e '))
         if wall_mat:
-            materials.append(u"le mura in %s" % 
-                cls._gen_list_string(wall_mat, ', ', ' e '))
+            materials.append(u"le mura in %s" %
+                             cls._gen_list_string(wall_mat, ', ', ' e '))
         if roof_mat:
-            materials.append(u"il tetto in %s" % 
-                cls._gen_list_string(roof_mat, ', ', ' e '))
+            materials.append(u"il tetto in %s" %
+                             cls._gen_list_string(roof_mat, ', ', ' e '))
         if materials:
             string = (u"Le case hanno " +
                       cls._gen_list_string(materials, ', ', ' e ') + ". ")
@@ -126,8 +126,8 @@ class Project_description_it:
                               cls._gen_list_string(health_prob, ', ', ' e ')
                               if len(health_prob) > 1 else u"è " +
                               health_prob[0])
-            string = (u"%s piú comuni in questa zona %s. " % (sing_plur_subj,
-                      sing_plur_verb))
+            string = (u"%s piú comuni in questa zona %s. " % (
+                sing_plur_subj, sing_plur_verb))
         else:
             string = ""
 

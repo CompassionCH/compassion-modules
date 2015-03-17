@@ -16,7 +16,6 @@ from child_description_de import Child_description_de
 from child_description_en import Child_description_en
 from child_description_it import Child_description_it
 import re
-import pdb
 
 
 class child_description_wizard(orm.TransientModel):
@@ -142,16 +141,15 @@ class child_description_wizard(orm.TransientModel):
             'desc_it': Child_description_it.gen_it_translation(
                 cr, uid, child, case_study, context),
         }, context)
+
         return {
             'name': _('Descriptions generation'),
             'type': 'ir.actions.act_window',
             'res_model': self._name,
-            'view_mode': 'form',
+            'view_mode': 'auto_description_form',
             'view_type': 'form',
-            'res_id': ids[0],
             'context': context,
             'target': 'new',
-            'tag': 'wizard.action',
         }
 
     def validate_descriptions(self, cr, uid, ids, context=None):
@@ -178,90 +176,3 @@ class child_description_wizard(orm.TransientModel):
             'type': 'ir.actions.client',
             'tag': 'reload',
         }
-
-    def on_change_translation(
-            self, cr, uid, ids, child_property_value_ids, context=None):
-        translated_value_obj = self.pool.get('compassion.translated.value')
-        wizard_ids = self.search(cr, uid, [], context=context)
-
-        if not wizard_ids:
-            return {}
-
-        wizard = self.browse(cr, uid, wizard_ids, context)[-1]
-
-        new_desc_fr = wizard.desc_fr
-        new_desc_de = wizard.desc_de
-        new_desc_it = wizard.desc_it
-
-        for child_property_value in child_property_value_ids:
-
-            translated_value = translated_value_obj.browse(
-                cr, uid, child_property_value[1], context)
-            if child_property_value[2]:
-                old_value = (r'(<span id="{}" style="color:).*?(".*?>).*?'
-                             '(</span>)').format(translated_value.value_en)
-
-                if 'value_fr' in child_property_value[2]:
-                    if child_property_value[2]['value_fr']:
-                        new_color = 'blue'
-                    else:
-                        new_color = 'red'
-                    new_value = r'\1{}\2{}\3'.format(
-                        new_color,
-                        child_property_value[2]['value_fr'] or
-                        translated_value.value_en)
-                    new_desc_fr = re.sub(old_value, new_value, new_desc_fr)
-
-                if 'value_de' in child_property_value[2]:
-                    if child_property_value[2]['value_de']:
-                        new_color = 'blue'
-                    else:
-                        new_color = 'red'
-                    new_value = r'\1{}\2{}\3'.format(
-                        new_color,
-                        child_property_value[2]['value_de'] or
-                        translated_value.value_en)
-                    new_desc_de = re.sub(old_value, new_value, new_desc_de)
-
-                if 'value_it' in child_property_value[2]:
-                    if child_property_value[2]['value_it']:
-                        new_color = 'blue'
-                    else:
-                        new_color = 'red'
-                    new_value = r'\1{}\2{}\3'.format(
-                        new_color,
-                        child_property_value[2]['value_it'] or
-                        translated_value.value_en)
-                    new_desc_it = re.sub(old_value, new_value, new_desc_it)
-
-        return {
-            'value':
-            {
-                'desc_fr': new_desc_fr,
-                'desc_de': new_desc_de,
-                'desc_it': new_desc_it,
-            }
-        }
-
-    def on_change_desc_fr(self, cr, uid, ids, desc_fr, context=None):
-        return self._on_change_desc(cr, uid, ids, desc_fr, 'desc_fr', context)
-
-    def on_change_desc_de(self, cr, uid, ids, desc_de, context=None):
-        return self._on_change_desc(cr, uid, ids, desc_de, 'desc_de', context)
-
-    def on_change_desc_it(self, cr, uid, ids, desc_it, context=None):
-        return self._on_change_desc(cr, uid, ids, desc_it, 'desc_it', context)
-
-    def on_change_desc_en(self, cr, uid, ids, desc_en, context=None):
-        return self._on_change_desc(cr, uid, ids, desc_en, 'desc_en', context)
-
-    def _on_change_desc(self, cr, uid, ids, desc, lang, context=None):
-        translated_value_obj = self.pool.get('compassion.translated.value')
-        wizard_ids = self.search(cr, uid, [], context=context)
-
-        if not wizard_ids:
-            return {}
-        
-        wizard = self.write(cr, uid, wizard_ids, {lang: desc}, context)
-        
-        return {}

@@ -296,7 +296,7 @@ class compassion_project(orm.Model):
             'name': _('Description generation'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
-            'view_mode': 'form',
+            'view_mode': 'auto_description_form',
             'res_model': 'project.description.wizard',
             'context': context,
             'target': 'new',

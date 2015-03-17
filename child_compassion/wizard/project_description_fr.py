@@ -79,14 +79,14 @@ class Project_description_fr:
 
         materials = []
         if floor_mat:
-            materials.append(u"de sols en %s" % 
-                cls._gen_list_string(floor_mat, ', ', ' et '))
+            materials.append(u"de sols en %s" %
+                             cls._gen_list_string(floor_mat, ', ', ' et '))
         if wall_mat:
-            materials.append(u"de murs en %s" % 
-                cls._gen_list_string(wall_mat, ', ', ' et '))
+            materials.append(u"de murs en %s" %
+                             cls._gen_list_string(wall_mat, ', ', ' et '))
         if roof_mat:
-            materials.append(u"de toits en %s" % 
-                cls._gen_list_string(roof_mat, ', ', ' et '))
+            materials.append(u"de toits en %s" %
+                             cls._gen_list_string(roof_mat, ', ', ' et '))
         if materials:
             string = (u"Les maisons typiques sont construites " +
                       cls._gen_list_string(materials, ', ', ' et ') + ". ")

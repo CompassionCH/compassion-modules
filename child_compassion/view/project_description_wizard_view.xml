@@ -9,21 +9,21 @@
                 <form string="Description generation" version="7.0">
                     <group col='2'>
                         <group string="Complete missing translations if needed">
-                            <field name="project_property_value_ids" nolabel="1" on_change="on_change_translation(project_property_value_ids)"/>
+                            <field name="project_property_value_ids" nolabel="1"/>
                         </group>
                         <group string="Check and select descriptions to validate">
                             <group col='1' colspan='2'><field name="desc_en" readonly="True"/></group>
                             
                             <field name="keep_desc_fr"/>
-                            <field name="desc_fr" attrs="{'invisible':[('keep_desc_fr','=',False)]}" nolabel="1" colspan="2"/>
+                            <field name="desc_fr" class="oe_desc_fr" attrs="{'invisible':[('keep_desc_fr','=',False)]}" nolabel="1" colspan="2"/>
                             <field name="needs_desc_fr" attrs="{'invisible':[('keep_desc_fr','=',False)]}" nolabel="1" colspan="2"/>
 
-                            <field name="keep_desc_de"/>
-                            <field name="desc_de" attrs="{'invisible':[('keep_desc_de','=',False)]}" nolabel="1" colspan="2"/>
+                            <field name="keep_desc_de" />
+                            <field name="desc_de"  class="oe_desc_de" attrs="{'invisible':[('keep_desc_de','=',False)]}" nolabel="1" colspan="2"/>
                             <field name="needs_desc_de" attrs="{'invisible':[('keep_desc_de','=',False)]}" nolabel="1" colspan="2"/>
 
                             <field name="keep_desc_it"/>
-                            <field name="desc_it" attrs="{'invisible':[('keep_desc_it','=',False)]}" nolabel="1" colspan="2"/>
+                            <field name="desc_it"  class="oe_desc_it" attrs="{'invisible':[('keep_desc_it','=',False)]}" nolabel="1" colspan="2"/>
                             <field name="needs_desc_it" attrs="{'invisible':[('keep_desc_it','=',False)]}" nolabel="1" colspan="2"/>
                         </group>
                     </group>

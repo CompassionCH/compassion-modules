@@ -63,7 +63,7 @@ Warning: Requires 'pysftp' (sudo pip install pysftp)
         'workflow/child_workflow.xml',
     ],
     'css': ['static/src/css/child_compassion.css'],
-    # 'js': ['static/src/js/child_description_wizard.js'],
+    'js': ['static/src/js/child_description_wizard.js'],
     'demo': [],
     'installable': True,
     'auto_install': False,

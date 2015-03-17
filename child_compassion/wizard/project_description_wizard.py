@@ -16,6 +16,7 @@ from project_description_de import Project_description_de
 from project_description_it import Project_description_it
 import re
 
+
 class project_description_wizard(orm.TransientModel):
     _name = 'project.description.wizard'
 
@@ -146,7 +147,7 @@ class project_description_wizard(orm.TransientModel):
             'desc_de': desc_de,
             'desc_it': desc_it,
             'desc_en': wizard.desc_en,
-            }, context)
+        }, context)
 
         return {
             'name': _('Descriptions generation'),
@@ -157,7 +158,7 @@ class project_description_wizard(orm.TransientModel):
             'res_id': ids[0],
             'context': context,
             'target': 'new',
-            }
+        }
 
     def validate_descriptions(self, cr, uid, ids, context=None):
         """ Save the selected descriptions in the project. """
