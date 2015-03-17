@@ -202,8 +202,8 @@ class Child_description_de:
             prefix = [u'ihrem', u'ihrer', u'ihren']
 
         live_with = OrderedDict()
-        male_guardians = dict()
-        female_guardians = dict()
+        male_guardians = OrderedDict()
+        female_guardians = OrderedDict()
         live_in_institut = False
 
         for guardian in case_study.guardians_ids:
@@ -266,7 +266,7 @@ class Child_description_de:
         if (u'grandmother' in dict and u'grandfather' in dict):
             dict.pop(u'grandmother')
             dict.pop(u'grandfather')
-            dict[u'parents'] = u'{} Großeltern'.format(prefix[2])
+            dict[u'grandparents'] = u'{} Großeltern'.format(prefix[2])
         return dict
 
     @classmethod

@@ -165,7 +165,7 @@ class Child_description_fr:
             else:
                 string += u" va à l'école"
             if case_study.school_performance:
-                string += u' et %s a des résultats %s' % (
+                string += u' et %s a des résultats %s. ' % (
                     u'il' if child.gender == 'M' else u'elle',
                     cls._get_translated_value(
                         case_study.school_performance[0]))
@@ -199,8 +199,8 @@ class Child_description_fr:
         plur_values = ['friends', 'other relatives', 'foster parents']
         prefix = [u'son', u'sa', u'ses']
         live_with = OrderedDict()
-        male_guardians = dict()
-        female_guardians = dict()
+        male_guardians = OrderedDict()
+        female_guardians = OrderedDict()
         live_in_institut = False
 
         # Separate male_guardian female_guardians and add guardians to
@@ -259,6 +259,7 @@ class Child_description_fr:
         string += cls._get_parents_info(
             cr, uid, child, case_study, context)
         # Generate guardians job
+
         string += cls._get_guardians_jobs_fr(
             cr, uid, child, case_study,
             male_guardians.items()[0] if male_guardians else False,
@@ -277,7 +278,7 @@ class Child_description_fr:
                 u'grandfather' in dict):
             dict.pop(u'grandmother')
             dict.pop(u'grandfather')
-            dict[u'parents'] = u'ses grand-parents'
+            dict[u'grandparents'] = u'ses grand-parents'
         return dict
 
     @classmethod

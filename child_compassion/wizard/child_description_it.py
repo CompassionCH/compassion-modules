@@ -200,8 +200,8 @@ class Child_description_it:
         prefix = [u'suo', u'sua', u'i suoi']
 
         live_with = OrderedDict()
-        male_guardians = dict()
-        female_guardians = dict()
+        male_guardians = OrderedDict()
+        female_guardians = OrderedDict()
         live_in_institut = False
 
         # Separate male_guardian female_guardians and add guardians to
@@ -278,7 +278,7 @@ class Child_description_it:
                 u'grandfather' in dict):
             dict.pop(u'grandmother')
             dict.pop(u'grandfather')
-            dict[u'parents'] = u'{} nonni'.format(prefix[2])
+            dict[u'grandparents'] = u'{} nonni'.format(prefix[2])
         return dict
 
     @classmethod
