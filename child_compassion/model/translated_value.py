@@ -11,7 +11,7 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
-
+import pdb
 
 class translated_value(orm.Model):
     _name = 'compassion.translated.value'
@@ -38,6 +38,14 @@ class translated_value(orm.Model):
     _defaults = {
         'is_tag': False,
     }
+    def get_translated_value(self, cr, uid, id, lang, context):
+        # pdb.set_trace()
+        value = self.browse(cr, uid, id, context)[0]
+        id = value.value_en
+        translated_value = getattr(value, "value_"+lang) or value.value_en
+        color = 'red' if not getattr(value, "value_"+lang) else 'blue'
+        return u'<span id="{}" style="color:{}">{}</span>'.format(
+            id, color, translated_value)
 
     def get_value_ids(self, cr, uid, eng_values, property_name, context):
         """ Utility method that finds already existing translated values

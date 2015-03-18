@@ -14,13 +14,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 
 class Child_description_de:
-    @classmethod
-    def _get_translated_value(cls, value):
-        id = value.value_en
-        translated_value = value.value_de or value.value_en
-        color = 'red' if not value.value_de else 'blue'
-        return u'<span id="{}" style="color:{}">{}</span>'.format(
-            id, color, translated_value)
 
     @classmethod
     def gen_de_translation(
@@ -73,7 +66,7 @@ class Child_description_de:
         if not case_study.christian_activities_ids:
             return ''
         activities = [
-            cls._get_translated_value(activity)
+            activity.get_translated_value('it')
             for activity in case_study.christian_activities_ids]
         activities_str = cls._gen_list_string(activities)
         string = (u"In der Kirche macht %s %s %s" % (
@@ -91,7 +84,7 @@ class Child_description_de:
         '''
         if not case_study.family_duties_ids:
             return ''
-        activities = ([cls._get_translated_value(activity)
+        activities = ([activity.get_translated_value('it')
                        for activity in case_study.family_duties_ids])
         activities_str = cls._gen_list_string(activities)
         string = (u"Zu Hause hilft %s %s. " % (
@@ -111,7 +104,7 @@ class Child_description_de:
         gender_pronoun = 'Er' if child.gender == 'M' else 'Sie'
 
         activities = [
-            cls._get_translated_value(activity)
+            activity.get_translated_value('it')
             for activity in case_study.hobbies_ids]
 
         string = u"{} mag {}".format(
@@ -164,15 +157,13 @@ class Child_description_de:
                 string += u' geht zur Schule'
             if case_study.school_performance:
                 string += (u' und hat %s Ergebnisse. ' % (
-                    cls._get_translated_value(
-                        case_study.school_performance[0])))
+                    case_study.school_performance[0].get_translated_value('it')))
             else:
                 string += '.'
             if case_study.school_best_subject:
                 string += u'%s mag %s. ' % (
                     u'Er' if child.gender == 'M' else u'Sie',
-                    cls._get_translated_value(
-                        case_study.school_best_subject[0]))
+                    case_study.school_best_subject[0].get_translated_value('it'))
 
         else:
             child_age = (
@@ -207,7 +198,7 @@ class Child_description_de:
         live_in_institut = False
 
         for guardian in case_study.guardians_ids:
-            value = cls._get_translated_value(guardian)
+            value = guardian.get_translated_value('it')
 
             if guardian.value_en != 'institutional worker':
                 if guardian.value_en in male_values:

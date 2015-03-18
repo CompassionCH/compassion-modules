@@ -16,14 +16,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 class Child_description_it:
 
     @classmethod
-    def _get_translated_value(cls, value):
-        id = value.value_en
-        translated_value = value.value_it or value.value_en
-        color = 'red' if not value.value_it else 'blue'
-        return u'<span id="{}" style="color:{}">{}</span>'.format(
-            id, color, translated_value)
-
-    @classmethod
     def gen_it_translation(
             cls, cr, uid, child, case_study, context=None):
         desc_it = cls._get_guardians_info_it(
@@ -79,7 +71,7 @@ class Child_description_it:
         if not case_study.christian_activities_ids:
             return ''
         activities = [
-            cls._get_translated_value(activity)
+            activity.get_translated_value('it')
             for activity in case_study.christian_activities_ids]
         activities_str = cls._gen_list_string(activities)
         string = u"In chiesa, frequenta %s. " % (activities_str)
@@ -95,7 +87,7 @@ class Child_description_it:
         '''
         if not case_study.family_duties_ids:
             return ''
-        activities = ([cls._get_translated_value(activity)
+        activities = ([activity.get_translated_value('it')
                        for activity in case_study.family_duties_ids])
         activities_str = cls._gen_list_string(activities)
         string = ((u"A casa, aiuta %s. ") % (
@@ -108,7 +100,7 @@ class Child_description_it:
         '''
         if not case_study.hobbies_ids:
             return ''
-        activities = [cls._get_translated_value(activity)
+        activities = [activity.get_translated_value('it')
                       for activity in case_study.hobbies_ids]
         string = ''
         if activities:
@@ -165,14 +157,12 @@ class Child_description_it:
             if case_study.school_performance:
                 string += (u' ed %s ha voti %s. ' % (
                     u'Lui' if child.gender == 'M' else u'Lei',
-                    cls._get_translated_value(
-                        case_study.school_performance[0])))
+                    case_study.school_performance[0].get_translated_value('it')))
 
             if case_study.school_best_subject:
                 string += u'%s piace %s. ' % (
                     u'Li' if child.gender == 'M' else u'Le',
-                    cls._get_translated_value(
-                        case_study.school_best_subject[0]))
+                    case_study.school_best_subject[0].get_translated_value('it'))
             else:
                 string += '.'
         else:
@@ -207,7 +197,7 @@ class Child_description_it:
         # Separate male_guardian female_guardians and add guardians to
         # live_with
         for guardian in case_study.guardians_ids:
-            value = cls._get_translated_value(guardian)
+            value = guardian.get_translated_value('it')
 
             if guardian.value_en != 'institutional worker':
                 # Male guardian
