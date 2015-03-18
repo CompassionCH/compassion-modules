@@ -60,15 +60,16 @@ class compassion_project(orm.Model):
         By default: log a message.
         """
         self.pool.get('mail.thread').message_post(
-                cr, uid, project_id,
-                "The project was suspended and funds are retained<b>"
-                "{}</b>.<br/>".format(
-                    date_end.strftime(" until %B %Y") if date_end else ""),
-                "Project Suspended", 'comment',
-                context={'thread_model': self._name})
+            cr, uid, project_id,
+            "The project was suspended and funds are retained<b>"
+            "{}</b>.<br/>".format(
+                date_end.strftime(" until %B %Y") if date_end else ""),
+            "Project Suspended", 'comment',
+            context={'thread_model': self._name})
         return True
 
     def _has_desc(self, cr, uid, ids, field_names, args, context=None):
+
         res = dict()
         field_res = dict()
         for child in self.browse(cr, uid, ids, context):
@@ -234,6 +235,10 @@ class compassion_project(orm.Model):
             readonly=True, track_visibility="onchange"),
     }
 
+    _defaults = {
+        'name': '/'
+    }
+
     def update_informations(self, cr, uid, ids, context=None):
         """ Get the most recent informations for selected projects and update
             them accordingly. """
@@ -303,7 +308,7 @@ class compassion_project(orm.Model):
             'name': _('Description generation'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
-            'view_mode': 'form',
+            'view_mode': 'auto_description_form',
             'res_model': 'project.description.wizard',
             'context': context,
             'target': 'new',
@@ -384,7 +389,7 @@ class compassion_project(orm.Model):
             'typicalFloorBuildingMaterialDescription': ('floor_material', '/'),
             'typicalWallBuildingMaterialDescription': ('wall_material', '/'),
             'typicalRoofBuildingMaterialDescription': ('roof_material', '/'),
-            'primaryEthnicGroup': ('spoken_languages', ', '),
+            'primaryEthnicGroup': ('spoken_languages', '?'),
             'primaryDiet': ('primary_diet', ','),
             'commonHealthProblems': ('health_problems', ', '),
             'primaryOccupationTitle': ('primary_occupation', '/'),

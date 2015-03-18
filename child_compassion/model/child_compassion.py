@@ -300,9 +300,9 @@ class compassion_child(orm.Model):
         return {
             'name': _('Description generation'),
             'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'form',
             'res_model': 'child.description.wizard',
+            'view_mode': 'auto_description_form',
+            'view_type': 'form',
             'context': context,
             'target': 'new',
         }
@@ -505,7 +505,8 @@ class compassion_child(orm.Model):
             if child.state == 'I':
                 to_remove_from_web.append(child.id)
         if to_remove_from_web:
-            self.child_remove_from_typo3(cr, uid, to_remove_from_web, context)
+            self.child_remove_from_typo3(cr, uid, to_remove_from_web,
+                                         context)
         self.write(cr, uid, ids, {
             'state': 'P',
             'has_been_sponsored': True}, context)
@@ -657,10 +658,8 @@ class compassion_child(orm.Model):
             Sync_typo3.request_to_typo3(query, 'upd')
 
         self._add_child_pictures_to_typo3(cr, uid, ids, context)
-        # This URL synchronizes the typo3 search index
-        # (not dramatic if we call it from test database)
-        requests.get('http://compassionch.customers.t3gardens.com/?type=778')
         self.write(cr, uid, ids, {'state': 'I'})
+        return Sync_typo3.sync_typo3_index()
 
     def child_remove_from_typo3(self, cr, uid, ids, context=None):
         child_codes = list()
@@ -677,9 +676,7 @@ class compassion_child(orm.Model):
             child_codes.append(child.code)
 
         Sync_typo3.delete_child_photos(child_codes)
-        requests.get('http://compassionch.customers.t3gardens.com/?type=778')
-
-        return True
+        return Sync_typo3.sync_typo3_index()
 
     def _add_child_pictures_to_typo3(self, cr, uid, ids, context=None):
         for child in self.browse(cr, uid, ids, context):

@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Kevin Cristi <kcristi@compassion.ch>
+#    @author: Kevin Cristi, David Coninckx
 #
 #    The licence is in the file __openerp__.py
 #
@@ -66,7 +66,7 @@ class Child_description_de:
         if not case_study.christian_activities_ids:
             return ''
         activities = [
-            activity.value_de if activity.value_de else activity.value_en
+            activity.get_translated_value('de')
             for activity in case_study.christian_activities_ids]
         activities_str = cls._gen_list_string(activities)
         string = (u"In der Kirche macht %s %s %s" % (
@@ -79,16 +79,15 @@ class Child_description_de:
     def _gen_family_act_info_de(
             cls, cr, uid, child, case_study, context=None):
         ''' Generate the family duties description part.
-            In German, it always starts with "Zu Hause hilft sie/er beim"
+            In German, it always starts with "Zu Hause hilft sie/er"
             It's followed by the family duties.
         '''
         if not case_study.family_duties_ids:
             return ''
-        activities = ([activity.value_de if activity.value_de
-                       else activity.value_en
+        activities = ([activity.get_translated_value('de')
                        for activity in case_study.family_duties_ids])
         activities_str = cls._gen_list_string(activities)
-        string = (u"Zu Hause hilft %s beim %s. " % (
+        string = (u"Zu Hause hilft %s %s. " % (
             'er' if child.gender == 'M' else 'sie', activities_str))
         return string
 
@@ -105,10 +104,10 @@ class Child_description_de:
         gender_pronoun = 'Er' if child.gender == 'M' else 'Sie'
 
         activities = [
-            activity.value_de if activity.value_de
-            else activity.value_en for activity in case_study.hobbies_ids]
+            activity.get_translated_value('de')
+            for activity in case_study.hobbies_ids]
 
-        string = u"{} mag {}".format(
+        string = u"{0} mag {1}".format(
             gender_pronoun, cls._gen_list_string(activities))
 
         return string
@@ -123,23 +122,23 @@ class Child_description_de:
              - School favourite subject if relevant and existing
         '''
         ordinals = {
-            '1': u'dreiten',
-            '2': u'vierten',
-            '3': u'fünften',
-            '4': u'sechsten',
-            '5': u'siebsten',
-            '6': u'achten',
-            '7': u'neunten',
-            '8': u'zehnten',
-            '9': u'elften',
+            '1': u'dritten Klasse',
+            '2': u'vierten Klasse',
+            '3': u'fünften Klasse',
+            '4': u'sechsten Klasse',
+            '5': u'siebsten Klasse',
+            '6': u'achten Klasse',
+            '7': u'neunten Klasse',
+            '8': u'zehnten Klasse',
+            '9': u'elften Klasse',
             '10': u'ersten Jahr der High School',
             '11': u'zweiten Jahr der High School',
             '12': u'dreiten Jahr der High School',
             '13': u'der High School',
             '14': u'der High School',
             'PK': u'Kindergarten',
-            'K': u'zweiten',
-            'P': u'ersten',
+            'K': u'zweiten Klasse',
+            'P': u'ersten Klasse',
         }
 
         # the value of us_school_level can also be blank
@@ -157,19 +156,17 @@ class Child_description_de:
             else:
                 string += u' geht zur Schule'
             if case_study.school_performance:
-                string += (u' und %s hat %s Ergebnisse. ' % (
-                    u'er' if child.gender == 'M' else u'sie',
-                    case_study.school_performance[0].value_de
-                    if case_study.school_performance[0].value_de
-                    else case_study.school_performance[0].value_en))
-            if case_study.school_best_subject:
-                string += u'%s mag %s. ' \
-                          % (u'Er' if child.gender == 'M' else u'Sie',
-                             case_study.school_best_subject[0].value_de
-                             if case_study.school_best_subject[0].value_de
-                             else case_study.school_best_subject[0].value_en)
+                string += (u' und hat %s Ergebnisse. ' % (
+                    case_study.school_performance[0].get_translated_value(
+                        'de')))
             else:
                 string += '.'
+            if case_study.school_best_subject:
+                string += u'%s mag %s. ' % (
+                    u'Er' if child.gender == 'M' else u'Sie',
+                    case_study.school_best_subject[0].get_translated_value(
+                        'de'))
+
         else:
             child_age = (
                 date.today() - datetime.strptime(
@@ -193,33 +190,33 @@ class Child_description_de:
                        'stepfather', 'godfather']
         plur_values = ['friends', 'other relatives', 'foster parents']
         if child.gender == 'M':
-            prefix = [u'sein', u'seine', u'seine']
+            prefix = [u'seinem', u'seiner', u'seinen']
         else:
-            prefix = [u'ihr', u'ihre', u'ihre']
+            prefix = [u'ihrem', u'ihrer', u'ihren']
 
         live_with = OrderedDict()
-        male_guardians = dict()
-        female_guardians = dict()
+        male_guardians = OrderedDict()
+        female_guardians = OrderedDict()
         live_in_institut = False
 
         for guardian in case_study.guardians_ids:
-            value = guardian.value_de or guardian.value_en
+            value = guardian.get_translated_value('de')
 
             if guardian.value_en != 'institutional worker':
                 if guardian.value_en in male_values:
                     male_guardians[guardian.value_en] = value
                     if guardian.value_en != 'brother':
-                        live_with[guardian.value_en] = u'{} {}'.format(
+                        live_with[guardian.value_en] = u'{0} {1}'.format(
                             prefix[0], value)
                 elif guardian.value_en in plur_values:
                     male_guardians[guardian.value_en] = value
                     female_guardians[guardian.value_en] = value
-                    live_with[guardian.value_en] = u'{} {}'.format(
+                    live_with[guardian.value_en] = u'{0} {1}'.format(
                         prefix[2], value)
                 else:
                     female_guardians[guardian.value_en] = value
                     if guardian.value_en != 'sister':
-                        live_with[guardian.value_en] = u'{} {}'.format(
+                        live_with[guardian.value_en] = u'{0} {1}'.format(
                             prefix[1], value)
             else:
                 live_in_institut = True
@@ -228,14 +225,14 @@ class Child_description_de:
         live_with = cls._regroup_parents(cr, uid, live_with, prefix, context)
 
         if case_study.nb_brothers == 1:
-            live_with['brothers'] = u'{} Bruder'.format(prefix[0])
+            live_with['brothers'] = u'{0} Bruder'.format(prefix[0])
         elif case_study.nb_brothers > 1:
-            live_with['brothers'] = u'{} {} Brüder'.format(
+            live_with['brothers'] = u'{0} {1} Brüder'.format(
                 prefix[2], cls._number_to_string(case_study.nb_brothers))
         if case_study.nb_sisters == 1:
-            live_with['sisters'] = u'{} Schwester'.format(prefix[1])
+            live_with['sisters'] = u'{0} Schwester'.format(prefix[1])
         elif case_study.nb_sisters > 1:
-            live_with['sisters'] = u'{} {} Schwestern'.format(
+            live_with['sisters'] = u'{0} {1} Schwestern'.format(
                 prefix[2], cls._number_to_string(case_study.nb_sisters))
 
         if live_in_institut:
@@ -254,16 +251,16 @@ class Child_description_de:
         return string
 
     @classmethod
-    def _regroup_parents(cls, cr, uid, dict, prefix, context=None):
-        if (u'mother' in dict and u'father' in dict):
-            dict.pop(u'mother')
-            dict.pop(u'father')
-            dict[u'parents'] = u'{} Eltern'.format(prefix[2])
-        if (u'grandmother' in dict and u'grandfather' in dict):
-            dict.pop(u'grandmother')
-            dict.pop(u'grandfather')
-            dict[u'parents'] = u'{} Großeltern'.format(prefix[2])
-        return dict
+    def _regroup_parents(cls, cr, uid, live_with, prefix, context=None):
+        if (u'mother' in live_with and u'father' in live_with):
+            live_with.pop(u'mother')
+            live_with.pop(u'father')
+            live_with[u'parents'] = u'{0} Eltern'.format(prefix[2])
+        if (u'grandmother' in live_with and u'grandfather' in live_with):
+            live_with.pop(u'grandmother')
+            live_with.pop(u'grandfather')
+            live_with[u'grandparents'] = u'{0} Großeltern'.format(prefix[2])
+        return live_with
 
     @classmethod
     def _get_parents_info(cls, cr, uid, child,
@@ -292,7 +289,7 @@ class Child_description_de:
 
     @classmethod
     def _get_parent_info_string(
-            cls, cr, uid, child, props, type, context=None):
+            cls, cr, uid, child, props, parent, context=None):
         # Comments for this function in child_description_fr
         string = u''
 
@@ -320,28 +317,28 @@ class Child_description_de:
 
         multiple_status = False
 
-        for prop in props[type]:
+        for prop in props[parent]:
             if prop in status_tags:
                 if not multiple_status:
-                    string += u'{} {} {}'.format(
-                        prefix[type], be[type], status_tags[prop][type])
+                    string += u'{0} {1} {2}'.format(
+                        prefix[parent], be[parent], status_tags[prop][parent])
                     multiple_status = True
                 else:
-                    string += u' et {}'.format(status_tags[prop])
-        if (type == 2):
+                    string += u' und {0}'.format(status_tags[prop])
+        if (parent == 2):
             if ('alive' not in props[0] and
                     'alive' not in props[1]):
-                string = u'{} {}'.format(prefix[type], dead[type])
-            if 'supportingchild' in props[type] and \
+                string = u'{0} {1}'.format(prefix[parent], dead[parent])
+            if 'supportingchild' in props[parent] and \
                'livingwithchild' not in props[0] and \
                'livingwithchild' not in props[1]:
-                string += u'{} {}'.format(prefix[type], support[type])
+                string += u'{0} {1}'.format(prefix[parent], support[parent])
         else:
-            if 'supportingchild' in props[type] and \
-               'livingwithchild' not in props[type]:
-                string += u'{} {}'.format(prefix[type], support[type])
-            if ('alive' not in props[type] and type != 2):
-                string = u'{} {}'.format(prefix[type], dead[type])
+            if 'supportingchild' in props[parent] and \
+               'livingwithchild' not in props[parent]:
+                string += u'{0} {1}'.format(prefix[parent], support[parent])
+            if ('alive' not in props[parent] and parent != 2):
+                string = u'{0} {1}'.format(prefix[parent], dead[parent])
 
         if string:
             string += u'. '
@@ -396,27 +393,28 @@ class Child_description_de:
             prefix_f = u'Ihre'
 
         if (f_g[0] == u'grandmother' and m_g[0] == u'grandfather'):
-            mf_g = u'{} Großeltern'.format(prefix_f)
+            mf_g = u'{0} Großeltern'.format(prefix_f)
         elif (f_g[0] == u'mother' and m_g[0] == u'father'):
-            mf_g = u'{} Eltern'.format(prefix_f)
+            mf_g = u'{0} Eltern'.format(prefix_f)
         else:
-            mf_g = u'{} {} et {} {}'.format(prefix_m, m_g[1], prefix_f, f_g[1])
+            mf_g = u'{0} {1} und {2} {3}'.format(
+                prefix_m, m_g[1], prefix_f, f_g[1])
 
         return mf_g
 
     @classmethod
     def _get_guardian_job_string(
             cls, cr, uid, child, props_en, props_de,
-            m_g, f_g, type, context=None):
+            m_g, f_g, parent, context=None):
         # Comments for this function in child_description_fr
         string = u''
 
         if(child.gender == 'M'):
-            prefix_f = u'Seine {}'.format(f_g[1] if f_g else u'Mutter')
-            prefix_m = u'Sein {}'.format(m_g[1]if m_g else u'Vater')
+            prefix_f = u'Seine {0}'.format(f_g[1] if f_g else u'Mutter')
+            prefix_m = u'Sein {0}'.format(m_g[1]if m_g else u'Vater')
         else:
-            prefix_f = u'Ihre {}'.format(f_g[1] if f_g else u'Mutter')
-            prefix_m = u'Ihr {}'.format(m_g[1]if m_g else u'Vater')
+            prefix_f = u'Ihre {0}'.format(f_g[1] if f_g else u'Mutter')
+            prefix_m = u'Ihr {0}'.format(m_g[1]if m_g else u'Vater')
 
         prefix_mf = cls._get_mf_g(
             cr, uid, child, m_g, f_g, context) if f_g and m_g else None
@@ -444,38 +442,38 @@ class Child_description_de:
         unconsidered_tag = [u'isattimesemployed', u'isemployed']
 
         # Case unemployed
-        if ('isunemployed' in props_en[type]):
-            string += u'{} {}'.format(prefix[type], is_unemployed[type])
+        if ('isunemployed' in props_en[parent]):
+            string += u'{0} {1}'.format(prefix[parent], is_unemployed[parent])
         else:
             multiple_job_work_as = False
             for job_tag_work_as in job_tags_work_as:
-                if job_tag_work_as in props_en[type]:
+                if job_tag_work_as in props_en[parent]:
                     # Multiple job check
                     if not multiple_job_work_as:
-                        string += u'{} {} {}'.format(
-                            prefix[type], work_as[type],
-                            job_tags_work_as[job_tag_work_as][type])
+                        string += u'{0} {1} {2}'.format(
+                            prefix[parent], work_as[parent],
+                            job_tags_work_as[job_tag_work_as][parent])
                         multiple_job_work_as = True
                     else:
-                        string += u' und {}'.format(
-                            job_tags_work_as[job_tag_work_as][type])
+                        string += u' und {0}'.format(
+                            job_tags_work_as[job_tag_work_as][parent])
 
             multiple_job_isemployed = False
             for job_tag_isemployed in job_tags_isemployed:
-                if job_tag_isemployed in props_en[type]:
+                if job_tag_isemployed in props_en[parent]:
                     # Multiple job check
                     if (not multiple_job_isemployed and not
                             multiple_job_work_as):
-                        string += u'{} {} {}'.format(
-                            prefix[type], is_employed[type],
+                        string += u'{0} {1} {2}'.format(
+                            prefix[parent], is_employed[parent],
                             job_tags_isemployed[job_tag_isemployed])
                         multiple_job_isemployed = True
                     else:
-                        string += u' und {}'.format(
+                        string += u' und {0}'.format(
                             job_tags_isemployed[job_tag_isemployed])
 
             multiple_job = False
-            for prop in props_en[type]:
+            for prop in props_en[parent]:
                 if (prop not in unconsidered_tag and
                         prop not in job_tags_work_as and
                         prop not in job_tags_isemployed):
@@ -483,13 +481,17 @@ class Child_description_de:
                     if (not multiple_job_work_as and not
                             multiple_job_isemployed and not
                             multiple_job):
-                        string += prefix[type]
+                        string += prefix[parent]
                         multiple_job = True
                     else:
                         string += u' und'
 
-                    string += u' {}'.format(
-                        props_de[type][props_en[type].index(prop)] or prop)
+                    prop_de = props_de[parent][props_en[parent].index(prop)]
+                    color = 'red' if not prop_de else 'blue'
+                    translated_prop = prop_de or prop
+
+                    string += (u' <span id="{0}" style="color:{1}">{2}'
+                               '</span>').format(prop, color, translated_prop)
 
         if string:
             string += u'. '

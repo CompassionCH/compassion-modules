@@ -79,3 +79,29 @@ class Sync_typo3:
 
         self._typo3_scripts_fetch(scripts_url, api_key, "delete_photo",
                                   {"children": ",".join(child_codes)})
+
+    @classmethod
+    def sync_typo3_index(self):
+        """ Calls the URL to synchronize typo3 index.
+            (not dramatic if we call it from test database)
+        """
+        res = requests.get(
+            'http://compassionch.customers.t3gardens.com/?type=778')
+        return res.text == 'Indexed'
+
+    @classmethod
+    def typo3_index_error(self, cr, uid, src_obj, context=None):
+        """ Opens the wizard showing typo3 index update error. """
+        wizard_name = 'child.on.internet.wizard'
+        wizard_id = src_obj.pool.get(wizard_name).create(cr, uid, {
+            'state': 'error'}, context)
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Typo3 Error',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': wizard_name,
+            'res_id': wizard_id,
+            'target': 'new',
+            'context': context
+        }
