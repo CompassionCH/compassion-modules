@@ -66,7 +66,7 @@ class Child_description_de:
         if not case_study.christian_activities_ids:
             return ''
         activities = [
-            activity.value_de if activity.value_de else activity.value_en
+            activity.get_translated_value('de')
             for activity in case_study.christian_activities_ids]
         activities_str = cls._gen_list_string(activities)
         string = (u"In der Kirche macht %s %s %s" % (
@@ -79,16 +79,15 @@ class Child_description_de:
     def _gen_family_act_info_de(
             cls, cr, uid, child, case_study, context=None):
         ''' Generate the family duties description part.
-            In German, it always starts with "Zu Hause hilft sie/er beim"
+            In German, it always starts with "Zu Hause hilft sie/er"
             It's followed by the family duties.
         '''
         if not case_study.family_duties_ids:
             return ''
-        activities = ([activity.value_de if activity.value_de
-                       else activity.value_en
+        activities = ([activity.get_translated_value('de')
                        for activity in case_study.family_duties_ids])
         activities_str = cls._gen_list_string(activities)
-        string = (u"Zu Hause hilft %s beim %s. " % (
+        string = (u"Zu Hause hilft %s %s. " % (
             'er' if child.gender == 'M' else 'sie', activities_str))
         return string
 
@@ -105,8 +104,8 @@ class Child_description_de:
         gender_pronoun = 'Er' if child.gender == 'M' else 'Sie'
 
         activities = [
-            activity.value_de if activity.value_de
-            else activity.value_en for activity in case_study.hobbies_ids]
+            activity.get_translated_value('de')
+            for activity in case_study.hobbies_ids]
 
         string = u"{} mag {}".format(
             gender_pronoun, cls._gen_list_string(activities))
@@ -123,23 +122,23 @@ class Child_description_de:
              - School favourite subject if relevant and existing
         '''
         ordinals = {
-            '1': u'dreiten',
-            '2': u'vierten',
-            '3': u'fünften',
-            '4': u'sechsten',
-            '5': u'siebsten',
-            '6': u'achten',
-            '7': u'neunten',
-            '8': u'zehnten',
-            '9': u'elften',
+            '1': u'dritten Klasse',
+            '2': u'vierten Klasse',
+            '3': u'fünften Klasse',
+            '4': u'sechsten Klasse',
+            '5': u'siebsten Klasse',
+            '6': u'achten Klasse',
+            '7': u'neunten Klasse',
+            '8': u'zehnten Klasse',
+            '9': u'elften Klasse',
             '10': u'ersten Jahr der High School',
             '11': u'zweiten Jahr der High School',
             '12': u'dreiten Jahr der High School',
             '13': u'der High School',
             '14': u'der High School',
             'PK': u'Kindergarten',
-            'K': u'zweiten',
-            'P': u'ersten',
+            'K': u'zweiten Klasse',
+            'P': u'ersten Klasse',
         }
 
         # the value of us_school_level can also be blank
@@ -157,19 +156,17 @@ class Child_description_de:
             else:
                 string += u' geht zur Schule'
             if case_study.school_performance:
-                string += (u' und %s hat %s Ergebnisse. ' % (
-                    u'er' if child.gender == 'M' else u'sie',
-                    case_study.school_performance[0].value_de
-                    if case_study.school_performance[0].value_de
-                    else case_study.school_performance[0].value_en))
-            if case_study.school_best_subject:
-                string += u'%s mag %s. ' \
-                          % (u'Er' if child.gender == 'M' else u'Sie',
-                             case_study.school_best_subject[0].value_de
-                             if case_study.school_best_subject[0].value_de
-                             else case_study.school_best_subject[0].value_en)
+                string += (u' und hat %s Ergebnisse. ' % (
+                    case_study.school_performance[0].get_translated_value(
+                        'de')))
             else:
                 string += '.'
+            if case_study.school_best_subject:
+                string += u'%s mag %s. ' % (
+                    u'Er' if child.gender == 'M' else u'Sie',
+                    case_study.school_best_subject[0].get_translated_value(
+                        'de'))
+
         else:
             child_age = (
                 date.today() - datetime.strptime(
@@ -193,17 +190,17 @@ class Child_description_de:
                        'stepfather', 'godfather']
         plur_values = ['friends', 'other relatives', 'foster parents']
         if child.gender == 'M':
-            prefix = [u'sein', u'seine', u'seine']
+            prefix = [u'seinem', u'seiner', u'seinen']
         else:
-            prefix = [u'ihr', u'ihre', u'ihre']
+            prefix = [u'ihrem', u'ihrer', u'ihren']
 
         live_with = OrderedDict()
-        male_guardians = dict()
-        female_guardians = dict()
+        male_guardians = OrderedDict()
+        female_guardians = OrderedDict()
         live_in_institut = False
 
         for guardian in case_study.guardians_ids:
-            value = guardian.value_de or guardian.value_en
+            value = guardian.get_translated_value('de')
 
             if guardian.value_en != 'institutional worker':
                 if guardian.value_en in male_values:
@@ -262,7 +259,7 @@ class Child_description_de:
         if (u'grandmother' in dict and u'grandfather' in dict):
             dict.pop(u'grandmother')
             dict.pop(u'grandfather')
-            dict[u'parents'] = u'{} Großeltern'.format(prefix[2])
+            dict[u'grandparents'] = u'{} Großeltern'.format(prefix[2])
         return dict
 
     @classmethod
@@ -488,8 +485,12 @@ class Child_description_de:
                     else:
                         string += u' und'
 
-                    string += u' {}'.format(
-                        props_de[type][props_en[type].index(prop)] or prop)
+                    prop_de = props_de[type][props_en[type].index(prop)]
+                    color = 'red' if not prop_de else 'blue'
+                    translated_prop = prop_de or prop
+
+                    string += (u' <span id="{}" style="color:{}">{}'
+                               '</span>').format(prop, color, translated_prop)
 
         if string:
             string += u'. '

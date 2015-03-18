@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -300,9 +301,9 @@ class compassion_child(orm.Model):
         return {
             'name': _('Description generation'),
             'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'form',
             'res_model': 'child.description.wizard',
+            'view_mode': 'auto_description_form',
+            'view_type': 'form',
             'context': context,
             'target': 'new',
         }

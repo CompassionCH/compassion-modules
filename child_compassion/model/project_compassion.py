@@ -69,6 +69,7 @@ class compassion_project(orm.Model):
         return True
 
     def _has_desc(self, cr, uid, ids, field_names, args, context=None):
+
         res = dict()
         field_res = dict()
         for child in self.browse(cr, uid, ids, context):
@@ -307,7 +308,7 @@ class compassion_project(orm.Model):
             'name': _('Description generation'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
-            'view_mode': 'form',
+            'view_mode': 'auto_description_form',
             'res_model': 'project.description.wizard',
             'context': context,
             'target': 'new',
@@ -388,7 +389,7 @@ class compassion_project(orm.Model):
             'typicalFloorBuildingMaterialDescription': ('floor_material', '/'),
             'typicalWallBuildingMaterialDescription': ('wall_material', '/'),
             'typicalRoofBuildingMaterialDescription': ('roof_material', '/'),
-            'primaryEthnicGroup': ('spoken_languages', ', '),
+            'primaryEthnicGroup': ('spoken_languages', '?'),
             'primaryDiet': ('primary_diet', ','),
             'commonHealthProblems': ('health_problems', ', '),
             'primaryOccupationTitle': ('primary_occupation', '/'),

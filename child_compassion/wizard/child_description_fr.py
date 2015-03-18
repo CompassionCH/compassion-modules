@@ -67,7 +67,7 @@ class Child_description_fr:
         if not case_study.christian_activities_ids:
             return ''
         activities = [
-            activity.value_fr if activity.value_fr else activity.value_en
+            activity.get_translated_value('fr')
             for activity in case_study.christian_activities_ids]
         activities_str = cls._gen_list_string(activities)
         string = u"A l'Église, %s participe %s. " % (
@@ -86,8 +86,7 @@ class Child_description_fr:
         if not case_study.family_duties_ids:
             return ''
 
-        activities = [activity.value_fr if activity.value_fr
-                      else activity.value_en
+        activities = [activity.get_translated_value('fr')
                       for activity in case_study.family_duties_ids]
 
         string = u"A la maison, %s aide %s. " % (
@@ -106,8 +105,7 @@ class Child_description_fr:
         if not case_study.hobbies_ids:
             return ''
 
-        activities = [activity.value_fr if activity.value_fr
-                      else activity.value_en
+        activities = [activity.get_translated_value('fr')
                       for activity in case_study.hobbies_ids]
 
         string = u"%s aime %s. " % (
@@ -161,13 +159,13 @@ class Child_description_fr:
             if case_study.school_performance:
                 string += u' et %s a des résultats %s. ' % (
                     u'il' if child.gender == 'M' else u'elle',
-                    case_study.school_performance[0].value_fr or
-                    case_study.school_performance[0].value_en)
+                    case_study.school_performance[0].get_translated_value(
+                        'fr'))
             if case_study.school_best_subject:
-                string += u'%s aime bien %s. ' \
-                          % (u'Il' if child.gender == 'M' else u'Elle',
-                             case_study.school_best_subject[0].value_fr or
-                             case_study.school_best_subject[0].value_en)
+                string += u'%s aime bien %s. ' % (
+                    u'Il' if child.gender == 'M' else u'Elle',
+                    case_study.school_best_subject[0].get_translated_value(
+                        'fr'))
             else:
                 string += '.'
         else:
@@ -193,14 +191,14 @@ class Child_description_fr:
         plur_values = ['friends', 'other relatives', 'foster parents']
         prefix = [u'son', u'sa', u'ses']
         live_with = OrderedDict()
-        male_guardians = dict()
-        female_guardians = dict()
+        male_guardians = OrderedDict()
+        female_guardians = OrderedDict()
         live_in_institut = False
 
         # Separate male_guardian female_guardians and add guardians to
         # live_with
         for guardian in case_study.guardians_ids:
-            value = guardian.value_fr or guardian.value_en
+            value = guardian.get_translated_value('fr')
 
             if guardian.value_en != 'institutional worker':
                 # Male guardian
@@ -253,6 +251,7 @@ class Child_description_fr:
         string += cls._get_parents_info(
             cr, uid, child, case_study, context)
         # Generate guardians job
+
         string += cls._get_guardians_jobs_fr(
             cr, uid, child, case_study,
             male_guardians.items()[0] if male_guardians else False,
@@ -271,7 +270,7 @@ class Child_description_fr:
                 u'grandfather' in dict):
             dict.pop(u'grandmother')
             dict.pop(u'grandfather')
-            dict[u'parents'] = u'ses grand-parents'
+            dict[u'grandparents'] = u'ses grand-parents'
         return dict
 
     @classmethod
@@ -495,8 +494,13 @@ class Child_description_fr:
                     else:
                         string += u' et'
 
-                    string += u' {}'.format(
-                        props_fr[type][props_en[type].index(prop)] or prop)
+                    color = 'red' if not props_fr[type][
+                        props_en[type].index(prop)] else 'blue'
+                    translated_prop = props_fr[type][
+                        props_en[type].index(prop)] or prop
+
+                    string += (u' <span id="{}" style="color:{}">{}'
+                               '</span>').format(prop, color, translated_prop)
 
         # Endpoint
         if string:

@@ -168,8 +168,8 @@
             <field name="view_id" ref="view_compassion_child_tree"/>
             <field name="context">{'search_default_available':1}</field>
         </record>
-
-        <menuitem id="menu_sponsorship_children" parent="menu_sponsorship_section" name="Children" action="child_compassion.open_view_children_tree" sequence="2"/>  
+        
+        <menuitem id="menu_sponsorship_children" parent="menu_sponsorship_section" name="Children" action="child_compassion.open_view_children_tree" sequence="2"/>
 
     </data>
 </openerp>
