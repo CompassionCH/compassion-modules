@@ -19,8 +19,9 @@ class crm_lead(orm.Model):
     _columns = {
         'planned_sponsorships': fields.integer(
             _('Expected new sponsorships'), track_visibility='onchange'),
-        'event_id': fields.many2one(
-            'crm.event.compassion', _('Event'), readonly=True),
+        'event_ids': fields.one2many(
+            'crm.event.compassion', 'lead_id', _('Event'),
+            readonly=True),
     }
 
     def create_event(self, cr, uid, ids, context=None):

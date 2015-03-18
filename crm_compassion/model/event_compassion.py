@@ -12,6 +12,8 @@
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
+from datetime import datetime
+
 
 class event_compassion(orm.Model):
 
@@ -57,11 +59,11 @@ class event_compassion(orm.Model):
         return res
 
     def _get_year(self, cr, uid, ids, field_name, arg, context=None):
-        res = {}
+        res = dict()
         if not isinstance(ids, list):
             ids = [ids]
         for event in self.browse(cr, uid, ids, context):
-            res[event.id] = event.start_date[0:4]
+            res[event.id] = event.start_date[:4]
         return res
 
     _columns = {
@@ -123,27 +125,28 @@ class event_compassion(orm.Model):
         - create a project and link to its analytic account,
         - create an origin for sponsorships.
         """
+        # Avoid putting twice the date in linked objects name
+        event_year = vals.get('start_date',
+                              datetime.today().strftime('%Y'))[:4]
+        event_name = vals.get('name', '0000')
+        if event_name[-4:] == event_year:
+            vals['name'] = event_name[:-4]
+        elif event_name[-2:] == event_year[-2:]:
+            vals['name'] = event_name[:-2]
+
         new_id = super(event_compassion, self).create(cr, uid, vals, context)
         event = self.browse(cr, uid, new_id, context)
-        if event.lead_id:
-            event.lead_id.write({'event_id': new_id})
 
-        project_id = self._create_project(cr, uid, event, context)
-        analytic_id = self.pool.get('project.project').browse(
-            cr, uid, project_id, context).analytic_account_id.id
-        origin_obj = self.pool.get('recurring.contract.origin')
-        # Avoid putting twice the date in origin name
-        event_year = event.start_date[:4]
-        if event.name[-4:] == event_year:
-            event_year = ""
-        else:
-            event_year = " " + event_year
-        origin_id = origin_obj.create(cr, uid, {
-            'name': event.name + event_year,
-            'type': 'event',
-            'event_id': new_id,
-            'analytic_id': analytic_id,
-        }, context)
+        # Create Project, Analytic account and Origin linked to this event
+        project_id = event.project_id and event.project_id.id or \
+            self.pool.get('project.project').create(
+                cr, uid, self._get_project_vals(cr, uid, event, context),
+                context)
+        analytic_id = self.pool.get('account.analytic.account').create(
+            cr, uid, self._get_analytic_vals(cr, uid, event, context), context)
+        origin_id = self.pool.get('recurring.contract.origin').create(
+            cr, uid, self._get_origin_vals(
+                cr, uid, event, analytic_id, context), context)
         event.write({
             'origin_id': origin_id,
             'analytic_id': analytic_id,
@@ -152,9 +155,11 @@ class event_compassion(orm.Model):
         return new_id
 
     def write(self, cr, uid, ids, vals, context=None):
-        """ Push values to linked project. """
+        """ Push values to linked objects. """ TODOOOOOOOOOOOOOOO
         super(event_compassion, self).write(cr, uid, ids, vals, context)
         project_vals = dict()
+        origin_vals = dict()
+        analytic_vals = dict()
         ctx = context.copy()
         ctx['from_event'] = True
         if 'type' in vals:
@@ -199,20 +204,21 @@ class event_compassion(orm.Model):
         context['use_tasks'] = False
         return self.create(cr, uid, vals, context)
 
-    def _create_project(self, cr, uid, event, context=None):
+    def _get_project_vals(self, cr, uid, event, context=None):
         """ Creates a new project based on the event.
         """
         if context is None:
             context = {}
         ctx = context.copy()
         ctx['lang'] = 'en_US'
+        ctx['from_event'] = True
         members = self.pool.get('res.users').search(
             cr, uid,
             [('partner_id', 'in', [p.id for p in event.staff_ids])],
             context=ctx)
-        ctx['from_event'] = True
-        project_id = self.pool.get('project.project').create(cr, uid, {
-            'name': event.name + ' ' + event.start_date[:4],
+        project_obj = self.pool.get('project.project')
+        return {
+            'name': event.name,
             'use_tasks': ctx.get('use_tasks', True),
             'user_id': event.user_id.id,
             'partner_id': event.partner_id.id,
@@ -223,26 +229,27 @@ class event_compassion(orm.Model):
                                                     event.year, ctx),
             'project_type': event.type,
             'state': 'open' if ctx.get('use_tasks', True) else 'close',
-        }, ctx)
+        }
 
-        return project_id
+    def _get_analytic_vals(self, cr, uid, event, parent_id, context=None):
+        return {
+            # TODO : see if naming scheme is good
+            'name': event.year + '/' + event.type + '/' + event.name,
+            'type': 'normal',
+            'parent_id': parent_id,
+            'use_timesheets': True,
+            'partner_id': event.partner_id.id,
+            'manager_id': event.user_id.id,
+            'user_id': event.user_id.id,
+        }
 
-    def _find_parent_analytic(self, cr, uid, event_type, year, context=None):
-        analytics_obj = self.pool.get('account.analytic.account')
-        categ_id = analytics_obj.search(
-            cr, uid, [('name', 'ilike', event_type)], context=context)[0]
-        acc_ids = analytics_obj.search(
-            cr, uid, [('name', '=', year), ('parent_id', '=', categ_id)],
-            context=context)
-        if not acc_ids:
-            # The category for this year does not yet exist
-            acc_ids = [analytics_obj.create(cr, uid, {
-                'name': year,
-                'type': 'view',
-                'code': 'AA' + event_type[:2].upper() + year,
-                'parent_id': categ_id
-            }, context)]
-        return acc_ids[0]
+    def _get_origin_vals(self, cr, uid, event, analytic_id, context=None):
+        return {
+            'name': event.name + ' ' + event_year,
+            'type': 'event',
+            'event_id': event.id,
+            'analytic_id': analytic_id,
+        }
 
     def show_tasks(self, cr, uid, ids, context=None):
         event = self.browse(cr, uid, ids[0], context)

@@ -38,12 +38,12 @@
                             </h1>
                         </div>
                         <div class="oe_right oe_button_box" name="buttons">
-                            <field name="project_id" invisible="1"/>
                             <button name="show_tasks" string="Open tasks" type="object"/>
                         </div>
                         <group>
                             <group>
                                 <field name="type"/>
+                                <field name="project_id"/>
                                 <field name="user_id"/>
                             </group>
                             <group>
