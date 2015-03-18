@@ -5,7 +5,6 @@ openerp.child_compassion = function (instance) {
     instance.web.child_compassion.AutoDescriptionFormView = instance.web.FormView.extend({
         start: function () {
             this._super();
-            console.log("Executed the view");
             this.on('field_changed:child_property_value_ids', this, this.values_changed);
             this.on('field_changed:project_property_value_ids', this, this.values_changed);
         },
@@ -24,22 +23,29 @@ openerp.child_compassion = function (instance) {
                 }
             }
         },
+        // Detect the changes on descriptions (Work for project description and child description)
         values_changed: function() {
             var value_en = [];
             $.each(this.$el.find('td[data-field="value_en"]'), function(index, value) {
                     value_en[index] = value.innerHTML;
             });
+            var values = []
+            
+            // To use this method for both project and child description
+            // Child description case
             if (this.fields.hasOwnProperty('child_property_value_ids')) {
                 var values = this.get_field_value('child_property_value_ids');
             }
+            // Project description case
             if (this.fields.hasOwnProperty('project_property_value_ids')) {
                 var values = this.get_field_value('project_property_value_ids');
             }
             
-                         
             for(index in values) {
                 var value = values[index];
                 
+                // Check if the value contain a object at 2 
+                // value[2] can contains value_fr, value_de, or/and value_it
                 if (value[2]) {
                     this.update_value('fr', value, value_en);
                     this.update_value('de', value, value_en);

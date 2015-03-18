@@ -153,9 +153,8 @@ class project_description_wizard(orm.TransientModel):
             'name': _('Descriptions generation'),
             'type': 'ir.actions.act_window',
             'res_model': self._name,
-            'view_mode': 'form',
+            'view_mode': 'auto_description_form',
             'view_type': 'form',
-            'res_id': ids[0],
             'context': context,
             'target': 'new',
         }
@@ -164,17 +163,18 @@ class project_description_wizard(orm.TransientModel):
         """ Save the selected descriptions in the project. """
         wizard = self.browse(cr, uid, ids, context)[0]
         vals = dict()
+        p = re.compile(r'<.*?>')  # Remove HTML markers
         if wizard.keep_desc_fr:
-            vals['description_fr'] = wizard.desc_fr + \
-                wizard.needs_desc_fr.strip('\n')
+            vals['description_fr'] = p.sub('', wizard.desc_fr +
+                                           wizard.needs_desc_fr.strip('\n'))
             vals['needs_fr'] = wizard.needs_desc_fr
         if wizard.keep_desc_de:
-            vals['description_de'] = wizard.desc_de + \
-                wizard.needs_desc_de.strip('\n')
+            vals['description_de'] = p.sub('', wizard.desc_de +
+                                           wizard.needs_desc_de.strip('\n'))
             vals['needs_de'] = wizard.needs_desc_de
         if wizard.keep_desc_it:
-            vals['description_it'] = wizard.desc_it + \
-                wizard.needs_desc_it.strip('\n')
+            vals['description_it'] = p.sub('', wizard.desc_it +
+                                           wizard.needs_desc_it.strip('\n'))
             vals['needs_it'] = wizard.needs_desc_it
 
         if not vals:
@@ -186,69 +186,4 @@ class project_description_wizard(orm.TransientModel):
         return {
             'type': 'ir.actions.client',
             'tag': 'reload',
-        }
-
-    def on_change_translation(
-            self, cr, uid, ids, project_property_value_ids, context=None):
-
-        translated_value_obj = self.pool.get('compassion.translated.value')
-        wizard_ids = self.search(cr, uid, [], context=context)
-
-        if not wizard_ids:
-            return {}
-
-        wizard = self.browse(cr, uid, wizard_ids, context)[-1]
-
-        new_desc_fr = wizard.desc_fr
-        new_desc_de = wizard.desc_de
-        new_desc_it = wizard.desc_it
-
-        for project_property_value in project_property_value_ids:
-
-            translated_value = translated_value_obj.browse(
-                cr, uid, project_property_value[1], context)
-            if project_property_value[2]:
-                old_value = (r'(<span id="{}" style="color:).*?(".*?>).*?'
-                             '(</span>)').format(translated_value.value_en)
-
-                if 'value_fr' in project_property_value[2]:
-                    if project_property_value[2]['value_fr']:
-                        new_color = 'blue'
-                    else:
-                        new_color = 'red'
-                    new_value = r'\1{}\2{}\3'.format(
-                        new_color,
-                        project_property_value[2]['value_fr'] or
-                        translated_value.value_en)
-                    new_desc_fr = re.sub(old_value, new_value, new_desc_fr)
-
-                if 'value_de' in project_property_value[2]:
-                    if project_property_value[2]['value_de']:
-                        new_color = 'blue'
-                    else:
-                        new_color = 'red'
-                    new_value = r'\1{}\2{}\3'.format(
-                        new_color,
-                        project_property_value[2]['value_de'] or
-                        translated_value.value_en)
-                    new_desc_de = re.sub(old_value, new_value, new_desc_de)
-
-                if 'value_it' in project_property_value[2]:
-                    if project_property_value[2]['value_it']:
-                        new_color = 'blue'
-                    else:
-                        new_color = 'red'
-                    new_value = r'\1{}\2{}\3'.format(
-                        new_color,
-                        project_property_value[2]['value_it'] or
-                        translated_value.value_en)
-                    new_desc_it = re.sub(old_value, new_value, new_desc_it)
-
-        return {
-            'value':
-            {
-                'desc_fr': new_desc_fr,
-                'desc_de': new_desc_de,
-                'desc_it': new_desc_it,
-            }
         }

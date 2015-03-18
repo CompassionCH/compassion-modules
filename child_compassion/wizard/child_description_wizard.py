@@ -154,7 +154,7 @@ class child_description_wizard(orm.TransientModel):
 
     def validate_descriptions(self, cr, uid, ids, context=None):
         wizard = self.browse(cr, uid, ids, context)[0]
-        vals = {}
+        vals = dict()
         p = re.compile(r'<.*?>')  # Remove HTML markers
         if wizard.keep_desc_fr:
             vals['desc_fr'] = p.sub('', wizard.desc_fr.strip('\n'))
