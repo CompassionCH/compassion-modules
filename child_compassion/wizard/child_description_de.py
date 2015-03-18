@@ -66,7 +66,7 @@ class Child_description_de:
         if not case_study.christian_activities_ids:
             return ''
         activities = [
-            activity.get_translated_value('it')
+            activity.get_translated_value('de')
             for activity in case_study.christian_activities_ids]
         activities_str = cls._gen_list_string(activities)
         string = (u"In der Kirche macht %s %s %s" % (
@@ -84,7 +84,7 @@ class Child_description_de:
         '''
         if not case_study.family_duties_ids:
             return ''
-        activities = ([activity.get_translated_value('it')
+        activities = ([activity.get_translated_value('de')
                        for activity in case_study.family_duties_ids])
         activities_str = cls._gen_list_string(activities)
         string = (u"Zu Hause hilft %s %s. " % (
@@ -104,7 +104,7 @@ class Child_description_de:
         gender_pronoun = 'Er' if child.gender == 'M' else 'Sie'
 
         activities = [
-            activity.get_translated_value('it')
+            activity.get_translated_value('de')
             for activity in case_study.hobbies_ids]
 
         string = u"{} mag {}".format(
@@ -157,13 +157,15 @@ class Child_description_de:
                 string += u' geht zur Schule'
             if case_study.school_performance:
                 string += (u' und hat %s Ergebnisse. ' % (
-                    case_study.school_performance[0].get_translated_value('it')))
+                    case_study.school_performance[0].get_translated_value(
+                        'de')))
             else:
                 string += '.'
             if case_study.school_best_subject:
                 string += u'%s mag %s. ' % (
                     u'Er' if child.gender == 'M' else u'Sie',
-                    case_study.school_best_subject[0].get_translated_value('it'))
+                    case_study.school_best_subject[0].get_translated_value(
+                        'de'))
 
         else:
             child_age = (
@@ -198,7 +200,7 @@ class Child_description_de:
         live_in_institut = False
 
         for guardian in case_study.guardians_ids:
-            value = guardian.get_translated_value('it')
+            value = guardian.get_translated_value('de')
 
             if guardian.value_en != 'institutional worker':
                 if guardian.value_en in male_values:

@@ -159,11 +159,13 @@ class Child_description_fr:
             if case_study.school_performance:
                 string += u' et %s a des résultats %s. ' % (
                     u'il' if child.gender == 'M' else u'elle',
-                    case_study.school_performance[0].get_translated_value('fr'))
+                    case_study.school_performance[0].get_translated_value(
+                        'fr'))
             if case_study.school_best_subject:
                 string += u'%s aime bien %s. ' % (
                     u'Il' if child.gender == 'M' else u'Elle',
-                    case_study.school_best_subject[0].get_translated_value('fr'))
+                    case_study.school_best_subject[0].get_translated_value(
+                        'fr'))
             else:
                 string += '.'
         else:

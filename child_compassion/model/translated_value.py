@@ -11,7 +11,7 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
-import pdb
+
 
 class translated_value(orm.Model):
     _name = 'compassion.translated.value'
@@ -38,6 +38,7 @@ class translated_value(orm.Model):
     _defaults = {
         'is_tag': False,
     }
+
     def get_translated_value(self, cr, uid, id, lang, context):
         # pdb.set_trace()
         value = self.browse(cr, uid, id, context)[0]
