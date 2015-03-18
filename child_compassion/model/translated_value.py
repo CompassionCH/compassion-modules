@@ -40,7 +40,6 @@ class translated_value(orm.Model):
     }
 
     def get_translated_value(self, cr, uid, id, lang, context):
-        # pdb.set_trace()
         value = self.browse(cr, uid, id, context)[0]
         id = value.value_en
         translated_value = getattr(value, "value_"+lang) or value.value_en

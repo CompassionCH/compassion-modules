@@ -13,14 +13,6 @@
 class Project_description_it:
 
     @classmethod
-    def _get_translated_value(cls, value):
-        id = value.value_en
-        translated_value = value.value_it or value.value_en
-        color = 'red' if not value.value_it else 'blue'
-        return u'<span id="{}" style="color:{}">{}</span>'.format(
-            id, color, translated_value)
-
-    @classmethod
     def gen_it_translation(
             cls, cr, uid, project, context=None):
         desc_it = cls._gen_intro_it(
@@ -66,11 +58,11 @@ class Project_description_it:
         """ Generate house build materials, there are no specificities
             in this part
         """
-        floor_mat = [mat.value_it if mat.value_it else mat.value_en
+        floor_mat = [mat.get_translated_value('it')
                      for mat in project.floor_material_ids]
-        wall_mat = [mat.value_it if mat.value_it else mat.value_en
+        wall_mat = [mat.get_translated_value('it')
                     for mat in project.wall_material_ids]
-        roof_mat = [mat.value_it if mat.value_it else mat.value_en
+        roof_mat = [mat.get_translated_value('it')
                     for mat in project.roof_material_ids]
 
         materials = []
@@ -96,9 +88,9 @@ class Project_description_it:
         """ Generate spoken languages(s) and primary diet, there are
             no specificities in this part
         """
-        primary_diet = [cls._get_translated_value(diet)
+        primary_diet = [diet.get_translated_value('it')
                         for diet in project.primary_diet_ids]
-        spoken_languages = [cls._get_translated_value(lang)
+        spoken_languages = [lang.get_translated_value('it')
                             for lang in project.spoken_languages_ids]
 
         if spoken_languages:
@@ -116,7 +108,7 @@ class Project_description_it:
         """ Generate health problemes of this region, there
             are no specificities in this part
         """
-        health_prob = [cls._get_translated_value(prob)
+        health_prob = [prob.get_translated_value('it')
                        for prob in project.health_problems_ids]
 
         if health_prob:
@@ -138,7 +130,7 @@ class Project_description_it:
         """ Generate primary occupation and monthly income, check if need to
             round the income
         """
-        primary_occup = [cls._get_translated_value(occup)
+        primary_occup = [occup.get_translated_value('it')
                          for occup in project.primary_occupation_ids]
         monthly_income = int(round(project.monthly_income))
 

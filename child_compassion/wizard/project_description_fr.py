@@ -13,14 +13,6 @@
 class Project_description_fr:
 
     @classmethod
-    def _get_translated_value(cls, value):
-        id = value.value_en
-        translated_value = value.value_fr or value.value_en
-        color = 'red' if not value.value_fr else 'blue'
-        return u'<span id="{}" style="color:{}">{}</span>'.format(
-            id, color, translated_value)
-
-    @classmethod
     def gen_fr_translation(
             cls, cr, uid, project, context=None):
         desc_fr = cls._gen_intro_fr(
@@ -51,7 +43,7 @@ class Project_description_fr:
         """ Generate the project name, the localization and infos
             about the community
         """
-        terrain_desc = [cls._get_translated_value(desc)
+        terrain_desc = [desc.get_translated_value('fr')
                         for desc in project.terrain_description_ids]
         project_community_name = project.community_name.split('-')[0]
         project_community_population = u"{:,}".format(
@@ -70,11 +62,11 @@ class Project_description_fr:
         """ Generate house build materials, there are no specificities
             in this part
         """
-        floor_mat = [cls._get_translated_value(mat)
+        floor_mat = [mat.get_translated_value('fr')
                      for mat in project.floor_material_ids]
-        wall_mat = [cls._get_translated_value(mat)
+        wall_mat = [mat.get_translated_value('fr')
                     for mat in project.wall_material_ids]
-        roof_mat = [cls._get_translated_value(mat)
+        roof_mat = [mat.get_translated_value('fr')
                     for mat in project.roof_material_ids]
 
         materials = []
@@ -99,9 +91,9 @@ class Project_description_fr:
     def _gen_primary_diet_fr(cls, cr, uid, project, context=None):
         """ Generate primary diet, there are no specificities in this part
         """
-        primary_diet = [cls._get_translated_value(diet)
+        primary_diet = [diet.get_translated_value('fr')
                         for diet in project.primary_diet_ids]
-        spoken_languages = [cls._get_translated_value(lang)
+        spoken_languages = [lang.get_translated_value('fr')
                             for lang in project.spoken_languages_ids]
 
         if spoken_languages:
@@ -120,7 +112,7 @@ class Project_description_fr:
         """ Generate health problemes of this region, there
             are no specificities in this part
         """
-        health_prob = [cls._get_translated_value(prob)
+        health_prob = [prob.get_translated_value('fr')
                        for prob in project.health_problems_ids]
 
         if health_prob:
@@ -144,7 +136,7 @@ class Project_description_fr:
         """ Generate primary occupation and monthly income, check if need to
             round the income
         """
-        primary_occup = [cls._get_translated_value(occup)
+        primary_occup = [occup.get_translated_value('fr')
                          for occup in project.primary_occupation_ids]
         monthly_income = int(round(project.monthly_income))
 
