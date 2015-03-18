@@ -147,9 +147,11 @@ class Child_description_it:
             else:
                 string += u' frequenta la scuola'
             if case_study.school_performance:
-                string += (u' ed ha voti %s ' % (
+                string += (u' ed ha voti %s. ' % (
                     case_study.school_performance[0].get_translated_value(
                         'it')))
+            else:
+                string += '.'
 
             if case_study.school_best_subject:
                 string += u'%s piace: %s. ' % (
