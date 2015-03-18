@@ -81,16 +81,13 @@ class Child_description_it:
     def _gen_family_act_info_it(
             cls, cr, uid, child, case_study, context=None):
         ''' Generate the family duties description part.
-            In Italian, it always starts with "A casa, aiuta
-            con lavori domestici come "
-            It's followed by the family duties.
         '''
         if not case_study.family_duties_ids:
             return ''
         activities = ([activity.get_translated_value('it')
                        for activity in case_study.family_duties_ids])
         activities_str = cls._gen_list_string(activities)
-        string = ((u"A casa, aiuta %s. ") % (
+        string = ((u"A casa, aiuta: %s. ") % (
             activities_str))
         return string
 
@@ -122,47 +119,41 @@ class Child_description_it:
              - School favourite subject if relevant and existing
         '''
         ordinals = {
-            '1': u'terzo anno di scuola',
-            '2': u'quarto anno di scuola',
-            '3': u'quinto anno di scuola',
-            '4': u'sesto anno di scuola',
-            '5': u'settimo anno di scuola',
-            '6': u'ottavo anno di scuola',
-            '7': u'nono anno di scuola',
-            '8': u'decimo anno di scuola',
-            '9': u'undicesimo anno di scuola',
-            '10': u'primo anno di scuola superiore',
-            '11': u'secondo anno di scuola superiore',
-            '12': u'terzo anno di scuola superiore',
-            '13': u'liceo',
-            '14': u'liceo',
-            'PK': u'nella scuola materna',
-            'K': u'secondo anno di scuola',
-            'P': u'primo anno di scuola',
+            '1': u'il terzo anno di scuola',
+            '2': u'il quarto anno di scuola',
+            '3': u'il quinto anno di scuola',
+            '4': u'il sesto anno di scuola',
+            '5': u'il settimo anno di scuola',
+            '6': u"l'ottavo anno di scuola",
+            '7': u'il nono anno di scuola',
+            '8': u'il decimo anno di scuola',
+            '9': u"l'undicesimo anno di scuola'",
+            '10': u'il primo anno di scuola superiore',
+            '11': u'il secondo anno di scuola superiore',
+            '12': u'il terzo anno di scuola superiore',
+            '13': u'il liceo',
+            '14': u'il liceo',
+            'PK': u'la scuola materna',
+            'K': u'il secondo anno di scuola',
+            'P': u'il primo anno di scuola',
         }
         # the value of us_school_level can also be blank
         string = child.firstname
         if case_study.attending_school_flag:
             if (case_study.us_school_level and case_study.us_school_level in
                     ordinals):
-                try:
-                    int(case_study.us_school_level)
-                    string += (u" frequenta il %s" % (
-                        ordinals[case_study.us_school_level]))
-                except:
-                    string += (u" frequenta la scuola %s (US)"
-                               % ordinals[case_study.us_school_level])
+                string += (u" frequenta %s" % (
+                    ordinals[case_study.us_school_level]))
             else:
                 string += u' frequenta la scuola'
             if case_study.school_performance:
-                string += (u' ed %s ha voti %s. ' % (
-                    u'Lui' if child.gender == 'M' else u'Lei',
+                string += (u' ed ha voti %s ' % (
                     case_study.school_performance[0].get_translated_value(
                         'it')))
 
             if case_study.school_best_subject:
-                string += u'%s piace %s. ' % (
-                    u'Li' if child.gender == 'M' else u'Le',
+                string += u'%s piace: %s. ' % (
+                    u'A lui' if child.gender == 'M' else u'A lei',
                     case_study.school_best_subject[0].get_translated_value(
                         'it'))
             else:
@@ -233,7 +224,7 @@ class Child_description_it:
         if case_study.nb_brothers == 1:
             live_with['brothers'] = u'{0} fratello'.format(prefix[0])
         elif case_study.nb_brothers > 1:
-            live_with['brothers'] = u'{0} {1} confratelli'.format(
+            live_with['brothers'] = u'{0} {1} fratelli'.format(
                 prefix[2], cls._number_to_string(case_study.nb_brothers))
         if case_study.nb_sisters == 1:
             live_with['sisters'] = u'{0} sorella'.format(prefix[1])
@@ -243,7 +234,7 @@ class Child_description_it:
 
         # Live in institute or not
         if live_in_institut:
-            string = '%s vit dans un internat avec %s. ' % (
+            string = '%s vive in un collegio con %s. ' % (
                 child.firstname, cls._gen_list_string(live_with.values()))
         else:
             string = '%s vive con %s. ' % (
@@ -395,11 +386,12 @@ class Child_description_it:
 
         prefix_m = u'Suo'
         prefix_f = u'Sua'
+        prefix_p = u'I suoi'
 
         if (f_g[0] == u'grandmother' and m_g[0] == u'grandfather'):
             mf_g = u'{0} nonni'.format(prefix_f)
         elif (f_g[0] == u'mother' and m_g[0] == u'father'):
-            mf_g = u'{0} genitori'.format(prefix_f)
+            mf_g = u'{0} genitori'.format(prefix_p)
         else:
             mf_g = u'{0} {1} e {2} {3}'.format(prefix_m, m_g[1], prefix_f,
                                                f_g[1])
@@ -423,8 +415,8 @@ class Child_description_it:
         prefix = [prefix_m, prefix_f, prefix_mf]
 
         work_as = [
-            u'lavora come', u'lavora come', u'lavoro come']
-        is_employed = [u'lavora', u'lavora', u'lavoro']
+            u'lavora come', u'lavora come', u'lavorano come']
+        is_employed = [u'lavora', u'lavora', u'lavorano']
         is_unemployed = [
             u"è disoccupato", u"è disoccupata", u"sono disoccupati"]
 

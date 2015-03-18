@@ -582,15 +582,16 @@ class recurring_contract(orm.Model):
 
     def _invoice_paid(self, cr, uid, invoice, context=None):
         """ Prevent to reconcile invoices for fund-suspended projects. """
-        for invl in invoice.invoice_line:
-            if invl.contract_id and invl.contract_id.child_id:
-                project = invl.contract_id.child_id.project_id
-                if project.suspension == 'fund-suspended' and \
-                        invl.last_payment >= project.status_date:
-                    raise orm.except_orm(
-                        _("Reconcile error"),
-                        _("The project %s is fund-suspended. You cannot "
-                          "reconcile this invoice.") % project.code)
+        if invoice.payment_ids:
+            for invl in invoice.invoice_line:
+                if invl.contract_id and invl.contract_id.child_id:
+                    project = invl.contract_id.child_id.project_id
+                    if project.suspension == 'fund-suspended' and \
+                            invl.due_date >= project.status_date:
+                        raise orm.except_orm(
+                            _("Reconcile error"),
+                            _("The project %s is fund-suspended. You cannot "
+                              "reconcile this invoice.") % project.code)
 
     def _update_invoice_lines(self, cr, uid, contract, invoice_ids,
                               context=None):
