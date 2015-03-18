@@ -23,8 +23,8 @@ class child_on_internet_wizard(orm.TransientModel):
         childrens = child_obj.browse(
             cr, uid, context.get('active_ids'), context)
 
+        possible_states = ['N', 'R', 'Z']
         for child in childrens:
-            possible_states = ['N', 'R', 'Z']
             if child.state in possible_states:
                 child_ids.append(child.id)
 

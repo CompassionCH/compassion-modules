@@ -24,8 +24,8 @@ class child_remove_from_internet(orm.TransientModel):
         childrens = child_obj.browse(
             cr, uid, context.get('active_ids'), context)
 
+        possible_states = ['I']
         for child in childrens:
-            possible_states = ['I']
             if child.state in possible_states:
                 child_ids.append(child.id)
 

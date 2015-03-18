@@ -507,7 +507,7 @@ class compassion_child(orm.Model):
                 to_remove_from_web.append(child.id)
         if to_remove_from_web:
             self.child_remove_from_typo3(cr, uid, to_remove_from_web,
-                                               context)
+                                         context)
         self.write(cr, uid, ids, {
             'state': 'P',
             'has_been_sponsored': True}, context)

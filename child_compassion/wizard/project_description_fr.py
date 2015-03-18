@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Kevin Cristi <kcristi@compassion.ch>
+#    @author: Kevin Cristi, David Coninckx
 #
 #    The licence is in the file __openerp__.py
 #
@@ -48,8 +48,8 @@ class Project_description_fr:
         project_community_name = project.community_name.split('-')[0]
         project_community_population = u"{:,}".format(
             project.community_population).replace(',', "'")
-        string = (u"Cet enfant vit à {}"
-                  u"{}. {} compte environ {} habitants. ".format(
+        string = (u"Cet enfant vit à {0}"
+                  u"{1}. {2} compte environ {3} habitants. ".format(
                       project_community_name,
                       "" if not terrain_desc else u" dans une région " +
                       terrain_desc[0],

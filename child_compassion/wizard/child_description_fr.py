@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Cyril Sester , Kevin Cristi, David Coninckx
 #
@@ -206,21 +206,21 @@ class Child_description_fr:
                     male_guardians[guardian.value_en] = value
                     # Except brother. Managed later
                     if guardian.value_en != 'brother':
-                        live_with[guardian.value_en] = u'{} {}'.format(
+                        live_with[guardian.value_en] = u'{0} {1}'.format(
                             prefix[0], value)
                 # Plural guardian
                 elif guardian.value_en in plur_values:
                     # Included in male_guardian and female_guardians
                     male_guardians[guardian.value_en] = value
                     female_guardians[guardian.value_en] = value
-                    live_with[guardian.value_en] = u'{} {}'.format(
+                    live_with[guardian.value_en] = u'{0} {1}'.format(
                         prefix[2], value)
                 # Female guardian
                 else:
                     female_guardians[guardian.value_en] = value
                     # Except sister. Managed later
                     if guardian.value_en != 'sister':
-                        live_with[guardian.value_en] = u'{} {}'.format(
+                        live_with[guardian.value_en] = u'{0} {1}'.format(
                             prefix[1], value)
             else:
                 live_in_institut = True
@@ -230,14 +230,14 @@ class Child_description_fr:
 
         # Get number of brothers and sisters
         if case_study.nb_brothers == 1:
-            live_with['brothers'] = u'{} frère'.format(prefix[0])
+            live_with['brothers'] = u'{0} frère'.format(prefix[0])
         elif case_study.nb_brothers > 1:
-            live_with['brothers'] = u'{} {} frères'.format(
+            live_with['brothers'] = u'{0} {1} frères'.format(
                 prefix[2], cls._number_to_string(case_study.nb_brothers))
         if case_study.nb_sisters == 1:
-            live_with['sisters'] = u'{} soeur'.format(prefix[1])
+            live_with['sisters'] = u'{0} soeur'.format(prefix[1])
         elif case_study.nb_sisters > 1:
-            live_with['sisters'] = u'{} {} soeurs'.format(
+            live_with['sisters'] = u'{0} {1} soeurs'.format(
                 prefix[2], cls._number_to_string(case_study.nb_sisters))
 
         # Live in institute or not
@@ -260,18 +260,18 @@ class Child_description_fr:
         return string
 
     @classmethod
-    def _regroup_parents(cls, cr, uid, dict, context=None):
-        if (u'mother' in dict and
-                u'father' in dict):
-            dict.pop(u'mother')
-            dict.pop(u'father')
-            dict[u'parents'] = u'ses parents'
-        if (u'grandmother' in dict and
-                u'grandfather' in dict):
-            dict.pop(u'grandmother')
-            dict.pop(u'grandfather')
-            dict[u'grandparents'] = u'ses grand-parents'
-        return dict
+    def _regroup_parents(cls, cr, uid, live_with, context=None):
+        if (u'mother' in live_with and
+                u'father' in live_with):
+            live_with.pop(u'mother')
+            live_with.pop(u'father')
+            live_with[u'parents'] = u'ses parents'
+        if (u'grandmother' in live_with and
+                u'grandfather' in live_with):
+            live_with.pop(u'grandmother')
+            live_with.pop(u'grandfather')
+            live_with[u'grandparents'] = u'ses grand-parents'
+        return live_with
 
     @classmethod
     def _get_parents_info(cls, cr, uid, child,
@@ -297,7 +297,7 @@ class Child_description_fr:
         return string
 
     @classmethod
-    def _get_parent_info_string(cls, cr, uid, props, type, context=None):
+    def _get_parent_info_string(cls, cr, uid, props, parent, context=None):
         string = u''
 
         # Initialize specific strings to language
@@ -320,31 +320,31 @@ class Child_description_fr:
         # Boolean to generate string with more than one tags
         multiple_status = False
 
-        for prop in props[type]:
+        for prop in props[parent]:
             if prop in status_tags:
                 if not multiple_status:
-                    string += u'{} {} {}'.format(
-                        prefix[type], be[type], status_tags[prop][type])
+                    string += u'{0} {1} {2}'.format(
+                        prefix[parent], be[parent], status_tags[prop][parent])
                     multiple_status = True
                 else:
-                    string += u' et {}'.format(status_tags[prop])
+                    string += u' et {0}'.format(status_tags[prop])
 
         # Specific check on alive and supportingchild for both guardians
-        if (type == 2):
+        if (parent == 2):
             if ('alive' not in props[0] and
                     'alive' not in props[1]):
-                string = u'{} {}'.format(prefix[type], dead[type])
-            if 'supportingchild' in props[type] and \
+                string = u'{0} {1}'.format(prefix[parent], dead[parent])
+            if 'supportingchild' in props[parent] and \
                'livingwithchild' not in props[0] and \
                'livingwithchild' not in props[1]:
-                string += u'{} {}'.format(prefix[type], support[type])
+                string += u'{0} {1}'.format(prefix[parent], support[parent])
         # Check on alive and supportingchild
         else:
-            if 'supportingchild' in props[type] and \
-               'livingwithchild' not in props[type]:
-                string += u'{} {}'.format(prefix[type], support[type])
-            if ('alive' not in props[type] and type != 2):
-                string = u'{} {}'.format(prefix[type], dead[type])
+            if 'supportingchild' in props[parent] and \
+               'livingwithchild' not in props[parent]:
+                string += u'{0} {1}'.format(prefix[parent], support[parent])
+            if ('alive' not in props[parent] and parent != 2):
+                string = u'{0} {1}'.format(prefix[parent], dead[parent])
 
         # Endpoint
         if string:
@@ -402,21 +402,21 @@ class Child_description_fr:
             mf_g = u'Ses parents'
         # Case friends, foster parents or other relatives
         elif(f_g[0] == m_g[0]):
-            mf_g = u'Ses {}'.format(m_g)
+            mf_g = u'Ses {0}'.format(m_g)
         else:
-            mf_g = u'Son {} et sa {}'.format(m_g[1], f_g[1])
+            mf_g = u'Son {0} et sa {1}'.format(m_g[1], f_g[1])
 
         return mf_g
 
     @classmethod
     def _get_guardian_job_string(
             cls, cr, uid, props_en, props_fr,
-            m_g, f_g, type, context=None):
+            m_g, f_g, parent, context=None):
         string = u''
 
         # Initialize prefix specific to language
-        prefix_f = u'Sa {}'.format(f_g[1] if f_g else u'mère')
-        prefix_m = u'Son {}'.format(m_g[1] if m_g else u'père')
+        prefix_f = u'Sa {0}'.format(f_g[1] if f_g else u'mère')
+        prefix_m = u'Son {0}'.format(m_g[1] if m_g else u'père')
         prefix_mf = cls._get_mf_g(
             cr, uid, m_g, f_g, context) if f_g and m_g else None
 
@@ -444,44 +444,44 @@ class Child_description_fr:
         unconsidered_tag = [u'isattimesemployed', u'isemployed']
 
         # Case unemployed
-        if ('isunemployed' in props_en[type]):
-            string += u'{} {}'.format(prefix[type], is_unemployed[type])
+        if ('isunemployed' in props_en[parent]):
+            string += u'{0} {1}'.format(prefix[parent], is_unemployed[parent])
         else:
             multiple_job_work_as = False
 
             # Work as
             for job_tag_work_as in job_tags_work_as:
-                if job_tag_work_as in props_en[type]:
+                if job_tag_work_as in props_en[parent]:
                     # Multiple job check
                     if not multiple_job_work_as:
-                        string += u'{} {} {}'.format(
-                            prefix[type], work_as[type],
-                            job_tags_work_as[job_tag_work_as][type])
+                        string += u'{0} {1} {2}'.format(
+                            prefix[parent], work_as[parent],
+                            job_tags_work_as[job_tag_work_as][parent])
                         multiple_job_work_as = True
                     else:
-                        string += u' et {}'.format(
-                            job_tags_work_as[job_tag_work_as][type])
+                        string += u' et {0}'.format(
+                            job_tags_work_as[job_tag_work_as][parent])
 
             multiple_job_isemployed = False
 
             # Is employed
             for job_tag_isemployed in job_tags_isemployed:
-                if job_tag_isemployed in props_en[type]:
+                if job_tag_isemployed in props_en[parent]:
                     # Multiple job check
                     if (not multiple_job_isemployed and not
                             multiple_job_work_as):
-                        string += u'{} {} {}'.format(
-                            prefix[type], is_employed[type],
+                        string += u'{0} {1} {2}'.format(
+                            prefix[parent], is_employed[parent],
                             job_tags_isemployed[job_tag_isemployed])
                         multiple_job_isemployed = True
                     else:
-                        string += u' et {}'.format(
+                        string += u' et {0}'.format(
                             job_tags_isemployed[job_tag_isemployed])
 
             multiple_job = False
 
             # Other employments that requires translation
-            for prop in props_en[type]:
+            for prop in props_en[parent]:
                 if (prop not in unconsidered_tag and
                         prop not in job_tags_work_as and
                         prop not in job_tags_isemployed):
@@ -489,17 +489,17 @@ class Child_description_fr:
                     if (not multiple_job_work_as and not
                             multiple_job_isemployed and not
                             multiple_job):
-                        string += prefix[type]
+                        string += prefix[parent]
                         multiple_job = True
                     else:
                         string += u' et'
 
-                    color = 'red' if not props_fr[type][
-                        props_en[type].index(prop)] else 'blue'
-                    translated_prop = props_fr[type][
-                        props_en[type].index(prop)] or prop
+                    color = 'red' if not props_fr[parent][
+                        props_en[parent].index(prop)] else 'blue'
+                    translated_prop = props_fr[parent][
+                        props_en[parent].index(prop)] or prop
 
-                    string += (u' <span id="{}" style="color:{}">{}'
+                    string += (u' <span id="{0}" style="color:{1}">{2}'
                                '</span>').format(prop, color, translated_prop)
 
         # Endpoint
