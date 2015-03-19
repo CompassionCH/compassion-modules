@@ -24,7 +24,7 @@ class event_compassion(orm.Model):
     _inherit = ['mail.thread']
 
     def _get_analytic_lines(self, cr, uid, ids, field_name, arg, context=None):
-        res = {}
+        res = dict()
         line_obj = self.pool.get('account.analytic.line')
         if not isinstance(ids, list):
             ids = [ids]
@@ -42,7 +42,7 @@ class event_compassion(orm.Model):
 
     def _get_won_sponsorships(self, cr, uid, ids, field_name, arg,
                               context=None):
-        res = {}
+        res = dict()
         if not isinstance(ids, list):
             ids = [ids]
         for event in self.browse(cr, uid, ids, context):
@@ -125,6 +125,9 @@ class event_compassion(orm.Model):
         - create a project and link to its analytic account,
         - create an origin for sponsorships.
         """
+        if context is None:
+            context = dict()
+        context['from_event'] = True
         # Avoid putting twice the date in linked objects name
         event_year = vals.get('start_date',
                               datetime.today().strftime('%Y'))[:4]
@@ -143,7 +146,8 @@ class event_compassion(orm.Model):
                 cr, uid, self._get_project_vals(cr, uid, event, context),
                 context)
         analytic_id = self.pool.get('account.analytic.account').create(
-            cr, uid, self._get_analytic_vals(cr, uid, event, context), context)
+            cr, uid, self._get_analytic_vals(cr, uid, event, context),
+            context)
         origin_id = self.pool.get('recurring.contract.origin').create(
             cr, uid, self._get_origin_vals(
                 cr, uid, event, analytic_id, context), context)
@@ -155,29 +159,17 @@ class event_compassion(orm.Model):
         return new_id
 
     def write(self, cr, uid, ids, vals, context=None):
-        """ Push values to linked objects. """ TODOOOOOOOOOOOOOOO
+        """ Push values to linked objects. """
         super(event_compassion, self).write(cr, uid, ids, vals, context)
-        project_vals = dict()
-        origin_vals = dict()
-        analytic_vals = dict()
-        ctx = context.copy()
-        ctx['from_event'] = True
-        if 'type' in vals:
-            project_vals.update({'project_type': vals['type']})
-        if 'user_id' in vals:
-            project_vals.update({'user_id': vals['user_id']})
-        if 'partner_id' in vals:
-            project_vals.update({'partner_id': vals['partner_id']})
-        if 'name' in vals:
-            project_vals.update({'name': vals['name']})
-        if project_vals:
-            for event in self.browse(cr, uid, ids, context):
-                if 'type' in vals:
-                    # Change parent of analytic account
-                    project_vals.update({
-                        'parent_id': self._find_parent_analytic(
-                            cr, uid, vals['type'], event.year, context)})
-                event.project_id.write(project_vals, context=ctx)
+        if context is None:
+            context = dict()
+        context['from_event'] = True
+        for event in self.browse(cr, uid, ids, context):
+            event.project_id.write(self._get_project_vals(cr, uid, event,
+                                                          context))
+            event.analytic_id.write(self._get_analytic_vals(cr, uid, event,
+                                                            context))
+            event.origin_id.write({'name': event.name + ' ' + event.year})
 
         return True
 
@@ -191,15 +183,16 @@ class event_compassion(orm.Model):
                     _('The event is linked to expenses or sponsorships. '
                       'You cannot delete it.'))
             else:
-                if event.project_id:
+                if len(event.project_id.event_ids) <= 1:
                     event.project_id.unlink()
-                if event.analytic_id:
-                    event.analytic_id.unlink()
+                event.analytic_id.unlink()
+                event.origin_id.unlink()
         return super(event_compassion, self).unlink(cr, uid, ids, context)
 
     def create_from_gp(self, cr, uid, vals, context=None):
+        """ DEPRECATED """
         if context is None:
-            context = {}
+            context = dict()
         # Don't create project tasks for an old Event imported from GP.
         context['use_tasks'] = False
         return self.create(cr, uid, vals, context)
@@ -208,18 +201,16 @@ class event_compassion(orm.Model):
         """ Creates a new project based on the event.
         """
         if context is None:
-            context = {}
+            context = dict()
         ctx = context.copy()
         ctx['lang'] = 'en_US'
-        ctx['from_event'] = True
         members = self.pool.get('res.users').search(
             cr, uid,
             [('partner_id', 'in', [p.id for p in event.staff_ids])],
             context=ctx)
-        project_obj = self.pool.get('project.project')
         return {
             'name': event.name,
-            'use_tasks': ctx.get('use_tasks', True),
+            'use_tasks': True,
             'user_id': event.user_id.id,
             'partner_id': event.partner_id.id,
             'members': [(6, 0, members)],   # many2many field
@@ -228,7 +219,7 @@ class event_compassion(orm.Model):
             'parent_id': self._find_parent_analytic(cr, uid, event.type,
                                                     event.year, ctx),
             'project_type': event.type,
-            'state': 'open' if ctx.get('use_tasks', True) else 'close',
+            'state': 'open',
         }
 
     def _get_analytic_vals(self, cr, uid, event, parent_id, context=None):
@@ -245,7 +236,7 @@ class event_compassion(orm.Model):
 
     def _get_origin_vals(self, cr, uid, event, analytic_id, context=None):
         return {
-            'name': event.name + ' ' + event_year,
+            'name': event.name + ' ' + event.year,
             'type': 'event',
             'event_id': event.id,
             'analytic_id': analytic_id,
