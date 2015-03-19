@@ -70,35 +70,34 @@ class Project_description_de:
         roof_mat = [mat.get_translated_value('de')
                     for mat in project.roof_material_ids]
 
-        string = u"Die Häuser sind für gewöhnlich auf "
+        if not (floor_mat or wall_mat or roof_mat):
+            return ""
 
-        if wall_mat and floor_mat and roof_mat:
-            string += (u"%s erlaubt und haben %s, sowie %s. " % (
-                       wall_mat[0], floor_mat[0], roof_mat[0]))
-
-        elif ((wall_mat and floor_mat) or (wall_mat and
-              roof_mat) or (floor_mat and roof_mat)):
-            if not wall_mat:
-                string += (u"%s erlaubt und haben %s. " % (
-                           floor_mat[0], roof_mat[0]))
-            elif not floor_mat:
-                string += (u"%s erlaubt und haben %s. " % (
-                           wall_mat[0], roof_mat[0]))
-            elif not roof_mat:
-                string += (u"%s erlaubt und haben %s. " % (
-                           wall_mat[0], floor_mat[0]))
-
-        elif (wall_mat or floor_mat or roof_mat):
+        res = u"Die Häuser {verb} für gewöhnlich "
+        verb = u'sind'
+        wall = unicode(cls._gen_list_string(wall_mat, ', ', ' und '))
+        floor = unicode(cls._gen_list_string(floor_mat, ', ', ' und '))
+        roof = unicode(cls._gen_list_string(roof_mat, ', ', ' und '))
+        if floor_mat:
+            res += u"auf {floor} erbaut"
+        if wall_mat:
+            if floor_mat:
+                res += u" und haben {wall}"
+            else:
+                verb = u'haben'
+                res += u"{wall}"
+        if roof_mat:
             if wall_mat:
-                string += u"%s gebaut. " % wall_mat[0]
+                res += u", sowie {roof}."
             elif floor_mat:
-                string += u"%s gebaut. " % floor_mat[0]
-            elif roof_mat:
-                string += u"%s gebaut. " % roof_mat[0]
+                res += u" und haben {roof}."
+            else:
+                verb = u'haben'
+                res += u"{roof}."
         else:
-            string = ""
+            res += u"."
 
-        return string
+        return res.format(verb=verb, wall=wall, floor=floor, roof=roof)
 
     @classmethod
     def _gen_primary_diet_de(cls, cr, uid, project, context=None):
@@ -179,10 +178,12 @@ class Project_description_de:
         """ Create the needs' description pattern to fill by hand
         """
         string = (u"Diese Region braucht (...). Ihre Patenschaft erlaubt "
-                  u"den Mitarbeitern des %s, Ihr Patenkind "
-                  u"mit (...). Zusätzlich bieten die Zentrumsangestellten "
+                  u"den Mitarbeitern des {0}, Ihr Patenkind "
+                  u"mit Bibel- und Schulunterricht, Hygieneunterricht, "
+                  u"medizinischen Untersuchungen, ........................., "
+                  u"zu versorgen. Zusätzlich bieten die Zentrumsangestellten "
                   u"verschiedene Treffen für die Eltern oder "
-                  u"Erziehungsberechtigten Ihres Patenkindes " +
-                  "an.") % (project.name)
+                  u"Erziehungsberechtigten Ihres Patenkindes an.").format(
+            project.name)
 
         return string
