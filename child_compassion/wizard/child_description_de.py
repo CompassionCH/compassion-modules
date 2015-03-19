@@ -107,7 +107,7 @@ class Child_description_de:
             activity.get_translated_value('de')
             for activity in case_study.hobbies_ids]
 
-        string = u"{0} mag {1}".format(
+        string = u"{0} mag {1}.".format(
             gender_pronoun, cls._gen_list_string(activities))
 
         return string

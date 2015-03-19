@@ -244,6 +244,12 @@ class compassion_child(orm.Model):
         'state': 'N',
     }
 
+    _sql_constraints = [
+        ('unique_id', 
+         'unique(unique_id)',
+         _('The child already exists in database.'))
+    ]
+
     def _get_basic_informations(self, cr, uid, ids, context=None):
         if not isinstance(ids, list):
             ids = [ids]

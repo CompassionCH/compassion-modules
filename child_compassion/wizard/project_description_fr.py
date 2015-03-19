@@ -97,7 +97,7 @@ class Project_description_fr:
                             for lang in project.spoken_languages_ids]
 
         if spoken_languages:
-            string = (u"La langue commune de la region est "
+            string = (u"La langue commune de la région est "
                       u"le %s. " % (spoken_languages[0]))
         else:
             string = ""
@@ -162,9 +162,12 @@ class Project_description_fr:
     def _get_needs_pattern_fr(cls, cr, uid, project, context=None):
         """ Create the needs' description pattern to fill by hand
         """
-        string = (u"Cette communauté a besoin (de...). Votre parrainage "
-                  u"permet au personnel du centre d'accueil %s d'offrir à cet "
-                  u"enfant (des enseignements bibliques...). (Des rencontres "
-                  u"sont aussi organisées...)." % project.name)
+        string = (
+            u"Cette communauté a besoin (de...). Votre parrainage permet au "
+            u"personnel du centre d'accueil %s d'offrir à cet enfant des "
+            u"enseignements bibliques, des contrôles médicaux, une formation "
+            u"sur la santé, des activités récréatives et des cours d'appuis. "
+            u"Des rencontres sont aussi organisées pour les parents ou "
+            u"responsable de l'enfant." % project.name)
 
         return string
