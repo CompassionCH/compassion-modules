@@ -39,6 +39,9 @@ class crm_lead(orm.Model):
             'default_planned_sponsorships': lead.planned_sponsorships,
             'default_lead_id': lead.id
         })
+        if lead.event_ids:
+            model_event = lead.event_ids[0]
+            context['default_project_id'] = model_event.project_id.id
         # Open the create form...
         return {
             'type': 'ir.actions.act_window',
