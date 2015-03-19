@@ -102,8 +102,7 @@ class event_compassion(orm.Model):
             _get_analytic_lines, type="one2many",
             relation="account.analytic.line", readonly=True),
         'planned_sponsorships': fields.integer(_("Expected sponsorships")),
-        'lead_id': fields.many2one('crm.lead', _('Opportunity'),
-                                   readonly=True),
+        'lead_id': fields.many2one('crm.lead', _('Opportunity')),
         'won_sponsorships': fields.function(
             _get_won_sponsorships, type="integer",
             string=_("Won sponsorships"), store={
@@ -141,12 +140,16 @@ class event_compassion(orm.Model):
         event = self.browse(cr, uid, new_id, context)
 
         # Create Project, Analytic account and Origin linked to this event
+        project_obj = self.pool.get('project.project')
         project_id = event.project_id and event.project_id.id or \
-            self.pool.get('project.project').create(
+            project_obj.create(
                 cr, uid, self._get_project_vals(cr, uid, event, context),
                 context)
+        parent_analytic_id = project_obj.browse(
+            cr, uid, project_id, context).analytic_account_id.id
         analytic_id = self.pool.get('account.analytic.account').create(
-            cr, uid, self._get_analytic_vals(cr, uid, event, context),
+            cr, uid, self._get_analytic_vals(
+                cr, uid, event, parent_analytic_id, context),
             context)
         origin_id = self.pool.get('recurring.contract.origin').create(
             cr, uid, self._get_origin_vals(
@@ -160,6 +163,10 @@ class event_compassion(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
         """ Push values to linked objects. """
+        if 'lead_id' in vals:
+            raise orm.except_orm(
+                _("Not allowed"),
+                _("You cannot change the opportunity of this event."))
         super(event_compassion, self).write(cr, uid, ids, vals, context)
         if context is None:
             context = dict()
@@ -167,9 +174,13 @@ class event_compassion(orm.Model):
         for event in self.browse(cr, uid, ids, context):
             event.project_id.write(self._get_project_vals(cr, uid, event,
                                                           context))
-            event.analytic_id.write(self._get_analytic_vals(cr, uid, event,
-                                                            context))
-            event.origin_id.write({'name': event.name + ' ' + event.year})
+            event.analytic_id.write(self._get_analytic_vals(
+                cr, uid, event, event.project_id.analytic_account_id.id,
+                context))
+            self.pool.get('recurring.contract.origin').write(
+                cr, 1, event.origin_id.id, {
+                    'name': event.name + ' ' + event.year
+                }, context)
 
         return True
 
@@ -208,6 +219,9 @@ class event_compassion(orm.Model):
             cr, uid,
             [('partner_id', 'in', [p.id for p in event.staff_ids])],
             context=ctx)
+        parent_id = self.pool.get('account.analytic.account').search(
+                cr, uid, [('name', '=', 'Events')],
+                context={'lang': 'en_US'})[0]
         return {
             'name': event.name,
             'use_tasks': True,
@@ -216,16 +230,16 @@ class event_compassion(orm.Model):
             'members': [(6, 0, members)],   # many2many field
             'date_start': event.start_date,
             'date': event.end_date,
-            'parent_id': self._find_parent_analytic(cr, uid, event.type,
-                                                    event.year, ctx),
-            'project_type': event.type,
+            'parent_id': parent_id,
+            'project_type': 'event',
             'state': 'open',
         }
 
     def _get_analytic_vals(self, cr, uid, event, parent_id, context=None):
         return {
             # TODO : see if naming scheme is good
-            'name': event.year + '/' + event.type + '/' + event.name,
+            'name': event.year + ' / ' + event.type.title() + ' / ' +
+            event.name,
             'type': 'normal',
             'parent_id': parent_id,
             'use_timesheets': True,

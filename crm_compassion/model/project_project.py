@@ -60,7 +60,7 @@ class project_project(orm.Model):
     def write(self, cr, uid, ids, vals, context=None):
         """ Push the changes to linked events and to analytic account. """
         super(project_project, self).write(cr, uid, ids, vals, context)
-        if 'project_type' in vals:
+        if 'project_type' in vals and not context.get('from_event'):
             raise orm.except_orm(
                 _("Type cannot be changed"),
                 _("You cannot change the type of the project."))
