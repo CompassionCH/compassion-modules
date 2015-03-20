@@ -107,6 +107,7 @@ class gmc_message_pool(orm.Model):
         'state': fields.selection(
             [('new', _('New')),
              ('pending', _('Pending')),
+             ('fondue', _('To deliver')),
              ('success', _('Success')),
              ('failure', _('Failure'))],
             _('State'), readonly=True
@@ -127,13 +128,14 @@ class gmc_message_pool(orm.Model):
             store=True),
         'gift_type': fields.related(
             'invoice_line_id', 'product_id', 'name', type='char',
-            string=_('Gift type'), readonly=True),
+            string=_('Gift type'), readonly=True, store=True),
         'gift_instructions': fields.related(
             'invoice_line_id', 'gift_instructions', type='char',
-            string=_('Gift instructions')),
+            string=_('Gift instructions'), store=True),
         'gift_amount': fields.related(
-            'invoice_line_id', 'price_subtotal', type='integer',
-            string=_('Gift amount'), readonly=True),
+            'invoice_line_id', 'price_subtotal', type='float',
+            string=_('Gift amount'), readonly=True, store=True),
+        'money_sent_date': fields.datetime(_("Money sent"), readonly=True),
     }
 
     _defaults = {
@@ -168,7 +170,8 @@ class gmc_message_pool(orm.Model):
         today = datetime.now()
         for message in self.browse(cr, uid, ids, context=context):
             mess_date = datetime.strptime(message.date[:10], DF)
-            if message.state == 'new' and mess_date <= today:
+            if message.state == 'new' and (mess_date <= today or
+                                           context.get('force_send')):
                 res = False
                 action = message.action_id
                 if action.direction == 'in':
@@ -212,6 +215,12 @@ class gmc_message_pool(orm.Model):
                     # processing the next message.
                     cr.commit()
 
+            elif message.state == 'fondue':
+                # Mark Money Sent for Gift Messages
+                message.write({
+                    'money_sent_date': today,
+                    'state': 'success'
+                })
         return True
 
     def reset_message(self, cr, uid, ids, context=None):
@@ -247,6 +256,8 @@ class gmc_message_pool(orm.Model):
         """
         action = message.action_id
         object_id = message.object_id
+        if context is None:
+            context = dict()
         if self._validate_outgoing_action(cr, uid, message, context):
             if context.get('test_mode'):
                 # Don't send the request when testing.
@@ -360,12 +371,16 @@ class gmc_message_pool(orm.Model):
         """
         message_ids = self.search(
             cr, uid, [('request_id', '=', request_id)], context=context)
-        if message_ids:
-            self.write(cr, uid, message_ids, {
-                'state': status.lower(),
+        state = status.lower()
+        for m in self.browse(cr, uid, message_ids, context):
+            if state == 'success' and m.action_id.name == 'CreateGift':
+                state = 'fondue'
+            m.write({
+                # Gift messages are in success mode only after money is sent.
+                'state': state,
                 'failure_reason': message
-            }, context)
-        else:
+            })
+        if not message_ids:
             logger.error('Request id not found:' + str(request_id))
         return True
 
@@ -481,3 +496,12 @@ class gmc_action(orm.Model):
                 return True
 
         return False
+
+    def get_action_id(self, cr, uid, name, context=None):
+        """ Returns the id of the action given its name. """
+        action_id = self.search(cr, uid, [('name', '=', name)], limit=1,
+                                context=context)
+        if action_id:
+            return action_id[0]
+        else:
+            return False

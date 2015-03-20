@@ -245,7 +245,7 @@ class compassion_child(orm.Model):
     }
 
     _sql_constraints = [
-        ('unique_id', 
+        ('unique_id',
          'unique(unique_id)',
          _('The child already exists in database.'))
     ]

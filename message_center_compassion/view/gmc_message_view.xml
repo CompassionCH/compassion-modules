@@ -133,15 +133,18 @@
                     <field name="action_id"/>
                     <field name="date"/>
                     <field name="process_date"/>
+                    <field name="child_id"/>
+                    <field name="partner_id"/>
                     <filter string="Incoming" name="incoming" domain="[('direction','=','in')]" context="{'group_by':'action_id'}" />
                     <filter string="Constituent" name="constituent" domain="['|',('name','like','Constituent'),('name','like','Email')]" />
                     <filter string="Child" name="child" domain="['|',('name','like','Child'),('name','like','Project')]" />
                     <filter string="Commitment" name="commitment" domain="[('name','like','Commitment')]" context="{'group_by':'action_id'}"/>
-                    <filter string="CreateGift" name="gift" domain="[('name','=','CreateGift')]" />
+                    <filter string="CreateGift" name="gift" domain="[('name','=','CreateGift')]" context="{'group_by':'date'}" />
                     <separator />
                     <filter string="Pending" name="pending" domain="['|', ('state','=','pending'), ('state','=','new')]" />
                     <filter string="Failed" name="failure" domain="[('state','=','failure')]" />
-                    <filter string="Success" name="failure" domain="[('state','=','success')]" />
+                    <filter string="Success" name="success" domain="[('state','=','success')]" />
+                    <filter string="To Deliver" name="deliver" domain="[('state','=','fondue')]" />
                     <group expand="0" string="Group By...">
                         <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
                         <filter string="Date" domain="[]" context="{'group_by':'date'}"/>

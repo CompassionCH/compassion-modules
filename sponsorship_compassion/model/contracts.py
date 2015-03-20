@@ -16,6 +16,9 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+
+from .product import GIFT_TYPES
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -407,15 +410,10 @@ class recurring_contract(orm.Model):
         Note: direct access to database avoids to unreconcile and reconcile
               again invoices, which is a huge performance gain.
         """
-        if not since_date:
-            since_date = datetime.today().strftime(DF)
-        invl_search = [('contract_id', 'in', ids), ('state', '=', 'paid'),
-                       ('due_date', '>=', since_date)]
-        if to_date:
-            invl_search.append(('due_date', '<=', to_date))
-
         # Find all paid invoice lines after the given date
         inv_line_obj = self.pool.get('account.invoice.line')
+        invl_search = self._filter_clean_invoices(cr, uid, ids, since_date,
+                                                  to_date, context)
         inv_line_ids = inv_line_obj.search(cr, uid, invl_search,
                                            context=context)
 
@@ -550,6 +548,19 @@ class recurring_contract(orm.Model):
     ################################
     #        PRIVATE METHODS       #
     ################################
+    def _filter_clean_invoices(self, cr, uid, ids, since_date=None,
+                               to_date=None, context=None):
+        """ Construct filter domain to be passes on method clean_invoices,
+        which will determine which invoice lines will be removed from
+        invoices. """
+        if not since_date:
+            since_date = datetime.today().strftime(DF)
+        invl_search = [('contract_id', 'in', ids), ('state', '=', 'paid'),
+                       ('due_date', '>=', since_date)]
+        if to_date:
+            invl_search.append(('due_date', '<=', to_date))
+        return invl_search
+
     def _on_contract_active(self, cr, uid, ids, context=None):
         """ Hook for doing something when contract is activated.
         Update child to mark it has been sponsored, and update partner
@@ -585,9 +596,16 @@ class recurring_contract(orm.Model):
         if invoice.payment_ids:
             for invl in invoice.invoice_line:
                 if invl.contract_id and invl.contract_id.child_id:
+                    payment_allowed = True
                     project = invl.contract_id.child_id.project_id
-                    if project.suspension == 'fund-suspended' and \
-                            invl.due_date >= project.status_date:
+                    if invl.product_id.name in GIFT_TYPES
+                        payment_allowed = project.disburse_gifts or \
+                            invl.due_date < project.status_date
+                    else:
+                        payment_allowed = project.disburse_funds or \
+                            invl.due_date < project.status_date
+
+                    if not payment_allowed:
                         raise orm.except_orm(
                             _("Reconcile error"),
                             _("The project %s is fund-suspended. You cannot "
