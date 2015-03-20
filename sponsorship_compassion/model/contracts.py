@@ -598,7 +598,7 @@ class recurring_contract(orm.Model):
                 if invl.contract_id and invl.contract_id.child_id:
                     payment_allowed = True
                     project = invl.contract_id.child_id.project_id
-                    if invl.product_id.name in GIFT_TYPES
+                    if invl.product_id.name in GIFT_TYPES:
                         payment_allowed = project.disburse_gifts or \
                             invl.due_date < project.status_date
                     else:
