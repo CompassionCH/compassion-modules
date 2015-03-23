@@ -14,6 +14,8 @@
                     <field name="name"/>
                     <field name="color"/>
                     <field name="sds_state"/>
+                    <field name="state"/>
+                    <field name="child_id"/>
                     <templates>
                         <t t-name="kanban-box">
                             <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click">
@@ -24,9 +26,11 @@
                                 </div>
                                 <div class="oe_kanban_content">
                                     <div class="oe_kanban_left">
-                                        <div><field name="name"/></div>
-                                        <div><field name="partner_id"/></div>
-                                        <div><field name="child_id"/></div>
+                                        <b><field name="name"/></b>
+                                        <div>State : <field name="state"/></div>
+                                        <div>Project : <field name="project_state"/></div>
+                                        <div>Last change : <field name="last_sds_state_change_date"/></div>
+                                        <div>Total amount : <field name="total_amount"/></div>
                                     </div>
                                     <div class="oe_kanban_right">
                                         <img t-att-src="kanban_image('compassion.child', 'portrait', record.child_id.raw_value)" t-att-title="record.child_id.value" height="50" class="oe_kanban_avatar" t-if="record.child_id.value"/>
