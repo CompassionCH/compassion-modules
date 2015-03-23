@@ -12,7 +12,7 @@
             <field name="inherit_id" ref="child_compassion.view_compassion_child_form" />
             <field name="arch" type="xml">
                  <div name="buttons" position='inside'>
-                    <button string="Error message" name="message_center_compassion.action_gmc_message_pool_form" type="action" context="{'search_default_failure':1}" attrs="{'invisible': [('state', '!=', 'E')]}" />
+                    <button string="Error message" name="view_error_messages" type="object" attrs="{'invisible': [('state', '!=', 'E')]}" />
                  </div>
             </field>
         </record>
