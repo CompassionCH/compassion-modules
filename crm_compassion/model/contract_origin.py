@@ -34,38 +34,23 @@ class contracts(orm.Model):
 
     _inherit = 'recurring.contract'
 
-    def _get_user_id(self, cr, uid, ids, field_name, args, context=None):
-        """ Finds the Salesperson of the contract. """
-        res = dict()
-        for contract in self.browse(cr, uid, ids, context):
-            origin = contract.origin_id
-            user_id = False
-            if origin.partner_id:
-                user_id = origin.partner_id.id
-            elif origin.analytic_id and origin.analytic_id.manager_id:
-                user_id = origin.analytic_id.manager_id.partner_id.id
-            elif origin.event_id and origin.event_id.user_id:
-                user_id = origin.event_id.user_id.partner_id.id
-            res[contract.id] = user_id
-        return res
-
-    def _get_contracts_from_event(event_obj, cr, uid, ids, context=None):
-        """Returns contracts originated by given events."""
-        res = set()
-        for event in event_obj.browse(cr, uid, ids, context):
-            res.update([c.id for c in event.contract_ids])
-        return list(res)
+    def _get_user_from_origin(self, origin):
+        user_id = False
+        if origin.partner_id:
+            user_id = origin.partner_id.id
+        elif origin.analytic_id and origin.analytic_id.manager_id:
+            user_id = origin.analytic_id.manager_id.partner_id.id
+        elif origin.event_id and origin.event_id.user_id:
+            user_id = origin.event_id.user_id.partner_id.id
+        return user_id
 
     _columns = {
-        'user_id': fields.function(
-            _get_user_id, type='many2one', obj='res.partner',
-            string=_('Ambassador'), store={
-                'recurring.contract': (
-                    lambda self, cr, uid, ids, context=None: ids,
-                    ['origin_id'],
-                    10),
-                'crm.event.compassion': (
-                    _get_contracts_from_event,
-                    ['user_id'],
-                    10)})
+        'user_id': fields.many2one('res.partner', _('Ambassador'))
     }
+
+    def on_change_origin(self, cr, uid, ids, origin_id, context=None):
+        origin = self.pool.get('recurring.contract.origin').browse(
+            cr, uid, origin_id, context)
+        return {
+            'value': {'user_id': self._get_user_from_origin(origin)}
+        }
