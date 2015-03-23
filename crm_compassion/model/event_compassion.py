@@ -16,10 +16,10 @@ from datetime import datetime
 
 
 class event_compassion(orm.Model):
-
     """A Compassion event. """
-    _name = "crm.event.compassion"
-    _description = "Compassion event"
+    _name = 'crm.event.compassion'
+    _description = 'Compassion event'
+    _order = 'start_date desc'
 
     _inherit = ['mail.thread']
 
@@ -66,14 +66,23 @@ class event_compassion(orm.Model):
             res[event.id] = event.start_date[:4]
         return res
 
-    _columns = {
-        'name': fields.char(_("Name"), size=128, required=True),
-        'type': fields.selection([
+    def _get_full_name(self, cr, uid, ids, field_name, arg, context=None):
+        return {e.id: e.type.title() + ' ' + e.name + ' ' + e.year
+                for e in self.browse(cr, uid, ids, context)}
+
+    def get_event_types(self, cr, uid, context=None):
+        return [
             ('stand', _("Stand")),
             ('concert', _("Concert")),
             ('presentation', _("Presentation")),
             ('meeting', _("Meeting")),
-            ('sport', _("Sport event"))], _("Type"), required=True),
+            ('sport', _("Sport event"))]
+
+    _columns = {
+        'name': fields.char(_("Name"), size=128, required=True),
+        'full_name': fields.function(_get_full_name, type='char',
+                                     string='Full name'),
+        'type': fields.selection(get_event_types, _("Type"), required=True),
         'start_date': fields.datetime(_("Start date"), required=True),
         'year': fields.function(_get_year, type='char', string='Year',
                                 store=True),
@@ -120,9 +129,10 @@ class event_compassion(orm.Model):
 
     def create(self, cr, uid, vals, context=None):
         """ When an event is created:
-        - link it to the originating Opportunity,
-        - create a project and link to its analytic account,
-        - create an origin for sponsorships.
+        - Format the name to remove year of it,
+        - Retrieve a corresponding Project (for tasks) or create a new one,
+        - Create a child analytic_account to the project's one,
+        - Create an origin for sponsorships.
         """
         if context is None:
             context = dict()
@@ -142,9 +152,11 @@ class event_compassion(orm.Model):
         # Create Project, Analytic account and Origin linked to this event
         project_obj = self.pool.get('project.project')
         project_id = event.project_id and event.project_id.id or \
+            event.lead_id and event.lead_id.event_ids and \
+            event.lead_id.event_ids[-1].project_id.id or \
             project_obj.create(
-                cr, uid, self._get_project_vals(cr, uid, event, context),
-                context)
+                cr, uid, self._get_project_vals(
+                    cr, uid, event, create=True, context=context), context)
         parent_analytic_id = project_obj.browse(
             cr, uid, project_id, context).analytic_account_id.id
         analytic_id = self.pool.get('account.analytic.account').create(
@@ -173,14 +185,13 @@ class event_compassion(orm.Model):
         context['from_event'] = True
         for event in self.browse(cr, uid, ids, context):
             event.project_id.write(self._get_project_vals(cr, uid, event,
-                                                          context))
+                                                          context=context))
             event.analytic_id.write(self._get_analytic_vals(
                 cr, uid, event, event.project_id.analytic_account_id.id,
                 context))
             self.pool.get('recurring.contract.origin').write(
                 cr, 1, event.origin_id.id, {
-                    'name': event.name + ' ' + event.year
-                }, context)
+                    'name': event.full_name}, context)
 
         return True
 
@@ -208,39 +219,66 @@ class event_compassion(orm.Model):
         context['use_tasks'] = False
         return self.create(cr, uid, vals, context)
 
-    def _get_project_vals(self, cr, uid, event, context=None):
+    def _get_project_vals(self, cr, uid, event, create=False, context=None):
         """ Creates a new project based on the event.
         """
-        if context is None:
-            context = dict()
-        ctx = context.copy()
-        ctx['lang'] = 'en_US'
-        members = self.pool.get('res.users').search(
-            cr, uid,
-            [('partner_id', 'in', [p.id for p in event.staff_ids])],
-            context=ctx)
-        parent_id = self.pool.get('account.analytic.account').search(
+        res = dict()
+        if create:
+            members = self.pool.get('res.users').search(
+                cr, uid,
+                [('partner_id', 'in', [p.id for p in event.staff_ids])],
+                context=context)
+            parent_id = self.pool.get('account.analytic.account').search(
                 cr, uid, [('name', '=', 'Events')],
                 context={'lang': 'en_US'})[0]
-        return {
-            'name': event.name,
-            'use_tasks': True,
-            'user_id': event.user_id.id,
-            'partner_id': event.partner_id.id,
-            'members': [(6, 0, members)],   # many2many field
-            'date_start': event.start_date,
-            'date': event.end_date,
-            'parent_id': parent_id,
-            'project_type': 'event',
+            task_type_id = self._create_task_type(cr, uid, event, context)
+            res.update({
+                'name': event.name,
+                'use_tasks': True,
+                'parent_id': parent_id,
+                'project_type': 'event',
+                'user_id': event.user_id.id,
+                'partner_id': event.partner_id.id,
+                'members': [(6, 0, members)],   # many2many field
+                'date_start': event.start_date,
+                'date': event.end_date,
+                'state': 'open',
+                'type_ids': [(6, 0, [task_type_id])],
+            })
+        else:
+            # Update task type of project
+            task_type_obj = self.pool.get('project.task.type')
+            task_type_id = task_type_obj.search(cr, uid, [
+                ('description', 'like', str(event.id))], context=context)
+            if task_type_id:
+                res['type_ids'] = [(1, task_type_id[0], {
+                    'name': event.full_name})]
+            else:
+                # Attach a new task type
+                task_type_id = self._create_task_type(cr, uid, event, context)
+                res['type_ids'] = [(4, task_type_id)]
+
+        return res
+
+    def _create_task_type(self, cr, uid, event, context=None):
+        """ Create a new project task type """
+        task_type_obj = self.pool.get('project.task.type')
+        task_type_id = task_type_obj.create(cr, uid, {
+            'name': event.full_name,
             'state': 'open',
-        }
+            'description': 'Task type generated for event ID ' + str(
+                event.id),
+            'sequence': 1}, context)
+        return task_type_id
 
     def _get_analytic_vals(self, cr, uid, event, parent_id, context=None):
         return {
-            # TODO : see if naming scheme is good
             'name': event.year + ' / ' + event.type.title() + ' / ' +
             event.name,
-            'type': 'normal',
+            'type': 'event',
+            'event_type': event.type,
+            'date_start': event.start_date,
+            'date': event.end_date,
             'parent_id': parent_id,
             'use_timesheets': True,
             'partner_id': event.partner_id.id,
@@ -250,7 +288,6 @@ class event_compassion(orm.Model):
 
     def _get_origin_vals(self, cr, uid, event, analytic_id, context=None):
         return {
-            'name': event.name + ' ' + event.year,
             'type': 'event',
             'event_id': event.id,
             'analytic_id': analytic_id,

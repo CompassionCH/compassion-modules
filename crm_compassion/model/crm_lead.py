@@ -40,7 +40,7 @@ class crm_lead(orm.Model):
             'default_lead_id': lead.id
         })
         if lead.event_ids:
-            model_event = lead.event_ids[0]
+            model_event = lead.event_ids[-1]
             context['default_project_id'] = model_event.project_id.id
         # Open the create form...
         return {

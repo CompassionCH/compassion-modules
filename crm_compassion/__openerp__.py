@@ -56,6 +56,7 @@ new model for tracking upcoming events.
         'view/move_line_view.xml',
         'view/project_view.xml',
         'view/hr_timesheet_view.xml',
+        'view/analytic_account_view.xml',
     ],
     'demo': [],
     'installable': True,
