@@ -41,11 +41,11 @@ class translated_value(orm.Model):
 
     def get_translated_value(self, cr, uid, id, lang, context):
         value = self.browse(cr, uid, id, context)[0]
-        id = value.value_en
+        html_id = value.value_en
         translated_value = getattr(value, "value_"+lang) or value.value_en
         color = 'red' if not getattr(value, "value_"+lang) else 'blue'
-        return u'<span id="{}" style="color:{}">{}</span>'.format(
-            id, color, translated_value)
+        return u'<span id="{0}" style="color:{1}">{2}</span>'.format(
+            html_id, color, translated_value)
 
     def get_value_ids(self, cr, uid, eng_values, property_name, context):
         """ Utility method that finds already existing translated values
