@@ -6,7 +6,7 @@
 -->
 <openerp>
 	<data noupdate='1'>
-        <function model="install.sds.tracking" name="_set_sds_state"/>
+        <function model="install.sds.tracking" name="_set_sds_states"/>
         <function model="install.sds.tracking" name="_set_project_state"/>
         <function model="install.sds.tracking" name="_insert_wkf_items_for_sds_state"/>
     </data>
