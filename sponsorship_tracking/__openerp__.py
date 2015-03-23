@@ -51,6 +51,7 @@ It adds a new tree and form view to track sponsorships.
         'data/install.xml',
         ],
     'demo': [],
+    'js': ['static/src/js/sponsorship_tracking_kanban.js'],
     'installable': True,
     'auto_install': False,
 }

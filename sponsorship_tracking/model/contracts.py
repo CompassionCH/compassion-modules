@@ -15,12 +15,29 @@ from openerp.tools.translate import _
 
 from datetime import datetime, date, timedelta
 import logging
+import pdb
 
 logger = logging.getLogger(__name__)
 
 
 class recurring_contract(orm.Model):
     _inherit = "recurring.contract"
+    def state_transition_from_kanban (self, cr, uid, old_state, new_state, id, context=None):
+        start, end, signal = 'start', 'end' ,'signal'
+
+        state_transitions = [
+            {start:'start', end:'active', signal:'mail_sent'},
+            {start:'waiting_welcome', end:'active', signal:'welcome_sent'},
+            {start:'sub_waiting', end:'no_sub', signal:'no_sub'},
+        ]
+        
+        for state_transition in state_transitions:
+            if (state_transition[start] == old_state and 
+               state_transition[end] == new_state):
+                trans_method = getattr(self, state_transition[signal])
+                return trans_method(cr, uid, id, context)
+        else:
+            return False
 
     _columns = {
         'sds_state': fields.selection([
@@ -33,8 +50,8 @@ class recurring_contract(orm.Model):
             ('sub_waiting', _('Sub waiting')),
             ('no_sub', _('No sub')),
             ('sub', _('Sub')),
-            ('sub_accept', _('Accept sub')),
-            ('sub_reject', _('Reject sub'))], _('SDS Status'), select=True,
+            ('sub_accept', _('Sub Accept')),
+            ('sub_reject', _('Sub Reject'))], _('SDS Status'), select=True,
             readonly=True, track_visibility='onchange',
             help=_('')),
         'last_sds_state_change_date': fields.date(
@@ -58,6 +75,7 @@ class recurring_contract(orm.Model):
             ('terminated', _('Terminated'))], _('Project Status'), select=True,
             readonly=True, track_visibility='onchange',
             help=_('')),
+        'color': fields.integer('Color Index'),
     }
 
     def copy(self, cr, uid, id, default=None, context=None):
@@ -137,21 +155,39 @@ class recurring_contract(orm.Model):
     def check_sub_duration(self, cr, uid, context=None):
         contract_ids = self.search(
             cr, uid, [('sds_state', '=', 'sub')], context=context)
-
+        
         for contract in self.browse(cr, uid, contract_ids, context):
-            if contract.last_sds_state_change_date:
-                last_sds_state_change_date = datetime.strptime(
-                    contract.last_sds_state_change_date, DF).date()
-                if (last_sds_state_change_date <
-                   date.today() - timedelta(days=15)):
+            sub_parent_contracts_ids = self.search(
+            cr, uid,
+            [('parent_id', '=', contract.id)],
+            context=context)
+            
+            if sub_parent_contracts_ids:
+                sub_parent_contracts = self.browse(
+                        cr, uid, sub_parent_contracts_ids, context)
+                for sub_parent_contract in sub_parent_contracts:
+                    if (sub_parent_contract.state == 'active' or
+                       sub_parent_contract.end_reason == 1):
+                        wf_service = netsvc.LocalService('workflow')
+                        wf_service = netsvc.LocalService('workflow')
+                        logger.info(
+                            "Contract " + str(
+                            contract.id) + " sub waiting time expired")
+                        wf_service.trg_validate(
+                            uid, 'recurring.contract',
+                            contract.id,
+                            'sub_accept', cr)
+                        break
+                else:
+                    wf_service = netsvc.LocalService('workflow')
                     wf_service = netsvc.LocalService('workflow')
                     logger.info(
                         "Contract " + str(
-                            contract.id) + " sub waiting time expired")
+                        contract.id) + " sub waiting time expired")
                     wf_service.trg_validate(
                         uid, 'recurring.contract',
                         contract.id,
-                        'sub_accept', cr)
+                        'sub_reject', cr)
         return True
 
     def contract_cancelled(self, cr, uid, ids, context=None):
