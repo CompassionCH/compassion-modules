@@ -23,7 +23,7 @@ class contract_origin(orm.Model):
 
     def _name_get(self, origin):
         if origin.type == 'event':
-            name = origin.event_id.name + " " + origin.event_id.start_date[:4]
+            name = origin.event_id.full_name
         else:
             name = super(contract_origin, self)._name_get(origin)
         return name

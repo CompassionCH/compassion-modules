@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!--
+            ANALYTIC ACCOUNT
+        -->
+        
+        <!-- Analytic Account Form View -->
+        <record model="ir.ui.view" id="crm_analytic_compassion">
+            <field name="model">account.analytic.account</field>
+            <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='contract_page']" position="after">
+                    <page string="Event Information" name='event_page' attrs="{'invisible':[('type','!=','event')]}">
+                        <group>
+                            <field name="event_type"/>
+                            <field name="date_start"/>
+                            <field name="date"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+        
+        <!-- Search view -->
+        <record id="view_analytic_filter" model="ir.ui.view">
+            <field name="name">crm.analytic.compassion.select</field>
+            <field name="model">account.analytic.account</field>
+            <field name="inherit_id" ref="account.view_account_analytic_account_search"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="type"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
