@@ -300,9 +300,9 @@ class Child_description_de:
 
         be = [u'ist', u'ist', u'sind']
         dead = [u'ist gestorben', u'ist gestorben', u'sind gestorben']
-        support = [u'unterstüzt die Familie finanziell',
-                   u'unterstüzt die Familie finanziell',
-                   u'unterstüzt die Familie finanziell']
+        support = [u'unterstützt die Familie finanziell',
+                   u'unterstützt die Familie finanziell',
+                   u'unterstützt die Familie finanziell']
 
         status_tags = {
             u'inprison': [u'im Gefängnis', u'im Gefängnis', u'im Gefängnis'],
