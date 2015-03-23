@@ -15,25 +15,26 @@ from openerp.tools.translate import _
 
 from datetime import datetime, date, timedelta
 import logging
-import pdb
 
 logger = logging.getLogger(__name__)
 
 
 class recurring_contract(orm.Model):
     _inherit = "recurring.contract"
-    def state_transition_from_kanban (self, cr, uid, old_state, new_state, id, context=None):
-        start, end, signal = 'start', 'end' ,'signal'
+
+    def state_transition_from_kanban(
+            self, cr, uid, old_state, new_state, id, context=None):
+        start, end, signal = 'start', 'end', 'signal'
 
         state_transitions = [
-            {start:'start', end:'active', signal:'mail_sent'},
-            {start:'waiting_welcome', end:'active', signal:'welcome_sent'},
-            {start:'sub_waiting', end:'no_sub', signal:'no_sub'},
+            {start: 'start', end: 'active', signal: 'mail_sent'},
+            {start: 'waiting_welcome', end: 'active', signal: 'welcome_sent'},
+            {start: 'sub_waiting', end: 'no_sub', signal: 'no_sub'},
         ]
-        
+
         for state_transition in state_transitions:
-            if (state_transition[start] == old_state and 
-               state_transition[end] == new_state):
+            if (state_transition[start] == old_state and
+                    state_transition[end] == new_state):
                 trans_method = getattr(self, state_transition[signal])
                 return trans_method(cr, uid, id, context)
         else:
@@ -155,24 +156,24 @@ class recurring_contract(orm.Model):
     def check_sub_duration(self, cr, uid, context=None):
         contract_ids = self.search(
             cr, uid, [('sds_state', '=', 'sub')], context=context)
-        
+
         for contract in self.browse(cr, uid, contract_ids, context):
             sub_parent_contracts_ids = self.search(
-            cr, uid,
-            [('parent_id', '=', contract.id)],
-            context=context)
-            
+                cr, uid,
+                [('parent_id', '=', contract.id)],
+                context=context)
+
             if sub_parent_contracts_ids:
                 sub_parent_contracts = self.browse(
-                        cr, uid, sub_parent_contracts_ids, context)
+                    cr, uid, sub_parent_contracts_ids, context)
                 for sub_parent_contract in sub_parent_contracts:
                     if (sub_parent_contract.state == 'active' or
-                       sub_parent_contract.end_reason == 1):
+                            sub_parent_contract.end_reason == 1):
                         wf_service = netsvc.LocalService('workflow')
                         wf_service = netsvc.LocalService('workflow')
                         logger.info(
                             "Contract " + str(
-                            contract.id) + " sub waiting time expired")
+                                contract.id) + " sub waiting time expired")
                         wf_service.trg_validate(
                             uid, 'recurring.contract',
                             contract.id,
@@ -183,7 +184,7 @@ class recurring_contract(orm.Model):
                     wf_service = netsvc.LocalService('workflow')
                     logger.info(
                         "Contract " + str(
-                        contract.id) + " sub waiting time expired")
+                            contract.id) + " sub waiting time expired")
                     wf_service.trg_validate(
                         uid, 'recurring.contract',
                         contract.id,
