@@ -151,7 +151,8 @@ class gmc_message_pool(orm.Model):
     def process_update_messages(self, cr, uid, context=None):
         gmc_action_ids = self.pool.get('gmc.action').search(
             cr, uid,
-            [('type', '=', 'update'), ('direction', '=', 'in')],
+            [('type', '=', 'update'), ('direction', '=', 'in'),
+             ('event', '!=', 'NewImage')],
             context=context)
         gmc_update_messages_ids = self.search(
             cr, uid, [('action_id', 'in', gmc_action_ids)], context=context)

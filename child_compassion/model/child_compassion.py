@@ -462,6 +462,12 @@ class compassion_child(orm.Model):
             child_prop_obj.write(cr, uid, study_ids, vals, context)
         else:
             child_prop_obj.create(cr, uid, vals, context)
+            # Remove old descriptions
+            child.write({
+                'desc_fr': False,
+                'desc_de': False,
+                'desc_it': False,
+                'desc_en': False})
 
         # Add a note in child
         self.pool.get('mail.thread').message_post(
