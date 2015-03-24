@@ -51,7 +51,7 @@
                                 <field name="end_date" />
                             </group>
                             <group>
-                                <field name="partner_id"/>
+                                <field name="partner_id" options="{'create': false, 'm2o_dialog': false}"/>
                                 <label for="street" string="Address"/>
                                 <div>
                                     <field name="street" placeholder="Street..."/>
