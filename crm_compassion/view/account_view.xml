@@ -33,5 +33,31 @@
                 </field>
             </field>
         </record>
+        
+        <!-- 
+            ACCOUNT INVOICE LINE
+        -->
+        
+        <!-- Invoie Line Tree View -->
+        <record model="ir.ui.view" id="crm_invoice_line_compassion">
+            <field name="model">account.invoice.line</field>
+            <field name="inherit_id" ref="sponsorship_compassion.view_invoice_line_child_tree"/>
+            <field name="arch" type="xml">
+                <field name="child_name" position="after">
+                    <field name="user_id"/>
+                </field>
+            </field>
+        </record>
+        
+        <!-- Invoice Form View -->
+        <record model="ir.ui.view" id="crm_invoice_compassion">
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="sponsorship_compassion.view_invoice_child_form"/>
+            <field name="arch" type="xml">
+                <field name="child_name" position="after">
+                    <field name="user_id"/>
+                </field>
+            </field>
+        </record>
     </data>
 </openerp>
