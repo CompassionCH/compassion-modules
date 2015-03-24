@@ -64,6 +64,7 @@ class child_pictures(orm.Model):
         a new Pictures object.
         """
         res_id = super(child_pictures, self).create(cr, uid, vals, context)
+
         child = self.pool.get('compassion.child').browse(
             cr, uid, vals['child_id'], context)
         # Retrieve Fullshot
@@ -92,7 +93,7 @@ class child_pictures(orm.Model):
             self.unlink(cr, uid, res_id, context)
             self.write(
                 cr, uid, same_picture_ids,
-                {'date': date.today()}, context)
+                {'date': context['image_date']}, context)
             self.pool.get('mail.thread').message_post(
                 cr, uid, child.id,
                 _('The picture was the same'), 'Picture update',
@@ -124,11 +125,13 @@ class child_pictures(orm.Model):
                      type='Headshot', dpi=72, width=400, height=400,
                      format='jpeg', context=None):
         ''' Gets a picture from Compassion webservice '''
-        url = self.pool.get('compassion.child').get_url(child_code, 'image')
+        url = self.pool.get('compassion.child').get_url(
+            child_code, 'image/2015/03')
         url += '&Height=%s&Width=%s&DPI=%s&ImageFormat=%s&ImageType=%s' \
             % (height, width, dpi, format, type)
         r = requests.get(url)
         json_data = r.json()
+
         if not r.status_code/100 == 2:
             self.pool.get('mail.thread').message_post(
                 cr, uid, child_id,
@@ -141,7 +144,7 @@ class child_pictures(orm.Model):
         if not context:
             context = dict()
         context['store_fname'] = type + '.' + format
-
+        context['image_date'] = json_data['imageDate'] or date.today()
         return attachment_obj.create(cr, uid, {
             'datas_fname': type + '.' + format,
             'res_model': self._name,
