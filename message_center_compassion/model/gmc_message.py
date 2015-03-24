@@ -151,8 +151,7 @@ class gmc_message_pool(orm.Model):
     def process_update_messages(self, cr, uid, context=None):
         gmc_action_ids = self.pool.get('gmc.action').search(
             cr, uid,
-            [('type', '=', 'update'), ('direction', '=', 'in'),
-             ('event', '!=', 'NewImage')],
+            [('type', '=', 'update'), ('direction', '=', 'in')],
             context=context)
         gmc_update_messages_ids = self.search(
             cr, uid, [('action_id', 'in', gmc_action_ids)], context=context)
@@ -222,6 +221,11 @@ class gmc_message_pool(orm.Model):
                     'money_sent_date': today,
                     'state': 'success'
                 })
+
+            elif message.state == 'failure':
+                # Set back to new
+                message.reset_message()
+
         return True
 
     def reset_message(self, cr, uid, ids, context=None):
