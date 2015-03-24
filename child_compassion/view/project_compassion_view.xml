@@ -75,6 +75,7 @@
                                     <group> 
                                         <field name="primary_diet_ids" widget="many2many_tags" />
                                         <field name="closest_city" />
+                                        <field name="distance_from_closest_city_ids" widget="many2many_tags"/>
                                         <field name="terrain_description_ids" widget="many2many_tags" />
                                         <field name="community_population" />
                                         <field name="floor_material_ids" widget="many2many_tags" />

@@ -187,12 +187,11 @@ class compassion_child(orm.Model):
                 'child_id': child_id}, context)
         return child_id
 
-    def view_error_messages(self, cr ,uid, ids, context=None):
+    def view_error_messages(self, cr, uid, ids, context=None):
         return {
             'type': 'ir.actions.act_window',
             'id': 'action_gmc_message_incoming_form',
             'view_mode': 'tree,form',
             'res_model': 'gmc.message.pool',
-            'domain':[('child_id', '=', ids[0]),('state', '=', 'failure')]
+            'domain': [('child_id', 'in', ids), ('state', '=', 'failure')]
         }
-        
