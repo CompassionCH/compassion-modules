@@ -11,15 +11,47 @@
 
 
 def migrate(cr, version):
+
     if not version:
         return
-    # Modify analytic accounts linked to Events to change their event type.
+    # Add translated value for new property distance_from_closest_city
+    # based on old string distance_from_closest_city
 
     cr.execute(
         """
+        CREATE RULE "my_table_on_duplicate_ignore"
+        AS ON INSERT TO "compassion_translated_value"
+        WHERE EXISTS(SELECT 1 FROM compassion_translated_value
+                    WHERE value_en=NEW.value_en)
+        DO INSTEAD NOTHING;
         INSERT INTO compassion_translated_value
         (is_tag,value_en, property_name)
         SELECT False, distance_from_closest_city, 'distance_from_closest_city'
         FROM compassion_project
-        WHERE distance_from_closest_city IS NOT NULL ;
+        WHERE distance_from_closest_city IS NOT NULL;
+        DROP RULE "my_table_on_duplicate_ignore"
+        ON "compassion_translated_value";
         """)
+
+    cr.execute(
+        '''
+        SELECT id, distance_from_closest_city
+        FROM compassion_project
+        WHERE distance_from_closest_city IS NOT NULL
+        '''
+    )
+    projects = cr.fetchall()
+
+    for project in projects:
+        cr.execute(
+            '''
+        SELECT id FROM compassion_translated_value
+        WHERE value_en = '{}'
+        '''.format(project[1]))
+        translated_value_id = cr.fetchall()[0][0]
+
+        cr.execute(
+            '''
+        INSERT INTO project_property_to_value (project_id, value_id)
+        VALUES ({},{})
+        '''.format(project[0], translated_value_id))
