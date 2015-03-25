@@ -8,9 +8,12 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+import sys
 
 
 def migrate(cr, version):
+    reload(sys)
+    sys.setdefaultencoding('UTF8')
 
     if not version:
         return
