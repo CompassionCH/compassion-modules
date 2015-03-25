@@ -53,7 +53,7 @@ def migrate(cr, version):
     for project in projects:
         cr.execute(
             "SELECT id FROM compassion_translated_value "
-            "WHERE value_en = '{}'".format(project[1]))
+            "WHERE value_en = '{}'".format(project[1].replace('\'', '\'\'')))
         translated_value_id = cr.fetchall()[0][0]
 
         cr.execute(
