@@ -53,5 +53,5 @@ def migrate(cr, version):
         cr.execute(
             '''
         INSERT INTO project_property_to_value (project_id, value_id)
-        VALUES ({},{})
+        VALUES ({0},{1})
         '''.format(project[0], translated_value_id))
