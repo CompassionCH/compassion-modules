@@ -53,6 +53,8 @@ class child_pictures(orm.Model):
         'headshot': fields.function(get_picture, type='binary',
                                     string=_('Headshot')),
         'date': fields.date(_('Date of pictures')),
+        'case_study_id': fields.many2one(
+            'compassion.child.property', _('Case study'), readonly=True)
     }
 
     _defaults = {
@@ -61,7 +63,8 @@ class child_pictures(orm.Model):
 
     def create(self, cr, uid, vals, context=None):
         """ Fetch new pictures from GMC webservice when creating
-        a new Pictures object.
+        a new Pictures object. Check if picture is the same as the previous
+        and attach the pictures to the last case study.
         """
         res_id = super(child_pictures, self).create(cr, uid, vals, context)
         child = self.pool.get('compassion.child').browse(
@@ -73,14 +76,14 @@ class child_pictures(orm.Model):
         # Retrieve Headshot
         success = success and self._get_picture(cr, uid, child.id, child.code,
                                                 res_id, context=context)
-        child_picture = self.browse(
-            cr, uid, res_id, context)
+        child_picture = self.browse(cr, uid, res_id, context)
         if not success:
             # We could not retrieve a picture, we cancel the creation
             self._unlink_related_attachment(cr, uid, child_picture.id, context)
             self.unlink(cr, uid, res_id, context)
             return False
 
+        # Find if same pictures already exist
         same_picture_ids = self._find_same_picture(
             cr, uid, child.id,
             child_picture.fullshot, child_picture.headshot,
@@ -88,6 +91,7 @@ class child_pictures(orm.Model):
         same_picture_ids.remove(child_picture.id)
 
         if same_picture_ids:
+            # Don't keep the new picture and return the previous one.
             self._unlink_related_attachment(cr, uid, child_picture.id, context)
             self.unlink(cr, uid, res_id, context)
             self.write(
@@ -97,7 +101,16 @@ class child_pictures(orm.Model):
                 cr, uid, child.id,
                 _('The picture was the same'), 'Picture update',
                 context={'thread_model': 'compassion.child'})
-            return same_picture_ids[0]
+            res_id = same_picture_ids[0]
+            child_picture = self.browse(cr, uid, res_id, context)
+
+        if not child_picture.case_study_id:
+            # Attach the picture to the last Case Study
+            case_study = child.case_study_ids and child.case_study_ids[0]
+            if case_study and not case_study.pictures_id:
+                case_study.attach_pictures(res_id)
+                child_picture.write({'case_study_id': case_study.id})
+
         return res_id
 
     def _unlink_related_attachment(self, cr, uid, res_id, context=None):

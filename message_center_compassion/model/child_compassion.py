@@ -138,9 +138,7 @@ class compassion_child(orm.Model):
         if event in ('Allocate', 'Transfer'):
             res = self.get_infos(cr, uid, args.get('object_id'), context)
         elif event == 'CaseStudy':
-            # As we send an update to sponsors, we also get the last picture
             res = self._get_case_study(cr, uid, child, context)
-            self._get_last_pictures(cr, uid, child.id, context)
         elif event == 'NewImage':
             res = self._get_last_pictures(cr, uid, child.id, context)
 
