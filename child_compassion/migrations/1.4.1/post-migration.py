@@ -34,24 +34,35 @@ def migrate(cr, version):
         """)
 
     cr.execute(
-        '''
-        SELECT id, distance_from_closest_city
-        FROM compassion_project
-        WHERE distance_from_closest_city IS NOT NULL
-        '''
+        'SELECT id, distance_from_closest_city '
+        'FROM compassion_project '
+        'WHERE distance_from_closest_city IS NOT NULL'
     )
     projects = cr.fetchall()
-
+    
+    cr.execute(
+        '''
+        CREATE RULE "my_table_on_duplicate_ignore"
+        AS ON INSERT TO "project_property_to_value"
+        WHERE EXISTS(SELECT 1 FROM project_property_to_value
+                    WHERE value_id=NEW.value_id 
+                    AND project_id = NEW.project_id)
+        DO INSTEAD NOTHING;
+        ''')
+        
     for project in projects:
         cr.execute(
-            '''
-        SELECT id FROM compassion_translated_value
-        WHERE value_en = '{}'
-        '''.format(project[1]))
+        "SELECT id FROM compassion_translated_value "
+        "WHERE value_en = '{}'".format(project[1]))
         translated_value_id = cr.fetchall()[0][0]
-
+        
         cr.execute(
-            '''
-        INSERT INTO project_property_to_value (project_id, value_id)
-        VALUES ({0},{1})
-        '''.format(project[0], translated_value_id))
+        "INSERT INTO project_property_to_value (project_id, value_id) "
+        "VALUES ({0},{1})".format(
+            project[0], translated_value_id))
+
+    cr.execute(
+    """
+        DROP RULE "my_table_on_duplicate_ignore"
+        ON "project_property_to_value";
+    """)
