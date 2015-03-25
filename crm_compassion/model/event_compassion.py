@@ -233,7 +233,7 @@ class event_compassion(orm.Model):
                 context={'lang': 'en_US'})[0]
             task_type_id = self._create_task_type(cr, uid, event, context)
             res.update({
-                'name': event.name,
+                'name': event.lead_id and event.lead_id.name or event.name,
                 'use_tasks': True,
                 'parent_id': parent_id,
                 'project_type': 'event',

@@ -106,6 +106,7 @@
                         <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
                         <filter string="Customer" domain="[]" context="{'group_by':'partner_id'}"/>
                         <filter string="Responsible" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter string="Opportunity" domain="[]" context="{'group_by':'lead_id'}"/>
                         <filter string="Year" domain="[]" context="{'group_by':'year'}"/>
                     </group>
                 </search>
