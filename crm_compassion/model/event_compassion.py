@@ -79,15 +79,18 @@ class event_compassion(orm.Model):
             ('sport', _("Sport event"))]
 
     _columns = {
-        'name': fields.char(_("Name"), size=128, required=True),
+        'name': fields.char(_("Name"), size=128, required=True,
+                            track_visibility='onchange'),
         'full_name': fields.function(_get_full_name, type='char',
                                      string='Full name'),
-        'type': fields.selection(get_event_types, _("Type"), required=True),
+        'type': fields.selection(get_event_types, _("Type"), required=True,
+                                 track_visibility='onchange'),
         'start_date': fields.datetime(_("Start date"), required=True),
         'year': fields.function(_get_year, type='char', string='Year',
                                 store=True),
         'end_date': fields.datetime(_("End date")),
-        'partner_id': fields.many2one('res.partner', _("Customer")),
+        'partner_id': fields.many2one('res.partner', _("Customer"),
+                                      track_visibility='onchange'),
         'zip_id': fields.many2one('res.better.zip', 'Address'),
         'street': fields.char('Street', size=128),
         'street2': fields.char('Street2', size=128),
@@ -110,8 +113,10 @@ class event_compassion(orm.Model):
         'analytic_line_ids': fields.function(
             _get_analytic_lines, type="one2many",
             relation="account.analytic.line", readonly=True),
-        'planned_sponsorships': fields.integer(_("Expected sponsorships")),
-        'lead_id': fields.many2one('crm.lead', _('Opportunity')),
+        'planned_sponsorships': fields.integer(_("Expected sponsorships"),
+                                               track_visibility='onchange'),
+        'lead_id': fields.many2one('crm.lead', _('Opportunity'),
+                                   track_visibility='onchange'),
         'won_sponsorships': fields.function(
             _get_won_sponsorships, type="integer",
             string=_("Won sponsorships"), store={
@@ -176,9 +181,29 @@ class event_compassion(orm.Model):
     def write(self, cr, uid, ids, vals, context=None):
         """ Push values to linked objects. """
         if 'lead_id' in vals:
-            raise orm.except_orm(
-                _("Not allowed"),
-                _("You cannot change the opportunity of this event."))
+            # Move events to another project related to the opporunity
+            other_events_ids = self.search(cr, uid, [(
+                'lead_id', '=', vals['lead_id'])], context=context)
+            if other_events_ids:
+                # Attach event to same project than those related to this
+                # opportunity and add project stage for this event.
+                new_project = self.browse(
+                    cr, uid, other_events_ids[0], context).project_id
+                vals['project_id'] = new_project.id
+                task_type_obj = self.pool.get('project.task.type')
+                for event in self.browse(cr, uid, ids, context):
+                    task_type_id = task_type_obj.search(
+                        cr, uid, [('description', 'like', str(event.id))],
+                        context=context)
+                    if task_type_id:
+                        new_project.write({'type_ids': [(4, task_type_id[0])]})
+            else:
+                # Update project name
+                proj_name = self.pool.get('crm.lead').browse(
+                    cr, uid, vals['lead_id'], context).name
+                for event in self.browse(cr, uid, ids, context):
+                    event.project_id.write({'name': proj_name})
+
         super(event_compassion, self).write(cr, uid, ids, vals, context)
         if context is None:
             context = dict()

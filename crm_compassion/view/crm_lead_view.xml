@@ -17,11 +17,9 @@
                 </label>
                 <xpath expr="//page[@string='Internal Notes']" position="before">
                     <page string="Events">
+                        <button string="Create Event" name="create_event" type="object"/>
                         <field name="event_ids"/>
                     </page>
-                </xpath>
-                <xpath expr="/form/header/button[@name='case_mark_lost']" position="after">
-                    <button string="Create Event" name="create_event" type="object"/>
                 </xpath>
             </field>
         </record>

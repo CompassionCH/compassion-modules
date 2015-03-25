@@ -21,6 +21,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+import sys
 
 
 def migrate(cr, version):
@@ -33,3 +34,32 @@ def migrate(cr, version):
         SET event_type = lower(substring(name FROM '(?:.)*/ ((.)*)$'))
         WHERE type = 'event'
         """)
+
+    # Add project task types
+    cr.execute(
+        """
+        SELECT p.id as project_id, e.name as event_name, e.id as event_id
+        FROM crm_event_compassion e JOIN project_project p
+        ON e.project_id = p.id
+        """)
+    to_update = cr.fetchall()
+    cr.execute(
+        'DELETE FROM project_task_type_rel '
+        'WHERE project_id IN ({0}) '.format(
+            ','.join([str(r[0]) for r in to_update])
+        ))
+    reload(sys)
+    sys.setdefaultencoding('UTF8')
+    for data in to_update:
+        cr.execute(
+            "INSERT INTO project_task_type(name,state,description,sequence) "
+            "VALUES ('{0}','open',CONCAT("
+            "   'Task type generated for event ID ', {1}),1) ".format(
+                data[1].replace('\'', '\'\''), data[2]))
+
+        cr.execute("SELECT MAX(id) FROM project_task_type")
+        task_type_id = cr.fetchone()[0]
+
+        cr.execute(
+            'INSERT INTO project_task_type_rel(project_id, type_id) '
+            'VALUES ({0}, {1})'.format(data[0], task_type_id))
