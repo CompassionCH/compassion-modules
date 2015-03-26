@@ -10,15 +10,10 @@
 ##############################################################################
 
 import requests
-import json
-import calendar
-import sys
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
-
-from datetime import datetime
 
 
 class compassion_project(orm.Model):
@@ -478,5 +473,3 @@ class compassion_project(orm.Model):
                 'Error calling %s for project %s' % (api_mess, project_code),
                 json_result['error']['message'])
         return json_result
-
-   
