@@ -58,4 +58,6 @@ class end_sponsorship_wizard(orm.TransientModel):
         else:
             vals['gp_exit_reason'] = wizard.gp_exit_reason
 
+        child.write(vals)
+
         return True
