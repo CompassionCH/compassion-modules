@@ -21,8 +21,10 @@ from openerp.tools.translate import _
 from openerp.tools.config import config
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from sync_typo3 import Sync_typo3
+
+
 
 logger = logging.getLogger(__name__)
 
@@ -276,7 +278,11 @@ class compassion_child(orm.Model):
         proj_obj = self.pool.get('compassion.project')
         res = True
         for child in self.browse(cr, uid, ids, context):
-            res = res and self._get_case_study(cr, uid, child, context)
+            if child.type != 'LDP':
+                res = res and self._get_case_study(cr, uid, child, context)
+            else :
+                res = res and self._create_empty_case_study(cr, uid, child, context)
+
             self._get_basic_informations(cr, uid, child.id)
             project_ids = proj_obj.search(
                 cr, uid, [('code', '=', child.code[:5])],
@@ -289,7 +295,7 @@ class compassion_child(orm.Model):
                 proj_obj.update_informations(cr, uid, proj_id)
             # Temporarily deactivate update of picture so that it doesn't
             # attach to an old case study. (To fix when we have picture date)
-            # res = res and self._get_last_pictures(cr, uid, child.id, context)
+            res = res and self._get_last_pictures(cr, uid, child.id, context)
         return res
 
     def generate_descriptions(self, cr, uid, child_id, context=None):
@@ -315,6 +321,11 @@ class compassion_child(orm.Model):
             'target': 'new',
         }
 
+    def update_child_pictures(self, cr, uid, child_ids, context=None):
+        for child_id in child_ids:
+            self._get_last_pictures(
+                cr, uid, child_id, context)
+
     def _get_last_pictures(self, cr, uid, child_id, context=None):
         pictures_obj = self.pool.get('compassion.child.pictures')
         pic_id = pictures_obj.create(
@@ -327,7 +338,21 @@ class compassion_child(orm.Model):
                 context={'thread_model': self._name})
 
         return pic_id
+    
+    def _create_empty_case_study(self, cr, uid, child, context=None):
+        child_prop_obj = self.pool.get('compassion.child.property')
 
+        if not (child_prop_obj.search(
+                cr, uid,
+                [('child_id','=', child.id)],
+                context=context)):
+            vals = {
+                'child_id': child.id,
+                'info_date': date.today()
+            }
+            child_prop_obj.create(cr, uid, vals, context)
+        return True
+        
     ##################################################
     #            Case study retrieving               #
     ##################################################
