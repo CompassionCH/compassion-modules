@@ -10,18 +10,12 @@
 ##############################################################################
 
 import logging
-import sys
-import calendar
-import json
 import requests
-import base64
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
-from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
