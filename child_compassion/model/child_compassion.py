@@ -24,8 +24,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import date, datetime, timedelta
 from sync_typo3 import Sync_typo3
 
-
-
 logger = logging.getLogger(__name__)
 
 
@@ -280,8 +278,9 @@ class compassion_child(orm.Model):
         for child in self.browse(cr, uid, ids, context):
             if child.type != 'LDP':
                 res = res and self._get_case_study(cr, uid, child, context)
-            else :
-                res = res and self._create_empty_case_study(cr, uid, child, context)
+            else:
+                res = res and self._create_empty_case_study(
+                    cr, uid, child, context)
 
             self._get_basic_informations(cr, uid, child.id)
             project_ids = proj_obj.search(
@@ -338,13 +337,13 @@ class compassion_child(orm.Model):
                 context={'thread_model': self._name})
 
         return pic_id
-    
+
     def _create_empty_case_study(self, cr, uid, child, context=None):
         child_prop_obj = self.pool.get('compassion.child.property')
 
         if not (child_prop_obj.search(
                 cr, uid,
-                [('child_id','=', child.id)],
+                [('child_id', '=', child.id)],
                 context=context)):
             vals = {
                 'child_id': child.id,
@@ -352,7 +351,7 @@ class compassion_child(orm.Model):
             }
             child_prop_obj.create(cr, uid, vals, context)
         return True
-        
+
     ##################################################
     #            Case study retrieving               #
     ##################################################
