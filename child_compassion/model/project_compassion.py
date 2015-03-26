@@ -60,12 +60,12 @@ class compassion_project(orm.Model):
         By default: log a message.
         """
         self.pool.get('mail.thread').message_post(
-                cr, uid, project_id,
-                "The project was suspended and funds are retained<b>"
-                "{}</b>.<br/>".format(
-                    date_end.strftime(" until %B %Y") if date_end else ""),
-                "Project Suspended", 'comment',
-                context={'thread_model': self._name})
+            cr, uid, project_id,
+            "The project was suspended and funds are retained<b>"
+            "{}</b>.<br/>".format(
+                date_end.strftime(" until %B %Y") if date_end else ""),
+            "Project Suspended", 'comment',
+            context={'thread_model': self._name})
         return True
 
     def _has_desc(self, cr, uid, ids, field_names, args, context=None):
@@ -210,6 +210,11 @@ class compassion_project(orm.Model):
             'project_id', 'value_id', _('Terrain description'),
             domain=[('property_name', '=', 'terrain_description')],
             track_visibility='onchange'),
+        'distance_from_closest_city_ids': fields.many2many(
+            'compassion.translated.value', 'project_property_to_value',
+            'project_id', 'value_id', _('Distance from closest city'),
+            domain=[('property_name', '=', 'distance_from_closest_city')],
+            track_visibility='onchange'),
         # b. Static Values
         'gps_latitude': fields.float(_('GPS latitude')),
         'gps_longitude': fields.float(_('GPS longitude')),
@@ -225,13 +230,16 @@ class compassion_project(orm.Model):
         'education_needs': fields.text(_('Education needs')),
         'social_needs': fields.text(_('Social needs')),
         'spiritual_needs': fields.text(_('Spiritual needs')),
-        'distance_from_closest_city': fields.text(_('Distance from closest '
-                                                    'city')),
+
         # d. Age groups section
         'age_group_ids': fields.one2many(
             'compassion.project.age.group', 'project_id',
             _('Age group'),
             readonly=True, track_visibility="onchange"),
+    }
+
+    _defaults = {
+        'name': '/'
     }
 
     def update_informations(self, cr, uid, ids, context=None):
@@ -303,7 +311,7 @@ class compassion_project(orm.Model):
             'name': _('Description generation'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
-            'view_mode': 'form',
+            'view_mode': 'auto_description_form',
             'res_model': 'project.description.wizard',
             'context': context,
             'target': 'new',
@@ -372,8 +380,6 @@ class compassion_project(orm.Model):
             'social_needs': json_values['socialNeeds'],
             'spiritual_needs': json_values['spiritualNeeds'],
             'closest_city': json_values['closestCityName'],
-            'distance_from_closest_city': json_values['distanceFrom'
-                                                      'ClosestCity'],
         }
 
         # Automatic translated fields retrieval
@@ -384,10 +390,11 @@ class compassion_project(orm.Model):
             'typicalFloorBuildingMaterialDescription': ('floor_material', '/'),
             'typicalWallBuildingMaterialDescription': ('wall_material', '/'),
             'typicalRoofBuildingMaterialDescription': ('roof_material', '/'),
-            'primaryEthnicGroup': ('spoken_languages', ', '),
+            'primaryEthnicGroup': ('spoken_languages', '?'),
             'primaryDiet': ('primary_diet', ','),
             'commonHealthProblems': ('health_problems', ', '),
             'primaryOccupationTitle': ('primary_occupation', '/'),
+            'distanceFromClosestCity': ('distance_from_closest_city', '?'),
         }
 
         # Get the property values ids

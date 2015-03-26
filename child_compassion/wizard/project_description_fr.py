@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Kevin Cristi <kcristi@compassion.ch>
+#    @author: Kevin Cristi, David Coninckx
 #
 #    The licence is in the file __openerp__.py
 #
@@ -43,15 +43,17 @@ class Project_description_fr:
         """ Generate the project name, the localization and infos
             about the community
         """
-        terrain_desc = [desc.value_fr if desc.value_fr else desc.value_en
+        terrain_desc = [desc.get_translated_value('fr')
                         for desc in project.terrain_description_ids]
         project_community_name = project.community_name.split('-')[0]
-        string = (u"Cet enfant vit à %s"
-                  u"%s. %s compte environ %s habitants. " % (
+        project_community_population = u"{:,}".format(
+            project.community_population).replace(',', "'")
+        string = (u"Cet enfant vit à {0}"
+                  u"{1}. {2} compte environ {3} habitants. ".format(
                       project_community_name,
                       "" if not terrain_desc else u" dans une région " +
                       terrain_desc[0],
-                      project_community_name, project.community_population))
+                      project_community_name, project_community_population))
 
         return string
 
@@ -60,20 +62,23 @@ class Project_description_fr:
         """ Generate house build materials, there are no specificities
             in this part
         """
-        floor_mat = [mat.value_fr if mat.value_fr else mat.value_en
+        floor_mat = [mat.get_translated_value('fr')
                      for mat in project.floor_material_ids]
-        wall_mat = [mat.value_fr if mat.value_fr else mat.value_en
+        wall_mat = [mat.get_translated_value('fr')
                     for mat in project.wall_material_ids]
-        roof_mat = [mat.value_fr if mat.value_fr else mat.value_en
+        roof_mat = [mat.get_translated_value('fr')
                     for mat in project.roof_material_ids]
 
         materials = []
         if floor_mat:
-            materials.append(u"de sols en %s" % floor_mat[0])
+            materials.append(u"de sols en %s" %
+                             cls._gen_list_string(floor_mat, ', ', ' et '))
         if wall_mat:
-            materials.append(u"de murs en %s" % wall_mat[0])
+            materials.append(u"de murs en %s" %
+                             cls._gen_list_string(wall_mat, ', ', ' et '))
         if roof_mat:
-            materials.append(u"de toits en %s" % roof_mat[0])
+            materials.append(u"de toits en %s" %
+                             cls._gen_list_string(roof_mat, ', ', ' et '))
         if materials:
             string = (u"Les maisons typiques sont construites " +
                       cls._gen_list_string(materials, ', ', ' et ') + ". ")
@@ -86,13 +91,13 @@ class Project_description_fr:
     def _gen_primary_diet_fr(cls, cr, uid, project, context=None):
         """ Generate primary diet, there are no specificities in this part
         """
-        primary_diet = [diet.value_fr if diet.value_fr else diet.value_en
+        primary_diet = [diet.get_translated_value('fr')
                         for diet in project.primary_diet_ids]
-        spoken_languages = [lang.value_fr if lang.value_fr else lang.value_en
+        spoken_languages = [lang.get_translated_value('fr')
                             for lang in project.spoken_languages_ids]
 
         if spoken_languages:
-            string = (u"La langue la plus parlée à cet endroit est "
+            string = (u"La langue commune de la région est "
                       u"le %s. " % (spoken_languages[0]))
         else:
             string = ""
@@ -107,7 +112,7 @@ class Project_description_fr:
         """ Generate health problemes of this region, there
             are no specificities in this part
         """
-        health_prob = [prob.value_fr if prob.value_fr else prob.value_en
+        health_prob = [prob.get_translated_value('fr')
                        for prob in project.health_problems_ids]
 
         if health_prob:
@@ -119,8 +124,8 @@ class Project_description_fr:
                               if len(health_prob) > 1 else u"est" +
                               health_prob[0])
 
-            string = (u"%s de santé de la région %s. " % (sing_plur_subj,
-                      sing_plur_verb))
+            string = (u"%s de santé de la région %s. " % (
+                sing_plur_subj, sing_plur_verb))
         else:
             string = ""
 
@@ -131,14 +136,22 @@ class Project_description_fr:
         """ Generate primary occupation and monthly income, check if need to
             round the income
         """
-        primary_occup = [occup.value_fr if occup.value_fr else occup.value_en
+        primary_occup = [occup.get_translated_value('fr')
                          for occup in project.primary_occupation_ids]
         monthly_income = int(round(project.monthly_income))
 
         if primary_occup:
-            string = (u"La plupart des adultes travaillent comme %s et gagnent"
-                      u" environ $%s par mois. " % (
-                          primary_occup[0], monthly_income))
+            if project.unemployment_rate > 0.5:
+                string = (
+                    u"La plupart des adultes sont sans emploi"
+                    ", mais certains travaillent comme %s "
+                    "et gagnent environ $%s par mois. " % (
+                        primary_occup[0], monthly_income))
+            else:
+                string = (
+                    u"La plupart des adultes travaillent comme %s et gagnent"
+                    u" environ $%s par mois. " % (
+                        primary_occup[0], monthly_income))
         else:
             string = (u"Le salaire moyen d'un travailleur est d'environ "
                       u"$%s par mois. " % monthly_income)
@@ -149,9 +162,12 @@ class Project_description_fr:
     def _get_needs_pattern_fr(cls, cr, uid, project, context=None):
         """ Create the needs' description pattern to fill by hand
         """
-        string = (u"Cette communauté a besoin (de...). Votre parrainage "
-                  u"permet au personnel du centre d'accueil %s d'offrir à cet "
-                  u"enfant (des enseignements bibliques...). (Des rencontres "
-                  u"sont aussi organisées...)." % project.name)
+        string = (
+            u"Cette communauté a besoin (de...). Votre parrainage permet au "
+            u"personnel du centre d'accueil %s d'offrir à cet enfant des "
+            u"enseignements bibliques, des contrôles médicaux, une formation "
+            u"sur la santé, des activités récréatives et des cours d'appuis. "
+            u"Des rencontres sont aussi organisées pour les parents ou "
+            u"responsable de l'enfant." % project.name)
 
         return string

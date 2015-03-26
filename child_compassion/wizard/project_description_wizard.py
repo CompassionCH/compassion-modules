@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Kevin Cristi, Emanuel Cino
+#    @author: Kevin Cristi, Emanuel Cino, David Coninckx
 #
 #    The licence is in the file __openerp__.py
 #
@@ -14,6 +14,7 @@ from openerp.tools.translate import _
 from project_description_fr import Project_description_fr
 from project_description_de import Project_description_de
 from project_description_it import Project_description_it
+import re
 
 
 class project_description_wizard(orm.TransientModel):
@@ -34,10 +35,6 @@ class project_description_wizard(orm.TransientModel):
                    WHERE rel.project_id = %s
                    AND rel.value_id = val.id
                    AND val.is_tag = false
-                   AND (
-                        val.value_fr is Null
-                        OR val.value_de is Null
-                        OR val.value_it is Null)
                    ORDER BY val.value_en, val.property_name''' % project_id
         cr.execute(query)
         value_ids = [x[0] for x in cr.fetchall()]
@@ -100,9 +97,9 @@ class project_description_wizard(orm.TransientModel):
         'keep_desc_fr': fields.boolean(_('Update french description')),
         'keep_desc_de': fields.boolean(_('Update german description')),
         'keep_desc_it': fields.boolean(_('Update italian description')),
-        'desc_fr': fields.text(_('French description')),
-        'desc_de': fields.text(_('German description')),
-        'desc_it': fields.text(_('Italian description')),
+        'desc_fr': fields.html(_('French description')),
+        'desc_de': fields.html(_('German description')),
+        'desc_it': fields.html(_('Italian description')),
         'desc_en': fields.text(_('English description')),
         # Needs descriptions
         'needs_desc_fr': fields.text(_('French needs description')),
@@ -149,36 +146,35 @@ class project_description_wizard(orm.TransientModel):
             'desc_fr': desc_fr,
             'desc_de': desc_de,
             'desc_it': desc_it,
-            'desc_en': project.description_en.replace(
-                wizard.needs_desc_en, ''),
-            }, context)
+            'desc_en': wizard.desc_en,
+        }, context)
 
         return {
             'name': _('Descriptions generation'),
             'type': 'ir.actions.act_window',
             'res_model': self._name,
-            'view_mode': 'form',
+            'view_mode': 'auto_description_form',
             'view_type': 'form',
-            'res_id': ids[0],
             'context': context,
             'target': 'new',
-            }
+        }
 
     def validate_descriptions(self, cr, uid, ids, context=None):
         """ Save the selected descriptions in the project. """
         wizard = self.browse(cr, uid, ids, context)[0]
         vals = dict()
+        p = re.compile(r'<.*?>')  # Remove HTML markers
         if wizard.keep_desc_fr:
-            vals['description_fr'] = wizard.desc_fr + \
-                wizard.needs_desc_fr.strip('\n')
+            vals['description_fr'] = p.sub('', wizard.desc_fr +
+                                           wizard.needs_desc_fr.strip('\n'))
             vals['needs_fr'] = wizard.needs_desc_fr
         if wizard.keep_desc_de:
-            vals['description_de'] = wizard.desc_de + \
-                wizard.needs_desc_de.strip('\n')
+            vals['description_de'] = p.sub('', wizard.desc_de +
+                                           wizard.needs_desc_de.strip('\n'))
             vals['needs_de'] = wizard.needs_desc_de
         if wizard.keep_desc_it:
-            vals['description_it'] = wizard.desc_it + \
-                wizard.needs_desc_it.strip('\n')
+            vals['description_it'] = p.sub('', wizard.desc_it +
+                                           wizard.needs_desc_it.strip('\n'))
             vals['needs_it'] = wizard.needs_desc_it
 
         if not vals:

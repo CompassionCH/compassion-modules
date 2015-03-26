@@ -244,6 +244,12 @@ class compassion_child(orm.Model):
         'state': 'N',
     }
 
+    _sql_constraints = [
+        ('unique_id',
+         'unique(unique_id)',
+         _('The child already exists in database.'))
+    ]
+
     def _get_basic_informations(self, cr, uid, ids, context=None):
         if not isinstance(ids, list):
             ids = [ids]
@@ -281,7 +287,9 @@ class compassion_child(orm.Model):
                     'name': child.code[:5],
                 })
                 proj_obj.update_informations(cr, uid, proj_id)
-            res = res and self._get_last_pictures(cr, uid, child.id, context)
+            # Temporarily deactivate update of picture so that it doesn't
+            # attach to an old case study. (To fix when we have picture date)
+            # res = res and self._get_last_pictures(cr, uid, child.id, context)
         return res
 
     def generate_descriptions(self, cr, uid, child_id, context=None):
@@ -300,15 +308,16 @@ class compassion_child(orm.Model):
         return {
             'name': _('Description generation'),
             'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'form',
             'res_model': 'child.description.wizard',
+            'view_mode': 'auto_description_form',
+            'view_type': 'form',
             'context': context,
             'target': 'new',
         }
 
     def _get_last_pictures(self, cr, uid, child_id, context=None):
-        pic_id = self.pool.get('compassion.child.pictures').create(
+        pictures_obj = self.pool.get('compassion.child.pictures')
+        pic_id = pictures_obj.create(
             cr, uid, {'child_id': child_id}, context)
         if pic_id:
             # Add a note in child
@@ -316,6 +325,7 @@ class compassion_child(orm.Model):
                 cr, uid, child_id, "The picture has been updated.",
                 "Picture update", 'comment',
                 context={'thread_model': self._name})
+
         return pic_id
 
     ##################################################
@@ -456,6 +466,12 @@ class compassion_child(orm.Model):
             child_prop_obj.write(cr, uid, study_ids, vals, context)
         else:
             child_prop_obj.create(cr, uid, vals, context)
+            # Remove old descriptions
+            child.write({
+                'desc_fr': False,
+                'desc_de': False,
+                'desc_it': False,
+                'desc_en': False})
 
         # Add a note in child
         self.pool.get('mail.thread').message_post(
@@ -505,7 +521,8 @@ class compassion_child(orm.Model):
             if child.state == 'I':
                 to_remove_from_web.append(child.id)
         if to_remove_from_web:
-            self.child_remove_from_typo3(cr, uid, to_remove_from_web, context)
+            self.child_remove_from_typo3(cr, uid, to_remove_from_web,
+                                         context)
         self.write(cr, uid, ids, {
             'state': 'P',
             'has_been_sponsored': True}, context)
@@ -657,10 +674,8 @@ class compassion_child(orm.Model):
             Sync_typo3.request_to_typo3(query, 'upd')
 
         self._add_child_pictures_to_typo3(cr, uid, ids, context)
-        # This URL synchronizes the typo3 search index
-        # (not dramatic if we call it from test database)
-        requests.get('http://compassionch.customers.t3gardens.com/?type=778')
         self.write(cr, uid, ids, {'state': 'I'})
+        return Sync_typo3.sync_typo3_index()
 
     def child_remove_from_typo3(self, cr, uid, ids, context=None):
         child_codes = list()
@@ -677,9 +692,7 @@ class compassion_child(orm.Model):
             child_codes.append(child.code)
 
         Sync_typo3.delete_child_photos(child_codes)
-        requests.get('http://compassionch.customers.t3gardens.com/?type=778')
-
-        return True
+        return Sync_typo3.sync_typo3_index()
 
     def _add_child_pictures_to_typo3(self, cr, uid, ids, context=None):
         for child in self.browse(cr, uid, ids, context):

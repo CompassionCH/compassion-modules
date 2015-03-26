@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2015 Compassion (http://www.compassion.ch)
+    @author David Copninckx <david@coninckx.com>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+    <data>
+        <record id="view_gmc_child_compassion" model="ir.ui.view">
+            <field name="name">gmc.child.compassion.view</field>
+            <field name="model">compassion.child</field>
+            <field name="inherit_id" ref="child_compassion.view_compassion_child_form" />
+            <field name="arch" type="xml">
+                 <div name="buttons" position='inside'>
+                    <button string="Error message" name="view_error_messages" type="object" attrs="{'invisible': [('state', '!=', 'E')]}" />
+                 </div>
+            </field>
+        </record>
+    </data>
+</openerp>

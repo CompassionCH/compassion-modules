@@ -12,6 +12,7 @@
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from datetime import datetime
+from ..model.sync_typo3 import Sync_typo3
 
 
 class delegate_child_wizard(orm.TransientModel):
@@ -24,9 +25,9 @@ class delegate_child_wizard(orm.TransientModel):
         childrens = child_obj.browse(
             cr, uid, context.get('active_ids'), context)
 
+        possible_states = ['N', 'R', 'D', 'I', 'Z']
         for child in childrens:
-            possible_states = ['N', 'R', 'D', 'I', 'Z']
-            if (child.state in possible_states):
+            if child.state in possible_states:
                 child_ids.append(child.id)
 
         return {id: child_ids for id in ids}
@@ -52,9 +53,14 @@ class delegate_child_wizard(orm.TransientModel):
         child_ids = self._default_child_ids(cr, uid, context)
         child_obj = self.pool.get('compassion.child')
 
+        typo3_to_remove_ids = list()
         for child in child_obj.browse(cr, uid, child_ids, context):
             if (child.state == 'I'):
-                child_obj.child_remove_from_typo3(cr, uid, [child.id], context)
+                typo3_to_remove_ids.append(child.id)
+        res = True
+        if typo3_to_remove_ids:
+            res = child_obj.child_remove_from_typo3(
+                cr, uid, typo3_to_remove_ids, context)
 
         child_obj.write(
             cr, uid, child_ids,
@@ -62,3 +68,5 @@ class delegate_child_wizard(orm.TransientModel):
                 'delegated_comment': wizard.comment,
                 'date_delegation': datetime.today()},
             context=context)
+
+        return res or Sync_typo3.typo3_index_error(cr, uid, self, context)

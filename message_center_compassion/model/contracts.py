@@ -27,6 +27,7 @@ class recurring_contract(orm.Model):
         'gmc_state': fields.selection([
             ('picture', _('New Picture')),
             ('casestudy', _('New Case Study')),
+            ('biennial', _('Biennial')),
             ('depart', _('Child Departed')),
             ('transfer', _('Child Transfer')),
             ('suspension', _('Project Fund-Suspended')),
@@ -39,7 +40,6 @@ class recurring_contract(orm.Model):
         super(recurring_contract, self)._on_contract_active(
             cr, uid, ids, context=context)
         message_obj = self.pool.get('gmc.message.pool')
-        action_obj = self.pool.get('gmc.action')
         action_id = 0
         message_vals = {}
 
@@ -49,9 +49,7 @@ class recurring_contract(orm.Model):
         for contract in self.browse(cr, uid, ids, context=context):
             if contract.child_id:
                 # UpsertConstituent Message
-                action_id = action_obj.search(
-                    cr, uid, [('name', '=', 'UpsertConstituent')],
-                    limit=1, context=context)[0]
+                action_id = self.get_action_id(cr, uid, 'UpsertConstituent')
                 partner_id = contract.correspondant_id.id
                 message_vals = {
                     'action_id': action_id,
@@ -67,9 +65,7 @@ class recurring_contract(orm.Model):
                     message_obj.create(cr, uid, message_vals, context=context)
 
                 # CreateCommitment Message
-                action_id = action_obj.search(
-                    cr, uid, [('name', '=', 'CreateCommitment')],
-                    limit=1, context=context)[0]
+                action_id = self.get_action_id(cr, uid, 'CreateCommitment')
                 message_vals.update({
                     'action_id': action_id,
                     'object_id': contract.id,
@@ -78,23 +74,33 @@ class recurring_contract(orm.Model):
                 message_obj.create(cr, uid, message_vals, context)
 
     def contract_terminated(self, cr, uid, ids, context=None):
-        """ Inform GMC when sponsorship is terminated,
-        if end reason is from sponsor.
+        """ Inform GMC when sponsorship is terminated.
+        Send pending gifts if any are waiting.
         """
+        if context is None:
+            context = dict()
         res = super(recurring_contract, self).contract_terminated(
             cr, uid, ids, context)
         if res:
             message_obj = self.pool.get('gmc.message.pool')
-            action_obj = self.pool.get('gmc.action')
-            action_id = action_obj.search(
-                cr, uid, [('name', '=', 'CancelCommitment')],
-                limit=1, context=context)[0]
+            action_id = self.get_action_id(cr, uid, 'CancelCommitment')
             message_vals = {'action_id': action_id}
 
             for contract in self.browse(cr, uid, ids, context=context):
+                end_reason = int(contract.end_reason)
+                if contract.child_id and end_reason != 1:
+                    # Send pending gifts
+                    mess_ids = message_obj.search(cr, uid, [
+                        ('action_id', '=', self.get_action_id(cr, uid,
+                                                              'CreateGift')),
+                        ('state', '=', 'new'),
+                        ('partner_id', '=', contract.correspondant_id.id),
+                        ('child_id', '=', contract.child_id.id)],
+                        context=context)
+                    context['force_send'] = True
+                    message_obj.process_messages(cr, uid, mess_ids, context)
                 # Contract must have child and not terminated by
                 # partner move
-                end_reason = int(contract.end_reason)
                 if contract.child_id and end_reason != 4:
                     message_vals.update({
                         'object_id': contract.id,
@@ -111,10 +117,7 @@ class recurring_contract(orm.Model):
         super(recurring_contract, self)._invoice_paid(cr, uid, invoice,
                                                       context)
         message_obj = self.pool.get('gmc.message.pool')
-        action_obj = self.pool.get('gmc.action')
-        action_id = action_obj.search(
-            cr, uid, [('name', '=', 'CreateGift')], limit=1,
-            context=context)[0]
+        action_id = self.get_action_id(cr, uid, 'CreateGift')
         message_vals = {
             'action_id': action_id,
             'date': invoice.date_invoice,
@@ -140,7 +143,7 @@ class recurring_contract(orm.Model):
                 # 1. Check if a GIFT was sent to GMC and prevent unrec
                 mess_ids = message_obj.search(cr, uid, [
                     ('invoice_line_id', '=', invoice_line.id),
-                    ('state', '=', 'success'),
+                    ('state', 'in', ['success', 'fondue']),
                     ('action_id', '=', action_id)], context=context)
                 if mess_ids:
                     raise orm.except_orm(
@@ -185,3 +188,26 @@ class recurring_contract(orm.Model):
                     uid, 'recurring.contract', message.object_id,
                     'contract_activation_cancelled', cr)
         message_obj.unlink(cr, uid, mess_ids, context)
+
+    def _filter_clean_invoices(self, cr, uid, ids, since_date=None,
+                               to_date=None, context=None):
+        """ Don't clean invoice lines related to GIFT messages sent to GMC.
+        Delete pending messages. """
+        message_obj = self.pool.get('gmc.message.pool')
+        sender_ids = [c.correspondant_id.id for c in self.browse(cr, uid, ids,
+                                                                 context)]
+        mess_ids = message_obj.search(cr, uid, [
+            ('action_id', '=', self.get_action_id(cr, uid, 'CreateGift')),
+            ('partner_id', 'in', sender_ids),
+            ('state', 'not in', ['new', 'failure'])], context=context)
+        filter_invl_ids = [m.object_id for m in message_obj.browse(
+            cr, uid, mess_ids, context)]
+
+        invl_filter = super(recurring_contract, self)._filter_clean_invoices(
+            cr, uid, ids, since_date, to_date, context)
+        invl_filter.append(('id', 'not in', filter_invl_ids))
+        return invl_filter
+
+    def get_action_id(self, cr, uid, name, context=None):
+        return self.pool.get('gmc.action').get_action_id(cr, uid, name,
+                                                         context)

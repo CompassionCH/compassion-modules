@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Children',
-    'version': '1.4',
+    'version': '1.4.2',
     'category': 'Other',
     'description': """
 Setup child and projects for sponsorship management.
@@ -63,6 +63,7 @@ Warning: Requires 'pysftp' (sudo pip install pysftp)
         'workflow/child_workflow.xml',
     ],
     'css': ['static/src/css/child_compassion.css'],
+    'js': ['static/src/js/child_description_wizard.js'],
     'demo': [],
     'installable': True,
     'auto_install': False,

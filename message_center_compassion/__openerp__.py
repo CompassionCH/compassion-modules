@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion CH Message Center',
-    'version': '1.4',
+    'version': '1.4.1',
     'category': 'Other',
     'description': """
         Message Center that offers a queue of messages that have to be sent
@@ -50,6 +50,7 @@
         'security/ir.model.access.csv',
         'view/gmc_message_view.xml',
         'view/contracts_view.xml',
+        'view/child_compassion_view.xml',
         'data/gmc_action.xml',
         'data/gmc_message_cron.xml',
         'workflow/contract_workflow.xml',
