@@ -59,4 +59,4 @@ class delegate_child_wizard(orm.TransientModel):
                 'date_delegation': datetime.today()},
             context=context)
 
-        return res
+        return True
