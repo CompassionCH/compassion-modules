@@ -48,7 +48,6 @@ class end_sponsorship_wizard(orm.TransientModel):
 
     def child_depart(self, cr, uid, ids, context=None):
         wizard = self.browse(cr, uid, ids[0], context)
-        child = wizard.child_id
         vals = {'exit_date': wizard.end_date,
                 'state': 'F'}
 
@@ -59,4 +58,4 @@ class end_sponsorship_wizard(orm.TransientModel):
         else:
             vals['gp_exit_reason'] = wizard.gp_exit_reason
 
-        return res 
+        return True
