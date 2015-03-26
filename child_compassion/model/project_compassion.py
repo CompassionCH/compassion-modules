@@ -69,7 +69,6 @@ class compassion_project(orm.Model):
         return True
 
     def _has_desc(self, cr, uid, ids, field_names, args, context=None):
-
         res = dict()
         field_res = dict()
         for child in self.browse(cr, uid, ids, context):
@@ -211,6 +210,11 @@ class compassion_project(orm.Model):
             'project_id', 'value_id', _('Terrain description'),
             domain=[('property_name', '=', 'terrain_description')],
             track_visibility='onchange'),
+        'distance_from_closest_city_ids': fields.many2many(
+            'compassion.translated.value', 'project_property_to_value',
+            'project_id', 'value_id', _('Distance from closest city'),
+            domain=[('property_name', '=', 'distance_from_closest_city')],
+            track_visibility='onchange'),
         # b. Static Values
         'gps_latitude': fields.float(_('GPS latitude')),
         'gps_longitude': fields.float(_('GPS longitude')),
@@ -226,8 +230,7 @@ class compassion_project(orm.Model):
         'education_needs': fields.text(_('Education needs')),
         'social_needs': fields.text(_('Social needs')),
         'spiritual_needs': fields.text(_('Spiritual needs')),
-        'distance_from_closest_city': fields.text(_('Distance from closest '
-                                                    'city')),
+
         # d. Age groups section
         'age_group_ids': fields.one2many(
             'compassion.project.age.group', 'project_id',
@@ -377,8 +380,6 @@ class compassion_project(orm.Model):
             'social_needs': json_values['socialNeeds'],
             'spiritual_needs': json_values['spiritualNeeds'],
             'closest_city': json_values['closestCityName'],
-            'distance_from_closest_city': json_values['distanceFrom'
-                                                      'ClosestCity'],
         }
 
         # Automatic translated fields retrieval
@@ -393,6 +394,7 @@ class compassion_project(orm.Model):
             'primaryDiet': ('primary_diet', ','),
             'commonHealthProblems': ('health_problems', ', '),
             'primaryOccupationTitle': ('primary_occupation', '/'),
+            'distanceFromClosestCity': ('distance_from_closest_city', '?'),
         }
 
         # Get the property values ids

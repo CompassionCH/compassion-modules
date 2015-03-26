@@ -128,4 +128,15 @@ class child_property(orm.Model):
         'desc_fr': fields.text(_('French description'), readonly=True),
         'desc_de': fields.text(_('German description'), readonly=True),
         'desc_it': fields.text(_('Italian description'), readonly=True),
+        'pictures_id': fields.many2one(
+            'compassion.child.pictures', _('Child images'), readonly=True),
     }
+
+    def attach_pictures(self, cr, uid, ids, pictures_id, context=None):
+        if len(ids) != 1:
+            raise orm.except_orm(
+                _('Picture error'),
+                _('You cannot attach a picture to more than one '
+                  'case study.'))
+        self.write(cr, uid, ids, {'pictures_id': pictures_id}, context)
+        return True

@@ -27,6 +27,7 @@ class recurring_contract(orm.Model):
         'gmc_state': fields.selection([
             ('picture', _('New Picture')),
             ('casestudy', _('New Case Study')),
+            ('biennial', _('Biennial')),
             ('depart', _('Child Departed')),
             ('transfer', _('Child Transfer')),
             ('suspension', _('Project Fund-Suspended')),

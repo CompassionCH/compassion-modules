@@ -287,7 +287,9 @@ class compassion_child(orm.Model):
                     'name': child.code[:5],
                 })
                 proj_obj.update_informations(cr, uid, proj_id)
-            res = res and self._get_last_pictures(cr, uid, child.id, context)
+            # Temporarily deactivate update of picture so that it doesn't
+            # attach to an old case study. (To fix when we have picture date)
+            # res = res and self._get_last_pictures(cr, uid, child.id, context)
         return res
 
     def generate_descriptions(self, cr, uid, child_id, context=None):
@@ -314,7 +316,8 @@ class compassion_child(orm.Model):
         }
 
     def _get_last_pictures(self, cr, uid, child_id, context=None):
-        pic_id = self.pool.get('compassion.child.pictures').create(
+        pictures_obj = self.pool.get('compassion.child.pictures')
+        pic_id = pictures_obj.create(
             cr, uid, {'child_id': child_id}, context)
         if pic_id:
             # Add a note in child
@@ -322,6 +325,7 @@ class compassion_child(orm.Model):
                 cr, uid, child_id, "The picture has been updated.",
                 "Picture update", 'comment',
                 context={'thread_model': self._name})
+
         return pic_id
 
     ##################################################
@@ -462,6 +466,12 @@ class compassion_child(orm.Model):
             child_prop_obj.write(cr, uid, study_ids, vals, context)
         else:
             child_prop_obj.create(cr, uid, vals, context)
+            # Remove old descriptions
+            child.write({
+                'desc_fr': False,
+                'desc_de': False,
+                'desc_it': False,
+                'desc_en': False})
 
         # Add a note in child
         self.pool.get('mail.thread').message_post(

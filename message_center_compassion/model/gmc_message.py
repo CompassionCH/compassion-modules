@@ -221,6 +221,11 @@ class gmc_message_pool(orm.Model):
                     'money_sent_date': today,
                     'state': 'success'
                 })
+
+            elif message.state == 'failure':
+                # Set back to new
+                message.reset_message()
+
         return True
 
     def reset_message(self, cr, uid, ids, context=None):
