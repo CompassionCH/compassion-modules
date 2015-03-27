@@ -174,7 +174,7 @@
             <field name="name">Update picture</field>
             <field name="model_id" ref="model_compassion_child"/>
             <field name="state">code</field>
-            <field name="code">action = self.update_child_pictures(cr, uid, context.get('active_ids', []), context=context)</field>
+            <field name="code">self.update_child_pictures(cr, uid, context.get('active_ids', []), context=context)</field>
         </record>
         
         <record id="update_child_pictures" model="ir.values">

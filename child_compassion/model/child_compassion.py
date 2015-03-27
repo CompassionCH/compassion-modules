@@ -280,7 +280,7 @@ class compassion_child(orm.Model):
                 res = res and self._get_case_study(cr, uid, child, context)
             else:
                 res = res and self._create_empty_case_study(
-                    cr, uid, child, context)
+                    cr, uid, child.id, context)
 
             self._get_basic_informations(cr, uid, child.id)
             project_ids = proj_obj.search(
@@ -292,8 +292,7 @@ class compassion_child(orm.Model):
                     'name': child.code[:5],
                 })
                 proj_obj.update_informations(cr, uid, proj_id)
-            # Temporarily deactivate update of picture so that it doesn't
-            # attach to an old case study. (To fix when we have picture date)
+
             res = res and self._get_last_pictures(cr, uid, child.id, context)
         return res
 
@@ -321,10 +320,11 @@ class compassion_child(orm.Model):
         }
 
     def update_child_pictures(self, cr, uid, child_ids, context=None):
+        res = True
         for child_id in child_ids:
-            self._get_last_pictures(
-                cr, uid, child_id, context)
-
+            res = self._get_last_pictures(
+                cr, uid, child_id, context) and res
+        return res
     def _get_last_pictures(self, cr, uid, child_id, context=None):
         pictures_obj = self.pool.get('compassion.child.pictures')
         pic_id = pictures_obj.create(
@@ -338,19 +338,18 @@ class compassion_child(orm.Model):
 
         return pic_id
 
-    def _create_empty_case_study(self, cr, uid, child, context=None):
+    def _create_empty_case_study(self, cr, uid, child_id, context=None):
         child_prop_obj = self.pool.get('compassion.child.property')
 
         if not (child_prop_obj.search(
                 cr, uid,
-                [('child_id', '=', child.id)],
+                [('child_id', '=', child_id)],
                 context=context)):
             vals = {
-                'child_id': child.id,
+                'child_id': child_id,
                 'info_date': date.today()
             }
-            child_prop_obj.create(cr, uid, vals, context)
-        return True
+        return child_prop_obj.create(cr, uid, vals, context)
 
     ##################################################
     #            Case study retrieving               #
