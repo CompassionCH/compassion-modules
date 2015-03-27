@@ -20,7 +20,7 @@ class update_child_picture_date(orm.TransientModel):
         print('LAUNCH CHILD PICTURE UPDATE')
         child_obj = self.pool.get('compassion.child')
         child_ids = child_obj.search(
-            cr, uid, [('state', 'in', ['N', 'P'])], context=context)
+            cr, uid, [('state', 'not in', ['F', 'X'])], context=context)
 
         for child in child_obj.browse(cr, uid, child_ids, context):
             try:
@@ -32,5 +32,5 @@ class update_child_picture_date(orm.TransientModel):
                     context=context)
                 self.pool.get('mail.thread').message_post(
                     cr, uid, child.id,
-                    traceback.format_exc(), 'Picture update',
+                    traceback.format_exc(), 'Child update',
                     context={'thread_model': 'compassion.child'})

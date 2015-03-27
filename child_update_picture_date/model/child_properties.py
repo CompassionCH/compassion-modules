@@ -33,9 +33,12 @@ class child_property(orm.Model):
             date_diff = abs((case_study_date - picture_date).days)
 
             if (date_diff > six_months):
+                picture_obj.write(
+                    cr, uid, pictures_id, {'case_study_id': False}, context)
                 self.unattach_pictures(cr, uid, ids, pictures_id, context)
 
         return res
 
     def unattach_pictures(self, cr, uid, ids, pictures_id, context=None):
         self.write(cr, uid, ids, {'pictures_id': False}, context)
+        
