@@ -325,6 +325,7 @@ class compassion_child(orm.Model):
             res = self._get_last_pictures(
                 cr, uid, child_id, context) and res
         return res
+
     def _get_last_pictures(self, cr, uid, child_id, context=None):
         pictures_obj = self.pool.get('compassion.child.pictures')
         pic_id = pictures_obj.create(
