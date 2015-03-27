@@ -321,6 +321,7 @@ class compassion_child(orm.Model):
 
     def update_child_pictures(self, cr, uid, child_ids, context=None):
         res = True
+        # Update child's pictures
         for child_id in child_ids:
             res = self._get_last_pictures(
                 cr, uid, child_id, context) and res
