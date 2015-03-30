@@ -13,7 +13,7 @@ from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
 
-from datetime import date
+from datetime import date, datetime
 import requests
 
 
@@ -117,7 +117,7 @@ class child_pictures(orm.Model):
                 picture_date = datetime.strptime(picture_date, DF)
 
                 date_diff = abs((case_study_date - picture_date).days)
-                
+
                 if (date_diff <= six_months):
                     case_study.attach_pictures(res_id)
                     child_picture.write({'case_study_id': case_study.id})
