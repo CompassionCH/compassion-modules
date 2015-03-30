@@ -278,11 +278,11 @@ class compassion_child(orm.Model):
         for child in self.browse(cr, uid, ids, context):
             if child.type != 'LDP':
                 res = res and self._get_case_study(cr, uid, child, context)
+                self._get_basic_informations(cr, uid, child.id)
             else:
                 res = res and self._create_empty_case_study(
                     cr, uid, child.id, context)
 
-            self._get_basic_informations(cr, uid, child.id)
             project_ids = proj_obj.search(
                 cr, uid, [('code', '=', child.code[:5])],
                 context=context)

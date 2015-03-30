@@ -118,7 +118,7 @@ class child_pictures(orm.Model):
 
                 date_diff = abs((case_study_date - picture_date).days)
 
-                if (date_diff <= six_months):
+                if (date_diff <= six_months or child.type == 'LDP'):
                     case_study.attach_pictures(res_id)
                     child_picture.write({'case_study_id': case_study.id})
 
