@@ -137,6 +137,7 @@ class child_property(orm.Model):
             raise orm.except_orm(
                 _('Picture error'),
                 _('You cannot attach a picture to more than one '
-                  'case study.'))
+                  'case study'))
+
         self.write(cr, uid, ids, {'pictures_id': pictures_id}, context)
         return True
