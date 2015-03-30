@@ -104,6 +104,8 @@ class child_pictures(orm.Model):
                 context={'thread_model': 'compassion.child'})
             res_id = same_picture_ids[0]
             child_picture = self.browse(cr, uid, res_id, context)
+        else:
+            child_picture.write({'date': context['image_date']})
 
         if not child_picture.case_study_id:
             # Attach the picture to the last Case Study

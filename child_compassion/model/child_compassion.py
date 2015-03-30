@@ -281,7 +281,7 @@ class compassion_child(orm.Model):
                 self._get_basic_informations(cr, uid, child.id)
             else:
                 res = res and self._create_empty_case_study(
-                    cr, uid, child.id, context)
+                    cr, uid, child, context)
 
             project_ids = proj_obj.search(
                 cr, uid, [('code', '=', child.code[:5])],
@@ -340,16 +340,24 @@ class compassion_child(orm.Model):
 
         return pic_id
 
-    def _create_empty_case_study(self, cr, uid, child_id, context=None):
+    def _create_empty_case_study(self, cr, uid, child, context=None):
         child_prop_obj = self.pool.get('compassion.child.property')
 
         if not (child_prop_obj.search(
                 cr, uid,
-                [('child_id', '=', child_id)],
+                [('child_id', '=', child.id)],
                 context=context)):
             vals = {
-                'child_id': child_id,
-                'info_date': date.today()
+                'child_id': child.id,
+                'info_date': date.today(),
+                'last_modification_date': date.today(),
+                'code': child.code,
+                'unique_id': child.unique_id,
+                'name': child.name,
+                'firstname': child.firstname,
+                'gender': child.gender,
+                'birthdate': child.birthdate,
+                'comments': 'Empty Case Study for LDP Student',
             }
         return child_prop_obj.create(cr, uid, vals, context)
 
