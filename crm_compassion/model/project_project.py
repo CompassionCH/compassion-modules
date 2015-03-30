@@ -70,3 +70,15 @@ class project_project(orm.Model):
                     'manager_id': vals['user_id']
                 })
         return True
+
+    def unlink(self, cr, uid, ids, context=None):
+        """ Unlink analytic account if empty. """
+        account_ids = list()
+        for project in self.browse(cr, uid, ids, context):
+            account = project.analytic_account_id
+            if not account.child_ids and not account.line_ids:
+                account_ids.append(account.id)
+        res = super(project_project, self).unlink(cr, uid, ids, context)
+        self.pool.get('account.analytic.account').unlink(cr, uid, account_ids,
+                                                         context)
+        return res

@@ -98,7 +98,7 @@ class event_compassion(orm.Model):
         'state_id': fields.many2one('res.country.state', 'State'),
         'zip': fields.char('ZIP', size=24),
         'country_id': fields.many2one('res.country', 'Country'),
-        'user_id': fields.many2one('res.users', _("Responsible"),
+        'user_id': fields.many2one('res.users', _("Ambassador"),
                                    track_visibility='onchange'),
         'staff_ids': fields.many2many(
             'res.partner', 'partners_to_staff_event', 'event_id',
@@ -129,7 +129,10 @@ class event_compassion(orm.Model):
                     ['contract_ids', 'description'],
                     10)
             }),
-        'project_id': fields.many2one('project.project', _("Project"))
+        'project_id': fields.many2one('project.project', _("Project")),
+        'project_name': fields.related(
+            'project_id', 'name', type='char', string=_('Project name'),
+            store=True, track_visibility='onchange'),
     }
 
     def create(self, cr, uid, vals, context=None):
@@ -186,17 +189,11 @@ class event_compassion(orm.Model):
                 'lead_id', '=', vals['lead_id'])], context=context)
             if other_events_ids:
                 # Attach event to same project than those related to this
-                # opportunity and add project stage for this event.
+                # opportunity.
                 new_project = self.browse(
                     cr, uid, other_events_ids[0], context).project_id
                 vals['project_id'] = new_project.id
-                task_type_obj = self.pool.get('project.task.type')
-                for event in self.browse(cr, uid, ids, context):
-                    task_type_id = task_type_obj.search(
-                        cr, uid, [('description', 'like', str(event.id))],
-                        context=context)
-                    if task_type_id:
-                        new_project.write({'type_ids': [(4, task_type_id[0])]})
+
             else:
                 # Update project name
                 proj_name = self.pool.get('crm.lead').browse(
@@ -204,7 +201,27 @@ class event_compassion(orm.Model):
                 for event in self.browse(cr, uid, ids, context):
                     event.project_id.write({'name': proj_name})
 
+        project_obj = self.pool.get('project.project')
+        to_remove_project_ids = list()
+        if 'project_id' in vals:
+            task_type_obj = self.pool.get('project.task.type')
+            for event in self.browse(cr, uid, ids, context):
+                # Add project stage for this event.
+                task_type_id = task_type_obj.search(
+                    cr, uid, [('description', 'like', str(event.id))],
+                    context=context)
+                if task_type_id:
+                    project_obj.write(cr, uid, vals['project_id'], {
+                        'type_ids': [(4, task_type_id[0])]}, context)
+                # Remove old project if empty
+                other_events_ids = self.search(cr, uid, [
+                    ('project_id', '=', event.project_id.id),
+                    ('id', '!=', event.id)], context=context)
+                if not other_events_ids:
+                    to_remove_project_ids.append(event.project_id.id)
+
         super(event_compassion, self).write(cr, uid, ids, vals, context)
+
         if context is None:
             context = dict()
         context['from_event'] = True
@@ -218,6 +235,7 @@ class event_compassion(orm.Model):
                 cr, 1, event.origin_id.id, {
                     'name': event.full_name}, context)
 
+        project_obj.unlink(cr, uid, to_remove_project_ids, context)
         return True
 
     def unlink(self, cr, uid, ids, context=None):
@@ -258,7 +276,8 @@ class event_compassion(orm.Model):
                 context={'lang': 'en_US'})[0]
             task_type_id = self._create_task_type(cr, uid, event, context)
             res.update({
-                'name': event.lead_id and event.lead_id.name or event.name,
+                'name': event.project_name or event.lead_id
+                and event.lead_id.name or event.name,
                 'use_tasks': True,
                 'parent_id': parent_id,
                 'project_type': 'event',
@@ -271,16 +290,22 @@ class event_compassion(orm.Model):
                 'type_ids': [(6, 0, [task_type_id])],
             })
         else:
+            res['name'] = event.project_name
             # Update task type of project
             task_type_obj = self.pool.get('project.task.type')
             task_type_id = task_type_obj.search(cr, uid, [
                 ('description', 'like', str(event.id))], context=context)
-            if task_type_id:
+            project_task_types = [t.id for t in event.project_id.type_ids]
+            if task_type_id and task_type_id[0] in project_task_types:
                 res['type_ids'] = [(1, task_type_id[0], {
                     'name': event.full_name})]
             else:
                 # Attach a new task type
-                task_type_id = self._create_task_type(cr, uid, event, context)
+                if task_type_id:
+                    task_type_id = task_type_id[0]
+                else:
+                    task_type_id = self._create_task_type(cr, uid, event,
+                                                          context)
                 res['type_ids'] = [(4, task_type_id)]
 
         return res
@@ -298,8 +323,7 @@ class event_compassion(orm.Model):
 
     def _get_analytic_vals(self, cr, uid, event, parent_id, context=None):
         return {
-            'name': event.year + ' / ' + event.type.title() + ' / ' +
-            event.name,
+            'name': event.year + ' / ' + event.name,
             'type': 'event',
             'event_type': event.type,
             'date_start': event.start_date,
