@@ -66,17 +66,19 @@ class child_pictures(orm.Model):
         a new Pictures object. Check if picture is the same as the previous
         and attach the pictures to the last case study.
         """
+        if context is None:
+            context = dict()
         res_id = super(child_pictures, self).create(cr, uid, vals, context)
 
         child = self.pool.get('compassion.child').browse(
             cr, uid, vals['child_id'], context)
         # Retrieve Fullshot
         success = self._get_picture(
-            cr, uid, child.id, child.code, res_id, 'Fullshot',
-            dpi=300, width=1500, height=1200, context=context)
+            cr, uid, child.id, child.code, res_id, context, 'Fullshot',
+            dpi=300, width=1500, height=1200)
         # Retrieve Headshot
         success = success and self._get_picture(cr, uid, child.id, child.code,
-                                                res_id, context=context)
+                                                res_id, context)
         child_picture = self.browse(cr, uid, res_id, context)
         if not success:
             # We could not retrieve a picture, we cancel the creation
@@ -146,9 +148,9 @@ class child_pictures(orm.Model):
                     same_pict_ids.append(picture.id)
         return same_pict_ids
 
-    def _get_picture(self, cr, uid, child_id, child_code, attach_id,
+    def _get_picture(self, cr, uid, child_id, child_code, attach_id, context,
                      type='Headshot', dpi=72, width=400, height=400,
-                     format='jpeg', context=None):
+                     format='jpeg'):
         ''' Gets a picture from Compassion webservice '''
         url = self.pool.get('compassion.child').get_url(
             child_code, 'image/2015/03')
@@ -166,8 +168,6 @@ class child_pictures(orm.Model):
             return False
 
         attachment_obj = self.pool.get('ir.attachment')
-        if not context:
-            context = dict()
         context['store_fname'] = type + '.' + format
         context['image_date'] = json_data['imageDate'] or date.today()
         return attachment_obj.create(cr, uid, {
