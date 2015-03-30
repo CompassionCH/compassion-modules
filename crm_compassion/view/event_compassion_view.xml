@@ -44,6 +44,8 @@
                             <group>
                                 <field name="type"/>
                                 <field name="lead_id" context="{'form_view_ref':'crm.crm_case_form_view_oppor'}"/>
+                                <field name="project_id" groups="base.group_erp_manager" domain="[('project_type', '=', 'event')]"/>
+                                <field name="project_name"/>
                                 <field name="user_id"/>
                             </group>
                             <group>

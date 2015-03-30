@@ -39,7 +39,7 @@
                         <field name="user_id"/>
                     </field>
                     <xpath expr="//filter[@string='Origin']" position="after">
-                        <filter string="Salesperson" domain="[]"  context="{'group_by':'user_id'}"/>
+                        <filter string="Ambassador" domain="[]"  context="{'group_by':'user_id'}"/>
                     </xpath>
                 </data>
             </field>

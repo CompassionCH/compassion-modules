@@ -27,12 +27,21 @@ import sys
 def migrate(cr, version):
     if not version:
         return
-    # Modify analytic accounts linked to Events to change their event type.
+    # Modify analytic accounts linked to Events to change their event type
+    # and remove type and year from the name.
     cr.execute(
         """
         UPDATE account_analytic_account
-        SET event_type = lower(substring(name FROM '(?:.)*/ ((.)*)$'))
+        SET event_type = lower(substring(name FROM '(?:.)*/ ((.)*) /(?:.)*')),
+        name = substring(name FROM '(?:.)* / ((.)*$)')
         WHERE type = 'event'
+        """)
+
+    # Remove years from events
+    cr.execute(
+        """
+        UPDATE crm_event_compassion
+        SET name = regexp_replace(name, '20(\d){2}', '')
         """)
 
     # Add project task types

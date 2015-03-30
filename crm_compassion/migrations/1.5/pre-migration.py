@@ -60,7 +60,8 @@ def update_analytic_accounts(cr):
             "UPDATE account_analytic_account a SET parent_id = ("
             "   SELECT max(id) from account_analytic_account "
             "   WHERE name = a.name AND id != a.id GROUP BY name), "
-            "name = CONCAT('{0} / {1} / ', name), type = 'event' "
+            "name = CONCAT('{0} / {1} / ', name), "
+            "type = 'event' "
             "WHERE id = {2}".format(event_years[i], event_types[i],
                                     analytic_ids[i]))
 
