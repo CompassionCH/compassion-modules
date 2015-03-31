@@ -28,6 +28,23 @@
             </field>
         </record>
 
+        <record id="view_crm_contract_origin_filter" model="ir.ui.view">
+            <field name="name">recurring.contract.origin.crm.select</field>
+            <field name="model">recurring.contract.origin</field>
+            <field name="inherit_id" ref="sponsorship_compassion.view_contract_origin_filter"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="event_id"/>
+                </field>
+            </field>
+        </record>
+        
+        
+        <!--
+        RECURRING CONTRACT
+        -->
+        
+        
         <!-- Search contracts by Salesperson -->
         <record id="view_recurring_contract_filter" model="ir.ui.view">
             <field name="name">recurring.contract.select</field>
@@ -45,10 +62,6 @@
             </field>
         </record>
 
-
-        <!--
-        RECURRING CONTRACT
-        -->
         <record id="view_contract_tree_crm" model="ir.ui.view">
             <field name="name">recurring.contract.crm.tree</field>
             <field name="model">recurring.contract</field>

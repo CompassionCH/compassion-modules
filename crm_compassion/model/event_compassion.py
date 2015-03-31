@@ -174,11 +174,11 @@ class event_compassion(orm.Model):
         origin_id = self.pool.get('recurring.contract.origin').create(
             cr, uid, self._get_origin_vals(
                 cr, uid, event, analytic_id, context), context)
-        event.write({
+        super(event_compassion, self).write(cr, uid, event.id, {
             'origin_id': origin_id,
             'analytic_id': analytic_id,
             'project_id': project_id,
-        })
+        }, context)
         return new_id
 
     def write(self, cr, uid, ids, vals, context=None):
@@ -235,7 +235,8 @@ class event_compassion(orm.Model):
                 cr, 1, event.origin_id.id, {
                     'name': event.full_name}, context)
 
-        project_obj.unlink(cr, uid, to_remove_project_ids, context)
+        if to_remove_project_ids:
+            project_obj.unlink(cr, uid, to_remove_project_ids, context)
         return True
 
     def unlink(self, cr, uid, ids, context=None):
@@ -277,7 +278,7 @@ class event_compassion(orm.Model):
             task_type_id = self._create_task_type(cr, uid, event, context)
             res.update({
                 'name': event.project_name or event.lead_id
-                and event.lead_id.name or event.name,
+                and event.lead_id.name or event.name + ' ' + event.year,
                 'use_tasks': True,
                 'parent_id': parent_id,
                 'project_type': 'event',
@@ -323,7 +324,7 @@ class event_compassion(orm.Model):
 
     def _get_analytic_vals(self, cr, uid, event, parent_id, context=None):
         return {
-            'name': event.year + ' / ' + event.name,
+            'name': event.name,
             'type': 'event',
             'event_type': event.type,
             'date_start': event.start_date,
