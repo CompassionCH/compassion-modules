@@ -51,13 +51,14 @@
 		</field>
 	</record>
     
-    <record id="view_recurring_contract_filter" model="ir.ui.view">
+    <record id="view_contract_origin_filter" model="ir.ui.view">
 		<field name="name">recurring.contract.origin.select</field>
 		<field name="model">recurring.contract.origin</field>
 		<field name="arch" type="xml">
             <search string="Search origin">
                 <field name="name"/>
                 <field name="type"/>
+                <field name="partner_id"/>
                 <group expand="0" string="Group By...">
                     <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
                 </group>

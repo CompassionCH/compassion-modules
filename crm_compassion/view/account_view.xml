@@ -37,7 +37,7 @@
         <!-- 
             ACCOUNT INVOICE LINE
         -->
-        
+
         <!-- Invoie Line Tree View -->
         <record model="ir.ui.view" id="crm_invoice_line_compassion">
             <field name="model">account.invoice.line</field>
@@ -48,7 +48,7 @@
                 </field>
             </field>
         </record>
-        
+
         <!-- Invoice Form View -->
         <record model="ir.ui.view" id="crm_invoice_compassion">
             <field name="model">account.invoice</field>
@@ -57,6 +57,27 @@
                 <field name="child_name" position="after">
                     <field name="user_id"/>
                 </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="crm_invoice_supplier_compassion">
+            <field name="name">account.invoice.supplier.form.crm.compassion</field>
+            <field name="model">account.invoice</field>
+            <field name="priority">40</field>
+            <field name="inherit_id" ref="sponsorship_compassion.invoice_supplier_form_compassion"/>
+            <field name="arch" type="xml">
+                <!-- Change colors of analytic accounts depending its type -->
+                <xpath expr="//field[@name='account_analytic_id']" position="attributes">
+                    <attribute name="options">
+                        {'field_color': 'type',
+                         'colors': {
+                            'event': 'blue',
+                            'contract': 'red'
+                            },
+                         'search_more': true
+                        }
+                    </attribute>
+                </xpath>
             </field>
         </record>
     </data>
