@@ -44,14 +44,10 @@ class Project_description_de:
         """ Generate the project name, the localization and infos
             about the community
         """
-        terrain_desc = [desc.get_translated_value('de')
-                        for desc in project.terrain_description_ids]
         project_community_name = project.community_name.split('-')[0]
-        string = (u"Ihr Patenkind lebt in %s%s "
+        string = (u"Ihr Patenkind lebt in %s, "
                   u"Heimat von ungefähr %s Einwohnern. " % (
                       project_community_name,
-                      "" if not terrain_desc else
-                      " einer " + terrain_desc[0],
                       project.community_population))
 
         return string
@@ -75,9 +71,9 @@ class Project_description_de:
 
         res = u"Die Häuser {verb} für gewöhnlich "
         verb = u'sind'
-        wall = unicode(cls._gen_list_string(wall_mat, ', ', ' und '))
-        floor = unicode(cls._gen_list_string(floor_mat, ', ', ' und '))
-        roof = unicode(cls._gen_list_string(roof_mat, ', ', ' und '))
+        wall = unicode(cls._gen_list_string(wall_mat, ', ', ' oder '))
+        floor = unicode(cls._gen_list_string(floor_mat, ', ', ' oder '))
+        roof = unicode(cls._gen_list_string(roof_mat, ', ', ' oder '))
         if floor_mat:
             res += u"auf {floor} gebaut"
         if wall_mat:
