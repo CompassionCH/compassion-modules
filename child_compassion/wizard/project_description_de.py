@@ -44,14 +44,10 @@ class Project_description_de:
         """ Generate the project name, the localization and infos
             about the community
         """
-        terrain_desc = [desc.get_translated_value('de')
-                        for desc in project.terrain_description_ids]
         project_community_name = project.community_name.split('-')[0]
-        string = (u"Ihr Patenkind lebt in %s%s "
-                  u"von ungefähr %s Einwohnern. " % (
+        string = (u"Ihr Patenkind lebt in %s, "
+                  u"Heimat von ungefähr %s Einwohnern. " % (
                       project_community_name,
-                      "" if not terrain_desc else
-                      " einer " + terrain_desc[0],
                       project.community_population))
 
         return string
@@ -75,11 +71,11 @@ class Project_description_de:
 
         res = u"Die Häuser {verb} für gewöhnlich "
         verb = u'sind'
-        wall = unicode(cls._gen_list_string(wall_mat, ', ', ' und '))
-        floor = unicode(cls._gen_list_string(floor_mat, ', ', ' und '))
-        roof = unicode(cls._gen_list_string(roof_mat, ', ', ' und '))
+        wall = unicode(cls._gen_list_string(wall_mat, ', ', ' oder '))
+        floor = unicode(cls._gen_list_string(floor_mat, ', ', ' oder '))
+        roof = unicode(cls._gen_list_string(roof_mat, ', ', ' oder '))
         if floor_mat:
-            res += u"auf {floor} erbaut"
+            res += u"auf {floor} gebaut"
         if wall_mat:
             if floor_mat:
                 res += u" und haben {wall}"
@@ -120,8 +116,9 @@ class Project_description_de:
         else:
             string += ". "
 
-        string += (u"Die regionale Ernährung besteht aus %s. " % (
-                   cls._gen_list_string(primary_diet, ', ', ' und ')))
+        string += u"Die regionale Ernährung besteht hauptsächlich aus %s. "
+        string += '{0}. '.format(
+            cls._gen_list_string(primary_diet, ', ', ' und '))
 
         return string
 
@@ -179,9 +176,9 @@ class Project_description_de:
         """
         string = (u"Diese Region braucht (...). Ihre Patenschaft erlaubt "
                   u"den Mitarbeitern des {0}, Ihr Patenkind "
-                  u"mit Bibel- und Schulunterricht, Hygieneunterricht, "
+                  u"mit Bibel- und Schulunterricht, Hygieneschulungen, "
                   u"medizinischen Untersuchungen, ........................., "
-                  u"zu versorgen. Zusätzlich bieten die Zentrumsangestellten "
+                  u"zu versorgen. Zusätzlich bieten die Projektmitarbeiter "
                   u"verschiedene Treffen für die Eltern oder "
                   u"Erziehungsberechtigten Ihres Patenkindes an.").format(
             project.name)
