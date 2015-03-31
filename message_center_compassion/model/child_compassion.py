@@ -161,8 +161,16 @@ class compassion_child(orm.Model):
 
         if child.state == 'E':
             # Put the child back to normal state
-            child.write({'state': child.previous_state})
+            self.reset_child_state(cr, uid, child.id, context)
 
+        return True
+
+    def reset_child_state(self, cr, uid, ids, context=None):
+        if not isinstance(ids, list):
+            ids = [ids]
+        for child in self.browse(cr, uid, ids, context):
+            child.write({'state': child.previous_state,
+                         'previous_state': False})
         return True
 
         ######################################################################
