@@ -126,7 +126,7 @@ class Child_description_de:
             '2': u'vierten Klasse',
             '3': u'fünften Klasse',
             '4': u'sechsten Klasse',
-            '5': u'siebsten Klasse',
+            '5': u'siebten Klasse',
             '6': u'achten Klasse',
             '7': u'neunten Klasse',
             '8': u'zehnten Klasse',
@@ -227,7 +227,7 @@ class Child_description_de:
         if case_study.nb_brothers == 1:
             live_with['brothers'] = u'{0} Bruder'.format(prefix[0])
         elif case_study.nb_brothers > 1:
-            live_with['brothers'] = u'{0} {1} Brüder'.format(
+            live_with['brothers'] = u'{0} {1} Brüdern'.format(
                 prefix[2], cls._number_to_string(case_study.nb_brothers))
         if case_study.nb_sisters == 1:
             live_with['sisters'] = u'{0} Schwester'.format(prefix[1])
@@ -428,8 +428,8 @@ class Child_description_de:
             u"ist arbeitslos", u"ist arbeitslos", u"sind arbeitslos"]
 
         job_tags_work_as = {
-            'isafarmer': [u'Landwirt', u'Landwirtin', u'fermiers'],
-            'isateacher': [u'Lehrer', u'Lehrerin', u'enseignants'],
+            'isafarmer': [u'Bauer', u'Bäuerin', u'Bauern'],
+            'isateacher': [u'Lehrer', u'Lehrerin', u'Lehrer'],
             'sellsinmarket': [u'Marktverkäufer',
                               u'Marktverkäuferin',
                               u'Marktverkäufer'],

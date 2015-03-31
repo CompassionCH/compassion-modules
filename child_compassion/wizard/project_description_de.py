@@ -48,7 +48,7 @@ class Project_description_de:
                         for desc in project.terrain_description_ids]
         project_community_name = project.community_name.split('-')[0]
         string = (u"Ihr Patenkind lebt in %s%s "
-                  u"von ungefähr %s Einwohnern. " % (
+                  u"Heimat von ungefähr %s Einwohnern. " % (
                       project_community_name,
                       "" if not terrain_desc else
                       " einer " + terrain_desc[0],
@@ -79,7 +79,7 @@ class Project_description_de:
         floor = unicode(cls._gen_list_string(floor_mat, ', ', ' und '))
         roof = unicode(cls._gen_list_string(roof_mat, ', ', ' und '))
         if floor_mat:
-            res += u"auf {floor} erbaut"
+            res += u"auf {floor} gebaut"
         if wall_mat:
             if floor_mat:
                 res += u" und haben {wall}"
@@ -120,8 +120,9 @@ class Project_description_de:
         else:
             string += ". "
 
-        string += (u"Die regionale Ernährung besteht aus %s. " % (
-                   cls._gen_list_string(primary_diet, ', ', ' und ')))
+        string += u"Die regionale Ernährung besteht hauptsächlich aus %s. "
+        string += '{0}. '.format(
+            cls._gen_list_string(primary_diet, ', ', ' und '))
 
         return string
 
@@ -179,9 +180,9 @@ class Project_description_de:
         """
         string = (u"Diese Region braucht (...). Ihre Patenschaft erlaubt "
                   u"den Mitarbeitern des {0}, Ihr Patenkind "
-                  u"mit Bibel- und Schulunterricht, Hygieneunterricht, "
+                  u"mit Bibel- und Schulunterricht, Hygieneschulungen, "
                   u"medizinischen Untersuchungen, ........................., "
-                  u"zu versorgen. Zusätzlich bieten die Zentrumsangestellten "
+                  u"zu versorgen. Zusätzlich bieten die Projektmitarbeiter "
                   u"verschiedene Treffen für die Eltern oder "
                   u"Erziehungsberechtigten Ihres Patenkindes an.").format(
             project.name)
