@@ -11,8 +11,11 @@
             <field name="model">compassion.child</field>
             <field name="inherit_id" ref="child_compassion.view_compassion_child_form" />
             <field name="arch" type="xml">
+                <header position="inside">
+                    <button name="reset_child_state" type="object" states="E" string="Resolved"/>
+                </header>
                  <div name="buttons" position='inside'>
-                    <button string="Error message" name="view_error_messages" type="object" attrs="{'invisible': [('state', '!=', 'E')]}" />
+                    <button string="Error message" name="view_error_messages" type="object" states="E" />
                  </div>
             </field>
         </record>
