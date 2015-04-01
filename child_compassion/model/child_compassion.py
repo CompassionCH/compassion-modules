@@ -499,8 +499,8 @@ class compassion_child(orm.Model):
         vals['sibling_project_2'] = json_data[
             'familySize']['secondBrotherOrSister']
 
-        # Attach many2many values
-        vals['hobbies_ids'] = [(6, 0, [v for v in values if v])]
+        # Attach many2many values (and remove duplicates)
+        vals['hobbies_ids'] = [(6, 0, list(set([v for v in values if v])))]
 
         # Write values to existing case_study or create a new one
         if study_ids:

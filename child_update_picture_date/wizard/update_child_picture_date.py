@@ -42,6 +42,7 @@ class update_child_picture_date(orm.TransientModel):
             finally:
                 count += 1
                 cr.commit()
+        return True
 
 
 class child_compassion(orm.Model):
