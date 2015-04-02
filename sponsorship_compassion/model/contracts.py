@@ -20,7 +20,7 @@ from dateutil.relativedelta import relativedelta
 from .product import GIFT_TYPES
 
 import logging
-import pdb
+
 logger = logging.getLogger(__name__)
 
 
@@ -48,14 +48,18 @@ class recurring_contract(orm.Model):
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, ctx):
             if invoice.state == 'paid':
                 self._invoice_paid(cr, uid, invoice, ctx)
-                last_pay_date = max([move_line.date
-                                     for move_line in invoice.payment_ids
-                                     if move_line.credit > 0] or [0])
+
+                pay_dates = [move_line.date
+                             for move_line in invoice.payment_ids
+                             if move_line.credit > 0] or [0]
+
+                last_pay_date = max(pay_dates)
+                first_pay_date = min(pay_dates)
 
                 self._cancel_invoices(
                     cr, uid,
                     invoice.partner_id.id,
-                    invoice.date_invoice,
+                    first_pay_date,
                     context)
 
                 for invoice_line in invoice.invoice_line:
@@ -95,7 +99,7 @@ class recurring_contract(orm.Model):
             contract_ids = [
                 invoice_line.contract_id.id for invoice_line in invoice_lines]
             contract_ids = list(set(contract_ids))
-            pdb.set_trace()
+
             wf_service = netsvc.LocalService('workflow')
             if contract_ids:
                 if len(contract_ids) == 1:
