@@ -359,7 +359,8 @@ class compassion_child(orm.Model):
                 'birthdate': child.birthdate,
                 'comments': 'Empty Case Study for LDP Student',
             }
-        return child_prop_obj.create(cr, uid, vals, context)
+            return child_prop_obj.create(cr, uid, vals, context)
+        return True
 
     ##################################################
     #            Case study retrieving               #
@@ -373,12 +374,19 @@ class compassion_child(orm.Model):
             context = dict()
         url = self.get_url(child.code, 'casestudy')
         r = requests.get(url)
-        json_data = r.json()
-        if not r.status_code / 100 == 2:
+        html_res = r.text
+        json_data = dict()
+        error = r.status_code != 200
+        try:
+            json_data = r.json()
+        except:
+            error = True
+        if error:
+            error_message = json_data.get('error', {'message': html_res})
             raise orm.except_orm('NetworkError',
                                  _('An error occured while fetching the last '
                                    'case study for child %s. ') % child.code +
-                                 json_data['error']['message'])
+                                 error_message.get('message', 'Bad response'))
 
         child_prop_obj = self.pool.get('compassion.child.property')
         info_date = json_data['childCaseStudyDate']

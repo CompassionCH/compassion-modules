@@ -19,5 +19,20 @@
                  </div>
             </field>
         </record>
+        
+        <!-- Resolve child error actions -->
+        <record id="resolve_child_state" model="ir.actions.server">
+            <field name="name">Resolve Error</field>
+            <field name="model_id" ref="model_compassion_child"/>
+            <field name="state">code</field>
+            <field name="code">self.reset_child_state(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        
+        <record id="update_child_pictures" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'compassion.child'" name="model"/>
+            <field name="name">Resolve Error</field>
+            <field eval="'ir.actions.server,%d'%resolve_child_state" name="value"/>
+        </record>
     </data>
 </openerp>

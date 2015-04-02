@@ -157,12 +157,18 @@ class child_pictures(orm.Model):
         url += '&Height=%s&Width=%s&DPI=%s&ImageFormat=%s&ImageType=%s' \
             % (height, width, dpi, format, type)
         r = requests.get(url)
-        json_data = r.json()
-
-        if not r.status_code/100 == 2:
+        error = r.status_code != 200
+        html_res = r.text
+        json_data = dict()
+        try:
+            json_data = r.json()
+        except:
+            error = True
+        if error:
+            error_message = json_data.get('error', {'message': html_res})
             self.pool.get('mail.thread').message_post(
                 cr, uid, child_id,
-                json_data['error']['message'],
+                error_message.get('message', 'Bad response'),
                 _('Picture update error'), 'comment',
                 context={'thread_model': 'compassion.child'})
             return False
