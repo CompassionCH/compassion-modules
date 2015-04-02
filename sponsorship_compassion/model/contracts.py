@@ -20,7 +20,7 @@ from dateutil.relativedelta import relativedelta
 from .product import GIFT_TYPES
 
 import logging
-
+import pdb
 logger = logging.getLogger(__name__)
 
 
@@ -51,8 +51,16 @@ class recurring_contract(orm.Model):
                 last_pay_date = max([move_line.date
                                      for move_line in invoice.payment_ids
                                      if move_line.credit > 0] or [0])
+
+                self._cancel_invoices(
+                    cr, uid,
+                    invoice.partner_id.id,
+                    invoice.date_invoice,
+                    context)
+
                 for invoice_line in invoice.invoice_line:
                     contract = invoice_line.contract_id
+
                     if contract.id not in res and (
                             contract.state == 'waiting' and last_pay_date):
                         # Activate the contract and set the
@@ -62,6 +70,42 @@ class recurring_contract(orm.Model):
                             'activation_date': datetime.today().strftime(DF)})
 
         return list(res)
+
+    def _cancel_invoices(
+            self, cr, uid, partner_id, date_invoice, context=None):
+        invoice_line_obj = self.pool.get('account.invoice.line')
+        invoice_obj = self.pool.get('account.invoice')
+        invoice_ids = invoice_obj.search(
+            cr, uid,
+            [('partner_id', '=', partner_id),
+             ('state', '=', 'open'),
+             ('date_invoice', '<', date_invoice)
+             ],
+            context=context)
+
+        for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
+            invoice_line_ids = invoice_line_obj.search(
+                cr, uid,
+                [('invoice_id', '=', invoice.id)],
+                context=context)
+            invoice_lines = invoice_line_obj.browse(
+                cr, uid,
+                invoice_line_ids,
+                context)
+            contract_ids = [
+                invoice_line.contract_id.id for invoice_line in invoice_lines]
+            contract_ids = list(set(contract_ids))
+            pdb.set_trace()
+            wf_service = netsvc.LocalService('workflow')
+            if contract_ids:
+                if len(contract_ids) == 1:
+                    wf_service.trg_validate(uid, 'account.invoice',
+                                            invoice.id, 'invoice_cancel', cr)
+                else:
+                    invoice_obj.action_cancel_draft(
+                        cr, uid, invoice.id, context)
+                    invoice_obj.trg_validate(uid, 'account.invoice',
+                                             invoice.id, 'invoice_open', cr)
 
     def _is_fully_managed(self, cr, uid, ids, field_name, arg, context):
         """Tells if the correspondent and the payer is the same person."""
@@ -604,7 +648,6 @@ class recurring_contract(orm.Model):
                     else:
                         payment_allowed = project.disburse_funds or \
                             invl.due_date < project.status_date
-
                     if not payment_allowed:
                         raise orm.except_orm(
                             _("Reconcile error"),
