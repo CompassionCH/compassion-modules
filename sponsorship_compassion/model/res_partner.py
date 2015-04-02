@@ -86,11 +86,11 @@ class res_partner(orm.Model):
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree, form',
-            'domain': [('partner_id', 'in', ids)],
             'res_model': 'account.invoice.line',
             'view_id': view_id,
             'views': [(view_id, 'tree'), (False, 'form')],
             'target': 'current',
+            'context': {'search_default_partner_id': ids},
         }
 
         return action

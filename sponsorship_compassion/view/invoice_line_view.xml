@@ -62,6 +62,7 @@
                     <filter name="cancel" string="Cancelled" domain="[('state','=','cancel')]" help="Cancelled invoice lines"/>
                     <field name="product_id" string="Product" />
                     <field name="child_name" string="Sponsored child" />
+                    <field name="partner_id" string="Partner"/>
                     <group expand="0" string="Group By...">
                         <filter string="Product" domain="[]" context="{'group_by':'product_id'}"/>
                         <filter string="Child" domain="[]"  context="{'group_by':'child_name'}"/>
