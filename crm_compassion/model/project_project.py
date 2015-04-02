@@ -45,7 +45,7 @@ class project_project(orm.Model):
             'use_timesheets': True,
             'manager_id': project.user_id.id}
         # if project.project_type: TODO : See if needed
-            # analytic_vals['name'] = 'Project/' + project.name
+        # analytic_vals['name'] = 'Project/' + project.name
         project.analytic_account_id.write(analytic_vals)
         if type == 'marketing':
             # Create an origin for contracts
