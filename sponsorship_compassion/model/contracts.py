@@ -56,12 +56,6 @@ class recurring_contract(orm.Model):
                 last_pay_date = max(pay_dates)
                 first_pay_date = min(pay_dates)
 
-                self._cancel_invoices(
-                    cr, uid,
-                    invoice.partner_id.id,
-                    first_pay_date,
-                    context)
-
                 for invoice_line in invoice.invoice_line:
                     contract = invoice_line.contract_id
 
@@ -73,11 +67,16 @@ class recurring_contract(orm.Model):
                         contract.write({
                             'activation_date': datetime.today().strftime(DF)})
 
+                        # Cancel the invoices if a contract is activated
+                        self._cancel_invoices(
+                            cr, uid,
+                            invoice.partner_id.id,
+                            first_pay_date,
+                            context)
         return list(res)
 
     def _cancel_invoices(
             self, cr, uid, partner_id, date_invoice, context=None):
-        invoice_line_obj = self.pool.get('account.invoice.line')
         invoice_obj = self.pool.get('account.invoice')
         invoice_ids = invoice_obj.search(
             cr, uid,
@@ -88,16 +87,10 @@ class recurring_contract(orm.Model):
             context=context)
 
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
-            invoice_line_ids = invoice_line_obj.search(
-                cr, uid,
-                [('invoice_id', '=', invoice.id)],
-                context=context)
-            invoice_lines = invoice_line_obj.browse(
-                cr, uid,
-                invoice_line_ids,
-                context)
+            invoice_lines = invoice.invoice_line
             contract_ids = [
-                invoice_line.contract_id.id for invoice_line in invoice_lines]
+                invoice_line.contract_id.id for invoice_line in invoice_lines
+                if invoice_line.contract_id]
             contract_ids = list(set(contract_ids))
 
             wf_service = netsvc.LocalService('workflow')
