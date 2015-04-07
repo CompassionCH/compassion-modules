@@ -77,7 +77,8 @@ class recurring_contract(orm.Model):
         return list(res)
 
     def _cancel_old_invoices(
-            self, cr, uid, partner_id, contract_id, date_invoice, context=None):
+            self, cr, uid, partner_id,
+            contract_id, date_invoice, context=None):
         invoice_obj = self.pool.get('account.invoice')
         invoice_ids = invoice_obj.search(
             cr, uid,
@@ -106,7 +107,7 @@ class recurring_contract(orm.Model):
                         invoice_line for invoice_line in invoice_lines
                         if invoice_line.contract_id.id != contract_id]
                     invoice_obj.write(
-                        cr, uid, invoice.id, 
+                        cr, uid, invoice.id,
                         {'invoice_id': invoice_lines},
                         context)
                     invoice_obj.trg_validate(uid, 'account.invoice',
