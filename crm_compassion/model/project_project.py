@@ -18,7 +18,11 @@ class project_project(orm.Model):
 
     _columns = {
         'project_type': fields.selection([
-            ('event', _("Event")),
+            ('stand', _("Stand")),
+            ('concert', _("Concert")),
+            ('presentation', _("Presentation")),
+            ('meeting', _("Meeting")),
+            ('sport', _("Sport event")),
             ('marketing', _("Marketing campaign"))], _('Type'))
     }
 
@@ -30,23 +34,22 @@ class project_project(orm.Model):
             parent_id = analytic_obj.search(
                 cr, uid, [('name', '=', 'Campaign')],
                 context={'lang': 'en_US'})
-        elif project_type == 'event':
-            parent_id = analytic_obj.search(
-                cr, uid, [('name', '=', 'Events')],
-                context={'lang': 'en_US'})
-        res['value'] = {'parent_id': parent_id[0] if parent_id else False}
+            res['value'] = {'parent_id': parent_id[0] if parent_id else False}
         return res
 
     def create(self, cr, uid, vals, context=None):
         type = vals.get('project_type')
+        if type in ('stand', 'concert', 'presentation', 'meeting',
+                    'sport') and not context.get('from_event'):
+            raise orm.except_orm(
+                _("Type not allowed for creation"),
+                _("Please create an event. It will automatically create "
+                  "an associated Project for the event."))
         id = super(project_project, self).create(cr, uid, vals, context)
         project = self.browse(cr, uid, id, context)
-        analytic_vals = {
+        project.analytic_account_id.write({
             'use_timesheets': True,
-            'manager_id': project.user_id.id}
-        # if project.project_type: TODO : See if needed
-        # analytic_vals['name'] = 'Project/' + project.name
-        project.analytic_account_id.write(analytic_vals)
+            'manager_id': project.user_id.id})
         if type == 'marketing':
             # Create an origin for contracts
             self.pool.get('recurring.contract.origin').create(
@@ -64,21 +67,4 @@ class project_project(orm.Model):
             raise orm.except_orm(
                 _("Type cannot be changed"),
                 _("You cannot change the type of the project."))
-        if 'user_id' in vals:
-            for project in self.browse(cr, uid, ids, context):
-                project.analytic_account_id.write({
-                    'manager_id': vals['user_id']
-                })
         return True
-
-    def unlink(self, cr, uid, ids, context=None):
-        """ Unlink analytic account if empty. """
-        account_ids = list()
-        for project in self.browse(cr, uid, ids, context):
-            account = project.analytic_account_id
-            if not account.child_ids and not account.line_ids:
-                account_ids.append(account.id)
-        res = super(project_project, self).unlink(cr, uid, ids, context)
-        self.pool.get('account.analytic.account').unlink(cr, uid, account_ids,
-                                                         context)
-        return res
