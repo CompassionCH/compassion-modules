@@ -83,8 +83,7 @@ class recurring_contract(orm.Model):
             cr, uid,
             [('partner_id', '=', partner_id),
              ('state', '=', 'open'),
-             ('date_invoice', '<', date_invoice),
-             ('invoice_line.contract_id.id', '=', contract_id)
+             ('date_invoice', '<', date_invoice)
              ],
             context=context)
 
@@ -96,7 +95,7 @@ class recurring_contract(orm.Model):
             contract_ids = list(set(contract_ids))
 
             wf_service = netsvc.LocalService('workflow')
-            if contract_ids:
+            if contract_ids and contract_id in contract_ids:
                 if len(contract_ids) == 1:
                     wf_service.trg_validate(uid, 'account.invoice',
                                             invoice.id, 'invoice_cancel', cr)
