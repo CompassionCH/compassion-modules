@@ -129,17 +129,15 @@ class event_compassion(orm.Model):
                     ['contract_ids', 'description'],
                     10)
             }),
-        'project_id': fields.many2one('project.project', _("Project")),
-        'project_name': fields.related(
-            'project_id', 'name', type='char', string=_('Project name'),
-            store=True, track_visibility='onchange'),
+        'project_id': fields.many2one('project.project', 'Project'),
+        'use_tasks': fields.boolean(_('Use tasks')),
+        'parent_id': fields.many2one('account.analytic.account', _('Parent')),
     }
 
     def create(self, cr, uid, vals, context=None):
         """ When an event is created:
         - Format the name to remove year of it,
-        - Retrieve a corresponding Project (for tasks) or create a new one,
-        - Create a child analytic_account to the project's one,
+        - Create an analytic_account,
         - Create an origin for sponsorships.
         """
         if context is None:
@@ -157,19 +155,17 @@ class event_compassion(orm.Model):
         new_id = super(event_compassion, self).create(cr, uid, vals, context)
         event = self.browse(cr, uid, new_id, context)
 
-        # Create Project, Analytic account and Origin linked to this event
-        project_obj = self.pool.get('project.project')
-        project_id = event.project_id and event.project_id.id or \
-            event.lead_id and event.lead_id.event_ids and \
-            event.lead_id.event_ids[-1].project_id.id or \
-            project_obj.create(
+        # Create project for the tasks
+        project_id = False
+        if event.use_tasks:
+            project_id = self.pool.get('project.project').create(
                 cr, uid, self._get_project_vals(
-                    cr, uid, event, create=True, context=context), context)
-        parent_analytic_id = project_obj.browse(
-            cr, uid, project_id, context).analytic_account_id.id
+                    cr, uid, event, context), context)
+
+        # Analytic account and Origin linked to this event
         analytic_id = self.pool.get('account.analytic.account').create(
             cr, uid, self._get_analytic_vals(
-                cr, uid, event, parent_analytic_id, context),
+                cr, uid, event, context),
             context)
         origin_id = self.pool.get('recurring.contract.origin').create(
             cr, uid, self._get_origin_vals(
@@ -183,60 +179,28 @@ class event_compassion(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
         """ Push values to linked objects. """
-        if 'lead_id' in vals:
-            # Move events to another project related to the opporunity
-            other_events_ids = self.search(cr, uid, [(
-                'lead_id', '=', vals['lead_id'])], context=context)
-            if other_events_ids:
-                # Attach event to same project than those related to this
-                # opportunity.
-                new_project = self.browse(
-                    cr, uid, other_events_ids[0], context).project_id
-                vals['project_id'] = new_project.id
-
-            else:
-                # Update project name
-                proj_name = self.pool.get('crm.lead').browse(
-                    cr, uid, vals['lead_id'], context).name
-                for event in self.browse(cr, uid, ids, context):
-                    event.project_id.write({'name': proj_name})
-
-        project_obj = self.pool.get('project.project')
-        to_remove_project_ids = list()
-        if 'project_id' in vals:
-            task_type_obj = self.pool.get('project.task.type')
-            for event in self.browse(cr, uid, ids, context):
-                # Add project stage for this event.
-                task_type_id = task_type_obj.search(
-                    cr, uid, [('description', 'like', str(event.id))],
-                    context=context)
-                if task_type_id:
-                    project_obj.write(cr, uid, vals['project_id'], {
-                        'type_ids': [(4, task_type_id[0])]}, context)
-                # Remove old project if empty
-                other_events_ids = self.search(cr, uid, [
-                    ('project_id', '=', event.project_id.id),
-                    ('id', '!=', event.id)], context=context)
-                if not other_events_ids:
-                    to_remove_project_ids.append(event.project_id.id)
-
         super(event_compassion, self).write(cr, uid, ids, vals, context)
 
         if context is None:
             context = dict()
         context['from_event'] = True
         for event in self.browse(cr, uid, ids, context):
-            event.project_id.write(self._get_project_vals(cr, uid, event,
-                                                          context=context))
+            if 'use_tasks' in vals and event.use_tasks:
+                project_id = self.pool.get('project.project').create(
+                    cr, uid, self._get_project_vals(
+                        cr, uid, event, context), context)
+                event.write({'project_id': project_id})
+            elif event.project_id:
+                event.project_id.write(self._get_project_vals(
+                    cr, uid, event, context))
             event.analytic_id.write(self._get_analytic_vals(
-                cr, uid, event, event.project_id.analytic_account_id.id,
-                context))
-            self.pool.get('recurring.contract.origin').write(
-                cr, 1, event.origin_id.id, {
-                    'name': event.full_name}, context)
+                cr, uid, event, context))
+            if 'name' in vals:
+                self.pool.get('recurring.contract.origin').write(
+                    # Only administrator has write access to origins.
+                    cr, 1, event.origin_id.id, {
+                        'name': event.full_name}, context)
 
-        if to_remove_project_ids:
-            project_obj.unlink(cr, uid, to_remove_project_ids, context)
         return True
 
     def unlink(self, cr, uid, ids, context=None):
@@ -249,8 +213,7 @@ class event_compassion(orm.Model):
                     _('The event is linked to expenses or sponsorships. '
                       'You cannot delete it.'))
             else:
-                if len(event.project_id.event_ids) <= 1:
-                    event.project_id.unlink()
+                event.project_id.unlink()
                 event.analytic_id.unlink()
                 event.origin_id.unlink()
         return super(event_compassion, self).unlink(cr, uid, ids, context)
@@ -263,68 +226,38 @@ class event_compassion(orm.Model):
         context['use_tasks'] = False
         return self.create(cr, uid, vals, context)
 
-    def _get_project_vals(self, cr, uid, event, create=False, context=None):
+    def _get_project_vals(self, cr, uid, event, context=None):
         """ Creates a new project based on the event.
         """
-        res = dict()
-        if create:
-            members = self.pool.get('res.users').search(
-                cr, uid,
-                [('partner_id', 'in', [p.id for p in event.staff_ids])],
-                context=context)
-            parent_id = self.pool.get('account.analytic.account').search(
-                cr, uid, [('name', '=', 'Events')],
-                context={'lang': 'en_US'})[0]
-            task_type_id = self._create_task_type(cr, uid, event, context)
-            res.update({
-                'name': event.project_name or event.lead_id
-                and event.lead_id.name or event.name + ' ' + event.year,
-                'use_tasks': True,
-                'parent_id': parent_id,
-                'project_type': 'event',
-                'user_id': event.user_id.id,
-                'partner_id': event.partner_id.id,
-                'members': [(6, 0, members)],   # many2many field
-                'date_start': event.start_date,
-                'date': event.end_date,
-                'state': 'open',
-                'type_ids': [(6, 0, [task_type_id])],
-            })
-        else:
-            res['name'] = event.project_name
-            # Update task type of project
-            task_type_obj = self.pool.get('project.task.type')
-            task_type_id = task_type_obj.search(cr, uid, [
-                ('description', 'like', str(event.id))], context=context)
-            project_task_types = [t.id for t in event.project_id.type_ids]
-            if task_type_id and task_type_id[0] in project_task_types:
-                res['type_ids'] = [(1, task_type_id[0], {
-                    'name': event.full_name})]
-            else:
-                # Attach a new task type
-                if task_type_id:
-                    task_type_id = task_type_id[0]
-                else:
-                    task_type_id = self._create_task_type(cr, uid, event,
-                                                          context)
-                res['type_ids'] = [(4, task_type_id)]
-
-        return res
-
-    def _create_task_type(self, cr, uid, event, context=None):
-        """ Create a new project task type """
-        task_type_obj = self.pool.get('project.task.type')
-        task_type_id = task_type_obj.create(cr, uid, {
-            'name': event.full_name,
-            'state': 'open',
-            'description': 'Task type generated for event ID ' + str(
-                event.id),
-            'sequence': 1}, context)
-        return task_type_id
-
-    def _get_analytic_vals(self, cr, uid, event, parent_id, context=None):
+        members = self.pool.get('res.users').search(
+            cr, uid,
+            [('partner_id', 'in', [p.id for p in event.staff_ids])],
+            context=context)
         return {
-            'name': event.name,
+            'name': event.full_name,
+            'use_tasks': True,
+            'analytic_account_id': event.analytic_id.id,
+            'project_type': event.type,
+            'user_id': event.user_id.id,
+            'partner_id': event.partner_id.id,
+            'members': [(6, 0, members)],   # many2many field
+            'date_start': event.start_date,
+            'date': event.end_date,
+            'state': 'open',
+        }
+
+    def _get_analytic_vals(self, cr, uid, event, context=None):
+        name = event.name
+        parent_id = event.parent_id and event.parent_id.id
+        if event.city:
+            name += ' ' + event.city
+        if not parent_id:
+            parent_id = self._find_parent_analytic(
+                cr, uid, event.type, event.year, context)
+            super(event_compassion, self).write(cr, uid, event.id, {
+                'parent_id': parent_id}, context)
+        return {
+            'name': name,
             'type': 'event',
             'event_type': event.type,
             'date_start': event.start_date,
@@ -342,6 +275,23 @@ class event_compassion(orm.Model):
             'event_id': event.id,
             'analytic_id': analytic_id,
         }
+
+    def _find_parent_analytic(self, cr, uid, event_type, year, context=None):
+        analytics_obj = self.pool.get('account.analytic.account')
+        categ_id = analytics_obj.search(
+            cr, uid, [('name', 'ilike', event_type)], context=context)[0]
+        acc_ids = analytics_obj.search(
+            cr, uid, [('name', '=', year), ('parent_id', '=', categ_id)],
+            context=context)
+        if not acc_ids:
+            # The category for this year does not yet exist
+            acc_ids = [analytics_obj.create(cr, uid, {
+                'name': year,
+                'type': 'view',
+                'code': 'AA' + event_type[:2].upper() + year,
+                'parent_id': categ_id
+            }, context)]
+        return acc_ids[0]
 
     def show_tasks(self, cr, uid, ids, context=None):
         event = self.browse(cr, uid, ids[0], context)

@@ -38,14 +38,19 @@
                             </h1>
                         </div>
                         <div class="oe_right oe_button_box" name="buttons">
-                            <button name="show_tasks" string="Open tasks" type="object"/>
+                            <button name="show_tasks" string="Open tasks" type="object" attrs="{'invisible': [('use_tasks', '=', False)]}"/>
                         </div>
                         <group>
                             <group>
                                 <field name="type"/>
                                 <field name="lead_id" context="{'form_view_ref':'crm.crm_case_form_view_oppor'}"/>
-                                <field name="project_id" groups="base.group_erp_manager" domain="[('project_type', '=', 'event')]"/>
-                                <field name="project_name"/>
+                                <field name="parent_id" context="{
+                                    'default_parent_id': parent_id,
+                                    'default_manager_id': user_id,
+                                    'default_user_id': user_id,
+                                    'default_partner_id': partner_id,
+                                    'default_name': name}"/>
+                                <field name="use_tasks"/>
                                 <field name="user_id"/>
                             </group>
                             <group>
