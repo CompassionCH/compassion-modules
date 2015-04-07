@@ -67,22 +67,24 @@ class recurring_contract(orm.Model):
                         contract.write({
                             'activation_date': datetime.today().strftime(DF)})
 
-                        # Cancel the invoices if a contract is activated
-                        self._cancel_invoices(
+                        # Cancel the old invoices if a contract is activated
+                        self._cancel_old_invoices(
                             cr, uid,
                             invoice.partner_id.id,
+                            contract.id,
                             first_pay_date,
                             context)
         return list(res)
 
-    def _cancel_invoices(
-            self, cr, uid, partner_id, date_invoice, context=None):
+    def _cancel_old_invoices(
+            self, cr, uid, partner_id, contract_id, date_invoice, context=None):
         invoice_obj = self.pool.get('account.invoice')
         invoice_ids = invoice_obj.search(
             cr, uid,
             [('partner_id', '=', partner_id),
              ('state', '=', 'open'),
-             ('date_invoice', '<', date_invoice)
+             ('date_invoice', '<', date_invoice),
+             ('invoice_line.contract_id.id', '=', contract_id)
              ],
             context=context)
 
@@ -90,7 +92,7 @@ class recurring_contract(orm.Model):
             invoice_lines = invoice.invoice_line
             contract_ids = [
                 invoice_line.contract_id.id for invoice_line in invoice_lines
-                if invoice_line.contract_id]
+                if invoice_line.contract_id.id]
             contract_ids = list(set(contract_ids))
 
             wf_service = netsvc.LocalService('workflow')
@@ -101,6 +103,13 @@ class recurring_contract(orm.Model):
                 else:
                     invoice_obj.action_cancel_draft(
                         cr, uid, invoice.id, context)
+                    invoice_lines = [
+                        invoice_line for invoice_line in invoice_lines
+                        if invoice_line.contract_id.id != contract_id]
+                    invoice_obj.write(
+                        cr, uid, invoice.id, 
+                        {'invoice_id': invoice_lines},
+                        context)
                     invoice_obj.trg_validate(uid, 'account.invoice',
                                              invoice.id, 'invoice_open', cr)
 
