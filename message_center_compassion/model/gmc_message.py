@@ -19,7 +19,6 @@ from datetime import datetime
 import requests
 import logging
 import traceback
-import pdb
 
 logger = logging.getLogger(__name__)
 
@@ -421,7 +420,6 @@ class gmc_message_pool(orm.Model):
 
     def recompute_gifts(self, cr, uid, ids, context=None):
         """ Method for updating gifts messages. """
-        pdb.set_trace()
         self._store_set_values(cr, uid, ids, [
             'gift_type', 'gift_amount', 'gift_instructions'], context)
         return True
