@@ -66,21 +66,18 @@ class recurring_contract(orm.TransientModel):
         wkf_instance_ids = list()
         for contract_id in cont_ids:
             cr.execute(
-                '''
-                    SELECT id FROM wkf_instance
-                    WHERE wkf_id = {} AND res_id = {}
-                    '''.format(wkf_id, contract_id))
+                "SELECT id FROM wkf_instance "
+                "WHERE wkf_id = {0} AND res_id = {1}".format(
+                    wkf_id, contract_id))
             res = cr.fetchall()
             if res:
                 wkf_instance_ids.append(res[0][0])
 
         for wkf_instance_id in wkf_instance_ids:
             cr.execute(
-                '''
-                    INSERT INTO wkf_workitem(act_id, inst_id, state)
-                    VALUES ('{}', '{}', '{}')
-                    '''.format(wkf_activity_id, wkf_instance_id, 'complete')
-            )
+                "INSERT INTO wkf_workitem(act_id, inst_id, state) "
+                "VALUES ('{0}', '{1}', '{2}')".format(
+                    wkf_activity_id, wkf_instance_id, 'complete'))
 
     # Only at module installation
     def _set_sds_states(self, cr, uid, ids=None, context=None):
@@ -128,11 +125,9 @@ class recurring_contract(orm.TransientModel):
             sds_change_date, date_delta=0):
         for contract_id in contract_ids:
             cr.execute(
-                '''
-                UPDATE recurring_contract
-                SET sds_state = '{}', last_sds_state_change_date = {}+{}
-                WHERE id = '{}'
-                '''.format(
+                "UPDATE recurring_contract "
+                "SET sds_state = '{0}', last_sds_state_change_date = {1}+{2} "
+                "WHERE id = '{3}' ".format(
                     sds_state, sds_change_date,
                     date_delta, contract_id))
 
@@ -197,12 +192,9 @@ class recurring_contract(orm.TransientModel):
 
         for suspended_project_id in suspended_project_ids:
             cr.execute(
-                '''
-                UPDATE compassion_project
-                SET status = 'S'
-                WHERE id = '{}'
-                '''.format(suspended_project_id)
-            )
+                "UPDATE compassion_project "
+                "SET status = 'S' "
+                "WHERE id = '{0}'".format(suspended_project_id))
 
         active_project_ids = compassion_project_obj.search(
             cr, uid, [('status', '=', 'A')], context=context)
@@ -214,18 +206,12 @@ class recurring_contract(orm.TransientModel):
 
         for suspended_project_contract_id in suspended_project_contract_ids:
             cr.execute(
-                '''
-                UPDATE recurring_contract
-                SET project_state = 'suspended'
-                WHERE id = '{}'
-                '''.format(suspended_project_contract_id)
-            )
+                "UPDATE recurring_contract "
+                "SET project_state = 'suspended' "
+                "WHERE id = '{0}'".format(suspended_project_contract_id))
 
         for active_project_contract_id in active_project_contract_ids:
             cr.execute(
-                '''
-                UPDATE recurring_contract
-                SET project_state = 'active'
-                WHERE id = '{}'
-                '''.format(active_project_contract_id)
-            )
+                "UPDATE recurring_contract "
+                "SET project_state = 'active' "
+                "WHERE id = '{0}'".format(active_project_contract_id))
