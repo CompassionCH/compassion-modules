@@ -105,9 +105,9 @@ class recurring_contract(orm.Model):
                     invoice_obj.action_cancel_draft(
                         cr, uid, invoice.id, context)
 
-                    inv_line_ids = invoice_line_obj.search(
-                        cr, uid,
-                        [('contract_id', '=', contract_id)])
+                    inv_line_ids = [
+                        invl.id for invl in invoice_lines
+                        if invl.contract_id == contract_id]
                     invoice_line_obj.unlink(
                         cr, uid,
                         inv_line_ids,
