@@ -276,12 +276,13 @@ class compassion_child(orm.Model):
         proj_obj = self.pool.get('compassion.project')
         res = True
         for child in self.browse(cr, uid, ids, context):
-            if child.type != 'LDP':
-                res = res and self._get_case_study(cr, uid, child, context)
-                self._get_basic_informations(cr, uid, child.id)
-            else:
+            if child.type == 'LDP':
                 res = res and self._create_empty_case_study(
                     cr, uid, child, context)
+
+            else:
+                res = res and self._get_case_study(cr, uid, child, context)
+                self._get_basic_informations(cr, uid, child.id)
 
             project_ids = proj_obj.search(
                 cr, uid, [('code', '=', child.code[:5])],

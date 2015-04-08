@@ -148,9 +148,9 @@ class child_pictures(orm.Model):
                     same_pict_ids.append(picture.id)
         return same_pict_ids
 
-    def _get_picture(self, cr, uid, child_id, child_code, attach_id, context,
-                     type='Headshot', dpi=72, width=400, height=400,
-                     format='jpeg'):
+    def _get_picture(self, cr, uid, child_id, child_code, attach_id,
+                     context=None, type='Headshot', dpi=72, width=400,
+                     height=400, format='jpeg'):
         ''' Gets a picture from Compassion webservice '''
         url = self.pool.get('compassion.child').get_url(
             child_code, 'image/2015/03')
