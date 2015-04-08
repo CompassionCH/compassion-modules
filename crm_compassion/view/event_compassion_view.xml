@@ -46,6 +46,9 @@
                                 <field name="lead_id" context="{'form_view_ref':'crm.crm_case_form_view_oppor'}"/>
                                 <field name="parent_id" context="{
                                     'default_parent_id': parent_id,
+                                    'default_type': 'event',
+                                    'default_use_tasks': True,
+                                    'default_use_timesheets': True,
                                     'default_manager_id': user_id,
                                     'default_user_id': user_id,
                                     'default_partner_id': partner_id,
@@ -107,6 +110,7 @@
             <field name="arch" type="xml">
                 <search string="Search origin">
                     <field name="name"/>
+                    <field name="parent_id"/>
                     <field name="type"/>
                     <field name="city"/>
                     <group expand="0" string="Group By...">

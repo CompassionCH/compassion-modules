@@ -131,7 +131,8 @@ class event_compassion(orm.Model):
             }),
         'project_id': fields.many2one('project.project', 'Project'),
         'use_tasks': fields.boolean(_('Use tasks')),
-        'parent_id': fields.many2one('account.analytic.account', _('Parent')),
+        'parent_id': fields.many2one('account.analytic.account', _('Parent'),
+                                     track_visibility='onchange'),
     }
 
     def create(self, cr, uid, vals, context=None):
