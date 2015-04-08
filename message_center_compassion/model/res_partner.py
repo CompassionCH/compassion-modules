@@ -14,7 +14,6 @@ from datetime import date
 
 
 class res_partner(orm.Model):
-
     """ UPSERT constituents. """
     _inherit = 'res.partner'
 
@@ -39,7 +38,7 @@ class res_partner(orm.Model):
         """
         to_update_ids = list()
         for partner in self.browse(cr, uid, ids, context):
-            new_firstname = vals.get('fisrtname', partner.firstname)
+            new_firstname = vals.get('firstname', partner.firstname)
             new_lastname = vals.get('lastname', partner.lastname)
             if partner.firstname != new_firstname or \
                     partner.lastname != new_lastname:
@@ -54,7 +53,7 @@ class res_partner(orm.Model):
             ids = [ids]
         for partner in self.browse(cr, uid, ids, context):
             contract_ids = self.pool.get('recurring.contract').search(
-                cr, uid, [('partner_id', '=', partner.id),
+                cr, uid, [('correspondant_id', '=', partner.id),
                           ('state', 'not in', ('terminated', 'cancelled'))],
                 context=context)
             if contract_ids:
@@ -68,5 +67,13 @@ class res_partner(orm.Model):
                     'partner_id': partner.id,
                     'date': date.today().strftime(DF),
                 }
-                self.pool.get('gmc.message.pool').create(
+                message_obj = self.pool.get('gmc.message.pool')
+                # Delete pending upsert messages if any exist
+                mess_ids = message_obj.search(cr, uid, [
+                    ('partner_id', '=', partner.id),
+                    ('state', '=', 'new'),
+                    ('action_id', '=', action_id)], context=context)
+                if mess_ids:
+                    message_obj.unlink(cr, uid, mess_ids, context)
+                message_obj.create(
                     cr, uid, message_vals, context=context)
