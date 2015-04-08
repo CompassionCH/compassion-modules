@@ -133,6 +133,10 @@ class event_compassion(orm.Model):
         'use_tasks': fields.boolean(_('Use tasks')),
         'parent_id': fields.many2one('account.analytic.account', _('Parent'),
                                      track_visibility='onchange'),
+        # This field circumvents problem for passing parent_id in a subview.
+        'parent_copy': fields.related(
+            'parent_id', type='many2one', relation='account.analytic.account',
+            string='Parent copy'),
     }
 
     def create(self, cr, uid, vals, context=None):
