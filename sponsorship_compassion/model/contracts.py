@@ -79,6 +79,7 @@ class recurring_contract(orm.Model):
     def _cancel_old_invoices(
             self, cr, uid, partner_id,
             contract_id, date_invoice, context=None):
+        invoice_line_obj = self.pool.get('account.invoice.line')
         invoice_obj = self.pool.get('account.invoice')
         invoice_ids = invoice_obj.search(
             cr, uid,
@@ -91,8 +92,8 @@ class recurring_contract(orm.Model):
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
             invoice_lines = invoice.invoice_line
             contract_ids = [
-                invoice_line.contract_id.id for invoice_line in invoice_lines
-                if invoice_line.contract_id.id]
+                invl.contract_id.id for invl in invoice_lines
+                if invl.contract_id]
             contract_ids = list(set(contract_ids))
 
             wf_service = netsvc.LocalService('workflow')
@@ -103,13 +104,15 @@ class recurring_contract(orm.Model):
                 else:
                     invoice_obj.action_cancel_draft(
                         cr, uid, invoice.id, context)
-                    invoice_lines = [
-                        invoice_line for invoice_line in invoice_lines
-                        if invoice_line.contract_id.id != contract_id]
-                    invoice_obj.write(
-                        cr, uid, invoice.id,
-                        {'invoice_id': invoice_lines},
+
+                    inv_line_ids = invoice_line_obj.search(
+                        cr, uid,
+                        [('contract_id', '=', contract_id)])
+                    invoice_line_obj.unlink(
+                        cr, uid,
+                        inv_line_ids,
                         context)
+
                     invoice_obj.trg_validate(uid, 'account.invoice',
                                              invoice.id, 'invoice_open', cr)
 
