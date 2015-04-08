@@ -19,6 +19,7 @@ from datetime import datetime
 import requests
 import logging
 import traceback
+import pdb
 
 logger = logging.getLogger(__name__)
 
@@ -391,7 +392,7 @@ class gmc_message_pool(orm.Model):
 
     def create(self, cr, uid, vals, context=None):
         """ Directly put CreateGift messages which have a too long instruction
-        in Failed state. """
+        in Failed state. Compute Gift fields."""
         res_id = super(gmc_message_pool, self).create(cr, uid, vals, context)
         message = self.browse(cr, uid, res_id, context)
         if message.gift_instructions and len(message.gift_instructions) > 60:
@@ -399,6 +400,8 @@ class gmc_message_pool(orm.Model):
                 'state': 'failure',
                 'failure_reason': _('Gift instructions is more than 60 '
                                     'characters length')})
+        message._store_set_values(['gift_type', 'gift_amount',
+                                   'gift_instructions'], context)
         return res_id
 
     def write(self, cr, uid, ids, vals, context=None):
@@ -415,6 +418,13 @@ class gmc_message_pool(orm.Model):
 
         return super(gmc_message_pool, self).write(cr, uid, ids, vals,
                                                    context)
+
+    def recompute_gifts(self, cr, uid, ids, context=None):
+        """ Method for updating gifts messages. """
+        pdb.set_trace()
+        self._store_set_values(cr, uid, ids, [
+            'gift_type', 'gift_amount', 'gift_instructions'], context)
+        return True
 
 
 class gmc_action(orm.Model):

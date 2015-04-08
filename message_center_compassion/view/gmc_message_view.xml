@@ -273,11 +273,26 @@
                 </form>
             </field>
         </record>
-        
+
         <act_window id="action_message_pool_process"
             multi="True"
             key2="client_action_multi" name="Process Messages"
             res_model="gmc.message.pool.process" src_model="gmc.message.pool"
             view_mode="form" target="new" view_type="form" />
+
+        <!-- Action for updating gift messages -->
+        <record id="update_gift_info" model="ir.actions.server">
+            <field name="name">Update gift info</field>
+            <field name="model_id" ref="model_gmc_message_pool"/>
+            <field name="state">code</field>
+            <field name="code">self.recompute_gifts(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+
+        <record id="update_gift_info_action" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'gmc.message.pool'" name="model"/>
+            <field name="name">Update gift info</field>
+            <field eval="'ir.actions.server,%d'%update_gift_info" name="value"/>
+        </record>
     </data>
 </openerp>
