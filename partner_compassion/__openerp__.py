@@ -29,7 +29,7 @@
 
 
 {
-    'name': 'Add partner fields for Compassion Suisse',
+    'name': 'Add partner fields for Compassion',
     'version': '1.5',
     'category': 'Partner',
     'sequence': 150,
