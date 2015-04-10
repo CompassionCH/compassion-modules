@@ -53,7 +53,13 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="origin_id" position="after">
-                        <field name="user_id"/>
+                        <field name="user_id" filter_domain="[
+                            '|', '|', '|',
+                            ('user_id', 'ilike', self),
+                            ('origin_id.partner_id', 'ilike', self),
+                            ('origin_id.event_id.user_id', 'ilike', self),
+                            ('origin_id.analytic_id.manager_id.partner_id', 'ilike', self),
+                            ]"/>
                     </field>
                     <xpath expr="//filter[@string='Origin']" position="after">
                         <filter string="Ambassador" domain="[]"  context="{'group_by':'user_id'}"/>
