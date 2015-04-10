@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="sequence_type_partner_ref" model="ir.sequence.type">
+            <field name="name">CODEGA</field>
+            <field name="code">partner.ref</field>
+        </record>
+        <record id="sequence_partner_ref" model="ir.sequence">
+            <field name="name">CODEGA sequence</field>
+            <field name="code">partner.ref</field>
+            <field name="padding" eval="7"/>
+            <field eval="1512077" name="number_next"/>
+            <field eval="1" name="number_increment"/>
+        </record>
+    </data>
+ </openerp>
