@@ -139,7 +139,7 @@ class gmc_message_pool(orm.Model):
     }
 
     _defaults = {
-        'date': str(datetime.today()),
+        'date': datetime.now().strftime(DF + ' %H:%M:%S'),
         'state': 'new'
     }
 
