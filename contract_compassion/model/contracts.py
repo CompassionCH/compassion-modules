@@ -18,7 +18,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 import logging
-
+import pdb
 logger = logging.getLogger(__name__)
 
 
@@ -26,6 +26,31 @@ class recurring_contract(orm.Model):
     _inherit = "recurring.contract"
     _order = 'start_date desc'
     
+    def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
+        ''' On partner change, we update the correspondent and
+        set the new pol_number (for gift identification).'''
+        res = super(recurring_contract, self).on_change_partner_id(
+            cr, uid, ids, partner_id, context)
+        num_contracts = self.search(
+            cr, uid, [('partner_id', '=', partner_id)], context=context,
+            count=True)
+        # If contract created check state
+        if ids:
+            contract = self.browse(cr, uid, ids[0], context)
+            # If state draft correspondant_id=parent_id
+            if (contract.state == 'draft'):
+                res['value'].update({
+                    'correspondant_id': partner_id,
+                })
+        # Else correspondant_id=parent_id
+        else:
+            res['value'].update({
+                'correspondant_id': partner_id,
+            })
+        res['value'].update({
+            'num_pol_ga': num_contracts
+        })
+        return res
     ################################
     #        FIELDS METHODS        #
     ################################
@@ -162,33 +187,8 @@ class recurring_contract(orm.Model):
         return res
 
     def _name_get(self, cr, uid, ids, field_name, args, context=None):
-        return {c[0]: c[1] for c in self.name_get(cr, uid, ids, context)}
-
-    def _get_standard_lines(self, cr, uid, context=None):
-        """ Select Sponsorship and General Fund by default """
-        ctx = {'lang': 'en_US'}
-        res = []
-        product_obj = self.pool.get('product.product')
-        sponsorship_id = product_obj.search(
-            cr, uid, [('name', '=', 'Sponsorship')], context=ctx)[0]
-        gen_id = product_obj.search(
-            cr, uid, [('name', '=', 'General Fund')], context=ctx)[0]
-        sponsorship_vals = {
-            'product_id': sponsorship_id,
-            'quantity': 1,
-            'amount': 42,
-            'subtotal': 42
-        }
-        gen_vals = {
-            'product_id': gen_id,
-            'quantity': 1,
-            'amount': 8,
-            'subtotal': 8
-        }
-        res.append([0, 6, sponsorship_vals])
-        res.append([0, 6, gen_vals])
-        return res
-
+        return {c[0]: c[1] for c in self.name_get(cr, uid, ids, context)}            
+        
     ###########################
     #        New Fields       #
     ###########################
@@ -205,12 +205,6 @@ class recurring_contract(orm.Model):
         'partner_codega': fields.related(
             'correspondant_id', 'ref', string=_('Partner ref'), readonly=True,
             type='char'),
-        # This field is only for the middleware testing purpose.
-        # In the future, the type will be identified in another way.
-        'type': fields.selection([
-            ('ChildSponsorship', 'Sponsorship'),
-            ('ChildCorrespondenceSponsorship', 'Correspondence')],
-            _("Type of sponsorship")),
         'correspondant_id': fields.many2one(
             'res.partner', _('Correspondant'), required=True, readonly=True,
             states={'draft': [('readonly', False)]}),
@@ -249,7 +243,7 @@ class recurring_contract(orm.Model):
             'Partner Contract Number', required=True
         ),
         'frequency': fields.related(
-            'group_id', 'advance_billing', type="char", readonly=True,
+            'group_id', 'advance_billing_months', type="integer", readonly=True,
             string=_('Frequency'), store=False),
         'end_reason': fields.selection(get_ending_reasons, _('End reason'),
                                        select=True),
@@ -273,12 +267,20 @@ class recurring_contract(orm.Model):
             readonly=False, states={'terminated': [('readonly', True)]},
             ondelete='restrict',
             track_visibility='onchange'),
+        'type': fields.selection([
+            ('S', _('Sponsorship')),
+            ('O', _('Others'))], _('Type'), select=True,
+            readonly=True, track_visibility='onchange'),
+        # 'contract_line_ids': fields.function(
+            # _get_lines, fnct_inv=_set_lines,
+            # relation='recurring.contract.line', type="one2many",
+            # string=_('Contract lines') , track_visibility="onchange"),
     }
 
     _defaults = {
-        'contract_line_ids': _get_standard_lines,
-        'type': 'ChildSponsorship',
+        'type': 'S',
     }
+
 
     ##########################
     #        CALLBACKS       #
@@ -427,155 +429,6 @@ class recurring_contract(orm.Model):
             'target': 'current',
         }
 
-    def clean_invoices(self, cr, uid, ids, context=None, since_date=None,
-                       to_date=None):
-        """ Take into consideration when the sponsor has paid in advance,
-        so that we cancel/modify the paid invoices and let the user decide
-        what to do with the payment.
-
-        - The process bypasses the ORM by directly removing the invoice_lines
-          concerning the cancelled contract. It also splits the sponsor's
-          payment in order to be able to change the attribution of the amount
-          that was destined to the cancelled contract.
-
-        Note: direct access to database avoids to unreconcile and reconcile
-              again invoices, which is a huge performance gain.
-        """
-        # Find all paid invoice lines after the given date
-        inv_line_obj = self.pool.get('account.invoice.line')
-        invl_search = self._filter_clean_invoices(cr, uid, ids, since_date,
-                                                  to_date, context)
-        inv_line_ids = inv_line_obj.search(cr, uid, invl_search,
-                                           context=context)
-
-        # Invoice and move lines that need to be removed/updated
-        to_remove_inv = set()
-        to_update_inv = set()
-        to_remove_mvl = list()
-        to_remove_move = list()
-        # Dictionary containing the total debit_lines in account 1050
-        # for each invoice. These lines will be updated.
-        # dict of format {move_line_id: debit_amount}
-        to_update_mvl = dict()
-        # Dictionary containing payment move_lines
-        # dict of format {move_line_id: amount_removed}
-        payment_mvl = dict()
-        to_remove_pml = list()
-
-        # Store data that is removed to pass it in sub_modules
-        # Dictionary is in the following format :
-        # {invoice_line_id: [invoice_id, child_code, product_name, amount]}
-        invl_rm_data = dict()
-
-        # 1. Determine which action has to be done for each invoice_line
-        for inv_line in inv_line_obj.browse(cr, uid, inv_line_ids, context):
-            invoice = inv_line.invoice_id
-            to_update_inv.add(invoice.id)
-            if inv_line.contract_id.child_id:
-                # Store data before removal
-                invl_rm_data[inv_line.id] = [
-                    invoice.id, inv_line.contract_id.child_code,
-                    inv_line.product_id.name, inv_line.price_subtotal]
-            mvl_found = False
-            for mvl in inv_line.invoice_id.move_id.line_id:
-                if not mvl_found and \
-                        mvl.product_id.id == inv_line.product_id.id \
-                        and mvl.credit == inv_line.price_subtotal \
-                        and mvl.id not in to_remove_mvl:
-                    # Mark credit line to be removed
-                    to_remove_mvl.append(mvl.id)
-                    mvl_found = True
-                elif mvl.debit > 0 and mvl.account_id.code == '1050':
-                    # Remove amount of invoice_line from debit line
-                    total_debit = to_update_mvl.get(mvl.id, mvl.debit)
-                    to_update_mvl[mvl.id] = total_debit - \
-                        inv_line.price_subtotal
-                    if to_update_mvl[mvl.id] == 0:
-                        # We deleted all invoice_lines and can delete the
-                        # move associated with this invoice.
-                        to_remove_mvl.append(mvl.id)
-                        to_remove_move.append(mvl.move_id.id)
-                    # Update payment lines related to this invoice
-                    for pml in mvl.reconcile_id.line_id:
-                        if pml.credit > inv_line.price_subtotal:
-                            amount_deleted = payment_mvl.get(pml.id, 0.000)
-                            payment_mvl[pml.id] = amount_deleted + \
-                                inv_line.price_subtotal
-                            if pml.credit == payment_mvl[pml.id]:
-                                to_remove_pml.append(pml.id)
-                            if pml.credit < payment_mvl[pml.id]:
-                                self._clean_error()
-                            # Update only one payment_line per invoice_line
-                            break
-            if not mvl_found:
-                self._clean_error()
-            # Mark empty invoice to be removed
-            other_lines_ids = [invl.id for invl in invoice.invoice_line]
-            remaining_lines_ids = [invl_id for invl_id in other_lines_ids
-                                   if invl_id not in inv_line_ids]
-            if not remaining_lines_ids:
-                to_remove_inv.add(invoice.id)
-
-        # 2. Manually remove invoice_lines, move_lines, empty invoices/moves
-        #    and reconcile refs that are no longer valid
-        if inv_line_ids:
-            # 2.1 Call the hook for letting other modules handle the removal.
-            self._on_invoice_line_removal(cr, uid, invl_rm_data, context)
-
-            cr.execute(
-                "DELETE FROM account_invoice_line WHERE id in ({0})"
-                .format(','.join(str(id) for id in inv_line_ids)))
-            if to_remove_inv:
-                cr.execute(
-                    "DELETE FROM account_invoice WHERE id in ({0})"
-                    .format(','.join(str(id) for id in to_remove_inv)))
-            # Remove move lines and invalid reconcile refs
-            mvl_ids_string = ','.join(str(id) for id in to_remove_mvl)
-            cr.execute(
-                "DELETE FROM account_move_line WHERE id in ({0});"
-                "DELETE FROM account_move_reconcile rec WHERE ("
-                "   SELECT count(*) FROM account_move_line "
-                "   WHERE reconcile_id = rec.id) < 2;"
-                .format(mvl_ids_string))
-            if to_remove_move:
-                cr.execute(
-                    "DELETE FROM account_move WHERE id IN ({0})"
-                    .format(','.join(str(id) for id in to_remove_move)))
-            for mvl, amount in to_update_mvl.iteritems():
-                cr.execute(
-                    "UPDATE account_move_line SET debit={0:.3f} "
-                    "WHERE id = {1:d}".format(amount, mvl))
-            # Update the total field of invoices
-            to_update_inv = to_update_inv - to_remove_inv
-            self.pool.get('account.invoice').button_compute(
-                cr, uid, list(to_update_inv), context=context, set_total=True)
-
-            # 2.2. Split a payment so that the amount deleted is isolated
-            #      in one move line that can be easily reconciled later.
-            mvl_obj = self.pool.get('account.move.line')
-            for pml_id, amount_deleted in payment_mvl.iteritems():
-                cr.execute(
-                    "UPDATE account_move_line SET credit=credit-{0:.3f} "
-                    "WHERE id = {1:d}".format(
-                        amount_deleted,
-                        pml_id))
-                mvl_obj.copy(
-                    cr, uid, pml_id, default={
-                        'reconcile_id': False,
-                        'credit': amount_deleted}, context=context)
-            if to_remove_pml:
-                mvl_obj._remove_move_reconcile(cr, uid, to_remove_pml,
-                                               context=context)
-                cr.execute(
-                    "DELETE FROM account_move_line WHERE id in ({0})"
-                    .format(','.join(str(id) for id in to_remove_pml)))
-
-        # 3. Clean open invoices
-        super(recurring_contract, self).clean_invoices(
-            cr, uid, ids, context, since_date, to_date)
-
-        return True
-
     ################################
     #        PRIVATE METHODS       #
     ################################
@@ -681,18 +534,6 @@ class recurring_contract(orm.Model):
                         'invoice_open', cr)
         return True
 
-    def _on_change_next_invoice_date(self, cr, uid, ids, next_invoice_date,
-                                     context=None):
-        """Prevent to change next_invoice_date in the past
-        for active contract.
-        """
-        for contract in self.browse(cr, uid, ids, context):
-            if contract.state not in ('draft', 'mandate') \
-                    and next_invoice_date < contract.next_invoice_date:
-                raise orm.except_orm(
-                    _('Warning'),
-                    _('You cannot rewind the next invoice date.'))
-
     def _on_change_group_id(self, cr, uid, ids, group_id, context=None):
         """ Change state of contract if payment is changed to/from LSV or DD.
         """
@@ -758,6 +599,15 @@ class recurring_contract(orm.Model):
                     # This will trigger group_date computation
                     contract.write({
                         'next_invoice_date': contract.next_invoice_date})
+                        
+    def _compute_next_invoice_date(self, contract):
+        # Sponsorship case
+        if contract.type == 'S':
+            next_date = datetime.strptime(contract.next_invoice_date, DF)
+            next_date += relativedelta(months=+1)
+            return next_date
+        else:
+            return super(recurring_contract, self)._compute_next_invoice_date(contract)
 
     ################################
     #        PUBLIC METHODS        #
@@ -802,9 +652,6 @@ class recurring_contract(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
         """ Perform various checks when a contract is modified. """
-        if 'next_invoice_date' in vals:
-            self._on_change_next_invoice_date(
-                cr, uid, ids, vals['next_invoice_date'], context)
         if 'child_id' in vals:
             self._on_change_child_id(cr, uid, ids, vals['child_id'],
                                      vals.get('partner_id'), context)
