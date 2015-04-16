@@ -47,14 +47,6 @@ class contract_group(orm.Model):
     _columns = {
         'bvr_reference': fields.char(size=32, string=_('BVR Ref'),
                                      track_visibility="onchange"),
-        'advance_billing': fields.selection([
-            ('monthly', _('Monthly')),
-            ('bimonthly', _('Bimonthly')),
-            ('quarterly', _('Quarterly')),
-            ('fourmonthly', _('Four-monthly')),
-            ('biannual', _('Bi-annual')),
-            ('annual', _('Annual'))], string=_('Frequency'),
-            track_visibility="onchange"),
         'payment_term_id': fields.many2one(
             'account.payment.term', _('Payment Term'),
             domain=['|', '|', '|', ('name', 'ilike', 'BVR'),
@@ -66,7 +58,6 @@ class contract_group(orm.Model):
 
     _defaults = {
         'payment_term_id': _get_op_payment_term,
-        'advance_billing': 'monthly',
     }
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
