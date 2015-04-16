@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-# from . import contract_group
+from . import contract_group
 from . import contracts
 from . import invoice_line
 from . import res_partner
