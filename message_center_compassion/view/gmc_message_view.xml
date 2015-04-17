@@ -68,7 +68,7 @@
                         <field name="state" widget="statusbar" statusbar_visible="new,pending,success" />
                         <button name="process_messages" type="object" class="oe_highlight" string="Process Message" states="new" />
                         <button name="reset_message" type="object" string="Set back to New" states="failure,pending"/>
-                        <button name="force_success" type="object" string="Success" groups="base.group_erp_manager" attrs="{'invisible':[('state','=','success')]}/>
+                        <button name="force_success" type="object" string="Success" groups="base.group_erp_manager" attrs="{'invisible':[('state','=','success')]}"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
