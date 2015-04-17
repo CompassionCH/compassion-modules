@@ -237,6 +237,13 @@ class gmc_message_pool(orm.Model):
         }, context)
         return True
 
+    def force_success(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {
+            'state': 'success',
+            'failure_reason': False
+        }, context)
+        return True
+
     def _perform_incoming_action(self, cr, uid, message, context=None):
         """ This method defines what has to be done
         for each incoming message type. """
