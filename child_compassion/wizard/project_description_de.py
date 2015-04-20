@@ -84,14 +84,14 @@ class Project_description_de:
                 res += u"{wall}"
         if roof_mat:
             if wall_mat:
-                res += u", sowie {roof}."
+                res += u", sowie {roof}. "
             elif floor_mat:
-                res += u" und haben {roof}."
+                res += u" und haben {roof}. "
             else:
                 verb = u'haben'
-                res += u"{roof}."
+                res += u"{roof}. "
         else:
-            res += u"."
+            res += u". "
 
         return res.format(verb=verb, wall=wall, floor=floor, roof=roof)
 
@@ -126,9 +126,9 @@ class Project_description_de:
                        for prob in project.health_problems_ids]
         health_desc = u""
         if len(health_prob) == 1:
-            health_desc = u"Ein verbeitetes Gesundheitsproblem ist {0}."
+            health_desc = u"Ein verbeitetes Gesundheitsproblem ist {0}. "
         elif len(health_prob) > 1:
-            health_desc = u"Verbreitete Gesundheitsprobleme sind {0}."
+            health_desc = u"Verbreitete Gesundheitsprobleme sind {0}. "
         else:
             return health_desc
 
