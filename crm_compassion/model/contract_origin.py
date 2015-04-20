@@ -59,7 +59,7 @@ class contracts(orm.Model):
     _columns = {
         'user_id': fields.function(
             _get_user_id, type='many2one', obj='res.partner',
-            string=_('Salesperson'), store={
+            string=_('Ambassador'), store={
                 'recurring.contract': (
                     lambda self, cr, uid, ids, context=None: ids,
                     ['origin_id'],
