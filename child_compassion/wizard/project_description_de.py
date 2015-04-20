@@ -100,27 +100,20 @@ class Project_description_de:
         """ Generate spoken languages(s) and primary diet, there are
             no specificities in this part
         """
+        res_desc = u""
         primary_diet = [diet.get_translated_value('de')
                         for diet in project.primary_diet_ids]
 
         spoken_languages = [lang.get_translated_value('de')
                             for lang in project.spoken_languages_ids]
 
-        string = (u"Die ethnischen Mehrheiten %s %s" % (
-                  u"sind" if len(spoken_languages) > 1 else u"ist",
-                  cls._gen_list_string(spoken_languages, ', ', ' und ')))
-
         if spoken_languages:
-            string += (u" und die meist gesprochene Sprache ist %s. " % (
-                       spoken_languages[0]))
-        else:
-            string += ". "
+            res_desc += u"Die meist gesprochene Sprache ist {0}. ".format(spoken_languages[0])
 
-        string += u"Die regionale Ernährung besteht hauptsächlich aus %s. "
-        string += '{0}. '.format(
+        res_desc += u"Die regionale Ernährung besteht hauptsächlich aus {0}. ".format(
             cls._gen_list_string(primary_diet, ', ', ' und '))
 
-        return string
+        return res_desc
 
     @classmethod
     def _gen_health_prob_de(cls, cr, uid, project, context=None):
@@ -129,15 +122,15 @@ class Project_description_de:
         """
         health_prob = [prob.get_translated_value('de')
                        for prob in project.health_problems_ids]
-
-        if health_prob:
-            string = (u"Verbreitete Gesundheitsprobleme %s %s. " % (
-                      u"sind" if len(health_prob) > 1 else u"ist",
-                      cls._gen_list_string(health_prob, ', ', ' und ')))
+        health_desc = u""
+        if len(health_prob) == 1:
+            health_desc = u"Ein verbeitetes Gesundheitsproblem ist {0}."
+        elif len(health_prob) > 1:
+            health_desc = u"Verbreitete Gesundheitsprobleme sind {0}."
         else:
-            string = ""
+            return health_desc
 
-        return string
+        return health_desc.format(cls._gen_list_string(health_prob, ', ', ' und '))
 
     @classmethod
     def _gen_primary_occup_de(cls, cr, uid, project, context=None):
@@ -154,14 +147,14 @@ class Project_description_de:
                     u"Die meisten Erwachsenen in %s sind arbeitslos"
                     ", doch einige arbeiten als %s "
                     "und verdienen etwa %s Dollar pro Monat. " % (
-                        project.closest_city,
+                        project.community_name,
                         primary_occup[0],
                         monthly_income))
             else:
                 string = (
                     u"Die meisten Erwachsenen in %s sind %s "
                     "und verdienen etwa %s Dollar pro Monat. " % (
-                        project.closest_city,
+                        project.community_name,
                         primary_occup[0],
                         monthly_income))
         else:

@@ -134,11 +134,11 @@ class Child_description_de:
             '10': u'ersten Jahr der High School',
             '11': u'zweiten Jahr der High School',
             '12': u'dreiten Jahr der High School',
-            '13': u'der High School',
-            '14': u'der High School',
-            'PK': u'Kindergarten',
-            'K': u'zweiten Klasse',
-            'P': u'ersten Klasse',
+            '13': u'High School',
+            '14': u'High School',
+            'PK': u'im Kindergarten',
+            'K': u'in der zweiten Klasse',
+            'P': u'in der ersten Klasse',
         }
 
         # the value of us_school_level can also be blank
@@ -151,7 +151,7 @@ class Child_description_de:
                     string += (u' ist in der %s'
                                % ordinals[case_study.us_school_level])
                 except:
-                    string += (u' ist in der %s'
+                    string += (u' ist %s'
                                % ordinals[case_study.us_school_level])
             else:
                 string += u' geht zur Schule'
@@ -259,7 +259,7 @@ class Child_description_de:
         if (u'grandmother' in live_with and u'grandfather' in live_with):
             live_with.pop(u'grandmother')
             live_with.pop(u'grandfather')
-            live_with[u'grandparents'] = u'{0} Großeltern'.format(prefix[2])
+            live_with[u'grandparents'] = u'{0} Grosseltern'.format(prefix[2])
         return live_with
 
     @classmethod
@@ -309,9 +309,9 @@ class Child_description_de:
             u'mentallyill': [u'seelisch krank',
                              u'seelisch krank',
                              u'seelisch krank'],
-            u'chronicallyill': [u'kronisch krank',
-                                u'kronisch krank',
-                                u'kronisch krank'],
+            u'chronicallyill': [u'chronisch krank',
+                                u'chronisch krank',
+                                u'chronisch krank'],
             u'handicapped': [u'behindert', u'behindert', u'behindert'],
         }
 
@@ -393,7 +393,7 @@ class Child_description_de:
             prefix_f = u'Ihre'
 
         if (f_g[0] == u'grandmother' and m_g[0] == u'grandfather'):
-            mf_g = u'{0} Großeltern'.format(prefix_f)
+            mf_g = u'{0} Grosseltern'.format(prefix_f)
         elif (f_g[0] == u'mother' and m_g[0] == u'father'):
             mf_g = u'{0} Eltern'.format(prefix_f)
         else:
