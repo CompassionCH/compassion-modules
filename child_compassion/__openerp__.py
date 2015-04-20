@@ -28,8 +28,8 @@
 ##############################################################################
 
 
-    'name': 'Compassion Children',
 {
+    'name': 'Compassion Children',
     'version': '1.4.1',
     'category': 'Other',
     'description': """

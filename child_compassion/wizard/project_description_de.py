@@ -108,10 +108,12 @@ class Project_description_de:
                             for lang in project.spoken_languages_ids]
 
         if spoken_languages:
-            res_desc += u"Die meist gesprochene Sprache ist {0}. ".format(spoken_languages[0])
+            res_desc += u"Die meist gesprochene Sprache ist {0}. ".format(
+                spoken_languages[0])
 
-        res_desc += u"Die regionale Ernährung besteht hauptsächlich aus {0}. ".format(
-            cls._gen_list_string(primary_diet, ', ', ' und '))
+        res_desc += u"Die regionale Ernährung besteht hauptsächlich " \
+            u"aus {0}. ".format(
+                cls._gen_list_string(primary_diet, ', ', ' und '))
 
         return res_desc
 
@@ -130,7 +132,8 @@ class Project_description_de:
         else:
             return health_desc
 
-        return health_desc.format(cls._gen_list_string(health_prob, ', ', ' und '))
+        return health_desc.format(cls._gen_list_string(
+            health_prob, ', ', ' und '))
 
     @classmethod
     def _gen_primary_occup_de(cls, cr, uid, project, context=None):
