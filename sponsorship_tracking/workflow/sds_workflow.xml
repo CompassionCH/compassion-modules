@@ -63,6 +63,7 @@
             <field name="name">no_sub</field>
             <field name="kind">function</field>
             <field name="action">write({'sds_state': 'no_sub'})</field>
+            <field name="flow_stop" eval='True' />
         </record>
         
         <record model="workflow.activity" id="act_sub">
@@ -77,6 +78,7 @@
             <field name="name">sub_accept</field>
             <field name="kind">function</field>
             <field name="action">write({'sds_state': 'sub_accept'})</field>
+            <field name="flow_stop" eval='True' />
         </record>
         
         <record model="workflow.activity" id="act_sub_reject">
@@ -84,6 +86,7 @@
             <field name="name">sub_reject</field>
             <field name="kind">function</field>
             <field name="action">write({'sds_state': 'sub_reject'})</field>
+            <field name="flow_stop" eval='True' />
         </record>
 
         <!-- Transitions -->
@@ -109,7 +112,7 @@
         <record model="workflow.transition" id="t2">
             <field name="act_from" ref="act_waiting_welcome" />
             <field name="act_to" ref="act_active" />
-            <field name="signal">welcome_sent</field>
+            <field name="signal">mail_sent</field>
         </record>
         
         <record model="workflow.transition" id="t5a">

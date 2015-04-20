@@ -9,17 +9,19 @@
         <record id="view_follow_contract_kanban_compassion" model="ir.ui.view">
 			<field name="name">follow.contract.compassion.kanban</field>
 			<field name="model">recurring.contract</field>
+            <field name="options">{'test':'test'}</field>
 			<field name="arch" type="xml">
-                <kanban default_group_by="sds_state" create='false' edit='true'>
+                <kanban default_group_by="sds_state" create='false' edit='false'>
                     <field name="name"/>
                     <field name="color"/>
-                    <field name="sds_state"/>
+                    <field name="sds_state" options="{'test':'test'}"/>
                     <field name="state" />
                     <templates>
                         <field name="child_id"/>
                         <t t-name="kanban-box">
                             <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click">
                                 <div class="oe_dropdown_toggle oe_dropdown_kanban">
+                                    <span class="oe_e">í</span>
                                     <ul class="oe_dropdown_menu">
                                         <li><ul class="oe_kanban_colorpicker" data-field="color"/></li>
                                     </ul>
@@ -46,7 +48,7 @@
         </record>
 
         <record id="view_tracking_contract_form" model="ir.ui.view">
-			<field name="name">follow.contract.compassion.form</field>
+			<field name="name">recurring.contract.compassion.form</field>
 			<field name="model">recurring.contract</field>
             <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
 			<field name="arch" type="xml">
@@ -63,14 +65,14 @@
         <record id="view_follow_contract_form_compassion" model="ir.ui.view">
 			<field name="name">follow.contract.compassion.form</field>
 			<field name="model">recurring.contract</field>
+            <field eval="18" name="priority"/>
 			<field name="arch" type="xml">
                 <form string="Follow contract" version="7.0" create="false" edit="false">
                     <header>
                         <field name="sds_state" widget="statusbar" statusbar_visible="draft,start,waiting_welcome,active,sub,sub_accept"/>
                         <button name="contract_validated" class="oe_highlight" attrs="{'invisible':[('sds_state','!=','draft')]}" string="Validate"/>
                         
-                        <button name="mail_sent" class="oe_highlight" string="Mail sent" attrs="{'invisible':[('sds_state','!=','start')]}"/>
-                        <button name="welcome_sent" class="oe_highlight" string="Welcome sent" attrs="{'invisible':[('sds_state','!=','waiting_welcome')]}"/>
+                        <button name="mail_sent" class="oe_highlight" string="Mail sent" attrs="{'invisible':[('sds_state','not in',['start', 'waiting_welcome'])]}"/>
                         <button name="no_sub" class="oe_highlight" string="No sub" attrs="{'invisible':[('sds_state','!=','sub_waiting')]}"/>
                         <button 
                             name="project_mail_sent" 
