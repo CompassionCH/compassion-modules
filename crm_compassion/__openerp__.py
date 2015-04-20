@@ -32,16 +32,38 @@
     'version': '1.4.1',
     'category': 'CRM',
     'sequence': 150,
-    'description': """Compassion CRM - Events and Projects
-==============================================================================
+    'description': """
+Compassion CRM - Events and Projects
+====================================
 
 This module helps Compassion CH to manage its planned events, by creating a
 new model for tracking upcoming events.
 
- * Won opportunities create automatically a new event
- * Each event is linked to a project and its analytic account
+ * Won opportunities can generate new events
+ * Each event is linked to an analytic account
  * Each event creates a sponsorship origin
  * Portal users have an analytic account to track sponsorships gained by them
+ * Can set ambassadors to sponsorships in order to track who brought them
+
+Usage
+=====
+
+To use this module, you need to:
+
+* go to Sales -> Events
+
+Known issues / Roadmap
+======================
+
+* nothing yet
+
+Credits
+=======
+
+Contributors
+------------
+
+* Emanuel Cino <ecino@compassion.ch>
 """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
