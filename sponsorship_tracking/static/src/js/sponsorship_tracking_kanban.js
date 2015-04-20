@@ -1,30 +1,58 @@
 openerp.sponsorship_tracking = function (instance) { 
     instance.web.sponsorship_tracking = instance.web.sponsorship_tracking || {};
-    var Contracts = new instance.web.Model("recurring.contract");
     
     instance.web.views.add('kanban', 'instance.web_kanban.SDSTrackingKanban');
     instance.web_kanban.SDSTrackingKanban = instance.web_kanban.KanbanView.extend({
         template: "KanbanView",
-        on_record_moved: function(record, old_group, old_index, new_group, new_index) {
-            if (this.__parentedParent.process_model != 'recurring.contract') {
-                return this._super(record, old_group, old_index, new_group, new_index);
-            }
-            if (old_group === new_group) {
-                return this._super(record, old_group, old_index, new_group, new_index);
-            }
-            var self = this;
-            Contracts.call('state_transition_from_kanban', [old_group.value, new_group.value, record.id]).done(function (res) {
-                if (!res) {
-                    record.$el.remove();
-                    new_group.records.splice(new_index, 1);
-                    old_group.records.splice(old_index, 1);
-                    $(old_group.records[old_index].$el).before(record.$el);
-                    old_group.records.splice(old_index, 0, record);
-                    record.group = old_group;
 
-                    record.do_reload();
+        do_add_groups: function(groups) {
+            var ordered_groups = groups;
+            var order = []
+            if(this.group_by_field.type == 'selection') {
+                var selection = this.group_by_field.selection
+                for (index in selection) {
+                    order[index] = selection[index][0];
                 }
-            });
+                ordered_groups.sort(function(a, b){
+                    return order.indexOf(a.value)-order.indexOf(b.value)
+                });
+            }
+            res = this._super(ordered_groups);
+            
+            for (index = 0; index < groups.length; index++){
+                visible_on_groups = [];
+                label = ''
+                action = ''
+                
+                if (this.group_by == 'sds_state'){
+                    visible_on_groups = ['start', 'waiting_welcome'];
+                    label = 'Mail sent'
+                    action = 'button_mail_sent'
+                }
+                if (this.group_by == 'project_state') {
+                    visible_on_groups = ['inform_suspended', 'inform_reactivation', 'inform_project_terminated'];
+                    label = 'Project mail sent'
+                    action = 'button_project_mail_sent'
+                }
+     
+                this.add_group_buttons(groups[index], label, action, visible_on_groups);
+            }
+        },
+        add_group_buttons: function(group, button_label, action, visible_on_groups) {
+            var self = this;
+            if (visible_on_groups.indexOf(group.value) != -1) {
+                var Objects = new instance.web.Model(this.fields_view.model);
+                var kanban_dropdown = group.$el.find('.oe_kanban_group_dropdown');
+              
+                kanban_dropdown = jQuery(kanban_dropdown);
+                kanban_dropdown.append('<li><a href="#">'+button_label+'</a></li>');
+                
+                kanban_dropdown.on('click', function() {
+                    Objects.call(action, [group.value]).then(function (result) {
+                        self.do_reload()
+                    });
+                });
+            }
         },
     });
 }
