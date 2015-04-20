@@ -28,15 +28,56 @@
 ##############################################################################
 
 
-{
     'name': 'Compassion Children',
+{
     'version': '1.4.1',
     'category': 'Other',
     'description': """
-Setup child and projects for sponsorship management.
-Webservice information retrieving is also done in this module.
+Compassion Children
+===================
 
-Warning: Requires 'pysftp' (sudo pip install pysftp)
+Setup child and projects for sponsorship management.
+Webservice information retrieving is also done in this module...
+
+Installation
+============
+
+To install this module, you need to:
+
+* install pysftp (sudo pip install pysftp)
+
+Configuration
+=============
+
+To configure this module, you need to:
+
+* add settings in .conf file of Odoo
+* compass_url = <url to compass webservice>
+* compass_api_key = <your developer key for compass webservices>
+
+Usage
+=====
+
+To use this module, you need to:
+
+* Go to Sponsorship -> Children
+
+Known issues / Roadmap
+======================
+
+* Typo3 functionalities will be removed from this module
+
+Credits
+=======
+
+Contributors
+------------
+
+* Cyril Sester <cyril.sester@outlook.com>
+* Emanuel Cino <ecino@compassion.ch>
+* Kevin Cristi <kcristi@compassion.ch>
+* David Coninckx <david@coninckx.com>
+
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',

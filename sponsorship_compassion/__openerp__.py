@@ -33,16 +33,45 @@
     'version': '1.4',
     'category': 'Other',
     'description': """
+Compassion Sponsorships
+=======================
 Sponsorship management module. This module makes the link between child and
 contracts. It also customize contracts to fit the child sponsorship context.
 
-This modules also requires en_US, fr_CH, de_DE, it_IT and es_ES to be installed
+Installation
+============
+This modules requires en_US, fr_CH, de_DE, it_IT and es_ES to be installed
 on the server.
+
 To check installed locales:
- $ locale -a
+
+* locale -a
+
 To add a new locale :
- $ /usr/share/locales/install-language-pack <ISO-locale-name>
- $ dpkg-reconfigure locales
+
+* /usr/share/locales/install-language-pack <ISO-locale-name>
+* dpkg-reconfigure locales
+
+Usage
+=====
+
+To use this module, you need to:
+
+* go to Sponsorship -> Sponsorships
+
+Known issues / Roadmap
+======================
+
+* Contracts and Sponsorships will be better differenciated.
+
+Credits
+=======
+
+Contributors
+------------
+
+* Cyril Sester <cyril.sester@outlook.com>
+* Emanuel Cino <ecino@compassion.ch>
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
