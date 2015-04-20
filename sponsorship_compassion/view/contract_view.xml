@@ -1,139 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
-		<record id="view_recurring_contract_tree_compassion" model="ir.ui.view">
-			<field name="name">recurring.contract.compassion.tree</field>
+        <!-- <record id="view_sponsorship_contract_tree_compassion" model="ir.ui.view">
+			<field name="name">sponsorship.contract.compassion.tree</field>
 			<field name="model">recurring.contract</field>
-			<field name="inherit_id" ref="recurring_contract.view_recurring_contract_tree"/>
-			<field eval="18" name="priority"/>
 			<field name="arch" type="xml">
-				<data>
-					<tree string="Contracts" position="attributes">
-						<attribute name="colors">blue:state == 'draft';red:state == 'mandate';green:state == 'waiting';black:state == 'active';gray:state in ('terminated','cancelled')</attribute>
-						<attribute name="string">Sponsorships</attribute>
+					<tree string="Sponsorships" colors="blue:state == 'draft';red:state == 'mandate';green:state == 'waiting';black:state == 'active';gray:state in ('terminated','cancelled')">
+                        <field name="partner_codega"/>
+                        <field name="partner_id"/>
+                        <field name="child_code"/>
+                        <field name="child_id"/>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                        <field name="payment_term_id"/>
+                        <field name="frequency"/>
+                        <field name="total_amount"/>
+                        <field name="state"/>
 					</tree>
-					<field name="partner_id" position="after">
-						<field name="child_code" />
-						<field name="child_name" />
-					</field>
-					<field name="partner_id" position="before">
-						<field name="partner_codega" invisible="context.get('partner_contracts_view')" />
-					</field>
-                    <field name="payment_term_id" position="after">
-                        <field name="frequency" />
-                        <field name="origin_id" />
-                    </field>
-                    <field name="state" position="after">
-                        <button name="open_contract" type="object" invisible="not context.get('partner_contracts_view')" icon="STOCK_JUMP_TO" />
-                    </field>
-					<field name="reference" position="replace" />
-				</data>
 			</field>
 		</record>
-		
-		<record id="view_recurring_contract_form_compassion" model="ir.ui.view">
-			<field name="name">recurring.contract.compassion.form</field>
+		-->
+		<record id="view_sponsorship_contract_form_compassion" model="ir.ui.view">
+			<field name="name">sponsorship.contract.compassion.form</field>
 			<field name="model">recurring.contract</field>
-			<field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
-			<field eval="18" name="priority"/>
+            <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
 			<field name="arch" type="xml">
-                <!-- Modify header to add the waiting state -->
-                <field name="state" position="attributes">
-                    <attribute name="statusbar_visible">draft,active,waiting,terminated</attribute>
-                </field>
-
-                <!-- Replace terminate button to call the end_sponsorship wizard -->
-                <button name="contract_terminated" position="replace">
-                     <button name="%(action_end_sponsorship)d" states="waiting,mandate,active" type="action" string="Terminate" class="oe_highlight" />
+                <button name="contract_terminated" position="attributes">
+                    <attribute name="attrs">{'invisible':[('type', '=', 'S')]}</attribute>
                 </button>
-
-                <!-- Hide reference -->
-                <field name="reference" position="replace">
-                    <field name="name"/>
-                </field>
-
-				<!-- Redefine the top group view (lot of changes) -->
-                <xpath expr="//sheet/group[1]" position="replace">
-                    <group>
-                        <group>
-                            <field name="partner_id" on_change="on_change_partner_id(partner_id)"
-                                   options="{'create': false, 'm2o_dialog': false}"/>
-                            <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}"/>
-                            <field name="group_id" domain="[('partner_id', '=', partner_id)]"
-                                   context="{'default_partner_id': partner_id}"
-                                   on_change="on_change_group_id(group_id)"/>
-                            <field name="parent_id" domain="[('partner_id', '=', partner_id), ('child_id', '!=', child_id)]"/>
-                        </group>
-                        <group>
-                            <field name="start_date" string="Creation date"/>
-                            <field name="activation_date" states="active,terminated,cancelled" />
-                            <field name="end_date" attrs="{'invisible':[('end_date', '=', False)]}" />
-                            <field name="next_invoice_date" states="draft,waiting,mandate,active" />
-                        </group>
-                        
-                        <group>
-                            <field name="origin_id" domain="['!',('name','like','SUB Sponsorship - ')]"/>
-                            <field name="channel"/>
-                        </group>
-                        <group>
-                            <field name="child_id" domain="[('state', 'in', ('N', 'D', 'I', 'R', 'Z')), ('project_id.suspension', 'not in', ('suspended','fund-suspended'))]"
-                                   options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
-                            <field name="end_reason" states="terminated,cancelled"/>
-                            <field name="num_pol_ga" invisible="1"/>
-                        </group>
-                    </group>
-                </xpath>
-                
-                <!-- Track when sponsorship products are added in contract -->
-                <field name="contract_line_ids" position="replace">
-                        <field name="contract_line_ids" widget="one2many_list"/>
-                </field>
-			</field>
+                <button name="contract_terminated" position="after">
+                     <button name="%(action_end_sponsorship)d" type="action" string="Terminate" class="oe_highlight" attrs="{'invisible': ['|',('type', '!=', 'S'),('state', 'not in', ['waiting', 'mandate', 'active'])]}"/>
+                </button>          
+            </field>
 		</record>
-		
-		<record id="view_recurring_contract_compassion_filter" model="ir.ui.view">
-			<field name="name">recurring.contract.compassion.select</field>
-			<field name="model">recurring.contract</field>
-			<field name="inherit_id" ref="recurring_contract.view_recurring_contract_filter" />
-			<field name="arch" type="xml">
-				<data>
-                    <field name="reference" position="attributes">
-                        <attribute name="filter_domain">
-                            ['|', '|', '|', '|', '|', '|',
-                             ('reference','ilike',self),
-                             ('partner_id','child_of',self),
-                             ('payment_term_id', 'ilike', self),
-                             ('partner_codega', 'ilike', self),
-                             ('child_code', 'ilike', self),
-                             ('child_name', 'ilike', self),
-                             ('origin_id', 'ilike', self),
-                            ]
-                        </attribute>
-                    </field>
-                    <field name="payment_term_id" position="after">
-                        <field name="origin_id"/>
-                    </field>
-                    <xpath expr="//filter[@name='draft']" position="after">
-                        <filter name="waiting" string="Waiting" domain="[('state','=','waiting')]"/>
-                        <filter name="mandate" string="Waiting Mandate" domain="[('state','=','mandate')]"/>
-                    </xpath>
-                    <xpath expr="//filter[@name='terminated']" position="after">
-                        <filter name="cancelled" string="Cancelled" domain="[('state','=','cancelled')]"/>
-                    </xpath>
-                    <xpath expr="//filter[@string='Status']" position="after">
-                        <filter string="Origin" domain="[]"  context="{'group_by':'origin_id'}"/>
-                    </xpath>
-				</data>
-			</field>
-		</record>
+
+        <record id="action_sponsorship_contract" model="ir.actions.act_window">
+            <field name="name">Sponsorships</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">recurring.contract</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type','=','S')]</field>
+            <field name="context">{'default_type':'S'}</field>
+        </record>
+
         
         <!-- Move the Sponsorships Menu to the Sponsorship Section -->
-        <menuitem id="recurring_contract.menu_contracts_section" parent="child_compassion.menu_sponsorship_root" 
+        <menuitem id="menu_sponsorship_contract_form" parent="child_compassion.menu_sponsorship_section"
+                  name="Sponsorships" sequence="0" action="action_sponsorship_contract"/>
+        <menuitem id="contract_compassion.menu_contracts_section" parent="child_compassion.menu_sponsorship_root" 
                   name="Invoicing" groups="account.group_account_user" sequence="2"/>
-        <menuitem id="recurring_contract.menu_recurring_contract_form" parent="child_compassion.menu_sponsorship_section"
-                  name="Sponsorships" sequence="0"/>
-                  
         <menuitem id="open_customers" parent="child_compassion.menu_sponsorship_section"
-                  name="Partners" action="base.action_partner_customer_form" sequence="1"/>
+                  name="Partners" action="base.action_partner_customer_form" sequence="3"/>
 	</data>
 </openerp>
