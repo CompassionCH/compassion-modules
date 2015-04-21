@@ -15,7 +15,6 @@ from psycopg2 import IntegrityError
 
 
 class contract_origin(orm.Model):
-
     """ Origin of a contract """
     _name = 'recurring.contract.origin'
 

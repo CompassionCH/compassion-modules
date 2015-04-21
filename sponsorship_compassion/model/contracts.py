@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
+from openerp.osv import orm
 from openerp import netsvc
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
@@ -20,18 +20,13 @@ from dateutil.relativedelta import relativedelta
 from .product import GIFT_TYPES
 
 import logging
-import pdb
+
 
 logger = logging.getLogger(__name__)
 
 
 class sponsorship_contract(orm.Model):
-    _inherit = 'recurring.contract' 
-    # _columns = {
-        # 'contract_id': fields.many2one('recurring.contract', required=True,
-            # string='Related contract', ondelete='restrict',
-            # help='Contract-related to sponsorship'),   
-    # }
+    _inherit = 'recurring.contract'
 
     def _get_sponsorship_standard_lines(self, cr, uid, context=None):
         """ Select Sponsorship and General Fund by default """
@@ -128,16 +123,18 @@ class sponsorship_contract(orm.Model):
         wf_service.trg_delete(uid, 'recurring.contract', contract_id, cr)
         logger.info("Contract " + str(contract_id) + " terminated.")
         return True
-        
-    def clean_invoices(self, cr, uid, ids, context=None, since_date=None, to_date=None):
+
+    def clean_invoices(
+            self, cr, uid, ids, context=None, since_date=None, to_date=None):
         if type == 'S':
-            self.clean_invoices_paid(cr, uid, ids, context, since_date, to_date)
+            self.clean_invoices_paid(
+                cr, uid, ids, context, since_date, to_date)
 
         return super(sponsorship_contract, self).clean_invoices(
             cr, uid, ids, context, since_date, to_date)
 
     def clean_invoices_paid(self, cr, uid, ids, context=None, since_date=None,
-                       to_date=None):
+                            to_date=None):
         """ Take into consideration when the sponsor has paid in advance,
         so that we cancel/modify the paid invoices and let the user decide
         what to do with the payment.
@@ -280,11 +277,11 @@ class sponsorship_contract(orm.Model):
                     .format(','.join(str(id) for id in to_remove_pml)))
 
         # 3. Clean open invoices
-        super(recurring_contract, self).clean_invoices(
+        super(sponsorship_contract, self).clean_invoices(
             cr, uid, ids, context, since_date, to_date)
 
         return True
-        
+
     def _invoice_paid(self, cr, uid, invoice, context=None):
         """ Prevent to reconcile invoices for fund-suspended projects. """
         if invoice.payment_ids:
@@ -305,7 +302,7 @@ class sponsorship_contract(orm.Model):
                               "reconcile this invoice.") % project.code)
 
     def suspend_contract(self, cr, uid, ids, context=None, date_start=None,
-            date_end=None):
+                         date_end=None):
         """Cancels the number of invoices specified starting
         from a given date. This is useful to suspend a contract for a given
         period."""
@@ -353,7 +350,7 @@ class sponsorship_contract(orm.Model):
                 context={'thread_model': 'res.partner'})
 
         return True
-    
+
     def _on_contract_active(self, cr, uid, ids, context=None):
         """ Hook for doing something when contract is activated.
         Update child to mark it has been sponsored, and update partner
@@ -382,10 +379,10 @@ class sponsorship_contract(orm.Model):
             wf_service.trg_validate(
                 uid, 'recurring.contract', contract.id,
                 'contract_active', cr)
-            logger.info("Contract " + str(contract.id) + " activated.")  
-            
+            logger.info("Contract " + str(contract.id) + " activated.")
+
     def _on_change_child_id(self, cr, uid, ids, child_id, partner_id=None,
-                        context=None):
+                            context=None):
         """Link/unlink child to sponsor
         """
         for contract in self.browse(cr, uid, ids, context):
@@ -398,7 +395,7 @@ class sponsorship_contract(orm.Model):
                     cr, uid, child_id, {
                         'sponsor_id': partner_id or contract.partner_id.id},
                     context)
-    
+
     def contract_waiting_mandate(self, cr, uid, ids, context=None):
         for contract in self.browse(cr, uid, ids, context):
             # Check that a child is selected for Sponsorship product
@@ -407,8 +404,9 @@ class sponsorship_contract(orm.Model):
                     _("Please select a child"),
                     _("You should select a child if you "
                       "make a new sponsorship!"))
-        return super(Sponsorship_contract).contract_waiting_mandate(cr, uid, ids, context)
-        
+        return super(sponsorship_contract).contract_waiting_mandate(
+            cr, uid, ids, context)
+
     def contract_waiting(self, cr, uid, ids, context=None):
         for contract in self.browse(cr, uid, ids, {'lang': 'en_US'}):
             # Check that a child is selected for Sponsorship product
@@ -418,9 +416,9 @@ class sponsorship_contract(orm.Model):
                     _("You should select a child if you "
                       "make a new sponsorship!"))
 
-        return super(Sponsorship_contract).contract_waiting(cr, uid, ids, context)
-    
+        return super(sponsorship_contract).contract_waiting(
+            cr, uid, ids, context)
+
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
-        # pdb.set_trace()
         return super(sponsorship_contract, self).on_change_partner_id(
             cr, uid, ids, partner_id, context)
