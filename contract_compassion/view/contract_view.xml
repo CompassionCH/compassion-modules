@@ -73,7 +73,8 @@
                         </group>
                         
                         <group>
-                            <field name="origin_id" domain="['!',('name','like','SUB Sponsorship - ')]"/>
+                            <field name="origin_id" domain="['!',('name','like','SUB Sponsorship - ')]"
+                                attrs="{'required':[('type', '=', 'S')]}"/>
                             <field name="channel"/>
                         </group>
                         <group>
@@ -164,13 +165,8 @@
             <field name="act_window_id" ref="action_contract"/>
         </record>
 
-        <!-- Move the Sponsorships Menu to the Sponsorship Section -->
-<!--         <menuitem id="recurring_contract.menu_contracts_section" parent="child_compassion.menu_sponsorship_root" 
-                  name="Invoicing" groups="account.group_account_user" sequence="2"/> -->
         <menuitem id="recurring_contract.menu_recurring_contract_form" parent="child_compassion.menu_sponsorship_section"
                   name="Other contracts" sequence="1" action="action_contract"/>
                   
-<!--         <menuitem id="open_customers" parent="child_compassion.menu_sponsorship_section"
-                  name="Partners" action="base.action_partner_customer_form" sequence="1"/> -->
 	</data>
 </openerp>
