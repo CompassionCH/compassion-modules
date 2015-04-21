@@ -37,6 +37,7 @@ openerp.sponsorship_tracking = function (instance) {
      
                 this.add_group_buttons(groups[index], label, action, visible_on_groups);
             }
+            return res
         },
         add_group_buttons: function(group, button_label, action, visible_on_groups) {
             var self = this;
