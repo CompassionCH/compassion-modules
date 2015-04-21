@@ -18,17 +18,17 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 import logging
-import pdb
+
 logger = logging.getLogger(__name__)
 
 
 class recurring_contract(orm.Model):
     _inherit = "recurring.contract"
     _order = 'start_date desc'
-    
+
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
-        ''' On partner change, we update the correspondent and
-        set the new pol_number (for gift identification).'''
+        """ On partner change, we update the correspondent and
+        set the new pol_number (for gift identification). """
         res = super(recurring_contract, self).on_change_partner_id(
             cr, uid, ids, partner_id, context)
         num_contracts = self.search(
@@ -54,6 +54,7 @@ class recurring_contract(orm.Model):
     ################################
     #        FIELDS METHODS        #
     ################################
+
     def _active(self, cr, uid, ids, field_name, args, context=None):
         # Dummy function that sets the active flag.
         self._on_contract_active(cr, uid, ids, context=context)
@@ -187,8 +188,8 @@ class recurring_contract(orm.Model):
         return res
 
     def _name_get(self, cr, uid, ids, field_name, args, context=None):
-        return {c[0]: c[1] for c in self.name_get(cr, uid, ids, context)}            
-        
+        return {c[0]: c[1] for c in self.name_get(cr, uid, ids, context)}
+
     ###########################
     #        New Fields       #
     ###########################
@@ -243,7 +244,8 @@ class recurring_contract(orm.Model):
             'Partner Contract Number', required=True
         ),
         'frequency': fields.related(
-            'group_id', 'advance_billing_months', type="integer", readonly=True,
+            'group_id', 'advance_billing_months',
+            type="integer", readonly=True,
             string=_('Frequency'), store=False),
         'end_reason': fields.selection(get_ending_reasons, _('End reason'),
                                        select=True),
@@ -272,15 +274,14 @@ class recurring_contract(orm.Model):
             ('O', _('Others'))], _('Type'), select=True,
             readonly=True, track_visibility='onchange'),
         # 'contract_line_ids': fields.function(
-            # _get_lines, fnct_inv=_set_lines,
-            # relation='recurring.contract.line', type="one2many",
-            # string=_('Contract lines') , track_visibility="onchange"),
+        # _get_lines, fnct_inv=_set_lines,
+        # relation='recurring.contract.line', type="one2many",
+        # string=_('Contract lines') , track_visibility="onchange"),
     }
 
     _defaults = {
         'type': 'S',
     }
-
 
     ##########################
     #        CALLBACKS       #
@@ -295,32 +296,6 @@ class recurring_contract(orm.Model):
             elif contract.contract_line_ids:
                 name += ' - ' + contract.contract_line_ids[0].product_id.name
             res.append((contract.id, name))
-        return res
-
-    def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
-        ''' On partner change, we update the correspondent and
-        set the new pol_number (for gift identification).'''
-        res = super(recurring_contract, self).on_change_partner_id(
-            cr, uid, ids, partner_id, context)
-        num_contracts = self.search(
-            cr, uid, [('partner_id', '=', partner_id)], context=context,
-            count=True)
-        # If contract created check state
-        if ids:
-            contract = self.browse(cr, uid, ids[0], context)
-            # If state draft correspondant_id=parent_id
-            if (contract.state == 'draft'):
-                res['value'].update({
-                    'correspondant_id': partner_id,
-                })
-        # Else correspondant_id=parent_id
-        else:
-            res['value'].update({
-                'correspondant_id': partner_id,
-            })
-        res['value'].update({
-            'num_pol_ga': num_contracts
-        })
         return res
 
     def on_change_group_id(self, cr, uid, ids, group_id, context=None):
@@ -372,7 +347,7 @@ class recurring_contract(orm.Model):
                     'next_invoice_date': next_invoice_date.strftime(DF)})
 
         self.write(cr, uid, ids, {'state': 'waiting'}, context)
-        return True    
+        return True
 
     def contract_cancelled(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'cancelled'}, context)
@@ -444,7 +419,6 @@ class recurring_contract(orm.Model):
         if to_date:
             invl_search.append(('due_date', '<=', to_date))
         return invl_search
-
 
     def _update_invoice_lines(self, cr, uid, contract, invoice_ids,
                               context=None):
@@ -599,7 +573,7 @@ class recurring_contract(orm.Model):
                     # This will trigger group_date computation
                     contract.write({
                         'next_invoice_date': contract.next_invoice_date})
-                        
+
     def _compute_next_invoice_date(self, contract):
         # Sponsorship case
         if contract.type == 'S':
@@ -607,7 +581,8 @@ class recurring_contract(orm.Model):
             next_date += relativedelta(months=+1)
             return next_date
         else:
-            return super(recurring_contract, self)._compute_next_invoice_date(contract)
+            return super(recurring_contract, self)._compute_next_invoice_date(
+                contract)
 
     ################################
     #        PUBLIC METHODS        #
@@ -668,53 +643,3 @@ class recurring_contract(orm.Model):
             self._on_group_id_changed(cr, uid, ids, context)
 
         return res
-
-# just to modify access rights...
-class recurring_invoicer(orm.Model):
-    _inherit = 'recurring.invoicer'
-    _name = 'recurring.invoicer'
-
-
-class account_invoice(orm.Model):
-    _inherit = 'account.invoice'
-    _name = 'account.invoice'
-
-
-class contract_line(orm.Model):
-    _inherit = 'recurring.contract.line'
-
-
-class account_move(orm.Model):
-    _inherit = 'account.move'
-
-
-class account_move_line(orm.Model):
-    _inherit = 'account.move.line'
-
-
-class payment_line(orm.Model):
-    _inherit = 'payment.line'
-
-
-class account_journal(orm.Model):
-    _inherit = 'account.journal'
-
-
-class account_asset_depreciation_line(orm.Model):
-    _inherit = 'account.asset.depreciation.line'
-
-
-class account_analytic_plan_instance(orm.Model):
-    _inherit = 'account.analytic.plan.instance'
-
-
-class account_analytic_plan_instance_line(orm.Model):
-    _inherit = 'account.analytic.plan.instance.line'
-
-
-class account_period(orm.Model):
-    _inherit = 'account.period'
-
-
-class account_account_type(orm.Model):
-    _inherit = 'account.account.type'

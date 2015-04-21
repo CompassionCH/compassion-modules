@@ -30,20 +30,21 @@
 
 {
     'name': 'Compassion Contracts',
-    'version': '1.5',
+    'version': '0.1',
     'category': 'Other',
     'description': """
 Compassion contract module.
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['recurring_contract', 'account_analytic_plans', 
+    'depends': ['recurring_contract',
+                'account_analytic_plans',
                 'child_compassion'],
     'data': [
-             'view/contract_group_view.xml',
-             'view/contract_origin_view.xml',
-             'view/contract_view.xml'
-             ],
+        'view/contract_group_view.xml',
+        'view/contract_origin_view.xml',
+        'view/contract_view.xml'
+    ],
     'demo': [],
     'installable': True,
     'auto_install': False,
