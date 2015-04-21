@@ -18,8 +18,8 @@ from openerp import netsvc
 
 
 class contract_group(orm.Model):
-    ''' Add BVR on groups and add BVR ref and analytics_id
-    in invoices '''
+    """ Add BVR on groups and add BVR ref and analytics_id
+    in invoices """
     _inherit = 'recurring.contract.group'
 
     def name_get(self, cr, uid, ids, context=None):
@@ -38,7 +38,7 @@ class contract_group(orm.Model):
         return res
 
     def _get_op_payment_term(self, cr, uid, context=None):
-        ''' Get Permanent Order Payment Term, to set it by default. '''
+        """ Get Permanent Order Payment Term, to set it by default. """
         payment_term_id = self.pool.get('account.payment.term').search(
             cr, uid, [('name', '=', 'Permanent Order')],
             context={'lang': 'en_US'})
@@ -82,8 +82,8 @@ class contract_group(orm.Model):
 
     def on_change_payment_term(self, cr, uid, ids, payment_term_id, bvr_ref,
                                partner_id, context=None):
-        ''' Generate new bvr_reference if payment term is Permanent Order
-        or BVR '''
+        """ Generate new bvr_reference if payment term is Permanent Order
+        or BVR """
         if not context:
             ctx = dict()
         else:
@@ -109,7 +109,7 @@ class contract_group(orm.Model):
 
     def on_change_bvr_ref(self, cr, uid, ids, bvr_reference,
                           context=None):
-        ''' Test the validity of a reference number. '''
+        """ Test the validity of a reference number. """
         is_valid = bvr_reference and bvr_reference.isdigit()
         if is_valid and len(bvr_reference) == 26:
             bvr_reference = mod10r(bvr_reference)
@@ -152,7 +152,7 @@ class contract_group(orm.Model):
 
     def _setup_inv_data(self, cr, uid, con_gr, journal_ids, invoicer_id,
                         context=None):
-        ''' Inherit to add BVR ref '''
+        """ Inherit to add BVR ref """
         inv_data = super(contract_group, self)._setup_inv_data(cr, uid, con_gr,
                                                                journal_ids,
                                                                invoicer_id,
@@ -173,7 +173,7 @@ class contract_group(orm.Model):
 
     def _setup_inv_line_data(self, cr, uid, contract_line, invoice_id,
                              context=None):
-        ''' Inherit to add analytic distribution '''
+        """ Inherit to add analytic distribution """
         inv_line_data = super(contract_group, self)._setup_inv_line_data(
             cr, uid, contract_line, invoice_id, context)
 
@@ -191,7 +191,7 @@ class contract_group(orm.Model):
         return ['waiting', 'active']
 
     def write(self, cr, uid, ids, vals, context=None):
-        """If sponsor changes his payment term to LSV or DD,
+        """ If sponsor changes his payment term to LSV or DD,
         change the state of related contracts so that we wait
         for a valid mandate before generating new invoices.
         """
