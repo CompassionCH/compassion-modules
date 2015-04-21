@@ -16,29 +16,26 @@ from openerp.tools.translate import _
 from datetime import datetime, date, timedelta
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 
 class recurring_contract(orm.Model):
     _inherit = "recurring.contract"
 
-    def state_transition_from_kanban(
-            self, cr, uid, old_state, new_state, id, context=None):
-        start, end, signal = 'start', 'end', 'signal'
+    def button_mail_sent(self, cr, uid, value, context=None):
+        contract_ids = self.search(
+            cr, uid, [('sds_state', '=', value)], context)
+        for contract in contract_ids:
+            self.mail_sent(cr, uid, contract, context)
+        return True
 
-        state_transitions = [
-            {start: 'start', end: 'active', signal: 'mail_sent'},
-            {start: 'waiting_welcome', end: 'active', signal: 'welcome_sent'},
-            {start: 'sub_waiting', end: 'no_sub', signal: 'no_sub'},
-        ]
-
-        for state_transition in state_transitions:
-            if (state_transition[start] == old_state and
-                    state_transition[end] == new_state):
-                trans_method = getattr(self, state_transition[signal])
-                return trans_method(cr, uid, id, context)
-        else:
-            return False
+    def button_project_mail_sent(self, cr, uid, value, context=None):
+        contract_ids = self.search(
+            cr, uid, [('project_state', '=', value)], context)
+        for contract in contract_ids:
+            self.project_mail_sent(cr, uid, contract, context)
+        return True
 
     _columns = {
         'sds_state': fields.selection([
@@ -47,13 +44,13 @@ class recurring_contract(orm.Model):
             ('waiting_welcome', _('Waiting welcome')),
             ('active', _('Active')),
             ('field_memo', _('Field memo')),
-            ('cancelled', _('Cancelled')),
             ('sub_waiting', _('Sub waiting')),
-            ('no_sub', _('No sub')),
             ('sub', _('Sub')),
             ('sub_accept', _('Sub Accept')),
-            ('sub_reject', _('Sub Reject'))], _('SDS Status'), select=True,
-            readonly=True, track_visibility='onchange',
+            ('sub_reject', _('Sub Reject')),
+            ('no_sub', _('No sub')),
+            ('cancelled', _('Cancelled'))], _('SDS Status'),
+            readonly=True, track_visibility='onchange', select=True,
             help=_('')),
         'last_sds_state_change_date': fields.date(
             _('Last SDS state change date'),
@@ -110,6 +107,12 @@ class recurring_contract(orm.Model):
         logger.info("Contract " + str(contract_id) + " mail sent.")
         wf_service.trg_validate(uid, 'recurring.contract', contract_id,
                                 'mail_sent', cr)
+
+    def project_mail_sent(self, cr, uid, contract_id, context=None):
+        wf_service = netsvc.LocalService('workflow')
+        logger.info("Contract " + str(contract_id) + " project mail sent.")
+        wf_service.trg_validate(uid, 'recurring.contract', contract_id,
+                                'project_mail_sent', cr)
 
     def reactivate_project(self, cr, uid, contract_id, context=None):
         wf_service = netsvc.LocalService('workflow')
