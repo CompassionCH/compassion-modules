@@ -26,15 +26,15 @@ class recurring_contract(orm.Model):
     def button_mail_sent(self, cr, uid, value, context=None):
         contract_ids = self.search(
             cr, uid, [('sds_state', '=', value)], context)
-        for contract in self.browse(cr, uid, contract_ids, context):
-            self.mail_sent(cr, uid, contract.id, context)
+        for contract in contract_ids:
+            self.mail_sent(cr, uid, contract, context)
         return True
 
     def button_project_mail_sent(self, cr, uid, value, context=None):
         contract_ids = self.search(
             cr, uid, [('project_state', '=', value)], context)
-        for contract in self.browse(cr, uid, contract_ids, context):
-            self.project_mail_sent(cr, uid, contract.id, context)
+        for contract in contract_ids:
+            self.project_mail_sent(cr, uid, contract, context)
         return True
 
     _columns = {
