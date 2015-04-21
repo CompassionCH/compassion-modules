@@ -14,7 +14,7 @@
                 <kanban default_group_by="sds_state" create='false' edit='false'>
                     <field name="name"/>
                     <field name="color"/>
-                    <field name="sds_state" options="{'test':'test'}"/>
+                    <field name="sds_state"/>
                     <field name="state" />
                     <templates>
                         <field name="child_id"/>
@@ -48,7 +48,7 @@
         </record>
 
         <record id="view_tracking_contract_form" model="ir.ui.view">
-			<field name="name">recurring.contract.compassion.form</field>
+			<field name="name">tracking.contract.compassion.form</field>
 			<field name="model">recurring.contract</field>
             <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
 			<field name="arch" type="xml">
