@@ -253,7 +253,7 @@ class recurring_contract(orm.Model):
             _('End date'), readonly=True,
             track_visibility="onchange"),
         'origin_id': fields.many2one('recurring.contract.origin', _("Origin"),
-                                     required=True, ondelete='restrict',
+                                     ondelete='restrict',
                                      track_visibility='onchange'),
         'channel': fields.selection(_get_channels, string=_("Channel"),
                                     required=True, readonly=True,
@@ -273,10 +273,6 @@ class recurring_contract(orm.Model):
             ('S', _('Sponsorship')),
             ('O', _('Others'))], _('Type'), select=True,
             readonly=True, track_visibility='onchange'),
-        # 'contract_line_ids': fields.function(
-        # _get_lines, fnct_inv=_set_lines,
-        # relation='recurring.contract.line', type="one2many",
-        # string=_('Contract lines') , track_visibility="onchange"),
     }
 
     _defaults = {
