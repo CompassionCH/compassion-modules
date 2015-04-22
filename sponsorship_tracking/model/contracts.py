@@ -10,10 +10,9 @@
 ##############################################################################
 from openerp.osv import orm, fields
 from openerp import netsvc
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
 
-from datetime import datetime, date, timedelta
+from datetime import date, timedelta
 import logging
 
 
@@ -95,7 +94,7 @@ class recurring_contract(orm.Model):
                 wf_service = netsvc.LocalService('workflow')
                 logger.info("Contract " + str(contract.id) + " contract sub.")
                 wf_service.trg_validate(
-                    uid, 'recurring.contract', contract.parent_id.id,
+                    uid, self._name, contract.parent_id.id,
                     'new_contract_validated', cr)
         return True
 
@@ -110,68 +109,67 @@ class recurring_contract(orm.Model):
         return True
 
     def check_sub_waiting_duration(self, cr, uid, context=None):
-        contract_ids = self.search(
-            cr, uid, [('sds_state', '=', 'sub_waiting')], context=context)
+        """ If no SUB sponsorship is proposed after 15 days a child
+            has departed, the sponsorship is marked as NO SUB.
+        """
+        wf_service = netsvc.LocalService('workflow')
+        fifteen_days_ago = date.today() + timedelta(days=-15)
+        contract_ids = self.search(cr, uid, [
+            ('end_date', '<', fifteen_days_ago),
+            ('sds_state', '=', 'sub_waiting')], context=context)
 
-        for contract in self.browse(cr, uid, contract_ids, context):
-            if contract.end_date:
-                end_date = datetime.strptime(
-                    contract.end_date, DF).date()
-                if end_date + timedelta(days=15) < date.today():
-                    wf_service = netsvc.LocalService('workflow')
-                    logger.info(
-                        "Contract " + str(
-                            contract.id) + " sub waiting time expired")
-                    wf_service.trg_validate(
-                        uid, 'recurring.contract',
-                        contract.id, 'no_sub', cr)
+        for contract_id in contract_ids:
+            logger.info("Contract " + str(contract_id) +
+                        " sub waiting time expired")
+            wf_service.trg_validate(
+                uid, self._name, contract_id, 'no_sub', cr)
         return True
 
     def check_sub_duration(self, cr, uid, context=None):
-        contract_ids = self.search(
-            cr, uid, [('sds_state', '=', 'sub')], context=context)
+        """ Check all sponsorships in SUB State.
+            After 40 days being in SUB state, Sponsorship becomes :
+                - SUB Accept if one child sponsorship is active
+                - SUB Reject otherwise
+        """
+        wf_service = netsvc.LocalService('workflow')
+        fourty_days_ago = date.today() + timedelta(days=-40)
+        contract_ids = self.search(cr, uid, [
+            ('last_sds_state_change_date', '<', fourty_days_ago),
+            ('sds_state', '=', 'sub')], context=context)
 
-        for contract in self.browse(cr, uid, contract_ids, context):
-            sub_parent_contracts_ids = self.search(
+        logger.info("Contracts " + str(contract_ids) +
+                    " sub waiting time expired.")
+        for contract_id in contract_ids:
+            sub_sponsorship_ids = self.search(
                 cr, uid,
-                [('parent_id', '=', contract.id)],
+                [('parent_id', '=', contract_id)],
                 context=context)
-
-            if sub_parent_contracts_ids:
+            if sub_sponsorship_ids:
                 sub_parent_contracts = self.browse(
-                    cr, uid, sub_parent_contracts_ids, context)
+                    cr, uid, sub_sponsorship_ids, context)
                 for sub_parent_contract in sub_parent_contracts:
                     if (sub_parent_contract.state == 'active' or
                             sub_parent_contract.end_reason == 1):
-                        wf_service = netsvc.LocalService('workflow')
-                        wf_service = netsvc.LocalService('workflow')
-                        logger.info(
-                            "Contract " + str(
-                                contract.id) + " sub waiting time expired")
-                        wf_service.trg_validate(
-                            uid, 'recurring.contract',
-                            contract.id,
-                            'sub_accept', cr)
+                        wf_service.trg_validate(uid, self._name,
+                                                contract_id, 'sub_accept', cr)
                         break
                 else:
-                    wf_service = netsvc.LocalService('workflow')
-                    wf_service = netsvc.LocalService('workflow')
-                    logger.info(
-                        "Contract " + str(
-                            contract.id) + " sub waiting time expired")
-                    wf_service.trg_validate(
-                        uid, 'recurring.contract',
-                        contract.id,
-                        'sub_reject', cr)
+                    wf_service.trg_validate(uid, self._name,
+                                            contract_id, 'sub_reject', cr)
+            else:
+                wf_service.trg_validate(
+                    uid, self._name, contract_id, 'sub_reject', cr)
         return True
 
     def contract_cancelled(self, cr, uid, ids, context=None):
+        """ Project state is no more relevant when contract is cancelled. """
         res = super(recurring_contract, self).contract_cancelled(
             cr, uid, ids, context)
         self.write(cr, uid, ids, {'project_state': False}, context)
         return res
 
     def contract_terminated(self, cr, uid, ids, context=None):
+        """ Project state is no more relevant when contract is terminated. """
         res = super(recurring_contract, self).contract_terminated(
             cr, uid, ids, context)
         self.write(cr, uid, ids, {'project_state': False}, context)
@@ -226,7 +224,7 @@ class recurring_contract(orm.Model):
             'view_type': 'form',
             'view_mode': 'form',
             'views': [(view_id, 'form')],
-            'res_model': 'recurring.contract',
+            'res_model': self._name,
             'type': 'ir.actions.act_window',
             'target': 'current',
             "res_id": contract_id[0],
