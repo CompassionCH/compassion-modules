@@ -162,18 +162,17 @@
 			<field name="model">recurring.contract</field>
 			<field name="arch" type="xml">
                 <search string="Search contracts">
-                    <field name="reference" />
+                    <field name="reference" filter_domain="['|', '|', '|', '|',
+                             ('reference','ilike',self),
+                             ('partner_id','child_of',self),
+                             ('partner_codega', 'ilike', self),
+                             ('child_code', 'ilike', self),
+                             ('child_name', 'ilike', self),]"/>
                     <field name="child_id"/>
                     <field name="partner_id"/>
                     <field name="partner_codega"/>
                     <field name="sds_state"/>
                     <field name="project_state"/>
-
-                    <filter name="biennial" string="Biennial" domain="[('gmc_state', 'in', ('picture', 'casestudy'))]" context="{'group_by': 'gmc_state'}"/>
-                    <filter name="depart" string="Departure" domain="[('gmc_state', '=', 'depart')]"/>
-                    <filter name="transfer" string="Child Transfer" domain="[('gmc_state', '=', 'transfer')]"/>
-                    <filter name="suspension" string="Project Suspended" domain="[('gmc_state', '=', 'suspension')]"/>
-                    <filter name="reactivation" string="Project Reactivated" domain="[('gmc_state', '=', 'reactivation')]"/>
 
                     <group expand="0" string="Group By...">
                         <filter string="Start date" domain="[]"  context="{'group_by':'start_date'}"/>

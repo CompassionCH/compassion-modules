@@ -44,7 +44,6 @@ It adds a new tree and form view to track sponsorships.
         ],
     'data': [
         'view/contract_view.xml',
-        'view/project_view.xml',
         'workflow/sds_workflow.xml',
         'workflow/project_workflow.xml',
         'data/contract_cron.xml',

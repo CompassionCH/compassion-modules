@@ -40,7 +40,7 @@ class compassion_project(orm.Model):
                         project.suspension != 'fund-suspended':
                     self.suspend_funds(cr, uid, project.id, context)
             else:
-                self.reactivate_project(cr, uid, project.id, context)
+                self._reactivate_project(cr, uid, project.id, context)
         return res
 
     def suspend_funds(self, cr, uid, project_id, context=None,
@@ -57,8 +57,12 @@ class compassion_project(orm.Model):
             context={'thread_model': self._name})
         return True
 
-    def reactivate_project(self, cr, uid, project_id, context=None):
+    def _reactivate_project(self, cr, uid, project_id, context=None):
         """ To perform some actions when project is reactivated """
+        pass
+
+    def _suspend_extension(self, cr, uid, project_id, context=None):
+        """ To perform some actions when project suspension is extended. """
         pass
 
     def _has_desc(self, cr, uid, ids, field_names, args, context=None):
@@ -246,6 +250,7 @@ class compassion_project(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
         for project in self.browse(cr, uid, ids, context):
+            was_fund_suspended = (project.suspension == 'fund-suspended')
             values = None
             try:
                 values, community_id = self._update_program_info(
@@ -264,6 +269,10 @@ class compassion_project(orm.Model):
             finally:
                 if values:
                     self.write(cr, uid, [project.id], values, context)
+                    project = self.browse(cr, uid, project.id, context)
+                    if was_fund_suspended and \
+                            project.suspension == 'fund-suspended':
+                        self._suspend_extension(cr, uid, project.id, context)
         return True
 
     def _update_program_info(self, cr, uid, project, context=None):

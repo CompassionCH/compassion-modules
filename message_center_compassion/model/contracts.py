@@ -28,10 +28,7 @@ class recurring_contract(orm.Model):
             ('casestudy', _('New Case Study')),
             ('biennial', _('Biennial')),
             ('depart', _('Child Departed')),
-            ('transfer', _('Child Transfer')),
-            ('suspension', _('Project Fund-Suspended')),
-            ('suspension-extension', _('Fund suspension extension')),
-            ('reactivation', _('Project Reactivated'))], _('GMC State'))
+            ('transfer', _('Child Transfer'))], _('GMC State'))
     }
 
     def _on_contract_active(self, cr, uid, ids, context=None):
@@ -152,13 +149,6 @@ class recurring_contract(orm.Model):
 
                 # 2. Delete pending CreateGift and CreateCommitment messages
                 self._clean_messages(cr, uid, invoice_line.id, context)
-
-    def suspend_contract(self, cr, uid, ids, context=None,
-                         date_start=None, date_end=None):
-        """ Mark the state of contract when it is suspended. """
-        self.write(cr, uid, ids, {'gmc_state': 'suspension'}, context)
-        return super(recurring_contract, self).suspend_contract(
-            cr, uid, ids, context, date_start, date_end)
 
     def _on_invoice_line_removal(self, cr, uid, invoice_lines, context=None):
         """ Removes the corresponding Affectats in GP.
