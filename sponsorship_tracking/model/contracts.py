@@ -127,14 +127,14 @@ class recurring_contract(orm.Model):
 
     def check_sub_duration(self, cr, uid, context=None):
         """ Check all sponsorships in SUB State.
-            After 40 days being in SUB state, Sponsorship becomes :
+            After 40 days after ending, Sponsorship becomes :
                 - SUB Accept if one child sponsorship is active
                 - SUB Reject otherwise
         """
         wf_service = netsvc.LocalService('workflow')
         fourty_days_ago = date.today() + timedelta(days=-40)
         contract_ids = self.search(cr, uid, [
-            ('last_sds_state_change_date', '<', fourty_days_ago),
+            ('end_date', '<', fourty_days_ago),
             ('sds_state', '=', 'sub')], context=context)
 
         logger.info("Contracts " + str(contract_ids) +
