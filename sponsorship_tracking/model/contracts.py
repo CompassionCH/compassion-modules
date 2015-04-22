@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: David Coninckx
+#    @author: David Coninckx, Emanuel Cino
 #
 #    The licence is in the file __openerp__.py
 #
@@ -24,17 +24,19 @@ class recurring_contract(orm.Model):
     _inherit = "recurring.contract"
 
     def button_mail_sent(self, cr, uid, value, context=None):
+        """Button in Kanban view calling action on all contracts of one group.
+        """
         contract_ids = self.search(
             cr, uid, [('sds_state', '=', value)], context)
-        for contract in contract_ids:
-            self.mail_sent(cr, uid, contract, context)
+        self.trg_validate(cr, uid, contract_ids, 'mail_sent', context)
         return True
 
     def button_project_mail_sent(self, cr, uid, value, context=None):
+        """Button in Kanban view calling action on all contracts of one group.
+        """
         contract_ids = self.search(
             cr, uid, [('project_state', '=', value)], context)
-        for contract in contract_ids:
-            self.project_mail_sent(cr, uid, contract, context)
+        self.trg_validate(cr, uid, contract_ids, 'project_mail_sent', context)
         return True
 
     _columns = {
@@ -65,6 +67,7 @@ class recurring_contract(orm.Model):
             ('inform_suspended', _('Inform suspended')),
             ('suspended', _('Suspended')),
             ('inform_reactivation', _('Inform reactivation')),
+            ('inform_extension', _('Inform extension')),
             ('waiting_attribution', _('Waiting attribution')),
             ('inform_suspended_reactivation',
              _('Inform suspended and reactivation')),
@@ -96,47 +99,15 @@ class recurring_contract(orm.Model):
                     'new_contract_validated', cr)
         return True
 
-    def welcome_sent(self, cr, uid, contract_id, context=None):
+    def trg_validate(self, cr, uid, ids, transition, context=None):
+        """ Workflow helper for triggering a transition on contracts. """
         wf_service = netsvc.LocalService('workflow')
-        logger.info("Contract " + str(contract_id) + " welcome sent.")
-        wf_service.trg_validate(uid, 'recurring.contract', contract_id,
-                                'welcome_sent', cr)
-
-    def mail_sent(self, cr, uid, contract_id, context=None):
-        wf_service = netsvc.LocalService('workflow')
-        logger.info("Contract " + str(contract_id) + " mail sent.")
-        wf_service.trg_validate(uid, 'recurring.contract', contract_id,
-                                'mail_sent', cr)
-
-    def project_mail_sent(self, cr, uid, contract_id, context=None):
-        wf_service = netsvc.LocalService('workflow')
-        logger.info("Contract " + str(contract_id) + " project mail sent.")
-        wf_service.trg_validate(uid, 'recurring.contract', contract_id,
-                                'project_mail_sent', cr)
-
-    def reactivate_project(self, cr, uid, contract_id, context=None):
-        wf_service = netsvc.LocalService('workflow')
-        logger.info("Contract " + str(contract_id) + " project reactivated.")
-        wf_service.trg_validate(uid, 'recurring.contract', contract_id,
-                                'project_reactivation', cr)
-
-    def terminate_project(self, cr, uid, contract_id, context=None):
-        wf_service = netsvc.LocalService('workflow')
-        logger.info("Contract " + str(contract_id) + " project terminated.")
-        wf_service.trg_validate(uid, 'recurring.contract', contract_id,
-                                'project_terminated', cr)
-
-    def phase_out_project(self, cr, uid, contract_id, context=None):
-        wf_service = netsvc.LocalService('workflow')
-        logger.info("Contract " + str(contract_id) + " project phase out.")
-        wf_service.trg_validate(uid, 'recurring.contract', contract_id,
-                                'project_phase_out', cr)
-
-    def suspend_project(self, cr, uid, contract_id, context=None):
-        wf_service = netsvc.LocalService('workflow')
-        logger.info("Contract " + str(contract_id) + " project suspended.")
-        wf_service.trg_validate(uid, 'recurring.contract', contract_id,
-                                'project_suspended', cr)
+        for contract_id in ids:
+            logger.info("{0} on Contract {1}".format(
+                transition, str(contract_id)))
+            wf_service.trg_validate(uid, self._name, contract_id, transition,
+                                    cr)
+        return True
 
     def check_sub_waiting_duration(self, cr, uid, context=None):
         contract_ids = self.search(
@@ -197,14 +168,13 @@ class recurring_contract(orm.Model):
     def contract_cancelled(self, cr, uid, ids, context=None):
         res = super(recurring_contract, self).contract_cancelled(
             cr, uid, ids, context)
-        for contract in self.browse(cr, uid, ids, context):
-            if contract.parent_id:
-                wf_service = netsvc.LocalService('workflow')
-                logger.info("Contract " + str(contract.id) + " sub rejected")
-                wf_service.trg_validate(
-                    uid, 'recurring.contract',
-                    contract.parent_id.id,
-                    'sub_reject', cr)
+        self.write(cr, uid, ids, {'project_state': False}, context)
+        return res
+
+    def contract_terminated(self, cr, uid, ids, context=None):
+        res = super(recurring_contract, self).contract_terminated(
+            cr, uid, ids, context)
+        self.write(cr, uid, ids, {'project_state': False}, context)
         return res
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
@@ -261,3 +231,14 @@ class recurring_contract(orm.Model):
             'target': 'current',
             "res_id": contract_id[0],
         }
+
+    def end_workflow(self, cr, uid, context=None):
+        """ Terminate all workflows related to inactive contracts. """
+        wf_service = netsvc.LocalService('workflow')
+        ids = self.search(cr, uid, [
+            ('sds_state', 'in', ['cancelled', 'no_sub', 'sub_accept',
+                                 'sub_reject']),
+            ('state', 'in', ['terminated', 'cancelled'])], context=context)
+        for contract_id in ids:
+            wf_service.trg_delete(uid, self._name, contract_id, cr)
+        return True
