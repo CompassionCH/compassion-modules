@@ -49,6 +49,7 @@
             <field name="name">cancelled</field>
             <field name="kind">function</field>
             <field name="action">write({'sds_state': 'cancelled'})</field>
+            <field name="flow_stop" eval='True' />
         </record>
         
         <record model="workflow.activity" id="act_sub_waiting">
@@ -107,6 +108,7 @@
             <field name="act_from" ref="act_start" />
             <field name="act_to" ref="act_active" />
             <field name="signal">mail_sent</field>
+            <field name="condition">not correspondant_id.email</field>
         </record>
         
         <record model="workflow.transition" id="t2">
@@ -119,28 +121,44 @@
             <field name="act_from" ref="act_active" />
             <field name="act_to" ref="act_sub_waiting" />
             <field name="signal">contract_terminated</field>
-            <field name="condition">end_reason=='1'</field>
+            <field name="condition">end_reason=='1' and is_active</field>
         </record>
         
         <record model="workflow.transition" id="t5b">
             <field name="act_from" ref="act_active" />
             <field name="act_to" ref="act_cancelled" />
             <field name="signal">contract_terminated</field>
-            <field name="condition">end_reason!='1'</field>
+            <field name="condition">end_reason!='1' or not is_active</field>
         </record>
 
         <record model="workflow.transition" id="t5c">
             <field name="act_from" ref="act_start" />
             <field name="act_to" ref="act_cancelled" />
             <field name="signal">contract_terminated</field>
+            <field name="condition">end_reason!='1' or not is_active</field>
         </record>
-
+        
         <record model="workflow.transition" id="t5d">
             <field name="act_from" ref="act_waiting_welcome" />
             <field name="act_to" ref="act_cancelled" />
             <field name="signal">contract_terminated</field>
+            <field name="condition">end_reason!='1' or not is_active</field>
         </record>
         
+        <record model="workflow.transition" id="t5e">
+            <field name="act_from" ref="act_start" />
+            <field name="act_to" ref="act_sub_waiting" />
+            <field name="signal">contract_terminated</field>
+            <field name="condition">end_reason=='1' and is_active</field>
+        </record>
+        
+        <record model="workflow.transition" id="t5f">
+            <field name="act_from" ref="act_waiting_welcome" />
+            <field name="act_to" ref="act_sub_waiting" />
+            <field name="signal">contract_terminated</field>
+            <field name="condition">end_reason=='1' and is_active</field>
+        </record>
+
         <record model="workflow.transition" id="t6">
             <field name="act_from" ref="act_sub_waiting" />
             <field name="act_to" ref="act_no_sub" />

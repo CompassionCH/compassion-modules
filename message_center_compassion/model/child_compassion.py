@@ -16,6 +16,18 @@ from openerp.tools.translate import _
 from datetime import datetime
 
 
+class compassion_project(orm.Model):
+    """ Add update method. """
+    _inherit = 'compassion.project'
+
+    def update(self, cr, uid, args, context=None):
+        """ When we receive a notification that a project has been updated,
+        we fetch the last informations. """
+        project_id = args.get('object_id')
+        self.update_informations(cr, uid, project_id, context)
+        return True
+
+
 class compassion_child(orm.Model):
     """ Add allocation and deallocation methods on the children. """
     _inherit = 'compassion.child'
