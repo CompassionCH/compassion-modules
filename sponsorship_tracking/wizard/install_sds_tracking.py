@@ -87,7 +87,7 @@ class recurring_contract(orm.TransientModel):
             3. Active contracts -> active
             4. Cancelled contracts -> cancelled
             5. Contracts terminated by sponsor -> cancelled
-            6. Contracts child departed -> either no_sub, sub_accept or sub_reject
+            6. Contracts child departed -> no_sub, sub_accept or sub_reject
                See Method _get_contract_sub for more details.
         """
         contract_obj = self.pool.get('recurring.contract')
@@ -202,7 +202,7 @@ class recurring_contract(orm.TransientModel):
         contract_obj = self.pool.get('recurring.contract')
         suspended_project_ids = compassion_project_obj.search(
             cr, uid, [('suspension', '=', 'fund-suspended')], context=context)
-        suspended_project_contract_ids = contract_obj.search(cr, uid,[
+        suspended_project_contract_ids = contract_obj.search(cr, uid, [
             ('project_id', 'in', suspended_project_ids),
             ('state', 'not in', ['terminated', 'cancelled'])
             ], context=context)
