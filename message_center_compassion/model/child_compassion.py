@@ -156,7 +156,8 @@ class compassion_child(orm.Model):
                 'NewImage': 'picture',
             }
             for contract in child.contract_ids:
-                if contract.state in ('waiting', 'active', 'mandate'):
+                if not contract.gmc_state and \
+                        contract.state in ('waiting', 'active', 'mandate'):
                     contract.write({'gmc_state': gmc_states[event]})
 
         if child.state == 'E':
