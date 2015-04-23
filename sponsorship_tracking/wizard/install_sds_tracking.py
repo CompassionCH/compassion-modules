@@ -81,6 +81,15 @@ class recurring_contract(orm.TransientModel):
 
     # Only at module installation
     def _set_sds_states(self, cr, uid, ids=None, context=None):
+        """ Rules for setting the SDS State of a contract.
+            1. Draft contracts -> draft
+            2. Waiting contracts -> active
+            3. Active contracts -> active
+            4. Cancelled contracts -> cancelled
+            5. Contracts terminated by sponsor -> cancelled
+            6. Contracts child departed -> either no_sub, sub_accept or sub_reject
+               See Method _get_contract_sub for more details.
+        """
         contract_obj = self.pool.get('recurring.contract')
         waiting_contract_ids = contract_obj.search(
             cr, uid,
@@ -133,6 +142,14 @@ class recurring_contract(orm.TransientModel):
 
     # Only at module installation
     def _get_contract_sub(self, cr, uid, ids=None, context=None):
+        """ Rules for setting SUB Status of a contract with child departed:
+            1. No active or cancelled/terminated SUB contract exists -> no_sub
+            2. One active SUB contract exists -> sub_accept
+            3. One cancelled/terminated contract exists and end_date > 40 days
+               after child departure or end_reason is also a child departure
+               -> sub_accept
+            4. If no other condition above is met -> sub_reject
+        """
         contract_obj = self.pool.get('recurring.contract')
         child_departed_contract_ids = contract_obj.search(
             cr, uid,
@@ -147,29 +164,29 @@ class recurring_contract(orm.TransientModel):
             contract = contract_obj.browse(
                 cr, uid, child_departed_contract_id, context)
 
-            parent_contract_ids = contract_obj.search(
+            sub_contract_ids = contract_obj.search(
                 cr, uid,
                 [('parent_id', '=', child_departed_contract_id),
                  ('state', 'in', ['active', 'terminated', 'cancelled'])],
                 context)
-            if not (parent_contract_ids):
+            if not (sub_contract_ids):
                 no_sub_ids.append(child_departed_contract_id)
             else:
-                for parent_contract_id in parent_contract_ids:
-                    parent_contract = contract_obj.browse(
-                        cr, uid, parent_contract_id, context)
-                    if (parent_contract.state == 'active'):
+                for sub_contract_id in sub_contract_ids:
+                    sub_contract = contract_obj.browse(
+                        cr, uid, sub_contract_id, context)
+                    if (sub_contract.state == 'active'):
                         sub_accept_ids.append(
                             child_departed_contract_id)
                         break
                     else:
-                        if parent_contract.end_date and contract.end_date:
+                        if sub_contract.end_date and contract.end_date:
                             parent_end_date = datetime.strptime(
-                                parent_contract.end_date, DF)
+                                sub_contract.end_date, DF)
                             contract_end_date = datetime.strptime(
                                 contract.end_date, DF)
-                            if (parent_contract.end_reason == '1' or
-                               parent_end_date >
+                            if (sub_contract.end_reason == '1' or
+                                parent_end_date >
                                     contract_end_date + timedelta(days=40)):
                                 sub_accept_ids.append(
                                     child_departed_contract_id)
@@ -180,38 +197,33 @@ class recurring_contract(orm.TransientModel):
         return no_sub_ids, sub_accept_ids, sub_reject_ids
 
     def _set_project_state(self, cr, uid, ids=None, context=None):
+        """ Pushes the state of the project to the active contracts. """
         compassion_project_obj = self.pool.get('compassion.project')
         contract_obj = self.pool.get('recurring.contract')
         suspended_project_ids = compassion_project_obj.search(
             cr, uid, [('suspension', '=', 'fund-suspended')], context=context)
-        suspended_project_contract_ids = contract_obj.search(
-            cr, uid,
-            [('project_id', 'in', suspended_project_ids),
-             ('state', 'not in', ['terminated', 'cancelled'])],
-            context)
+        suspended_project_contract_ids = contract_obj.search(cr, uid,[
+            ('project_id', 'in', suspended_project_ids),
+            ('state', 'not in', ['terminated', 'cancelled'])
+            ], context=context)
 
-        for suspended_project_id in suspended_project_ids:
-            cr.execute(
-                "UPDATE compassion_project "
-                "SET status = 'S' "
-                "WHERE id = '{0}'".format(suspended_project_id))
-
-        active_project_ids = compassion_project_obj.search(
-            cr, uid, [('status', '=', 'A')], context=context)
+        active_project_ids = compassion_project_obj.search(cr, uid, [
+            ('status', '=', 'A'),
+            ('id', 'not in', suspended_project_ids)], context=context)
         active_project_contract_ids = contract_obj.search(
             cr, uid,
             [('project_id', 'in', active_project_ids),
              ('state', 'not in', ['terminated', 'cancelled'])],
             context)
 
-        for suspended_project_contract_id in suspended_project_contract_ids:
-            cr.execute(
-                "UPDATE recurring_contract "
-                "SET project_state = 'suspended' "
-                "WHERE id = '{0}'".format(suspended_project_contract_id))
+        cr.execute(
+            "UPDATE recurring_contract "
+            "SET project_state = 'suspended' "
+            "WHERE id IN ({0})".format(','.join(
+                [str(id) for id in suspended_project_contract_ids])))
 
-        for active_project_contract_id in active_project_contract_ids:
-            cr.execute(
-                "UPDATE recurring_contract "
-                "SET project_state = 'active' "
-                "WHERE id = '{0}'".format(active_project_contract_id))
+        cr.execute(
+            "UPDATE recurring_contract "
+            "SET project_state = 'active' "
+            "WHERE id IN ({0})".format(','.join(
+                [str(id) for id in active_project_contract_ids])))
