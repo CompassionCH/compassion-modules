@@ -113,14 +113,14 @@
                     <field name="payment_term_id" position="after">
                         <field name="origin_id"/>
                     </field>
-                    <xpath expr="//filter[@name='draft']" position="after">
-                        <filter name="waiting" string="Waiting" domain="[('state','=','waiting')]"/>
-                        <filter name="mandate" string="Waiting Mandate" domain="[('state','=','mandate')]"/>
+                    <xpath expr="//filter[@name='draft']" position="replace">
+                        <filter name="waiting" string="Waiting" domain="[('state','in', ('draft','waiting','mandate'))]"/>
                     </xpath>
-                    <xpath expr="//filter[@name='terminated']" position="after">
-                        <filter name="cancelled" string="Cancelled" domain="[('state','=','cancelled')]"/>
+                    <xpath expr="//filter[@name='terminated']" position="replace">
+                        <filter name="finished" string="Finished" domain="[('state','in', ('cancelled','terminated'))]"/>
                     </xpath>
                     <xpath expr="//filter[@string='Status']" position="after">
+                        <separator />
                         <filter string="Origin" domain="[]"  context="{'group_by':'origin_id'}"/>
                     </xpath>
 				</data>
