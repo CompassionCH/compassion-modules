@@ -25,12 +25,6 @@
             <field name="kind">function</field>
             <field name="action">write({'project_state': 'suspended'})</field>
         </record>
-        <record model="workflow.activity" id="act_inform_extension">
-            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
-            <field name="name">inform_suspension_extension</field>
-            <field name="kind">function</field>
-            <field name="action">write({'project_state': 'inform_extension'})</field>
-        </record>
         <record model="workflow.activity" id="act_inform_terminated">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">inform_project_terminated</field>
@@ -118,14 +112,9 @@
             <field name="signal">project_reactivation</field>
             <field name="condition">state not in ('terminated', 'cancelled')</field>
         </record>
-        <record model="workflow.transition" id="pt9a">
+        <!-- This is to restore state suspended if inform_extension was set. -->
+        <record model="workflow.transition" id="pt9">
             <field name="act_from" ref="act_project_suspended" />
-            <field name="act_to" ref="act_inform_extension" />
-            <field name="signal">project_suspension_extension</field>
-            <field name="condition">state not in ('terminated', 'cancelled')</field>
-        </record>
-        <record model="workflow.transition" id="pt9b">
-            <field name="act_from" ref="act_inform_extension" />
             <field name="act_to" ref="act_project_suspended" />
             <field name="signal">project_mail_sent</field>
         </record>

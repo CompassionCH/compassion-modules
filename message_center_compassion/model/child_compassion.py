@@ -24,8 +24,7 @@ class compassion_project(orm.Model):
         """ When we receive a notification that a project has been updated,
         we fetch the last informations. """
         project_id = args.get('object_id')
-        self.update_informations(cr, uid, project_id, context)
-        return True
+        return self.update_informations(cr, uid, project_id, context)
 
 
 class compassion_child(orm.Model):
