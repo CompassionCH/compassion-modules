@@ -26,7 +26,7 @@ class recurring_contract(orm.Model):
         """Button in Kanban view calling action on all contracts of one group.
         """
         contract_ids = self.search(
-            cr, uid, [('sds_state', '=', value)], context)
+            cr, uid, [('sds_state', '=', value)], context=context)
         self.trg_validate(cr, uid, contract_ids, 'mail_sent', context)
         return True
 
@@ -34,7 +34,7 @@ class recurring_contract(orm.Model):
         """Button in Kanban view calling action on all contracts of one group.
         """
         contract_ids = self.search(
-            cr, uid, [('project_state', '=', value)], context)
+            cr, uid, [('project_state', '=', value)], context=context)
         self.trg_validate(cr, uid, contract_ids, 'project_mail_sent', context)
         return True
 
