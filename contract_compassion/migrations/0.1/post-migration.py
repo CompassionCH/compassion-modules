@@ -18,6 +18,7 @@ def migrate(cr, version):
     if not version:
         return
 
+    # Set the contract type
     cr.execute(
         '''
         UPDATE recurring_contract
@@ -32,6 +33,8 @@ def migrate(cr, version):
         WHERE child_id IS NULL
         '''
     )
+
+    # Set the product type
     cr.execute(
         '''
         UPDATE product_product

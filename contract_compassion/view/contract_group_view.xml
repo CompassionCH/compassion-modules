@@ -13,7 +13,7 @@
             <field name="inherit_id" ref="recurring_contract.view_group_contract_form"/>
             <field eval="10" name="priority"/>
             <field name="arch" type="xml">
-                <group name="partner_info" position="replace">
+                <group name="partner_info" position="replace"> 
                     <group name="partner_info">
                         <field name="partner_id" domain="[('customer', '=', True)]" on_change="on_change_partner_id(partner_id)" readonly="1"/>
                         <field name="bvr_reference" on_change="on_change_bvr_ref(bvr_reference)" />
