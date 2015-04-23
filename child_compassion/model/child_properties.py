@@ -11,7 +11,10 @@
 
 
 from openerp.osv import orm, fields
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
+
+from datetime import datetime
 
 
 class child_property(orm.Model):
@@ -131,6 +134,28 @@ class child_property(orm.Model):
         'pictures_id': fields.many2one(
             'compassion.child.pictures', _('Child images'), readonly=True),
     }
+
+    def create(self, cr, uid, vals, context=None):
+        """ When creating a new Case Study, check if a recent picture exists
+        and link to it if necessary. """
+        res_id = super(child_property, self).create(cr, uid, vals, context)
+
+        case_study = self.browse(cr, uid, res_id, context)
+        last_pictures = case_study.child_id.pictures_id and \
+            case_study.child_id.pictures_id[0]
+
+        if last_pictures and not last_pictures.case_study_id:
+            six_months = 180
+            case_study_date = datetime.strptime(case_study.info_date, DF)
+            picture_date = datetime.strptime(last_pictures.date, DF)
+
+            date_diff = abs((case_study_date - picture_date).days)
+
+            if (date_diff <= six_months or case_study.child_id.type == 'LDP'):
+                case_study.attach_pictures(last_pictures.id)
+                last_pictures.write({'case_study_id': case_study.id})
+
+        return res_id
 
     def attach_pictures(self, cr, uid, ids, pictures_id, context=None):
         if len(ids) != 1:
