@@ -242,3 +242,16 @@ class contract_group(orm.Model):
                 wf_service.trg_validate(uid, 'account.invoice', invoice_id,
                                         'invoice_open', cr)
         return res
+
+    def clean_invoices(self, cr, uid, group, advance_billing=0, context=None):
+        inv_ids = super(contract_group, self).clean_invoices(
+            cr, uid, group, advance_billing, context=None)
+        if inv_ids:
+            inv_ids = list(inv_ids)
+            cr.execute(
+                '''
+                DELETE FROM account_invoice
+                WHERE id IN ({0})
+                '''.format(','.join(
+                    [str(id) for id in inv_ids])))
+        return inv_ids
