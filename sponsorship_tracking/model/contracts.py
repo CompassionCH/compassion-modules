@@ -89,9 +89,9 @@ class recurring_contract(orm.Model):
             cr, uid, id, default, context)
 
     def contract_validation(self, cr, uid, ids, context=None):
+        wf_service = netsvc.LocalService('workflow')
         for contract in self.browse(cr, uid, ids, context):
             if contract.parent_id:
-                wf_service = netsvc.LocalService('workflow')
                 logger.info("Contract " + str(contract.id) + " contract sub.")
                 wf_service.trg_validate(
                     uid, self._name, contract.parent_id.id,
@@ -112,17 +112,12 @@ class recurring_contract(orm.Model):
         """ If no SUB sponsorship is proposed after 15 days a child
             has departed, the sponsorship is marked as NO SUB.
         """
-        wf_service = netsvc.LocalService('workflow')
         fifteen_days_ago = date.today() + timedelta(days=-15)
         contract_ids = self.search(cr, uid, [
             ('end_date', '<', fifteen_days_ago),
             ('sds_state', '=', 'sub_waiting')], context=context)
 
-        for contract_id in contract_ids:
-            logger.info("Contract " + str(contract_id) +
-                        " sub waiting time expired")
-            wf_service.trg_validate(
-                uid, self._name, contract_id, 'no_sub', cr)
+        self.trg_validate(cr, uid, contract_ids, 'no_sub', context)
         return True
 
     def check_sub_duration(self, cr, uid, context=None):
