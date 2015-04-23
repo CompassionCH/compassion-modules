@@ -420,5 +420,50 @@ class sponsorship_contract(orm.Model):
             cr, uid, ids, context)
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
-        return super(sponsorship_contract, self).on_change_partner_id(
+        res = super(sponsorship_contract, self).on_change_partner_id(
             cr, uid, ids, partner_id, context)
+
+        # Check if group_id is valid
+        if 'group_id' in res['value']:
+            if not self._is_a_valid_group(
+                    cr, uid, res['value']['group_id'], context):
+                del res['value']['group_id']
+        return res
+
+    def _is_a_valid_group(self, cr, uid, group_id, context=None):
+        group_obj = self.pool.get('recurring.contract.group')
+        group = group_obj.browse(cr, uid, group_id, context)
+
+        if not group.contains_sponsorship or group.recurring_value != 1:
+            return False
+        return True
+
+    def create(self, cr, uid, vals, context):
+        # Check if group is valid for these contracts on create
+        if 'group_id' in vals:
+            if context['default_type'] == 'S':
+                group_id = vals['group_id']
+                if not self._is_a_valid_group(cr, uid, group_id, context):
+                    raise orm.except_orm(
+                        _('Please select a valid payment option'),
+                        _('You should select payment option with'
+                          '"1 month" as recurring value')
+                    )
+        return super(sponsorship_contract, self).create(
+            cr, uid, vals, context)
+
+    def write(self, cr, uid, ids, vals, context):
+        # Check if group is valid for these contracts on write
+        for contract in self.browse(cr, uid, ids, context):
+            if 'group_id' in vals:
+                group_id = vals['group_id']
+                if contract.type == 'S':
+                    if not self._is_a_valid_group(cr, uid, group_id, context):
+                        raise orm.except_orm(
+                            _('Please select a valid payment option'),
+                            _('You should select payment option with'
+                              '"1 month" as recurring value')
+                        )
+
+        return super(sponsorship_contract, self).write(
+            cr, uid, ids, vals, context)

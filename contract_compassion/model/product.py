@@ -20,7 +20,6 @@ class product(orm.Model):
         'type': fields.selection([
             ('S', _('Sponsorship')),
             ('B', _('Both')),
-            ('G', _('Gift')),
             ('O', _('Others'))], _('Type'), select=True,
             readonly=True)
     }
