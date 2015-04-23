@@ -70,6 +70,7 @@
                             <field name="activation_date" states="active,terminated,cancelled" />
                             <field name="end_date" attrs="{'invisible':[('end_date', '=', False)]}" />
                             <field name="next_invoice_date" states="draft,waiting,mandate,active" />
+                            <field name="change_method" />
                         </group>
                         
                         <group>

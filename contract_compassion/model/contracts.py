@@ -51,6 +51,17 @@ class recurring_contract(orm.Model):
             'num_pol_ga': num_contracts
         })
         return res
+
+    def on_change_next_invoice_date(
+            self, cr, uid, ids, new_invoice_date, context=None):
+        res = True
+        for contract in self.browse(cr, uid, ids, context):
+            if (contract.state not in ('draft', 'mandate')):
+                res = super(
+                    self._name, self).on_change_next_invoice_date(
+                        self, cr, uid, ids, new_invoice_date, context) & res
+        return res
+
     ################################
     #        FIELDS METHODS        #
     ################################

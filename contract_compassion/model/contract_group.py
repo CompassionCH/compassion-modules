@@ -153,10 +153,8 @@ class contract_group(orm.Model):
     def _setup_inv_data(self, cr, uid, con_gr, journal_ids, invoicer_id,
                         context=None):
         """ Inherit to add BVR ref """
-        inv_data = super(contract_group, self)._setup_inv_data(cr, uid, con_gr,
-                                                               journal_ids,
-                                                               invoicer_id,
-                                                               context)
+        inv_data = super(contract_group, self)._setup_inv_data(
+            cr, uid, con_gr, journal_ids, invoicer_id, context)
 
         ref = ''
         if con_gr.bvr_reference:
