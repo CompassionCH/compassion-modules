@@ -9,11 +9,28 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
 
 
 class contract_group(orm.Model):
-
-    ''' Add BVR on groups and add BVR ref and analytics_id
-    in invoices '''
     _inherit = 'recurring.contract.group'
+
+    def _contains_sponsorship(
+            self, cr, uid, ids, field_name, args, context=None):
+        res = dict()
+        for group in self.browse(cr, uid, ids, context):
+            for contract in group.contract_ids:
+                if contract.type == 'S':
+                    res[group.id] = True
+                    break
+            else:
+                res[group.id] = False
+
+        return res
+
+    _columns = {
+        'contains_sponsorship': fields.function(
+            _contains_sponsorship, string=_('Contains sponsorship'),
+            type='boolean', readonly=True)
+    }
