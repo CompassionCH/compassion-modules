@@ -78,7 +78,7 @@
                             name="project_mail_sent" 
                             class="oe_highlight" 
                             string="Inform project status" 
-                            attrs="{'invisible':[('project_state','not in',['inform_suspended', 'inform_suspended_reactivation', 'inform_reactivation', 'inform_project_terminated'])]}"/>
+                            attrs="{'invisible':[('project_state','not in',['inform_suspended', 'inform_extension', 'inform_suspended_reactivation', 'inform_reactivation', 'inform_project_terminated'])]}"/>
                         <button 
                             name="attribute" 
                             class="oe_highlight" 

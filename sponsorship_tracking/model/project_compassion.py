@@ -36,8 +36,12 @@ class compassion_project(orm.Model):
         super(compassion_project, self)._suspend_extension(
             cr, uid, project_id, context)
 
-        return self._transition_contracts(
-            cr, uid, project_id, 'project_suspension_extension', context)
+        contract_obj = self.pool.get('recurring.contract')
+        contract_ids = contract_obj.search(cr, uid, [
+            ('project_id', '=', project_id),
+            ('project_state', '=', 'suspended')], context=context)
+        return contract_obj.write(cr, uid, contract_ids, {
+            'project_state': 'inform_extension'}, context)
 
     def _transition_contracts(self, cr, uid, project_id, transition,
                               context=None):
