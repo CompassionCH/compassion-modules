@@ -172,6 +172,7 @@
                     <field name="partner_id"/>
                     <field name="partner_codega"/>
                     <field name="sds_state"/>
+                    <field name="state"/>
                     <field name="project_state"/>
 
                     <group expand="0" string="Group By...">
