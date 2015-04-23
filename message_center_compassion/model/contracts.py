@@ -22,14 +22,21 @@ class recurring_contract(orm.Model):
     """ We add here creation of messages concerning commitments. """
     _inherit = "recurring.contract"
 
-    _columns = {
-        # Field to identify contracts modified by gmc.
-        'gmc_state': fields.selection([
+    def _get_gmc_states(self, cr, uid, context=None):
+        """ Overridable method to get GMC states. """
+        return [
             ('picture', _('New Picture')),
             ('casestudy', _('New Case Study')),
             ('biennial', _('Biennial')),
             ('depart', _('Child Departed')),
-            ('transfer', _('Child Transfer'))], _('GMC State'))
+            ('transfer', _('Child Transfer'))]
+
+    def __get_gmc_states(self, cr, uid, context=None):
+        return self._get_gmc_states(cr, uid, context)
+
+    _columns = {
+        # Field to identify contracts modified by gmc.
+        'gmc_state': fields.selection(__get_gmc_states, _('GMC State'))
     }
 
     def _on_contract_active(self, cr, uid, ids, context=None):
@@ -201,3 +208,7 @@ class recurring_contract(orm.Model):
     def get_action_id(self, cr, uid, name, context=None):
         return self.pool.get('gmc.action').get_action_id(cr, uid, name,
                                                          context)
+
+    def new_biennial(self, cr, uid, ids, context=None):
+        """ Called when new picture and new case study is available. """
+        self.write(cr, uid, ids, {'gmc_state': 'biennial'}, context)
