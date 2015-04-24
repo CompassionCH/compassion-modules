@@ -29,13 +29,25 @@
                                 <div class="oe_kanban_content">
                                     <div class="oe_kanban_left">
                                         <b><field name="name"/></b>
+                                        <div>SDS State : <field name="sds_state"/></div>
                                         <div>State : <field name="state"/></div>
-                                        <div>Project : <field name="project_state"/></div>
-                                        <div>Last change : <field name="last_sds_state_change_date"/></div>
-                                        <div>Total amount : <field name="total_amount"/></div>
+                                        <div t-if="record.project_state.raw_value">Project : <field name="project_state"/></div>
+                                        <div class="oe_kanban_footer_left">
+                                            <span>
+                                                <span class="oe_e">N</span>
+                                                <field name="last_sds_state_change_date"/>
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div class="oe_kanban_right">
-                                        <img t-att-src="kanban_image('compassion.child', 'portrait', record.child_id.raw_value)" t-att-title="record.child_id.value" height="50" class="oe_kanban_avatar" t-if="record.child_id.value"/>
+                                    <div class="oe_kanban_bottom_right">
+                                        <!-- Project status color indicator -->
+                                        <span t-if="record.project_state.raw_value">
+                                            <span t-if="['active','inform_reactivation','waiting_attribution','inform_suspended_reactivation'].indexOf(record.project_state.raw_value) !== -1"
+                                                  string="Project active" class="oe_kanban_status oe_kanban_status_green"> </span>
+                                            <span t-if="['active','inform_reactivation','waiting_attribution','inform_suspended_reactivation'].indexOf(record.project_state.raw_value) === -1"
+                                                  string="Project not active" class="oe_kanban_status oe_kanban_status_red"> </span>
+                                        </span>
+                                        <img t-att-src="kanban_image('compassion.child', 'portrait', record.child_id.raw_value)" t-att-title="record.child_id.value" height="40" class="oe_kanban_avatar" t-if="record.child_id.value"/>
                                     </div>
                                     <div class="oe_clear"></div>
                                 </div>
