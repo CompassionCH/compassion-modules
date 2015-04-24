@@ -160,15 +160,13 @@ class compassion_child(orm.Model):
 
         # Notify the change if the child is sponsored
         if child.sponsor_id:
-            # Maps the event to the gmc state value of contract
-            gmc_states = {
-                'Transfer': 'transfer',
-                'CaseStudy': 'casestudy',
-                'NewImage': 'picture',
-            }
-            for contract in child.contract_ids:
-                if contract.state in ('waiting', 'active', 'mandate'):
-                    contract.write({'gmc_state': gmc_states[event]})
+            sponsor_id = child.sponsor_id.id
+            contract_obj = self.pool.get('recurring.contract')
+            contract_ids = contract_obj.search(cr, uid, [
+                ('state', 'not in', ('terminated', 'cancelled')),
+                '|', ('partner_id', '=', sponsor_id),
+                ('correspondant_id', '=', sponsor_id)], context=context)
+            contract_obj.set_gmc_event(cr, uid, contract_ids, event, context)
 
         if child.state == 'E':
             # Put the child back to normal state

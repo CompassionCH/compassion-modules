@@ -212,3 +212,20 @@ class recurring_contract(orm.Model):
     def new_biennial(self, cr, uid, ids, context=None):
         """ Called when new picture and new case study is available. """
         self.write(cr, uid, ids, {'gmc_state': 'biennial'}, context)
+
+    def set_gmc_event(self, cr, uid, ids, event, context=None):
+        """
+        Called when a Child Update was received for a sponsored child.
+        Arg event can have one of the following values :
+            - Transfer : child was transferred to another project
+            - CaseStudy : child has a new casestudy
+            - NewImage : child has a new image
+        """
+        # Maps the event to the gmc state value of contract
+        gmc_states = {
+            'Transfer': 'transfer',
+            'CaseStudy': 'casestudy',
+            'NewImage': 'picture',
+        }
+        return self.write(cr, uid, ids, {'gmc_state': gmc_states[event]},
+                          context)
