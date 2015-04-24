@@ -126,35 +126,40 @@ class recurring_contract(orm.Model):
                 - SUB Accept if one child sponsorship is active
                 - SUB Reject otherwise
         """
-        wf_service = netsvc.LocalService('workflow')
         fourty_days_ago = date.today() + timedelta(days=-40)
         contract_ids = self.search(cr, uid, [
-            ('end_date', '<', fourty_days_ago),
             ('sds_state', '=', 'sub')], context=context)
 
-        logger.info("Contracts " + str(contract_ids) +
-                    " sub waiting time expired.")
-        for contract_id in contract_ids:
+        for contract in self.browse(cr, uid, contract_ids, context):
+            transition = 'sub_reject'
             sub_sponsorship_ids = self.search(
                 cr, uid,
-                [('parent_id', '=', contract_id)],
+                [('parent_id', '=', contract.id)],
                 context=context)
             if sub_sponsorship_ids:
-                sub_parent_contracts = self.browse(
-                    cr, uid, sub_sponsorship_ids, context)
-                for sub_parent_contract in sub_parent_contracts:
-                    if (sub_parent_contract.state == 'active' or
-                            sub_parent_contract.end_reason == 1):
-                        wf_service.trg_validate(uid, self._name,
-                                                contract_id, 'sub_accept', cr)
+                for sub_contract in self.browse(cr, uid, sub_sponsorship_ids,
+                                                context):
+                    if sub_contract.state == 'active' or \
+                            sub_contract.end_reason == 1:
+                        transition = 'sub_accept'
                         break
-                else:
-                    wf_service.trg_validate(uid, self._name,
-                                            contract_id, 'sub_reject', cr)
-            else:
-                wf_service.trg_validate(
-                    uid, self._name, contract_id, 'sub_reject', cr)
+
+            contract.write({'color': 5 if transition == 'sub_accept' else 2})
+            if contract.end_date < fourty_days_ago:
+                self.trg_validate(cr, uid, [contract.id], transition, context)
+
         return True
+
+    def check_waiting_welcome_duration(self, cr, uid, context=None):
+        """ Check all sponsorships in Waiting Welcome state. Put them in
+            light green color after 10 days, indicating the mailing should
+            be sent.
+        """
+        ten_days_ago = date.today() + timedelta(days=-10)
+        ids = self.search(cr, uid, [
+            ('last_sds_state_change_date', '<', ten_days_ago),
+            ('sds_state', '=', 'waiting_welcome')], context=context)
+        return self.write(cr, uid, ids, {'color': 4}, context)
 
     def contract_cancelled(self, cr, uid, ids, context=None):
         """ Project state is no more relevant when contract is cancelled. """
