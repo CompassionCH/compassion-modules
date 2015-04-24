@@ -13,6 +13,15 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 from datetime import timedelta, datetime
 
+SDS_COLORS = {
+    'sub_accept': '5',
+    'sub_reject': '2',
+    'no_sub': '1',
+    'cancelled': '1',
+    'draft': '7',
+    'active': '0',
+}
+
 
 class recurring_contract(orm.TransientModel):
     _name = "install.sds.tracking"
@@ -135,10 +144,11 @@ class recurring_contract(orm.TransientModel):
         for contract_id in contract_ids:
             cr.execute(
                 "UPDATE recurring_contract "
-                "SET sds_state = '{0}', last_sds_state_change_date = {1}+{2} "
-                "WHERE id = '{3}' ".format(
+                "SET sds_state = '{0}', last_sds_state_change_date = {1}+{2},"
+                "    color = {3} "
+                "WHERE id = {4} ".format(
                     sds_state, sds_change_date,
-                    date_delta, contract_id))
+                    date_delta, SDS_COLORS[sds_state], contract_id))
 
     # Only at module installation
     def _get_contract_sub(self, cr, uid, ids=None, context=None):
