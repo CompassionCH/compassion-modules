@@ -425,6 +425,7 @@ class recurring_contract(orm.Model):
                        ('due_date', '>=', since_date)]
         if to_date:
             invl_search.append(('due_date', '<=', to_date))
+
         return invl_search
 
     def _update_invoice_lines(self, cr, uid, contract, invoice_ids,
