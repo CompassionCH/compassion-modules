@@ -1,4 +1,5 @@
 openerp.sponsorship_tracking = function (instance) { 
+    var _t = instance.web._t
     instance.web.sponsorship_tracking = instance.web.sponsorship_tracking || {};
     
     instance.web.views.add('kanban', 'instance.web_kanban.SDSTrackingKanban');
@@ -23,15 +24,15 @@ openerp.sponsorship_tracking = function (instance) {
                 visible_on_groups = [];
                 label = ''
                 action = ''
-                
+
                 if (this.group_by == 'sds_state'){
                     visible_on_groups = ['start', 'waiting_welcome'];
-                    label = 'Mail sent'
+                    label = _t('Mail sent')
                     action = 'button_mail_sent'
                 }
                 if (this.group_by == 'project_state') {
                     visible_on_groups = ['inform_suspended', 'inform_reactivation', 'inform_project_terminated'];
-                    label = 'Project mail sent'
+                    label = _t('Project mail sent')
                     action = 'button_project_mail_sent'
                 }
      
