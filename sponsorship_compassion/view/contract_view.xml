@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-<<<<<<< HEAD
 	<data>
-=======
-	<data>
->>>>>>> Origin_id is no more required for classic contract
 		<record id="view_sponsorship_contract_form_compassion" model="ir.ui.view">
 			<field name="name">sponsorship.contract.compassion.form</field>
 			<field name="model">recurring.contract</field>
