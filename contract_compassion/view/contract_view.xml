@@ -140,7 +140,7 @@
             <field name="inherit_id" ref="recurring_contract.view_recurring_contract_line_tree" />
             <field name="arch" type="xml">
                 <field name='product_id' position="attributes">
-                    <attribute name="domain">[('type', 'in', context['product_type'])]</attribute>
+                    <attribute name="domain">[('product_tmpl_id.categ_id.name', 'not in', context['product_type'])]</attribute>
                 </field>
             </field>
         </record>
@@ -152,7 +152,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[('type','=','O')]</field>
-            <field name="context">{'default_type':'O', 'product_type':['B','G']}</field>
+            <field name="context">{'default_type':'O', 'product_type':['Sponsorship']}</field>
         </record>
 
         <record model="ir.actions.act_window.view" id="act_compassion_contract_tree">
