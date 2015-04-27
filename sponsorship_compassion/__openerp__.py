@@ -65,7 +65,6 @@ To add a new locale :
         'data/lang.xml',
         'data/sequence.xml',
         'data/analytic_accounting.xml',
-        'data/friday_invoicer_cron.xml',
     ],
     'demo': [],
     'installable': True,
