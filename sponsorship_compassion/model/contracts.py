@@ -17,7 +17,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-from .product import GIFT_TYPES
 
 import logging
 
@@ -289,7 +288,7 @@ class sponsorship_contract(orm.Model):
                 if invl.contract_id and invl.contract_id.child_id:
                     payment_allowed = True
                     project = invl.contract_id.child_id.project_id
-                    if invl.product_id.name in GIFT_TYPES:
+                    if invl.product_id.type == 'G':
                         payment_allowed = project.disburse_gifts or \
                             invl.due_date < project.status_date
                     else:
@@ -404,7 +403,7 @@ class sponsorship_contract(orm.Model):
                     _("Please select a child"),
                     _("You should select a child if you "
                       "make a new sponsorship!"))
-        return super(sponsorship_contract).contract_waiting_mandate(
+        return super(sponsorship_contract, self).contract_waiting_mandate(
             cr, uid, ids, context)
 
     def contract_waiting(self, cr, uid, ids, context=None):
@@ -416,7 +415,7 @@ class sponsorship_contract(orm.Model):
                     _("You should select a child if you "
                       "make a new sponsorship!"))
 
-        return super(sponsorship_contract).contract_waiting(
+        return super(sponsorship_contract, self).contract_waiting(
             cr, uid, ids, context)
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
@@ -439,7 +438,7 @@ class sponsorship_contract(orm.Model):
         return True
 
     def create(self, cr, uid, vals, context):
-        # Check if group is valid for these contracts on create
+        ''' Check if group is valid for these contracts on create '''
         if 'group_id' in vals:
             if context['default_type'] == 'S':
                 group_id = vals['group_id']
@@ -453,7 +452,7 @@ class sponsorship_contract(orm.Model):
             cr, uid, vals, context)
 
     def write(self, cr, uid, ids, vals, context):
-        # Check if group is valid for these contracts on write
+        ''' Check if group is valid for these contracts on write '''
         for contract in self.browse(cr, uid, ids, context):
             if 'group_id' in vals:
                 group_id = vals['group_id']

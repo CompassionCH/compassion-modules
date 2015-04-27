@@ -45,7 +45,7 @@ def migrate(cr, version):
     cr.execute(
         '''
         UPDATE product_product
-        SET type = 'O'
+        SET type = 'G'
         WHERE name_template
         IN ('Birthday Gift', 'General Gift', 'Family Gift',
         'Project Gift', 'Graduation Gift')

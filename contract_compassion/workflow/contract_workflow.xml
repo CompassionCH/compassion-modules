@@ -7,7 +7,7 @@
 <openerp>
     <data>
         <!-- Workflow activities (what is done when state is reached) -->
-
+        
         <record model="workflow.activity" id="act_waiting">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">waiting</field>
