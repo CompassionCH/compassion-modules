@@ -25,7 +25,7 @@ class product(orm.Model):
             'Graduation Gift': 'FinalOrGraduationGift'
         }
         for product in self.browse(cr, uid, ids, {'lang': 'en_US'}):
-            if product.type in 'G':
+            if product.product_tmpl_id.categ_id.name == 'Sponsor gifts':
                 res[product.id] = gmc_names[product.name]
             else:
                 res[product.id] = "Undefined"
