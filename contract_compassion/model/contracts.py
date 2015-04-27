@@ -26,7 +26,6 @@ class recurring_contract(orm.Model):
     _inherit = "recurring.contract"
     _order = 'start_date desc'
 
-
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
         """ On partner change, we update the correspondent and
         set the new pol_number (for gift identification). """
@@ -115,8 +114,8 @@ class recurring_contract(orm.Model):
     def _cancel_old_invoices(
             self, cr, uid, partner_id,
             contract_id, date_invoice, context=None):
-        ''' 
-            Cancel the invoices of a partner from a date 
+        '''
+            Cancel the invoices of a partner from a date
             If the invoice has only one contract -> cancel
             Else -> draft to modify the invoice and validate
         '''
@@ -138,7 +137,6 @@ class recurring_contract(orm.Model):
                 if invl.contract_id and invl.product_id.type != 'G']
             contract_ids = list(set(contract_ids))
 
-           
             if contract_ids and contract_id in contract_ids:
                 if len(contract_ids) == 1:
                     wf_service.trg_validate(uid, 'account.invoice',
@@ -302,8 +300,6 @@ class recurring_contract(orm.Model):
     ##########################
 
     def activate_contract(self, cr, uid, ids, context=None):
-        contract_obj = self.pool.get('recurring.contract')
-        # Ids of contracts are stored in context
         for contract in self.browse(
                 cr, uid, ids, context):
             if contract.state in ('draft', 'waiting'):
@@ -587,7 +583,7 @@ class recurring_contract(orm.Model):
                         'next_invoice_date': contract.next_invoice_date})
 
     def _compute_next_invoice_date(self, contract):
-        ''' Override to force recurring_value to 1 
+        ''' Override to force recurring_value to 1
             if contract is a sponsorship
         '''
         if contract.type == 'S':
