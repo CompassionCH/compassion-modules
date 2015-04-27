@@ -43,7 +43,8 @@ Compassion contract module.
     'data': [
         'view/contract_group_view.xml',
         'view/contract_origin_view.xml',
-        'view/contract_view.xml'
+        'view/contract_view.xml',
+        'workflow/contract_workflow.xml',
     ],
     'demo': [],
     'installable': True,

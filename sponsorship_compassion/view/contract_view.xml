@@ -6,9 +6,6 @@
 			<field name="model">recurring.contract</field>
             <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
 			<field name="arch" type="xml">
-                <button name="contract_terminated" position="attributes">
-                    <attribute name="attrs">{'invisible':[('type', '=', 'S')]}</attribute>
-                </button>
                 <button name="contract_terminated" position="after">
                      <button name="%(action_end_sponsorship)d" type="action" string="Terminate" class="oe_highlight" attrs="{'invisible': ['|',('type', '!=', 'S'),('state', 'not in', ['waiting', 'mandate', 'active'])]}"/>
                 </button>          
@@ -22,9 +19,9 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[('type','=','S')]</field>
-            <field name="context">{'default_type':'S'}</field>
+            <field name="context">{'default_type':'S', 'product_type':['B','S']}</field>
         </record>
-        
+
         <!-- Move the Sponsorships Menu to the Sponsorship Section -->
         <menuitem id="menu_sponsorship_contract_form" parent="child_compassion.menu_sponsorship_section"
                   name="Sponsorships" sequence="0" action="action_sponsorship_contract"/>

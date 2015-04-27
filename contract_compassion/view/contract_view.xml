@@ -42,10 +42,14 @@
                 <field name="state" position="attributes">
                     <attribute name="statusbar_visible">draft,active,waiting,terminated</attribute>
                 </field>
-
-                <!-- Replace terminate button to call the a simple confirm popup -->
+                
+                <button name="contract_terminated" position="before">
+                    <button name="activate_contract" type="object" confirm="This will mark the sponsorship as Active, even if the sponsor has made no payment. Please be sure that you want to do this." class="oe_highlight" string="Activate" states="waiting"/>
+                </button>
+                
                 <button name="contract_terminated" position="attributes">
-                     <attribute name="confirm">Are you sure ?</attribute>
+                    <attribute name="states" position="replace"/>
+                    <attribute name="attrs">{'invisible':['|',('state', '!=', 'active'),('type', '!=', 'O')]}</attribute>
                 </button>
 
                 <!-- Hide reference -->
@@ -89,7 +93,7 @@
                 
                 <!-- Track when sponsorship products are added in contract -->
                 <field name="contract_line_ids" position="replace">
-                        <field name="contract_line_ids" widget="one2many_list" context="{'type':type}"/>
+                        <field name="contract_line_ids" widget="one2many_list" context="{'product_type':context['product_type']}"/>
                 </field>
 			</field>
 		</record>
@@ -136,7 +140,7 @@
             <field name="inherit_id" ref="recurring_contract.view_recurring_contract_line_tree" />
             <field name="arch" type="xml">
                 <field name='product_id' position="attributes">
-                    <attribute name="domain">[('type', 'in', ['B', context['type']])]</attribute>
+                    <attribute name="domain">[('type', 'in', context['product_type'])]</attribute>
                 </field>
             </field>
         </record>
@@ -148,7 +152,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[('type','=','O')]</field>
-            <field name="context">{'default_type':'O'}</field>
+            <field name="context">{'default_type':'O', 'product_type':['B','G']}</field>
         </record>
 
         <record model="ir.actions.act_window.view" id="act_compassion_contract_tree">
@@ -167,6 +171,6 @@
 
         <menuitem id="recurring_contract.menu_recurring_contract_form" parent="child_compassion.menu_sponsorship_section"
                   name="Other contracts" sequence="1" action="action_contract"/>
-                  
+        
 	</data>
 </openerp>

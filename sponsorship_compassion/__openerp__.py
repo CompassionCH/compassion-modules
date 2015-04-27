@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Sponsorships',
-    'version': '1.4',
+    'version': '1.5',
     'category': 'Other',
     'description': """
 Compassion Sponsorships
@@ -86,7 +86,6 @@ Contributors
         'view/invoice_line_view.xml',
         'view/res_partner_view.xml',
         'view/generate_gift_view.xml',
-        'view/activate_contract_view.xml',
         'view/account_invoice_split_wizard_view.xml',
         'view/suspension_wizard_view.xml',
         'view/child_view.xml',
@@ -97,7 +96,6 @@ Contributors
         'data/analytic_accounting.xml',
         'data/friday_invoicer_cron.xml',
         'security/ir.model.access.csv',
-        'workflow/contract_workflow.xml',
     ],
     'demo': [],
     'installable': True,
