@@ -132,10 +132,12 @@ class recurring_contract(orm.Model):
         wf_service = netsvc.LocalService('workflow')
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
             invoice_lines = invoice.invoice_line
+            gift = 'Sponsor gifs'
             contract_ids = [
                 invl.contract_id.id for invl in invoice_lines
-                if (invl.contract_id and 
-                   invl.product_id.product_tmpl_id.categ_id.name != 'Sponsorship gifs')]
+                if (invl.contract_id and
+                    invl.product_id.product_tmpl_id.categ_id.name != gift)]
+
             contract_ids = list(set(contract_ids))
 
             if contract_ids and contract_id in contract_ids:
