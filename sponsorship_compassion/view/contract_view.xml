@@ -19,7 +19,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[('type','=','S')]</field>
-            <field name="context">{'default_type':'S', 'product_type':['B','S']}</field>
+            <field name="context">{'default_type':'S', 'product_type':['Sponsor gifts']}</field>
         </record>
 
         

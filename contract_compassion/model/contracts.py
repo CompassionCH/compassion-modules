@@ -134,7 +134,8 @@ class recurring_contract(orm.Model):
             invoice_lines = invoice.invoice_line
             contract_ids = [
                 invl.contract_id.id for invl in invoice_lines
-                if invl.contract_id and invl.product_id.type != 'G']
+                if (invl.contract_id and 
+                   invl.product_id.product_tmpl_id.categ_id.name != 'Sponsorship gifs')]
             contract_ids = list(set(contract_ids))
 
             if contract_ids and contract_id in contract_ids:

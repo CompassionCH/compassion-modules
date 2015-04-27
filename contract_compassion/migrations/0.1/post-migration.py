@@ -34,27 +34,3 @@ def migrate(cr, version):
         '''
     )
 
-    # Set the product type
-    cr.execute(
-        '''
-        UPDATE product_product
-        SET type = 'S'
-        WHERE name_template IN ('LDP Sponsorship')
-        '''
-    )
-    cr.execute(
-        '''
-        UPDATE product_product
-        SET type = 'G'
-        WHERE name_template
-        IN ('Birthday Gift', 'General Gift', 'Family Gift',
-        'Project Gift', 'Graduation Gift')
-        '''
-    )
-    cr.execute(
-        '''
-        UPDATE product_product
-        SET type = 'B'
-        WHERE type IS NULL
-        '''
-    )
