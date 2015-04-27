@@ -59,3 +59,32 @@ def migrate(cr, version):
         WHERE act_from = {1}
         '''.format(new_activity_id, old_activity_id)
         )
+
+    cr.execute(
+        '''
+    SELECT name_template FROM product_product
+    GROUP BY name_template
+    '''
+    )
+    product_names = cr.fetchall()
+
+    for product_name in product_names:
+        product_name = product_name[0]
+        cr.execute(
+            '''
+        SELECT id,create_date FROM product_product
+        WHERE name_template = '{0}'
+        '''.format(product_name)
+        )
+        product_ids = cr.fetchall()
+
+        new_product_id = max(product_ids, key=itemgetter(1))[0]
+        old_product_id = min(product_ids, key=itemgetter(1))[0]
+
+        cr.execute(
+            '''
+        UPDATE recurring_contract_line
+        SET product_id = {0}
+        WHERE product_id = {1}
+        '''.format(new_product_id, old_product_id)
+        )

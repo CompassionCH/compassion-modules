@@ -60,7 +60,6 @@ To add a new locale :
         'view/account_invoice_split_wizard_view.xml',
         'view/suspension_wizard_view.xml',
         'view/child_view.xml',
-        'data/product.xml',
         'data/payment_terms.xml',
         'data/lang.xml',
         'data/sequence.xml',

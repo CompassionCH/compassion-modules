@@ -46,7 +46,8 @@ Compassion contract module.
         'view/contract_view.xml',
         'workflow/contract_workflow.xml',
         'security/ir.model.access.csv',
-        'data/friday_invoicer_cron.xml'
+        'data/friday_invoicer_cron.xml',
+        'data/product.xml',
     ],
     'demo': [],
     'installable': True,
