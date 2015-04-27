@@ -60,6 +60,7 @@ def migrate(cr, version):
         '''.format(new_activity_id, old_activity_id)
         )
 
+    # Get products by name
     cr.execute(
         '''
     SELECT name_template FROM product_product
@@ -78,9 +79,11 @@ def migrate(cr, version):
         )
         product_ids = cr.fetchall()
 
+        # Find the old id and the new one (old=new if len=1)
         new_product_id = max(product_ids, key=itemgetter(1))[0]
         old_product_id = min(product_ids, key=itemgetter(1))[0]
 
+        # Update product_id on recurring_contract_line
         cr.execute(
             '''
         UPDATE recurring_contract_line
