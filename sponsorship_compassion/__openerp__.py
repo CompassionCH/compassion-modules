@@ -95,7 +95,6 @@ Contributors
         'data/sequence.xml',
         'data/analytic_accounting.xml',
         'data/friday_invoicer_cron.xml',
-        'security/ir.model.access.csv',
     ],
     'demo': [],
     'installable': True,

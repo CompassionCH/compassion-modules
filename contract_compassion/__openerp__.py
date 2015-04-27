@@ -45,6 +45,7 @@ Compassion contract module.
         'view/contract_origin_view.xml',
         'view/contract_view.xml',
         'workflow/contract_workflow.xml',
+        'security/ir.model.access.csv',
     ],
     'demo': [],
     'installable': True,
