@@ -12,7 +12,6 @@
 from openerp import netsvc
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
-from sponsorship_compassion.model.product import GIFT_TYPES
 import logging
 
 logger = logging.getLogger(__name__)
@@ -127,7 +126,7 @@ class recurring_contract(orm.Model):
             'date': invoice.date_invoice,
         }
         gift_ids = self.pool.get('product.product').search(
-            cr, uid, [('name_template', 'in', GIFT_TYPES)],
+            cr, uid, [('type', '=', 'G')],
             context={'lang': 'en_US'})
 
         for invoice_line in invoice.invoice_line:
