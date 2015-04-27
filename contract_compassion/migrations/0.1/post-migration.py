@@ -33,4 +33,3 @@ def migrate(cr, version):
         WHERE child_id IS NULL
         '''
     )
-
