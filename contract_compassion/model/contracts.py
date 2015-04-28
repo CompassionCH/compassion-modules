@@ -302,16 +302,6 @@ class recurring_contract(orm.Model):
     #        CALLBACKS       #
     ##########################
 
-    def activate_contract(self, cr, uid, ids, context=None):
-        for contract in self.browse(
-                cr, uid, ids, context):
-            if contract.state in ('draft', 'waiting'):
-                contract.write({
-                    'activation_date': datetime.today().strftime(DF)})
-                self.force_activation(
-                    cr, uid, contract.id, context)
-        return True
-
     def name_get(self, cr, uid, ids, context=None):
         """ Gives a friendly name for a sponsorship """
         res = []

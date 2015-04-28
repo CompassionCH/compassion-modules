@@ -42,11 +42,7 @@
                 <field name="state" position="attributes">
                     <attribute name="statusbar_visible">draft,active,waiting,terminated</attribute>
                 </field>
-                
-                <button name="contract_terminated" position="before">
-                    <button name="activate_contract" type="object" confirm="This will mark the sponsorship as Active, even if the sponsor has made no payment. Please be sure that you want to do this." class="oe_highlight" string="Activate" states="waiting"/>
-                </button>
-                
+
                 <button name="contract_terminated" position="attributes">
                     <attribute name="states" position="replace"/>
                     <attribute name="attrs">{'invisible':['|',('state', '!=', 'active'),('type', '!=', 'O')]}</attribute>
