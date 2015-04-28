@@ -226,5 +226,9 @@ class recurring_contract(orm.Model):
             'CaseStudy': 'casestudy',
             'NewImage': 'picture',
         }
-        return self.write(cr, uid, ids, {'gmc_state': gmc_states[event]},
-                          context)
+        res = True
+        for contract in self.browse(cr, uid, ids, context):
+            if not (contract.gmc_state == 'biennial' and
+                    event in ('CaseStudy', 'NewImage')):
+                res = res and contract.write({'gmc_state': gmc_states[event]})
+        return res
