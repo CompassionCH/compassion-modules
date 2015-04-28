@@ -17,3 +17,5 @@ import pdb
 def migrate(cr, version):
     reload(sys)
     sys.setdefaultencoding('UTF8')
+    
+    
