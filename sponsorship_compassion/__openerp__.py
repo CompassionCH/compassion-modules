@@ -80,8 +80,8 @@ Contributors
                 'account_asset_compassion', 'partner_compassion',
                 'web_m2x_options', 'account_invoice_split_invoice'],
     'data': [
-        'view/contract_view.xml',
-        'view/contract_group_view.xml',
+        # 'view/contract_view.xml',
+        # 'view/contract_group_view.xml',
         'view/end_sponsorship_wizard_view.xml',
         'view/invoice_line_view.xml',
         'view/res_partner_view.xml',
