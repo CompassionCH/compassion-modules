@@ -69,7 +69,7 @@ class sponsorship_contract(orm.Model):
         when exported from GP. """
         wf_service = netsvc.LocalService('workflow')
         logger.info("Contract " + str(contract_id) + " validated.")
-        wf_service.trg_validate(uid, 'recurring.contract', contract_id,
+        wf_service.trg_validate(uid, self._name, contract_id,
                                 'contract_validated', cr)
         return True
 
@@ -119,7 +119,7 @@ class sponsorship_contract(orm.Model):
 
         # Delete workflow for this contract
         wf_service = netsvc.LocalService('workflow')
-        wf_service.trg_delete(uid, 'recurring.contract', contract_id, cr)
+        wf_service.trg_delete(uid, self._name, contract_id, cr)
         logger.info("Contract " + str(contract_id) + " terminated.")
         return True
 
@@ -338,7 +338,7 @@ class sponsorship_contract(orm.Model):
                 "are automatically cancelled.".format(
                     project_code, date_end.strftime("%B %Y")),
                 "Project Suspended", 'comment',
-                context={'thread_model': 'recurring.contract'})
+                context={'thread_model': self._name})
             self.pool.get('mail.thread').message_post(
                 cr, uid, contract.partner_id.id,
                 "The project {0} was suspended and funds are retained "
@@ -378,7 +378,7 @@ class sponsorship_contract(orm.Model):
                 contract.partner_id.write({
                     'category_id': [(6, 0, list(partner_categories))]})
             wf_service.trg_validate(
-                uid, 'recurring.contract', contract.id,
+                uid, self._name, contract.id,
                 'contract_active', cr)
             logger.info("Contract " + str(contract.id) + " activated.")
 
