@@ -328,7 +328,8 @@ class sponsorship_contract(orm.Model):
                         raise orm.except_orm(
                             _("Reconcile error"),
                             _("The project %s is fund-suspended. You cannot "
-                              "reconcile this invoice.") % project.code)
+                              "reconcile invoice (%s).") % (project.code,
+                                                            invoice.id))
 
     def suspend_contract(self, cr, uid, ids, context=None, date_start=None,
                          date_end=None):
