@@ -35,8 +35,6 @@
 			<field name="name">recurring.contract.compassion.form</field>
 			<field name="model">recurring.contract</field>
 			<field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
-            <field eval="14" name="priority"/>
-            <field name="mode">primary</field>
 			<field name="arch" type="xml">
                 <!-- Modify header to add the waiting state -->
                 <field name="state" position="attributes">

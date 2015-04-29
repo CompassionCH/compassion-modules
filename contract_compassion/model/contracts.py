@@ -294,10 +294,6 @@ class recurring_contract(orm.Model):
             readonly=True, track_visibility='onchange'),
     }
 
-    _defaults = {
-        'type': 'S',
-    }
-
     ##########################
     #        CALLBACKS       #
     ##########################
