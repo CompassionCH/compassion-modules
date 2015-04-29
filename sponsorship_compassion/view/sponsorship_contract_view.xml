@@ -4,7 +4,7 @@
 		<record id="view_sponsorship_contract_form_compassion" model="ir.ui.view">
 			<field name="name">sponsorship.contract.compassion.form</field>
 			<field name="model">recurring.contract</field>
-            <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
+            <field name="inherit_id" ref="contract_compassion.view_recurring_contract_form_compassion"/>
 			<field name="arch" type="xml">
                 <button name="contract_terminated" position="after">
                      <button name="%(action_end_sponsorship)d" type="action" string="Terminate" class="oe_highlight" attrs="{'invisible': ['|',('type', '!=', 'S'),('state', 'not in', ['waiting', 'mandate', 'active'])]}"/>
