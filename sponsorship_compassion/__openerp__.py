@@ -82,7 +82,7 @@ Contributors
     'data': [
         'view/sponsorship_contract_view.xml',
         'view/sponsorship_contract_group_view.xml',
-        'view/end_sponsorship_wizard_view.xml',
+        # 'view/end_sponsorship_wizard_view.xml',
         'view/invoice_line_view.xml',
         'view/res_partner_view.xml',
         'view/generate_gift_view.xml',
