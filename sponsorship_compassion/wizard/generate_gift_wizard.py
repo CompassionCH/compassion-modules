@@ -55,7 +55,7 @@ class generate_gift_wizard(orm.TransientModel):
                     [('type', '=', 'sale'), ('company_id', '=', 1 or False)],
                     limit=1)
 
-                if wizard.product_id.name == 'Birthday Gift':   # Birthday Gift
+                if wizard.product_id.name == 'Birthday Gift':
                     invoice_date = self.compute_date_birthday_invoice(
                         contract.child_id.birthdate, wizard.invoice_date)
                 else:

@@ -10,7 +10,6 @@
 				<data>
 					<tree string="Contracts" position="attributes">
 						<attribute name="colors">blue:state == 'draft';red:state == 'mandate';green:state == 'waiting';black:state == 'active';gray:state in ('terminated','cancelled')</attribute>
-						<attribute name="string">Sponsorships</attribute>
 					</tree>
 					<field name="partner_id" position="after">
 						<field name="child_code" />
@@ -20,7 +19,6 @@
 						<field name="partner_codega" invisible="context.get('partner_contracts_view')" />
 					</field>
                     <field name="payment_term_id" position="after">
-                        <field name="frequency" />
                         <field name="origin_id" />
                     </field>
                     <field name="state" position="after">
@@ -51,13 +49,12 @@
                     <field name="name"/>
                 </field>
 
-				<!-- Redefine the top group view (lot of changes) -->
+				<!-- Redefine the top group view -->
                 <xpath expr="//sheet/group[1]" position="replace">
                     <group>
                         <group>
                             <field name="partner_id" on_change="on_change_partner_id(partner_id)"
                                    options="{'create': false, 'm2o_dialog': false}"/>
-                            <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}"/>
                             <field name="group_id" domain="[('partner_id', '=', partner_id)]"
                                    context="{'default_partner_id': partner_id}"
                                    on_change="on_change_group_id(group_id)"/>
@@ -71,8 +68,7 @@
                         </group>
                         
                         <group>
-                            <field name="origin_id" domain="['!',('name','like','SUB Sponsorship - ')]"
-                                attrs="{'required':[('type', '=', 'S')]}"/>
+                            <field name="origin_id" domain="['!',('name','like','SUB Sponsorship - ')]"/>
                             <field name="channel"/>
                         </group>
                         <group>
@@ -83,12 +79,7 @@
                             <field name="type" />
                         </group>
                     </group>
-                </xpath>
-                
-                <!-- Track when sponsorship products are added in contract -->
-                <field name="contract_line_ids" position="replace">
-                        <field name="contract_line_ids" widget="one2many_list" context="{'product_type':context['product_type']}"/>
-                </field>
+                </xpath> 
 			</field>
 		</record>
 		
@@ -128,17 +119,6 @@
 			</field>
 		</record>
 
-        <record id="view_sponsorship_contract_line_tree" model="ir.ui.view">
-            <field name="name">compassion.contract.line.tree</field>
-            <field name="model">recurring.contract.line</field>
-            <field name="inherit_id" ref="recurring_contract.view_recurring_contract_line_tree" />
-            <field name="arch" type="xml">
-                <field name='product_id' position="attributes">
-                    <attribute name="domain">[('product_tmpl_id.categ_id.name', 'not in', context['product_type'])]</attribute>
-                </field>
-            </field>
-        </record>
-
         <record model="ir.actions.act_window" id="action_contract">
             <field name="name">Other contracts</field>
             <field name="type">ir.actions.act_window</field>
@@ -146,7 +126,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[('type','=','O')]</field>
-            <field name="context">{'default_type':'O', 'product_type':['Sponsorship']}</field>
+            <field name="context">{'default_type':'O'}</field>
         </record>
 
         <record model="ir.actions.act_window.view" id="act_compassion_contract_tree">

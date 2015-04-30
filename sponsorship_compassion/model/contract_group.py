@@ -20,13 +20,15 @@ class contract_group(orm.Model):
             self, cr, uid, ids, field_name, args, context=None):
         res = dict()
         for group in self.browse(cr, uid, ids, context):
-            for contract in group.contract_ids:
-                if contract.type == 'S':
-                    res[group.id] = True
-                    break
+            if group.contract_ids:
+                for contract in group.contract_ids:
+                    if contract.type == 'S':
+                        res[group.id] = True
+                        break
+                else:
+                    res[group.id] = False
             else:
-                res[group.id] = False
-
+                res[group.id] = True
         return res
 
     _columns = {

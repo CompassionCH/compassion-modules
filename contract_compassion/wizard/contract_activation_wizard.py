@@ -16,7 +16,7 @@ from datetime import datetime
 
 
 class activate_contract_wizard(orm.TransientModel):
-    """ This wizard generates a Gift Invoice for a given contract. """
+    """ This wizard force activation of a contract. """
     _name = 'recurring.contract.activate.wizard'
 
     def activate_contract(self, cr, uid, ids, context=None):

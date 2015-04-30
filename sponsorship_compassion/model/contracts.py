@@ -9,14 +9,13 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
+from openerp.osv import orm, fields
 from openerp import netsvc
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-
 
 import logging
 
@@ -27,6 +26,9 @@ logger = logging.getLogger(__name__)
 class sponsorship_contract(orm.Model):
     _inherit = 'recurring.contract'
 
+    ################################
+    #        FIELDS METHODS        #
+    ################################
     def _get_sponsorship_standard_lines(self, cr, uid, context=None):
         """ Select Sponsorship and General Fund by default """
         ctx = {'lang': 'en_US'}
@@ -57,29 +59,43 @@ class sponsorship_contract(orm.Model):
             return self._get_sponsorship_standard_lines(cr, uid, context)
         return []
 
+    def _is_fully_managed(self, cr, uid, ids, field_name, arg, context):
+        """Tells if the correspondent and the payer is the same person."""
+        res = dict()
+        for contract in self.browse(cr, uid, ids, context=context):
+            res[contract.id] = contract.partner_id == contract.correspondant_id
+        return res
+
+    def _get_type(self, cr, uid, context=None):
+        res = super(sponsorship_contract, self)._get_type(cr, uid, context)
+        res.append(('S', _('Sponsorship')))
+        return res
+
+    ###########################
+    #        New Fields       #
+    ###########################
+    _columns = {
+        'correspondant_id': fields.many2one(
+            'res.partner', _('Correspondant'), required=True, readonly=True,
+            states={'draft': [('readonly', False)]}),
+        'partner_codega': fields.related(
+            'correspondant_id', 'ref', string=_('Partner ref'), readonly=True,
+            type='char'),
+        'fully_managed': fields.function(
+            _is_fully_managed, type="boolean", store=True),
+        'frequency': fields.related(
+            'group_id', 'advance_billing_months',
+            type="integer", readonly=True,
+            string=_('Frequency'), store=False),
+    }
+
     _defaults = {
         'contract_line_ids': _get_standard_lines
     }
 
-    ##############################
-    #      CALLBACKS FOR GP      #
-    ##############################
-    def force_validation(self, cr, uid, contract_id, context=None):
-        """ Used to transition draft sponsorships in waiting state
-        when exported from GP. """
-        wf_service = netsvc.LocalService('workflow')
-        logger.info("Contract " + str(contract_id) + " validated.")
-        wf_service.trg_validate(uid, self._name, contract_id,
-                                'contract_validated', cr)
-        return True
-
-    def force_activation(self, cr, uid, contract_id, context=None):
-        """ Used to transition draft sponsorships in active state
-        when exported from GP. """
-        self.force_validation(cr, uid, contract_id, context)
-        self._on_contract_active(cr, uid, [contract_id], context)
-        return True
-
+    ##########################################################################
+    #                       CALLBACKS FOR GP                                 #
+    ##########################################################################
     def force_termination(self, cr, uid, contract_id, end_state, end_reason,
                           child_state, child_exit_code, end_date,
                           transfer_country_code, context=None):
@@ -352,6 +368,46 @@ class sponsorship_contract(orm.Model):
 
         return True
 
+    def contract_cancelled(self, cr, uid, ids, context=None):
+        res = super(sponsorship_contract, self).contract_cancelled(
+            cr, uid, ids, context)
+        # Remove the sponsor of the child
+        for contract in self.browse(cr, uid, ids, context):
+            if contract.child_id:
+                contract.child_id.write({'sponsor_id': False})
+        return res
+
+    def contract_terminated(self, cr, uid, ids, context=None):
+        res = super(sponsorship_contract, self).contract_terminated(
+            cr, uid, ids, context)
+
+        ctx = {'lang': 'en_US'}
+        category_obj = self.pool.get('res.partner.category')
+        sponsor_cat_id = category_obj.search(
+            cr, uid, [('name', '=', 'Sponsor')], context=ctx)[0]
+        old_sponsor_cat_id = category_obj.search(
+            cr, uid, [('name', '=', 'Old Sponsor')],
+            context=ctx)[0]
+        # Check if the sponsor has still active contracts
+        for contract in self.browse(cr, uid, ids, context):
+            con_ids = self.search(cr, uid, [
+                ('partner_id', '=', contract.partner_id.id),
+                ('state', '=', 'active')], context)
+            if not con_ids:
+                # Replace sponsor categoy by old sponsor category
+                partner_categories = set(
+                    [cat.id for cat in contract.partner_id.category_id])
+                if sponsor_cat_id in partner_categories:
+                    partner_categories.remove(sponsor_cat_id)
+                partner_categories.add(old_sponsor_cat_id)
+                # Standard way in Odoo to set one2many fields
+                contract.partner_id.write({
+                    'category_id': [(6, 0, list(partner_categories))]})
+            # Remove the sponsor of the child
+            if contract.child_id:
+                contract.child_id.write({'sponsor_id': False})
+        return res
+
     def _on_contract_active(self, cr, uid, ids, context=None):
         """ Hook for doing something when contract is activated.
         Update child to mark it has been sponsored, and update partner
@@ -382,10 +438,10 @@ class sponsorship_contract(orm.Model):
                 'contract_active', cr)
             logger.info("Contract " + str(contract.id) + " activated.")
 
-    def _on_change_child_id(self, cr, uid, ids, child_id, partner_id=None,
-                            context=None):
+    def _on_change_child_id(self, cr, uid, ids, vals, context=None):
         """Link/unlink child to sponsor
         """
+        child_id = vals.get('child_id')
         for contract in self.browse(cr, uid, ids, context):
             if contract.child_id and contract.child_id != child_id:
                 # Free the previously selected child
@@ -394,7 +450,8 @@ class sponsorship_contract(orm.Model):
                 # Mark the selected child as sponsored
                 self.pool.get('compassion.child').write(
                     cr, uid, child_id, {
-                        'sponsor_id': partner_id or contract.partner_id.id},
+                        'sponsor_id': vals.get('correspondant_id') or
+                        contract.correspondant_id.id},
                     context)
 
     def contract_waiting_mandate(self, cr, uid, ids, context=None):
@@ -429,6 +486,21 @@ class sponsorship_contract(orm.Model):
             if not self._is_a_valid_group(
                     cr, uid, res['value']['group_id'], context):
                 del res['value']['group_id']
+
+        if ids:
+            contract = self.browse(cr, uid, ids[0], context)
+            if contract.type == 'S':
+                # If state draft correspondant_id=parent_id
+                if (contract.state == 'draft'):
+                    res['value'].update({
+                        'correspondant_id': partner_id,
+                    })
+                # Else correspondant_id=parent_id
+                else:
+                    res['value'].update({
+                        'correspondant_id': partner_id,
+                    })
+
         return res
 
     def _is_a_valid_group(self, cr, uid, group_id, context=None):
@@ -439,8 +511,32 @@ class sponsorship_contract(orm.Model):
             return False
         return True
 
+    def _compute_next_invoice_date(self, contract):
+        ''' Override to force recurring_value to 1
+            if contract is a sponsorship
+        '''
+        if contract.type == 'S':
+            next_date = datetime.strptime(contract.next_invoice_date, DF)
+            next_date += relativedelta(months=+1)
+            return next_date
+        else:
+            return super(
+                sponsorship_contract, self)._compute_next_invoice_date(
+                    contract)
+
+    ################################
+    #        PUBLIC METHODS        #
+    ################################
+
     def create(self, cr, uid, vals, context):
-        ''' Check if group is valid for these contracts on create '''
+        """ Perform various checks on contract creations
+        """
+        child_id = vals.get('child_id')
+        if child_id:
+            self.pool.get('compassion.child').write(
+                cr, uid, child_id, {
+                    'sponsor_id': vals['partner_id']}, context)
+
         if 'group_id' in vals:
             if context['default_type'] == 'S':
                 group_id = vals['group_id']
@@ -454,8 +550,10 @@ class sponsorship_contract(orm.Model):
             cr, uid, vals, context)
 
     def write(self, cr, uid, ids, vals, context):
-        ''' Check if group is valid for these contracts on write '''
+        """ Perform various checks on contract modification """
         for contract in self.browse(cr, uid, ids, context):
+            if 'child_id' in vals:
+                self._on_change_child_id(cr, uid, ids, vals, context)
             if 'group_id' in vals:
                 group_id = vals['group_id']
                 if contract.type == 'S':
@@ -468,3 +566,10 @@ class sponsorship_contract(orm.Model):
 
         return super(sponsorship_contract, self).write(
             cr, uid, ids, vals, context)
+
+    def unlink(self, cr, uid, ids, context=None):
+        res = super(sponsorship_contract, self).unlink(cr, uid, ids, context)
+        for contract in self.browse(cr, uid, ids, context):
+            if contract.child_id:
+                contract.child_id.write({'sponsor_id': False})
+        return res
