@@ -322,7 +322,7 @@ class sponsorship_contract(orm.Model):
                     payment_allowed = True
                     project = invl.contract_id.child_id.project_id
 
-                    if inv_line.product_id.categ_name == 'Sponsor gifts':
+                    if invl.product_id.categ_name == 'Sponsor gifts':
                         payment_allowed = project.disburse_gifts or \
                             invl.due_date < project.status_date
                     else:
