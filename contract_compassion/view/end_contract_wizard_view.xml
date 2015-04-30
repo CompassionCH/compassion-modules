@@ -21,13 +21,6 @@
                         </group>
                         <group/>
 
-                        <group>
-                            <!-- Child Exit Details form -->
-                            <field name="gp_exit_reason" attrs="{'required': [('end_reason', '=', '1')],
-                                                                 'invisible': [('end_reason', '!=', '1')]}"/>
-                        </group>
-                        <group/>
-
                         <group attrs="{'invisible': [('end_reason', '!=', '4')]}">
                             <!-- Transfer child form -->
                             <field name="do_transfer" />

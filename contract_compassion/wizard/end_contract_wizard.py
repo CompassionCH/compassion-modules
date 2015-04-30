@@ -37,9 +37,6 @@ class end_contract_wizard(orm.TransientModel):
         return self.pool.get('recurring.contract').get_ending_reasons(
             cr, uid, context)
 
-    def _get_exit_reason(self, cr, uid, context=None):
-        return self.pool.get('compassion.child').get_gp_exit_reasons(cr, uid)
-
     _columns = {
         'end_date': fields.date(_('End date'), required=True),
         'contract_id': fields.many2one('recurring.contract', 'Contract'),
@@ -50,8 +47,6 @@ class end_contract_wizard(orm.TransientModel):
         'transfer_country_id': fields.many2one(
             'res.country', _('Country'),
             domain=[('code', 'in', IP_COUNTRIES)]),
-        'gp_exit_reason': fields.selection(
-            _get_exit_reason, string=_('Exit reason')),
     }
 
     _defaults = {
@@ -85,20 +80,5 @@ class end_contract_wizard(orm.TransientModel):
         wf_service = netsvc.LocalService('workflow')
         wf_service.trg_validate(
             uid, 'recurring.contract', contract.id, 'contract_terminated', cr)
-
-        if wizard.child_id:
-            # If sponsor moves, the child may be transferred
-            if wizard.do_transfer:
-                wizard.child_id.write({
-                    'state': 'F',
-                    'transfer_country_id': wizard.transfer_country_id.id,
-                    'exit_date': wizard.end_date})
-
-            # If child has departed, write exit_details
-            elif wizard.end_reason == '1':
-                wizard.child_id.write({
-                    'state': 'F',
-                    'gp_exit_reason': wizard.gp_exit_reason,
-                    'exit_date': wizard.end_date})
 
         return True
