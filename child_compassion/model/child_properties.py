@@ -141,8 +141,11 @@ class child_property(orm.Model):
         res_id = super(child_property, self).create(cr, uid, vals, context)
 
         case_study = self.browse(cr, uid, res_id, context)
-        last_pictures = case_study.child_id.pictures_id and \
-            case_study.child_id.pictures_id[0]
+        try:
+            last_pictures = case_study.child_id.pictures_id and \
+                case_study.child_id.pictures_id[0]
+        except AttributeError:
+            last_pictures = False
 
         if last_pictures and not last_pictures.case_study_id:
             six_months = 180
