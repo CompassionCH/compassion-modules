@@ -141,12 +141,12 @@ class child_property(orm.Model):
         res_id = super(child_property, self).create(cr, uid, vals, context)
 
         case_study = self.browse(cr, uid, res_id, context)
-        try:
-            last_pictures = case_study.child_id.pictures_id and \
-                case_study.child_id.pictures_id[0]
-        except AttributeError:
-            last_pictures = False
-
+        pictures_obj = self.pool.get('compassion.child.pictures')
+        pictures_ids = pictures_obj.search(
+            cr, uid, [('child_id', '=', case_study.child_id.id)],
+            order='date desc', context=context)
+        last_pictures = pictures_ids and pictures_obj.browse(
+            cr, uid, pictures_ids[0], context)
         if last_pictures and not last_pictures.case_study_id:
             six_months = 180
             case_study_date = datetime.strptime(case_study.info_date, DF)
