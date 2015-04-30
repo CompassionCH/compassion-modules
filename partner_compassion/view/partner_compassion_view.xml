@@ -28,7 +28,6 @@
             <field name="priority" eval="15"/>
             <field name="inherit_id" ref="base_location.view_partner_form"/>
             <field name="arch" type="xml">
-
                 <!-- Add street3 in the form of the partner -->
                 <field name="street2" position="after">
                     <field name="street3" attrs="{'readonly': [('use_parent_address','=',True)]}"/>
@@ -51,12 +50,15 @@
                         'default_street3':street3}</attribute>
                 </xpath>
 
-                <!-- Add the church field -->
-                <xpath expr="//field[@name='title'][1]" position="after">
+                <!-- Add the church field and move title field -->
+                <xpath expr="//field[@name='title'][1]" position="replace">
                     <field name="is_church"/>
                     <field name="church_id" attrs="{'invisible': ['|',('is_company','=',True),('is_church','=',True)]}" context="{'tree_view_ref' : 'partner_compassion.view_partner_tree_compassion'}"/>
                     <field name="church_unlinked" attrs="{'invisible': ['|',('is_company','=',True),'|',('is_church','=',True),('church_id','>',0)]}"/>
                 </xpath>
+                <label string="Address" position="before">
+                    <field name="title"/>
+                </label>
 
                 <!-- Add birthdate and deathdate -->
                 <xpath expr="//field[@name='website'][1]" position="after">
