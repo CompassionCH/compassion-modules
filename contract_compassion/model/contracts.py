@@ -37,20 +37,20 @@ class recurring_contract(orm.Model):
     def get_ending_reasons(self, cr, uid, context=None):
         """Returns all the ending reasons of sponsorships"""
         return [
-            ('1', _("Depart of child")),
             ('2', _("Mistake from our staff")),
-            ('3', _("Death of sponsor")),
+            ('3', _("Death of partner")),
             ('4', _("Moved to foreign country")),
             ('5', _("Not satisfied")),
             ('6', _("Doesn't pay")),
             ('8', _("Personal reasons")),
             ('9', _("Never paid")),
-            ('10', _("Subreject")),
-            ('11', _("Exchange of sponsor")),
             ('12', _("Financial reasons")),
             ('25', _("Not given")),
         ]
-
+        
+    def _get_ending_reasons(self, cr, uid, context=None):
+        return self.get_ending_reasons(cr, uid, context)
+        
     def _get_channels(self, cr, uid, context=None):
         """Returns the available channel through the new sponsor
         reached Compassion.
@@ -172,7 +172,7 @@ class recurring_contract(orm.Model):
         'num_pol_ga': fields.integer(
             'Partner Contract Number', required=True
         ),
-        'end_reason': fields.selection(get_ending_reasons, _('End reason'),
+        'end_reason': fields.selection(_get_ending_reasons, _('End reason'),
                                        select=True),
         'end_date': fields.date(
             _('End date'), readonly=True,

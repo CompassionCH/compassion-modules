@@ -9,9 +9,7 @@
                 <field name="partner_id" position="after">
                     <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', '!=', 'S')]}"/>
                 </field>
-                <button name="contract_terminated" position="after">
-                     <button name="%(action_end_sponsorship)d" type="action" string="Terminate" class="oe_highlight" attrs="{'invisible': ['|',('type', '!=', 'S'),('state', 'not in', ['waiting', 'mandate', 'active'])]}"/>
-                </button>
+
                 <field name="contract_line_ids" position="replace">
                     <field name="contract_line_ids" widget="one2many_list" context="{'product_type':context['product_type']}"/>
                 </field> 

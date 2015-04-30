@@ -39,9 +39,8 @@
                     <attribute name="statusbar_visible">draft,active,waiting,terminated</attribute>
                 </field>
 
-                <button name="contract_terminated" position="attributes">
-                    <attribute name="states" position="replace"/>
-                    <attribute name="attrs">{'invisible':['|',('state', '!=', 'active'),('type', '!=', 'O')]}</attribute>
+                <button name="contract_terminated" position="replace">
+                     <button name="%(action_end_contract)d" type="action" string="Terminate" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['waiting', 'mandate', 'active'])]}"/>
                 </button>
 
                 <!-- Hide reference -->
