@@ -47,10 +47,10 @@ class recurring_contract(orm.Model):
             ('12', _("Financial reasons")),
             ('25', _("Not given")),
         ]
-        
+
     def _get_ending_reasons(self, cr, uid, context=None):
         return self.get_ending_reasons(cr, uid, context)
-        
+
     def _get_channels(self, cr, uid, context=None):
         """Returns the available channel through the new sponsor
         reached Compassion.
