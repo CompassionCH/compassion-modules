@@ -26,145 +26,13 @@ class recurring_contract(orm.Model):
     _inherit = "recurring.contract"
     _order = 'start_date desc'
 
-    def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
-        """ On partner change, we update the correspondent and
-        set the new pol_number (for gift identification). """
-        res = super(recurring_contract, self).on_change_partner_id(
-            cr, uid, ids, partner_id, context)
-        num_contracts = self.search(
-            cr, uid, [('partner_id', '=', partner_id)], context=context,
-            count=True)
-        # If contract created check state
-        if ids:
-            contract = self.browse(cr, uid, ids[0], context)
-            # If state draft correspondant_id=parent_id
-            if (contract.state == 'draft'):
-                res['value'].update({
-                    'correspondant_id': partner_id,
-                })
-        # Else correspondant_id=parent_id
-        else:
-            res['value'].update({
-                'correspondant_id': partner_id,
-            })
-        res['value'].update({
-            'num_pol_ga': num_contracts
-        })
-        return res
-
-    def on_change_next_invoice_date(
-            self, cr, uid, ids, new_invoice_date, context=None):
-        res = True
-        for contract in self.browse(cr, uid, ids, context):
-            if (contract.state not in ('draft', 'mandate')):
-                res = super(
-                    self._name, self).on_change_next_invoice_date(
-                        self, cr, uid, ids, new_invoice_date, context) & res
-        return res
-
     ################################
     #        FIELDS METHODS        #
     ################################
-
     def _active(self, cr, uid, ids, field_name, args, context=None):
         # Dummy function that sets the active flag.
         self._on_contract_active(cr, uid, ids, context=context)
         return {id: True for id in ids}
-
-    def _get_contract_from_invoice(invoice_obj, cr, uid, invoice_ids,
-                                   context=None):
-        self = invoice_obj.pool.get('recurring.contract')
-        res = set()
-        # Read data in english
-        if context is None:
-            context = {}
-        ctx = context.copy()
-        ctx['lang'] = 'en_US'
-        for invoice in invoice_obj.browse(cr, uid, invoice_ids, ctx):
-            if invoice.state == 'paid':
-                self._invoice_paid(cr, uid, invoice, ctx)
-
-                pay_dates = [move_line.date
-                             for move_line in invoice.payment_ids
-                             if move_line.credit > 0] or [0]
-
-                last_pay_date = max(pay_dates)
-                first_pay_date = min(pay_dates)
-
-                for invoice_line in invoice.invoice_line:
-                    contract = invoice_line.contract_id
-
-                    if contract.id not in res and (
-                            contract.state == 'waiting' and last_pay_date):
-                        # Activate the contract and set the
-                        # activation_date
-                        res.add(contract.id)
-                        contract.write({
-                            'activation_date': datetime.today().strftime(DF)})
-
-                        # Cancel the old invoices if a contract is activated
-                        self._cancel_old_invoices(
-                            cr, uid,
-                            invoice.partner_id.id,
-                            contract.id,
-                            first_pay_date,
-                            context)
-        return list(res)
-
-    def _cancel_old_invoices(
-            self, cr, uid, partner_id,
-            contract_id, date_invoice, context=None):
-        '''
-            Cancel the invoices of a partner from a date
-            If the invoice has only one contract -> cancel
-            Else -> draft to modify the invoice and validate
-        '''
-        invoice_line_obj = self.pool.get('account.invoice.line')
-        invoice_obj = self.pool.get('account.invoice')
-        invoice_ids = invoice_obj.search(
-            cr, uid,
-            [('partner_id', '=', partner_id),
-             ('state', '=', 'open'),
-             ('date_invoice', '<', date_invoice)
-             ],
-            context=context)
-
-        wf_service = netsvc.LocalService('workflow')
-        for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
-            invoice_lines = invoice.invoice_line
-            gift = 'Sponsor gifts'
-            contract_ids = [
-                invl.contract_id.id for invl in invoice_lines
-                if (invl.contract_id and
-                    invl.product_id.product_tmpl_id.categ_id.name != gift)]
-
-            contract_ids = list(set(contract_ids))
-
-            if contract_ids and contract_id in contract_ids:
-                if len(contract_ids) == 1:
-                    wf_service.trg_validate(uid, 'account.invoice',
-                                            invoice.id, 'invoice_cancel', cr)
-                else:
-                    invoice_obj.action_cancel_draft(
-                        cr, uid, invoice.id, context)
-
-                    inv_line_ids = [
-                        invl.id for invl in invoice_lines
-                        if invl.contract_id == contract_id]
-                    invoice_line_obj.unlink(
-                        cr, uid,
-                        inv_line_ids,
-                        context)
-
-                    invoice_obj.trg_validate(uid, 'account.invoice',
-                                             invoice.id, 'invoice_open', cr)
-
-    def _is_fully_managed(self, cr, uid, ids, field_name, arg, context):
-        """Tells if the correspondent and the payer is the same person."""
-        res = dict()
-        for contract in self.browse(cr, uid, ids, context=context):
-            res[contract.id] = contract.partner_id == contract.correspondant_id
-        return res
 
     def get_ending_reasons(self, cr, uid, context=None):
         """Returns all the ending reasons of sponsorships"""
@@ -209,6 +77,53 @@ class recurring_contract(orm.Model):
     def _name_get(self, cr, uid, ids, field_name, args, context=None):
         return {c[0]: c[1] for c in self.name_get(cr, uid, ids, context)}
 
+    def _get_type(self, cr, uid, context=None):
+        return [('O', _('Others'))]
+
+    def __get_type(self, cr, uid, context=None):
+        """ Return the type values to be inherited """
+        return self._get_type(cr, uid, context)
+
+    def _get_contract_from_invoice(invoice_obj, cr, uid, invoice_ids,
+                                   context=None):
+        self = invoice_obj.pool.get('recurring.contract')
+        res = set()
+        # Read data in english
+        if context is None:
+            context = dict()
+        ctx = context.copy()
+        ctx['lang'] = 'en_US'
+        for invoice in invoice_obj.browse(cr, uid, invoice_ids, ctx):
+            if invoice.state == 'paid':
+                self._invoice_paid(cr, uid, invoice, ctx)
+
+                pay_dates = [move_line.date
+                             for move_line in invoice.payment_ids
+                             if move_line.credit > 0] or [0]
+
+                last_pay_date = max(pay_dates)
+                first_pay_date = min(pay_dates)
+
+                for invoice_line in invoice.invoice_line:
+                    contract = invoice_line.contract_id
+
+                    if contract.id not in res and (
+                            contract.state == 'waiting' and last_pay_date):
+                        # Activate the contract and set the
+                        # activation_date
+                        res.add(contract.id)
+                        contract.write({
+                            'activation_date': datetime.today().strftime(DF)})
+
+                        # Cancel the old invoices if a contract is activated
+                        self._cancel_old_invoices(
+                            cr, uid,
+                            invoice.partner_id.id,
+                            contract.id,
+                            first_pay_date,
+                            context)
+        return list(res)
+
     ###########################
     #        New Fields       #
     ###########################
@@ -223,11 +138,8 @@ class recurring_contract(orm.Model):
             'child_id', 'code', string=_('Sponsored child code'),
             readonly=True, type='char'),
         'partner_codega': fields.related(
-            'correspondant_id', 'ref', string=_('Partner ref'), readonly=True,
+            'partner_id', 'ref', string=_('Partner ref'), readonly=True,
             type='char'),
-        'correspondant_id': fields.many2one(
-            'res.partner', _('Correspondant'), required=True, readonly=True,
-            states={'draft': [('readonly', False)]}),
         'activation_date': fields.date(
             _('Activation date'), readonly=True),
         # Add a waiting and waiting mandate states
@@ -256,16 +168,10 @@ class recurring_contract(orm.Model):
             },
             help="It indicates that the first invoice has been paid and the "
                  "contract was activated."),
-        'fully_managed': fields.function(
-            _is_fully_managed, type="boolean", store=True),
         # Field used for identifying gifts from sponsor (because of bad GP)
         'num_pol_ga': fields.integer(
             'Partner Contract Number', required=True
         ),
-        'frequency': fields.related(
-            'group_id', 'advance_billing_months',
-            type="integer", readonly=True,
-            string=_('Frequency'), store=False),
         'end_reason': fields.selection(get_ending_reasons, _('End reason'),
                                        select=True),
         'end_date': fields.date(
@@ -288,15 +194,108 @@ class recurring_contract(orm.Model):
             readonly=False, states={'terminated': [('readonly', True)]},
             ondelete='restrict',
             track_visibility='onchange'),
-        'type': fields.selection([
-            ('S', _('Sponsorship')),
-            ('O', _('Others'))], _('Type'), select=True,
+        'type': fields.selection(
+            __get_type, _('Type'), select=True,
             readonly=True, track_visibility='onchange'),
     }
+
+    def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
+        """ On partner change, we update the correspondent and
+        set the new pol_number (for gift identification). """
+        res = super(recurring_contract, self).on_change_partner_id(
+            cr, uid, ids, partner_id, context)
+        num_contracts = self.search(
+            cr, uid, [('partner_id', '=', partner_id)], context=context,
+            count=True)
+
+        res['value'].update({
+            'num_pol_ga': num_contracts
+        })
+        return res
+
+    def on_change_next_invoice_date(
+            self, cr, uid, ids, new_invoice_date, context=None):
+        res = True
+        for contract in self.browse(cr, uid, ids, context):
+            if (contract.state not in ('draft', 'mandate')):
+                res = super(
+                    recurring_contract, self).on_change_next_invoice_date(
+                        self, cr, uid, ids, new_invoice_date, context) and res
+        return res
+
+    def _cancel_old_invoices(
+            self, cr, uid, partner_id,
+            contract_id, date_invoice, context=None):
+        """
+            Cancel the open invoices of a contract
+            which are older than a given date.
+            If the invoice has only one contract -> cancel
+            Else -> draft to modify the invoice and validate
+        """
+
+        invoice_line_obj = self.pool.get('account.invoice.line')
+        invoice_obj = self.pool.get('account.invoice')
+        invoice_line_ids = invoice_line_obj.search(
+            cr, uid,
+            [('contract_id', '=', contract_id),
+             ('state', '=', 'open'),
+             ('due_date', '<', date_invoice)
+             ],
+            context=context)
+
+        invoice_ids = [invoice_line.invoice_id.id for invoice_line
+                       in invoice_line_obj.browse(cr, uid, invoice_line_ids,
+                                                  context)]
+        invoice_ids = list(set(invoice_ids))
+
+        wf_service = netsvc.LocalService('workflow')
+        for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
+            invoice_lines = invoice.invoice_line
+            gift = 'Sponsor gifts'
+            contract_ids = [
+                invl.contract_id.id for invl in invoice_lines
+                if (invl.contract_id and
+                    invl.product_id.product_tmpl_id.categ_id.name != gift)]
+
+            contract_ids = list(set(contract_ids))
+
+            if contract_ids and contract_id in contract_ids:
+                inv_line_ids = [
+                    invl.id for invl in invoice_lines
+                    if (invl.contract_id == contract_id and
+                        invl.product_id.product_tmpl_id.categ_id.name != gift)]
+
+                if len(contract_ids) == 1:
+                    wf_service.trg_validate(uid, 'account.invoice',
+                                            invoice.id, 'invoice_cancel', cr)
+                else:
+                    invoice_obj.action_cancel_draft(
+                        cr, uid, invoice.id, context)
+
+                    invoice_line_obj.unlink(
+                        cr, uid,
+                        inv_line_ids,
+                        context)
+
+                    invoice_obj.trg_validate(uid, 'account.invoice',
+                                             invoice.id, 'invoice_open', cr)
 
     ##########################
     #        CALLBACKS       #
     ##########################
+    def force_validation(self, cr, uid, contract_id, context=None):
+        """ Used to transition draft sponsorships in waiting state. """
+        wf_service = netsvc.LocalService('workflow')
+        logger.info("Contract " + str(contract_id) + " validated.")
+        wf_service.trg_validate(uid, self._name, contract_id,
+                                'contract_validated', cr)
+        return True
+
+    def force_activation(self, cr, uid, contract_id, context=None):
+        """ Used to transition draft sponsorships in active state. """
+        self.force_validation(cr, uid, contract_id, context)
+        self._on_contract_active(cr, uid, [contract_id], context)
+        return True
 
     def name_get(self, cr, uid, ids, context=None):
         """ Gives a friendly name for a sponsorship """
@@ -363,40 +362,10 @@ class recurring_contract(orm.Model):
 
     def contract_cancelled(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'cancelled'}, context)
-        # Remove the sponsor of the child
-        for contract in self.browse(cr, uid, ids, context):
-            if contract.child_id:
-                contract.child_id.write({'sponsor_id': False})
         return True
 
     def contract_terminated(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'terminated'})
-
-        ctx = {'lang': 'en_US'}
-        category_obj = self.pool.get('res.partner.category')
-        sponsor_cat_id = category_obj.search(
-            cr, uid, [('name', '=', 'Sponsor')], context=ctx)[0]
-        old_sponsor_cat_id = category_obj.search(
-            cr, uid, [('name', '=', 'Old Sponsor')],
-            context=ctx)[0]
-        # Check if the sponsor has still active contracts
-        for contract in self.browse(cr, uid, ids, context):
-            con_ids = self.search(cr, uid, [
-                ('partner_id', '=', contract.partner_id.id),
-                ('state', '=', 'active')], context)
-            if not con_ids:
-                # Replace sponsor categoy by old sponsor category
-                partner_categories = set(
-                    [cat.id for cat in contract.partner_id.category_id])
-                if sponsor_cat_id in partner_categories:
-                    partner_categories.remove(sponsor_cat_id)
-                partner_categories.add(old_sponsor_cat_id)
-                # Standard way in Odoo to set one2many fields
-                contract.partner_id.write({
-                    'category_id': [(6, 0, list(partner_categories))]})
-            # Remove the sponsor of the child
-            if contract.child_id:
-                contract.child_id.write({'sponsor_id': False})
         return True
 
     def contract_waiting_mandate(self, cr, uid, ids, context=None):
@@ -571,30 +540,9 @@ class recurring_contract(orm.Model):
                     contract.write({
                         'next_invoice_date': contract.next_invoice_date})
 
-    def _compute_next_invoice_date(self, contract):
-        ''' Override to force recurring_value to 1
-            if contract is a sponsorship
-        '''
-        if contract.type == 'S':
-            next_date = datetime.strptime(contract.next_invoice_date, DF)
-            next_date += relativedelta(months=+1)
-            return next_date
-        else:
-            return super(recurring_contract, self)._compute_next_invoice_date(
-                contract)
-
     ################################
     #        PUBLIC METHODS        #
     ################################
-    def create(self, cr, uid, vals, context=None):
-        """Link child to sponsor.
-        """
-        child_id = vals.get('child_id')
-        if child_id:
-            self.pool.get('compassion.child').write(
-                cr, uid, child_id, {
-                    'sponsor_id': vals['partner_id']}, context)
-        return super(recurring_contract, self).create(cr, uid, vals, context)
 
     def copy(self, cr, uid, id, default=None, context=None):
         if not default:
@@ -616,19 +564,12 @@ class recurring_contract(orm.Model):
                 raise orm.except_orm(_('Warning'),
                                      _('You cannot delete a contract that is '
                                        'still active. Terminate it first.'))
-            else:
-                if contract.child_id:
-                    contract.child_id.write({'sponsor_id': False})
-
         super(recurring_contract, self).unlink(cr, uid, ids,
                                                context=context)
         return
 
     def write(self, cr, uid, ids, vals, context=None):
         """ Perform various checks when a contract is modified. """
-        if 'child_id' in vals:
-            self._on_change_child_id(cr, uid, ids, vals['child_id'],
-                                     vals.get('partner_id'), context)
         if 'group_id' in vals:
             self._on_change_group_id(cr, uid, ids, vals['group_id'], context)
 

@@ -21,7 +21,7 @@
                     </group>
                 </group>
                 <xpath expr="//h2" position="replace">
-                    <h2>Sponsorships</h2>
+                    <h2>Contracts</h2>
                 </xpath>
             </field>
         </record>
