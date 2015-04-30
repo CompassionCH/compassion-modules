@@ -64,11 +64,11 @@ class recurring_contract(orm.Model):
             ('phone', _("By phone")),
             ('payment', _("Payment")),
         ]
-        
+
     def __get_channels(self, cr, uid, context=None):
         """To be able to extend selection"""
         return self._get_channels(cr, uid, context)
-        
+
     def _has_mandate(self, cr, uid, ids, field_name, args, context=None):
         # Search for an existing valid mandate
         res = dict()
