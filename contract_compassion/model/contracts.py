@@ -49,6 +49,7 @@ class recurring_contract(orm.Model):
         ]
 
     def _get_ending_reasons(self, cr, uid, context=None):
+        """To be able to extend selection"""
         return self.get_ending_reasons(cr, uid, context)
 
     def _get_channels(self, cr, uid, context=None):
@@ -63,7 +64,11 @@ class recurring_contract(orm.Model):
             ('phone', _("By phone")),
             ('payment', _("Payment")),
         ]
-
+        
+    def __get_channels(self, cr, uid, context=None):
+        """To be able to extend selection"""
+        return self._get_channels(cr, uid, context)
+        
     def _has_mandate(self, cr, uid, ids, field_name, args, context=None):
         # Search for an existing valid mandate
         res = dict()
@@ -180,7 +185,7 @@ class recurring_contract(orm.Model):
         'origin_id': fields.many2one('recurring.contract.origin', _("Origin"),
                                      ondelete='restrict',
                                      track_visibility='onchange'),
-        'channel': fields.selection(_get_channels, string=_("Channel"),
+        'channel': fields.selection(__get_channels, string=_("Channel"),
                                     required=True, readonly=True,
                                     states={'draft': [('readonly', False)]}),
         'parent_id': fields.many2one(
@@ -196,7 +201,7 @@ class recurring_contract(orm.Model):
             track_visibility='onchange'),
         'type': fields.selection(
             __get_type, _('Type'), select=True,
-            readonly=True, track_visibility='onchange'),
+            readonly=True),
     }
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
@@ -255,7 +260,7 @@ class recurring_contract(orm.Model):
             contract_ids = [
                 invl.contract_id.id for invl in invoice_lines
                 if (invl.contract_id and
-                    invl.product_id.product_tmpl_id.categ_id.name != gift)]
+                    invl.product_id.categ_name != gift)]
 
             contract_ids = list(set(contract_ids))
 
@@ -263,7 +268,7 @@ class recurring_contract(orm.Model):
                 inv_line_ids = [
                     invl.id for invl in invoice_lines
                     if (invl.contract_id == contract_id and
-                        invl.product_id.product_tmpl_id.categ_id.name != gift)]
+                        invl.product_id.categ_name != gift)]
 
                 if len(contract_ids) == 1:
                     wf_service.trg_validate(uid, 'account.invoice',
