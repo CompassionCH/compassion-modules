@@ -18,7 +18,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 import logging
-
+import pdb
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +29,23 @@ class sponsorship_contract(orm.Model):
     ################################
     #        FIELDS METHODS        #
     ################################
+
+    def get_ending_reasons (self, cr, uid, context=None):
+        res = super(sponsorship_contract, self).get_ending_reasons(
+            cr, uid, context)
+
+        if 'active_id' in context:
+            type = self.browse(cr, uid, context['active_id'], context).type
+            if type == 'S':
+                res.extend([
+                    ('1', _("Depart of child")),
+                    ('10', _("Subreject")),
+                    ('11', _("Exchange of sponsor"))
+                    ]
+                )
+                res.sort(key=lambda tup: int(float(tup[0]))) # Sort res
+        return res
+            
     def _get_sponsorship_standard_lines(self, cr, uid, context=None):
         """ Select Sponsorship and General Fund by default """
         ctx = {'lang': 'en_US'}

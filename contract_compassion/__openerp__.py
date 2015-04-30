@@ -41,7 +41,8 @@ Compassion contract module.
                 'account_analytic_plans',
                 'child_compassion'],
     'data': [
-        'data/install.xml',
+        'data/install.xml',        
+        'view/end_contract_wizard_view.xml',
         'view/contract_group_view.xml',
         'view/contract_origin_view.xml',
         'view/contract_view.xml',
