@@ -6,5 +6,19 @@
 -->
 <openerp>
     <data>
+        <record id="end_sponsorship_view" model="ir.ui.view">
+            <field name="name">end.sponsorship.wizard.view</field>
+            <field name="model">end.contract.wizard</field>   
+            <field name="inherit_id" ref="contract_compassion.end_contract_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/group[1]/group[2]" position="after">
+                    <group>
+                        <!-- Child Exit Details form -->
+                        <field name="gp_exit_reason" attrs="{'required': [('end_reason', '=', '1')],'invisible': [('end_reason', '!=', '1')]}"/>
+                    </group>
+                    <group/>
+                </xpath>
+            </field>
+        </record>
     </data>
 </openerp>
