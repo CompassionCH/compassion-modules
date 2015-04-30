@@ -61,7 +61,7 @@ class contract_group(orm.Model):
     }
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
-        res = {}
+        res = dict()
         if not partner_id:
             return {'value': {'bvr_reference': ''}}
         partner = self.pool.get('res.partner').browse(cr, uid, partner_id,
@@ -89,7 +89,7 @@ class contract_group(orm.Model):
         else:
             ctx = context.copy()
             ctx['lang'] = 'en_US'
-        res = {'value': {}}
+        res = {'value': dict()}
         payment_term_obj = self.pool.get('account.payment.term')
         need_bvr_ref_term_ids = payment_term_obj.search(cr, uid, [
             '|', ('name', 'in', ('Permanent Order', 'BVR')),
@@ -119,7 +119,7 @@ class contract_group(orm.Model):
         else:
             is_valid = False
 
-        res = {}
+        res = dict()
         if is_valid:
             res['value'] = {'bvr_reference': bvr_reference}
         elif bvr_reference:
@@ -250,7 +250,7 @@ class contract_group(orm.Model):
         if inv_ids:
             inv_ids = list(inv_ids)
             cr.execute(
-                "DELETE FROM account_invoice"
+                "DELETE FROM account_invoice "
                 "WHERE id IN ({0})".format(
                     ','.join([str(id) for id in inv_ids])))
         return inv_ids

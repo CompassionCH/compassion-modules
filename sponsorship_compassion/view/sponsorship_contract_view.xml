@@ -6,12 +6,42 @@
 			<field name="model">recurring.contract</field>
             <field name="inherit_id" ref="contract_compassion.view_recurring_contract_form_compassion"/>
 			<field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', '!=', 'S')]}"/>
+                </field>
                 <button name="contract_terminated" position="after">
                      <button name="%(action_end_sponsorship)d" type="action" string="Terminate" class="oe_highlight" attrs="{'invisible': ['|',('type', '!=', 'S'),('state', 'not in', ['waiting', 'mandate', 'active'])]}"/>
-                </button>          
+                </button>
+                <field name="contract_line_ids" position="replace">
+                    <field name="contract_line_ids" widget="one2many_list" context="{'product_type':context['product_type']}"/>
+                </field> 
+                <field name="origin_id" position="attributes">
+                    <attribute name="attrs">{'required':[('type', '=', 'S')]}</attribute>
+                </field>
             </field>
 		</record>
+        
+        <record id="view_sponsorship_contract_line_tree" model="ir.ui.view">
+            <field name="name">compassion.contract.line.tree</field>
+            <field name="model">recurring.contract.line</field>
+            <field name="inherit_id" ref="recurring_contract.view_recurring_contract_line_tree" />
+            <field name="arch" type="xml">
+                <field name='product_id' position="attributes">
+                    <attribute name="domain">[('product_tmpl_id.categ_id.name', 'in', context['product_type'])]</attribute>
+                </field>
+            </field>
+        </record>
 
+        <record model="ir.actions.act_window" id="contract_compassion.action_contract">
+            <field name="name">Other contracts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">recurring.contract</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type','=','O')]</field>
+            <field name="context">{'default_type':'O', 'product_type':['Sponsor gifts', 'Fund']}</field>
+        </record>
+        
         <record id="action_sponsorship_contract" model="ir.actions.act_window">
             <field name="name">Sponsorships</field>
             <field name="type">ir.actions.act_window</field>
@@ -19,7 +49,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[('type','=','S')]</field>
-            <field name="context">{'default_type':'S', 'product_type':['Sponsor gifts']}</field>
+            <field name="context">{'default_type':'S', 'product_type':['Sponsorship', 'Fund']}</field>
         </record>
 
         
