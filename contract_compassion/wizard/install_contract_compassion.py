@@ -15,14 +15,27 @@ class install_contract_compassion(orm.TransientModel):
     _name = "install.contract.compassion"
 
     def install(self, cr, uid, ids=None, context=None):
+        product_ids = self.pool.get('product.product').search(
+            cr, uid,
+            [('categ_name', 'in', ['Sponsorship', 'Sponsor gifts'])],
+            context)
 
         # Modify old ir_model_data to change module name
+        cr.execute(
+            "UPDATE ir_model_data "
+            "SET module='contract_compassion' "
+            "WHERE module='sponsorship_compassion' AND "
+            "model = 'product.product' AND "
+            "res_id NOT IN ({0}) ".format(
+                (','.join(str(id) for id in product_ids))
+            ))
+
         cr.execute(
             """
         UPDATE ir_model_data
         SET module='contract_compassion'
         WHERE module='sponsorship_compassion' AND
-        model IN ('product.product','workflow.activity','workflow.transition')
+        model IN ('workflow.activity','workflow.transition')
         """
         )
         cr.execute(
