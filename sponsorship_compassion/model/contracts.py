@@ -41,7 +41,7 @@ class sponsorship_contract(orm.Model):
                     ('1', _("Depart of child")),
                     ('10', _("Subreject")),
                     ('11', _("Exchange of sponsor"))
-                    ]
+                ]
                 )
                 res.sort(key=lambda tup: int(float(tup[0])))  # Sort res
         return res
@@ -100,10 +100,6 @@ class sponsorship_contract(orm.Model):
             type='char'),
         'fully_managed': fields.function(
             _is_fully_managed, type="boolean", store=True),
-        'frequency': fields.related(
-            'group_id', 'advance_billing_months',
-            type="integer", readonly=True,
-            string=_('Frequency'), store=False),
     }
 
     _defaults = {
@@ -527,10 +523,33 @@ class sponsorship_contract(orm.Model):
             return False
         return True
 
+    def _has_valid_contract_lines(
+            self, cr, uid, contract_lines, type, context=None):
+        forbidden_product_types = {
+            'O': ['Sponsorship'],
+            'S': ['Sponsor gifts']
+        }
+        product_obj = self.pool.get('product.product')
+        contract_lines = [cont_line[2] for cont_line in contract_lines
+                          if cont_line[2]]
+
+        for contract_line in contract_lines:
+            product = product_obj.browse(
+                cr, uid, contract_line.get('product_id'), context)
+
+            categ_name = product.categ_name
+            if categ_name in forbidden_product_types.get(type):
+                raise orm.except_orm(
+                    _('Please select a valid product'),
+                    _('You should not select product'
+                      'from category "{}"'.format(categ_name))
+                )
+        return True
+
     def _compute_next_invoice_date(self, contract):
-        ''' Override to force recurring_value to 1
+        """ Override to force recurring_value to 1
             if contract is a sponsorship
-        '''
+        """
         if contract.type == 'S':
             next_date = datetime.strptime(contract.next_invoice_date, DF)
             next_date += relativedelta(months=+1)
@@ -562,6 +581,11 @@ class sponsorship_contract(orm.Model):
                         _('You should select payment option with'
                           '"1 month" as recurring value')
                     )
+        if 'contract_line_ids' in vals:
+            self._has_valid_contract_lines(
+                cr, uid, vals['contract_line_ids'],
+                context['default_type'], context)
+
         return super(sponsorship_contract, self).create(
             cr, uid, vals, context)
 
@@ -579,6 +603,10 @@ class sponsorship_contract(orm.Model):
                             _('You should select payment option with'
                               '"1 month" as recurring value')
                         )
+            if 'contract_line_ids' in vals:
+                self._has_valid_contract_lines(
+                    cr, uid, vals['contract_line_ids'],
+                    contract.type, context)
 
         return super(sponsorship_contract, self).write(
             cr, uid, ids, vals, context)
