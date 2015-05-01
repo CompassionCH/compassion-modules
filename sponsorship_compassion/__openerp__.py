@@ -93,6 +93,7 @@ Contributors
         'data/lang.xml',
         'data/sequence.xml',
         'data/analytic_accounting.xml',
+        'data/sponsorship_product.xml',
     ],
     'demo': [],
     'installable': True,
