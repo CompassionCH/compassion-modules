@@ -1,46 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data>
-		<record id="view_recurring_contract_tree_compassion" model="ir.ui.view">
-			<field name="name">recurring.contract.compassion.tree</field>
-			<field name="model">recurring.contract</field>
-			<field name="inherit_id" ref="recurring_contract.view_recurring_contract_tree"/>
-			<field eval="18" name="priority"/>
-			<field name="arch" type="xml">
-				<data>
-					<tree string="Contracts" position="attributes">
-						<attribute name="colors">blue:state == 'draft';red:state == 'mandate';green:state == 'waiting';black:state == 'active';gray:state in ('terminated','cancelled')</attribute>
-					</tree>
-					<field name="partner_id" position="after">
-						<field name="child_code" />
-						<field name="child_name" />
-					</field>
-					<field name="partner_id" position="before">
-						<field name="partner_codega" invisible="context.get('partner_contracts_view')" />
-					</field>
+    <data>
+        <record id="view_recurring_contract_tree_compassion" model="ir.ui.view">
+            <field name="name">recurring.contract.compassion.tree</field>
+            <field name="model">recurring.contract</field>
+            <field name="inherit_id" ref="recurring_contract.view_recurring_contract_tree"/>
+            <field eval="18" name="priority"/>
+            <field name="arch" type="xml">
+                <data>
+                    <tree string="Contracts" position="attributes">
+                        <attribute name="colors">blue:state == 'draft';red:state == 'mandate';green:state == 'waiting';black:state == 'active';gray:state in ('terminated','cancelled')</attribute>
+                    </tree>
+                    <field name="partner_id" position="after">
+                        <field name="child_code" />
+                        <field name="child_name" />
+                    </field>
+                    <field name="partner_id" position="before">
+                        <field name="partner_codega" invisible="context.get('partner_contracts_view')" />
+                    </field>
                     <field name="payment_term_id" position="after">
+                        <field name="group_freq" />
                         <field name="origin_id" />
                     </field>
                     <field name="state" position="after">
                         <button name="open_contract" type="object" invisible="not context.get('partner_contracts_view')" icon="STOCK_JUMP_TO" />
                     </field>
-					<field name="reference" position="replace" />
-				</data>
-			</field>
-		</record>
-		
-		<record id="view_recurring_contract_form_compassion" model="ir.ui.view">
-			<field name="name">recurring.contract.compassion.form</field>
-			<field name="model">recurring.contract</field>
-			<field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
-			<field name="arch" type="xml">
+                    <field name="reference" position="replace" />
+                </data>
+            </field>
+        </record>
+
+        <record id="view_recurring_contract_form_compassion" model="ir.ui.view">
+            <field name="name">recurring.contract.compassion.form</field>
+            <field name="model">recurring.contract</field>
+            <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
+            <field name="arch" type="xml">
                 <!-- Modify header to add the waiting state -->
                 <field name="state" position="attributes">
                     <attribute name="statusbar_visible">draft,active,waiting,terminated</attribute>
                 </field>
 
                 <button name="contract_terminated" position="replace">
-                     <button name="%(action_end_contract)d" type="action" string="Terminate" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['waiting', 'mandate', 'active'])]}"/>
+                    <button name="%(action_end_contract)d" type="action" string="Terminate" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['waiting', 'mandate', 'active'])]}"/>
                 </button>
 
                 <!-- Hide reference -->
@@ -48,7 +49,7 @@
                     <field name="name"/>
                 </field>
 
-				<!-- Redefine the top group view -->
+                <!-- Redefine the top group view -->
                 <xpath expr="//sheet/group[1]" position="replace">
                     <group>
                         <group>
@@ -65,7 +66,7 @@
                             <field name="end_date" attrs="{'invisible':[('end_date', '=', False)]}" />
                             <field name="next_invoice_date" states="draft,waiting,mandate,active" />
                         </group>
-                        
+
                         <group>
                             <field name="origin_id" domain="['!',('name','like','SUB Sponsorship - ')]"/>
                             <field name="channel"/>
@@ -79,15 +80,15 @@
                         </group>
                     </group>
                 </xpath> 
-			</field>
-		</record>
-		
-		<record id="view_recurring_contract_compassion_filter" model="ir.ui.view">
-			<field name="name">recurring.contract.compassion.select</field>
-			<field name="model">recurring.contract</field>
-			<field name="inherit_id" ref="recurring_contract.view_recurring_contract_filter" />
-			<field name="arch" type="xml">
-				<data>
+            </field>
+        </record>
+
+        <record id="view_recurring_contract_compassion_filter" model="ir.ui.view">
+            <field name="name">recurring.contract.compassion.select</field>
+            <field name="model">recurring.contract</field>
+            <field name="inherit_id" ref="recurring_contract.view_recurring_contract_filter" />
+            <field name="arch" type="xml">
+                <data>
                     <field name="reference" position="attributes">
                         <attribute name="filter_domain">
                             ['|', '|', '|', '|', '|', '|',
@@ -114,10 +115,21 @@
                     <xpath expr="//filter[@string='Status']" position="after">
                         <filter string="Origin" domain="[]"  context="{'group_by':'origin_id'}"/>
                     </xpath>
-				</data>
-			</field>
-		</record>
-
+                </data>
+            </field>
+        </record>
+       <record id="view_compassion_contract_line_tree" model="ir.ui.view">
+		<field name="name">compassion.contract.line.tree</field>
+		<field name="model">recurring.contract.line</field>
+		<field name="inherit_id" ref="recurring_contract.view_recurring_contract_line_tree" />
+		<field name="arch" type="xml">
+				<field name="product_id" position="attributes">
+                    <attribute name="options">
+                    {'colors':{'Sponsorship':'blue', 'Fund':'green', 'Sponsor gifts':'red'}, 'field_color':'categ_name'}
+                    </attribute>
+                </field>
+		</field>
+	</record>
         <record model="ir.actions.act_window" id="action_contract">
             <field name="name">Other contracts</field>
             <field name="type">ir.actions.act_window</field>
@@ -144,6 +156,6 @@
 
         <menuitem id="recurring_contract.menu_recurring_contract_form" parent="child_compassion.menu_sponsorship_section"
                   name="Other contracts" sequence="1" action="action_contract"/>
-        
-	</data>
+
+    </data>
 </openerp>
