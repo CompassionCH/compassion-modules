@@ -15,16 +15,16 @@ class install_contract_compassion(orm.TransientModel):
     _name = "install.contract.compassion"
 
     def install(self, cr, uid, ids=None, context=None):
-        
+
         # Modify old ir_model_data to change module name
         product_ids = self.pool.get('product.product').search(
             cr, uid,
             [('categ_name', 'in', ['Sponsorship', 'Sponsor gifts'])],
             context)
         sql_request = ("UPDATE ir_model_data "
-        "SET module='contract_compassion' "
-        "WHERE module='sponsorship_compassion' AND "
-        "model = 'product.product' ")
+                       "SET module='contract_compassion' "
+                       "WHERE module='sponsorship_compassion' AND "
+                       "model = 'product.product' ")
         if product_ids:
             sql_request += "AND res_id NOT IN ({0}) ".format(
                 (','.join(str(id) for id in product_ids))
