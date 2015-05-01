@@ -559,6 +559,24 @@ class sponsorship_contract(orm.Model):
                 sponsorship_contract, self)._compute_next_invoice_date(
                     contract)
 
+    def _get_filtered_invoice_lines(
+            self, cr, uid, invoice_lines, contract_id, context=None):
+        res = list()
+        for invl in invoice_lines:
+            if (invl.contract_id == contract_id and
+               invl.product_id.categ_name != 'Sponsor gifts'):
+                res.append(invl.id)
+        return res
+
+    def _get_filtered_contract_ids(
+            self, cr, uid, invoice_lines, context=None):
+        res = list()
+        for invl in invoice_lines:
+            if (invl.contract_id and
+               invl.product_id.categ_name != 'Sponsor gifts'):
+                res.append(invl.contract_id.id)
+        return res
+
     ################################
     #        PUBLIC METHODS        #
     ################################

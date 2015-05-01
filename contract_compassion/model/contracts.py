@@ -262,6 +262,16 @@ class recurring_contract(orm.Model):
                         self, cr, uid, ids, new_invoice_date, context) and res
         return res
 
+    def _get_filtered_contract_ids(
+            self, cr, uid, invoice_lines, context=None):
+        return [invl.contract_id.id for invl in invoice_lines
+                if invl.contract_id]
+
+    def _get_filtered_invoice_lines(
+            self, cr, uid, invoice_lines, contract_id, context=None):
+        return [invl.id for invl in invoice_lines
+                if invl.contract_id == contract_id]
+
     def _cancel_old_invoices(
             self, cr, uid, partner_id,
             contract_id, date_invoice, context=None):
@@ -290,19 +300,15 @@ class recurring_contract(orm.Model):
         wf_service = netsvc.LocalService('workflow')
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
             invoice_lines = invoice.invoice_line
-            gift = 'Sponsor gifts'
-            contract_ids = [
-                invl.contract_id.id for invl in invoice_lines
-                if (invl.contract_id and
-                    invl.product_id.categ_name != gift)]
+
+            contract_ids = self._get_filtered_contract_ids(
+                cr, uid, invoice_lines, context)
 
             contract_ids = list(set(contract_ids))
 
             if contract_ids and contract_id in contract_ids:
-                inv_line_ids = [
-                    invl.id for invl in invoice_lines
-                    if (invl.contract_id == contract_id and
-                        invl.product_id.categ_name != gift)]
+                inv_line_ids = self._get_filtered_invoice_lines(
+                    cr, uid, invoice_lines, context)
 
                 if len(contract_ids) == 1:
                     wf_service.trg_validate(uid, 'account.invoice',

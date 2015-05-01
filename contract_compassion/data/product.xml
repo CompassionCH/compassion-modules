@@ -7,40 +7,16 @@
             Resource: product.category
         -->
  
-        <record id="product_category_sponsorship" model="product.category">
-            <field name="parent_id" ref="product.product_category_1"/>
-            <field name="name">Sponsorship</field>
-        </record>
         <record id="product_category_fund" model="product.category">
             <field name="parent_id" ref="product.product_category_1"/>
             <field name="name">Fund</field>
         </record>
-        <record id="product_category_gift" model="product.category">
-            <field name="parent_id" ref="product_category_sponsorship"/>
-            <field name="name">Sponsor gifts</field>
-        </record>
-        
+
         <!--
             Resource: product.template
         -->
         
-        <!-- Sponsorship template -->
-        <record id="product_template_sponsorship" model="product.template">
-            <field name="name">Sponsorship</field>
-            <field name="categ_id" ref="product_category_sponsorship"/>
-            <field name="list_price">42</field>
-            <field name="type">service</field>
-            <field name="description">Standard Sponsorship of type CDSP.</field>
-        </record>
-        
         <!-- Funds templates -->
-        <record id="product_template_sponsorship_ldp" model="product.template">
-            <field name="name">LDP Sponsorship</field>
-            <field name="categ_id" ref="product_category_sponsorship"/>
-            <field name="list_price">310</field>
-            <field name="type">service</field>
-            <field name="description">Sponsorship for LDP Students.</field>
-        </record>
 		<record id="product_template_fund_aid" model="product.template">
             <field name="name">AIDS/HIV Fund</field>
 			<field name="type">service</field>
@@ -275,52 +251,11 @@
 			<field name="categ_id" ref="product_category_fund" />
 			<field name="list_price">8</field>
 		</record>
-        
-        <!-- Sponsorship Gifts Templates -->
-        <record id="product_template_gift_birthday" model="product.template">
-            <field name="name">Birthday Gift</field>
-			<field name="type">service</field>
-			<field name="categ_id" ref="product_category_gift" />
-		</record>
-        <record id="product_template_gift_gen" model="product.template">
-            <field name="name">General Gift</field>
-			<field name="type">service</field>
-			<field name="categ_id" ref="product_category_gift" />
-		</record>
-        <record id="product_template_gift_family" model="product.template">
-            <field name="name">Family Gift</field>
-			<field name="type">service</field>
-			<field name="categ_id" ref="product_category_gift" />
-		</record>
-        <record id="product_template_gift_project" model="product.template">
-            <field name="name">Project Gift</field>
-			<field name="type">service</field>
-			<field name="categ_id" ref="product_category_gift" />
-		</record>
-        <record id="product_template_gift_graduation" model="product.template">
-            <field name="name">Graduation Gift</field>
-			<field name="type">service</field>
-			<field name="categ_id" ref="product_category_gift" />
-		</record>
 
 		<!--
             Resource: product.product
         -->
-        
-		<!-- Sponsorships -->
-        <record id="product_product_standard" model="product.product">
-            <field name="categ_id" ref="product_category_sponsorship"/>
-            <field name="product_tmpl_id" ref="product_template_sponsorship"/>
-            <field name="property_account_income" search="[('code','=','6000')]"/>
-            <field name="property_account_expense" search="[('code','=','5000')]"/>
-        </record>
-        <record id="product_product_ldp" model="product.product">
-            <field name="categ_id" ref="product_category_sponsorship"/>
-            <field name="product_tmpl_id" ref="product_template_sponsorship_ldp"/>
-            <field name="property_account_income" search="[('code','=','6013')]"/>
-            <field name="property_account_expense" search="[('code','=','5000')]"/>
-        </record>
-		
+
 		<!-- Funds -->
         <record id="product_fund_aid" model="product.product">
             <field name="product_tmpl_id" ref="product_template_fund_aid" />
@@ -709,32 +644,6 @@
             <field name="property_account_expense" search="[('code','=','5000')]"/>
             <field name="gp_fund_id">178</field>
         </record>
-        
-        <!-- Sponsor Gifts -->
-        <record id="product_gift_birthday" model="product.product">
-            <field name="product_tmpl_id" ref="product_template_gift_birthday" />
-            <field name="property_account_income" search="[('code','=','6003')]" />
-            <field name="property_account_expense" search="[('code','=','5000')]" />
-        </record>
-        <record id="product_gift_general" model="product.product">
-            <field name="product_tmpl_id" ref="product_template_gift_gen" />
-            <field name="property_account_income" search="[('code','=','6003')]" />
-            <field name="property_account_expense" search="[('code','=','5000')]" />
-        </record>
-        <record id="product_gift_family" model="product.product">
-            <field name="product_tmpl_id" ref="product_template_gift_family" />
-            <field name="property_account_income" search="[('code','=','6003')]" />
-            <field name="property_account_expense" search="[('code','=','5000')]" />
-        </record>
-        <record id="product_gift_project" model="product.product">
-            <field name="product_tmpl_id" ref="product_template_gift_project" />
-            <field name="property_account_income" search="[('code','=','6003')]" />
-            <field name="property_account_expense" search="[('code','=','5000')]" />
-        </record>
-        <record id="product_gift_graduation" model="product.product">
-            <field name="product_tmpl_id" ref="product_template_gift_graduation" />
-            <field name="property_account_income" search="[('code','=','6003')]" />
-            <field name="property_account_expense" search="[('code','=','5000')]" />
-        </record>
+       
     </data>
 </openerp>

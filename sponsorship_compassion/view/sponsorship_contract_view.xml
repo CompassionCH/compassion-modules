@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data>
-		<record id="view_sponsorship_contract_form_compassion" model="ir.ui.view">
-			<field name="name">sponsorship.contract.compassion.form</field>
-			<field name="model">recurring.contract</field>
+    <data>
+        <record id="view_sponsorship_contract_form_compassion" model="ir.ui.view">
+            <field name="name">sponsorship.contract.compassion.form</field>
+            <field name="model">recurring.contract</field>
             <field name="inherit_id" ref="contract_compassion.view_recurring_contract_form_compassion"/>
-			<field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <field name="partner_id" position="after">
                     <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', '!=', 'S')]}"/>
                 </field>
@@ -13,8 +13,20 @@
                     <attribute name="attrs">{'required':[('type', '=', 'S')]}</attribute>
                 </field>
             </field>
-		</record>
+        </record>
 
+        <record id="view_compassion_contract_line_tree" model="ir.ui.view">
+            <field name="name">compassion.contract.line.tree</field>
+            <field name="model">recurring.contract.line</field>
+            <field name="inherit_id" ref="recurring_contract.view_recurring_contract_line_tree" />
+            <field name="arch" type="xml">
+                <field name="product_id" position="attributes">
+                    <attribute name="options">
+                        {'colors':{'Sponsorship':'blue', 'Fund':'green', 'Sponsor gifts':'red'}, 'field_color':'categ_name'}
+                    </attribute>
+                </field>
+            </field>
+        </record>
 
         <record model="ir.actions.act_window" id="contract_compassion.action_contract">
             <field name="name">Other contracts</field>
@@ -25,7 +37,7 @@
             <field name="domain">[('type','=','O')]</field>
             <field name="context">{'default_type':'O'}</field>
         </record>
-        
+
         <record id="action_sponsorship_contract" model="ir.actions.act_window">
             <field name="name">Sponsorships</field>
             <field name="type">ir.actions.act_window</field>
@@ -36,7 +48,7 @@
             <field name="context">{'default_type':'S'}</field>
         </record>
 
-        
+
         <!-- Move the Sponsorships Menu to the Sponsorship Section -->
         <menuitem id="menu_sponsorship_contract_form" parent="child_compassion.menu_sponsorship_section"
                   name="Sponsorships" sequence="0" action="action_sponsorship_contract"/>
@@ -44,5 +56,5 @@
                   name="Invoicing" groups="account.group_account_user" sequence="2"/>
         <menuitem id="open_customers" parent="child_compassion.menu_sponsorship_section"
                   name="Partners" action="base.action_partner_customer_form" sequence="3"/>
-	</data>
+    </data>
 </openerp>
