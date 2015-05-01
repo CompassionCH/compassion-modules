@@ -16,7 +16,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -88,6 +87,34 @@ class recurring_contract(orm.Model):
     def __get_type(self, cr, uid, context=None):
         """ Return the type values to be inherited """
         return self._get_type(cr, uid, context)
+
+    def _get_frequency(self, cr, uid, ids, field_name, arg, context=None):
+        res = dict()
+
+        frequencies = {
+            '1 month': 'Monthly',
+            '2 month': 'Bimonthly',
+            '3 month': 'Quarterly',
+            '4 month': 'Four-monthly',
+            '6 month': 'Bi-annual',
+            '12 month': 'Annual',
+            '1 year': 'Annual',
+        }
+
+        for contract in self.browse(cr, uid, ids, context):
+            recurring_value = contract.group_id.recurring_value
+            recurring_unit = contract.group_id.recurring_unit
+            frequency = "{0} {1}".format(recurring_value, recurring_unit)
+            if frequency in frequencies:
+                frequency = frequencies[frequency]
+            res[contract.id] = frequency
+        return res
+
+    def _get_contracts_from_group(group_obj, cr, uid, ids, context=None):
+        res = list()
+        for group in group_obj.browse(cr, uid, ids, context):
+            res.extend([contract.id for contract in group.contract_ids])
+        return res
 
     def _get_contract_from_invoice(invoice_obj, cr, uid, invoice_ids,
                                    context=None):
@@ -202,11 +229,18 @@ class recurring_contract(orm.Model):
         'type': fields.selection(
             __get_type, _('Type'), select=True,
             readonly=True),
+        'group_freq': fields.function(
+            _get_frequency, type='char',
+            store={'recurring.contract.group': (
+                _get_contracts_from_group,
+                ['recurring_value', 'recurring_unit'],
+                10)}, readonly=True,
+            string=_('Frequency')),
     }
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
-        """ On partner change, we update the correspondent and
-        set the new pol_number (for gift identification). """
+        """ On partner change, we set the new pol_number
+        (for gift identification). """
         res = super(recurring_contract, self).on_change_partner_id(
             cr, uid, ids, partner_id, context)
         num_contracts = self.search(
