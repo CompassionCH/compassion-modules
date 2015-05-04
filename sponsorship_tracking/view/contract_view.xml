@@ -64,13 +64,12 @@
 			<field name="model">recurring.contract</field>
             <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
 			<field name="arch" type="xml">
-                <div class="oe_title" position="before">
-                    <div class="oe_right oe_button_box" name="button_box">
-                        <button name="switch_contract_view" 
-                                type="object" 
-                                string="Open SDS view" context="{'view_id':'view_follow_contract_form_compassion'}" />
-                    </div>
-                </div>
+                <button name="button_generate_invoices" position="after">
+                    <button name="switch_contract_view" 
+                            type="object" 
+                            string="Open SDS view" context="{'view_id':'view_follow_contract_form_compassion'}"
+                            attrs="{'invisible': [('type', '!=', 'S')]}"/>
+                </button>
             </field>
         </record>
         
