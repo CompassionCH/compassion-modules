@@ -19,7 +19,7 @@ IP_COUNTRIES = ['AU', 'CA', 'DE', 'ES', 'FR', 'GB', 'IT', 'KR', 'NL',
                 'NZ', 'US', 'NO']
 
 
-class end_sponsorship_wizard(orm.TransientModel):
+class child_depart_wizard(orm.TransientModel):
     _name = 'child.depart.wizard'
 
     def _get_child_id(self, cr, uid, context=None):

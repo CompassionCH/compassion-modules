@@ -96,7 +96,7 @@
                             class="oe_highlight" 
                             string="Attributed" 
                             attrs="{'invisible':[('project_state','!=','waiting_attribution')]}"/>
-                        <button name="%(sponsorship_compassion.action_end_sponsorship)d" string="Terminate" states="waiting,mandate,active" type="action"/>
+                        <button name="%(contract_compassion.action_end_contract)d" string="Terminate" states="waiting,mandate,active" type="action"/>
                     </header>
                     <sheet>
                         <div class="oe_right oe_button_box" name="button_box">
