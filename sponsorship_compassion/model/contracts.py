@@ -557,7 +557,7 @@ class sponsorship_contract(orm.Model):
         else:
             return super(
                 sponsorship_contract, self)._compute_next_invoice_date(
-                    contract)
+                contract)
 
     def _get_filtered_invoice_lines(
             self, cr, uid, invoice_lines, contract_id, context=None):

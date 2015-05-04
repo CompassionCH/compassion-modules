@@ -259,7 +259,7 @@ class recurring_contract(orm.Model):
             if (contract.state not in ('draft', 'mandate')):
                 res = super(
                     recurring_contract, self).on_change_next_invoice_date(
-                        self, cr, uid, ids, new_invoice_date, context) and res
+                    self, cr, uid, ids, new_invoice_date, context) and res
         return res
 
     def _get_filtered_contract_ids(
