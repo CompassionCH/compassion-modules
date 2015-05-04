@@ -203,6 +203,7 @@
             <field name="res_model">recurring.contract</field>
             <field name="view_type">form</field>
             <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('type', '=', 'S')]</field>
             <field name="search_view_id" ref="contract_tracking_filter"/>
         </record>
         
