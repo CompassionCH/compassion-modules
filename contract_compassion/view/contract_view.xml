@@ -105,10 +105,10 @@
                     <field name="payment_term_id" position="after">
                         <field name="origin_id"/>
                     </field>
-                    <xpath expr="//filter[@name='draft']" position="replace">
+                    <xpath expr="//filter[@name='draft']" position="after">
                         <filter name="waiting" string="Waiting" domain="[('state','in', ('draft','waiting','mandate'))]"/>
                     </xpath>
-                    <xpath expr="//filter[@name='terminated']" position="replace">
+                    <xpath expr="//filter[@name='terminated']" position="after">
                         <filter name="finished" string="Finished" domain="[('state','in', ('cancelled','terminated'))]"/>
                     </xpath>
                     <xpath expr="//filter[@string='Status']" position="after">
