@@ -20,9 +20,6 @@
                         <field name="payment_term_id" on_change="on_change_payment_term(payment_term_id, bvr_reference, partner_id)" />
                     </group>
                 </group>
-                <xpath expr="//h2" position="replace">
-                    <h2>Contracts</h2>
-                </xpath>
             </field>
         </record>
     </data>

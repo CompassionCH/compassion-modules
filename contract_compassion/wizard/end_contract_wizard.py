@@ -31,7 +31,7 @@ class end_contract_wizard(orm.TransientModel):
         # Retrieve the id of the sponsored child
         contract = self.pool.get('recurring.contract').browse(
             cr, uid, context.get('active_id'), context)
-        return contract.child_id.id if contract.child_id else False
+        return contract.child_id.id if contract.type == 'S' else False
 
     def _get_end_reason(self, cr, uid, context=None):
         return self.pool.get('recurring.contract').get_ending_reasons(

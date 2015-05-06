@@ -6,12 +6,35 @@
             <field name="model">recurring.contract</field>
             <field name="inherit_id" ref="contract_compassion.view_recurring_contract_form_compassion"/>
             <field name="arch" type="xml">
+                <!-- Add correspondant field for sponsorships -->
                 <field name="partner_id" position="after">
                     <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', '!=', 'S')]}"/>
                 </field>
+                
+                <!-- Redefine change method of parnter_id -->
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="on_change" position="replace">
+                        <attribute name="on_change">on_change_partner_id(partner_id, type)</attribute>
+                    </attribute>
+                </xpath>
+                
+                <!-- Make origin mandatory for sponsorships -->
                 <field name="origin_id" position="attributes">
                     <attribute name="attrs">{'required':[('type', '=', 'S')]}</attribute>
                 </field>
+                
+                <!-- Special types behaviours -->
+                <xpath expr="//field[@name='type']" position="attributes">
+                    <!-- Sponsorship contracts cannot change their types -->
+                    <attribute name="attrs">{'readonly': [('type', '=', 'S')]}</attribute>
+                    <!-- Listen on type change for changing domain of children -->
+                    <attribute name="on_change">on_change_type(partner_id, type)</attribute>
+                </xpath>
+                
+                <!-- Field child_id is not available for general contracts -->
+                <xpath expr="//field[@name='child_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('type', '=', 'O')], 'required': [('type', 'in', ['S', 'G'])]}</attribute>
+                </xpath>
             </field>
         </record>
 

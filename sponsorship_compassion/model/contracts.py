@@ -85,7 +85,9 @@ class sponsorship_contract(orm.Model):
 
     def _get_type(self, cr, uid, context=None):
         res = super(sponsorship_contract, self)._get_type(cr, uid, context)
-        res.append(('S', _('Sponsorship')))
+        res.extend([
+            ('S', _('Sponsorship')),
+            ('G', _('Child Gift'))])
         return res
 
     ###########################
@@ -142,7 +144,7 @@ class sponsorship_contract(orm.Model):
                 if country_id:
                     country_id = country_id[0]
                     child_vals['transfer_country_id'] = country_id
-        if contract.child_id:
+        if contract.type == 'S':
             child_vals['sponsor_id'] = False
             contract.child_id.write(child_vals)
 
@@ -386,7 +388,7 @@ class sponsorship_contract(orm.Model):
             cr, uid, ids, context)
         # Remove the sponsor of the child
         for contract in self.browse(cr, uid, ids, context):
-            if contract.child_id:
+            if contract.type == 'S':
                 contract.child_id.write({'sponsor_id': False})
         return res
 
@@ -417,7 +419,7 @@ class sponsorship_contract(orm.Model):
                 contract.partner_id.write({
                     'category_id': [(6, 0, list(partner_categories))]})
             # Remove the sponsor of the child
-            if contract.child_id:
+            if contract.type == 'S':
                 contract.child_id.write({'sponsor_id': False})
         return res
 
@@ -437,7 +439,7 @@ class sponsorship_contract(orm.Model):
         sponsor_cat_id = self.pool.get('res.partner.category').search(
             cr, uid, [('name', '=', 'Sponsor')], context=ctx)[0]
         for contract in self.browse(cr, uid, ids, context=ctx):
-            if contract.child_id:
+            if contract.type == 'S':
                 contract.child_id.write({'has_been_sponsored': True})
                 partner_categories = set(
                     [cat.id for cat in contract.partner_id.category_id
@@ -456,10 +458,10 @@ class sponsorship_contract(orm.Model):
         """
         child_id = vals.get('child_id')
         for contract in self.browse(cr, uid, ids, context):
-            if contract.child_id and contract.child_id != child_id:
+            if contract.type == 'S' and contract.child_id != child_id:
                 # Free the previously selected child
                 contract.child_id.write({'sponsor_id': False})
-            if child_id:
+            if contract.type == 'S':
                 # Mark the selected child as sponsored
                 self.pool.get('compassion.child').write(
                     cr, uid, child_id, {
@@ -470,7 +472,7 @@ class sponsorship_contract(orm.Model):
     def contract_waiting_mandate(self, cr, uid, ids, context=None):
         for contract in self.browse(cr, uid, ids, context):
             # Check that a child is selected for Sponsorship product
-            if not contract.child_id:
+            if contract.type == 'S' and not contract.child_id:
                 raise orm.except_orm(
                     _("Please select a child"),
                     _("You should select a child if you "
@@ -481,7 +483,7 @@ class sponsorship_contract(orm.Model):
     def contract_waiting(self, cr, uid, ids, context=None):
         for contract in self.browse(cr, uid, ids, {'lang': 'en_US'}):
             # Check that a child is selected for Sponsorship product
-            if not contract.child_id:
+            if contract.type == 'S' and not contract.child_id:
                 raise orm.except_orm(
                     _("Please select a child"),
                     _("You should select a child if you "
@@ -490,7 +492,8 @@ class sponsorship_contract(orm.Model):
         return super(sponsorship_contract, self).contract_waiting(
             cr, uid, ids, context)
 
-    def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
+    def on_change_partner_id(self, cr, uid, ids, partner_id, type,
+                             context=None):
         res = super(sponsorship_contract, self).on_change_partner_id(
             cr, uid, ids, partner_id, context)
 
@@ -503,17 +506,27 @@ class sponsorship_contract(orm.Model):
         if ids:
             contract = self.browse(cr, uid, ids[0], context)
             if contract.type == 'S':
-                # If state draft correspondant_id=parent_id
+                # If state draft correspondant_id=partner_id
                 if (contract.state == 'draft'):
                     res['value'].update({
                         'correspondant_id': partner_id,
                     })
-                # Else correspondant_id=parent_id
-                else:
-                    res['value'].update({
-                        'correspondant_id': partner_id,
-                    })
+        else:
+            res['value'].update({
+                'correspondant_id': partner_id,
+            })
 
+        return res
+
+    def on_change_type(self, cr, uid, ids, partner_id, type, context=None):
+        child_obj = self.pool.get('compassion.child')
+        res = {'domain': dict(), 'value': dict()}
+        if type == 'G':
+            child_ids = child_obj.search(cr, uid, [
+                ('sponsor_id', '=', partner_id)], context=context)
+            res['domain']['child_id'] = [('id', 'in', child_ids)]
+        if type == 'O':
+            res['value']['child_id'] = False
         return res
 
     def _is_a_valid_group(self, cr, uid, group_id, context=None):
@@ -527,8 +540,11 @@ class sponsorship_contract(orm.Model):
     def _has_valid_contract_lines(
             self, cr, uid, contract_lines, type, context=None):
         forbidden_product_types = {
-            'O': ['Sponsorship'],
-            'S': ['Sponsor gifts']
+            'O': ['Sponsorship', 'Sponsor gifts'],
+        }
+        whitelist_product_types = {
+            'G': ['Sponsor gifts'],
+            'S': ['Sponsorship', 'Fund']
         }
         product_obj = self.pool.get('product.product')
         contract_lines = [cont_line[2] for cont_line in contract_lines
@@ -539,12 +555,16 @@ class sponsorship_contract(orm.Model):
                 cr, uid, contract_line.get('product_id'), context)
 
             categ_name = product.categ_name
-            if categ_name in forbidden_product_types.get(type):
+            allowed = whitelist_product_types.get(type)
+            forbidden = forbidden_product_types.get(type)
+            if (allowed and not categ_name in allowed) or \
+                    (forbidden and categ_name in forbidden):
+                message = _('You can only select {0} products.').format(
+                    str(allowed)) if allowed else _(
+                    'You should not select product '
+                    'from category "{}"'.format(categ_name))
                 raise orm.except_orm(
-                    _('Please select a valid product'),
-                    _('You should not select product'
-                      'from category "{}"'.format(categ_name))
-                )
+                    _('Please select a valid product'), message)
         return True
 
     def _compute_next_invoice_date(self, contract):
@@ -586,7 +606,7 @@ class sponsorship_contract(orm.Model):
         """ Perform various checks on contract creations
         """
         child_id = vals.get('child_id')
-        if child_id:
+        if vals.get('type') == 'S' and child_id:
             self.pool.get('compassion.child').write(
                 cr, uid, child_id, {
                     'sponsor_id': vals['partner_id']}, context)
@@ -597,7 +617,7 @@ class sponsorship_contract(orm.Model):
                 if not self._is_a_valid_group(cr, uid, group_id, context):
                     raise orm.except_orm(
                         _('Please select a valid payment option'),
-                        _('You should select payment option with'
+                        _('You should select payment option with '
                           '"1 month" as recurring value')
                     )
         if 'contract_line_ids' in vals:
@@ -633,6 +653,6 @@ class sponsorship_contract(orm.Model):
     def unlink(self, cr, uid, ids, context=None):
         res = super(sponsorship_contract, self).unlink(cr, uid, ids, context)
         for contract in self.browse(cr, uid, ids, context):
-            if contract.child_id:
+            if contract.type == 'S':
                 contract.child_id.write({'sponsor_id': False})
         return res

@@ -82,7 +82,7 @@ class recurring_contract(orm.Model):
         return {c[0]: c[1] for c in self.name_get(cr, uid, ids, context)}
 
     def _get_type(self, cr, uid, context=None):
-        return [('O', _('Others'))]
+        return [('O', _('General'))]
 
     def __get_type(self, cr, uid, context=None):
         """ Return the type values to be inherited """
@@ -227,8 +227,7 @@ class recurring_contract(orm.Model):
             ondelete='restrict',
             track_visibility='onchange'),
         'type': fields.selection(
-            __get_type, _('Type'), select=True,
-            readonly=True),
+            __get_type, _('Type'), select=True),
         'group_freq': fields.function(
             _get_frequency, type='char',
             store={'recurring.contract.group': (
@@ -347,7 +346,7 @@ class recurring_contract(orm.Model):
         res = []
         for contract in self.browse(cr, uid, ids, context):
             name = contract.partner_id.ref
-            if contract.child_id:
+            if contract.type == 'S':
                 name += ' - ' + contract.child_id.code
             elif contract.contract_line_ids:
                 name += ' - ' + contract.contract_line_ids[0].product_id.name
