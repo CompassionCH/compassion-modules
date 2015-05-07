@@ -39,6 +39,11 @@
                 <field name="state" position="attributes">
                     <attribute name="statusbar_visible">draft,active,waiting,terminated</attribute>
                 </field>
+                <button name="button_generate_invoices" position="attributes">
+                    <attribute name="states" position="replace">
+                        <attribute name="states">waiting,active</attribute>
+                    </attribute>
+                </button>
 
                 <button name="contract_terminated" position="replace">
                     <button name="%(action_end_contract)d" type="action" string="Terminate" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['waiting', 'mandate', 'active'])]}"/>

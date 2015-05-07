@@ -17,19 +17,52 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
+from lxml import etree
+
 import logging
 
 
 logger = logging.getLogger(__name__)
 
 
+class sponsorship_line(orm.Model):
+    _inherit = 'recurring.contract.line'
+
+    _columns = {
+        'sponsorship_id': fields.many2one(
+            'recurring.contract', _('Sponsorship'))
+    }
+
+    def fields_view_get(self, cr, user, view_id=None, view_type='tree',
+                        context=None, toolbar=False, submenu=False):
+        """ Change product domain depending on contract type. """
+        res = super(sponsorship_line, self).fields_view_get(
+            cr, user, view_id, view_type, context, toolbar, submenu)
+
+        if view_type == 'tree':
+            type = context.get('default_type')
+            if type == 'S':
+                res['fields']['product_id']['domain'] = [
+                    ('categ_name', 'in', ['Sponsorship', 'Fund'])]
+                # Remove field sponsorship_id for sponsorship contracts
+                doc = etree.XML(res['arch'])
+                for node in doc.xpath("//field[@name='sponsorship_id']"):
+                    node.getparent().remove(node)
+                res['arch'] = etree.tostring(doc)
+                del(res['fields']['sponsorship_id'])
+            else:
+                res['fields']['product_id']['domain'] = [
+                    ('categ_name', '!=', 'Sponsorship')]
+
+        return res
+
+
 class sponsorship_contract(orm.Model):
     _inherit = 'recurring.contract'
 
-    ################################
-    #        FIELDS METHODS        #
-    ################################
-
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
     def get_ending_reasons(self, cr, uid, context=None):
         res = super(sponsorship_contract, self).get_ending_reasons(
             cr, uid, context)
@@ -86,13 +119,21 @@ class sponsorship_contract(orm.Model):
     def _get_type(self, cr, uid, context=None):
         res = super(sponsorship_contract, self)._get_type(cr, uid, context)
         res.extend([
-            ('S', _('Sponsorship')),
-            ('G', _('Child Gift'))])
+            ('G', _('Child Gift')),
+            ('S', _('Sponsorship'))])
         return res
 
-    ###########################
-    #        New Fields       #
-    ###########################
+    def _is_lsv_dd(self, cr, uid, ids, name, args, context=None):
+        res = dict()
+        for contract in self.browse(cr, uid, ids, {'lang': 'en_US'}):
+            payment_term = contract.payment_term_id.name
+            res[contract.id] = 'LSV' in payment_term or \
+                'Postfinance' in payment_term
+        return res
+
+    ##########################################################################
+    #                                 FIELDS                                 #
+    ##########################################################################
     _columns = {
         'correspondant_id': fields.many2one(
             'res.partner', _('Correspondant'), required=True, readonly=True,
@@ -102,6 +143,13 @@ class sponsorship_contract(orm.Model):
             type='char'),
         'fully_managed': fields.function(
             _is_fully_managed, type="boolean", store=True),
+        'birthday_withdrawal': fields.float(_("Annual birthday gift"), help=_(
+            "Set the amount to enable automatic withdrawal each year for "
+            "a birthday gift. The withdrawal is set two months before "
+            "child's birthday.")),
+        'is_lsv_dd': fields.function(
+            _is_lsv_dd, type='boolean',
+            string="Uses LSV or DD")
     }
 
     _defaults = {
@@ -109,7 +157,65 @@ class sponsorship_contract(orm.Model):
     }
 
     ##########################################################################
-    #                       CALLBACKS FOR GP                                 #
+    #                              ORM METHODS                               #
+    ##########################################################################
+    def create(self, cr, uid, vals, context):
+        """ Perform various checks on contract creations
+        """
+        child_id = vals.get('child_id')
+        if vals.get('type') == 'S' and child_id:
+            self.pool.get('compassion.child').write(
+                cr, uid, child_id, {
+                    'sponsor_id': vals['partner_id']}, context)
+
+        if 'group_id' in vals:
+            if context['default_type'] == 'S':
+                group_id = vals['group_id']
+                if not self._is_a_valid_group(cr, uid, group_id, context):
+                    raise orm.except_orm(
+                        _('Please select a valid payment option'),
+                        _('You should select payment option with '
+                          '"1 month" as recurring value')
+                    )
+        if 'contract_line_ids' in vals:
+            self._has_valid_contract_lines(
+                cr, uid, vals['contract_line_ids'],
+                context['default_type'], context)
+
+        return super(sponsorship_contract, self).create(
+            cr, uid, vals, context)
+
+    def write(self, cr, uid, ids, vals, context):
+        """ Perform various checks on contract modification """
+        for contract in self.browse(cr, uid, ids, context):
+            if 'child_id' in vals:
+                self._on_change_child_id(cr, uid, ids, vals, context)
+            if 'group_id' in vals:
+                group_id = vals['group_id']
+                if contract.type == 'S':
+                    if not self._is_a_valid_group(cr, uid, group_id, context):
+                        raise orm.except_orm(
+                            _('Please select a valid payment option'),
+                            _('You should select payment option with'
+                              '"1 month" as recurring value')
+                        )
+            if 'contract_line_ids' in vals:
+                self._has_valid_contract_lines(
+                    cr, uid, vals['contract_line_ids'],
+                    contract.type, context)
+
+        return super(sponsorship_contract, self).write(
+            cr, uid, ids, vals, context)
+
+    def unlink(self, cr, uid, ids, context=None):
+        res = super(sponsorship_contract, self).unlink(cr, uid, ids, context)
+        for contract in self.browse(cr, uid, ids, context):
+            if contract.type == 'S':
+                contract.child_id.write({'sponsor_id': False})
+        return res
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
     ##########################################################################
     def force_termination(self, cr, uid, contract_id, end_state, end_reason,
                           child_state, child_exit_code, end_date,
@@ -312,27 +418,6 @@ class sponsorship_contract(orm.Model):
 
         return True
 
-    def _invoice_paid(self, cr, uid, invoice, context=None):
-        """ Prevent to reconcile invoices for fund-suspended projects. """
-        if invoice.payment_ids:
-            for invl in invoice.invoice_line:
-                if invl.contract_id and invl.contract_id.child_id:
-                    payment_allowed = True
-                    project = invl.contract_id.child_id.project_id
-
-                    if invl.product_id.categ_name == 'Sponsor gifts':
-                        payment_allowed = project.disburse_gifts or \
-                            invl.due_date < project.status_date
-                    else:
-                        payment_allowed = project.disburse_funds or \
-                            invl.due_date < project.status_date
-                    if not payment_allowed:
-                        raise orm.except_orm(
-                            _("Reconcile error"),
-                            _("The project %s is fund-suspended. You cannot "
-                              "reconcile invoice (%s).") % (project.code,
-                                                            invoice.id))
-
     def suspend_contract(self, cr, uid, ids, context=None, date_start=None,
                          date_end=None):
         """Cancels the number of invoices specified starting
@@ -383,6 +468,62 @@ class sponsorship_contract(orm.Model):
 
         return True
 
+    ##########################################################################
+    #                             VIEW CALLBACKS                             #
+    ##########################################################################
+    def fields_view_get(self, cr, user, view_id=None, view_type='form',
+                        context=None, toolbar=False, submenu=False):
+        """ Display only contract type needed in view. """
+        res = super(sponsorship_contract, self).fields_view_get(
+            cr, user, view_id, view_type, context, toolbar, submenu)
+
+        if view_type == 'form' and res['fields'].get('type'):
+            if context.get('default_type') != 'S':
+                # Remove type Sponsorship so that we cannot change to it.
+                res['fields']['type']['selection'].pop(2)
+        return res
+
+    def on_change_partner_id(self, cr, uid, ids, partner_id, type,
+                             context=None):
+        res = super(sponsorship_contract, self).on_change_partner_id(
+            cr, uid, ids, partner_id, context)
+
+        # Check if group_id is valid
+        if 'group_id' in res['value']:
+            if not self._is_a_valid_group(
+                    cr, uid, res['value']['group_id'], context):
+                del res['value']['group_id']
+
+        if ids:
+            contract = self.browse(cr, uid, ids[0], context)
+            if contract.type == 'S':
+                # If state draft correspondant_id=partner_id
+                if (contract.state == 'draft'):
+                    res['value'].update({
+                        'correspondant_id': partner_id,
+                    })
+        else:
+            res['value'].update({
+                'correspondant_id': partner_id,
+            })
+
+        return res
+
+    def on_change_group_id(self, cr, uid, ids, group_id, context=None):
+        """ Allows to show/hide annual birthday gift field. """
+        res = super(sponsorship_contract, self).on_change_group_id(
+            cr, uid, ids, group_id, context)
+
+        group = self.pool.get('recurring.contract.group').browse(
+            cr, uid, group_id, {'lang': 'en_US'})
+        payment_term = group.payment_term_id.name
+        res['value']['is_lsv_dd'] = 'LSV' in payment_term or \
+            'Postfinance' in payment_term
+        return res
+
+    ##########################################################################
+    #                            WORKFLOW METHODS                            #
+    ##########################################################################
     def contract_cancelled(self, cr, uid, ids, context=None):
         res = super(sponsorship_contract, self).contract_cancelled(
             cr, uid, ids, context)
@@ -423,6 +564,32 @@ class sponsorship_contract(orm.Model):
                 contract.child_id.write({'sponsor_id': False})
         return res
 
+    def contract_waiting_mandate(self, cr, uid, ids, context=None):
+        for contract in self.browse(cr, uid, ids, context):
+            # Check that a child is selected for Sponsorship product
+            if contract.type == 'S' and not contract.child_id:
+                raise orm.except_orm(
+                    _("Please select a child"),
+                    _("You should select a child if you "
+                      "make a new sponsorship!"))
+        return super(sponsorship_contract, self).contract_waiting_mandate(
+            cr, uid, ids, context)
+
+    def contract_waiting(self, cr, uid, ids, context=None):
+        for contract in self.browse(cr, uid, ids, {'lang': 'en_US'}):
+            # Check that a child is selected for Sponsorship product
+            if contract.type == 'S' and not contract.child_id:
+                raise orm.except_orm(
+                    _("Please select a child"),
+                    _("You should select a child if you "
+                      "make a new sponsorship!"))
+
+        return super(sponsorship_contract, self).contract_waiting(
+            cr, uid, ids, context)
+
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
     def _on_contract_active(self, cr, uid, ids, context=None):
         """ Hook for doing something when contract is activated.
         Update child to mark it has been sponsored, and update partner
@@ -469,65 +636,26 @@ class sponsorship_contract(orm.Model):
                         contract.correspondant_id.id},
                     context)
 
-    def contract_waiting_mandate(self, cr, uid, ids, context=None):
-        for contract in self.browse(cr, uid, ids, context):
-            # Check that a child is selected for Sponsorship product
-            if contract.type == 'S' and not contract.child_id:
-                raise orm.except_orm(
-                    _("Please select a child"),
-                    _("You should select a child if you "
-                      "make a new sponsorship!"))
-        return super(sponsorship_contract, self).contract_waiting_mandate(
-            cr, uid, ids, context)
+    def _invoice_paid(self, cr, uid, invoice, context=None):
+        """ Prevent to reconcile invoices for fund-suspended projects. """
+        if invoice.payment_ids:
+            for invl in invoice.invoice_line:
+                if invl.contract_id and invl.contract_id.child_id:
+                    payment_allowed = True
+                    project = invl.contract_id.child_id.project_id
 
-    def contract_waiting(self, cr, uid, ids, context=None):
-        for contract in self.browse(cr, uid, ids, {'lang': 'en_US'}):
-            # Check that a child is selected for Sponsorship product
-            if contract.type == 'S' and not contract.child_id:
-                raise orm.except_orm(
-                    _("Please select a child"),
-                    _("You should select a child if you "
-                      "make a new sponsorship!"))
-
-        return super(sponsorship_contract, self).contract_waiting(
-            cr, uid, ids, context)
-
-    def on_change_partner_id(self, cr, uid, ids, partner_id, type,
-                             context=None):
-        res = super(sponsorship_contract, self).on_change_partner_id(
-            cr, uid, ids, partner_id, context)
-
-        # Check if group_id is valid
-        if 'group_id' in res['value']:
-            if not self._is_a_valid_group(
-                    cr, uid, res['value']['group_id'], context):
-                del res['value']['group_id']
-
-        if ids:
-            contract = self.browse(cr, uid, ids[0], context)
-            if contract.type == 'S':
-                # If state draft correspondant_id=partner_id
-                if (contract.state == 'draft'):
-                    res['value'].update({
-                        'correspondant_id': partner_id,
-                    })
-        else:
-            res['value'].update({
-                'correspondant_id': partner_id,
-            })
-
-        return res
-
-    def on_change_type(self, cr, uid, ids, partner_id, type, context=None):
-        child_obj = self.pool.get('compassion.child')
-        res = {'domain': dict(), 'value': dict()}
-        if type == 'G':
-            child_ids = child_obj.search(cr, uid, [
-                ('sponsor_id', '=', partner_id)], context=context)
-            res['domain']['child_id'] = [('id', 'in', child_ids)]
-        if type == 'O':
-            res['value']['child_id'] = False
-        return res
+                    if invl.product_id.categ_name == 'Sponsor gifts':
+                        payment_allowed = project.disburse_gifts or \
+                            invl.due_date < project.status_date
+                    else:
+                        payment_allowed = project.disburse_funds or \
+                            invl.due_date < project.status_date
+                    if not payment_allowed:
+                        raise orm.except_orm(
+                            _("Reconcile error"),
+                            _("The project %s is fund-suspended. You cannot "
+                              "reconcile invoice (%s).") % (project.code,
+                                                            invoice.id))
 
     def _is_a_valid_group(self, cr, uid, group_id, context=None):
         group_obj = self.pool.get('recurring.contract.group')
@@ -552,7 +680,7 @@ class sponsorship_contract(orm.Model):
 
         for contract_line in contract_lines:
             product = product_obj.browse(
-                cr, uid, contract_line.get('product_id'), context)
+                cr, uid, contract_line.get('product_id'), {'lang': 'en_US'})
 
             categ_name = product.categ_name
             allowed = whitelist_product_types.get(type)
@@ -562,7 +690,7 @@ class sponsorship_contract(orm.Model):
                 message = _('You can only select {0} products.').format(
                     str(allowed)) if allowed else _(
                     'You should not select product '
-                    'from category "{}"'.format(categ_name))
+                    'from category "{0}"'.format(categ_name))
                 raise orm.except_orm(
                     _('Please select a valid product'), message)
         return True
@@ -596,63 +724,4 @@ class sponsorship_contract(orm.Model):
             if (invl.contract_id and
                invl.product_id.categ_name != 'Sponsor gifts'):
                 res.append(invl.contract_id.id)
-        return res
-
-    ################################
-    #        PUBLIC METHODS        #
-    ################################
-
-    def create(self, cr, uid, vals, context):
-        """ Perform various checks on contract creations
-        """
-        child_id = vals.get('child_id')
-        if vals.get('type') == 'S' and child_id:
-            self.pool.get('compassion.child').write(
-                cr, uid, child_id, {
-                    'sponsor_id': vals['partner_id']}, context)
-
-        if 'group_id' in vals:
-            if context['default_type'] == 'S':
-                group_id = vals['group_id']
-                if not self._is_a_valid_group(cr, uid, group_id, context):
-                    raise orm.except_orm(
-                        _('Please select a valid payment option'),
-                        _('You should select payment option with '
-                          '"1 month" as recurring value')
-                    )
-        if 'contract_line_ids' in vals:
-            self._has_valid_contract_lines(
-                cr, uid, vals['contract_line_ids'],
-                context['default_type'], context)
-
-        return super(sponsorship_contract, self).create(
-            cr, uid, vals, context)
-
-    def write(self, cr, uid, ids, vals, context):
-        """ Perform various checks on contract modification """
-        for contract in self.browse(cr, uid, ids, context):
-            if 'child_id' in vals:
-                self._on_change_child_id(cr, uid, ids, vals, context)
-            if 'group_id' in vals:
-                group_id = vals['group_id']
-                if contract.type == 'S':
-                    if not self._is_a_valid_group(cr, uid, group_id, context):
-                        raise orm.except_orm(
-                            _('Please select a valid payment option'),
-                            _('You should select payment option with'
-                              '"1 month" as recurring value')
-                        )
-            if 'contract_line_ids' in vals:
-                self._has_valid_contract_lines(
-                    cr, uid, vals['contract_line_ids'],
-                    contract.type, context)
-
-        return super(sponsorship_contract, self).write(
-            cr, uid, ids, vals, context)
-
-    def unlink(self, cr, uid, ids, context=None):
-        res = super(sponsorship_contract, self).unlink(cr, uid, ids, context)
-        for contract in self.browse(cr, uid, ids, context):
-            if contract.type == 'S':
-                contract.child_id.write({'sponsor_id': False})
         return res

@@ -9,6 +9,7 @@
 #
 ##############################################################################
 
+from openerp import netsvc
 from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools import mod10r
@@ -17,6 +18,10 @@ from openerp.tools.translate import _
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import time
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class generate_gift_wizard(orm.TransientModel):
@@ -34,6 +39,66 @@ class generate_gift_wizard(orm.TransientModel):
     _defaults = {
         'invoice_date': datetime.today().strftime(DF),
     }
+
+    def generate_from_cron(self, cr, uid, context=None):
+        """ Creates the annual birthday gift for LSV/DD contracts that
+        have set the option for automatic withdrawal. """
+        logger.info("Automatic Birthday Gift Withdrawal CRON Started.")
+        if context is None:
+            context = dict()
+
+        contract_obj = self.pool.get('recurring.contract')
+        invl_obj = self.pool.get('account.invoice.line')
+        gen_states = self.pool.get(
+            'recurring.contract.group')._get_gen_states()
+        product_id = self.pool.get('product.product').search(
+            cr, uid, [('name', '=', 'Birthday Gift')],
+            context={'lang': 'en_US'})[0]
+
+        # Search active LSV/DD Sponsorships with birthday withdrawal
+        contract_ids = contract_obj.search(cr, uid, [
+            ('birthday_withdrawal', '>', 0.0),
+            ('state', 'in', gen_states),
+            '|', ('payment_term_id.name', 'ilike', 'LSV'),
+            ('payment_term_id.name', 'ilike', 'Postfinance')],
+            context=context)
+        # Exclude sponsorship if a gift is already open
+        for con_id in list(contract_ids):
+            invl_ids = invl_obj.search(cr, uid, [
+                ('state', '=', 'open'),
+                ('contract_id', '=', con_id),
+                ('product_id', '=', product_id)], context=context)
+            if invl_ids:
+                contract_ids.remove(con_id)
+
+        if contract_ids:
+            total = str(len(contract_ids))
+            count = 1
+            logger.info("Found {0} Birthday Gifts to generate.".format(total))
+            wf_service = netsvc.LocalService('workflow')
+            wizard_id = self.create(cr, uid, {
+                'description': _('Automatic withdrawal for birthday gift'),
+                'invoice_date': datetime.today().strftime(DF),
+                'product_id': product_id}, context)
+
+            # Generate and validate invoices
+            for contract in contract_obj.browse(cr, uid, contract_ids,
+                                                context):
+                logger.info("Invoice Generation: {0}/{1} ".format(
+                    str(count), total))
+                self.write(cr, uid, wizard_id, {
+                    'amount': contract.birthday_withdrawal}, context)
+                context['active_ids'] = [contract.id]
+                invoice_id = self.generate_invoice(
+                    cr, uid, [wizard_id], context)['domain'][0][2][0]
+                wf_service.trg_validate(
+                    uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                count += 1
+
+            self.unlink(cr, uid, wizard_id, context)
+
+        logger.info("Automatic Birthday Gift Withdrawal CRON Finished !!")
+        return True
 
     def generate_invoice(self, cr, uid, ids, context=None):
         # Read data in english

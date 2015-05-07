@@ -27,14 +27,24 @@
                 <xpath expr="//field[@name='type']" position="attributes">
                     <!-- Sponsorship contracts cannot change their types -->
                     <attribute name="attrs">{'readonly': [('type', '=', 'S')]}</attribute>
-                    <!-- Listen on type change for changing domain of children -->
-                    <attribute name="on_change">on_change_type(partner_id, type)</attribute>
                 </xpath>
                 
                 <!-- Field child_id is not available for general contracts -->
                 <xpath expr="//field[@name='child_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('type', '=', 'O')], 'required': [('type', 'in', ['S', 'G'])]}</attribute>
+                    <attribute name="attrs">{'readonly': [('type', '!=', 'S')], 'required': [('type', '=', 'S')]}</attribute>
                 </xpath>
+                
+                <!-- Add context in contract lines -->
+                <xpath expr="//field[@name='contract_line_ids']" position="attributes">
+                    <attribute name="context">{'default_type': type}</attribute>
+                </xpath>
+                
+                <!-- Automatic birthday withdrawal -->
+                <field name="next_invoice_date" position="after">
+                    <field name="is_lsv_dd" invisible="1"/>
+                    <field name="birthday_withdrawal"
+                           attrs="{'invisible': ['|', '|', ('is_lsv_dd', '=', False), ('state', 'in', ['terminated', 'cancelled']), ('type', '!=', 'S')]}"/>
+                </field>
             </field>
         </record>
 
@@ -48,6 +58,11 @@
                         {'colors':{'Sponsorship':'blue', 'Fund':'green', 'Sponsor gifts':'red'}, 'field_color':'categ_name'}
                     </attribute>
                 </field>
+                <field name="product_id" position="after">
+                    <!-- Ability to link gift contract lines to sponsorships -->
+                    <field name="sponsorship_id"
+                           domain="[('partner_id', '=', parent.partner_id), ('type', '=', 'S'), ('state', 'not in', ['draft', 'terminated', 'cancelled'])]"/>
+                </field>
             </field>
         </record>
 
@@ -57,7 +72,7 @@
             <field name="res_model">recurring.contract</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="domain">[('type','=','O')]</field>
+            <field name="domain">[('type','in',['O','G'])]</field>
             <field name="context">{'default_type':'O'}</field>
         </record>
 

@@ -36,3 +36,24 @@ class contract_group(orm.Model):
             _contains_sponsorship, string=_('Contains sponsorship'),
             type='boolean', readonly=True)
     }
+
+    def _setup_inv_line_data(self, cr, uid, contract_line, invoice_id,
+                             context=None):
+        """ Contract gifts relate their invoice lines to sponsorship. """
+        invl_data = super(contract_group, self)._setup_inv_line_data(
+            cr, uid, contract_line, invoice_id, context)
+
+        contract = contract_line.contract_id
+        if contract.type == 'G':
+            sponsorship = contract_line.sponsorship_id
+            if sponsorship.state in self._get_gen_states():
+                invl_data['contract_id'] = sponsorship.id
+            else:
+                raise orm.except_orm(
+                    _('Invoice generation error'),
+                    _('No active sponsorship found for child {0}. '
+                      'The gift contract with id {1} is not valid.').format(
+                        sponsorship.child_code, str(contract.id))
+                )
+
+        return invl_data
