@@ -9,8 +9,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
+#    @author: David Coninckx
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -29,33 +29,49 @@
 
 
 {
-    'name': 'Compassion CH Message Center',
-    'version': '1.5',
+    'name': 'Compassion Sponsorships Tracking',
+    'version': '1.1',
     'category': 'Other',
     'description': """
-        Message Center that offers a queue of messages that have to be sent
-        to GMC and a queue of messages received from GMC.
+Compassion Sponsorships Tracking
+================================
 
-        Warning : this addon requires the python-requests library to be
-        installed on the server. (sudo apt-get install python-requests).
+Module to track the sponsorships.
+It is based on a new state : sds_state.
+It adds a new kanban, tree and form view to track sponsorships.
+
+Color conventions for SDS Tracking Kanban View :
+
+    0. Blank - Default color
+    1. Black - Sponsorships with NO SUB (cancelled, or no_sub)
+    2. Red - Sub_rejected sponsorships or sponsorships that are likely to
+             become sub_reject.
+    3. Yellow - Indicates a higher priority action is required on this
+                sponsorship.
+    4. Light green - Indicates an action is required on this sponsorship,
+                     typically a mailing is to be sent to the sponsor.
+                     This is a low priority action.
+    5. Green - Sub_accepted sponsorships or sponsorships likely to become
+               sub_accept.
+    6. Light blue - not used
+    7. Blue - Draft sponsorships
+    8. Violet - not used
+    9. Pink - not used
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['sponsorship_compassion', 'partner_firstname'],
-    'external_dependencies': {
-        'python': ['requests'],
-    },
+    'depends': [
+        'sponsorship_compassion',
+        ],
     'data': [
-        'security/gmc_groups.xml',
-        'security/ir.model.access.csv',
-        'view/gmc_message_view.xml',
-        'view/contracts_view.xml',
-        'view/child_compassion_view.xml',
-        'data/gmc_action.xml',
-        'data/gmc_message_cron.xml',
-        'workflow/contract_workflow.xml',
-    ],
+        'view/contract_view.xml',
+        'workflow/sds_workflow.xml',
+        'workflow/project_workflow.xml',
+        'data/contract_cron.xml',
+        'data/install.xml',
+        ],
     'demo': [],
+    'js': ['static/src/js/sponsorship_tracking_kanban.js'],
     'installable': True,
     'auto_install': False,
 }

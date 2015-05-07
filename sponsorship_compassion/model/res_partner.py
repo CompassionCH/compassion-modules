@@ -73,12 +73,6 @@ class res_partner(orm.Model):
     }
 
     def show_lines(self, cr, uid, ids, context=None):
-        inv_obj = self.pool.get('account.invoice')
-        inv_line_obj = self.pool.get('account.invoice.line')
-        inv_ids = inv_obj.search(cr, uid, [('partner_id', '=', ids[0])],
-                                 context=context)
-        inv_line_ids = inv_line_obj.search(
-            cr, uid, [('invoice_id', 'in', inv_ids)], context=context)
         try:
             ir_model_data = self.pool.get('ir.model.data')
             invoice_line_id = ir_model_data.get_object_reference(
@@ -86,17 +80,40 @@ class res_partner(orm.Model):
                 'view_invoice_line_partner_tree')[1]
         except ValueError:
             invoice_line_id = False
-
+        context['search_default_partner_id'] = ids
         action = {
             'name': 'Related invoice lines',
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree, form',
-            'domain': [('id', 'in', inv_line_ids)],
             'res_model': 'account.invoice.line',
             'view_id': invoice_line_id,
             'views': [(invoice_line_id, 'tree'), (False, 'form')],
             'target': 'current',
+            'context': context,
+        }
+
+        return action
+
+    def show_move_lines(self, cr, uid, ids, context=None):
+        try:
+            ir_model_data = self.pool.get('ir.model.data')
+            move_line_id = ir_model_data.get_object_reference(
+                cr, uid, 'account',
+                'view_move_line_tree')[1]
+        except ValueError:
+            move_line_id = False
+        context['search_default_partner_id'] = ids
+        action = {
+            'name': 'Related invoice lines',
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree',
+            'res_model': 'account.move.line',
+            'view_id': move_line_id,
+            'views': [(move_line_id, 'tree')],
+            'target': 'current',
+            'context': context,
         }
 
         return action
@@ -115,3 +132,15 @@ class res_partner(orm.Model):
             'target': 'current',
             'context': context
         }
+
+    def unreconciled_transaction_items(self, cr, uid, ids, context=None):
+        context['search_default_unreconciled'] = 1
+        return self.show_move_lines(cr, uid, ids, context)
+
+    def receivable_transaction_items(self, cr, uid, ids, context=None):
+        account_ids = self.pool.get('account.account').search(
+            cr, uid,
+            [('code', '=', '1050')],
+            context=context)
+        context['search_default_account_id'] = account_ids[0]
+        return self.show_move_lines(cr, uid, ids, context)

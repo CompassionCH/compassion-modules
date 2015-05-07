@@ -22,17 +22,21 @@ class recurring_contract(orm.Model):
     """ We add here creation of messages concerning commitments. """
     _inherit = "recurring.contract"
 
-    _columns = {
-        # Field to identify contracts modified by gmc.
-        'gmc_state': fields.selection([
+    def _get_gmc_states(self, cr, uid, context=None):
+        """ Overridable method to get GMC states. """
+        return [
             ('picture', _('New Picture')),
             ('casestudy', _('New Case Study')),
             ('biennial', _('Biennial')),
             ('depart', _('Child Departed')),
-            ('transfer', _('Child Transfer')),
-            ('suspension', _('Project Fund-Suspended')),
-            ('suspension-extension', _('Fund suspension extension')),
-            ('reactivation', _('Project Reactivated'))], _('GMC State'))
+            ('transfer', _('Child Transfer'))]
+
+    def __get_gmc_states(self, cr, uid, context=None):
+        return self._get_gmc_states(cr, uid, context)
+
+    _columns = {
+        # Field to identify contracts modified by gmc.
+        'gmc_state': fields.selection(__get_gmc_states, _('GMC State'))
     }
 
     def _on_contract_active(self, cr, uid, ids, context=None):
@@ -154,13 +158,6 @@ class recurring_contract(orm.Model):
                 # 2. Delete pending CreateGift and CreateCommitment messages
                 self._clean_messages(cr, uid, invoice_line.id, context)
 
-    def suspend_contract(self, cr, uid, ids, context=None,
-                         date_start=None, date_end=None):
-        """ Mark the state of contract when it is suspended. """
-        self.write(cr, uid, ids, {'gmc_state': 'suspension'}, context)
-        return super(recurring_contract, self).suspend_contract(
-            cr, uid, ids, context, date_start, date_end)
-
     def _on_invoice_line_removal(self, cr, uid, invoice_lines, context=None):
         """ Removes the corresponding Affectats in GP.
             @param: invoice_lines (dict): {
@@ -211,3 +208,28 @@ class recurring_contract(orm.Model):
     def get_action_id(self, cr, uid, name, context=None):
         return self.pool.get('gmc.action').get_action_id(cr, uid, name,
                                                          context)
+
+    def new_biennial(self, cr, uid, ids, context=None):
+        """ Called when new picture and new case study is available. """
+        self.write(cr, uid, ids, {'gmc_state': 'biennial'}, context)
+
+    def set_gmc_event(self, cr, uid, ids, event, context=None):
+        """
+        Called when a Child Update was received for a sponsored child.
+        Arg event can have one of the following values :
+            - Transfer : child was transferred to another project
+            - CaseStudy : child has a new casestudy
+            - NewImage : child has a new image
+        """
+        # Maps the event to the gmc state value of contract
+        gmc_states = {
+            'Transfer': 'transfer',
+            'CaseStudy': 'casestudy',
+            'NewImage': 'picture',
+        }
+        res = True
+        for contract in self.browse(cr, uid, ids, context):
+            if not (contract.gmc_state == 'biennial' and
+                    event in ('CaseStudy', 'NewImage')):
+                res = res and contract.write({'gmc_state': gmc_states[event]})
+        return res

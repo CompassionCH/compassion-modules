@@ -79,13 +79,6 @@ class child_compassion(orm.Model):
         self._store_set_values(cr, uid, ids, ['unsponsored_since'], context)
         return True
 
-    def child_add_to_typo3(self, cr, uid, ids, context=None):
-        """ Update unsponsored date before puting the children on internet.
-        """
-        self._recompute_unsponsored(cr, uid, ids, context)
-        return super(child_compassion, self).child_add_to_typo3(cr, uid, ids,
-                                                                context)
-
     def get_infos(self, cr, uid, ids, context=None):
         """ Update unsponsored date. """
         if not isinstance(ids, list):
