@@ -178,9 +178,12 @@ class recurring_contract(orm.Model):
         message_obj = self.pool.get('gmc.message.pool')
         wf_service = netsvc.LocalService('workflow')
 
+        # Don't remove CancelCommitment messages
+        cancel_id = self.get_action_id(cr, uid, 'CancelCommitment')
         mess_ids = message_obj.search(cr, uid, [
             ('invoice_line_id', 'in', invoice_line_ids),
-            ('state', 'in', ['new', 'failure'])], context=context)
+            ('state', 'in', ['new', 'failure']),
+            ('action_id', '!=', cancel_id)], context=context)
         for message in message_obj.browse(cr, uid, mess_ids, context):
             if message.action_id.name == 'CreateCommitment':
                 # We set back the sponsorship in waiting state
