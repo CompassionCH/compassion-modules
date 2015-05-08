@@ -8,7 +8,7 @@
             <field eval="18" name="priority"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
-                    <field name="child_name" />
+                    <field name="contract_id" />
                 </field>
             </field>
         </record>
@@ -23,7 +23,6 @@
                     <field name="contract_id" domain="['|', ('partner_id', '=', parent.partner_id), ('correspondant_id', '=', parent.partner_id), ('state', '!=', 'draft')]"
                            options="{'search_more': true, 'field_color': 'state',
                                      'colors': {'cancelled': 'gray', 'terminated': 'gray', 'draft': 'blue', 'mandate': 'red', 'waiting': 'green'}}"/>
-                    <field name="child_name" />
                 </xpath>
 
                 <!-- Replace analytic_id by analytics_id in invoice lines -->
@@ -40,7 +39,7 @@
             <field name="arch" type="xml">
                 <tree string="Invoice lines" colors="blue:state == 'draft';black:state in ('proforma','proforma2','open');gray:state == 'cancel'">
                     <field name="product_id" />
-                    <field name="child_name" />
+                    <field name="contract_id" />
                     <field name="due_date" />
                     <field name="last_payment" />
                     <field name="quantity" />
@@ -61,11 +60,10 @@
                     <filter name="paid" string="Paid" domain="[('state','=','paid')]" help="Paid invoice lines"/>
                     <filter name="cancel" string="Cancelled" domain="[('state','=','cancel')]" help="Cancelled invoice lines"/>
                     <field name="product_id" string="Product" />
-                    <field name="child_name" string="Sponsored child" />
                     <field name="partner_id" string="Partner"/>
                     <group expand="0" string="Group By...">
                         <filter string="Product" domain="[]" context="{'group_by':'product_id'}"/>
-                        <filter string="Child" domain="[]"  context="{'group_by':'child_name'}"/>
+                        <filter string="Contract" domain="[]"  context="{'group_by':'contract_id'}"/>
                         <filter string="State" domain="[]" context="{'group_by':'state'}"/>
                         <filter string="Last payment" domain="[]" context="{'group_by':'last_payment'}"/>
                         <filter string="Invoice" domain="[]" context="{'group_by':'invoice_id'}" />

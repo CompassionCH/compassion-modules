@@ -9,7 +9,6 @@
 #
 ##############################################################################
 
-from openerp import netsvc
 from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools import mod10r
@@ -18,10 +17,6 @@ from openerp.tools.translate import _
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import time
-
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 class generate_gift_wizard(orm.TransientModel):
@@ -40,80 +35,22 @@ class generate_gift_wizard(orm.TransientModel):
         'invoice_date': datetime.today().strftime(DF),
     }
 
-    def generate_from_cron(self, cr, uid, context=None):
-        """ Creates the annual birthday gift for LSV/DD contracts that
-        have set the option for automatic withdrawal. """
-        logger.info("Automatic Birthday Gift Withdrawal CRON Started.")
-        if context is None:
-            context = dict()
-
-        contract_obj = self.pool.get('recurring.contract')
-        invl_obj = self.pool.get('account.invoice.line')
-        gen_states = self.pool.get(
-            'recurring.contract.group')._get_gen_states()
-        product_id = self.pool.get('product.product').search(
-            cr, uid, [('name', '=', 'Birthday Gift')],
-            context={'lang': 'en_US'})[0]
-
-        # Search active LSV/DD Sponsorships with birthday withdrawal
-        contract_ids = contract_obj.search(cr, uid, [
-            ('birthday_withdrawal', '>', 0.0),
-            ('state', 'in', gen_states),
-            '|', ('payment_term_id.name', 'ilike', 'LSV'),
-            ('payment_term_id.name', 'ilike', 'Postfinance')],
-            context=context)
-        # Exclude sponsorship if a gift is already open
-        for con_id in list(contract_ids):
-            invl_ids = invl_obj.search(cr, uid, [
-                ('state', '=', 'open'),
-                ('contract_id', '=', con_id),
-                ('product_id', '=', product_id)], context=context)
-            if invl_ids:
-                contract_ids.remove(con_id)
-
-        if contract_ids:
-            total = str(len(contract_ids))
-            count = 1
-            logger.info("Found {0} Birthday Gifts to generate.".format(total))
-            wf_service = netsvc.LocalService('workflow')
-            wizard_id = self.create(cr, uid, {
-                'description': _('Automatic withdrawal for birthday gift'),
-                'invoice_date': datetime.today().strftime(DF),
-                'product_id': product_id}, context)
-
-            # Generate and validate invoices
-            for contract in contract_obj.browse(cr, uid, contract_ids,
-                                                context):
-                logger.info("Invoice Generation: {0}/{1} ".format(
-                    str(count), total))
-                self.write(cr, uid, wizard_id, {
-                    'amount': contract.birthday_withdrawal}, context)
-                context['active_ids'] = [contract.id]
-                invoice_id = self.generate_invoice(
-                    cr, uid, [wizard_id], context)['domain'][0][2][0]
-                wf_service.trg_validate(
-                    uid, 'account.invoice', invoice_id, 'invoice_open', cr)
-                count += 1
-
-            self.unlink(cr, uid, wizard_id, context)
-
-        logger.info("Automatic Birthday Gift Withdrawal CRON Finished !!")
-        return True
-
     def generate_invoice(self, cr, uid, ids, context=None):
         # Read data in english
         if context is None:
-            context = {}
+            context = dict()
         ctx = context.copy()
         ctx['lang'] = 'en_US'
         # Ids of contracts are stored in context
         wizard = self.browse(cr, uid, ids[0], ctx)
         invoice_ids = list()
+        gen_states = self.pool.get(
+            'recurring.contract.group')._get_gen_states()
         for contract in self.pool.get('recurring.contract').browse(
                 cr, uid, context.get('active_ids', list()), ctx):
             partner = contract.partner_id
 
-            if contract.type == 'S' and contract.state == 'active':
+            if contract.type == 'S' and contract.state in gen_states:
                 invoice_obj = self.pool.get('account.invoice')
                 journal_ids = self.pool.get('account.journal').search(
                     cr, uid,
@@ -123,6 +60,16 @@ class generate_gift_wizard(orm.TransientModel):
                 if wizard.product_id.name == 'Birthday Gift':
                     invoice_date = self.compute_date_birthday_invoice(
                         contract.child_id.birthdate, wizard.invoice_date)
+                    # If a gift was already made for that date, create one
+                    # for next year.
+                    invoice_ids = self.pool.get(
+                        'account.invoice.line').search(cr, uid, [
+                        ('product_id', '=', wizard.product_id.id),
+                        ('due_date', '=', invoice_date),
+                        ('contract_id', '=', contract.id)], context=ctx)
+                    if invoice_ids:
+                        invoice_date = (datetime.strptime(invoice_date, DF) +
+                                        relativedelta(months=12)).strftime(DF)
                 else:
                     invoice_date = wizard.invoice_date
 
@@ -135,6 +82,8 @@ class generate_gift_wizard(orm.TransientModel):
                     'payment_term': 1,  # Immediate payment
                     'bvr_reference': self._generate_bvr_reference(
                         contract, wizard.product_id),
+                    'recurring_invoicer_id': context.get(
+                        'recurring_invoicer_id', False)
                 }
 
                 invoice_id = invoice_obj.create(cr, uid, inv_data,
@@ -212,21 +161,6 @@ class generate_gift_wizard(orm.TransientModel):
             bvr_reference = '004874969' + bvr_reference[9:]
         if len(bvr_reference) == 26:
             return mod10r(bvr_reference)
-
-    def fields_view_get(self, cr, user, view_id=None, view_type='form',
-                        context=None, toolbar=False, submenu=False):
-        """ Dynamically compute the domain of field product_id to return
-        only Gifts products.
-        """
-        res = super(generate_gift_wizard, self).fields_view_get(
-            cr, user, view_id, view_type, context, toolbar, submenu)
-        if view_type == 'form':
-            gifts_ids = self.pool.get('product.product').search(
-                cr, user, [('type', '=', 'G')],
-                context={'lang': 'en_US'})
-            res['fields']['product_id']['domain'] = [('id', 'in', gifts_ids)]
-
-        return res
 
     def compute_date_birthday_invoice(self, child_birthdate, payment_date):
         """Set date of invoice two months before child's birthdate"""

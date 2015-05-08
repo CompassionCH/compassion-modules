@@ -9,7 +9,7 @@
                 <form string="Gift Generation" version="7.0">
                     <separator string="Gift generation from contract"/>
                     <group>
-                        <field name="product_id" />
+                        <field name="product_id" domain="[('categ_name', '=', 'Sponsor gifts')]" />
                         <field name="amount" />
                         <field name="invoice_date" />
                         <field name="description" />

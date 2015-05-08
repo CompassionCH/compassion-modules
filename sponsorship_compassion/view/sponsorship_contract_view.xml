@@ -39,11 +39,10 @@
                     <attribute name="context">{'default_type': type}</attribute>
                 </xpath>
                 
-                <!-- Automatic birthday withdrawal -->
+                <!-- Automatic birthday invoice -->
                 <field name="next_invoice_date" position="after">
-                    <field name="is_lsv_dd" invisible="1"/>
-                    <field name="birthday_withdrawal"
-                           attrs="{'invisible': ['|', '|', ('is_lsv_dd', '=', False), ('state', 'in', ['terminated', 'cancelled']), ('type', '!=', 'S')]}"/>
+                    <field name="birthday_invoice"
+                           attrs="{'invisible': ['|', ('state', 'in', ['terminated', 'cancelled']), ('type', '!=', 'S')]}"/>
                 </field>
             </field>
         </record>

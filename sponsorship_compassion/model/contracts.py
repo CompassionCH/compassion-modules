@@ -123,14 +123,6 @@ class sponsorship_contract(orm.Model):
             ('S', _('Sponsorship'))])
         return res
 
-    def _is_lsv_dd(self, cr, uid, ids, name, args, context=None):
-        res = dict()
-        for contract in self.browse(cr, uid, ids, {'lang': 'en_US'}):
-            payment_term = contract.payment_term_id.name
-            res[contract.id] = 'LSV' in payment_term or \
-                'Postfinance' in payment_term
-        return res
-
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
@@ -143,13 +135,10 @@ class sponsorship_contract(orm.Model):
             type='char'),
         'fully_managed': fields.function(
             _is_fully_managed, type="boolean", store=True),
-        'birthday_withdrawal': fields.float(_("Annual birthday gift"), help=_(
-            "Set the amount to enable automatic withdrawal each year for "
-            "a birthday gift. The withdrawal is set two months before "
+        'birthday_invoice': fields.float(_("Annual birthday gift"), help=_(
+            "Set the amount to enable automatic invoice creation each year "
+            "for a birthday gift. The invoice is set two months before "
             "child's birthday.")),
-        'is_lsv_dd': fields.function(
-            _is_lsv_dd, type='boolean',
-            string="Uses LSV or DD")
     }
 
     _defaults = {
@@ -509,18 +498,6 @@ class sponsorship_contract(orm.Model):
 
         return res
 
-    def on_change_group_id(self, cr, uid, ids, group_id, context=None):
-        """ Allows to show/hide annual birthday gift field. """
-        res = super(sponsorship_contract, self).on_change_group_id(
-            cr, uid, ids, group_id, context)
-
-        group = self.pool.get('recurring.contract.group').browse(
-            cr, uid, group_id, {'lang': 'en_US'})
-        payment_term = group.payment_term_id.name
-        res['value']['is_lsv_dd'] = 'LSV' in payment_term or \
-            'Postfinance' in payment_term
-        return res
-
     ##########################################################################
     #                            WORKFLOW METHODS                            #
     ##########################################################################
@@ -695,18 +672,24 @@ class sponsorship_contract(orm.Model):
                     _('Please select a valid product'), message)
         return True
 
-    def _compute_next_invoice_date(self, contract):
+    def update_next_invoice_date(self, cr, uid, ids, context=None):
         """ Override to force recurring_value to 1
-            if contract is a sponsorship
+            if contract is a sponsorship, and to bypass ORM for performance.
         """
-        if contract.type == 'S':
-            next_date = datetime.strptime(contract.next_invoice_date, DF)
-            next_date += relativedelta(months=+1)
-            return next_date
-        else:
-            return super(
-                sponsorship_contract, self)._compute_next_invoice_date(
-                contract)
+        for contract in self.browse(cr, uid, ids, context):
+            if contract.type == 'S':
+                next_date = datetime.strptime(contract.next_invoice_date, DF)
+                next_date += relativedelta(months=+1)
+                next_date = next_date.strftime(DF)
+            else:
+                next_date = self._compute_next_invoice_date(contract)
+
+            cr.execute(
+                "UPDATE recurring_contract SET next_invoice_date = %s "
+                "WHERE id = %s", (next_date, contract.id))
+            contract.group_id._store_set_values(['next_invoice_date'])
+
+        return True
 
     def _get_filtered_invoice_lines(
             self, cr, uid, invoice_lines, contract_id, context=None):

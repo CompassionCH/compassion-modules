@@ -314,15 +314,15 @@ class recurring_contract(orm.Model):
                                             invoice.id, 'invoice_cancel', cr)
                 else:
                     invoice_obj.action_cancel_draft(
-                        cr, uid, invoice.id, context)
+                        cr, uid, [invoice.id], context)
 
                     invoice_line_obj.unlink(
                         cr, uid,
                         inv_line_ids,
                         context)
 
-                    invoice_obj.trg_validate(uid, 'account.invoice',
-                                             invoice.id, 'invoice_open', cr)
+                    wf_service.trg_validate(uid, 'account.invoice',
+                                            invoice.id, 'invoice_open', cr)
 
     ##########################
     #        CALLBACKS       #
