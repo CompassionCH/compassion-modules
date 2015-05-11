@@ -188,23 +188,24 @@ class event_compassion(orm.Model):
 
         if context is None:
             context = dict()
-        context['from_event'] = True
-        for event in self.browse(cr, uid, ids, context):
+        ctx = context.copy()
+        ctx['from_event'] = True
+        for event in self.browse(cr, uid, ids, ctx):
             if 'use_tasks' in vals and event.use_tasks:
                 project_id = self.pool.get('project.project').create(
                     cr, uid, self._get_project_vals(
-                        cr, uid, event, context), context)
+                        cr, uid, event, ctx), ctx)
                 event.write({'project_id': project_id})
             elif event.project_id:
                 event.project_id.write(self._get_project_vals(
-                    cr, uid, event, context))
+                    cr, uid, event, ctx))
             event.analytic_id.write(self._get_analytic_vals(
-                cr, uid, event, context))
+                cr, uid, event, ctx))
             if 'name' in vals:
                 self.pool.get('recurring.contract.origin').write(
                     # Only administrator has write access to origins.
                     cr, 1, event.origin_id.id, {
-                        'name': event.full_name}, context)
+                        'name': event.full_name}, ctx)
 
         return True
 
