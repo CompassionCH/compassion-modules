@@ -16,6 +16,11 @@
             <field name="priority" eval="21"/>
             <field name="inherit_id" ref="partner_firstname.view_partner_form_firstname"/>
             <field name="arch" type="xml">
+                <!-- Move title field and add it in inner contact form -->
+                <field name="title" position="replace"/>
+                <field name="lastname" position="before">
+                    <field name="title"/>
+                </field>
                 <xpath expr="//form[@string='Contact']/sheet//field[@name='lastname']" position="before">
                     <field name="title" />
                 </xpath>
@@ -50,15 +55,12 @@
                         'default_street3':street3}</attribute>
                 </xpath>
 
-                <!-- Add the church field and move title field -->
-                <xpath expr="//field[@name='title'][1]" position="replace">
+                <!-- Add the church field -->
+                <field name="email" position="after">
                     <field name="is_church"/>
                     <field name="church_id" attrs="{'invisible': ['|',('is_company','=',True),('is_church','=',True)]}" context="{'tree_view_ref' : 'partner_compassion.view_partner_tree_compassion'}"/>
                     <field name="church_unlinked" attrs="{'invisible': ['|',('is_company','=',True),'|',('is_church','=',True),('church_id','>',0)]}"/>
-                </xpath>
-                <label string="Address" position="before">
-                    <field name="title"/>
-                </label>
+                </field>
 
                 <!-- Add birthdate and deathdate -->
                 <xpath expr="//field[@name='website'][1]" position="after">
