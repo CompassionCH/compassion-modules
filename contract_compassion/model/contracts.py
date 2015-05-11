@@ -29,9 +29,14 @@ class recurring_contract(orm.Model):
     #        FIELDS METHODS        #
     ################################
     def _active(self, cr, uid, ids, field_name, args, context=None):
-        # Dummy function that sets the active flag.
-        self._on_contract_active(cr, uid, ids, context=context)
-        return {id: True for id in ids}
+        """Returns if contract is active or not based on
+        activation_date and state.
+        """
+        res = dict()
+        for contract in self.browse(cr, uid, ids, context):
+            res[contract.id] = bool(contract.activation_date) and \
+                contract.state not in ('terminated', 'cancelled')
+        return res
 
     def get_ending_reasons(self, cr, uid, context=None):
         """Returns all the ending reasons of sponsorships"""
@@ -118,6 +123,7 @@ class recurring_contract(orm.Model):
 
     def _get_contract_from_invoice(invoice_obj, cr, uid, invoice_ids,
                                    context=None):
+        """ Called when invoice state is changed. """
         self = invoice_obj.pool.get('recurring.contract')
         res = set()
         # Read data in english
@@ -138,14 +144,10 @@ class recurring_contract(orm.Model):
 
                 for invoice_line in invoice.invoice_line:
                     contract = invoice_line.contract_id
-
                     if contract.id not in res and (
                             contract.state == 'waiting' and last_pay_date):
-                        # Activate the contract and set the
-                        # activation_date
+                        # Trigger activation
                         res.add(contract.id)
-                        contract.write({
-                            'activation_date': datetime.today().strftime(DF)})
 
                         # Cancel the old invoices if a contract is activated
                         self._cancel_old_invoices(
@@ -154,7 +156,11 @@ class recurring_contract(orm.Model):
                             contract.id,
                             first_pay_date,
                             context)
-        return list(res)
+
+        # Activate contracts
+        activate_ids = list(res)
+        self._on_contract_active(cr, uid, activate_ids, context=context)
+        return activate_ids
 
     ###########################
     #        New Fields       #
@@ -432,6 +438,17 @@ class recurring_contract(orm.Model):
     ################################
     #        PRIVATE METHODS       #
     ################################
+    def _on_contract_active(self, cr, uid, ids, context=None):
+        """ Activate contract when first invoice was paid."""
+        self.write(cr, uid, ids, {
+            'activation_date': datetime.today().strftime(DF)}, context)
+        wf_service = netsvc.LocalService('workflow')
+        for id in ids:
+            wf_service.trg_validate(
+                uid, self._name, id,
+                'contract_active', cr)
+            logger.info("Contract " + str(id) + " activated.")
+
     def _filter_clean_invoices(self, cr, uid, ids, since_date=None,
                                to_date=None, context=None):
         """ Construct filter domain to be passes on method clean_invoices,

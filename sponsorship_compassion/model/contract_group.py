@@ -44,6 +44,11 @@ class contract_group(orm.Model):
             type='boolean', readonly=True)
     }
 
+    _defaults = {
+        'contains_sponsorship': lambda self, cr, uid, context: context.get(
+            'default_type') == 'S'
+    }
+
     def generate_invoices(self, cr, uid, ids, invoicer_id=None, context=None):
         """ Add birthday gifts generation. """
         invoicer_id = self._generate_birthday_gifts(cr, uid, ids, invoicer_id,

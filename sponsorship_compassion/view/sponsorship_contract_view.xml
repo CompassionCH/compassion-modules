@@ -44,6 +44,11 @@
                     <field name="birthday_invoice"
                            attrs="{'invisible': ['|', ('state', 'in', ['terminated', 'cancelled']), ('type', '!=', 'S')]}"/>
                 </field>
+                
+                <!-- Add context for group view -->
+                <field name="group_id" position="attributes">
+                    <attribute name="context">{'default_type': context.get('default_type'), 'default_partner_id': partner_id}</attribute>
+                </field>
             </field>
         </record>
 

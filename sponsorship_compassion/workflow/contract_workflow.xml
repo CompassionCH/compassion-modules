@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2015 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+    <data>
+        <!-- Add automatic transition from waiting to active if is_active field is already set -->
+        <record model="workflow.transition" id="t_active">
+            <field name="act_from" ref="contract_compassion.act_waiting" />
+            <field name="act_to" ref="recurring_contract.act_active" />
+            <field name="condition">is_active</field>
+        </record>
+    </data>
+</openerp>

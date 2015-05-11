@@ -113,7 +113,8 @@ class sponsorship_contract(orm.Model):
         """Tells if the correspondent and the payer is the same person."""
         res = dict()
         for contract in self.browse(cr, uid, ids, context=context):
-            res[contract.id] = contract.partner_id == contract.correspondant_id
+            res[contract.id] = (contract.partner_id ==
+                                contract.correspondant_id)
         return res
 
     def _get_type(self, cr, uid, context=None):
@@ -169,7 +170,7 @@ class sponsorship_contract(orm.Model):
         if 'contract_line_ids' in vals:
             self._has_valid_contract_lines(
                 cr, uid, vals['contract_line_ids'],
-                context['default_type'], context)
+                vals.get('type', context.get('default_type')), context)
 
         return super(sponsorship_contract, self).create(
             cr, uid, vals, context)
@@ -191,7 +192,7 @@ class sponsorship_contract(orm.Model):
             if 'contract_line_ids' in vals:
                 self._has_valid_contract_lines(
                     cr, uid, vals['contract_line_ids'],
-                    contract.type, context)
+                    vals.get('type', contract.type), context)
 
         return super(sponsorship_contract, self).write(
             cr, uid, ids, vals, context)
@@ -206,49 +207,6 @@ class sponsorship_contract(orm.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    def force_termination(self, cr, uid, contract_id, end_state, end_reason,
-                          child_state, child_exit_code, end_date,
-                          transfer_country_code, context=None):
-        """ Used to delete the workflow of terminated or cancelled
-        sponsorships when exported from GP. """
-        # Write sponsorship end reason
-        sponsor_reasons = [reason[0] for reason in self.get_ending_reasons(
-            cr, uid, context)]
-        end_reason = str(end_reason)
-        if end_reason not in sponsor_reasons:
-            end_reason = '1'
-        vals = {'state': end_state,
-                'end_reason': str(end_reason),
-                'end_date': end_date or False}
-        self.write(cr, uid, contract_id, vals, context)
-
-        # Mark child as departed
-        contract = self.browse(cr, uid, contract_id, context)
-        child_vals = {}
-        if child_state == 'F' and contract.child_id:
-            child_vals['state'] = 'F'
-            child_exit_code = str(child_exit_code)
-            exit_reasons = [reason[0] for reason in self.pool.get(
-                'compassion.child').get_gp_exit_reasons(cr, uid, context)]
-            if child_exit_code in exit_reasons:
-                child_vals['gp_exit_reason'] = str(child_exit_code)
-            else:
-                country_id = self.pool.get('res.country').search(
-                    cr, uid, [('code', '=', transfer_country_code)],
-                    context=context)
-                if country_id:
-                    country_id = country_id[0]
-                    child_vals['transfer_country_id'] = country_id
-        if contract.type == 'S':
-            child_vals['sponsor_id'] = False
-            contract.child_id.write(child_vals)
-
-        # Delete workflow for this contract
-        wf_service = netsvc.LocalService('workflow')
-        wf_service.trg_delete(uid, self._name, contract_id, cr)
-        logger.info("Contract " + str(contract_id) + " terminated.")
-        return True
-
     def clean_invoices(
             self, cr, uid, ids, context=None, since_date=None, to_date=None):
         if type == 'S':
@@ -504,41 +462,23 @@ class sponsorship_contract(orm.Model):
     def contract_cancelled(self, cr, uid, ids, context=None):
         res = super(sponsorship_contract, self).contract_cancelled(
             cr, uid, ids, context)
-        # Remove the sponsor of the child
-        for contract in self.browse(cr, uid, ids, context):
-            if contract.type == 'S':
-                contract.child_id.write({'sponsor_id': False})
+
+        sponsorship_ids = self.search(cr, uid, [
+            ('id', 'in', ids),
+            ('type', '=', 'S')], context=context)
+        self._on_sponsorship_finished(cr, uid, sponsorship_ids, context)
+
         return res
 
     def contract_terminated(self, cr, uid, ids, context=None):
         res = super(sponsorship_contract, self).contract_terminated(
             cr, uid, ids, context)
 
-        ctx = {'lang': 'en_US'}
-        category_obj = self.pool.get('res.partner.category')
-        sponsor_cat_id = category_obj.search(
-            cr, uid, [('name', '=', 'Sponsor')], context=ctx)[0]
-        old_sponsor_cat_id = category_obj.search(
-            cr, uid, [('name', '=', 'Old Sponsor')],
-            context=ctx)[0]
-        # Check if the sponsor has still active contracts
-        for contract in self.browse(cr, uid, ids, context):
-            con_ids = self.search(cr, uid, [
-                ('partner_id', '=', contract.partner_id.id),
-                ('state', '=', 'active')], context)
-            if not con_ids:
-                # Replace sponsor categoy by old sponsor category
-                partner_categories = set(
-                    [cat.id for cat in contract.partner_id.category_id])
-                if sponsor_cat_id in partner_categories:
-                    partner_categories.remove(sponsor_cat_id)
-                partner_categories.add(old_sponsor_cat_id)
-                # Standard way in Odoo to set one2many fields
-                contract.partner_id.write({
-                    'category_id': [(6, 0, list(partner_categories))]})
-            # Remove the sponsor of the child
-            if contract.type == 'S':
-                contract.child_id.write({'sponsor_id': False})
+        sponsorship_ids = self.search(cr, uid, [
+            ('id', 'in', ids),
+            ('type', '=', 'S')], context=context)
+        self._on_sponsorship_finished(cr, uid, sponsorship_ids, context)
+
         return res
 
     def contract_waiting_mandate(self, cr, uid, ids, context=None):
@@ -554,12 +494,18 @@ class sponsorship_contract(orm.Model):
 
     def contract_waiting(self, cr, uid, ids, context=None):
         for contract in self.browse(cr, uid, ids, {'lang': 'en_US'}):
-            # Check that a child is selected for Sponsorship product
             if contract.type == 'S' and not contract.child_id:
+                # Check that a child is selected for Sponsorship contract
                 raise orm.except_orm(
                     _("Please select a child"),
                     _("You should select a child if you "
                       "make a new sponsorship!"))
+            elif contract.type == 'G':
+                # Activate directly if sponsorship is already active
+                for line in contract.contract_line_ids:
+                    sponsorship = line.sponsorship_id
+                    if sponsorship.state == 'active':
+                        contract.write({'is_active': True})
 
         return super(sponsorship_contract, self).contract_waiting(
             cr, uid, ids, context)
@@ -567,11 +513,54 @@ class sponsorship_contract(orm.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    def _on_sponsorship_finished(self, cr, uid, sponsorship_ids,
+                                 context=None):
+        """ Called when a sponsorship is terminated or cancelled:
+        Remove sponsor from the child, terminate related gift
+        contracts, and remove sponsor category if sponsor has no other
+        active sponsorships.
+        """
+        ctx = {'lang': 'en_US'}
+        category_obj = self.pool.get('res.partner.category')
+        sponsor_cat_id = category_obj.search(
+            cr, uid, [('name', '=', 'Sponsor')], context=ctx)[0]
+        old_sponsor_cat_id = category_obj.search(
+            cr, uid, [('name', '=', 'Old Sponsor')],
+            context=ctx)[0]
+        wf_service = netsvc.LocalService('workflow')
+        con_line_obj = self.pool.get('recurring.contract.line')
+
+        for sponsorship in self.browse(cr, uid, sponsorship_ids, context):
+            sponsorship.child_id.write({'sponsor_id': False})
+
+            con_ids = self.search(cr, uid, [
+                ('partner_id', '=', sponsorship.partner_id.id),
+                ('state', '=', 'active'),
+                ('type', '=', 'S')], context)
+            if not con_ids:
+                # Replace sponsor category by old sponsor category
+                sponsorship.partner_id.write({
+                    'category_id': [(3, sponsor_cat_id),
+                                    (4, old_sponsor_cat_id)]})
+
+            gift_con_ids = con_line_obj.search(cr, uid, [
+                ('sponsorship_id', '=', sponsorship.id)], context=context)
+            for line in con_line_obj.browse(cr, uid, gift_con_ids, context):
+                contract = line.contract_id
+                if len(contract.contract_line_ids) > 1:
+                    line.unlink()
+                else:
+                    wf_service.trg_validate(
+                        uid, self._name, contract.id,
+                        'contract_terminated', cr)
+
     def _on_contract_active(self, cr, uid, ids, context=None):
         """ Hook for doing something when contract is activated.
-        Update child to mark it has been sponsored, and update partner
-        to add the 'Sponsor' category.
+        Update child to mark it has been sponsored, update partner
+        to add the 'Sponsor' category, and activate gift contracts.
         """
+        super(sponsorship_contract, self)._on_contract_active(cr, uid, ids,
+                                                              context)
         # Read data in english
         if context is None:
             context = {}
@@ -582,7 +571,8 @@ class sponsorship_contract(orm.Model):
             ids = [ids]
         sponsor_cat_id = self.pool.get('res.partner.category').search(
             cr, uid, [('name', '=', 'Sponsor')], context=ctx)[0]
-        for contract in self.browse(cr, uid, ids, context=ctx):
+        con_line_obj = self.pool.get('recurring.contract.line')
+        for contract in self.browse(cr, uid, ids, ctx):
             if contract.type == 'S':
                 contract.child_id.write({'has_been_sponsored': True})
                 partner_categories = set(
@@ -592,10 +582,12 @@ class sponsorship_contract(orm.Model):
                 # Standard way in Odoo to set one2many fields
                 contract.partner_id.write({
                     'category_id': [(6, 0, list(partner_categories))]})
-            wf_service.trg_validate(
-                uid, self._name, contract.id,
-                'contract_active', cr)
-            logger.info("Contract " + str(contract.id) + " activated.")
+                gift_con_ids = con_line_obj.search(cr, uid, [
+                    ('sponsorship_id', '=', contract.id)], context=context)
+                for line in con_line_obj.browse(cr, uid, gift_con_ids, ctx):
+                    wf_service.trg_validate(
+                        uid, self._name, line.contract_id.id,
+                        'contract_active', cr)
 
     def _on_change_child_id(self, cr, uid, ids, vals, context=None):
         """Link/unlink child to sponsor

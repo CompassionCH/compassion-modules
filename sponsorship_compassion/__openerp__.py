@@ -93,6 +93,7 @@ Contributors
         'data/sequence.xml',
         'data/analytic_accounting.xml',
         'data/sponsorship_product.xml',
+        'workflow/contract_workflow.xml',
     ],
     'demo': [],
     'installable': True,
