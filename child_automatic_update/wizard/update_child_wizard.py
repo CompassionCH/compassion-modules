@@ -13,12 +13,12 @@ import traceback
 from openerp.osv import orm, fields
 
 
-class update_child_picture_date(orm.TransientModel):
+class update_child_wizard(orm.TransientModel):
     _name = 'update.child.picture.date'
 
-    def update(self, cr, uid, context=None):
+    def update(self, cr, uid, method, context=None):
         count = 1
-        print('LAUNCH CHILD PICTURE UPDATE')
+        print('LAUNCH CHILD UPDATE -- ' + method)
         child_obj = self.pool.get('compassion.child')
         child_ids = child_obj.search(
             cr, uid, [('state', 'not in', ['F', 'X']),
@@ -28,8 +28,14 @@ class update_child_picture_date(orm.TransientModel):
         for child in child_obj.browse(cr, uid, child_ids, context):
             try:
                 print('Updating child {0}/{1}').format(str(count), total)
-                child_obj.get_infos(cr, uid, child.id, context)
+
+                if method == 'picture':
+                    child_obj.get_infos(cr, uid, child.id, context)
+                elif method == 'basic':
+                    child_obj._get_basic_informations(cr, uid, child.id,
+                                                      context)
                 child.write({'update_done': True})
+
             except Exception:
                 if child.state != 'E':
                     child.write({
@@ -42,6 +48,8 @@ class update_child_picture_date(orm.TransientModel):
             finally:
                 count += 1
                 cr.commit()
+        # When update is finished, restore update state
+        child_obj.write(cr, uid, child_ids, {'update_done': False}, context)
         return True
 
 

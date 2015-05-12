@@ -9,4 +9,4 @@
 #
 ##############################################################################
 
-from . import update_child_picture_date
+from . import update_child_wizard

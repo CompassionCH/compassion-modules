@@ -30,16 +30,16 @@
 
 {
     'name': 'Update Compassion Children Picture Date',
-    'version': '1.4',
+    'version': '1.4.1',
     'category': 'Other',
     'description': """
-        Update child picture date
+        CRON tasks for automatic child update.
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['child_compassion'],
     'data': [
-        'data/child_update_picture_date_cron.xml',
+        'data/child_update_crons.xml',
     ],
     'demo': [],
     'installable': True,

@@ -47,6 +47,8 @@ class gmc_message_pool_process(orm.TransientModel):
 class gmc_message_pool(orm.Model):
     """ Pool of messages exchanged between Compassion CH and GMC. """
     _name = 'gmc.message.pool'
+    _inherit = 'mail.thread'
+    _description = 'GMC Message'
 
     _order = 'date desc'
 
@@ -103,16 +105,18 @@ class gmc_message_pool(orm.Model):
         'action_id': fields.many2one(
             'gmc.action', _('GMC Message'), ondelete="restrict",
             required=True, readonly=True),
-        'process_date': fields.datetime(_('Process Date'), readonly=True),
+        'process_date': fields.datetime(_('Process Date'), readonly=True,
+                                        track_visibility='onchange'),
         'state': fields.selection(
             [('new', _('New')),
              ('pending', _('Pending')),
              ('fondue', _('To deliver')),
              ('success', _('Success')),
              ('failure', _('Failure'))],
-            _('State'), readonly=True
+            _('State'), readonly=True, track_visibility='always'
         ),
-        'failure_reason': fields.text(_("Failure details")),
+        'failure_reason': fields.text(_("Failure details"),
+                                      track_visibility='onchange'),
         'object_id': fields.integer(_('Referrenced Object Id')),
         'incoming_key': fields.char(
             _('Incoming Reference'), size=9, readonly=True,

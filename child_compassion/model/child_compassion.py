@@ -251,19 +251,38 @@ class compassion_child(orm.Model):
     ]
 
     def _get_basic_informations(self, cr, uid, ids, context=None):
+        """ Retrieves basic information from Get Child Information service.
+        """
         if not isinstance(ids, list):
             ids = [ids]
 
         for child in self.browse(cr, uid, ids, context):
-            case_study = child.case_study_ids[0]
-            if case_study:
-                self.write(cr, uid, [child.id], {
-                    'name': case_study.name,
-                    'firstname': case_study.firstname,
-                    'birthdate': case_study.birthdate,
-                    'gender': case_study.gender,
-                    'unique_id': case_study.unique_id,
-                }, context=context)
+            url = self.get_url(child.code, 'information')
+            r = requests.get(url)
+            html_res = r.text
+            json_data = dict()
+            error = r.status_code != 200
+            try:
+                json_data = r.json()
+            except:
+                error = True
+            if error:
+                error_message = json_data.get('error', {'message': html_res})
+                raise orm.except_orm(
+                    'NetworkError',
+                    _('An error occured while fetching general information '
+                      'for child %s. ') % child.code + error_message.get(
+                        'message', 'Bad response'))
+
+            vals = {
+                'name': json_data['childName'],
+                'firstname': json_data['childPersonalName'],
+                'birthdate': json_data['birthDate'] or False,
+                'gender': json_data['gender'],
+                'unique_id': json_data['childID'],
+                'completion_date': json_data['cdspCompletionDate'] or False,
+            }
+            self.write(cr, uid, [child.id], vals, context=context)
         return True
 
     def get_infos(self, cr, uid, ids, context=None):
@@ -281,8 +300,8 @@ class compassion_child(orm.Model):
                     cr, uid, child, context)
 
             else:
+                self._get_basic_informations(cr, uid, child.id, context)
                 res = res and self._get_case_study(cr, uid, child, context)
-                self._get_basic_informations(cr, uid, child.id)
 
             project_ids = proj_obj.search(
                 cr, uid, [('code', '=', child.code[:5])],
