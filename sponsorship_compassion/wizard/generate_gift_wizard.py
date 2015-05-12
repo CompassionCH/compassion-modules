@@ -50,7 +50,7 @@ class generate_gift_wizard(orm.TransientModel):
                 cr, uid, context.get('active_ids', list()), ctx):
             partner = contract.partner_id
 
-            if contract.type == 'S' and contract.state in gen_states:
+            if 'S' in contract.type and contract.state in gen_states:
                 invoice_obj = self.pool.get('account.invoice')
                 journal_ids = self.pool.get('account.journal').search(
                     cr, uid,

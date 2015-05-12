@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <!-- Add correspondant field for sponsorships -->
                 <field name="partner_id" position="after">
-                    <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', '!=', 'S')]}"/>
+                    <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', 'not in', ['S','SC'])]}"/>
                 </field>
                 
                 <!-- Redefine change method of parnter_id -->
@@ -20,18 +20,12 @@
                 
                 <!-- Make origin mandatory for sponsorships -->
                 <field name="origin_id" position="attributes">
-                    <attribute name="attrs">{'required':[('type', '=', 'S')]}</attribute>
+                    <attribute name="attrs">{'required':[('type', 'like', 'S')]}</attribute>
                 </field>
-                
-                <!-- Special types behaviours -->
-                <xpath expr="//field[@name='type']" position="attributes">
-                    <!-- Sponsorship contracts cannot change their types -->
-                    <attribute name="attrs">{'readonly': [('type', '=', 'S')]}</attribute>
-                </xpath>
                 
                 <!-- Field child_id is not available for general contracts -->
                 <xpath expr="//field[@name='child_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('type', '!=', 'S')], 'required': [('type', '=', 'S')]}</attribute>
+                    <attribute name="attrs">{'readonly': [('type', 'not in', ['S','SC'])], 'required': [('type', 'like', 'S')]}</attribute>
                 </xpath>
                 
                 <!-- Add context in contract lines -->
@@ -42,7 +36,7 @@
                 <!-- Automatic birthday invoice -->
                 <field name="next_invoice_date" position="after">
                     <field name="birthday_invoice"
-                           attrs="{'invisible': ['|', ('state', 'in', ['terminated', 'cancelled']), ('type', '!=', 'S')]}"/>
+                           attrs="{'invisible': ['|', ('state', 'in', ['terminated', 'cancelled']), ('type', 'not in', ['S','SC'])]}"/>
                 </field>
                 
                 <!-- Add context for group view -->
@@ -65,19 +59,13 @@
                 <field name="product_id" position="after">
                     <!-- Ability to link gift contract lines to sponsorships -->
                     <field name="sponsorship_id"
-                           domain="[('partner_id', '=', parent.partner_id), ('type', '=', 'S'), ('state', 'not in', ['draft', 'terminated', 'cancelled'])]"/>
+                           domain="[('partner_id', '=', parent.partner_id), ('type', 'like', 'S'), ('state', 'not in', ['draft', 'terminated', 'cancelled'])]"/>
                 </field>
             </field>
         </record>
 
         <record model="ir.actions.act_window" id="contract_compassion.action_contract">
-            <field name="name">Other contracts</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">recurring.contract</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
             <field name="domain">[('type','in',['O','G'])]</field>
-            <field name="context">{'default_type':'O'}</field>
         </record>
 
         <record id="action_sponsorship_contract" model="ir.actions.act_window">
@@ -86,7 +74,7 @@
             <field name="res_model">recurring.contract</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="domain">[('type','=','S')]</field>
+            <field name="domain">[('type','like','S')]</field>
             <field name="context">{'default_type':'S'}</field>
         </record>
 

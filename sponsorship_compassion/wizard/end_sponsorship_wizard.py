@@ -29,7 +29,7 @@ class end_sponsorship_wizard(orm.TransientModel):
             cr, uid, ids, context)
         wizard = self.browse(cr, uid, ids[0], context)
 
-        if wizard.child_id and wizard.contract_id.type == 'S':
+        if wizard.child_id and 'S' in wizard.contract_id.type:
             # If sponsor moves, the child may be transferred
             if wizard.do_transfer:
                 wizard.child_id.write({

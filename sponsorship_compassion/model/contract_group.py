@@ -29,7 +29,7 @@ class contract_group(orm.Model):
         for group in self.browse(cr, uid, ids, context):
             if group.contract_ids:
                 for contract in group.contract_ids:
-                    if contract.type == 'S':
+                    if 'S' in contract.type:
                         res[group.id] = True
                         break
                 else:
@@ -45,8 +45,8 @@ class contract_group(orm.Model):
     }
 
     _defaults = {
-        'contains_sponsorship': lambda self, cr, uid, context: context.get(
-            'default_type') == 'S'
+        'contains_sponsorship': lambda self, cr, uid, context: 'S' in
+        context.get('default_type', 'O')
     }
 
     def generate_invoices(self, cr, uid, ids, invoicer_id=None, context=None):
@@ -123,21 +123,24 @@ class contract_group(orm.Model):
 
     def _setup_inv_line_data(self, cr, uid, contract_line, invoice_id,
                              context=None):
-        """ Contract gifts relate their invoice lines to sponsorship. """
-        invl_data = super(contract_group, self)._setup_inv_line_data(
-            cr, uid, contract_line, invoice_id, context)
-
+        """ Contract gifts relate their invoice lines to sponsorship,
+            Correspondence sponsorships don't create invoice lines.
+        """
+        invl_data = False
         contract = contract_line.contract_id
-        if contract.type == 'G':
-            sponsorship = contract_line.sponsorship_id
-            if sponsorship.state in self._get_gen_states():
-                invl_data['contract_id'] = sponsorship.id
-            else:
-                raise orm.except_orm(
-                    _('Invoice generation error'),
-                    _('No active sponsorship found for child {0}. '
-                      'The gift contract with id {1} is not valid.').format(
-                        sponsorship.child_code, str(contract.id))
-                )
+        if contract.type != 'SC':
+            invl_data = super(contract_group, self)._setup_inv_line_data(
+                cr, uid, contract_line, invoice_id, context)
+
+            if contract.type == 'G':
+                sponsorship = contract_line.sponsorship_id
+                if sponsorship.state in self._get_gen_states():
+                    invl_data['contract_id'] = sponsorship.id
+                else:
+                    raise orm.except_orm(
+                        _('Invoice generation error'),
+                        _('No active sponsorship found for child {0}. '
+                          'The gift contract with id {1} is not valid.')
+                        .format(sponsorship.child_code, str(contract.id)))
 
         return invl_data

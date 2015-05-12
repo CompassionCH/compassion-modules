@@ -9,7 +9,8 @@
                 <form string="Gift Generation" version="7.0">
                     <separator string="Gift generation from contract"/>
                     <group>
-                        <field name="product_id" domain="[('categ_name', '=', 'Sponsor gifts')]" />
+                        <field name="product_id" domain="[('categ_name', '=', 'Sponsor gifts')]"
+                               options="{'colors': {'Sponsorship':'blue', 'Fund':'green', 'Sponsor gifts':'blueviolet'}, 'field_color':'categ_name'}"/>
                         <field name="amount" />
                         <field name="invoice_date" />
                         <field name="description" />

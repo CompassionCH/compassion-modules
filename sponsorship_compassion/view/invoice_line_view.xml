@@ -19,6 +19,9 @@
             <field name="inherit_id" ref="account.invoice_form" />
             <field eval="18" name="priority"/>
             <field name="arch" type="xml">
+                <xpath expr="//tree[@string='Invoice Lines']/field[@name='product_id']" position="attributes">
+                    <attribute name="options">{'colors': {'Sponsorship':'blue', 'Fund':'green', 'Sponsor gifts':'blueviolet'}, 'field_color':'categ_name'}</attribute>
+                </xpath>
                 <xpath expr="//tree[@string='Invoice Lines']/field[@name='name']" position="after">
                     <field name="contract_id" domain="['|', ('partner_id', '=', parent.partner_id), ('correspondant_id', '=', parent.partner_id), ('state', '!=', 'draft')]"
                            options="{'search_more': true, 'field_color': 'state',

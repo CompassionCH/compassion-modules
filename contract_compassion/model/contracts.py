@@ -352,8 +352,8 @@ class recurring_contract(orm.Model):
         res = []
         for contract in self.browse(cr, uid, ids, context):
             name = contract.partner_id.ref
-            if contract.type == 'S':
-                name += ' - ' + contract.child_id.code
+            if contract.child_id:
+                name += ' - ' + contract.child_code
             elif contract.contract_line_ids:
                 name += ' - ' + contract.contract_line_ids[0].product_id.name
             res.append((contract.id, name))

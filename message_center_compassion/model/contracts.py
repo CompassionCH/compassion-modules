@@ -50,7 +50,7 @@ class recurring_contract(orm.Model):
             ids = [ids]
 
         for contract in self.browse(cr, uid, ids, context=context):
-            if contract.type == 'S':
+            if 'S' in contract.type:
                 # UpsertConstituent Message
                 action_id = self.get_action_id(cr, uid, 'UpsertConstituent')
                 partner_id = contract.correspondant_id.id
@@ -91,7 +91,7 @@ class recurring_contract(orm.Model):
 
             for contract in self.browse(cr, uid, ids, context=context):
                 end_reason = int(contract.end_reason)
-                if contract.type == 'S' and end_reason != 1:
+                if 'S' in contract.type and end_reason != 1:
                     # Send pending gifts
                     mess_ids = message_obj.search(cr, uid, [
                         ('action_id', '=', self.get_action_id(cr, uid,
@@ -104,7 +104,7 @@ class recurring_contract(orm.Model):
                     message_obj.process_messages(cr, uid, mess_ids, context)
                 # Contract must have child and not terminated by
                 # partner move
-                if contract.type == 'S' and end_reason != 4:
+                if 'S' in contract.type and end_reason != 4:
                     message_vals.update({
                         'object_id': contract.id,
                         'partner_id': contract.correspondant_id.id,
