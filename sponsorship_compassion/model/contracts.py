@@ -67,7 +67,8 @@ class sponsorship_contract(orm.Model):
         res = super(sponsorship_contract, self).get_ending_reasons(
             cr, uid, context)
 
-        if 'active_id' in context:
+        if 'active_id' in context and \
+                context.get('active_model') == self._name:
             type = self.browse(cr, uid, context['active_id'], context).type
             if type == 'S':
                 res.extend([
@@ -424,7 +425,8 @@ class sponsorship_contract(orm.Model):
         res = super(sponsorship_contract, self).fields_view_get(
             cr, user, view_id, view_type, context, toolbar, submenu)
 
-        if view_type == 'form' and res['fields'].get('type'):
+        if view_type == 'form' and (isinstance(res['fields'], dict) and
+                                    'type' in res['fields']):
             if context.get('default_type') != 'S':
                 # Remove type Sponsorship so that we cannot change to it.
                 res['fields']['type']['selection'].pop(2)
