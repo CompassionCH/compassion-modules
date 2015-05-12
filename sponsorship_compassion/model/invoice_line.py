@@ -47,6 +47,29 @@ class account_invoice(orm.Model):
     """Generate automatically a BVR Reference for LSV Invoices"""
     _inherit = 'account.invoice'
 
+    def _get_children(self, cr, uid, ids, name, args, context=None):
+        """ View children contained in invoice. """
+        res = dict()
+        for invoice in self.browse(cr, uid, ids, context):
+            child_codes = set()
+            for invl in invoice.invoice_line:
+                child = invl.contract_id and invl.contract_id.child_id
+                if child:
+                    child_codes.add(child.code)
+            if len(child_codes) > 1:
+                res[invoice.id] = _("{0} children".format(str(len(
+                    child_codes))))
+            elif child_codes:
+                res[invoice.id] = child_codes.pop()
+            else:
+                res[invoice.id] = False
+        return res
+
+    _columns = {
+        'children': fields.function(
+            _get_children, type='char', string=_('Children'))
+    }
+
     def action_date_assign(self, cr, uid, ids, context=None):
         """Method called when invoice is validated.
             - Add BVR Reference if payment term is LSV and no reference is
