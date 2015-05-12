@@ -48,8 +48,10 @@ class account_invoice(orm.Model):
     _inherit = 'account.invoice'
 
     def action_date_assign(self, cr, uid, ids, context=None):
-        """Method called when invoice is validated. Add BVR Reference
-        if payment term is LSV and no reference is set.
+        """Method called when invoice is validated.
+            - Add BVR Reference if payment term is LSV and no reference is
+              set.
+            - Prevent validating invoices missing related contract.
         """
         for invoice in self.browse(cr, uid, ids, context):
             if invoice.payment_term and 'LSV' in invoice.payment_term.name \
@@ -57,5 +59,13 @@ class account_invoice(orm.Model):
                 seq = self.pool.get('ir.sequence')
                 ref = mod10r(seq.next_by_code(cr, uid, 'contract.bvr.ref'))
                 invoice.write({'bvr_reference': ref})
+            for invl in invoice.invoice_line:
+                if not invl.contract_id and invl.product_id.categ_name in (
+                        'Sponsorship', 'Sponsor gifts'):
+                    raise orm.except_orm(
+                        _('Sponsorship missing in invoice'),
+                        _("Invoice %s for '%s' is missing a sponsorship.") %
+                        (str(invoice.id), invoice.partner_id.name))
+
         return super(account_invoice, self).action_date_assign(cr, uid, ids,
                                                                context)
