@@ -79,7 +79,8 @@
                         <group>
                             <field name="type" />
                             <field name="child_id" domain="[('state', 'in', ('N', 'D', 'I', 'R', 'Z')), ('project_id.suspension', 'not in', ('suspended','fund-suspended'))]"
-                                   options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
+                                   options="{'create': false, 'm2o_dialog': false, 'create_edit': false, 'colors':{
+                                        'R':'red', 'N':'blue'}, 'field_color':'state'}"/>
                             <field name="end_reason" states="terminated,cancelled"/>
                             <field name="num_pol_ga" invisible="1"/>
                         </group>
