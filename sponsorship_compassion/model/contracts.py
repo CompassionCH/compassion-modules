@@ -659,20 +659,22 @@ class sponsorship_contract(orm.Model):
                           if cont_line[2]]
 
         for contract_line in contract_lines:
-            product = product_obj.browse(
-                cr, uid, contract_line.get('product_id'), {'lang': 'en_US'})
+            product_id = contract_line.get('product_id')
+            if product_id:
+                product = product_obj.browse(
+                    cr, uid, product_id, {'lang': 'en_US'})
 
-            categ_name = product.categ_name
-            allowed = whitelist_product_types.get(type)
-            forbidden = forbidden_product_types.get(type)
-            if (allowed and not categ_name in allowed) or \
-                    (forbidden and categ_name in forbidden):
-                message = _('You can only select {0} products.').format(
-                    str(allowed)) if allowed else _(
-                    'You should not select product '
-                    'from category "{0}"'.format(categ_name))
-                raise orm.except_orm(
-                    _('Please select a valid product'), message)
+                categ_name = product.categ_name
+                allowed = whitelist_product_types.get(type)
+                forbidden = forbidden_product_types.get(type)
+                if (allowed and not categ_name in allowed) or \
+                        (forbidden and categ_name in forbidden):
+                    message = _('You can only select {0} products.').format(
+                        str(allowed)) if allowed else _(
+                        'You should not select product '
+                        'from category "{0}"'.format(categ_name))
+                    raise orm.except_orm(
+                        _('Please select a valid product'), message)
         return True
 
     def update_next_invoice_date(self, cr, uid, ids, context=None):
