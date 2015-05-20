@@ -438,6 +438,10 @@ class recurring_contract(orm.Model):
     ################################
     #        PRIVATE METHODS       #
     ################################
+    def _invoice_paid(self, cr, uid, invoice, context=None):
+        """ Hook for doing something when invoice is paid. """
+        pass
+
     def _on_contract_active(self, cr, uid, ids, context=None):
         """ Activate contract when first invoice was paid."""
         self.write(cr, uid, ids, {
