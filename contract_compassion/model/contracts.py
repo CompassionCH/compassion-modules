@@ -168,7 +168,9 @@ class recurring_contract(orm.Model):
     _columns = {
         'child_id': fields.many2one(
             'compassion.child', _('Sponsored child'), readonly=True,
-            states={'draft': [('readonly', False)]}, ondelete='restrict'),
+            states={'draft': [('readonly', False)],
+                    'waiting': [('readonly', False)],
+                    'mandate': [('readonly', False)],}, ondelete='restrict'),
         'child_name': fields.related(
             'child_id', 'name', string=_('Sponsored child name'),
             readonly=True, type='char'),
@@ -219,8 +221,7 @@ class recurring_contract(orm.Model):
                                      ondelete='restrict',
                                      track_visibility='onchange'),
         'channel': fields.selection(__get_channels, string=_("Channel"),
-                                    required=True, readonly=True,
-                                    states={'draft': [('readonly', False)]}),
+                                    required=True),
         'parent_id': fields.many2one(
             'recurring.contract', _('Previous sponsorship'),
             track_visibility='onchange'),
