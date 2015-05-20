@@ -221,7 +221,7 @@ class sponsorship_contract(orm.Model):
             cr, uid, ids, context, since_date, to_date)
 
     def clean_invoices_paid(self, cr, uid, ids, context=None, since_date=None,
-                            to_date=None):
+                            to_date=None, gifts=False):
         """ Take into consideration when the sponsor has paid in advance,
         so that we cancel/modify the paid invoices and let the user decide
         what to do with the payment.
@@ -237,7 +237,7 @@ class sponsorship_contract(orm.Model):
         # Find all paid invoice lines after the given date
         inv_line_obj = self.pool.get('account.invoice.line')
         invl_search = self._filter_clean_invoices(cr, uid, ids, since_date,
-                                                  to_date, context)
+                                                  to_date, gifts, context)
         inv_line_ids = inv_line_obj.search(cr, uid, invl_search,
                                            context=context)
 
@@ -635,6 +635,23 @@ class sponsorship_contract(orm.Model):
                             _("The project %s is fund-suspended. You cannot "
                               "reconcile invoice (%s).") % (project.code,
                                                             invoice.id))
+
+    def _filter_clean_invoices(self, cr, uid, ids, since_date=None,
+                               to_date=None, gifts=False, context=None):
+        """ Construct filter domain to be passed on method
+        clean_invoices_paid, which will determine which invoice lines will
+        be removed from invoices. """
+        if not since_date:
+            since_date = datetime.today().strftime(DF)
+        invl_search = [('contract_id', 'in', ids), ('state', '=', 'paid'),
+                       ('due_date', '>=', since_date),
+                       ('product_id.categ_name', '!=', 'Sponsor gifts')]
+        if gifts:
+            invl_search.pop()
+        if to_date:
+            invl_search.append(('due_date', '<=', to_date))
+
+        return invl_search
 
     def _is_a_valid_group(self, cr, uid, group_id, context=None):
         group_obj = self.pool.get('recurring.contract.group')

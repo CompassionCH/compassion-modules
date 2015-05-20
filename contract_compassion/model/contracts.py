@@ -170,7 +170,7 @@ class recurring_contract(orm.Model):
             'compassion.child', _('Sponsored child'), readonly=True,
             states={'draft': [('readonly', False)],
                     'waiting': [('readonly', False)],
-                    'mandate': [('readonly', False)],}, ondelete='restrict'),
+                    'mandate': [('readonly', False)]}, ondelete='restrict'),
         'child_name': fields.related(
             'child_id', 'name', string=_('Sponsored child name'),
             readonly=True, type='char'),
@@ -453,20 +453,6 @@ class recurring_contract(orm.Model):
                 uid, self._name, id,
                 'contract_active', cr)
             logger.info("Contract " + str(id) + " activated.")
-
-    def _filter_clean_invoices(self, cr, uid, ids, since_date=None,
-                               to_date=None, context=None):
-        """ Construct filter domain to be passes on method clean_invoices,
-        which will determine which invoice lines will be removed from
-        invoices. """
-        if not since_date:
-            since_date = datetime.today().strftime(DF)
-        invl_search = [('contract_id', 'in', ids), ('state', '=', 'paid'),
-                       ('due_date', '>=', since_date)]
-        if to_date:
-            invl_search.append(('due_date', '<=', to_date))
-
-        return invl_search
 
     def _update_invoice_lines(self, cr, uid, contract, invoice_ids,
                               context=None):
