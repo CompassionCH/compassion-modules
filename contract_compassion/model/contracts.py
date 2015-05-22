@@ -413,10 +413,12 @@ class recurring_contract(orm.Model):
 
     def contract_cancelled(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'cancelled'}, context)
+        self.clean_invoices(cr, uid, ids, context)
         return True
 
     def contract_terminated(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'terminated'})
+        self.write(cr, uid, ids, {'state': 'terminated'}, context)
+        self.clean_invoices(cr, uid, ids, context)
         return True
 
     def contract_waiting_mandate(self, cr, uid, ids, context=None):
