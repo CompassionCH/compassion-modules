@@ -19,8 +19,9 @@ class crm_lead(orm.Model):
     _columns = {
         'planned_sponsorships': fields.integer(
             _('Expected new sponsorships'), track_visibility='onchange'),
-        'event_id': fields.many2one(
-            'crm.event.compassion', _('Event'), readonly=True),
+        'event_ids': fields.one2many(
+            'crm.event.compassion', 'lead_id', _('Event'),
+            readonly=True),
     }
 
     def create_event(self, cr, uid, ids, context=None):
@@ -38,6 +39,9 @@ class crm_lead(orm.Model):
             'default_planned_sponsorships': lead.planned_sponsorships,
             'default_lead_id': lead.id
         })
+        if lead.event_ids:
+            model_event = lead.event_ids[-1]
+            context['default_project_id'] = model_event.project_id.id
         # Open the create form...
         return {
             'type': 'ir.actions.act_window',

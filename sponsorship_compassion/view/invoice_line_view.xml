@@ -20,7 +20,9 @@
             <field eval="18" name="priority"/>
             <field name="arch" type="xml">
                 <xpath expr="//tree[@string='Invoice Lines']/field[@name='name']" position="after">
-                    <field name="contract_id" domain="[('partner_id', '=', parent.partner_id), ('state', '!=', 'draft')]"/>
+                    <field name="contract_id" domain="[('partner_id', '=', parent.partner_id), ('state', '!=', 'draft')]"
+                           options="{'search_more': true, 'field_color': 'state',
+                                     'colors': {'cancelled': 'gray', 'terminated': 'gray', 'draft': 'blue', 'mandate': 'red', 'waiting': 'green'}}"/>
                     <field name="child_name" />
                 </xpath>
 

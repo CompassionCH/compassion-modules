@@ -15,11 +15,11 @@
                 <label for="planned_revenue" position="before">
                     <label for="planned_sponsorships"/><h2><field name="planned_sponsorships"/></h2>
                 </label>
-                <field name="categ_ids" position="after">
-                    <field name="event_id"/>
-                </field>
-                <xpath expr="/form/header/button[@name='case_mark_lost']" position="after">
-                    <button string="Create Event" name="create_event" type="object" attrs="{'invisible': [('event_id', '>', 0)]}"/>
+                <xpath expr="//page[@string='Internal Notes']" position="before">
+                    <page string="Events">
+                        <button string="Create Event" name="create_event" type="object"/>
+                        <field name="event_ids"/>
+                    </page>
                 </xpath>
             </field>
         </record>
@@ -49,10 +49,10 @@
                     <field name="planned_sponsorships" sum="Expected Sponsorships"/>
                 </field>
                 <field name="message_summary" position="after">
-                    <field name="event_id"/>
+                    <field name="event_ids"/>
                 </field>
                 <xpath expr="//ul[@class='oe_dropdown_menu']/li/a[@name='action_makeMeeting']" position="after">
-                    <t t-if="!record.event_id.raw_value"><li><a name="create_event" type="object">Create Event</a></li></t>
+                    <li><a name="create_event" type="object">Create Event</a></li>
                 </xpath>
             </field>
         </record>

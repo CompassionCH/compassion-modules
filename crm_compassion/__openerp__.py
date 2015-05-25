@@ -29,7 +29,7 @@
 
 {
     'name': 'Compassion CH - Events',
-    'version': '1.1',
+    'version': '1.4.1',
     'category': 'CRM',
     'sequence': 150,
     'description': """Compassion CRM - Events and Projects
@@ -56,6 +56,8 @@ new model for tracking upcoming events.
         'view/move_line_view.xml',
         'view/project_view.xml',
         'view/hr_timesheet_view.xml',
+        'view/account_view.xml',
+        'view/close_old_projects_view.xml',
     ],
     'demo': [],
     'installable': True,

@@ -399,8 +399,8 @@ class gmc_message_pool(orm.Model):
                 'state': 'failure',
                 'failure_reason': _('Gift instructions is more than 60 '
                                     'characters length')})
-        message._store_set_values(['gift_type', 'gift_amount',
-                                   'gift_instructions'], context)
+        self._store_set_values(cr, uid, [message.id], [
+            'gift_type', 'gift_amount', 'gift_instructions'], context)
         return res_id
 
     def write(self, cr, uid, ids, vals, context=None):

@@ -27,9 +27,11 @@ class project_project(orm.Model):
     }
 
     def on_change_type(self, cr, uid, ids, project_type, context=None):
-        res = {}
+        """ Set the parent analytic account. """
+        res = dict()
+        analytic_obj = self.pool.get('account.analytic.account')
         if project_type == 'marketing':
-            parent_id = self.pool.get('account.analytic.account').search(
+            parent_id = analytic_obj.search(
                 cr, uid, [('name', '=', 'Campaign')],
                 context={'lang': 'en_US'})
             res['value'] = {'parent_id': parent_id[0] if parent_id else False}
@@ -49,6 +51,7 @@ class project_project(orm.Model):
             'use_timesheets': True,
             'manager_id': project.user_id.id})
         if type == 'marketing':
+            # Create an origin for contracts
             self.pool.get('recurring.contract.origin').create(
                 cr, uid, {
                     'type': 'marketing',
@@ -58,25 +61,10 @@ class project_project(orm.Model):
         return id
 
     def write(self, cr, uid, ids, vals, context=None):
+        """ Push the changes to linked events and to analytic account. """
         super(project_project, self).write(cr, uid, ids, vals, context)
         if 'project_type' in vals and not context.get('from_event'):
             raise orm.except_orm(
                 _("Type cannot be changed"),
-                _("You cannot change the type of the project. If the project "
-                  "is linked to an event, change the type of the event."))
-        event_vals = dict()
-        if 'user_id' in vals:
-            event_vals['user_id'] = vals['user_id']
-            for project in self.browse(cr, uid, ids, context):
-                project.analytic_account_id.write({
-                    'manager_id': vals['user_id']
-                })
-        if 'name' in vals:
-            event_vals['name'] = vals['name']
-        if event_vals and not context.get('from_event'):
-            event_obj = self.pool.get('crm.event.compassion')
-            event_ids = event_obj.search(
-                cr, uid, [('project_id', 'in', ids)], context=context)
-            if event_ids:
-                event_obj.write(cr, uid, event_ids, event_vals, context)
+                _("You cannot change the type of the project."))
         return True
