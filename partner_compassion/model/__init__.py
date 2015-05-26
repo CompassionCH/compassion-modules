@@ -9,3 +9,4 @@
 #
 ##############################################################################
 from . import partner_compassion
+from . import partner_bank_compassion
