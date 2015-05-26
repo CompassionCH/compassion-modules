@@ -97,5 +97,5 @@ class test_webservice(common.TransactionCase):
         self.assertEqual(child.firstname, "Happiness")
         self.assertEqual(child.gender, "F")
         self.assertEqual(child.birthdate, "2005-04-17")
-        self.assertTrue(child.case_study_ids[0])
+        self.assertTrue(child.case_study_ids)
         self.assertTrue(child.portrait)
