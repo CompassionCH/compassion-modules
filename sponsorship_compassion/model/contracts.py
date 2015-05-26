@@ -743,12 +743,12 @@ class sponsorship_contract(orm.Model):
             invoice_obj.write(cr, uid, to_remove_inv, {
                 'move_id': False}, context)
             for invoice_id in to_remove_inv:
-                wf_service.trg_validate(uid, 'account.invoice', invoice_id,
-                                        'invoice_cancel', cr)
-            self.pool.get('mail.thread').message_post(
-                cr, uid, cancel_ids, keep_lines,
-                _("Invoice Cancelled"), 'comment',
-                context={'thread_model': 'account.invoice'})
+                wf_service.trg_validate(uid, 'account.invoice',
+                                        invoice_id, 'invoice_cancel', cr)
+                self.pool.get('mail.thread').message_post(
+                    cr, uid, invoice_id, keep_lines,
+                    _("Invoice Cancelled"), 'comment',
+                    context={'thread_model': 'account.invoice'})
 
             # Isolate invoice lines in cancelled invoices instead of
             # deleting them
