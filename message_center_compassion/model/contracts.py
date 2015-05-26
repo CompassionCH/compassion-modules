@@ -35,7 +35,10 @@ class recurring_contract(orm.Model):
 
     _columns = {
         # Field to identify contracts modified by gmc.
-        'gmc_state': fields.selection(__get_gmc_states, _('GMC State'))
+        'gmc_state': fields.selection(__get_gmc_states, _('GMC State')),
+        'cancel_gifts_on_termination': fields.boolean(
+            _("Cancel pending gifts if sponsorship is terminated")
+        ),
     }
 
     def _on_contract_active(self, cr, uid, ids, context=None):
@@ -100,7 +103,8 @@ class recurring_contract(orm.Model):
                         ('partner_id', '=', contract.correspondant_id.id),
                         ('child_id', '=', contract.child_id.id)],
                         context=context)
-                    if contract.child_id.project_id.disburse_gifts:
+                    if contract.child_id.project_id.disburse_gifts and not \
+                            contract.cancel_gifts_on_termination:
                         # Send gifts
                         ctx = context.copy()
                         ctx['force_send'] = True
