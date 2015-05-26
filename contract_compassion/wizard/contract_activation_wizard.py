@@ -1,4 +1,4 @@
-﻿# -*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -15,8 +15,8 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import datetime
 
 
-class activate_sponsorship_wizard(orm.TransientModel):
-    """ This wizard generates a Gift Invoice for a given contract. """
+class activate_contract_wizard(orm.TransientModel):
+    """ This wizard force activation of a contract. """
     _name = 'recurring.contract.activate.wizard'
 
     def activate_contract(self, cr, uid, ids, context=None):

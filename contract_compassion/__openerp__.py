@@ -10,7 +10,7 @@
 #                            in Jesus' name
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
-#    @author: Cyril Sester, Emanuel Cino
+#    @author: David Coninckx
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -29,41 +29,28 @@
 
 
 {
-    'name': 'Compassion Sponsorships',
-    'version': '1.5',
+    'name': 'Compassion Contracts',
+    'version': '0.1',
     'category': 'Other',
     'description': """
-Sponsorship management module. This module makes the link between child and
-contracts. It also customize contracts to fit the child sponsorship context.
-
-This modules also requires en_US, fr_CH, de_DE, it_IT and es_ES to be installed
-on the server.
-To check installed locales:
- $ locale -a
-To add a new locale :
- $ /usr/share/locales/install-language-pack <ISO-locale-name>
- $ dpkg-reconfigure locales
+Compassion contract module.
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['contract_compassion', 'l10n_ch_payment_slip', 'crm',
-                'l10n_ch', 'account_cancel', 'partner_compassion',
-                'web_m2x_options', 'account_invoice_split_invoice'],
+    'depends': ['recurring_contract', 'account_banking_mandate',
+                'account_analytic_plans', 'account_asset_compassion',
+                'child_compassion'],
     'data': [
-        'view/sponsorship_contract_view.xml',
-        'view/sponsorship_contract_group_view.xml',
-        'view/end_sponsorship_wizard_view.xml',
-        'view/invoice_line_view.xml',
-        'view/res_partner_view.xml',
-        'view/generate_gift_view.xml',
-        'view/account_invoice_split_wizard_view.xml',
-        'view/suspension_wizard_view.xml',
-        'view/child_view.xml',
-        'data/payment_terms.xml',
-        'data/lang.xml',
-        'data/sequence.xml',
-        'data/analytic_accounting.xml',
-        'data/sponsorship_product.xml',
+        'data/install.xml',
+        'view/end_contract_wizard_view.xml',
+        'view/contract_group_view.xml',
+        'view/contract_origin_view.xml',
+        'view/contract_view.xml',
+        'view/activate_contract_view.xml',
+        'workflow/contract_workflow.xml',
+        'security/ir.model.access.csv',
+        'data/friday_invoicer_cron.xml',
+        'data/product.xml',
     ],
     'demo': [],
     'installable': True,

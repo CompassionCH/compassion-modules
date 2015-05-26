@@ -14,7 +14,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools import mod10r
 from openerp.tools.translate import _
 
-from ..model.product import GIFT_TYPES
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import time
@@ -56,7 +55,7 @@ class generate_gift_wizard(orm.TransientModel):
                     [('type', '=', 'sale'), ('company_id', '=', 1 or False)],
                     limit=1)
 
-                if wizard.product_id.name == GIFT_TYPES[0]:   # Birthday Gift
+                if wizard.product_id.name == 'Birthday Gift':
                     invoice_date = self.compute_date_birthday_invoice(
                         contract.child_id.birthdate, wizard.invoice_date)
                 else:
@@ -128,12 +127,19 @@ class generate_gift_wizard(orm.TransientModel):
         return True
 
     def _generate_bvr_reference(self, contract, product):
+        gift_bvr_ref = {
+            'Birthday Gift': 1,
+            'General Gift': 2,
+            'Family Gift': 3,
+            'Project Gift': 4,
+            'Graduation Gift': 5
+        }
         ref = contract.partner_id.ref
         bvr_reference = '0' * (9 + (7 - len(ref))) + ref
         num_pol_ga = str(contract.num_pol_ga)
         bvr_reference += '0' * (5 - len(num_pol_ga)) + num_pol_ga
         # Type of gift
-        bvr_reference += str(GIFT_TYPES.index(product.name)+1)
+        bvr_reference += str(gift_bvr_ref[product.name])
         bvr_reference += '0' * 4
 
         if contract.group_id.payment_term_id and \
@@ -151,7 +157,7 @@ class generate_gift_wizard(orm.TransientModel):
             cr, user, view_id, view_type, context, toolbar, submenu)
         if view_type == 'form':
             gifts_ids = self.pool.get('product.product').search(
-                cr, user, [('name', 'in', GIFT_TYPES)],
+                cr, user, [('type', '=', 'G')],
                 context={'lang': 'en_US'})
             res['fields']['product_id']['domain'] = [('id', 'in', gifts_ids)]
 

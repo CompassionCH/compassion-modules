@@ -13,9 +13,8 @@ from . import contract_group
 from . import contracts
 from . import invoice_line
 from . import res_partner
-from . import product
 from . import move_line
-from . import contract_origin
 from . import account_banking_mandate
 from . import project_compassion
 from . import child_compassion
+from . import product
