@@ -45,7 +45,7 @@
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['base', 'partner_firstname', 'base_location',
-                'email_template'],
+                'email_template', 'contract_compassion'],
     'data': [
         'view/partner_compassion_view.xml',
         'data/partner_sequence.xml',

@@ -39,7 +39,6 @@ class ResPartnerBank(orm.Model):
         """
 
         obj_bank = self.pool['res.partner.bank']
-        account = None
 
         for account in obj_bank.browse(cr, uid, ids, context=context):
             account.partner_id.pool.get('mail.thread'). \

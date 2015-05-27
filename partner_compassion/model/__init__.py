@@ -10,3 +10,4 @@
 ##############################################################################
 from . import partner_compassion
 from . import partner_bank_compassion
+from . import account_banking_mandate_compassion
