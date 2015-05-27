@@ -192,6 +192,7 @@ class compassion_child(orm.Model):
         'delegated_to': fields.many2one('res.partner', _("Delegated to")),
         'delegated_comment': fields.text(_("Delegated comment")),
         'date_delegation': fields.date(_("Delegated date")),
+        'date_end_delegation': fields.date(_("Delegated until")),
         'date_info': fields.related('case_study_ids', 'info_date',
                                     type='date', string=_("Last info")),
 
@@ -355,6 +356,10 @@ class compassion_child(orm.Model):
                 'comments': 'Empty Case Study for LDP Student',
             }
             return child_prop_obj.create(cr, uid, vals, context)
+        return True
+
+    def update_delegate(self, cr, uid, context=None):
+
         return True
 
     ##################################################
