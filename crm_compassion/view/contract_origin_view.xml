@@ -7,7 +7,7 @@
         <record id="view_contract_origin_tree_event" model="ir.ui.view">
             <field name="name">contract.origin.tree.event</field>
             <field name="model">recurring.contract.origin</field>
-            <field name="inherit_id" ref="sponsorship_compassion.view_contract_origin_tree"/>
+            <field name="inherit_id" ref="contract_compassion.view_contract_origin_tree"/>
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
                     <field name="event_id"/>
@@ -18,7 +18,7 @@
         <record id="view_contract_origin_form_event" model="ir.ui.view">
             <field name="name">contract.origin.form.event</field>
             <field name="model">recurring.contract.origin</field>
-            <field name="inherit_id" ref="sponsorship_compassion.view_contract_origin_form"/>
+            <field name="inherit_id" ref="contract_compassion.view_contract_origin_form"/>
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
                     <field name="event_id" attrs="{'invisible': [('type', '!=', 'event')],
@@ -31,7 +31,7 @@
         <record id="view_crm_contract_origin_filter" model="ir.ui.view">
             <field name="name">recurring.contract.origin.crm.select</field>
             <field name="model">recurring.contract.origin</field>
-            <field name="inherit_id" ref="sponsorship_compassion.view_contract_origin_filter"/>
+            <field name="inherit_id" ref="contract_compassion.view_contract_origin_filter"/>
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
                     <field name="event_id"/>
@@ -85,7 +85,7 @@
         <record id="view_contract_form_crm" model="ir.ui.view">
             <field name="name">recurring.contract.crm.form</field>
             <field name="model">recurring.contract</field>
-            <field name="inherit_id" ref="sponsorship_compassion.view_recurring_contract_form_compassion"/>
+            <field name="inherit_id" ref="contract_compassion.view_recurring_contract_form_compassion"/>
             <field eval="18" name="priority"/>
             <field name="arch" type="xml">
                 <data>
