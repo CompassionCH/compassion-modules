@@ -41,8 +41,7 @@ class delegate_child_wizard(orm.TransientModel):
         'comment': fields.text(_('Comment'), required=True),
         'date_delegation': fields.date(_('Delegation\'s beginning'),
                                        required=True),
-        'date_end_delegation': fields.date(_('Delegation\'s end'),
-                                           required=False),
+        'date_end_delegation': fields.date(_('Delegation\'s end')),
         'child_ids': fields.function(
             _get_active_ids, type='one2many',
             obj='compassion.child',
