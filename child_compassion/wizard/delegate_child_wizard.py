@@ -60,8 +60,8 @@ class delegate_child_wizard(orm.TransientModel):
         if wizard.date_end_delegation:
             if datetime.strptime(wizard.date_delegation, DF) > \
                datetime.strptime(wizard.date_end_delegation, DF):
-                raise orm.except_orm("Invalid value", "End date must "
-                                     "be later than beginning")
+                raise orm.except_orm("Invalid value", _("End date must "
+                                     "be later than beginning"))
 
         if datetime.strptime(wizard.date_delegation, DF) <= datetime.today():
             child_obj.write(cr, uid, child_ids, {'state': 'D'},
