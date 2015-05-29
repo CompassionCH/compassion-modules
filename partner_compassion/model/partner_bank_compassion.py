@@ -42,13 +42,11 @@ class ResPartnerBank(orm.Model):
 
         for account in obj_bank.browse(cr, uid, ids, context=context):
             account.partner_id.pool.get('mail.thread'). \
-                message_post(cr, uid, account.partner_id.id,
-                             "<b>Account number: </b>" +
-                             account.acc_number,
-                             "Account deleted",
-                             'comment',
-                             context={'thread_model':
-                                      account.partner_id._name})
+                message_post(
+                    cr, uid, account.partner_id.id, "<b>Account number: </b>" +
+                    account.acc_number, "Account deleted", 'comment',
+                    context={'thread_model': account.partner_id._name})
+
         result = super(ResPartnerBank, self).unlink(cr, uid, ids,
                                                     context=context)
         return result
