@@ -592,7 +592,7 @@ class sponsorship_contract(orm.Model):
                 categ_name = product.categ_name
                 allowed = whitelist_product_types.get(type)
                 forbidden = forbidden_product_types.get(type)
-                if (allowed and not categ_name in allowed) or \
+                if (allowed and categ_name not in allowed) or \
                         (forbidden and categ_name in forbidden):
                     message = _('You can only select {0} products.').format(
                         str(allowed)) if allowed else _(
