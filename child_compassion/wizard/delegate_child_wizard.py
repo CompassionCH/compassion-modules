@@ -59,13 +59,18 @@ class delegate_child_wizard(orm.TransientModel):
         child_obj = self.pool.get('compassion.child')
 
         if wizard.date_end_delegation:
-            if wizard.date_delegation > wizard.date_end_delegation:
+            if datetime.strptime(wizard.date_delegation, DF) > \
+               datetime.strptime(wizard.date_end_delegation, DF):
                 raise orm.except_orm("Invalid value", "End date must "
                                      "be later than beginning")
 
+        if datetime.strptime(wizard.date_delegation, DF) <= datetime.today():
+            child_obj.write(cr, uid, child_ids, {'state': 'D'},
+                            context=context)
+
         child_obj.write(
             cr, uid, child_ids,
-            {'state': 'D', 'delegated_to': wizard.partner.id,
+            {'delegated_to': wizard.partner.id,
              'delegated_comment': wizard.comment,
              'date_delegation': wizard.date_delegation,
              'date_end_delegation': wizard.date_end_delegation, },

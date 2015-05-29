@@ -16,7 +16,8 @@ from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
 
-from datetime import date
+from datetime import date, datetime
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 logger = logging.getLogger(__name__)
 
@@ -359,6 +360,28 @@ class compassion_child(orm.Model):
         return True
 
     def update_delegate(self, cr, uid, context=None):
+        obj_children = self.pool.get('compassion.child')
+        obj_undelegate_wizard = self.pool.get('undelegate.child.wizard')
+
+        child_ids = obj_children.search(cr, uid, [], context=context)
+        child_ids_to_delegate = []
+        child_ids_to_undelegate = []
+
+        for child in obj_children.browse(cr, uid, child_ids, context=context):
+            if child.date_delegation:
+                if datetime.strptime(child.date_delegation, DF) \
+                   <= datetime.today():
+                    child_ids_to_delegate.append(child.id)
+
+                if child.date_end_delegation and \
+                   datetime.strptime(child.date_end_delegation, DF) <= \
+                   datetime.today():
+                    child_ids_to_undelegate.append(child.id)
+
+        obj_children.write(cr, uid, child_ids_to_delegate, {'state': 'D'},
+                           context=context)
+        obj_undelegate_wizard.undelegate(cr, uid, 0, {'active_ids':
+                                                      child_ids_to_undelegate})
 
         return True
 

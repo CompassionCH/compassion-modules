@@ -11,6 +11,7 @@
 		<field name="name">Check validity of delegate date</field>
 		<field name="interval_number">1</field>
 		<field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
         <field name="active" eval="True"/>
         <field name="function" eval="'update_delegate'" />
         <field name="model" eval="'compassion.child'"/>
