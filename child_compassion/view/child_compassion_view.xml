@@ -128,6 +128,7 @@
                     <field name="delegated_to"/>
                     <field name="date_delegation"/>
                     <field name="date_end_delegation"/>
+                    <field name="delegated_comment"/>
                     <field name="date_info"/>
                     <field name="has_desc_fr"/>
                     <field name="has_desc_de"/>
