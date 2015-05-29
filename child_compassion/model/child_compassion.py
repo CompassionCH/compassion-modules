@@ -361,7 +361,8 @@ class compassion_child(orm.Model):
 
     def update_delegate(self, cr, uid, context=None):
         obj_undelegate_wizard = self.pool.get('undelegate.child.wizard')
-
+        
+        possible_states = ['N', 'R', 'D', 'I', 'Z']
         child_ids = self.search(cr, uid, [], context=context)
         child_ids_to_delegate = []
         child_ids_to_undelegate = []
@@ -369,7 +370,7 @@ class compassion_child(orm.Model):
         for child in self.browse(cr, uid, child_ids, context=context):
             if child.date_delegation:
                 if datetime.strptime(child.date_delegation, DF) \
-                   <= datetime.today():
+                   <= datetime.today() and child.state in possible_states:
                     child_ids_to_delegate.append(child.id)
 
                 if child.date_end_delegation and \
