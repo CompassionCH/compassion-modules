@@ -64,7 +64,7 @@
             <field name="name">account.invoice.supplier.form.crm.compassion</field>
             <field name="model">account.invoice</field>
             <field name="priority">40</field>
-            <field name="inherit_id" ref="sponsorship_compassion.invoice_supplier_form_compassion"/>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
             <field name="arch" type="xml">
                 <!-- Change colors of analytic accounts depending its type -->
                 <xpath expr="//field[@name='account_analytic_id']" position="attributes">
