@@ -81,8 +81,6 @@
         <!-- Move the Sponsorships Menu to the Sponsorship Section -->
         <menuitem id="menu_sponsorship_contract_form" parent="child_compassion.menu_sponsorship_section"
                   name="Sponsorships" sequence="0" action="action_sponsorship_contract"/>
-        <menuitem id="contract_compassion.menu_contracts_section" parent="child_compassion.menu_sponsorship_root" 
-                  name="Invoicing" groups="account.group_account_user" sequence="2"/>
         <menuitem id="open_customers" parent="child_compassion.menu_sponsorship_section"
                   name="Partners" action="base.action_partner_customer_form" sequence="3"/>
     </data>
