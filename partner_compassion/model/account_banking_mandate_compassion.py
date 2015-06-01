@@ -41,16 +41,12 @@ class Account_Banking_Mandate(orm.Model):
         """
 
         obj_mandate = self.pool['account.banking.mandate']
-        thread_obj = self.pool.get('mail.thread')
 
         for mandate in obj_mandate.browse(cr, uid, ids, context=context):
-            thread_obj.message_post(cr, uid, mandate.partner_id.id,
-                                    "For account: " +
-                                    mandate.partner_bank_id.acc_number,
-                                    "Mandate validated",
-                                    'comment',
-                                    context={'thread_model':
-                                             mandate.partner_id._name})
+            self.message_post(
+                cr, uid, mandate.partner_id.id, "For account: " +
+                mandate.partner_bank_id.acc_number, "Mandate validated",
+                'comment', context={'thread_model': mandate.partner_id._name})
 
         super(Account_Banking_Mandate, self).validate(cr, uid, ids, context)
         return True
