@@ -29,8 +29,12 @@ class portal_wizard(orm.TransientModel):
             user_ids = self.pool.get('res.users').search(
                 cr, uid, [('name', '=', user.partner_id.name)],
                 context=ctx)
-            partner_name = user.partner_id.parent_id.name + ", " + \
-                user.partner_id.name
+            partner_name = user.partner_id.name
+
+            if user.partner_id.parent_id:
+                partner_name = user.partner_id.parent_id.name + \
+                    ", " + partner_name
+
             analytics_obj = self.pool.get('account.analytic.account')
             acc_ids = analytics_obj.search(
                 cr, uid, [('name', '=', partner_name)], context=ctx)
