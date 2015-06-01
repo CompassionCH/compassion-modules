@@ -82,9 +82,6 @@ Contributors
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['mail', 'web_m2x_options'],
-    'external_dependencies': {
-        'python': ['pysftp'],
-    },
     'data': [
         'security/sponsorship_groups.xml',
         'security/ir.model.access.csv',
@@ -97,11 +94,10 @@ Contributors
         'view/country_compassion_view.xml',
         'view/delegate_child_wizard.xml',
         'view/undelegate_child_wizard.xml',
-        'view/child_on_internet_wizard.xml',
-        'view/child_remove_from_internet.xml',
         'view/project_description_wizard_view.xml',
         'view/project_compassion_age_groups_view.xml',
         'workflow/child_workflow.xml',
+        'data/delegate_child_compassion_cron.xml',
     ],
     'css': ['static/src/css/child_compassion.css'],
     'js': ['static/src/js/child_description_wizard.js'],

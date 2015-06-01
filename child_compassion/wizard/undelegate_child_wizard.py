@@ -57,7 +57,8 @@ class undelegate_child_wizard(orm.TransientModel):
                 self.pool.get('compassion.child').write(
                     cr, uid, child.id,
                     {'state': newstate, 'delegated_to': None,
-                        'delegated_comment': None, 'date_delegation': None},
+                        'delegated_comment': None, 'date_delegation': None,
+                        'date_end_delegation': None},
                     context=context)
 
         return True

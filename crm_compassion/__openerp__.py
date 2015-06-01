@@ -73,7 +73,7 @@ Contributors
         'security/ir.model.access.csv',
         'data/account_analytic_data.xml',
         'view/event_compassion_view.xml',
-        'view/contract_origin_view.xml',
+        # 'view/contract_origin_view.xml',
         'view/crm_lead_view.xml',
         'view/move_line_view.xml',
         'view/project_view.xml',

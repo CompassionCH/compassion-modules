@@ -12,7 +12,6 @@
 from openerp import netsvc
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
-from sponsorship_compassion.model.product import GIFT_TYPES
 import logging
 
 logger = logging.getLogger(__name__)
@@ -22,17 +21,21 @@ class recurring_contract(orm.Model):
     """ We add here creation of messages concerning commitments. """
     _inherit = "recurring.contract"
 
-    _columns = {
-        # Field to identify contracts modified by gmc.
-        'gmc_state': fields.selection([
+    def _get_gmc_states(self, cr, uid, context=None):
+        """ Overridable method to get GMC states. """
+        return [
             ('picture', _('New Picture')),
             ('casestudy', _('New Case Study')),
             ('biennial', _('Biennial')),
             ('depart', _('Child Departed')),
-            ('transfer', _('Child Transfer')),
-            ('suspension', _('Project Fund-Suspended')),
-            ('suspension-extension', _('Fund suspension extension')),
-            ('reactivation', _('Project Reactivated'))], _('GMC State'))
+            ('transfer', _('Child Transfer'))]
+
+    def __get_gmc_states(self, cr, uid, context=None):
+        return self._get_gmc_states(cr, uid, context)
+
+    _columns = {
+        # Field to identify contracts modified by gmc.
+        'gmc_state': fields.selection(__get_gmc_states, _('GMC State'))
     }
 
     def _on_contract_active(self, cr, uid, ids, context=None):
@@ -47,7 +50,7 @@ class recurring_contract(orm.Model):
             ids = [ids]
 
         for contract in self.browse(cr, uid, ids, context=context):
-            if contract.child_id:
+            if 'S' in contract.type:
                 # UpsertConstituent Message
                 action_id = self.get_action_id(cr, uid, 'UpsertConstituent')
                 partner_id = contract.correspondant_id.id
@@ -88,8 +91,8 @@ class recurring_contract(orm.Model):
 
             for contract in self.browse(cr, uid, ids, context=context):
                 end_reason = int(contract.end_reason)
-                if contract.child_id and end_reason != 1:
-                    # Send pending gifts
+                if 'S' in contract.type:
+                    # Search pending gifts
                     mess_ids = message_obj.search(cr, uid, [
                         ('action_id', '=', self.get_action_id(cr, uid,
                                                               'CreateGift')),
@@ -97,11 +100,20 @@ class recurring_contract(orm.Model):
                         ('partner_id', '=', contract.correspondant_id.id),
                         ('child_id', '=', contract.child_id.id)],
                         context=context)
-                    context['force_send'] = True
-                    message_obj.process_messages(cr, uid, mess_ids, context)
+                    if contract.child_id.project_id.disburse_gifts:
+                        # Send gifts
+                        ctx = context.copy()
+                        ctx['force_send'] = True
+                        message_obj.process_messages(cr, uid, mess_ids, ctx)
+                    else:
+                        # Abort gifts and clean invoices
+                        message_obj.unlink(cr, uid, mess_ids, context)
+                        self.clean_invoices_paid(cr, uid, ids, context,
+                                                 gifts=True)
+
                 # Contract must have child and not terminated by
-                # partner move
-                if contract.child_id and end_reason != 4:
+                # partner move -> CancelCommitment message
+                if 'S' in contract.type and end_reason != 4:
                     message_vals.update({
                         'object_id': contract.id,
                         'partner_id': contract.correspondant_id.id,
@@ -122,15 +134,13 @@ class recurring_contract(orm.Model):
             'action_id': action_id,
             'date': invoice.date_invoice,
         }
-        gift_ids = self.pool.get('product.product').search(
-            cr, uid, [('name_template', 'in', GIFT_TYPES)],
-            context={'lang': 'en_US'})
 
         for invoice_line in invoice.invoice_line:
             contract = invoice_line.contract_id
             if not contract:
                 break
-            if invoice_line.product_id.id in gift_ids and invoice.payment_ids:
+            if invoice_line.product_id.categ_name == 'Sponsor gifts' and \
+                    invoice.payment_ids:
                 # CreateGift
                 message_vals.update({
                     'object_id': invoice_line.id,
@@ -154,15 +164,8 @@ class recurring_contract(orm.Model):
                 # 2. Delete pending CreateGift and CreateCommitment messages
                 self._clean_messages(cr, uid, invoice_line.id, context)
 
-    def suspend_contract(self, cr, uid, ids, context=None,
-                         date_start=None, date_end=None):
-        """ Mark the state of contract when it is suspended. """
-        self.write(cr, uid, ids, {'gmc_state': 'suspension'}, context)
-        return super(recurring_contract, self).suspend_contract(
-            cr, uid, ids, context, date_start, date_end)
-
     def _on_invoice_line_removal(self, cr, uid, invoice_lines, context=None):
-        """ Removes the corresponding Affectats in GP.
+        """ Removes the messages linked to the invoice line.
             @param: invoice_lines (dict): {
                 line_id: [invoice_id, child_code, product_name, amount]}
         """
@@ -192,25 +195,31 @@ class recurring_contract(orm.Model):
                     'contract_activation_cancelled', cr)
         message_obj.unlink(cr, uid, mess_ids, context)
 
-    def _filter_clean_invoices(self, cr, uid, ids, since_date=None,
-                               to_date=None, context=None):
-        """ Don't clean invoice lines related to GIFT messages sent to GMC.
-        Delete pending messages. """
-        message_obj = self.pool.get('gmc.message.pool')
-        sender_ids = [c.correspondant_id.id for c in self.browse(cr, uid, ids,
-                                                                 context)]
-        mess_ids = message_obj.search(cr, uid, [
-            ('action_id', '=', self.get_action_id(cr, uid, 'CreateGift')),
-            ('partner_id', 'in', sender_ids),
-            ('state', 'not in', ['new', 'failure'])], context=context)
-        filter_invl_ids = [m.object_id for m in message_obj.browse(
-            cr, uid, mess_ids, context)]
-
-        invl_filter = super(recurring_contract, self)._filter_clean_invoices(
-            cr, uid, ids, since_date, to_date, context)
-        invl_filter.append(('id', 'not in', filter_invl_ids))
-        return invl_filter
-
     def get_action_id(self, cr, uid, name, context=None):
         return self.pool.get('gmc.action').get_action_id(cr, uid, name,
                                                          context)
+
+    def new_biennial(self, cr, uid, ids, context=None):
+        """ Called when new picture and new case study is available. """
+        self.write(cr, uid, ids, {'gmc_state': 'biennial'}, context)
+
+    def set_gmc_event(self, cr, uid, ids, event, context=None):
+        """
+        Called when a Child Update was received for a sponsored child.
+        Arg event can have one of the following values :
+            - Transfer : child was transferred to another project
+            - CaseStudy : child has a new casestudy
+            - NewImage : child has a new image
+        """
+        # Maps the event to the gmc state value of contract
+        gmc_states = {
+            'Transfer': 'transfer',
+            'CaseStudy': 'casestudy',
+            'NewImage': 'picture',
+        }
+        res = True
+        for contract in self.browse(cr, uid, ids, context):
+            if not (contract.gmc_state == 'biennial' and
+                    event in ('CaseStudy', 'NewImage')):
+                res = res and contract.write({'gmc_state': gmc_states[event]})
+        return res

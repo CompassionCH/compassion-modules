@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <!-- Filter only analytic accounts that use timesheets -->
         <record id="hr_timesheet_line_tree" model="ir.ui.view">
             <field name="name">hr.analytic.timesheet.tree.compassion</field>
             <field name="model">hr.analytic.timesheet</field>
@@ -9,6 +10,22 @@
                 <field name="account_id" position="attributes">
                     <attribute name="domain">[('use_timesheets','=',1)]</attribute>
                 </field>
+            </field>
+        </record>
+
+        <!-- Add event analytic accounts on hr expenses -->
+        <record id="hr_expense_form_compassion" model="ir.ui.view">
+            <field name="name">hr.expense.form.compassion</field>
+            <field name="model">hr.expense.expense</field>
+            <field name="inherit_id" ref="hr_expense.view_expenses_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree/field[@name='analytic_account']" position="attributes">
+                    <attribute name="domain" position="replace">
+                        <attribute name="domain">
+                            [('type','in',['normal','contract','event'])]
+                        </attribute>
+                    </attribute>
+                </xpath>
             </field>
         </record>
     </data>
