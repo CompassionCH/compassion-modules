@@ -68,7 +68,7 @@ class contract_group(orm.Model):
         ctx['lang'] = 'en_US'
         if invoicer_id is None:
             invoicer_id = self.pool.get('recurring.invoicer').create(
-                cr, uid, {}, ctx)
+                cr, uid, {'source': self._name}, ctx)
         ctx['recurring_invoicer_id'] = invoicer_id
 
         # Search active Sponsorships with automatic birthday gift

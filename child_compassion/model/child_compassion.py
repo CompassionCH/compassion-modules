@@ -16,7 +16,8 @@ from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
 
-from datetime import date
+from datetime import date, datetime
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 logger = logging.getLogger(__name__)
 
@@ -192,6 +193,7 @@ class compassion_child(orm.Model):
         'delegated_to': fields.many2one('res.partner', _("Delegated to")),
         'delegated_comment': fields.text(_("Delegated comment")),
         'date_delegation': fields.date(_("Delegated date")),
+        'date_end_delegation': fields.date(_("Delegated until")),
         'date_info': fields.related('case_study_ids', 'info_date',
                                     type='date', string=_("Last info")),
 
@@ -355,6 +357,32 @@ class compassion_child(orm.Model):
                 'comments': 'Empty Case Study for LDP Student',
             }
             return child_prop_obj.create(cr, uid, vals, context)
+        return True
+
+    def update_delegate(self, cr, uid, context=None):
+        obj_undelegate_wizard = self.pool.get('undelegate.child.wizard')
+
+        possible_states = ['N', 'R', 'D', 'I', 'Z']
+        child_ids = self.search(cr, uid, [], context=context)
+        child_ids_to_delegate = []
+        child_ids_to_undelegate = []
+
+        for child in self.browse(cr, uid, child_ids, context=context):
+            if child.date_delegation:
+                if datetime.strptime(child.date_delegation, DF) \
+                   <= datetime.today() and child.state in possible_states:
+                    child_ids_to_delegate.append(child.id)
+
+                if child.date_end_delegation and \
+                   datetime.strptime(child.date_end_delegation, DF) <= \
+                   datetime.today():
+                    child_ids_to_undelegate.append(child.id)
+
+        self.write(cr, uid, child_ids_to_delegate, {'state': 'D'},
+                   context=context)
+        obj_undelegate_wizard.undelegate(cr, uid, 0, {'active_ids':
+                                                      child_ids_to_undelegate})
+
         return True
 
     ##################################################

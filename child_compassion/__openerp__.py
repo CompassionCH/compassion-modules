@@ -97,6 +97,7 @@ Contributors
         'view/project_description_wizard_view.xml',
         'view/project_compassion_age_groups_view.xml',
         'workflow/child_workflow.xml',
+        'data/delegate_child_compassion_cron.xml',
     ],
     'css': ['static/src/css/child_compassion.css'],
     'js': ['static/src/js/child_description_wizard.js'],
