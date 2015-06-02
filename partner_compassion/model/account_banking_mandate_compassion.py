@@ -24,9 +24,9 @@ class Account_Banking_Mandate(orm.Model):
                                   context=context)
 
         account.partner_id.pool.get('mail.thread').message_post(
-            cr, uid, account.partner_id.id, "For account: " + 
+            cr, uid, account.partner_id.id, "For account: " +
             account.acc_number, "New mandate created", 'comment',
-            context={'thread_model':account.partner_id._name})
+            context={'thread_model': account.partner_id._name})
 
         result = super(Account_Banking_Mandate, self).create(cr, uid, data,
                                                              context=context)
