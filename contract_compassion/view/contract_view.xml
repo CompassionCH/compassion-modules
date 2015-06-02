@@ -44,6 +44,9 @@
                         <attribute name="states">waiting,active</attribute>
                     </attribute>
                 </button>
+                <button name="button_generate_invoices" position="after">
+                    <button name="action_cancel_draft" type="object" string="Set back to draft" states="cancelled"/>
+                </button>
 
                 <button name="contract_terminated" position="replace">
                     <button name="%(action_end_contract)d" type="action" string="Terminate" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['waiting', 'mandate', 'active'])]}"/>

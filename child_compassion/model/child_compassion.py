@@ -97,6 +97,14 @@ class compassion_child(orm.Model):
 
         return res
 
+    def _is_available(self, cr, uid, ids, field_name, args, context=None):
+        """ Tells if child is available for sponsorship. """
+        return {child.id: child.state in self._available_states()
+                for child in self.browse(cr, uid, ids, context)}
+
+    def _available_states(self):
+        return ['N', 'D', 'I', 'Z', 'R']
+
     _columns = {
         ######################################################################
         #                      1. General Information                        #
@@ -196,6 +204,8 @@ class compassion_child(orm.Model):
         'date_end_delegation': fields.date(_("Delegated until")),
         'date_info': fields.related('case_study_ids', 'info_date',
                                     type='date', string=_("Last info")),
+        'is_available': fields.function(
+            _is_available, string='Is available', type='boolean'),
 
         ######################################################################
         #                      2. Exit Details                               #

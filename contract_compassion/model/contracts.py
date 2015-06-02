@@ -438,6 +438,20 @@ class recurring_contract(orm.Model):
             'target': 'current',
         }
 
+    def action_cancel_draft(self, cr, uid, ids, context=None):
+        """ Set back a cancelled contract to draft state. """
+        wf_service = netsvc.LocalService('workflow')
+        for contract in self.browse(cr, uid, ids, context):
+            update_sql = "UPDATE recurring_contract SET state='draft', "\
+                "end_date=NULL, activation_date=NULL, start_date=CURRENT_DATE"
+            if contract.state == 'cancelled':
+                if contract.child_id and not contract.child_id.is_available:
+                    update_sql += ', child_id = NULL'
+                cr.execute(update_sql + " WHERE id = %s", [contract.id])
+                wf_service.trg_delete(uid, self._name, contract.id, cr)
+                wf_service.trg_create(uid, self._name, contract.id, cr)
+        return True
+
     ################################
     #        PRIVATE METHODS       #
     ################################
@@ -605,7 +619,6 @@ class recurring_contract(orm.Model):
         default.update({
             'child_id': False,
             'activation_date': False,
-            'is_active': False,
             'num_pol_ga': num_pol_ga + 1,
         })
         return super(recurring_contract, self).copy(cr, uid, id, default,
