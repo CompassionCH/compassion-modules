@@ -97,6 +97,14 @@ class compassion_child(orm.Model):
 
         return res
 
+    def _is_available(self, cr, uid, ids, field_name, args, context=None):
+        """ Tells if child is available for sponsorship. """
+        return {child.id: child.state in self._available_states()
+                for child in self.browse(cr, uid, ids, context)}
+
+    def _available_states(self):
+        return ['N', 'D', 'I', 'Z', 'R']
+
     _columns = {
         ######################################################################
         #                      1. General Information                        #
@@ -196,6 +204,8 @@ class compassion_child(orm.Model):
         'date_end_delegation': fields.date(_("Delegated until")),
         'date_info': fields.related('case_study_ids', 'info_date',
                                     type='date', string=_("Last info")),
+        'is_available': fields.function(
+            _is_available, string='Is available', type='boolean'),
 
         ######################################################################
         #                      2. Exit Details                               #
@@ -362,7 +372,6 @@ class compassion_child(orm.Model):
     def update_delegate(self, cr, uid, context=None):
         obj_undelegate_wizard = self.pool.get('undelegate.child.wizard')
 
-        possible_states = ['N', 'R', 'D', 'I', 'Z']
         child_ids = self.search(cr, uid, [], context=context)
         child_ids_to_delegate = []
         child_ids_to_undelegate = []
@@ -370,7 +379,7 @@ class compassion_child(orm.Model):
         for child in self.browse(cr, uid, child_ids, context=context):
             if child.date_delegation:
                 if datetime.strptime(child.date_delegation, DF) \
-                   <= datetime.today() and child.state in possible_states:
+                   <= datetime.today() and child.is_available:
                     child_ids_to_delegate.append(child.id)
 
                 if child.date_end_delegation and \

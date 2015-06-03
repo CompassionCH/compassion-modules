@@ -44,6 +44,9 @@
                         <attribute name="states">waiting,active</attribute>
                     </attribute>
                 </button>
+                <button name="button_generate_invoices" position="after">
+                    <button name="action_cancel_draft" type="object" string="Set back to draft" states="cancelled"/>
+                </button>
 
                 <button name="contract_terminated" position="replace">
                     <button name="%(action_end_contract)d" type="action" string="Terminate" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['waiting', 'mandate', 'active'])]}"/>
@@ -111,10 +114,10 @@
                     <field name="payment_term_id" position="after">
                         <field name="origin_id"/>
                     </field>
-                    <xpath expr="//filter[@name='draft']" position="after">
+                    <xpath expr="//filter[@name='draft']" position="replace">
                         <filter name="waiting" string="Waiting" domain="[('state','in', ('draft','waiting','mandate'))]"/>
                     </xpath>
-                    <xpath expr="//filter[@name='terminated']" position="after">
+                    <xpath expr="//filter[@name='terminated']" position="replace">
                         <filter name="finished" string="Finished" domain="[('state','in', ('cancelled','terminated'))]"/>
                     </xpath>
                     <xpath expr="//filter[@string='Status']" position="after">
@@ -150,6 +153,8 @@
 
         <menuitem id="recurring_contract.menu_recurring_contract_form" parent="child_compassion.menu_sponsorship_section"
                   name="Other contracts" sequence="1" action="action_contract"/>
+        <menuitem id="recurring_contract.menu_contracts_section" parent="child_compassion.menu_sponsorship_root" 
+                  name="Invoicing" groups="account.group_account_user" sequence="2"/>
 
     </data>
 </openerp>

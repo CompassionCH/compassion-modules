@@ -241,7 +241,8 @@ class compassion_project(orm.Model):
     }
 
     _defaults = {
-        'name': '/'
+        'name': '/',
+        'status': 'A',
     }
 
     def update_informations(self, cr, uid, ids, context=None):

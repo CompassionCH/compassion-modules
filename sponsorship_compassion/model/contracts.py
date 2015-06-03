@@ -137,7 +137,11 @@ class sponsorship_contract(orm.Model):
             'correspondant_id', 'ref', string=_('Partner ref'), readonly=True,
             type='char'),
         'fully_managed': fields.function(
-            _is_fully_managed, type="boolean", store=True),
+            _is_fully_managed, type="boolean", store={
+                'recurring.contract': (
+                    lambda self, cr, uid, ids, c=None: ids,
+                    ['partner_id', 'correspondant_id'], 10)
+            }),
         'birthday_invoice': fields.float(_("Annual birthday gift"), help=_(
             "Set the amount to enable automatic invoice creation each year "
             "for a birthday gift. The invoice is set two months before "
@@ -211,7 +215,7 @@ class sponsorship_contract(orm.Model):
     ##########################################################################
     def clean_invoices(
             self, cr, uid, ids, context=None, since_date=None, to_date=None,
-            keep_lines=None):
+            keep_lines=None, clean_invoices_paid=True):
         """ Take into consideration when the sponsor has paid in advance,
         so that we cancel/modify the paid invoices and let the user decide
         what to do with the payment.
@@ -219,9 +223,10 @@ class sponsorship_contract(orm.Model):
         sponsorship_ids = self.search(cr, uid, [
             ('id', 'in', ids),
             ('type', 'like', 'S')], context=context)
-        self.clean_invoices_paid(
-            cr, uid, sponsorship_ids, context, since_date, to_date,
-            keep_lines=keep_lines)
+        if clean_invoices_paid:
+            self.clean_invoices_paid(
+                cr, uid, sponsorship_ids, context, since_date, to_date,
+                keep_lines=keep_lines)
 
         return super(sponsorship_contract, self).clean_invoices(
             cr, uid, ids, context, since_date, to_date, keep_lines)
@@ -529,7 +534,8 @@ class sponsorship_contract(orm.Model):
         """
         child_id = vals.get('child_id')
         for contract in self.browse(cr, uid, ids, context):
-            if 'S' in contract.type and contract.child_id != child_id:
+            if 'S' in contract.type and contract.child_id and \
+                    contract.child_id != child_id:
                 # Free the previously selected child
                 contract.child_id.write({'sponsor_id': False})
             if 'S' in contract.type:
@@ -592,7 +598,7 @@ class sponsorship_contract(orm.Model):
                 categ_name = product.categ_name
                 allowed = whitelist_product_types.get(type)
                 forbidden = forbidden_product_types.get(type)
-                if (allowed and not categ_name in allowed) or \
+                if (allowed and categ_name not in allowed) or \
                         (forbidden and categ_name in forbidden):
                     message = _('You can only select {0} products.').format(
                         str(allowed)) if allowed else _(
@@ -743,12 +749,12 @@ class sponsorship_contract(orm.Model):
             invoice_obj.write(cr, uid, to_remove_inv, {
                 'move_id': False}, context)
             for invoice_id in to_remove_inv:
-                wf_service.trg_validate(uid, 'account.invoice', invoice_id,
-                                        'invoice_cancel', cr)
-            self.pool.get('mail.thread').message_post(
-                cr, uid, cancel_ids, keep_lines,
-                _("Invoice Cancelled"), 'comment',
-                context={'thread_model': 'account.invoice'})
+                wf_service.trg_validate(uid, 'account.invoice',
+                                        invoice_id, 'invoice_cancel', cr)
+                self.pool.get('mail.thread').message_post(
+                    cr, uid, invoice_id, keep_lines,
+                    _("Invoice Cancelled"), 'comment',
+                    context={'thread_model': 'account.invoice'})
 
             # Isolate invoice lines in cancelled invoices instead of
             # deleting them

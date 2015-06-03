@@ -19,16 +19,11 @@ class delegate_child_wizard(orm.TransientModel):
     _name = 'delegate.child.wizard'
 
     def _get_active_ids(self, cr, uid, ids, field_name, arg, context):
-        child_ids = list()
-
         child_obj = self.pool.get('compassion.child')
-        childrens = child_obj.browse(
-            cr, uid, context.get('active_ids'), context)
-
-        possible_states = ['N', 'R', 'D', 'I', 'Z']
-        for child in childrens:
-            if child.state in possible_states:
-                child_ids.append(child.id)
+        child_ids = [c.id for c in child_obj.browse(cr, uid,
+                                                    context.get('active_ids'),
+                                                    context)
+                     if c.is_available]
 
         return {id: child_ids for id in ids}
 

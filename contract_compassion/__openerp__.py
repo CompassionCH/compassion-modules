@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Contracts',
-    'version': '0.1',
+    'version': '1.0',
     'category': 'Other',
     'description': """
 Compassion contract module.

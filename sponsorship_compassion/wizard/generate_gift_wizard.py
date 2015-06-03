@@ -64,9 +64,9 @@ class generate_gift_wizard(orm.TransientModel):
                     # for next year.
                     invoice_ids = self.pool.get(
                         'account.invoice.line').search(cr, uid, [
-                        ('product_id', '=', wizard.product_id.id),
-                        ('due_date', '=', invoice_date),
-                        ('contract_id', '=', contract.id)], context=ctx)
+                            ('product_id', '=', wizard.product_id.id),
+                            ('due_date', '=', invoice_date),
+                            ('contract_id', '=', contract.id)], context=ctx)
                     if invoice_ids:
                         invoice_date = (datetime.strptime(invoice_date, DF) +
                                         relativedelta(months=12)).strftime(DF)

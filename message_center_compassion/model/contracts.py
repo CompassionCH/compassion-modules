@@ -11,7 +11,10 @@
 
 from openerp import netsvc
 from openerp.osv import orm, fields
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
+
+from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
@@ -35,7 +38,10 @@ class recurring_contract(orm.Model):
 
     _columns = {
         # Field to identify contracts modified by gmc.
-        'gmc_state': fields.selection(__get_gmc_states, _('GMC State'))
+        'gmc_state': fields.selection(__get_gmc_states, _('GMC State')),
+        'cancel_gifts_on_termination': fields.boolean(
+            _("Cancel pending gifts if sponsorship is terminated")
+        ),
     }
 
     def _on_contract_active(self, cr, uid, ids, context=None):
@@ -100,8 +106,10 @@ class recurring_contract(orm.Model):
                         ('partner_id', '=', contract.correspondant_id.id),
                         ('child_id', '=', contract.child_id.id)],
                         context=context)
-                    if contract.child_id.project_id.disburse_gifts:
+                    if contract.child_id.project_id.disburse_gifts and not \
+                            contract.cancel_gifts_on_termination:
                         # Send gifts
+                        self._change_gift_dates(cr, uid, mess_ids, context)
                         ctx = context.copy()
                         ctx['force_send'] = True
                         message_obj.process_messages(cr, uid, mess_ids, ctx)
@@ -130,12 +138,12 @@ class recurring_contract(orm.Model):
                                                       context)
         message_obj = self.pool.get('gmc.message.pool')
         action_id = self.get_action_id(cr, uid, 'CreateGift')
-        message_vals = {
-            'action_id': action_id,
-            'date': invoice.date_invoice,
-        }
 
         for invoice_line in invoice.invoice_line:
+            message_vals = {
+                'action_id': action_id,
+                'date': invoice.date_invoice,
+            }
             contract = invoice_line.contract_id
             if not contract:
                 break
@@ -147,6 +155,11 @@ class recurring_contract(orm.Model):
                     'partner_id': contract.correspondant_id.id,
                     'child_id': contract.child_id.id,
                 })
+                if contract.child_id.type == 'LDP':
+                    message_vals.update({
+                        'state': 'failure',
+                        'failure_reason': 'Gift cannot be sent to LDP'
+                    })
                 message_obj.create(cr, uid, message_vals)
             elif not invoice.payment_ids:
                 # Invoice goes from paid to open state
@@ -191,6 +204,23 @@ class recurring_contract(orm.Model):
                     uid, 'recurring.contract', message.object_id,
                     'contract_activation_cancelled', cr)
         message_obj.unlink(cr, uid, mess_ids, context)
+
+    def _change_gift_dates(self, cr, uid, mess_ids, context=None):
+        """ Put gift invoices today if they are in the future. """
+        message_obj = self.pool.get('gmc.message.pool')
+        today = datetime.today()
+        for message in message_obj.browse(cr, uid, mess_ids, context):
+            invoice = message.invoice_line_id and \
+                message.invoice_line_id.invoice_id
+            if invoice:
+                invoice_date = datetime.strptime(invoice.date_invoice, DF)
+                if invoice_date > today:
+                    invoice.write({
+                        'date_invoice': today.strftime(DF)
+                        })
+                    message.write({
+                        'date': today.strftime(DF + ' %H:%M:%S')
+                        })
 
     def get_action_id(self, cr, uid, name, context=None):
         return self.pool.get('gmc.action').get_action_id(cr, uid, name,
