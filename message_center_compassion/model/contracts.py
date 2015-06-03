@@ -138,12 +138,12 @@ class recurring_contract(orm.Model):
                                                       context)
         message_obj = self.pool.get('gmc.message.pool')
         action_id = self.get_action_id(cr, uid, 'CreateGift')
-        message_vals = {
-            'action_id': action_id,
-            'date': invoice.date_invoice,
-        }
 
         for invoice_line in invoice.invoice_line:
+            message_vals = {
+                'action_id': action_id,
+                'date': invoice.date_invoice,
+            }
             contract = invoice_line.contract_id
             if not contract:
                 break
@@ -155,6 +155,11 @@ class recurring_contract(orm.Model):
                     'partner_id': contract.correspondant_id.id,
                     'child_id': contract.child_id.id,
                 })
+                if contract.child_id.type == 'LDP':
+                    message_vals.update({
+                        'state': 'failure',
+                        'failure_reason': 'Gift cannot be sent to LDP'
+                    })
                 message_obj.create(cr, uid, message_vals)
             elif not invoice.payment_ids:
                 # Invoice goes from paid to open state

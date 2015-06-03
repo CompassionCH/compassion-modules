@@ -20,12 +20,12 @@
                 
                 <!-- Make origin mandatory for sponsorships -->
                 <field name="origin_id" position="attributes">
-                    <attribute name="attrs">{'required':[('type', 'like', 'S')]}</attribute>
+                    <attribute name="attrs">{'required':[('type', '=', 'S')]}</attribute>
                 </field>
                 
                 <!-- Field child_id is not available for general contracts -->
                 <xpath expr="//field[@name='child_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('type', 'not in', ['S','SC'])], 'required': [('type', 'like', 'S')]}</attribute>
+                    <attribute name="attrs">{'readonly': [('type', 'not in', ['S','SC'])], 'required': [('type', 'in', ['S','SC'])]}</attribute>
                 </xpath>
                 
                 <!-- Add context in contract lines -->
