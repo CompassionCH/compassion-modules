@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2015 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+    <data>
+        <record model="workflow.transition" id="t10">
+            <field name="act_from" ref="recurring_contract.act_active" />
+            <field name="act_to" ref="contract_compassion.act_waiting" />
+            <field name="signal">contract_activation_cancelled</field>
+        </record>
+    </data>
+</openerp>
