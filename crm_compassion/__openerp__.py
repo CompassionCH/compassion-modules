@@ -79,6 +79,7 @@ Contributors
         'view/hr_timesheet_view.xml',
         'view/account_view.xml',
         'view/close_old_projects_view.xml',
+        'view/account_invoice_line.xml',
     ],
     'demo': [],
     'installable': True,
