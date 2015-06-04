@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!--
+            OPPORTUNITY
+        -->
+        
+        <!-- Opportunities Form View -->
+        <record model="ir.ui.view" id="view_invoice_line_crm_compassion">
+            <field name="name">account.invoice.line.partner.crm.compassion.tree</field>
+            <field name="model">account.invoice.line</field>
+            <field name="inherit_id" ref="sponsorship_compassion.view_invoice_line_partner_tree"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                    <field name="name" />
+                </field>
+                <field name="contract_id" position="after">
+                    <field name="user_id" />
+                    <field name="account_id" />
+                    <field name="account_analytic_id" />
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

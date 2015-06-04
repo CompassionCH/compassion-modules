@@ -8,9 +8,7 @@
             <field eval="18" name="priority"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
-                    <field name="contract_id"
-                           options="{'create_edit':false,'field_color': 'state',
-                                     'colors': {'cancelled': 'gray', 'terminated': 'gray', 'draft': 'blue', 'mandate': 'red', 'waiting': 'green'}}"/>
+                    <field name="contract_id" />
                 </field>
             </field>
         </record>
@@ -26,14 +24,14 @@
                 </xpath>
                 <xpath expr="//tree[@string='Invoice Lines']/field[@name='name']" position="after">
                     <field name="contract_id" domain="['|', ('partner_id', '=', parent.partner_id), ('correspondant_id', '=', parent.partner_id), ('state', '!=', 'draft')]"
-                           options="{'create_edit':false,'field_color': 'state',
+                           options="{'search_more': true, 'field_color': 'state',
                                      'colors': {'cancelled': 'gray', 'terminated': 'gray', 'draft': 'blue', 'mandate': 'red', 'waiting': 'green'}}"/>
                 </xpath>
 
                 <!-- Replace analytic_id by analytics_id in invoice lines -->
-              <!--   <xpath expr="//tree[@string='Invoice Lines']/field[@name='account_analytic_id']" position="replace">
+                <xpath expr="//tree[@string='Invoice Lines']/field[@name='account_analytic_id']" position="replace">
                     <field name="analytics_id" groups="analytic.group_analytic_accounting"/>
-                </xpath> -->
+                </xpath>
             </field>
         </record>
 
@@ -77,8 +75,9 @@
             </field>
         </record>
 
+
         <!-- Add analytics_id in supplier invoice lines -->
-<!--         <record model="ir.ui.view" id="invoice_supplier_form_compassion">
+        <record model="ir.ui.view" id="invoice_supplier_form_compassion">
             <field name="name">account.invoice.supplier.form.compassion</field>
             <field name="model">account.invoice</field>
             <field name="priority">40</field>
@@ -88,7 +87,7 @@
                     <field name="analytics_id" groups="analytic.group_analytic_accounting"/>
                 </xpath>
             </field>
-        </record> -->
+        </record>
         
         <!-- View children contained in invoice -->
         <record model="ir.ui.view" id="invoice_tree_compassion">
