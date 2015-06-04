@@ -35,6 +35,10 @@ openerp.sponsorship_tracking = function (instance) {
                     label = _t('Project mail sent')
                     action = 'button_project_mail_sent'
                 }
+                if (this.group_by == 'gmc_state') {
+                    label = _t('Reset GMC Status')
+                    action = 'button_reset_gmc_state'
+                }
      
                 this.add_group_buttons(groups[index], label, action, visible_on_groups);
             }
@@ -42,7 +46,7 @@ openerp.sponsorship_tracking = function (instance) {
         },
         add_group_buttons: function(group, button_label, action, visible_on_groups) {
             var self = this;
-            if (visible_on_groups.indexOf(group.value) != -1) {
+            if (visible_on_groups.length < 1 || visible_on_groups.indexOf(group.value) != -1) {
                 var Objects = new instance.web.Model(this.fields_view.model);
                 var kanban_dropdown = group.$el.find('.oe_kanban_group_dropdown');
               

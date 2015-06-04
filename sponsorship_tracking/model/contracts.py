@@ -38,6 +38,12 @@ class recurring_contract(orm.Model):
         self.trg_validate(cr, uid, contract_ids, 'project_mail_sent', context)
         return True
 
+    def button_reset_gmc_state(self, cr, uid, value, context=None):
+        """ Button called from Kanban view on all contracts of one group. """
+        ids = self.search(cr, uid, [
+            ('gmc_state', '=', value)], context=context)
+        return self.reset_gmc_state(cr, uid, ids, context)
+
     _columns = {
         'sds_state': fields.selection([
             ('draft', _('Draft')),

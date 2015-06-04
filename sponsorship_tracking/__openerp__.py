@@ -61,7 +61,7 @@ Color conventions for SDS Tracking Kanban View :
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': [
-        'sponsorship_compassion',
+        'message_center_compassion',
         ],
     'data': [
         'view/contract_view.xml',

@@ -32,6 +32,7 @@
                                         <div>SDS State : <field name="sds_state"/></div>
                                         <div>State : <field name="state"/></div>
                                         <div t-if="record.project_state.raw_value">Project : <field name="project_state"/></div>
+                                        <div>GMC State : <field name="gmc_state"/></div>
                                         <div class="oe_kanban_footer_left">
                                             <span>
                                                 <span class="oe_e">N</span>
@@ -192,6 +193,7 @@
                         <filter string="Status" domain="[]"  context="{'group_by':'state'}"/>
                         <filter string="SDS Status" domain="[]"  context="{'group_by':'sds_state'}"/>
                         <filter string="Project Status" domain="[]"  context="{'group_by':'project_state'}"/>
+                        <filter string="GMC Update" domain="[]"  context="{'group_by':'gmc_state'}"/>
                     </group>
                 </search>
             </field>

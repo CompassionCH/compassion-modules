@@ -132,7 +132,10 @@ class sponsorship_contract(orm.Model):
     _columns = {
         'correspondant_id': fields.many2one(
             'res.partner', _('Correspondant'), required=True, readonly=True,
-            states={'draft': [('readonly', False)]}),
+            states={'draft': [('readonly', False)],
+                    'waiting': [('readonly', False)],
+                    'mandate': [('readonly', False)]},
+            track_visibility='onchange'),
         'partner_codega': fields.related(
             'correspondant_id', 'ref', string=_('Partner ref'), readonly=True,
             type='char'),
@@ -145,7 +148,7 @@ class sponsorship_contract(orm.Model):
         'birthday_invoice': fields.float(_("Annual birthday gift"), help=_(
             "Set the amount to enable automatic invoice creation each year "
             "for a birthday gift. The invoice is set two months before "
-            "child's birthday.")),
+            "child's birthday."), track_visibility='onchange'),
     }
 
     _defaults = {

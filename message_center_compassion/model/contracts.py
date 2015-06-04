@@ -250,3 +250,7 @@ class recurring_contract(orm.Model):
                     event in ('CaseStudy', 'NewImage')):
                 res = res and contract.write({'gmc_state': gmc_states[event]})
         return res
+
+    def reset_gmc_state(self, cr, uid, ids, context=None):
+        """ Useful for manually unset GMC State. """
+        return self.write(cr, uid, ids, {'gmc_state': False})

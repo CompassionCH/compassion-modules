@@ -170,7 +170,8 @@ class recurring_contract(orm.Model):
             'compassion.child', _('Sponsored child'), readonly=True,
             states={'draft': [('readonly', False)],
                     'waiting': [('readonly', False)],
-                    'mandate': [('readonly', False)]}, ondelete='restrict'),
+                    'mandate': [('readonly', False)]}, ondelete='restrict',
+            track_visibility='onchange'),
         'child_name': fields.related(
             'child_id', 'name', string=_('Sponsored child name'),
             readonly=True, type='char'),
