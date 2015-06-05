@@ -172,6 +172,7 @@
         <record id="contract_tracking_filter" model="ir.ui.view">
 			<field name="name">contract.tracking.select</field>
 			<field name="model">recurring.contract</field>
+            <field name="priority" eval="18"/>
 			<field name="arch" type="xml">
                 <search string="Search contracts">
                     <field name="reference" filter_domain="['|', '|', '|', '|',
