@@ -245,6 +245,13 @@ class compassion_project(orm.Model):
         'status': 'A',
     }
 
+    def create(self, cr, uid, vals, context=None):
+        """Get informations of project on creation. """
+        res_id = super(compassion_project, self).create(cr, uid, vals,
+                                                        context)
+        self.update_informations(cr, uid, res_id, context)
+        return res_id
+
     def update_informations(self, cr, uid, ids, context=None):
         """ Get the most recent informations for selected projects and update
             them accordingly. """
