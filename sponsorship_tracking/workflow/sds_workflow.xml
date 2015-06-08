@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2015 Compassion (http://www.compassion.ch)
+    @author David Coninckx <david@coninckx.com>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+    <data>
+        <!-- Override activities -->
+         <record model="workflow.activity" id="sponsorship_compassion.act_validation">
+            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
+            <field name="name">validation</field>
+            <field name="kind">function</field>
+            <field name="action">contract_validation()</field>
+        </record>
+        
+        <!-- Activities -->
+        <record model="workflow.activity" id="act_draft">
+            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
+            <field name="name">draft</field>
+            <field name="kind">function</field>
+            <field name="action">write({'sds_state': 'draft', 'color': 7})</field>
+            <field name="flow_start" eval='True' />
+        </record>
+        
+        <record model="workflow.activity" id="act_start">
+            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
+            <field name="name">start</field>
+            <field name="kind">function</field>
+            <field name="action">write({'sds_state': 'start', 'color': 4})</field>
+        </record>
+        
+        <record model="workflow.activity" id="act_waiting_welcome">
+            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
+            <field name="name">waiting_welcome</field>
+            <field name="kind">function</field>
+            <!-- Blank at first, becomes light green after 10 days -->
+            <field name="action"> write({'sds_state': 'waiting_welcome', 'color': 0})</field>
+        </record>
+        
+        <record model="workflow.activity" id="act_active">
+            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
+            <field name="name">active</field>
+            <field name="kind">function</field>
+            <field name="action">write({'sds_state': 'active', 'color': 0})</field>
+        </record>
+
+        <record model="workflow.activity" id="act_cancelled">
+            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
+            <field name="name">cancelled</field>
+            <field name="kind">function</field>
+            <field name="action">write({'sds_state': 'cancelled', 'color': 1})</field>
+            <field name="flow_stop" eval='True' />
+        </record>
+        
+        <record model="workflow.activity" id="act_sub_waiting">
+            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
+            <field name="name">sub_waiting</field>
+            <field name="kind">function</field>
+            <!-- Yellow -->
+            <field name="action">write({'sds_state': 'sub_waiting', 'color': 3})</field>
+        </record>
+        
+        <record model="workflow.activity" id="act_no_sub">
+            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
+            <field name="name">no_sub</field>
+            <field name="kind">function</field>
+            <field name="action">write({'sds_state': 'no_sub', 'color': 1})</field>
+            <field name="flow_stop" eval='True' />
+        </record>
+        
+        <record model="workflow.activity" id="act_sub">
+            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
+            <field name="name">sub</field>
+            <field name="kind">function</field>
+            <!-- Color green : should become sub_accept -->
+            <field name="action">write({'sds_state': 'sub', 'color': 5})</field>
+        </record>
+        
+        <record model="workflow.activity" id="act_sub_accept">
+            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
+            <field name="name">sub_accept</field>
+            <field name="kind">function</field>
+            <field name="action">write({'sds_state': 'sub_accept', 'color': 5})</field>
+            <field name="flow_stop" eval='True' />
+        </record>
+        
+        <record model="workflow.activity" id="act_sub_reject">
+            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
+            <field name="name">sub_reject</field>
+            <field name="kind">function</field>
+            <field name="action">write({'sds_state': 'sub_reject', 'color': 2})</field>
+            <field name="flow_stop" eval='True' />
+        </record>
+
+        <!-- Transitions -->
+        <record model="workflow.transition" id="t0">
+            <field name="act_from" ref="act_draft" />
+            <field name="act_to" ref="act_start" />
+            <field name="signal">contract_validated</field>
+        </record>
+
+        <record model="workflow.transition" id="t1a">
+            <field name="act_from" ref="act_start" />
+            <field name="act_to" ref="act_waiting_welcome" />
+            <field name="signal">mail_sent</field>
+            <field name="condition">correspondant_id.email</field>
+        </record>
+
+         <record model="workflow.transition" id="t1b">
+            <field name="act_from" ref="act_start" />
+            <field name="act_to" ref="act_active" />
+            <field name="signal">mail_sent</field>
+            <field name="condition">not correspondant_id.email</field>
+        </record>
+        
+        <record model="workflow.transition" id="t2">
+            <field name="act_from" ref="act_waiting_welcome" />
+            <field name="act_to" ref="act_active" />
+            <field name="signal">mail_sent</field>
+        </record>
+        
+        <record model="workflow.transition" id="t5a">
+            <field name="act_from" ref="act_active" />
+            <field name="act_to" ref="act_sub_waiting" />
+            <field name="signal">contract_terminated</field>
+            <field name="condition">end_reason=='1' and is_active</field>
+        </record>
+        
+        <record model="workflow.transition" id="t5b">
+            <field name="act_from" ref="act_active" />
+            <field name="act_to" ref="act_cancelled" />
+            <field name="signal">contract_terminated</field>
+            <field name="condition">end_reason!='1' or not is_active</field>
+        </record>
+
+        <record model="workflow.transition" id="t5c">
+            <field name="act_from" ref="act_start" />
+            <field name="act_to" ref="act_cancelled" />
+            <field name="signal">contract_terminated</field>
+            <field name="condition">end_reason!='1' or not is_active</field>
+        </record>
+        
+        <record model="workflow.transition" id="t5d">
+            <field name="act_from" ref="act_waiting_welcome" />
+            <field name="act_to" ref="act_cancelled" />
+            <field name="signal">contract_terminated</field>
+            <field name="condition">end_reason!='1' or not is_active</field>
+        </record>
+        
+        <record model="workflow.transition" id="t5e">
+            <field name="act_from" ref="act_start" />
+            <field name="act_to" ref="act_sub_waiting" />
+            <field name="signal">contract_terminated</field>
+            <field name="condition">end_reason=='1' and is_active</field>
+        </record>
+        
+        <record model="workflow.transition" id="t5f">
+            <field name="act_from" ref="act_waiting_welcome" />
+            <field name="act_to" ref="act_sub_waiting" />
+            <field name="signal">contract_terminated</field>
+            <field name="condition">end_reason=='1' and is_active</field>
+        </record>
+
+        <record model="workflow.transition" id="t6">
+            <field name="act_from" ref="act_sub_waiting" />
+            <field name="act_to" ref="act_no_sub" />
+            <field name="signal">no_sub</field>
+        </record>
+
+        <record model="workflow.transition" id="t7">
+            <field name="act_from" ref="act_sub_waiting" />
+            <field name="act_to" ref="act_sub" />
+            <field name="signal">new_contract_validated</field>
+        </record>
+        
+        <record model="workflow.transition" id="t8a">
+            <field name="act_from" ref="act_sub" />
+            <field name="act_to" ref="act_sub_accept" />
+            <field name="signal">sub_accept</field>
+        </record>
+        
+        <record model="workflow.transition" id="t8b">
+            <field name="act_from" ref="act_sub" />
+            <field name="act_to" ref="act_sub_reject" />
+            <field name="signal">sub_reject</field>
+        </record>
+    </data>
+</openerp>

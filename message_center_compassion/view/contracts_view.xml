@@ -10,18 +10,39 @@
         <record id="view_gmc_contract_filter" model="ir.ui.view">
             <field name="name">gmc.contract.filter</field>
             <field name="model">recurring.contract</field>
-            <field name="inherit_id" ref="sponsorship_compassion.view_recurring_contract_compassion_filter" />
+            <field name="inherit_id" ref="contract_compassion.view_recurring_contract_compassion_filter" />
             <field name="arch" type="xml">
                 <data>
-                    <filter name="cancelled" position="after">
+                    <filter name="finished" position="after">
                         <separator/>
                         <filter name="biennial" string="Biennial" domain="[('gmc_state', '=', 'biennial')]"/>
                         <filter name="depart" string="Departure" domain="[('gmc_state', '=', 'depart')]"/>
                         <filter name="transfer" string="Child Transfer" domain="[('gmc_state', '=', 'transfer')]"/>
-                        <filter name="suspension" string="Suspension" domain="[('gmc_state', 'in', ('suspension', 'suspension-extension', 'reactivation'))]" context="{'group_by': 'gmc_state'}"/>
                     </filter>
+                    <xpath expr="//filter[@string='Origin']" position="after">
+                        <filter string="GMC Update" domain="[]"  context="{'group_by':'gmc_state'}"/>
+                    </xpath>
                 </data>
             </field>
+        </record>
+        
+        <!-- Add action for resetting gmc_state -->
+        <record id="action_reset_gmc" model="ir.actions.server">
+            <field name="name">Reset GMC Status</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_recurring_contract"/>
+            <field name="state">code</field>
+            <field name="code">self.reset_gmc_state(cr, uid, context.get('active_ids'), context)</field>
+        </record>
+
+        <record id="reset_gmc_state_menu" model="ir.values">
+            <field name="name">Reset GMC Status</field>
+            <field name="action_id" ref="action_reset_gmc"/>
+            <field name="value" eval="'ir.actions.server,' + str(ref('action_reset_gmc'))"/>
+            <field name="key">action</field>
+            <field name="model_id" ref="model_recurring_contract"/>
+            <field name="model">recurring.contract</field>
+            <field name="key2">client_action_multi</field>
         </record>
     </data>
 </openerp>

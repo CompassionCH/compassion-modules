@@ -36,5 +36,16 @@
             
 		</field>
 	</record>
+     <record id="compassion_partner_view_buttons" model="ir.ui.view">
+            <field name="name">compassion.partner.view.buttons</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="sale.res_partner_view_buttons" />
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='%(sale.act_res_partner_2_sale_order)d']" position="replace">
+                    <button name="unreconciled_transaction_items" string='Unreconciled Transaction Items' type='object'/>
+                    <button name="receivable_transaction_items" string='1050 Transaction Items' type='object'/>
+                </xpath>
+            </field>
+    </record>
 </data>
 </openerp>

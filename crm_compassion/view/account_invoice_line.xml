@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>        
+        <record id="view_account_invoice_filter_compassion" model="ir.ui.view">
+            <field name="name">inherit.account.invoice.compassion.select</field>
+            <field name="model">account.invoice.line</field>
+            <field name="inherit_id" ref="sponsorship_compassion.view_invoice_line_compassion_filter"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="user_id" string="Ambassador"/>
+                    <field name="account_analytic_id" string="Analytic Account"/>
+                </field>
+                <xpath expr='//filter[@string="Contract"]' position="before">
+                    <filter string="Ambassador" domain="[]" context="{'group_by':'user_id'}"/>
+                    <filter string="Analytic Account" domain="[]" context="{'group_by':'account_analytic_id'}"/>
+                </xpath>
+            </field>
+        </record>
+                
+        <!-- 
+            ACCOUNT INVOICE LINE
+        -->
+
+        <!-- Invoie Line Tree View -->
+        <record model="ir.ui.view" id="crm_invoice_line_compassion">
+            <field name="model">account.invoice.line</field>
+            <field name="inherit_id" ref="sponsorship_compassion.view_invoice_line_child_tree"/>
+            <field name="arch" type="xml">
+                <field name="contract_id" position="after">
+                    <field name="user_id"/>
+                </field>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_invoice_line_crm_compassion">
+            <field name="name">account.invoice.line.partner.crm.compassion.tree</field>
+            <field name="model">account.invoice.line</field>
+            <field name="inherit_id" ref="sponsorship_compassion.view_invoice_line_partner_tree"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                    <field name="name" />
+                </field>
+                <field name="contract_id" position="after">
+                    <field name="user_id" />
+                    <field name="account_id" />
+                    <field name="account_analytic_id" />
+                </field>
+            </field>
+        </record>        
+        
+        <!-- Sidebar action, called from menu_recurring_contract_form menuitem -->
+        <record id="action_invoice_lines_compassion" model="ir.actions.act_window">
+            <field name="name">Invoice Lines</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.invoice.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_invoice_line_crm_compassion"/>
+        </record>
+        <menuitem id="menu_invoice_lines_compassion" name="Invoice Lines" parent="account.menu_finance_entries" action="action_invoice_lines_compassion"/>
+    </data>
+</openerp>

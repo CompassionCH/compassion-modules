@@ -10,19 +10,14 @@
 ##############################################################################
 
 import logging
-import sys
-import calendar
-import json
 import requests
-import base64
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
-from datetime import date, datetime, timedelta
-from sync_typo3 import Sync_typo3
+from datetime import date, datetime
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 logger = logging.getLogger(__name__)
 
@@ -101,6 +96,14 @@ class compassion_child(orm.Model):
             res[child.id] = field_res.copy()
 
         return res
+
+    def _is_available(self, cr, uid, ids, field_name, args, context=None):
+        """ Tells if child is available for sponsorship. """
+        return {child.id: child.state in self._available_states()
+                for child in self.browse(cr, uid, ids, context)}
+
+    def _available_states(self):
+        return ['N', 'D', 'I', 'Z', 'R']
 
     _columns = {
         ######################################################################
@@ -198,8 +201,11 @@ class compassion_child(orm.Model):
         'delegated_to': fields.many2one('res.partner', _("Delegated to")),
         'delegated_comment': fields.text(_("Delegated comment")),
         'date_delegation': fields.date(_("Delegated date")),
+        'date_end_delegation': fields.date(_("Delegated until")),
         'date_info': fields.related('case_study_ids', 'info_date',
                                     type='date', string=_("Last info")),
+        'is_available': fields.function(
+            _is_available, string='Is available', type='boolean'),
 
         ######################################################################
         #                      2. Exit Details                               #
@@ -380,6 +386,31 @@ class compassion_child(orm.Model):
                 'comments': 'Empty Case Study for LDP Student',
             }
             return child_prop_obj.create(cr, uid, vals, context)
+        return True
+
+    def update_delegate(self, cr, uid, context=None):
+        obj_undelegate_wizard = self.pool.get('undelegate.child.wizard')
+
+        child_ids = self.search(cr, uid, [], context=context)
+        child_ids_to_delegate = []
+        child_ids_to_undelegate = []
+
+        for child in self.browse(cr, uid, child_ids, context=context):
+            if child.date_delegation:
+                if datetime.strptime(child.date_delegation, DF) \
+                   <= datetime.today() and child.is_available:
+                    child_ids_to_delegate.append(child.id)
+
+                if child.date_end_delegation and \
+                   datetime.strptime(child.date_end_delegation, DF) <= \
+                   datetime.today():
+                    child_ids_to_undelegate.append(child.id)
+
+        self.write(cr, uid, child_ids_to_delegate, {'state': 'D'},
+                   context=context)
+        obj_undelegate_wizard.undelegate(cr, uid, 0, {'active_ids':
+                                                      child_ids_to_undelegate})
+
         return True
 
     ##################################################
@@ -576,14 +607,6 @@ class compassion_child(orm.Model):
         return True
 
     def child_sponsored(self, cr, uid, ids, context=None):
-        """ Remove children from the website when they are sponsored. """
-        to_remove_from_web = []
-        for child in self.browse(cr, uid, ids, context):
-            if child.state == 'I':
-                to_remove_from_web.append(child.id)
-        if to_remove_from_web:
-            self.child_remove_from_typo3(cr, uid, to_remove_from_web,
-                                         context)
         self.write(cr, uid, ids, {
             'state': 'P',
             'has_been_sponsored': True}, context)
@@ -635,141 +658,6 @@ class compassion_child(orm.Model):
         })
 
         return True
-
-    def _get_typo3_child_id(self, cr, uid, child_code):
-        res_query = Sync_typo3.request_to_typo3(
-            "select * "
-            "from tx_drechildpoolmanagement_domain_model_children "
-            "where child_key='%s';" % child_code, 'sel')
-        res = 0
-        try:
-            res = json.loads(res_query)[0]['uid']
-        except:
-            raise orm.except_orm(
-                _('Typo3 Error'),
-                _('Child %s not found on typo3') % child_code)
-
-        return res
-
-    def child_add_to_typo3(self, cr, uid, ids, context=None):
-        # Solve the encoding problems on child's descriptions
-        reload(sys)
-        sys.setdefaultencoding('UTF8')
-
-        for child in self.browse(cr, uid, ids, context):
-            project_obj = self.pool.get('compassion.project')
-            project = project_obj.get_project_from_typo3(
-                cr, uid, child.project_id.code)
-
-            if not project:
-                project = project_obj.project_add_to_typo3(
-                    cr, uid, [child.project_id.id], context)[0]
-
-            child_gender = self._get_gender(cr, uid, child.gender, context)
-            child_image = child.code + "_f.jpg," + child.code + "_h.jpg"
-
-            today_ts = calendar.timegm(
-                datetime.today().utctimetuple())
-            consign_ts = timedelta(days=200).total_seconds()
-            if child.birthdate:
-                child_birth_date = calendar.timegm(
-                    datetime.strptime(child.birthdate, DF).utctimetuple())
-            else:
-                child_birth_date = 0
-            if child.unsponsored_since:
-                child_unsponsored_date = calendar.timegm(
-                    datetime.strptime(child.unsponsored_since,
-                                      DF).utctimetuple())
-            else:
-                child_unsponsored_date = today_ts
-
-            # Fix ' in description
-            child_desc_de = child.desc_de.replace('\'', '\'\'')
-            child_desc_fr = child.desc_fr.replace('\'', '\'\'')
-
-            # German description (parent)
-            Sync_typo3.request_to_typo3(
-                "insert into "
-                "tx_drechildpoolmanagement_domain_model_children"
-                "(child_key, child_name_full, child_name_personal,"
-                " child_gender, child_biography,"
-                " consignment_date, tstamp, crdate, consignment_expiry_date,"
-                " l10n_parent,image,child_birth_date,"
-                " child_unsponsored_since_date,project) "
-                "values ('{}','{}','{}','{}','{}','{}',"
-                "        '{}','{}','{}','{}','{}','{}','{}',{});".format(
-                    child.code, child.name, child.firstname,
-                    child_gender, child_desc_de,
-                    today_ts, today_ts, today_ts, today_ts + consign_ts,
-                    0, child_image, child_birth_date, child_unsponsored_date,
-                    project), 'upd')
-
-            parent_id = self._get_typo3_child_id(cr, uid, child.code)
-
-            # French description
-            query = "insert into " \
-                "tx_drechildpoolmanagement_domain_model_children" \
-                "(child_key,child_name_full,child_name_personal," \
-                " child_gender,child_biography,consignment_date,tstamp," \
-                " crdate,consignment_expiry_date,l10n_parent,image," \
-                " child_birth_date,child_unsponsored_since_date," \
-                " project,sys_language_uid) " \
-                "values ('{}','{}','{}','{}','{}','{}','{}'," \
-                "        '{}','{}','{}','{}','{}','{}',{},1);".format(
-                    child.code, child.name, child.firstname,
-                    child_gender, child_desc_fr,
-                    today_ts, today_ts, today_ts, today_ts + consign_ts,
-                    parent_id, child_image, child_birth_date,
-                    child_unsponsored_date, project)
-
-            # Assign child to childpool
-            max_sorting = int(json.loads(Sync_typo3.request_to_typo3(
-                "select max(sorting) as max from "
-                "tx_drechildpoolmanagement_childpools_children_mm",
-                'sel'))[0]['max'])
-            query += "insert into " \
-                "tx_drechildpoolmanagement_childpools_children_mm" \
-                "(uid_foreign,sorting) " \
-                "values ({},{})".format(parent_id, max_sorting)
-
-            Sync_typo3.request_to_typo3(query, 'upd')
-
-        self._add_child_pictures_to_typo3(cr, uid, ids, context)
-        self.write(cr, uid, ids, {'state': 'I'})
-        return Sync_typo3.sync_typo3_index()
-
-    def child_remove_from_typo3(self, cr, uid, ids, context=None):
-        child_codes = list()
-
-        for child in self.browse(cr, uid, ids, context):
-            child_uid = self._get_typo3_child_id(cr, uid, child.code)
-            Sync_typo3.request_to_typo3(
-                "delete from tx_drechildpoolmanagement_childpools_children_mm"
-                " where uid_foreign={};"
-                "delete from tx_drechildpoolmanagement_domain_model_children "
-                "where child_key='{}';".format(child_uid, child.code), 'upd')
-            state = 'R' if child.has_been_sponsored else 'N'
-            child.write({'state': state})
-            child_codes.append(child.code)
-
-        Sync_typo3.delete_child_photos(child_codes)
-        return Sync_typo3.sync_typo3_index()
-
-    def _add_child_pictures_to_typo3(self, cr, uid, ids, context=None):
-        for child in self.browse(cr, uid, ids, context):
-
-            head_image = child.code + "_h.jpg"
-            full_image = child.code + "_f.jpg"
-
-            file_head = open(head_image, "wb")
-            file_head.write(base64.b64decode(child.portrait))
-            file_head.close()
-
-            file_fullshot = open(full_image, "wb")
-            file_fullshot.write(base64.b64decode(child.fullshot))
-            file_fullshot.close()
-
-            Sync_typo3.add_child_photos(head_image, full_image)
 
     def _get_gender(self, cr, uid, gender, context=None):
         if gender == 'M':

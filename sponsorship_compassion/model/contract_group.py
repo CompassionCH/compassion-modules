@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Cyril Sester, Emanuel Cino
 #
@@ -9,247 +9,138 @@
 #
 ##############################################################################
 
-import time
-
 from openerp.osv import orm, fields
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
-from openerp.tools import mod10r
-from openerp import netsvc
+
+from datetime import datetime
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class contract_group(orm.Model):
-    ''' Add BVR on groups and add BVR ref and analytics_id
-    in invoices '''
     _inherit = 'recurring.contract.group'
 
-    def name_get(self, cr, uid, ids, context=None):
-        if not ids:
-            return []
-        res = []
-        for gr in self.browse(cr, uid, ids, context):
-            name = ''
-            if gr.payment_term_id:
-                name = gr.payment_term_id.name
-            if gr.bvr_reference:
-                name += ' ' + gr.bvr_reference
-            if name == '':
-                name = gr.partner_id.name + ' ' + str(gr.id)
-            res.append((gr.id, name))
+    def _contains_sponsorship(
+            self, cr, uid, ids, field_name, args, context=None):
+        res = dict()
+        for group in self.browse(cr, uid, ids, context):
+            if group.contract_ids:
+                for contract in group.contract_ids:
+                    if 'S' in contract.type:
+                        res[group.id] = True
+                        break
+                else:
+                    res[group.id] = False
+            else:
+                res[group.id] = True
         return res
 
-    def _get_op_payment_term(self, cr, uid, context=None):
-        ''' Get Permanent Order Payment Term, to set it by default. '''
-        payment_term_id = self.pool.get('account.payment.term').search(
-            cr, uid, [('name', '=', 'Permanent Order')],
-            context={'lang': 'en_US'})
-        return payment_term_id[0]
-
     _columns = {
-        'bvr_reference': fields.char(size=32, string=_('BVR Ref'),
-                                     track_visibility="onchange"),
-        'advance_billing': fields.selection([
-            ('monthly', _('Monthly')),
-            ('bimonthly', _('Bimonthly')),
-            ('quarterly', _('Quarterly')),
-            ('fourmonthly', _('Four-monthly')),
-            ('biannual', _('Bi-annual')),
-            ('annual', _('Annual'))], string=_('Frequency'),
-            track_visibility="onchange"),
-        'payment_term_id': fields.many2one(
-            'account.payment.term', _('Payment Term'),
-            domain=['|', '|', '|', ('name', 'ilike', 'BVR'),
-                    ('name', 'ilike', 'LSV'),
-                    ('name', 'ilike', 'Postfinance'),
-                    ('name', 'ilike', 'Permanent')],
-            track_visibility="onchange"),
+        'contains_sponsorship': fields.function(
+            _contains_sponsorship, string=_('Contains sponsorship'),
+            type='boolean', readonly=True)
     }
 
     _defaults = {
-        'payment_term_id': _get_op_payment_term,
-        'advance_billing': 'monthly',
+        'contains_sponsorship': lambda self, cr, uid, context: 'S' in
+        context.get('default_type', 'O')
     }
 
-    def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
-        res = {}
-        if not partner_id:
-            return {'value': {'bvr_reference': ''}}
-        partner = self.pool.get('res.partner').browse(cr, uid, partner_id,
-                                                      context=context)
-        if partner.ref:
-            computed_ref = self.compute_partner_bvr_ref(cr, uid, ids,
-                                                        partner, context)
-            if computed_ref:
-                res['value'] = {'bvr_reference': computed_ref}
-            else:
-                res['warning'] = {'title': _('Warning'),
-                                  'message': _('The reference of the partner '
-                                               'has not been set, or is in '
-                                               'wrong format. Please make sure'
-                                               ' to enter a valid BVR '
-                                               'reference for the contract.')}
-        return res
+    def generate_invoices(self, cr, uid, ids, invoicer_id=None, context=None):
+        """ Add birthday gifts generation. """
+        invoicer_id = self._generate_birthday_gifts(cr, uid, ids, invoicer_id,
+                                                    context)
+        invoicer_id = super(contract_group, self).generate_invoices(
+            cr, uid, ids, invoicer_id, context)
+        return invoicer_id
 
-    def on_change_payment_term(self, cr, uid, ids, payment_term_id, bvr_ref,
-                               partner_id, context=None):
-        ''' Generate new bvr_reference if payment term is Permanent Order
-        or BVR '''
-        if not context:
-            ctx = dict()
-        else:
-            ctx = context.copy()
-            ctx['lang'] = 'en_US'
-        res = {'value': {}}
-        payment_term_obj = self.pool.get('account.payment.term')
-        need_bvr_ref_term_ids = payment_term_obj.search(cr, uid, [
-            '|', ('name', 'in', ('Permanent Order', 'BVR')),
-            ('name', 'like', 'multi-months')], context=ctx)
-        lsv_term_ids = payment_term_obj.search(
-            cr, uid, [('name', 'like', 'LSV')], context=ctx)
-        if payment_term_id in need_bvr_ref_term_ids:
-            is_lsv = payment_term_id in lsv_term_ids
-            partner = self.pool.get('res.partner').browse(cr, uid, partner_id,
-                                                          context=context)
-            if partner.ref and (not bvr_ref or is_lsv):
-                res['value'].update({
-                    'bvr_reference': self.compute_partner_bvr_ref(
-                        cr, uid, ids, partner, is_lsv, context)})
+    def _generate_birthday_gifts(self, cr, uid, ids, invoicer_id=None,
+                                 context=None):
+        """ Creates the annual birthday gift for sponsorships that
+        have set the option for automatic birthday gift creation. """
+        logger.info("Automatic Birthday Gift Generation Started.")
+        if context is None:
+            context = dict()
+        ctx = context.copy()
+        ctx['lang'] = 'en_US'
+        if invoicer_id is None:
+            invoicer_id = self.pool.get('recurring.invoicer').create(
+                cr, uid, {'source': self._name}, ctx)
+        ctx['recurring_invoicer_id'] = invoicer_id
 
-        return res
+        # Search active Sponsorships with automatic birthday gift
+        gen_states = self._get_gen_states()
+        contract_search = [('birthday_invoice', '>', 0.0),
+                           ('state', 'in', gen_states)]
+        if ids:
+            contract_search.append(('group_id', 'in', ids))
+        contract_obj = self.pool.get('recurring.contract')
+        contract_ids = contract_obj.search(cr, uid, contract_search,
+                                           context=ctx)
 
-    def on_change_bvr_ref(self, cr, uid, ids, bvr_reference,
-                          context=None):
-        ''' Test the validity of a reference number. '''
-        is_valid = bvr_reference and bvr_reference.isdigit()
-        if is_valid and len(bvr_reference) == 26:
-            bvr_reference = mod10r(bvr_reference)
-        elif is_valid and len(bvr_reference) == 27:
-            valid_ref = mod10r(bvr_reference[:-1])
-            is_valid = (valid_ref == bvr_reference)
-        else:
-            is_valid = False
+        # Exclude sponsorship if a gift is already open
+        invl_obj = self.pool.get('account.invoice.line')
+        product_id = self.pool.get('product.product').search(
+            cr, uid, [('name', '=', 'Birthday Gift')], context=ctx)[0]
+        for con_id in list(contract_ids):
+            invl_ids = invl_obj.search(cr, uid, [
+                ('state', '=', 'open'),
+                ('contract_id', '=', con_id),
+                ('product_id', '=', product_id)], context=ctx)
+            if invl_ids:
+                contract_ids.remove(con_id)
 
-        res = {}
-        if is_valid:
-            res['value'] = {'bvr_reference': bvr_reference}
-        elif bvr_reference:
-            res['warning'] = {'title': _('Warning'),
-                              'message': _('The reference of the partner '
-                                           'has not been set, or is in '
-                                           'wrong format. Please make sure'
-                                           ' to enter a valid BVR '
-                                           'reference for the contract.')}
-        return res
+        if contract_ids:
+            total = str(len(contract_ids))
+            count = 1
+            logger.info("Found {0} Birthday Gifts to generate.".format(total))
+            gift_wizard_obj = self.pool.get('generate.gift.wizard')
+            gift_wizard_id = gift_wizard_obj.create(cr, uid, {
+                'description': _('Automatic birthday gift'),
+                'invoice_date': datetime.today().strftime(DF),
+                'product_id': product_id,
+                'amount': 0.0}, ctx)
 
-    def compute_partner_bvr_ref(self, cr, uid, ids, partner=None,
-                                is_lsv=False, context=None):
-        """ Generates a new BVR Reference.
-        See file \\nas\it\devel\Code_ref_BVR.xls for more information."""
-        partner = partner or self.browse(cr, uid, ids[0], context).partner_id
-        result = '0' * (9 + (7 - len(partner.ref))) + partner.ref
-        count_groups = str(self.search(
-            cr, uid, [('partner_id', '=', partner.id)], context=context,
-            count=True))
-        result += '0' * (5 - len(count_groups)) + count_groups
-        # Type '0' = Sponsorship
-        result += '0'
-        result += '0' * 4
+            # Generate invoices
+            for contract in contract_obj.browse(cr, uid, contract_ids,
+                                                ctx):
+                logger.info("Birthday Gift Generation: {0}/{1} ".format(
+                    str(count), total))
+                gift_wizard_obj.write(cr, uid, gift_wizard_id, {
+                    'amount': contract.birthday_invoice}, ctx)
+                ctx['active_ids'] = [contract.id]
+                gift_wizard_obj.generate_invoice(cr, uid, [gift_wizard_id],
+                                                 ctx)
+                count += 1
 
-        if is_lsv:
-            result = '004874969' + result[9:]
-        if len(result) == 26:
-            return mod10r(result)
+            gift_wizard_obj.unlink(cr, uid, gift_wizard_id, ctx)
 
-    def _setup_inv_data(self, cr, uid, con_gr, journal_ids, invoicer_id,
-                        context=None):
-        ''' Inherit to add BVR ref '''
-        inv_data = super(contract_group, self)._setup_inv_data(cr, uid, con_gr,
-                                                               journal_ids,
-                                                               invoicer_id,
-                                                               context)
-
-        ref = ''
-        if con_gr.bvr_reference:
-            ref = con_gr.bvr_reference
-        elif (con_gr.payment_term_id and
-              (_('LSV') in con_gr.payment_term_id.name or
-               _('Direct Debit') in con_gr.payment_term_id.name)):
-            seq = self.pool['ir.sequence']
-            ref = mod10r(seq.next_by_code(cr, uid, 'contract.bvr.ref'))
-        inv_data.update({
-            'bvr_reference': ref})
-
-        return inv_data
+        logger.info("Automatic Birthday Gift Generation Finished !!")
+        return invoicer_id
 
     def _setup_inv_line_data(self, cr, uid, contract_line, invoice_id,
                              context=None):
-        ''' Inherit to add analytic distribution '''
-        inv_line_data = super(contract_group, self)._setup_inv_line_data(
-            cr, uid, contract_line, invoice_id, context)
-
-        product_id = contract_line.product_id.id
-        partner_id = contract_line.contract_id.partner_id.id
-        analytic = self.pool.get('account.analytic.default').account_get(
-            cr, uid, product_id, partner_id, uid, time.strftime('%Y-%m-%d'),
-            context=context)
-        if analytic and analytic.analytics_id:
-            inv_line_data.update({'analytics_id': analytic.analytics_id.id})
-
-        return inv_line_data
-
-    def _get_gen_states(self):
-        return ['waiting', 'active']
-
-    def write(self, cr, uid, ids, vals, context=None):
-        """If sponsor changes his payment term to LSV or DD,
-        change the state of related contracts so that we wait
-        for a valid mandate before generating new invoices.
+        """ Contract gifts relate their invoice lines to sponsorship,
+            Correspondence sponsorships don't create invoice lines.
         """
-        contract_ids = list()
-        inv_vals = dict()
-        if 'payment_term_id' in vals:
-            inv_vals['payment_term'] = vals['payment_term_id']
-            payment_term = self.pool.get('account.payment.term').browse(
-                cr, uid, vals['payment_term_id'], {'lang': 'en_US'})
-            payment_name = payment_term.name
-            wf_service = netsvc.LocalService('workflow')
-            for group in self.browse(cr, uid, ids, context):
-                old_term = group.payment_term_id.name
-                for contract in group.contract_ids:
-                    contract_ids.append(contract.id)
-                    if 'LSV' in payment_name or 'Postfinance' in payment_name:
-                        wf_service.trg_validate(
-                            uid, 'recurring.contract', contract.id,
-                            'will_pay_by_lsv_dd', cr)
-                        # LSV/DD Contracts need no reference
-                        if group.bvr_reference and \
-                                'multi-months' not in payment_name:
-                            vals['bvr_reference'] = False
-                    elif 'LSV' in old_term or 'Postfinance' in old_term:
-                        wf_service.trg_validate(
-                            uid, 'recurring.contract', contract.id,
-                            'mandate_validated', cr)
-        if 'bvr_reference' in vals:
-            inv_vals['bvr_reference'] = vals['bvr_reference']
-            for group in self.browse(cr, uid, ids, context):
-                contract_ids.extend([c.id for c in group.contract_ids])
+        invl_data = False
+        contract = contract_line.contract_id
+        if contract.type != 'SC':
+            invl_data = super(contract_group, self)._setup_inv_line_data(
+                cr, uid, contract_line, invoice_id, context)
 
-        res = super(contract_group, self).write(cr, uid, ids, vals, context)
+            if contract.type == 'G':
+                sponsorship = contract_line.sponsorship_id
+                if sponsorship.state in self._get_gen_states():
+                    invl_data['contract_id'] = sponsorship.id
+                else:
+                    raise orm.except_orm(
+                        _('Invoice generation error'),
+                        _('No active sponsorship found for child {0}. '
+                          'The gift contract with id {1} is not valid.')
+                        .format(sponsorship.child_code, str(contract.id)))
 
-        if contract_ids:
-            # Update related open invoices to reflect the changes
-            inv_line_obj = self.pool.get('account.invoice.line')
-            inv_obj = self.pool.get('account.invoice')
-            inv_line_ids = inv_line_obj.search(cr, uid, [
-                ('contract_id', 'in', contract_ids),
-                ('state', 'not in', ('paid', 'cancel'))], context=context)
-            invoice_ids = list(set([inv_l.invoice_id.id for inv_l in
-                                    inv_line_obj.browse(cr, uid, inv_line_ids,
-                                                        context)]))
-            inv_obj.action_cancel(cr, uid, invoice_ids, context)
-            inv_obj.action_cancel_draft(cr, uid, invoice_ids)
-            inv_obj.write(cr, uid, invoice_ids, inv_vals, context)
-            wf_service = netsvc.LocalService('workflow')
-            for invoice_id in invoice_ids:
-                wf_service.trg_validate(uid, 'account.invoice', invoice_id,
-                                        'invoice_open', cr)
-        return res
+        return invl_data

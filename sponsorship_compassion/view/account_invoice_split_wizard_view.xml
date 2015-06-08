@@ -8,7 +8,6 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="contract_id" readonly="1"/>
-                    <field name="child_name" readonly="1"/>
                 </xpath>
             </field>
         </record>

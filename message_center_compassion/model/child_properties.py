@@ -22,7 +22,7 @@ class child_properties(orm.Model):
         if not isinstance(ids, list):
             ids = [ids]
         property = self.browse(cr, uid, ids, context)[0]
-        for contract in property.child_id.contract_ids:
+        for contract in property.child_id.sponsorship_ids:
             if contract.state in ('waiting', 'active', 'mandate'):
-                contract.write({'gmc_state': 'biennial'})
+                contract.new_biennial()
         return res

@@ -10,7 +10,9 @@
                     <field name="child_ids"/>
                     <group>
                         <field name="partner"/>
-                         <field name="comment"/>
+                        <field name="comment"/>
+                        <field name="date_delegation"/>
+                        <field name="date_end_delegation"/>
                     </group>
                     <footer>
                         <button name="delegate" string="Delegate" type="object" class="oe_highlight"/>

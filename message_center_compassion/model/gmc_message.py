@@ -242,10 +242,13 @@ class gmc_message_pool(orm.Model):
         return True
 
     def force_success(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {
-            'state': 'success',
-            'failure_reason': False
-        }, context)
+        for message in self.browse(cr, uid, ids, context):
+            state = 'success'
+            if message.action_id.name == 'CreateGift':
+                state = 'fondue'
+            message.write({
+                'state': state,
+                'failure_reason': False})
         return True
 
     def _perform_incoming_action(self, cr, uid, message, context=None):

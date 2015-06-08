@@ -1,105 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data>
-		<!-- Invoices -->
-		<record id="invoice_supplier_form_remove_quick_create_partner" model="ir.ui.view">
-            <field name="name">invoice.supplier.remove.create.partner</field>
-                <field name="model">account.invoice</field>
-                <field name="inherit_id" ref="account.invoice_supplier_form"/>
-                <field name="arch" type="xml">
-                    <xpath expr="//field[@name='partner_id']" position="attributes">
-                        <attribute name="options">{'create': false, 'm2o_dialog': false}</attribute>
-                    </xpath>
-                </field>
+    <data>
+        <!-- Settings for removing quick create and create -->
+        <record id="remove_m2o_dialog" model="ir.config_parameter">
+            <field name="key">web_m2x_options.m2o_dialog</field>
+            <field name="value">False</field>
         </record>
-        <record id="invoice_customer_form_remove_quick_create_partner" model="ir.ui.view">
-            <field name="name">invoice.customer.remove.create.partner</field>
-                <field name="model">account.invoice</field>
-                <field name="inherit_id" ref="account.invoice_form"/>
-                <field name="arch" type="xml">
-                    <xpath expr="//field[@name='partner_id']" position="attributes">
-                        <attribute name="options">{'create': false, 'm2o_dialog': false}</attribute>
-                    </xpath>
-                </field>
+        <record id="remove_create" model="ir.config_parameter">
+            <field name="key">web_m2x_options.create</field>
+            <field name="value">False</field>
         </record>
-        
-        <!-- Leads -->
-        <record id="crm_lead_form_remove_quick_create_partner" model="ir.ui.view">
-            <field name="name">crm.lead.remove.create.partner</field>
-                <field name="model">crm.lead</field>
-                <field name="inherit_id" ref="crm.crm_case_form_view_leads"/>
-                <field name="arch" type="xml">
-                    <xpath expr="//field[@name='partner_id']" position="attributes">
-                        <attribute name="options">{'create': false, 'm2o_dialog': false}</attribute>
-                    </xpath>
-                </field>
+
+        <!-- Settings for adding search_more everywhere -->
+        <record id="add_search_more" model="ir.config_parameter">
+            <field name="key">web_m2x_options.search_more</field>
+            <field name="value">True</field>
         </record>
-        <record id="crm_opportunity_form_remove_quick_create_partner" model="ir.ui.view">
-            <field name="name">crm.opportunity.remove.create.partner</field>
-                <field name="model">crm.lead</field>
-                <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
-                <field name="arch" type="xml">
-                    <xpath expr="//field[@name='partner_id']" position="attributes">
-                        <attribute name="options">{'create': false, 'm2o_dialog': false}</attribute>
-                    </xpath>
-                </field>
-        </record>
-        
-        <!-- Projects -->
-        <record id="project_form_remove_quick_create_partner" model="ir.ui.view">
-            <field name="name">project.task.remove.create.partner</field>
-                <field name="model">project.task</field>
-                <field name="inherit_id" ref="project.view_task_form2"/>
-                <field name="arch" type="xml">
-                    <xpath expr="//field[@name='partner_id']" position="attributes">
-                        <attribute name="options">{'create': false, 'm2o_dialog': false}</attribute>
-                    </xpath>
-                </field>
-        </record>
-        <record id="project_edit_form_remove_quick_create_partner" model="ir.ui.view">
-            <field name="name">project.edit.remove.create.partner</field>
-                <field name="model">project.project</field>
-                <field name="inherit_id" ref="project.edit_project"/>
-                <field name="arch" type="xml">
-                    <xpath expr="//field[@name='partner_id']" position="attributes">
-                        <attribute name="options">{'create': false, 'm2o_dialog': false}</attribute>
-                    </xpath>
-                </field>
-        </record>
-        
-        <!-- Bank Statements -->
-        <record id="bank_statement_form_remove_quick_create_partner" model="ir.ui.view">
-            <field name="name">bank.statement.remove.create.partner</field>
-                <field name="model">account.bank.statement</field>
-                <field name="inherit_id" ref="account.view_bank_statement_form"/>
-                <field name="arch" type="xml">
-                    <xpath expr="//field[@name='partner_id']" position="attributes">
-                        <attribute name="options">{'create': false, 'm2o_dialog': false}</attribute>
-                    </xpath>
-                </field>
-        </record>
-        <record id="bank_statement_form_remove_quick_create_partner2" model="ir.ui.view">
-            <field name="name">bank.statement.remove.create.partner2</field>
-                <field name="model">account.bank.statement</field>
-                <field name="inherit_id" ref="account_statement_ext.view_treasury_statement_form"/>
-                <field name="arch" type="xml">
-                     <xpath expr="//field[@name='line_ids']/tree/field[@name='partner_id']" position="attributes">
-                        <attribute name="options">{'create': false, 'm2o_dialog': false}</attribute>
-                    </xpath>
-                </field>
-        </record>
-        
-        <!-- Res Partner -->
-        <record id="partner_form_remove_quick_create_partner" model="ir.ui.view">
-            <field name="name">res.partner.remove.create.partner</field>
-                <field name="model">res.partner</field>
-                <field name="inherit_id" ref="base.view_partner_form"/>
-                <field name="arch" type="xml">
-                    <xpath expr="//field[@name='parent_id']" position="attributes">
-                        <attribute name="options">{'create': false, 'm2o_dialog': false}</attribute>
-                    </xpath>
-                </field>
-        </record>
-        
+
     </data>
 </openerp>

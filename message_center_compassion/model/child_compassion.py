@@ -16,6 +16,17 @@ from openerp.tools.translate import _
 from datetime import datetime
 
 
+class compassion_project(orm.Model):
+    """ Add update method. """
+    _inherit = 'compassion.project'
+
+    def update(self, cr, uid, args, context=None):
+        """ When we receive a notification that a project has been updated,
+        we fetch the last informations. """
+        project_id = args.get('object_id')
+        return self.update_informations(cr, uid, project_id, context)
+
+
 class compassion_child(orm.Model):
     """ Add allocation and deallocation methods on the children. """
     _inherit = 'compassion.child'
@@ -149,16 +160,13 @@ class compassion_child(orm.Model):
 
         # Notify the change if the child is sponsored
         if child.sponsor_id:
-            # Maps the event to the gmc state value of contract
-            gmc_states = {
-                'Transfer': 'transfer',
-                'CaseStudy': 'casestudy',
-                'NewImage': 'picture',
-            }
-            for contract in child.contract_ids:
-                if (event == 'Transfer' or not contract.gmc_state) and \
-                        contract.state in ('waiting', 'active', 'mandate'):
-                    contract.write({'gmc_state': gmc_states[event]})
+            sponsor_id = child.sponsor_id.id
+            contract_obj = self.pool.get('recurring.contract')
+            contract_ids = contract_obj.search(cr, uid, [
+                ('state', 'not in', ('terminated', 'cancelled')),
+                '|', ('partner_id', '=', sponsor_id),
+                ('correspondant_id', '=', sponsor_id)], context=context)
+            contract_obj.set_gmc_event(cr, uid, contract_ids, event, context)
 
         if child.state == 'E':
             # Put the child back to normal state

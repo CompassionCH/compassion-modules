@@ -49,7 +49,8 @@ class move_line(orm.Model):
             'credit': move_line.credit-residual
         }, context)
         self.copy(cr, uid, move_line.id, default={
-            'credit': residual
+            'credit': residual,
+            'name': context.get('residual_comment') or move_line.name
         }, context=context)
         move_obj.button_validate(cr, uid, [move.id], context)
 

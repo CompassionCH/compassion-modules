@@ -40,23 +40,10 @@ class event_compassion(orm.Model):
 
         return res
 
-    def _get_won_sponsorships(self, cr, uid, ids, field_name, arg,
-                              context=None):
-        res = dict()
-        if not isinstance(ids, list):
-            ids = [ids]
-        for event in self.browse(cr, uid, ids, context):
-            contract_ids = [contract.id for contract in event.contract_ids
-                            if contract.state in ('active', 'terminated')]
-            res[event.id] = len(contract_ids)
-        return res
-
-    def _get_event_from_contract(contract_obj, cr, uid, ids, context=None):
-        res = []
-        for contract in contract_obj.browse(cr, uid, ids, context):
-            if contract.state == 'active' and contract.origin_id.event_id:
-                res.append(contract.origin_id.event_id.id)
-        return res
+    def _get_event_from_origin(origin_obj, cr, uid, ids, context=None):
+        self = origin_obj.pool.get('crm.event.compassion')
+        return self.search(cr, uid, [(
+            'origin_id', 'in', ids)], context=context)
 
     def _get_year(self, cr, uid, ids, field_name, arg, context=None):
         res = dict()
@@ -117,16 +104,12 @@ class event_compassion(orm.Model):
                                                track_visibility='onchange'),
         'lead_id': fields.many2one('crm.lead', _('Opportunity'),
                                    track_visibility='onchange'),
-        'won_sponsorships': fields.function(
-            _get_won_sponsorships, type="integer",
+        'won_sponsorships': fields.related(
+            'origin_id', 'won_sponsorships', type="integer",
             string=_("Won sponsorships"), store={
-                'recurring.contract': (
-                    _get_event_from_contract,
-                    ['state'],
-                    10),
-                'crm.event.compassion': (
-                    lambda self, cr, uid, ids, context=None: ids,
-                    ['contract_ids', 'description'],
+                'recurring.contract.origin': (
+                    _get_event_from_origin,
+                    ['won_sponsorships'],
                     10)
             }),
         'project_id': fields.many2one('project.project', 'Project'),

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Compassion (http://www.compassion.ch)
+    @author Steve Ferry
+    The licence is in the file __openerp__.py
+-->
+
+<openerp>
+<data>
+	<record id="delegate_child_compassion_cron" model="ir.cron">
+		<field name="name">Check validity of delegate date</field>
+		<field name="interval_number">1</field>
+		<field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="function" eval="'update_delegate'" />
+        <field name="model" eval="'compassion.child'"/>
+	</record>
+</data>
+</openerp>

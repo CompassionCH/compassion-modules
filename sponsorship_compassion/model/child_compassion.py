@@ -26,8 +26,9 @@ class child_compassion(orm.Model):
                                context=None):
         con_obj = self.pool.get('recurring.contract')
         return {
-            child_id: con_obj.search(cr, uid, [('child_id', '=', child_id)],
-                                     context=context)
+            child_id: con_obj.search(cr, uid, [
+                ('child_id', '=', child_id),
+                ('type', '=', 'S')], context=context)
             for child_id in ids
         }
 
@@ -64,7 +65,7 @@ class child_compassion(orm.Model):
         return res
 
     _columns = {
-        'contract_ids': fields.function(
+        'sponsorship_ids': fields.function(
             _get_related_contracts, type='one2many', obj='recurring.contract',
             string=_("Sponsorships"), readonly=True),
         'unsponsored_since': fields.function(
@@ -78,13 +79,6 @@ class child_compassion(orm.Model):
         """ Useful for updating unset values """
         self._store_set_values(cr, uid, ids, ['unsponsored_since'], context)
         return True
-
-    def child_add_to_typo3(self, cr, uid, ids, context=None):
-        """ Update unsponsored date before puting the children on internet.
-        """
-        self._recompute_unsponsored(cr, uid, ids, context)
-        return super(child_compassion, self).child_add_to_typo3(cr, uid, ids,
-                                                                context)
 
     def get_infos(self, cr, uid, ids, context=None):
         """ Update unsponsored date. """
