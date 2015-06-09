@@ -28,7 +28,7 @@ class compassion_project(orm.Model):
 
         for project in self.browse(cr, uid, ids, context):
             res[project.id] = False
-            if project.status == 'A' and not (
+            if project.status in ('A', 'P') and not (
                project.disburse_gifts and project.disburse_funds and
                project.disburse_unsponsored_funds and
                project.new_sponsorships_allowed and
