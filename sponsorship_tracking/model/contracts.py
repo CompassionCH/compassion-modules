@@ -60,7 +60,7 @@ class recurring_contract(orm.Model):
             readonly=True, track_visibility='onchange', select=True,
             help=_('')),
         'last_sds_state_change_date': fields.date(
-            _('Last SDS state change date'),
+            _('SDS state date'),
             readonly=True),
         'project_id': fields.related(
             'child_id', 'project_id',

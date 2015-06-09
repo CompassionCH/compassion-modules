@@ -89,7 +89,7 @@
                         <button 
                             name="project_mail_sent" 
                             class="oe_highlight" 
-                            string="Inform project status" 
+                            string="Project mail sent" 
                             attrs="{'invisible':[('project_state','not in',['inform_suspended', 'inform_extension', 'inform_suspended_reactivation', 'inform_reactivation', 'inform_project_terminated'])]}"/>
                         <button 
                             name="attribute" 
@@ -187,10 +187,14 @@
                     <field name="sds_state"/>
                     <field name="state"/>
                     <field name="project_state"/>
+                    
+                    <filter name="active" string="Active" domain="[('state', '=', 'active')]"/>
+                    <filter name="waiting" string="Waiting" domain="[('state','in', ('draft','waiting','mandate'))]"/>
+                    <filter name="finished" string="Finished" domain="[('state','in', ('cancelled','terminated'))]"/>
 
                     <group expand="0" string="Group By...">
                         <filter string="Start date" domain="[]"  context="{'group_by':'start_date'}"/>
-                        <filter string="Last SDS state date" domain="[]" context="{'group_by':'last_sds_state_change_date'}"/>
+                        <filter string="SDS state date" domain="[]" context="{'group_by':'last_sds_state_change_date'}"/>
                         <filter string="Status" domain="[]"  context="{'group_by':'state'}"/>
                         <filter string="SDS Status" domain="[]"  context="{'group_by':'sds_state'}"/>
                         <filter string="Project Status" domain="[]"  context="{'group_by':'project_state'}"/>
