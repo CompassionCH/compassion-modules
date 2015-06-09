@@ -69,8 +69,8 @@ class recurring_contract(orm.Model):
         ),
         'project_state': fields.selection([
             ('active', _('Active')),
-            ('inform_suspended', _('Inform suspended')),
-            ('suspended', _('Suspended')),
+            ('inform_suspended', _('Inform fund suspension')),
+            ('fund-suspended', _('Fund Suspended')),
             ('inform_reactivation', _('Inform reactivation')),
             ('inform_extension', _('Inform extension')),
             ('waiting_attribution', _('Waiting attribution')),

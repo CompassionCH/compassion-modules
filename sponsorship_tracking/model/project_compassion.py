@@ -39,7 +39,7 @@ class compassion_project(orm.Model):
         contract_obj = self.pool.get('recurring.contract')
         contract_ids = contract_obj.search(cr, uid, [
             ('project_id', '=', project_id),
-            ('project_state', '=', 'suspended')], context=context)
+            ('project_state', '=', 'fund-suspended')], context=context)
         return contract_obj.write(cr, uid, contract_ids, {
             'project_state': 'inform_extension'}, context)
 

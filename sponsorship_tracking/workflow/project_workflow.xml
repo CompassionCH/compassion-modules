@@ -23,7 +23,7 @@
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">project_suspended</field>
             <field name="kind">function</field>
-            <field name="action">write({'project_state': 'suspended'})</field>
+            <field name="action">write({'project_state': 'fund-suspended'})</field>
         </record>
         <record model="workflow.activity" id="act_inform_terminated">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
