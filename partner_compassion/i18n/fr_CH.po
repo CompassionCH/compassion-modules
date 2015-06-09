@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 7.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-25 12:24+0000\n"
-"PO-Revision-Date: 2014-04-25 14:38+0100\n"
+"POT-Creation-Date: 2015-06-09 11:46+0000\n"
+"PO-Revision-Date: 2015-06-09 15:04+0100\n"
 "Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
 "Language-Team: \n"
 "Language: fr_CH\n"
@@ -59,7 +59,9 @@ msgid "Birthday Reminder"
 msgstr "Rappel Anniversaire"
 
 #. module: partner_compassion
+#: code:addons/partner_compassion/model/partner_compassion.py:66
 #: field:res.partner,deathdate:0
+#, python-format
 msgid "Death date"
 msgstr "Date décès"
 
@@ -69,7 +71,9 @@ msgid "Misters"
 msgstr "Messieurs"
 
 #. module: partner_compassion
+#: code:addons/partner_compassion/model/partner_compassion.py:63
 #: field:res.partner,church_unlinked:0
+#, python-format
 msgid "Church (N/A)"
 msgstr "Eglise (N/A)"
 
@@ -136,9 +140,39 @@ msgid "Friends"
 msgstr "Amis"
 
 #. module: partner_compassion
+#: code:addons/partner_compassion/model/partner_compassion.py:64
+#: help:res.partner,church_unlinked:0
+#, python-format
+msgid ""
+"Use this field if the church of the partner can not correctly be determined "
+"and linked."
+msgstr ""
+"A utiliser si l'église ne peut pas être liée à un partenaire (nom imprécis)"
+
+#. module: partner_compassion
+#: view:res.partner:0
+msgid ""
+"{'default_parent_id': active_id, 'default_street': street, "
+"'default_street2': street2, 'default_city': city, 'default_state_id': "
+"state_id, 'default_zip': zip, 'default_country_id': country_id, "
+"'default_supplier': supplier, 'default_lang': lang,\n"
+"                        'default_street3':street3}"
+msgstr ""
+"{'default_parent_id': active_id, 'default_street': street, "
+"'default_street2': street2, 'default_city': city, 'default_state_id': "
+"state_id, 'default_zip': zip, 'default_country_id': country_id, "
+"'default_supplier': supplier, 'default_lang': lang,\n"
+"                        'default_street3':street3}"
+
+#. module: partner_compassion
 #: view:res.partner:0 field:res.partner,member_ids:0
 msgid "Members"
 msgstr "Membres"
+
+#. module: partner_compassion
+#: view:res.partner:0
+msgid "Language"
+msgstr "Langue"
 
 #. module: partner_compassion
 #: help:res.partner,birthday_reminder:0
@@ -147,6 +181,12 @@ msgid ""
 msgstr ""
 "Indique si le partenaire désire recevoir le rappel par e-mail lorsque son "
 "enfant aura bientôt son anniversaire."
+
+#. module: partner_compassion
+#: code:addons/partner_compassion/model/partner_compassion.py:67
+#, python-format
+msgid "Birthdate"
+msgstr "Anniversaire"
 
 #. module: partner_compassion
 #: help:res.partner,christmas_card:0
@@ -164,6 +204,11 @@ msgid "Mr. and Mrs."
 msgstr "M. et Mme"
 
 #. module: partner_compassion
+#: model:ir.model,name:partner_compassion.model_res_users
+msgid "Users"
+msgstr "Utilisateurs"
+
+#. module: partner_compassion
 #: model:res.partner.category,name:partner_compassion.res_partner_category_ambassador
 msgid "Ambassador"
 msgstr "Ambassadeur"
@@ -178,6 +223,16 @@ msgstr "Mesdames"
 #: model:res.partner.title,name:partner_compassion.res_partner_title_family
 msgid "Family"
 msgstr "Famille"
+
+#. module: partner_compassion
+#: model:ir.model,name:partner_compassion.model_res_partner_bank
+msgid "Bank Accounts"
+msgstr "Comptes Bancaires"
+
+#. module: partner_compassion
+#: model:ir.model,name:partner_compassion.model_compassion_config_settings
+msgid "compassion.config.settings"
+msgstr "compassion.config.settings"
 
 #. module: partner_compassion
 #: field:res.partner,christmas_card:0
@@ -211,12 +266,9 @@ msgid "Calendar"
 msgstr "Calendrier"
 
 #. module: partner_compassion
-#: help:res.partner,church_unlinked:0
-msgid ""
-"Use this field if the church of the partner can not correctly be determined "
-"and linked."
-msgstr ""
-"A utiliser si l'église ne peut pas être liée à un partenaire (nom imprécis)"
+#: model:ir.model,name:partner_compassion.model_account_banking_mandate
+msgid "A generic banking mandate"
+msgstr "Un mandat bancaire"
 
 #. module: partner_compassion
 #: model:res.partner.category,name:partner_compassion.res_partner_category_old
@@ -249,17 +301,6 @@ msgstr "Ancien Parrain"
 
 #~ msgid "Foreign/e-mail"
 #~ msgstr "A l'étranger/e-mail"
-
-#~ msgid ""
-#~ "{'default_parent_id': active_id, 'default_street': street, "
-#~ "'default_street2': street2, 'default_city': city, 'default_state_id': "
-#~ "state_id, 'default_zip': zip, 'default_country_id': country_id, "
-#~ "'default_supplier': supplier, 'default_street3':street3}"
-#~ msgstr ""
-#~ "{'default_parent_id': active_id, 'default_street': street, "
-#~ "'default_street2': street2, 'default_city': city, 'default_state_id': "
-#~ "state_id, 'default_zip': zip, 'default_country_id': country_id, "
-#~ "'default_supplier': supplier, 'default_street3':street3}"
 
 #~ msgid "Complete Mailing"
 #~ msgstr "Mailing complet"

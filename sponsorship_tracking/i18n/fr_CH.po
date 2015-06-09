@@ -1,0 +1,348 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* sponsorship_tracking
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-09 11:41+0000\n"
+"PO-Revision-Date: 2015-06-09 13:42+0100\n"
+"Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
+"Language-Team: \n"
+"Language: fr_CH\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.6.4\n"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:81
+#: selection:recurring.contract,project_state:0
+#, python-format
+msgid "Terminated"
+msgstr "Terminé"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "State :"
+msgstr "Etat :"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:55
+#: selection:recurring.contract,sds_state:0
+#, python-format
+msgid "Sub"
+msgstr "Reprise"
+
+#. module: sponsorship_tracking
+#: model:ir.model,name:sponsorship_tracking.model_recurring_contract
+msgid "Contract for recurring invoicing"
+msgstr "Contrat à facturation récurrente"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:74
+#: selection:recurring.contract,project_state:0
+#, python-format
+msgid "Inform reactivation"
+msgstr "Informer Réactivation"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "GMC State :"
+msgstr "Etat GMC :"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Group By..."
+msgstr "Grouper Par..."
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Follow contracts"
+msgstr "Suivi SDS"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:49
+#: selection:recurring.contract,sds_state:0
+#, python-format
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Start date"
+msgstr "Date de création"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "GMC Update"
+msgstr "Statut GMC"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:57
+#: selection:recurring.contract,sds_state:0
+#, python-format
+msgid "Sub Reject"
+msgstr "Sub Reject"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Status"
+msgstr "Etat"
+
+#. module: sponsorship_tracking
+#. openerp-web
+#: code:addons/sponsorship_tracking/static/src/js/sponsorship_tracking_kanban.js:35
+#: view:recurring.contract:0
+#, python-format
+msgid "Project mail sent"
+msgstr "Statut projet informé"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "í"
+msgstr "í"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:80
+#: selection:recurring.contract,project_state:0
+#, python-format
+msgid "Phase out"
+msgstr "Phase out"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "SDS State :"
+msgstr "Etat SDS :"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:63
+#: view:recurring.contract:0
+#: field:recurring.contract,last_sds_state_change_date:0
+#, python-format
+msgid "SDS state date"
+msgstr "Date Statut SDS"
+
+#. module: sponsorship_tracking
+#. openerp-web
+#: code:addons/sponsorship_tracking/static/src/js/sponsorship_tracking_kanban.js:30
+#: view:recurring.contract:0
+#, python-format
+msgid "Mail sent"
+msgstr "Courrier envoyé"
+
+#. module: sponsorship_tracking
+#: model:ir.actions.act_window,name:sponsorship_tracking.action_follow_contract
+msgid "Track contracts"
+msgstr "Suivi SDS"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:73
+#: selection:recurring.contract,project_state:0
+#, python-format
+msgid "Fund Suspended"
+msgstr "Suspension avec Retenue"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Finished"
+msgstr "Terminé"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Follow contract"
+msgstr "Suivi SDS"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Waiting"
+msgstr "En création"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:58
+#: view:recurring.contract:0 selection:recurring.contract,sds_state:0
+#, python-format
+msgid "No sub"
+msgstr "Pas de reprise"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:52
+#: code:addons/sponsorship_tracking/model/contracts.py:71
+#: view:recurring.contract:0 selection:recurring.contract,project_state:0
+#: selection:recurring.contract,sds_state:0
+#, python-format
+msgid "Active"
+msgstr "Actif"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Open SDS view"
+msgstr "Ouvrir Suivi SDS"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:72
+#: selection:recurring.contract,project_state:0
+#, python-format
+msgid "Inform fund suspension"
+msgstr "Suspension à Informer"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:76
+#: selection:recurring.contract,project_state:0
+#, python-format
+msgid "Waiting attribution"
+msgstr "En attente d'Attribution"
+
+#. module: sponsorship_tracking
+#: model:ir.model,name:sponsorship_tracking.model_compassion_project
+msgid "compassion.project"
+msgstr "compassion.project"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Attributed"
+msgstr "Attribué"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:67
+#: field:recurring.contract,project_id:0
+#, python-format
+msgid "Project"
+msgstr "Projet"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Open financial view"
+msgstr "Vue financière"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:51
+#: selection:recurring.contract,sds_state:0
+#, python-format
+msgid "Waiting welcome"
+msgstr "Attente Welcome"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:59
+#: selection:recurring.contract,sds_state:0
+#, python-format
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:78
+#: selection:recurring.contract,project_state:0
+#, python-format
+msgid "Inform suspended and reactivation"
+msgstr "Informer suspension + réactivation"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Project :"
+msgstr "Projet :"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Validate"
+msgstr "Valider"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:59
+#: view:recurring.contract:0 field:recurring.contract,sds_state:0
+#, python-format
+msgid "SDS Status"
+msgstr "Statut SDS"
+
+#. module: sponsorship_tracking
+#: field:recurring.contract,color:0
+msgid "Color Index"
+msgstr "Index Couleur"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Project not active"
+msgstr "Projet inactif"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Project active"
+msgstr "Projet actif"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:79
+#: selection:recurring.contract,project_state:0
+#, python-format
+msgid "Inform project terminated"
+msgstr "Projet terminé à informer"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:50
+#: selection:recurring.contract,sds_state:0
+#, python-format
+msgid "Start"
+msgstr "Début"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:75
+#: selection:recurring.contract,project_state:0
+#, python-format
+msgid "Inform extension"
+msgstr "Susp. Extension à Informer"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Terminate"
+msgstr "Terminer"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:81
+#: view:recurring.contract:0 field:recurring.contract,project_state:0
+#, python-format
+msgid "Project Status"
+msgstr "Statut du Projet"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:53
+#: selection:recurring.contract,sds_state:0
+#, python-format
+msgid "Field memo"
+msgstr "Field memo"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:56
+#: selection:recurring.contract,sds_state:0
+#, python-format
+msgid "Sub Accept"
+msgstr "Sub Accept"
+
+#. module: sponsorship_tracking
+#: view:recurring.contract:0
+msgid "Search contracts"
+msgstr "Recherche contrats"
+
+#. module: sponsorship_tracking
+#: model:ir.model,name:sponsorship_tracking.model_install_sds_tracking
+msgid "install.sds.tracking"
+msgstr "install.sds.tracking"
+
+#. module: sponsorship_tracking
+#: code:addons/sponsorship_tracking/model/contracts.py:54
+#: selection:recurring.contract,sds_state:0
+#, python-format
+msgid "Sub waiting"
+msgstr "En attente de reprise"
+
+#. module: sponsorship_tracking
+#. openerp-web
+#: code:addons/sponsorship_tracking/static/src/js/sponsorship_tracking_kanban.js:39
+#, python-format
+msgid "Reset GMC Status"
+msgstr "RàZ Etat GMC"
+
+#~ msgid "Inform project status"
+#~ msgstr "Statut projet informé"
+
+#~ msgid "Last SDS state change date"
+#~ msgstr "Date Statut SDS"
