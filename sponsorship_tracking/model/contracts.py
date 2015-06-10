@@ -82,6 +82,7 @@ class recurring_contract(orm.Model):
             readonly=True, track_visibility='onchange',
             help=_('')),
         'color': fields.integer('Color Index'),
+        'no_sub_reason': fields.char(_("No sub reason")),
     }
 
     def copy(self, cr, uid, id, default=None, context=None):
@@ -186,7 +187,7 @@ class recurring_contract(orm.Model):
             cr, uid, ids, partner_id, context)
         origin_ids = self.pool.get('recurring.contract.origin').search(
             cr, uid,
-            [('name', '=', 'SUB Sponsorship')],
+            [('type', '=', 'sub')],
             context=context)
         parent_id = self.define_parent_id(cr, uid, partner_id, context)
         origin_id = origin_ids[0] if parent_id else False

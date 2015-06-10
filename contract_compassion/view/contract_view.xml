@@ -76,7 +76,7 @@
                         </group>
 
                         <group>
-                            <field name="origin_id" domain="['!',('name','like','SUB Sponsorship - ')]"/>
+                            <field name="origin_id"/>
                             <field name="channel"/>
                         </group>
                         <group>

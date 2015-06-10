@@ -7,7 +7,7 @@
 <openerp>
     <data>
         <!-- Override activities -->
-         <record model="workflow.activity" id="sponsorship_compassion.act_validation">
+         <record model="workflow.activity" id="contract_compassion.act_validation">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">validation</field>
             <field name="kind">function</field>

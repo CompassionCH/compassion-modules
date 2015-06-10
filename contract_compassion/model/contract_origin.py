@@ -23,7 +23,7 @@ class contract_origin(orm.Model):
             ('partner', _("Contact with sponsor/ambassador")),
             ('event', _("Event")),
             ('marketing', _("Marketing campaign")),
-            ('sub', _("SUB sponsorship")),
+            ('sub', _("SUB Sponsorship")),
             ('transfer', _("Transfer")),
             ('other', _("Other")),
         ]
@@ -48,6 +48,9 @@ class contract_origin(orm.Model):
                 name = 'Transfer from partner country'
         elif origin.type == 'other':
             name = origin.other_name or 'Other'
+        elif origin.type == 'sub':
+            name = 'SUB Sponsorship'
+
         return name
 
     def _get_won_sponsorships(self, cr, uid, ids, field, arg, context=None):

@@ -64,6 +64,7 @@ Color conventions for SDS Tracking Kanban View :
         'message_center_compassion',
         ],
     'data': [
+        'view/sub_sponsorship_wizard_view.xml',
         'view/contract_view.xml',
         'workflow/sds_workflow.xml',
         'workflow/project_workflow.xml',

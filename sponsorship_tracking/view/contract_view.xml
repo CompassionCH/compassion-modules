@@ -85,7 +85,10 @@
                         <button name="contract_validated" class="oe_highlight" attrs="{'invisible':[('sds_state','!=','draft')]}" string="Validate"/>
                         
                         <button name="mail_sent" class="oe_highlight" string="Mail sent" attrs="{'invisible':[('sds_state','not in',['start', 'waiting_welcome'])]}"/>
-                        <button name="no_sub" class="oe_highlight" string="No sub" attrs="{'invisible':[('sds_state','!=','sub_waiting')]}"/>
+                        <button name="%(action_create_sub_sponsorship)d" type="action" class="oe_highlight" string="Create SUB Sponsorship" attrs="{'invisible':[('sds_state','!=','sub_waiting')]}"
+                                context="{'default_state': 'sub'}"/>
+                        <button name="%(action_create_sub_sponsorship)d" type="action" string="No sub" attrs="{'invisible':[('sds_state','!=','sub_waiting')]}"
+                                context="{'default_state': 'no_sub'}"/>
                         <button 
                             name="project_mail_sent" 
                             class="oe_highlight" 
@@ -130,7 +133,8 @@
                             </group>
                             <group>
                                 <field name="child_id"/>
-                                <field name="end_reason"/>
+                                <field name="end_reason" states="terminated,cancelled"/>
+                                <field name="no_sub_reason" attrs="{'invisible': [('sds_state', '!=', 'no_sub')]}"/>
                                 <field name="state"/>
                                 <field name="project_state"/>
                             </group>
@@ -210,6 +214,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="domain">[('type', 'like', 'S')]</field>
+            <field name="context">{'default_type': 'S'}</field>
             <field name="search_view_id" ref="contract_tracking_filter"/>
         </record>
         

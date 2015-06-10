@@ -188,6 +188,8 @@ class sponsorship_contract(orm.Model):
 
     def write(self, cr, uid, ids, vals, context):
         """ Perform various checks on contract modification """
+        if not isinstance(ids, list):
+            ids = [ids]
         for contract in self.browse(cr, uid, ids, context):
             if 'child_id' in vals:
                 self._on_change_child_id(cr, uid, ids, vals, context)
@@ -209,10 +211,13 @@ class sponsorship_contract(orm.Model):
             cr, uid, ids, vals, context)
 
     def unlink(self, cr, uid, ids, context=None):
-        res = super(sponsorship_contract, self).unlink(cr, uid, ids, context)
         for contract in self.browse(cr, uid, ids, context):
-            if 'S' in contract.type:
-                contract.child_id.write({'sponsor_id': False})
+            if 'S' in contract.type and contract.child_id:
+                child_sponsor_id = contract.child_id.sponsor_id and \
+                    contract.child_id.sponsor_id.id
+                if child_sponsor_id == contract.correspondant_id.id:
+                    contract.child_id.write({'sponsor_id': False})
+        res = super(sponsorship_contract, self).unlink(cr, uid, ids, context)
         return res
 
     ##########################################################################
