@@ -8,7 +8,8 @@
 		<field eval="18" name="priority"/>
 		<field name="arch" type="xml">
             <xpath expr="//div[@name='buttons']" position="inside">
-				<button name="show_lines" string="Show transactions" type="object" />
+				<button name="%(account.act_res_partner_2_account_invoice_opened)d" type="action" string="Show invoices" groups="account.group_account_invoice"/>
+				<button name="show_lines" string="Show invoice lines" type="object" groups="account.group_account_invoice"/>
 			</xpath>
             
             <!-- Redefine how contracts are shown. -->
@@ -42,8 +43,8 @@
             <field name="inherit_id" ref="sale.res_partner_view_buttons" />
             <field name="arch" type="xml">
                 <xpath expr="//button[@name='%(sale.act_res_partner_2_sale_order)d']" position="replace">
-                    <button name="unreconciled_transaction_items" string='Unreconciled Transaction Items' type='object'/>
-                    <button name="receivable_transaction_items" string='1050 Transaction Items' type='object'/>
+                    <button name="unreconciled_transaction_items" string='Unreconciled Transaction Items' type='object' groups="account.group_account_user"/>
+                    <button name="receivable_transaction_items" string='1050 Transaction Items' type='object' groups="account.group_account_user"/>
                 </xpath>
             </field>
     </record>

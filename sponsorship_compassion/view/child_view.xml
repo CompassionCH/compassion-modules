@@ -25,7 +25,7 @@
                         <group>
                             <field name="unsponsored_since" attrs="{'invisible': [('unsponsored_since', '=', False)]}"/>
                         </group>
-                        <field name="sponsorship_ids"/>
+                        <field name="sponsorship_ids" context="{'default_type': 'S'}"/>
                     </page>
                 </xpath>
 			</field>

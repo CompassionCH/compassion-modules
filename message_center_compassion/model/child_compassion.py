@@ -106,8 +106,7 @@ class compassion_child(orm.Model):
                 if contract.state in ('waiting', 'active', 'mandate'):
                     # Terminate contract and mark the departure
                     ctx = context.copy()
-                    ctx['active_model'] = 'recurring.contract'
-                    ctx['active_id'] = contract.id
+                    ctx['default_type'] = 'S'
                     self.pool.get('recurring.contract').write(
                         cr, uid, contract.id, {
                             'end_reason': '1',  # Child departure

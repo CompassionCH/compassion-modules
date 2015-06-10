@@ -70,14 +70,16 @@ class sponsorship_contract(orm.Model):
         if 'active_id' in context and \
                 context.get('active_model') == self._name:
             type = self.browse(cr, uid, context['active_id'], context).type
-            if 'S' in type:
-                res.extend([
-                    ('1', _("Depart of child")),
-                    ('10', _("Subreject")),
-                    ('11', _("Exchange of sponsor"))
-                ]
-                )
-                res.sort(key=lambda tup: int(float(tup[0])))  # Sort res
+        else:
+            type = context.get('default_type', 'O')
+
+        if 'S' in type:
+            res.extend([
+                ('1', _("Depart of child")),
+                ('10', _("Subreject")),
+                ('11', _("Exchange of sponsor"))
+                ])
+            res.sort(key=lambda tup: int(float(tup[0])))  # Sort res
         return res
 
     def _get_sponsorship_standard_lines(self, cr, uid, context=None):

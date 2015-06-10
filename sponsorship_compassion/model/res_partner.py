@@ -84,7 +84,7 @@ class res_partner(orm.Model):
             view_id = False
         context['search_default_partner_id'] = ids
         action = {
-            'name': 'Related invoice lines',
+            'name': _('Related invoice lines'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree, form',
