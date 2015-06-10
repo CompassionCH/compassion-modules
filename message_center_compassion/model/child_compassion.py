@@ -105,10 +105,14 @@ class compassion_child(orm.Model):
             for contract in child.sponsorship_ids:
                 if contract.state in ('waiting', 'active', 'mandate'):
                     # Terminate contract and mark the departure
-                    contract.write({
-                        'end_reason': '1',  # Child departure
-                        'end_date': datetime.today().strftime(DF),
-                        'gmc_state': 'depart'})
+                    ctx = context.copy()
+                    ctx['active_model'] = 'recurring.contract'
+                    ctx['active_id'] = contract.id
+                    self.pool.get('recurring.contract').write(
+                        cr, uid, contract.id, {
+                            'end_reason': '1',  # Child departure
+                            'end_date': datetime.today().strftime(DF),
+                            'gmc_state': 'depart'}, ctx)
 
                     wf_service = netsvc.LocalService('workflow')
                     wf_service.trg_validate(
