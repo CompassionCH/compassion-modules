@@ -102,7 +102,7 @@ class compassion_child(orm.Model):
             context = dict()
         child = self.browse(cr, uid, args.get('object_id'), context)
         if child.sponsor_id:
-            for contract in child.contract_ids:
+            for contract in child.sponsorship_ids:
                 if contract.state in ('waiting', 'active', 'mandate'):
                     # Terminate contract and mark the departure
                     contract.write({
