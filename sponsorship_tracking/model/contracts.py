@@ -105,6 +105,13 @@ class recurring_contract(orm.Model):
                     'new_contract_validated', cr)
         return True
 
+    def mail_sent(self, cr, uid, contract_id, context=None):
+        return self.trg_validate(cr, uid, [contract_id], 'mail_sent', context)
+
+    def project_mail_sent(self, cr, uid, contract_id, context=None):
+        return self.trg_validate(cr, uid, [contract_id], 'project_mail_sent',
+                                 context)
+
     def trg_validate(self, cr, uid, ids, transition, context=None):
         """ Workflow helper for triggering a transition on contracts. """
         wf_service = netsvc.LocalService('workflow')
