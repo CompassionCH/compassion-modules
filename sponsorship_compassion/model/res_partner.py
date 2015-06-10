@@ -10,6 +10,7 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+from openerp.tools.translate import _
 
 
 class res_partner(orm.Model):
@@ -107,7 +108,7 @@ class res_partner(orm.Model):
             move_line_id = False
         context['search_default_partner_id'] = ids
         action = {
-            'name': 'Related invoice lines',
+            'name': _('Related invoice lines'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree',
@@ -127,7 +128,7 @@ class res_partner(orm.Model):
         })
         return {
             'type': 'ir.actions.act_window',
-            'name': 'New Sponsorship',
+            'name': _('New Sponsorship'),
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'recurring.contract',
