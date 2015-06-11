@@ -44,8 +44,8 @@ class recurring_contract(orm.Model):
             ('gmc_state', '=', value)], context=context)
         return self.reset_gmc_state(cr, uid, ids, context)
 
-    _columns = {
-        'sds_state': fields.selection([
+    def _get_sds_states(self, cr, uid, context=None):
+        return [
             ('draft', _('Draft')),
             ('start', _('Start')),
             ('waiting_welcome', _('Waiting welcome')),
@@ -56,18 +56,11 @@ class recurring_contract(orm.Model):
             ('sub_accept', _('Sub Accept')),
             ('sub_reject', _('Sub Reject')),
             ('no_sub', _('No sub')),
-            ('cancelled', _('Cancelled'))], _('SDS Status'),
-            readonly=True, track_visibility='onchange', select=True,
-            help=_('')),
-        'last_sds_state_change_date': fields.date(
-            _('SDS state date'),
-            readonly=True),
-        'project_id': fields.related(
-            'child_id', 'project_id',
-            type='many2one', string=_('Project'),
-            readonly=True
-        ),
-        'project_state': fields.selection([
+            ('cancelled', _('Cancelled'))
+        ]
+
+    def _get_project_states(self, cr, uid, context=None):
+        return [
             ('active', _('Active')),
             ('inform_suspended', _('Inform fund suspension')),
             ('fund-suspended', _('Fund Suspended')),
@@ -78,12 +71,72 @@ class recurring_contract(orm.Model):
              _('Inform suspended and reactivation')),
             ('inform_project_terminated', _('Inform project terminated')),
             ('phase_out', _('Phase out')),
-            ('terminated', _('Terminated'))], _('Project Status'), select=True,
-            readonly=True, track_visibility='onchange',
-            help=_('')),
+            ('terminated', _('Terminated'))
+        ]
+
+    _columns = {
+        'sds_state': fields.selection(
+            _get_sds_states, _('SDS Status'), readonly=True,
+            track_visibility='onchange', select=True),
+        'last_sds_state_change_date': fields.date(
+            _('SDS state date'),
+            readonly=True),
+        'project_id': fields.related(
+            'child_id', 'project_id',
+            type='many2one', string=_('Project'),
+            readonly=True
+        ),
+        'project_state': fields.selection(
+            _get_project_states, _('Project Status'), select=True,
+            readonly=True, track_visibility='onchange'),
         'color': fields.integer('Color Index'),
         'no_sub_reason': fields.char(_("No sub reason")),
     }
+
+    ##########################################################################
+    #                          KANBAN GROUP METHODS                          #
+    ##########################################################################
+    def sds_kanban_groups(self, cr, uid, ids, domain, **kwargs):
+        fold = {
+            'active': True,
+            'sub_accept': True,
+            'sub_reject': True,
+            'no_sub': True,
+            'cancelled': True
+        }
+        sds_states = self._get_sds_states(cr, uid)
+        display_states = list()
+        for sds_state in sds_states:
+            sponsorship_ids = self.search(cr, uid, [
+                ('sds_state', '=', sds_state[0])])
+            if sponsorship_ids:
+                display_states.append(sds_state)
+        return display_states, fold
+
+    _group_by_full = {
+        'sds_state': sds_kanban_groups,
+    }
+
+    def _read_group_fill_results(self, cr, uid, domain, groupby,
+                                 remaining_groupbys, aggregated_fields,
+                                 read_group_result,
+                                 read_group_order=None, context=None):
+        """
+        The method seems to support grouping using m2o fields only,
+        while we want to group by a simple status field.
+        Hence the code below - it replaces simple status values
+        with (value, name) tuples.
+        """
+        if groupby == 'sds_state':
+            state_dict = dict(self._get_sds_states(cr, uid, context))
+            for result in read_group_result:
+                state = result[groupby]
+                result[groupby] = (state, state_dict.get(state))
+
+        return super(recurring_contract, self)._read_group_fill_results(
+            cr, uid, domain, groupby, remaining_groupbys, aggregated_fields,
+            read_group_result, read_group_order, context
+        )
 
     def copy(self, cr, uid, id, default=None, context=None):
         if not default:

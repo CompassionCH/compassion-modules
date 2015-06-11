@@ -208,13 +208,34 @@
             </field>
 		</record>
         
-        <record model="ir.actions.act_window" id="action_follow_contract">
-            <field name="name">Track contracts</field>
+        <!-- Tracking actions -->
+        <record model="ir.actions.act_window" id="action_follow_sds">
+            <field name="name">Welcome / SUB</field>
             <field name="res_model">recurring.contract</field>
             <field name="view_type">form</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="domain">[('type', 'like', 'S')]</field>
             <field name="context">{'default_type': 'S'}</field>
+            <field name="search_view_id" ref="contract_tracking_filter"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_follow_gmc">
+            <field name="name">GMC Updates</field>
+            <field name="res_model">recurring.contract</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('type', 'like', 'S')]</field>
+            <field name="context">{'default_type': 'S', 'group_by': 'gmc_state'}</field>
+            <field name="search_view_id" ref="contract_tracking_filter"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_follow_project">
+            <field name="name">Project Status</field>
+            <field name="res_model">recurring.contract</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('type', 'like', 'S')]</field>
+            <field name="context">{'default_type': 'S', 'group_by': 'project_state'}</field>
             <field name="search_view_id" ref="contract_tracking_filter"/>
         </record>
         
@@ -238,10 +259,15 @@
             <field name="view_id" ref="view_follow_contract_form_compassion"/>
             <field name="act_window_id" ref="action_follow_contract"/>
         </record>
-        
       
-
-        <menuitem action="action_follow_contract" id="recurring_contract.menu_follow_contract" parent="child_compassion.menu_sponsorship_section"
-                  name="Track sponsorships" sequence="0"/>
+        <!-- Menu Items -->
+        <menuitem id="menu_tracking" parent="child_compassion.menu_sponsorship_root"
+                  name="Track sponsorships" sequence="2"/>
+        <menuitem action="action_follow_sds" id="menu_follow_sds" parent="menu_tracking"
+                  name="Welcome / SUB" sequence="1"/>
+        <menuitem action="action_follow_gmc" id="menu_follow_gmc" parent="menu_tracking"
+                  name="GMC Updates" sequence="2"/>
+        <menuitem action="action_follow_project" id="menu_follow_project" parent="menu_tracking"
+                  name="Project Status" sequence="3"/>
 	</data>
 </openerp>
