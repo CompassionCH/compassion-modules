@@ -217,7 +217,6 @@
             <field name="domain">[('type', 'like', 'S')]</field>
             <field name="context">{'default_type': 'S'}</field>
             <field name="search_view_id" ref="contract_tracking_filter"/>
-            <field name="view_id" ref="view_follow_contract_form_compassion"/>
         </record>
 
         <record model="ir.actions.act_window" id="action_follow_gmc">
@@ -228,7 +227,6 @@
             <field name="domain">[('type', 'like', 'S')]</field>
             <field name="context">{'default_type': 'S', 'group_by': 'gmc_state'}</field>
             <field name="search_view_id" ref="contract_tracking_filter"/>
-            <field name="view_id" ref="view_follow_contract_form_compassion"/>
         </record>
 
         <record model="ir.actions.act_window" id="action_follow_project">
@@ -239,7 +237,64 @@
             <field name="domain">[('type', 'like', 'S')]</field>
             <field name="context">{'default_type': 'S', 'group_by': 'project_state'}</field>
             <field name="search_view_id" ref="contract_tracking_filter"/>
+        </record>
+        
+        <!-- Select correct kanban, form and tree view -->
+        <record model="ir.actions.act_window.view" id="act_follow_contract_kanban1">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="view_follow_contract_kanban_compassion"/>
+            <field name="act_window_id" ref="action_follow_sds"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="act_follow_contract_kanban2">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="view_follow_contract_kanban_compassion"/>
+            <field name="act_window_id" ref="action_follow_gmc"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="act_follow_contract_kanban3">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="view_follow_contract_kanban_compassion"/>
+            <field name="act_window_id" ref="action_follow_project"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_follow_contract_tree1">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_follow_contract_tree_compassion"/>
+            <field name="act_window_id" ref="action_follow_sds"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="act_follow_contract_tree2">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_follow_contract_tree_compassion"/>
+            <field name="act_window_id" ref="action_follow_gmc"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="act_follow_contract_tree3">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_follow_contract_tree_compassion"/>
+            <field name="act_window_id" ref="action_follow_project"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_follow_contract_form1">
+            <field eval="3" name="sequence"/>
+            <field name="view_mode">form</field>
             <field name="view_id" ref="view_follow_contract_form_compassion"/>
+            <field name="act_window_id" ref="action_follow_sds"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="act_follow_contract_form2">
+            <field eval="3" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_follow_contract_form_compassion"/>
+            <field name="act_window_id" ref="action_follow_gmc"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="act_follow_contract_form3">
+            <field eval="3" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_follow_contract_form_compassion"/>
+            <field name="act_window_id" ref="action_follow_project"/>
         </record>
         
       
