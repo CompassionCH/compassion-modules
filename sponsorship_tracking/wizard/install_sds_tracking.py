@@ -134,9 +134,9 @@ class recurring_contract(orm.TransientModel):
             cr, uid, terminated_contract_ids, 'cancelled', 'end_date')
         self._set_sds_state(cr, uid, no_sub_ids, 'no_sub', 'end_date')
         self._set_sds_state(
-            cr, uid, sub_accept_ids, 'sub_accept', 'end_date', 40)
+            cr, uid, sub_accept_ids, 'sub_accept', 'end_date', 50)
         self._set_sds_state(
-            cr, uid, sub_reject_ids, 'sub_reject', 'end_date', 40)
+            cr, uid, sub_reject_ids, 'sub_reject', 'end_date', 50)
 
     def _set_sds_state(
             self, cr, uid, contract_ids, sds_state,
@@ -155,7 +155,7 @@ class recurring_contract(orm.TransientModel):
         """ Rules for setting SUB Status of a contract with child departed:
             1. No active or cancelled/terminated SUB contract exists -> no_sub
             2. One active SUB contract exists -> sub_accept
-            3. One cancelled/terminated contract exists and end_date > 40 days
+            3. One cancelled/terminated contract exists and end_date > 50 days
                after child departure or end_reason is also a child departure
                -> sub_accept
             4. If no other condition above is met -> sub_reject
@@ -197,7 +197,7 @@ class recurring_contract(orm.TransientModel):
                                 contract.end_date, DF)
                             if (sub_contract.end_reason == '1' or
                                 parent_end_date >
-                                    contract_end_date + timedelta(days=40)):
+                                    contract_end_date + timedelta(days=50)):
                                 sub_accept_ids.append(
                                     child_departed_contract_id)
                                 break

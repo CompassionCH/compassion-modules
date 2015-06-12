@@ -189,11 +189,11 @@ class recurring_contract(orm.Model):
 
     def check_sub_duration(self, cr, uid, context=None):
         """ Check all sponsorships in SUB State.
-            After 40 days after ending, Sponsorship becomes :
+            After 50 days after ending, Sponsorship becomes :
                 - SUB Accept if one child sponsorship is active
                 - SUB Reject otherwise
         """
-        fourty_days_ago = date.today() + timedelta(days=-40)
+        fourty_days_ago = date.today() + timedelta(days=-50)
         contract_ids = self.search(cr, uid, [
             ('sds_state', '=', 'sub')], context=context)
 
