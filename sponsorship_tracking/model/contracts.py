@@ -10,9 +10,10 @@
 ##############################################################################
 from openerp.osv import orm, fields
 from openerp import netsvc
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
 
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
 import logging
 
 
@@ -175,25 +176,13 @@ class recurring_contract(orm.Model):
                                     cr)
         return True
 
-    def check_sub_waiting_duration(self, cr, uid, context=None):
-        """ If no SUB sponsorship is proposed after 15 days a child
-            has departed, the sponsorship is marked as NO SUB.
-        """
-        fifteen_days_ago = date.today() + timedelta(days=-15)
-        contract_ids = self.search(cr, uid, [
-            ('end_date', '<', fifteen_days_ago),
-            ('sds_state', '=', 'sub_waiting')], context=context)
-
-        self.trg_validate(cr, uid, contract_ids, 'no_sub', context)
-        return True
-
     def check_sub_duration(self, cr, uid, context=None):
         """ Check all sponsorships in SUB State.
-            After 50 days after ending, Sponsorship becomes :
-                - SUB Accept if one child sponsorship is active
+            After 50 days SUB Sponsorship started, Sponsorship becomes :
+                - SUB Accept if SUB sponsorship is active
                 - SUB Reject otherwise
         """
-        fourty_days_ago = date.today() + timedelta(days=-50)
+        fifty_days_ago = date.today() + timedelta(days=-50)
         contract_ids = self.search(cr, uid, [
             ('sds_state', '=', 'sub')], context=context)
 
@@ -211,9 +200,13 @@ class recurring_contract(orm.Model):
                         transition = 'sub_accept'
                         break
 
-            contract.write({'color': 5 if transition == 'sub_accept' else 2})
-            if contract.end_date < fourty_days_ago:
-                self.trg_validate(cr, uid, [contract.id], transition, context)
+                contract.write({'color': 5 if transition == 'sub_accept'
+                                else 2})
+                sub_start_date = datetime.strptime(
+                    sub_contract.start_date, DF)
+                if sub_start_date < fifty_days_ago:
+                    self.trg_validate(cr, uid, [contract.id], transition,
+                                      context)
 
         return True
 

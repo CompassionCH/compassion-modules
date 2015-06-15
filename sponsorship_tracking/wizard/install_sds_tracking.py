@@ -120,8 +120,8 @@ class recurring_contract(orm.TransientModel):
             cr, uid,
             [('state', '=', 'terminated'), ('end_reason', '!=', '1')],
             context)
-        no_sub_ids, sub_accept_ids, sub_reject_ids = self._get_contract_sub(
-            cr, uid)
+        no_sub_ids, sub_ids, sub_accept_ids, sub_reject_ids, \
+            sub_waiting_ids = self._get_contract_sub(cr, uid)
 
         self._set_sds_state(cr, uid, draft_contract_ids, 'draft', 'start_date')
         self._set_sds_state(
@@ -133,6 +133,9 @@ class recurring_contract(orm.TransientModel):
         self._set_sds_state(
             cr, uid, terminated_contract_ids, 'cancelled', 'end_date')
         self._set_sds_state(cr, uid, no_sub_ids, 'no_sub', 'end_date')
+        self._set_sds_state(cr, uid, sub_ids, 'sub', 'end_date')
+        self._set_sds_state(cr, uid, sub_waiting_ids, 'sub_waiting',
+                            'end_date')
         self._set_sds_state(
             cr, uid, sub_accept_ids, 'sub_accept', 'end_date', 50)
         self._set_sds_state(
@@ -161,50 +164,56 @@ class recurring_contract(orm.TransientModel):
             4. If no other condition above is met -> sub_reject
         """
         contract_obj = self.pool.get('recurring.contract')
+        max_sub_waiting = datetime.date.today() + timedelta(days=-50)
         child_departed_contract_ids = contract_obj.search(
             cr, uid,
             [('state', '=', 'terminated'), ('end_reason', '=', '1')],
             context=context)
 
         no_sub_ids = list()
+        sub_ids = list()
+        sub_waiting_ids = list()
         sub_accept_ids = list()
         sub_reject_ids = list()
 
-        for child_departed_contract_id in child_departed_contract_ids:
-            contract = contract_obj.browse(
-                cr, uid, child_departed_contract_id, context)
-
+        for contract in contract_obj.browse(
+                cr, uid, child_departed_contract_ids, context):
             sub_contract_ids = contract_obj.search(
                 cr, uid,
-                [('parent_id', '=', child_departed_contract_id),
-                 ('state', 'in', ['active', 'terminated', 'cancelled'])],
+                [('parent_id', '=', contract.id)],
                 context)
-            if not (sub_contract_ids):
-                no_sub_ids.append(child_departed_contract_id)
-            else:
-                for sub_contract_id in sub_contract_ids:
-                    sub_contract = contract_obj.browse(
-                        cr, uid, sub_contract_id, context)
-                    if (sub_contract.state == 'active'):
-                        sub_accept_ids.append(
-                            child_departed_contract_id)
-                        break
-                    else:
-                        if sub_contract.end_date and contract.end_date:
-                            parent_end_date = datetime.strptime(
-                                sub_contract.end_date, DF)
-                            contract_end_date = datetime.strptime(
-                                contract.end_date, DF)
-                            if (sub_contract.end_reason == '1' or
-                                parent_end_date >
-                                    contract_end_date + timedelta(days=50)):
-                                sub_accept_ids.append(
-                                    child_departed_contract_id)
-                                break
-                else:
-                    sub_reject_ids.append(child_departed_contract_id)
+            contract_end_date = datetime.strptime(contract.end_date, DF)
 
-        return no_sub_ids, sub_accept_ids, sub_reject_ids
+            if not sub_contract_ids:
+                if contract_end_date < max_sub_waiting:
+                    no_sub_ids.append(contract.id)
+                else:
+                    sub_waiting_ids.append(contract.id)
+            else:
+                for sub_contract in contract_obj.browse(
+                        cr, uid, sub_contract_ids, context):
+                    if (sub_contract.state == 'active'):
+                        sub_accept_ids.append(contract.id)
+                        break
+                    elif sub_contract.end_date:
+                        sub_end_date = datetime.strptime(
+                            sub_contract.end_date, DF)
+                        sub_start_date = datetime.strptime(
+                            sub_contract.start_date, DF)
+                        if (sub_contract.end_reason == '1' or
+                            sub_end_date >
+                                sub_start_date + timedelta(days=50)):
+                            sub_accept_ids.append(
+                                contract.id)
+                            break
+                    else:
+                        sub_ids.append(contract.id)
+                        break
+                else:
+                    sub_reject_ids.append(contract.id)
+
+        return no_sub_ids, sub_ids, sub_accept_ids, sub_reject_ids, \
+            sub_waiting_ids
 
     def _set_project_state(self, cr, uid, ids=None, context=None):
         """ Pushes the state of the project to the active contracts. """

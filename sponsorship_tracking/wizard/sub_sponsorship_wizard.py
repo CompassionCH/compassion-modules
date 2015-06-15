@@ -16,12 +16,25 @@ from openerp.tools.translate import _
 class sub_sponsorship_wizard(orm.TransientModel):
     _name = "sds.subsponsorship.wizard"
 
+    def _get_no_sub_reasons(self, cr, uid, context=None):
+        return [
+            ('other_sponsorship', _('Sponsors other children')),
+            ('financial', _('Financial reasons')),
+            ('old', _('Is too old to sponsor another child')),
+            ('other_support', _('Wants to support with fund donations')),
+            ('other_organization', _('Supports another organization')),
+            ('not_now', _("Doesn't want to take another child right now")),
+            ('not_given', _('Not given')),
+            ('other', _('Other...'))
+        ]
+
     _columns = {
         'state': fields.selection([
             ('sub', 'sub'),
             ('no_sub', 'no_sub')]),
         'child_id': fields.many2one(
             'compassion.child', string=_("Child")),
+        'no_sub_default_reasons': fields.selection(_get_no_sub_reasons),
         'no_sub_reason': fields.char(_("No sub reason")),
     }
 
@@ -64,7 +77,14 @@ class sub_sponsorship_wizard(orm.TransientModel):
 
         sponsorship_id = context.get('active_id')
         contract_obj = self.pool.get('recurring.contract')
-        reason = self.browse(cr, uid, ids[0], context).no_sub_reason
+        wizard = self.browse(cr, uid, ids[0], context)
+        default_reason = wizard.no_sub_default_reasons
+        reason = False
+        if default_reason == 'other':
+            reason = wizard.no_sub_reason
+        else:
+            reason = dict(self._get_no_sub_reasons(cr, uid, context)).get(
+                default_reason)
         contract_obj.write(cr, uid, sponsorship_id, {
             'no_sub_reason': reason}, context)
         wf_service = netsvc.LocalService('workflow')
