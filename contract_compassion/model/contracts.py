@@ -437,6 +437,7 @@ class recurring_contract(orm.Model):
             'res_model': self._name,
             'res_id': ids[0],
             'target': 'current',
+            'context': context,
         }
 
     def action_cancel_draft(self, cr, uid, ids, context=None):
