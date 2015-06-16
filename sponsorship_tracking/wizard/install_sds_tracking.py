@@ -17,6 +17,8 @@ SDS_COLORS = {
     'sub_accept': '5',
     'sub_reject': '2',
     'no_sub': '1',
+    'sub': '0',
+    'sub_waiting': '3',
     'cancelled': '1',
     'draft': '7',
     'active': '0',
@@ -164,7 +166,7 @@ class recurring_contract(orm.TransientModel):
             4. If no other condition above is met -> sub_reject
         """
         contract_obj = self.pool.get('recurring.contract')
-        max_sub_waiting = datetime.date.today() + timedelta(days=-50)
+        max_sub_waiting = datetime.today() + timedelta(days=-50)
         child_departed_contract_ids = contract_obj.search(
             cr, uid,
             [('state', '=', 'terminated'), ('end_reason', '=', '1')],
