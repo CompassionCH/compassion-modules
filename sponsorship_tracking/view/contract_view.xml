@@ -134,7 +134,7 @@
                             <group>
                                 <field name="child_id"/>
                                 <field name="end_reason" states="terminated,cancelled"/>
-                                <field name="no_sub_reason" attrs="{'invisible': [('sds_state', '!=', 'no_sub')]}"/>
+                                <field name="no_sub_reason" attrs="{'invisible': [('sds_state', 'not in', ['inform_no_sub', 'no_sub'])]}"/>
                                 <field name="state"/>
                                 <field name="project_state"/>
                             </group>
