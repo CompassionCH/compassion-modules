@@ -84,7 +84,7 @@
                         <field name="sds_state" widget="statusbar" statusbar_visible="draft,start,waiting_welcome,active,sub,sub_accept"/>
                         <button name="contract_validated" class="oe_highlight" attrs="{'invisible':[('sds_state','!=','draft')]}" string="Validate"/>
                         
-                        <button name="mail_sent" class="oe_highlight" string="Mail sent" attrs="{'invisible':[('sds_state','not in',['start', 'waiting_welcome'])]}"/>
+                        <button name="mail_sent" class="oe_highlight" string="Mail sent" attrs="{'invisible':[('sds_state','not in',['start', 'waiting_welcome', 'inform_no_sub'])]}"/>
                         <button name="%(action_create_sub_sponsorship)d" type="action" class="oe_highlight" string="Create SUB Sponsorship" attrs="{'invisible':[('sds_state','!=','sub_waiting')]}"
                                 context="{'default_state': 'sub'}"/>
                         <button name="%(action_create_sub_sponsorship)d" type="action" string="No sub" attrs="{'invisible':[('sds_state','!=','sub_waiting')]}"

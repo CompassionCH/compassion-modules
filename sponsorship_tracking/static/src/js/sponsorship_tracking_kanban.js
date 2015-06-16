@@ -26,7 +26,7 @@ openerp.sponsorship_tracking = function (instance) {
                 action = ''
 
                 if (this.group_by == 'sds_state'){
-                    visible_on_groups = ['start', 'waiting_welcome'];
+                    visible_on_groups = ['start', 'waiting_welcome', 'inform_no_sub'];
                     label = _t('Mail sent')
                     action = 'button_mail_sent'
                 }

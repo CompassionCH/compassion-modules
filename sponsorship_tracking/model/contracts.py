@@ -56,6 +56,7 @@ class recurring_contract(orm.Model):
             ('sub', _('Sub')),
             ('sub_accept', _('Sub Accept')),
             ('sub_reject', _('Sub Reject')),
+            ('inform_no_sub', _('Inform No sub')),
             ('no_sub', _('No sub')),
             ('cancelled', _('Cancelled'))
         ]

@@ -61,6 +61,13 @@
             <field name="action">write({'sds_state': 'sub_waiting', 'color': 3})</field>
         </record>
         
+        <record model="workflow.activity" id="act_inform_no_sub">
+            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
+            <field name="name">inform_no_sub</field>
+            <field name="kind">function</field>
+            <field name="action">write({'sds_state': 'inform_no_sub', 'color': 0})</field>
+        </record>
+        
         <record model="workflow.activity" id="act_no_sub">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">no_sub</field>
@@ -164,8 +171,14 @@
 
         <record model="workflow.transition" id="t6">
             <field name="act_from" ref="act_sub_waiting" />
-            <field name="act_to" ref="act_no_sub" />
+            <field name="act_to" ref="act_inform_no_sub" />
             <field name="signal">no_sub</field>
+        </record>
+        
+        <record model="workflow.transition" id="t6b">
+            <field name="act_from" ref="act_inform_no_sub" />
+            <field name="act_to" ref="act_no_sub" />
+            <field name="signal">mail_sent</field>
         </record>
 
         <record model="workflow.transition" id="t7">
