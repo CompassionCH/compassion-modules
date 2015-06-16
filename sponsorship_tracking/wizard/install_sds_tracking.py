@@ -47,6 +47,14 @@ class recurring_contract(orm.TransientModel):
             cr, uid,
             [('project_state', '=', 'suspended')],
             context)
+        sub_waiting_contract_ids = contract_obj.search(
+            cr, uid,
+            [('sds_state', '=', 'sub_waiting')],
+            context)
+        sub_contract_ids = contract_obj.search(
+            cr, uid,
+            [('sds_state', '=', 'sub')],
+            context)
         cr.execute(
             '''
             SELECT id FROM wkf
@@ -61,6 +69,12 @@ class recurring_contract(orm.TransientModel):
         self._ins_wkf_items(
             cr, uid, 'act_active',
             wkf_id, active_contract_ids, context)
+        self._ins_wkf_items(
+            cr, uid, 'act_sub_waiting',
+            wkf_id, sub_waiting_contract_ids, context)
+        self._ins_wkf_items(
+            cr, uid, 'act_sub',
+            wkf_id, sub_contract_ids, context)
         self._ins_wkf_items(
             cr, uid, 'act_project_active',
             wkf_id, project_active_contracts_ids, context)
