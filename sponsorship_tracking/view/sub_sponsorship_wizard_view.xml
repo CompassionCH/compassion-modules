@@ -21,7 +21,7 @@
                         </group>
                         <group states="no_sub">
                             <field name="no_sub_default_reasons" attrs="{'required': [('state', '=', 'no_sub')]}"/>
-                            <field name="no_sub_reason" attrs="{'visible': [('no_sub_default_reasons', '=', 'other')], 'required': [('no_sub_default_reasons', '=', 'other')]}"/>
+                            <field name="no_sub_reason" attrs="{'invisible': [('no_sub_default_reasons', '!=', 'other')], 'required': [('no_sub_default_reasons', '=', 'other')]}"/>
                         </group>
                     </sheet>
                     <footer>

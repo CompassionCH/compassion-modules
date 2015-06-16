@@ -34,7 +34,8 @@ class sub_sponsorship_wizard(orm.TransientModel):
             ('no_sub', 'no_sub')]),
         'child_id': fields.many2one(
             'compassion.child', string=_("Child")),
-        'no_sub_default_reasons': fields.selection(_get_no_sub_reasons),
+        'no_sub_default_reasons': fields.selection(
+            _get_no_sub_reasons, string=_("No sub reason")),
         'no_sub_reason': fields.char(_("No sub reason")),
     }
 
