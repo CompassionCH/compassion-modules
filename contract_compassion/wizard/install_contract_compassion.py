@@ -77,8 +77,7 @@ class install_contract_compassion(orm.TransientModel):
         cr.execute(
             """
         UPDATE recurring_contract
-        SET type = 'O', recurring_value = advance_billing_months,
-            advance_billing_months = 1
+        SET type = 'O'
         WHERE child_id IS NULL
         AND type IN ('ChildSponsorship') OR type IS NULL
         """)
