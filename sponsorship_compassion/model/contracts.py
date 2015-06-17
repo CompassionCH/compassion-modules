@@ -19,6 +19,8 @@ from dateutil.relativedelta import relativedelta
 
 from lxml import etree
 
+from .product import GIFT_CATEGORY, SPONSORSHIP_CATEGORY, FUND_CATEGORY
+
 import logging
 
 
@@ -43,7 +45,8 @@ class sponsorship_line(orm.Model):
             type = context.get('default_type', 'O')
             if 'S' in type:
                 res['fields']['product_id']['domain'] = [
-                    ('categ_name', 'in', ['Sponsorship', 'Fund'])]
+                    ('categ_name', 'in', [SPONSORSHIP_CATEGORY,
+                                          FUND_CATEGORY])]
                 # Remove field sponsorship_id for sponsorship contracts
                 doc = etree.XML(res['arch'])
                 for node in doc.xpath("//field[@name='sponsorship_id']"):
@@ -52,7 +55,7 @@ class sponsorship_line(orm.Model):
                 del(res['fields']['sponsorship_id'])
             else:
                 res['fields']['product_id']['domain'] = [
-                    ('categ_name', '!=', 'Sponsorship')]
+                    ('categ_name', '!=', SPONSORSHIP_CATEGORY)]
 
         return res
 
@@ -564,7 +567,7 @@ class sponsorship_contract(orm.Model):
                     payment_allowed = True
                     project = invl.contract_id.child_id.project_id
 
-                    if invl.product_id.categ_name == 'Sponsor gifts':
+                    if invl.product_id.categ_name == GIFT_CATEGORY:
                         payment_allowed = project.disburse_gifts or \
                             invl.due_date < project.status_date
                     else:
@@ -588,12 +591,12 @@ class sponsorship_contract(orm.Model):
     def _has_valid_contract_lines(
             self, cr, uid, contract_lines, type, context=None):
         forbidden_product_types = {
-            'O': ['Sponsorship', 'Sponsor gifts'],
+            'O': [SPONSORSHIP_CATEGORY, GIFT_CATEGORY],
         }
         whitelist_product_types = {
-            'G': ['Sponsor gifts'],
-            'S': ['Sponsorship', 'Fund'],
-            'SC': ['Sponsorship', 'Fund'],
+            'G': [GIFT_CATEGORY],
+            'S': [SPONSORSHIP_CATEGORY, FUND_CATEGORY],
+            'SC': [SPONSORSHIP_CATEGORY, FUND_CATEGORY],
         }
         product_obj = self.pool.get('product.product')
         contract_lines = [cont_line[2] for cont_line in contract_lines
@@ -642,7 +645,7 @@ class sponsorship_contract(orm.Model):
         res = list()
         for invl in invoice_lines:
             if (invl.contract_id == contract_id and
-               invl.product_id.categ_name != 'Sponsor gifts'):
+               invl.product_id.categ_name != GIFT_CATEGORY):
                 res.append(invl.id)
         return res
 
@@ -651,7 +654,7 @@ class sponsorship_contract(orm.Model):
         res = list()
         for invl in invoice_lines:
             if (invl.contract_id and
-               invl.product_id.categ_name != 'Sponsor gifts'):
+               invl.product_id.categ_name != GIFT_CATEGORY):
                 res.append(invl.contract_id.id)
         return res
 
@@ -667,7 +670,7 @@ class sponsorship_contract(orm.Model):
             since_date = datetime.today().strftime(DF)
         invl_search = [('contract_id', 'in', ids), ('state', '=', 'paid'),
                        ('due_date', '>=', since_date),
-                       ('product_id.categ_name', '!=', 'Sponsor gifts')]
+                       ('product_id.categ_name', '!=', GIFT_CATEGORY)]
         if gifts:
             invl_search.pop()
         if to_date:

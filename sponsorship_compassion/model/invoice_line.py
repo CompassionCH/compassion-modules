@@ -13,6 +13,8 @@ from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools import mod10r
 
+from .product import GIFT_CATEGORY, SPONSORSHIP_CATEGORY
+
 
 class invoice_line(orm.Model):
     _inherit = 'account.invoice.line'
@@ -84,7 +86,7 @@ class account_invoice(orm.Model):
                 invoice.write({'bvr_reference': ref})
             for invl in invoice.invoice_line:
                 if not invl.contract_id and invl.product_id.categ_name in (
-                        'Sponsorship', 'Sponsor gifts'):
+                        SPONSORSHIP_CATEGORY, GIFT_CATEGORY):
                     raise orm.except_orm(
                         _('Sponsorship missing in invoice'),
                         _("Invoice %s for '%s' is missing a sponsorship.") %

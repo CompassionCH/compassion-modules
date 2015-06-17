@@ -16,6 +16,9 @@ from openerp.tools.translate import _
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+
+from ..model.product import GIFT_NAMES
+
 import time
 
 
@@ -57,7 +60,8 @@ class generate_gift_wizard(orm.TransientModel):
                     [('type', '=', 'sale'), ('company_id', '=', 1 or False)],
                     limit=1)
 
-                if wizard.product_id.name == 'Birthday Gift':
+                # Birthday Gift
+                if wizard.product_id.name == GIFT_NAMES[0]:
                     invoice_date = self.compute_date_birthday_invoice(
                         contract.child_id.birthdate, wizard.invoice_date)
                     # If a gift was already made for that date, create one
@@ -81,7 +85,7 @@ class generate_gift_wizard(orm.TransientModel):
                     'date_invoice': invoice_date,
                     'payment_term': 1,  # Immediate payment
                     'bvr_reference': self._generate_bvr_reference(
-                        contract, wizard.product_id),
+                        cr, uid, contract, wizard.product_id, ctx),
                     'recurring_invoicer_id': context.get(
                         'recurring_invoicer_id', False)
                 }
@@ -133,32 +137,35 @@ class generate_gift_wizard(orm.TransientModel):
         if not wizard.description:
             inv_line_data['name'] = contract.child_id.code
             inv_line_data['name'] += " - " + contract.child_id.birthdate \
-                if product.name == 'Birthday Gift' else ""
+                if product.name == GIFT_NAMES[0] else ""
 
         self.pool.get('account.invoice.line').create(
             cr, uid, inv_line_data, context=context)
 
         return True
 
-    def _generate_bvr_reference(self, contract, product):
-        gift_bvr_ref = {
-            'Birthday Gift': 1,
-            'General Gift': 2,
-            'Family Gift': 3,
-            'Project Gift': 4,
-            'Graduation Gift': 5
-        }
+    def _generate_bvr_reference(self, cr, uid, contract, product,
+                                context=None):
         ref = contract.partner_id.ref
         bvr_reference = '0' * (9 + (7 - len(ref))) + ref
         num_pol_ga = str(contract.num_pol_ga)
         bvr_reference += '0' * (5 - len(num_pol_ga)) + num_pol_ga
         # Type of gift
-        bvr_reference += str(gift_bvr_ref[product.name])
+        bvr_reference += str(GIFT_NAMES.index(product.name) + 1)
         bvr_reference += '0' * 4
 
         if contract.group_id.payment_term_id and \
                 'LSV' in contract.group_id.payment_term_id.name:
-            bvr_reference = '004874969' + bvr_reference[9:]
+            # Get company BVR adherent number
+            user = self.pool.get('res.users').browse(cr, uid, uid, context)
+            bank_obj = self.pool.get('res.partner.bank')
+            company_bank_id = bank_obj.search(cr, uid, [
+                ('partner_id', '=', user.company_id.partner_id.id),
+                ('bvr_adherent_num', '!=', False)], context=context)
+            if company_bank_id:
+                bvr_prefix = bank_obj.browse(
+                    cr, uid, company_bank_id[0], context).bvr_adherent_num
+                bvr_reference = bvr_prefix + bvr_reference[9:]
         if len(bvr_reference) == 26:
             return mod10r(bvr_reference)
 

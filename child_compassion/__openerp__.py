@@ -81,7 +81,7 @@ Contributors
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['mail', 'web_m2x_options'],
+    'depends': ['mail', 'web_m2x_options', 'document'],
     'data': [
         'security/sponsorship_groups.xml',
         'security/ir.model.access.csv',

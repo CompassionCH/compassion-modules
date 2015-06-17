@@ -11,6 +11,19 @@
 
 from openerp.osv import orm, fields
 
+# Name of gifts products
+GIFT_NAMES = ["Birthday Gift", "General Gift", "Family Gift", "Project Gift",
+              "Graduation Gift"]
+
+# Name of gift category
+GIFT_CATEGORY = "Sponsor gifts"
+
+# Name of sponsorship category
+SPONSORSHIP_CATEGORY = "Sponsorship"
+
+# Name of fund category
+FUND_CATEGORY = "Fund"
+
 
 class product(orm.Model):
     _inherit = 'product.product'
@@ -25,7 +38,7 @@ class product(orm.Model):
             'Graduation Gift': 'FinalOrGraduationGift'
         }
         for product in self.browse(cr, uid, ids, {'lang': 'en_US'}):
-            if product.product_tmpl_id.categ_id.name == 'Sponsor gifts':
+            if product.categ_name == GIFT_CATEGORY:
                 res[product.id] = gmc_names[product.name]
             else:
                 res[product.id] = "Undefined"
