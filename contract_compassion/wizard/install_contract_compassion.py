@@ -71,7 +71,7 @@ class install_contract_compassion(orm.TransientModel):
 
         # Perform the moves
         cr.execute(update_sql.format(sql_filters))
-        
+
     def _upgrade_contracts(self, cr, uid, context=None):
         """ Update old contracts """
         # Set the contract type for existing contracts
