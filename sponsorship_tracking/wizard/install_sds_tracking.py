@@ -45,7 +45,7 @@ class recurring_contract(orm.TransientModel):
             context)
         project_suspended_contracts_ids = contract_obj.search(
             cr, uid,
-            [('project_state', '=', 'suspended')],
+            [('project_state', '=', 'fund-suspended')],
             context)
         sub_waiting_contract_ids = contract_obj.search(
             cr, uid,
@@ -253,7 +253,7 @@ class recurring_contract(orm.TransientModel):
 
         cr.execute(
             "UPDATE recurring_contract "
-            "SET project_state = 'suspended' "
+            "SET project_state = 'fund-suspended' "
             "WHERE id IN ({0})".format(','.join(
                 [str(id) for id in suspended_project_contract_ids])))
 
