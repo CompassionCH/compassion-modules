@@ -15,8 +15,15 @@ class install_contract_compassion(orm.TransientModel):
     _name = "install.contract.compassion"
 
     def install(self, cr, uid, ids=None, context=None):
-        """Modify old ir_model_data to change module name of xml objects
-        moved from sponsorship_compassion to contract_compassion. """
+        """ Installation script to update < 1.5 compassion database. """
+        self._move_xml_objects(cr, uid, context)
+        self._upgrade_contracts(cr, uid, context)
+        return True
+
+    def _move_xml_objects(self, cr, uid, context=None):
+        """ Modify old ir_model_data to change module name of xml objects
+        moved from sponsorship_compassion to contract_compassion.
+        """
         update_sql = "UPDATE ir_model_data SET module='contract_compassion' "\
             "WHERE module='sponsorship_compassion' AND ({0})"
 
@@ -64,7 +71,9 @@ class install_contract_compassion(orm.TransientModel):
 
         # Perform the moves
         cr.execute(update_sql.format(sql_filters))
-
+        
+    def _upgrade_contracts(self, cr, uid, context=None):
+        """ Update old contracts """
         # Set the contract type for existing contracts
         cr.execute(
             """
@@ -80,4 +89,11 @@ class install_contract_compassion(orm.TransientModel):
         SET type = 'O'
         WHERE child_id IS NULL
         AND type IN ('ChildSponsorship') OR type IS NULL
+        """)
+
+        # Update change_method of contract_groups
+        cr.execute(
+            """
+        UPDATE recurring_contract_group
+        SET change_method = 'clean_invoices'
         """)
