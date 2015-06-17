@@ -17,6 +17,8 @@ from openerp.tools.translate import _
 from datetime import datetime
 import logging
 
+from sponsorship_compassion.model.product import GIFT_CATEGORY
+
 logger = logging.getLogger(__name__)
 
 
@@ -147,7 +149,7 @@ class recurring_contract(orm.Model):
             contract = invoice_line.contract_id
             if not contract:
                 break
-            if invoice_line.product_id.categ_name == 'Sponsor gifts' and \
+            if invoice_line.product_id.categ_name == GIFT_CATEGORY and \
                     invoice.payment_ids:
                 # CreateGift
                 message_vals.update({

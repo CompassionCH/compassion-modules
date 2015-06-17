@@ -58,6 +58,8 @@ class contract_group(orm.Model):
 
     _defaults = {
         'payment_term_id': _get_op_payment_term,
+        # Clean invoices when group is modified
+        'change_method': 'clean_invoices',
     }
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):

@@ -17,6 +17,8 @@ SDS_COLORS = {
     'sub_accept': '5',
     'sub_reject': '2',
     'no_sub': '1',
+    'sub': '0',
+    'sub_waiting': '3',
     'cancelled': '1',
     'draft': '7',
     'active': '0',
@@ -43,7 +45,15 @@ class recurring_contract(orm.TransientModel):
             context)
         project_suspended_contracts_ids = contract_obj.search(
             cr, uid,
-            [('project_state', '=', 'suspended')],
+            [('project_state', '=', 'fund-suspended')],
+            context)
+        sub_waiting_contract_ids = contract_obj.search(
+            cr, uid,
+            [('sds_state', '=', 'sub_waiting')],
+            context)
+        sub_contract_ids = contract_obj.search(
+            cr, uid,
+            [('sds_state', '=', 'sub')],
             context)
         cr.execute(
             '''
@@ -59,6 +69,12 @@ class recurring_contract(orm.TransientModel):
         self._ins_wkf_items(
             cr, uid, 'act_active',
             wkf_id, active_contract_ids, context)
+        self._ins_wkf_items(
+            cr, uid, 'act_sub_waiting',
+            wkf_id, sub_waiting_contract_ids, context)
+        self._ins_wkf_items(
+            cr, uid, 'act_sub',
+            wkf_id, sub_contract_ids, context)
         self._ins_wkf_items(
             cr, uid, 'act_project_active',
             wkf_id, project_active_contracts_ids, context)
@@ -120,8 +136,8 @@ class recurring_contract(orm.TransientModel):
             cr, uid,
             [('state', '=', 'terminated'), ('end_reason', '!=', '1')],
             context)
-        no_sub_ids, sub_accept_ids, sub_reject_ids = self._get_contract_sub(
-            cr, uid)
+        no_sub_ids, sub_ids, sub_accept_ids, sub_reject_ids, \
+            sub_waiting_ids = self._get_contract_sub(cr, uid)
 
         self._set_sds_state(cr, uid, draft_contract_ids, 'draft', 'start_date')
         self._set_sds_state(
@@ -133,10 +149,13 @@ class recurring_contract(orm.TransientModel):
         self._set_sds_state(
             cr, uid, terminated_contract_ids, 'cancelled', 'end_date')
         self._set_sds_state(cr, uid, no_sub_ids, 'no_sub', 'end_date')
+        self._set_sds_state(cr, uid, sub_ids, 'sub', 'end_date')
+        self._set_sds_state(cr, uid, sub_waiting_ids, 'sub_waiting',
+                            'end_date')
         self._set_sds_state(
-            cr, uid, sub_accept_ids, 'sub_accept', 'end_date', 40)
+            cr, uid, sub_accept_ids, 'sub_accept', 'end_date', 50)
         self._set_sds_state(
-            cr, uid, sub_reject_ids, 'sub_reject', 'end_date', 40)
+            cr, uid, sub_reject_ids, 'sub_reject', 'end_date', 50)
 
     def _set_sds_state(
             self, cr, uid, contract_ids, sds_state,
@@ -155,56 +174,62 @@ class recurring_contract(orm.TransientModel):
         """ Rules for setting SUB Status of a contract with child departed:
             1. No active or cancelled/terminated SUB contract exists -> no_sub
             2. One active SUB contract exists -> sub_accept
-            3. One cancelled/terminated contract exists and end_date > 40 days
+            3. One cancelled/terminated contract exists and end_date > 50 days
                after child departure or end_reason is also a child departure
                -> sub_accept
             4. If no other condition above is met -> sub_reject
         """
         contract_obj = self.pool.get('recurring.contract')
+        max_sub_waiting = datetime.today() + timedelta(days=-50)
         child_departed_contract_ids = contract_obj.search(
             cr, uid,
             [('state', '=', 'terminated'), ('end_reason', '=', '1')],
             context=context)
 
         no_sub_ids = list()
+        sub_ids = list()
+        sub_waiting_ids = list()
         sub_accept_ids = list()
         sub_reject_ids = list()
 
-        for child_departed_contract_id in child_departed_contract_ids:
-            contract = contract_obj.browse(
-                cr, uid, child_departed_contract_id, context)
-
+        for contract in contract_obj.browse(
+                cr, uid, child_departed_contract_ids, context):
             sub_contract_ids = contract_obj.search(
                 cr, uid,
-                [('parent_id', '=', child_departed_contract_id),
-                 ('state', 'in', ['active', 'terminated', 'cancelled'])],
+                [('parent_id', '=', contract.id)],
                 context)
-            if not (sub_contract_ids):
-                no_sub_ids.append(child_departed_contract_id)
-            else:
-                for sub_contract_id in sub_contract_ids:
-                    sub_contract = contract_obj.browse(
-                        cr, uid, sub_contract_id, context)
-                    if (sub_contract.state == 'active'):
-                        sub_accept_ids.append(
-                            child_departed_contract_id)
-                        break
-                    else:
-                        if sub_contract.end_date and contract.end_date:
-                            parent_end_date = datetime.strptime(
-                                sub_contract.end_date, DF)
-                            contract_end_date = datetime.strptime(
-                                contract.end_date, DF)
-                            if (sub_contract.end_reason == '1' or
-                                parent_end_date >
-                                    contract_end_date + timedelta(days=40)):
-                                sub_accept_ids.append(
-                                    child_departed_contract_id)
-                                break
-                else:
-                    sub_reject_ids.append(child_departed_contract_id)
+            contract_end_date = datetime.strptime(contract.end_date, DF)
 
-        return no_sub_ids, sub_accept_ids, sub_reject_ids
+            if not sub_contract_ids:
+                if contract_end_date < max_sub_waiting:
+                    no_sub_ids.append(contract.id)
+                else:
+                    sub_waiting_ids.append(contract.id)
+            else:
+                for sub_contract in contract_obj.browse(
+                        cr, uid, sub_contract_ids, context):
+                    if (sub_contract.state == 'active'):
+                        sub_accept_ids.append(contract.id)
+                        break
+                    elif sub_contract.end_date:
+                        sub_end_date = datetime.strptime(
+                            sub_contract.end_date, DF)
+                        sub_start_date = datetime.strptime(
+                            sub_contract.start_date, DF)
+                        if (sub_contract.end_reason == '1' or
+                            sub_end_date >
+                                sub_start_date + timedelta(days=50)):
+                            sub_accept_ids.append(
+                                contract.id)
+                            break
+                    else:
+                        sub_ids.append(contract.id)
+                        break
+                else:
+                    sub_reject_ids.append(contract.id)
+
+        return no_sub_ids, sub_ids, sub_accept_ids, sub_reject_ids, \
+            sub_waiting_ids
 
     def _set_project_state(self, cr, uid, ids=None, context=None):
         """ Pushes the state of the project to the active contracts. """
@@ -228,7 +253,7 @@ class recurring_contract(orm.TransientModel):
 
         cr.execute(
             "UPDATE recurring_contract "
-            "SET project_state = 'suspended' "
+            "SET project_state = 'fund-suspended' "
             "WHERE id IN ({0})".format(','.join(
                 [str(id) for id in suspended_project_contract_ids])))
 

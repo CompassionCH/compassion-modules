@@ -76,7 +76,7 @@
                         </group>
 
                         <group>
-                            <field name="origin_id" domain="['!',('name','like','SUB Sponsorship - ')]"/>
+                            <field name="origin_id"/>
                             <field name="channel"/>
                         </group>
                         <group>
@@ -129,7 +129,7 @@
         </record>
 
         <record model="ir.actions.act_window" id="action_contract">
-            <field name="name">Other contracts</field>
+            <field name="name">Contracts</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">recurring.contract</field>
             <field name="view_type">form</field>
@@ -151,8 +151,8 @@
             <field name="act_window_id" ref="action_contract"/>
         </record>
 
-        <menuitem id="recurring_contract.menu_recurring_contract_form" parent="child_compassion.menu_sponsorship_section"
-                  name="Other contracts" sequence="1" action="action_contract"/>
+        <menuitem id="recurring_contract.menu_recurring_contract_form" parent="recurring_contract.menu_contracts_section"
+                  name="Contracts" sequence="0" action="action_contract"/>
         <menuitem id="recurring_contract.menu_contracts_section" parent="child_compassion.menu_sponsorship_root" 
                   name="Invoicing" groups="account.group_account_user" sequence="2"/>
 

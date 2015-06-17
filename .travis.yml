@@ -6,19 +6,17 @@ python:
 
 env:
   - VERSION="7.0" ODOO_REPO="odoo/odoo""
-  - VERSION="7.0" UNIT_TEST="1"
   
 install:
   - pip install flake8
-  - git clone https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
+  - git clone https://github.com/CompassionCH/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
   - travis_install_nightly
   
 
 script:
-  - travis_run_tests
-  - test_flake8
   - travis/travis_header.sh
+  - travis_run_tests
 
 notifications:
   email: false

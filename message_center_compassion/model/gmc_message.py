@@ -248,7 +248,7 @@ class gmc_message_pool(orm.Model):
                 state = 'fondue'
             message.write({
                 'state': state,
-                'failure_reason': False})
+                'failure_reason': False}, context)
         return True
 
     def _perform_incoming_action(self, cr, uid, message, context=None):

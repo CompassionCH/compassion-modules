@@ -41,6 +41,7 @@
                 4. Birthdate and Deathdate
                 5. Adds new contact titles
                 6. Adds Partner Categories
+                7. Notify on Partner Mandate changes
     """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',

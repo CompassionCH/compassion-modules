@@ -10,9 +10,10 @@
 ##############################################################################
 from openerp.osv import orm, fields
 from openerp import netsvc
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
 
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
 import logging
 
 
@@ -44,8 +45,8 @@ class recurring_contract(orm.Model):
             ('gmc_state', '=', value)], context=context)
         return self.reset_gmc_state(cr, uid, ids, context)
 
-    _columns = {
-        'sds_state': fields.selection([
+    def _get_sds_states(self, cr, uid, context=None):
+        return [
             ('draft', _('Draft')),
             ('start', _('Start')),
             ('waiting_welcome', _('Waiting welcome')),
@@ -55,19 +56,13 @@ class recurring_contract(orm.Model):
             ('sub', _('Sub')),
             ('sub_accept', _('Sub Accept')),
             ('sub_reject', _('Sub Reject')),
+            ('inform_no_sub', _('Inform No sub')),
             ('no_sub', _('No sub')),
-            ('cancelled', _('Cancelled'))], _('SDS Status'),
-            readonly=True, track_visibility='onchange', select=True,
-            help=_('')),
-        'last_sds_state_change_date': fields.date(
-            _('SDS state date'),
-            readonly=True),
-        'project_id': fields.related(
-            'child_id', 'project_id',
-            type='many2one', string=_('Project'),
-            readonly=True
-        ),
-        'project_state': fields.selection([
+            ('cancelled', _('Cancelled'))
+        ]
+
+    def _get_project_states(self, cr, uid, context=None):
+        return [
             ('active', _('Active')),
             ('inform_suspended', _('Inform fund suspension')),
             ('fund-suspended', _('Fund Suspended')),
@@ -78,11 +73,72 @@ class recurring_contract(orm.Model):
              _('Inform suspended and reactivation')),
             ('inform_project_terminated', _('Inform project terminated')),
             ('phase_out', _('Phase out')),
-            ('terminated', _('Terminated'))], _('Project Status'), select=True,
-            readonly=True, track_visibility='onchange',
-            help=_('')),
+            ('terminated', _('Terminated'))
+        ]
+
+    _columns = {
+        'sds_state': fields.selection(
+            _get_sds_states, _('SDS Status'), readonly=True,
+            track_visibility='onchange', select=True),
+        'last_sds_state_change_date': fields.date(
+            _('SDS state date'),
+            readonly=True),
+        'project_id': fields.related(
+            'child_id', 'project_id',
+            type='many2one', string=_('Project'),
+            readonly=True
+        ),
+        'project_state': fields.selection(
+            _get_project_states, _('Project Status'), select=True,
+            readonly=True, track_visibility='onchange'),
         'color': fields.integer('Color Index'),
+        'no_sub_reason': fields.char(_("No sub reason")),
     }
+
+    ##########################################################################
+    #                          KANBAN GROUP METHODS                          #
+    ##########################################################################
+    def sds_kanban_groups(self, cr, uid, ids, domain, **kwargs):
+        fold = {
+            'active': True,
+            'sub_accept': True,
+            'sub_reject': True,
+            'no_sub': True,
+            'cancelled': True
+        }
+        sds_states = self._get_sds_states(cr, uid)
+        display_states = list()
+        for sds_state in sds_states:
+            sponsorship_ids = self.search(cr, uid, [
+                ('sds_state', '=', sds_state[0])])
+            if sponsorship_ids:
+                display_states.append(sds_state)
+        return display_states, fold
+
+    _group_by_full = {
+        'sds_state': sds_kanban_groups,
+    }
+
+    def _read_group_fill_results(self, cr, uid, domain, groupby,
+                                 remaining_groupbys, aggregated_fields,
+                                 read_group_result,
+                                 read_group_order=None, context=None):
+        """
+        The method seems to support grouping using m2o fields only,
+        while we want to group by a simple status field.
+        Hence the code below - it replaces simple status values
+        with (value, name) tuples.
+        """
+        if groupby == 'sds_state':
+            state_dict = dict(self._get_sds_states(cr, uid, context))
+            for result in read_group_result:
+                state = result[groupby]
+                result[groupby] = (state, state_dict.get(state))
+
+        return super(recurring_contract, self)._read_group_fill_results(
+            cr, uid, domain, groupby, remaining_groupbys, aggregated_fields,
+            read_group_result, read_group_order, context
+        )
 
     def copy(self, cr, uid, id, default=None, context=None):
         if not default:
@@ -104,6 +160,13 @@ class recurring_contract(orm.Model):
                     'new_contract_validated', cr)
         return True
 
+    def mail_sent(self, cr, uid, contract_id, context=None):
+        return self.trg_validate(cr, uid, [contract_id], 'mail_sent', context)
+
+    def project_mail_sent(self, cr, uid, contract_id, context=None):
+        return self.trg_validate(cr, uid, [contract_id], 'project_mail_sent',
+                                 context)
+
     def trg_validate(self, cr, uid, ids, transition, context=None):
         """ Workflow helper for triggering a transition on contracts. """
         wf_service = netsvc.LocalService('workflow')
@@ -114,25 +177,13 @@ class recurring_contract(orm.Model):
                                     cr)
         return True
 
-    def check_sub_waiting_duration(self, cr, uid, context=None):
-        """ If no SUB sponsorship is proposed after 15 days a child
-            has departed, the sponsorship is marked as NO SUB.
-        """
-        fifteen_days_ago = date.today() + timedelta(days=-15)
-        contract_ids = self.search(cr, uid, [
-            ('end_date', '<', fifteen_days_ago),
-            ('sds_state', '=', 'sub_waiting')], context=context)
-
-        self.trg_validate(cr, uid, contract_ids, 'no_sub', context)
-        return True
-
     def check_sub_duration(self, cr, uid, context=None):
         """ Check all sponsorships in SUB State.
-            After 40 days after ending, Sponsorship becomes :
-                - SUB Accept if one child sponsorship is active
+            After 50 days SUB Sponsorship started, Sponsorship becomes :
+                - SUB Accept if SUB sponsorship is active
                 - SUB Reject otherwise
         """
-        fourty_days_ago = date.today() + timedelta(days=-40)
+        fifty_days_ago = date.today() + timedelta(days=-50)
         contract_ids = self.search(cr, uid, [
             ('sds_state', '=', 'sub')], context=context)
 
@@ -150,9 +201,13 @@ class recurring_contract(orm.Model):
                         transition = 'sub_accept'
                         break
 
-            contract.write({'color': 5 if transition == 'sub_accept' else 2})
-            if contract.end_date < fourty_days_ago:
-                self.trg_validate(cr, uid, [contract.id], transition, context)
+                contract.write({'color': 5 if transition == 'sub_accept'
+                                else 2})
+                sub_start_date = datetime.strptime(
+                    sub_contract.start_date, DF)
+                if sub_start_date < fifty_days_ago:
+                    self.trg_validate(cr, uid, [contract.id], transition,
+                                      context)
 
         return True
 
@@ -186,7 +241,7 @@ class recurring_contract(orm.Model):
             cr, uid, ids, partner_id, context)
         origin_ids = self.pool.get('recurring.contract.origin').search(
             cr, uid,
-            [('name', '=', 'SUB Sponsorship')],
+            [('type', '=', 'sub')],
             context=context)
         parent_id = self.define_parent_id(cr, uid, partner_id, context)
         origin_id = origin_ids[0] if parent_id else False

@@ -10,3 +10,4 @@
 ##############################################################################
 
 from . import install_sds_tracking
+from . import sub_sponsorship_wizard

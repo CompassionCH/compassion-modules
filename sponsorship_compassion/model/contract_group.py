@@ -15,6 +15,8 @@ from openerp.tools.translate import _
 
 from datetime import datetime
 
+from .product import GIFT_NAMES
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -84,7 +86,7 @@ class contract_group(orm.Model):
         # Exclude sponsorship if a gift is already open
         invl_obj = self.pool.get('account.invoice.line')
         product_id = self.pool.get('product.product').search(
-            cr, uid, [('name', '=', 'Birthday Gift')], context=ctx)[0]
+            cr, uid, [('name', '=', GIFT_NAMES[0])], context=ctx)[0]
         for con_id in list(contract_ids):
             invl_ids = invl_obj.search(cr, uid, [
                 ('state', '=', 'open'),
