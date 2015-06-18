@@ -235,7 +235,7 @@ class recurring_contract(orm.Model):
             ondelete='restrict',
             track_visibility='onchange'),
         'type': fields.selection(
-            __get_type, _('Type'), select=True),
+            __get_type, _('Type'), select=True, required=True),
         'group_freq': fields.function(
             _get_frequency, type='char',
             store={'recurring.contract.group': (

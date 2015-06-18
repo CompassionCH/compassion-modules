@@ -47,7 +47,6 @@
             <field name="act_from" ref="recurring_contract.act_draft" />
             <field name="act_to" ref="act_validation" />
             <field name="signal">contract_validated</field>
-
         </record>
         <record model="workflow.transition" id="t2">
             <field name="act_from" ref="act_waiting" />

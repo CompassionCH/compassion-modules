@@ -20,7 +20,7 @@
                 
                 <!-- Make origin mandatory for sponsorships -->
                 <field name="origin_id" position="attributes">
-                    <attribute name="attrs">{'required':[('type', '=', 'S')]}</attribute>
+                    <attribute name="attrs">{'required':[('type', 'in', ['S','SC'])]}</attribute>
                 </field>
                 
                 <!-- Field child_id is not available for general contracts -->

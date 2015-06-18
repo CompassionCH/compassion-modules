@@ -458,7 +458,16 @@ class sponsorship_contract(orm.Model):
                 for line in contract.contract_line_ids:
                     sponsorship = line.sponsorship_id
                     if sponsorship.state == 'active':
-                        contract.write({'is_active': True})
+                        cr.execute(
+                            "update recurring_contract set "
+                            "activation_date = current_date,is_active = True "
+                            "where id = %s", [contract.id])
+            elif contract.type == 'SC':
+                # Activate directly correspondence sponsorships
+                cr.execute(
+                    "update recurring_contract set "
+                    "activation_date = current_date,is_active = True "
+                    "where id = %s", [contract.id])
 
         return super(sponsorship_contract, self).contract_waiting(
             cr, uid, ids, context)
