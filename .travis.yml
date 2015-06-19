@@ -1,15 +1,23 @@
-# Config file .travis.yml
+addons:
+  apt:
+    packages:
+      - expect-dev  # provides unbuffer utility
+      - python-lxml # because pip installation is slow
+
 language: python
 
 python:
   - "2.7"
 
 env:
-  - VERSION="7.0" ODOO_REPO="odoo/odoo""
+  - VERSION="7.0" ODOO_REPO="odoo/odoo"
+  
+virtualenv:
+  system_site_packages: true
   
 install:
   - pip install flake8
-  - git clone https://github.com/CompassionCH/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
+  - git clone https://github.com/CompassionCH/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools -b r2
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
   - travis_install_nightly
   
