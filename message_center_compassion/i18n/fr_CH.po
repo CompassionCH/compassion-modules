@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: OpenERP Server 7.0-20140602-231022\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-08 06:10+0000\n"
-"PO-Revision-Date: 2015-06-08 11:55+0100\n"
+"PO-Revision-Date: 2015-06-19 09:36+0100\n"
 "Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
 "Language-Team: \n"
 "Language: fr_CH\n"
@@ -241,7 +241,6 @@ msgstr "Nouveau"
 
 #. module: message_center_compassion
 #: view:recurring.contract:0
-#, fuzzy
 msgid "GMC Update"
 msgstr "Etat GMC"
 
@@ -321,7 +320,7 @@ msgstr "Pas d'implémentation de la méthode '%s'"
 #. module: message_center_compassion
 #: view:recurring.contract:0
 msgid "Departure"
-msgstr "Departure"
+msgstr "Depart"
 
 #. module: message_center_compassion
 #: code:addons/message_center_compassion/model/contracts.py:174
@@ -621,7 +620,7 @@ msgstr "Contrat à facturation récurrente"
 #: code:addons/message_center_compassion/model/contracts.py:33
 #, python-format
 msgid "Child Departed"
-msgstr "Enfant Departed"
+msgstr "Depart Enfant"
 
 #. module: message_center_compassion
 #: view:compassion.child:0
