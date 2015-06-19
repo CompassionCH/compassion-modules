@@ -106,6 +106,8 @@ class contract_group(orm.Model):
                 res['value'].update({
                     'bvr_reference': self.compute_partner_bvr_ref(
                         cr, uid, ids, partner, is_lsv, context)})
+        else:
+            res['value'].update({'bvr_reference': False})
 
         return res
 
@@ -137,6 +139,11 @@ class contract_group(orm.Model):
                                 is_lsv=False, context=None):
         """ Generates a new BVR Reference.
         See file \\nas\it\devel\Code_ref_BVR.xls for more information."""
+        if ids:
+            # If group was already existing, retrieve any existing reference
+            ref = self.browse(cr, uid, ids[0], context).bvr_reference
+            if ref:
+                return ref
         partner = partner or self.browse(cr, uid, ids[0], context).partner_id
         result = '0' * (9 + (7 - len(partner.ref))) + partner.ref
         count_groups = str(self.search(
