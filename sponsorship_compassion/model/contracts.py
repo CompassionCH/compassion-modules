@@ -22,6 +22,7 @@ from lxml import etree
 from .product import GIFT_CATEGORY, SPONSORSHIP_CATEGORY, FUND_CATEGORY
 
 import logging
+import pdb
 
 
 logger = logging.getLogger(__name__)
@@ -427,6 +428,7 @@ class sponsorship_contract(orm.Model):
         res = super(sponsorship_contract, self).contract_terminated(
             cr, uid, ids, context)
 
+        pdb.set_trace()
         sponsorship_ids = self.search(cr, uid, [
             ('id', 'in', ids),
             ('type', 'like', 'S')], context=context)
@@ -645,7 +647,8 @@ class sponsorship_contract(orm.Model):
             cr.execute(
                 "UPDATE recurring_contract SET next_invoice_date = %s "
                 "WHERE id = %s", (next_date, contract.id))
-            contract.group_id._store_set_values(['next_invoice_date'])
+        self.pool.get('recurring.contract.group')._store_set_values(
+            cr, uid, ids, ['next_invoice_date'], context)
 
         return True
 
