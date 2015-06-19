@@ -245,10 +245,10 @@ class contract_group(orm.Model):
                                         'invoice_open', cr)
         return res
 
-    def clean_invoices(self, cr, uid, group, advance_billing=0, context=None):
+    def clean_invoices(self, cr, uid, group, context=None):
         """ Override clean_invoices to delete cancelled invoices """
         inv_ids = super(contract_group, self).clean_invoices(
-            cr, uid, group, advance_billing, context=None)
+            cr, uid, group, context=None)
         if inv_ids:
             inv_ids = list(inv_ids)
             cr.execute(
