@@ -31,10 +31,11 @@ install:
 
 script:
   - travis/travis_header.sh
-  - travis_run_tests
+  # - travis_run_tests
+  - test_flake8
 
 notifications:
   email: false
   
-after-success:
-  - coveralls
+# after-success:
+  # - coveralls
