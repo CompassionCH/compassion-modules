@@ -636,7 +636,9 @@ class sponsorship_contract(orm.Model):
         """ Override to force recurring_value to 1
             if contract is a sponsorship, and to bypass ORM for performance.
         """
+        group_ids = list()
         for contract in self.browse(cr, uid, ids, context):
+            group_ids.append(contract.group_id.id)
             if 'S' in contract.type:
                 next_date = datetime.strptime(contract.next_invoice_date, DF)
                 next_date += relativedelta(months=+1)
@@ -648,7 +650,7 @@ class sponsorship_contract(orm.Model):
                 "UPDATE recurring_contract SET next_invoice_date = %s "
                 "WHERE id = %s", (next_date, contract.id))
         self.pool.get('recurring.contract.group')._store_set_values(
-            cr, uid, ids, ['next_invoice_date'], context)
+            cr, uid, group_ids, ['next_invoice_date'], context)
 
         return True
 
