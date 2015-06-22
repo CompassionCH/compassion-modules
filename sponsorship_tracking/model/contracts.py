@@ -204,7 +204,7 @@ class recurring_contract(orm.Model):
                 contract.write({'color': 5 if transition == 'sub_accept'
                                 else 2})
                 sub_start_date = datetime.strptime(
-                    sub_contract.start_date, DF)
+                    sub_contract.start_date, DF).date()
                 if sub_start_date < fifty_days_ago:
                     self.trg_validate(cr, uid, [contract.id], transition,
                                       context)

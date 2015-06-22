@@ -3,7 +3,6 @@
         <record id="view_partner_form_compassion3" model="ir.ui.view">
             <field name="name">res.partner.form.compassion3</field>
             <field name="model">res.partner</field>
-            <field name="priority" eval="21"/>
             <field name="inherit_id" ref="email_template.res_partner_opt_out_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='opt_out']" position="replace"/>
@@ -13,7 +12,6 @@
         <record id="view_partner_form_compassion_firstname" model="ir.ui.view">
             <field name="name">res.partner.form.compassion2</field>
             <field name="model">res.partner</field>
-            <field name="priority" eval="21"/>
             <field name="inherit_id" ref="partner_firstname.view_partner_form_firstname"/>
             <field name="arch" type="xml">
                 <!-- Move title field and add it in inner contact form -->
@@ -30,7 +28,6 @@
         <record id="view_partner_form_compassion" model="ir.ui.view">
             <field name="name">res.partner.form.compassion</field>
             <field name="model">res.partner</field>
-            <field name="priority" eval="15"/>
             <field name="inherit_id" ref="base_location.view_partner_form"/>
             <field name="arch" type="xml">
                 <!-- Add street3 in the form of the partner -->
@@ -119,7 +116,6 @@
             <field name="model">res.partner</field>
             <field name="type">tree</field>
             <field name="inherit_id" ref="base.view_partner_tree"/>            
-            <field eval="15" name="priority"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
                     <field name="lang"/>

@@ -32,6 +32,10 @@
                         <h3>Sponsorships fully managed</h3>
                         <field name="contracts_fully_managed" context="{'partner_contracts_view': True}" />
                     </div>
+                    <div attrs="{'invisible' : [('other_contract_ids','=', [])]}">
+                        <h3>Other contracts</h3>
+                        <field name="other_contract_ids" context="{'partner_contracts_view': True}" />
+                    </div>
                 </page>
             </xpath>
             

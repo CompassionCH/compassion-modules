@@ -26,23 +26,28 @@ class res_partner(orm.Model):
         for id in ids:
             correspondant_ids = contract_obj.search(
                 cr, uid, [('correspondant_id', '=', id),
-                          ('type', '=', 'S'),
+                          ('type', 'in', ['S', 'SC']),
                           ('fully_managed', '=', False)],
-                order='start_date desc', context={})
+                order='start_date desc', context=context)
             paid_ids = contract_obj.search(
                 cr, uid, [('partner_id', '=', id),
-                          ('type', '=', 'S'),
+                          ('type', 'in', ['S', 'SC']),
                           ('fully_managed', '=', False)],
-                order='start_date desc', context={})
+                order='start_date desc', context=context)
             fully_managed_ids = contract_obj.search(
                 cr, uid, [('partner_id', '=', id),
-                          ('type', '=', 'S'),
+                          ('type', 'in', ['S', 'SC']),
                           ('fully_managed', '=', True)],
-                order='start_date desc', context={})
+                order='start_date desc', context=context)
+            other_contract_ids = contract_obj.search(
+                cr, uid, [('partner_id', '=', id),
+                          ('type', 'not in', ['S', 'SC'])],
+                order='start_date desc', context=context)
 
             field_res['contracts_fully_managed'] = fully_managed_ids
             field_res['contracts_paid'] = paid_ids
             field_res['contracts_correspondant'] = correspondant_ids
+            field_res['other_contract_ids'] = other_contract_ids
             res[id] = field_res.copy()
 
         return res
@@ -73,6 +78,11 @@ class res_partner(orm.Model):
             obj="recurring.contract",
             fnct_inv=_write_related_contracts, multi='sponsorships',
             string='Sponsorships as correspondant only'),
+        'other_contract_ids': fields.function(
+            _get_related_contracts, type="one2many",
+            obj="recurring.contract",
+            fnct_inv=_write_related_contracts, multi='sponsorships',
+            string='Other contracts'),
     }
 
     def show_lines(self, cr, uid, ids, context=None):

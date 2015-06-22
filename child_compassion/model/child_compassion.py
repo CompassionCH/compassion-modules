@@ -391,7 +391,8 @@ class compassion_child(orm.Model):
     def update_delegate(self, cr, uid, context=None):
         obj_undelegate_wizard = self.pool.get('undelegate.child.wizard')
 
-        child_ids = self.search(cr, uid, [], context=context)
+        child_ids = self.search(cr, uid, [
+            ('state', 'not in', ['F', 'X', 'P'])], context=context)
         child_ids_to_delegate = []
         child_ids_to_undelegate = []
 
