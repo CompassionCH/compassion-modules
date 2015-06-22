@@ -429,6 +429,8 @@ class recurring_contract(orm.Model):
     def open_contract(self, cr, uid, ids, context=None):
         """ Used to bypass opening a contract in popup mode from
         res_partner view. """
+        contract = self.browse(cr, uid, ids[0], context)
+        context['default_type'] = contract.type
         return {
             'type': 'ir.actions.act_window',
             'name': 'Contract',
@@ -520,14 +522,7 @@ class recurring_contract(orm.Model):
                 # If no invoices are left in cancel state, we rewind
                 # the next_invoice_date for the contract to generate again
                 else:
-                    next_invoice_date = datetime.strptime(
-                        contract.next_invoice_date, DF)
-                    next_invoice_date = next_invoice_date + relativedelta(
-                        months=-len(invoices_canceled))
-                    super(recurring_contract, self).write(
-                        cr, uid, contract.id, {
-                            'next_invoice_date': next_invoice_date.strftime(
-                                DF)}, context)
+                    contract.rewind_next_invoice_date()
                     invoicer_id = contract.group_id.generate_invoices()
                     invoicer = self.pool.get('recurring.invoicer').browse(
                         cr, uid, invoicer_id, context)
