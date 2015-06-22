@@ -22,7 +22,6 @@ from lxml import etree
 from .product import GIFT_CATEGORY, SPONSORSHIP_CATEGORY, FUND_CATEGORY
 
 import logging
-import pdb
 
 
 logger = logging.getLogger(__name__)
@@ -428,7 +427,6 @@ class sponsorship_contract(orm.Model):
         res = super(sponsorship_contract, self).contract_terminated(
             cr, uid, ids, context)
 
-        pdb.set_trace()
         sponsorship_ids = self.search(cr, uid, [
             ('id', 'in', ids),
             ('type', 'like', 'S')], context=context)
