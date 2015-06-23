@@ -85,12 +85,12 @@ class test_contract_compassion(common.TransactionCase):
             In this test we are testing states changement of a contract and if
             the old invoice are well cancelled when we pay one invoice.
         """
-        contract_group = self._create_group_id(
+        contract_group = self._create_group(
             'do_nothing', 1, 'month', self.partner_id, 5, self.payment_term_id)
         contract_id = self._create_contract_id(
             datetime.today().strftime(DF), contract_group,
             'phone', datetime.today().strftime(DF))
-        self._create_contract_line_id(
+        self._create_contract_line(
             contract_id, '2', '40.0')
 
         contract_obj = self.registry('recurring.contract')
@@ -138,13 +138,13 @@ class test_contract_compassion(common.TransactionCase):
             Testing if invoices are well cancelled when we cancel the related
             contract.
         """
-        contract_group = self._create_group_id(
+        contract_group = self._create_group(
             'do_nothing', 1, 'month', self.partner_id1, 1,
             self.payment_term_id)
         contract_id = self._create_contract_id(
             datetime.today().strftime(DF), contract_group, 'postal',
             datetime.today().strftime(DF))
-        self._create_contract_line_id(
+        self._create_contract_line(
             contract_id, '3', '200.0')
 
         # Switch to "waiting for payment" state
@@ -182,16 +182,16 @@ class test_contract_compassion(common.TransactionCase):
             THe invoice paid should not be updated, whereas the other one
             should be upadted.
         """
-        contract_group = self._create_group_id(
+        contract_group = self._create_group(
             'do_nothing', 1, 'month', self.partner_id, 1,
             self.payment_term_id)
-        contract_group2 = self._create_group_id(
+        contract_group2 = self._create_group(
             'do_nothing', 1, 'month', self.partner_id1, 2,
             self.payment_term_id)
         contract_id = self._create_contract_id(
             datetime.today().strftime(DF), contract_group,
             'postal', datetime.today().strftime(DF))
-        contract_line_id = self._create_contract_line_id(
+        contract_line_id = self._create_contract_line(
             contract_id, '2', '60.0')
 
         wf_service = netsvc.LocalService('workflow')
@@ -229,8 +229,8 @@ class test_contract_compassion(common.TransactionCase):
             self.cr, self.uid, invoice_upd.invoice_line[0].id)
         self.assertEqual(invoice_line_up.price_unit, ctr_line_id.amount)
         self.assertEqual(invoice_line_up.price_subtotal, ctr_line_id.subtotal)
-
-    def _create_contract_id(self, start_date, group_id, channel,
+        
+    def _create_contract(self, start_date, group_id, channel,
                          next_invoice_date):
         """
             Create a contract. For that purpose we have created a partner
@@ -251,7 +251,7 @@ class test_contract_compassion(common.TransactionCase):
         })
         return contract_id
 
-    def _create_contract_line_id(self, contract_id, quantity, price):
+    def _create_contract_line(self, contract_id, quantity, price):
         """ Create contract's lines """
         contract_line_obj = self.registry('recurring.contract.line')
         contract_line_id = contract_line_obj.create(self.cr, self.uid, {
@@ -261,8 +261,8 @@ class test_contract_compassion(common.TransactionCase):
             'contract_id': contract_id,
         })
         return contract_line_id
-
-    def _create_group_id(self, change_method, rec_value, rec_unit, partner_id,
+        
+    def _create_group(self, change_method, rec_value, rec_unit, partner_id,
                       adv_biling_months, payment_term_id, ref=None):
         """
             Create a group with 2 possibilities :
