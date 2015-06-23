@@ -27,7 +27,7 @@ install:
   - git clone https://github.com/OCA/bank-statement-reconcile.git ${HOME}/build/albertsh/bank-statement-reconcile -b 7.0
   - git clone https://github.com/OCA/l10n-switzerland.git ${HOME}/build/albertsh/l10n-switzerland -b 7.0
   - git clone https://github.com/OCA/web.git ${HOME}/build/albertsh/web -b 7.0
-  - git clone https://github.com/albertsh/compassion-accounting.git ${HOME}/build/albertsh/compassion-accounting -b 1.5-devel
+  - git clone https://github.com/albertsh/compassion-accounting.git ${HOME}/build/albertsh/compassion-accounting -b 1.5
   - git clone https://github.com/OCA/bank-payment.git ${HOME}/build/albertsh/bank-payment -b 7.0
   - git clone https://github.com/OCA/account-financial-tools.git ${HOME}/build/albertsh/account-financial-tools -b 7.0
   - git clone https://github.com/albertsh/compassion-switzerland.git ${HOME}/build/albertsh/compassion-switzerland -b 1.5-devel
