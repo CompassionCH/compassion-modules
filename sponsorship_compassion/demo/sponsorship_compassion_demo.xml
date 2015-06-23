@@ -8,7 +8,6 @@
             <field name="name">Sponsorship Distribution</field>
             <field name="code">SPONSOR</field>
             <field name="journal_id" ref="account.analytic_journal_sale"/>
-            <field name="plan_id">1</field>
         </record>
     </data>        
 </openerp>
