@@ -58,6 +58,33 @@ class install_contract_compassion(orm.TransientModel):
         sql_filters += " OR model IN ('workflow.activity', " \
             "'workflow.transition')"
 
+        cr.execute(
+            """
+        UPDATE ir_model_data
+        SET module='contract_compassion'
+        WHERE module='sponsorship_compassion' AND
+        model IN ('workflow.activity','workflow.transition')
+        """
+        )
+        cr.execute(
+            """
+        UPDATE ir_model_data
+        SET module= 'contract_compassion'
+        WHERE module = 'sponsorship_compassion' AND
+        name IN ('view_recurring_contract_form_compassion',
+        'view_contract_group_form_compassion') AND
+        model = 'ir.ui.view'
+        """
+        )
+        cr.execute(
+            """
+        UPDATE ir_model_data
+        SET module = 'contract_compassion'
+        WHERE module = 'sponsorship_compassion' AND 
+        model IN ('account.payment.term','account.payment.term.line')
+        """
+        )
+
         # Move views
         sql_filters += " OR (name IN (" \
             "'view_recurring_contract_form_compassion'," \
