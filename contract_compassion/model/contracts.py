@@ -17,7 +17,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import logging
-
 logger = logging.getLogger(__name__)
 
 
@@ -258,7 +257,17 @@ class recurring_contract(orm.Model):
             'num_pol_ga': num_contracts
         })
         return res
-
+    
+    def create(self, cr, uid, vals, context=None):
+        if 'num_pol_ga' not in vals:
+            partner_id = vals.get('partner_id')
+            if partner_id:
+                vals['num_pol_ga'] = self.search(
+                cr, uid, [('partner_id', '=', partner_id)], context=context,
+                count=True)
+        return super(recurring_contract, self).create(cr, uid, vals,
+                                                      context=context)    
+    
     def on_change_next_invoice_date(
             self, cr, uid, ids, new_invoice_date, context=None):
         res = True
@@ -288,7 +297,6 @@ class recurring_contract(orm.Model):
             If the invoice has only one contract -> cancel
             Else -> draft to modify the invoice and validate
         """
-
         invoice_line_obj = self.pool.get('account.invoice.line')
         invoice_obj = self.pool.get('account.invoice')
         invoice_line_ids = invoice_line_obj.search(
@@ -542,6 +550,8 @@ class recurring_contract(orm.Model):
     def _on_change_group_id(self, cr, uid, ids, group_id, context=None):
         """ Change state of contract if payment is changed to/from LSV or DD.
         """
+        if not isinstance(ids, list):
+            ids = [ids]
         wf_service = netsvc.LocalService('workflow')
         group = self.pool.get('recurring.contract.group').browse(
             cr, uid, group_id, context)
@@ -634,6 +644,8 @@ class recurring_contract(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
         """ Perform various checks when a contract is modified. """
+        if not isinstance(ids, list):
+            ids = [ids]
         if 'group_id' in vals:
             self._on_change_group_id(cr, uid, ids, vals['group_id'], context)
 

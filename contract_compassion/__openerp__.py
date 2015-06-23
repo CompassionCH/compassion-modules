@@ -50,6 +50,7 @@ Compassion contract module.
         'security/ir.model.access.csv',
         'data/friday_invoicer_cron.xml',
         'data/product.xml',
+        'data/payment_terms.xml',
     ],
     'demo': [],
     'installable': True,
