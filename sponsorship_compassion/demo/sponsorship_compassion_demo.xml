@@ -4,10 +4,10 @@
         <!--
             Resource: account.analytic.plan.instance
         -->
-        <record id="account_analytic_plan_instance_sponsorship_demo" model="account.analytic.plan.instance">
-            <field name="name">Sponsorship Distribution</field>
-            <field name="code">SPONSOR</field>
-            <field name="journal_id" ref="account.analytic_journal_sale"/>
+        <record id="account_analytic_plan_sponsorship_demo" model="account.analytic.plan">
+            <field name="name">Plan Distribution</field>
+            <field name="default_instance_id">4754463</field>
+            <field name="plan_ids">1</field>
         </record>
     </data>        
 </openerp>
