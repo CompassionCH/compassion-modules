@@ -93,6 +93,11 @@ class recurring_contract(orm.Model):
             readonly=True, track_visibility='onchange'),
         'color': fields.integer('Color Index'),
         'no_sub_reason': fields.char(_("No sub reason")),
+        'sds_uid': fields.many2one('res.users', string=_("SDS Follower"))
+    }
+
+    _defaults = {
+        'sds_uid': lambda self, cr, uid, c=None: uid
     }
 
     ##########################################################################
@@ -230,10 +235,12 @@ class recurring_contract(orm.Model):
         return res
 
     def contract_terminated(self, cr, uid, ids, context=None):
-        """ Project state is no more relevant when contract is terminated. """
+        """ Project state is no more relevant when contract is terminated.
+        We also put the person who terminated the contract as follower. """
         res = super(recurring_contract, self).contract_terminated(
             cr, uid, ids, context)
-        self.write(cr, uid, ids, {'project_state': False}, context)
+        self.write(cr, uid, ids, {'project_state': False,
+                                  'sds_uid': uid}, context)
         return res
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):

@@ -17,6 +17,7 @@
                     <field name="sds_state"/>
                     <field name="state" />
                     <templates>
+                        <field name="sds_uid"/>
                         <field name="child_id"/>
                         <t t-name="kanban-box">
                             <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click">
@@ -40,6 +41,10 @@
                                             </span>
                                         </div>
                                     </div>
+                                    <div class="oe_kanban_right">
+                                        <img t-att-src="kanban_image('compassion.child', 'portrait', record.child_id.raw_value)" t-att-title="record.child_id.value" height="40" class="oe_kanban_avatar" t-if="record.child_id.value"/>
+                                    </div>
+                                    <div class="oe_clear"></div>
                                     <div class="oe_kanban_bottom_right">
                                         <!-- Project status color indicator -->
                                         <span t-if="record.project_state.raw_value">
@@ -48,7 +53,7 @@
                                             <span t-if="['active','inform_reactivation','waiting_attribution','inform_suspended_reactivation'].indexOf(record.project_state.raw_value) === -1"
                                                   string="Project not active" class="oe_kanban_status oe_kanban_status_red"> </span>
                                         </span>
-                                        <img t-att-src="kanban_image('compassion.child', 'portrait', record.child_id.raw_value)" t-att-title="record.child_id.value" height="40" class="oe_kanban_avatar" t-if="record.child_id.value"/>
+                                        <img t-att-src="kanban_image('res.users', 'image_small', record.sds_uid.raw_value)" t-att-title="record.sds_uid.value" width="24" height="24" class="oe_kanban_avatar"/>
                                     </div>
                                     <div class="oe_clear"></div>
                                 </div>
@@ -71,6 +76,9 @@
                             string="Open SDS view" context="{'view_id':'view_follow_contract_form_compassion'}"
                             attrs="{'invisible': [('type', 'not in', ['S', 'SC'])]}"/>
                 </button>
+<!--                 <field name="partner_id" position="after">
+                    <field name="sds_uid" invisible="1"/>
+                </field> -->
             </field>
         </record>
         
@@ -79,7 +87,7 @@
 			<field name="model">recurring.contract</field>
             <field eval="18" name="priority"/>
 			<field name="arch" type="xml">
-                <form string="Follow contract" version="7.0" create="false" edit="false">
+                <form string="Follow contract" version="7.0" create="false">
                     <header>
                         <field name="sds_state" widget="statusbar" statusbar_visible="draft,start,waiting_welcome,active,sub,sub_accept"/>
                         <button name="contract_validated" class="oe_highlight" attrs="{'invisible':[('sds_state','!=','draft')]}" string="Validate"/>
@@ -113,30 +121,31 @@
                         </div>
                         <group>
                             <group>
-                                <field name="partner_id"/>
-                                <field name="correspondant_id"/>
+                                <field name="partner_id" readonly="1"/>
+                                <field name="correspondant_id" readonly="1"/>
                                 <field name="parent_id" context="{
                                     'form_view_ref' : 'sponsorship_tracking.view_follow_contract_form_compassion',
                                     'tree_view_ref' : 'sponsorship_tracking.view_follow_contract_tree_compassion'
-                                    }"/>
+                                    }" readonly="1"/>
                             </group>
                             <group>
-                                <field name="origin_id"/>
-                                <field name="channel"/>
+                                <field name="origin_id" readonly="1"/>
+                                <field name="channel" readonly="1"/>
+                                <field name="sds_uid"/>
                             </group>
 
                             <group>
-                                <field name="start_date"/>
-                                <field name="activation_date"/>
+                                <field name="start_date" readonly="1"/>
+                                <field name="activation_date" readonly="1"/>
                                 <field name="last_sds_state_change_date"/>
-                                <field name="end_date"/>
+                                <field name="end_date" readonly="1"/>
                             </group>
                             <group>
-                                <field name="child_id"/>
-                                <field name="end_reason" states="terminated,cancelled"/>
-                                <field name="no_sub_reason" attrs="{'invisible': [('sds_state', 'not in', ['inform_no_sub', 'no_sub'])]}"/>
-                                <field name="state"/>
-                                <field name="project_state"/>
+                                <field name="child_id" readonly="1"/>
+                                <field name="end_reason" states="terminated,cancelled" readonly="1"/>
+                                <field name="no_sub_reason" attrs="{'invisible': [('sds_state', 'not in', ['inform_no_sub', 'no_sub'])]}" readonly="1"/>
+                                <field name="state" readonly="1"/>
+                                <field name="project_state" readonly="1"/>
                             </group>
                         </group>
                     </sheet>
@@ -191,6 +200,7 @@
                     <field name="sds_state"/>
                     <field name="state"/>
                     <field name="project_state"/>
+                    <field name="sds_uid"/>
                     
                     <filter name="active" string="Active" domain="[('state', '=', 'active')]"/>
                     <filter name="waiting" string="Waiting" domain="[('state','in', ('draft','waiting','mandate'))]"/>
