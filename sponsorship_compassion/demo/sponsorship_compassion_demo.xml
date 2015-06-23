@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+            Resource: account.analytic.plan.instance
+        -->
+        <record id="account_analytic_plan_sponsorship_demo" model="account.analytic.plan">
+            <field name="name">Plan Distribution</field>
+        </record>
+    </data>        
+</openerp>
