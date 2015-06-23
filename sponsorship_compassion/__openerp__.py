@@ -94,7 +94,9 @@ Contributors
         'data/analytic_accounting.xml',
         'workflow/contract_workflow.xml',
     ],
-    'demo': [],
+    'demo': [
+        'demo/sponsorship_compassion_demo.xml'
+    ],
     'installable': True,
     'auto_install': False,
 }
