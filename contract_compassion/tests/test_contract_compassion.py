@@ -10,8 +10,7 @@
 ##############################################################################
 
 from openerp.tests import common
-from datetime import datetime, timedelta
-from dateutil.relativedelta import relativedelta
+from datetime import datetime
 from openerp import netsvc
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import logging
@@ -22,13 +21,13 @@ class test_contract_compassion(common.TransactionCase):
     """
         Test Project contract compassion.
         We are testing 3 scenarios :
-         - in the first, we are testing the changement of state of a contract 
+         - in the first, we are testing the changement of state of a contract
          and we are testing what is happening when we pay an invoice.
          - in the second one, we are testing what is happening when we cancel
          a contract.
          - in the last one, we are testing the _reset_open_invoices method.
     """
-    
+
     def setUp(self):
         super(test_contract_compassion, self).setUp()
         # Creation of an account
@@ -68,21 +67,21 @@ class test_contract_compassion(common.TransactionCase):
             'property_account_receivable': property_account_receivable,
             'property_account_payable': property_account_payable,
             'notification_email_send': 'none',
-            'ref': '00002222',            
-        })    
+            'ref': '00002222',
+        })
         # Creation of a payement term
         payment_term_obj = self.registry('account.payment.term')
         self.payment_term_id = payment_term_obj.search(self.cr, self.uid, [
             ('name', '=', '15 Days')
         ])[0]
-        
+
         product_obj = self.registry('product.product')
         product_obj.write(self.cr, self.uid, 1, {
             'property_account_income': property_account_income,
             })
-        
-    def _create_contract(
-        self, start_date, group_id, channel, next_invoice_date):
+
+    def _create_contract(self, start_date, group_id, channel,
+                         next_invoice_date):
         """
             Create a contract. For that purpose we have created a partner
             to get his id.
@@ -100,7 +99,7 @@ class test_contract_compassion(common.TransactionCase):
             'next_invoice_date': next_invoice_date,
         })
         return contract_id
-    
+
     def _create_contract_line(self, contract_id, quantity, price):
         """ Create contract's lines """
         contract_line_obj = self.registry('recurring.contract.line')
@@ -111,7 +110,7 @@ class test_contract_compassion(common.TransactionCase):
             'contract_id': contract_id,
         })
         return contract_line_id
-        
+
     def _create_group(self, change_method, rec_value, rec_unit, partner_id,
                       adv_biling_months, payment_term_id, ref=None):
         """
@@ -141,7 +140,7 @@ class test_contract_compassion(common.TransactionCase):
         journal_obj = self.registry('account.journal')
         bank_journal_id = self.registry('account.journal').search(
             self.cr, self.uid, [('code', '=', 'TBNK')])[0]
-        bank_journal = journal_obj.browse(self.cr, self.uid, bank_journal_id) 
+        bank_journal = journal_obj.browse(self.cr, self.uid, bank_journal_id)
         move_obj = self.registry('account.move')
         move_line_obj = self.registry('account.move.line')
         invoice = self.registry('account.invoice').browse(
@@ -174,8 +173,8 @@ class test_contract_compassion(common.TransactionCase):
         to_reconcile = move_line_obj.search(self.cr, self.uid, [
             ('move_id', '=', invoice.move_id.id),
             ('account_id', '=', account_id)]) + [mv_line_id]
-        move_line_obj.reconcile(self.cr, self.uid, to_reconcile)    
-        
+        move_line_obj.reconcile(self.cr, self.uid, to_reconcile)
+
     def test_contract_compassion_first_scenario(self):
         """
             In this test we are testing states changement of a contract and if
@@ -189,11 +188,11 @@ class test_contract_compassion(common.TransactionCase):
             'phone', datetime.today().strftime(DF))
         self.contract_line_id = self._create_contract_line(
             self.contract_id, '2', '40.0')
-        
+
         contract_obj = self.registry('recurring.contract')
         contract = contract_obj.browse(self.cr, self.uid, self.contract_id)
         self.assertEqual(contract.state, 'draft')
-        
+
         # Switching to "waiting for payment" state
         wf_service = netsvc.LocalService('workflow')
         wf_service.trg_validate(
@@ -208,20 +207,20 @@ class test_contract_compassion(common.TransactionCase):
         invoicer = invoicer_obj.browse(self.cr, self.uid, invoicer_id)
         invoices = invoicer.invoice_ids
         nb_invoices = len(invoices)
-        self.assertEqual(nb_invoices,6)
+        self.assertEqual(nb_invoices, 6)
         invoice3 = invoices[3]
         self.assertEqual(invoice3.state, 'open')
-        # Payment of the third invoice so the 
-        # contract will be on the active state and the 2 first invoices should 
+        # Payment of the third invoice so the
+        # contract will be on the active state and the 2 first invoices should
         # be canceled.
-        self._pay_invoice(invoice3.id) 
+        self._pay_invoice(invoice3.id)
         invoice_paid = invoice_obj.browse(self.cr, self.uid, invoices[0].id)
         invoice_paid1 = invoice_obj.browse(self.cr, self.uid, invoices[1].id)
         invoice_paid2 = invoice_obj.browse(self.cr, self.uid, invoices[2].id)
         invoice_paid3 = invoice_obj.browse(self.cr, self.uid, invoice3.id)
         invoice_paid4 = invoice_obj.browse(self.cr, self.uid, invoices[4].id)
         invoice_paid5 = invoice_obj.browse(self.cr, self.uid, invoices[5].id)
-        contract_act = contract_obj.browse(self.cr, self.uid, self.contract_id)    
+        contract_act = contract_obj.browse(self.cr, self.uid, self.contract_id)
         self.assertEqual(invoice_paid3.state, 'paid')
         self.assertEqual(invoice_paid.state, 'open')
         self.assertEqual(invoice_paid1.state, 'open')
@@ -231,11 +230,11 @@ class test_contract_compassion(common.TransactionCase):
         self.assertEqual(contract_act.state, 'active')
         wf_service.trg_validate(
             self.uid, 'recurring.contract',
-            self.contract_id, 'contract_terminated', self.cr)    
+            self.contract_id, 'contract_terminated', self.cr)
         contract_term = contract_obj.browse(
             self.cr, self.uid, self.contract_id)
         self.assertEqual(contract_term.state, 'terminated')
-    
+
     def test_contract_compassion_second_scenario(self):
         """
             Testing if invoices are well concelled when we cancel the related
@@ -246,8 +245,8 @@ class test_contract_compassion(common.TransactionCase):
             'do_nothing', 1, 'month', self.partner_id1, 1,
             self.payment_term_id)
         self.contract_id = self._create_contract(
-            datetime.today().strftime(DF), self.contract_group,
-                'postal', datetime.today().strftime(DF))
+            datetime.today().strftime(DF), self.contract_group, 'postal',
+            datetime.today().strftime(DF))
         self.contract_line_id = self._create_contract_line(
             self.contract_id, '3', '200.0')
 
@@ -267,7 +266,7 @@ class test_contract_compassion(common.TransactionCase):
         invoice1 = invoices[1]
         self.assertEqual(invoice.state, 'open')
         self.assertEqual(invoice1.state, 'open')
-        
+
         # Cancelling of the contract
         wf_service.trg_validate(
             self.uid, 'recurring.contract',
@@ -281,12 +280,12 @@ class test_contract_compassion(common.TransactionCase):
             self.cr, self.uid, invoice1.id)
         self.assertEqual(invoice_cancel.state, 'cancel')
         self.assertEqual(invoice1_cancel.state, 'cancel')
-    
+
     def test_reset_open_invoices(self):
         """
-            Testing of the method that update invoices when the contract 
+            Testing of the method that update invoices when the contract
             is updated.
-            THe invoice paid should not be updated, whereas the other one 
+            THe invoice paid should not be updated, whereas the other one
             should be upadted.
         """
         # Testing area creation
@@ -298,7 +297,7 @@ class test_contract_compassion(common.TransactionCase):
             self.payment_term_id)
         self.contract_id = self._create_contract(
             datetime.today().strftime(DF), self.contract_group,
-                'postal', datetime.today().strftime(DF))
+            'postal', datetime.today().strftime(DF))
         self.contract_line_id = self._create_contract_line(
             self.contract_id, '2', '60.0')
 
@@ -315,7 +314,7 @@ class test_contract_compassion(common.TransactionCase):
         invoices = invoicer.invoice_ids
         invoice1 = invoices[1]
         self._pay_invoice(invoice1.id)
-        
+
         # Updating of the contract
         contract_line_obj = self.registry('recurring.contract.line')
         contract_line_obj.write(
@@ -329,7 +328,6 @@ class test_contract_compassion(common.TransactionCase):
             })
         ctr_line_id = contract_line_obj.browse(
             self.cr, self.uid, self.contract_line_id)
-        contract_act = contract_obj.browse(self.cr, self.uid, self.contract_id)
 
         # Check if the invoice unpaid is well updated
         invoice_obj = self.registry('account.invoice')
@@ -338,4 +336,3 @@ class test_contract_compassion(common.TransactionCase):
             self.cr, self.uid, invoice_upd.invoice_line[0].id)
         self.assertEqual(invoice_line_up.price_unit, ctr_line_id.amount)
         self.assertEqual(invoice_line_up.price_subtotal, ctr_line_id.subtotal)
-        
