@@ -257,17 +257,17 @@ class recurring_contract(orm.Model):
             'num_pol_ga': num_contracts
         })
         return res
-    
+
     def create(self, cr, uid, vals, context=None):
         if 'num_pol_ga' not in vals:
             partner_id = vals.get('partner_id')
             if partner_id:
                 vals['num_pol_ga'] = self.search(
-                cr, uid, [('partner_id', '=', partner_id)], context=context,
-                count=True)
+                    cr, uid, [('partner_id', '=', partner_id)],
+                    context=context, count=True)
         return super(recurring_contract, self).create(cr, uid, vals,
-                                                      context=context)    
-    
+                                                      context=context)
+
     def on_change_next_invoice_date(
             self, cr, uid, ids, new_invoice_date, context=None):
         res = True

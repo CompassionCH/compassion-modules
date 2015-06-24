@@ -80,7 +80,7 @@ class install_contract_compassion(orm.TransientModel):
             """
         UPDATE ir_model_data
         SET module = 'contract_compassion'
-        WHERE module = 'sponsorship_compassion' AND 
+        WHERE module = 'sponsorship_compassion' AND
         model IN ('account.payment.term','account.payment.term.line')
         """
         )

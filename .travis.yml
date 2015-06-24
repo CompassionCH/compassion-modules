@@ -10,7 +10,7 @@ python:
   - "2.7"
 
 env:
-  - VERSION="7.0" ODOO_REPO="odoo/odoo"
+  - VERSION="7.0" ODOO_REPO="odoo/odoo" EXCLUDE="message_center_compassion, sponsorship_tracking"
   
 virtualenv:
   system_site_packages: true
@@ -36,7 +36,7 @@ install:
 
 script:
   - travis/travis_header.sh
-  - travis_run_tests EXCLUDE="message_center_compassion" 
+  - travis_run_tests --exclude="message_center_compassion/tests"
 
 
 after_success:
