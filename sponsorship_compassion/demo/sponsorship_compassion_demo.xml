@@ -6,8 +6,6 @@
         -->
         <record id="account_analytic_plan_sponsorship_demo" model="account.analytic.plan">
             <field name="name">Plan Distribution</field>
-            <field name="default_instance_id">4754463</field>
-            <field name="plan_ids">1</field>
         </record>
     </data>        
 </openerp>
