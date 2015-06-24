@@ -49,10 +49,13 @@ class contracts(orm.Model):
     }
 
     def on_change_origin(self, cr, uid, ids, origin_id, context=None):
-        origin = self.pool.get('recurring.contract.origin').browse(
-            cr, uid, origin_id, context)
+        user = False
+        if origin_id:
+            origin = self.pool.get('recurring.contract.origin').browse(
+                cr, uid, origin_id, context)
+            user = self._get_user_from_origin(origin)
         return {
-            'value': {'user_id': self._get_user_from_origin(origin)}
+            'value': {'user_id': user}
         }
 
 

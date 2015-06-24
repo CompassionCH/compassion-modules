@@ -22,19 +22,19 @@
                     <field name="contracts_correspondant" invisible="True" />
                     <div attrs="{'invisible' : [('contracts_paid','=', [])]}">
                         <h3>Sponsorships as payer only</h3>
-                        <field name="contracts_paid" context="{'partner_contracts_view': True}" />
+                        <field name="contracts_paid" context="{'partner_contracts_view': True, 'default_type': 'S'}" />
                     </div>
                     <div attrs="{'invisible' : [('contracts_correspondant','=', [])]}">
                         <h3>Sponsorships as correspondent only</h3>
-                        <field name="contracts_correspondant" context="{'partner_contracts_view': True}" />
+                        <field name="contracts_correspondant" context="{'partner_contracts_view': True, 'default_type': 'S'}" />
                     </div>
                     <div attrs="{'invisible' : [('contracts_fully_managed','=', [])]}">
                         <h3>Sponsorships fully managed</h3>
-                        <field name="contracts_fully_managed" context="{'partner_contracts_view': True}" />
+                        <field name="contracts_fully_managed" context="{'partner_contracts_view': True, 'default_type': 'S'}" />
                     </div>
                     <div attrs="{'invisible' : [('other_contract_ids','=', [])]}">
                         <h3>Other contracts</h3>
-                        <field name="other_contract_ids" context="{'partner_contracts_view': True}" />
+                        <field name="other_contract_ids" context="{'partner_contracts_view': True, 'default_type': 'O'}" />
                     </div>
                 </page>
             </xpath>
