@@ -74,7 +74,6 @@ class test_contract_compassion(common.TransactionCase):
         self.payment_term_id = payment_term_obj.search(self.cr, self.uid, [
             ('name', '=', '15 Days')
         ])[0]
-
         product_obj = self.registry('product.product')
         product_obj.write(self.cr, self.uid, 1, {
             'property_account_income': property_account_income,
@@ -261,7 +260,7 @@ class test_contract_compassion(common.TransactionCase):
             'contract_id': contract_id,
         })
         return contract_line_id
-        
+
     def _create_group(self, change_method, rec_value, rec_unit, partner_id,
                       adv_biling_months, payment_term_id, ref=None):
         """
