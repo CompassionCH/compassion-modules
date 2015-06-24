@@ -251,14 +251,16 @@ class recurring_contract(orm.TransientModel):
              ('state', 'not in', ['terminated', 'cancelled'])],
             context)
 
-        cr.execute(
-            "UPDATE recurring_contract "
-            "SET project_state = 'fund-suspended' "
-            "WHERE id IN ({0})".format(','.join(
-                [str(id) for id in suspended_project_contract_ids])))
+        if suspended_project_contract_ids:
+            cr.execute(
+                "UPDATE recurring_contract "
+                "SET project_state = 'fund-suspended' "
+                "WHERE id IN ({0})".format(','.join(
+                    [str(id) for id in suspended_project_contract_ids])))
 
-        cr.execute(
-            "UPDATE recurring_contract "
-            "SET project_state = 'active' "
-            "WHERE id IN ({0})".format(','.join(
-                [str(id) for id in active_project_contract_ids])))
+        if active_project_contract_ids:
+            cr.execute(
+                "UPDATE recurring_contract "
+                "SET project_state = 'active' "
+                "WHERE id IN ({0})".format(','.join(
+                    [str(id) for id in active_project_contract_ids])))
