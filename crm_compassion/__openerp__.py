@@ -68,7 +68,7 @@ Contributors
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['mail', 'base_location', 'sponsorship_compassion', 'project',
-                'hr_timesheet'],
+                'hr_timesheet', 'hr_expense'],
     'data': [
         'security/ir.model.access.csv',
         'data/account_analytic_data.xml',

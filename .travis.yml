@@ -36,7 +36,7 @@ install:
 
 script:
   - travis/travis_header.sh
-  - travis_run_tests 
+  - travis_run_tests EXCLUDE="message_center_compassion" 
 
 
 after_success:
