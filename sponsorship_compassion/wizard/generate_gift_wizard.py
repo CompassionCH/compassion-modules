@@ -93,8 +93,10 @@ class generate_gift_wizard(orm.TransientModel):
                 invoice_id = invoice_obj.create(cr, uid, inv_data,
                                                 context=context)
                 if invoice_id:
-                    self._generate_invoice_line(
-                        cr, uid, invoice_id, wizard, contract, context=ctx)
+                    inv_line_data = self._setup_invoice_line(
+                        cr, uid, invoice_id, wizard, contract, ctx)
+                    self.pool.get('account.invoice.line').create(
+                        cr, uid, inv_line_data, ctx)
                     invoice_ids.append(invoice_id)
             else:
                 raise orm.except_orm(
@@ -111,8 +113,8 @@ class generate_gift_wizard(orm.TransientModel):
             'type': 'ir.actions.act_window',
         }
 
-    def _generate_invoice_line(self, cr, uid, invoice_id, wizard,
-                               contract, context=None):
+    def _setup_invoice_line(self, cr, uid, invoice_id, wizard,
+                            contract, context=None):
         product = wizard.product_id
 
         inv_line_data = {
@@ -139,10 +141,7 @@ class generate_gift_wizard(orm.TransientModel):
             inv_line_data['name'] += " - " + contract.child_id.birthdate \
                 if product.name == GIFT_NAMES[0] else ""
 
-        self.pool.get('account.invoice.line').create(
-            cr, uid, inv_line_data, context=context)
-
-        return True
+        return inv_line_data
 
     def _generate_bvr_reference(self, cr, uid, contract, product,
                                 context=None):

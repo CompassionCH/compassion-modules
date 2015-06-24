@@ -98,7 +98,7 @@ class res_partner(orm.Model):
             'name': _('Related invoice lines'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
-            'view_mode': 'tree, form',
+            'view_mode': 'tree,form',
             'res_model': 'account.invoice.line',
             'view_id': view_id,
             'views': [(view_id, 'tree'), (False, 'form')],

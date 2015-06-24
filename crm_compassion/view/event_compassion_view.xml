@@ -80,6 +80,8 @@
                             <group>
                                 <field name="planned_sponsorships"/>
                                 <field name="won_sponsorships"/>
+                                <field name="total_expense"/>
+                                <field name="total_income"/>
                             </group>
                         </group>
                         <notebook>
@@ -89,8 +91,11 @@
                             <page string="Staff">
                                 <field name="staff_ids"/>
                             </page>
+                            <page string="Incomes">
+                                <field name="income_line_ids"/>
+                            </page>
                             <page string="Expenses">
-                                <field name="analytic_line_ids"/>
+                                <field name="expense_line_ids"/>
                             </page>
                             <page string="New sponsorships">
                                 <field name="contract_ids"/>

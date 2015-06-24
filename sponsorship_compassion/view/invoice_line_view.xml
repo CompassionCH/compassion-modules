@@ -43,6 +43,7 @@
             <field eval="18" name="priority"/>
             <field name="arch" type="xml">
                 <tree string="Invoice lines" colors="blue:state == 'draft';black:state in ('proforma','proforma2','open');gray:state == 'cancel'">
+                    <field name="partner_id" />
                     <field name="product_id" />
                     <field name="contract_id" />
                     <field name="due_date" />
@@ -67,6 +68,7 @@
                     <field name="product_id" string="Product" />
                     <field name="partner_id" string="Partner"/>
                     <group expand="0" string="Group By...">
+                        <filter string="Partner" domain="[]" context="{'group_by':'partner_id'}"/>
                         <filter string="Product" domain="[]" context="{'group_by':'product_id'}"/>
                         <filter string="Contract" domain="[]"  context="{'group_by':'contract_id'}"/>
                         <filter string="State" domain="[]" context="{'group_by':'state'}"/>

@@ -34,17 +34,6 @@
             </field>
         </record>
 
-        <!-- Invoice Form View -->
-        <record model="ir.ui.view" id="crm_invoice_compassion">
-            <field name="model">account.invoice</field>
-            <field name="inherit_id" ref="sponsorship_compassion.view_invoice_child_form"/>
-            <field name="arch" type="xml">
-                <field name="contract_id" position="after">
-                    <field name="user_id"/>
-                </field>
-            </field>
-        </record>
-
         <record model="ir.ui.view" id="crm_invoice_supplier_compassion">
             <field name="name">account.invoice.supplier.form.crm.compassion</field>
             <field name="model">account.invoice</field>

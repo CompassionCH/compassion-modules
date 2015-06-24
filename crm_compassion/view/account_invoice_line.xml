@@ -16,6 +16,20 @@
                 </xpath>
             </field>
         </record>
+        
+        <!-- Invoice Form View -->
+        <record model="ir.ui.view" id="crm_invoice_compassion">
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="sponsorship_compassion.view_invoice_child_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='contract_id']" position="attributes">
+                    <attribute name="on_change">on_change_contract_id(contract_id)</attribute>
+                </xpath>
+                <xpath expr="//field[@name='contract_id']" position="after">
+                    <field name="user_id"/>
+                </xpath>
+            </field>
+        </record>
                 
         <!-- 
             ACCOUNT INVOICE LINE
@@ -26,9 +40,12 @@
             <field name="model">account.invoice.line</field>
             <field name="inherit_id" ref="sponsorship_compassion.view_invoice_line_child_tree"/>
             <field name="arch" type="xml">
-                <field name="contract_id" position="after">
+                <xpath expr="//field[@name='contract_id']" position="attributes">
+                    <attribute name="on_change">on_change_contract_id(contract_id)</attribute>
+                </xpath>
+                <xpath expr="//field[@name='contract_id']" position="after">
                     <field name="user_id"/>
-                </field>
+                </xpath>
             </field>
         </record>
         
@@ -40,13 +57,28 @@
                 <field name="product_id" position="after">
                     <field name="name" />
                 </field>
-                <field name="contract_id" position="after">
+                <xpath expr="//field[@name='contract_id']" position="attributes">
+                    <attribute name="on_change">on_change_contract_id(contract_id)</attribute>
+                </xpath>
+                <xpath expr="//field[@name='contract_id']" position="after">
                     <field name="user_id" />
                     <field name="account_id" />
                     <field name="account_analytic_id" />
+                </xpath>
+            </field>
+        </record>    
+
+        <!-- Invoice Line Form -->
+        <record model="ir.ui.view" id="view_invoice_line_form_crm_compassion">
+            <field name="name">account.invoice.line.crm.compassion.form</field>
+            <field name="model">account.invoice.line</field>
+            <field name="inherit_id" ref="account.view_invoice_line_form"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="before">
+                    <field name="invoice_id" readonly="1" context="{'form_view_ref': 'account.invoice_form'}"/>
                 </field>
             </field>
-        </record>        
+        </record>
         
         <!-- Sidebar action, called from menu_recurring_contract_form menuitem -->
         <record id="action_invoice_lines_compassion" model="ir.actions.act_window">

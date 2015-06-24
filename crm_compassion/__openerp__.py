@@ -80,6 +80,7 @@ Contributors
         'view/account_view.xml',
         'view/close_old_projects_view.xml',
         'view/account_invoice_line.xml',
+        'view/res_partner_view.xml',
     ],
     'demo': [],
     'installable': True,

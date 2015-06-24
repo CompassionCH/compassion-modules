@@ -16,3 +16,4 @@ from . import portal_wizard
 from . import project_project
 from . import analytic_account
 from . import account_invoice_line
+from . import res_partner

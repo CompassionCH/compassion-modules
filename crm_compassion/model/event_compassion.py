@@ -23,20 +23,37 @@ class event_compassion(orm.Model):
 
     _inherit = ['mail.thread']
 
-    def _get_analytic_lines(self, cr, uid, ids, field_name, arg, context=None):
+    def _get_analytic_lines(self, cr, uid, ids, field_names, arg,
+                            context=None):
         res = dict()
+        field_res = dict()
         line_obj = self.pool.get('account.analytic.line')
         if not isinstance(ids, list):
             ids = [ids]
         for event in self.browse(cr, uid, ids, context):
             if event.analytic_id:
-                line_ids = line_obj.search(
+                expense_ids = line_obj.search(
                     cr, uid, [
-                        ('account_id', '=', event.analytic_id.id)],
-                    context=context)
-                res[event.id] = line_ids
+                        ('account_id', '=', event.analytic_id.id),
+                        ('amount', '<', '0.0')], context=context)
+                income_ids = line_obj.search(
+                    cr, uid, [
+                        ('account_id', '=', event.analytic_id.id),
+                        ('amount', '>', '0.0')], context=context)
+                field_res['expense_line_ids'] = expense_ids or False
+                field_res['income_line_ids'] = income_ids or False
+                field_res['total_expense'] = sum(
+                    [l.amount for l in line_obj.browse(cr, uid, expense_ids,
+                                                       context)])
+                field_res['total_income'] = sum(
+                    [l.amount for l in line_obj.browse(cr, uid, income_ids,
+                                                       context)])
             else:
-                res[event.id] = False
+                field_res['expense_line_ids'] = False
+                field_res['income_line_ids'] = False
+                field_res['total_expense'] = 0.0
+                field_res['total_income'] = 0.0
+            res[event.id] = field_res.copy()
 
         return res
 
@@ -97,9 +114,18 @@ class event_compassion(orm.Model):
         'contract_ids': fields.related(
             'origin_id', 'contract_ids', type="one2many",
             relation="recurring.contract", readonly=True),
-        'analytic_line_ids': fields.function(
-            _get_analytic_lines, type="one2many",
+        'expense_line_ids': fields.function(
+            _get_analytic_lines, type="one2many", multi='analytic_line',
             relation="account.analytic.line", readonly=True),
+        'income_line_ids': fields.function(
+            _get_analytic_lines, type="one2many",  multi='analytic_line',
+            relation="account.analytic.line", readonly=True),
+        'total_expense': fields.function(
+            _get_analytic_lines, type="float", multi='analytic_line',
+            readonly=True, string=_("Total expense")),
+        'total_income': fields.function(
+            _get_analytic_lines, type="float", multi='analytic_line',
+            readonly=True, string=_("Total income")),
         'planned_sponsorships': fields.integer(_("Expected sponsorships"),
                                                track_visibility='onchange'),
         'lead_id': fields.many2one('crm.lead', _('Opportunity'),

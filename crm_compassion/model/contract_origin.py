@@ -54,3 +54,16 @@ class contracts(orm.Model):
         return {
             'value': {'user_id': self._get_user_from_origin(origin)}
         }
+
+
+class contract_group(orm.Model):
+    """ Push salesperson to invoice on invoice generation """
+    _inherit = 'recurring.contract.group'
+
+    def _setup_inv_line_data(self, cr, uid, contract_line, invoice_id,
+                             context=None):
+        invl_data = super(contract_group, self)._setup_inv_line_data(
+            cr, uid, contract_line, invoice_id, context)
+        if contract_line.contract_id.user_id:
+            invl_data['user_id'] = contract_line.contract_id.user_id.id
+        return invl_data
