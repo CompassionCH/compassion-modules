@@ -48,9 +48,9 @@
                                     <div class="oe_kanban_bottom_right">
                                         <!-- Project status color indicator -->
                                         <span t-if="record.project_state.raw_value">
-                                            <span t-if="['active','inform_reactivation','waiting_attribution','inform_suspended_reactivation'].indexOf(record.project_state.raw_value) !== -1"
+                                            <span t-if="['active','inform_reactivation','inform_suspended_reactivation'].indexOf(record.project_state.raw_value) !== -1"
                                                   string="Project active" class="oe_kanban_status oe_kanban_status_green"> </span>
-                                            <span t-if="['active','inform_reactivation','waiting_attribution','inform_suspended_reactivation'].indexOf(record.project_state.raw_value) === -1"
+                                            <span t-if="['active','inform_reactivation','inform_suspended_reactivation'].indexOf(record.project_state.raw_value) === -1"
                                                   string="Project not active" class="oe_kanban_status oe_kanban_status_red"> </span>
                                         </span>
                                         <img t-att-src="kanban_image('res.users', 'image_small', record.sds_uid.raw_value)" t-att-title="record.sds_uid.value" width="24" height="24" class="oe_kanban_avatar"/>
@@ -102,11 +102,6 @@
                             class="oe_highlight" 
                             string="Project mail sent" 
                             attrs="{'invisible':[('project_state','not in',['inform_suspended', 'inform_extension', 'inform_suspended_reactivation', 'inform_reactivation', 'inform_project_terminated'])]}"/>
-                        <button 
-                            name="attribute" 
-                            class="oe_highlight" 
-                            string="Attributed" 
-                            attrs="{'invisible':[('project_state','!=','waiting_attribution')]}"/>
                         <button name="%(contract_compassion.action_end_contract)d" string="Terminate" states="waiting,mandate,active" type="action"/>
                     </header>
                     <sheet>

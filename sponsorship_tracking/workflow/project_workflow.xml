@@ -43,13 +43,6 @@
             <field name="kind">function</field>
             <field name="action">write({'project_state': 'inform_suspended_reactivation'})</field>
         </record>
-
-        <record model="workflow.activity" id="act_waiting_attribution">
-            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
-            <field name="name">waiting_attribution</field>
-            <field name="kind">function</field>
-            <field name="action">write({'project_state': 'waiting_attribution'})</field>
-        </record>
         
         <record model="workflow.activity" id="act_project_phase_out">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
@@ -132,18 +125,13 @@
         </record>
         <record model="workflow.transition" id="pt4">
             <field name="act_from" ref="act_inform_reactivation" />
-            <field name="act_to" ref="act_waiting_attribution" />
+            <field name="act_to" ref="act_project_active" />
             <field name="signal">project_mail_sent</field>
         </record>
         <record model="workflow.transition" id="pt5">
             <field name="act_from" ref="act_inform_suspended_reactivation" />
-            <field name="act_to" ref="act_waiting_attribution" />
-            <field name="signal">project_mail_sent</field>
-        </record>
-        <record model="workflow.transition" id="pt6">
-            <field name="act_from" ref="act_waiting_attribution" />
             <field name="act_to" ref="act_project_active" />
-            <field name="signal">attribute</field>
+            <field name="signal">project_mail_sent</field>
         </record>
         <record model="workflow.transition" id="pt7a">
             <field name="act_from" ref="act_inform_terminated" />

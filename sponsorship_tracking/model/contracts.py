@@ -68,7 +68,6 @@ class recurring_contract(orm.Model):
             ('fund-suspended', _('Fund Suspended')),
             ('inform_reactivation', _('Inform reactivation')),
             ('inform_extension', _('Inform extension')),
-            ('waiting_attribution', _('Waiting attribution')),
             ('inform_suspended_reactivation',
              _('Inform suspended and reactivation')),
             ('inform_project_terminated', _('Inform project terminated')),

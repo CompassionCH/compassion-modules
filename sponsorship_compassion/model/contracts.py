@@ -314,7 +314,10 @@ class sponsorship_contract(orm.Model):
 
     def suspend_contract(self, cr, uid, ids, context=None, date_start=None,
                          date_end=None):
-        """Cancels the number of invoices specified starting
+        """
+        If ir.config.parameter is set : change sponsorship invoices with
+        a fund donation set in the config.
+        Otherwise, Cancel the number of invoices specified starting
         from a given date. This is useful to suspend a contract for a given
         period."""
         # By default, we suspend the contract for 3 months starting from today
@@ -360,7 +363,44 @@ class sponsorship_contract(orm.Model):
                 "Project Suspended", 'comment',
                 context={'thread_model': 'res.partner'})
 
+        # Change invoices if config tells to do so.
+        config_obj = self.pool.get('ir.config_parameter')
+        suspend_config_id = config_obj.search(cr, uid, [
+            ('key', '=', 'sponsorship_compassion.suspend_product_id')],
+            context=context)
+        if suspend_config_id:
+            product_id = config_obj.browse(cr, uid, suspend_config_id[0],
+                                           context).value
+            self._suspend_change_invoices(cr, uid, ids, date_start, date_end,
+                                          product_id, context)
+
         return True
+
+    def _suspend_change_invoices(self, cr, uid, ids, since_date, to_date,
+                                 product_id, context=None):
+        """ Change cancelled sponsorship invoices and put them for given
+        product. Re-open invoices. """
+        invl_obj = self.pool.get('account.invoice.line')
+        cancel_invl_ids = invl_obj.search(cr, uid, [
+            ('contract_id', 'in', ids),
+            ('state', '=', 'cancel'),
+            ('product_id.categ_name', '=', SPONSORSHIP_CATEGORY),
+            ('due_date', '>=', since_date),
+            ('due_date', '<=', to_date)], context=context)
+        invoice_ids = set()
+        for invl in invl_obj.browse(cr, uid, cancel_invl_ids,
+                                    {'lang': 'en_US'}):
+            invoice_ids.add(invl.invoice_id.id)
+        invoice_ids = list(invoice_ids)
+        self.pool.get('account.invoice').action_cancel_draft(
+            cr, uid, invoice_ids)
+        invl_obj.write(cr, uid, cancel_invl_ids, {
+            'product_id': product_id,
+            'name': 'Replacement of sponsorship (fund-suspended)'}, context)
+        wf_service = netsvc.LocalService('workflow')
+        for invoice_id in invoice_ids:
+            wf_service.trg_validate(uid, 'account.invoice',
+                                    invoice_id, 'invoice_open', cr)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -579,7 +619,7 @@ class sponsorship_contract(orm.Model):
                     if invl.product_id.categ_name == GIFT_CATEGORY:
                         payment_allowed = project.disburse_gifts or \
                             invl.due_date < project.status_date
-                    else:
+                    elif invl.product_id.categ_name == SPONSORSHIP_CATEGORY:
                         payment_allowed = project.disburse_funds or \
                             invl.due_date < project.status_date
                     if not payment_allowed:
@@ -742,7 +782,7 @@ class sponsorship_contract(orm.Model):
                                 # don't need to be splitted
                                 del split_payment_mvl[pml.id]
                                 unrec_pml.append(pml.id)
-                            if pml.credit < split_payment_mvl[pml.id]:
+                            elif pml.credit < split_payment_mvl[pml.id]:
                                 self._clean_error()
                             # Update only one payment_line per invoice_line
                             break

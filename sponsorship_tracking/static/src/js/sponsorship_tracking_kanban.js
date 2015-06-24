@@ -31,7 +31,7 @@ openerp.sponsorship_tracking = function (instance) {
                     action = 'button_mail_sent'
                 }
                 if (this.group_by == 'project_state') {
-                    visible_on_groups = ['inform_suspended', 'inform_reactivation', 'inform_project_terminated'];
+                    visible_on_groups = ['inform_suspended', 'inform_reactivation', 'inform_project_terminated', 'inform_extension', 'inform_suspended_reactivation'];
                     label = _t('Project mail sent')
                     action = 'button_project_mail_sent'
                 }
