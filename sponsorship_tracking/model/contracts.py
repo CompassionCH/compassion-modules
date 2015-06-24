@@ -84,7 +84,7 @@ class recurring_contract(orm.Model):
             _('SDS state date'),
             readonly=True),
         'project_id': fields.related(
-            'child_id', 'project_id',
+            'child_id', 'project_id', relation='compassion.project',
             type='many2one', string=_('Project'),
             readonly=True
         ),
