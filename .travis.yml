@@ -36,7 +36,7 @@ install:
 
 script:
   - travis/travis_header.sh
-  - travis_run_tests --exclude = "test_message.py"
+  - travis_run_tests --exclude="message_center_compassion/tests"
 
 
 after_success:
