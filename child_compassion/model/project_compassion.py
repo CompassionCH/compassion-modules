@@ -43,23 +43,25 @@ class compassion_project(orm.Model):
                 self._reactivate_project(cr, uid, project.id, context)
         return res
 
-    def suspend_funds(self, cr, uid, project_id, context=None,
-                      date_start=None, date_end=None):
+    def suspend_funds(self, cr, uid, project_id, context=None):
         """ Hook to perform some action when project is suspended.
         By default: log a message.
         """
         self.pool.get('mail.thread').message_post(
             cr, uid, project_id,
-            "The project was suspended and funds are retained<b>"
-            "{}</b>.<br/>".format(
-                date_end.strftime(" until %B %Y") if date_end else ""),
+            "The project was suspended and funds are retained.",
             "Project Suspended", 'comment',
             context={'thread_model': self._name})
         return True
 
     def _reactivate_project(self, cr, uid, project_id, context=None):
         """ To perform some actions when project is reactivated """
-        pass
+        self.pool.get('mail.thread').message_post(
+            cr, uid, project_id,
+            "The project is reactivated.",
+            "Project Reactivation", 'comment',
+            context={'thread_model': self._name})
+        return True
 
     def _suspend_extension(self, cr, uid, project_id, context=None):
         """ To perform some actions when project suspension is extended. """

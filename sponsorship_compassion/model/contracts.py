@@ -312,71 +312,55 @@ class sponsorship_contract(orm.Model):
 
         return True
 
-    def suspend_contract(self, cr, uid, ids, context=None, date_start=None,
-                         date_end=None):
+    def suspend_contract(self, cr, uid, ids, context=None):
         """
         If ir.config.parameter is set : change sponsorship invoices with
         a fund donation set in the config.
         Otherwise, Cancel the number of invoices specified starting
         from a given date. This is useful to suspend a contract for a given
         period."""
-        # By default, we suspend the contract for 3 months starting from today
-        if not date_start:
-            date_start = datetime.today()
-        if not date_end:
-            date_end = date_start + relativedelta(months=3)
+        date_start = datetime.today().strftime(DF)
+
+        config_obj = self.pool.get('ir.config_parameter')
+        suspend_config_id = config_obj.search(cr, uid, [
+            ('key', '=', 'sponsorship_compassion.suspend_product_id')],
+            context=context)
 
         # Cancel invoices in the period of suspension
-        self.clean_invoices(cr, uid, ids, context, date_start.strftime(DF),
-                            date_end.strftime(DF), _('Center suspended'))
+        self.clean_invoices(cr, uid, ids, context, date_start,
+                            keep_lines=_('Center suspended'))
 
         for contract in self.browse(cr, uid, ids, context):
-            # Advance next invoice date after end of suspension
-            next_inv_date = datetime.strptime(contract.next_invoice_date, DF)
-            months = relativedelta(date_end, date_start).months
-            month_diff = relativedelta(date_end, next_inv_date).months
-            if month_diff > 0:
-                # If sponsorship is late, don't advance it too much
-                if month_diff > months:
-                    month_diff = months
-                new_date = next_inv_date + relativedelta(months=month_diff)
-                contract.write({'next_invoice_date': new_date.strftime(DF)})
-
             # Add a note in the contract and in the partner.
             project_code = contract.child_id.project_id.code
             self.pool.get('mail.thread').message_post(
                 cr, uid, contract.id,
-                "The project {0} was suspended and funds are retained <b>"
-                "until {1}</b>.<br/>Invoices due in the suspension period "
+                "The project {0} was suspended and funds are retained."
+                "<br/>Invoices due in the suspension period "
                 "are automatically cancelled.".format(
-                    project_code, date_end.strftime("%B %Y")),
+                    project_code),
                 "Project Suspended", 'comment',
                 context={'thread_model': self._name})
             self.pool.get('mail.thread').message_post(
                 cr, uid, contract.partner_id.id,
                 "The project {0} was suspended and funds are retained "
-                "for child {2} <b>"
-                "until {1}</b>.<br/>Invoices due in the suspension period "
+                "for child {1}. <b>"
+                "<br/>Invoices due in the suspension period "
                 "are automatically cancelled.".format(
-                    project_code, date_end.strftime("%B %Y"),
-                    contract.child_id.code),
+                    project_code, contract.child_id.code),
                 "Project Suspended", 'comment',
                 context={'thread_model': 'res.partner'})
 
         # Change invoices if config tells to do so.
-        config_obj = self.pool.get('ir.config_parameter')
-        suspend_config_id = config_obj.search(cr, uid, [
-            ('key', '=', 'sponsorship_compassion.suspend_product_id')],
-            context=context)
         if suspend_config_id:
-            product_id = config_obj.browse(cr, uid, suspend_config_id[0],
-                                           context).value
-            self._suspend_change_invoices(cr, uid, ids, date_start, date_end,
+            product_id = int(config_obj.browse(cr, uid, suspend_config_id[0],
+                                               context).value)
+            self._suspend_change_invoices(cr, uid, ids, date_start,
                                           product_id, context)
 
         return True
 
-    def _suspend_change_invoices(self, cr, uid, ids, since_date, to_date,
+    def _suspend_change_invoices(self, cr, uid, ids, since_date,
                                  product_id, context=None):
         """ Change cancelled sponsorship invoices and put them for given
         product. Re-open invoices. """
@@ -385,8 +369,7 @@ class sponsorship_contract(orm.Model):
             ('contract_id', 'in', ids),
             ('state', '=', 'cancel'),
             ('product_id.categ_name', '=', SPONSORSHIP_CATEGORY),
-            ('due_date', '>=', since_date),
-            ('due_date', '<=', to_date)], context=context)
+            ('due_date', '>=', since_date)], context=context)
         invoice_ids = set()
         for invl in invl_obj.browse(cr, uid, cancel_invl_ids,
                                     {'lang': 'en_US'}):
@@ -394,13 +377,112 @@ class sponsorship_contract(orm.Model):
         invoice_ids = list(invoice_ids)
         self.pool.get('account.invoice').action_cancel_draft(
             cr, uid, invoice_ids)
-        invl_obj.write(cr, uid, cancel_invl_ids, {
-            'product_id': product_id,
-            'name': 'Replacement of sponsorship (fund-suspended)'}, context)
+        vals = self.get_suspend_invl_data(cr, uid, product_id, context)
+        invl_obj.write(cr, uid, cancel_invl_ids, vals, context)
         wf_service = netsvc.LocalService('workflow')
         for invoice_id in invoice_ids:
             wf_service.trg_validate(uid, 'account.invoice',
                                     invoice_id, 'invoice_open', cr)
+
+    def get_suspend_invl_data(self, cr, uid, product_id, context=None):
+        """ Returns invoice_line data for a given product when center
+        is suspended. """
+        product = self.pool.get('product.product').browse(cr, uid, product_id,
+                                                          context)
+        vals = {
+            'product_id': product_id,
+            'account_id': product.property_account_income.id,
+            'name': 'Replacement of sponsorship (fund-suspended)'}
+        rec = self.pool.get('account.analytic.default').account_get(
+            cr, uid, product_id, context=context)
+        if rec and rec.analytics_id:
+            vals['analytics_id'] = rec.analytics_id.id
+
+        return vals
+
+    def reactivate_contract(self, cr, uid, ids, context):
+        """ When project is reactivated, we re-open cancelled invoices,
+        or we change open invoices if fund is set to replace sponsorship
+        product. We also change attribution of invoices paid in advance.
+        """
+        date_start = datetime.today().strftime(DF)
+        config_obj = self.pool.get('ir.config_parameter')
+        wf_service = netsvc.LocalService('workflow')
+        suspend_config_id = config_obj.search(cr, uid, [
+            ('key', '=', 'sponsorship_compassion.suspend_product_id')],
+            context=context)
+        invl_obj = self.pool.get('account.invoice.line')
+        invoice_obj = self.pool.get('account.invoice')
+        product_obj = self.pool.get('product.product')
+        sponsorship_product = product_obj.browse(cr, uid, product_obj.search(
+            cr, uid, [('name', '=', SPONSORSHIP_CATEGORY)])
+            [0], context)
+        contract_ids = set()
+        if suspend_config_id:
+            # Revert future invoices with sponsorship product
+            susp_product_id = int(config_obj.browse(
+                cr, uid, suspend_config_id[0], context).value)
+            invl_ids = invl_obj.search(cr, uid, [
+                ('contract_id', 'in', ids),
+                ('product_id', '=', susp_product_id),
+                ('state', 'in', ['open', 'paid']),
+                ('due_date', '>=', date_start)], context=context)
+            invl_data = {
+                'product_id': sponsorship_product.id,
+                'account_id': sponsorship_product.property_account_income.id,
+                'name': sponsorship_product.name
+            }
+            rec = self.pool.get('account.analytic.default').account_get(
+                cr, uid, sponsorship_product.id, context=context)
+            if rec and rec.analytics_id:
+                invl_data['analytics_id'] = rec.analytics_id.id
+            invl_obj.write(cr, uid, invl_ids, invl_data, context)
+
+            inv_ids = set()
+            mvl_paid_ids = set()
+            for invoice_line in invl_obj.browse(cr, uid, invl_ids, context):
+                invoice = invoice_line.invoice_id
+                inv_ids.add(invoice.id)
+                contract_ids.add(invoice_line.contract_id.id)
+                if invoice.state == 'paid':
+                    mvl_paid_ids |= set([
+                        l.id for l in
+                        invoice.payment_ids[0].reconcile_id.line_id])
+
+            # Unreconcile paid invoices
+            self.pool.get('account.move.line')._remove_move_reconcile(
+                cr, uid, list(mvl_paid_ids), context=context)
+            # Cancel and confirm again invoices to update move lines
+            inv_ids = list(inv_ids)
+            invoice_obj.action_cancel(cr, uid, inv_ids)
+            invoice_obj.action_cancel_draft(cr, uid, inv_ids)
+            for inv_id in inv_ids:
+                wf_service.trg_validate(
+                    uid, 'account.invoice', inv_id, 'invoice_open', cr)
+        else:
+            # Open again cancelled invoices
+            invl_ids = invl_obj.search(cr, uid, [
+                ('contract_id', 'in', ids),
+                ('product_id', '=', sponsorship_product.id),
+                ('state', '=', 'cancel'),
+                ('due_date', '>=', date_start)], context=context)
+            for invoice_line in invl_obj.browse(cr, uid, invl_ids, context):
+                invoice = invoice_line.invoice_id
+                contract_ids.add(invoice_line.contract_id.id)
+                if invoice.state == 'cancel':
+                    invoice_obj.action_cancel_draft(cr, uid, [invoice.id])
+                    wf_service.trg_validate(
+                        uid, 'account.invoice', invoice.id, 'invoice_open',
+                        cr)
+
+        # Log a note in the contracts
+        self.pool.get('mail.thread').message_post(
+            cr, uid, list(contract_ids),
+            "The project was reactivated."
+            "<br/>Invoices due in the suspension period "
+            "are automatically reverted.",
+            "Project Reactivated", 'comment',
+            context={'thread_model': self._name})
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

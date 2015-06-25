@@ -9,25 +9,20 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from openerp.tools.translate import _
-
-from datetime import datetime
+from openerp.osv import orm
 
 
 class project_compassion(orm.Model):
     _inherit = 'compassion.project'
 
-    def suspend_funds(self, cr, uid, project_id, context=None,
-                      date_start=None, date_end=None):
+    def suspend_funds(self, cr, uid, project_id, context=None):
         """ When a project is suspended, We update all contracts of
         sponsored children in the project, so that we don't create invoices
         during the period of suspension.
         We also remove the children on internet.
         """
         res = super(project_compassion, self).suspend_funds(
-            cr, uid, project_id, context, date_start, date_end)
+            cr, uid, project_id, context)
         project = self.browse(cr, uid, project_id, context)
         contract_obj = self.pool.get('recurring.contract')
         contract_ids = contract_obj.search(cr, uid, [
@@ -35,55 +30,20 @@ class project_compassion(orm.Model):
             ('state', 'in', ('active', 'waiting', 'mandate'))],
             context=context)
         res = res and contract_obj.suspend_contract(
-            cr, uid, contract_ids, context, date_start, date_end)
+            cr, uid, contract_ids, context)
         return res
 
-
-class suspension_wizard(orm.TransientModel):
-    """ Wizard to extend suspensions of projects. """
-    _name = 'compassion.project.suspension.wizard'
-
-    _columns = {
-        'date_start': fields.date(_('Start of suspension')),
-        'date_end': fields.date(_('End of suspension'),
-                                help=_("will add 3 months if empty")),
-    }
-
-    def _get_start_date(self, cr, uid, context=None):
-        project = self.pool.get('compassion.project').browse(
-            cr, uid, context.get('active_id'), context)
-        if project:
-            return project.status_date
-        else:
-            return datetime.today().strftime(DF)
-
-    _defaults = {
-        'date_start': _get_start_date
-    }
-
-    def perform_suspension(self, cr, uid, ids, context=None):
-        project_id = context.get('active_id')
-        if not project_id:
-            raise orm.except_orm(
-                _('No project selected'),
-                _('Please select a project to suspend'))
-
-        project_obj = self.pool.get('compassion.project')
-        project = project_obj.browse(cr, uid, project_id, context)
-        if project.suspension != 'fund-suspended':
-            raise orm.except_orm(
-                _('Suspension error'),
-                _('The project is not fund-suspended. '
-                  'You cannot extend the suspension.'))
-
-        wizard = self.browse(cr, uid, ids[0], context)
-        date_start = datetime.strptime(wizard.date_start, DF) if \
-            wizard.date_start else None
-        date_end = datetime.strptime(wizard.date_end, DF) if \
-            wizard.date_end else None
-        project_obj.suspend_funds(
-            cr, uid, project_id, context=context,
-            date_start=date_start,
-            date_end=date_end)
-
-        return True
+    def _reactivate_project(self, cr, uid, project_id, context=None):
+        """ When project is reactivated, we re-open cancelled invoices,
+        or we change open invoices if fund is set to replace sponsorship
+        product. We also change attribution of invoices paid in advance.
+        """
+        super(project_compassion, self)._reactivate_project(
+            cr, uid, project_id, context)
+        project = self.browse(cr, uid, project_id, context)
+        contract_obj = self.pool.get('recurring.contract')
+        contract_ids = contract_obj.search(cr, uid, [
+            ('child_code', 'like', project.code),
+            ('state', 'in', ('active', 'waiting', 'mandate'))],
+            context=context)
+        contract_obj.reactivate_contract(cr, uid, contract_ids, context)

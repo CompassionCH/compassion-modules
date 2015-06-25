@@ -9,10 +9,12 @@
                 <field name="partner_id" position="after">
                     <field name="user_id" string="Ambassador"/>
                     <field name="account_analytic_id" string="Analytic Account"/>
+                    <field name="currency_id"/>
                 </field>
                 <xpath expr='//filter[@string="Contract"]' position="before">
                     <filter string="Ambassador" domain="[]" context="{'group_by':'user_id'}"/>
                     <filter string="Analytic Account" domain="[]" context="{'group_by':'account_analytic_id'}"/>
+                    <filter string="Due Date" domain="[]" context="{'group_by':'due_date'}"/>
                 </xpath>
             </field>
         </record>
@@ -65,6 +67,9 @@
                     <field name="account_id" />
                     <field name="account_analytic_id" />
                 </xpath>
+                <field name="price_subtotal" position="after">
+                    <field name="currency_id" />
+                </field>
             </field>
         </record>    
 
