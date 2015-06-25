@@ -56,7 +56,6 @@
             <field name="name">project_terminated</field>
             <field name="kind">function</field>
             <field name="action">write({'project_state': 'terminated'})</field>
-            <field name="flow_stop" eval='True' />
         </record>
         
         <!--

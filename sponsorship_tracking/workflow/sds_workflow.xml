@@ -198,5 +198,11 @@
             <field name="act_to" ref="act_sub_reject" />
             <field name="signal">sub_reject</field>
         </record>
+
+        <!-- Remove flow_stop when sponsorship is terminated -->
+        <record model="workflow.activity" id="recurring_contract.act_terminated">
+            <field name="flow_stop" eval='False' />
+        </record>
+        
     </data>
 </openerp>
