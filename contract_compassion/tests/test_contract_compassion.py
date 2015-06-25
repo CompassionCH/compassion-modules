@@ -97,6 +97,7 @@ class test_contract_compassion(common.TransactionCase):
             'group_id': group_id,
             'channel': channel,
             'next_invoice_date': next_invoice_date,
+            'type': 'O',
         })
         return contract_id
 
