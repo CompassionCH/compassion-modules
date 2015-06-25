@@ -476,13 +476,14 @@ class sponsorship_contract(orm.Model):
                         cr)
 
         # Log a note in the contracts
-        self.pool.get('mail.thread').message_post(
-            cr, uid, list(contract_ids),
-            "The project was reactivated."
-            "<br/>Invoices due in the suspension period "
-            "are automatically reverted.",
-            "Project Reactivated", 'comment',
-            context={'thread_model': self._name})
+        if contract_ids:
+            self.pool.get('mail.thread').message_post(
+                cr, uid, list(contract_ids),
+                "The project was reactivated."
+                "<br/>Invoices due in the suspension period "
+                "are automatically reverted.",
+                "Project Reactivated", 'comment',
+                context={'thread_model': self._name})
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
