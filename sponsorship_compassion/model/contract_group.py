@@ -15,7 +15,7 @@ from openerp.tools.translate import _
 
 from datetime import datetime
 
-from .product import GIFT_NAMES
+from .product import GIFT_NAMES, SPONSORSHIP_CATEGORY
 
 import logging
 
@@ -133,6 +133,24 @@ class contract_group(orm.Model):
         if contract.type != 'SC':
             invl_data = super(contract_group, self)._setup_inv_line_data(
                 cr, uid, contract_line, invoice_id, context)
+
+            # If project is suspended, either skip invoice or replace product
+            if contract.type == 'S' and not \
+                    contract.child_id.project_id.disburse_funds:
+                config_obj = self.pool.get('ir.config_parameter')
+                suspend_config_id = config_obj.search(cr, uid, [(
+                    'key', '=', 'sponsorship_compassion.suspend_product_id')],
+                    context=context)
+                if not suspend_config_id:
+                    return False
+                current_product = self.pool.get('product.product').browse(
+                    cr, uid, invl_data['product_id'], {'lang': 'en_US'})
+                if current_product.categ_name == SPONSORSHIP_CATEGORY:
+                    product_id = int(config_obj.browse(
+                        cr, uid, suspend_config_id[0], context).value)
+                    invl_data.update(self.pool.get(
+                        'recurring.contract').get_suspend_invl_data(
+                        cr, uid, product_id, context))
 
             if contract.type == 'G':
                 sponsorship = contract_line.sponsorship_id

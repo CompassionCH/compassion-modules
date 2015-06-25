@@ -17,10 +17,9 @@ class compassion_project(orm.Model):
     """
     _inherit = 'compassion.project'
 
-    def suspend_funds(self, cr, uid, project_id, context=None,
-                      date_start=None, date_end=None):
+    def suspend_funds(self, cr, uid, project_id, context=None):
         super(compassion_project, self).suspend_funds(
-            cr, uid, project_id, context, date_start, date_end)
+            cr, uid, project_id, context)
 
         return self._transition_contracts(
             cr, uid, project_id, 'project_suspended', context)

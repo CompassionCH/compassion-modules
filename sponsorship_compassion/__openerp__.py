@@ -95,7 +95,6 @@ Contributors
         'view/res_partner_view.xml',
         'view/generate_gift_view.xml',
         'view/account_invoice_split_wizard_view.xml',
-        'view/suspension_wizard_view.xml',
         'view/child_view.xml',
         'data/payment_terms.xml',
         'data/lang.xml',
