@@ -38,7 +38,9 @@ class contract_origin(orm.Model):
     def _name_get(self, origin):
         name = ""
         if origin.type == 'partner':
-            name = origin.partner_id.name
+            if origin.partner_id.parent_id:
+                name = origin.partner_id.parent_id.name + ", "
+            name += origin.partner_id.name
         elif origin.type in ('event', 'marketing'):
             name = origin.analytic_id.name
         elif origin.type == 'transfer':
