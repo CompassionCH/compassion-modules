@@ -264,15 +264,16 @@ class event_compassion(orm.Model):
         """Check that the event is not linked with expenses or won
         sponsorships."""
         for event in self.browse(cr, uid, ids, context):
-            if event.contract_ids or event.expense_line_ids or \
-                    event.income_line_ids:
+            if event.contract_ids or event.balance:
                 raise orm.except_orm(
                     _('Not authorized action'),
                     _('The event is linked to expenses or sponsorships. '
                       'You cannot delete it.'))
             else:
-                event.project_id.unlink()
-                event.analytic_id.unlink()
+                if event.project_id:
+                    event.project_id.unlink()
+                if event.analytic_id:
+                    event.analytic_id.unlink()
                 event.origin_id.unlink()
         return super(event_compassion, self).unlink(cr, uid, ids, context)
 
