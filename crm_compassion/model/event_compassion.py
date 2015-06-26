@@ -15,6 +15,25 @@ from openerp.tools.translate import _
 from datetime import datetime
 
 
+class account_move_line(orm.Model):
+    _inherit = 'account.move.line'
+
+    def unlink(self, cr, uid, ids, context=None):
+        """ Override unlink to recompute expense/income of events. """
+        event_obj = self.pool.get('crm.event.compassion')
+        line_obj = self.pool.get('account.analytic.line')
+        analytic_line_ids = line_obj.search(
+            cr, uid, [('move_id', 'in', ids)], context=context)
+        account_ids = [l.account_id.id for l in line_obj.browse(
+            cr, uid, analytic_line_ids, context)]
+        event_ids = event_obj.search(cr, uid, [
+            ('analytic_id', 'in', account_ids)], context=context)
+        res = super(account_move_line, self).unlink(cr, uid, ids, context)
+        event_obj._store_set_values(cr, uid, event_ids, [
+            'total_income', 'total_expense', 'balance'], context)
+        return res
+
+
 class event_compassion(orm.Model):
     """A Compassion event. """
     _name = 'crm.event.compassion'
@@ -42,19 +61,30 @@ class event_compassion(orm.Model):
                         ('amount', '>', '0.0')], context=context)
                 field_res['expense_line_ids'] = expense_ids or False
                 field_res['income_line_ids'] = income_ids or False
-                field_res['total_expense'] = sum(
+                field_res['total_expense'] = abs(sum(
                     [l.amount for l in line_obj.browse(cr, uid, expense_ids,
-                                                       context)])
+                                                       context)]))
                 field_res['total_income'] = sum(
                     [l.amount for l in line_obj.browse(cr, uid, income_ids,
                                                        context)])
+                field_res['balance'] = field_res['total_income'] - \
+                    field_res['total_expense']
             else:
                 field_res['expense_line_ids'] = False
                 field_res['income_line_ids'] = False
                 field_res['total_expense'] = 0.0
                 field_res['total_income'] = 0.0
+                field_res['balance'] = 0.0
             res[event.id] = field_res.copy()
 
+        return res
+
+    def _analytic_line_to_events(line_obj, cr, uid, line_ids, context=None):
+        self = line_obj.pool.get('crm.event.compassion')
+        res = list()
+        for line in line_obj.browse(cr, uid, line_ids, context):
+            res.extend(self.search(cr, uid, [
+                ('analytic_id', '=', line.account_id.id)], context=context))
         return res
 
     def _get_event_from_origin(origin_obj, cr, uid, ids, context=None):
@@ -122,10 +152,22 @@ class event_compassion(orm.Model):
             relation="account.analytic.line", readonly=True),
         'total_expense': fields.function(
             _get_analytic_lines, type="float", multi='analytic_line',
-            readonly=True, string=_("Total expense")),
+            readonly=True, string=_("Total expense"), store={
+                'account.analytic.line': (
+                    _analytic_line_to_events, ['amount', 'account_id'], 10)
+            }),
         'total_income': fields.function(
             _get_analytic_lines, type="float", multi='analytic_line',
-            readonly=True, string=_("Total income")),
+            readonly=True, string=_("Total income"), store={
+                'account.analytic.line': (
+                    _analytic_line_to_events, ['amount', 'account_id'], 20)
+            }),
+        'balance': fields.function(
+            _get_analytic_lines, type="float", multi='analytic_line',
+            readonly=True, string=_("Balance"), store={
+                'account.analytic.line': (
+                    _analytic_line_to_events, ['amount', 'account_id'], 30)
+            }),
         'planned_sponsorships': fields.integer(_("Expected sponsorships"),
                                                track_visibility='onchange'),
         'lead_id': fields.many2one('crm.lead', _('Opportunity'),
@@ -222,7 +264,8 @@ class event_compassion(orm.Model):
         """Check that the event is not linked with expenses or won
         sponsorships."""
         for event in self.browse(cr, uid, ids, context):
-            if event.contract_ids or event.analytic_line_ids:
+            if event.contract_ids or event.expense_line_ids or \
+                    event.income_line_ids:
                 raise orm.except_orm(
                     _('Not authorized action'),
                     _('The event is linked to expenses or sponsorships. '

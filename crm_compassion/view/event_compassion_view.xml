@@ -20,6 +20,9 @@
                     <field name="partner_id"/>
                     <field name="city"/>
                     <field name="user_id"/>
+                    <field name="total_income"/>
+                    <field name="total_expense"/>
+                    <field name="balance"/>
                     <field name="won_sponsorships"/>
                 </tree>
             </field>
