@@ -12,5 +12,5 @@
 from . import test_webservice
 
 checks = [
-    test_webservice
+    # test_webservice
 ]
