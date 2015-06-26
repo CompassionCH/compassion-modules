@@ -85,7 +85,6 @@ class test_contract_compassion(common.TransactionCase):
             In this test we are testing states changement of a contract and if
             the old invoice are well cancelled when we pay one invoice.
         """
-        # Testing area creation
         contract_group = self._create_group_id(
             'do_nothing', 1, 'month', self.partner_id, 5, self.payment_term_id)
         contract_id = self._create_contract_id(
@@ -136,10 +135,9 @@ class test_contract_compassion(common.TransactionCase):
 
     def test_contract_compassion_second_scenario(self):
         """
-            Testing if invoices are well concelled when we cancel the related
+            Testing if invoices are well cancelled when we cancel the related
             contract.
         """
-        # Testing area creation
         contract_group = self._create_group_id(
             'do_nothing', 1, 'month', self.partner_id1, 1,
             self.payment_term_id)
@@ -184,7 +182,6 @@ class test_contract_compassion(common.TransactionCase):
             THe invoice paid should not be updated, whereas the other one
             should be upadted.
         """
-        # Testing area creation
         contract_group = self._create_group_id(
             'do_nothing', 1, 'month', self.partner_id, 1,
             self.payment_term_id)
@@ -206,7 +203,6 @@ class test_contract_compassion(common.TransactionCase):
             self.cr, self.uid, contract_id)
         invoicer_obj = self.registry('recurring.invoicer')
         invoicer_id = contract.button_generate_invoices()
-        invoicer = invoicer_obj.browse(self.cr, self.uid, invoicer_id)
         invoices = invoicer_obj.browse(
             self.cr, self.uid, invoicer_id).invoice_ids
         self._pay_invoice(invoices[1].id)
