@@ -106,6 +106,7 @@ Contributors
     'demo': [
         'demo/sponsorship_compassion_demo.xml'
     ],
+    'demo': ['demo/sponsorship_compassion_demo.xml'],
     'installable': True,
     'auto_install': False,
 }

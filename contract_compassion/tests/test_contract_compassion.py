@@ -206,7 +206,7 @@ class test_contract_compassion(common.TransactionCase):
             self.cr, self.uid, invoicer_id).invoice_ids
         self._pay_invoice(invoices[1].id)
         self.assertEqual(len(invoices), 2)
-        
+
         # Updating of the contract
         contract_line_obj = self.registry('recurring.contract.line')
         contract_line_obj.write(

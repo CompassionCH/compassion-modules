@@ -16,6 +16,8 @@ install:
 - pip install MySQL-python
 - pip install unidecode
 - pip install pysmb
+- pip install urllib3
+- pip install certifi
 - pip install coveralls
 - git clone https://github.com/albertsh/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
   -b r2
@@ -42,4 +44,8 @@ script:
 after_success:
 - coveralls
 before_script:
-- openssl aes-256-cbc -K $encrypted_f7bf959fc25e_key -iv $encrypted_f7bf959fc25e_iv -in travis/odoo_travis.conf.enc -out ${HOME}/odoo-7.0/odoo.conf -d
+    # - openssl aes-256-cbc -K $encrypted_f7bf959fc25e_key -iv $encrypted_f7bf959fc25e_iv -in travis/test.conf.enc -out ${HOME}/odoo-7.0/odoo.conf -d
+    # - echo " ----------- MY DECRYPTED FILE IS HERE --------------------"
+    # - cat ${HOME}/odoo-7.0/odoo.conf
+    - openssl aes-256-cbc -K $encrypted_f7bf959fc25e_key -iv $encrypted_f7bf959fc25e_iv -in travis/odoo_travis.conf.enc -out ${HOME}/odoo-7.0/odoo.conf -d
+

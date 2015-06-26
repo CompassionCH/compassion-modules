@@ -76,7 +76,6 @@ class generate_gift_wizard(orm.TransientModel):
                                         relativedelta(months=12)).strftime(DF)
                 else:
                     invoice_date = wizard.invoice_date
-
                 inv_data = {
                     'account_id': partner.property_account_receivable.id,
                     'type': 'out_invoice',

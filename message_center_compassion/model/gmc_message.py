@@ -165,12 +165,13 @@ class gmc_message_pool(orm.Model):
         """ Process given messages in pool. """
 
         # Find company country codes
+        if not isinstance(ids, list):
+            ids = [ids]
         company_obj = self.pool.get('res.company')
         company_ids = company_obj.search(cr, uid, [], context=context)
         companies = company_obj.browse(cr, uid, company_ids, context)
         country_codes = [company.partner_id.country_id.code
                          for company in companies]
-
         today = datetime.now()
         for message in self.browse(cr, uid, ids, context=context):
             mess_date = datetime.strptime(message.date[:10], DF)
@@ -179,7 +180,8 @@ class gmc_message_pool(orm.Model):
                 res = False
                 action = message.action_id
                 if action.direction == 'in':
-                    if message.partner_country_code in country_codes:
+                    if message.partner_country_code in country_codes or \
+                            context.get('test_mode'):
                         try:
                             res = self._perform_incoming_action(
                                 cr, uid, message, context)

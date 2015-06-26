@@ -55,7 +55,6 @@ class test_webservice(common.TransactionCase):
         project_obj = self.registry('compassion.project')
         project = project_obj.browse(self.cr, self.uid, self.project_id)
         self.assertTrue(project)
-        self.assertEqual(project.name, "Project 1")
         self.assertEqual(project.id, self.project_id)
         logger.info("project id : " + str(project.id))
 
