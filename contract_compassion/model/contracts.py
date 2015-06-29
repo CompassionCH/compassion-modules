@@ -397,7 +397,8 @@ class recurring_contract(orm.Model):
     def contract_waiting(self, cr, uid, ids, context=None):
         for contract in self.browse(cr, uid, ids, {'lang': 'en_US'}):
             payment_term = contract.group_id.payment_term_id.name
-            if 'LSV' in payment_term or 'Postfinance' in payment_term:
+            if contract.type == 'S' and ('LSV' in payment_term or
+                                         'Postfinance' in payment_term):
                 # Recompute next_invoice_date
                 today = datetime.today()
                 next_invoice_date = datetime.strptime(
