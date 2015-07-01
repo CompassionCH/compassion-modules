@@ -18,7 +18,7 @@ from openerp import netsvc
 
 
 class contract_group(orm.Model):
-    """ Add BVR on groups and add BVR ref and analytics_id
+    """ Add BVR on groups and add BVR ref and analytic_id
     in invoices """
     _inherit = 'recurring.contract.group'
 
@@ -189,8 +189,9 @@ class contract_group(orm.Model):
         analytic = self.pool.get('account.analytic.default').account_get(
             cr, uid, product_id, partner_id, uid, time.strftime('%Y-%m-%d'),
             context=context)
-        if analytic and analytic.analytics_id:
-            inv_line_data.update({'analytics_id': analytic.analytics_id.id})
+        if analytic and analytic.analytic_id:
+            inv_line_data.update({
+                'account_analytic_id': analytic.analytic_id.id})
 
         return inv_line_data
 

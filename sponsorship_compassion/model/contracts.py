@@ -395,8 +395,8 @@ class sponsorship_contract(orm.Model):
             'name': 'Replacement of sponsorship (fund-suspended)'}
         rec = self.pool.get('account.analytic.default').account_get(
             cr, uid, product_id, context=context)
-        if rec and rec.analytics_id:
-            vals['analytics_id'] = rec.analytics_id.id
+        if rec and rec.analytic_id:
+            vals['account_analytic_id'] = rec.analytic_id.id
 
         return vals
 
@@ -434,8 +434,8 @@ class sponsorship_contract(orm.Model):
             }
             rec = self.pool.get('account.analytic.default').account_get(
                 cr, uid, sponsorship_product.id, context=context)
-            if rec and rec.analytics_id:
-                invl_data['analytics_id'] = rec.analytics_id.id
+            if rec and rec.analytic_id:
+                invl_data['account_analytic_id'] = rec.analytic_id.id
             invl_obj.write(cr, uid, invl_ids, invl_data, context)
 
             inv_ids = set()

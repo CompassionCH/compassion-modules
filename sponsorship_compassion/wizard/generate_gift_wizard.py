@@ -132,8 +132,8 @@ class generate_gift_wizard(orm.TransientModel):
         analytic = self.pool.get('account.analytic.default').account_get(
             cr, uid, product.id, contract.partner_id.id, uid,
             time.strftime(DF), context=context)
-        if analytic and analytic.analytics_id:
-            inv_line_data['analytics_id'] = analytic.analytics_id.id
+        if analytic and analytic.analytic_id:
+            inv_line_data['account_analytic_id'] = analytic.analytic_id.id
 
         # Give a better name to invoice_line
         if not wizard.description:
