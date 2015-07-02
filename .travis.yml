@@ -16,12 +16,14 @@ install:
 - pip install MySQL-python
 - pip install unidecode
 - pip install pysmb
+- pip install urllib3
+- pip install certifi
 - pip install coveralls
 - git clone https://github.com/CompassionCH/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
   -b r2
 - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
 - git clone https://github.com/OCA/bank-statement-reconcile.git ${HOME}/build/CompassionCH/bank-statement-reconcile
-  -b master
+  -b 7.0
 - git clone https://github.com/OCA/l10n-switzerland.git ${HOME}/build/CompassionCH/l10n-switzerland
   -b 7.0
 - git clone https://github.com/OCA/web.git ${HOME}/build/CompassionCH/web -b 7.0
@@ -41,5 +43,5 @@ script:
 - travis_run_tests
 after_success:
 - coveralls
-
-
+before_script:
+    - openssl aes-256-cbc -K $encrypted_f7bf959fc25e_key -iv $encrypted_f7bf959fc25e_iv -in travis/odoo.conf.enc -out ${HOME}/odoo-7.0/odoo.conf -d
