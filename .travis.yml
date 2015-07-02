@@ -44,5 +44,5 @@ script:
 after_success:
 - coveralls
 before_script:
-    - openssl aes-256-cbc -K $encrypted_3f9ae8c16e87_key -iv $encrypted_3f9ae8c16e87_iv -in travis/odoo_travis.conf.enc -out ${HOME}/odoo-7.0/odoo.conf -d
+    - openssl aes-256-cbc -K $encrypted_3f9ae8c16e87_key -iv $encrypted_3f9ae8c16e87_iv -in travis/odoo.conf.enc -out ${HOME}/odoo-7.0/odoo.conf -d
 
