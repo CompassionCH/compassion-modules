@@ -44,8 +44,5 @@ script:
 after_success:
 - coveralls
 before_script:
-    # - openssl aes-256-cbc -K $encrypted_f7bf959fc25e_key -iv $encrypted_f7bf959fc25e_iv -in travis/test.conf.enc -out ${HOME}/odoo-7.0/odoo.conf -d
-    # - echo " ----------- MY DECRYPTED FILE IS HERE --------------------"
-    # - cat ${HOME}/odoo-7.0/odoo.conf
     - openssl aes-256-cbc -K $encrypted_f7bf959fc25e_key -iv $encrypted_f7bf959fc25e_iv -in travis/odoo_travis.conf.enc -out ${HOME}/odoo-7.0/odoo.conf -d
 
