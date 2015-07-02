@@ -86,7 +86,7 @@ class test_contract_compassion(common.TransactionCase):
         """
         contract_group = self._create_group(
             'do_nothing', 1, 'month', self.partner_id, 5, self.payment_term_id)
-        contract_id = self._create_contract_id(
+        contract_id = self._create_contract(
             datetime.today().strftime(DF), contract_group,
             'phone', datetime.today().strftime(DF))
         self._create_contract_line(
@@ -140,7 +140,7 @@ class test_contract_compassion(common.TransactionCase):
         contract_group = self._create_group(
             'do_nothing', 1, 'month', self.partner_id1, 1,
             self.payment_term_id)
-        contract_id = self._create_contract_id(
+        contract_id = self._create_contract(
             datetime.today().strftime(DF), contract_group, 'postal',
             datetime.today().strftime(DF))
         self._create_contract_line(
@@ -187,7 +187,7 @@ class test_contract_compassion(common.TransactionCase):
         contract_group2 = self._create_group(
             'do_nothing', 1, 'month', self.partner_id1, 2,
             self.payment_term_id)
-        contract_id = self._create_contract_id(
+        contract_id = self._create_contract(
             datetime.today().strftime(DF), contract_group,
             'postal', datetime.today().strftime(DF))
         contract_line_id = self._create_contract_line(
