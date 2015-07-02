@@ -228,7 +228,7 @@ class test_contract_compassion(common.TransactionCase):
             self.cr, self.uid, invoice_upd.invoice_line[0].id)
         self.assertEqual(invoice_line_up.price_unit, ctr_line_id.amount)
         self.assertEqual(invoice_line_up.price_subtotal, ctr_line_id.subtotal)
-        
+
     def _create_contract(self, start_date, group_id, channel,
                          next_invoice_date):
         """
