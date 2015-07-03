@@ -15,7 +15,7 @@ from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
 from openerp import SUPERUSER_ID
 import pytz
 from datetime import datetime, timedelta, time
-
+import pdb
 
 class hr_planning_wizard(orm.TransientModel):
     _name = 'hr.planning.wizard'
@@ -207,7 +207,7 @@ class hr_planning_wizard(orm.TransientModel):
     def _get_time_zone(self, cr, uid, context=None):
         user_pool = self.pool.get('res.users')
         user = user_pool.browse(cr, SUPERUSER_ID, uid)
-        tz = pytz.timezone(user.partner_id.tz) or pytz.utc
+        tz = pytz.utc if not user.partner_id.tz else pytz.timezone(user.partner_id.tz)
         return tz
 
     def _time_from_float(self, cr, uid, flt_time, context=None):

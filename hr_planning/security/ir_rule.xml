@@ -3,7 +3,7 @@
     <data>
         <record id="property_rule_holidays_employee" model="ir.rule">
             <field name="name">Employee Planning Request Rule</field>
-            <field model="ir.model" name="model_id" ref="model_hr_planning_day_move_request"/>
+            <field name="model_id" ref="model_hr_planning_day_move_request"/>
             <field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
             <field name="perm_create" eval="False"/>
             <field name="perm_write" eval="False"/>
@@ -12,7 +12,7 @@
         </record>
         <record id="property_rule_planning_request_write" model="ir.rule">
             <field name="name">Employee Planning request Rule</field>
-            <field model="ir.model" name="model_id" ref="model_hr_planning_day_move_request"/>
+            <field name="model_id" ref="model_hr_planning_day_move_request"/>
             <field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
             <field name="perm_read" eval="False"/>
             <field name="groups" eval="[(4,ref('base.group_user'))]"/>
