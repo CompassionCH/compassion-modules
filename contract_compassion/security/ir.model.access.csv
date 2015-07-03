@@ -11,10 +11,5 @@
 "acces_account_move_line","Full access on account.move.line","account.model_account_move_line","child_compassion.group_sponsorship",1,1,1,1
 "acces_payment_line","Write access on payment.line","account_payment.model_payment_line","child_compassion.group_sponsorship",1,1,0,0
 "acces_account_journal","Read access on account.journal","account.model_account_journal","child_compassion.group_sponsorship",1,0,0,0
-"acces_account_asset_depreciation_line","Write access on account.asset.depreciation.line","account_asset_management.model_account_asset_depreciation_line","child_compassion.group_sponsorship",1,1,0,0
-"acces_account_analytic_plan_instance","Read access on account.analytic.plan.instance","account_analytic_plans.model_account_analytic_plan_instance","child_compassion.group_sponsorship",1,0,0,0
-"acces_account_analytic_plan_instance_line","Read access on account.analytic.plan.instance.line","account_analytic_plans.model_account_analytic_plan_instance_line","child_compassion.group_sponsorship",1,0,0,0
 "acces_account_period","Read access on account.period","account.model_account_period","child_compassion.group_sponsorship",1,0,0,0
 "acces_account_account_type","Read access on account.account.type","account.model_account_account_type","child_compassion.group_sponsorship",1,0,0,0
-
-
