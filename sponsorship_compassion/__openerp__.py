@@ -86,7 +86,8 @@ Contributors
     'website': 'http://www.compassion.ch',
     'depends': ['contract_compassion', 'l10n_ch_payment_slip', 'crm',
                 'l10n_ch', 'account_cancel', 'partner_compassion',
-                'web_m2x_options', 'account_invoice_split_invoice'],
+                'web_m2x_options', 'account_invoice_split_invoice',
+                'account_analytic_compassion'],
     'data': [
         'view/sponsorship_contract_view.xml',
         'view/sponsorship_contract_group_view.xml',
@@ -96,14 +97,15 @@ Contributors
         'view/generate_gift_view.xml',
         'view/account_invoice_split_wizard_view.xml',
         'view/child_view.xml',
-        'data/payment_terms.xml',
         'data/lang.xml',
         'data/sequence.xml',
         'data/sponsorship_product.xml',
         'data/analytic_accounting.xml',
         'workflow/contract_workflow.xml',
     ],
-    'demo': [],
+    'demo': [
+        'demo/sponsorship_compassion_demo.xml'
+    ],
     'installable': True,
     'auto_install': False,
 }

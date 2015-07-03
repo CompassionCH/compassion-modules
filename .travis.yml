@@ -1,41 +1,48 @@
 addons:
   apt:
     packages:
-      - expect-dev  # provides unbuffer utility
-      - python-lxml # because pip installation is slow
-
+    - expect-dev
+    - python-lxml
 language: python
-
 python:
-  - "2.7"
-
+- '2.7'
 env:
-  - VERSION="7.0" ODOO_REPO="odoo/odoo"
-  
+- VERSION="7.0" ODOO_REPO="odoo/odoo" 
 virtualenv:
   system_site_packages: true
-  
 install:
-  - pip install flake8
-  - git clone https://github.com/CompassionCH/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools -b r2
-  - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
-  - git clone https://github.com/CompassionCH/web.git ${HOME}/build/CompassionCH/web -b 7.0
-  - git clone https://github.com/CompassionCH/compassion-accounting.git ${HOME}/build/CompassionCH/compassion-accounting -b 7.0
-  - git clone https://github.com/OCA/bank-statement-reconcile.git ${HOME}/build/CompassionCH/bank-statement-reconcile -b 7.0
-  - git clone https://github.com/OCA/l10n-switzerland.git ${HOME}/build/CompassionCH/l10n-switzerland -b 7.0
-  - git clone https://github.com/OCA/bank-payment.git ${HOME}/build/CompassionCH/bank-payment -b 7.0
-  - git clone https://github.com/OCA/account-financial-tools.git ${HOME}/build/CompassionCH/account-financial-tools -b 7.0
-  - git clone https://github.com/OCA/partner-contact.git ${HOME}/build/CompassionCH/partner-contact -b 7.0
-  - travis_install_nightly
-  
-
+- pip install flake8
+- pip install pysftp
+- pip install MySQL-python
+- pip install unidecode
+- pip install pysmb
+- pip install urllib3
+- pip install certifi
+- pip install coveralls
+- git clone https://github.com/CompassionCH/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
+  -b r2
+- export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
+- git clone https://github.com/OCA/bank-statement-reconcile.git ${HOME}/build/CompassionCH/bank-statement-reconcile
+  -b 7.0
+- git clone https://github.com/OCA/l10n-switzerland.git ${HOME}/build/CompassionCH/l10n-switzerland
+  -b 7.0
+- git clone https://github.com/OCA/web.git ${HOME}/build/CompassionCH/web -b 7.0
+- git clone https://github.com/CompassionCH/compassion-accounting.git ${HOME}/build/CompassionCH/compassion-accounting
+  -b 1.5
+- git clone https://github.com/OCA/bank-payment.git ${HOME}/build/CompassionCH/bank-payment
+  -b 7.0
+- git clone https://github.com/OCA/account-financial-tools.git ${HOME}/build/CompassionCH/account-financial-tools
+  -b 7.0
+- git clone https://github.com/CompassionCH/compassion-switzerland.git ${HOME}/build/CompassionCH/compassion-switzerland
+  -b 1.5-devel
+- git clone https://github.com/OCA/partner-contact.git ${HOME}/build/CompassionCH/partner-contact
+  -b 7.0
+- travis_install_nightly
 script:
-  - travis/travis_header.sh
-  # - travis_run_tests
-  - test_flake8
+- travis/travis_header.sh
+- travis_run_tests
+after_success:
+- coveralls
+before_script:
+    - openssl aes-256-cbc -K $encrypted_f7bf959fc25e_key -iv $encrypted_f7bf959fc25e_iv -in travis/odoo.conf.enc -out ${HOME}/odoo-7.0/odoo.conf -d
 
-notifications:
-  email: false
-  
-# after-success:
-  # - coveralls

@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Contracts',
-    'version': '1.0',
+    'version': '1.1',
     'category': 'Other',
     'description': """
 Compassion contract module.
@@ -50,6 +50,7 @@ Compassion contract module.
         'security/ir.model.access.csv',
         'data/friday_invoicer_cron.xml',
         'data/product.xml',
+        'data/payment_terms.xml',
     ],
     'demo': [],
     'installable': True,

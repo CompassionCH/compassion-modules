@@ -44,7 +44,8 @@ Installation
 
 To install this module, you need to:
 
-* install pysftp (sudo pip install pysftp)
+* install certifi (sudo pip install certifi)
+* install urllib3 (sudo pip install urllib3)
 
 Configuration
 =============
@@ -82,6 +83,9 @@ Contributors
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['mail', 'web_m2x_options', 'document'],
+    'external_dependencies': {
+        'python': ['urllib3', 'certifi'],
+    },
     'data': [
         'security/sponsorship_groups.xml',
         'security/ir.model.access.csv',

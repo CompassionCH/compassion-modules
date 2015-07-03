@@ -55,7 +55,6 @@ class test_webservice(common.TransactionCase):
         project_obj = self.registry('compassion.project')
         project = project_obj.browse(self.cr, self.uid, self.project_id)
         self.assertTrue(project)
-        self.assertEqual(project.name, "Project 1")
         self.assertEqual(project.id, self.project_id)
         logger.info("project id : " + str(project.id))
 
@@ -97,5 +96,5 @@ class test_webservice(common.TransactionCase):
         self.assertEqual(child.firstname, "Happiness")
         self.assertEqual(child.gender, "F")
         self.assertEqual(child.birthdate, "2005-04-17")
-        self.assertTrue(child.case_study_ids[0])
+        self.assertTrue(child.case_study_ids)
         self.assertTrue(child.portrait)
