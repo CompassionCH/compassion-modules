@@ -153,7 +153,7 @@ class recurring_contract(orm.Model):
                             cr, uid,
                             invoice.partner_id.id,
                             contract.id,
-                            first_pay_date,
+                            invoice.date_invoice,
                             context)
 
         # Activate contracts
