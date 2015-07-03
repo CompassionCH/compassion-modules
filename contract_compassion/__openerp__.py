@@ -38,7 +38,7 @@ Compassion contract module.
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['recurring_contract', 'account_banking_mandate',
-                'child_compassion'],
+                'child_compassion', 'account_asset_management'],
     'data': [
         'data/install.xml',
         'view/end_contract_wizard_view.xml',
