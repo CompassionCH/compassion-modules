@@ -189,7 +189,7 @@ class sponsorship_contract(orm.Model):
         return super(sponsorship_contract, self).create(
             cr, uid, vals, context)
 
-    def write(self, cr, uid, ids, vals, context):
+    def write(self, cr, uid, ids, vals, context=None):
         """ Perform various checks on contract modification """
         if not isinstance(ids, list):
             ids = [ids]

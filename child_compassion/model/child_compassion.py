@@ -11,7 +11,9 @@
 
 import logging
 import requests
-
+import urllib3
+import certifi
+import json
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
@@ -264,22 +266,15 @@ class compassion_child(orm.Model):
 
         for child in self.browse(cr, uid, ids, context):
             url = self.get_url(child.code, 'information')
-            r = requests.get(url)
-            html_res = r.text
+            r = self.https_get(url)
             json_data = dict()
-            error = r.status_code != 200
             try:
-                json_data = r.json()
+                json_data = json.loads(r)
             except:
-                error = True
-            if error:
-                error_message = json_data.get('error', {'message': html_res})
                 raise orm.except_orm(
                     'NetworkError',
                     _('An error occured while fetching general information '
-                      'for child %s. ') % child.code + error_message.get(
-                        'message', 'Bad response'))
-
+                      'for child %s. ') % child.code)
             vals = {
                 'name': json_data['childName'],
                 'firstname': json_data['childPersonalName'],
@@ -425,20 +420,14 @@ class compassion_child(orm.Model):
         if context is None:
             context = dict()
         url = self.get_url(child.code, 'casestudy')
-        r = requests.get(url)
-        html_res = r.text
+        r = self.https_get(url)
         json_data = dict()
-        error = r.status_code != 200
         try:
-            json_data = r.json()
+            json_data = json.loads(r)
         except:
-            error = True
-        if error:
-            error_message = json_data.get('error', {'message': html_res})
             raise orm.except_orm('NetworkError',
                                  _('An error occured while fetching the last '
-                                   'case study for child %s. ') % child.code +
-                                 error_message.get('message', 'Bad response'))
+                                   'case study for child %s. ') % child.code)
 
         child_prop_obj = self.pool.get('compassion.child.property')
         info_date = json_data['childCaseStudyDate']
@@ -573,6 +562,20 @@ class compassion_child(orm.Model):
             context={'thread_model': self._name})
         return True
 
+    def https_get(self, url):
+        """" Try to fetch URL with secure connection. """
+        http = urllib3.PoolManager(
+            cert_reqs='CERT_REQUIRED',  # Force certificate check.
+            ca_certs=certifi.where(),   # Path to the Certifi bundle.
+        )
+        r = None
+        try:
+            r = http.request('GET', url).data
+        except urllib3.exceptions.SSLError:
+            logger.error("Could not connect with SSL CERT.")
+            r = requests.get(url).text
+        return r
+
     def get_url(self, child_code, api_mess):
         url = config.get('compass_url')
         api_key = config.get('compass_api_key')
@@ -626,14 +629,22 @@ class compassion_child(orm.Model):
         if not child:
             raise orm.except_orm('ObjectError', _('No valid child id given !'))
         url = self.get_url(child.code, 'exitdetails')
-        r = requests.get(url)
-        json_data = r.json()
-        if not r.status_code == 200:
+        r = self.https_get(url)
+        try:
+            json_data = json.loads(r)
+        except:
+            self.pool.get('mail.thread').message_post(
+                cr, uid, child_id, "Invalid JSON Data received",
+                "Error fetching exit details", 'comment',
+                context={'thread_model': self._name})
+            return False
+        if json_data.get('error'):
             self.pool.get('mail.thread').message_post(
                 cr, uid, child_id, json_data['error']['message'],
                 "Error fetching exit details", 'comment',
                 context={'thread_model': self._name})
             return False
+
         child.write({
             'exit_date': json_data['exitDate'],
             'last_attended_project': json_data['dateLastAttendedProject'],

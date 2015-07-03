@@ -10,10 +10,16 @@
 ##############################################################################
 
 import requests
+import urllib3
+import certifi
+import json
+import logging
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
+
+logger = logging.getLogger(__name__)
 
 
 class compassion_project(orm.Model):
@@ -488,10 +494,26 @@ class compassion_project(orm.Model):
                 api_key)
 
         # Send the request and retrieve the result.
-        r = requests.get(url)
-        json_result = r.json()
-        if not r.status_code == 200:
+        r = self.https_get(url)
+        json_result = None
+        try:
+            json_result = json.loads(r)
+        except:
             raise orm.except_orm(
-                'Error calling %s for project %s' % (api_mess, project_code),
-                json_result['error']['message'])
+                'Error calling webservice',
+                'Error calling %s for project %s' % (api_mess, project_code))
         return json_result
+
+    def https_get(self, url):
+        """" Try to fetch URL with secure connection. """
+        http = urllib3.PoolManager(
+            cert_reqs='CERT_REQUIRED',  # Force certificate check.
+            ca_certs=certifi.where(),   # Path to the Certifi bundle.
+        )
+        r = None
+        try:
+            r = http.request('GET', url).data
+        except urllib3.exceptions.SSLError:
+            logger.error("Could not connect with SSL CERT.")
+            r = requests.get(url).text
+        return r

@@ -19,10 +19,10 @@ def migrate(cr, version):
 
     # Move payment terms data to contract_compassion module
     cr.execute(
-            """
+        """
         UPDATE ir_model_data
-        SET module = 'contract_compassion'
-        WHERE module = 'sponsorship_compassion' AND
-        model IN ('account.payment.term','account.payment.term.line')
+        SET module='contract_compassion'
+        WHERE module='sponsorship_compassion' AND
+        model IN('account.payment.term', 'account.payment.term.line')
         """
     )

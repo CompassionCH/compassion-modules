@@ -7,7 +7,6 @@
             <field name="note">BVR immediate</field>
         </record>
         <record id="payment_term_line_direct_debit" model="account.payment.term.line">
-            <field name="name">BVR immediate</field>
             <field name="value">balance</field>
             <field eval="0" name="days"/>
             <field eval="0" name="days2"/>
@@ -20,7 +19,6 @@
             <field name="note">LSV immediate</field>
         </record>
         <record id="payment_term_line_lsv" model="account.payment.term.line">
-            <field name="name">LSV immediate debit</field>
             <field name="value">balance</field>
             <field eval="0" name="days"/>
             <field eval="0" name="days2"/>
@@ -31,7 +29,6 @@
             <field name="note">LSV</field>
         </record>
         <record id="payment_term_line_lsv_25th" model="account.payment.term.line">
-            <field name="name">LSV 25th</field>
             <field name="value">balance</field>
             <field eval="0" name="days"/>
             <field eval="0" name="days2"/>
@@ -42,7 +39,6 @@
             <field name="note">LSV</field>
         </record>
         <record id="payment_term_line_lsv_multi_months" model="account.payment.term.line">
-            <field name="name">LSV multi-months</field>
             <field name="value">balance</field>
             <field eval="0" name="days"/>
             <field eval="0" name="days2"/>
@@ -55,7 +51,6 @@
             <field name="note">Postfinance direct debit immediate</field>
         </record>
         <record id="payment_term_line_postfinance_dd" model="account.payment.term.line">
-            <field name="name">Postfinance immediate direct debit</field>
             <field name="value">balance</field>
             <field eval="0" name="days"/>
             <field eval="0" name="days2"/>
@@ -66,7 +61,6 @@
             <field name="note">Postfinance direct debit</field>
         </record>
         <record id="payment_term_line_postfinance_dd_25th" model="account.payment.term.line">
-            <field name="name">Postfinance immediate 25th</field>
             <field name="value">balance</field>
             <field eval="0" name="days"/>
             <field eval="0" name="days2"/>
@@ -77,7 +71,6 @@
             <field name="note">Postfinance direct</field>
         </record>
         <record id="payment_term_line_postfinance_dd_multi_months" model="account.payment.term.line">
-            <field name="name">Postfinance immediate multi-months</field>
             <field name="value">balance</field>
             <field eval="0" name="days"/>
             <field eval="0" name="days2"/>
@@ -90,7 +83,6 @@
             <field name="note">Permanent order immediate</field>
         </record>
         <record id="payment_term_line_permament_order" model="account.payment.term.line">
-            <field name="name">Permanent order immediate</field>
             <field name="value">balance</field>
             <field eval="0" name="days"/>
             <field eval="0" name="days2"/>
@@ -103,7 +95,6 @@
             <field name="note">Bank Transfer Immediate</field>
         </record>
         <record id="payment_term_line_virement" model="account.payment.term.line">
-            <field name="name">Bank Transfer Immediate</field>
             <field name="value">balance</field>
             <field eval="0" name="days"/>
             <field eval="0" name="days2"/>
@@ -116,7 +107,6 @@
             <field name="note">Web Payment Immediate</field>
         </record>
         <record id="payment_term_web_virement" model="account.payment.term.line">
-            <field name="name">Web Payment Immediate</field>
             <field name="value">balance</field>
             <field eval="0" name="days"/>
             <field eval="0" name="days2"/>
