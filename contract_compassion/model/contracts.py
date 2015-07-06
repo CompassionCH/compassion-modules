@@ -139,7 +139,6 @@ class recurring_contract(orm.Model):
                              if move_line.credit > 0] or [0]
 
                 last_pay_date = max(pay_dates)
-                first_pay_date = min(pay_dates)
 
                 for invoice_line in invoice.invoice_line:
                     contract = invoice_line.contract_id
