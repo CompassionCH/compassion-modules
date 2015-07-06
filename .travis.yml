@@ -29,10 +29,10 @@ install:
     - git clone https://github.com/OCA/bank-statement-reconcile.git ${HOME}/build/CompassionCH/bank-statement-reconcile -b 7.0
     - git clone https://github.com/OCA/l10n-switzerland.git ${HOME}/build/CompassionCH/l10n-switzerland -b 7.0
     - git clone https://github.com/OCA/web.git ${HOME}/build/CompassionCH/web -b 7.0
-    - git clone https://github.com/CompassionCH/compassion-accounting.git ${HOME}/build/CompassionCH/compassion-accounting -b 1.5
+    - git clone https://github.com/CompassionCH/compassion-accounting.git ${HOME}/build/CompassionCH/compassion-accounting -b 7.0
     - git clone https://github.com/OCA/bank-payment.git ${HOME}/build/CompassionCH/bank-payment -b 7.0
     - git clone https://github.com/OCA/account-financial-tools.git ${HOME}/build/CompassionCH/account-financial-tools -b 7.0
-    - git clone https://github.com/CompassionCH/compassion-switzerland.git ${HOME}/build/CompassionCH/compassion-switzerland -b 1.5-devel
+    - git clone https://github.com/CompassionCH/compassion-switzerland.git ${HOME}/build/CompassionCH/compassion-switzerland -b 7.0
     - git clone https://github.com/OCA/partner-contact.git ${HOME}/build/CompassionCH/partner-contact -b 7.0
     - travis_install_nightly
 
