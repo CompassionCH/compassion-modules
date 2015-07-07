@@ -18,8 +18,11 @@
                     </attribute>
                 </xpath>
                 
-                <!-- Make origin mandatory for sponsorships -->
+                <!-- Make origin and channel mandatory for sponsorships -->
                 <field name="origin_id" position="attributes">
+                    <attribute name="attrs">{'required':[('type', 'in', ['S','SC'])]}</attribute>
+                </field>
+                <field name="channel" position="attributes">
                     <attribute name="attrs">{'required':[('type', 'in', ['S','SC'])]}</attribute>
                 </field>
                 
@@ -42,6 +45,13 @@
                 <!-- Add context for group view -->
                 <field name="group_id" position="attributes">
                     <attribute name="context">{'default_type': context.get('default_type'), 'default_partner_id': partner_id}</attribute>
+                </field>
+                
+                <!-- Replace filter domain of parent_id field to take correspondant -->
+                <field name="parent_id" position="attributes">
+                    <attribute name="domain" position="replace">
+                        <attribute name="domain">[('correspondant_id', '=', correspondant_id), ('child_id', '!=', child_id)]</attribute>
+                    </attribute>
                 </field>
             </field>
         </record>

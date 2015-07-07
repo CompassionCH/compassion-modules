@@ -215,13 +215,18 @@ class sponsorship_contract(orm.Model):
 
     def unlink(self, cr, uid, ids, context=None):
         for contract in self.browse(cr, uid, ids, context):
+            # We can only delete draft sponsorships.
+            if 'S' in contract.type and contract.state != 'draft':
+                raise orm.except_orm(_('Warning'),
+                                     _('You cannot delete a validated '
+                                       'sponsorship.'))
+            # Remove sponsor of child
             if 'S' in contract.type and contract.child_id:
                 child_sponsor_id = contract.child_id.sponsor_id and \
                     contract.child_id.sponsor_id.id
                 if child_sponsor_id == contract.correspondant_id.id:
                     contract.child_id.write({'sponsor_id': False})
-        res = super(sponsorship_contract, self).unlink(cr, uid, ids, context)
-        return res
+        return super(sponsorship_contract, self).unlink(cr, uid, ids, context)
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -519,16 +524,11 @@ class sponsorship_contract(orm.Model):
 
         if ids:
             contract = self.browse(cr, uid, ids[0], context)
-            if 'S' in contract.type:
+            if 'S' in type and contract.state == 'draft':
                 # If state draft correspondant_id=partner_id
-                if (contract.state == 'draft'):
-                    res['value'].update({
-                        'correspondant_id': partner_id,
-                    })
-        else:
-            res['value'].update({
-                'correspondant_id': partner_id,
-            })
+                res['value']['correspondant_id'] = partner_id
+        elif 'S' in type:
+            res['value']['correspondant_id'] = partner_id
 
         return res
 

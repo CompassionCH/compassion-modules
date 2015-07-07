@@ -219,8 +219,7 @@ class recurring_contract(orm.Model):
         'origin_id': fields.many2one('recurring.contract.origin', _("Origin"),
                                      ondelete='restrict',
                                      track_visibility='onchange'),
-        'channel': fields.selection(__get_channels, string=_("Channel"),
-                                    required=True),
+        'channel': fields.selection(__get_channels, string=_("Channel")),
         'parent_id': fields.many2one(
             'recurring.contract', _('Previous sponsorship'),
             track_visibility='onchange'),
@@ -255,6 +254,16 @@ class recurring_contract(orm.Model):
         res['value'].update({
             'num_pol_ga': num_contracts
         })
+        return res
+
+    def on_change_parent_id(self, cr, uid, ids, parent_id, context=None):
+        """ If a previous sponsorship is selected, the origin should be
+        SUB Sponsorship. """
+        res = dict()
+        if parent_id:
+            origin_id = self.pool.get('recurring.contract.origin').search(
+                cr, uid, [('type', '=', 'sub')], context=context)[0]
+            res['value'] = {'origin_id': origin_id}
         return res
 
     def create(self, cr, uid, vals, context=None):
@@ -605,17 +614,6 @@ class recurring_contract(orm.Model):
         })
         return super(recurring_contract, self).copy(cr, uid, id, default,
                                                     context)
-
-    def unlink(self, cr, uid, ids, context=None):
-        for contract in self.browse(cr, uid, ids, context):
-            # We can only delete draft contracts.
-            if contract.state != 'draft':
-                raise orm.except_orm(_('Warning'),
-                                     _('You cannot delete a contract that is '
-                                       'still active. Terminate it first.'))
-        super(recurring_contract, self).unlink(cr, uid, ids,
-                                               context=context)
-        return
 
     def write(self, cr, uid, ids, vals, context=None):
         """ Perform various checks when a contract is modified. """

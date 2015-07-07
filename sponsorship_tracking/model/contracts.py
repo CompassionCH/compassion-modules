@@ -242,32 +242,62 @@ class recurring_contract(orm.Model):
                                   'sds_uid': uid}, context)
         return res
 
-    def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
+    def on_change_partner_id(self, cr, uid, ids, partner_id,
+                             type, context=None):
+        """ Find parent sponsorship if any is sub_waiting. """
         res = super(recurring_contract, self).on_change_partner_id(
-            cr, uid, ids, partner_id, context)
-        origin_ids = self.pool.get('recurring.contract.origin').search(
-            cr, uid,
-            [('type', '=', 'sub')],
-            context=context)
-        parent_id = self.define_parent_id(cr, uid, partner_id, context)
-        origin_id = origin_ids[0] if parent_id else False
+            cr, uid, ids, partner_id, type, context)
 
-        res['value'].update({
-            'parent_id': parent_id,
-            'origin_id': origin_id
-        })
+        if 'S' in type:
+            origin_id = self.pool.get('recurring.contract.origin').search(
+                cr, uid, [('type', '=', 'sub')], context=context)[0]
+            correspondant_id = partner_id
+
+            if ids:
+                contract = self.browse(cr, uid, ids[0], context)
+                if 'correspondant_id' in res['value']:
+                    correspondant_id = res['value']['correspondant_id']
+                else:
+                    correspondant_id = contract.correspondant_id.id
+
+            parent_id = self.define_parent_id(cr, uid, correspondant_id,
+                                              context)
+
+            if parent_id and (not ids or contract.state == 'draft'):
+                res['value']['parent_id'] = parent_id
+                res['value']['origin_id'] = origin_id
+
         return res
+
+    def _parent_id_changed(self, cr, uid, ids, parent_id, context=None):
+        """ If contract is already validated and parent is sub_waiting,
+        mark the sub. """
+        for contract in self.browse(cr, uid, ids, context):
+            if 'S' in contract.type and contract.state != 'draft':
+                if contract.parent_id:
+                    raise orm.except_orm(
+                        _("Operation Failure"),
+                        _("You cannot change the sub sponsorship."))
+                parent = self.browse(cr, uid, parent_id, context)
+                if parent.sds_state == 'sub_waiting':
+                    wf_service = netsvc.LocalService('workflow')
+                    wf_service.trg_validate(
+                        uid, 'recurring.contract', parent_id,
+                        'new_contract_validated', cr)
 
     def write(self, cr, uid, ids, vals, context=None):
         if 'sds_state' in vals:
             vals['last_sds_state_change_date'] = date.today()
+        if 'parent_id' in vals:
+            self._parent_id_changed(cr, uid, ids, vals['parent_id'], context)
+
         return super(recurring_contract, self).write(
             cr, uid, ids, vals, context)
 
-    def define_parent_id(self, cr, uid, partner_id, context=None):
+    def define_parent_id(self, cr, uid, correspondant_id, context=None):
         same_partner_contracts_ids = self.search(
             cr, uid,
-            [('partner_id', '=', partner_id),
+            [('correspondant_id', '=', correspondant_id),
              ('sds_state', '=', 'sub_waiting')],
             context=context)
         same_partner_contracts = self.browse(

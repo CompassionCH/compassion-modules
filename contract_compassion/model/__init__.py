@@ -13,3 +13,4 @@ from . import contracts
 from . import contract_group
 from . import contract_origin
 from . import product
+from . import account_banking_mandate
