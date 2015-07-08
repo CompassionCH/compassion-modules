@@ -299,10 +299,15 @@ class compassion_child(orm.Model):
             if child.type == 'LDP':
                 res = res and self._create_empty_case_study(
                     cr, uid, child, context)
-
+                if child.state == 'F':
+                    self.get_exit_details(cr, uid, child.id, context)
             else:
-                self._get_basic_informations(cr, uid, child.id, context)
-                res = res and self._get_case_study(cr, uid, child, context)
+                if child.state != 'F':
+                    self._get_basic_informations(cr, uid, child.id, context)
+                    res = res and self._get_case_study(cr, uid, child,
+                                                       context)
+                else:
+                    self.get_exit_details(cr, uid, child.id, context)
 
             project_ids = proj_obj.search(
                 cr, uid, [('code', '=', child.code[:5])],
