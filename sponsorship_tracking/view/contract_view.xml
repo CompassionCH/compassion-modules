@@ -138,7 +138,7 @@
                             <group>
                                 <field name="child_id" readonly="1"/>
                                 <field name="end_reason" states="terminated,cancelled" readonly="1"/>
-                                <field name="no_sub_reason" attrs="{'invisible': [('sds_state', 'not in', ['inform_no_sub', 'no_sub'])]}" readonly="1"/>
+                                <field name="no_sub_reason" attrs="{'invisible': [('sds_state', 'not in', ['inform_no_sub', 'no_sub'])]}"/>
                                 <field name="state" readonly="1"/>
                                 <field name="project_state" readonly="1"/>
                             </group>
