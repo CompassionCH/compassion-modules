@@ -9,6 +9,7 @@
 #
 ##############################################################################
 
+from openerp import api, models
 from openerp.osv import orm
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
@@ -17,35 +18,32 @@ import pytz
 from datetime import datetime, timedelta, time
 import pdb
 
-class hr_planning_wizard(orm.TransientModel):
+class hr_planning_wizard(models.TransientModel):
     _name = 'hr.planning.wizard'
 
     # Global regeneration from wizard
-    def regenerate(self, cr, uid, ids, context=None):
-        employee_obj = self.pool.get('hr.employee')
-        employee_ids = employee_obj.search(cr, uid, [], context=context)
-        self.generate(cr, uid, employee_ids, context)
+    @api.multi
+    def regenerate(self):
+        employees = self.env['hr.employee'].search([])
+        self.generate(employees.ids)
 
-    def generate(self, cr, uid, ids, context=None):
-        employee_obj = self.pool.get('hr.employee')
+    @api.model
+    def generate(self, employee_ids):
         planning_day_obj = self.pool.get('hr.planning.day')
-
-        # Get employees
-        employees = employee_obj.browse(cr, uid, ids, context=context)
-
+        employees = self.env['hr.employee'].browse(employee_ids)
         today = datetime.today()
-
         # Find the time zone
-        tz = self._get_time_zone(cr, uid, context)
-
+        tz = self._get_time_zone()
+        cr = self.env.cr
+        uid = self.env.user.id
+        context = self.env.context
         for employee in employees:
 
             # Clean future planning days
             planning_days_to_remove = planning_day_obj.search(
                 cr, uid,
                 [('employee_id', '=', employee.id),
-                    ('start_date', '>=', today.strftime(DF))],
-                context=context)
+                 ('start_date', '>=', today.strftime(DF))], context=context)
             planning_day_obj.unlink(
                 cr, uid, planning_days_to_remove, context=context)
 
@@ -73,10 +71,10 @@ class hr_planning_wizard(orm.TransientModel):
                     # Loop until the end_date is reached
                     while d <= end_date:
                         start_hour, start_minutes = self._time_from_float(
-                            cr, uid, attendance.hour_from, context)
+                            attendance.hour_from)
 
                         end_hour, end_minutes = self._time_from_float(
-                            cr, uid, attendance.hour_to, context)
+                            attendance.hour_to)
 
                         start_date = datetime(
                             d.year, d.month, d.day, start_hour, start_minutes)
@@ -130,9 +128,14 @@ class hr_planning_wizard(orm.TransientModel):
                                         'end_date': stop_date})
                         d += delta
             # Planning days exceptions
-            self._move_planning_days(cr, uid, employee, context)
+            self._move_planning_days(employee)
 
-    def _move_planning_days(self, cr, uid, employee, context=None):
+    @api.model
+    def _move_planning_days(self, employee):
+        cr = self.env.cr
+        uid = self.env.user.id
+        context = self.env.context
+
         planning_day_move_request_obj = self.pool.get(
             'hr.planning.day.move.request')
         # Search for validated request
@@ -179,9 +182,9 @@ class hr_planning_wizard(orm.TransientModel):
             # Add case
             else:
                 start_hour, start_minutes = self._time_from_float(
-                    cr, uid, planning_day_move_request.hour_from, context)
+                    planning_day_move_request.hour_from)
                 end_hour, end_minutes = self._time_from_float(
-                    cr, uid, planning_day_move_request.hour_to, context)
+                    planning_day_move_request.hour_to)
                 new_start_date = datetime.combine(
                     datetime.strptime(
                         planning_day_move_request.new_date, DF).date(),
@@ -192,7 +195,7 @@ class hr_planning_wizard(orm.TransientModel):
                         planning_day_move_request.new_date, DF).date(),
                     time(end_hour, end_minutes)
                 )
-                tz = self._get_time_zone(cr, uid, context)
+                tz = self._get_time_zone()
                 new_start_date = new_start_date - tz.utcoffset(new_start_date)
                 new_end_date = new_end_date - tz.utcoffset(new_end_date)
 
@@ -204,13 +207,13 @@ class hr_planning_wizard(orm.TransientModel):
                      'employee_id': employee.id},
                     context=context)
 
-    def _get_time_zone(self, cr, uid, context=None):
-        user_pool = self.pool.get('res.users')
-        user = user_pool.browse(cr, SUPERUSER_ID, uid)
-        tz = pytz.utc if not user.partner_id.tz else pytz.timezone(user.partner_id.tz)
+    @api.model
+    def _get_time_zone(self):
+        tz = pytz.utc if not self.env.user.partner_id.tz else pytz.timezone(self.env.user.partner_id.tz)
         return tz
 
-    def _time_from_float(self, cr, uid, flt_time, context=None):
+    @api.model
+    def _time_from_float(self, flt_time):
         hour = int(flt_time)
         minute = int((flt_time - hour) * 60)
         return(hour, minute)
