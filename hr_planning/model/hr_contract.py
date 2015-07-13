@@ -11,7 +11,7 @@
 
 from openerp import api, models
 from openerp.osv import orm
-
+import pdb
 
 class hr_contract(models.Model):
     _inherit = "hr.contract"
@@ -23,8 +23,7 @@ class hr_contract(models.Model):
             res._generate()
         return res
 
-    @api.model
-    @api.one
+    @api.multi
     def write(self, vals):
         res = super(hr_contract, self).write(vals)
         if('working_hours' in vals or
@@ -33,18 +32,18 @@ class hr_contract(models.Model):
             self._generate()
         return res
 
+    @api.multi
     def unlink(self):
-        planning_day_ids = self.pool.get('hr.planning.day').search(
-            [('contract_id', 'in', self.id)])
-        planning_day_ids.unlink()
-        res = super(hr_contract, self).unlink(
-            cr, uid, ids, context=context)
+        for contract in self:
+            planning_day_ids = self.env['hr.planning.day'].search(
+                [('contract_id', '=', contract.id)])
+            planning_day_ids.unlink()
+        res = super(hr_contract, self).unlink()
         return res
-    
-    @api.model
+
+    @api.multi
     def _generate(self):
         employee_ids = []
         for contract in self:
             employee_ids.append(contract.employee_id.id)
-        self.pool.get('hr.planning.wizard').generate(
-            self.env.cr, self.env.user.id, employee_ids, context=self.env.context)
+        self.env['hr.planning.wizard'].generate(employee_ids)
