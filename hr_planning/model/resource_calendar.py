@@ -9,40 +9,37 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
+from openerp import api, models
 
 
-class resource_calendar(orm.Model):
+class resource_calendar(models.Model):
     _inherit = 'resource.calendar'
 
-    def create(self, cr, uid, vals, context=None):
-        res = super(resource_calendar, self).create(cr, uid, vals,
-                                                    context=context)
+    @api.model
+    def create(self, vals):
+        res = super(resource_calendar, self).create(vals)
 
         if ('attendance_ids' in vals):
-            self._generate(cr, uid, [res], context)
+            res._generate()
         return res
 
-    def write(self, cr, uid, ids, vals, context=None):
-        res = super(resource_calendar, self).write(
-            cr, uid, ids, vals, context=context)
+    def write(self, vals):
+        res = super(resource_calendar, self).write(vals)
 
         if ('attendance_ids' in vals):
-            self._generate(cr, uid, ids, context)
+            self._generate()
         return res
 
-    def _generate(self, cr, uid, ids, context=None):
-        for id in ids:
-            contract_obj = self.pool.get('hr.contract')
-            contract_ids = contract_obj.search(
-                cr, uid, [('working_hours', '=', id)], context=context)
+    @api.model
+    def _generate(self):
+        for calendar in self:
+            contract_obj = self.env['hr.contract']
+            contracts = contract_obj.search(
+                [('working_hours', '=', calendar.id)])
 
-            contracts = contract_obj.browse(
-                cr, uid, contract_ids, context=context)
             employee_ids = []
 
             for contract in contracts:
                 employee_ids.append(contract.employee_id.id)
 
-            self.pool.get('hr.planning.wizard').generate(
-                cr, uid, employee_ids, context=context)
+            self.env['hr.planning.wizard'].generate(employee_ids)

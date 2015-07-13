@@ -9,26 +9,25 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
+from openerp import api, models
 
 
-class hr_holidays(orm.Model):
+class hr_holidays(models.Model):
     _inherit = "hr.holidays"
 
-    def _generate(self, cr, uid, ids, context=None):
-        holidays = self.browse(cr, uid, ids, context=context)
-        employee_ids = [holiday.employee_id.id for holiday in holidays]
-        self.pool.get('hr.planning.wizard').generate(
-            cr, uid, employee_ids, context=context)
+    @api.multi
+    def _generate(self):
+        employee_ids = [holiday.employee_id.id for holiday in self]
+        self.env['hr.planning.wizard'].generate(employee_ids)
 
-    def holidays_validate(self, cr, uid, ids, context=None):
-        res = super(hr_holidays, self).holidays_validate(
-            cr, uid, ids, context=context)
-        self._generate(cr, uid, ids, context)
+    @api.multi
+    def holidays_validate(self):
+        res = super(hr_holidays, self).holidays_validate()
+        self._generate()
         return res
 
-    def holidays_refuse(self, cr, uid, ids, context=None):
-        res = super(hr_holidays, self).holidays_refuse(
-            cr, uid, ids, context=context)
-        self._generate(cr, uid, ids, context)
+    @api.multi
+    def holidays_refuse(self):
+        res = super(hr_holidays, self).holidays_refuse()
+        self._generate()
         return res

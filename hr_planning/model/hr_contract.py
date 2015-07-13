@@ -9,9 +9,9 @@
 #
 ##############################################################################
 
+
 from openerp import api, models
-from openerp.osv import orm
-import pdb
+
 
 class hr_contract(models.Model):
     _inherit = "hr.contract"
