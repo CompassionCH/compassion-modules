@@ -17,18 +17,14 @@ class Child_description_fr:
 
     @classmethod
     def gen_fr_translation(
-            cls, cr, uid, child, case_study, context=None):
-        desc_fr = cls._get_guardians_info_fr(
-            cr, uid, child, case_study, context)
+            cls, child, case_study):
+        desc_fr = cls._get_guardians_info_fr(child, case_study)
         desc_fr += u'\r\n\r\n'
-        desc_fr += cls._get_school_info_fr(
-            cr, uid, child, case_study, context)
+        desc_fr += cls._get_school_info_fr(child, case_study)
         desc_fr += u'\r\n\r\n'
-        desc_fr += cls._gen_christ_act_fr(cr, uid, child, case_study, context)
-        desc_fr += cls._gen_family_act_info_fr(
-            cr, uid, child, case_study, context)
-        desc_fr += cls._gen_hobbies_info_fr(
-            cr, uid, child, case_study, context)
+        desc_fr += cls._gen_christ_act_fr(child, case_study)
+        desc_fr += cls._gen_family_act_info_fr(child, case_study)
+        desc_fr += cls._gen_hobbies_info_fr(child, case_study)
         return desc_fr
 
     @classmethod
@@ -50,17 +46,17 @@ class Child_description_fr:
             return str(number)
 
     @classmethod
-    def _gen_list_string(cls, list):
-        string = ''
-        if list:
-            string = ', '.join(list[:-1])
-            if len(list) > 1:
-                string += ' et '
-            string += list[-1]
-        return string
+    def _gen_list_string(cls, word_list):
+        res = ''
+        if word_list:
+            res = ', '.join(word_list[:-1])
+            if len(word_list) > 1:
+                res += ' et '
+            res += word_list[-1]
+        return res
 
     @classmethod
-    def _gen_christ_act_fr(cls, cr, uid, child, case_study, context=None):
+    def _gen_christ_act_fr(cls, child, case_study):
         ''' Generate the christian activities description part.
             Words as 'à', 'aux', ... are included in value_fr field.
         '''
@@ -70,13 +66,13 @@ class Child_description_fr:
             activity.get_translated_value('fr')
             for activity in case_study.christian_activities_ids]
         activities_str = cls._gen_list_string(activities)
-        string = u"A l'Église, %s participe %s. " % (
+        res = u"A l'Église, %s participe %s. " % (
             'il' if child.gender == 'M' else 'elle', activities_str)
-        return string
+        return res
 
     @classmethod
     def _gen_family_act_info_fr(
-            cls, cr, uid, child, case_study, context=None):
+            cls, child, case_study):
         ''' Generate the family duties description part. There are 2 kind of
             activities:
              - Standards : introduced by 'aide à faire' and having
@@ -89,13 +85,13 @@ class Child_description_fr:
         activities = [activity.get_translated_value('fr')
                       for activity in case_study.family_duties_ids]
 
-        string = u"A la maison, %s aide %s. " % (
+        res = u"A la maison, %s aide %s. " % (
             'il' if child.gender == 'M' else 'elle',
             cls._gen_list_string(activities))
-        return string
+        return res
 
     @classmethod
-    def _gen_hobbies_info_fr(cls, cr, uid, child, case_study, context=None):
+    def _gen_hobbies_info_fr(cls, child, case_study):
         ''' Generate the hobbies description part.
              There are 2 kind of hobbies :
              - games, which are introduced by 'jouer' and having
@@ -108,13 +104,13 @@ class Child_description_fr:
         activities = [activity.get_translated_value('fr')
                       for activity in case_study.hobbies_ids]
 
-        string = u"%s aime %s. " % (
+        res = u"%s aime %s. " % (
             'Il' if child.gender == 'M'
             else 'Elle', cls._gen_list_string(activities))
-        return string
+        return res
 
     @classmethod
-    def _get_school_info_fr(cls, cr, uid, child, case_study, context=None):
+    def _get_school_info_fr(cls, child, case_study):
         ''' Generate the school description part. Description includes :
              - If child is attending school
              - Reason why not attending school if relevant and existing
@@ -142,48 +138,48 @@ class Child_description_fr:
             'P': u'en première année',
         }
         # the value of us_school_level can also be blank
-        string = child.firstname
+        res = child.firstname
 
         if case_study.attending_school_flag:
             if (case_study.us_school_level and case_study.us_school_level in
                     ordinals):
                 try:
                     int(case_study.us_school_level)
-                    string += (u' est %s'
-                               % ordinals[case_study.us_school_level])
+                    res += (u' est %s'
+                            % ordinals[case_study.us_school_level])
                 except:
-                    string += (u' est %s'
-                               % ordinals[case_study.us_school_level])
+                    res += (u' est %s'
+                            % ordinals[case_study.us_school_level])
             else:
-                string += u" va à l'école"
+                res += u" va à l'école"
             if case_study.school_performance:
-                string += u' et %s a des résultats %s. ' % (
+                res += u' et %s a des résultats %s. ' % (
                     u'il' if child.gender == 'M' else u'elle',
                     case_study.school_performance[0].get_translated_value(
                         'fr'))
             if case_study.school_best_subject:
-                string += u'%s aime bien %s. ' % (
+                res += u'%s aime bien %s. ' % (
                     u'Il' if child.gender == 'M' else u'Elle',
                     case_study.school_best_subject[0].get_translated_value(
                         'fr'))
             else:
-                string += '.'
+                res += '.'
         else:
             child_age = (
                 date.today() - datetime.strptime(
                     child.birthdate, DF).date()).days / 365
             if child_age <= 5:
-                string += u" ne va pas encore à l'école."
+                res += u" ne va pas encore à l'école."
             else:
-                string += u" ne va pas à l'école."
-        return string
+                res += u" ne va pas à l'école."
+        return res
 
     @classmethod
-    def _get_guardians_info_fr(cls, cr, uid, child, case_study, context=None):
+    def _get_guardians_info_fr(cls, child, case_study):
         ''' Generate the guardian description part. Guardians jobs are
             also included here.
         '''
-        string = u''
+        res = u''
         if not case_study.guardians_ids:
             return ''
         male_values = ['father', 'uncle', 'brother', 'grandfather',
@@ -226,7 +222,7 @@ class Child_description_fr:
                 live_in_institut = True
 
         # Regroup parents and grandparents
-        live_with = cls._regroup_parents(cr, uid, live_with, context)
+        live_with = cls._regroup_parents(live_with)
 
         # Get number of brothers and sisters
         if case_study.nb_brothers == 1:
@@ -242,25 +238,24 @@ class Child_description_fr:
 
         # Live in institute or not
         if live_in_institut:
-            string = '%s vit dans un internat avec %s. ' % (
+            res = '%s vit dans un internat avec %s. ' % (
                 child.firstname, cls._gen_list_string(live_with.values()))
         else:
-            string = '%s vit avec %s. ' % (
+            res = '%s vit avec %s. ' % (
                 child.firstname, cls._gen_list_string(live_with.values()))
 
-        string += cls._get_parents_info(
-            cr, uid, child, case_study, context)
+        res += cls._get_parents_info(
+            child, case_study)
         # Generate guardians job
 
-        string += cls._get_guardians_jobs_fr(
-            cr, uid, child, case_study,
+        res += cls._get_guardians_jobs_fr(
+            child, case_study,
             male_guardians.items()[0] if male_guardians else False,
-            female_guardians.items()[0] if female_guardians else False,
-            context)
-        return string
+            female_guardians.items()[0] if female_guardians else False)
+        return res
 
     @classmethod
-    def _regroup_parents(cls, cr, uid, live_with, context=None):
+    def _regroup_parents(cls, live_with):
         if (u'mother' in live_with and
                 u'father' in live_with):
             live_with.pop(u'mother')
@@ -274,9 +269,9 @@ class Child_description_fr:
         return live_with
 
     @classmethod
-    def _get_parents_info(cls, cr, uid, child,
-                          case_study, context=None):
-        string = u''
+    def _get_parents_info(cls, child,
+                          case_study):
+        res = u''
 
         # Get tags for female/male and same tags
         props_m = [tag.value_en for tag in case_study.father_ids]
@@ -285,20 +280,20 @@ class Child_description_fr:
         props = [props_m, props_f, props_mf]
 
         # Father info
-        string += cls._get_parent_info_string(cr, uid, props, 0, context)
+        res += cls._get_parent_info_string(props, 0)
 
         # Mother info
-        string += cls._get_parent_info_string(cr, uid, props, 1, context)
+        res += cls._get_parent_info_string(props, 1)
 
         # Parents info
-        string = cls._get_parent_info_string(
-            cr, uid, props, 2, context) or string
+        res = cls._get_parent_info_string(
+            props, 2) or res
 
-        return string
+        return res
 
     @classmethod
-    def _get_parent_info_string(cls, cr, uid, props, parent, context=None):
-        string = u''
+    def _get_parent_info_string(cls, props, parent):
+        res = u''
 
         # Initialize specific strings to language
         prefix = [u'Son père', u'Sa mère', u'Ses parents']
@@ -317,45 +312,45 @@ class Child_description_fr:
                                 u'chroniquement malades'],
             u'handicapped': [u'handicapé', u'handicapée', u'handicapés'],
         }
-        # Boolean to generate string with more than one tags
+        # Boolean to generate res with more than one tags
         multiple_status = False
 
         for prop in props[parent]:
             if prop in status_tags:
                 if not multiple_status:
-                    string += u'{0} {1} {2}'.format(
+                    res += u'{0} {1} {2}'.format(
                         prefix[parent], be[parent], status_tags[prop][parent])
                     multiple_status = True
                 else:
-                    string += u' et {0}'.format(status_tags[prop])
+                    res += u' et {0}'.format(status_tags[prop])
 
         # Specific check on alive and supportingchild for both guardians
         if (parent == 2):
             if ('alive' not in props[0] and
                     'alive' not in props[1]):
-                string = u'{0} {1}'.format(prefix[parent], dead[parent])
+                res = u'{0} {1}'.format(prefix[parent], dead[parent])
             if 'supportingchild' in props[parent] and \
                'livingwithchild' not in props[0] and \
                'livingwithchild' not in props[1]:
-                string += u'{0} {1}'.format(prefix[parent], support[parent])
+                res += u'{0} {1}'.format(prefix[parent], support[parent])
         # Check on alive and supportingchild
         else:
             if 'supportingchild' in props[parent] and \
                'livingwithchild' not in props[parent]:
-                string += u'{0} {1}'.format(prefix[parent], support[parent])
+                res += u'{0} {1}'.format(prefix[parent], support[parent])
             if ('alive' not in props[parent] and parent != 2):
-                string = u'{0} {1}'.format(prefix[parent], dead[parent])
+                res = u'{0} {1}'.format(prefix[parent], dead[parent])
 
         # Endpoint
-        if string:
-            string += u'. '
-        return string
+        if res:
+            res += u'. '
+        return res
 
     @classmethod
-    def _get_guardians_jobs_fr(cls, cr, uid, child,
-                               case_study, m_g, f_g, context=None):
+    def _get_guardians_jobs_fr(cls, child,
+                               case_study, m_g, f_g):
         ''' Generate the guardians jobs description part. '''
-        string = u""
+        res = u""
 
         # Check if guardian has tags
         if case_study.male_guardian_ids or case_study.female_guardian_ids:
@@ -376,21 +371,21 @@ class Child_description_fr:
             props_fr = [props_fr_m, props_fr_f, props_fr_mf]
 
             # Male job
-            string += cls._get_guardian_job_string(
-                cr, uid, props_en, props_fr, m_g, f_g, 0, context)
+            res += cls._get_guardian_job_string(
+                props_en, props_fr, m_g, f_g, 0)
 
             # Female job
-            string += cls._get_guardian_job_string(
-                cr, uid, props_en, props_fr, m_g, f_g, 1, context)
+            res += cls._get_guardian_job_string(
+                props_en, props_fr, m_g, f_g, 1)
 
             # Same job
-            string = cls._get_guardian_job_string(
-                cr, uid, props_en, props_fr, m_g, f_g, 2, context) or string
+            res = cls._get_guardian_job_string(
+                props_en, props_fr, m_g, f_g, 2) or res
 
-        return string
+        return res
 
     @classmethod
-    def _get_mf_g(cls, cr, uid, m_g, f_g, context=None):
+    def _get_mf_g(cls, m_g, f_g):
         # Generate prefix to define both guardians
         mf_g = u''
 
@@ -410,15 +405,15 @@ class Child_description_fr:
 
     @classmethod
     def _get_guardian_job_string(
-            cls, cr, uid, props_en, props_fr,
-            m_g, f_g, parent, context=None):
-        string = u''
+            cls, props_en, props_fr,
+            m_g, f_g, parent):
+        res = u''
 
         # Initialize prefix specific to language
         prefix_f = u'Sa {0}'.format(f_g[1] if f_g else u'mère')
         prefix_m = u'Son {0}'.format(m_g[1] if m_g else u'père')
         prefix_mf = cls._get_mf_g(
-            cr, uid, m_g, f_g, context) if f_g and m_g else None
+            m_g, f_g) if f_g and m_g else None
 
         prefix = [prefix_m, prefix_f, prefix_mf]
 
@@ -445,7 +440,7 @@ class Child_description_fr:
 
         # Case unemployed
         if ('isunemployed' in props_en[parent]):
-            string += u'{0} {1}'.format(prefix[parent], is_unemployed[parent])
+            res += u'{0} {1}'.format(prefix[parent], is_unemployed[parent])
         else:
             multiple_job_work_as = False
 
@@ -454,12 +449,12 @@ class Child_description_fr:
                 if job_tag_work_as in props_en[parent]:
                     # Multiple job check
                     if not multiple_job_work_as:
-                        string += u'{0} {1} {2}'.format(
+                        res += u'{0} {1} {2}'.format(
                             prefix[parent], work_as[parent],
                             job_tags_work_as[job_tag_work_as][parent])
                         multiple_job_work_as = True
                     else:
-                        string += u' et {0}'.format(
+                        res += u' et {0}'.format(
                             job_tags_work_as[job_tag_work_as][parent])
 
             multiple_job_isemployed = False
@@ -470,12 +465,12 @@ class Child_description_fr:
                     # Multiple job check
                     if (not multiple_job_isemployed and not
                             multiple_job_work_as):
-                        string += u'{0} {1} {2}'.format(
+                        res += u'{0} {1} {2}'.format(
                             prefix[parent], is_employed[parent],
                             job_tags_isemployed[job_tag_isemployed])
                         multiple_job_isemployed = True
                     else:
-                        string += u' et {0}'.format(
+                        res += u' et {0}'.format(
                             job_tags_isemployed[job_tag_isemployed])
 
             multiple_job = False
@@ -489,21 +484,21 @@ class Child_description_fr:
                     if (not multiple_job_work_as and not
                             multiple_job_isemployed and not
                             multiple_job):
-                        string += prefix[parent]
+                        res += prefix[parent]
                         multiple_job = True
                     else:
-                        string += u' et'
+                        res += u' et'
 
                     color = 'red' if not props_fr[parent][
                         props_en[parent].index(prop)] else 'blue'
                     translated_prop = props_fr[parent][
                         props_en[parent].index(prop)] or prop
 
-                    string += (u' <span id="{0}" style="color:{1}">{2}'
-                               '</span>').format(prop, color, translated_prop)
+                    res += (u' <span id="{0}" style="color:{1}">{2}'
+                            '</span>').format(prop, color, translated_prop)
 
         # Endpoint
-        if string:
-            string += u'. '
+        if res:
+            res += u'. '
 
-        return string
+        return res

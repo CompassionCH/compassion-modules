@@ -55,7 +55,9 @@
                                         <field name="delegated_comment" />
                                     </group>
                                     <group colspan="2">
-                                        <field name="pictures_ids"/>
+                                        <field name="pictures_ids">
+                                            <field name="date"/>
+                                        </field>
                                     </group>
                                 </group>
                             </page>

@@ -9,45 +9,37 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
+from openerp import models, fields, api
 
 
-class translated_value(orm.Model):
+class translated_value(models.Model):
     _name = 'compassion.translated.value'
     _rec_name = 'value_en'
     _order = 'property_name asc'
 
-    _columns = {
-        'is_tag': fields.boolean(_('Tag')),
-        'child_property_ids': fields.many2many(
-            'compassion.child.property', 'child_property_to_value',
-            'value_id', 'property_id', _('Properties')),
-        'project_property_ids': fields.many2many(
-            'compassion.project.property', 'project_property_to_value',
-            'value_id', 'property_id', _('Properties')),
-        'property_name': fields.char(_('Is value for'), required=True,
-                                     readonly=True),
-        'value_en': fields.char(_('English value'), required=True,
-                                readonly=True),
-        'value_fr': fields.char(_('French translation')),
-        'value_de': fields.char(_('German translation')),
-        'value_it': fields.char(_('Italian translation')),
-    }
+    is_tag = fields.Boolean('Tag')
+    child_property_ids = fields.Many2many(
+        'compassion.child.property', 'child_property_to_value',
+        'value_id', 'property_id', 'Properties')
+    project_property_ids = fields.Many2many(
+        'compassion.project', 'project_property_to_value',
+        'value_id', 'project_id', 'Properties')
+    property_name = fields.Char('Is value for', required=True, readonly=True)
+    value_en = fields.Char('English value', required=True, readonly=True)
+    value_fr = fields.Char('French translation')
+    value_de = fields.Char('German translation')
+    value_it = fields.Char('Italian translation')
 
-    _defaults = {
-        'is_tag': False,
-    }
-
-    def get_translated_value(self, cr, uid, id, lang, context):
-        value = self.browse(cr, uid, id, context)[0]
-        html_id = value.value_en
-        translated_value = getattr(value, "value_"+lang) or value.value_en
-        color = 'red' if not getattr(value, "value_"+lang) else 'blue'
+    def get_translated_value(self, lang):
+        self.ensure_one()
+        html_id = self.value_en
+        translated_value = getattr(self, "value_"+lang) or self.value_en
+        color = 'red' if not getattr(self, "value_"+lang) else 'blue'
         return u'<span id="{0}" style="color:{1}">{2}</span>'.format(
             html_id, color, translated_value)
 
-    def get_value_ids(self, cr, uid, eng_values, property_name, context):
+    @api.model
+    def get_value_ids(self, eng_values, property_name):
         """ Utility method that finds already existing translated values
         or create them if necessary.
         Args:
@@ -62,14 +54,13 @@ class translated_value(orm.Model):
         value_ids = []
         if isinstance(eng_values, list):
             for elem in eng_values:
-                value_ids.append(self._get_value_id(cr, uid, elem,
-                                                    property_name, context))
+                value_ids.append(self._get_value_id(elem, property_name))
         elif isinstance(eng_values, basestring):
-            value_ids = self._get_value_id(cr, uid, eng_values, property_name,
-                                           context)
+            value_ids = self._get_value_id(eng_values, property_name)
         return value_ids
 
-    def _get_value_id(self, cr, uid, value, property_name, context=None):
+    @api.model
+    def _get_value_id(self, value, property_name):
         """ Find or create a translated_value for a given property.
         Returns the translated_value id."""
         value = value.lower().strip()
@@ -79,10 +70,9 @@ class translated_value(orm.Model):
         if not value:
             return False
 
-        val_ids = self.search(cr, uid, [('value_en', '=like', value),
-                                        ('property_name', '=', property_name)],
-                              context=context)
+        val_ids = self.search([('value_en', '=like', value),
+                               ('property_name', '=', property_name)])
         if val_ids:
-            return val_ids[0]
-        prop_id = self.create(cr, uid, property_vals, context)
-        return prop_id
+            return val_ids[0].id
+
+        return self.create(property_vals).id

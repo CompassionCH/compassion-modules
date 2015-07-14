@@ -10,143 +10,152 @@
 ##############################################################################
 
 
-from openerp.osv import orm, fields
+from openerp import models, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
 
 from datetime import datetime
 
 
-class child_property(orm.Model):
+class child_property(models.Model):
     _name = 'compassion.child.property'
     _order = 'child_id, info_date desc'
     _inherit = 'mail.thread'
     _description = "Case Study"
 
-    _columns = {
-        'child_id': fields.many2one(
-            'compassion.child', _('Concerned child'),
-            required=True, ondelete='cascade', readonly=True),
-        'unique_id': fields.integer(_("Unique ID"), readonly=True),
-        'info_date': fields.date(_('Date of case study'), readonly=True),
-        'last_modification_date': fields.date(_('Last modified'),
-                                              readonly=True),
-        'name': fields.char(_('Name'), readonly=True,
-                            track_visibility='onchange'),
-        'code': fields.char(_("Child code"), size=9,
-                            readonly=True, track_visibility='onchange'),
-        'firstname': fields.char(_('Firstname'), readonly=True,
-                                 track_visibility='onchange'),
-        'gender': fields.selection([
-            ('M', 'Male'),
-            ('F', 'Female')], _('Gender'), readonly=True),
-        'birthdate': fields.date(_('Birthdate'), readonly=True,
-                                 track_visibility='onchange'),
-        'comments': fields.text(_('Comments'), readonly=True,
-                                track_visibility='onchange'),
-        'orphan_flag': fields.boolean(_('Is orphan'), readonly=True,
-                                      track_visibility='onchange'),
-        'handicapped_flag': fields.boolean(_('Is handicapped'), readonly=True,
-                                           track_visibility='onchange'),
-        'attending_school_flag': fields.boolean(_('Is attending school'),
-                                                readonly=True,
-                                                track_visibility='onchange'),
-        'not_attending_reason': fields.many2many(
-            'compassion.translated.value', 'child_property_to_value',
-            'property_id', 'value_id', _('Not attending school reason'),
-            domain=[('property_name', '=', 'not_attending_reason')],
-            readonly=True),
-        'us_school_level': fields.char(_('US school level'),
-                                       readonly=True,
-                                       track_visibility='onchange'),
-        'school_performance': fields.many2many(
-            'compassion.translated.value', 'child_property_to_value',
-            'property_id', 'value_id', _('School performances'),
-            domain=[('property_name', '=', 'school_performance')],
-            readonly=True, track_visibility='onchange'),
-        'school_best_subject': fields.many2many(
-            'compassion.translated.value', 'child_property_to_value',
-            'property_id', 'value_id', _('School best subject'),
-            domain=[('property_name', '=', 'school_best_subject')],
-            readonly=True, track_visibility='onchange'),
-        'marital_status_id': fields.many2many(
-            'compassion.translated.value', 'child_property_to_value',
-            'property_id', 'value_id', _('Marital status of parents'),
-            domain=[('property_name', '=', 'marital_status')],
-            readonly=True, track_visibility='onchange'),
-        'christian_activities_ids': fields.many2many(
-            'compassion.translated.value', 'child_property_to_value',
-            'property_id', 'value_id', _('Christian activities'),
-            domain=[('property_name', '=', 'christian_activities')],
-            readonly=True, track_visibility='onchange'),
-        'family_duties_ids': fields.many2many(
-            'compassion.translated.value', 'child_property_to_value',
-            'property_id', 'value_id', _('Family duties'),
-            domain=[('property_name', '=', 'family_duties')], readonly=True,
-            track_visibility='onchange'),
-        'hobbies_ids': fields.many2many(
-            'compassion.translated.value', 'child_property_to_value',
-            'property_id', 'value_id', _('Hobbies'),
-            domain=[('property_name', '=', 'hobbies')], readonly=True,
-            track_visibility='onchange'),
-        'health_ids': fields.many2many(
-            'compassion.translated.value', 'child_property_to_value',
-            'property_id', 'value_id', _('Health'),
-            domain=[('property_name', '=', 'health')], readonly=True,
-            track_visibility='onchange'),
-        'guardians_ids': fields.many2many(
-            'compassion.translated.value', 'child_property_to_value',
-            'property_id', 'value_id', _('Guardians'),
-            domain=[('property_name', '=', 'guardians')], readonly=True,
-            track_visibility='onchange'),
-        'male_guardian_ids': fields.many2many(
-            'compassion.translated.value', 'child_property_to_value',
-            'property_id', 'value_id', _('Male guardian'),
-            domain=[('property_name', '=', 'male_guardian')], readonly=True,
-            track_visibility='onchange'),
-        'female_guardian_ids': fields.many2many(
-            'compassion.translated.value', 'child_property_to_value',
-            'property_id', 'value_id', _('Female guardian'),
-            domain=[('property_name', '=', 'female_guardian')], readonly=True,
-            track_visibility='onchange'),
-        'father_ids': fields.many2many(
-            'compassion.translated.value', 'child_property_to_value',
-            'property_id', 'value_id', _('Father'),
-            domain=[('property_name', '=', 'father')], readonly=True,
-            track_visibility='onchange'),
-        'mother_ids': fields.many2many(
-            'compassion.translated.value', 'child_property_to_value',
-            'property_id', 'value_id', _('Mother'),
-            domain=[('property_name', '=', 'mother')], readonly=True,
-            track_visibility='onchange'),
-        'nb_brothers': fields.integer(_('Brothers'), readonly=True,
-                                      track_visibility='onchange'),
-        'nb_sisters': fields.integer(_('Sisters'), readonly=True,
-                                     track_visibility='onchange'),
-        'sibling_project_1': fields.char(_('First sibling in project'),
-                                         readonly=True),
-        'sibling_project_2': fields.char(_('Second sibling in project'),
-                                         readonly=True),
-        'desc_en': fields.text(_('English description'), readonly=True),
-        'desc_fr': fields.text(_('French description'), readonly=True),
-        'desc_de': fields.text(_('German description'), readonly=True),
-        'desc_it': fields.text(_('Italian description'), readonly=True),
-        'pictures_id': fields.many2one(
-            'compassion.child.pictures', _('Child images'), readonly=True),
-    }
+    ##########################################################################
+    #                                 FIELDS                                 #
+    ##########################################################################
 
-    def create(self, cr, uid, vals, context=None):
+    # General Information
+    #####################
+    child_id = fields.Many2one(
+        'compassion.child', 'Child', required=True, readonly=True,
+        ondelete='cascade')
+    unique_id = fields.Integer('Unique ID', readonly=True)
+    info_date = fields.Date('Date of case study', readonly=True)
+    last_modification_date = fields.Date('Last modified', readonly=True)
+    name = fields.Char(readonly=True, track_visibility='onchange')
+    code = fields.Char(
+        'Child code', size=9, readonly=True, track_visibility='onchange')
+    firstname = fields.Char(readonly=True, track_visibility='onchange')
+    gender = fields.Selection([
+        ('M', 'Male'), ('F', 'Female')], readonly=True)
+    birthdate = fields.Date(readonly=True, track_visibility='onchange')
+    comments = fields.Text(readonly=True, track_visibility='onchange')
+    orphan_flag = fields.Boolean(
+        'Is orphan', readonly=True, track_visibility='onchange')
+    handicapped_flag = fields.Boolean(
+        'Is handicapped', readonly=True, track_visibility='onchange')
+    health_ids = fields.Many2many(
+        'compassion.translated.value', 'child_property_to_value',
+        'property_id', 'value_id', 'Health',
+        readonly=True, track_visibility='onchange',
+        domain=[('property_name', '=', 'health')])
+
+    # Schooling
+    ###########
+    attending_school_flag = fields.Boolean(
+        'Is attending school', readonly=True, track_visibility='onchange')
+    not_attending_reason = fields.Many2many(
+        'compassion.translated.value', 'child_property_to_value',
+        'property_id', 'value_id', 'Not attending school reason',
+        readonly=True,
+        domain=[('property_name', '=', 'not_attending_reason')])
+    us_school_level = fields.Char(
+        'US school level', readonly=True, track_visibility='onchange')
+    school_performance = fields.Many2many(
+        'compassion.translated.value', 'child_property_to_value',
+        'property_id', 'value_id', 'School performances',
+        readonly=True, track_visibility='onchange',
+        domain=[('property_name', '=', 'school_performance')])
+    school_best_subject = fields.Many2many(
+        'compassion.translated.value', 'child_property_to_value',
+        'property_id', 'value_id', 'School best subject',
+        readonly=True, track_visibility='onchange',
+        domain=[('property_name', '=', 'school_best_subject')])
+
+    # Activities
+    ############
+    christian_activities_ids = fields.Many2many(
+        'compassion.translated.value', 'child_property_to_value',
+        'property_id', 'value_id', 'Christian activities',
+        readonly=True, track_visibility='onchange',
+        domain=[('property_name', '=', 'christian_activities')])
+    family_duties_ids = fields.Many2many(
+        'compassion.translated.value', 'child_property_to_value',
+        'property_id', 'value_id', 'Family duties',
+        readonly=True, track_visibility='onchange',
+        domain=[('property_name', '=', 'family_duties')])
+    hobbies_ids = fields.Many2many(
+        'compassion.translated.value', 'child_property_to_value',
+        'property_id', 'value_id', 'Hobbies',
+        readonly=True, track_visibility='onchange',
+        domain=[('property_name', '=', 'hobbies')])
+
+    # Home
+    ######
+    marital_status_id = fields.Many2many(
+        'compassion.translated.value', 'child_property_to_value',
+        'property_id', 'value_id', 'Marital status of parents',
+        readonly=True, track_visibility='onchange',
+        domain=[('property_name', '=', 'marital_status')])
+    guardians_ids = fields.Many2many(
+        'compassion.translated.value', 'child_property_to_value',
+        'property_id', 'value_id', 'Guardians',
+        readonly=True, track_visibility='onchange',
+        domain=[('property_name', '=', 'guardians')])
+    male_guardian_ids = fields.Many2many(
+        'compassion.translated.value', 'child_property_to_value',
+        'property_id', 'value_id', 'Male guardian',
+        domain=[('property_name', '=', 'male_guardian')], readonly=True,
+        track_visibility='onchange')
+    female_guardian_ids = fields.Many2many(
+        'compassion.translated.value', 'child_property_to_value',
+        'property_id', 'value_id', 'Female guardian',
+        domain=[('property_name', '=', 'female_guardian')], readonly=True,
+        track_visibility='onchange')
+    father_ids = fields.Many2many(
+        'compassion.translated.value', 'child_property_to_value',
+        'property_id', 'value_id', 'Father',
+        domain=[('property_name', '=', 'father')], readonly=True,
+        track_visibility='onchange')
+    mother_ids = fields.Many2many(
+        'compassion.translated.value', 'child_property_to_value',
+        'property_id', 'value_id', _('Mother'),
+        domain=[('property_name', '=', 'mother')], readonly=True,
+        track_visibility='onchange')
+    nb_brothers = fields.Integer(
+        'Brothers', readonly=True, track_visibility='onchange')
+    nb_sisters = fields.Integer(
+        'Sisters', readonly=True, track_visibility='onchange')
+    sibling_project_1 = fields.Char(
+        'First sibling in project', readonly=True)
+    sibling_project_2 = fields.Char(
+        'Second sibling in project', readonly=True)
+
+    # Descriptions and pictures
+    ###########################
+    desc_en = fields.Text('English description', readonly=True)
+    desc_fr = fields.Text('French description', readonly=True)
+    desc_de = fields.Text('German description', readonly=True)
+    desc_it = fields.Text('Italian description', readonly=True)
+    pictures_id = fields.Many2one(
+        'compassion.child.pictures', 'Child images', readonly=True)
+
+    ##########################################################################
+    #                              ORM METHODS                               #
+    ##########################################################################
+    def create(self, vals):
         """ When creating a new Case Study, check if a recent picture exists
         and link to it if necessary. """
-        res_id = super(child_property, self).create(cr, uid, vals, context)
+        case_study = super(child_property, self).create(vals)
 
-        case_study = self.browse(cr, uid, res_id, context)
-        pictures_obj = self.pool.get('compassion.child.pictures')
-        pictures_ids = pictures_obj.search(
-            cr, uid, [('child_id', '=', case_study.child_id.id)],
-            order='date desc', context=context)
-        last_pictures = pictures_ids and pictures_obj.browse(
-            cr, uid, pictures_ids[0], context)
+        pictures_obj = self.env['compassion.child.pictures']
+        pictures = pictures_obj.search(
+            [('child_id', '=', case_study.child_id.id)],
+            order='date desc')
+        last_pictures = pictures and pictures[0]
         if last_pictures and not last_pictures.case_study_id:
             six_months = 180
             case_study_date = datetime.strptime(case_study.info_date, DF)
@@ -158,14 +167,11 @@ class child_property(orm.Model):
                 case_study.attach_pictures(last_pictures.id)
                 last_pictures.write({'case_study_id': case_study.id})
 
-        return res_id
+        return case_study
 
-    def attach_pictures(self, cr, uid, ids, pictures_id, context=None):
-        if len(ids) != 1:
-            raise orm.except_orm(
-                _('Picture error'),
-                _('You cannot attach a picture to more than one '
-                  'case study'))
-
-        self.write(cr, uid, ids, {'pictures_id': pictures_id}, context)
-        return True
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    def attach_pictures(self, pictures_id):
+        self.ensure_one()
+        return self.write({'pictures_id': pictures_id})
