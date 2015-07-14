@@ -9,65 +9,55 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
+from openerp import models, fields, api, exceptions, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import datetime
 
 
-class delegate_child_wizard(orm.TransientModel):
+class delegate_child_wizard(models.TransientModel):
     _name = 'delegate.child.wizard'
 
-    def _get_active_ids(self, cr, uid, ids, field_name, arg, context):
+    partner = fields.Many2one(
+        'res.partner', 'Partner', required=True)
+    comment = fields.Text('Comment', required=True)
+    date_delegation = fields.Date(
+        'Delegation\'s beginning', required=True,
+        default=datetime.today().strftime(DF))
+    date_end_delegation = fields.Date('Delegation\'s end')
+    child_ids = fields.One2many(
+        'compassion.child', string='Selected children',
+        compute='_get_active_ids',
+        default=lambda self: self._get_active_ids())
+
+    @api.multi
+    def _get_active_ids(self):
         child_obj = self.pool.get('compassion.child')
-        child_ids = [c.id for c in child_obj.browse(cr, uid,
-                                                    context.get('active_ids'),
-                                                    context)
+        active_ids = self.env.context.get('active_ids')
+        child_ids = [c.id for c in child_obj.browse(active_ids)
                      if c.is_available]
 
-        return {id: child_ids for id in ids}
+        self.write({'child_ids': [(6, 0, child_ids)]})
+        return child_ids
 
-    def _default_child_ids(self, cr, uid, context):
-        return self._get_active_ids(cr, uid, [0], None, None, context)[0]
+    @api.multi
+    def delegate(self):
+        self.ensure_one()
+        child_ids = self.child_ids
 
-    _columns = {
-        'partner': fields.many2one(
-            'res.partner', string=_('Partner'), required=True),
-        'comment': fields.text(_('Comment'), required=True),
-        'date_delegation': fields.date(_('Delegation\'s beginning'),
-                                       required=True),
-        'date_end_delegation': fields.date(_('Delegation\'s end')),
-        'child_ids': fields.function(
-            _get_active_ids, type='one2many',
-            obj='compassion.child',
-            string=_('Selected childs')),
-    }
-    _defaults = {
-        'child_ids': (_default_child_ids),
-        'date_delegation': datetime.today().strftime(DF),
-    }
+        if self.date_end_delegation:
+            if datetime.strptime(self.date_delegation, DF) > \
+               datetime.strptime(self.date_end_delegation, DF):
+                raise exceptions.Warning(
+                    "Invalid value",
+                    _("End date must be later than beginning"))
 
-    def delegate(self, cr, uid, ids, context=None):
-        wizard = self.browse(cr, uid, ids[0], context)
-        child_ids = self._default_child_ids(cr, uid, context)
-        child_obj = self.pool.get('compassion.child')
+        if datetime.strptime(self.date_delegation, DF) <= datetime.today():
+            child_ids.write({'state': 'D'})
 
-        if wizard.date_end_delegation:
-            if datetime.strptime(wizard.date_delegation, DF) > \
-               datetime.strptime(wizard.date_end_delegation, DF):
-                raise orm.except_orm("Invalid value", _("End date must "
-                                     "be later than beginning"))
-
-        if datetime.strptime(wizard.date_delegation, DF) <= datetime.today():
-            child_obj.write(cr, uid, child_ids, {'state': 'D'},
-                            context=context)
-
-        child_obj.write(
-            cr, uid, child_ids,
-            {'delegated_to': wizard.partner.id,
-             'delegated_comment': wizard.comment,
-             'date_delegation': wizard.date_delegation,
-             'date_end_delegation': wizard.date_end_delegation, },
-            context=context)
+        child_ids.write({
+            'delegated_to': self.partner.id,
+            'delegated_comment': self.comment,
+            'date_delegation': self.date_delegation,
+            'date_end_delegation': self.date_end_delegation})
 
         return True

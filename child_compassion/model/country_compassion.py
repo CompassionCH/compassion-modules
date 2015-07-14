@@ -12,58 +12,56 @@
 import requests
 import json
 
-from openerp.osv import orm, fields
+from openerp import models, fields, api, exceptions
 from openerp.tools.translate import _
 from openerp.tools.config import config
 
 
-class compassion_country(orm.Model):
+class compassion_country(models.Model):
     _name = 'compassion.country'
 
-    _columns = {
-        'description_en': fields.text(_('English description')),
-        'description_fr': fields.text(_('French description')),
-        'description_de': fields.text(_('German description')),
-        'description_it': fields.text(_('Italian description')),
-        'iso_code': fields.char(_('ISO code'), size=2, required=True),
-        'name': fields.char(_('Name')),
-        'name_en': fields.related('name', type='char', string=_('English '
-                                                                'name')),
-        'name_fr': fields.char(_('French name')),
-        'name_de': fields.char(_('German name')),
-        'name_it': fields.char(_('Italian name')),
-        'language': fields.char(_('Official language')),
-        'project_ids': fields.one2many(
-            'compassion.project', 'country_id', _('Country projects')),
-    }
+    description_en = fields.Text('English description')
+    description_fr = fields.Text('French description')
+    description_de = fields.Text('German description')
+    description_it = fields.Text('Italian description')
+    iso_code = fields.Char('ISO code', size=2, required=True)
+    name = fields.Char('Name')
+    name_en = fields.Char('English name', related='name')
+    name_fr = fields.Char('French name')
+    name_de = fields.Char('German name')
+    name_it = fields.Char('Italian name')
+    language = fields.Char('Official language')
+    project_ids = fields.One2many(
+        'compassion.project', 'country_id', 'Country projects')
 
-    def update_informations(self, cr, uid, ids, context=None):
-        countries = self.browse(cr, uid, ids, context=context)
-        for country in countries:
+    def update_informations(self):
+        for country in self:
             url = self._get_url('iso', country.iso_code)
             r = requests.get(url)
             if not r.status_code/100 == 2:
                 continue
 
             json_data = json.loads(r.text)
-            values = self._get_val_from_json(cr, uid, json_data, context)
-            self.write(cr, uid, [country.id], values, context=context)
-        return
+            values = self._get_val_from_json(json_data)
+            country.write(values)
+        return True
 
-    def _get_val_from_json(self, cr, uid, json_data, context=None):
-        values = {}
+    @api.model
+    def _get_val_from_json(self, json_data):
+        values = dict()
         values['name'] = json_data['countryCommonName']
         values['description_en'] = json_data['countryDescription']
         values['language'] = json_data['officialLanguage']
         return values
 
+    @api.model
     def _get_url(self, api_mess, api_value):
         url = config.get('compass_url')
         api_key = config.get('compass_api_key')
         if not url or not api_key:
-            raise orm.except_orm('ConfigError',
-                                 _('Missing compass_url or compass_api_key '
-                                   'in conf file'))
+            raise exceptions.Warning(
+                'ConfigError', _('Missing compass_url or compass_api_key '
+                                 'in conf file'))
         if url.endswith('/'):
             url = url[:-1]
         url += ('/ci/v1/countries/' + api_mess + '/' + api_value +

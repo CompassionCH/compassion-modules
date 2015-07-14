@@ -13,33 +13,27 @@
 class Project_description_fr:
 
     @classmethod
-    def gen_fr_translation(
-            cls, cr, uid, project, context=None):
-        desc_fr = cls._gen_intro_fr(
-            cr, uid, project, context)
-        desc_fr += cls._gen_build_mat_fr(
-            cr, uid, project, context)
-        desc_fr += cls._gen_primary_diet_fr(
-            cr, uid, project, context)
-        desc_fr += cls._gen_health_prob_fr(
-            cr, uid, project, context)
-        desc_fr += cls._gen_primary_occup_fr(
-            cr, uid, project, context)
+    def gen_fr_translation(cls, project):
+        desc_fr = cls._gen_intro_fr(project)
+        desc_fr += cls._gen_build_mat_fr(project)
+        desc_fr += cls._gen_primary_diet_fr(project)
+        desc_fr += cls._gen_health_prob_fr(project)
+        desc_fr += cls._gen_primary_occup_fr(project)
         return desc_fr
 
     @classmethod
-    def _gen_list_string(cls, list, separator, last_separator):
-        string = ''
-        if list:
-            string = separator.join(list[:-1])
-            if len(list) > 1:
-                string += last_separator
-            string += list[-1]
+    def _gen_list_string(cls, word_list, separator, last_separator):
+        res = ''
+        if word_list:
+            res = separator.join(word_list[:-1])
+            if len(word_list) > 1:
+                res += last_separator
+            res += word_list[-1]
 
-        return string
+        return res
 
     @classmethod
-    def _gen_intro_fr(cls, cr, uid, project, context=None):
+    def _gen_intro_fr(cls, project):
         """ Generate the project name, the localization and infos
             about the community
         """
@@ -48,17 +42,17 @@ class Project_description_fr:
         project_community_name = project.community_name.split('-')[0]
         project_community_population = u"{:,}".format(
             project.community_population).replace(',', "'")
-        string = (u"Cet enfant vit à {0}"
-                  u"{1}. {2} compte environ {3} habitants. ".format(
-                      project_community_name,
-                      "" if not terrain_desc else u" dans une région " +
-                      terrain_desc[0],
-                      project_community_name, project_community_population))
+        res = (u"Cet enfant vit à {0}"
+               u"{1}. {2} compte environ {3} habitants. ".format(
+                   project_community_name,
+                   "" if not terrain_desc else u" dans une région " +
+                   terrain_desc[0],
+                   project_community_name, project_community_population))
 
-        return string
+        return res
 
     @classmethod
-    def _gen_build_mat_fr(cls, cr, uid, project, context=None):
+    def _gen_build_mat_fr(cls, project):
         """ Generate house build materials, there are no specificities
             in this part
         """
@@ -80,15 +74,15 @@ class Project_description_fr:
             materials.append(u"de toits en %s" %
                              cls._gen_list_string(roof_mat, ', ', ' et '))
         if materials:
-            string = (u"Les maisons typiques sont construites " +
-                      cls._gen_list_string(materials, ', ', ' et ') + ". ")
+            res = (u"Les maisons typiques sont construites " +
+                   cls._gen_list_string(materials, ', ', ' et ') + ". ")
         else:
-            string = ""
+            res = ""
 
-        return string
+        return res
 
     @classmethod
-    def _gen_primary_diet_fr(cls, cr, uid, project, context=None):
+    def _gen_primary_diet_fr(cls, project):
         """ Generate primary diet, there are no specificities in this part
         """
         primary_diet = [diet.get_translated_value('fr')
@@ -97,18 +91,18 @@ class Project_description_fr:
                             for lang in project.spoken_languages_ids]
 
         if spoken_languages:
-            string = (u"La langue commune de la région est "
-                      u"le %s. " % (spoken_languages[0]))
+            res = (u"La langue commune de la région est "
+                   u"le %s. " % (spoken_languages[0]))
         else:
-            string = ""
+            res = ""
 
-        string += (u"La nourriture de base se compose de %s. " % (
-                   cls._gen_list_string(primary_diet, ', ', ' et ')))
+        res += (u"La nourriture de base se compose de %s. " % (
+                cls._gen_list_string(primary_diet, ', ', ' et ')))
 
-        return string
+        return res
 
     @classmethod
-    def _gen_health_prob_fr(cls, cr, uid, project, context=None):
+    def _gen_health_prob_fr(cls, project):
         """ Generate health problemes of this region, there
             are no specificities in this part
         """
@@ -124,15 +118,15 @@ class Project_description_fr:
                               if len(health_prob) > 1 else u"est" +
                               health_prob[0])
 
-            string = (u"%s de santé de la région %s. " % (
+            res = (u"%s de santé de la région %s. " % (
                 sing_plur_subj, sing_plur_verb))
         else:
-            string = ""
+            res = ""
 
-        return string
+        return res
 
     @classmethod
-    def _gen_primary_occup_fr(cls, cr, uid, project, context=None):
+    def _gen_primary_occup_fr(cls, project):
         """ Generate primary occupation and monthly income, check if need to
             round the income
         """
@@ -142,27 +136,27 @@ class Project_description_fr:
 
         if primary_occup:
             if project.unemployment_rate > 0.5:
-                string = (
+                res = (
                     u"La plupart des adultes sont sans emploi"
                     ", mais certains travaillent comme %s "
                     "et gagnent environ $%s par mois. " % (
                         primary_occup[0], monthly_income))
             else:
-                string = (
+                res = (
                     u"La plupart des adultes travaillent comme %s et gagnent"
                     u" environ $%s par mois. " % (
                         primary_occup[0], monthly_income))
         else:
-            string = (u"Le salaire moyen d'un travailleur est d'environ "
-                      u"$%s par mois. " % monthly_income)
+            res = (u"Le salaire moyen d'un travailleur est d'environ "
+                   u"$%s par mois. " % monthly_income)
 
-        return string
+        return res
 
     @classmethod
-    def _get_needs_pattern_fr(cls, cr, uid, project, context=None):
+    def _get_needs_pattern_fr(cls, project):
         """ Create the needs' description pattern to fill by hand
         """
-        string = (
+        res = (
             u"Cette communauté a besoin (de...). Votre parrainage permet au "
             u"personnel du centre d'accueil %s d'offrir à cet enfant des "
             u"enseignements bibliques, des contrôles médicaux, une formation "
@@ -170,4 +164,4 @@ class Project_description_fr:
             u"Des rencontres sont aussi organisées pour les parents ou "
             u"responsable de l'enfant." % project.name)
 
-        return string
+        return res
