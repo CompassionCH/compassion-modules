@@ -14,7 +14,6 @@ import requests
 import urllib3
 import certifi
 import json
-import pdb
 
 from openerp import models, fields, api, exceptions, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
@@ -592,7 +591,6 @@ class compassion_child(models.Model):
         vals['hobbies_ids'] = [(6, 0, list(set([v for v in values if v])))]
 
         # Write values to existing case_study or create a new one
-        pdb.set_trace()
         if case_studies:
             case_studies.write(vals)
         else:
