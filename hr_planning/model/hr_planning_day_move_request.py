@@ -30,16 +30,15 @@ class hr_planning_day_move_request(models.Model):
         return self.env.user.id
 
     name = fields.Char(
-        _('Name'), required=True, states={'validate': [('readonly', True)]})
+        required=True, states={'validate': [('readonly', True)]})
     old_date = fields.Date(
-        _('Old date'), states={'validate': [('readonly', True)]})
-    new_date = fields.Date(
-        _('New date'), required=True,
         states={'validate': [('readonly', True)]})
+    new_date = fields.Date(
+        required=True, states={'validate': [('readonly', True)]})
     hour_from = fields.Float(
-        _('From'), default=8, states={'validate': [('readonly', True)]})
+        'From', default=8, states={'validate': [('readonly', True)]})
     hour_to = fields.Float(
-        _('To'), default=17, states={'validate': [('readonly', True)]})
+        'To', default=17, states={'validate': [('readonly', True)]})
     employee_id = fields.Many2one(
         'hr.employee', 'Employee', default=_employee_get, required=True,
         states={'validate': [('readonly', True)]})
@@ -51,32 +50,31 @@ class hr_planning_day_move_request(models.Model):
         [('add', 'Add'), ('move', 'Move')], _('Type'), required=True,
         states={'validate': [('readonly', True)]})
 
-    @api.multi
+    @api.model
     def create(self, vals):
         # Move request
-        for move_requ in self:
-            if vals['type'] == 'move':
-                # Check if this employee is working this day
-                if (move_requ._check_is_working(
-                        vals['employee_id'], vals['old_date'])):
-                    return super(hr_planning_day_move_request,
-                                 self).create(vals)
-                # Check if the move will have no effect
-                elif vals['old_date'] == vals['new_date']:
-                    raise exceptions.Warning(_('Warning'),
-                                             _(u'You chose the same date'))
-                else:
-                    employee_name = self.env['hr.employee'].browse(
-                        vals['employee_id']).name
-                    raise exceptions.Warning(
-                        _('Warning'),
-                        _(u'{} does not work this day : {}').format(
-                            employee_name, vals['old_date'])
-                    )
-            # Add request
+        if vals['type'] == 'move':
+            # Check if this employee is working this day
+            if (self._check_is_working(
+                    vals['employee_id'], vals['old_date'])):
+                return super(hr_planning_day_move_request,
+                             self).create(vals)
+            # Check if the move will have no effect
+            elif vals['old_date'] == vals['new_date']:
+                raise exceptions.Warning(_('Warning'),
+                                         _(u'You chose the same date'))
             else:
-                vals['old_date'] = False
-                return super(hr_planning_day_move_request, self).create(vals)
+                employee_name = self.env['hr.employee'].browse(
+                    vals['employee_id']).name
+                raise exceptions.Warning(
+                    _('Warning'),
+                    _(u'{} does not work this day : {}').format(
+                        employee_name, vals['old_date'])
+                )
+        # Add request
+        else:
+            vals['old_date'] = False
+            return super(hr_planning_day_move_request, self).create(vals)
 
     def write(self, vals):
         if 'type' in vals:
@@ -100,7 +98,7 @@ class hr_planning_day_move_request(models.Model):
 
     # Approve a request
     @api.multi
-    def approve(self, cr, uid, ids, context=None):
+    def approve(self):
         self.write({'state': 'validate'})
         employee_ids = list()
 
@@ -121,18 +119,16 @@ class hr_planning_day_move_request(models.Model):
 
     # Refuse a request
     @api.multi
-    def refuse(self, cr, uid, ids, context=None):
+    def refuse(self):
         self.write({'state': 'to_approve'})
-        employee_ids = [move_request.employee_id.id
-                        for move_request in self]
+        employee_ids = self.mapped('employee_id.id')
         self.env['hr.planning.wizard'].generate(employee_ids)
         return True
 
     # Delete a request
     @api.multi
-    def unlink(self, cr, uid, ids, context=None):
-        employee_ids = [move_request.employee_id.id
-                        for move_request in self]
+    def unlink(self):
+        employee_ids = self.mapped('employee_id.id')
         res = super(hr_planning_day_move_request, self).unlink()
         self.env['hr.planning.wizard'].generate(employee_ids)
         return res

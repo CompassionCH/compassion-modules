@@ -19,13 +19,13 @@ class hr_planning_day(models.Model):
     '''
     employee_id = fields.Many2one(
         'hr.employee', 'Employee', readonly=True)
-    start_date = fields.Datetime('Start date', readonly=True)
-    end_date = fields.Datetime('End date', readonly=True)
+    start_date = fields.Datetime(readonly=True)
+    end_date = fields.Datetime(readonly=True)
     contract_id = fields.Many2one(
         'hr.contract', 'Contract', readonly=True)
     department_id = fields.Many2one(
         'hr.department', reltated='employee_id.department_id',
-        string=_('Department'), store=True, readonly=True)
+        string='Department', store=True, readonly=True)
     category_ids = fields.Many2many(
-        related='employee_id.category_ids', string=_('Category'),
+        related='employee_id.category_ids', string='Category',
         store=False, readonly=True)

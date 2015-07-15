@@ -17,7 +17,7 @@ class hr_holidays(models.Model):
 
     @api.multi
     def _generate(self):
-        employee_ids = [holiday.employee_id.id for holiday in self]
+        employee_ids = self.mapped('employee_id.id')
         self.env['hr.planning.wizard'].generate(employee_ids)
 
     @api.multi
