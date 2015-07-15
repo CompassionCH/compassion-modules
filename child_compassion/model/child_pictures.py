@@ -55,6 +55,7 @@ class child_pictures(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
+    @api.model
     def create(self, vals):
         """ Fetch new pictures from GMC webservice when creating
         a new Pictures object. Check if picture is the same as the previous
