@@ -145,6 +145,7 @@ class child_property(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
+    @api.model
     def create(self, vals):
         """ When creating a new Case Study, check if a recent picture exists
         and link to it if necessary. """
