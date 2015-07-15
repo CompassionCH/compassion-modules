@@ -32,14 +32,13 @@ class resource_calendar(models.Model):
 
     @api.model
     def _generate(self):
-        for calendar in self:
-            contract_obj = self.env['hr.contract']
-            contracts = contract_obj.search(
-                [('working_hours', '=', calendar.id)])
+        contract_obj = self.env['hr.contract']
+        contracts = contract_obj.search(
+            [('working_hours', '=', calendar.id)])
 
-            employee_ids = []
+        employee_ids = []
 
-            for contract in contracts:
-                employee_ids.append(contract.employee_id.id)
+        for contract in contracts:
+            employee_ids.append(contract.employee_id.id)
 
-            self.env['hr.planning.wizard'].generate(employee_ids)
+        self.env['hr.planning.wizard'].generate(employee_ids)

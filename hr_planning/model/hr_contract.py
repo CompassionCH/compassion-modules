@@ -43,7 +43,5 @@ class hr_contract(models.Model):
 
     @api.multi
     def _generate(self):
-        employee_ids = []
-        for contract in self:
-            employee_ids.append(contract.employee_id.id)
-        self.env['hr.planning.wizard'].generate(employee_ids)
+        employees_ids = self.mapped('employee_id.id')
+        self.env['hr.planning.wizard'].generate(employees_ids)
