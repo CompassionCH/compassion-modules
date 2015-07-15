@@ -11,16 +11,38 @@
 
 import time
 
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
+from openerp import models, fields, api, netsvc, _
 from openerp.tools import mod10r
-from openerp import netsvc
 
 
-class contract_group(orm.Model):
+class contract_group(models.Model):
     """ Add BVR on groups and add BVR ref and analytic_id
     in invoices """
     _inherit = 'recurring.contract.group'
+
+    ##########################################################################
+    #                                 FIELDS                                 #
+    ##########################################################################
+    bvr_reference = fields.Char(
+        'BVR Ref', size=32, track_visibility="onchange"),
+    payment_term_id = fields.Many2one(
+        'account.payment.term', 'Payment Term',
+        domain=['|', '|', '|', ('name', 'ilike', 'BVR'),
+                ('name', 'ilike', 'LSV'),
+                ('name', 'ilike', 'Postfinance'),
+                ('name', 'ilike', 'Permanent')], track_visibility='onchange',
+        default=lambda self: self._get_op_payment_term()),
+    change_method = fields.Selection(default='clean_invoices')
+
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+    def _get_op_payment_term(self, cr, uid, context=None):
+        """ Get Permanent Order Payment Term, to set it by default. """
+        payment_term_id = self.pool.get('account.payment.term').search(
+            cr, uid, [('name', '=', 'Permanent Order')],
+            context={'lang': 'en_US'})
+        return payment_term_id[0]
 
     def name_get(self, cr, uid, ids, context=None):
         if not ids:
@@ -36,31 +58,6 @@ class contract_group(orm.Model):
                 name = gr.partner_id.name + ' ' + str(gr.id)
             res.append((gr.id, name))
         return res
-
-    def _get_op_payment_term(self, cr, uid, context=None):
-        """ Get Permanent Order Payment Term, to set it by default. """
-        payment_term_id = self.pool.get('account.payment.term').search(
-            cr, uid, [('name', '=', 'Permanent Order')],
-            context={'lang': 'en_US'})
-        return payment_term_id[0]
-
-    _columns = {
-        'bvr_reference': fields.char(size=32, string=_('BVR Ref'),
-                                     track_visibility="onchange"),
-        'payment_term_id': fields.many2one(
-            'account.payment.term', _('Payment Term'),
-            domain=['|', '|', '|', ('name', 'ilike', 'BVR'),
-                    ('name', 'ilike', 'LSV'),
-                    ('name', 'ilike', 'Postfinance'),
-                    ('name', 'ilike', 'Permanent')],
-            track_visibility="onchange"),
-    }
-
-    _defaults = {
-        'payment_term_id': _get_op_payment_term,
-        # Clean invoices when group is modified
-        'change_method': 'clean_invoices',
-    }
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
         res = dict()

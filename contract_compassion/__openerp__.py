@@ -30,11 +30,8 @@
 
 {
     'name': 'Compassion Contracts',
-    'version': '1.1',
+    'version': '1.2',
     'category': 'Other',
-    'description': """
-Compassion contract module.
-    """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['recurring_contract', 'account_banking_mandate',
