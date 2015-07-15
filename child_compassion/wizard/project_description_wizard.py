@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, exceptions, _
+from openerp import models, fields, api, exceptions, _
 from project_description_fr import Project_description_fr
 from project_description_de import Project_description_de
 from project_description_it import Project_description_it
@@ -47,10 +47,10 @@ class project_description_wizard(models.TransientModel):
     needs_desc_it = fields.Text(
         'Italian needs description',
         default=lambda self: self._get_needs('it'))
-    project_property_value_ids = fields.One2many(
+    project_property_value_ids = fields.Many2many(
         'compassion.translated.value',
-        compute='_get_value_ids', default=lambda self: self._get_value_ids(),
-        inverse=True)
+        compute='_set_value_ids', default=lambda self: self._set_value_ids(),
+        inverse='_write_values')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -59,7 +59,7 @@ class project_description_wizard(models.TransientModel):
         # Retrieve the id of the project from context
         return self.env.context.get('active_id', False)
 
-    def _get_value_ids(self):
+    def _set_value_ids(self):
         project_id = self.env.context.get('active_id')
         if not project_id:
             return False
@@ -76,19 +76,15 @@ class project_description_wizard(models.TransientModel):
         self.write({'project_property_value_ids': [(6, 0, value_ids)]})
         return value_ids
 
-    # def _write_values(self):
-        # value_obj = self.pool.get('compassion.translated.value')
-        # for line in value:
-        # if line[0] == 1:  # on2many update
-        # value_id = line[1]
-        # value_obj.write([value_id], line[2])
-        # return True
+    def _write_values(self):
+        # Values are automatically propagated into related objects
+        return True
 
     def _get_needs(self, lang):
         """ Returns the needs descrption of the given language.
         It will either generate it from a pattern or retrieve the
         last saved description if one exist. """
-        project = self.pool.get('compassion.project').browse(
+        project = self.env['compassion.project'].browse(
             self.env.context.get('active_id'))
         res = False
         if lang == 'fr':
@@ -104,7 +100,7 @@ class project_description_wizard(models.TransientModel):
         return res + '\n\n'     # Fix for display of the textfield
 
     def _get_desc(self, lang):
-        project = self.pool.get('compassion.project').browse(
+        project = self.env['compassion.project'].browse(
             self.env.context.get('active_id'))
         res = False
         if lang == 'fr':
@@ -121,6 +117,7 @@ class project_description_wizard(models.TransientModel):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
+    @api.multi
     def generate_descriptions(self):
         self.ensure_one()
         project = self.project_id
@@ -148,6 +145,7 @@ class project_description_wizard(models.TransientModel):
             'target': 'new',
         }
 
+    @api.multi
     def validate_descriptions(self):
         """ Save the selected descriptions in the project. """
         self.ensure_one()

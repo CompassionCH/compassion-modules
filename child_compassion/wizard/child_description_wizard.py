@@ -42,8 +42,8 @@ class child_description_wizard(models.TransientModel):
         'compassion.translated.value', compute='_get_value_ids',
         inverse='_write_values', default=lambda self: self._get_value_ids())
     comments = fields.Text(
-        'Comments', compute='_get_comments',
-        default=lambda self: self._get_comments(), readonly=True)
+        'Comments', compute='_set_comments',
+        default=lambda self: self._set_comments(), readonly=True)
     case_study_id = fields.Many2one(
         'compassion.child.property', 'Case Study',
         default=lambda self: self.env.context.get('property_id'))
@@ -97,7 +97,7 @@ class child_description_wizard(models.TransientModel):
                 child, case_study)
         return res + '\n\n'     # Fix for displaying the textfield
 
-    def _get_comments(self):
+    def _set_comments(self):
         child = self.env['compassion.child'].browse(
             self.env.context.get('active_id'))
         if child and child.case_study_ids:

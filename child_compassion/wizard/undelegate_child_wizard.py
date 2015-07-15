@@ -9,16 +9,17 @@
 #
 ##############################################################################
 
-from openerp import models, fields
+from openerp import models, fields, api
 
 
 class undelegate_child_wizard(models.TransientModel):
     _name = 'undelegate.child.wizard'
 
-    child_ids = fields.One2many(
+    child_ids = fields.Many2many(
         'compassion.child', string='Selected children',
         compute='_set_children', default=lambda self: self._set_children())
 
+    @api.multi
     def _set_children(self):
         child_ids = list()
         for child in self.env['compassion.child'].browse(
@@ -26,8 +27,10 @@ class undelegate_child_wizard(models.TransientModel):
             if (child.state == 'D'):
                 child_ids.append(child.id)
 
-        self.child_ids = child_ids
+        self.write({'child_ids': [(6, 0, child_ids)]})
+        return child_ids
 
+    @api.multi
     def undelegate(self):
         child_obj = self.env['compassion.child']
         for child in child_obj.browse(self.env.context.get('active_ids')):

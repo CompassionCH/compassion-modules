@@ -289,7 +289,7 @@ class compassion_project(models.Model):
     #                             PRIVATE METHODS                            #
     ##########################################################################
     @api.one
-    def _reactivate_project(self, project_id):
+    def _reactivate_project(self):
         """ To perform some actions when project is reactivated """
         self.message_post(
             "The project is reactivated.",

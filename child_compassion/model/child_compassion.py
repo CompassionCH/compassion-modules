@@ -158,13 +158,14 @@ class compassion_child(models.Model):
             ('41', _("Reached maximum age")),
         ]
 
+    @api.one
     @api.depends('code', 'project_id.code')
     def _set_project(self):
-        for child in self:
+        if self.code:
             projects = self.env['compassion.project'].search(
-                [('code', '=', child.code[:5])])
+                [('code', '=', self.code[:5])])
             if projects:
-                child.project_id = projects[0].id
+                self.project_id = projects[0].id
 
     def _get_child_states(self):
         return [
