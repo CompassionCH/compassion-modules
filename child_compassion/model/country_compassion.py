@@ -12,8 +12,7 @@
 import requests
 import json
 
-from openerp import models, fields, api, exceptions
-from openerp.tools.translate import _
+from openerp import models, fields, api, exceptions, _
 from openerp.tools.config import config
 
 

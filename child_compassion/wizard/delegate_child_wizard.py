@@ -24,14 +24,14 @@ class delegate_child_wizard(models.TransientModel):
         'Delegation\'s beginning', required=True,
         default=datetime.today().strftime(DF))
     date_end_delegation = fields.Date('Delegation\'s end')
-    child_ids = fields.One2many(
+    child_ids = fields.Many2many(
         'compassion.child', string='Selected children',
-        compute='_get_active_ids',
-        default=lambda self: self._get_active_ids())
+        compute='_set_active_ids',
+        default=lambda self: self._set_active_ids())
 
     @api.multi
-    def _get_active_ids(self):
-        child_obj = self.pool.get('compassion.child')
+    def _set_active_ids(self):
+        child_obj = self.env['compassion.child']
         active_ids = self.env.context.get('active_ids')
         child_ids = [c.id for c in child_obj.browse(active_ids)
                      if c.is_available]
@@ -42,7 +42,8 @@ class delegate_child_wizard(models.TransientModel):
     @api.multi
     def delegate(self):
         self.ensure_one()
-        child_ids = self.child_ids
+        child_ids = self.env['compassion.child'].browse(self.env.context.get(
+            'active_ids')).filtered('is_available')
 
         if self.date_end_delegation:
             if datetime.strptime(self.date_delegation, DF) > \
