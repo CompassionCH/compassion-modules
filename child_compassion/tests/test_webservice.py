@@ -25,19 +25,19 @@ class test_webservice(common.TransactionCase):
         self.child_id = self._create_child("TZ1120316", "Child 1")
 
     def _create_project(self, project_code, project_name):
-        project_obj = self.registry('compassion.project')
-        project_id = project_obj.create(self.cr, self.uid, {
+        project_obj = self.env['compassion.project']
+        project_id = project_obj.create({
             'code': project_code,
             'name': project_name,
-        })
+        }).id
         return project_id
 
     def _create_child(self, child_code, child_name):
-        child_obj = self.registry('compassion.child')
-        child_id = child_obj.create(self.cr, self.uid, {
+        child_obj = self.env['compassion.child']
+        child_id = child_obj.create({
             'code': child_code,
             'name': child_name,
-        })
+        }).id
         return child_id
 
     def test_config_set(self):
@@ -52,15 +52,14 @@ class test_webservice(common.TransactionCase):
         """ Test the webservice on Project TZ112. """
         # Test the basics
         self.assertTrue(self.project_id)
-        project_obj = self.registry('compassion.project')
-        project = project_obj.browse(self.cr, self.uid, self.project_id)
+        project_obj = self.env['compassion.project']
+        project = project_obj.browse(self.project_id)
         self.assertTrue(project)
         self.assertEqual(project.id, self.project_id)
         logger.info("project id : " + str(project.id))
 
         # Retrieve the informations from the webservice
-        project_obj.update_informations(self.cr, self.uid, project.id)
-        project = project_obj.browse(self.cr, self.uid, self.project_id)
+        project.update_informations()
 
         # Test the data
         self.assertEqual(project.name, "Tanzania Assembly of God (TAG) "
@@ -78,8 +77,8 @@ class test_webservice(common.TransactionCase):
         """ Test the webservice on child TZ1120316"""
         # Test the basics
         self.assertTrue(self.child_id)
-        child_obj = self.registry('compassion.child')
-        child = child_obj.browse(self.cr, self.uid, self.child_id)
+        child_obj = self.env['compassion.child']
+        child = child_obj.browse(self.child_id)
         self.assertTrue(child)
         self.assertEqual(child.name, "Child 1")
         logger.info("child name: " + str(child.name))
@@ -87,8 +86,7 @@ class test_webservice(common.TransactionCase):
         logger.info("child id: " + str(child.id))
 
         # Retrieve the informations from the webservice
-        child_obj.get_infos(self.cr, self.uid, child.id)
-        child = child_obj.browse(self.cr, self.uid, self.child_id)
+        child.get_infos()
 
         # Test the data
         self.assertEqual(child.code, "TZ1120316")
