@@ -380,7 +380,7 @@ class compassion_child(models.Model):
         self.state = state
         return True
 
-    @api.one
+    @api.multi
     def child_sponsored(self):
         self.write({
             'state': 'P',
@@ -609,7 +609,4 @@ class compassion_child(models.Model):
 
     # TODO : Move in module child_sync_typo3
     def _get_gender(self, gender):
-        if gender == 'M':
-            return 1
-        else:
-            return 2
+        return 1 if gender == 'M' else 2
