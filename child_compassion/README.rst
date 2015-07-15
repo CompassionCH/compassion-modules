@@ -5,7 +5,7 @@ Compassion Children
 ===================
 
 Setup child and projects for sponsorship management.
-Webservice information retrieving is also done in this module...
+Webservice information retrieving is also done in this module.
 
 Installation
 ============
@@ -34,7 +34,7 @@ To use this module, you need to:
 Known issues / Roadmap
 ======================
 
-* Migrate code to V8
+* Javascript code is not working in V8 for generate_descriptions_wizard
 
 Credits
 =======
@@ -42,8 +42,8 @@ Credits
 Contributors
 ------------
 
-* Cyril Sester <cyril.sester@outlook.com>
 * Emanuel Cino <ecino@compassion.ch>
+* Cyril Sester <cyril.sester@outlook.com>
 * Kevin Cristi <kcristi@compassion.ch>
 * David Coninckx <david@coninckx.com>
 
