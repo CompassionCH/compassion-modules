@@ -117,7 +117,7 @@
             <field name="type">tree</field>
             <field name="inherit_id" ref="base.view_partner_tree"/>            
             <field name="arch" type="xml">
-                <field name="name" position="after">
+                <field name="display_name" position="after">
                     <field name="lang"/>
                     <field name="zip"/>
                     <field name="city"/>
