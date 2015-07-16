@@ -9,8 +9,7 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
+from openerp import api, models, fields, _
 
 import requests
 import logging
@@ -19,70 +18,57 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class child_compassion(orm.Model):
+class child_compassion(models.Model):
     _inherit = 'compassion.child'
 
-    def _get_related_contracts(self, cr, uid, ids, field_name, args,
-                               context=None):
-        con_obj = self.pool.get('recurring.contract')
-        return {
-            child_id: con_obj.search(cr, uid, [
-                ('child_id', '=', child_id),
-                ('type', '=', 'S')], context=context)
-            for child_id in ids
-        }
+    sponsorship_ids = fields.One2many(
+        'recurring.contract', compute='_set_related_contracts',
+        string="Sponsorships", readonly=True)
+    unsponsored_since = fields.Date(
+        compute='_get_unsponsored_since', store=True)
 
-    def _get_unsponsored_since(self, cr, uid, ids, field_name, args,
-                               context=None):
+    @api.multi
+    def _set_related_contracts(self):
+        con_obj = self.env['recurring.contract']
+        for child in self:
+            child.sponsorship_ids = con_obj.search([
+                ('child_id', '=', child.id),
+                ('type', '=', 'S')])
+
+    @api.multi
+    def _get_unsponsored_since(self):
         """ Returns the date since the child is waiting for a sponsor.
         If child was never sponsored, this date comes from GMC services,
         otherwise we can infer it by looking at last sponsorship. """
         res = dict()
-        con_obj = self.pool.get('recurring.contract')
-        for child in self.browse(cr, uid, ids, context):
-            con_ids = con_obj.search(
-                cr, uid, [('child_id', '=', child.id)], order='end_date desc',
-                limit=1, context=context)
-            if con_ids and child.state not in ('P', 'F', 'X'):
-                contract = con_obj.browse(cr, uid, con_ids[0], context)
-                res[child.id] = contract.end_date
+        con_obj = self.env['recurring.contract']
+        for child in self:
+            child.unsponsored_since = False
+            contract = con_obj.search(
+                [('child_id', '=', child.id)], order='end_date desc', limit=1)
+            if contract and child.state not in ('P', 'F', 'X'):
+                child.unsponsored_since = contract.end_date
             elif not child.has_been_sponsored:
                 # Retrieve the information from the webservice
                 url = self.get_url(child.code, 'information')
                 r = requests.get(url)
                 json_data = r.json()
                 if r.status_code == 200:
-                    res[child.id] = json_data['beginWaitTime'] or False
+                    child.unsponsored_since = json_data['beginWaitTime'] or False
                 else:
                     logger.error(
                         'An error occured while fetching the unsponsored '
                         ' date of child %s.' % child.code +
                         json_data['error']['message'])
-                    res[child.id] = False
-            else:
-                res[child.id] = False
 
-        return res
-
-    _columns = {
-        'sponsorship_ids': fields.function(
-            _get_related_contracts, type='one2many', obj='recurring.contract',
-            string=_("Sponsorships"), readonly=True),
-        'unsponsored_since': fields.function(
-            _get_unsponsored_since, type='date',
-            string=_('Unsponsored since'), readonly=True, store={
-                'compassion.child': (lambda self, cr, uid, ids,
-                                     context=None: ids, ['state'], 10)}),
-    }
-
-    def _recompute_unsponsored(self, cr, uid, ids, context=None):
+    @api.multi
+    def _recompute_unsponsored(self):
         """ Useful for updating unset values """
-        self._store_set_values(cr, uid, ids, ['unsponsored_since'], context)
+        self._store_set_values(['unsponsored_since'])
         return True
 
+    @api.multi
     def get_infos(self, cr, uid, ids, context=None):
         """ Update unsponsored date. """
-        if not isinstance(ids, list):
-            ids = [ids]
-        self._recompute_unsponsored(cr, uid, ids, context)
-        return super(child_compassion, self).get_infos(cr, uid, ids, context)
+        self._recompute_unsponsored()
+        return super(child_compassion, self).get_infos()

@@ -9,23 +9,23 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
-from openerp import netsvc
+from openerp import api, models, netsvc
 
 
-class account_mandate(orm.Model):
+class account_mandate(models.Model):
     _inherit = 'account.banking.mandate'
 
-    def validate(self, cr, uid, ids, context=None):
+    @api.multi
+    def validate(self):
         """Validate LSV/DD Contracts when mandate is validated."""
-        if super(account_mandate, self).validate(cr, uid, ids, context):
+        if super(account_mandate, self).validate():
             wf_service = netsvc.LocalService('workflow')
-            for mandate in self.browse(cr, uid, ids, context):
+            for mandate in self:
                 contract_ids = self.pool.get('recurring.contract').search(
-                    cr, uid, [('partner_id', '=', mandate.partner_id.id),
-                              ('state', '=', 'mandate')], context=context)
+                    [('partner_id', '=', mandate.partner_id.id),
+                     ('state', '=', 'mandate')])
                 for con_id in contract_ids:
                     wf_service.trg_validate(
-                        uid, 'recurring.contract', con_id,
-                        'mandate_validated', cr)
+                        self.env.user.id, 'recurring.contract', con_id,
+                        'mandate_validated', self.env.cr)
         return True
