@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
+from openerp import api, models
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
 from openerp import SUPERUSER_ID
@@ -17,37 +17,29 @@ import pytz
 from datetime import datetime, timedelta, time
 
 
-class hr_planning_wizard(orm.TransientModel):
+class hr_planning_wizard(models.TransientModel):
     _name = 'hr.planning.wizard'
 
     # Global regeneration from wizard
-    def regenerate(self, cr, uid, ids, context=None):
-        employee_obj = self.pool.get('hr.employee')
-        employee_ids = employee_obj.search(cr, uid, [], context=context)
-        self.generate(cr, uid, employee_ids, context)
+    @api.multi
+    def regenerate(self):
+        employees = self.env['hr.employee'].search([])
+        self.generate(employees.ids)
 
-    def generate(self, cr, uid, ids, context=None):
-        employee_obj = self.pool.get('hr.employee')
-        planning_day_obj = self.pool.get('hr.planning.day')
-
-        # Get employees
-        employees = employee_obj.browse(cr, uid, ids, context=context)
-
+    @api.multi
+    def generate(self, employee_ids):
+        planning_day_obj = self.env['hr.planning.day']
+        employees = self.env['hr.employee'].browse(employee_ids)
         today = datetime.today()
-
         # Find the time zone
-        tz = self._get_time_zone(cr, uid, context)
-
+        tz = self._get_time_zone()
         for employee in employees:
 
             # Clean future planning days
             planning_days_to_remove = planning_day_obj.search(
-                cr, uid,
                 [('employee_id', '=', employee.id),
-                    ('start_date', '>=', today.strftime(DF))],
-                context=context)
-            planning_day_obj.unlink(
-                cr, uid, planning_days_to_remove, context=context)
+                 ('start_date', '>=', today.strftime(DF))])
+            planning_days_to_remove.unlink()
 
             # Loop on each contract related to the employee
             for contract in employee.contract_ids:
@@ -73,10 +65,10 @@ class hr_planning_wizard(orm.TransientModel):
                     # Loop until the end_date is reached
                     while d <= end_date:
                         start_hour, start_minutes = self._time_from_float(
-                            cr, uid, attendance.hour_from, context)
+                            attendance.hour_from)
 
                         end_hour, end_minutes = self._time_from_float(
-                            cr, uid, attendance.hour_to, context)
+                            attendance.hour_to)
 
                         start_date = datetime(
                             d.year, d.month, d.day, start_hour, start_minutes)
@@ -90,25 +82,23 @@ class hr_planning_wizard(orm.TransientModel):
 
                         if (int(attendance.dayofweek) == d.weekday()):
                             # Check for holidays
-                            holiday_obj = self.pool.get('hr.holidays')
-                            holidays = holiday_obj.search(cr, uid, [
+                            holiday_obj = self.env['hr.holidays']
+                            holidays = holiday_obj.search([
                                 ('employee_id', '=', employee.id),
                                 ('date_from', '<=', start_date.strftime(DF)),
                                 ('date_to', '>=', stop_date.strftime(DF)),
-                                ('state', '=', 'validate')],
-                                context=context)
+                                ('state', '=', 'validate')])
                             # If no holidays on the full day
                             if not holidays:
                                 # Create a planning day
-                                planning_day_obj.create(cr, uid, {
+                                planning_day_obj.create({
                                     'employee_id': employee.id,
                                     'contract_id': contract.id,
                                     'start_date': start_date,
                                     'end_date': stop_date})
                             # If holidays on a part of the day
                             elif len(holidays) == 1:
-                                holiday = holiday_obj.browse(
-                                    cr, uid, holidays, context)[0]
+                                holiday = holidays[0]
                                 holiday_start = datetime.strptime(
                                     holiday.date_from, DTF)
                                 holiday_stop = datetime.strptime(
@@ -116,38 +106,33 @@ class hr_planning_wizard(orm.TransientModel):
 
                                 if (holiday_start.date() == d.date() and
                                         start_date < holiday_start):
-                                    planning_day_obj.create(cr, uid, {
+                                    planning_day_obj.create({
                                         'employee_id': employee.id,
                                         'contract_id': contract.id,
                                         'start_date': start_date,
                                         'end_date': holiday_start})
                                 elif (holiday_stop.date() == d.date() and
                                         stop_date > holiday_stop):
-                                    planning_day_obj.create(cr, uid, {
+                                    planning_day_obj.create({
                                         'employee_id': employee.id,
                                         'contract_id': contract.id,
                                         'start_date': holiday_stop,
                                         'end_date': stop_date})
                         d += delta
             # Planning days exceptions
-            self._move_planning_days(cr, uid, employee, context)
+            self._move_planning_days(employee)
 
-    def _move_planning_days(self, cr, uid, employee, context=None):
-        planning_day_move_request_obj = self.pool.get(
-            'hr.planning.day.move.request')
+    @api.model
+    def _move_planning_days(self, employee):
+
         # Search for validated request
-        planning_day_move_requests_ids = planning_day_move_request_obj.search(
-            cr, uid,
-            [('employee_id', '=', employee.id), ('state', '=', 'validate')],
-            context=context)
-        planning_day_move_requests = planning_day_move_request_obj.browse(
-            cr, uid, planning_day_move_requests_ids, context=context)
+        planning_day_move_requests = self.env[
+            'hr.planning.day.move.request'].search(
+            [('employee_id', '=', employee.id), ('state', '=', 'validate')])
 
-        planning_day_obj = self.pool.get('hr.planning.day')
-        planning_days_ids = planning_day_obj.search(
-            cr, uid, [('employee_id', '=', employee.id)], context=context)
-        planning_days = planning_day_obj.browse(
-            cr, uid, planning_days_ids, context)
+        planning_day_obj = self.env['hr.planning.day']
+        planning_days = planning_day_obj.search(
+            [('employee_id', '=', employee.id)])
 
         for planning_day_move_request in planning_day_move_requests:
             # Move case
@@ -171,17 +156,15 @@ class hr_planning_wizard(orm.TransientModel):
                                 planning_day.end_date, DTF).time()
                         )
                         # Update the day
-                        planning_day_obj.write(
-                            cr, uid, planning_day.id, {
-                                'start_date': new_start_date,
-                                'end_date': new_end_date},
-                            context=context)
+                        planning_day.write({
+                            'start_date': new_start_date,
+                            'end_date': new_end_date})
             # Add case
             else:
                 start_hour, start_minutes = self._time_from_float(
-                    cr, uid, planning_day_move_request.hour_from, context)
+                    planning_day_move_request.hour_from)
                 end_hour, end_minutes = self._time_from_float(
-                    cr, uid, planning_day_move_request.hour_to, context)
+                    planning_day_move_request.hour_to)
                 new_start_date = datetime.combine(
                     datetime.strptime(
                         planning_day_move_request.new_date, DF).date(),
@@ -192,25 +175,25 @@ class hr_planning_wizard(orm.TransientModel):
                         planning_day_move_request.new_date, DF).date(),
                     time(end_hour, end_minutes)
                 )
-                tz = self._get_time_zone(cr, uid, context)
+                tz = self._get_time_zone()
                 new_start_date = new_start_date - tz.utcoffset(new_start_date)
                 new_end_date = new_end_date - tz.utcoffset(new_end_date)
 
                 # Create a new planning day
                 planning_day_obj.create(
-                    cr, uid,
                     {'start_date': new_start_date,
                      'end_date': new_end_date,
-                     'employee_id': employee.id},
-                    context=context)
+                     'employee_id': employee.id})
 
-    def _get_time_zone(self, cr, uid, context=None):
-        user_pool = self.pool.get('res.users')
-        user = user_pool.browse(cr, SUPERUSER_ID, uid)
-        tz = pytz.timezone(user.partner_id.tz) or pytz.utc
+    @api.model
+    def _get_time_zone(self):
+        usr = self.env['res.users'].browse(SUPERUSER_ID)
+        tz = pytz.utc if not usr.partner_id.tz else pytz.timezone(
+            usr.partner_id.tz)
         return tz
 
-    def _time_from_float(self, cr, uid, flt_time, context=None):
+    @api.model
+    def _time_from_float(self, flt_time):
         hour = int(flt_time)
         minute = int((flt_time - hour) * 60)
         return(hour, minute)
