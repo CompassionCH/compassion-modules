@@ -23,6 +23,7 @@ class resource_calendar(models.Model):
             res._generate()
         return res
 
+    @api.multi
     def write(self, vals):
         res = super(resource_calendar, self).write(vals)
 
