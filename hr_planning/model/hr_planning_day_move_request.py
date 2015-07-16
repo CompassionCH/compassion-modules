@@ -76,6 +76,7 @@ class hr_planning_day_move_request(models.Model):
             vals['old_date'] = False
             return super(hr_planning_day_move_request, self).create(vals)
 
+    @api.multi
     def write(self, vals):
         if 'type' in vals:
             if vals['type'] == 'add':
