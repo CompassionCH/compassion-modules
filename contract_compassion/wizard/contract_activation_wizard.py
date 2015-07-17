@@ -9,24 +9,19 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-
-from datetime import datetime
+from openerp import models, api
 
 
-class activate_contract_wizard(orm.TransientModel):
+class activate_contract_wizard(models.TransientModel):
     """ This wizard force activation of a contract. """
     _name = 'recurring.contract.activate.wizard'
 
-    def activate_contract(self, cr, uid, ids, context=None):
-        contract_obj = self.pool.get('recurring.contract')
+    @api.multi
+    def activate_contract(self):
+        contract_obj = self.env['recurring.contract']
         # Ids of contracts are stored in context
         for contract in contract_obj.browse(
-                cr, uid, context.get('active_ids', list()), context):
+                self.env.context.get('active_ids', list())):
             if contract.state in ('draft', 'waiting'):
-                contract.write({
-                    'activation_date': datetime.today().strftime(DF)})
-                contract_obj.force_activation(
-                    cr, uid, contract.id, context)
+                contract.force_activation()
         return True

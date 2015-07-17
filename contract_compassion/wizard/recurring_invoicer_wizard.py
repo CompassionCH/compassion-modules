@@ -9,13 +9,14 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
+from openerp import api, models
 
 
-class recurring_invoicer_wizard(orm.TransientModel):
+class recurring_invoicer_wizard(models.TransientModel):
     _inherit = 'recurring.invoicer.wizard'
 
-    def generate_from_cron(self, cr, uid, context=None):
-        ret_dict = self.generate(cr, uid, [], context=context)
-        recurring_invoicer_obj = self.pool.get('recurring.invoicer')
-        recurring_invoicer_obj.validate_invoices(cr, uid, [ret_dict['res_id']])
+    @api.model
+    def generate_from_cron(self):
+        ret_dict = self.generate()
+        invoicer = self.env['recurring.invoicer'].browse(ret_dict['res_id'])
+        invoicer.validate_invoices()

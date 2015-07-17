@@ -15,9 +15,9 @@
             <field name="arch" type="xml">
                 <group name="partner_info" position="replace"> 
                     <group name="partner_info">
-                        <field name="partner_id" domain="[('customer', '=', True)]" on_change="on_change_partner_id(partner_id)" readonly="1"/>
-                        <field name="bvr_reference" on_change="on_change_bvr_ref(bvr_reference)" />
-                        <field name="payment_term_id" on_change="on_change_payment_term(payment_term_id, bvr_reference, partner_id)" />
+                        <field name="partner_id" domain="[('customer', '=', True)]" readonly="1"/>
+                        <field name="bvr_reference"/>
+                        <field name="payment_term_id"/>
                     </group>
                 </group>
             </field>

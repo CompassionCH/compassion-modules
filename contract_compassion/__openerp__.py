@@ -30,23 +30,20 @@
 
 {
     'name': 'Compassion Contracts',
-    'version': '1.1',
+    'version': '1.2',
     'category': 'Other',
-    'description': """
-Compassion contract module.
-    """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['recurring_contract', 'account_banking_mandate',
-                'child_compassion'],
+                'child_compassion', 'l10n_ch_payment_slip'],
     'data': [
-        'data/install.xml',
         'view/end_contract_wizard_view.xml',
         'view/contract_group_view.xml',
         'view/contract_origin_view.xml',
         'view/contract_view.xml',
         'view/activate_contract_view.xml',
         'workflow/contract_workflow.xml',
+        'workflow/invoice_workflow.xml',
         'security/ir.model.access.csv',
         'data/friday_invoicer_cron.xml',
         'data/product.xml',
