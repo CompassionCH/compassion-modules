@@ -43,7 +43,7 @@ class ResPartner(models.Model):
     deathdate = fields.Date('Death date')
     birthdate = fields.Date('Birthdate')
     lang = fields.Selection(
-        _lang_get, string='Language', required=True,
+        '_lang_get', string='Language', required=True,
         help="If the selected language is loaded in the system, all "
         "documents related to this contact will be printed in this "
         "language. If not, it will be English.")
