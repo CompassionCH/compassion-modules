@@ -23,10 +23,10 @@ class ResPartnerBank(models.Model):
         """Override function to notify creation in a message
         """
         result = super(ResPartnerBank, self).create(data)
-        
+
         part = result.partner_id
-        part.message_post( "<b>Account number: </b>" + result.acc_number,
-            "New account created", 'comment')
+        part.message_post("<b>Account number: </b>" + result.acc_number,
+                          "New account created", 'comment')
 
         return result
 
@@ -36,8 +36,8 @@ class ResPartnerBank(models.Model):
         """
         for account in self:
             part = account.partner_id
-            part.message_post( "<b>Account number: </b>" + account.acc_number,
-                "Account deleted", 'comment')
+            part.message_post("<b>Account number: </b>" + account.acc_number,
+                              "Account deleted", 'comment')
 
         result = super(ResPartnerBank, self).unlink()
         return result
