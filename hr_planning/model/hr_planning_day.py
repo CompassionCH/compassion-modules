@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import fields, models, _
+from openerp import fields, models
 
 
 class hr_planning_day(models.Model):
