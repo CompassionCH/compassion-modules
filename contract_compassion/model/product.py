@@ -9,21 +9,13 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
+from openerp import models, fields
 
 
-class product(orm.Model):
+class product(models.Model):
     _inherit = 'product.product'
 
-    def _get_categ_name(self, cr, uid, ids, name, args, context=None):
-        return {p.id: p.product_tmpl_id.categ_id.name for p in
-                self.browse(cr, uid, ids, {'lang': 'en_US'})}
-
-    _columns = {
-        'gp_fund_id': fields.integer("GP Fund id", size=4),
-        'categ_name': fields.function(
-            _get_categ_name,
-            type="char", string=_('Product category'),
-            store=True)
-    }
+    gp_fund_id = fields.Integer('GP Fund id', size=4)
+    categ_name = fields.Char(
+        'Product category', related='product_tmpl_id.categ_id.name',
+        store=True)
