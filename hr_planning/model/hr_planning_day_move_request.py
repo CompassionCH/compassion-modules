@@ -26,8 +26,9 @@ class hr_planning_day_move_request(models.Model):
     '''
     _name = "hr.planning.day.move.request"
 
-    def _employee_get(self):
-        return self.env.user.id
+    ##########################################################################
+    #                                 FIELDS                                 #
+    ##########################################################################
 
     name = fields.Char(
         required=True, states={'validate': [('readonly', True)]})
@@ -40,8 +41,8 @@ class hr_planning_day_move_request(models.Model):
     hour_to = fields.Float(
         'To', default=17, states={'validate': [('readonly', True)]})
     employee_id = fields.Many2one(
-        'hr.employee', 'Employee', default=_employee_get, required=True,
-        states={'validate': [('readonly', True)]})
+        'hr.employee', 'Employee', default=lambda self: self._employee_get(),
+        required=True, states={'validate': [('readonly', True)]})
     state = fields.Selection(
         [('to_approve', 'To Approve'), ('validate', 'Approved')],
         'Status', default='to_approve', track_visibility="onchange",
@@ -49,6 +50,17 @@ class hr_planning_day_move_request(models.Model):
     type = fields.Selection(
         [('add', 'Add'), ('move', 'Move')], _('Type'), required=True,
         states={'validate': [('readonly', True)]})
+
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+
+    def _employee_get(self):
+        return self.env.user.id
+
+    ##########################################################################
+    #                              ORM METHODS                               #
+    ##########################################################################
 
     @api.model
     def create(self, vals):
@@ -83,19 +95,17 @@ class hr_planning_day_move_request(models.Model):
                 vals['old_date'] = False
         return super(hr_planning_day_move_request, self).write(vals)
 
-    def _check_is_working(self, employee_id, date):
-        planning_day_obj = self.env['hr.planning.day']
-        planning_days = planning_day_obj.search(
-            [('employee_id', '=', employee_id)])
+    # Delete a request
+    @api.multi
+    def unlink(self):
+        employee_ids = self.mapped('employee_id.id')
+        res = super(hr_planning_day_move_request, self).unlink()
+        self.env['hr.planning.wizard'].generate(employee_ids)
+        return res
 
-        # Find in the planning day
-        for planning_day in planning_days:
-            if (datetime.strptime(
-                planning_day.start_date, DTF).date() ==
-                    datetime.strptime(date, DF).date()):
-                return True
-
-        return False
+    ##########################################################################
+    #                            WORKFLOW METHODS                            #
+    ##########################################################################
 
     # Approve a request
     @api.multi
@@ -126,10 +136,20 @@ class hr_planning_day_move_request(models.Model):
         self.env['hr.planning.wizard'].generate(employee_ids)
         return True
 
-    # Delete a request
-    @api.multi
-    def unlink(self):
-        employee_ids = self.mapped('employee_id.id')
-        res = super(hr_planning_day_move_request, self).unlink()
-        self.env['hr.planning.wizard'].generate(employee_ids)
-        return res
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
+
+    def _check_is_working(self, employee_id, date):
+        planning_day_obj = self.env['hr.planning.day']
+        planning_days = planning_day_obj.search(
+            [('employee_id', '=', employee_id)])
+
+        # Find in the planning day
+        for planning_day in planning_days:
+            if (datetime.strptime(
+                planning_day.start_date, DTF).date() ==
+                    datetime.strptime(date, DF).date()):
+                return True
+
+        return False
