@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class test_contract_compassion(common.TransactionCase):
+
     """
         Test Project contract compassion.
         We are testing 3 scenarios :
@@ -32,38 +33,31 @@ class test_contract_compassion(common.TransactionCase):
     def setUp(self):
         super(test_contract_compassion, self).setUp()
         # Retrieve receivable and payable accounts
-        account_type = self.registry('account.account.type').search(
-            self.cr, self.uid, [
-                ('code', '=', 'receivable'),
-            ])[0]
-        property_account_receivable = self.registry('account.account').search(
-            self.cr, self.uid, [
-                ('type', '=', 'receivable'),
-                ('user_type', '=', account_type)
-            ])[0]
-        account_type = self.registry('account.account.type').search(
-            self.cr, self.uid, [
-                ('code', '=', 'payable'),
-            ])[0]
-        property_account_payable = self.registry('account.account').search(
-            self.cr, self.uid, [
-                ('type', '=', 'payable'),
-                ('user_type', '=', account_type)])[0]
-        property_account_income = self.registry('account.account').search(
-            self.cr, self.uid, [
-                ('type', '=', 'other'),
-                ('name', '=', 'Property Account Income Test')
-            ])[0]
+        account_obj = self.env['account.account']
+        account_type_obj = self.env['account.account.type']
+        account_type = account_type_obj.search([
+            ('code', '=', 'receivable')]).ids[0]
+        property_account_receivable = account_obj.search([
+            ('type', '=', 'receivable'),
+            ('user_type', '=', account_type)]).ids[0]
+        account_type = account_type_obj.search([
+            ('code', '=', 'payable')]).ids[0]
+        property_account_payable = account_obj.search([
+            ('type', '=', 'payable'),
+            ('user_type', '=', account_type)]).ids[0]
+        property_account_income = account_obj.search([
+            ('type', '=', 'other'),
+            ('name', '=', 'Property Account Income Test')]).ids[0]
         # Creation of partners
-        partner_obj = self.registry('res.partner')
-        self.partner_id = partner_obj.create(self.cr, self.uid, {
+        partner_obj = self.env['res.partner']
+        self.partners = partner_obj.create({
             'name': 'Monsieur Client 197',
             'property_account_receivable': property_account_receivable,
             'property_account_payable': property_account_payable,
             'notification_email_send': 'none',
             'ref': '00001111',
         })
-        self.partner_id1 = partner_obj.create(self.cr, self.uid, {
+        self.partners += partner_obj.create({
             'name': 'Client 197',
             'property_account_receivable': property_account_receivable,
             'property_account_payable': property_account_payable,
@@ -71,14 +65,11 @@ class test_contract_compassion(common.TransactionCase):
             'ref': '00002222',
         })
         # Retrieve a payement term
-        payment_term_obj = self.registry('account.payment.term')
-        self.payment_term_id = payment_term_obj.search(self.cr, self.uid, [
-            ('name', '=', '15 Days')
-        ])[0]
-        product_obj = self.registry('product.product')
-        product_obj.write(self.cr, self.uid, 1, {
-            'property_account_income': property_account_income,
-            })
+        payment_term_obj = self.env['account.payment.term']
+        self.payment_term_id = payment_term_obj.search([
+            ('name', '=', '15 Days')])[0].id
+        product = self.env['product.product'].browse(1)
+        product.property_account_income = property_account_income
 
     def test_contract_compassion_first_scenario(self):
         """
@@ -89,28 +80,25 @@ class test_contract_compassion(common.TransactionCase):
         next_year = (datetime.strptime(
             (datetime.today().strftime(DF)), DF)
             + relativedelta(years=+1)).year
-        fiscal_year_id = self.registry('account.fiscalyear').create(
-            self.cr, self.uid, {
-                'name': next_year,
-                'code': next_year,
-                'date_start': datetime.strptime((datetime(
-                    next_year, 1, 1)).strftime(DF), DF),
-                'date_stop': datetime.strptime((datetime(
-                    next_year, 12, 31)).strftime(DF), DF),
+        fiscal_year = self.env['account.fiscalyear'].create({
+            'name': next_year,
+            'code': next_year,
+            'date_start': datetime.strptime((datetime(
+                next_year, 1, 1)).strftime(DF), DF),
+            'date_stop': datetime.strptime((datetime(
+                next_year, 12, 31)).strftime(DF), DF),
             })
-        fiscal_year = self.registry('account.fiscalyear').browse(
-            self.cr, self.uid, [fiscal_year_id])
-        fiscal_year[0].create_period()
+        fiscal_year.create_period()
         contract_group = self._create_group(
-            'do_nothing', 1, 'month', self.partner_id, 5, self.payment_term_id)
-        contract_id = self._create_contract(
+            'do_nothing', 1, 'month', self.partners.ids[0], 5,
+            self.payment_term_id)
+        contract = self._create_contract(
             datetime.today().strftime(DF), contract_group,
             'phone', datetime.today().strftime(DF))
+        contract_id = contract.id
         self._create_contract_line(
             contract_id, '2', '40.0')
 
-        contract_obj = self.registry('recurring.contract')
-        contract = contract_obj.browse(self.cr, self.uid, contract_id)
         self.assertEqual(contract.state, 'draft')
 
         # Switching to "waiting for payment" state
@@ -118,35 +106,27 @@ class test_contract_compassion(common.TransactionCase):
         wf_service.trg_validate(
             self.uid, 'recurring.contract',
             contract_id, 'contract_validated', self.cr)
-        contract = contract_obj.browse(
-            self.cr, self.uid, contract_id)
         self.assertEqual(contract.state, 'waiting')
-        invoicer_obj = self.registry('recurring.invoicer')
-        invoicer_id = contract.button_generate_invoices()
-        invoices = invoicer_obj.browse(
-            self.cr, self.uid, invoicer_id).invoice_ids
+
+        invoices = contract.button_generate_invoices().invoice_ids
         nb_invoices = len(invoices)
         self.assertEqual(nb_invoices, 6)
         self.assertEqual(invoices[3].state, 'open')
+
         # Payment of the third invoice so the
         # contract will be on the active state and the 2 first invoices should
         # be canceled.
-        self._pay_invoice(invoices[3].id)
-        invoices = invoicer_obj.browse(
-            self.cr, self.uid, invoicer_id).invoice_ids
-        contract = contract_obj.browse(self.cr, self.uid, contract_id)
+        self._pay_invoice(invoices[3])
         self.assertEqual(invoices[3].state, 'paid')
-        self.assertEqual(invoices[0].state, 'open')
-        self.assertEqual(invoices[1].state, 'open')
-        self.assertEqual(invoices[2].state, 'open')
-        self.assertEqual(invoices[4].state, 'cancel')
-        self.assertEqual(invoices[5].state, 'cancel')
+        self.assertEqual(invoices[0].state, 'cancel')
+        self.assertEqual(invoices[1].state, 'cancel')
+        self.assertEqual(invoices[2].state, 'cancel')
+        self.assertEqual(invoices[4].state, 'open')
+        self.assertEqual(invoices[5].state, 'open')
         self.assertEqual(contract.state, 'active')
         wf_service.trg_validate(
             self.uid, 'recurring.contract',
             contract_id, 'contract_terminated', self.cr)
-        contract = contract_obj.browse(
-            self.cr, self.uid, contract_id)
         self.assertEqual(contract.state, 'terminated')
 
     def test_contract_compassion_second_scenario(self):
@@ -155,26 +135,20 @@ class test_contract_compassion(common.TransactionCase):
             contract.
         """
         contract_group = self._create_group(
-            'do_nothing', 1, 'month', self.partner_id1, 1,
+            'do_nothing', 1, 'month', self.partners.ids[1], 1,
             self.payment_term_id)
-        contract_id = self._create_contract(
+        contract = self._create_contract(
             datetime.today().strftime(DF), contract_group, 'postal',
             datetime.today().strftime(DF))
-        self._create_contract_line(
-            contract_id, '3', '200.0')
+        contract_id = contract.id
+        self._create_contract_line(contract_id, '3', '200.0')
 
         # Switch to "waiting for payment" state
         wf_service = netsvc.LocalService('workflow')
         wf_service.trg_validate(
             self.uid, 'recurring.contract',
             contract_id, 'contract_validated', self.cr)
-        contract_obj = self.registry('recurring.contract')
-        contract = contract_obj.browse(
-            self.cr, self.uid, contract_id)
-        invoicer_obj = self.registry('recurring.invoicer')
-        invoicer_id = contract.button_generate_invoices()
-        invoices = invoicer_obj.browse(
-            self.cr, self.uid, invoicer_id).invoice_ids
+        invoices = contract.button_generate_invoices().invoice_ids
         self.assertEqual(invoices[0].state, 'open')
         self.assertEqual(invoices[1].state, 'open')
         self.assertEqual(len(invoices), 2)
@@ -183,11 +157,7 @@ class test_contract_compassion(common.TransactionCase):
         wf_service.trg_validate(
             self.uid, 'recurring.contract',
             contract_id, 'contract_terminated', self.cr)
-        contract = contract_obj.browse(
-            self.cr, self.uid, contract_id)
         self.assertEqual(contract.state, 'cancelled')
-        invoices = invoicer_obj.browse(
-            self.cr, self.uid, invoicer_id).invoice_ids
         self.assertEqual(invoices[0].state, 'cancel')
         self.assertEqual(invoices[1].state, 'cancel')
 
@@ -199,84 +169,66 @@ class test_contract_compassion(common.TransactionCase):
             should be upadted.
         """
         contract_group = self._create_group(
-            'do_nothing', 1, 'month', self.partner_id, 1,
+            'do_nothing', 1, 'month', self.partners.ids[0], 1,
             self.payment_term_id)
         contract_group2 = self._create_group(
-            'do_nothing', 1, 'month', self.partner_id1, 2,
+            'do_nothing', 1, 'month', self.partners.ids[1], 2,
             self.payment_term_id)
-        contract_id = self._create_contract(
+        contract = self._create_contract(
             datetime.today().strftime(DF), contract_group,
             'postal', datetime.today().strftime(DF))
-        contract_line_id = self._create_contract_line(
-            contract_id, '2', '60.0')
+        contract_id = contract.id
+        contract_line = self._create_contract_line(contract_id, '2', '60.0')
 
         wf_service = netsvc.LocalService('workflow')
         wf_service.trg_validate(
             self.uid, 'recurring.contract',
             contract_id, 'contract_validated', self.cr)
-        contract_obj = self.registry('recurring.contract')
-        contract = contract_obj.browse(
-            self.cr, self.uid, contract_id)
-        invoicer_obj = self.registry('recurring.invoicer')
-        invoicer_id = contract.button_generate_invoices()
-        invoices = invoicer_obj.browse(
-            self.cr, self.uid, invoicer_id).invoice_ids
-        self._pay_invoice(invoices[1].id)
+        invoices = contract.button_generate_invoices().invoice_ids
+        self._pay_invoice(invoices[0])
         self.assertEqual(len(invoices), 2)
 
         # Updating of the contract
-        contract_line_obj = self.registry('recurring.contract.line')
-        contract_line_obj.write(
-            self.cr, self.uid, contract_line_id, {
-                'quantity': '3',
-                'amount': '100.0',
-            })
-        contract_obj.write(
-            self.cr, self.uid, contract_id, {
-                'group_id': contract_group2,
-            })
-        ctr_line_id = contract_line_obj.browse(
-            self.cr, self.uid, contract_line_id)
+        contract_line.write({
+            'quantity': '3',
+            'amount': '100.0',
+        })
+        contract.write({
+            'group_id': contract_group2.id})
 
         # Check if the invoice unpaid is well updated
-        invoice_obj = self.registry('account.invoice')
-        invoice_upd = invoice_obj.browse(self.cr, self.uid, invoices[0].id)
-        invoice_line_up = self.registry('account.invoice.line').browse(
-            self.cr, self.uid, invoice_upd.invoice_line[0].id)
-        self.assertEqual(invoice_line_up.price_unit, ctr_line_id.amount)
-        self.assertEqual(invoice_line_up.price_subtotal, ctr_line_id.subtotal)
+        invoice_upd = invoices[1]
+        invoice_line_up = invoice_upd.invoice_line[0]
+        self.assertEqual(invoice_line_up.price_unit, contract_line.amount)
+        self.assertEqual(
+            invoice_line_up.price_subtotal, contract_line.subtotal)
 
-    def _create_contract(self, start_date, group_id, channel,
+    def _create_contract(self, start_date, group, channel,
                          next_invoice_date):
         """
             Create a contract. For that purpose we have created a partner
             to get his id.
         """
         # Creation of a contract
-        contract_obj = self.registry('recurring.contract')
-        group_obj = self.registry('recurring.contract.group')
-        group = group_obj.browse(self.cr, self.uid, group_id)
+        contract_obj = self.env['recurring.contract']
         partner_id = group.partner_id.id
-        contract_id = contract_obj.create(self.cr, self.uid, {
+        return contract_obj.create({
             'start_date': start_date,
             'partner_id': partner_id,
-            'group_id': group_id,
+            'group_id': group.id,
             'channel': channel,
             'next_invoice_date': next_invoice_date,
             'type': 'O',
         })
-        return contract_id
 
     def _create_contract_line(self, contract_id, quantity, price):
         """ Create contract's lines """
-        contract_line_obj = self.registry('recurring.contract.line')
-        contract_line_id = contract_line_obj.create(self.cr, self.uid, {
+        return self.env['recurring.contract.line'].create({
             'product_id': 1,
             'amount': price,
             'quantity': quantity,
             'contract_id': contract_id,
         })
-        return contract_line_id
 
     def _create_group(self, change_method, rec_value, rec_unit, partner_id,
                       adv_biling_months, payment_term_id, ref=None):
@@ -285,12 +237,9 @@ class test_contract_compassion(common.TransactionCase):
                 - ref is not given so it takes "/" default values
                 - ref is given
         """
-        group_obj = self.registry('recurring.contract.group')
-        group_id = group_obj.create(self.cr, self.uid, {
-            'partner_id': partner_id,
-        })
-        group = group_obj.browse(self.cr, self.uid, group_id)
+        group_obj = self.env['recurring.contract.group']
         group_vals = {
+            'partner_id': partner_id,
             'change_method': change_method,
             'recurring_value': rec_value,
             'recurring_unit': rec_unit,
@@ -300,35 +249,30 @@ class test_contract_compassion(common.TransactionCase):
         }
         if ref:
             group_vals['ref'] = ref
-        group.write(group_vals)
-        return group_id
+        return group_obj.create(group_vals)
 
-    def _pay_invoice(self, invoice_id):
-        journal_obj = self.registry('account.journal')
-        bank_journal_id = self.registry('account.journal').search(
-            self.cr, self.uid, [('code', '=', 'TBNK')])[0]
-        bank_journal = journal_obj.browse(self.cr, self.uid, bank_journal_id)
-        move_obj = self.registry('account.move')
-        move_line_obj = self.registry('account.move.line')
-        invoice = self.registry('account.invoice').browse(
-            self.cr, self.uid, invoice_id)
+    def _pay_invoice(self, invoice):
+        bank_journal = self.env['account.journal'].search(
+            [('code', '=', 'TBNK')])[0]
+        move_obj = self.env['account.move']
+        move_line_obj = self.env['account.move.line']
         account_id = invoice.partner_id.property_account_receivable.id
-        move_id = move_obj.create(self.cr, self.uid, {
-            'journal_id': bank_journal_id
+        move = move_obj.create({
+            'journal_id': bank_journal.id
         })
-        move_line_obj.create(self.cr, self.uid, {
+        move_line_obj.create({
             'name': 'BNK-' + invoice.number,
-            'move_id': move_id,
+            'move_id': move.id,
             'partner_id': invoice.partner_id.id,
             'account_id': bank_journal.default_debit_account_id.id,
             'debit': invoice.amount_total,
-            'journal_id': bank_journal_id,
+            'journal_id': bank_journal.id,
             'period_id': invoice.period_id.id,
             'date': invoice.date_due
         })
-        mv_line_id = move_line_obj.create(self.cr, self.uid, {
+        mv_line = move_line_obj.create({
             'name': 'PAY-' + invoice.number,
-            'move_id': move_id,
+            'move_id': move.id,
             'partner_id': invoice.partner_id.id,
             'account_id': account_id,
             'credit': invoice.amount_total,
@@ -336,8 +280,8 @@ class test_contract_compassion(common.TransactionCase):
             'period_id': invoice.period_id.id,
             'date': invoice.date_due
         })
-        move_obj.button_validate(self.cr, self.uid, [move_id])
-        to_reconcile = move_line_obj.search(self.cr, self.uid, [
+        move.button_validate()
+        to_reconcile = move_line_obj.search([
             ('move_id', '=', invoice.move_id.id),
-            ('account_id', '=', account_id)]) + [mv_line_id]
-        move_line_obj.reconcile(self.cr, self.uid, to_reconcile)
+            ('account_id', '=', account_id)]) + mv_line
+        to_reconcile.reconcile()
