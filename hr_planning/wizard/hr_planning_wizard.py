@@ -9,16 +9,19 @@
 #
 ##############################################################################
 
-from openerp import api, models
+from openerp import api, models, SUPERUSER_ID
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
-from openerp import SUPERUSER_ID
 import pytz
 from datetime import datetime, timedelta, time
 
 
 class hr_planning_wizard(models.TransientModel):
     _name = 'hr.planning.wizard'
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
 
     # Global regeneration from wizard
     @api.multi
@@ -121,6 +124,10 @@ class hr_planning_wizard(models.TransientModel):
                         d += delta
             # Planning days exceptions
             self._move_planning_days(employee)
+
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
 
     @api.model
     def _move_planning_days(self, employee):
