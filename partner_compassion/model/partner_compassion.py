@@ -43,7 +43,7 @@ class ResPartner(models.Model):
     deathdate = fields.Date('Death date')
     birthdate = fields.Date('Birthdate')
     lang = fields.Selection(
-        string='Language', compute='_lang_get', required=True,
+        _lang_get, string='Language', required=True,
         help="If the selected language is loaded in the system, all "
         "documents related to this contact will be printed in this "
         "language. If not, it will be English.")
@@ -52,13 +52,12 @@ class ResPartner(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
 
-    @api.multi
+    @api.model
     def _lang_get(self):
-        self.ensure_one()
         lang_obj = self.env['res.lang']
         ids = lang_obj.search([])
         res = ids.read(['code', 'name'])
-        self.lang = [(r['code'], r['name']) for r in res]
+        return [(r['code'], r['name']) for r in res]
 
     @api.multi
     def _is_church(self):
