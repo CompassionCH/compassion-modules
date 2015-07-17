@@ -23,7 +23,7 @@ class account_mandate(models.Model):
             for mandate in self:
                 contract_ids = self.env['recurring.contract'].search(
                     [('partner_id', '=', mandate.partner_id.id),
-                     ('state', '=', 'mandate')])
+                     ('state', '=', 'mandate')]).ids
                 for con_id in contract_ids:
                     wf_service.trg_validate(
                         self.env.user.id, 'recurring.contract', con_id,
