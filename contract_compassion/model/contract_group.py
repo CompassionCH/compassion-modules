@@ -9,9 +9,7 @@
 #
 ##############################################################################
 
-import time
-
-from openerp import models, fields, api, netsvc, _
+from openerp import models, fields, api, exceptions, netsvc, _
 from openerp.tools import mod10r
 
 
@@ -24,14 +22,14 @@ class contract_group(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     bvr_reference = fields.Char(
-        'BVR Ref', size=32, track_visibility="onchange"),
+        'BVR Ref', size=32, track_visibility="onchange")
     payment_term_id = fields.Many2one(
         'account.payment.term', 'Payment Term',
         domain=['|', '|', '|', ('name', 'ilike', 'BVR'),
                 ('name', 'ilike', 'LSV'),
                 ('name', 'ilike', 'Postfinance'),
                 ('name', 'ilike', 'Permanent')], track_visibility='onchange',
-        default=lambda self: self._get_op_payment_term()),
+        default=lambda self: self._get_op_payment_term())
     change_method = fields.Selection(default='clean_invoices')
 
     ##########################################################################
@@ -40,7 +38,8 @@ class contract_group(models.Model):
     @api.model
     def _get_op_payment_term(self):
         """ Get Permanent Order Payment Term, to set it by default. """
-        record = self.env.ref('child_compassion.payment_term_permanent_order')
+        record = self.env.ref(
+            'contract_compassion.payment_term_permanent_order')
         return record.id
 
     ##########################################################################
@@ -49,7 +48,7 @@ class contract_group(models.Model):
     @api.multi
     @api.depends('payment_term_id', 'bvr_reference', 'partner_id')
     def name_get(self):
-        res = []
+        res = list()
         for gr in self:
             name = ''
             if gr.payment_term_id:
@@ -101,18 +100,17 @@ class contract_group(models.Model):
         if contract_ids:
             # Update related open invoices to reflect the changes
             inv_line_obj = self.env['account.invoice.line']
-            inv_obj = self.env['account.invoice']
             inv_lines = inv_line_obj.search([
                 ('contract_id', 'in', contract_ids),
                 ('state', 'not in', ('paid', 'cancel'))])
-            invoice_ids = list(set(inv_lines.mapped('invoice_id.id')))
-            inv_obj.action_cancel(invoice_ids)
-            inv_obj.action_cancel_draft(invoice_ids)
-            inv_obj.write(invoice_ids, inv_vals)
+            invoices = inv_lines.mapped('invoice_id')
+            invoices.action_cancel()
+            invoices.action_cancel_draft()
+            invoices.write(inv_vals)
             wf_service = netsvc.LocalService('workflow')
-            for invoice_id in invoice_ids:
+            for invoice in invoices:
                 wf_service.trg_validate(
-                    uid, 'account.invoice', invoice_id,
+                    self.env.user.id, 'account.invoice', invoice.id,
                     'invoice_open', self.env.cr)
         return res
 
@@ -147,7 +145,7 @@ class contract_group(models.Model):
         inv_ids = super(contract_group, self).clean_invoices()
         if inv_ids:
             inv_ids = list(inv_ids)
-            cr.execute(
+            self.env.cr.execute(
                 "DELETE FROM account_invoice "
                 "WHERE id IN ({0})".format(
                     ','.join([str(id) for id in inv_ids])))
@@ -158,7 +156,6 @@ class contract_group(models.Model):
     ##########################################################################
     @api.onchange('partner_id')
     def on_change_partner_id(self):
-        res = dict()
         if not self.partner_id:
             self.bvr_reference = False
             return
@@ -239,22 +236,6 @@ class contract_group(models.Model):
             'bvr_reference': ref})
 
         return inv_data
-
-    def _setup_inv_line_data(self, contract_line, invoice_id):
-        """ Inherit to add analytic distribution """
-        inv_line_data = super(contract_group, self)._setup_inv_line_data(
-            contract_line, invoice_id)
-
-        product_id = contract_line.product_id.id
-        partner_id = contract_line.contract_id.partner_id.id
-        analytic = self.env['account.analytic.default'].account_get(
-            product_id, partner_id, uid, time.strftime('%Y-%m-%d'),
-            context=context)
-        if analytic and analytic.analytic_id:
-            inv_line_data.update({
-                'account_analytic_id': analytic.analytic_id.id})
-
-        return inv_line_data
 
     def _get_gen_states(self):
         return ['waiting', 'active']

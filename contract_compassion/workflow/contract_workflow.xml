@@ -119,5 +119,10 @@
             <field name="signal">will_pay_by_lsv_dd</field>
             <field name="condition">not has_mandate</field>
         </record>
+        <record model="workflow.transition" id="t10">
+            <field name="act_from" ref="recurring_contract.act_active" />
+            <field name="act_to" ref="act_waiting" />
+            <field name="signal">contract_activation_cancelled</field>
+        </record>
     </data>
 </openerp>
