@@ -21,7 +21,7 @@ class account_mandate(models.Model):
         if super(account_mandate, self).validate():
             wf_service = netsvc.LocalService('workflow')
             for mandate in self:
-                contract_ids = self.pool.get('recurring.contract').search(
+                contract_ids = self.env['recurring.contract'].search(
                     [('partner_id', '=', mandate.partner_id.id),
                      ('state', '=', 'mandate')])
                 for con_id in contract_ids:
