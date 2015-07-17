@@ -77,11 +77,11 @@ class contract_group(models.Model):
             wf_service = netsvc.LocalService('workflow')
             for group in self:
                 old_term = group.payment_term_id.name
-                for contract in group.contract_ids:
-                    contract_ids.append(contract.id)
+                for contract_id in group.contract_ids.ids:
+                    contract_ids.append(contract_id)
                     if 'LSV' in payment_name or 'Postfinance' in payment_name:
                         wf_service.trg_validate(
-                            uid, 'recurring.contract', contract.id,
+                            uid, 'recurring.contract', contract_id,
                             'will_pay_by_lsv_dd', self.env.cr)
                         # LSV/DD Contracts need no reference
                         if group.bvr_reference and \
@@ -89,7 +89,7 @@ class contract_group(models.Model):
                             vals['bvr_reference'] = False
                     elif 'LSV' in old_term or 'Postfinance' in old_term:
                         wf_service.trg_validate(
-                            uid, 'recurring.contract', contract.id,
+                            uid, 'recurring.contract', contract_id,
                             'mandate_validated', self.env.cr)
         if 'bvr_reference' in vals:
             inv_vals['bvr_reference'] = vals['bvr_reference']
