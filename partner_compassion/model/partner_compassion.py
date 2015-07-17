@@ -8,79 +8,76 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp.osv import fields, orm
-from openerp.tools.translate import _
+
+from openerp import api, fields, models, _
 
 # fields that are synced if 'use_parent_address' is checked
 ADDRESS_FIELDS = [
     'street', 'street2', 'street3', 'zip', 'city', 'state_id', 'country_id']
 
 
-class ResPartner(orm.Model):
+class ResPartner(models.Model):
     """ This class upgrade the partners to match Compassion needs.
     """
 
     _inherit = 'res.partner'
 
-    def _lang_get(self, cr, uid, context=None):
-        lang_obj = self.pool.get('res.lang')
-        ids = lang_obj.search(cr, uid, [], context=context)
-        res = lang_obj.read(cr, uid, ids, ['code', 'name'], context)
-        return [(r['code'], r['name']) for r in res]
-
-    def _is_church(self, cr, uid, ids, field_name, arg, context=None):
-        """ Tell if the given Partners are Church Partners
-            (by looking at their categories). """
-        # Set the default return value to False
-        res = dict.fromkeys(ids, False)
-
-        # Retrieve all the categories and check if one is Church
-        for record in self.browse(cr, uid, ids, context):
-            for category in record.category_id:
-                if category.name.upper() in ('CHURCH', 'EGLISE', 'KIRCHE'):
-                    res[record.id] = True
-
-        return res
-
     ##########################################################################
     #                        NEW PARTNER FIELDS                              #
     ##########################################################################
-    _columns = {
-        'street3': fields.char("Street3", size=128),
-        'member_ids': fields.one2many(
-            'res.partner', 'church_id', 'Members',
-            domain=[('active', '=', True)]),
-        'is_church': fields.function(
-            _is_church, type='boolean', method=True, string="Is a Church",
-            store={'res.partner': (
-                lambda self, cr, uid, ids, context=None: ids,
-                ['category_id'],
-                10)}
-            ),
-        'church_id': fields.many2one(
-            'res.partner', 'Church', domain=[('is_church', '=', True)]),
-        'church_unlinked': fields.char(
-            _("Church (N/A)"),
-            help=_("Use this field if the church of the partner"
-                   " can not correctly be determined and linked.")),
-        'deathdate': fields.date(_('Death date')),
-        'birthdate': fields.date(_('Birthdate')),
-        'lang': fields.selection(
-            _lang_get,
-            'Language',
-            required=True,
-            help="If the selected language is loaded in the system, all "
-            "documents related to this contact will be printed in this "
-            "language. If not, it will be English."),
-    }
 
-    _defaults = {
-        'ref': lambda self, cr, uid, context=None: self.pool.get(
-            'ir.sequence').get(cr, uid, 'partner.ref'),
-    }
+    ref = fields.Char(default=lambda self: self.env[
+        'ir.sequence'].get('partner.ref'))
+    street3 = fields.Char("Street3", size=128)
+    member_ids = fields.One2many(
+        'res.partner', 'church_id', 'Members',
+        domain=[('active', '=', True)])
+    is_church = fields.Boolean(
+        string="Is a Church", compute='_is_church', store=True)
+    church_id = fields.Many2one(
+        'res.partner', 'Church', domain=[('is_church', '=', True)])
+    church_unlinked = fields.Char(
+        "Church (N/A)",
+        help=_("Use this field if the church of the partner"
+               " can not correctly be determined and linked."))
+    deathdate = fields.Date('Death date')
+    birthdate = fields.Date('Birthdate')
+    lang = fields.Selection(
+        string='Language', compute='_lang_get', required=True,
+        help="If the selected language is loaded in the system, all "
+        "documents related to this contact will be printed in this "
+        "language. If not, it will be English.")
 
-    def _display_address(self, cr, uid, address, without_company=False,
-                         context=None):
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+
+    @api.multi
+    def _lang_get(self):
+        self.ensure_one()
+        lang_obj = self.env['res.lang']
+        ids = lang_obj.search([])
+        res = lang_obj.read(['code', 'name'])
+        self.lang = [(r['code'], r['name']) for r in res]
+
+    @api.multi
+    def _is_church(self):
+        """ Tell if the given Partners are Church Partners
+            (by looking at their categories). """
+
+        # Retrieve all the categories and check if one is Church
+        for record in self:
+            record.is_church = False
+            for category in record.category_id:
+                if category.name.upper() in ('CHURCH', 'EGLISE', 'KIRCHE'):
+                    record.is_church = True
+
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
+
+    @api.multi
+    def _display_address(self, address, without_company=False):
         """ Build and return an address formatted accordingly to
         Compassion standards.
 
