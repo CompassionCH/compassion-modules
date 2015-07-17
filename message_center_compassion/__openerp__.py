@@ -32,13 +32,6 @@
     'name': 'Compassion CH Message Center',
     'version': '1.5',
     'category': 'Other',
-    'description': """
-        Message Center that offers a queue of messages that have to be sent
-        to GMC and a queue of messages received from GMC.
-
-        Warning : this addon requires the python-requests library to be
-        installed on the server. (sudo apt-get install python-requests).
-    """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['sponsorship_compassion', 'partner_firstname'],
