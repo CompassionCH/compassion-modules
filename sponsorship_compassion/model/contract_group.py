@@ -9,6 +9,7 @@
 #
 ##############################################################################
 
+from openerp import api, models
 from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
@@ -23,56 +24,61 @@ import time
 logger = logging.getLogger(__name__)
 
 
-class contract_group(orm.Model):
+class contract_group(models.Model):
     _inherit = 'recurring.contract.group'
 
-    def _contains_sponsorship(
-            self, cr, uid, ids, field_name, args, context=None):
+    ##########################################################################
+    #                                 FIELDS                                 #
+    ##########################################################################
+
+    contains_sponsorship = fields.Boolean(
+        string='Contains sponsorship', compute='_contains_sponsorship', 
+        readonly=True, default=lambda self: 'S' in self.env.context.get(
+            'default_type', 'O'))
+
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+
+    @api.multi
+    def _contains_sponsorship(self):
         res = dict()
-        for group in self.browse(cr, uid, ids, context):
+        for group in self:
             if group.contract_ids:
+                group.contains_sponsorship = False
                 for contract in group.contract_ids:
                     if 'S' in contract.type:
-                        res[group.id] = True
+                        group.contains_sponsorship = True
                         break
-                else:
-                    res[group.id] = False
             else:
-                res[group.id] = True
-        return res
+                group.contains_sponsorship = True
 
-    _columns = {
-        'contains_sponsorship': fields.function(
-            _contains_sponsorship, string=_('Contains sponsorship'),
-            type='boolean', readonly=True)
-    }
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
 
-    _defaults = {
-        'contains_sponsorship': lambda self, cr, uid, context: 'S' in
-        context.get('default_type', 'O')
-    }
-
-    def generate_invoices(self, cr, uid, ids, invoicer_id=None, context=None):
+    def generate_invoices(self, invoicer=None):
         """ Add birthday gifts generation. """
-        invoicer_id = self._generate_birthday_gifts(cr, uid, ids, invoicer_id,
-                                                    context)
-        invoicer_id = super(contract_group, self).generate_invoices(
-            cr, uid, ids, invoicer_id, context)
-        return invoicer_id
+        invoicer = self._generate_birthday_gifts(invoicer)
+        invoicer = super(contract_group, self).generate_invoices(invoicer)
+        return invoicer
 
-    def _generate_birthday_gifts(self, cr, uid, ids, invoicer_id=None,
-                                 context=None):
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
+
+    @api.multi
+    def _generate_birthday_gifts(self, invoicer=None):
         """ Creates the annual birthday gift for sponsorships that
         have set the option for automatic birthday gift creation. """
         logger.info("Automatic Birthday Gift Generation Started.")
-        if context is None:
-            context = dict()
-        ctx = context.copy()
-        ctx['lang'] = 'en_US'
-        if invoicer_id is None:
-            invoicer_id = self.pool.get('recurring.invoicer').create(
-                cr, uid, {'source': self._name}, ctx)
-        ctx['recurring_invoicer_id'] = invoicer_id
+
+        self.with_context(lang='en_US')
+
+        if invoicer is None:
+            invoicer = self.env['recurring.invoicer'].create(
+                {'source': self._name})
+        self.with_context(recurring_invoicer_id=invoicer)
 
         # Search active Sponsorships with automatic birthday gift
         gen_states = self._get_gen_states()
@@ -122,7 +128,7 @@ class contract_group(orm.Model):
             gift_wizard_obj.unlink(cr, uid, gift_wizard_id, ctx)
 
         logger.info("Automatic Birthday Gift Generation Finished !!")
-        return invoicer_id
+        return invoicer
 
     def _setup_inv_line_data(self, cr, uid, contract_line, invoice_id,
                              context=None):
