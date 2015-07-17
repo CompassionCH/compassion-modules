@@ -18,6 +18,7 @@ MANDATE_STATE = {'create': 'created',
                  'back2draft': 'back to draft',
                  'delete': 'deleted'}
 
+
 class Account_Banking_Mandate(models.Model):
     """ This class upgrade the partners.bank to match Compassion needs.
     """
@@ -32,8 +33,8 @@ class Account_Banking_Mandate(models.Model):
 
         if action in MANDATE_STATE:
             self.partner_id.message_post(
-                    "For account: " + self.partner_bank_id.acc_number,
-                    "Mandate " + MANDATE_STATE[action], 'comment')
+                "For account: " + self.partner_bank_id.acc_number,
+                "Mandate " + MANDATE_STATE[action], 'comment')
 
     @api.model
     def create(self, data):
@@ -41,7 +42,7 @@ class Account_Banking_Mandate(models.Model):
         """
         result = super(Account_Banking_Mandate, self).create(data)
         result._update_mandate_status_partner('create')
-        
+
         return result
 
     @api.multi
