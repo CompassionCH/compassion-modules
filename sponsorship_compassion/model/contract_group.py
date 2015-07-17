@@ -78,27 +78,27 @@ class contract_group(models.Model):
         if invoicer is None:
             invoicer = self.env['recurring.invoicer'].create(
                 {'source': self._name})
-        self.with_context(recurring_invoicer_id=invoicer)
 
         # Search active Sponsorships with automatic birthday gift
-        gen_states = self._get_gen_states()
+        gen_states = self.with_context(
+            recurring_invoicer_id=invoicer)._get_gen_states()
         contract_search = [('birthday_invoice', '>', 0.0),
                            ('state', 'in', gen_states)]
-        if ids:
-            contract_search.append(('group_id', 'in', ids))
-        contract_obj = self.pool.get('recurring.contract')
-        contract_ids = contract_obj.search(cr, uid, contract_search,
-                                           context=ctx)
+        if self.ids:
+            contract_search.append(('group_id', 'in', self.ids))
+        contract_obj = self.env['recurring.contract']
+        contract_ids = contract_obj.search(contract_search).ids
 
         # Exclude sponsorship if a gift is already open
-        invl_obj = self.pool.get('account.invoice.line')
-        product_id = self.pool.get('product.product').search(
-            cr, uid, [('name', '=', GIFT_NAMES[0])], context=ctx)[0]
-        for con_id in list(contract_ids):
-            invl_ids = invl_obj.search(cr, uid, [
+        invl_obj = self.env['account.invoice.line']
+        product_id = self.env['product.product'].search(
+            [('name', '=', GIFT_NAMES[0])])[0].id
+
+        for con_id in contract_ids:
+            invl_ids = invl_obj.search([
                 ('state', '=', 'open'),
                 ('contract_id', '=', con_id),
-                ('product_id', '=', product_id)], context=ctx)
+                ('product_id', '=', product_id)])
             if invl_ids:
                 contract_ids.remove(con_id)
 
@@ -106,32 +106,30 @@ class contract_group(models.Model):
             total = str(len(contract_ids))
             count = 1
             logger.info("Found {0} Birthday Gifts to generate.".format(total))
-            gift_wizard_obj = self.pool.get('generate.gift.wizard')
-            gift_wizard_id = gift_wizard_obj.create(cr, uid, {
+
+            gift_wizard = self.env['generate.gift.wizard'].create({
                 'description': _('Automatic birthday gift'),
                 'invoice_date': datetime.today().strftime(DF),
                 'product_id': product_id,
-                'amount': 0.0}, ctx)
+                'amount': 0.0})
 
             # Generate invoices
-            for contract in contract_obj.browse(cr, uid, contract_ids,
-                                                ctx):
+            for contract in contract_obj.browse(contract_ids):
                 logger.info("Birthday Gift Generation: {0}/{1} ".format(
                     str(count), total))
-                gift_wizard_obj.write(cr, uid, gift_wizard_id, {
-                    'amount': contract.birthday_invoice}, ctx)
-                ctx['active_ids'] = [contract.id]
-                gift_wizard_obj.generate_invoice(cr, uid, [gift_wizard_id],
-                                                 ctx)
+                gift_wizard.write({
+                    'amount': contract.birthday_invoice})
+                gift_wizard.with_context(
+                    active_ids=contract.id).generate_invoice()
                 count += 1
 
-            gift_wizard_obj.unlink(cr, uid, gift_wizard_id, ctx)
+            gift_wizard.unlink()
 
         logger.info("Automatic Birthday Gift Generation Finished !!")
         return invoicer
 
-    def _setup_inv_line_data(self, cr, uid, contract_line, invoice_id,
-                             context=None):
+    @api.multi
+    def _setup_inv_line_data(self, contract_line, invoice_id):
         """ Contract gifts relate their invoice lines to sponsorship,
             Correspondence sponsorships don't create invoice lines.
             Add analytic account to invoice_lines.
@@ -140,7 +138,8 @@ class contract_group(models.Model):
         contract = contract_line.contract_id
         if contract.type != 'SC':
             invl_data = super(contract_group, self)._setup_inv_line_data(
-                cr, uid, contract_line, invoice_id, context)
+                contract_line, invoice)
+
             # If project is suspended, either skip invoice or replace product
             if contract.type == 'S' and not \
                     contract.child_id.project_id.disburse_funds:
