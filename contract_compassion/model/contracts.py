@@ -9,9 +9,7 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp import netsvc
-from openerp.tools.translate import _
+from openerp import models, fields, api, netsvc, exceptions, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 from datetime import datetime
@@ -19,25 +17,73 @@ from dateutil.relativedelta import relativedelta
 import logging
 logger = logging.getLogger(__name__)
 
+import pdb
 
-class recurring_contract(orm.Model):
+
+class recurring_contract(models.Model):
     _inherit = "recurring.contract"
     _order = 'start_date desc'
 
-    ################################
-    #        FIELDS METHODS        #
-    ################################
-    def _active(self, cr, uid, ids, field_name, args, context=None):
-        """Returns if contract is active or not based on
-        activation_date and state.
-        """
-        res = dict()
-        for contract in self.browse(cr, uid, ids, context):
-            res[contract.id] = bool(contract.activation_date) and \
-                contract.state not in ('terminated', 'cancelled')
-        return res
+    ##########################################################################
+    #                                 FIELDS                                 #
+    ##########################################################################
+    child_id = fields.Many2one(
+        'compassion.child', 'Sponsored child', readonly=True, copy=False,
+        states={'draft': [('readonly', False)],
+                'waiting': [('readonly', False)],
+                'mandate': [('readonly', False)]}, ondelete='restrict',
+        track_visibility='onchange')
+    child_name = fields.Char(
+        'Sponsored child name', related='child_id.name', readonly=True)
+    child_code = fields.Char(
+        'Sponsored child code', related='child_id.code', readonly=True)
+    partner_codega = fields.Char(
+        'Partner ref', related='partner_id.ref', readonly=True)
+    activation_date = fields.Date(readonly=True, copy=False)
+    # Add a waiting and waiting mandate states
+    state = fields.Selection(selection=[
+        ('draft', _('Draft')),
+        ('mandate', _('Waiting Mandate')),
+        ('waiting', _('Waiting Payment')),
+        ('active', _('Active')),
+        ('terminated', _('Terminated')),
+        ('cancelled', _('Cancelled'))])
+    is_active = fields.Boolean(
+        'Contract Active', compute='_set_active', store=True,
+        help="It indicates that the first invoice has been paid and the "
+             "contract was activated.")
+    # Field used for identifying gifts from sponsor (because of bad GP)
+    num_pol_ga = fields.Integer(
+        'Partner Contract Number', required=True)
+    end_reason = fields.Selection('get_ending_reasons')
+    end_date = fields.Date(readonly=True, track_visibility='onchange')
+    origin_id = fields.Many2one(
+        'recurring.contract.origin', 'Origin', ondelete='restrict',
+        track_visibility='onchange')
+    channel = fields.Selection('_get_channels')
+    parent_id = fields.Many2one(
+        'recurring.contract', 'Previous sponsorship',
+        track_visibility='onchange')
+    has_mandate = fields.Boolean(compute='_has_mandate')
+    name = fields.Char(readonly=True)
+    partner_id = fields.Many2one(
+        'res.partner', 'Partner', required=True,
+        readonly=False, states={'terminated': [('readonly', True)]},
+        ondelete='restrict', track_visibility='onchange')
+    type = fields.Selection('_get_type', required=True)
+    group_freq = fields.Char(
+        'Frequency', compute='_set_frequency', store=True, readonly=True)
 
-    def get_ending_reasons(self, cr, uid, context=None):
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+    @api.one
+    @api.depends('state')
+    def _set_active(self):
+        self.is_active = bool(self.activation_date) and \
+            self.state not in ('terminated', 'cancelled')
+
+    def get_ending_reasons(self):
         """Returns all the ending reasons of sponsorships"""
         return [
             ('2', _("Mistake from our staff")),
@@ -51,11 +97,7 @@ class recurring_contract(orm.Model):
             ('25', _("Not given")),
         ]
 
-    def _get_ending_reasons(self, cr, uid, context=None):
-        """To be able to extend selection"""
-        return self.get_ending_reasons(cr, uid, context)
-
-    def _get_channels(self, cr, uid, context=None):
+    def _get_channels(self):
         """Returns the available channel through the new sponsor
         reached Compassion.
         """
@@ -68,33 +110,20 @@ class recurring_contract(orm.Model):
             ('payment', _("Payment")),
         ]
 
-    def __get_channels(self, cr, uid, context=None):
-        """To be able to extend selection"""
-        return self._get_channels(cr, uid, context)
-
-    def _has_mandate(self, cr, uid, ids, field_name, args, context=None):
+    @api.one
+    def _has_mandate(self):
         # Search for an existing valid mandate
-        res = dict()
-        for contract in self.browse(cr, uid, ids, context):
-            count = self.pool.get('account.banking.mandate').search(cr, uid, [
-                ('partner_id', '=', contract.partner_id.id),
-                ('state', '=', 'valid')], count=True, context=context)
-            res[contract.id] = bool(count)
-        return res
+        count = self.env['account.banking.mandate'].search_count([
+            ('partner_id', '=', self.partner_id.id),
+            ('state', '=', 'valid')])
+        self.has_mandate = bool(count)
 
-    def _name_get(self, cr, uid, ids, field_name, args, context=None):
-        return {c[0]: c[1] for c in self.name_get(cr, uid, ids, context)}
-
-    def _get_type(self, cr, uid, context=None):
+    def _get_type(self):
         return [('O', _('General'))]
 
-    def __get_type(self, cr, uid, context=None):
-        """ Return the type values to be inherited """
-        return self._get_type(cr, uid, context)
-
-    def _get_frequency(self, cr, uid, ids, field_name, arg, context=None):
-        res = dict()
-
+    @api.one
+    @api.depends('group_id.recurring_unit', 'group_id.recurring_value')
+    def _set_frequency(self):
         frequencies = {
             '1 month': 'Monthly',
             '2 month': 'Bimonthly',
@@ -104,272 +133,32 @@ class recurring_contract(orm.Model):
             '12 month': 'Annual',
             '1 year': 'Annual',
         }
+        recurring_value = self.group_id.recurring_value
+        recurring_unit = self.group_id.recurring_unit
+        frequency = "{0} {1}".format(recurring_value, recurring_unit)
+        if frequency in frequencies:
+            frequency = frequencies[frequency]
+        self.group_freq = frequency
 
-        for contract in self.browse(cr, uid, ids, context):
-            recurring_value = contract.group_id.recurring_value
-            recurring_unit = contract.group_id.recurring_unit
-            frequency = "{0} {1}".format(recurring_value, recurring_unit)
-            if frequency in frequencies:
-                frequency = frequencies[frequency]
-            res[contract.id] = frequency
-        return res
-
-    def _get_contracts_from_group(group_obj, cr, uid, ids, context=None):
-        res = list()
-        for group in group_obj.browse(cr, uid, ids, context):
-            res.extend([contract.id for contract in group.contract_ids])
-        return res
-
-    def _get_contract_from_invoice(invoice_obj, cr, uid, invoice_ids,
-                                   context=None):
-        """ Called when invoice state is changed. """
-        self = invoice_obj.pool.get('recurring.contract')
-        res = set()
-        # Read data in english
-        if context is None:
-            context = dict()
-        ctx = context.copy()
-        ctx['lang'] = 'en_US'
-        for invoice in invoice_obj.browse(cr, uid, invoice_ids, ctx):
-            if invoice.state == 'paid':
-                self._invoice_paid(cr, uid, invoice, ctx)
-
-                pay_dates = [move_line.date
-                             for move_line in invoice.payment_ids
-                             if move_line.credit > 0] or [0]
-
-                last_pay_date = max(pay_dates)
-
-                for invoice_line in invoice.invoice_line:
-                    contract = invoice_line.contract_id
-                    if contract.id not in res and (
-                            contract.state == 'waiting' and last_pay_date):
-                        # Trigger activation
-                        res.add(contract.id)
-
-                        # Cancel the old invoices if a contract is activated
-                        self._cancel_old_invoices(
-                            cr, uid,
-                            invoice.partner_id.id,
-                            contract.id,
-                            invoice.date_invoice,
-                            context)
-
-        # Activate contracts
-        activate_ids = list(res)
-        self._on_contract_active(cr, uid, activate_ids, context=context)
-        return activate_ids
-
-    ###########################
-    #        New Fields       #
-    ###########################
-    _columns = {
-        'child_id': fields.many2one(
-            'compassion.child', _('Sponsored child'), readonly=True,
-            states={'draft': [('readonly', False)],
-                    'waiting': [('readonly', False)],
-                    'mandate': [('readonly', False)]}, ondelete='restrict',
-            track_visibility='onchange'),
-        'child_name': fields.related(
-            'child_id', 'name', string=_('Sponsored child name'),
-            readonly=True, type='char'),
-        'child_code': fields.related(
-            'child_id', 'code', string=_('Sponsored child code'),
-            readonly=True, type='char'),
-        'partner_codega': fields.related(
-            'partner_id', 'ref', string=_('Partner ref'), readonly=True,
-            type='char'),
-        'activation_date': fields.date(
-            _('Activation date'), readonly=True),
-        # Add a waiting and waiting mandate states
-        'state': fields.selection([
-            ('draft', _('Draft')),
-            ('mandate', _('Waiting Mandate')),
-            ('waiting', _('Waiting Payment')),
-            ('active', _('Active')),
-            ('terminated', _('Terminated')),
-            ('cancelled', _('Cancelled'))], _('Status'), select=True,
-            readonly=True, track_visibility='onchange',
-            help=_(" * The 'Draft' status is used when a user is encoding a "
-                   "new and unconfirmed Contract.\n"
-                   " * The 'Waiting' status is used when the Contract is "
-                   " confirmed but the partner has not yet paid.\n"
-                   " * The 'Active' status is used when the contract is "
-                   "confirmed and until it's terminated.\n"
-                   " * The 'Terminated' status is used when a contract is no "
-                   "longer active.\n"
-                   " * The 'Cancelled' status is used when a contract was "
-                   "never paid.")),
-        'is_active': fields.function(
-            _active, string='Contract Active', type='boolean',
-            store={
-                'account.invoice': (_get_contract_from_invoice, ['state'], 50)
-            },
-            help="It indicates that the first invoice has been paid and the "
-                 "contract was activated."),
-        # Field used for identifying gifts from sponsor (because of bad GP)
-        'num_pol_ga': fields.integer(
-            'Partner Contract Number', required=True
-        ),
-        'end_reason': fields.selection(_get_ending_reasons, _('End reason'),
-                                       select=True),
-        'end_date': fields.date(
-            _('End date'), readonly=True,
-            track_visibility="onchange"),
-        'origin_id': fields.many2one('recurring.contract.origin', _("Origin"),
-                                     ondelete='restrict',
-                                     track_visibility='onchange'),
-        'channel': fields.selection(__get_channels, string=_("Channel")),
-        'parent_id': fields.many2one(
-            'recurring.contract', _('Previous sponsorship'),
-            track_visibility='onchange'),
-        'has_mandate': fields.function(
-            _has_mandate, type='boolean', string='Has mandate'),
-        'name': fields.function(_name_get, type='char'),
-        'partner_id': fields.many2one(
-            'res.partner', string=_('Partner'), required=True,
-            readonly=False, states={'terminated': [('readonly', True)]},
-            ondelete='restrict',
-            track_visibility='onchange'),
-        'type': fields.selection(
-            __get_type, _('Type'), select=True, required=True),
-        'group_freq': fields.function(
-            _get_frequency, type='char',
-            store={'recurring.contract.group': (
-                _get_contracts_from_group,
-                ['recurring_value', 'recurring_unit'],
-                10)}, readonly=True,
-            string=_('Frequency')),
-    }
-
-    def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
-        """ On partner change, we set the new pol_number
-        (for gift identification). """
-        res = super(recurring_contract, self).on_change_partner_id(
-            cr, uid, ids, partner_id, context)
-        num_contracts = self.search(
-            cr, uid, [('partner_id', '=', partner_id)], context=context,
-            count=True)
-
-        res['value'].update({
-            'num_pol_ga': num_contracts
-        })
-        return res
-
-    def on_change_parent_id(self, cr, uid, ids, parent_id, context=None):
-        """ If a previous sponsorship is selected, the origin should be
-        SUB Sponsorship. """
-        res = dict()
-        if parent_id:
-            origin_id = self.pool.get('recurring.contract.origin').search(
-                cr, uid, [('type', '=', 'sub')], context=context)[0]
-            res['value'] = {'origin_id': origin_id}
-        return res
-
-    def create(self, cr, uid, vals, context=None):
+    ##########################################################################
+    #                              ORM METHODS                               #
+    ##########################################################################
+    @api.model
+    def create(self, vals):
         if 'num_pol_ga' not in vals:
             partner_id = vals.get('partner_id')
             if partner_id:
-                vals['num_pol_ga'] = self.search(
-                    cr, uid, [('partner_id', '=', partner_id)],
-                    context=context, count=True)
-        return super(recurring_contract, self).create(cr, uid, vals,
-                                                      context=context)
+                vals['num_pol_ga'] = self.search_count([
+                    ('partner_id', '=', partner_id)])
+        return super(recurring_contract, self).create(vals)
 
-    def on_change_next_invoice_date(
-            self, cr, uid, ids, new_invoice_date, context=None):
-        res = True
-        for contract in self.browse(cr, uid, ids, context):
-            if (contract.state not in ('draft', 'mandate')):
-                res = super(
-                    recurring_contract, self).on_change_next_invoice_date(
-                    self, cr, uid, ids, new_invoice_date, context) and res
-        return res
-
-    def _get_filtered_contract_ids(
-            self, cr, uid, invoice_lines, context=None):
-        return [invl.contract_id.id for invl in invoice_lines
-                if invl.contract_id]
-
-    def _get_filtered_invoice_lines(
-            self, cr, uid, invoice_lines, contract_id, context=None):
-        return [invl.id for invl in invoice_lines
-                if invl.contract_id == contract_id]
-
-    def _cancel_old_invoices(
-            self, cr, uid, partner_id,
-            contract_id, date_invoice, context=None):
-        """
-            Cancel the open invoices of a contract
-            which are older than a given date.
-            If the invoice has only one contract -> cancel
-            Else -> draft to modify the invoice and validate
-        """
-        invoice_line_obj = self.pool.get('account.invoice.line')
-        invoice_obj = self.pool.get('account.invoice')
-        invoice_line_ids = invoice_line_obj.search(
-            cr, uid,
-            [('contract_id', '=', contract_id),
-             ('state', '=', 'open'),
-             ('due_date', '<', date_invoice)
-             ],
-            context=context)
-
-        invoice_ids = [invoice_line.invoice_id.id for invoice_line
-                       in invoice_line_obj.browse(cr, uid, invoice_line_ids,
-                                                  context)]
-        invoice_ids = list(set(invoice_ids))
-
-        wf_service = netsvc.LocalService('workflow')
-        for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
-            invoice_lines = invoice.invoice_line
-
-            contract_ids = self._get_filtered_contract_ids(
-                cr, uid, invoice_lines, context)
-
-            contract_ids = list(set(contract_ids))
-
-            if contract_ids and contract_id in contract_ids:
-                inv_line_ids = self._get_filtered_invoice_lines(
-                    cr, uid, invoice_lines, context)
-
-                if len(contract_ids) == 1:
-                    wf_service.trg_validate(uid, 'account.invoice',
-                                            invoice.id, 'invoice_cancel', cr)
-                else:
-                    invoice_obj.action_cancel_draft(
-                        cr, uid, [invoice.id], context)
-
-                    invoice_line_obj.unlink(
-                        cr, uid,
-                        inv_line_ids,
-                        context)
-
-                    wf_service.trg_validate(uid, 'account.invoice',
-                                            invoice.id, 'invoice_open', cr)
-
-    ##########################
-    #        CALLBACKS       #
-    ##########################
-    def force_validation(self, cr, uid, contract_id, context=None):
-        """ Used to transition draft sponsorships in waiting state. """
-        wf_service = netsvc.LocalService('workflow')
-        logger.info("Contract " + str(contract_id) + " validated.")
-        wf_service.trg_validate(uid, self._name, contract_id,
-                                'contract_validated', cr)
-        return True
-
-    def force_activation(self, cr, uid, contract_id, context=None):
-        """ Used to transition draft sponsorships in active state. """
-        self.force_validation(cr, uid, contract_id, context)
-        self._on_contract_active(cr, uid, [contract_id], context)
-        return True
-
-    def name_get(self, cr, uid, ids, context=None):
+    @api.multi
+    @api.depends('partner_id', 'child_id')
+    def name_get(self):
         """ Gives a friendly name for a sponsorship """
         res = []
-        for contract in self.browse(cr, uid, ids, context):
-            name = contract.partner_id.ref
+        for contract in self:
+            name = contract.partner_id.ref or contract.reference
             if contract.child_id:
                 name += ' - ' + contract.child_code
             elif contract.contract_line_ids:
@@ -377,21 +166,102 @@ class recurring_contract(orm.Model):
             res.append((contract.id, name))
         return res
 
-    def on_change_group_id(self, cr, uid, ids, group_id, context=None):
+    @api.one
+    def copy(self, default=None):
+        if default is None:
+            default = dict()
+        default.update({
+            'num_pol_ga': self.num_pol_ga + 1
+        })
+        return super(recurring_contract, self).copy(default)
+
+    @api.multi
+    def write(self, vals):
+        """ Perform various checks when a contract is modified. """
+        if 'group_id' in vals:
+            self._on_change_group_id(vals['group_id'])
+
+        # Write the changes
+        res = super(recurring_contract, self).write(vals)
+
+        if 'group_id' in vals or 'partner_id' in vals:
+            self._on_group_id_changed()
+
+        return res
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    def invoice_unpaid(self, invoice):
+        wf_service = netsvc.LocalService('workflow')
+        cr = self.env.cr
+        uid = self.env.user.id
+        for contract in self:
+            wf_service.trg_validate(
+                uid, self._name, contract.id, 'contract_activation_cancelled',
+                cr)
+
+    def invoice_paid(self, invoice):
+        """ Activate contract if it is waiting for payment. """
+        activate_contracts = self.filtered(lambda c: c.state == 'waiting')
+        # Cancel the old invoices if a contract is activated
+        activate_contracts._cancel_old_invoices(
+            invoice.partner_id.id, invoice.date_invoice)
+
+        wf_service = netsvc.LocalService('workflow')
+        cr = self.env.cr
+        uid = self.env.user.id
+        for contract in activate_contracts:
+            wf_service.trg_validate(
+                uid, self._name, contract.id,
+                'contract_active', cr)
+            logger.info("Contract " + str(id) + " activated.")
+
+    @api.one
+    def force_activation(self):
+        """ Used to transition sponsorships in active state. """
+        wf_service = netsvc.LocalService('workflow')
+        wf_service.trg_validate(self.env.user.id, self._name, self.id,
+                                'contract_validated', self.env.cr)
+        wf_service.trg_validate(self.env.user.id, self._name, self.id,
+                                'contract_active', self.env.cr)
+        logger.info("Contract " + str(self.id) + " activated.")
+        return True
+
+    ##########################################################################
+    #                             VIEW CALLBACKS                             #
+    ##########################################################################
+    @api.onchange('partner_id')
+    def on_change_partner_id(self):
+        """ On partner change, we set the new pol_number
+        (for gift identification). """
+        super(recurring_contract, self).on_change_partner_id()
+        num_contracts = self.search_count(
+            [('partner_id', '=', self.partner_id.id)])
+
+        self.num_pol_ga = num_contracts
+
+    @api.onchange('parent_id')
+    def on_change_parent_id(self):
+        """ If a previous sponsorship is selected, the origin should be
+        SUB Sponsorship. """
+        if self.parent_id:
+            origin = self.env['recurring.contract.origin'].search(
+                [('type', '=', 'sub')])[0]
+            self.origin_id = origin.id
+
+    @api.onchange('group_id')
+    def on_change_group_id(self):
         """ Compute next invoice_date """
-        res = dict()
         current_date = datetime.today()
         is_active = False
-        if ids:
-            contract = self.browse(cr, uid, ids[0], context)
-            if contract.state not in (
-                    'draft', 'mandate') and contract.next_invoice_date:
-                is_active = True
-                current_date = datetime.strptime(contract.next_invoice_date,
-                                                 DF)
-        if group_id:
-            contract_group = self.pool.get('recurring.contract.group').browse(
-                cr, uid, group_id, context)
+
+        if self.state not in ('draft', 'mandate') and self.next_invoice_date:
+            is_active = True
+            current_date = datetime.strptime(self.next_invoice_date, DF)
+
+        if self.group_id:
+            contract_group = self.group_id
             if contract_group.next_invoice_date:
                 next_group_date = datetime.strptime(
                     contract_group.next_invoice_date, DF)
@@ -407,113 +277,148 @@ class recurring_contract(orm.Model):
         if current_date.day > 15 or (
                 payment_term in ('LSV', 'Postfinance') and not is_active):
             next_invoice_date = next_invoice_date + relativedelta(months=+1)
-        res['value'] = {'next_invoice_date': next_invoice_date.strftime(DF)}
-        return res
+        self.next_invoice_date = next_invoice_date.strftime(DF)
 
-    def contract_waiting(self, cr, uid, ids, context=None):
-        for contract in self.browse(cr, uid, ids, {'lang': 'en_US'}):
-            payment_term = contract.group_id.payment_term_id.name
-            if contract.type == 'S' and ('LSV' in payment_term or
-                                         'Postfinance' in payment_term):
-                # Recompute next_invoice_date
-                today = datetime.today()
-                next_invoice_date = datetime.strptime(
-                    contract.next_invoice_date, DF).replace(month=today.month,
-                                                            year=today.year)
-                if today.day > 15 and next_invoice_date.day < 15:
-                    next_invoice_date = next_invoice_date + relativedelta(
-                        months=+1)
-                contract.write({
-                    'next_invoice_date': next_invoice_date.strftime(DF)})
-
-        self.write(cr, uid, ids, {'state': 'waiting'}, context)
-        return True
-
-    def contract_cancelled(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'cancelled'}, context)
-        self.clean_invoices(cr, uid, ids, context)
-        return True
-
-    def contract_terminated(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'terminated'}, context)
-        self.clean_invoices(cr, uid, ids, context)
-        return True
-
-    def contract_waiting_mandate(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'mandate'}, context)
-        return True
-
-    def contract_validation(self, cr, uid, ids, context=None):
-        """Only for making the tests successful."""
-        return True
-
-    def open_contract(self, cr, uid, ids, context=None):
+    @api.multi
+    def open_contract(self):
         """ Used to bypass opening a contract in popup mode from
         res_partner view. """
-        contract = self.browse(cr, uid, ids[0], context)
-        context['default_type'] = contract.type
+        self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
             'name': 'Contract',
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': self._name,
-            'res_id': ids[0],
+            'res_id': self.id,
             'target': 'current',
-            'context': context,
+            'context': self.env.with_context(default_type=self.type).context
         }
 
-    def action_cancel_draft(self, cr, uid, ids, context=None):
-        """ Set back a cancelled contract to draft state. """
-        wf_service = netsvc.LocalService('workflow')
-        for contract in self.browse(cr, uid, ids, context):
-            update_sql = "UPDATE recurring_contract SET state='draft', "\
-                "end_date=NULL, activation_date=NULL, start_date=CURRENT_DATE"
-            if contract.state == 'cancelled':
-                if contract.child_id and not contract.child_id.is_available:
-                    update_sql += ', child_id = NULL'
-                cr.execute(update_sql + " WHERE id = %s", [contract.id])
-                wf_service.trg_delete(uid, self._name, contract.id, cr)
-                wf_service.trg_create(uid, self._name, contract.id, cr)
+    ##########################################################################
+    #                            WORKFLOW METHODS                            #
+    ##########################################################################
+    @api.multi
+    def contract_active(self):
+        self.write({
+            'activation_date': datetime.today().strftime(DF),
+            'state': 'active'})
         return True
 
-    ################################
-    #        PRIVATE METHODS       #
-    ################################
-    def _invoice_paid(self, cr, uid, invoice, context=None):
-        """ Hook for doing something when invoice is paid. """
-        pass
+    @api.multi
+    def contract_cancelled(self):
+        self.write({'state': 'cancelled'})
+        self.clean_invoices()
+        return True
 
-    def _on_contract_active(self, cr, uid, ids, context=None):
-        """ Activate contract when first invoice was paid."""
-        self.write(cr, uid, ids, {
-            'activation_date': datetime.today().strftime(DF)}, context)
+    @api.multi
+    def contract_terminated(self):
+        self.write({'state': 'terminated'})
+        self.clean_invoices()
+        return True
+
+    @api.multi
+    def contract_waiting_mandate(self):
+        self.write({'state': 'mandate'})
+        return True
+
+    @api.multi
+    def contract_validation(self):
+        """Only for making the tests successful."""
+        return True
+
+    @api.one
+    def contract_waiting(self):
+        vals = {'state': 'waiting'}
+        payment_term = self.group_id.payment_term_id.name
+        if self.type == 'S' and ('LSV' in payment_term or
+                                 'Postfinance' in payment_term):
+            # Recompute next_invoice_date
+            today = datetime.today()
+            next_invoice_date = datetime.strptime(
+                self.next_invoice_date, DF).replace(month=today.month,
+                                                    year=today.year)
+            if today.day > 15 and next_invoice_date.day < 15:
+                next_invoice_date = next_invoice_date + relativedelta(
+                    months=+1)
+            vals['next_invoice_date'] = next_invoice_date.strftime(DF)
+
+        self.write(vals)
+        return True
+
+    @api.one
+    def action_cancel_draft(self):
+        """ Set back a cancelled contract to draft state. """
         wf_service = netsvc.LocalService('workflow')
-        for id in ids:
-            wf_service.trg_validate(
-                uid, self._name, id,
-                'contract_active', cr)
-            logger.info("Contract " + str(id) + " activated.")
+        update_sql = "UPDATE recurring_contract SET state='draft', "\
+            "end_date=NULL, activation_date=NULL, start_date=CURRENT_DATE"
+        cr = self.env.cr
+        uid = self.env.user.id
+        if self.state == 'cancelled':
+            if self.child_id and not self.child_id.is_available:
+                update_sql += ', child_id = NULL'
+            cr.execute(update_sql + " WHERE id = %s", [self.id])
+            wf_service.trg_delete(uid, self._name, self.id, cr)
+            wf_service.trg_create(uid, self._name, self.id, cr)
+            self.env.invalidate_all()
+        return True
 
-    def _update_invoice_lines(self, cr, uid, contract, invoice_ids,
-                              context=None):
-        super(recurring_contract, self)._update_invoice_lines(
-            cr, uid, contract, invoice_ids, context)
-        invoice_obj = self.pool.get('account.invoice')
-        for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
-            # Update payment term and generate new invoice_lines
-            invoice.write({
-                'bvr_reference': contract.group_id.bvr_reference})
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
+    @api.one
+    def _on_change_next_invoice_date(self, new_invoice_date):
+        if self.state not in ('draft', 'mandate'):
+            super(recurring_contract, self)._on_change_next_invoice_date(
+                new_invoice_date)
 
-    def _on_invoice_line_removal(self, cr, uid, invoice_lines, context=None):
-        """ Hook for doing something before invoice_line deletion
-            @param: invoice_lines (dict): {
-                line_id: [invoice_id, child_code, product_name, amount]}
+    def _get_filtered_invoice_lines(self, invoice_lines):
+        return invoice_lines.filtered(lambda l: l.contract_id.id in self.ids)
+
+    def _cancel_old_invoices(self, partner_id, date_invoice):
         """
-        pass
+            Cancel the open invoices of a contract
+            which are older than a given date.
+            If the invoice has only one contract -> cancel
+            Else -> draft to modify the invoice and validate
+        """
+        invoice_line_obj = self.env['account.invoice.line']
+        invoice_lines = invoice_line_obj.search([
+            ('contract_id', 'in', self.ids),
+            ('state', '=', 'open'),
+            ('due_date', '<', date_invoice)])
+
+        invoices = invoice_lines.mapped('invoice_id')
+        pdb.set_trace()
+
+        wf_service = netsvc.LocalService('workflow')
+        for invoice in invoices:
+            invoice_lines = invoice.invoice_line
+
+            inv_lines = self._get_filtered_invoice_lines(
+                invoice_lines)
+
+            if len(inv_lines) == len(invoice_lines):
+                wf_service.trg_validate(
+                    self.env.user.id, 'account.invoice',
+                    invoice.id, 'invoice_cancel', self.env.cr)
+            else:
+                invoice.action_cancel_draft()
+                inv_lines.unlink()
+
+                wf_service.trg_validate(
+                    self.env.user.id, 'account.invoice',
+                    invoice.id, 'invoice_open', self.env.cr)
+
+    @api.one
+    def _update_invoice_lines(self, invoices):
+        super(recurring_contract, self)._update_invoice_lines(invoices)
+        # Update bvr_reference of invoices
+        invoices.write({
+            'bvr_reference': self.group_id.bvr_reference})
 
     def _clean_error(self):
-        raise orm.except_orm(
+        raise exceptions.Warning(
             _('Cancel Invoice Error'),
             _('The sponsor has already paid in advance for this '
               'sponsorship, but the system was unable to automatically '
@@ -521,32 +426,30 @@ class recurring_contract(orm.Model):
               'changing the attribution of his payment before cancelling '
               'the sponsorship.'))
 
-    def _reset_open_invoices(self, cr, uid, ids, context=None):
+    def _reset_open_invoices(self):
         """Clean the open invoices in order to generate new invoices.
         This can be useful if contract was updated when active."""
-        invoices_canceled = super(recurring_contract, self).clean_invoices(
-            cr, uid, ids, context)
+        invoices_canceled = super(recurring_contract, self).clean_invoices()
         if invoices_canceled:
-            invoice_obj = self.pool.get('account.invoice')
+            invoice_obj = self.env['account.invoice']
             inv_update_ids = set()
-            for contract in self.browse(cr, uid, ids, context):
+            for contract in self:
                 # If some invoices are left cancelled, we update them
                 # with new contract information and validate them
-                cancel_ids = invoice_obj.search(cr, uid, [
+                cancel_invoices = invoice_obj.search([
                     ('state', '=', 'cancel'),
-                    ('id', 'in', list(invoices_canceled))], context=context)
-                if cancel_ids:
-                    inv_update_ids.update(cancel_ids)
-                    invoice_obj.action_cancel_draft(cr, uid, cancel_ids)
-                    self._update_invoice_lines(cr, uid, contract, cancel_ids,
-                                               context)
+                    ('id', 'in', list(invoices_canceled))])
+                if cancel_invoices:
+                    inv_update_ids.update(cancel_invoices.ids)
+                    cancel_invoices.action_cancel_draft()
+                    contract._update_invoice_lines(cancel_invoices)
                 # If no invoices are left in cancel state, we rewind
                 # the next_invoice_date for the contract to generate again
                 else:
                     contract.rewind_next_invoice_date()
                     invoicer_id = contract.group_id.generate_invoices()
-                    invoicer = self.pool.get('recurring.invoicer').browse(
-                        cr, uid, invoicer_id, context)
+                    invoicer = self.env['recurring.invoicer'].browse(
+                        invoicer_id)
                     if invoicer.invoice_ids:
                         invoicer.validate_invoices()
                     else:
@@ -556,38 +459,36 @@ class recurring_contract(orm.Model):
                 wf_service = netsvc.LocalService('workflow')
                 for invoice_id in inv_update_ids:
                     wf_service.trg_validate(
-                        uid, 'account.invoice', invoice_id,
-                        'invoice_open', cr)
+                        self.env.user.id, 'account.invoice', invoice_id,
+                        'invoice_open', self.env.cr)
         return True
 
-    def _on_change_group_id(self, cr, uid, ids, group_id, context=None):
+    def _on_change_group_id(self, group_id):
         """ Change state of contract if payment is changed to/from LSV or DD.
         """
-        if not isinstance(ids, list):
-            ids = [ids]
         wf_service = netsvc.LocalService('workflow')
-        group = self.pool.get('recurring.contract.group').browse(
-            cr, uid, group_id, context)
+        group = self.env['recurring.contract.group'].browse(
+            group_id)
         payment_name = group.payment_term_id.name
         if 'LSV' in payment_name or 'Postfinance' in payment_name:
-            for id in ids:
+            for contract in self:
                 wf_service.trg_validate(
-                    uid, 'recurring.contract', id,
-                    'will_pay_by_lsv_dd', cr)
+                    self.env.user.id, self._name, contract.id,
+                    'will_pay_by_lsv_dd', self.env.cr)
         else:
             # Check if old payment_term was LSV or DD
-            for contract in self.browse(cr, uid, ids, context):
+            for contract in self:
                 payment_name = contract.group_id.payment_term_id.name
                 if 'LSV' in payment_name or 'Postfinance' in payment_name:
                     wf_service.trg_validate(
-                        uid, 'recurring.contract', contract.id,
-                        'mandate_validated', cr)
+                        self.env.user.id, 'recurring.contract', contract.id,
+                        'mandate_validated', self.env.cr)
 
-    def _on_group_id_changed(self, cr, uid, ids, context=None):
+    def _on_group_id_changed(self):
         """Remove lines of open invoices and generate them again
         """
-        self._reset_open_invoices(cr, uid, ids, context)
-        for contract in self.browse(cr, uid, ids, context=context):
+        self._reset_open_invoices()
+        for contract in self:
             # Update next_invoice_date of group if necessary
             if contract.group_id.next_invoice_date:
                 next_invoice_date = datetime.strptime(
@@ -598,35 +499,3 @@ class recurring_contract(orm.Model):
                     # This will trigger group_date computation
                     contract.write({
                         'next_invoice_date': contract.next_invoice_date})
-
-    ################################
-    #        PUBLIC METHODS        #
-    ################################
-
-    def copy(self, cr, uid, id, default=None, context=None):
-        if not default:
-            default = dict()
-        num_pol_ga = self.browse(cr, uid, id, context=context).num_pol_ga
-        default.update({
-            'child_id': False,
-            'activation_date': False,
-            'num_pol_ga': num_pol_ga + 1,
-        })
-        return super(recurring_contract, self).copy(cr, uid, id, default,
-                                                    context)
-
-    def write(self, cr, uid, ids, vals, context=None):
-        """ Perform various checks when a contract is modified. """
-        if not isinstance(ids, list):
-            ids = [ids]
-        if 'group_id' in vals:
-            self._on_change_group_id(cr, uid, ids, vals['group_id'], context)
-
-        # Write the changes
-        res = super(recurring_contract, self).write(cr, uid, ids, vals,
-                                                    context=context)
-
-        if 'group_id' in vals or 'partner_id' in vals:
-            self._on_group_id_changed(cr, uid, ids, context)
-
-        return res

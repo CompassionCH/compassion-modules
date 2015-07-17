@@ -18,6 +18,8 @@ from datetime import datetime
 from .product import GIFT_NAMES, SPONSORSHIP_CATEGORY
 
 import logging
+import time
+
 logger = logging.getLogger(__name__)
 
 
@@ -126,6 +128,7 @@ class contract_group(orm.Model):
                              context=None):
         """ Contract gifts relate their invoice lines to sponsorship,
             Correspondence sponsorships don't create invoice lines.
+            Add analytic account to invoice_lines.
         """
         invl_data = False
         contract = contract_line.contract_id
@@ -160,5 +163,15 @@ class contract_group(orm.Model):
                         _('No active sponsorship found for child {0}. '
                           'The gift contract with id {1} is not valid.')
                         .format(sponsorship.child_code, str(contract.id)))
+
+            product_id = contract_line.product_id.id
+            partner_id = contract_line.contract_id.partner_id.id
+            uid = self.env.user.id
+            analytic = self.env['account.analytic.default'].account_get(
+                self.env.cr, uid, product_id, partner_id, uid,
+                time.strftime('%Y-%m-%d'), context=self.env.context)
+            if analytic and analytic.analytic_id:
+                invl_data.update({
+                    'account_analytic_id': analytic.analytic_id.id})
 
         return invl_data
