@@ -57,7 +57,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         lang_obj = self.env['res.lang']
         ids = lang_obj.search([])
-        res = lang_obj.read(['code', 'name'])
+        res = ids.read(['code', 'name'])
         self.lang = [(r['code'], r['name']) for r in res]
 
     @api.multi
