@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <!-- Add correspondant field for sponsorships -->
                 <field name="partner_id" position="after">
-                    <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', 'not in', ['S','SC'])]}"/>
+                    <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', 'not in', ['S','SC'])], 'required': [('type', 'in', ['S', 'SC'])]}"/>
                 </field>
                 
                 <!-- Redefine change method of parnter_id -->

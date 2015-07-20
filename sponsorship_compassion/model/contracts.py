@@ -136,7 +136,7 @@ class sponsorship_contract(orm.Model):
     ##########################################################################
     _columns = {
         'correspondant_id': fields.many2one(
-            'res.partner', _('Correspondant'), required=True, readonly=True,
+            'res.partner', _('Correspondant'), readonly=True,
             states={'draft': [('readonly', False)],
                     'waiting': [('readonly', False)],
                     'mandate': [('readonly', False)]},
