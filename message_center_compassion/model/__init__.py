@@ -10,6 +10,7 @@
 ##############################################################################
 
 from . import gmc_message
+from . import gmc_action
 from . import child_compassion
 from . import child_properties
 from . import contracts

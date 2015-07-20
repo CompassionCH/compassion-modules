@@ -89,7 +89,7 @@
                             <field name="event" attrs="{'invisible':[('direction','=','out')]}"/>
                             <field name="failure_reason"/>
                         </group>
-                        <group attrs="{'invisible':[('invoice_line_id','=',False)]}">
+                        <group attrs="{'invisible':[('name','!=','CreateGift')]}">
                             <field name="gift_type" />
                             <field name="gift_instructions" />
                             <field name="gift_amount" />
