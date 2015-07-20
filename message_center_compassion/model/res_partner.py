@@ -8,72 +8,57 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp.osv import orm, fields
+from openerp import api, models
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import date
 
 
-class res_partner(orm.Model):
+class res_partner(models.Model):
     """ UPSERT constituents. """
     _inherit = 'res.partner'
 
-    """ Add write_date for the middleware to have the information. """
-    def _get_write_date(self, cr, uid, ids, field_name, args, context=None):
-        metadata = self.perm_read(cr, uid, ids, context)
-        return {md['id']: md['write_date'][:10] for md in metadata}
-
-    _columns = {
-        'write_date': fields.function(_get_write_date, 'Write date',
-                                      type='date')
-    }
-
-    def write(self, cr, uid, ids, vals, context=None):
+    @api.multi
+    def write(self, vals):
         if vals.get('firstname') or vals.get('lastname') or \
                 vals.get('name'):
-            self._upsert_constituent(cr, uid, ids, context)
-        return super(res_partner, self).write(cr, uid, ids, vals, context)
+            self._upsert_constituent()
+        return super(res_partner, self).write(vals)
 
-    def write_from_gp(self, cr, uid, ids, vals, context=None):
+    @api.multi
+    def write_from_gp(self, vals):
         """ GP always send firstname and lastname. We check if they changed.
         """
-        to_update_ids = list()
-        for partner in self.browse(cr, uid, ids, context):
-            new_firstname = vals.get('firstname', partner.firstname)
-            new_lastname = vals.get('lastname', partner.lastname)
-            if partner.firstname != new_firstname or \
-                    partner.lastname != new_lastname:
-                to_update_ids.append(partner.id)
-        self._upsert_constituent(cr, uid, to_update_ids, context)
-        return super(res_partner, self).write_from_gp(cr, uid, ids, vals,
-                                                      context)
+        new_firstname = vals.get('firstname')
+        new_lastname = vals.get('lastname')
+        to_update = self.mapped(
+            lambda p: (new_firstname and p.firstname != new_firstname) or
+            (new_lastname and p.lastname != new_lastname))
+        to_update._upsert_constituent()
+        return super(res_partner, self).write(vals)
 
-    def _upsert_constituent(self, cr, uid, ids, context=None):
+    def _upsert_constituent(self):
         """If partner has active contracts, UPSERT Constituent in GMC."""
-        if not isinstance(ids, list):
-            ids = [ids]
-        for partner in self.browse(cr, uid, ids, context):
-            contract_ids = self.pool.get('recurring.contract').search(
-                cr, uid, [('correspondant_id', '=', partner.id),
-                          ('state', 'not in', ('terminated', 'cancelled'))],
-                context=context)
-            if contract_ids:
+        for partner in self:
+            contract_count = self.env['recurring.contract'].search_count([
+                ('correspondant_id', '=', partner.id),
+                ('state', 'not in', ('terminated', 'cancelled'))])
+            if contract_count:
                 # UpsertConstituent Message
-                action_id = self.pool.get('gmc.action').search(
-                    cr, uid, [('name', '=', 'UpsertConstituent')],
-                    limit=1, context=context)[0]
+                action_id = self.env['gmc.action'].search(
+                    [('name', '=', 'UpsertConstituent')],
+                    limit=1)[0].id
                 message_vals = {
                     'action_id': action_id,
                     'object_id': partner.id,
                     'partner_id': partner.id,
                     'date': date.today().strftime(DF),
                 }
-                message_obj = self.pool.get('gmc.message.pool')
+                message_obj = self.env['gmc.message.pool']
                 # Delete pending upsert messages if any exist
-                mess_ids = message_obj.search(cr, uid, [
+                messages = message_obj.search([
                     ('partner_id', '=', partner.id),
                     ('state', '=', 'new'),
-                    ('action_id', '=', action_id)], context=context)
-                if mess_ids:
-                    message_obj.unlink(cr, uid, mess_ids, context)
-                message_obj.create(
-                    cr, uid, message_vals, context=context)
+                    ('action_id', '=', action_id)])
+                if messages:
+                    messages.unlink()
+                message_obj.create(message_vals)
