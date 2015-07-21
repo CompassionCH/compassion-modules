@@ -17,7 +17,6 @@ virtualenv:
 
 install:
     - pip install flake8
-    - 'IF [ "${TRAVIS_SECURE_ENV_VARS}" = "true" ]'
     - pip install pysftp
     - pip install MySQL-python
     - pip install unidecode
@@ -35,8 +34,7 @@ install:
     - git clone https://github.com/OCA/account-financial-tools.git ${HOME}/build/CompassionCH/account-financial-tools -b 8.0
     - git clone https://github.com/CompassionCH/compassion-switzerland.git ${HOME}/build/CompassionCH/compassion-switzerland -b 8.0
     - git clone https://github.com/OCA/partner-contact.git ${HOME}/build/CompassionCH/partner-contact -b 8.0
-    - travis_install_nightly
-    - 'FI'
+    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis_install_nightly'
 
 before_script:
     - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && openssl aes-256-cbc -K $encrypted_f7bf959fc25e_key -iv $encrypted_f7bf959fc25e_iv -in travis/odoo.conf.enc -out ${HOME}/odoo-8.0/odoo.conf -d'
