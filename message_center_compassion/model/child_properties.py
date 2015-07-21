@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp.osv import models
+from openerp import models
 
 
 class child_properties(models.Model):
