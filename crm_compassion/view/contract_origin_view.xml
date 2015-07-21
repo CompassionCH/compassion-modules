@@ -89,11 +89,6 @@
             <field eval="18" name="priority"/>
             <field name="arch" type="xml">
                 <data>
-                    <field name="origin_id" position="attributes">
-                        <attribute name="on_change">
-                            on_change_origin(origin_id)
-                        </attribute>
-                    </field>
                     <field name="origin_id" position="after">
                         <field name="user_id"/>
                     </field>

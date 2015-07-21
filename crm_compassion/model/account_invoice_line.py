@@ -9,53 +9,34 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
+from openerp import api, models, fields
 
 
-class account_invoice_line(orm.Model):
+class account_invoice_line(models.Model):
     """ Add salespersons to invoice_lines. """
     _inherit = "account.invoice.line"
 
-    def _get_invoice_lines(self, cr, uid, ids, context=None):
-        inv_line_obj = self.pool.get('account.invoice.line')
-        inv_line_ids = inv_line_obj.search(cr, uid,
-                                           [('invoice_id', 'in', ids)],
-                                           context=context)
-        return inv_line_ids
+    user_id = fields.Many2one(
+        'res.partner', 'Ambassador')
+    currency_id = fields.Many2one(
+        'res.currency', 'Currency', related='invoice_id.currency_id',
+        store=True)
 
-    _columns = {
-        'user_id': fields.many2one(
-            'res.partner', string=_('Ambassador')),
-        'currency_id': fields.related(
-            'invoice_id', 'currency_id', type='many2one',
-            string=_("Currency"), relation='res.currency', store={
-                'account.invoice': (_get_invoice_lines, ['currency_id'], 10)
-            }),
-    }
-
-    def on_change_contract_id(self, cr, uid, ids, contract_id, context=None):
+    @api.onchange('contract_id')
+    def on_change_contract_id(self):
         """ Push Ambassador to invoice line. """
-        res = dict()
-        user = False
-        if contract_id:
-            contract = self.pool.get('recurring.contract').browse(
-                cr, uid, contract_id, context)
-            if contract.user_id:
-                user = contract.user_id.id
-
-        res['value'] = {'user_id': user}
-        return res
+        contract = self.contract_id
+        if contract and contract.user_id:
+            self.user_id = contract.user_id.id
 
 
-class generate_gift_wizard(orm.TransientModel):
+class generate_gift_wizard(models.TransientModel):
     """ Push salespersons to generated invoices """
     _inherit = 'generate.gift.wizard'
 
-    def _setup_invoice_line(self, cr, uid, invoice_id, wizard,
-                            contract, context=None):
+    def _setup_invoice_line(self, invoice_id, contract):
         invl_data = super(generate_gift_wizard, self)._setup_invoice_line(
-            cr, uid, invoice_id, wizard, contract, context)
+            invoice_id, contract)
         if contract.user_id:
             invl_data['user_id'] = contract.user_id.id
         return invl_data
