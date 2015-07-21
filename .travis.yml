@@ -36,10 +36,10 @@ install:
     - git clone https://github.com/OCA/account-financial-tools.git ${HOME}/build/CompassionCH/account-financial-tools -b 8.0
     - git clone https://github.com/CompassionCH/compassion-switzerland.git ${HOME}/build/CompassionCH/compassion-switzerland -b 8.0
     - git clone https://github.com/OCA/partner-contact.git ${HOME}/build/CompassionCH/partner-contact -b 8.0
-    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis_install_nightly'
+    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis_install_nightly || echo "Not installing odoo in Pull requests"'
 
 before_script:
-    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && openssl aes-256-cbc -K $encrypted_f7bf959fc25e_key -iv $encrypted_f7bf959fc25e_iv -in travis/odoo.conf.enc -out ${HOME}/odoo-8.0/odoo.conf -d'
+    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && openssl aes-256-cbc -K $encrypted_f7bf959fc25e_key -iv $encrypted_f7bf959fc25e_iv -in travis/odoo.conf.enc -out ${HOME}/odoo-8.0/odoo.conf -d || echo "encrypted files not available"'
 
 script:
     - travis/travis_header.sh
