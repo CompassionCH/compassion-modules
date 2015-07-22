@@ -8,15 +8,22 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import netsvc
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
+from openerp import api, models, netsvc, exceptions, _
 
 
-class sub_sponsorship_wizard(orm.TransientModel):
+class sub_sponsorship_wizard(models.TransientModel):
     _name = "sds.subsponsorship.wizard"
 
-    def _get_no_sub_reasons(self, cr, uid, context=None):
+    state = fields.Selection([
+        ('sub', 'sub'),
+        ('no_sub', 'no_sub')])
+    child_id = fields.Many2one(
+        'compassion.child', 'Child')
+    no_sub_default_reasons = fields.Selection(
+        '_get_no_sub_reasons', 'No sub reason')
+    no_sub_reason = fields.Char('No sub reason')
+
+    def _get_no_sub_reasons(self):
         return [
             ('other_sponsorship', _('Sponsors other children')),
             ('financial', _('Financial reasons')),
@@ -28,67 +35,49 @@ class sub_sponsorship_wizard(orm.TransientModel):
             ('other', _('Other...'))
         ]
 
-    _columns = {
-        'state': fields.selection([
-            ('sub', 'sub'),
-            ('no_sub', 'no_sub')]),
-        'child_id': fields.many2one(
-            'compassion.child', string=_("Child")),
-        'no_sub_default_reasons': fields.selection(
-            _get_no_sub_reasons, string=_("No sub reason")),
-        'no_sub_reason': fields.char(_("No sub reason")),
-    }
-
-    def create_subsponsorship(self, cr, uid, ids, context=None):
+    @api.multi
+    def create_subsponsorship(self):
         """ Creates a subsponsorship. """
-        if not isinstance(ids, list):
-            ids = [ids]
-        child = self.browse(cr, uid, ids[0], context).child_id
+        self.ensure_one()
+        child = self.child_id
         if not child:
-            raise orm.except_orm("No child selected", "Please select a child")
+            raise exceptions.Warning(
+                _("No child selected"),
+                _("Please select a child"))
 
-        sponsorship_id = context.get('active_id')
-        contract_obj = self.pool.get('recurring.contract')
-        origin_obj = self.pool.get('recurring.contract.origin')
-        sub_origin_ids = origin_obj.search(cr, uid, [
-            ('type', '=', 'sub')], context=context)
+        sponsorship_id = self.env.context.get('active_id')
+        contract_obj = self.env['recurring.contract']
+        contract = contract_obj.browse(sponsorship_id)
+        origin_obj = self.env['recurring.contract.origin']
+        sub_origin_ids = origin_obj.search([('type', '=', 'sub')]).ids
 
-        contract_obj.copy(cr, uid, sponsorship_id, {
+        sub_contract = contract.copy({
             'parent_id': sponsorship_id,
             'origin_id': sub_origin_ids and sub_origin_ids[0],
-        }, context)
-
-        sub_id = contract_obj.search(cr, uid, [
-            ('state', '=', 'draft'),
-            ('origin_id', '=', sub_origin_ids and sub_origin_ids[0]),
-            ('parent_id', '=', sponsorship_id)], context=context)
-        if sub_id and len(sub_id) == 1:
-            contract_obj.write(cr, uid, sub_id, {
-                'child_id': child.id}, context)
-            wf_service = netsvc.LocalService('workflow')
-            wf_service.trg_validate(uid, 'recurring.contract', sub_id[0],
-                                    'contract_validated', cr)
+        })
+        sub_contract.write({'child_id': child.id})
+        wf_service = netsvc.LocalService('workflow')
+        wf_service.trg_validate(
+            self.env.user.id, 'recurring.contract', sub_contract.id,
+            'contract_validated', self.env.cr)
 
         return True
 
-    def no_sub(self, cr, uid, ids, context=None):
+    @api.multi
+    def no_sub(self):
         """ No SUB for the sponsorship. """
-        if not isinstance(ids, list):
-            ids = [ids]
-
-        sponsorship_id = context.get('active_id')
-        contract_obj = self.pool.get('recurring.contract')
-        wizard = self.browse(cr, uid, ids[0], context)
-        default_reason = wizard.no_sub_default_reasons
+        self.ensure_one()
+        sponsorship_id = self.env.context.get('active_id')
+        contract = self.env['recurring.contract'].browse(sponsorship_id)
+        default_reason = self.no_sub_default_reasons
         reason = False
         if default_reason == 'other':
-            reason = wizard.no_sub_reason
+            reason = self.no_sub_reason
         else:
-            reason = dict(self._get_no_sub_reasons(cr, uid, context)).get(
-                default_reason)
-        contract_obj.write(cr, uid, sponsorship_id, {
-            'no_sub_reason': reason}, context)
+            reason = dict(self._get_no_sub_reasons()).get(default_reason)
+        contract.write({'no_sub_reason': reason})
         wf_service = netsvc.LocalService('workflow')
-        wf_service.trg_validate(uid, 'recurring.contract', sponsorship_id,
-                                'no_sub', cr)
+        wf_service.trg_validate(
+            self.env.user.id, 'recurring.contract', sponsorship_id,
+            'no_sub', self.env.cr)
         return True

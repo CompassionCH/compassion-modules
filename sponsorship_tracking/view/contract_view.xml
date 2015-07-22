@@ -37,7 +37,7 @@
                                         <div class="oe_kanban_footer_left">
                                             <span>
                                                 <span class="oe_e">N</span>
-                                                <field name="last_sds_state_change_date"/>
+                                                <field name="sds_state_date"/>
                                             </span>
                                         </div>
                                     </div>
@@ -132,7 +132,7 @@
                             <group>
                                 <field name="start_date" readonly="1"/>
                                 <field name="activation_date" readonly="1"/>
-                                <field name="last_sds_state_change_date"/>
+                                <field name="sds_state_date"/>
                                 <field name="end_date" readonly="1"/>
                             </group>
                             <group>
@@ -165,7 +165,7 @@
                     <field name="child_name"/>
                     
                     <field name="start_date"/>
-                    <field name="last_sds_state_change_date"/>
+                    <field name="sds_state_date"/>
                     <field name="end_date"/>
                     <field name="end_reason"/>
                     <field name="origin_id"/>
@@ -203,7 +203,7 @@
 
                     <group expand="0" string="Group By...">
                         <filter string="Start date" domain="[]"  context="{'group_by':'start_date'}"/>
-                        <filter string="SDS state date" domain="[]" context="{'group_by':'last_sds_state_change_date'}"/>
+                        <filter string="SDS state date" domain="[]" context="{'group_by':'sds_state_date'}"/>
                         <filter string="Status" domain="[]"  context="{'group_by':'state'}"/>
                         <filter string="SDS Status" domain="[]"  context="{'group_by':'sds_state'}"/>
                         <filter string="Project Status" domain="[]"  context="{'group_by':'project_state'}"/>

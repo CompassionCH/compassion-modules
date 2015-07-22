@@ -163,7 +163,7 @@ class recurring_contract(orm.TransientModel):
         for contract_id in contract_ids:
             cr.execute(
                 "UPDATE recurring_contract "
-                "SET sds_state = '{0}', last_sds_state_change_date = {1}+{2},"
+                "SET sds_state = '{0}', sds_state_date = {1}+{2},"
                 "    color = {3} "
                 "WHERE id = {4} ".format(
                     sds_state, sds_change_date,

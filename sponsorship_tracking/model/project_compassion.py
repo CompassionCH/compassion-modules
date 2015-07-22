@@ -8,44 +8,33 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp.osv import orm
+from openerp import api, models
 
 
-class compassion_project(orm.Model):
+class compassion_project(models.Model):
     """ Update Contracts Project Workflow when Suspension status
         is changed.
     """
     _inherit = 'compassion.project'
 
-    def suspend_funds(self, cr, uid, project_id, context=None):
-        super(compassion_project, self).suspend_funds(
-            cr, uid, project_id, context)
+    @api.multi
+    def suspend_funds(self):
+        super(compassion_project, self).suspend_funds()
+        return self._transition_contracts('project_suspended')
 
-        return self._transition_contracts(
-            cr, uid, project_id, 'project_suspended', context)
+    @api.multi
+    def _reactivate_project(self):
+        super(compassion_project, self)._reactivate_project()
+        return self._transition_contracts('project_reactivation')
 
-    def _reactivate_project(self, cr, uid, project_id, context=None):
-        super(compassion_project, self)._reactivate_project(
-            cr, uid, project_id, context)
+    def _suspend_extension(self):
+        super(compassion_project, self)._suspend_extension()
+        contracts = self.env['recurring.contract'].search([
+            ('project_id', 'in', self.ids),
+            ('project_state', '=', 'fund-suspended')])
+        return contracts.write({'project_state': 'inform_extension'})
 
-        return self._transition_contracts(
-            cr, uid, project_id, 'project_reactivation', context)
-
-    def _suspend_extension(self, cr, uid, project_id, context=None):
-        super(compassion_project, self)._suspend_extension(
-            cr, uid, project_id, context)
-
-        contract_obj = self.pool.get('recurring.contract')
-        contract_ids = contract_obj.search(cr, uid, [
-            ('project_id', '=', project_id),
-            ('project_state', '=', 'fund-suspended')], context=context)
-        return contract_obj.write(cr, uid, contract_ids, {
-            'project_state': 'inform_extension'}, context)
-
-    def _transition_contracts(self, cr, uid, project_id, transition,
-                              context=None):
-        contract_obj = self.pool.get('recurring.contract')
-        contract_ids = contract_obj.search(
-            cr, uid, [('project_id', '=', project_id)], context=context)
-        return contract_obj.trg_validate(cr, uid, contract_ids, transition,
-                                         context)
+    def _transition_contracts(self, transition):
+        contracts = self.env['recurring.contract'].search([
+            ('project_id', 'in', self.ids)])
+        return contracts.trg_validate(transition)
