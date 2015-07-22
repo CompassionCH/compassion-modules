@@ -17,18 +17,16 @@ from datetime import datetime
 class account_move_line(models.Model):
     _inherit = 'account.move.line'
 
-    def unlink(self, ids):
+    @api.multi
+    def unlink(self):
         """ Override unlink to recompute expense/income of events. """
-        event_obj = self.env['crm.event.compassion']
-        line_obj = self.env['account.analytic.line']
-        analytic_line_ids = line_obj.search(
-            [('move_id', 'in', ids)])
-        account_ids = [l.account_id.id for l in line_obj.browse(
-            analytic_line_ids)]
-        event_ids = event_obj.search([
+        analytic_lines = self.env['account.analytic.line'].search(
+            [('move_id', 'in', self.ids)])
+        account_ids = analytic_lines.mapped('account_id.id')
+        events = self.env['crm.event.compassion'].search([
             ('analytic_id', 'in', account_ids)])
-        res = super(account_move_line, self).unlink(ids)
-        event_obj._store_set_values(event_ids, [
+        res = super(account_move_line, self).unlink()
+        events._store_set_values([
             'total_income', 'total_expense', 'balance'])
         return res
 
@@ -104,7 +102,7 @@ class event_compassion(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.one
-    @api.depends('expense_line_ids', 'income_line_ids')
+    @api.depends('analytic_id')
     def _set_analytic_lines(self):
         line_obj = self.env['account.analytic.line']
         if self.analytic_id:
