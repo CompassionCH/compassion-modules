@@ -8,7 +8,6 @@
 		<field eval="18" name="priority"/>
 		<field name="arch" type="xml">
             <xpath expr="//div[@name='buttons']" position="inside">
-				<button name="%(account.act_res_partner_2_account_invoice_opened)d" type="action" string="Show invoices" groups="account.group_account_invoice"/>
 				<button name="show_lines" string="Show invoice lines" type="object" groups="account.group_account_invoice"/>
 			</xpath>
             
