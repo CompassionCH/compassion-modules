@@ -9,6 +9,7 @@
 #
 ##############################################################################
 
+from openerp import api, fields, models
 from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools import mod10r
@@ -22,35 +23,39 @@ from ..model.product import GIFT_NAMES
 import time
 
 
-class generate_gift_wizard(orm.TransientModel):
+class generate_gift_wizard(models.TransientModel):
     """ This wizard generates a Gift Invoice for a given contract. """
     _name = 'generate.gift.wizard'
 
-    _columns = {
-        'amount': fields.float(_("Gift Amount"), required=True),
-        'product_id': fields.many2one(
-            'product.product', _("Gift Type"), required=True),
-        'invoice_date': fields.date(_("Invoice date")),
-        'description': fields.char(_("Additional comments"), size=200),
-    }
+    amount = fields.Float("Gift Amount", required=True)
+    product_id = fields.Many2one(
+        'product.product', "Gift Type", required=True)
+    invoice_date = fields.Date(default=datetime.today().strftime(DF))
+    description = fields.Char("Additional comments", size=200)
 
-    _defaults = {
-        'invoice_date': datetime.today().strftime(DF),
-    }
+    # _columns = {
+        # 'amount': fields.float(_("Gift Amount"), required=True),
+        # 'product_id': fields.many2one(
+            # 'product.product', _("Gift Type"), required=True),
+        # 'invoice_date': fields.date(_("Invoice date")),
+        # 'description': fields.char(_("Additional comments"), size=200),
+    # }
 
+    # _defaults = {
+        # 'invoice_date': datetime.today().strftime(DF),
+    # }
+
+    @api.multi
     def generate_invoice(self, cr, uid, ids, context=None):
         # Read data in english
-        if context is None:
-            context = dict()
-        ctx = context.copy()
-        ctx['lang'] = 'en_US'
+        self.ensure_one()
+        self.with_context(lang='en_US')
         # Ids of contracts are stored in context
         wizard = self.browse(cr, uid, ids[0], ctx)
         invoice_ids = list()
-        gen_states = self.pool.get(
-            'recurring.contract.group')._get_gen_states()
-        for contract in self.pool.get('recurring.contract').browse(
-                cr, uid, context.get('active_ids', list()), ctx):
+        gen_states = self.env['recurring.contract.group']._get_gen_states()
+        for contract in self.env['recurring.contract'].browse(
+                self.env.context.get('active_ids', list())):
             partner = contract.partner_id
 
             if 'S' in contract.type and contract.state in gen_states:
@@ -89,16 +94,14 @@ class generate_gift_wizard(orm.TransientModel):
                         'recurring_invoicer_id', False)
                 }
 
-                invoice_id = invoice_obj.create(cr, uid, inv_data,
-                                                context=context)
-                if invoice_id:
+                invoice = self.env['account.invoice'].create(inv_data)
+                if invoice:
                     inv_line_data = self._setup_invoice_line(
-                        cr, uid, invoice_id, wizard, contract, ctx)
-                    self.pool.get('account.invoice.line').create(
-                        cr, uid, inv_line_data, ctx)
-                    invoice_ids.append(invoice_id)
+                        invoice, contract)
+                    self.env['account.invoice.line'].create(inv_line_data)
+                    invoice_ids = invoice_ids | invoice
             else:
-                raise orm.except_orm(
+                raise exceptions.Warning(
                     _("Generation Error"),
                     _("You can only generate gifts for active child "
                       "sponsorships"))
@@ -107,7 +110,7 @@ class generate_gift_wizard(orm.TransientModel):
             'view_mode': 'tree,form',
             'view_type': 'form',
             'res_model': 'account.invoice',
-            'domain': [('id', 'in', invoice_ids)],
+            'domain': [('id', 'in', invoice_ids.ids)],
             'context': {'form_view_ref': 'account.invoice_form'},
             'type': 'ir.actions.act_window',
         }

@@ -9,23 +9,23 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
-from openerp.tools.translate import _
+from openerp import api, exceptions, models, _
 
 
-class move_line(orm.Model):
+class move_line(models.Model):
     """ Adds a method to split a payment into several move_lines
     in order to reconcile only a partial amount, avoiding doing
     partial reconciliation. """
     _inherit = 'account.move.line'
 
+    @api.multi
     def split_payment_and_reconcile(self, cr, uid, ids, context=None):
         residual = 0.0
         count_credit_lines = 0
         move = False
         move_line = False
 
-        for line in self.browse(cr, uid, ids, context):
+        for line in self:
             residual += line.credit - line.debit
             if line.credit > 0:
                 move = line.move_id
@@ -33,28 +33,25 @@ class move_line(orm.Model):
                 count_credit_lines += 1
 
         if residual <= 0:
-            raise orm.except_orm(
-                'ResidualError',
+            raise exceptions.Warning(
                 _('This can only be done if credits > debits'))
 
         if count_credit_lines != 1:
-            raise orm.except_orm(
-                'CreditLineError',
+            raise exceptions.Warning(
                 _('This can only be done for one credit line'))
 
         # Edit move in order to split payment into two move lines
-        move_obj = self.pool.get('account.move')
-        move_obj.button_cancel(cr, uid, [move.id], context)
-        self.write(cr, uid, move_line.id, {
+        move.button_cancel()
+        move_line.write({
             'credit': move_line.credit-residual
-        }, context)
-        self.copy(cr, uid, move_line.id, default={
+        })
+        move_line.copy(default={
             'credit': residual,
-            'name': context.get('residual_comment') or move_line.name
-        }, context=context)
-        move_obj.button_validate(cr, uid, [move.id], context)
+            'name': self.env.context.get('residual_comment') or move_line.name
+        })
+        move.button_validate()
 
         # Perform the reconciliation
-        self.reconcile(cr, uid, ids)
+        self.reconcile()
 
         return True

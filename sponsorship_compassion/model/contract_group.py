@@ -9,8 +9,8 @@
 #
 ##############################################################################
 
-from openerp import api, models
-from openerp.osv import orm, fields
+from openerp import api, fields, models
+from openerp.osv import orm
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.translate import _
 
@@ -32,7 +32,7 @@ class contract_group(models.Model):
     ##########################################################################
 
     contains_sponsorship = fields.Boolean(
-        string='Contains sponsorship', compute='_contains_sponsorship', 
+        string='Contains sponsorship', compute='_contains_sponsorship',
         readonly=True, default=lambda self: 'S' in self.env.context.get(
             'default_type', 'O'))
 
@@ -42,7 +42,6 @@ class contract_group(models.Model):
 
     @api.multi
     def _contains_sponsorship(self):
-        res = dict()
         for group in self:
             if group.contract_ids:
                 group.contains_sponsorship = False
@@ -129,7 +128,7 @@ class contract_group(models.Model):
         return invoicer
 
     @api.multi
-    def _setup_inv_line_data(self, contract_line, invoice_id):
+    def _setup_inv_line_data(self, contract_line, invoice):
         """ Contract gifts relate their invoice lines to sponsorship,
             Correspondence sponsorships don't create invoice lines.
             Add analytic account to invoice_lines.
@@ -150,7 +149,7 @@ class contract_group(models.Model):
                 if not suspend_config_id:
                     return False
                 current_product = self.env['product.product'].with_context(
-                    lang='en_US'}).browse(invl_data['product_id'])
+                    lang='en_US').browse(invl_data['product_id'])
                 if current_product.categ_name == SPONSORSHIP_CATEGORY:
                     product_id = config_obj.browse(suspend_config_id[0]).id
                     invl_data.update(self.env[
@@ -170,10 +169,8 @@ class contract_group(models.Model):
 
             product_id = contract_line.product_id.id
             partner_id = contract_line.contract_id.partner_id.id
-            uid = self.env.user.id
             analytic = self.env['account.analytic.default'].account_get(
-                self.env.cr, uid, product_id, partner_id, uid,
-                time.strftime('%Y-%m-%d'), context=self.env.context)
+                product_id, partner_id, time.strftime('%Y-%m-%d'))
             if analytic and analytic.analytic_id:
                 invl_data.update({
                     'account_analytic_id': analytic.analytic_id.id})
