@@ -13,9 +13,6 @@
                 
                 <!-- Redefine change method of parnter_id -->
                 <xpath expr="//field[@name='partner_id']" position="attributes">
-                    <attribute name="on_change" position="replace">
-                        <attribute name="on_change">on_change_partner_id(partner_id, type)</attribute>
-                    </attribute>
                 </xpath>
                 
                 <!-- Make origin and channel mandatory for sponsorships -->

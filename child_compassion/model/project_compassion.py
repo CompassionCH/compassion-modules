@@ -170,21 +170,22 @@ class compassion_project(models.Model):
         'new_sponsorships_allowed', 'additional_quota_allowed')
     @api.one
     def _set_suspension_state(self):
-        if self.status in ('A', 'P') and not (
-                self.disburse_gifts and self.disburse_funds and
-                self.disburse_unsponsored_funds and
-                self.new_sponsorships_allowed and
-                self.additional_quota_allowed):
-            status = 'suspended' if self.disburse_funds \
-                else 'fund-suspended'
+        if self.id:
+            if self.status in ('A', 'P') and not (
+                    self.disburse_gifts and self.disburse_funds and
+                    self.disburse_unsponsored_funds and
+                    self.new_sponsorships_allowed and
+                    self.additional_quota_allowed):
+                status = 'suspended' if self.disburse_funds \
+                    else 'fund-suspended'
 
-            if status == 'fund-suspended' and \
-                    self.suspension != 'fund-suspended':
-                self.suspend_funds()
-            self.suspension = status
-        elif self.suspension == 'fund-suspended':
-            self.suspension = False
-            self._reactivate_project()
+                if status == 'fund-suspended' and \
+                        self.suspension != 'fund-suspended':
+                    self.suspend_funds()
+                self.suspension = status
+            elif self.suspension == 'fund-suspended':
+                self.suspension = False
+                self._reactivate_project()
 
     def _has_desc(self):
         for project in self:

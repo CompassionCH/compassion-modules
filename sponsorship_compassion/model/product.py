@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
+from openerp import api, fields, models
 
 # Name of gifts products
 GIFT_NAMES = ["Birthday Gift", "General Gift", "Family Gift", "Project Gift",
@@ -25,11 +25,13 @@ SPONSORSHIP_CATEGORY = "Sponsorship"
 FUND_CATEGORY = "Fund"
 
 
-class product(orm.Model):
+class product(models.Model):
     _inherit = 'product.product'
 
-    def _get_gmc_name(self, cr, uid, ids, field_name, arg, context=None):
-        res = dict()
+    gmc_name = fields.Char(compute='_set_gmc_name')
+
+    @api.multi
+    def _set_gmc_name(self):
         gmc_names = {
             'Birthday Gift': 'BirthdayGift',
             'General Gift': 'GeneralChildGift',
@@ -37,13 +39,8 @@ class product(orm.Model):
             'Project Gift': 'ProjectGift',
             'Graduation Gift': 'FinalOrGraduationGift'
         }
-        for product in self.browse(cr, uid, ids, {'lang': 'en_US'}):
+        for product in self.whit_context(lang='en_US'):
             if product.categ_name == GIFT_CATEGORY:
-                res[product.id] = gmc_names[product.name]
+                product.gmc_names = gmc_names[product.name]
             else:
-                res[product.id] = "Undefined"
-        return res
-
-    _columns = {
-        'gmc_name': fields.function(_get_gmc_name, type='char'),
-    }
+                product.gmc_names = "Undefined"
