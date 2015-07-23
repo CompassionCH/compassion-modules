@@ -14,7 +14,6 @@ import urllib3
 import certifi
 import json
 import logging
-
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config

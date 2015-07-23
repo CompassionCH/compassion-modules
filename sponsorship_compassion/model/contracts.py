@@ -23,7 +23,6 @@ from .product import GIFT_CATEGORY, SPONSORSHIP_CATEGORY, FUND_CATEGORY
 
 import logging
 
-
 logger = logging.getLogger(__name__)
 
 

@@ -18,7 +18,6 @@ from datetime import datetime
 from .product import GIFT_NAMES, SPONSORSHIP_CATEGORY
 
 import logging
-
 logger = logging.getLogger(__name__)
 
 
@@ -133,7 +132,6 @@ class contract_group(orm.Model):
         if contract.type != 'SC':
             invl_data = super(contract_group, self)._setup_inv_line_data(
                 cr, uid, contract_line, invoice_id, context)
-
             # If project is suspended, either skip invoice or replace product
             if contract.type == 'S' and not \
                     contract.child_id.project_id.disburse_funds:
