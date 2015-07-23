@@ -149,12 +149,11 @@ class test_sponsorship_compassion(common.TransactionCase):
         self._pay_invoice(gift_inv[0].id)
         self.assertEqual(gift_inv[0].state, 'paid')
         sponsorship.suspend_contract()
-        # wf_service.trg_validate(
-            # self.uid, 'recurring.contract',
-            # sponsorship_id, 'contract_terminated', self.cr)
-        # sponsorship = contract_obj.browse(self.cr, self.uid, sponsorship_id)
-        # self.assertTrue(sponsorship.state, 'terminated')
-        # sponsorship.clean_invoices()
+        wf_service.trg_validate(
+            self.uid, 'recurring.contract',
+            sponsorship_id, 'contract_terminated', self.cr)
+        sponsorship = contract_obj.browse(self.cr, self.uid, sponsorship_id)
+        self.assertTrue(sponsorship.state, 'terminated')
         
     def _create_sponsorship(self, start_date, group_id, next_invoice_date, 
                             origin_id, channel, type, child_id):
