@@ -9,41 +9,36 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
+from openerp import api, models
 
 
-class project_compassion(orm.Model):
+class project_compassion(models.Model):
     _inherit = 'compassion.project'
 
-    def suspend_funds(self, cr, uid, project_id, context=None):
+    def suspend_funds(self):
         """ When a project is suspended, We update all contracts of
         sponsored children in the project, so that we don't create invoices
         during the period of suspension.
         We also remove the children on internet.
         """
-        res = super(project_compassion, self).suspend_funds(
-            cr, uid, project_id, context)
-        project = self.browse(cr, uid, project_id, context)
-        contract_obj = self.pool.get('recurring.contract')
-        contract_ids = contract_obj.search(cr, uid, [
-            ('child_code', 'like', project.code),
-            ('state', 'in', ('active', 'waiting', 'mandate'))],
-            context=context)
-        res = res and contract_obj.suspend_contract(
-            cr, uid, contract_ids, context)
+        self.ensure_one()
+        res = super(project_compassion, self).suspend_funds()
+        contracts = self.env['recurring.contract'].search([
+            ('child_code', 'like', self.code),
+            ('state', 'in', ('active', 'waiting', 'mandate'))])
+        res = res and contracts.suspend_contract()
+
         return res
 
-    def _reactivate_project(self, cr, uid, project_id, context=None):
+    @api.one
+    def _reactivate_project(self):
         """ When project is reactivated, we re-open cancelled invoices,
         or we change open invoices if fund is set to replace sponsorship
         product. We also change attribution of invoices paid in advance.
         """
-        super(project_compassion, self)._reactivate_project(
-            cr, uid, project_id, context)
-        project = self.browse(cr, uid, project_id, context)
-        contract_obj = self.pool.get('recurring.contract')
-        contract_ids = contract_obj.search(cr, uid, [
-            ('child_code', 'like', project.code),
-            ('state', 'in', ('active', 'waiting', 'mandate'))],
-            context=context)
-        contract_obj.reactivate_contract(cr, uid, contract_ids, context)
+        res = super(project_compassion, self)._reactivate_project()
+        contracts = self.env['recurring.contract'].search([
+            ('child_code', 'like', self.code),
+            ('state', 'in', ('active', 'waiting', 'mandate'))])
+
+        return res and contracts.reactivate_contract()

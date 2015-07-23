@@ -9,11 +9,10 @@
 #
 ##############################################################################
 
-from openerp import api, models, fields, _
+from openerp import api, models, fields
 
 import requests
 import logging
-
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +39,6 @@ class child_compassion(models.Model):
         """ Returns the date since the child is waiting for a sponsor.
         If child was never sponsored, this date comes from GMC services,
         otherwise we can infer it by looking at last sponsorship. """
-        res = dict()
         con_obj = self.env['recurring.contract']
         for child in self:
             child.unsponsored_since = False
@@ -54,7 +52,8 @@ class child_compassion(models.Model):
                 r = requests.get(url)
                 json_data = r.json()
                 if r.status_code == 200:
-                    child.unsponsored_since = json_data['beginWaitTime'] or False
+                    child.unsponsored_since = json_data[
+                        'beginWaitTime'] or False
                 else:
                     logger.error(
                         'An error occured while fetching the unsponsored '
@@ -64,11 +63,11 @@ class child_compassion(models.Model):
     @api.multi
     def _recompute_unsponsored(self):
         """ Useful for updating unset values """
-        self._store_set_values(['unsponsored_since'])
+        self.env['compassion.child']._store_set_values(['unsponsored_since'])
         return True
 
     @api.multi
-    def get_infos(self, cr, uid, ids, context=None):
+    def get_infos(self):
         """ Update unsponsored date. """
         self._recompute_unsponsored()
         return super(child_compassion, self).get_infos()

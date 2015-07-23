@@ -9,38 +9,36 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
+from openerp import api, fields, models
 
 
-class end_sponsorship_wizard(orm.TransientModel):
+class end_sponsorship_wizard(models.TransientModel):
     _inherit = 'end.contract.wizard'
 
-    def _get_exit_reason(self, cr, uid, context=None):
-        return self.pool.get('compassion.child').get_gp_exit_reasons(cr, uid)
+    gp_exit_reason = fields.Selection(
+        '_get_exit_reason', string='Exit reason')
 
-    _columns = {
-        'gp_exit_reason': fields.selection(
-            _get_exit_reason, string=_('Exit reason')),
-    }
+    @api.multi
+    def _get_exit_reason(self):
+        return self.env['compassion.child'].get_gp_exit_reasons()
 
-    def end_contract(self, cr, uid, ids, context=None):
-        res = super(end_sponsorship_wizard, self).end_contract(
-            cr, uid, ids, context)
-        wizard = self.browse(cr, uid, ids[0], context)
+    @api.multi
+    def end_contract(self):
+        self.ensure_one()
+        res = super(end_sponsorship_wizard, self).end_contract()
 
-        if wizard.child_id and 'S' in wizard.contract_id.type:
+        if self.child_id and 'S' in self.contract_id.type:
             # If sponsor moves, the child may be transferred
-            if wizard.do_transfer:
-                wizard.child_id.write({
+            if self.do_transfer:
+                self.child_id.write({
                     'state': 'F',
-                    'transfer_country_id': wizard.transfer_country_id.id,
-                    'exit_date': wizard.end_date})
+                    'transfer_country_id': self.transfer_country_id.id,
+                    'exit_date': self.end_date})
 
             # If child has departed, write exit_details
-            elif wizard.end_reason == '1':
-                wizard.child_id.write({
+            elif self.end_reason == '1':
+                self.child_id.write({
                     'state': 'F',
-                    'gp_exit_reason': wizard.gp_exit_reason,
-                    'exit_date': wizard.end_date})
+                    'gp_exit_reason': self.gp_exit_reason,
+                    'exit_date': self.end_date})
         return res
