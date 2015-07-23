@@ -128,7 +128,7 @@ class res_partner(models.Model):
             search_default_unreconciled=1).show_move_lines()
 
     @api.multi
-    def receivable_transaction_items(self, cr, uid, ids, context=None):
+    def receivable_transaction_items(self):
         account_ids = self.env['account.account'].search(
             [('code', '=', '1050')]).ids
         return self.with_context(

@@ -19,7 +19,7 @@ class move_line(models.Model):
     _inherit = 'account.move.line'
 
     @api.multi
-    def split_payment_and_reconcile(self, cr, uid, ids, context=None):
+    def split_payment_and_reconcile(self):
         residual = 0.0
         count_credit_lines = 0
         move = False

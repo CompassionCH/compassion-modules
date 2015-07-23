@@ -14,7 +14,6 @@ from openerp import api, models, fields
 import requests
 import logging
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -64,8 +63,7 @@ class child_compassion(models.Model):
     @api.multi
     def _recompute_unsponsored(self):
         """ Useful for updating unset values """
-        # self.pool.get('compassion.child')._store_set_values(cr, uid, ids,
-        # ['unsponsored_since'], context)
+        self.env['compassion.child']._store_set_values(['unsponsored_since'])
         return True
 
     @api.multi

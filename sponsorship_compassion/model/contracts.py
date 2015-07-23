@@ -19,7 +19,6 @@ from lxml import etree
 
 from .product import GIFT_CATEGORY, SPONSORSHIP_CATEGORY, FUND_CATEGORY
 import logging
-
 logger = logging.getLogger(__name__)
 
 
@@ -278,13 +277,12 @@ class sponsorship_contract(models.Model):
             inv_line_ids, to_remove_inv, to_update_inv,
             to_remove_mvl, to_remove_move, to_update_mvl, split_payment_mvl,
             unrec_pml, invl_rm_data)
-
         # 2. Manually remove invoice_lines, move_lines, empty invoices/moves
         #    and reconcile refs that are no longer valid
         if inv_line_ids:
             # Call the hook for letting other modules handle the removal.
             # TODO: An other module is needed for this method?
-            # self._on_invoice_line_removal(invl_rm_data)
+            self._on_invoice_line_removal(invl_rm_data)
 
             self._clean_paid_invoice_lines(list(to_remove_inv),
                                            list(to_update_inv),
@@ -303,6 +301,10 @@ class sponsorship_contract(models.Model):
             self._unrec_split_payment(split_payment_mvl, unrec_pml)
 
         return True
+
+    @api.multi
+    def _on_invoice_line_removal(self, invl_rm_data):
+        pass
 
     @api.multi
     def suspend_contract(self):
@@ -707,7 +709,7 @@ class sponsorship_contract(models.Model):
         """ Override to force recurring_value to 1
             if contract is a sponsorship, and to bypass ORM for performance.
         """
-        # groups = self.mapped('group_id')
+        groups = self.mapped('group_id')
         for contract in self:
             if 'S' in contract.type:
                 next_date = datetime.strptime(contract.next_invoice_date, DF)
@@ -719,7 +721,7 @@ class sponsorship_contract(models.Model):
             self.env.cr.execute(
                 "UPDATE recurring_contract SET next_invoice_date = %s "
                 "WHERE id = %s", (next_date, contract.id))
-
+        groups._store_set_values(['next_invoice_date'])
         return True
 
     @api.multi
@@ -774,7 +776,6 @@ class sponsorship_contract(models.Model):
               invl.product_id.name, invl.price_subtotal])
             for invl in inv_lines.filtered(
                 lambda invl: invl.contract_id.type == 'S')])
-
         for inv_line in inv_lines:
             invoice = inv_line.invoice_id
             mvl_found = False
