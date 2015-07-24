@@ -43,50 +43,7 @@
             <field name="rate">100</field>
             <field name="plan_id" ref="account_analytic_plan_instance_100undes"/>
         </record>
-        
-        <!--
-            Resource: account.analytic.default
-        --> 
-        <record id="account_analytic_default_standard_sponsorship" model="account.analytic.default">
-            <field name="analytics_id" ref="account_analytic_plan_instance_sponsorship"/>
-            <field name="sequence">10</field>
-            <field name="product_id" ref="product_product_standard"/>
-        </record>
-        <record id="account_analytic_default_ldp_sponsorship" model="account.analytic.default">
-            <field name="analytics_id" ref="account_analytic_plan_instance_sponsorship"/>
-            <field name="sequence">10</field>
-            <field name="product_id" ref="product_product_ldp"/>
-        </record>
-        <record id="account_analytic_default_general" model="account.analytic.default">
-            <field name="analytics_id" ref="account_analytic_plan_instance_100undes"/>
-            <field name="sequence">20</field>
-            <field name="product_id" ref="contract_compassion.product_fund_gen"/>
-        </record>
-        <record id="account_analytic_default_calendar" model="account.analytic.default">
-            <field name="analytics_id" ref="account_analytic_plan_instance_100undes"/>
-            <field name="sequence">20</field>
-            <field name="product_id" ref="contract_compassion.product_fund_cal"/>
-        </record>
-        <record id="account_analytic_default_compassion" model="account.analytic.default">
-            <field name="analytics_id" ref="account_analytic_plan_instance_100undes"/>
-            <field name="sequence">20</field>
-            <field name="product_id" ref="contract_compassion.product_fund_anl"/>
-        </record>
-        <record id="account_analytic_default_compassion_2" model="account.analytic.default">
-            <field name="analytics_id" ref="account_analytic_plan_instance_100undes"/>
-            <field name="sequence">20</field>
-            <field name="product_id" ref="contract_compassion.product_fund_don"/>
-        </record>
-        <record id="account_analytic_default_anonymous" model="account.analytic.default">
-            <field name="analytics_id" ref="account_analytic_plan_instance_100undes"/>
-            <field name="sequence">20</field>
-            <field name="product_id" ref="contract_compassion.product_fund_any"/>
-        </record>
-        <record id="account_analytic_default_100des" model="account.analytic.default">
-            <field name="analytics_id" ref="account_analytic_plan_instance_100des"/>
-            <field name="sequence">100</field>
-        </record>
-        
+
         <!--
             Resource: account.analytic.account
         -->
