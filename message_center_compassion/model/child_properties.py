@@ -18,7 +18,7 @@ class child_properties(models.Model):
 
     def attach_pictures(self, pictures_id):
         res = super(child_properties, self).attach_pictures(pictures_id)
-        for contract in self.child_id.sponsorship_ids:
-            if contract.state in ('waiting', 'active', 'mandate'):
-                contract.new_biennial()
+        contracts = self.mapped(lambda c: c.state in (
+            'waiting', 'active', 'mandate'))
+        contracts.new_biennial()
         return res
