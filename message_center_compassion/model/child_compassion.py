@@ -109,7 +109,7 @@ class compassion_child(models.Model):
             for contract in child.sponsorship_ids:
                 if contract.state in ('waiting', 'active', 'mandate'):
                     # Terminate contract and mark the departure
-                    self.env['recurring.contract'].write({
+                    contract.write({
                         'end_reason': '1',  # Child departure
                         'end_date': datetime.today().strftime(DF),
                         'gmc_state': 'depart'})

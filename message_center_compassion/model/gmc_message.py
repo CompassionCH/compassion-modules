@@ -277,13 +277,9 @@ class gmc_message_pool(models.Model):
 
     @api.multi
     def force_success(self):
-        for message in self:
-            state = 'success'
-            if message.name == 'CreateGift':
-                state = 'fondue'
-            message.write({
-                'state': state,
-                'failure_reason': False})
+        self.write({'state': 'sucess', 'failure_reason': False})
+        self.filtered(lambda m: m.name == 'CreateGift').write({
+            'state': 'fondue'})
         return True
 
     @api.multi

@@ -60,21 +60,20 @@ class recurring_contract(models.Model):
                 'date': invoice.date_invoice,
             }
             contract = invoice_line.contract_id
-            if not contract:
-                break
-            if invoice_line.product_id.categ_name == GIFT_CATEGORY:
-                # CreateGift
-                message_vals.update({
-                    'object_id': invoice_line.id,
-                    'partner_id': contract.correspondant_id.id,
-                    'child_id': contract.child_id.id,
-                })
-                if contract.child_id.type == 'LDP':
+            if contract:
+                if invoice_line.product_id.categ_name == GIFT_CATEGORY:
+                    # CreateGift
                     message_vals.update({
-                        'state': 'failure',
-                        'failure_reason': 'Gift cannot be sent to LDP'
+                        'object_id': invoice_line.id,
+                        'partner_id': contract.correspondant_id.id,
+                        'child_id': contract.child_id.id,
                     })
-                message_obj.create(message_vals)
+                    if contract.child_id.type == 'LDP':
+                        message_vals.update({
+                            'state': 'failure',
+                            'failure_reason': 'Gift cannot be sent to LDP'
+                        })
+                    message_obj.create(message_vals)
 
     def invoice_unpaid(self, invoice):
         super(recurring_contract, self).invoice_unpaid(invoice)
@@ -238,11 +237,9 @@ class recurring_contract(models.Model):
     def _change_gift_dates(self, messages):
         """ Put gift invoices today if they are in the future. """
         today = datetime.today()
-        for message in messages:
-            invoice = message.invoice_line_id and \
-                message.invoice_line_id.invoice_id
-            if invoice:
-                invoice_date = datetime.strptime(invoice.date_invoice, DF)
-                if invoice_date > today:
-                    invoice.write({'date_invoice': today.strftime(DF)})
-                    message.write({'date': today.strftime(DF + ' %H:%M:%S')})
+        messages_update = messages.filtered(lambda m: m.invoice_line_id)
+        invoices_update = messages.mapped(
+            'invoice_line_id.invoice_id').filtered(
+            lambda i: datetime.strptime(i.date_invoice, DF) > today)
+        invoices_update.write({'date_invoice': today.strftime(DF)})
+        messages_update.write({'date': today.strftime(DF + ' %H:%M:%S')})

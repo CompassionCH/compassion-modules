@@ -31,8 +31,5 @@ class account_invoice_line(models.Model):
         lang = self.partner_id.lang
         product = self.env['product.product'].with_context(
             lang=lang).browse(self.product_id.id)
-        if self.product_id.name == self.name or \
-                product.name == self.name:
-            return
-        else:
+        if self.product_id.name != self.name and product.name != self.name:
             self.gift_instructions = self.name
