@@ -88,5 +88,4 @@ class gmc_action(models.Model):
         action_id = self.search([('name', '=', name)], limit=1)
         if action_id:
             return action_id[0].id
-        else:
-            return False
+        return False
