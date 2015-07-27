@@ -63,7 +63,8 @@ class child_compassion(models.Model):
     @api.multi
     def _recompute_unsponsored(self):
         """ Useful for updating unset values """
-        self.env['compassion.child']._store_set_values(['unsponsored_since'])
+        self.env['compassion.child']._store_set_values(['unsponsored_since'],
+                                                       self.ids)
         return True
 
     @api.multi

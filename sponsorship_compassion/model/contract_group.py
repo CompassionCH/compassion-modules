@@ -72,15 +72,16 @@ class contract_group(models.Model):
         have set the option for automatic birthday gift creation. """
         logger.info("Automatic Birthday Gift Generation Started.")
 
-        self.with_context(lang='en_US')
-
         if invoicer is None:
-            invoicer = self.env['recurring.invoicer'].create(
-                {'source': self._name})
+            invoicer = self.env['recurring.invoicer'].with_context(
+                lang='en_US').create({'source': self._name})
+
+        self.env.context = self.with_context(
+            {'lang': 'en_US',
+             'recurring_invoicer_id': invoicer.id}).env.context
 
         # Search active Sponsorships with automatic birthday gift
-        gen_states = self.with_context(
-            recurring_invoicer_id=invoicer)._get_gen_states()
+        gen_states = self._get_gen_states()
         contract_search = [('birthday_invoice', '>', 0.0),
                            ('state', 'in', gen_states)]
         if self.ids:
@@ -145,16 +146,15 @@ class contract_group(models.Model):
                 config_obj = self.env['ir.config_parameter']
                 suspend_config_id = config_obj.search([(
                     'key', '=',
-                    'sponsorship_compassion.suspend_product_id')]).id
+                    'sponsorship_compassion.suspend_product_id')])
                 if not suspend_config_id:
                     return False
                 current_product = self.env['product.product'].with_context(
                     lang='en_US').browse(invl_data['product_id'])
                 if current_product.categ_name == SPONSORSHIP_CATEGORY:
-                    product_id = config_obj.browse(suspend_config_id[0]).id
                     invl_data.update(self.env[
                         'recurring.contract'].get_suspend_invl_data(
-                            product_id))
+                            suspend_config_id.id))
 
             if contract.type == 'G':
                 sponsorship = contract_line.sponsorship_id

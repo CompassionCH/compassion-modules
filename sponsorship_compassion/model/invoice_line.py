@@ -22,6 +22,7 @@ class invoice_line(models.Model):
         compute='_set_last_payment', store=True)
 
     @api.multi
+    @api.depends('invoice_id.payment_ids', 'state')
     def _set_last_payment(self):
         for line in self:
             last_date = None
@@ -36,10 +37,10 @@ class account_invoice(models.Model):
     _inherit = 'account.invoice'
 
     children = fields.Char(
-        compute='_get_children', string=_('Children'))
+        'Children', compute='_set_children')
 
     @api.multi
-    def _get_children(self):
+    def _set_children(self):
         """ View children contained in invoice. """
         for invoice in self:
             children = invoice.mapped('invoice_line.contract_id.child_id')
