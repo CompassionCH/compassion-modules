@@ -26,7 +26,7 @@ class sponsorship_line(models.Model):
     _inherit = 'recurring.contract.line'
 
     sponsorship_id = fields.Many2one(
-        'recurring.contract', string='Sponsorship')
+        'recurring.contract', 'Sponsorship')
 
     @api.v7
     def fields_view_get(self, cr, uid, view_id=None, view_type='tree',
@@ -82,7 +82,7 @@ class sponsorship_contract(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
 
-    @api.multi
+    @api.model
     def get_ending_reasons(self):
         res = super(sponsorship_contract, self).get_ending_reasons()
         context = self.env.context
@@ -101,12 +101,12 @@ class sponsorship_contract(models.Model):
             res.sort(key=lambda tup: int(float(tup[0])))  # Sort res
         return res
 
-    @api.multi
+    @api.model
     def _get_sponsorship_standard_lines(self):
         """ Select Sponsorship and General Fund by default """
         res = []
         product_obj = self.env['product.product']
-        product_obj.with_context(lang='en_US')
+        self.env.context = self.with_context(lang='en_US').env.context
         sponsorship_id = product_obj.search(
             [('name', '=', 'Sponsorship')])[0].id
         gen_id = product_obj.search(
@@ -127,7 +127,7 @@ class sponsorship_contract(models.Model):
         res.append([0, 6, gen_vals])
         return res
 
-    @api.multi
+    @api.model
     def _get_standard_lines(self):
         if 'S' in self.env.context.get('default_type', 'O'):
             return self._get_sponsorship_standard_lines()
@@ -162,20 +162,6 @@ class sponsorship_contract(models.Model):
         if 'S' in vals.get('type', '') and child:
             child.write({'sponsor_id': vals['partner_id']})
 
-        if 'group_id' in vals:
-            if 'S' in self.env.context.get('default_type', 'O'):
-                group_id = vals['group_id']
-                if not self._is_a_valid_group(group_id):
-                    raise exceptions.ValueError(
-                        _('Please select a valid payment option'),
-                        _('You should select payment option with '
-                          '"1 month" as recurring value')
-                    )
-        if 'contract_line_ids' in vals:
-            self._has_valid_contract_lines(
-                vals['contract_line_ids'],
-                vals.get('type', self.env.context.get('default_type')))
-
         return super(sponsorship_contract, self).create(vals)
 
     @api.multi
@@ -183,20 +169,6 @@ class sponsorship_contract(models.Model):
         """ Perform various checks on contract modification """
         if 'child_id' in vals:
                 self._on_change_child_id(vals)
-        for contract in self:
-            if 'group_id' in vals:
-                group_id = vals['group_id']
-                if 'S' in contract.type:
-                    if not self._is_a_valid_group(group_id):
-                        raise exceptions.Warning(
-                            _('Please select a valid payment option'),
-                            _('You should select payment option with'
-                              '"1 month" as recurring value')
-                        )
-            if 'contract_line_ids' in vals:
-                self._has_valid_contract_lines(
-                    vals['contract_line_ids'],
-                    vals.get('type', contract.type))
 
         return super(sponsorship_contract, self).write(vals)
 
@@ -220,16 +192,15 @@ class sponsorship_contract(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
 
-    @api.one
+    @api.multi
     def clean_invoices(self, since_date=None, to_date=None,
                        keep_lines=None, clean_invoices_paid=True):
         """ Take into consideration when the sponsor has paid in advance,
         so that we cancel/modify the paid invoices and let the user decide
         what to do with the payment.
         """
-        sponsorships = self.filtered(lambda s: s.type == 'S')
-
         if clean_invoices_paid:
+            sponsorships = self.filtered(lambda s: s.type == 'S')
             sponsorships.clean_invoices_paid(since_date, to_date,
                                              keep_lines=keep_lines)
 
@@ -251,7 +222,7 @@ class sponsorship_contract(models.Model):
         # Find all paid invoice lines after the given date
         inv_line_obj = self.env['account.invoice.line']
         invl_search = self._filter_clean_invoices(since_date, to_date, gifts)
-        inv_line_ids = inv_line_obj.search(invl_search)
+        inv_lines = inv_line_obj.search(invl_search)
 
         # Invoice and move lines that need to be removed/updated
         to_remove_inv = set()
@@ -274,27 +245,27 @@ class sponsorship_contract(models.Model):
 
         # 1. Determine which action has to be done for each invoice_line
         self._how_to_clean_invl(
-            inv_line_ids, to_remove_inv, to_update_inv,
+            inv_lines, to_remove_inv, to_update_inv,
             to_remove_mvl, to_remove_move, to_update_mvl, split_payment_mvl,
             unrec_pml, invl_rm_data)
         # 2. Manually remove invoice_lines, move_lines, empty invoices/moves
         #    and reconcile refs that are no longer valid
-        if inv_line_ids:
+        if inv_lines:
             # Call the hook for letting other modules handle the removal.
             # TODO: An other module is needed for this method?
             self._on_invoice_line_removal(invl_rm_data)
 
             self._clean_paid_invoice_lines(list(to_remove_inv),
                                            list(to_update_inv),
-                                           inv_line_ids.ids,
+                                           inv_lines.ids,
                                            keep_lines)
 
             self._clean_move_lines(to_remove_mvl, to_remove_move,
                                    to_update_mvl)
 
             # Update the total field of invoices
-            self.env['account.invoice'].browse(to_update_inv).button_compute(
-                set_total=True)
+            self.env['account.invoice'].browse(
+                list(to_update_inv)).button_compute(set_total=True)
 
             # 2.2. Split or unreconcile payment so that the amount deleted is
             #      isolated.
@@ -341,8 +312,8 @@ class sponsorship_contract(models.Model):
                 "Project Suspended", 'comment')
 
         # Change invoices if config tells to do so.
-        if len(suspend_config) > 0:
-            product = suspend_config[0]
+        if suspend_config:
+            product = int(suspend_config[0].value)
             self._suspend_change_invoices(date_start,
                                           product)
 
@@ -394,16 +365,16 @@ class sponsorship_contract(models.Model):
         date_start = datetime.today().strftime(DF)
         config_obj = self.env['ir.config_parameter']
         wf_service = netsvc.LocalService('workflow')
-        suspend_config_id = config_obj.search([
+        suspend_config = config_obj.search([
             ('key', '=', 'sponsorship_compassion.suspend_product_id')])[0]
         invl_obj = self.env['account.invoice.line']
         product_obj = self.env['product.product']
         sponsorship_product = product_obj.browse(product_obj.search(
             [('name', '=', SPONSORSHIP_CATEGORY)])[0])
         contracts = set()
-        if suspend_config_id:
+        if suspend_config:
             # Revert future invoices with sponsorship product
-            susp_product_id = config_obj.browse(suspend_config_id[0]).id
+            susp_product_id = int(suspend_config[0].value)
             invl_lines = invl_obj.search([
                 ('contract_id', 'in', self.ids),
                 ('product_id', '=', susp_product_id),
@@ -424,7 +395,7 @@ class sponsorship_contract(models.Model):
             contracts = invl_lines.mapped('contract_id')
             mvls_paid = invoices.filtered(
                 lambda inv: inv.state == 'paid').mapped(
-                'payment_ids[0].reconcile_id.line_id')
+                'payment_ids.reconcile_id.line_id')
 
             # Unreconcile paid invoices
             mvls_paid._remove_move_reconcile()
@@ -481,12 +452,13 @@ class sponsorship_contract(models.Model):
                 res['fields']['type']['selection'].pop(2)
         return res
 
+    @api.one
     @api.onchange('partner_id')
     def on_change_partner_id(self):
         super(sponsorship_contract, self).on_change_partner_id()
         # Check if group_id is valid
         if self.group_id:
-            if not self._is_a_valid_group(self.group_id.id):
+            if not self._is_a_valid_group():
                 self.group_id = False
 
         if 'S' in self.type and self.state == 'draft':
@@ -502,8 +474,7 @@ class sponsorship_contract(models.Model):
     def contract_cancelled(self):
         res = super(sponsorship_contract, self).contract_cancelled()
 
-        sponsorships = self.filtered(lambda c: c.type == 'S')
-        self._on_sponsorship_finished(sponsorships)
+        self.filtered(lambda c: c.type == 'S')._on_sponsorship_finished()
 
         return res
 
@@ -511,7 +482,7 @@ class sponsorship_contract(models.Model):
     def contract_terminated(self):
         res = super(sponsorship_contract, self).contract_terminated()
 
-        self._on_sponsorship_finished(self.filtered(lambda c: c.type == 'S'))
+        self.filtered(lambda c: c.type == 'S')._on_sponsorship_finished()
 
         return res
 
@@ -544,12 +515,14 @@ class sponsorship_contract(models.Model):
                             "update recurring_contract set "
                             "activation_date = current_date,is_active = True "
                             "where id = %s", [contract.id])
+                        self.env.invalidate_all()
             elif contract.type == 'SC':
                 # Activate directly correspondence sponsorships
                 self.env.cr.execute(
                     "update recurring_contract set "
                     "activation_date = current_date,is_active = True "
                     "where id = %s", [contract.id])
+                self.env.invalidate_all()
 
         return super(sponsorship_contract, self).contract_waiting()
 
@@ -558,7 +531,7 @@ class sponsorship_contract(models.Model):
     ##########################################################################
 
     @api.multi
-    def _on_sponsorship_finished(self, sponsorships):
+    def _on_sponsorship_finished(self):
         """ Called when a sponsorship is terminated or cancelled:
         Remove sponsor from the child, terminate related gift
         contracts, and remove sponsor category if sponsor has no other
@@ -572,7 +545,7 @@ class sponsorship_contract(models.Model):
             [('name', '=', 'Old Sponsor')])[0].id
         wf_service = netsvc.LocalService('workflow')
 
-        for sponsorship in sponsorships:
+        for sponsorship in self:
             sponsorship.child_id.write({'sponsor_id': False})
 
             contract_count = self.env['recurring.contract'].search_count([
@@ -604,7 +577,7 @@ class sponsorship_contract(models.Model):
         """
         super(sponsorship_contract, self)._on_contract_active()
         # Read data in english
-        self.with_context(lang='en_US')
+        self.env.context = self.with_context(lang='en_US').env.context
         wf_service = netsvc.LocalService('workflow')
         sponsor_cat_id = self.env['res.partner.category'].search(
             [('name', '=', 'Sponsor')])[0]
@@ -638,7 +611,7 @@ class sponsorship_contract(models.Model):
                 contract.child_id.write({'sponsor_id': False})
             if 'S' in contract.type:
                 # Mark the selected child as sponsored
-                self.env['compassion.child'].write(
+                self.env['compassion.child'].browse(child_id).write(
                     {'sponsor_id': vals.get('correspondant_id') or
                      contract.correspondant_id.id})
 
@@ -664,14 +637,21 @@ class sponsorship_contract(models.Model):
                               "reconcile invoice (%s).") % (project.code,
                                                             invoice.id))
 
-    def _is_a_valid_group(self, group_id):
-        group = self.env['recurring.contract.group'].browse(group_id)
-
-        if not group.contains_sponsorship or group.recurring_value != 1:
-            return False
+    @api.one
+    @api.constrains('group_id')
+    def _is_a_valid_group(self):
+        if 'S' in self.type:
+            if not self.group_id.contains_sponsorship or\
+                    self.group_id.recurring_value != 1:
+                raise exceptions.ValidationError(
+                    _('Please select a valid payment option'),
+                    _('You should select payment option with '
+                      '"1 month" as recurring value')
+                )
         return True
 
-    @api.multi
+    @api.one
+    @api.depends('contract_line_ids')
     def _has_valid_contract_lines(self, contract_lines, type):
         forbidden_product_types = {
             'O': [SPONSORSHIP_CATEGORY, GIFT_CATEGORY],
@@ -681,19 +661,13 @@ class sponsorship_contract(models.Model):
             'S': [SPONSORSHIP_CATEGORY, FUND_CATEGORY],
             'SC': [SPONSORSHIP_CATEGORY, FUND_CATEGORY],
         }
-        product_obj = self.env['product.product']
-        contract_lines = [cont_line[2] for cont_line in contract_lines
-                          if cont_line[2]]
 
-        for contract_line in contract_lines:
-            product_id = contract_line.get('product_id')
-            if product_id:
-                product = product_obj.with_context(lang='en_US').browse(
-                    product_id)
-
+        for contract_line in self.contract_line_ids.with_context(lang='en_US'):
+            product = contract_line.product_id
+            if product:
                 categ_name = product.categ_name
-                allowed = whitelist_product_types.get(type)
-                forbidden = forbidden_product_types.get(type)
+                allowed = whitelist_product_types.get(self.type)
+                forbidden = forbidden_product_types.get(self.type)
                 if (allowed and categ_name not in allowed) or \
                         (forbidden and categ_name in forbidden):
                     message = _('You can only select {0} products.').format(
@@ -721,13 +695,15 @@ class sponsorship_contract(models.Model):
             self.env.cr.execute(
                 "UPDATE recurring_contract SET next_invoice_date = %s "
                 "WHERE id = %s", (next_date, contract.id))
-        groups._store_set_values(['next_invoice_date'])
+            self.env.invalidate_all()
+        self.env['recurring.contract.group']._store_set_values(
+            ['next_invoice_date'], groups.ids)
         return True
 
     @api.multi
-    def _get_filtered_invoice_lines(self, invoice_lines, contract_id):
+    def _get_filtered_invoice_lines(self, invoice_lines):
         res = invoice_lines.filtered(
-            lambda invl: invl.contract_id == contract_id and
+            lambda invl: invl.contract_id in self.ids and
             invl.product_id.categ_name != GIFT_CATEGORY).ids
         return res
 
@@ -760,14 +736,13 @@ class sponsorship_contract(models.Model):
         return invl_search
 
     @api.multi
-    def _how_to_clean_invl(self, inv_line_ids, to_remove_inv,
+    def _how_to_clean_invl(self, inv_lines, to_remove_inv,
                            to_update_inv, to_remove_mvl, to_remove_move,
                            to_update_mvl, split_payment_mvl, unrec_pml,
                            invl_rm_data):
         """ Determine which action has to be done for each invoice_line for
         method clean_invoices_paid. See that method for the parameters.
         """
-        inv_lines = self.env['account.invoice.line'].browse(inv_line_ids.ids)
         to_update_inv.update(inv_lines.mapped('invoice_id.id'))
 
         invl_rm_data.update([
@@ -865,6 +840,7 @@ class sponsorship_contract(models.Model):
                 self.env.cr.execute(
                     "DELETE FROM account_invoice WHERE id in ({0})"
                     .format(','.join(str(id) for id in to_remove_inv)))
+            self.env.invalidate_all()
 
     @api.multi
     def _clean_move_lines(self, to_remove_mvl, to_remove_move,
@@ -888,6 +864,7 @@ class sponsorship_contract(models.Model):
             self.env.cr.execute(
                 "UPDATE account_move_line SET debit={0:.3f} "
                 "WHERE id = {1:d}".format(amount, mvl))
+        self.env.invalidate_all()
 
     @api.multi
     def _unrec_split_payment(self, payment_data, unrec_pml):
@@ -908,7 +885,7 @@ class sponsorship_contract(models.Model):
                 pml_id, default={
                     'reconcile_id': False,
                     'credit': amount_deleted})
-
+        self.env.invalidate_all()
         if unrec_pml:
             mvl_obj._remove_move_reconcile(self.env.cr, self.env.user.id,
                                            unrec_pml, context=self.env.context)

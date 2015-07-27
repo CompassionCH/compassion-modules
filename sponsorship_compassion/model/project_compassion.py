@@ -15,13 +15,13 @@ from openerp import api, models
 class project_compassion(models.Model):
     _inherit = 'compassion.project'
 
+    @api.one
     def suspend_funds(self):
         """ When a project is suspended, We update all contracts of
         sponsored children in the project, so that we don't create invoices
         during the period of suspension.
         We also remove the children on internet.
         """
-        self.ensure_one()
         res = super(project_compassion, self).suspend_funds()
         contracts = self.env['recurring.contract'].search([
             ('child_code', 'like', self.code),

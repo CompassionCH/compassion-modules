@@ -40,21 +40,21 @@ class res_partner(models.Model):
                 [('correspondant_id', '=', partner.id),
                  ('type', 'in', ['S', 'SC']),
                  ('fully_managed', '=', False)],
-                order='start_date desc')
+                order='start_date desc').ids
             partner.contracts_paid = contract_obj.search(
                 [('partner_id', '=', partner.id),
                  ('type', 'in', ['S', 'SC']),
                  ('fully_managed', '=', False)],
-                order='start_date desc')
+                order='start_date desc').ids
             partner.contracts_fully_managed = contract_obj.search(
                 [('partner_id', '=', partner.id),
                  ('type', 'in', ['S', 'SC']),
                  ('fully_managed', '=', True)],
-                order='start_date desc')
+                order='start_date desc').ids
             partner.other_contract_ids = contract_obj.search(
                 [('partner_id', '=', partner.id),
                  ('type', 'not in', ['S', 'SC'])],
-                order='start_date desc')
+                order='start_date desc').ids
 
     @api.multi
     def show_lines(self):
@@ -65,7 +65,8 @@ class res_partner(models.Model):
                 'view_invoice_line_partner_tree')[1]
         except ValueError:
             view_id = False
-        self.with_context(search_default_partner_id=self.ids)
+        self.env.context = self.env.with_context(
+            search_default_partner_id=self.ids)
         action = {
             'name': _('Related invoice lines'),
             'type': 'ir.actions.act_window',
@@ -89,7 +90,8 @@ class res_partner(models.Model):
                 'view_move_line_tree')[1]
         except ValueError:
             move_line_id = False
-        self.with_context(search_default_partner_id=self.ids)
+        self.env.context = self.env.with_context(
+            search_default_partner_id=self.ids)
         action = {
             'name': _('Related invoice lines'),
             'type': 'ir.actions.act_window',
