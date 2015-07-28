@@ -84,11 +84,20 @@ class test_sponsorship_compassion(common.TransactionCase):
             self.cr, self.uid, {'type': 'event'})
 
     def test_sponsorship_compassion_first_scenario(self):
+        """
+            This first scenario consists in creating a sponsorship contract
+            (type 'S') and associate a child to the sponsor.
+            Check the different states of the contract and check if there are
+            no mistakes.
+        """
+        # Create a child and get the project associated
         child_id = self._create_child('PE3760148')
         child = self.registry('compassion.child').browse(
             self.cr, self.uid, child_id)
         child.get_infos()
         child.project_id.write({'disburse_funds': True})
+
+        # Creation of the sponsorship contract
         sp_group = self._create_group(
             'do_nothing', self.partner_id, 1, self.payment_term_id)
         sponsorship_id = self._create_sponsorship(
@@ -96,12 +105,14 @@ class test_sponsorship_compassion(common.TransactionCase):
             datetime.today().strftime(DF), self.origin_id, 'postal', 'S',
             child_id)
         self.assertTrue(sponsorship_id)
+
         # Check if ref and language speaking of partner are set automatically
         partner_obj = self.registry('res.partner')
         self.assertTrue(partner_obj.browse(
             self.cr, self.uid, self.partner_id).ref)
         self.assertTrue(partner_obj.browse(
             self.cr, self.uid, self.partner_id).lang)
+
         contract_obj = self.registry('recurring.contract')
         sponsorship = contract_obj.browse(
             self.cr, self.uid, sponsorship_id)
@@ -127,6 +138,7 @@ class test_sponsorship_compassion(common.TransactionCase):
         self.assertEqual(invoice.state, 'paid')
         sponsorship = contract_obj.browse(self.cr, self.uid, sponsorship_id)
         self.assertEqual(sponsorship.state, 'active')
+
         # Generate gifts for the child
         gift_wiz_obj = self.registry('generate.gift.wizard')
         gift_wiz_id = gift_wiz_obj.create(
@@ -146,6 +158,8 @@ class test_sponsorship_compassion(common.TransactionCase):
             self.cr, self.uid, gift_inv_ids)
         self._pay_invoice(gift_inv[0].id)
         self.assertEqual(gift_inv[0].state, 'paid')
+
+        # Suspend of the sponsorship contract
         child.project_id.write({'disburse_funds': False})
         invoice = self.registry('account.invoice').browse(
             self.cr, self.uid, invoices[0].id)
@@ -153,6 +167,8 @@ class test_sponsorship_compassion(common.TransactionCase):
             self.cr, self.uid, invoices[1].id)
         self.assertEqual(invoice.state, 'cancel')
         self.assertEqual(invoice1.state, 'cancel')
+
+        # Reactivation of the sponsorship contract
         child.project_id.write({'disburse_funds': True})
         invoice = self.registry('account.invoice').browse(
             self.cr, self.uid, invoices[0].id)
@@ -173,6 +189,12 @@ class test_sponsorship_compassion(common.TransactionCase):
         self.assertEqual(invoice1.state, 'cancel')
 
     def test_sponsorship_compassion_second_scenario(self):
+        """
+            We are testing in this scenario the other type of sponsorship
+            contract (type 'SC'). Check if we pass from "draft" state to
+            "active" state directly by the validation button. Check if there
+            are no invoice lines too.
+        """
         child_id = self._create_child('IO6790210')
         child = self.registry('compassion.child').browse(
             self.cr, self.uid, child_id)
@@ -200,6 +222,10 @@ class test_sponsorship_compassion(common.TransactionCase):
         self.assertTrue(sponsorship.state, 'terminated')
 
     def test_sponsorship_compassion_third_scenario(self):
+        """
+            Test of the general contract (type 'O'). It's approximately the
+            same test than the contract_compassion's one.
+        """
         contract_group = self._create_group(
             'do_nothing', self.partner_id, 1, self.payment_term_id)
         contract_id = self._create_contract(
@@ -239,6 +265,15 @@ class test_sponsorship_compassion(common.TransactionCase):
         self.assertEqual(contract.state, 'terminated')
 
     def test_sponsorship_compassion_fourth_scenario(self):
+        """
+            In this final scenario we are testing the creation of 3 sponsorship
+            contracts for the same partner with for each contract one child to
+            sponsor.
+            We will make a child stop and leave the sponsorship program,
+            check if that child have no more sponsor id.
+            Check if the 3 contracts create one merged invoice for every month
+            (2 months here) with the good values.
+        """
         child_id1 = self._create_child('UG8320010')
         child_id2 = self._create_child('UG8320011')
         child_id3 = self._create_child('UG8320012')
@@ -277,21 +312,30 @@ class test_sponsorship_compassion(common.TransactionCase):
         sponsorship1 = contract_obj.browse(self.cr, self.uid, sponsorship_id1)
         sponsorship2 = contract_obj.browse(self.cr, self.uid, sponsorship_id2)
         sponsorship3 = contract_obj.browse(self.cr, self.uid, sponsorship_id3)
+        original_price1 = sponsorship1.total_amount
+        original_price2 = sponsorship2.total_amount
+        original_price3 = sponsorship3.total_amount
         self.assertEqual(sponsorship1.state, 'waiting')
         self.assertEqual(sponsorship2.state, 'waiting')
         self.assertEqual(sponsorship3.state, 'waiting')
         invoicer_obj = self.registry('recurring.invoicer')
         invoicer_id1 = sponsorship1.button_generate_invoices()
-        invoices1 = invoicer_obj.browse(
+        invoices = invoicer_obj.browse(
             self.cr, self.uid, invoicer_id1).invoice_ids
-        self._pay_invoice(invoices1[1].id)
-        self._pay_invoice(invoices1[0].id)
-        invoice11 = self.registry('account.invoice').browse(
-            self.cr, self.uid, invoices1[1].id)
-        invoice12 = self.registry('account.invoice').browse(
-            self.cr, self.uid, invoices1[0].id)
-        self.assertEqual(invoice11.state, 'paid')
-        self.assertEqual(invoice12.state, 'paid')
+        self._pay_invoice(invoices[1].id)
+        self._pay_invoice(invoices[0].id)
+        invoice1 = self.registry('account.invoice').browse(
+            self.cr, self.uid, invoices[1].id)
+        invoice2 = self.registry('account.invoice').browse(
+            self.cr, self.uid, invoices[0].id)
+        self.assertEqual(
+            invoice1.amount_total,
+            original_price1 + original_price2 + original_price3)
+        self.assertEqual(
+            invoice2.amount_total,
+            original_price1 + original_price2 + original_price3)
+        self.assertEqual(invoice1.state, 'paid')
+        self.assertEqual(invoice2.state, 'paid')
         child3.write({'state': 'F'})
         child3 = child_obj.browse(self.cr, self.uid, child_id3)
         self.assertEqual(child3.state, 'F')
