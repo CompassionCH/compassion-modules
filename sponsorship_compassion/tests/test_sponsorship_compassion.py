@@ -41,14 +41,14 @@ class test_sponsorship_compassion(common.TransactionCase):
                 ('user_type', '=', account_type)])[0]
         property_account_income = self.registry('account.account').search(
             self.cr, self.uid, [
-                ('type', '=', 'receivable'),
+                ('type', '=', 'other'),
                 ('name', '=', 'Property Account Income Test')
             ])[0]
         property_account_expense = self.registry('account.account').search(
             self.cr, self.uid, [
-                ('type', '=', 'receivable'),
+                ('type', '=', 'other'),
                 ('name', '=', 'Property Account Expense Test')
-            ])[0]    
+            ])[0]
         # Creation of partners
         partner_obj = self.registry('res.partner')
         self.partner_id = partner_obj.create(self.cr, self.uid, {
@@ -57,11 +57,6 @@ class test_sponsorship_compassion(common.TransactionCase):
             'property_account_payable': property_account_payable,
             'notification_email_send': 'comment',
         })
-        # Creation of a child
-        self.child_id = self.registry('compassion.child').create(
-            self.cr, self.uid, {
-                'code': 'PE3760148',
-            })
         # Retrieve a payment term
         payment_term_obj = self.registry('account.payment.term')
         self.payment_term_id = payment_term_obj.search(self.cr, self.uid, [
@@ -89,33 +84,36 @@ class test_sponsorship_compassion(common.TransactionCase):
             self.cr, self.uid, {'type': 'event'})
 
     def test_sponsorship_compassion_first_scenario(self):
-        child = self.registry('compassion.child').browse(self.cr, self.uid,
-            self.child_id)
-        child.get_infos()    
+        child_id = self._create_child('PE3760148')
+        child = self.registry('compassion.child').browse(
+            self.cr, self.uid, child_id)
+        child.get_infos()
         child.project_id.write({'disburse_funds': True})
         sp_group = self._create_group(
             'do_nothing', self.partner_id, 1, self.payment_term_id)
         sponsorship_id = self._create_sponsorship(
             datetime.today().strftime(DF), sp_group,
-            datetime.today().strftime(DF), self.origin_id, 'postal', 'S', 
-            self.child_id)
+            datetime.today().strftime(DF), self.origin_id, 'postal', 'S',
+            child_id)
         self.assertTrue(sponsorship_id)
         # Check if ref and language speaking of partner are set automatically
         partner_obj = self.registry('res.partner')
-        self.assertTrue(partner_obj.browse(self.cr, self.uid, 
-            self.partner_id).ref)
-        self.assertTrue(partner_obj.browse(self.cr, self.uid, 
-            self.partner_id).lang)
-        contract_obj = self.registry('recurring.contract')    
+        self.assertTrue(partner_obj.browse(
+            self.cr, self.uid, self.partner_id).ref)
+        self.assertTrue(partner_obj.browse(
+            self.cr, self.uid, self.partner_id).lang)
+        contract_obj = self.registry('recurring.contract')
         sponsorship = contract_obj.browse(
             self.cr, self.uid, sponsorship_id)
+        self.assertTrue(sponsorship.contract_line_ids)
+        self.assertEqual(len(sponsorship.contract_line_ids), 2)
         self.assertEqual(sponsorship.state, 'draft')
         wf_service = netsvc.LocalService('workflow')
         wf_service.trg_validate(
             self.uid, 'recurring.contract',
             sponsorship_id, 'contract_validated', self.cr)
         sponsorship = contract_obj.browse(
-            self.cr, self.uid, sponsorship_id) 
+            self.cr, self.uid, sponsorship_id)
         self.assertEqual(sponsorship.state, 'waiting')
         invoicer_obj = self.registry('recurring.invoicer')
         invoicer_id = sponsorship.button_generate_invoices()
@@ -124,12 +122,12 @@ class test_sponsorship_compassion(common.TransactionCase):
         self.assertEqual(len(invoices), 2)
         self.assertEqual(invoices[0].state, 'open')
         self._pay_invoice(invoices[1].id)
-        invoice = self.registry('account.invoice').browse(self.cr, self.uid,
-            invoices[1].id)
+        invoice = self.registry('account.invoice').browse(
+            self.cr, self.uid, invoices[1].id)
         self.assertEqual(invoice.state, 'paid')
         sponsorship = contract_obj.browse(self.cr, self.uid, sponsorship_id)
         self.assertEqual(sponsorship.state, 'active')
-        #Generate gifts for the child
+        # Generate gifts for the child
         gift_wiz_obj = self.registry('generate.gift.wizard')
         gift_wiz_id = gift_wiz_obj.create(
             self.cr, self.uid, {
@@ -144,18 +142,162 @@ class test_sponsorship_compassion(common.TransactionCase):
         wf_service.trg_validate(
             self.uid, 'account.invoice',
             gift_inv_ids[0], 'invoice_open', self.cr)
-        gift_inv = self.registry('account.invoice').browse(self.cr, self.uid,
-            gift_inv_ids)
+        gift_inv = self.registry('account.invoice').browse(
+            self.cr, self.uid, gift_inv_ids)
         self._pay_invoice(gift_inv[0].id)
         self.assertEqual(gift_inv[0].state, 'paid')
-        sponsorship.suspend_contract()
+        child.project_id.write({'disburse_funds': False})
+        invoice = self.registry('account.invoice').browse(
+            self.cr, self.uid, invoices[0].id)
+        invoice1 = self.registry('account.invoice').browse(
+            self.cr, self.uid, invoices[1].id)
+        self.assertEqual(invoice.state, 'cancel')
+        self.assertEqual(invoice1.state, 'cancel')
+        child.project_id.write({'disburse_funds': True})
+        invoice = self.registry('account.invoice').browse(
+            self.cr, self.uid, invoices[0].id)
+        invoice1 = self.registry('account.invoice').browse(
+            self.cr, self.uid, invoices[1].id)
+        self.assertEqual(invoice.state, 'open')
+        self.assertEqual(invoice1.state, 'open')
         wf_service.trg_validate(
             self.uid, 'recurring.contract',
             sponsorship_id, 'contract_terminated', self.cr)
         sponsorship = contract_obj.browse(self.cr, self.uid, sponsorship_id)
         self.assertTrue(sponsorship.state, 'terminated')
-        
-    def _create_sponsorship(self, start_date, group_id, next_invoice_date, 
+        invoice = self.registry('account.invoice').browse(
+            self.cr, self.uid, invoices[0].id)
+        invoice1 = self.registry('account.invoice').browse(
+            self.cr, self.uid, invoices[1].id)
+        self.assertEqual(invoice.state, 'cancel')
+        self.assertEqual(invoice1.state, 'cancel')
+
+    def test_sponsorship_compassion_second_scenario(self):
+        child_id = self._create_child('IO6790210')
+        child = self.registry('compassion.child').browse(
+            self.cr, self.uid, child_id)
+        child.get_infos()
+        child.project_id.write({'disburse_funds': True})
+        sp_group = self._create_group(
+            'do_nothing', self.partner_id, 1, self.payment_term_id)
+        sponsorship_id = self._create_sponsorship(
+            datetime.today().strftime(DF), sp_group,
+            datetime.today().strftime(DF), self.origin_id, 'postal', 'SC',
+            child_id)
+        wf_service = netsvc.LocalService('workflow')
+        wf_service.trg_validate(
+            self.uid, 'recurring.contract',
+            sponsorship_id, 'contract_validated', self.cr)
+        contract_obj = self.registry('recurring.contract')
+        sponsorship = contract_obj.browse(
+            self.cr, self.uid, sponsorship_id)
+        self.assertEqual(sponsorship.state, 'active')
+        self.assertEqual(len(sponsorship.invoice_line_ids), 0)
+        wf_service.trg_validate(
+            self.uid, 'recurring.contract',
+            sponsorship_id, 'contract_terminated', self.cr)
+        sponsorship = contract_obj.browse(self.cr, self.uid, sponsorship_id)
+        self.assertTrue(sponsorship.state, 'terminated')
+
+    def test_sponsorship_compassion_third_scenario(self):
+        contract_group = self._create_group(
+            'do_nothing', self.partner_id, 1, self.payment_term_id)
+        contract_id = self._create_contract(
+            datetime.today().strftime(DF), contract_group,
+            datetime.today().strftime(DF), 'O')
+        self._create_contract_line(
+            contract_id, '2', '40.0')
+        contract_obj = self.registry('recurring.contract')
+        contract = contract_obj.browse(self.cr, self.uid, contract_id)
+        self.assertEqual(contract.state, 'draft')
+
+        # Switching to "waiting for payment" state
+        wf_service = netsvc.LocalService('workflow')
+        wf_service.trg_validate(
+            self.uid, 'recurring.contract',
+            contract_id, 'contract_validated', self.cr)
+        contract = contract_obj.browse(
+            self.cr, self.uid, contract_id)
+        self.assertEqual(contract.state, 'waiting')
+        invoicer_obj = self.registry('recurring.invoicer')
+        invoicer_id = contract.button_generate_invoices()
+        invoices = invoicer_obj.browse(
+            self.cr, self.uid, invoicer_id).invoice_ids
+        nb_invoices = len(invoices)
+        self.assertEqual(nb_invoices, 2)
+        self.assertEqual(invoices[0].state, 'open')
+        self.assertEqual(invoices[1].state, 'open')
+        self._pay_invoice(invoices[1].id)
+        self._pay_invoice(invoices[0].id)
+        contract = contract_obj.browse(self.cr, self.uid, contract_id)
+        self.assertEqual(contract.state, 'active')
+        wf_service.trg_validate(
+            self.uid, 'recurring.contract',
+            contract_id, 'contract_terminated', self.cr)
+        contract = contract_obj.browse(
+            self.cr, self.uid, contract_id)
+        self.assertEqual(contract.state, 'terminated')
+
+    def test_sponsorship_compassion_fourth_scenario(self):
+        child_id1 = self._create_child('UG8320010')
+        child_id2 = self._create_child('UG8320011')
+        child_id3 = self._create_child('UG8320012')
+        child_obj = self.registry('compassion.child')
+        child1 = child_obj.browse(self.cr, self.uid, child_id1)
+        child2 = child_obj.browse(self.cr, self.uid, child_id2)
+        child3 = child_obj.browse(self.cr, self.uid, child_id3)
+        child1.get_infos()
+        child2.get_infos()
+        child3.get_infos()
+        sp_group = self._create_group(
+            'do_nothing', self.partner_id, 1, self.payment_term_id)
+        sponsorship_id1 = self._create_sponsorship(
+            datetime.today().strftime(DF), sp_group,
+            datetime.today().strftime(DF), self.origin_id, 'postal', 'S',
+            child_id1)
+        sponsorship_id2 = self._create_sponsorship(
+            datetime.today().strftime(DF), sp_group,
+            datetime.today().strftime(DF), self.origin_id, 'postal', 'S',
+            child_id2)
+        sponsorship_id3 = self._create_sponsorship(
+            datetime.today().strftime(DF), sp_group,
+            datetime.today().strftime(DF), self.origin_id,
+            'postal', 'S', child_id3)
+        wf_service = netsvc.LocalService('workflow')
+        wf_service.trg_validate(
+            self.uid, 'recurring.contract',
+            sponsorship_id1, 'contract_validated', self.cr)
+        wf_service.trg_validate(
+            self.uid, 'recurring.contract',
+            sponsorship_id2, 'contract_validated', self.cr)
+        wf_service.trg_validate(
+            self.uid, 'recurring.contract',
+            sponsorship_id3, 'contract_validated', self.cr)
+        contract_obj = self.registry('recurring.contract')
+        sponsorship1 = contract_obj.browse(self.cr, self.uid, sponsorship_id1)
+        sponsorship2 = contract_obj.browse(self.cr, self.uid, sponsorship_id2)
+        sponsorship3 = contract_obj.browse(self.cr, self.uid, sponsorship_id3)
+        self.assertEqual(sponsorship1.state, 'waiting')
+        self.assertEqual(sponsorship2.state, 'waiting')
+        self.assertEqual(sponsorship3.state, 'waiting')
+        invoicer_obj = self.registry('recurring.invoicer')
+        invoicer_id1 = sponsorship1.button_generate_invoices()
+        invoices1 = invoicer_obj.browse(
+            self.cr, self.uid, invoicer_id1).invoice_ids
+        self._pay_invoice(invoices1[1].id)
+        self._pay_invoice(invoices1[0].id)
+        invoice11 = self.registry('account.invoice').browse(
+            self.cr, self.uid, invoices1[1].id)
+        invoice12 = self.registry('account.invoice').browse(
+            self.cr, self.uid, invoices1[0].id)
+        self.assertEqual(invoice11.state, 'paid')
+        self.assertEqual(invoice12.state, 'paid')
+        child3.write({'state': 'F'})
+        child3 = child_obj.browse(self.cr, self.uid, child_id3)
+        self.assertEqual(child3.state, 'F')
+        self.assertEqual(child3.sponsor_id.id, False)
+
+    def _create_sponsorship(self, start_date, group_id, next_invoice_date,
                             origin_id, channel, type, child_id):
         group = self.registry('recurring.contract.group').browse(
             self.cr, self.uid, group_id)
@@ -173,7 +315,7 @@ class test_sponsorship_compassion(common.TransactionCase):
                 'child_id': child_id,
             }, {'default_type': type})
         return sponsorship_id
-        
+
     def _create_contract(self, start_date, group_id, next_invoice_date, type):
         """
             Create a contract. For that purpose we have created a partner
@@ -187,10 +329,11 @@ class test_sponsorship_compassion(common.TransactionCase):
         contract_id = contract_obj.create(self.cr, self.uid, {
             'start_date': start_date,
             'partner_id': partner_id,
+            'correspondant_id': partner_id,
             'group_id': group_id,
             'next_invoice_date': next_invoice_date,
             'type': type,
-        })
+        }, {'default_type': type})
         return contract_id
 
     def _create_contract_line(self, contract_id, quantity, price):
@@ -204,8 +347,8 @@ class test_sponsorship_compassion(common.TransactionCase):
         })
         return contract_line_id
 
-    def _create_group(self, change_method, partner_id, adv_biling_months, 
-                        payment_term_id):
+    def _create_group(self, change_method, partner_id, adv_biling_months,
+                      payment_term_id):
         """
             Create a group with 2 possibilities :
                 - ref is not given so it takes "/" default values
@@ -222,7 +365,15 @@ class test_sponsorship_compassion(common.TransactionCase):
             'advance_billing_months': adv_biling_months,
             'payment_term_id': payment_term_id,
         }
+        group.write(group_vals)
         return group_id
+
+    def _create_child(self, code):
+        child_id = self.registry('compassion.child').create(
+            self.cr, self.uid, {
+                'code': code,
+            })
+        return child_id
 
     def _pay_invoice(self, invoice_id):
         journal_obj = self.registry('account.journal')

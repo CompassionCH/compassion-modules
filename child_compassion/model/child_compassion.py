@@ -16,7 +16,7 @@ import certifi
 import json
 from openerp.tools.translate import _
 from openerp.tools.config import config
-
+from openerp.osv import orm, fields
 from datetime import date, datetime
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
@@ -118,7 +118,7 @@ class compassion_child(orm.Model):
                 'compassion.project': (
                     _get_child_from_project,
                     ['code'],
-                    10),   
+                    10),
                 'compassion.child': (
                     lambda self, cr, uid, ids, context=None: ids,
                     ['code'],

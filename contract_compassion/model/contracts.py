@@ -17,7 +17,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import logging
-import pdb
 logger = logging.getLogger(__name__)
 
 
