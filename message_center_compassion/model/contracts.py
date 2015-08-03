@@ -121,9 +121,8 @@ class recurring_contract(orm.Model):
                         self.clean_invoices_paid(cr, uid, ids, context,
                                                  gifts=True)
 
-                # Contract must have child and not terminated by
-                # partner move -> CancelCommitment message
-                if 'S' in contract.type and end_reason != 4:
+                # Only sponsorships are concerned
+                if 'S' in contract.type:
                     message_vals.update({
                         'object_id': contract.id,
                         'partner_id': contract.correspondant_id.id,
