@@ -98,7 +98,6 @@ class recurring_contract(orm.Model):
             message_vals = {'action_id': action_id}
 
             for contract in self.browse(cr, uid, ids, context=context):
-                end_reason = int(contract.end_reason)
                 if 'S' in contract.type:
                     # Search pending gifts
                     mess_ids = message_obj.search(cr, uid, [
