@@ -60,7 +60,7 @@ class gmc_message_pool(models.Model):
         related='action_id.name', readonly=True)
     description = fields.Text(
         'Action to execute', related='action_id.description', readonly=True)
-    direction = fields.Char(related='action_id.direction', store=True)
+    direction = fields.Selection(related='action_id.direction', store=True)
     partner_id = fields.Many2one(
         'res.partner', 'Partner', compute='_get_object_id', store=True)
     child_id = fields.Many2one(
