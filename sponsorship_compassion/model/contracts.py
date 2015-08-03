@@ -487,26 +487,9 @@ class sponsorship_contract(models.Model):
         return res
 
     @api.multi
-    def contract_waiting_mandate(self):
-        for contract in self:
-            # Check that a child is selected for Sponsorship product
-            if 'S' in contract.type and not contract.child_id:
-                raise exceptions.Warning(
-                    _("Please select a child"),
-                    _("You should select a child if you "
-                      "make a new sponsorship!"))
-        return super(sponsorship_contract, self).contract_waiting_mandate()
-
-    @api.multi
     def contract_waiting(self):
         for contract in self.with_context(lang='en_US'):
-            if 'S' in contract.type and not contract.child_id:
-                # Check that a child is selected for Sponsorship contract
-                raise exceptions.Warning(
-                    _("Please select a child"),
-                    _("You should select a child if you "
-                      "make a new sponsorship!"))
-            elif contract.type == 'G':
+            if contract.type == 'G':
                 # Activate directly if sponsorship is already active
                 for line in contract.contract_line_ids:
                     sponsorship = line.sponsorship_id
@@ -570,12 +553,12 @@ class sponsorship_contract(models.Model):
                         'contract_terminated', self.env.cr)
 
     @api.multi
-    def _on_contract_active(self):
+    def contract_active(self):
         """ Hook for doing something when contract is activated.
         Update child to mark it has been sponsored, update partner
         to add the 'Sponsor' category, and activate gift contracts.
         """
-        super(sponsorship_contract, self)._on_contract_active()
+        super(sponsorship_contract, self).contract_active()
         # Read data in english
         self.env.context = self.with_context(lang='en_US').env.context
         wf_service = netsvc.LocalService('workflow')
