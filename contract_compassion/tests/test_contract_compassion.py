@@ -13,8 +13,8 @@ from openerp.tests import common
 from datetime import datetime
 from openerp import netsvc
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from dateutil.relativedelta import relativedelta
 import logging
-import pdb
 logger = logging.getLogger(__name__)
 
 
@@ -85,18 +85,21 @@ class test_contract_compassion(common.TransactionCase):
             In this test we are testing states changement of a contract and if
             the old invoice are well cancelled when we pay one invoice.
         """
-        current_year = str(int(datetime.today().strftime(DF)[:4]) + 1)        
+        # Creation of a the next fiscal year
+        next_year = (datetime.strptime(
+            (datetime.today().strftime(DF)), DF)
+            + relativedelta(years=+1)).year
         fiscal_year_id = self.registry('account.fiscalyear').create(
             self.cr, self.uid, {
-                'name': current_year,
-                'code': current_year,
-                'date_start': str(datetime(
-                    int(datetime.today().strftime(DF)[:4]) + 1, 1, 1)),
-                'date_stop': str(datetime(
-                    int(datetime.today().strftime(DF)[:4]) + 1, 12, 31)),
+                'name': next_year,
+                'code': next_year,
+                'date_start': datetime.strptime((datetime(
+                    next_year, 1, 1)).strftime(DF), DF),
+                'date_stop': datetime.strptime((datetime(
+                    next_year, 12, 31)).strftime(DF), DF),
             })
         fiscal_year = self.registry('account.fiscalyear').browse(
-            self.cr, self.uid, [fiscal_year_id])    
+            self.cr, self.uid, [fiscal_year_id])
         fiscal_year[0].create_period()
         contract_group = self._create_group(
             'do_nothing', 1, 'month', self.partner_id, 5, self.payment_term_id)
@@ -105,7 +108,7 @@ class test_contract_compassion(common.TransactionCase):
             'phone', datetime.today().strftime(DF))
         self._create_contract_line(
             contract_id, '2', '40.0')
-    
+
         contract_obj = self.registry('recurring.contract')
         contract = contract_obj.browse(self.cr, self.uid, contract_id)
         self.assertEqual(contract.state, 'draft')
