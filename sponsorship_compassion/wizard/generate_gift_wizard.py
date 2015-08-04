@@ -35,7 +35,7 @@ class generate_gift_wizard(models.TransientModel):
     def generate_invoice(self):
         # Read data in english
         self.ensure_one()
-        self.env.context = self.env.with_context(lang='en_US').context
+        self = self.with_context(lang='en_US')
         invoice_ids = list()
         gen_states = self.env['recurring.contract.group']._get_gen_states()
         # Ids of contracts are stored in context
@@ -82,7 +82,7 @@ class generate_gift_wizard(models.TransientModel):
                     inv_line_data = self._setup_invoice_line(
                         invoice, contract)
                     self.env['account.invoice.line'].create(inv_line_data)
-                    invoice_ids.add(invoice.id)
+                    invoice_ids.append(invoice.id)
             else:
                 raise exceptions.Warning(
                     _("Generation Error"),
