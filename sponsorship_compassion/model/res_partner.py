@@ -108,10 +108,10 @@ class res_partner(models.Model):
     @api.multi
     def create_contract(self):
         self.ensure_one()
-        self.with_context({
-            'default_partner_id': self,
+        context = self.with_context({
+            'default_partner_id': self.id,
             'default_type': 'S',
-        })
+        }).env.context
         return {
             'type': 'ir.actions.act_window',
             'name': _('New Sponsorship'),
@@ -119,9 +119,7 @@ class res_partner(models.Model):
             'view_mode': 'form',
             'res_model': 'recurring.contract',
             'target': 'current',
-            'context': self.env.context.with_context({
-                'default_partner_id': self,
-                'default_type': 'S', })
+            'context': context
         }
 
     @api.multi

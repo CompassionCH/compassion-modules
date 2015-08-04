@@ -74,6 +74,7 @@
                         <div class="oe_title">
                             <h1>
                                 <field name="action_id"/>
+                                <field name="name" invisible="1"/>
                             </h1>
                         </div>
                         <group>
@@ -284,12 +285,5 @@
             key2="client_action_multi" name="Process Messages"
             res_model="gmc.message.pool.process" src_model="gmc.message.pool"
             view_mode="form" target="new" view_type="form" />
-
-        <record id="update_gift_info_action" model="ir.values">
-            <field eval="'client_action_multi'" name="key2"/>
-            <field eval="'gmc.message.pool'" name="model"/>
-            <field name="name">Update gift info</field>
-            <field eval="'ir.actions.server,%d'%update_gift_info" name="value"/>
-        </record>
     </data>
 </openerp>

@@ -65,8 +65,6 @@ class recurring_contract(models.Model):
                     # CreateGift
                     message_vals.update({
                         'object_id': invoice_line.id,
-                        'partner_id': contract.correspondant_id.id,
-                        'child_id': contract.child_id.id,
                     })
                     if contract.child_id.type == 'LDP':
                         message_vals.update({
@@ -148,7 +146,6 @@ class recurring_contract(models.Model):
                 message_vals = {
                     'action_id': action_id,
                     'object_id': partner_id,
-                    'partner_id': partner_id,
                 }
                 # Look if one Upsert is already pending for the same partner
                 mess_count = message_obj.search_count([
@@ -163,7 +160,6 @@ class recurring_contract(models.Model):
                 message_vals.update({
                     'action_id': action_id,
                     'object_id': contract.id,
-                    'child_id': contract.child_id.id,
                 })
                 message_obj.create(message_vals)
 
@@ -201,8 +197,6 @@ class recurring_contract(models.Model):
                 if 'S' in contract.type:
                     message_vals.update({
                         'object_id': contract.id,
-                        'partner_id': contract.correspondant_id.id,
-                        'child_id': contract.child_id.id,
                     })
                     message_obj.create(message_vals)
 

@@ -45,7 +45,6 @@ class gmc_message_pool_process(models.TransientModel):
 
 
 class gmc_message_pool(models.Model):
-
     """ Pool of messages exchanged between Compassion CH and GMC. """
     _name = 'gmc.message.pool'
     _inherit = 'mail.thread'
@@ -62,11 +61,11 @@ class gmc_message_pool(models.Model):
         'Action to execute', related='action_id.description', readonly=True)
     direction = fields.Selection(related='action_id.direction', store=True)
     partner_id = fields.Many2one(
-        'res.partner', 'Partner', compute='_get_object_id', store=True)
+        'res.partner', 'Partner', compute='_set_partner_id', store=True)
     child_id = fields.Many2one(
-        'compassion.child', 'Child', compute='_get_object_id', store=True)
+        'compassion.child', 'Child', compute='_set_child_id', store=True)
     project_id = fields.Many2one(
-        'compassion.project', 'Project', compute='_get_object_id', store=True)
+        'compassion.project', 'Project', compute='_set_project_id', store=True)
     request_id = fields.Char('Unique request ID', readonly=True)
     date = fields.Datetime(
         'Message Date', required=True,
@@ -95,11 +94,12 @@ class gmc_message_pool(models.Model):
     partner_country_code = fields.Char(size=2)
     # Gift Type Messages information
     invoice_line_id = fields.Many2one(
-        'account.invoice.line', compute='_get_object_id', store=True)
+        'account.invoice.line', compute='_set_invoice_line_id', store=True)
     gift_type = fields.Char(
         related='invoice_line_id.product_id.name', readonly=True, store=True)
     gift_instructions = fields.Char(
-        related='invoice_line_id.gift_instructions', store=True)
+        related='invoice_line_id.gift_instructions', store=True,
+        inverse='_set_gift_instructions')
     gift_amount = fields.Float(
         related='invoice_line_id.price_subtotal', readonly=True, store=True)
     money_sent_date = fields.Datetime('Money sent', readonly=True)
@@ -113,33 +113,53 @@ class gmc_message_pool(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.one
-    @api.depends('object_id', 'action_id')
-    def _get_object_id(self):
-        model_mapping = {
-            'res.partner': 'partner_id',
-            'compassion.child': 'child_id',
-            'compassion.project': 'project_id',
-            'account.invoice.line': 'invoice_line_id'
-        }
-        vals = {
-            'partner_id': False,
-            'child_id': False,
-            'project_id': False,
-            'invoice_line_id': False
-        }
+    @api.depends('object_id')
+    def _set_partner_id(self):
         model = self.action_id.model
-        if model in model_mapping:
-            vals[model_mapping[model]] = self.object_id
+        if model == 'res.partner':
+            self.partner_id = self.object_id
         elif model == 'recurring.contract':
             contract = self.env[model].browse(self.object_id)
-            vals['partner_id'] = contract.correspondant_id.id
-            vals['child_id'] = contract.child_id.id
-            invl_ids = self.env['account.invoice.line'].search([
-                ('contract_id', '=', contract.id),
-                ('last_payment', '!=', False)], order='due_date asc').ids
-            vals['invoice_line_id'] = invl_ids[0] if invl_ids else False
+            self.partner_id = contract.correspondant_id.id
+        elif model == 'account.invoice.line':
+            contract = self.env[model].browse(self.object_id).contract_id
+            self.partner_id = contract.correspondant_id.id
 
-        self.write(vals)
+    @api.one
+    @api.depends('object_id')
+    def _set_child_id(self):
+        model = self.action_id.model
+        if model == 'compassion.child':
+            self.child_id = self.object_id
+        elif model == 'recurring.contract':
+            contract = self.env[model].browse(self.object_id)
+            self.child_id = contract.child_id.id
+        elif model == 'account.invoice.line':
+            contract = self.env[model].browse(self.object_id).contract_id
+            self.child_id = contract.child_id.id
+
+    @api.one
+    @api.depends('object_id')
+    def _set_project_id(self):
+        model = self.action_id.model
+        if model == 'compassion.project':
+            self.project_id = self.object_id
+
+    @api.one
+    @api.depends('object_id')
+    def _set_invoice_line_id(self):
+        model = self.action_id.model
+        if model == 'account.invoice.line':
+            self.invoice_line_id = self.object_id
+        elif model == 'recurring.contract':
+            invl_ids = self.env['account.invoice.line'].search([
+                ('contract_id', '=', self.object_id),
+                ('last_payment', '!=', False)], order='due_date asc').ids
+            self.invoice_line_id = invl_ids[0] if invl_ids else False
+
+    @api.one
+    def _set_gift_instructions(self):
+        self.invoice_line_id.gift_instructions = self.gift_instructions
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -149,7 +169,8 @@ class gmc_message_pool(models.Model):
         """ Directly put CreateGift messages which have a too long instruction
         in Failed state. Compute Gift fields."""
         message = super(gmc_message_pool, self).create(vals)
-        if message.gift_instructions and len(message.gift_instructions) > 60:
+        if message.name == 'CreateGift' and len(
+                message.gift_instructions) > 60:
             message.write({
                 'state': 'failure',
                 'failure_reason': _('Gift instructions is more than 60 '
@@ -165,10 +186,6 @@ class gmc_message_pool(models.Model):
                     'state': 'failure',
                     'failure_reason': _('Gift instructions is more than 60 '
                                         'characters length')})
-            for message in self:
-                message.invoice_line_id.write({
-                    'name': vals['gift_instructions']})
-
         return super(gmc_message_pool, self).write(vals)
 
     ##########################################################################
@@ -275,7 +292,7 @@ class gmc_message_pool(models.Model):
 
     @api.multi
     def force_success(self):
-        self.write({'state': 'sucess', 'failure_reason': False})
+        self.write({'state': 'success', 'failure_reason': False})
         self.filtered(lambda m: m.name == 'CreateGift').write({
             'state': 'fondue'})
         return True
