@@ -14,7 +14,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-
 from lxml import etree
 
 from .product import GIFT_CATEGORY, SPONSORSHIP_CATEGORY, FUND_CATEGORY
@@ -557,19 +556,14 @@ class sponsorship_contract(models.Model):
         # Read data in english
         self.env.context = self.with_context(lang='en_US').env.context
         wf_service = netsvc.LocalService('workflow')
-        sponsor_cat_id = self.env['res.partner.category'].search(
-            [('name', '=', 'Sponsor')])[0]
+        sponsor_cat_id = self.env.ref(
+            'partner_compassion.res_partner_category_sponsor').id
         con_line_obj = self.env['recurring.contract.line']
         for contract in self:
             if 'S' in contract.type:
                 contract.child_id.write({'has_been_sponsored': True})
-                partner_categories = set(
-                    [cat.id for cat in contract.partner_id.category_id
-                     if cat.name != 'Old Sponsor'])
-                partner_categories.add(sponsor_cat_id)
-                # Standard way in Odoo to set one2many fields
                 contract.partner_id.write({
-                    'category_id': [(6, 0, list(partner_categories))]})
+                    'category_id': [(4, sponsor_cat_id)]})
                 gift_contract_lines = con_line_obj.search([
                     ('sponsorship_id', '=', contract.id)])
                 for con_id in gift_contract_lines.mapped('contract_id').ids:
@@ -678,15 +672,8 @@ class sponsorship_contract(models.Model):
     @api.multi
     def _get_filtered_invoice_lines(self, invoice_lines):
         res = invoice_lines.filtered(
-            lambda invl: invl.contract_id in self.ids and
-            invl.product_id.categ_name != GIFT_CATEGORY).ids
-        return res
-
-    @api.multi
-    def _get_filtered_contract_ids(invoice_lines):
-        res = invoice_lines.filtered(
-            lambda invl: invl.contract_id and
-            invl.product_id.categ_name != GIFT_CATEGORY).ids
+            lambda invl: invl.contract_id.id in self.ids and
+            invl.product_id.categ_name != GIFT_CATEGORY)
         return res
 
     ##########################################################################
