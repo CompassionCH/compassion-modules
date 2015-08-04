@@ -456,11 +456,6 @@ class sponsorship_contract(models.Model):
     @api.onchange('partner_id')
     def on_change_partner_id(self):
         super(sponsorship_contract, self).on_change_partner_id()
-        # Check if group_id is valid
-        if self.group_id:
-            if not self._is_a_valid_group():
-                self.group_id = False
-
         if 'S' in self.type and self.state == 'draft':
             # If state draft correspondant_id=partner_id
             self.correspondant_id = self.partner_id
@@ -626,11 +621,9 @@ class sponsorship_contract(models.Model):
         if 'S' in self.type:
             if not self.group_id.contains_sponsorship or\
                     self.group_id.recurring_value != 1:
-                raise exceptions.ValidationError(
-                    _('Please select a valid payment option'),
-                    _('You should select payment option with '
-                      '"1 month" as recurring value')
-                )
+                raise exceptions.ValidationError(_(
+                    'You should select payment option with '
+                    '"1 month" as recurring value'))
         return True
 
     @api.one
@@ -678,9 +671,8 @@ class sponsorship_contract(models.Model):
             self.env.cr.execute(
                 "UPDATE recurring_contract SET next_invoice_date = %s "
                 "WHERE id = %s", (next_date, contract.id))
-            self.env.invalidate_all()
-        self.env['recurring.contract.group']._store_set_values(
-            ['next_invoice_date'], groups.ids)
+        self.env.invalidate_all()
+        groups._set_next_invoice_date()
         return True
 
     @api.multi

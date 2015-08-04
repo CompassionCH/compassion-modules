@@ -40,17 +40,10 @@ class contract_group(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
 
-    @api.multi
+    @api.one
     def _contains_sponsorship(self):
-        for group in self:
-            if group.contract_ids:
-                group.contains_sponsorship = False
-                for contract in group.contract_ids:
-                    if 'S' in contract.type:
-                        group.contains_sponsorship = True
-                        break
-            else:
-                group.contains_sponsorship = True
+        types = self.mapped('contract_ids.type')
+        self.contains_sponsorship = 'S' in types or 'SC' in types
 
     ##########################################################################
     #                             PUBLIC METHODS                             #

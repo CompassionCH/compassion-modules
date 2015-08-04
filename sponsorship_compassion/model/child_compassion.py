@@ -24,7 +24,7 @@ class child_compassion(models.Model):
         'recurring.contract', compute='_set_related_contracts',
         string="Sponsorships", readonly=True)
     unsponsored_since = fields.Date(
-        compute='_get_unsponsored_since', store=True)
+        compute='_set_unsponsored_since', store=True)
 
     @api.multi
     def _set_related_contracts(self):
@@ -35,7 +35,7 @@ class child_compassion(models.Model):
                 ('type', '=', 'S')])
 
     @api.multi
-    def _get_unsponsored_since(self):
+    def _set_unsponsored_since(self):
         """ Returns the date since the child is waiting for a sponsor.
         If child was never sponsored, this date comes from GMC services,
         otherwise we can infer it by looking at last sponsorship. """
@@ -61,14 +61,7 @@ class child_compassion(models.Model):
                         json_data['error']['message'])
 
     @api.multi
-    def _recompute_unsponsored(self):
-        """ Useful for updating unset values """
-        self.env['compassion.child']._store_set_values(['unsponsored_since'],
-                                                       self.ids)
-        return True
-
-    @api.multi
     def get_infos(self):
         """ Update unsponsored date. """
-        self._recompute_unsponsored()
+        self._set_unsponsored_since()
         return super(child_compassion, self).get_infos()

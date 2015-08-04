@@ -154,8 +154,6 @@ class gmc_message_pool(models.Model):
                 'state': 'failure',
                 'failure_reason': _('Gift instructions is more than 60 '
                                     'characters length')})
-        self._store_set_values([message.id], [
-            'gift_type', 'gift_amount', 'gift_instructions'])
         return message
 
     @api.multi
@@ -280,13 +278,6 @@ class gmc_message_pool(models.Model):
         self.write({'state': 'sucess', 'failure_reason': False})
         self.filtered(lambda m: m.name == 'CreateGift').write({
             'state': 'fondue'})
-        return True
-
-    @api.multi
-    def recompute_gifts(self):
-        """ Method for updating gifts messages. """
-        self._store_set_values([
-            'gift_type', 'gift_amount', 'gift_instructions'])
         return True
 
     ##########################################################################
