@@ -11,6 +11,7 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
+import pdb
 
 
 class crm_lead(orm.Model):

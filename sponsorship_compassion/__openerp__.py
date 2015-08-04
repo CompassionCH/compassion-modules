@@ -86,8 +86,7 @@ Contributors
     'website': 'http://www.compassion.ch',
     'depends': ['contract_compassion', 'l10n_ch_payment_slip', 'crm',
                 'l10n_ch', 'account_cancel', 'partner_compassion',
-                'web_m2x_options', 'account_invoice_split_invoice',
-                'account_analytic_compassion'],
+                'web_m2x_options', 'account_invoice_split_invoice'],
     'data': [
         'view/sponsorship_contract_view.xml',
         'view/sponsorship_contract_group_view.xml',

@@ -14,6 +14,7 @@ from datetime import datetime
 from openerp import netsvc
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import logging
+import pdb
 logger = logging.getLogger(__name__)
 
 
@@ -50,7 +51,7 @@ class test_contract_compassion(common.TransactionCase):
                 ('user_type', '=', account_type)])[0]
         property_account_income = self.registry('account.account').search(
             self.cr, self.uid, [
-                ('type', '=', 'receivable'),
+                ('type', '=', 'other'),
                 ('name', '=', 'Property Account Income Test')
             ])[0]
         # Creation of partners
@@ -84,6 +85,19 @@ class test_contract_compassion(common.TransactionCase):
             In this test we are testing states changement of a contract and if
             the old invoice are well cancelled when we pay one invoice.
         """
+        current_year = str(int(datetime.today().strftime(DF)[:4]) + 1)        
+        fiscal_year_id = self.registry('account.fiscalyear').create(
+            self.cr, self.uid, {
+                'name': current_year,
+                'code': current_year,
+                'date_start': str(datetime(
+                    int(datetime.today().strftime(DF)[:4]) + 1, 1, 1)),
+                'date_stop': str(datetime(
+                    int(datetime.today().strftime(DF)[:4]) + 1, 12, 31)),
+            })
+        fiscal_year = self.registry('account.fiscalyear').browse(
+            self.cr, self.uid, [fiscal_year_id])    
+        fiscal_year[0].create_period()
         contract_group = self._create_group(
             'do_nothing', 1, 'month', self.partner_id, 5, self.payment_term_id)
         contract_id = self._create_contract(
@@ -91,7 +105,7 @@ class test_contract_compassion(common.TransactionCase):
             'phone', datetime.today().strftime(DF))
         self._create_contract_line(
             contract_id, '2', '40.0')
-
+    
         contract_obj = self.registry('recurring.contract')
         contract = contract_obj.browse(self.cr, self.uid, contract_id)
         self.assertEqual(contract.state, 'draft')
