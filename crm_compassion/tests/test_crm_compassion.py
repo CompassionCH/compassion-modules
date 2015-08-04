@@ -14,7 +14,6 @@ from datetime import datetime
 from openerp import netsvc
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import logging
-import pdb
 logger = logging.getLogger(__name__)
 
 
@@ -137,11 +136,11 @@ class test_crm_compassion(common.TransactionCase):
         self.assertEqual(len(invoices), 2)
         self.assertEqual(invoices[0].state, 'open')
         self.assertEqual(
-            invoices[0].invoice_line[0].user_id, sponsorship.user_id)    
-            
-    def _create_event(self, lead_id):        
+            invoices[0].invoice_line[0].user_id, sponsorship.user_id)
+
+    def _create_event(self, lead_id):
         lead = self.registry('crm.lead').browse(self.cr, self.uid, lead_id)
-        event_dic = lead.create_event(context = {})
+        event_dic = lead.create_event(context={})
         event_id = self.registry('crm.event.compassion').create(
             self.cr, self.uid, {
                 'name': event_dic['context']['default_name'],
@@ -152,8 +151,7 @@ class test_crm_compassion(common.TransactionCase):
                 'parent_id': 7,
             })
         return event_id
-        
-        
+
     def _create_lead(self, name, user_id):
         lead_id = self.registry('crm.lead').create(
             self.cr, self.uid, {
@@ -279,4 +277,4 @@ class test_crm_compassion(common.TransactionCase):
         to_reconcile = move_line_obj.search(self.cr, self.uid, [
             ('move_id', '=', invoice.move_id.id),
             ('account_id', '=', account_id)]) + [mv_line_id]
-        move_line_obj.reconcile(self.cr, self.uid, to_reconcile)    
+        move_line_obj.reconcile(self.cr, self.uid, to_reconcile)

@@ -13,6 +13,7 @@ from openerp.tests import common
 from datetime import datetime
 from openerp import netsvc
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from dateutil.relativedelta import relativedelta
 import logging
 logger = logging.getLogger(__name__)
 
@@ -62,20 +63,29 @@ class test_sponsorship_compassion(common.TransactionCase):
         self.payment_term_id = payment_term_obj.search(self.cr, self.uid, [
             ('name', '=', '15 Days')
         ])[0]
+        # Retrieve and modification of products
         product_obj = self.registry('product.product')
-        product_obj.write(self.cr, self.uid, 90, {
+        product_sp_id = product_obj.search(
+            self.cr, self.uid, [('name', '=', 'Sponsorship')])[0]
+        product_gf_id = product_obj.search(
+            self.cr, self.uid, [('name', '=', 'General Fund')])[0]
+        product_bf_id = product_obj.search(
+            self.cr, self.uid, [('name', '=', 'Birthday Gift')])[0]
+        product_fg_id = product_obj.search(
+            self.cr, self.uid, [('name', '=', 'Family Gift')])[0]
+        product_obj.write(self.cr, self.uid, product_sp_id, {
             'property_account_income': property_account_income,
             'property_account_expense': property_account_expense,
             })
-        product_obj.write(self.cr, self.uid, 65, {
+        product_obj.write(self.cr, self.uid, product_gf_id, {
             'property_account_income': property_account_income,
             'property_account_expense': property_account_expense,
         })
-        product_obj.write(self.cr, self.uid, 92, {
+        product_obj.write(self.cr, self.uid, product_bf_id, {
             'property_account_income': property_account_income,
             'property_account_expense': property_account_expense,
         })
-        product_obj.write(self.cr, self.uid, 94, {
+        product_obj.write(self.cr, self.uid, product_fg_id, {
             'property_account_income': property_account_income,
             'property_account_expense': property_account_expense,
         })
@@ -90,6 +100,22 @@ class test_sponsorship_compassion(common.TransactionCase):
             Check the different states of the contract and check if there are
             no mistakes.
         """
+        # Creation of a the next fiscal year
+        next_year = (datetime.strptime(
+            (datetime.today().strftime(DF)), DF)
+            + relativedelta(years=+1)).year
+        fiscal_year_id = self.registry('account.fiscalyear').create(
+            self.cr, self.uid, {
+                'name': next_year,
+                'code': next_year,
+                'date_start': datetime.strptime((datetime(
+                    next_year, 1, 1)).strftime(DF), DF),
+                'date_stop': datetime.strptime((datetime(
+                    next_year, 12, 31)).strftime(DF), DF),
+            })
+        fiscal_year = self.registry('account.fiscalyear').browse(
+            self.cr, self.uid, [fiscal_year_id])
+        fiscal_year[0].create_period()
         # Create a child and get the project associated
         child_id = self._create_child('PE3760148')
         child = self.registry('compassion.child').browse(
