@@ -51,7 +51,7 @@
                 <field name="message_summary" position="after">
                     <field name="event_ids"/>
                 </field>
-                <xpath expr="//ul[@class='oe_dropdown_menu']/li/a[@name='action_makeMeeting']" position="after">
+                <xpath expr="//ul[@class='oe_dropdown_menu']/li/a[@name='action_schedule_meeting']" position="after">
                     <li><a name="create_event" type="object">Create Event</a></li>
                 </xpath>
             </field>

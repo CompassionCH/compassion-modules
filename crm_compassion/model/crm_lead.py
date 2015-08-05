@@ -24,7 +24,7 @@ class crm_lead(models.Model):
     @api.multi
     def create_event(self):
         self.ensure_one()
-        context = self.env.with_context({
+        context = self.with_context({
             'default_name': self.name,
             'default_partner_id': self.partner_id.id,
             'default_street': self.street,
@@ -37,7 +37,7 @@ class crm_lead(models.Model):
             'default_planned_sponsorships': self.planned_sponsorships,
             'default_lead_id': self.id,
             'default_project_id': self.event_ids and
-            self.event_ids[-1].project_id.id}).context
+            self.event_ids[-1].project_id.id or False}).env.context
         # Open the create form...
         return {
             'type': 'ir.actions.act_window',

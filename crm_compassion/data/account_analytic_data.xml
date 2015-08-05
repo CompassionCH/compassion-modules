@@ -4,6 +4,12 @@
     	<!--
             Resource: account.analytic.account
         -->
+        <record id="account_analytic_account_events" model="account.analytic.account">
+            <field name="name">Events</field>
+            <field name="type">normal</field>
+            <field name="code">AA118</field>
+            <field name="parent_id" search="[('name', '=', 'FUND')]"/>
+        </record>
         <record id="account_analytic_account_stand" model="account.analytic.account">
             <field name="name">Stand</field>
             <field name="type">normal</field>

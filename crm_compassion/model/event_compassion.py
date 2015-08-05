@@ -76,10 +76,6 @@ class event_compassion(models.Model):
     total_expense = fields.Float(
         'Total expense', compute='_set_analytic_lines', readonly=True,
         store=True)
-    # store={
-    # 'account.analytic.line': (
-    # _analytic_line_to_events, ['amount', 'account_id'], 10)
-    # })
     total_income = fields.Float(
         compute='_set_analytic_lines', readonly=True, store=True)
     balance = fields.Float(
@@ -102,7 +98,8 @@ class event_compassion(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.one
-    @api.depends('analytic_id')
+    @api.depends('analytic_id', 'analytic_id.line_ids',
+                 'analytic_id.line_ids.amount')
     def _set_analytic_lines(self):
         line_obj = self.env['account.analytic.line']
         if self.analytic_id:
@@ -114,23 +111,23 @@ class event_compassion(models.Model):
                 ('amount', '>', '0.0')])
             expense = abs(sum(expenses.mapped('amount')))
             income = sum(incomes.mapped('amount'))
-            self.write({
-                'expense_line_ids': expenses.ids,
-                'income_line_ids': incomes.ids,
-                'total_expense': expense,
-                'total_income': income,
-                'balance': income - expense})
-        else:
-            self.write({
-                'expense_line_ids': False,
-                'income_line_ids': False,
-                'total_expense': 0.0,
-                'total_income': 0.0,
-                'balance': 0.0})
+            self.expense_line_ids = expenses.ids
+            self.income_line_ids = incomes.ids
+            self.total_expense = expense
+            self.total_income = income
+            self.balance = income - expense
+        elif not isinstance(self.id, models.NewId):
+            self.expense_line_ids = False
+            self.income_line_ids = False
+            self.total_expense = 0.0
+            self.total_income = 0.0
+            self.balance = 0.0
 
     @api.one
+    @api.depends('start_date')
     def _set_year(self):
-        self.year = self.start_date[:4]
+        if self.start_date:
+            self.year = self.start_date[:4]
 
     @api.one
     def _get_full_name(self):
@@ -176,7 +173,7 @@ class event_compassion(models.Model):
             event._get_analytic_vals()).id
         origin_id = self.env['recurring.contract.origin'].create(
             event._get_origin_vals(analytic_id)).id
-        super(event_compassion, self).write({
+        event.with_context(no_sync=True).write({
             'origin_id': origin_id,
             'analytic_id': analytic_id,
             'project_id': project_id,
@@ -188,18 +185,19 @@ class event_compassion(models.Model):
         """ Push values to linked objects. """
         super(event_compassion, self).write(vals)
 
-        for event in self:
-            if 'use_tasks' in vals and event.use_tasks:
-                project_id = self.env['project.project'].with_context(
-                    from_event=True).create(event._get_project_vals()).id
-                event.write({'project_id': project_id})
-            elif event.project_id:
-                event.project_id.write(event._get_project_vals())
-            event.analytic_id.write(event._get_analytic_vals())
-            if 'name' in vals:
-                # Only administrator has write access to origins.
-                self.env['recurring.contract.origin'].sudo().browse(
-                    event.origin_id.id).write({'name': event.full_name})
+        if not self.env.context.get('no_sync'):
+            for event in self:
+                if 'use_tasks' in vals and event.use_tasks:
+                    project_id = self.env['project.project'].with_context(
+                        from_event=True).create(event._get_project_vals()).id
+                    event.write({'project_id': project_id})
+                elif event.project_id:
+                    event.project_id.write(event._get_project_vals())
+                event.analytic_id.write(event._get_analytic_vals())
+                if 'name' in vals:
+                    # Only administrator has write access to origins.
+                    self.env['recurring.contract.origin'].sudo().browse(
+                        event.origin_id.id).write({'name': event.full_name})
 
         return True
 
@@ -270,7 +268,7 @@ class event_compassion(models.Model):
         if self.city:
             name += ' ' + self.city
         if not parent_id:
-            parent_id = self._find_parent_analytic(self.type, self.year)
+            parent_id = self._find_parent_analytic()
             super(event_compassion, self).write({'parent_id': parent_id})
         return {
             'name': name,
@@ -292,18 +290,18 @@ class event_compassion(models.Model):
             'analytic_id': analytic_id,
         }
 
-    def _find_parent_analytic(self, event_type, year):
+    def _find_parent_analytic(self):
         analytics_obj = self.env['account.analytic.account']
         categ_id = analytics_obj.search(
-            [('name', 'ilike', event_type)])[0].id
+            [('name', 'ilike', self.type)])[0].id
         acc_ids = analytics_obj.search(
-            [('name', '=', year), ('parent_id', '=', categ_id)]).ids
+            [('name', '=', self.year), ('parent_id', '=', categ_id)]).ids
         if not acc_ids:
             # The category for this year does not yet exist
             acc_ids = [analytics_obj.create({
-                'name': year,
+                'name': self.year,
                 'type': 'view',
-                'code': 'AA' + event_type[:2].upper() + year,
+                'code': 'AA' + self.type[:2].upper() + self.year,
                 'parent_id': categ_id
             }).id]
         return acc_ids[0]

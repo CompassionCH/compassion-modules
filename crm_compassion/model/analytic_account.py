@@ -14,7 +14,7 @@ from openerp import models, fields
 
 class account_analytic_account(models.Model):
     """ Add a type of analytic account related to events. """
-    _inherit = "account.analytic.account"
+    _inherit = 'account.analytic.account'
 
     event_type = fields.Selection('_get_event_types', 'Event type')
     type = fields.Selection(
@@ -29,7 +29,7 @@ class account_analytic_account(models.Model):
               "The special type 'Template of Contract' allows you to "
               "define a template with default data that you can reuse "
               "easily.\n"
-              "The type 'Event' is used for Compassion Events.")),
+              "The type 'Event' is used for Compassion Events."))
 
     def _get_event_types(self):
         return self.env['crm.event.compassion'].get_event_types()
