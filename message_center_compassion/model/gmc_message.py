@@ -98,8 +98,7 @@ class gmc_message_pool(models.Model):
     gift_type = fields.Char(
         related='invoice_line_id.product_id.name', readonly=True, store=True)
     gift_instructions = fields.Char(
-        related='invoice_line_id.gift_instructions', store=True,
-        inverse='_set_gift_instructions')
+        compute='_get_gift_instructions', inverse='_set_gift_instructions')
     gift_amount = fields.Float(
         related='invoice_line_id.price_subtotal', readonly=True, store=True)
     money_sent_date = fields.Datetime('Money sent', readonly=True)
@@ -157,9 +156,14 @@ class gmc_message_pool(models.Model):
                 ('last_payment', '!=', False)], order='due_date asc').ids
             self.invoice_line_id = invl_ids[0] if invl_ids else False
 
+    @api.depends('invoice_line_id')
+    @api.one
+    def _get_gift_instructions(self):
+        self.gift_instructions = self.invoice_line_id.gift_instructions
+
     @api.one
     def _set_gift_instructions(self):
-        self.invoice_line_id.gift_instructions = self.gift_instructions
+        self.invoice_line_id.name = self.gift_instructions
 
     ##########################################################################
     #                              ORM METHODS                               #
