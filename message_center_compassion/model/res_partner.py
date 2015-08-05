@@ -45,8 +45,7 @@ class res_partner(models.Model):
             if contract_count:
                 # UpsertConstituent Message
                 action_id = self.env['gmc.action'].search(
-                    [('name', '=', 'UpsertConstituent')],
-                    limit=1)[0].id
+                    [('name', '=', 'UpsertConstituent')], limit=1).id
                 message_vals = {
                     'action_id': action_id,
                     'object_id': partner.id,
