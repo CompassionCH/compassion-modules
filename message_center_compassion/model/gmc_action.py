@@ -87,5 +87,5 @@ class gmc_action(models.Model):
         """ Returns the id of the action given its name. """
         action_id = self.search([('name', '=', name)], limit=1)
         if action_id:
-            return action_id[0].id
+            return action_id.id
         return False

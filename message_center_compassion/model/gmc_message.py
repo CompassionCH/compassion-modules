@@ -28,7 +28,7 @@ class gmc_message_pool_process(models.TransientModel):
 
     @api.multi
     def process_messages(self):
-        active_ids = self.env.context.get('active_ids')
+        active_ids = self.env.context.get('active_ids', [])
         self.env['gmc.message.pool'].browse(active_ids).process_messages()
         action = {
             'name': 'Message treated',
