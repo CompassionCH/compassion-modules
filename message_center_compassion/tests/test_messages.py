@@ -18,7 +18,6 @@ from openerp.tools.config import config
 from datetime import date
 from random import randint
 import logging
-
 logger = logging.getLogger(__name__)
 
 
@@ -53,7 +52,7 @@ class test_messages(common.TransactionCase):
                 ('user_type', '=', account_type)])[0]
         self.property_account_income = self.registry('account.account').search(
             self.cr, self.uid, [
-                ('type', '=', 'receivable'),
+                ('type', '=', 'other'),
                 ('name', '=', 'Property Account Income Test')
             ])[0]
         category_id = self.registry('res.partner.category').create(

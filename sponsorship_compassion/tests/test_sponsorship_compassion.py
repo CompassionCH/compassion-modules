@@ -64,27 +64,27 @@ class test_sponsorship_compassion(common.TransactionCase):
         ])[0]
         # Retrieve and modification of products
         product_obj = self.registry('product.product')
-        product_sp_id = product_obj.search(
+        self.product_sp_id = product_obj.search(
             self.cr, self.uid, [('name', '=', 'Sponsorship')])[0]
-        product_gf_id = product_obj.search(
+        self.product_gf_id = product_obj.search(
             self.cr, self.uid, [('name', '=', 'General Fund')])[0]
-        product_bf_id = product_obj.search(
+        self.product_bf_id = product_obj.search(
             self.cr, self.uid, [('name', '=', 'Birthday Gift')])[0]
-        product_fg_id = product_obj.search(
+        self.product_fg_id = product_obj.search(
             self.cr, self.uid, [('name', '=', 'Family Gift')])[0]
-        product_obj.write(self.cr, self.uid, product_sp_id, {
+        product_obj.write(self.cr, self.uid, self.product_sp_id, {
             'property_account_income': property_account_income,
             'property_account_expense': property_account_expense,
             })
-        product_obj.write(self.cr, self.uid, product_gf_id, {
+        product_obj.write(self.cr, self.uid, self.product_gf_id, {
             'property_account_income': property_account_income,
             'property_account_expense': property_account_expense,
         })
-        product_obj.write(self.cr, self.uid, product_bf_id, {
+        product_obj.write(self.cr, self.uid, self.product_bf_id, {
             'property_account_income': property_account_income,
             'property_account_expense': property_account_expense,
         })
-        product_obj.write(self.cr, self.uid, product_fg_id, {
+        product_obj.write(self.cr, self.uid, self.product_fg_id, {
             'property_account_income': property_account_income,
             'property_account_expense': property_account_expense,
         })
@@ -152,7 +152,7 @@ class test_sponsorship_compassion(common.TransactionCase):
         gift_wiz_obj = self.registry('generate.gift.wizard')
         gift_wiz_id = gift_wiz_obj.create(
             self.cr, self.uid, {
-                'product_id': 92,
+                'product_id': self.product_bf_id,
                 'amount': 200.0,
                 'invoice_date': datetime.today().strftime(DF),
             })
@@ -285,7 +285,7 @@ class test_sponsorship_compassion(common.TransactionCase):
         """
         child_id1 = self._create_child('UG8320010')
         child_id2 = self._create_child('UG8320011')
-        child_id3 = self._create_child('UG8320012')
+        child_id3 = self._create_child('UG8320013')
         child_obj = self.registry('compassion.child')
         child1 = child_obj.browse(self.cr, self.uid, child_id1)
         child2 = child_obj.browse(self.cr, self.uid, child_id2)

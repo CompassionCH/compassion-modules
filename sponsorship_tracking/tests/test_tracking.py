@@ -73,7 +73,7 @@ class test_tracking(common.TransactionCase):
             5c. One with No Sub contract
         """
         # Four child codes available for testing
-        child_keys = ["PE3760148", "IO6790210", "UG8320012", "UG8350016"]  # nopep8 (will be used)
+        child_keys = ["PE3760144", "IO6790212", "UG8320012", "UG8350016"]  # nopep8 (will be used)
         # TODO Implement this test
         return True
 
