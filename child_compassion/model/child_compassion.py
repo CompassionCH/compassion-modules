@@ -14,10 +14,9 @@ import requests
 import urllib3
 import certifi
 import json
-from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools.config import config
-
+from openerp.osv import orm, fields
 from datetime import date, datetime
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 

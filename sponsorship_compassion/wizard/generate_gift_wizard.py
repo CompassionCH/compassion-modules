@@ -18,7 +18,6 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from ..model.product import GIFT_NAMES
-
 import time
 
 
@@ -61,6 +60,10 @@ class generate_gift_wizard(orm.TransientModel):
                     limit=1)
 
                 # Birthday Gift
+                if not contract.child_id.birthdate:
+                        raise orm.except_orm(
+                            'BirthdayError',
+                            _('The birthdate of the child is missing !'))
                 if wizard.product_id.name == GIFT_NAMES[0]:
                     invoice_date = self.compute_date_birthday_invoice(
                         contract.child_id.birthdate, wizard.invoice_date)
