@@ -121,5 +121,5 @@ class contract_origin(models.Model):
             name = self.other_name or 'Other'
         elif self.type == 'sub':
             name = 'SUB Sponsorship'
-        
+
         return name
