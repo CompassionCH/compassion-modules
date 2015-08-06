@@ -13,7 +13,6 @@ from openerp.tests import common
 from datetime import datetime
 from openerp import netsvc
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from dateutil.relativedelta import relativedelta
 import logging
 logger = logging.getLogger(__name__)
 
@@ -100,22 +99,6 @@ class test_sponsorship_compassion(common.TransactionCase):
             Check the different states of the contract and check if there are
             no mistakes.
         """
-        # Creation of a the next fiscal year
-        next_year = (datetime.strptime(
-            (datetime.today().strftime(DF)), DF)
-            + relativedelta(years=+1)).year
-        fiscal_year_id = self.registry('account.fiscalyear').create(
-            self.cr, self.uid, {
-                'name': next_year,
-                'code': next_year,
-                'date_start': datetime.strptime((datetime(
-                    next_year, 1, 1)).strftime(DF), DF),
-                'date_stop': datetime.strptime((datetime(
-                    next_year, 12, 31)).strftime(DF), DF),
-            })
-        fiscal_year = self.registry('account.fiscalyear').browse(
-            self.cr, self.uid, [fiscal_year_id])
-        fiscal_year[0].create_period()
         # Create a child and get the project associated
         child_id = self._create_child('PE3760148')
         child = self.registry('compassion.child').browse(
