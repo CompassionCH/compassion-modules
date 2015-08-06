@@ -17,8 +17,6 @@ from dateutil.relativedelta import relativedelta
 import logging
 logger = logging.getLogger(__name__)
 
-import pdb
-
 
 class recurring_contract(models.Model):
     _inherit = "recurring.contract"
@@ -64,7 +62,7 @@ class recurring_contract(models.Model):
     parent_id = fields.Many2one(
         'recurring.contract', 'Previous sponsorship',
         track_visibility='onchange')
-    has_mandate = fields.Boolean(compute='_has_mandate')
+    has_mandate = fields.Boolean(compute='_set_has_mandate')
     name = fields.Char(readonly=True)
     partner_id = fields.Many2one(
         'res.partner', 'Partner', required=True,
@@ -111,7 +109,7 @@ class recurring_contract(models.Model):
         ]
 
     @api.one
-    def _has_mandate(self):
+    def _set_has_mandate(self):
         # Search for an existing valid mandate
         count = self.env['account.banking.mandate'].search_count([
             ('partner_id', '=', self.partner_id.id),
@@ -389,7 +387,6 @@ class recurring_contract(models.Model):
             ('due_date', '<', date_invoice)])
 
         invoices = invoice_lines.mapped('invoice_id')
-        pdb.set_trace()
 
         wf_service = netsvc.LocalService('workflow')
         for invoice in invoices:
