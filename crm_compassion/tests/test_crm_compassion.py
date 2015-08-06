@@ -138,7 +138,7 @@ class test_crm_compassion(common.TransactionCase):
         self.assertEqual(project.name, event.name)
 
         # Create a child and get the project associated
-        child_id = self._create_child('PE3760148')
+        child_id = self._create_child('PE3760136')
         child = self.registry('compassion.child').browse(
             self.cr, self.uid, child_id)
         child.get_infos()

@@ -18,7 +18,6 @@ from openerp.tools.config import config
 from datetime import date
 from random import randint
 import logging
-
 logger = logging.getLogger(__name__)
 
 
