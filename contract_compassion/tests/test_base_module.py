@@ -20,6 +20,48 @@ class test_base_module(test_base_contract):
 
     def setUp(self):
         super(test_base_module, self).setUp()
+        # Retrieve of income account
+        account_obj = self.env['account.account']
+        property_account_income = account_obj.search([
+            ('type', '=', 'other'),
+            ('name', '=', 'Property Account Income Test')]).ids[0]
+        property_account_expense = self.env['account.account'].search([
+            ('type', '=', 'other'),
+            ('name', '=', 'Property Account Expense Test')
+        ]).ids[0]
+        # Retrieve and modification of products
+        product_obj = self.env['product.product']
+        self.product_sp = product_obj.search(
+            [('name', '=', 'Sponsorship')])
+        self.product_gf = product_obj.search(
+            [('name', '=', 'General Fund')])
+        self.product_bf = product_obj.search(
+            [('name', '=', 'Birthday Gift')])
+        self.product_fg = product_obj.search(
+            [('name', '=', 'Family Gift')])
+        if self.product_sp:
+            self.product_sp[0].write({
+                'property_account_income': property_account_income,
+                'property_account_expense': property_account_expense,
+                })
+        if self.product_gf:
+            self.product_gf[0].write({
+                'property_account_income': property_account_income,
+                'property_account_expense': property_account_expense,
+            })
+        if self.product_bf:
+            self.product_bf[0].write({
+                'property_account_income': property_account_income,
+                'property_account_expense': property_account_expense,
+            })
+        if self.product_fg:
+            self.product_fg[0].write({
+                'property_account_income': property_account_income,
+                'property_account_expense': property_account_expense,
+            })
+        # Add of account for id's 1 product
+        product = self.env['product.product'].browse(1)
+        product.property_account_income = property_account_income
 
     def _create_child(self, code):
         child = self.env['compassion.child'].create({'code': code})

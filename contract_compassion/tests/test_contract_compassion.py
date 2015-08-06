@@ -10,10 +10,8 @@
 ##############################################################################
 
 
-from openerp.addons.contract_compassion.tests.test_base_module \
-    import test_base_module
+from test_base_module import test_base_module
 from datetime import datetime
-from openerp import netsvc
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from dateutil.relativedelta import relativedelta
 import logging
@@ -54,22 +52,18 @@ class test_contract_compassion(test_base_module):
         fiscal_year.create_period()
         contract_group = self._create_group(
             'do_nothing', self.partners.ids[0], 5,
-            self.payment_term_id, ref=None,
+            self.payment_term_id,
             other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
-        contract_id = self._create_contract(
+        contract = self._create_contract(
             datetime.today().strftime(DF), contract_group,
             datetime.today().strftime(DF),
             other_vals={'channel': 'phone', 'type': 'O'})
         self._create_contract_line(
-            contract_id, '40.0', other_vals={'quantity': '2'})
-        contract = self.env['recurring.contract'].browse(contract_id)
+            contract.id, '40.0', other_vals={'quantity': '2'})
         self.assertEqual(contract.state, 'draft')
 
         # Switching to "waiting for payment" state
-        wf_service = netsvc.LocalService('workflow')
-        wf_service.trg_validate(
-            self.uid, 'recurring.contract',
-            contract_id, 'contract_validated', self.cr)
+        contract.signal_workflow('contract_validated')
         self.assertEqual(contract.state, 'waiting')
 
         invoices = contract.button_generate_invoices().invoice_ids
@@ -88,9 +82,7 @@ class test_contract_compassion(test_base_module):
         self.assertEqual(invoices[4].state, 'open')
         self.assertEqual(invoices[5].state, 'open')
         self.assertEqual(contract.state, 'active')
-        wf_service.trg_validate(
-            self.uid, 'recurring.contract',
-            contract_id, 'contract_terminated', self.cr)
+        contract.signal_workflow('contract_terminated')
         self.assertEqual(contract.state, 'terminated')
 
     def test_contract_compassion_second_scenario(self):
@@ -100,29 +92,23 @@ class test_contract_compassion(test_base_module):
         """
         contract_group = self._create_group(
             'do_nothing', self.partners.ids[1], 1,
-            self.payment_term_id, ref=None,
+            self.payment_term_id,
             other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
-        contract_id = self._create_contract(
+        contract = self._create_contract(
             datetime.today().strftime(DF), contract_group,
             datetime.today().strftime(DF),
             other_vals={'channel': 'postal', 'type': 'O'})
         self._create_contract_line(
-            contract_id, '200.0', other_vals={'quantity': '3'})
-        contract = self.env['recurring.contract'].browse(contract_id)
+            contract.id, '200.0', other_vals={'quantity': '3'})
         # Switch to "waiting for payment" state
-        wf_service = netsvc.LocalService('workflow')
-        wf_service.trg_validate(
-            self.uid, 'recurring.contract',
-            contract_id, 'contract_validated', self.cr)
+        contract.signal_workflow('contract_validated')
         invoices = contract.button_generate_invoices().invoice_ids
         self.assertEqual(invoices[0].state, 'open')
         self.assertEqual(invoices[1].state, 'open')
         self.assertEqual(len(invoices), 2)
 
         # Cancelling of the contract
-        wf_service.trg_validate(
-            self.uid, 'recurring.contract',
-            contract_id, 'contract_terminated', self.cr)
+        contract.signal_workflow('contract_terminated')
         self.assertEqual(contract.state, 'cancelled')
         self.assertEqual(invoices[0].state, 'cancel')
         self.assertEqual(invoices[1].state, 'cancel')
@@ -136,35 +122,29 @@ class test_contract_compassion(test_base_module):
         """
         contract_group = self._create_group(
             'do_nothing', self.partners.ids[0], 1,
-            self.payment_term_id, ref=None,
+            self.payment_term_id,
             other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
         contract_group2 = self._create_group(
             'do_nothing', self.partners.ids[1], 2,
-            self.payment_term_id, ref=None,
+            self.payment_term_id,
             other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
-        contract_id = self._create_contract(
+        contract = self._create_contract(
             datetime.today().strftime(DF), contract_group,
             datetime.today().strftime(DF),
             other_vals={'channel': 'postal', 'type': 'O'})
-        contract_line_id = self._create_contract_line(
-            contract_id, '60.0', other_vals={'quantity': '2'})
-        contract = self.env['recurring.contract'].browse(contract_id)
-        wf_service = netsvc.LocalService('workflow')
-        wf_service.trg_validate(
-            self.uid, 'recurring.contract',
-            contract_id, 'contract_validated', self.cr)
+        contract_line = self._create_contract_line(
+            contract.id, '60.0', other_vals={'quantity': '2'})
+        contract.signal_workflow('contract_validated')
         invoices = contract.button_generate_invoices().invoice_ids
         self._pay_invoice(invoices[0])
         self.assertEqual(len(invoices), 2)
-        contract_line = self.env['recurring.contract.line'].browse(
-            contract_line_id)
         # Updating of the contract
         contract_line.write({
             'quantity': '3',
             'amount': '100.0',
         })
         contract.write({
-            'group_id': contract_group2})
+            'group_id': contract_group2.id})
 
         # Check if the invoice unpaid is well updated
         invoice_upd = invoices[1]
