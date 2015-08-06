@@ -293,15 +293,16 @@ class event_compassion(models.Model):
     def _find_parent_analytic(self):
         analytics_obj = self.env['account.analytic.account']
         categ_id = analytics_obj.search(
-            [('name', 'ilike', self.type)])[0].id
-        acc_ids = analytics_obj.search(
-            [('name', '=', self.year), ('parent_id', '=', categ_id)]).ids
-        if not acc_ids:
+            [('name', 'ilike', self.type)], limit=1).id
+        acc_id = analytics_obj.search(
+            [('name', '=', self.year), ('parent_id', '=', categ_id)],
+            limit=1).id
+        if not acc_id:
             # The category for this year does not yet exist
-            acc_ids = [analytics_obj.create({
+            acc_id = analytics_obj.create({
                 'name': self.year,
                 'type': 'view',
                 'code': 'AA' + self.type[:2].upper() + self.year,
                 'parent_id': categ_id
-            }).id]
-        return acc_ids[0]
+            }).id
+        return acc_id
