@@ -100,7 +100,7 @@ class test_sponsorship_compassion(common.TransactionCase):
             no mistakes.
         """
         # Create a child and get the project associated
-        child_id = self._create_child('PE3760148')
+        child_id = self._create_child('PE3760140')
         child = self.registry('compassion.child').browse(
             self.cr, self.uid, child_id)
         child.get_infos()
@@ -204,7 +204,7 @@ class test_sponsorship_compassion(common.TransactionCase):
             "active" state directly by the validation button. Check if there
             are no invoice lines too.
         """
-        child_id = self._create_child('IO6790210')
+        child_id = self._create_child('IO6790211')
         child = self.registry('compassion.child').browse(
             self.cr, self.uid, child_id)
         child.get_infos()
