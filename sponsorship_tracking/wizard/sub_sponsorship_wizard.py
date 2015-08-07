@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, netsvc, exceptions, _
+from openerp import api, models, fields, exceptions, _
 
 
 class sub_sponsorship_wizard(models.TransientModel):
@@ -56,10 +56,7 @@ class sub_sponsorship_wizard(models.TransientModel):
             'origin_id': sub_origin_ids and sub_origin_ids[0],
         })
         sub_contract.write({'child_id': child.id})
-        wf_service = netsvc.LocalService('workflow')
-        wf_service.trg_validate(
-            self.env.user.id, 'recurring.contract', sub_contract.id,
-            'contract_validated', self.env.cr)
+        sub_contract.signal_workflow('contract_validated')
 
         return True
 
@@ -76,8 +73,5 @@ class sub_sponsorship_wizard(models.TransientModel):
         else:
             reason = dict(self._get_no_sub_reasons()).get(default_reason)
         contract.write({'no_sub_reason': reason})
-        wf_service = netsvc.LocalService('workflow')
-        wf_service.trg_validate(
-            self.env.user.id, 'recurring.contract', sponsorship_id,
-            'no_sub', self.env.cr)
+        contract.signal_workflow('no_sub')
         return True

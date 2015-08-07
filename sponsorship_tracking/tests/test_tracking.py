@@ -10,7 +10,6 @@
 ##############################################################################
 
 from openerp.tests import common
-from openerp import netsvc  # nopep8 (will be used when implemented)
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 from datetime import date

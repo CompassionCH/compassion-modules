@@ -8,11 +8,12 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, fields, netsvc, exceptions, _
+from openerp import api, models, fields, exceptions, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 from datetime import datetime, date, timedelta
 import logging
+import pdb
 
 
 logger = logging.getLogger(__name__)
@@ -26,7 +27,7 @@ class recurring_contract(models.Model):
     ##########################################################################
     sds_state = fields.Selection(
         '_get_sds_states', 'SDS Status', readonly=True,
-        track_visibility='onchange', select=True, copy=False),
+        track_visibility='onchange', select=True, copy=False)
     sds_state_date = fields.Date(
         'SDS state date', readonly=True, copy=False)
     project_id = fields.Many2one(
@@ -38,7 +39,7 @@ class recurring_contract(models.Model):
     color = fields.Integer('Color Index')
     no_sub_reason = fields.Char('No sub reason')
     sds_uid = fields.Many2one(
-        'res.users', 'SDS Follower', default=lambda self: self.env.user.id)
+        'res.users', 'SDS Follower', default=lambda self: self.env.user)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -86,21 +87,6 @@ class recurring_contract(models.Model):
         return super(recurring_contract, self).write(vals)
 
     ##########################################################################
-    #                             PUBLIC METHODS                             #
-    ##########################################################################
-    @api.multi
-    def trg_validate(self, transition):
-        """ Workflow helper for triggering a transition on contracts. """
-        wf_service = netsvc.LocalService('workflow')
-        for contract_id in self.ids:
-            logger.info("{0} on Contract {1}".format(
-                transition, str(contract_id)))
-            wf_service.trg_validate(
-                self.env.user.id, self._name, contract_id, transition,
-                self.cr)
-        return True
-
-    ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
 
@@ -111,7 +97,7 @@ class recurring_contract(models.Model):
         """Button in Kanban view calling action on all contracts of one group.
         """
         contracts = self.search([('sds_state', '=', value)])
-        contracts.trg_validate('mail_sent')
+        contracts.signal_workflow('mail_sent')
         return True
 
     @api.model
@@ -119,7 +105,7 @@ class recurring_contract(models.Model):
         """Button in Kanban view calling action on all contracts of one group.
         """
         contracts = self.search([('project_state', '=', value)])
-        contracts.trg_validate('project_mail_sent')
+        contracts.signal_workflow('project_mail_sent')
         return True
 
     @api.model
@@ -155,7 +141,7 @@ class recurring_contract(models.Model):
                 sub_start_date = datetime.strptime(
                     sub_contract.start_date, DF).date()
                 if sub_start_date < fifty_days_ago:
-                    contract.trg_validate(transition)
+                    contract.signal_workflow(transition)
 
         return True
 
@@ -174,14 +160,11 @@ class recurring_contract(models.Model):
     @api.model
     def end_workflow(self):
         """ Terminate all workflows related to inactive contracts. """
-        wf_service = netsvc.LocalService('workflow')
-        ids = self.search([
+        inactive_contracts = self.search([
             ('sds_state', 'in', ['cancelled', 'no_sub', 'sub_accept',
                                  'sub_reject']),
-            ('state', 'in', ['terminated', 'cancelled'])]).ids
-        for contract_id in ids:
-            wf_service.trg_delete(
-                self.env.user.id, self._name, contract_id, self.env.cr)
+            ('state', 'in', ['terminated', 'cancelled'])])
+        inactive_contracts.delete_workflow()
         return True
 
     # Other view callbacks
@@ -220,11 +203,11 @@ class recurring_contract(models.Model):
 
     @api.multi
     def mail_sent(self):
-        return self.trg_validate('mail_sent')
+        return self.signal_workflow('mail_sent')
 
     @api.multi
     def project_mail_sent(self):
-        return self.trg_validate('project_mail_sent')
+        return self.signal_workflow('project_mail_sent')
 
     # KANBAN GROUP METHODS
     ######################
@@ -249,7 +232,7 @@ class recurring_contract(models.Model):
     @api.model
     def _read_group_fill_results(self, domain, groupby,
                                  remaining_groupbys, aggregated_fields,
-                                 read_group_result,
+                                 count_field, read_group_result,
                                  read_group_order=None):
         """
         The method seems to support grouping using m2o fields only,
@@ -264,7 +247,8 @@ class recurring_contract(models.Model):
                 result[groupby] = (state, state_dict.get(state))
 
         return super(recurring_contract, self)._read_group_fill_results(
-            domain, groupby, remaining_groupbys, aggregated_fields,
+            domain, groupby,
+            remaining_groupbys, aggregated_fields, count_field,
             read_group_result, read_group_order
         )
 
@@ -277,13 +261,11 @@ class recurring_contract(models.Model):
     ##########################################################################
     @api.multi
     def contract_validation(self):
-        wf_service = netsvc.LocalService('workflow')
+        pdb.set_trace()
         for contract in self:
             if contract.parent_id:
                 logger.info("Contract " + str(contract.id) + " contract sub.")
-                wf_service.trg_validate(
-                    self.env.user.id, self._name, contract.parent_id.id,
-                    'new_contract_validated', self.env.cr)
+                contract.parent_id.signal_workflow('new_contract_validated')
         return True
 
     @api.multi
@@ -326,7 +308,4 @@ class recurring_contract(models.Model):
                         _("You cannot change the sub sponsorship."))
                 parent = self.browse(parent_id)
                 if parent.sds_state == 'sub_waiting':
-                    wf_service = netsvc.LocalService('workflow')
-                    wf_service.trg_validate(
-                        self.env.user.id, 'recurring.contract', parent_id,
-                        'new_contract_validated', self.env.cr)
+                    parent.signal_workflow('new_contract_validated')
