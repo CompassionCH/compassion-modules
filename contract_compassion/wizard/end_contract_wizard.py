@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, netsvc, api
+from openerp import models, fields, api
 from openerp.osv import orm
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
@@ -71,9 +71,6 @@ class end_contract_wizard(models.TransientModel):
         contract.write({'end_reason': self.end_reason,
                         'end_date': self.end_date})
 
-        wf_service = netsvc.LocalService('workflow')
-        wf_service.trg_validate(
-            self.env.user.id, 'recurring.contract', contract.id,
-            'contract_terminated', self.env.cr)
+        contract.signal_workflow('contract_terminated')
 
         return True

@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, netsvc, exceptions, _
+from openerp import models, fields, api, exceptions, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 from datetime import datetime
@@ -191,13 +191,7 @@ class recurring_contract(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def invoice_unpaid(self, invoice):
-        wf_service = netsvc.LocalService('workflow')
-        cr = self.env.cr
-        uid = self.env.user.id
-        for contract in self:
-            wf_service.trg_validate(
-                uid, self._name, contract.id, 'contract_activation_cancelled',
-                cr)
+        self.signal_workflow('contract_activation_cancelled')
 
     def invoice_paid(self, invoice):
         """ Activate contract if it is waiting for payment. """
@@ -206,24 +200,14 @@ class recurring_contract(models.Model):
         activate_contracts._cancel_old_invoices(
             invoice.partner_id.id, invoice.date_invoice)
 
-        wf_service = netsvc.LocalService('workflow')
-        cr = self.env.cr
-        uid = self.env.user.id
-        for contract in activate_contracts:
-            wf_service.trg_validate(
-                uid, self._name, contract.id,
-                'contract_active', cr)
-            logger.info("Contract " + str(id) + " activated.")
+        activate_contracts.signal_workflow('contract_active')
 
     @api.one
     def force_activation(self):
         """ Used to transition sponsorships in active state. """
-        wf_service = netsvc.LocalService('workflow')
-        wf_service.trg_validate(self.env.user.id, self._name, self.id,
-                                'contract_validated', self.env.cr)
-        wf_service.trg_validate(self.env.user.id, self._name, self.id,
-                                'contract_active', self.env.cr)
-        logger.info("Contract " + str(self.id) + " activated.")
+        self.signal_workflow('contract_validated')
+        self.signal_workflow('contract_active')
+        logger.info("Contracts " + str(self.ids) + " activated.")
         return True
 
     ##########################################################################
@@ -347,17 +331,14 @@ class recurring_contract(models.Model):
     @api.one
     def action_cancel_draft(self):
         """ Set back a cancelled contract to draft state. """
-        wf_service = netsvc.LocalService('workflow')
         update_sql = "UPDATE recurring_contract SET state='draft', "\
             "end_date=NULL, activation_date=NULL, start_date=CURRENT_DATE"
-        cr = self.env.cr
-        uid = self.env.user.id
         if self.state == 'cancelled':
             if self.child_id and not self.child_id.is_available:
                 update_sql += ', child_id = NULL'
-            cr.execute(update_sql + " WHERE id = %s", [self.id])
-            wf_service.trg_delete(uid, self._name, self.id, cr)
-            wf_service.trg_create(uid, self._name, self.id, cr)
+            self.env.cr.execute(update_sql + " WHERE id = %s", [self.id])
+            self.delete_workflow()
+            self.create_workflow()
             self.env.invalidate_all()
         return True
 
@@ -388,24 +369,17 @@ class recurring_contract(models.Model):
 
         invoices = invoice_lines.mapped('invoice_id')
 
-        wf_service = netsvc.LocalService('workflow')
         for invoice in invoices:
             invoice_lines = invoice.invoice_line
 
-            inv_lines = self._get_filtered_invoice_lines(
-                invoice_lines)
+            inv_lines = self._get_filtered_invoice_lines(invoice_lines)
 
             if len(inv_lines) == len(invoice_lines):
-                wf_service.trg_validate(
-                    self.env.user.id, 'account.invoice',
-                    invoice.id, 'invoice_cancel', self.env.cr)
+                invoice.signal_workflow('invoice_cancel')
             else:
                 invoice.action_cancel_draft()
                 inv_lines.unlink()
-
-                wf_service.trg_validate(
-                    self.env.user.id, 'account.invoice',
-                    invoice.id, 'invoice_open', self.env.cr)
+                invoice.signal_workflow('invoice_open')
 
     @api.one
     def _update_invoice_lines(self, invoices):
@@ -452,34 +426,24 @@ class recurring_contract(models.Model):
                     else:
                         invoicer.unlink()
             # Validate again modified invoices
-            if inv_update_ids:
-                wf_service = netsvc.LocalService('workflow')
-                for invoice_id in inv_update_ids:
-                    wf_service.trg_validate(
-                        self.env.user.id, 'account.invoice', invoice_id,
-                        'invoice_open', self.env.cr)
+            validate_invoices = invoice_obj.browse(list(inv_update_ids))
+            validate_invoices.signal_workflow('invoice_open')
         return True
 
     def _on_change_group_id(self, group_id):
         """ Change state of contract if payment is changed to/from LSV or DD.
         """
-        wf_service = netsvc.LocalService('workflow')
         group = self.env['recurring.contract.group'].browse(
             group_id)
         payment_name = group.payment_term_id.name
         if 'LSV' in payment_name or 'Postfinance' in payment_name:
-            for contract in self:
-                wf_service.trg_validate(
-                    self.env.user.id, self._name, contract.id,
-                    'will_pay_by_lsv_dd', self.env.cr)
+            self.signal_workflow('will_pay_by_lsv_dd')
         else:
             # Check if old payment_term was LSV or DD
             for contract in self:
                 payment_name = contract.group_id.payment_term_id.name
                 if 'LSV' in payment_name or 'Postfinance' in payment_name:
-                    wf_service.trg_validate(
-                        self.env.user.id, 'recurring.contract', contract.id,
-                        'mandate_validated', self.env.cr)
+                    contract.signal_workflow('mandate_validated')
 
     def _on_group_id_changed(self):
         """Remove lines of open invoices and generate them again

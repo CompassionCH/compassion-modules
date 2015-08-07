@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, fields, netsvc, _
+from openerp import api, models, fields, _
 from openerp.exceptions import Warning
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
@@ -65,9 +65,7 @@ class compassion_child(models.Model):
                       "Please verify information of child %s.") % child.code)
             if child.state in ('F', 'X'):
                 # Start a new workflow making the child available again
-                wf_service = netsvc.LocalService('workflow')
-                wf_service.trg_create(self.env.user.id, self._name, child_id,
-                                      self.env.cr)
+                child.create_workflow()
                 child.write({
                     'exit_date': False,
                     'exit_reason': False,
@@ -106,18 +104,14 @@ class compassion_child(models.Model):
         self.env.context = self.env.with_context(lang='en_US').context
         child = self.browse(args.get('object_id'))
         if child.sponsor_id:
-            for contract in child.sponsorship_ids:
-                if contract.state in ('waiting', 'active', 'mandate'):
-                    # Terminate contract and mark the departure
-                    contract.write({
-                        'end_reason': '1',  # Child departure
-                        'end_date': datetime.today().strftime(DF),
-                        'gmc_state': 'depart'})
-
-                    wf_service = netsvc.LocalService('workflow')
-                    wf_service.trg_validate(
-                        self.env.user.id, 'recurring.contract', contract.id,
-                        'contract_terminated', self.env.cr)
+            contracts = child.sponsorship_ids.filtered(
+                lambda c: c.state in ('waiting', 'active', 'mandate'))
+            # Terminate contract and mark the departure
+            contracts.write({
+                'end_reason': '1',  # Child departure
+                'end_date': datetime.today().strftime(DF),
+                'gmc_state': 'depart'})
+            contracts.signal_workflow('contract_terminated')
 
         if child.state != 'F':
             child.write({'state': 'F'})
