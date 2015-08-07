@@ -849,5 +849,4 @@ class sponsorship_contract(models.Model):
                     'credit': amount_deleted})
         self.env.invalidate_all()
         if unrec_pml:
-            mvl_obj._remove_move_reconcile(self.env.cr, self.env.user.id,
-                                           unrec_pml, context=self.env.context)
+            mvl_obj.browse(unrec_pml)._remove_move_reconcile()
