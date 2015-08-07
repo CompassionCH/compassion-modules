@@ -9,16 +9,16 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
-from openerp.tools.translate import _
+from openerp import api, models, _
 
 
-class res_partner(orm.Model):
+class res_partner(models.Model):
     _inherit = 'res.partner'
 
-    def open_events(self, cr, uid, ids, context=None):
-        event_ids = self.pool.get('crm.event.compassion').search(
-            cr, uid, [('partner_id', 'child_of', ids)], context=context)
+    @api.multi
+    def open_events(self):
+        event_ids = self.env['crm.event.compassion'].search(
+            [('partner_id', 'child_of', self.ids)]).ids
 
         return {
             'name': _('Events'),
@@ -28,5 +28,4 @@ class res_partner(orm.Model):
             'res_model': 'crm.event.compassion',
             'target': 'current',
             'domain': [('id', 'in', event_ids)],
-            'context': context,
         }

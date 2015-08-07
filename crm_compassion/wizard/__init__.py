@@ -10,3 +10,4 @@
 ##############################################################################
 
 from . import close_old_projects_wizard
+from . import portal_wizard

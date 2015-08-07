@@ -24,9 +24,6 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="sponsorship_compassion.view_invoice_child_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='contract_id']" position="attributes">
-                    <attribute name="on_change">on_change_contract_id(contract_id)</attribute>
-                </xpath>
                 <xpath expr="//field[@name='contract_id']" position="after">
                     <field name="user_id"/>
                 </xpath>

@@ -9,7 +9,7 @@
             <field name="inherit_id" ref="project.edit_project"/>
             <field name="arch" type="xml">
                 <field name="user_id" position="after">
-                    <field name="project_type" on_change="on_change_type(project_type)"/>
+                    <field name="project_type"/>
                 </field>
             </field>
         </record>

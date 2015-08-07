@@ -9,26 +9,25 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
+from openerp import api, models
 
 from datetime import date
 
 
-class close_projects_wizard(orm.TransientModel):
+class close_projects_wizard(models.TransientModel):
     _name = 'project.close.wizard'
 
-    def close_projects(self, cr, uid, ids, context=None):
+    @api.multi
+    def close_projects(self):
         """ Find projects with no tasks which end_date is past
         and close them. """
-        project_obj = self.pool.get('project.project')
-        project_ids = project_obj.search(cr, uid, [
+        projects = self.env['project.project'].search([
             ('state', '=', 'open'),
             '|', ('date', '<', date.today()),
             '&', ('date', '=', False),
             ('date_start', '<', date.today()),
-            ('tasks', '=', False),
-            ], context=context)
-        if project_ids:
-            project_obj.set_done(cr, uid, project_ids, context)
+            ('tasks', '=', False)])
+        if projects:
+            projects.set_done()
 
         return True

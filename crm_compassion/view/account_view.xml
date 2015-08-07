@@ -11,6 +11,9 @@
             <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//page[@name='contract_page']" position="after">
+                    <field name="partner_id" position="before">
+                        <field name="type" readonly="1" invisible="1"/>
+                    </field>
                     <page string="Event Information" name='event_page' attrs="{'invisible':[('type','!=','event')]}">
                         <group>
                             <field name="event_type"/>

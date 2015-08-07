@@ -76,23 +76,7 @@ class contract_origin(models.Model):
     def name_get(self):
         res = list()
         for origin in self:
-            name = ""
-            if origin.type == 'partner':
-                if origin.partner_id.parent_id:
-                    name = origin.partner_id.parent_id.name + ", "
-                name += origin.partner_id.name
-            elif origin.type in ('event', 'marketing'):
-                name = origin.analytic_id.name
-            elif origin.type == 'transfer':
-                if origin.country_id:
-                    name = 'Transfer from ' + origin.country_id.name
-                else:
-                    name = 'Transfer from partner country'
-            elif origin.type == 'other':
-                name = origin.other_name or 'Other'
-            elif origin.type == 'sub':
-                name = 'SUB Sponsorship'
-            res.append((origin.id, name))
+            res.append((origin.id, origin._name_get()))
 
         return res
 
@@ -116,3 +100,26 @@ class contract_origin(models.Model):
             else:
                 raise
         return res
+
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
+    def _name_get(self):
+        name = ""
+        if self.type == 'partner':
+            if self.partner_id.parent_id:
+                name = self.partner_id.parent_id.name + ", "
+            name += self.partner_id.name
+        elif self.type in ('event', 'marketing'):
+            name = self.analytic_id.name
+        elif self.type == 'transfer':
+            if self.country_id:
+                name = 'Transfer from ' + self.country_id.name
+            else:
+                name = 'Transfer from partner country'
+        elif self.type == 'other':
+            name = self.other_name or 'Other'
+        elif self.type == 'sub':
+            name = 'SUB Sponsorship'
+
+        return name
