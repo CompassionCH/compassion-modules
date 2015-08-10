@@ -257,6 +257,24 @@
 			<field name="categ_id" ref="product_category_fund" />
 			<field name="list_price">8</field>
 		</record>
+        <record id="product_template_fund_sawyer" model="product.template">
+            <field name="name">Sawyer Water Filters for Ndeiya</field>
+			<field name="type">service</field>
+			<field name="categ_id" ref="product_category_fund" />
+			<field name="list_price">8</field>
+		</record>
+        <record id="product_template_fund_muttgen" model="product.template">
+            <field name="name">Muttertagsgottesdienst - GEN</field>
+			<field name="type">service</field>
+			<field name="categ_id" ref="product_category_fund" />
+			<field name="list_price">8</field>
+		</record>
+        <record id="product_template_fund_muttcsp" model="product.template">
+            <field name="name">Muttertagsgottesdienst - CSP</field>
+			<field name="type">service</field>
+			<field name="categ_id" ref="product_category_fund" />
+			<field name="list_price">8</field>
+		</record>
 
 		<!--
             Resource: product.product
@@ -648,8 +666,36 @@
 			<field name="description"></field>
             <field name="property_account_income" search="[('code','=','6000')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">180</field>
+        </record>
+        <record id="product_fund_4mu2" model="product.product">
+            <field name="product_tmpl_id" ref="product_template_fund_4mu_2" />
+			<field name="description"></field>
+            <field name="property_account_income" search="[('code','=','6000')]"/>
+            <field name="property_account_expense" search="[('code','=','5000')]"/>
             <field name="gp_fund_id">178</field>
         </record>
-       
+        <record id="product_fund_sawyer" model="product.product">
+            <field name="product_tmpl_id" ref="product_template_fund_sawyer" />
+			<field name="description"></field>
+            <field name="property_account_income" search="[('code','=','6012')]"/>
+            <field name="property_account_expense" search="[('code','=','5000')]"/>
+            <field name="gp_fund_id">179</field>
+        </record>
+        <record id="product_fund_muttgen" model="product.product">
+            <field name="product_tmpl_id" ref="product_template_fund_muttgen" />
+			<field name="description"></field>
+            <field name="property_account_income" search="[('code','=','6004')]"/>
+            <field name="property_account_expense" search="[('code','=','5004')]"/>
+            <field name="gp_fund_id">181</field>
+        </record>
+        <record id="product_fund_muttcsp" model="product.product">
+            <field name="product_tmpl_id" ref="product_template_fund_muttcsp" />
+			<field name="description"></field>
+            <field name="property_account_income" search="[('code','=','6014')]"/>
+            <field name="property_account_expense" search="[('code','=','5014')]"/>
+            <field name="gp_fund_id">182</field>
+        </record>
+
     </data>
 </openerp>
