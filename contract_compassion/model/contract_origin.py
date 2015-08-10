@@ -109,7 +109,7 @@ class contract_origin(models.Model):
         if self.type == 'partner':
             if self.partner_id.parent_id:
                 name = self.partner_id.parent_id.name + ", "
-            name += self.partner_id.name
+            name += self.partner_id.name or self.name
         elif self.type in ('event', 'marketing'):
             name = self.analytic_id.name
         elif self.type == 'transfer':
