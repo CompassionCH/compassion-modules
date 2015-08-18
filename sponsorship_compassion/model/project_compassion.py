@@ -40,5 +40,5 @@ class project_compassion(models.Model):
         contracts = self.env['recurring.contract'].search([
             ('child_code', 'like', self.code),
             ('state', 'in', ('active', 'waiting', 'mandate'))])
-
-        return res and contracts.reactivate_contract()
+        contracts.reactivate_contract()
+        return res

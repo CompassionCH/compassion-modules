@@ -12,6 +12,6 @@
 from . import contracts
 from . import contract_group
 from . import contract_origin
-from . import product
+from . import products
 from . import account_banking_mandate
 from . import invoice
