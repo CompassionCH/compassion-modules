@@ -40,57 +40,64 @@ class generate_gift_wizard(models.TransientModel):
         # Ids of contracts are stored in context
         for contract in self.env['recurring.contract'].browse(
                 self.env.context.get('active_ids', list())):
-            partner = contract.partner_id
+                    partner = contract.partner_id
 
-            if 'S' in contract.type and contract.state in gen_states:
-                journal_id = self.env['account.journal'].search(
-                    [('type', '=', 'sale'), ('company_id', '=', 1 or False)],
-                    limit=1).id
+                    if 'S' in contract.type and contract.state in gen_states:
+                        journal_id = self.env['account.journal'].search([
+                            ('type', '=', 'sale'),
+                            ('company_id', '=', 1 or False)
+                            ], limit=1).id
 
-                # Birthday Gift
-                if not contract.child_id.birthdate:
+                        # Birthday Gift
+                        if not contract.child_id.birthdate:
+                                raise exceptions.Warning(
+                                    'BirthdayError',
+                                    _('The birthdate of the \
+                                        child is missing !'))
+                        if self.product_id.name == GIFT_NAMES[0]:
+                            invoice_date = self.compute_date_birthday_invoice(
+                                contract.child_id.birthdate, self.invoice_date)
+                            # If a gift was already made for that date, create
+                            # one for next year.
+                            invoice_line_ids = self.env[
+                                'account.invoice.line'].search([
+                                    ('product_id', '=', self.product_id.id),
+                                    ('due_date', '=', invoice_date),
+                                    ('contract_id', '=', contract.id)])
+                            if invoice_line_ids:
+                                invoice_date = (
+                                    datetime.strptime(
+                                        invoice_date,
+                                        DF) + relativedelta(months=12)
+                                ).strftime(DF)
+                        else:
+                            invoice_date = self.invoice_date
+                        inv_data = {
+                            'account_id':
+                                partner.property_account_receivable.id,
+                            'type': 'out_invoice',
+                            'partner_id': partner.id,
+                            'journal_id': journal_id,
+                            'date_invoice': invoice_date,
+                            'payment_term': 1,  # Immediate payment
+                            'bvr_reference': self._generate_bvr_reference(
+                                contract, self.product_id),
+                            'recurring_invoicer_id': self.env.context.get(
+                                'recurring_invoicer_id', False)
+                        }
+
+                        invoice = self.env['account.invoice'].create(inv_data)
+                        if invoice:
+                            inv_line_data = self._setup_invoice_line(
+                                invoice, contract)
+                            self.env['account.invoice.line'].create(
+                                inv_line_data)
+                            invoice_ids.append(invoice.id)
+                    else:
                         raise exceptions.Warning(
-                            'BirthdayError',
-                            _('The birthdate of the child is missing !'))
-                if self.product_id.name == GIFT_NAMES[0]:
-                    invoice_date = self.compute_date_birthday_invoice(
-                        contract.child_id.birthdate, self.invoice_date)
-                    # If a gift was already made for that date, create one
-                    # for next year.
-                    invoice_line_ids = self.env[
-                        'account.invoice.line'].search([
-                            ('product_id', '=', self.product_id.id),
-                            ('due_date', '=', invoice_date),
-                            ('contract_id', '=', contract.id)])
-                    if invoice_line_ids:
-                        invoice_date = (datetime.strptime(invoice_date, DF) +
-                                        relativedelta(months=12)).strftime(DF)
-                else:
-                    invoice_date = self.invoice_date
-                inv_data = {
-                    'account_id': partner.property_account_receivable.id,
-                    'type': 'out_invoice',
-                    'partner_id': partner.id,
-                    'journal_id': journal_id,
-                    'date_invoice': invoice_date,
-                    'payment_term': 1,  # Immediate payment
-                    'bvr_reference': self._generate_bvr_reference(
-                        contract, self.product_id),
-                    'recurring_invoicer_id': self.env.context.get(
-                        'recurring_invoicer_id', False)
-                }
-
-                invoice = self.env['account.invoice'].create(inv_data)
-                if invoice:
-                    inv_line_data = self._setup_invoice_line(
-                        invoice, contract)
-                    self.env['account.invoice.line'].create(inv_line_data)
-                    invoice_ids.append(invoice.id)
-            else:
-                raise exceptions.Warning(
-                    _("Generation Error"),
-                    _("You can only generate gifts for active child "
-                      "sponsorships"))
+                            _("Generation Error"),
+                            _("You can only generate gifts for active child "
+                              "sponsorships"))
         return {
             'name': _('Generated Invoices'),
             'view_mode': 'tree,form',
