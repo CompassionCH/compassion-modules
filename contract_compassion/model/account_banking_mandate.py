@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import models, api, netsvc
+from openerp import models, api
 
 
 class account_mandate(models.Model):
@@ -32,14 +32,9 @@ class account_mandate(models.Model):
     @api.multi
     def _trigger_contracts(self, state, transition):
         """ Fires a given transition on contracts in selected state. """
-        con_ids = set()
-        con_obj = self.env['recurring.contract']
+        contracts = self.env['recurring.contract']
         for mandate in self:
-            con_ids |= set(con_obj.search(
-                [('partner_id', '=', mandate.partner_id.id),
-                 ('state', '=', state)]).ids)
-        wf_service = netsvc.LocalService('workflow')
-        for con_id in con_ids:
-            wf_service.trg_validate(
-                self.user.id, 'recurring.contract', con_id, transition,
-                self.env.cr)
+            contracts |= contracts.search(
+                [('partner_id', 'child_of', mandate.partner_id.id),
+                 ('state', '=', state)])
+        contracts.signal_workflow(transition)

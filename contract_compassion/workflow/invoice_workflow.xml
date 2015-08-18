@@ -8,7 +8,7 @@
     <data>
         <!-- Add listener to when invoice gets back in open state -->
         <record model="workflow.activity" id="account.act_open_test">
-            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
+            <field name="wkf_id" ref="account.wkf" />
             <field name="action">action_reopen()</field>
         </record>
     </data>

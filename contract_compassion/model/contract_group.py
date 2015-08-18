@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, exceptions, netsvc, _
+from openerp import models, fields, api, exceptions, _
 from openerp.tools import mod10r
 
 
@@ -66,52 +66,40 @@ class contract_group(models.Model):
         change the state of related contracts so that we wait
         for a valid mandate before generating new invoices.
         """
-        contract_ids = list()
+        contracts = self.env['recurring.contract']
         inv_vals = dict()
-        uid = self.env.user.id
         if 'payment_term_id' in vals:
             inv_vals['payment_term'] = vals['payment_term_id']
             payment_term = self.env['account.payment.term'].with_context(
                 lang='en_US').browse(vals['payment_term_id'])
             payment_name = payment_term.name
-            wf_service = netsvc.LocalService('workflow')
+            contracts |= self.mapped('contract_ids')
             for group in self:
                 old_term = group.payment_term_id.name
-                for contract_id in group.contract_ids.ids:
-                    contract_ids.append(contract_id)
-                    if 'LSV' in payment_name or 'Postfinance' in payment_name:
-                        wf_service.trg_validate(
-                            uid, 'recurring.contract', contract_id,
-                            'will_pay_by_lsv_dd', self.env.cr)
-                        # LSV/DD Contracts need no reference
-                        if group.bvr_reference and \
-                                'multi-months' not in payment_name:
-                            vals['bvr_reference'] = False
-                    elif 'LSV' in old_term or 'Postfinance' in old_term:
-                        wf_service.trg_validate(
-                            uid, 'recurring.contract', contract_id,
-                            'mandate_validated', self.env.cr)
+                if 'LSV' in payment_name or 'Postfinance' in payment_name:
+                    group.contract_ids.signal_workflow('will_pay_by_lsv_dd')
+                    # LSV/DD Contracts need no reference
+                    if group.bvr_reference and \
+                            'multi-months' not in payment_name:
+                        vals['bvr_reference'] = False
+                elif 'LSV' in old_term or 'Postfinance' in old_term:
+                    group.contract_ids.signal_workflow('mandate_validated')
         if 'bvr_reference' in vals:
             inv_vals['bvr_reference'] = vals['bvr_reference']
-            contract_ids.extend(self.mapped('contract_ids.id'))
+            contracts |= self.mapped('contract_ids')
 
         res = super(contract_group, self).write(vals)
 
-        if contract_ids:
+        if contracts:
             # Update related open invoices to reflect the changes
-            inv_line_obj = self.env['account.invoice.line']
-            inv_lines = inv_line_obj.search([
-                ('contract_id', 'in', contract_ids),
+            inv_lines = self.env['account.invoice.line'].search([
+                ('contract_id', 'in', contracts.ids),
                 ('state', 'not in', ('paid', 'cancel'))])
             invoices = inv_lines.mapped('invoice_id')
             invoices.action_cancel()
             invoices.action_cancel_draft()
             invoices.write(inv_vals)
-            wf_service = netsvc.LocalService('workflow')
-            for invoice in invoices:
-                wf_service.trg_validate(
-                    self.env.user.id, 'account.invoice', invoice.id,
-                    'invoice_open', self.env.cr)
+            invoices.signal_workflow('invoice_open')
         return res
 
     ##########################################################################
@@ -142,14 +130,14 @@ class contract_group(models.Model):
 
     def clean_invoices(self):
         """ Override clean_invoices to delete cancelled invoices """
-        inv_ids = super(contract_group, self).clean_invoices()
-        if inv_ids:
-            inv_ids = list(inv_ids)
+        invoices = super(contract_group, self).clean_invoices()
+        if invoices:
+            inv_ids = invoices.ids
             self.env.cr.execute(
                 "DELETE FROM account_invoice "
                 "WHERE id IN ({0})".format(
                     ','.join([str(id) for id in inv_ids])))
-        return inv_ids
+        return invoices
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
