@@ -49,11 +49,11 @@ class sub_sponsorship_wizard(models.TransientModel):
         contract_obj = self.env['recurring.contract']
         contract = contract_obj.browse(sponsorship_id)
         origin_obj = self.env['recurring.contract.origin']
-        sub_origin_ids = origin_obj.search([('type', '=', 'sub')]).ids
+        sub_origin_id = origin_obj.search([('type', '=', 'sub')], limit=1).id
 
         sub_contract = contract.copy({
             'parent_id': sponsorship_id,
-            'origin_id': sub_origin_ids and sub_origin_ids[0],
+            'origin_id': sub_origin_id,
         })
         sub_contract.write({'child_id': child.id})
         sub_contract.signal_workflow('contract_validated')
