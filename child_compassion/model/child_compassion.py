@@ -352,7 +352,7 @@ class compassion_child(models.Model):
             'name': _('Description generation'),
             'type': 'ir.actions.act_window',
             'res_model': 'child.description.wizard',
-            'view_mode': 'auto_description_form',
+            'view_mode': 'form',
             'view_type': 'form',
             'context': context,
             'target': 'new',

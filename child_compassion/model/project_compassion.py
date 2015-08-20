@@ -281,7 +281,7 @@ class compassion_project(models.Model):
             'name': _('Description generation'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
-            'view_mode': 'auto_description_form',
+            'view_mode': 'form',
             'res_model': 'project.description.wizard',
             'target': 'new',
         }
