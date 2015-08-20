@@ -9,15 +9,16 @@
 #
 ##############################################################################
 
-from openerp.tests import common
 from datetime import datetime
-from openerp import netsvc
+from openerp.addons.contract_compassion.tests.test_base_module\
+    import test_base_module
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import logging
+import pdb
 logger = logging.getLogger(__name__)
 
 
-class test_crm_compassion(common.TransactionCase):
+class test_crm_compassion(test_base_module):
 
     def setUp(self):
         super(test_crm_compassion, self).setUp()
@@ -107,18 +108,13 @@ class test_crm_compassion(common.TransactionCase):
             'PlayoffsCompassion', self.admin_id)
         lead_id2 = self._create_lead(
             'JO_Compassion', self.admin_id)
-        self.assertTrue(lead_id)
-        event_id = self._create_event(lead_id)
-        event_id2 = self._create_event(lead_id2)
-        self.assertTrue(event_id)
-        event = self.registry('crm.event.compassion').browse(
-            self.cr, self.uid, event_id)
-        event.write({'use_tasks': True, 'partner_id': self.partner_id})
-        event = self.registry('crm.event.compassion').browse(
-            self.cr, self.uid, event_id)
-        event2 = self.registry('crm.event.compassion').browse(
-            self.cr, self.uid, event_id2)
-        event2.write({'use_tasks': True, 'partner_id': self.partner_id})
+        self.assertTrue(lead.id)
+        event = self._create_event(lead, 'sport')
+        pdb.set_trace()
+        event2 = self._create_event(lead2, 'sport')
+        self.assertTrue(event.id)
+        event.write({'use_tasks': True, 'partner_id': self.partners[2].id})
+        event2.write({'use_tasks': True, 'partner_id': self.partners[2].id})
         self.assertTrue(event.project_id)
 
         # Retrieve of the project from the event
@@ -146,24 +142,22 @@ class test_crm_compassion(common.TransactionCase):
 
         # Creation of the sponsorship contract
         sp_group = self._create_group(
-            'do_nothing', self.partner_id, 1, self.payment_term_id)
-        sponsorship_id = self._create_sponsorship(
+            'do_nothing', self.partners.ids[2], 1, self.payment_term_id)
+        sponsorship = self._create_contract(
             datetime.today().strftime(DF), sp_group,
-            datetime.today().strftime(DF), 'postal', 'S',
-            child_id, event_id)
-        contract_obj = self.registry('recurring.contract')
-        sponsorship = contract_obj.browse(
-            self.cr, self.uid, sponsorship_id)
-        sponsorship.write({'user_id': self.partner_id2})
+            datetime.today().strftime(DF),
+            other_vals={
+                'origin_id': event.origin_id.id,
+                'channel': 'postal',
+                'type': 'S',
+                'child_id': child.id,
+                'correspondant_id': sp_group.partner_id.id
+            })
+        sponsorship.write({'user_id': self.partner_id})
         self.assertEqual(sponsorship.origin_id.name, event.full_name)
         self.assertEqual(sponsorship.state, 'draft')
-        wf_service = netsvc.LocalService('workflow')
-        wf_service.trg_validate(
-            self.uid, 'recurring.contract',
-            sponsorship_id, 'contract_validated', self.cr)
-        sponsorship = contract_obj.browse(
-            self.cr, self.uid, sponsorship_id)
-        invoicer_obj = self.registry('recurring.invoicer')
+        sponsorship.signal_workflow('contract_validated')
+        invoicer_obj = self.env['recurring.invoicer']
         invoicer_id = sponsorship.button_generate_invoices()
         invoices = invoicer_obj.browse(
             self.cr, self.uid, invoicer_id).invoice_ids
@@ -188,13 +182,12 @@ class test_crm_compassion(common.TransactionCase):
             })
         return project_id
 
-    def _create_event(self, lead_id):
-        lead = self.registry('crm.lead').browse(self.cr, self.uid, lead_id)
-        event_dico = lead.create_event(context={})
-        event_id = self.registry('crm.event.compassion').create(
-            self.cr, self.uid, {
+    def _create_event(self, lead, type):
+        event_dico = lead.create_event()
+        event = self.env['crm.event.compassion'].create(
+            {
                 'name': event_dico['context']['default_name'],
-                'type': 'sport',
+                'type': type,
                 'start_date': datetime.today().strftime(DF),
                 'lead_id': lead_id,
                 'user_id': event_dico['context']['default_user_id'],

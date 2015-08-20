@@ -10,6 +10,7 @@
 ##############################################################################
 
 from openerp import api, models, fields, exceptions, _
+import pdb
 
 
 class project_project(models.Model):
