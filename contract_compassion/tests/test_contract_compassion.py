@@ -29,9 +29,6 @@ class test_contract_compassion(test_base_module):
          - in the last one, we are testing the _reset_open_invoices method.
     """
 
-    def setUp(self):
-        super(test_contract_compassion, self).setUp()
-
     def test_contract_compassion_first_scenario(self):
         """
             In this test we are testing states changement of a contract and if
