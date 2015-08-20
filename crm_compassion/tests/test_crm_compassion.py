@@ -9,15 +9,16 @@
 #
 ##############################################################################
 
-from openerp.tests import common
 from datetime import datetime
-from openerp import netsvc
+from openerp.addons.contract_compassion.tests.test_base_module\
+    import test_base_module
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import logging
+import pdb
 logger = logging.getLogger(__name__)
 
 
-class test_crm_compassion(common.TransactionCase):
+class test_crm_compassion(test_base_module):
 
     def setUp(self):
         super(test_crm_compassion, self).setUp()
@@ -42,8 +43,9 @@ class test_crm_compassion(common.TransactionCase):
         lead2 = self._create_lead(
             'JO_Compassion', self.admin_id)
         self.assertTrue(lead.id)
-        event = self._create_event(lead)
-        event2 = self._create_event(lead2)
+        event = self._create_event(lead, 'sport')
+        pdb.set_trace()
+        event2 = self._create_event(lead2, 'sport')
         self.assertTrue(event.id)
         event.write({'use_tasks': True, 'partner_id': self.partners[2].id})
         event2.write({'use_tasks': True, 'partner_id': self.partners[2].id})
@@ -70,12 +72,12 @@ class test_crm_compassion(common.TransactionCase):
 
         # Creation of the sponsorship contract
         sp_group = self._create_group(
-            'do_nothing', self.partners[2], 1, self.payment_term_id)
-        sponsorship = self._create_sponsorship(
+            'do_nothing', self.partners.ids[2], 1, self.payment_term_id)
+        sponsorship = self._create_contract(
             datetime.today().strftime(DF), sp_group,
             datetime.today().strftime(DF),
             other_vals={
-                'origin_id': event.origin_id.id
+                'origin_id': event.origin_id.id,
                 'channel': 'postal',
                 'type': 'S',
                 'child_id': child.id,
@@ -84,7 +86,7 @@ class test_crm_compassion(common.TransactionCase):
         sponsorship.write({'user_id': self.partner_id})
         self.assertEqual(sponsorship.origin_id.name, event.full_name)
         self.assertEqual(sponsorship.state, 'draft')
-        sponsorship.signal_workflow('contract_validated'))
+        sponsorship.signal_workflow('contract_validated')
         invoicer_obj = self.env['recurring.invoicer']
         invoicer_id = sponsorship.button_generate_invoices()
         invoices = invoicer_obj.browse(invoicer_id).invoice_ids
@@ -107,12 +109,12 @@ class test_crm_compassion(common.TransactionCase):
             })
         return project_id
 
-    def _create_event(self, lead):
-        event_dico = lead.create_event(context={})
+    def _create_event(self, lead, type):
+        event_dico = lead.create_event()
         event = self.env['crm.event.compassion'].create(
             {
                 'name': event_dico['context']['default_name'],
-                'type': 'sport',
+                'type': type,
                 'start_date': datetime.today().strftime(DF),
                 'lead_id': lead.id,
                 'user_id': event_dico['context']['default_user_id'],

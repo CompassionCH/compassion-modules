@@ -10,7 +10,7 @@
 ##############################################################################
 
 from openerp import api, models, fields, exceptions, _
-
+import pdb
 from datetime import datetime
 
 
@@ -192,7 +192,8 @@ class event_compassion(models.Model):
                         from_event=True).create(event._get_project_vals()).id
                     event.write({'project_id': project_id})
                 elif event.project_id:
-                    event.project_id.write(event._get_project_vals())
+                    event.project_id.with_context(from_event=True).write(
+                        event._get_project_vals())
                 event.analytic_id.write(event._get_analytic_vals())
                 if 'name' in vals:
                     # Only administrator has write access to origins.
