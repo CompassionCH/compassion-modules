@@ -19,7 +19,6 @@ logger = logging.getLogger(__name__)
 class test_base_module(test_base_contract):
 
     def setUp(self):
-        super(test_base_module, self).setUp()
         # Retrieve of income account
         account_obj = self.env['account.account']
         property_account_income = account_obj.search([
