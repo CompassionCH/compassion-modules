@@ -10,6 +10,7 @@
 ##############################################################################
 
 from openerp import api, models, fields
+import pdb
 
 
 class contract_origin(models.Model):
