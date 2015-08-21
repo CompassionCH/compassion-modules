@@ -10,6 +10,7 @@
 ##############################################################################
 
 from openerp import api, models, fields
+import pdb
 
 
 class contract_origin(models.Model):
@@ -19,6 +20,7 @@ class contract_origin(models.Model):
     event_id = fields.Many2one('crm.event.compassion', 'Event')
 
     def _name_get(self):
+        pdb.set_trace()
         if self.type == 'event':
             name = self.event_id.full_name
         else:

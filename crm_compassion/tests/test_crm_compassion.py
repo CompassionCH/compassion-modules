@@ -9,11 +9,13 @@
 #
 ##############################################################################
 
+
 from datetime import datetime
 from openerp.addons.contract_compassion.tests.test_base_module\
     import test_base_module
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import logging
+import pdb
 logger = logging.getLogger(__name__)
 
 
@@ -46,7 +48,7 @@ class test_crm_compassion(test_base_module):
         event2 = self._create_event(lead2, 'sport')
         self.assertTrue(event.id)
         event.write({'use_tasks': True, 'partner_id': self.partners[2].id})
-        event2.write({'use_tasks': True, 'partner_id': self.partners[2].id})
+.        event2.write({'use_tasks': True, 'partner_id': self.partners[2].id})
         self.assertTrue(event.project_id)
 
         # Retrieve of the project from the event
@@ -81,6 +83,7 @@ class test_crm_compassion(test_base_module):
                 'child_id': child.id,
                 'correspondant_id': sp_group.partner_id.id
             })
+        pdb.set_trace()    
         sponsorship.write({'user_id': self.partner_id})
         self.assertEqual(sponsorship.origin_id.name, event.full_name)
         self.assertEqual(sponsorship.state, 'draft')
