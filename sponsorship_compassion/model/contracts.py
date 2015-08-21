@@ -61,7 +61,7 @@ class sponsorship_contract(models.Model):
     ##########################################################################
 
     correspondant_id = fields.Many2one(
-        'res.partner', string='Correspondant', required=True, readonly=True,
+        'res.partner', string='Correspondant', readonly=True,
         states={'draft': [('readonly', False)],
                 'waiting': [('readonly', False)],
                 'mandate': [('readonly', False)]},

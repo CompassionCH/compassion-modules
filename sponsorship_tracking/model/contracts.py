@@ -13,7 +13,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 from datetime import datetime, date, timedelta
 import logging
-import pdb
 
 
 logger = logging.getLogger(__name__)
@@ -261,7 +260,6 @@ class recurring_contract(models.Model):
     ##########################################################################
     @api.multi
     def contract_validation(self):
-        pdb.set_trace()
         for contract in self:
             if contract.parent_id:
                 logger.info("Contract " + str(contract.id) + " contract sub.")

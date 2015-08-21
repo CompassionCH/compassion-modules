@@ -75,7 +75,7 @@ class ResPartner(models.Model):
     #                             PRIVATE METHODS                            #
     ##########################################################################
 
-    @api.multi
+    @api.model
     def _display_address(self, address, without_company=False):
         """ Build and return an address formatted accordingly to
         Compassion standards.

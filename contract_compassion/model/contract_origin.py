@@ -20,7 +20,7 @@ class contract_origin(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    name = fields.Char(readonly=True)
+    name = fields.Char(compute='_set_name')
     type = fields.Selection('_get_origin_types', help=_(
         "Origin of contract : "
         " * Contact with sponsor/ambassador : an other sponsor told the "
@@ -51,6 +51,11 @@ class contract_origin(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.one
+    @api.depends('type')
+    def _set_name(self):
+        self.name = self._name_get()
+
     def _get_origin_types(self):
         return [
             ('partner', _("Contact with sponsor/ambassador")),
