@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Contracts',
-    'version': '1.2',
+    'version': '1.3',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',

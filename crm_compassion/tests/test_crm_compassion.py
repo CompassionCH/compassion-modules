@@ -1,14 +1,3 @@
-# -*- encoding: utf-8 -*-
-##############################################################################
-#
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
-#    Releasing children from poverty in Jesus' name
-#    @author: Albert SHENOUDA <albert.shenouda@efrei.net>
-#
-#    The licence is in the file __openerp__.py
-#
-##############################################################################
-
 from datetime import datetime
 from openerp.addons.contract_compassion.tests.test_base_module\
     import test_base_module
@@ -110,11 +99,11 @@ class test_crm_compassion(test_base_module):
             'JO_Compassion', self.admin_id)
         self.assertTrue(lead.id)
         event = self._create_event(lead, 'sport')
-        pdb.set_trace()
         event2 = self._create_event(lead2, 'sport')
+        pdb.set_trace()
         self.assertTrue(event.id)
         event.write({'use_tasks': True, 'partner_id': self.partners[2].id})
-        event2.write({'use_tasks': True, 'partner_id': self.partners[2].id})
+.        event2.write({'use_tasks': True, 'partner_id': self.partners[2].id})
         self.assertTrue(event.project_id)
 
         # Retrieve of the project from the event
@@ -153,6 +142,7 @@ class test_crm_compassion(test_base_module):
                 'child_id': child.id,
                 'correspondant_id': sp_group.partner_id.id
             })
+        pdb.set_trace()    
         sponsorship.write({'user_id': self.partner_id})
         self.assertEqual(sponsorship.origin_id.name, event.full_name)
         self.assertEqual(sponsorship.state, 'draft')
