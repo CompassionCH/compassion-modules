@@ -34,7 +34,7 @@ class test_sponsorship_compassion(test_base_module):
             no mistakes.
         """
         # Create a child and get the project associated
-        child = self._create_child('PE3760140')
+        child = self.env['compassion.child'].create({'code': 'PE3760140'})
         child.get_infos()
         # Creation of the sponsorship contract
         sp_group = self._create_group(
@@ -106,7 +106,7 @@ class test_sponsorship_compassion(test_base_module):
             "active" state directly by the validation button. Check if there
             are no invoice lines too.
         """
-        child = self._create_child('IO6790211')
+        child = self.env['compassion.child'].create({'code': 'IO6790211'})
         child.project_id.write({'disburse_funds': True})
         sp_group = self._create_group(
             'do_nothing', self.partners.ids[0], 1, self.payment_term_id)
@@ -169,9 +169,10 @@ class test_sponsorship_compassion(test_base_module):
             Check if the 3 contracts create one merged invoice for every month
             (2 months here) with the good values.
         """
-        child1 = self._create_child('UG8320010')
-        child2 = self._create_child('UG8320011')
-        child3 = self._create_child('UG8320013')
+        child_obj = self.env['compassion.child']
+        child1 = child_obj.create({'code': 'UG8320010'})
+        child2 = child_obj.create({'code': 'UG8320011'})
+        child3 = child_obj.create({'code': 'UG8320013'})
         sp_group = self._create_group(
             'do_nothing', self.partners.ids[0], 1, self.payment_term_id)
         sponsorship1 = self._create_contract(

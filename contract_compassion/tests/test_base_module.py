@@ -62,10 +62,6 @@ class test_base_module(test_base_contract):
         product = self.env['product.product'].browse(1)
         product.property_account_income = property_account_income
 
-    def _create_child(self, code):
-        child = self.env['compassion.child'].create({'code': code})
-        return child
-
     def _pay_invoice(self, invoice):
         bank_journal = self.env['account.journal'].search(
             [('code', '=', 'TBNK')])[0]

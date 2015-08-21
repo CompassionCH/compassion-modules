@@ -17,8 +17,8 @@ def update_analytic_accounts(cr):
     """ Change the type of the analytic accounts. """
     # Find all analytic accounts related to events
     cr.execute(
-        "DELETE *"
-        "FROM ir.model.data"
+        "DELETE "
+        "FROM ir.model.data "
         "WHERE model = 'product.template' AND module = 'contract_compassion' ")
 
 
