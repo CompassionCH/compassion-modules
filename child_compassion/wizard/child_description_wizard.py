@@ -135,7 +135,7 @@ class child_description_wizard(models.TransientModel):
             'name': _('Descriptions generation'),
             'type': 'ir.actions.act_window',
             'res_model': self._name,
-            'view_mode': 'auto_description_form',
+            'view_mode': 'form',
             'view_type': 'form',
             'target': 'new',
         }

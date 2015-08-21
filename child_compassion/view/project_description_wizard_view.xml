@@ -9,7 +9,15 @@
                 <form string="Description generation" version="7.0">
                     <group col='2'>
                         <group string="Complete missing translations if needed">
-                            <field name="project_property_value_ids" nolabel="1"/>
+                            <field name="project_property_value_ids" nolabel="1">
+                                <tree string="translate value" editable="top">
+                                    <field name="property_name" />
+                                    <field name="value_en" />
+                                    <field name="value_fr" widget="autoDescription" />
+                                    <field name="value_de" widget="autoDescription" />
+                                    <field name="value_it" widget="autoDescription" />
+                                </tree>
+                            </field>
                         </group>
                         <group string="Check and select descriptions to validate">
                             <group col='1' colspan='2'><field name="desc_en" readonly="True"/></group>

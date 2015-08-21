@@ -56,7 +56,9 @@
                                     </group>
                                     <group colspan="2">
                                         <field name="pictures_ids">
-                                            <field name="date"/>
+                                            <tree string="date of pictures">
+                                                <field name="date"/>
+                                            </tree>
                                         </field>
                                     </group>
                                 </group>
