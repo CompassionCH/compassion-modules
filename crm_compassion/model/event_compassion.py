@@ -10,7 +10,6 @@
 ##############################################################################
 
 from openerp import api, models, fields, exceptions, _
-import pdb
 from datetime import datetime
 
 

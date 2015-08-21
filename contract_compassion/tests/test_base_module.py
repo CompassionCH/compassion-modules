@@ -20,8 +20,8 @@ class test_base_module(test_base_contract):
 
     def setUp(self):
         # Retrieve of income account
-        account_obj = self.env['account.account']
-        property_account_income = account_obj.search([
+        super(test_base_module, self).setUp()
+        property_account_income = self.env['account.account'].search([
             ('type', '=', 'other'),
             ('name', '=', 'Property Account Income Test')]).ids[0]
         property_account_expense = self.env['account.account'].search([

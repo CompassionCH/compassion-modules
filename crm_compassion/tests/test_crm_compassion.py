@@ -9,7 +9,6 @@
 #
 ##############################################################################
 
-
 from datetime import datetime
 from openerp.addons.contract_compassion.tests.test_base_module\
     import test_base_module
@@ -22,77 +21,11 @@ class test_crm_compassion(test_base_module):
 
     def setUp(self):
         super(test_crm_compassion, self).setUp()
-        # Retrieve receivable and payable accounts
-        account_type = self.registry('account.account.type').search(
-            self.cr, self.uid, [
-                ('code', '=', 'receivable'),
-            ])[0]
-        property_account_receivable = self.registry('account.account').search(
-            self.cr, self.uid, [
-                ('type', '=', 'receivable'),
-                ('user_type', '=', account_type)
-            ])[0]
-        account_type = self.registry('account.account.type').search(
-            self.cr, self.uid, [
-                ('code', '=', 'payable'),
-            ])[0]
-        property_account_payable = self.registry('account.account').search(
-            self.cr, self.uid, [
-                ('type', '=', 'payable'),
-                ('user_type', '=', account_type)])[0]
-        property_account_income = self.registry('account.account').search(
-            self.cr, self.uid, [
-                ('type', '=', 'other'),
-                ('name', '=', 'Property Account Income Test')
-            ])[0]
-        property_account_expense = self.registry('account.account').search(
-            self.cr, self.uid, [
-                ('type', '=', 'other'),
-                ('name', '=', 'Property Account Expense Test')
-            ])[0]
         # Creation of partners
-        partner_obj = self.registry('res.partner')
-        self.partner_id = partner_obj.create(self.cr, self.uid, {
-            'name': 'Monsieur Bryan',
-            'property_account_receivable': property_account_receivable,
-            'property_account_payable': property_account_payable,
-            'notification_email_send': 'comment',
-        })
-        self.admin_id = self.registry('res.users').search(
-            self.cr, self.uid, [('name', '=', 'Administrator')])[0]
-        self.partner_id2 = self.registry('res.partner').search(
-            self.cr, self.uid, [('name', '=', 'Michel Fletcher')])[0]
-        # Retrieve a payment term
-        payment_term_obj = self.registry('account.payment.term')
-        self.payment_term_id = payment_term_obj.search(self.cr, self.uid, [
-            ('name', '=', '15 Days')
-        ])[0]
-        # Retrieve and modification of products
-        product_obj = self.registry('product.product')
-        product_sp_id = product_obj.search(
-            self.cr, self.uid, [('name', '=', 'Sponsorship')])[0]
-        product_gf_id = product_obj.search(
-            self.cr, self.uid, [('name', '=', 'General Fund')])[0]
-        product_bf_id = product_obj.search(
-            self.cr, self.uid, [('name', '=', 'Birthday Gift')])[0]
-        product_fg_id = product_obj.search(
-            self.cr, self.uid, [('name', '=', 'Family Gift')])[0]
-        product_obj.write(self.cr, self.uid, product_sp_id, {
-            'property_account_income': property_account_income,
-            'property_account_expense': property_account_expense,
-            })
-        product_obj.write(self.cr, self.uid, product_gf_id, {
-            'property_account_income': property_account_income,
-            'property_account_expense': property_account_expense,
-        })
-        product_obj.write(self.cr, self.uid, product_bf_id, {
-            'property_account_income': property_account_income,
-            'property_account_expense': property_account_expense,
-        })
-        product_obj.write(self.cr, self.uid, product_fg_id, {
-            'property_account_income': property_account_income,
-            'property_account_expense': property_account_expense,
-        })
+        self.admin_id = self.env['res.users'].search(
+            [('name', '=', 'Administrator')])[0].id
+        self.partner_id = self.env['res.partner'].search(
+            [('name', '=', 'Michel Fletcher')])[0].id
 
     def test_crm_compassion(self):
         """
@@ -104,9 +37,9 @@ class test_crm_compassion(test_base_module):
         """
 
         # Creation of a lead and an event
-        lead_id = self._create_lead(
+        lead = self._create_lead(
             'PlayoffsCompassion', self.admin_id)
-        lead_id2 = self._create_lead(
+        lead2 = self._create_lead(
             'JO_Compassion', self.admin_id)
         self.assertTrue(lead.id)
         event = self._create_event(lead, 'sport')
@@ -117,14 +50,13 @@ class test_crm_compassion(test_base_module):
         self.assertTrue(event.project_id)
 
         # Retrieve of the project from the event
-        project = self.registry('project.project').browse(
-            self.cr, self.uid, event.project_id.id)
+        project = self.env['project.project'].browse(event.project_id.id)
 
         # Creation of a marketing project and check if an origin is created
         self._create_project(
             'Marketing Project', 'employees', self.admin_id, 'marketing', True)
-        mark_origin = self.registry('recurring.contract.origin').search(
-            self.cr, self.uid, [('type', '=', 'marketing')])
+        mark_origin = self.env['recurring.contract.origin'].search(
+            [('type', '=', 'marketing')])
         self.assertTrue(mark_origin)
         self.assertEqual(project.date_start, event.start_date[:10])
         self.assertEqual(project.analytic_account_id, event.analytic_id)
@@ -133,10 +65,7 @@ class test_crm_compassion(test_base_module):
         self.assertEqual(project.name, event.name)
 
         # Create a child and get the project associated
-        child_id = self._create_child('PE3760136')
-        child = self.registry('compassion.child').browse(
-            self.cr, self.uid, child_id)
-        child.get_infos()
+        child = self.env['compassion.child'].create({'code': 'PE3760136'})
         child.project_id.write({'disburse_funds': True})
 
         # Creation of the sponsorship contract
@@ -156,22 +85,18 @@ class test_crm_compassion(test_base_module):
         self.assertEqual(sponsorship.origin_id.name, event.full_name)
         self.assertEqual(sponsorship.state, 'draft')
         sponsorship.signal_workflow('contract_validated')
-        invoicer_obj = self.env['recurring.invoicer']
         invoicer_id = sponsorship.button_generate_invoices()
-        invoices = invoicer_obj.browse(
-            self.cr, self.uid, invoicer_id).invoice_ids
+        invoices = invoicer_id.invoice_ids
         self.assertEqual(len(invoices), 2)
         self.assertEqual(invoices[0].state, 'open')
         self.assertEqual(
             invoices[0].invoice_line[0].user_id, sponsorship.user_id)
-        partner = self.registry('res.partner').browse(
-            self.cr, self.uid, self.partner_id)
-        event_dico = partner.open_events()
+        event_dico = self.partners[2].open_events()
         self.assertEqual(len(event_dico['domain'][0][2]), 2)
 
     def _create_project(self, name, privacy_visibility, user_id, type, bool):
-        project_id = self.registry('project.project').create(
-            self.cr, self.uid, {
+        project_id = self.env['project.project'].create(
+            {
                 'name': name,
                 'privacy_visibility': privacy_visibility,
                 'user_id': user_id,
@@ -188,104 +113,16 @@ class test_crm_compassion(test_base_module):
                 'name': event_dico['context']['default_name'],
                 'type': type,
                 'start_date': datetime.today().strftime(DF),
-                'lead_id': lead_id,
+                'lead_id': lead.id,
                 'user_id': event_dico['context']['default_user_id'],
                 'parent_id': 7,
             })
-        return event_id
+        return event
 
     def _create_lead(self, name, user_id):
-        lead_id = self.registry('crm.lead').create(
-            self.cr, self.uid, {
+        lead = self.env['crm.lead'].create(
+            {
                 'name': name,
                 'user_id': user_id,
             })
-        return lead_id
-
-    def _create_sponsorship(self, start_date, group_id, next_invoice_date,
-                            channel, type, child_id, event_id):
-        group = self.registry('recurring.contract.group').browse(
-            self.cr, self.uid, group_id)
-        partner_id = group.partner_id.id
-        event = self.registry('crm.event.compassion').browse(
-            self.cr, self.uid, event_id)
-        sponsorship_id = self.registry('recurring.contract').create(
-            self.cr, self.uid, {
-                'start_date': start_date,
-                'partner_id': partner_id,
-                'correspondant_id': partner_id,
-                'group_id': group_id,
-                'next_invoice_date': next_invoice_date,
-                'origin_id': event.origin_id.id,
-                'channel': channel,
-                'type': type,
-                'child_id': child_id,
-            }, {'default_type': type})
-        return sponsorship_id
-
-    def _create_group(self, change_method, partner_id, adv_biling_months,
-                      payment_term_id):
-        """
-            Create a group with 2 possibilities :
-                - ref is not given so it takes "/" default values
-                - ref is given
-        """
-        group_obj = self.registry('recurring.contract.group')
-        group_id = group_obj.create(self.cr, self.uid, {
-            'partner_id': partner_id,
-        })
-        group = group_obj.browse(self.cr, self.uid, group_id)
-        group_vals = {
-            'change_method': change_method,
-            'partner_id': partner_id,
-            'advance_billing_months': adv_biling_months,
-            'payment_term_id': payment_term_id,
-        }
-        group.write(group_vals)
-        return group_id
-
-    def _create_child(self, code):
-        child_id = self.registry('compassion.child').create(
-            self.cr, self.uid, {
-                'code': code,
-            })
-        return child_id
-
-    def _pay_invoice(self, invoice_id):
-        journal_obj = self.registry('account.journal')
-        bank_journal_id = self.registry('account.journal').search(
-            self.cr, self.uid, [('code', '=', 'TBNK')])[0]
-        bank_journal = journal_obj.browse(self.cr, self.uid, bank_journal_id)
-        move_obj = self.registry('account.move')
-        move_line_obj = self.registry('account.move.line')
-        invoice = self.registry('account.invoice').browse(
-            self.cr, self.uid, invoice_id)
-        account_id = invoice.partner_id.property_account_receivable.id
-        move_id = move_obj.create(self.cr, self.uid, {
-            'journal_id': bank_journal_id
-        })
-        move_line_obj.create(self.cr, self.uid, {
-            'name': 'BNK-' + invoice.number,
-            'move_id': move_id,
-            'partner_id': invoice.partner_id.id,
-            'account_id': bank_journal.default_debit_account_id.id,
-            'debit': invoice.amount_total,
-            'journal_id': bank_journal_id,
-            'period_id': invoice.period_id.id,
-            'date': invoice.date_due
-        })
-        mv_line_id = move_line_obj.create(self.cr, self.uid, {
-            'name': 'PAY-' + invoice.number,
-            'move_id': move_id,
-            'partner_id': invoice.partner_id.id,
-            'account_id': account_id,
-            'credit': invoice.amount_total,
-            'journal_id': invoice.journal_id.id,
-            'period_id': invoice.period_id.id,
-            'date': invoice.date_due
-        })
-        move_obj.button_validate(self.cr, self.uid, [move_id])
-        to_reconcile = move_line_obj.search(self.cr, self.uid, [
-            ('move_id', '=', invoice.move_id.id),
-            ('account_id', '=', account_id)]) + [mv_line_id]
-        move_line_obj.reconcile(self.cr, self.uid, to_reconcile)
+        return lead
