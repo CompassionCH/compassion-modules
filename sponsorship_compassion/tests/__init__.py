@@ -10,7 +10,3 @@
 ##############################################################################
 
 from . import test_sponsorship_compassion
-
-checks = [
-    test_sponsorship_compassion
-]

@@ -158,13 +158,17 @@ class compassion_child(models.Model):
         ]
 
     @api.one
-    @api.depends('code', 'project_id.code')
+    @api.depends('code')
     def _set_project(self):
         if self.code:
-            projects = self.env['compassion.project'].search(
-                [('code', '=', self.code[:5])])
-            if projects:
-                self.project_id = projects[0].id
+            project = self.env['compassion.project'].search(
+                [('code', '=', self.code[:5])], limit=1)
+            if not project:
+                project = self.env['compassion.project'].create({
+                    'code': self.code[:5],
+                    'name': self.code[:5],
+                })
+            self.project_id = project.id
 
     def _get_child_states(self):
         return [
@@ -318,14 +322,6 @@ class compassion_child(models.Model):
                     res = res and child._get_case_study()
                 else:
                     child.get_exit_details()
-
-            proj_obj = self.env['compassion.project']
-            if not proj_obj.search_count([('code', '=', child.code[:5])]):
-                project = proj_obj.create({
-                    'code': child.code[:5],
-                    'name': child.code[:5],
-                })
-                project.update_informations()
 
             res = res and child._get_last_pictures()
         return res

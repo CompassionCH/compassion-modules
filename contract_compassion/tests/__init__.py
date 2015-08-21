@@ -10,7 +10,3 @@
 ##############################################################################
 
 from . import test_contract_compassion
-
-checks = [
-    test_contract_compassion
-]

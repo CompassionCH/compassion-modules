@@ -360,16 +360,16 @@ class sponsorship_contract(models.Model):
         """
         date_start = datetime.today().strftime(DF)
         config_obj = self.env['ir.config_parameter']
-        suspend_config = config_obj.search([
-            ('key', '=', 'sponsorship_compassion.suspend_product_id')])[0]
+        suspend_config = config_obj.search(
+            [('key', '=', 'sponsorship_compassion.suspend_product_id')],
+            limit=1)
         invl_obj = self.env['account.invoice.line']
-        product_obj = self.env['product.product']
-        sponsorship_product = product_obj.browse(product_obj.search(
-            [('name', '=', SPONSORSHIP_CATEGORY)])[0])
-        contracts = set()
+        sponsorship_product = self.env['product.product'].search(
+            [('name', '=', 'Sponsorship')])
+        contracts = None
         if suspend_config:
             # Revert future invoices with sponsorship product
-            susp_product_id = int(suspend_config[0].value)
+            susp_product_id = int(suspend_config.value)
             invl_lines = invl_obj.search([
                 ('contract_id', 'in', self.ids),
                 ('product_id', '=', susp_product_id),
@@ -553,8 +553,8 @@ class sponsorship_contract(models.Model):
                     'category_id': [(4, sponsor_cat_id)]})
                 gift_contract_lines = con_line_obj.search([
                     ('sponsorship_id', '=', contract.id)])
-                gift_contracts = gift_contract_lines.mapped('contract_id')
-                gift_contracts.signal_workflow('contract_active')
+                gift_contract_lines.mapped('contract_id').signal_workflow(
+                    'contract_active')
 
     @api.multi
     def _on_change_child_id(self, vals):
@@ -765,6 +765,7 @@ class sponsorship_contract(models.Model):
             # Cancel invoices instead of deleting them
             invoices.write({'move_id': False})
             invoices.signal_workflow('invoice_cancel')
+            invoices.message_post(_("Invoice Cancelled"), 'comment')
 
             # Isolate invoice lines in cancelled invoices instead of
             # deleting them

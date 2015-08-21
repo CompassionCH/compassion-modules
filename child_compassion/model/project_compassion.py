@@ -14,7 +14,6 @@ import urllib3
 import certifi
 import json
 import logging
-
 from openerp import models, fields, api, exceptions, _
 from openerp.tools.config import config
 
@@ -51,11 +50,16 @@ class compassion_project(models.Model):
     status_date = fields.Date(
         'Last status change', track_visibility='onchange')
     status_comment = fields.Char()
-    disburse_funds = fields.Boolean(track_visibility='onchange')
-    disburse_gifts = fields.Boolean(track_visibility='onchange')
-    disburse_unsponsored_funds = fields.Boolean(track_visibility='onchange')
-    new_sponsorships_allowed = fields.Boolean(track_visibility='onchange')
-    additional_quota_allowed = fields.Boolean(track_visibility='onchange')
+    disburse_funds = fields.Boolean(
+        track_visibility='onchange', default=True)
+    disburse_gifts = fields.Boolean(
+        track_visibility='onchange', default=True)
+    disburse_unsponsored_funds = fields.Boolean(
+        track_visibility='onchange', default=True)
+    new_sponsorships_allowed = fields.Boolean(
+        track_visibility='onchange', default=True)
+    additional_quota_allowed = fields.Boolean(
+        track_visibility='onchange', default=True)
 
     # Project Descriptions
     ######################
@@ -170,22 +174,23 @@ class compassion_project(models.Model):
         'new_sponsorships_allowed', 'additional_quota_allowed')
     @api.one
     def _set_suspension_state(self):
-        if self.id:
+        if not isinstance(self.id, models.NewId):
+            old_value = self.read(['suspension'])[0]['suspension']
             if self.status in ('A', 'P') and not (
                     self.disburse_gifts and self.disburse_funds and
                     self.disburse_unsponsored_funds and
                     self.new_sponsorships_allowed and
                     self.additional_quota_allowed):
-                status = 'suspended' if self.disburse_funds \
+                suspension_status = 'suspended' if self.disburse_funds \
                     else 'fund-suspended'
 
-                if status == 'fund-suspended' and \
-                        self.suspension != 'fund-suspended':
+                if suspension_status == 'fund-suspended' and \
+                        old_value != 'fund-suspended':
                     self.suspend_funds()
-                self.suspension = status
-            elif self.suspension == 'fund-suspended':
-                self.suspension = False
+                self.suspension = suspension_status
+            elif old_value == 'fund-suspended':
                 self._reactivate_project()
+                self.suspension = False
 
     def _has_desc(self):
         for project in self:
