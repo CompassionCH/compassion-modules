@@ -200,14 +200,14 @@ class recurring_contract(models.TransientModel):
             [('suspension', '=', 'fund-suspended')]).ids
         suspended_project_contract_ids = contract_obj.search([
             ('project_id', 'in', suspended_project_ids),
-            ('state', 'not in', ['terminated', 'cancelled'])])
+            ('state', 'not in', ['terminated', 'cancelled'])]).ids
 
         active_project_ids = project_obj.search([
             ('status', '=', 'A'),
-            ('id', 'not in', suspended_project_ids)])
+            ('id', 'not in', suspended_project_ids)]).ids
         active_project_contract_ids = contract_obj.search(
             [('project_id', 'in', active_project_ids),
-             ('state', 'not in', ['terminated', 'cancelled'])])
+             ('state', 'not in', ['terminated', 'cancelled'])]).ids
 
         cr = self.env.cr
         if suspended_project_contract_ids:
