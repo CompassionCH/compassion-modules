@@ -59,31 +59,32 @@ class recurring_contract(models.TransientModel):
             'act_project_suspended', wkf_id, project_suspended_contracts_ids)
 
     def _ins_wkf_items(self, act_id, wkf_id, cont_ids):
-        cr = self.env.cr
-        ir_model_data = self.env['ir.model.data']
-        wkf_activity_id = ir_model_data.get_object_reference(
-            'sponsorship_tracking', act_id)[1]
+        if cont_ids:
+            cr = self.env.cr
+            ir_model_data = self.env['ir.model.data']
+            wkf_activity_id = ir_model_data.get_object_reference(
+                'sponsorship_tracking', act_id)[1]
 
-        wkf_instance_ids = list()
-        con_ids_string = ','.join(cont_ids)
-        cr.execute(
-            "UPDATE wkf_instance SET state='active' "
-            "WHERE wfk_id = {0} and res_id in ({1})".format(
-                wkf_id, con_ids_string))
-        cr.execute(
-            "SELECT id FROM wkf_instance "
-            "WHERE wkf_id = {0} AND res_id in ({1})".format(
-                wkf_id, con_ids_string))
-        res = cr.fetchall()
-        if res:
-            for row in res:
-                wkf_instance_ids.append(row[0])
-
-        for wkf_instance_id in wkf_instance_ids:
+            wkf_instance_ids = list()
+            con_ids_string = ','.join(cont_ids)
             cr.execute(
-                "INSERT INTO wkf_workitem(act_id, inst_id, state) "
-                "VALUES ('{0}', '{1}', 'complete')".format(
-                    wkf_activity_id, wkf_instance_id))
+                "UPDATE wkf_instance SET state='active' "
+                "WHERE wfk_id = {0} and res_id in ({1})".format(
+                    wkf_id, con_ids_string))
+            cr.execute(
+                "SELECT id FROM wkf_instance "
+                "WHERE wkf_id = {0} AND res_id in ({1})".format(
+                    wkf_id, con_ids_string))
+            res = cr.fetchall()
+            if res:
+                for row in res:
+                    wkf_instance_ids.append(row[0])
+
+            for wkf_instance_id in wkf_instance_ids:
+                cr.execute(
+                    "INSERT INTO wkf_workitem(act_id, inst_id, state) "
+                    "VALUES ('{0}', '{1}', 'complete')".format(
+                        wkf_activity_id, wkf_instance_id))
 
     # Only at module installation
     @api.model
@@ -124,14 +125,15 @@ class recurring_contract(models.TransientModel):
 
     def _set_sds_state(self, contract_ids, sds_state, sds_change_date,
                        date_delta=0):
-        con_ids = ','.join(contract_ids)
-        self.env.cr.execute(
-            "UPDATE recurring_contract "
-            "SET sds_state = '{0}', sds_state_date = {1}+{2},"
-            "    color = {3} "
-            "WHERE id in ({4}) ".format(
-                sds_state, sds_change_date,
-                date_delta, SDS_COLORS[sds_state], con_ids))
+        if contract_ids:
+            con_ids = ','.join(contract_ids)
+            self.env.cr.execute(
+                "UPDATE recurring_contract "
+                "SET sds_state = '{0}', sds_state_date = {1}+{2},"
+                "    color = {3} "
+                "WHERE id in ({4}) ".format(
+                    sds_state, sds_change_date,
+                    date_delta, SDS_COLORS[sds_state], con_ids))
 
     def _get_contract_sub(self):
         """ Rules for setting SUB Status of a contract with child departed:

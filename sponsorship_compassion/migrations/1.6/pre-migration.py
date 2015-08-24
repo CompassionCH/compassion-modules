@@ -17,7 +17,7 @@ def update_product_records(cr):
     """ Remove ir_model_data to avoid product deletion. """
     cr.execute(
         "DELETE FROM ir_model_data "
-        "WHERE model = 'product.product' AND module = 'contract_compassion' ")
+        "WHERE model = 'product.product' AND module = 'sponsorship_compassion' ")
 
 
 def migrate(cr, version):

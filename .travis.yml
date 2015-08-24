@@ -43,7 +43,8 @@ before_script:
 
 script:
     - travis/travis_header.sh
-    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis_run_tests || test_flake8'
+    - test_flake8
+    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis_run_tests || true'
 
 after_success:
     - coveralls
