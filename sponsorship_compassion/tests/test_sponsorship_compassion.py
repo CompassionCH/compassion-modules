@@ -169,10 +169,9 @@ class test_sponsorship_compassion(test_base_module):
             Check if the 3 contracts create one merged invoice for every month
             (2 months here) with the good values.
         """
-        child_obj = self.env['compassion.child']
-        child1 = child_obj.create({'code': 'UG8320010'})
-        child2 = child_obj.create({'code': 'UG8320011'})
-        child3 = child_obj.create({'code': 'UG8320013'})
+        child1 = self.env['compassion.child'].create({'code': 'UG8320010'})
+        child2 = self.env['compassion.child'].create({'code': 'UG8320011'})
+        child3 = self.env['compassion.child'].create({'code': 'UG8320013'})
         sp_group = self._create_group(
             'do_nothing', self.partners.ids[0], 1, self.payment_term_id)
         sponsorship1 = self._create_contract(

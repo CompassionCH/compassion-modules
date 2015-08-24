@@ -10,7 +10,3 @@
 ##############################################################################
 
 from . import test_crm_compassion
-
-checks = [
-    test_crm_compassion
-]
