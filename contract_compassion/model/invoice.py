@@ -19,10 +19,11 @@ class account_invoice(models.Model):
     @api.multi
     def confirm_paid(self):
         """ Call invoice_paid method on related contracts. """
-        super(account_invoice, self).confirm_paid()
+        res = super(account_invoice, self).confirm_paid()
         for invoice in self:
             contracts = invoice.mapped('invoice_line.contract_id')
             contracts.invoice_paid(invoice)
+        return res
 
     @api.multi
     def action_reopen(self):
@@ -31,3 +32,4 @@ class account_invoice(models.Model):
         for invoice in self:
             contracts = invoice.mapped('invoice_line.contract_id')
             contracts.invoice_unpaid(invoice)
+        return True

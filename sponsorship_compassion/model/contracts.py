@@ -272,7 +272,7 @@ class sponsorship_contract(models.Model):
 
         return True
 
-    @api.multi
+    @api.model
     def _on_invoice_line_removal(self, invl_rm_data):
         pass
 
@@ -573,26 +573,26 @@ class sponsorship_contract(models.Model):
                      contract.correspondant_id.id})
 
     @api.multi
-    def _invoice_paid(self, invoice):
+    def invoice_paid(self, invoice):
         """ Prevent to reconcile invoices for fund-suspended projects. """
-        if invoice.payment_ids:
-            for invl in invoice.invoice_line:
-                if invl.contract_id and invl.contract_id.child_id:
-                    payment_allowed = True
-                    project = invl.contract_id.child_id.project_id
+        for invl in invoice.invoice_line:
+            if invl.contract_id and invl.contract_id.child_id:
+                payment_allowed = True
+                project = invl.contract_id.child_id.project_id
 
-                    if invl.product_id.categ_name == GIFT_CATEGORY:
-                        payment_allowed = project.disburse_gifts or \
-                            invl.due_date < project.status_date
-                    elif invl.product_id.categ_name == SPONSORSHIP_CATEGORY:
-                        payment_allowed = project.disburse_funds or \
-                            invl.due_date < project.status_date
-                    if not payment_allowed:
-                        raise exceptions.Warning(
-                            _("Reconcile error"),
-                            _("The project %s is fund-suspended. You cannot "
-                              "reconcile invoice (%s).") % (project.code,
-                                                            invoice.id))
+                if invl.product_id.categ_name == GIFT_CATEGORY:
+                    payment_allowed = project.disburse_gifts or \
+                        invl.due_date < project.status_date
+                elif invl.product_id.categ_name == SPONSORSHIP_CATEGORY:
+                    payment_allowed = project.disburse_funds or \
+                        invl.due_date < project.status_date
+                if not payment_allowed:
+                    raise exceptions.Warning(
+                        _("Reconcile error"),
+                        _("The project %s is fund-suspended. You cannot "
+                          "reconcile invoice (%s).") % (project.code,
+                                                        invoice.id))
+        super(sponsorship_contract, self).invoice_paid(invoice)
 
     @api.one
     @api.constrains('group_id')

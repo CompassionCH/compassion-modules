@@ -190,9 +190,18 @@ class recurring_contract(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.multi
     def invoice_unpaid(self, invoice):
-        self.signal_workflow('contract_activation_cancelled')
+        """ Check if at least one invoice is paid.
+            Cancel activation otherwise.
+        """
+        for contract in self.filtered(lambda c: c.state == 'active'):
+            paid_invoices = contract.invoice_line_ids.filtered(
+                lambda l: l.state == 'paid')
+            if not paid_invoices:
+                contract.signal_workflow('contract_activation_cancelled')
 
+    @api.multi
     def invoice_paid(self, invoice):
         """ Activate contract if it is waiting for payment. """
         activate_contracts = self.filtered(lambda c: c.state == 'waiting')

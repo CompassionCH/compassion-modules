@@ -47,6 +47,7 @@ class recurring_contract(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.multi
     def invoice_paid(self, invoice):
         """ Check if invoice paid contains
             a child gift and creates a message to GMC. """
@@ -73,6 +74,7 @@ class recurring_contract(models.Model):
                         })
                     message_obj.create(message_vals)
 
+    @api.multi
     def invoice_unpaid(self, invoice):
         super(recurring_contract, self).invoice_unpaid(invoice)
         action_id = self.get_action_id('CreateGift')
@@ -205,6 +207,7 @@ class recurring_contract(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    @api.model
     def _on_invoice_line_removal(self, invoice_lines):
         """ Removes the messages linked to the invoice line.
             @param: invoice_lines (dict): {
