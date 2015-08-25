@@ -33,16 +33,6 @@
     'version': '1.5',
     'category': 'Partner',
     'sequence': 150,
-    'description': """
-            Upgrade Partners to Compassion standards :
-                1. Three lines for the address
-                2. Mandatory reference sequence (CODEGA)
-                3. Church members relation between Partners
-                4. Birthdate and Deathdate
-                5. Adds new contact titles
-                6. Adds Partner Categories
-                7. Notify on Partner Mandate changes
-    """,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['base', 'partner_firstname', 'base_location',
