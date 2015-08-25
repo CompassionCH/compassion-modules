@@ -114,17 +114,18 @@ class contract_origin(models.Model):
         if self.type == 'partner':
             if self.partner_id.parent_id:
                 name = self.partner_id.parent_id.name + ", "
-            name += self.partner_id.name or self.name
+            name += self.partner_id.name or _(
+                'Contact with Sponsor/Ambassador')
         elif self.type in ('event', 'marketing'):
             name = self.analytic_id.name
         elif self.type == 'transfer':
             if self.country_id:
-                name = 'Transfer from ' + self.country_id.name
+                name = _('Transfer from ') + self.country_id.name
             else:
-                name = 'Transfer from partner country'
+                name = _('Transfer from partner country')
         elif self.type == 'other':
             name = self.other_name or 'Other'
         elif self.type == 'sub':
-            name = 'SUB Sponsorship'
+            name = _('SUB Sponsorship')
 
         return name
