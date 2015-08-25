@@ -45,6 +45,7 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="sale.res_partner_view_buttons" />
             <field name="arch" type="xml">
+                <!-- to change icone of smart button, you can find tag here:http://fortawesome.github.io/Font-Awesome/icons/ -->
                 <xpath expr="//button[@name='%(sale.act_res_partner_2_sale_order)d']" position="replace">
                     <button name="unreconciled_transaction_items" string='Unreconciled Transaction Items' type='object' groups="account.group_account_user" class="oe_inline oe_stat_button" icon="fa-android" />
                     <button name="receivable_transaction_items" string='1050 Transaction Items' type='object' groups="account.group_account_user" class="oe_inline oe_stat_button" icon="fa-exchange"/>
