@@ -30,7 +30,10 @@ class res_partner(models.Model):
         """
         new_firstname = vals.get('firstname')
         new_lastname = vals.get('lastname')
-        to_update = self.mapped(
+        for key, value in vals.iteritems():
+            if key.endswith('_id'):
+                vals[key] = int(value)
+        to_update = self.filtered(
             lambda p: (new_firstname and p.firstname != new_firstname) or
             (new_lastname and p.lastname != new_lastname))
         to_update._upsert_constituent()
