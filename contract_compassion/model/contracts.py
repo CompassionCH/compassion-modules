@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 class recurring_contract(models.Model):
     _inherit = "recurring.contract"
     _order = 'start_date desc'
+    _rec_name = 'name'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -63,7 +64,7 @@ class recurring_contract(models.Model):
         'recurring.contract', 'Previous sponsorship',
         track_visibility='onchange')
     has_mandate = fields.Boolean(compute='_set_has_mandate')
-    name = fields.Char(readonly=True)
+    name = fields.Char(compute='_set_name', store=True)
     partner_id = fields.Many2one(
         'res.partner', 'Partner', required=True,
         readonly=False, states={'terminated': [('readonly', True)]},
@@ -75,6 +76,17 @@ class recurring_contract(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.one
+    @api.depends('partner_id', 'child_id')
+    def _set_name(self):
+        """ Gives a friendly name for a sponsorship """
+        name = self.partner_id.ref or self.reference
+        if self.child_id:
+            name += ' - ' + self.child_code
+        elif self.contract_line_ids:
+            name += ' - ' + self.contract_line_ids[0].product_id.name
+        self.name = name
+
     @api.one
     @api.depends('state')
     def _set_active(self):
@@ -149,20 +161,6 @@ class recurring_contract(models.Model):
                 vals['num_pol_ga'] = self.search_count([
                     ('partner_id', '=', partner_id)])
         return super(recurring_contract, self).create(vals)
-
-    @api.multi
-    @api.depends('partner_id', 'child_id')
-    def name_get(self):
-        """ Gives a friendly name for a sponsorship """
-        res = []
-        for contract in self:
-            name = contract.partner_id.ref or contract.reference
-            if contract.child_id:
-                name += ' - ' + contract.child_code
-            elif contract.contract_line_ids:
-                name += ' - ' + contract.contract_line_ids[0].product_id.name
-            res.append((contract.id, name))
-        return res
 
     @api.one
     def copy(self, default=None):

@@ -20,7 +20,7 @@ class contract_origin(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    name = fields.Char(compute='_set_name')
+    name = fields.Char(compute='_set_name', store=True)
     type = fields.Selection('_get_origin_types', help=_(
         "Origin of contract : "
         " * Contact with sponsor/ambassador : an other sponsor told the "
@@ -54,7 +54,25 @@ class contract_origin(models.Model):
     @api.one
     @api.depends('type')
     def _set_name(self):
-        self.name = self._name_get()
+        name = ""
+        if self.type == 'partner':
+            if self.partner_id.parent_id:
+                name = self.partner_id.parent_id.name + ", "
+            name += self.partner_id.name or _(
+                'Contact with Sponsor/Ambassador')
+        elif self.type in ('event', 'marketing'):
+            name = self.analytic_id.name
+        elif self.type == 'transfer':
+            if self.country_id:
+                name = _('Transfer from ') + self.country_id.name
+            else:
+                name = _('Transfer from partner country')
+        elif self.type == 'other':
+            name = self.other_name or 'Other'
+        elif self.type == 'sub':
+            name = _('SUB Sponsorship')
+
+        self.name = name
 
     def _get_origin_types(self):
         return [
@@ -76,15 +94,6 @@ class contract_origin(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.multi
-    @api.depends('type')
-    def name_get(self):
-        res = list()
-        for origin in self:
-            res.append((origin.id, origin._name_get()))
-
-        return res
-
     @api.model
     def create(self, vals):
         """Try to find existing origin instead of raising an error."""
@@ -105,27 +114,3 @@ class contract_origin(models.Model):
             else:
                 raise
         return res
-
-    ##########################################################################
-    #                             PRIVATE METHODS                            #
-    ##########################################################################
-    def _name_get(self):
-        name = ""
-        if self.type == 'partner':
-            if self.partner_id.parent_id:
-                name = self.partner_id.parent_id.name + ", "
-            name += self.partner_id.name or _(
-                'Contact with Sponsor/Ambassador')
-        elif self.type in ('event', 'marketing'):
-            name = self.analytic_id.name
-        elif self.type == 'transfer':
-            if self.country_id:
-                name = _('Transfer from ') + self.country_id.name
-            else:
-                name = _('Transfer from partner country')
-        elif self.type == 'other':
-            name = self.other_name or 'Other'
-        elif self.type == 'sub':
-            name = _('SUB Sponsorship')
-
-        return name
