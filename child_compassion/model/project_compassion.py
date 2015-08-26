@@ -449,7 +449,7 @@ class compassion_project(models.Model):
             'name': json_values.get('name'),
             'start_date': json_values.get('startDate') or False,
             'stop_date': json_values.get('stopDate') or False,
-            'last_update_date': json_values.get('lastUpdateDate') or False,
+            'last_update_date': json_values.get('lastModifiedDate') or False,
             'status': json_values.get('status'),
             'status_date': json_values.get('statusDate') or False,
             'status_comment': json_values.get('statusComment'),
