@@ -83,6 +83,7 @@
                             <group>
                                 <field name="ref" required="1"/>
                                 <field name="lang"/>
+                                <field name="spoken_languages" widget="many2many_tags" options="{'create':False}"/>
                             </group>
                             <group>
                                 <field name="opt_out"/>
