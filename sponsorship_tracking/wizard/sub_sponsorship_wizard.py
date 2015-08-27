@@ -9,7 +9,7 @@
 #
 ##############################################################################
 from openerp import api, models, fields, exceptions, _
-import pdb
+
 
 class sub_sponsorship_wizard(models.TransientModel):
     _name = "sds.subsponsorship.wizard"
@@ -35,7 +35,7 @@ class sub_sponsorship_wizard(models.TransientModel):
             ('not_given', _('Not given')),
             ('other', _('Other...'))
         ]
-    
+
     def _get_channels(self):
         """Returns the available channel through the new sponsor
         reached Compassion.
@@ -57,7 +57,6 @@ class sub_sponsorship_wizard(models.TransientModel):
         contract = contract_obj.browse(sponsorship_id)
         origin_obj = self.env['recurring.contract.origin']
         sub_origin_id = origin_obj.search([('type', '=', 'sub')], limit=1).id
-        pdb.set_trace()
         sub_contract = contract.copy({
             'parent_id': sponsorship_id,
             'origin_id': sub_origin_id,
