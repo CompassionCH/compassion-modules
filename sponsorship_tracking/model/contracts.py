@@ -175,7 +175,7 @@ class recurring_contract(models.Model):
 
         if 'S' in self.type:
             origin_id = self.env['recurring.contract.origin'].search(
-                [('type', '=', 'sub')]).ids[0]
+                [('type', '=', 'sub')], limit=1).id
             correspondant_id = self.correspondant_id.id
             parent_id = self._define_parent_id(correspondant_id)
 

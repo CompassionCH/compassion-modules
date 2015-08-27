@@ -80,15 +80,16 @@ class recurring_contract(models.Model):
     @api.depends('partner_id', 'child_id')
     def _set_name(self):
         """ Gives a friendly name for a sponsorship """
-        name = self.partner_id.ref or self.reference
-        if self.child_id:
-            name += ' - ' + self.child_code
-        elif self.contract_line_ids:
-            name += ' - ' + self.contract_line_ids[0].product_id.name
-        self.name = name
+        if self.partner_id.ref or self.reference:
+            name = self.partner_id.ref or self.reference
+            if self.child_id:
+                name += ' - ' + self.child_code
+            elif self.contract_line_ids:
+                name += ' - ' + self.contract_line_ids[0].product_id.name
+            self.name = name
 
     @api.one
-    @api.depends('state')
+    @api.depends('activation_date')
     def _set_active(self):
         self.is_active = bool(self.activation_date) and \
             self.state not in ('terminated', 'cancelled')
@@ -287,11 +288,12 @@ class recurring_contract(models.Model):
     ##########################################################################
     #                            WORKFLOW METHODS                            #
     ##########################################################################
-    @api.multi
+    @api.one
     def contract_active(self):
-        self.write({
-            'activation_date': datetime.today().strftime(DF),
-            'state': 'active'})
+        vals = {'state': 'active'}
+        if not self.is_active:
+            vals.update({'activation_date': datetime.today().strftime(DF)})
+        self.write(vals)
         return True
 
     @api.multi

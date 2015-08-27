@@ -18,6 +18,7 @@
                                    domain="[('state', 'in', ('N', 'D', 'I', 'R', 'Z')), ('project_id.suspension', 'not in', ('suspended','fund-suspended'))]"
                                    options="{'create': false, 'm2o_dialog': false, 'create_edit': false, 'colors':{
                                              'R':'red', 'N':'blue'}, 'field_color':'state'}"/>
+                            <field name="channel" required="1"/>
                         </group>
                         <group states="no_sub">
                             <field name="no_sub_default_reasons" attrs="{'required': [('state', '=', 'no_sub')]}"/>
