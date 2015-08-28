@@ -158,7 +158,11 @@ class sponsorship_contract(models.Model):
         """
         child = self.env['compassion.child'].browse(vals.get('child_id'))
         if 'S' in vals.get('type', '') and child:
-            child.write({'sponsor_id': vals['partner_id']})
+            child.write(
+                {'sponsor_id': vals['partner_id'],
+                 'delegated_to': False, 'delegated_comment': False,
+                 'date_delegation': False, 'date_end_delegation': False}
+            )
 
         return super(sponsorship_contract, self).create(vals)
 
@@ -578,10 +582,11 @@ class sponsorship_contract(models.Model):
             if invl.contract_id and invl.contract_id.child_id:
                 payment_allowed = True
                 project = invl.contract_id.child_id.project_id
-
                 if invl.product_id.categ_name == GIFT_CATEGORY:
-                    payment_allowed = project.disburse_gifts or \
-                        invl.due_date < project.status_date
+                    payment_allowed = \
+                        (project.disburse_gifts or
+                         invl.due_date < project.status_date) and \
+                        invl.contract_id.state == 'active'
                 elif invl.product_id.categ_name == SPONSORSHIP_CATEGORY:
                     payment_allowed = project.disburse_funds or \
                         invl.due_date < project.status_date
