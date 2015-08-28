@@ -9,9 +9,9 @@
 #
 ##############################################################################
 
-from openerp.tests import common
 from openerp.exceptions import Warning
-from openerp import netsvc
+from openerp.addons.contract_compassion.tests.test_base_module\
+    import test_base_module
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.config import config
 
@@ -21,7 +21,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class test_messages(common.TransactionCase):
+class test_messages(test_base_module):
     """Test and simulate reception of GMC Messages.
     Warning : Please make sure module sponsorship_sync_gp is not installed
               in order to be sure no information is sent to GP.
@@ -34,38 +34,15 @@ class test_messages(common.TransactionCase):
         self.action_obj = self.env['gmc.action']
         self.child_obj = self.env['compassion.child']
         self.today = date.today().strftime(DF)
-        account_type = self.env['account.account.type'].search([
-            ('code', '=', 'receivable')])[0].id
-        property_account_receivable = self.env['account.account'].search([
-            ('type', '=', 'receivable'),
-            ('user_type', '=', account_type)])[0].id
-        account_type = self.env['account.account.type'].search([
-            ('code', '=', 'payable')])[0].id
-        property_account_payable = self.env['account.account'].search([
-            ('type', '=', 'payable'),
-            ('user_type', '=', account_type)])[0].id
-        self.property_account_income = self.env['account.account'].search([
-            ('type', '=', 'other'),
-            ('name', '=', 'Property Account Income Test')])[0].id
-        category_id = self.env['res.partner.category'].create({
-            'name': 'sponsor'}).id
-        self.partner_id = self.env['res.partner'].create(
-            self.cr, self.uid, {
-                'lang': 'fr_CH',
-                'lastname': 'Client 37',
-                'property_account_receivable': property_account_receivable,
-                'property_account_payable': property_account_payable,
-                'notification_email_send': 'none',
-                'category_id': [(4, category_id)],
-            }).id
-        self.payment_term_id = self.env['account.payment.term'].search([
-            ('name', '=', '15 Days')])[0].id
-        self.origin_id = self.env['recurring.contract.origin'].create({
-            'name': 'other',
-            'type': 'event'}).id
-        self.group_id = self._create_group_id(
-            'do_nothing', 1, 'month', self.partner_id, 1,
-            self.payment_term_id)
+        self.origin = self.env['recurring.contract.origin'].create(
+            {
+                'name': 'other',
+                'type': 'event'
+            })
+        self.group = self._create_group(
+            'do_nothing', self.partners.ids[3], 1,
+            self.payment_term_id,
+            other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
 
     def _allocate_new_children(self, child_keys):
         """Creates allocate message and process them for given
@@ -73,9 +50,10 @@ class test_messages(common.TransactionCase):
         """
         if not isinstance(child_keys, list):
             child_keys = [child_keys]
-        message_ids = [self._create_allocate_message(child_key)
-                       for child_key in child_keys]
-        self.message_obj.browse(message_ids).process_messages()
+        messages = self.message_obj
+        for child_key in child_keys:
+            messages |= self._create_allocate_message(child_key)
+        messages.process_messages()
         return self.child_obj.search([('code', 'in', child_keys)])
 
     def _create_allocate_message(self, child_key, child_id=0):
@@ -95,7 +73,7 @@ class test_messages(common.TransactionCase):
                 'child_id': child_id,
                 'object_id': child_id
             })
-        return self.message_obj.create(message_vals).id
+        return self.message_obj.create(message_vals)
 
     def _create_incoming_message(self, type, model, object_id, child_key='',
                                  event=''):
@@ -122,10 +100,10 @@ class test_messages(common.TransactionCase):
     def _create_active_contract(self, child_id):
         """Creates a new contract for given child."""
         contract_vals = {
-            'partner_id': self.partner_id,
-            'correspondant_id': self.partner_id,
-            'origin_id': self.origin_id,
-            'group_id': self.group_id,
+            'partner_id': self.partners.ids[3],
+            'correspondant_id': self.partners.ids[3],
+            'origin_id': self.origin.id,
+            'group_id': self.group.id,
             'channel': 'direct',
             'num_pol_ga': randint(700, 999),
             'child_id': child_id,
@@ -185,33 +163,9 @@ class test_messages(common.TransactionCase):
             'description': 'gift for bicycle'})
         res = wizard.generate_invoice()
         inv_ids = res['domain'][0][2]
-        wf_service = netsvc.LocalService('workflow')
-        wf_service.trg_validate(
-            self.uid, 'account.invoice', inv_ids[0], 'invoice_open', self.cr)
-        self._pay_invoice(inv_ids[0])
-
-    def _create_group_id(self, change_method, rec_value, rec_unit, partner_id,
-                         adv_biling_months, payment_term_id, ref=None):
-        """
-            Create a group with 2 possibilities :
-                - ref is not given so it takes "/" default values
-                - ref is given
-        """
-        group_obj = self.env['recurring.contract.group']
-        group = group_obj.create({
-            'partner_id': partner_id})
-        group_vals = {
-            'change_method': change_method,
-            'recurring_value': rec_value,
-            'recurring_unit': rec_unit,
-            'partner_id': partner_id,
-            'advance_billing_months': adv_biling_months,
-            'payment_term_id': payment_term_id,
-        }
-        if ref:
-            group_vals['ref'] = ref
-        group.write(group_vals)
-        return group.id
+        invoices = self.env['account.invoice'].browse(inv_ids)
+        invoices[0].signal_workflow('invoice_open')
+        self._pay_invoice(invoices[0])
 
     def test_config_set(self):
         """Test that the config is properly set on the server.
@@ -314,43 +268,5 @@ class test_messages(common.TransactionCase):
         self._send_messages('CreateGift')
 
         # Sponsor cancels the sponsorship
-        wf_service = netsvc.LocalService('workflow')
-        wf_service.trg_validate(self.uid, 'recurring.contract', contract.id,
-                                'contract_terminated', self.cr)
+        contract.signal_workflow('contract_terminated')
         self._send_messages('CancelCommitment')
-
-    def _pay_invoice(self, invoice_id):
-        bank_journal = self.env['account.journal'].search([
-            ('type', '=', 'bank')])[0]
-        invoice = self.env['account.invoice'].browse(invoice_id)
-        account_id = invoice.partner_id.property_account_receivable.id
-        move_obj = self.env['account.move']
-        move_line_obj = self.env['account.move.line']
-        move = move_obj.create({
-            'journal_id': bank_journal.id
-        })
-        move_line_obj.create({
-            'name': 'BNK-' + invoice.number,
-            'move_id': move.id,
-            'partner_id': invoice.partner_id.id,
-            'account_id': bank_journal.default_debit_account_id.id,
-            'debit': invoice.amount_total,
-            'journal_id': bank_journal.id,
-            'period_id': invoice.period_id.id,
-            'date': invoice.date_due
-        })
-        mv_line = move_line_obj.create({
-            'name': 'PAY-' + invoice.number,
-            'move_id': move.id,
-            'partner_id': invoice.partner_id.id,
-            'account_id': account_id,
-            'credit': invoice.amount_total,
-            'journal_id': invoice.journal_id.id,
-            'period_id': invoice.period_id.id,
-            'date': invoice.date_due
-        })
-        move.button_validate()
-        to_reconcile = move_line_obj.search([
-            ('move_id', '=', invoice.move_id.id),
-            ('account_id', '=', account_id)]) + mv_line
-        to_reconcile.reconcile()

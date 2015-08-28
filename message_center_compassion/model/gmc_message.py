@@ -19,7 +19,6 @@ from datetime import datetime
 import requests
 import logging
 import traceback
-
 logger = logging.getLogger(__name__)
 
 
@@ -235,7 +234,6 @@ class gmc_message_pool(models.Model):
                 res = self._perform_outgoing_action()
             else:
                 raise NotImplementedError
-
             if res:
                 message_update = {
                     'state': 'pending' if action.direction == 'out'
@@ -304,7 +302,6 @@ class gmc_message_pool(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    @api.one
     def _perform_incoming_action(self):
         """ This method defines what has to be done
         for each incoming message type. """
@@ -323,7 +320,6 @@ class gmc_message_pool(models.Model):
                 _("Invalid Action"),
                 _("No implementation found for method '%s'.") % (action.type))
 
-    @api.one
     def _perform_outgoing_action(self):
         """ Process an outgoing message by sending it to the middleware.
             Returns : unique id of generated request, or False.
@@ -353,10 +349,8 @@ class gmc_message_pool(models.Model):
             success = json_data.get('success')
             if success == 'yes':
                 return json_data.get('uuid')
-
         return False
 
-    @api.one
     def _validate_outgoing_action(self):
         """ Validation of outgoing messages before sending them to GMC. """
         action = self.action_id
