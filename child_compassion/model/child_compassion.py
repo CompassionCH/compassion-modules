@@ -218,7 +218,7 @@ class compassion_child(models.Model):
             if child.date_delegation:
                 if datetime.strptime(child.date_delegation, DF) \
                    <= datetime.today() and child.is_available:
-                    children_to_delegate.add(child)
+                    children_to_delegate |= child
 
                 if child.date_end_delegation and \
                    datetime.strptime(child.date_end_delegation, DF) <= \

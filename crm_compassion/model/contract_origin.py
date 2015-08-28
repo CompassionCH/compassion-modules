@@ -18,12 +18,14 @@ class contract_origin(models.Model):
 
     event_id = fields.Many2one('crm.event.compassion', 'Event')
 
-    def _name_get(self):
+    @api.one
+    @api.depends('type')
+    def _set_name(self):
         if self.type == 'event':
             name = self.event_id.full_name
         else:
             name = super(contract_origin, self)._name_get()
-        return name
+        self.name = name
 
 
 class contracts(models.Model):

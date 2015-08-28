@@ -173,8 +173,8 @@ class gmc_message_pool(models.Model):
         """ Directly put CreateGift messages which have a too long instruction
         in Failed state. Compute Gift fields."""
         message = super(gmc_message_pool, self).create(vals)
-        if message.name == 'CreateGift' and len(
-                message.gift_instructions) > 60:
+        if message.name == 'CreateGift' and message.gift_instructions and \
+                len(message.gift_instructions) > 60:
             message.write({
                 'state': 'failure',
                 'failure_reason': _('Gift instructions is more than 60 '
