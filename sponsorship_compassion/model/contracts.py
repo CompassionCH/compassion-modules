@@ -579,10 +579,11 @@ class sponsorship_contract(models.Model):
             if invl.contract_id and invl.contract_id.child_id:
                 payment_allowed = True
                 project = invl.contract_id.child_id.project_id
-
                 if invl.product_id.categ_name == GIFT_CATEGORY:
-                    payment_allowed = project.disburse_gifts or \
-                        invl.due_date < project.status_date
+                    payment_allowed = \
+                        (project.disburse_gifts or
+                         invl.due_date < project.status_date) and \
+                        invl.contract_id.state == 'active'
                 elif invl.product_id.categ_name == SPONSORSHIP_CATEGORY:
                     payment_allowed = project.disburse_funds or \
                         invl.due_date < project.status_date
