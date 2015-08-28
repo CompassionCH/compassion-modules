@@ -159,7 +159,11 @@ class sponsorship_contract(models.Model):
         """
         child = self.env['compassion.child'].browse(vals.get('child_id'))
         if 'S' in vals.get('type', '') and child:
-            child.write({'sponsor_id': vals['partner_id']})
+            child.write(
+                {'sponsor_id': vals['partner_id'], 
+                'delegated_to': False, 'delegated_comment': False,
+                 'date_delegation': False, 'date_end_delegation': False}
+            )
 
         return super(sponsorship_contract, self).create(vals)
 
