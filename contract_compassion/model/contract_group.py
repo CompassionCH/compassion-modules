@@ -218,7 +218,7 @@ class contract_group(models.Model):
         elif (self.payment_term_id and
               (_('LSV') in self.payment_term_id.name or
                _('Direct Debit') in self.payment_term_id.name)):
-            seq = self.pool['ir.sequence']
+            seq = self.env['ir.sequence']
             ref = mod10r(seq.next_by_code('contract.bvr.ref'))
         inv_data.update({
             'bvr_reference': ref})
