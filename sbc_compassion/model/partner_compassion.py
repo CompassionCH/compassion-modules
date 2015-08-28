@@ -9,7 +9,8 @@
 #
 ##############################################################################
 
-from openerp import api, fields, models, _
+from openerp import fields, models
+
 
 class ResPartner(models.Model):
 
