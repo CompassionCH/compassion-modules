@@ -1,0 +1,63 @@
+<openerp>
+    <data>
+
+
+                <!-- <tree default_order="name, code desc"/> -->
+        <record id="action_compassion_country" model="ir.actions.act_window">
+            <field name="name">view_compassion_country_tree</field>
+            <field name="res_model">compassion.country</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+<!--         <menuitem id="menu_sponsorship_contract_form" parent="child_compassion.menu_sponsorship_section"
+                  name="Sponsorships" sequence="0" action="action_sponsorship_contract"/> -->
+        <menuitem id="menu_country" parent="child_compassion.menu_sponsorship_section"
+                  name="Countries" action="action_compassion_country" sequence="4"/>
+
+        <!-- Top menu item -->
+<!--         <menuitem name="Sponsorship"
+                  id="menu_sponsorship_root"
+                  groups="group_sponsorship"
+                  sequence="5"/>
+        <menuitem id="menu_sponsorship_section" parent="menu_sponsorship_root" name="Sponsorship" sequence="1"/> -->
+
+    	<record id="view_compassion_country_form" model="ir.ui.view">
+            <field name="name">view_compassion_country_form</field>
+            <field name="model">compassion.country</field>
+            <field name="inherit_id" ref="child_compassion.view_compassion_country_form"/>
+            <field name="arch" type="xml">
+                <!-- Add correspondance tab -->
+                <xpath expr="//field[@name='language']" position="after">
+                    <field name="spoken_langs" widget="many2many_tags" options="{'create':False}"/>
+                </xpath>
+            </field>
+        </record>
+
+
+
+<!--         <record id="action_sponsorship_contract" model="ir.actions.act_window">
+            <field name="name">Sponsorships</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">recurring.contract</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type','like','S')]</field>
+            <field name="context">{'default_type':'S'}</field>
+        </record> -->
+
+<!--                 <record id="view_partner_tree_compassion" model="ir.ui.view">
+            <field name="name">res.partner.tree.compassion</field>
+            <field name="model">res.partner</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>            
+            <field name="arch" type="xml">
+                <field name="display_name" position="after">
+                    <field name="lang"/>
+                    <field name="zip"/>
+                    <field name="city"/>
+                </field>
+            </field>
+        </record> -->
+
+
+    </data>
+</openerp>

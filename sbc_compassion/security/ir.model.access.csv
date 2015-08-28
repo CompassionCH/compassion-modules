@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sbc.compassion_sbc.compassion,sbc.compassion.sbc.compassion,model_sbc.compassion_sbc.compassion,,1,0,0,0
