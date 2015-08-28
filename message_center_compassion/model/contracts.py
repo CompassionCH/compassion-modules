@@ -14,7 +14,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 from datetime import datetime
 import logging
-
 from openerp.addons.sponsorship_compassion.model.product import GIFT_CATEGORY
 
 logger = logging.getLogger(__name__)
@@ -116,8 +115,8 @@ class recurring_contract(models.Model):
             'NewImage': 'picture',
         }
         res = True
-        if not self.gmc_state == 'biennial' and event in (
-                'CaseStudy', 'NewImage'):
+        if not (self.gmc_state == 'biennial' and event in (
+                'CaseStudy', 'NewImage')):
             res = self.write({'gmc_state': gmc_states[event]})
         return res
 

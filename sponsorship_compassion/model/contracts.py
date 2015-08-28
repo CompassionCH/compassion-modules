@@ -90,7 +90,6 @@ class sponsorship_contract(models.Model):
             type = self.browse(context['active_id']).type
         else:
             type = context.get('default_type', 'O')
-
         if 'S' in type:
             res.extend([
                 ('1', _("Depart of child")),

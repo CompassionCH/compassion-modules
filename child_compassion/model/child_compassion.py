@@ -494,7 +494,6 @@ class compassion_child(models.Model):
 
         value_obj = self.env['compassion.translated.value']
         values = list()
-
         """ cs_sections_mapping holds the mapping of sections in case study
             to property.
             cs_sections_mapping is a dict of lists of the following form:

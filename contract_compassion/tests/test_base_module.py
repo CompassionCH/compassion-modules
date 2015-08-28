@@ -21,10 +21,10 @@ class test_base_module(test_base_contract):
     def setUp(self):
         # Retrieve of income account
         super(test_base_module, self).setUp()
-        property_account_income = self.env['account.account'].search([
+        self.property_account_income = self.env['account.account'].search([
             ('type', '=', 'other'),
             ('name', '=', 'Property Account Income Test')]).ids[0]
-        property_account_expense = self.env['account.account'].search([
+        self.property_account_expense = self.env['account.account'].search([
             ('type', '=', 'other'),
             ('name', '=', 'Property Account Expense Test')
         ]).ids[0]
@@ -40,27 +40,27 @@ class test_base_module(test_base_contract):
             [('name', '=', 'Family Gift')])
         if self.product_sp:
             self.product_sp[0].write({
-                'property_account_income': property_account_income,
-                'property_account_expense': property_account_expense,
+                'property_account_income': self.property_account_income,
+                'property_account_expense': self.property_account_expense,
                 })
         if self.product_gf:
             self.product_gf[0].write({
-                'property_account_income': property_account_income,
-                'property_account_expense': property_account_expense,
+                'property_account_income': self.property_account_income,
+                'property_account_expense': self.property_account_expense,
             })
         if self.product_bf:
             self.product_bf[0].write({
-                'property_account_income': property_account_income,
-                'property_account_expense': property_account_expense,
+                'property_account_income': self.property_account_income,
+                'property_account_expense': self.property_account_expense,
             })
         if self.product_fg:
             self.product_fg[0].write({
-                'property_account_income': property_account_income,
-                'property_account_expense': property_account_expense,
+                'property_account_income': self.property_account_income,
+                'property_account_expense': self.property_account_expense,
             })
         # Add of account for id's 1 product
         product = self.env['product.product'].browse(1)
-        product.property_account_income = property_account_income
+        product.property_account_income = self.property_account_income
 
     def _pay_invoice(self, invoice):
         bank_journal = self.env['account.journal'].search(

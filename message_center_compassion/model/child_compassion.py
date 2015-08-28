@@ -11,7 +11,6 @@
 from openerp import api, models, fields, _
 from openerp.exceptions import Warning
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-
 from datetime import datetime
 
 
@@ -90,8 +89,8 @@ class compassion_child(models.Model):
         This happens only for unsponsored children that are no longer
         assigned to Switzerland.
         """
-        return self.write(args.get('object_id'), {
-            'state': 'X', 'exit_date': args.get('date')})
+        child = self.browse(args.get('object_id'))
+        return child.write({'state': 'X', 'exit_date': args.get('date')})
 
     def depart(self, args):
         """When a depart is done automatically when processing a message:
@@ -100,9 +99,8 @@ class compassion_child(models.Model):
         2. The child is marked as departed (GetExitDetails API is called)
         3. GP_Exit_Reason is inferred if possible.
         """
-        lang = self.env.context.get('lang')
-        self.env.context = self.env.with_context(lang='en_US').context
-        child = self.browse(args.get('object_id'))
+        child = self.browse(args.get('object_id')).with_context(
+            lang='en_US', default_type='S')
         if child.sponsor_id:
             contracts = child.sponsorship_ids.filtered(
                 lambda c: c.state in ('waiting', 'active', 'mandate'))
@@ -112,7 +110,6 @@ class compassion_child(models.Model):
                 'end_date': datetime.today().strftime(DF),
                 'gmc_state': 'depart'})
             contracts.signal_workflow('contract_terminated')
-
         if child.state != 'F':
             child.write({'state': 'F'})
             if child.exit_reason:
@@ -121,7 +118,6 @@ class compassion_child(models.Model):
                         child.write({'gp_exit_reason': gp_exit[0]})
                         break
 
-        self.env.context = self.env.with_context(lang=lang).context
         return True
 
     def update(self, args):
