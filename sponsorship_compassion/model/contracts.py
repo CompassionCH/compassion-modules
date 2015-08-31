@@ -349,7 +349,7 @@ class sponsorship_contract(models.Model):
             'product_id': product_id,
             'account_id': product.property_account_income.id,
             'name': 'Replacement of sponsorship (fund-suspended)'}
-        rec = self.env['account.analytic.default'].account_get(product)
+        rec = self.env['account.analytic.default'].account_get(product.id)
         if rec and rec.analytic_id:
             vals['account_analytic_id'] = rec.analytic_id.id
 

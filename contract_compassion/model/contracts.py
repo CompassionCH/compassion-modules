@@ -326,15 +326,19 @@ class recurring_contract(models.Model):
                                  'Postfinance' in payment_term):
             # Recompute next_invoice_date
             today = datetime.today()
-            next_invoice_date = datetime.strptime(
-                self.next_invoice_date, DF).replace(month=today.month,
-                                                    year=today.year)
+            old_invoice_date = datetime.strptime(
+                self.next_invoice_date, DF)
+            next_invoice_date = old_invoice_date.replace(
+                month=today.month, year=today.year)
             if today.day > 15 and next_invoice_date.day < 15:
                 next_invoice_date = next_invoice_date + relativedelta(
                     months=+1)
-            vals['next_invoice_date'] = next_invoice_date.strftime(DF)
+            if next_invoice_date > old_invoice_date:
+                vals['next_invoice_date'] = next_invoice_date.strftime(DF)
 
         self.write(vals)
+        # Generate invoices
+        self.button_generate_invoices()
         return True
 
     @api.one
