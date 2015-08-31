@@ -49,7 +49,6 @@ class test_sponsorship_compassion(test_base_module):
                 'child_id': child.id,
                 'correspondant_id': sp_group.partner_id.id
             })
-
         # Check if ref and language speaking of partner are set automatically
         partner_obj = self.env['res.partner']
         self.assertTrue(partner_obj.browse(self.partners.ids[0]).ref)
