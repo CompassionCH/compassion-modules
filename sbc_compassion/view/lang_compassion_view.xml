@@ -20,7 +20,7 @@
 	        <field name="view_id" ref="view_spoken_langs_origin_tree"/>
 	    </record>
 
-	    <menuitem name="Spoken languages"
+	    <menuitem name="ISO639-3"
 	              parent="base.menu_translation"
 	              id="menu_open_view_spoken_langs_form"
 	              action="action_spoken_langs_form"
