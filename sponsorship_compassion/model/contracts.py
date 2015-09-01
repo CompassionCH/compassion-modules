@@ -254,7 +254,6 @@ class sponsorship_contract(models.Model):
         #    and reconcile refs that are no longer valid
         if inv_lines:
             # Call the hook for letting other modules handle the removal.
-            # TODO: An other module is needed for this method?
             self._on_invoice_line_removal(invl_rm_data)
 
             self._clean_paid_invoice_lines(list(to_remove_inv),
@@ -325,15 +324,13 @@ class sponsorship_contract(models.Model):
     def _suspend_change_invoices(self, since_date, product_id):
         """ Change cancelled sponsorship invoices and put them for given
         product. Re-open invoices. """
-
-        cancel_inv_lines = self.env['account.invoice.line'].search([
-            ('contract_id', 'in', self.ids),
-            ('state', '=', 'cancel'),
-            ('product_id.categ_name', '=', SPONSORSHIP_CATEGORY),
-            ('due_date', '>=', since_date)])
-        invoices = cancel_inv_lines.with_context(
-            lang='en_US').mapped('invoice_id')
-
+        cancel_inv_lines = self.env['account.invoice.line'].with_context(
+            lang='en_US').search([
+                ('contract_id', 'in', self.ids),
+                ('state', '=', 'cancel'),
+                ('product_id.categ_name', '=', SPONSORSHIP_CATEGORY),
+                ('due_date', '>=', since_date)])
+        invoices = cancel_inv_lines.mapped('invoice_id')
         invoices.action_cancel_draft()
         vals = self.get_suspend_invl_data(product_id)
         cancel_inv_lines.write(vals)
@@ -416,8 +413,8 @@ class sponsorship_contract(models.Model):
                 invoice.signal_workflow('invoice_open')
 
         # Log a note in the contracts
-        if contracts:
-            contracts.message_post(
+        for contract in contracts:
+            contract.message_post(
                 "The project was reactivated."
                 "<br/>Invoices due in the suspension period "
                 "are automatically reverted.",
@@ -769,12 +766,13 @@ class sponsorship_contract(models.Model):
             # Cancel invoices instead of deleting them
             invoices.write({'move_id': False})
             invoices.signal_workflow('invoice_cancel')
-            invoices.message_post(_("Invoice Cancelled"), 'comment')
+            for invoice in invoices:
+                invoice.message_post(_("Invoice Cancelled"), 'comment')
 
             # Isolate invoice lines in cancelled invoices instead of
             # deleting them
             invl_to_cancel = inv_line_obj.browse(inv_line_ids).filtered(
-                lambda invl: invl.invoice_id.id in to_update_inv).ids
+                lambda invl: invl.invoice_id.id in to_update_inv)
 
             self._move_cancel_lines(invl_to_cancel, keep_lines)
 
@@ -832,6 +830,6 @@ class sponsorship_contract(models.Model):
                 pml_id, default={
                     'reconcile_id': False,
                     'credit': amount_deleted})
-        self.env.invalidate_all()
         if unrec_pml:
             mvl_obj.browse(unrec_pml)._remove_move_reconcile()
+        self.env.invalidate_all()

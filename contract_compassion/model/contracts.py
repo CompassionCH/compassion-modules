@@ -282,7 +282,7 @@ class recurring_contract(models.Model):
             'res_model': self._name,
             'res_id': self.id,
             'target': 'current',
-            'context': self.with_context(default_type=self.type).context
+            'context': self.with_context(default_type=self.type).env.context
         }
 
     ##########################################################################

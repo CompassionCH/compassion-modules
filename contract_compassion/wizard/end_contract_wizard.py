@@ -71,6 +71,9 @@ class end_contract_wizard(models.TransientModel):
         contract.write({'end_reason': self.end_reason,
                         'end_date': self.end_date})
 
-        contract.signal_workflow('contract_terminated')
+        end_date = datetime.strptime(self.end_date, DF)
+        today = datetime.today()
+        if end_date <= today:
+            contract.signal_workflow('contract_terminated')
 
         return True

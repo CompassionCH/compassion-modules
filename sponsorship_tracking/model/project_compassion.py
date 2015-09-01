@@ -37,4 +37,4 @@ class compassion_project(models.Model):
     def _transition_contracts(self, transition):
         contracts = self.env['recurring.contract'].search([
             ('project_id', 'in', self.ids)])
-        return contracts.trg_validate(transition)
+        return contracts.signal_workflow(transition)
