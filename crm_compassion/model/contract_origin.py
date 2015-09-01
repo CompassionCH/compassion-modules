@@ -22,10 +22,9 @@ class contract_origin(models.Model):
     @api.depends('type')
     def _set_name(self):
         if self.type == 'event':
-            name = self.event_id.full_name
+            self.name = self.event_id.full_name
         else:
-            name = super(contract_origin, self)._name_get()
-        self.name = name
+            super(contract_origin, self)._set_name()
 
 
 class contracts(models.Model):
