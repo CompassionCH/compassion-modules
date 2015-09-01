@@ -28,6 +28,11 @@ class test_contract_compassion(test_base_module):
          a contract.
          - in the last one, we are testing the _reset_open_invoices method.
     """
+    def setUp(self):
+        super(test_contract_compassion, self).setUp()
+        category = self.env['res.partner.category'].create({
+            'name': 'sponsor'})
+        self.partners.write({'category_id': [(4, category.id)]})    
 
     def test_contract_compassion_first_scenario(self):
         """
