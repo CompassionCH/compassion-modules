@@ -40,7 +40,7 @@ class test_messages(test_base_module):
                 'type': 'event'
             })
         self.group = self._create_group(
-            'do_nothing', self.partners.ids[3], 1,
+            'do_nothing', self.partners.ids[0], 1,
             self.payment_term_id,
             other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
 
@@ -100,8 +100,8 @@ class test_messages(test_base_module):
     def _create_active_contract(self, child_id):
         """Creates a new contract for given child."""
         contract_vals = {
-            'partner_id': self.partners.ids[3],
-            'correspondant_id': self.partners.ids[3],
+            'partner_id': self.partners.ids[0],
+            'correspondant_id': self.partners.ids[0],
             'origin_id': self.origin.id,
             'group_id': self.group.id,
             'channel': 'direct',

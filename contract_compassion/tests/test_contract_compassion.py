@@ -32,7 +32,7 @@ class test_contract_compassion(test_base_module):
         super(test_contract_compassion, self).setUp()
         category = self.env['res.partner.category'].create({
             'name': 'sponsor'})
-        self.partners.write({'category_id': [(4, category.id)]})    
+        self.partners.write({'category_id': [(4, category.id)]})
 
     def test_contract_compassion_first_scenario(self):
         """
