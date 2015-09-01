@@ -826,10 +826,9 @@ class sponsorship_contract(models.Model):
                 "WHERE id = {1:d}".format(
                     amount_deleted,
                     pml_id))
-            mvl_obj.copy(
-                pml_id, default={
-                    'reconcile_id': False,
-                    'credit': amount_deleted})
+            self.env.invalidate_all()
+            mvl_obj.browse(pml_id).copy({
+                'reconcile_id': False,
+                'credit': amount_deleted})
         if unrec_pml:
             mvl_obj.browse(unrec_pml)._remove_move_reconcile()
-        self.env.invalidate_all()

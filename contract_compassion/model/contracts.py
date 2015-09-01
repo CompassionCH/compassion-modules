@@ -337,8 +337,6 @@ class recurring_contract(models.Model):
                 vals['next_invoice_date'] = next_invoice_date.strftime(DF)
 
         self.write(vals)
-        # Generate invoices
-        self.button_generate_invoices()
         return True
 
     @api.one

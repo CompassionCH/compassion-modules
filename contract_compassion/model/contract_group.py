@@ -132,7 +132,7 @@ class contract_group(models.Model):
         """ Override clean_invoices to delete cancelled invoices """
         invoices = super(contract_group, self).clean_invoices()
         if invoices:
-            inv_ids = invoices.ids
+            inv_ids = invoices.filtered(lambda i: i.state == 'cancel').ids
             self.env.cr.execute(
                 "DELETE FROM account_invoice "
                 "WHERE id IN ({0})".format(
