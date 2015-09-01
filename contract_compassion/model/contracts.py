@@ -416,7 +416,7 @@ class recurring_contract(models.Model):
                 # with new contract information and validate them
                 cancel_invoices = invoice_obj.search([
                     ('state', '=', 'cancel'),
-                    ('id', 'in', invoices_canceled.ids)])
+                    ('id', 'in', list(invoices_canceled))])
                 if cancel_invoices:
                     inv_update_ids.update(cancel_invoices.ids)
                     cancel_invoices.action_cancel_draft()
