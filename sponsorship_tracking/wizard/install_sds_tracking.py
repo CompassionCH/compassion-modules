@@ -66,7 +66,7 @@ class recurring_contract(models.TransientModel):
                 'sponsorship_tracking', act_id)[1]
 
             wkf_instance_ids = list()
-            con_ids_string = ','.join(cont_ids)
+            con_ids_string = ','.join([str(c) for c in cont_ids])
             cr.execute(
                 "UPDATE wkf_instance SET state='active' "
                 "WHERE wfk_id = {0} and res_id in ({1})".format(
@@ -126,7 +126,7 @@ class recurring_contract(models.TransientModel):
     def _set_sds_state(self, contract_ids, sds_state, sds_change_date,
                        date_delta=0):
         if contract_ids:
-            con_ids = ','.join(contract_ids)
+            con_ids = ','.join([str(c) for c in contract_ids])
             self.env.cr.execute(
                 "UPDATE recurring_contract "
                 "SET sds_state = '{0}', sds_state_date = {1}+{2},"

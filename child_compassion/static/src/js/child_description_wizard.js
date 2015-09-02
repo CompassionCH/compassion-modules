@@ -27,6 +27,7 @@ openerp.child_compassion = function (instance, local) {
         values_changed: function(field, value) {
             var value_en = this.$().parent().find('[data-fieldname="value_en"]').children().text();
             this.update_value(field.name, value, value_en);
+            this.view.save();
         },
     });
     instance.web.form.widgets.add('autoDescription', 'instance.child_compassion.autoDescription');
