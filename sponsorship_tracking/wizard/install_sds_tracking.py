@@ -69,7 +69,7 @@ class recurring_contract(models.TransientModel):
             con_ids_string = ','.join([str(c) for c in cont_ids])
             cr.execute(
                 "UPDATE wkf_instance SET state='active' "
-                "WHERE wfk_id = {0} and res_id in ({1})".format(
+                "WHERE wkf_id = {0} and res_id in ({1})".format(
                     wkf_id, con_ids_string))
             cr.execute(
                 "SELECT id FROM wkf_instance "
