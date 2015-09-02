@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    @author: Emmanuel Mathier <emmanuel.mathier@gmail.com>
 #
 #    The licence is in the file __openerp__.py
 #
@@ -20,7 +20,7 @@ class ResCountry(models.Model):
     _inherit = 'compassion.country'
 
     ##########################################################################
-    #                        NEW PARTNER FIELDS                              #
+    #                        NEW COUNTRY FIELDS                              #
     ##########################################################################
 
     spoken_langs = fields.Many2many('res.lang.compassion')

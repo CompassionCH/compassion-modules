@@ -48,7 +48,6 @@ class ResPartner(models.Model):
         help="If the selected language is loaded in the system, all "
         "documents related to this contact will be printed in this "
         "language. If not, it will be English.")
-    spoken_languages = fields.Many2many('res.lang', 'partner_id', 'lang_id')
 
     ##########################################################################
     #                             FIELDS METHODS                             #

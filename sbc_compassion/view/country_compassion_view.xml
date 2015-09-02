@@ -25,7 +25,7 @@
         </record>
 
         <record id="action_compassion_country_form" model="ir.actions.act_window">
-            <field name="name">view_compassion_country_tree</field>
+            <field name="name">Countries</field>
             <field name="res_model">compassion.country</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>

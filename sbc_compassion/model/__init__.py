@@ -11,3 +11,4 @@
 from . import partner_compassion
 from . import lang_compassion
 from . import country_compassion
+from . import sponsorship_correspondance

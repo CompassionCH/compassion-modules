@@ -5,9 +5,10 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base_location.view_partner_form"/>
             <field name="arch" type="xml">
-                <!-- Add correspondance tab -->
+                 <!-- Add correspondance tab  -->
                 <xpath expr="//field[@name='lang']" position="after">
-                    <field name="spoken_lang" widget="many2many_tags" options="{'create':False}"/>
+                    <field name="spoken_langs" widget="many2many_tags" options="{'create':False}"/>
+                    <field name="mandatory_review"/>
                 </xpath>
             </field>
         </record>
