@@ -15,7 +15,6 @@ from openerp.addons.contract_compassion.tests.test_base_module\
     import test_base_module
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import logging
-import pdb
 logger = logging.getLogger(__name__)
 
 
@@ -167,7 +166,6 @@ class test_sponsorship_compassion(test_base_module):
             Check if the 3 contracts create one merged invoice for every month
             (2 months here) with the good values.
         """
-        pdb.set_trace()
         child1 = self.env['compassion.child'].create({'code': 'UG8320010'})
         child2 = self.env['compassion.child'].create({'code': 'UG8320011'})
         child3 = self.env['compassion.child'].create({'code': 'UG8320013'})
