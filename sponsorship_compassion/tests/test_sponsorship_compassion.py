@@ -15,6 +15,7 @@ from openerp.addons.contract_compassion.tests.test_base_module\
     import test_base_module
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import logging
+import pdb
 logger = logging.getLogger(__name__)
 
 
@@ -59,8 +60,7 @@ class test_sponsorship_compassion(test_base_module):
         self.assertEqual(sponsorship.state, 'draft')
         sponsorship.signal_workflow('contract_validated')
         self.assertEqual(sponsorship.state, 'waiting')
-        invoicer_id = sponsorship.button_generate_invoices()
-        invoices = invoicer_id.invoice_ids
+        invoices = sponsorship.button_generate_invoices().invoice_ids
         self.assertEqual(len(invoices), 2)
         self.assertEqual(invoices[0].state, 'open')
         self._pay_invoice(invoices[0])
@@ -146,8 +146,7 @@ class test_sponsorship_compassion(test_base_module):
         # Switching to "waiting for payment" state
         contract.signal_workflow('contract_validated')
         self.assertEqual(contract.state, 'waiting')
-        invoicer_id = contract.button_generate_invoices()
-        invoices = invoicer_id.invoice_ids
+        invoices = contract.button_generate_invoices().invoice_ids
         nb_invoices = len(invoices)
         self.assertEqual(nb_invoices, 2)
         self.assertEqual(invoices[0].state, 'open')
@@ -168,6 +167,7 @@ class test_sponsorship_compassion(test_base_module):
             Check if the 3 contracts create one merged invoice for every month
             (2 months here) with the good values.
         """
+        pdb.set_trace()
         child1 = self.env['compassion.child'].create({'code': 'UG8320010'})
         child2 = self.env['compassion.child'].create({'code': 'UG8320011'})
         child3 = self.env['compassion.child'].create({'code': 'UG8320013'})
@@ -212,8 +212,7 @@ class test_sponsorship_compassion(test_base_module):
         self.assertEqual(sponsorship1.state, 'waiting')
         self.assertEqual(sponsorship2.state, 'waiting')
         self.assertEqual(sponsorship3.state, 'waiting')
-        invoicer_id1 = sponsorship1.button_generate_invoices()
-        invoices = invoicer_id1.invoice_ids
+        invoices = sponsorship1.button_generate_invoices().invoice_ids
         self._pay_invoice(invoices[0])
         self._pay_invoice(invoices[1])
         invoice1 = self.env['account.invoice'].browse(invoices[1].id)
@@ -229,3 +228,5 @@ class test_sponsorship_compassion(test_base_module):
         child3.write({'state': 'F'})
         self.assertEqual(child3.state, 'F')
         self.assertEqual(child3.sponsor_id.id, False)
+        action = self.partners[0].unreconciled_transaction_items()
+        self.assertTrue(action)
