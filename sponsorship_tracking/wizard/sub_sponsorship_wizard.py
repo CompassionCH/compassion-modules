@@ -53,7 +53,8 @@ class sub_sponsorship_wizard(models.TransientModel):
                 _("Please select a child"))
 
         sponsorship_id = self.env.context.get('active_id')
-        contract_obj = self.env['recurring.contract']
+        contract_obj = self.env['recurring.contract'].with_context(
+            allow_rewind=True)
         contract = contract_obj.browse(sponsorship_id)
         origin_obj = self.env['recurring.contract.origin']
         sub_origin_id = origin_obj.search([('type', '=', 'sub')], limit=1).id
@@ -62,8 +63,10 @@ class sub_sponsorship_wizard(models.TransientModel):
             'origin_id': sub_origin_id,
             'channel': self.channel,
         })
+        next_invoice_date = sub_contract.next_invoice_date
         sub_contract.write({'child_id': child.id})
         sub_contract.signal_workflow('contract_validated')
+        sub_contract.next_invoice_date = next_invoice_date
 
         return True
 

@@ -490,6 +490,7 @@ class compassion_child(models.Model):
             'unique_id': json_data['childID'],
             'code': json_data['childKey'],
             'comments': json_data['basicChildInternalComment'],
+            'completion_date': json_data['plannedCompletionDate'],
         }
 
         value_obj = self.env['compassion.translated.value']

@@ -468,6 +468,4 @@ class recurring_contract(models.Model):
                 group_date = datetime.strptime(
                     contract.group_id.next_invoice_date, DF)
                 if group_date > next_invoice_date:
-                    # This will trigger group_date computation
-                    contract.write({
-                        'next_invoice_date': contract.next_invoice_date})
+                    contract.group_id._set_next_invoice_date()
