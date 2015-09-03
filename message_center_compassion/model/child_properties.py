@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import models
+from openerp import api, models
 
 
 class child_properties(models.Model):
@@ -16,6 +16,7 @@ class child_properties(models.Model):
         Case Study. """
     _inherit = 'compassion.child.property'
 
+    @api.multi
     def attach_pictures(self, pictures_id):
         res = super(child_properties, self).attach_pictures(pictures_id)
         contracts = self.mapped('child_id.sponsorship_ids').filtered(

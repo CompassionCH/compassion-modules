@@ -172,6 +172,7 @@ class child_property(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.multi
     def attach_pictures(self, pictures_id):
         self.ensure_one()
         return self.write({'pictures_id': pictures_id})
