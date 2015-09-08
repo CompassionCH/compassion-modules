@@ -10,8 +10,6 @@
 ##############################################################################
 
 from openerp import fields, models, api, _
-import pdb
-
 
 class ResSponsorshipCorrespondence(models.Model):
 
@@ -52,8 +50,8 @@ class ResSponsorshipCorrespondence(models.Model):
     # Flag if the sponsor has wrote freakly words
     mandatory_review = fields.Boolean(related=
         'sponsorship_id.correspondant_id.mandatory_review')
-    # letter_image
-    # attachments
+    letter_image = fields.Binary()
+    attachments = fields.Many2many('ir.attachment')
     physical_attachments = fields.Selection(selection=[
         ('none', _('None')),
         ('sent_by_mail', _('Sent by mail')),

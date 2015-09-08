@@ -13,15 +13,6 @@
                     <field name="state"/>
                     <field name="is_encourager"/>
                     <field name="mandatory_review"/>
-                    <field name="physical_attachments"/>
-                    <field name="attachments_description"/>
-                    <field name="supporter_language" string="Partner spoken languages" widget="many2many_tags" options="{'create':False}"/>
-                    <field name="beneficiary_language" string="Child spoken languages" widget="many2many_tags" options="{'create':False}"/>
-                    <field name="current_language" string="Current language" options="{'create':False}"/>
-                    <field name="template_id"/>
-                    <field name="original_text"/>
-                    <field name="translated_text"/>
-                    <field name="source"/>
                 </tree>
             </field>
         </record>
@@ -43,6 +34,8 @@
                             <field name="state"/>
                             <field name="is_encourager"/>
                             <field name="mandatory_review"/>
+                            <field name="attachments" widget='image' string="Letter image"/>
+                            <field name="attachments" widget="many2many_binary" string="Attachments"/>
                             <field name="physical_attachments"/>
                             <field name="attachments_description"/>
                             <field name="supporter_language" string="Partner spoken languages" widget="many2many_tags" options="{'create':False}"/>

@@ -30,7 +30,7 @@
 {
     'name': "Sponsor to beneficiary communication",
     'version': '0.1',
-    'category': 'sbc',
+    'category': 'Other',
     'summary': """
         SBC - Sponsor to beneficiary communication""",
     'sequence': 150,
