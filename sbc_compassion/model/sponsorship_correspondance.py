@@ -11,6 +11,7 @@
 
 from openerp import fields, models, api, _
 
+
 class ResSponsorshipCorrespondence(models.Model):
 
     """ This class upgrade the partners to match Compassion needs.
@@ -37,7 +38,7 @@ class ResSponsorshipCorrespondence(models.Model):
         ('thank_you', _('Thank you')),
         ('third_party', _('Third party')),
         ('christmas', _('Christmas')),
-        ('introduction', _('Introduction'))], store=True) 
+        ('introduction', _('Introduction'))], store=True)
     state = fields.Selection(selection=[
         ('new', _('New')),
         ('to_translate', _('To translate')),
@@ -48,8 +49,8 @@ class ResSponsorshipCorrespondence(models.Model):
         ('delivered', _('Delivered'))], store=True)
     is_encourager = fields.Boolean(default=False, store=True)
     # Flag if the sponsor has wrote freakly words
-    mandatory_review = fields.Boolean(related=
-        'sponsorship_id.correspondant_id.mandatory_review')
+    mandatory_review = fields.Boolean(
+        related='sponsorship_id.correspondant_id.mandatory_review')
     letter_image = fields.Binary()
     attachments = fields.Many2many('ir.attachment')
     physical_attachments = fields.Selection(selection=[
@@ -57,10 +58,10 @@ class ResSponsorshipCorrespondence(models.Model):
         ('sent_by_mail', _('Sent by mail')),
         ('not_sent', _('Not sent'))], store=True)
     attachments_description = fields.Text(store=True)
-    supporter_language = fields.Many2many(related=
-        'sponsorship_id.correspondant_id.spoken_langs')
-    beneficiary_language = fields.Many2many(related=
-        'sponsorship_id.child_id.project_id.country_id.spoken_langs')
+    supporter_language = fields.Many2many(
+        related='sponsorship_id.correspondant_id.spoken_langs')
+    beneficiary_language = fields.Many2many(
+        related='sponsorship_id.child_id.project_id.country_id.spoken_langs')
     # First spoken lang of partner
     current_language = fields.Many2one('res.lang.compassion', store=True)
     template_id = fields.Integer(store=True)
@@ -90,4 +91,4 @@ class ResSponsorshipCorrespondence(models.Model):
                 self.sponsorship_id.child_id.code)
         if self.sponsorship_id.correspondant_id.spoken_langs:
             self.current_language = self.sponsorship_id.correspondant_id\
-            .spoken_langs[0]
+                .spoken_langs[0]
