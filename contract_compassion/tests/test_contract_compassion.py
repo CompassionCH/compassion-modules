@@ -154,3 +154,31 @@ class test_contract_compassion(test_base_module):
         self.assertEqual(invoice_line_up.price_unit, contract_line.amount)
         self.assertEqual(
             invoice_line_up.price_subtotal, contract_line.subtotal)
+
+    def test_contract_compassion_third_scenario(self):
+        contract_group = self._create_group(
+            'do_nothing', self.partners.ids[0], 1,
+            self.payment_term_id,
+            other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
+        contract_group2 = self._create_group(
+            'do_nothing', self.partners.ids[1], 1,
+            self.payment_term_id,
+            other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
+
+        contract = self._create_contract(
+            datetime.today().strftime(DF), contract_group,
+            datetime.today().strftime(DF),
+            other_vals={'channel': 'postal', 'type': 'O'})
+        contract_group.write({'partner_id': self.partners.ids[1]})
+        contract_group.on_change_partner_id()
+        self.assertTrue(contract_group.bvr_reference)
+        payment_termbvr_id = self.env['account.payment.term'].search(
+            [('name', '=', 'BVR')])[0].id
+        contract_group2.write({'payment_term_id': payment_termbvr_id})
+        contract_group2.on_change_payment_term()
+        self.assertTrue(contract_group2.bvr_reference)
+        contract.signal_workflow('contract_validated')
+        contract.write({'group_id': contract_group2.id})
+        contract.on_change_group_id()
+        self.assertEqual(
+            contract.group_id.payment_term_id.id, payment_termbvr_id)

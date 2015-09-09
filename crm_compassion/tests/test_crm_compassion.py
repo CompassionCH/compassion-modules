@@ -36,7 +36,6 @@ class test_crm_compassion(test_base_module):
             Check if we can find the origin from the event in a sponsorship
             contract.
         """
-
         # Creation of a lead and an event
         lead = self._create_lead(
             'PlayoffsCompassion', self.admin_id)
@@ -64,7 +63,6 @@ class test_crm_compassion(test_base_module):
         self.assertEqual(project.project_type, event.type)
         self.assertEqual(project.user_id, event.user_id)
         self.assertEqual(project.name, event.name)
-
         # Create a child and get the project associated
         child = self.env['compassion.child'].create({'code': 'PE3760136'})
         child.project_id.write({'disburse_funds': True})
@@ -85,6 +83,11 @@ class test_crm_compassion(test_base_module):
         sponsorship.write({'user_id': self.partner_id})
         self.assertEqual(sponsorship.origin_id.name, event.full_name)
         self.assertEqual(sponsorship.state, 'draft')
+        sponsorship.write({'origin_id': mark_origin.id})
+        sponsorship.on_change_origin()
+        self.assertEqual(
+            sponsorship.user_id.id,
+            mark_origin.analytic_id.manager_id.partner_id.id)
         sponsorship.signal_workflow('contract_validated')
         invoicer_id = sponsorship.button_generate_invoices()
         invoices = invoicer_id.invoice_ids
@@ -94,6 +97,8 @@ class test_crm_compassion(test_base_module):
             invoices[0].invoice_line[0].user_id, sponsorship.user_id)
         event_dico = self.partners[2].open_events()
         self.assertEqual(len(event_dico['domain'][0][2]), 2)
+        is_unlinked = event.unlink()
+        self.assertTrue(is_unlinked)
 
     def _create_project(self, name, privacy_visibility, user_id, type, bool):
         project_id = self.env['project.project'].create(

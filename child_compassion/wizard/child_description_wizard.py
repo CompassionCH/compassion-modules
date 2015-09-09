@@ -81,7 +81,7 @@ class child_description_wizard(models.TransientModel):
     def _get_desc(self, lang):
         child = self.env['compassion.child'].browse(
             self.env.context.get('child_id'))
-        case_study = child.case_study_ids[0]
+        case_study = child.case_study_ids
         res = False
         if lang == 'fr':
             res = Child_description_fr.gen_fr_translation(

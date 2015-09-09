@@ -12,7 +12,6 @@
 from openerp.tests import common
 from openerp.tools.config import config
 import logging
-
 logger = logging.getLogger(__name__)
 
 
@@ -87,6 +86,26 @@ class test_webservice(common.TransactionCase):
 
         # Retrieve the informations from the webservice
         child.get_infos()
+
+        # Generate descriptions for the child
+        child.generate_descriptions()
+        child_desc_wiz = self.env['child.description.wizard'].with_context(
+            child_id=child.id).create({
+                'child_id': child.id,
+                'case_study_id': child.case_study_ids.id,
+                'keep_desc_fr': True,
+                'keep_desc_en': True,
+                'keep_desc_it': True,
+                'keep_desc_de': True,
+            })
+        desc_child = child_desc_wiz.generate_descriptions()
+        self.assertTrue(desc_child)
+        desc_child_validated = child_desc_wiz.validate_descriptions()
+        self.assertTrue(desc_child_validated)
+        self.assertTrue(child.desc_fr)
+        self.assertTrue(child.desc_it)
+        self.assertTrue(child.desc_de)
+        self.assertTrue(child.desc_en)
 
         # Test the data
         self.assertEqual(child.code, "TZ1120316")

@@ -39,6 +39,8 @@ class test_sponsorship_compassion(test_base_module):
         # Creation of the sponsorship contract
         sp_group = self._create_group(
             'do_nothing', self.partners.ids[0], 1, self.payment_term_id)
+        self._create_group(
+            'do_nothing', self.partners.ids[1], 1, self.payment_term_id)
         sponsorship = self._create_contract(
             datetime.today().strftime(DF), sp_group,
             datetime.today().strftime(DF),
@@ -53,7 +55,9 @@ class test_sponsorship_compassion(test_base_module):
         partner_obj = self.env['res.partner']
         self.assertTrue(partner_obj.browse(self.partners.ids[0]).ref)
         self.assertTrue(partner_obj.browse(self.partners.ids[0]).lang)
-
+        sponsorship.write({'partner_id': self.partners[1].id})
+        sponsorship.on_change_partner_id()
+        self.assertEqual(sponsorship.correspondant_id, sponsorship.partner_id)
         self.assertTrue(sponsorship.contract_line_ids)
         self.assertEqual(len(sponsorship.contract_line_ids), 2)
         self.assertEqual(sponsorship.state, 'draft')
@@ -102,7 +106,8 @@ class test_sponsorship_compassion(test_base_module):
             We are testing in this scenario the other type of sponsorship
             contract (type 'SC'). Check if we pass from "draft" state to
             "active" state directly by the validation button. Check if there
-            are no invoice lines too.
+            are no invoice lines too. Test if a contract is
+            cancelled well if we don't generate invoices.
         """
         child = self.env['compassion.child'].create({'code': 'IO6790211'})
         child.project_id.write({'disburse_funds': True})
@@ -123,6 +128,19 @@ class test_sponsorship_compassion(test_base_module):
         self.assertEqual(len(sponsorship.invoice_line_ids), 0)
         sponsorship.signal_workflow('contract_terminated')
         self.assertTrue(sponsorship.state, 'terminated')
+        sponsorship2 = self._create_contract(
+            datetime.today().strftime(DF), sp_group,
+            datetime.today().strftime(DF),
+            other_vals={
+                'origin_id': self.origin_id,
+                'channel': 'postal',
+                'type': 'S',
+                'child_id': child.id,
+                'correspondant_id': sp_group.partner_id.id
+            })
+        sponsorship2.signal_workflow('contract_validated')
+        sponsorship2.signal_workflow('contract_terminated')
+        self.assertEqual(sponsorship2.state, 'cancelled')
 
     def test_sponsorship_compassion_third_scenario(self):
         """
@@ -138,10 +156,22 @@ class test_sponsorship_compassion(test_base_module):
                 'type': 'O',
                 'correspondant_id': contract_group.partner_id.id
             })
+        contract2 = self._create_contract(
+            datetime.today().strftime(DF), contract_group,
+            datetime.today().strftime(DF),
+            other_vals={
+                'type': 'O',
+                'correspondant_id': contract_group.partner_id.id
+            })
         self._create_contract_line(
             contract.id, '40.0', other_vals={'quantity': '2'})
+        contract_line = self._create_contract_line(
+            contract2.id, '137', other_vals={'quantity': '4'})
         self.assertEqual(contract.state, 'draft')
-
+        contract.contract_line_ids += contract_line
+        self.assertEqual(
+            contract.total_amount,
+            contract_line.subtotal + contract.contract_line_ids[0].subtotal)
         # Switching to "waiting for payment" state
         contract.signal_workflow('contract_validated')
         self.assertEqual(contract.state, 'waiting')
@@ -155,6 +185,8 @@ class test_sponsorship_compassion(test_base_module):
         self.assertEqual(contract.state, 'active')
         contract.signal_workflow('contract_terminated')
         self.assertEqual(contract.state, 'terminated')
+        is_unlinked = contract2.unlink()
+        self.assertTrue(is_unlinked)
 
     def test_sponsorship_compassion_fourth_scenario(self):
         """
@@ -188,9 +220,10 @@ class test_sponsorship_compassion(test_base_module):
                 'origin_id': self.origin_id,
                 'channel': 'postal',
                 'type': 'S',
-                'child_id': child2.id,
+                'child_id': child1.id,
                 'correspondant_id': sp_group.partner_id.id
             })
+        sponsorship2.write({'child_id': child2.id})
         sponsorship3 = self._create_contract(
             datetime.today().strftime(DF), sp_group,
             datetime.today().strftime(DF),
@@ -226,5 +259,7 @@ class test_sponsorship_compassion(test_base_module):
         child3.write({'state': 'F'})
         self.assertEqual(child3.state, 'F')
         self.assertEqual(child3.sponsor_id.id, False)
-        action = self.partners[0].unreconciled_transaction_items()
+        action_move = self.partners[0].unreconciled_transaction_items()
+        self.assertTrue(action_move)
+        action = self.partners[0].show_lines()
         self.assertTrue(action)
