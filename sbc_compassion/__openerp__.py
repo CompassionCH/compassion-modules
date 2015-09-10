@@ -42,8 +42,7 @@
     """,
     'depends': ['base', 'base_location', 'sponsorship_compassion'],
     'data': [
-        # 'security/ir.model.access.csv',
-        # 'templates.xml',
+        'security/ir.model.access.csv',
         'view/country_compassion_view.xml',
         'view/partner_compassion_view.xml',
         'view/lang_compassion_view.xml',
