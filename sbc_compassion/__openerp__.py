@@ -36,14 +36,26 @@
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['sponsorship_compassion'],
+    'external_dependencies': {
+        'java': ['zxing'],
+    },
     'data': [
         'security/ir.model.access.csv',
         'views/country_compassion_view.xml',
         'views/partner_compassion_view.xml',
         'views/lang_compassion_view.xml',
         'views/sponsorship_correspondence_view.xml',
+        'views/import_mail_view.xml',
         'data/lang_data.xml',
     ],
     'installable': True,
     'auto_install': False,
+    'description': """
+Installation
+============
+
+To install this module, you need to install dependencies:
+
+* requires python-MySQLdb to be installed on the server.
+""",
 }
