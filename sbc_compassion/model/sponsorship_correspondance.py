@@ -14,7 +14,7 @@ from openerp import fields, models, api, _
 
 class ResSponsorshipCorrespondence(models.Model):
 
-    """ This class upgrade the partners to match Compassion needs.
+    """ This class create correspondances to match Compassion needs.
     """
 
     _name = 'sponsorship.correspondence'

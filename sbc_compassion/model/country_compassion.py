@@ -14,7 +14,8 @@ from openerp import fields, models
 
 class ResCountry(models.Model):
 
-    """ This class upgrade the partners to match Compassion needs.
+    """ This class upgrade the countries to add spoken languages
+    to match Compassion needs.
     """
 
     _inherit = 'compassion.country'
