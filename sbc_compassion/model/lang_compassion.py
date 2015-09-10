@@ -24,4 +24,4 @@ class ResLang(models.Model):
     ##########################################################################
 
     name = fields.Char(size=128, store=True)
-    ISO_code = fields.Char(size=128, store=True)
+    iso_code = fields.Char(size=128, store=True)
