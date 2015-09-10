@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <!-- Add to Countries tab -->
                 <xpath expr="//field[@name='language']" position="after">
-                    <field name="spoken_langs" widget="many2many_tags" options="{'create':False}"/>
+                    <field name="spoken_langs_ids" string="Spoken langs" widget="many2many_tags" options="{'create':False}"/>
                 </xpath>
             </field>
         </record>
@@ -18,8 +18,8 @@
             <field name="arch" type="xml">
                 <tree string="Countries">
                     <field name="name"/>
-                    <field name="iso_code"/>
-                    <field name="spoken_langs" widget="many2many_tags" options="{'create':False}"/>
+                    <field name="iso_code" string="Iso code"/>
+                    <field name="spoken_langs_ids" string="Spoken langs" widget="many2many_tags" options="{'create':False}"/>
                 </tree>
             </field>
         </record>

@@ -20,8 +20,8 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     ##########################################################################
-    #                        NEW PARTNER FIELDS                              #
+    #                                 FIELDS                                 #
     ##########################################################################
 
-    spoken_langs = fields.Many2many('res.lang.compassion')
+    spoken_langs_ids = fields.Many2many('res.lang.compassion')
     mandatory_review = fields.Boolean(default=False)

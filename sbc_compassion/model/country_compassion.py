@@ -20,7 +20,7 @@ class ResCountry(models.Model):
     _inherit = 'compassion.country'
 
     ##########################################################################
-    #                        NEW COUNTRY FIELDS                              #
+    #                                 FIELDS                                 #
     ##########################################################################
 
-    spoken_langs = fields.Many2many('res.lang.compassion')
+    spoken_langs_ids = fields.Many2many('res.lang.compassion')

@@ -20,7 +20,7 @@ class ResLang(models.Model):
     _name = 'res.lang.compassion'
 
     ##########################################################################
-    #                        NEW LANG FIELDS                              #
+    #                                 FIELDS                                 #
     ##########################################################################
 
     name = fields.Char(size=128, store=True)

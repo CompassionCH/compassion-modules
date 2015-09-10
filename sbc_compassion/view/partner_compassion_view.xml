@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                  <!-- Add correspondance tab  -->
                 <xpath expr="//field[@name='lang']" position="after">
-                    <field name="spoken_langs" widget="many2many_tags" options="{'create':False}"/>
+                    <field name="spoken_langs_ids" string="Spoken langs" widget="many2many_tags" options="{'create':False}"/>
                     <field name="mandatory_review"/>
                 </xpath>
             </field>

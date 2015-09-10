@@ -20,7 +20,7 @@ class ResSponsorshipCorrespondence(models.Model):
     _name = 'sponsorship.correspondence'
 
     ##########################################################################
-    #                        SPONSORSHIP_CORRESPONDANCE FIELDS               #
+    #                                 FIELDS                                 #
     ##########################################################################
 
     sponsorship_id = fields.Many2one(
@@ -59,9 +59,10 @@ class ResSponsorshipCorrespondence(models.Model):
         ('not_sent', _('Not sent'))], store=True)
     attachments_description = fields.Text(store=True)
     supporter_language = fields.Many2many(
-        related='sponsorship_id.correspondant_id.spoken_langs')
+        related='sponsorship_id.correspondant_id.spoken_langs_ids')
     beneficiary_language = fields.Many2many(
-        related='sponsorship_id.child_id.project_id.country_id.spoken_langs')
+        related='sponsorship_id.child_id.project_id.country_id.\
+spoken_langs_ids')
     # First spoken lang of partner
     current_language = fields.Many2one('res.lang.compassion', store=True)
     template_id = fields.Integer(store=True)
@@ -79,7 +80,7 @@ class ResSponsorshipCorrespondence(models.Model):
     ]
 
     ##########################################################################
-    #                             FIELDS METHODS                             #
+    #                             VIEW CALLBACKS                             #
     ##########################################################################
 
     # On sponsorship_id change
@@ -89,6 +90,6 @@ class ResSponsorshipCorrespondence(models.Model):
         self.name = str(
             self.sponsorship_id.partner_codega) + " - " + str(
                 self.sponsorship_id.child_id.code)
-        if self.sponsorship_id.correspondant_id.spoken_langs:
+        if self.sponsorship_id.correspondant_id.spoken_langs_ids:
             self.current_language = self.sponsorship_id.correspondant_id\
-                .spoken_langs[0]
+                .spoken_langs_ids[0]

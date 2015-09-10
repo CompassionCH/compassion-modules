@@ -7,7 +7,7 @@
 	        	<!-- Add to Spoken languages tab -->
 	            <tree string="Spoken languages">
 	                <field name="name"/>
-	                <field name="ISO_code"/>
+	                <field name="iso_code" string="Iso code"/>
 	            </tree>
 	        </field>
 	    </record>
