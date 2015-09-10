@@ -1,71 +1,71 @@
 <openerp>
     <data>
-        <record id="0" model="res.lang.compassion">
+        <record id="lang_compassion_english" model="res.lang.compassion">
             <field name="name">English</field>
             <field name="ISO_code">eng</field>
         </record>
 
-        <record id="1" model="res.lang.compassion">
+        <record id="lang_compassion_french" model="res.lang.compassion">
             <field name="name">French</field>
             <field name="ISO_code">fra</field>
         </record>
 
-        <record id="2" model="res.lang.compassion">
+        <record id="lang_compassion_german" model="res.lang.compassion">
             <field name="name">German</field>
             <field name="ISO_code">deu</field>
         </record>
 
-        <record id="3" model="res.lang.compassion">
+        <record id="lang_compassion_swiss_german" model="res.lang.compassion">
             <field name="name">Swiss German</field>
             <field name="ISO_code">gsw</field>
         </record>
 
-        <record id="4" model="res.lang.compassion">
+        <record id="lang_compassion_spanish" model="res.lang.compassion">
             <field name="name">Spanish</field>
             <field name="ISO_code">spa</field>
         </record>
 
-        <record id="5" model="res.lang.compassion">
+        <record id="lang_compassion_portuguese" model="res.lang.compassion">
             <field name="name">Portuguese</field>
             <field name="ISO_code">por</field>
         </record>
 
-        <record id="6" model="res.lang.compassion">
+        <record id="lang_compassion_thai" model="res.lang.compassion">
             <field name="name">Thai</field>
             <field name="ISO_code">tha</field>
         </record>
 
-        <record id="7" model="res.lang.compassion">
+        <record id="lang_compassion_hindi" model="res.lang.compassion">
             <field name="name">Hindi</field>
             <field name="ISO_code">hin</field>
         </record>
 
-        <record id="8" model="res.lang.compassion">
+        <record id="lang_compassion_amharic" model="res.lang.compassion">
             <field name="name">Amharic</field>
             <field name="ISO_code">amh</field>
         </record>
 
-        <record id="9" model="res.lang.compassion">
+        <record id="lang_compassion_haitien_creole" model="res.lang.compassion">
             <field name="name">Haitian Creole</field>
             <field name="ISO_code">hat</field>
         </record>
 
-        <record id="10" model="res.lang.compassion">
+        <record id="lang_compassion_indonesian" model="res.lang.compassion">
             <field name="name">Indonesian</field>
             <field name="ISO_code">ind</field>
         </record>
 
-        <record id="11" model="res.lang.compassion">
+        <record id="lang_compassion_swahili" model="res.lang.compassion">
             <field name="name">Swahili</field>
             <field name="ISO_code">swa</field>
         </record>
 
-        <record id="12" model="res.lang.compassion">
+        <record id="lang_compassion_filipino" model="res.lang.compassion">
             <field name="name">Filipino</field>
             <field name="ISO_code">fil</field>
         </record>
 
-        <record id="13" model="res.lang.compassion">
+        <record id="lang_compassion_kinyarwanda" model="res.lang.compassion">
             <field name="name">Kinyarwanda</field>
             <field name="ISO_code">kin</field>
         </record>
