@@ -23,6 +23,6 @@ Maintainer
 
 This module is maintained by `Compassion Switzerland <https://www.compassion.ch>`.
 
-![alt tag](https://raw.github.com/secheron/CompassionCH/compassion-modules/sbc_compassion/images/Modul_sbc_compassion_modul.jpg)
-![alt tag](https://raw.github.com/secheron/CompassionCH/compassion-modules/sbc_compassion/images/Modul_sbc_compassion_ISO639-3.jpg)
-![alt tag](https://raw.github.com/secheron/CompassionCH/compassion-modules/sbc_compassion/images/Modul_sbc_compassion_spoken_langs.jpg)
+.. image:: https://raw.github.com/secheron/CompassionCH/compassion-modules/sbc_compassion/images/Modul_sbc_compassion_modul.jpg
+.. image:: https://raw.github.com/secheron/CompassionCH/compassion-modules/sbc_compassion/images/Modul_sbc_compassion_ISO639-3.jpg
+.. image:: https://raw.github.com/secheron/CompassionCH/compassion-modules/sbc_compassion/images/Modul_sbc_compassion_spoken_langs.jpg
