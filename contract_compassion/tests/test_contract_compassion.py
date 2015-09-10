@@ -156,6 +156,14 @@ class test_contract_compassion(test_base_module):
             invoice_line_up.price_subtotal, contract_line.subtotal)
 
     def test_contract_compassion_third_scenario(self):
+        """
+            Test the changement of a partner in a payment option and after that
+            changement test if the BVR reference is set.
+            Test the changement of the payment term and set it to the BVR one
+            and check if the payment option of the contract has the good
+            payment term.
+            Test the changement of a payment option for a contract.
+        """
         contract_group = self._create_group(
             'do_nothing', self.partners.ids[0], 1,
             self.payment_term_id,
@@ -164,7 +172,6 @@ class test_contract_compassion(test_base_module):
             'do_nothing', self.partners.ids[1], 1,
             self.payment_term_id,
             other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
-
         contract = self._create_contract(
             datetime.today().strftime(DF), contract_group,
             datetime.today().strftime(DF),
