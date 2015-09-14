@@ -31,6 +31,8 @@
                         </h1>
                         <group>
                             <field name="sponsorship_id"/>
+                            <field name="partner_id"/>
+                            <field name="child_id"/>
                             <field name="kit_id"/>
                             <field name="letter_type"/>
                             <field name="communication_type"/>

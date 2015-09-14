@@ -24,21 +24,23 @@ class ResSponsorshipCorrespondence(models.Model):
     ##########################################################################
 
     sponsorship_id = fields.Many2one(
-        'recurring.contract', 'Sponsorship', required=True, store=True)
+        'recurring.contract', 'Sponsorship', required=True)
     name = fields.Text('name', compute='_set_name')
+    partner_id = fields.Many2one(related='sponsorship_id.correspondant_id', store=True)
+    child_id = fields.Many2one(related='sponsorship_id.child_id', store=True)
     # Field used for identifying correspondence
-    kit_id = fields.Integer('Kit id', copy=False, store=True)
+    kit_id = fields.Integer('Kit id', copy=False)
 
     letter_type = fields.Selection(selection=[
         ('S2B', _('Sponsor to beneficiary')),
-        ('B2S', _('Beneficiary to sponsor'))], store=True)
+        ('B2S', _('Beneficiary to sponsor'))])
     communication_type = fields.Selection(selection=[
         ('scheduled', _('Scheduled')),
         ('response', _('Response')),
         ('thank_you', _('Thank you')),
         ('third_party', _('Third party')),
         ('christmas', _('Christmas')),
-        ('introduction', _('Introduction'))], store=True)
+        ('introduction', _('Introduction'))])
     state = fields.Selection(selection=[
         ('new', _('New')),
         ('to_translate', _('To translate')),
@@ -46,32 +48,32 @@ class ResSponsorshipCorrespondence(models.Model):
         ('quality_checked', _('Quality checked')),
         ('rejected', _('Rejected')),
         ('sent', _('Sent')),
-        ('delivered', _('Delivered'))], store=True)
-    is_encourager = fields.Boolean(default=False, store=True)
+        ('delivered', _('Delivered'))])
+    is_encourager = fields.Boolean()
     mandatory_review = fields.Boolean(
-        related='sponsorship_id.correspondant_id.mandatory_review')
+        related='sponsorship_id.correspondant_id.mandatory_review', store=True)
     letter_image = fields.Binary()
     attachments_ids = fields.Many2many('ir.attachment')
     physical_attachments = fields.Selection(selection=[
         ('none', _('None')),
         ('sent_by_mail', _('Sent by mail')),
-        ('not_sent', _('Not sent'))], store=True)
-    attachments_description = fields.Text(store=True)
+        ('not_sent', _('Not sent'))])
+    attachments_description = fields.Text()
     supporter_languages_ids = fields.Many2many(
-        related='sponsorship_id.correspondant_id.spoken_langs_ids')
+        related='sponsorship_id.correspondant_id.spoken_langs_ids', store=True)
     beneficiary_language_ids = fields.Many2many(
         related='sponsorship_id.child_id.project_id.country_id.\
-spoken_langs_ids')
+spoken_langs_ids', store=True)
     # First spoken lang of partner
-    original_language_id = fields.Many2one('res.lang.compassion', store=True, compute='_set_current_language')
+    original_language_id = fields.Many2one('res.lang.compassion', compute='_set_current_language', store=True)
     destination_language_id = fields.Many2one('res.lang.compassion')
-    template_id = fields.Integer(store=True)
-    original_text = fields.Text(store=True)
-    translated_text = fields.Text(store=True)
+    template_id = fields.Integer()
+    original_text = fields.Text()
+    translated_text = fields.Text()
     source = fields.Selection(selection=[
         ('letter', _('Letter')),
         ('email', _('E-Mail')),
-        ('website', _('Compassion website'))], store=True)
+        ('website', _('Compassion website'))])
 
     _sql_constraints = [
         ('kit_id',
