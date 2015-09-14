@@ -48,23 +48,23 @@ class ResSponsorshipCorrespondence(models.Model):
         ('sent', _('Sent')),
         ('delivered', _('Delivered'))], store=True)
     is_encourager = fields.Boolean(default=False, store=True)
-    # Flag if the sponsor has wrote freakly words
     mandatory_review = fields.Boolean(
         related='sponsorship_id.correspondant_id.mandatory_review')
     letter_image = fields.Binary()
-    attachments = fields.Many2many('ir.attachment')
+    attachments_ids = fields.Many2many('ir.attachment')
     physical_attachments = fields.Selection(selection=[
         ('none', _('None')),
         ('sent_by_mail', _('Sent by mail')),
         ('not_sent', _('Not sent'))], store=True)
     attachments_description = fields.Text(store=True)
-    supporter_language = fields.Many2many(
+    supporter_languages_ids = fields.Many2many(
         related='sponsorship_id.correspondant_id.spoken_langs_ids')
-    beneficiary_language = fields.Many2many(
+    beneficiary_language_ids = fields.Many2many(
         related='sponsorship_id.child_id.project_id.country_id.\
 spoken_langs_ids')
     # First spoken lang of partner
-    current_language = fields.Many2one('res.lang.compassion', store=True, compute='_set_current_language')
+    original_language_id = fields.Many2one('res.lang.compassion', store=True, compute='_set_current_language')
+    destination_language_id = fields.Many2one('res.lang.compassion')
     template_id = fields.Integer(store=True)
     original_text = fields.Text(store=True)
     translated_text = fields.Text(store=True)
@@ -93,5 +93,7 @@ spoken_langs_ids')
     def _set_current_language(self):
         # Get correspondent first spoken lang
         if self.sponsorship_id.correspondant_id.spoken_langs_ids:
-            self.current_language = self.sponsorship_id.correspondant_id\
+            self.original_language_id = self.sponsorship_id.correspondant_id\
+                .spoken_langs_ids[0]
+            self.destination_language_id = self.sponsorship_id.correspondant_id\
                 .spoken_langs_ids[0]
