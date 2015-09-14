@@ -22,6 +22,9 @@
             <field name="model">sponsorship.correspondence</field>
             <field name="arch" type="xml">
                 <form string="Correspondence" version="7.0">
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
                     <sheet>
                         <h1>
                             <field name="name"/>
@@ -31,7 +34,6 @@
                             <field name="kit_id"/>
                             <field name="letter_type"/>
                             <field name="communication_type"/>
-                            <field name="state"/>
                             <field name="is_encourager"/>
                             <field name="mandatory_review"/>
                             <field name="attachments" widget='image' string="Letter image"/>
