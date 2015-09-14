@@ -58,7 +58,10 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem id="menu_sponsorship_correspondence" parent="child_compassion.menu_sponsorship_section"
-                  name="Correspondence" action="action_compassion_sponsorship_correspondence_form" sequence="7"/>
+        <menuitem id="menu_sponsorship_letters" parent="menu_sponsorship_correspondence"
+                  name="Letters" action="action_compassion_sponsorship_correspondence_form" sequence="0"/>
+
+        <menuitem id="menu_sponsorship_correspondence" parent="child_compassion.menu_sponsorship_root"
+                  name="Correspondence" sequence="1"/>
     </data>
 </openerp>
