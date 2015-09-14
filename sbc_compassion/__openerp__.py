@@ -36,10 +36,6 @@
     'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'description': """
-        The sbc.compassion module can handle the different interactions of
-        correspondence between sponsors and their children sponsorships
-    """,
     'depends': ['base', 'base_location', 'sponsorship_compassion'],
     'data': [
         'security/ir.model.access.csv',
@@ -49,7 +45,6 @@
         'view/sponsorship_correspondance_view.xml',
         'data/lang_data.xml',
     ],
-    'demo': [],
     'installable': True,
     'auto_install': False,
 }
