@@ -36,7 +36,7 @@
     'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['base', 'base_location', 'sponsorship_compassion'],
+    'depends': ['sponsorship_compassion'],
     'data': [
         'security/ir.model.access.csv',
         'view/country_compassion_view.xml',
