@@ -25,12 +25,11 @@ class ResSponsorshipCorrespondence(models.Model):
 
     sponsorship_id = fields.Many2one(
         'recurring.contract', 'Sponsorship', required=True)
-    name = fields.Text('name', compute='_set_name')
+    name = fields.Char('name', compute='_set_name')
     partner_id = fields.Many2one(related='sponsorship_id.correspondant_id', store=True)
     child_id = fields.Many2one(related='sponsorship_id.child_id', store=True)
     # Field used for identifying correspondence
-    kit_id = fields.Integer('Kit id', copy=False)
-
+    kit_id = fields.Integer('Kit id', copy=False, readonly=True)
     letter_type = fields.Selection(selection=[
         ('S2B', _('Sponsor to beneficiary')),
         ('B2S', _('Beneficiary to sponsor'))])
