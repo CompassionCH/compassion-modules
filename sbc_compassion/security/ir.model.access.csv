@@ -1,3 +1,5 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-"access_sponsorship_correspondence","Full access on sponsorship_correspondence","model_sponsorship_correspondence","child_compassion.group_sponsorship",1,1,1,1
-"access_res_lang_compassion","Full access on res_lang_compassion","model_res_lang_compassion","child_compassion.group_sponsorship",1,1,1,1
+"access_sponsorship_correspondence","Read only access on sponsorship_correspondence","model_sponsorship_correspondence","child_compassion.group_sponsorship",1,0,0,0
+"access_res_lang_compassion","Read only access on res_lang_compassion","model_res_lang_compassion","child_compassion.group_sponsorship",1,0,0,0
+"access_sponsorship_correspondence","Full access on sponsorship_correspondence","model_sponsorship_correspondence","child_compassion.group_admin",1,1,1,1
+"access_res_lang_compassion","Full access on res_lang_compassion","model_res_lang_compassion","child_compassion.group_admin",1,1,1,1
