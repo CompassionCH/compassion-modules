@@ -25,7 +25,7 @@ class ResSponsorshipCorrespondence(models.Model):
 
     sponsorship_id = fields.Many2one(
         'recurring.contract', 'Sponsorship', required=True, store=True)
-    name = fields.Text('name')
+    name = fields.Text('name', compute='_set_name')
     # Field used for identifying correspondence
     kit_id = fields.Integer('Kit id', copy=False, store=True)
 
@@ -64,7 +64,7 @@ class ResSponsorshipCorrespondence(models.Model):
         related='sponsorship_id.child_id.project_id.country_id.\
 spoken_langs_ids')
     # First spoken lang of partner
-    current_language = fields.Many2one('res.lang.compassion', store=True)
+    current_language = fields.Many2one('res.lang.compassion', store=True, compute='_set_current_language')
     template_id = fields.Integer(store=True)
     original_text = fields.Text(store=True)
     translated_text = fields.Text(store=True)
@@ -80,16 +80,18 @@ spoken_langs_ids')
     ]
 
     ##########################################################################
-    #                             VIEW CALLBACKS                             #
+    #                             FIELDS METHODS                             #
     ##########################################################################
 
-    # On sponsorship_id change
-    # Get sponsorship name and first spoken lang of the correspondent
-    @api.onchange('sponsorship_id')
-    def check_change(self):
+    @api.depends('sponsorship_id')
+    def _set_name(self):
         self.name = str(
             self.sponsorship_id.partner_codega) + " - " + str(
                 self.sponsorship_id.child_id.code)
+
+    @api.depends('sponsorship_id')
+    def _set_current_language(self):
+        # Get correspondent first spoken lang
         if self.sponsorship_id.correspondant_id.spoken_langs_ids:
             self.current_language = self.sponsorship_id.correspondant_id\
                 .spoken_langs_ids[0]
