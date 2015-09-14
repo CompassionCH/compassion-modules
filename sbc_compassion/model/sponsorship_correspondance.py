@@ -67,7 +67,12 @@ spoken_langs_ids', store=True)
     # First spoken lang of partner
     original_language_id = fields.Many2one('res.lang.compassion', compute='_set_current_language', store=True)
     destination_language_id = fields.Many2one('res.lang.compassion')
-    template_id = fields.Integer()
+    template_id = fields.Selection(selection=[
+        ('template_1', _('Template 1')),
+        ('template_2', _('Template 2')),
+        ('template_3', _('Template 3')),
+        ('template_4', _('Template 4')),
+        ('template_5', _('Template 5'))])
     original_text = fields.Text()
     translated_text = fields.Text()
     source = fields.Selection(selection=[
