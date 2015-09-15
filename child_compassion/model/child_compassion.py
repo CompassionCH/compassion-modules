@@ -243,7 +243,7 @@ class compassion_child(models.Model):
         try:
             r = http.request('GET', url).data
         except urllib3.exceptions.SSLError:
-            logger.error("Could not connect with SSL CERT.")
+            logger.warning("Could not connect with SSL CERT.")
             r = requests.get(url).text
         return r
 
@@ -408,13 +408,19 @@ class compassion_child(models.Model):
                     'NetworkError',
                     _('An error occured while fetching general information '
                       'for child %s. ') % child.code)
+            if 'error' in json_data:
+                raise exceptions.Warning(
+                    _('Error fetching data for child %s') % (child.code),
+                    json_data['error'].get('message', _(
+                        'An unexpected answer was returned by GMC')))
             vals = {
-                'name': json_data['childName'],
-                'firstname': json_data['childPersonalName'],
-                'birthdate': json_data['birthDate'] or False,
-                'gender': json_data['gender'],
-                'unique_id': json_data['childID'],
-                'completion_date': json_data['cdspCompletionDate'] or False,
+                'name': json_data.get('childName'),
+                'firstname': json_data.get('childPersonalName'),
+                'birthdate': json_data.get('birthDate') or False,
+                'gender': json_data.get('gender'),
+                'unique_id': json_data.get('childID'),
+                'completion_date': json_data.get('cdspCompletionDate')
+                or False,
             }
             child.write(vals)
         return True
@@ -472,6 +478,11 @@ class compassion_child(models.Model):
                 'NetworkError',
                 _('An error occured while fetching the last '
                   'case study for child %s. ') % self.code)
+        if 'error' in json_data:
+            raise exceptions.Warning(
+                _('Error fetching data for child %s') % (self.code),
+                json_data['error'].get(
+                    'message', _('An unexpected answer was returned by GMC')))
 
         child_prop_obj = self.env['compassion.child.property']
         info_date = json_data['childCaseStudyDate']

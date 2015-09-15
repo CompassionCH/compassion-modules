@@ -494,4 +494,12 @@ class compassion_project(models.Model):
             raise exceptions.Warning(
                 'Error calling webservice',
                 'Error calling %s for project %s' % (api_mess, project_code))
+
+        if 'error' in json_result:
+                raise exceptions.Warning(
+                    _('Error fetching data for project %s') % (project_code),
+                    json_result['error'].get(
+                        'message',
+                        _('An unexpected answer was returned by GMC')))
+
         return json_result

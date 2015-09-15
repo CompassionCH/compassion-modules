@@ -41,6 +41,12 @@ class compassion_country(models.Model):
                 continue
 
             json_data = json.loads(r.text)
+            if 'error' in json_data:
+                raise exceptions.Warning(
+                    _('Error fetching data for country %s') %
+                    (country.iso_code),
+                    json_data['error'].get('message', _(
+                        'An unexpected answer was returned by GMC')))
             values = self._get_val_from_json(json_data)
             country.write(values)
         return True
