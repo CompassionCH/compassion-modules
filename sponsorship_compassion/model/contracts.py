@@ -103,8 +103,7 @@ class sponsorship_contract(models.Model):
     def _get_sponsorship_standard_lines(self):
         """ Select Sponsorship and General Fund by default """
         res = []
-        product_obj = self.env['product.product']
-        self.env.context = self.with_context(lang='en_US').env.context
+        product_obj = self.env['product.product'].with_context(lang='en_US')
         sponsorship_id = product_obj.search(
             [('name', '=', 'Sponsorship')])[0].id
         gen_id = product_obj.search(
