@@ -26,7 +26,8 @@ class ResSponsorshipCorrespondence(models.Model):
     sponsorship_id = fields.Many2one(
         'recurring.contract', 'Sponsorship', required=True)
     name = fields.Char('name', compute='_set_name')
-    partner_id = fields.Many2one(related='sponsorship_id.correspondant_id', store=True)
+    partner_id = fields.Many2one(
+        related='sponsorship_id.correspondant_id', store=True)
     child_id = fields.Many2one(related='sponsorship_id.child_id', store=True)
     # Field used for identifying correspondence
     kit_id = fields.Integer('Kit id', copy=False, readonly=True)
@@ -50,7 +51,8 @@ class ResSponsorshipCorrespondence(models.Model):
         ('delivered', _('Delivered'))])
     is_encourager = fields.Boolean()
     mandatory_review = fields.Boolean(
-        related='sponsorship_id.correspondant_id.mandatory_review', store=True)
+        related='sponsorship_id.correspondant_id.mandatory_review',
+        store=True)
     letter_image = fields.Binary()
     attachments_ids = fields.Many2many('ir.attachment')
     physical_attachments = fields.Selection(selection=[
@@ -59,12 +61,14 @@ class ResSponsorshipCorrespondence(models.Model):
         ('not_sent', _('Not sent'))])
     attachments_description = fields.Text()
     supporter_languages_ids = fields.Many2many(
-        related='sponsorship_id.correspondant_id.spoken_langs_ids', store=True)
+        related='sponsorship_id.correspondant_id.spoken_langs_ids',
+        store=True)
     beneficiary_language_ids = fields.Many2many(
         related='sponsorship_id.child_id.project_id.country_id.\
 spoken_langs_ids', store=True)
     # First spoken lang of partner
-    original_language_id = fields.Many2one('res.lang.compassion', compute='_set_current_language', store=True)
+    original_language_id = fields.Many2one(
+        'res.lang.compassion', compute='_set_current_language', store=True)
     destination_language_id = fields.Many2one('res.lang.compassion')
     template_id = fields.Selection(selection=[
         ('template_1', _('Template 1')),
@@ -101,5 +105,5 @@ spoken_langs_ids', store=True)
         if self.sponsorship_id.correspondant_id.spoken_langs_ids:
             self.original_language_id = self.sponsorship_id.correspondant_id\
                 .spoken_langs_ids[0]
-            self.destination_language_id = self.sponsorship_id.correspondant_id\
-                .spoken_langs_ids[0]
+            self.destination_language_id = self.sponsorship_id\
+                .correspondant_id.spoken_langs_ids[0]
