@@ -44,6 +44,7 @@
     'data': [
         # 'security/ir.model.access.csv',
         # 'templates.xml',
+        'view/import_mail_view.xml',
         'view/country_compassion_view.xml',
         'view/partner_compassion_view.xml',
         'view/lang_compassion_view.xml',
