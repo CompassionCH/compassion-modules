@@ -9,7 +9,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    @author: Emmanuel Mathier <emmanuel.mathier@gmail.com>
 #
 #    This program is free software: you can redistribute it and/or modify
