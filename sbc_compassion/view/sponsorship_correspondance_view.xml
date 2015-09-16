@@ -21,7 +21,7 @@
             <field name="name">sponsorship.correspondence.form</field>
             <field name="model">sponsorship.correspondence</field>
             <field name="arch" type="xml">
-                <form string="Correspondence" version="7.0">
+                <form string="Correspondence">
                     <header>
                         <field name="state" widget="statusbar"/>
                     </header>
