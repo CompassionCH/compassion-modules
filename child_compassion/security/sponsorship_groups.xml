@@ -11,10 +11,5 @@
             <field name="comment">the user will have access to all sponsorships and related data.</field>
             <field name="category_id" ref="module_category_compassion"/>
         </record>
-        <record id="group_admin" model="res.groups">
-            <field name="name">Manage sponsorships admin</field>
-            <field name="comment">the admin will have full access to all sponsorships and related data.</field>
-            <field name="category_id" ref="module_category_compassion"/>
-        </record>
     </data>
 </openerp>
