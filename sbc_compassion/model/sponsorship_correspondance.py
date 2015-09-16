@@ -68,7 +68,7 @@ class ResSponsorshipCorrespondence(models.Model):
 spoken_langs_ids', store=True)
     # First spoken lang of partner
     original_language_id = fields.Many2one(
-        'res.lang.compassion', compute='_set_current_language', store=True)
+        'res.lang.compassion', compute='_set_original_language', store=True)
     destination_language_id = fields.Many2one('res.lang.compassion')
     template_id = fields.Selection(selection=[
         ('template_1', _('Template 1')),
@@ -100,7 +100,7 @@ spoken_langs_ids', store=True)
                 self.sponsorship_id.child_id.code)
 
     @api.depends('sponsorship_id')
-    def _set_current_language(self):
+    def _set_original_language(self):
         # Get correspondent first spoken lang
         if self.sponsorship_id.correspondant_id.spoken_langs_ids:
             self.original_language_id = self.sponsorship_id.correspondant_id\
