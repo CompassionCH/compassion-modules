@@ -33,7 +33,7 @@ class ResSponsorshipCorrespondence(models.Model):
     kit_id = fields.Integer('Kit id', copy=False, readonly=True)
     letter_type = fields.Selection(selection=[
         ('S2B', _('Sponsor to beneficiary')),
-        ('B2S', _('Beneficiary to sponsor'))])
+        ('B2S', _('Beneficiary to sponsor'))], required=True)
     communication_type = fields.Selection(selection=[
         ('scheduled', _('Scheduled')),
         ('response', _('Response')),
