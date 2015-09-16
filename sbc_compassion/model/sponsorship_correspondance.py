@@ -62,7 +62,7 @@ class ResSponsorshipCorrespondence(models.Model):
     attachments_description = fields.Text()
     supporter_languages_ids = fields.Many2many(
         related='sponsorship_id.correspondant_id.spoken_langs_ids',
-        store=True)
+        store=True, readonly=True)
     beneficiary_language_ids = fields.Many2many(
         related='sponsorship_id.child_id.project_id.country_id.\
 spoken_langs_ids', store=True)
