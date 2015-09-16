@@ -48,7 +48,7 @@ class ResSponsorshipCorrespondence(models.Model):
         ('quality_checked', _('Quality checked')),
         ('rejected', _('Rejected')),
         ('sent', _('Sent')),
-        ('delivered', _('Delivered'))])
+        ('delivered', _('Delivered'))], default='new')
     is_encourager = fields.Boolean()
     mandatory_review = fields.Boolean(
         related='sponsorship_id.correspondant_id.mandatory_review',
