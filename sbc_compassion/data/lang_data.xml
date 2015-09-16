@@ -15,11 +15,6 @@
             <field name="code_iso">deu</field>
         </record>
 
-        <record id="lang_compassion_swiss_german" model="res.lang.compassion">
-            <field name="name">Swiss German</field>
-            <field name="code_iso">gsw</field>
-        </record>
-
         <record id="lang_compassion_spanish" model="res.lang.compassion">
             <field name="name">Spanish</field>
             <field name="code_iso">spa</field>
