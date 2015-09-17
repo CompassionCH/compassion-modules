@@ -33,7 +33,6 @@ class res_partner(models.Model):
         string='Other contracts')
     unrec_items = fields.Integer(compute='_set_count_items')
     receivable_items = fields.Integer(compute='_set_count_items')
-    
 
     ##########################################################################
     #                             FIELDS METHODS                             #
