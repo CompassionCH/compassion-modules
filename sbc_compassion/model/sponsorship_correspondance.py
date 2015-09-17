@@ -69,7 +69,8 @@ spoken_langs_ids', store=True)
     # First spoken lang of partner
     original_language_id = fields.Many2one(
         'res.lang.compassion', compute='_set_original_language', store=True)
-    destination_language_id = fields.Many2one('res.lang.compassion')
+    destination_language_id = fields.Many2one(
+        'res.lang.compassion', compute='_set_original_language', store=True)
     template_id = fields.Selection(selection=[
         ('template_1', _('Template 1')),
         ('template_2', _('Template 2')),
