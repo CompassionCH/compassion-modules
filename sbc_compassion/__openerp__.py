@@ -41,6 +41,9 @@
         correspondence between sponsors and their children sponsorships
     """,
     'depends': ['base', 'base_location', 'sponsorship_compassion'],
+    'external_dependencies': {
+        'java': ['zxing'],
+    },
     'data': [
         # 'security/ir.model.access.csv',
         # 'templates.xml',
@@ -54,4 +57,12 @@
     'demo': [],
     'installable': True,
     'auto_install': False,
+    'description': """
+Installation
+============
+
+To install this module, you need to install dependencies:
+
+* requires python-MySQLdb to be installed on the server.
+""",
 }

@@ -20,10 +20,10 @@ import copy
 
 import pdb
 from tempfile import TemporaryFile
-import barcode
+import zxing
 from openerp import api, fields, models, _
 from openerp.osv import osv
-
+import sponsorship_correspondance
 
 def check_file(name):
     """
@@ -88,7 +88,7 @@ def removename(string,name):
 
 
 
-class ImportMail(models.TransientModel):
+class ImportMail(models.Model):
     """
     Import mail
     """
@@ -143,8 +143,8 @@ class ImportMail(models.TransientModel):
         Counts the number of scans (if a zip is given, count the number
         inside it)
         """
-        tmp_list_name = self.mapped('data.name')
         pdb.set_trace()
+        tmp_list_name = self.mapped('data.name')
         if tmp_list_name != self.list_name.split(';'):
             self.list_name = list2string(tmp_list_name)
             # counter
@@ -197,14 +197,15 @@ class ImportMail(models.TransientModel):
                             self.list_zip = tmp
                         os.remove(self.path+f)
                         self.debug = self.list_zip
-            pdb.set_trace()
             self.debug = self.list_zip
+            pdb.set_trace()
         
     #------------------------ _RUN_ANALYZE -------------------------------------
         
     @api.one
     def button_run_analyze(self):
         """
+        SAVE ALL PDF AND TIFF
         
         """
         self.debug = "YOUPI"
@@ -215,30 +216,50 @@ class ImportMail(models.TransientModel):
                 check.append(file_['name'])
                 # check for zip
                 if not check_file(file_['name']):
-                    zip_ = zipfile.ZipFile(self.path+file_['name'],'r')                    
+                    zip_ = zipfile.ZipFile(self.path+file_['name'],'r')
+                    path_zip = path+file_['name'][-4::]
+                    pdb.set_trace()
+                    if not os.path.exists(path_zip):
+                        os.makedirs(path_zip)
                     for f in zip_.namelist():
                         """ ---------------------------------------------------
                         NEED TO CHECK THE DIRECTORY ---------------------------
                         """ # -------------------------------------------------
-                        path_zip = path+file_['name'][-4::]
-                        if not os.path.exists(path_zip):
-                            os.makedirs(path_zip)
+                        zip_.extract(f,path_zip)
                         self.analyze_attachment(path_zip+f)
+                    os.remove(path_zip)
                 else:
-                    self.analyze_attachment(file_['name'])
+                    self.analyze_attachment(
+                        "/tmp/sbc_compassion/" + file_['name'],file_['datas'])
             else:
                 raise osv.except_osv(_('Warning!'),
                                      _('Two files are the same'))
-            
+                return
         
-    def analyze_attachment(self,file_):
+    def analyze_attachment(self,file_,data=None):
         """
-        Analyze attachment (PDF/TIFF) and save everything in self.barcode
+        Analyze attachment (PDF/TIFF) and save everything
         
         :param ir_attachment file_: current file to analyze
         """
-        
-        tmp = barcode.barcode(file_)
-        tmpcode,tmpfile = tmp.analyze()
-        self.bar['barcode'].append(tmpcode)
-        self.bar['attachment'].append(tmpfile)
+        if data != None:
+            f = open(file_,'w')
+            f.write(base64.b64decode(data))
+            f.close()
+
+        tmp = zxing.BarCodeReader()
+        if isPDF(file_):
+            osv.except_osv('ERROR!','STILL IN DEV')
+        if isTIFF(file_):
+            code = tmp.decode(file_)
+            if data == None:
+                f = open(file_,'r')
+                data = base64.b64encode(f.read())
+            self.env['sponsorship.correspondence'].create({
+                'letter_image': data,
+                'sponsorship_id': 1,
+            })
+            print code.data.upper()
+            print "ERROR NEED TO CORRECT SPONSORSHIP_ID"
+        else:
+            osv.except_osv('ERROR','FORMAT NOT ACCEPTED')

@@ -14,3 +14,4 @@ from . import country_compassion
 from . import sponsorship_correspondance
 from . import barcode
 from . import import_mail
+from . import zxing
