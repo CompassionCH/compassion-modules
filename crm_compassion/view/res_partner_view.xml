@@ -8,7 +8,7 @@
             <field eval="18" name="priority"/>
             <field name="arch" type="xml">
                 <xpath expr="//div[@name='buttons']" position="inside">
-                    <button name="open_events" string="Events" type="object" groups="base.group_sale_salesman"/>
+                    <button name="open_events" string="Events" type="object" groups="base.group_sale_salesman" class="oe_stat_button" icon="fa-calendar"/>
                 </xpath>
             </field>
         </record>

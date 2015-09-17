@@ -15,6 +15,9 @@ from openerp import api, fields, models, _
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
+    ##########################################################################
+    #                                 FIELDS                                 #
+    ##########################################################################
     contracts_fully_managed = fields.One2many(
         "recurring.contract", compute='_get_related_contracts',
         string='Fully managed sponsorships',
@@ -28,7 +31,13 @@ class res_partner(models.Model):
     other_contract_ids = fields.One2many(
         "recurring.contract", compute='_get_related_contracts',
         string='Other contracts')
+    unrec_items = fields.Integer(compute='_set_count_items')
+    receivable_items = fields.Integer(compute='_set_count_items')
+    
 
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
     @api.multi
     def _get_related_contracts(self):
         """ Returns the contracts of the sponsor of given type
@@ -56,6 +65,20 @@ class res_partner(models.Model):
                  ('type', 'not in', ['S', 'SC'])],
                 order='start_date desc').ids
 
+    def _set_count_items(self):
+        move_line_obj = self.env['account.move.line']
+        for partner in self:
+            partner.unrec_items = move_line_obj.search_count([
+                ('partner_id', '=', partner.id),
+                ('reconcile_id', '=', False),
+                ('account_id.reconcile', '=', True)])
+            partner.receivable_items = move_line_obj.search_count([
+                ('partner_id', '=', partner.id),
+                ('account_id.code', '=', '1050')])
+
+    ##########################################################################
+    #                             VIEW CALLBACKS                             #
+    ##########################################################################
     @api.multi
     def show_lines(self):
         try:
@@ -93,7 +116,7 @@ class res_partner(models.Model):
         self.env.context = self.with_context(
             search_default_partner_id=self.ids).env.context
         action = {
-            'name': _('Related invoice lines'),
+            'name': _('1050 move lines'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree',
