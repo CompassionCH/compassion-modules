@@ -12,7 +12,7 @@
 from openerp import fields, models, api, _
 
 
-class ResSponsorshipCorrespondence(models.Model):
+class SponsorshipCorrespondence(models.Model):
 
     """ This class create correspondances to match Compassion needs.
     """
