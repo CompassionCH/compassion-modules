@@ -25,7 +25,7 @@ class ResSponsorshipCorrespondence(models.Model):
 
     sponsorship_id = fields.Many2one(
         'recurring.contract', 'Sponsorship', required=True)
-    name = fields.Char('name', compute='_set_name')
+    name = fields.Char(compute='_set_name')
     partner_id = fields.Many2one(
         related='sponsorship_id.correspondant_id', store=True)
     child_id = fields.Many2one(related='sponsorship_id.child_id', store=True)
