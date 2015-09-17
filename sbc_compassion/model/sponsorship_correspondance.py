@@ -95,9 +95,12 @@ spoken_langs_ids', store=True)
 
     @api.depends('sponsorship_id')
     def _set_name(self):
-        self.name = str(
-            self.sponsorship_id.partner_codega) + " - " + str(
-                self.sponsorship_id.child_id.code)
+        if self.sponsorship_id:
+            self.name = str(
+                self.sponsorship_id.partner_codega) + " - " + str(
+                    self.sponsorship_id.child_id.code)
+        else:
+            self.name = _('New correspondence')
 
     @api.depends('sponsorship_id')
     def _set_original_language(self):
