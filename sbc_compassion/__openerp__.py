@@ -31,8 +31,7 @@
     'name': "Sponsor to beneficiary communication",
     'version': '0.1',
     'category': 'Other',
-    'summary': """
-        SBC - Sponsor to beneficiary communication""",
+    'summary': "SBC - Sponsor to beneficiary communication",
     'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
