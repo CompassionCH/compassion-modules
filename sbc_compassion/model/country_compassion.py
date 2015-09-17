@@ -12,7 +12,7 @@
 from openerp import fields, models
 
 
-class ResCountry(models.Model):
+class CompassionCountry(models.Model):
 
     """ This class upgrade the countries to add spoken languages
     to match Compassion needs.
