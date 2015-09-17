@@ -14,7 +14,8 @@ from openerp import fields, models, api, _
 
 class SponsorshipCorrespondence(models.Model):
 
-    """ This class create correspondances to match Compassion needs.
+    """ This class holds the data of a Communication Kit between
+    a child and a sponsor.
     """
 
     _name = 'sponsorship.correspondence'
