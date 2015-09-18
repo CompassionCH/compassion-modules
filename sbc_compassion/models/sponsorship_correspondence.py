@@ -10,7 +10,7 @@
 ##############################################################################
 
 from openerp import fields, models, api, _
-import pdb
+
 
 class SponsorshipCorrespondence(models.Model):
 
@@ -52,7 +52,7 @@ class SponsorshipCorrespondence(models.Model):
         ('delivered', _('Delivered'))], default='new')
     is_encourager = fields.Boolean()
     mandatory_review = fields.Boolean(compute='_set_partner_review',
-        readonly=False, store=True)
+                                      readonly=False, store=True)
     letter_image = fields.Many2one('ir.attachment', required=True)
     attachments_ids = fields.Many2many('ir.attachment')
     physical_attachments = fields.Selection(selection=[
@@ -103,22 +103,22 @@ spoken_langs_ids', store=True)
         else:
             self.name = _('New correspondence')
 
-    @api.depends('sponsorship_id','letter_type')
+    @api.depends('sponsorship_id', 'letter_type')
     def _set_original_language(self):
         if self.letter_type == 'S2B':
             if self.partner_id.spoken_langs_ids:
                 self.original_language_id = self.partner_id\
-                .spoken_langs_ids[0]
+                    .spoken_langs_ids[0]
             if self.child_id.project_id.country_id.spoken_langs_ids:
                 self.destination_language_id = self.child_id.project_id\
-                .country_id.spoken_langs_ids[0]
+                    .country_id.spoken_langs_ids[0]
         if self.letter_type == 'B2S':
             if self.child_id.project_id.country_id.spoken_langs_ids:
                 self.original_language_id = self.child_id.project_id\
-                .country_id.spoken_langs_ids[0]
+                    .country_id.spoken_langs_ids[0]
             if self.partner_id.spoken_langs_ids:
                 self.destination_language_id = self.partner_id\
-                .spoken_langs_ids[0]
+                    .spoken_langs_ids[0]
 
     @api.depends('sponsorship_id')
     def _set_partner_review(self):
