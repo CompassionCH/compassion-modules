@@ -14,11 +14,15 @@
 __version__ = '0.3'
 import subprocess, re, os
 
-class BarCodeReader():
+class BarCode(read):
   location = ""
   command = "java"
   libs = ["javase.jar", "core.jar", "jcommander.jar", "ij.jar"]
-  args = ["-cp", "LIBS", "com.google.zxing.client.j2se.CommandLineRunner"]
+  args = ["-cp", "LIBS"]
+  if read==True:
+    args.append("com.google.zxing.client.j2se.CommandLineRunner")
+  else:
+    args.append("com.google.zxing.client.j2se.CommandLineEncoder")
 
   def __init__(self, loc=""):
     if not len(loc):
@@ -29,7 +33,7 @@ class BarCodeReader():
 
     self.location = loc
 
-  def decode(self, files, try_harder = False, qr_only = False):
+  def start(self, files, try_harder = False, qr_only = False):
     cmd = [self.command]
     cmd += self.args[:] #copy arg values
     if try_harder:
@@ -57,7 +61,7 @@ class BarCodeReader():
         codes.append(None)
         continue
 
-      codes.append(BarCode(result))
+      codes.append(BarCodeReader(result))
 
     if SINGLE_FILE:
       return codes[0]
@@ -65,7 +69,7 @@ class BarCodeReader():
       return codes
 
 #this is the barcode class which has
-class BarCode:
+class BarCodeReader:
   format = ""
   points = []
   data = ""
@@ -112,6 +116,9 @@ class BarCode:
           self.points.append((float(m.group(2)), float(m.group(3))))
 
     return
+
+
+class BarCodeWriter:
 
 
 if __name__ == "__main__":

@@ -26,7 +26,7 @@ Yes_No ()
 
 ################################################################################
 #                                                                              #
-#                   FOR ADDING A NEW OPERATION DURING                          #
+#                     TO ADD A NEW OPERATION DURING                            #
 #                          THE INSTALLATION                                    #
 #                  WRITE IN THE FUNCTION START_INSTALL                         #
 #                                                                              #
