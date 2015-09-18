@@ -51,9 +51,8 @@ class SponsorshipCorrespondence(models.Model):
         ('sent', _('Sent')),
         ('delivered', _('Delivered'))], default='new')
     is_encourager = fields.Boolean()
-    mandatory_review = fields.Boolean(
-        related='sponsorship_id.correspondant_id.mandatory_review',
-        store=True)
+    mandatory_review = fields.Boolean(compute='_set_partner_review',
+        readonly=False, store=True)
     letter_image = fields.Many2one('ir.attachment', required=True)
     attachments_ids = fields.Many2many('ir.attachment')
     physical_attachments = fields.Selection(selection=[
@@ -120,3 +119,10 @@ spoken_langs_ids', store=True)
             if self.partner_id.spoken_langs_ids:
                 self.destination_language_id = self.partner_id\
                 .spoken_langs_ids[0]
+
+    @api.depends('sponsorship_id')
+    def _set_partner_review(self):
+        if self.partner_id.mandatory_review:
+            self.mandatory_review = True
+        else:
+            self.mandatory_review = False
