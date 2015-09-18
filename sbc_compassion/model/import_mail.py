@@ -22,7 +22,7 @@ import pdb
 from tempfile import TemporaryFile
 import zxing
 from openerp import api, fields, models, _, exceptions
-import sponsorship_correspondance
+import sponsorship_correspondence
 
 def check_file(name):
     """
@@ -87,7 +87,7 @@ def removename(string,name):
 
 
 
-class ImportMail(models.Model):
+class ImportMail(models.TransientModel):
     """
     Import mail
     """
@@ -157,10 +157,10 @@ class ImportMail(models.Model):
                 try:
                     zip_ = zipfile.ZipFile(tmp_name_file,'r')
                 except zipfile.BadZipfile:
-                    raise Warning(_('Zip file corrupted (' + 
+                    raise exceptions.Warning(_('Zip file corrupted (' + 
                                     file_.name + ')'))
                 except zipfile.LargeZipFile:
-                    raise Warning(_('Zip64 is not supported(' + 
+                    raise exceptions.Warning(_('Zip64 is not supported(' + 
                                     file_.name + ')'))
                 else:
                     list_file = zip_.namelist()
@@ -175,7 +175,7 @@ class ImportMail(models.Model):
                 if os.path.exists(self.path+f):
                     tmp = removename(self.list_zip,f)
                     if tmp != -1:
-                        raise Warning(_("I am not able to delete a file"))
+                        raise exceptions.Warning(_("I am not able to delete a file"))
                     else:
                         self.list_zip = tmp
                     os.remove(self.path+f)
@@ -212,7 +212,7 @@ class ImportMail(models.Model):
                     self.analyze_attachment(
                         "/tmp/sbc_compassion/" + file_.name,file_.datas)
             else:
-                raise Warning(_('Two files are the same'))
+                raise exceptions.Warning(_('Two files are the same'))
                 return
         
     def analyze_attachment(self,file_,data=None):
@@ -226,20 +226,28 @@ class ImportMail(models.Model):
             f.write(base64.b64decode(data))
             f.close()
 
-        tmp = zxing.BarCodeReader()
+        tmp = zxing.BarCode(read=True)
         if isPDF(file_):
-            Warning('STILL IN DEV')
+            exceptions.Warning('STILL IN DEV')
         if isTIFF(file_):
             code = tmp.decode(file_)
+            partner,child = code.data.split('XX')
+            pdb.set_trace()
+            sp_id = self.env['sponsorship_correspondence'].search(
+                [('partner_id.codega','=','partner'),
+                 ('child_id.code','=','child')])[0].id
+            exceptions.Warning('BOUH')
             if data == None:
                 f = open(file_,'r')
                 data = base64.b64encode(f.read())
+                f.close()
+            partner = self.env['partner_id']
             self.env['sponsorship.correspondence'].create({
                 'letter_image': data,
-                'sponsorship_id': 1,
+                'partner_id': partner,
+                'child_id': child,
+                'sponsorship_id': sp_id,
             })
-            print code.data.upper()
-            print "ERROR NEED TO CORRECT SPONSORSHIP_ID"
             os.remove(file_)
         else:
-            Warning('FORMAT NOT ACCEPTED')
+            exceptions.Warning('FORMAT NOT ACCEPTED')
