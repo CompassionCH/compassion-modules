@@ -41,7 +41,7 @@
         'view/country_compassion_view.xml',
         'view/partner_compassion_view.xml',
         'view/lang_compassion_view.xml',
-        'view/sponsorship_correspondance_view.xml',
+        'view/sponsorship_correspondence_view.xml',
         'data/lang_data.xml',
     ],
     'installable': True,

@@ -54,7 +54,7 @@ class SponsorshipCorrespondence(models.Model):
     mandatory_review = fields.Boolean(
         related='sponsorship_id.correspondant_id.mandatory_review',
         store=True)
-    letter_image = fields.Binary()
+    letter_image = fields.Many2one('ir.attachment', required=True)
     attachments_ids = fields.Many2many('ir.attachment')
     physical_attachments = fields.Selection(selection=[
         ('none', _('None')),
@@ -77,7 +77,7 @@ spoken_langs_ids', store=True)
         ('template_2', _('Template 2')),
         ('template_3', _('Template 3')),
         ('template_4', _('Template 4')),
-        ('template_5', _('Template 5'))])
+        ('template_5', _('Template 5'))], required=True)
     original_text = fields.Text()
     translated_text = fields.Text()
     source = fields.Selection(selection=[
