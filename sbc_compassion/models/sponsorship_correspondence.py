@@ -10,7 +10,7 @@
 ##############################################################################
 
 from openerp import fields, models, api, _
-
+import pdb
 
 class SponsorshipCorrespondence(models.Model):
 
@@ -100,15 +100,23 @@ spoken_langs_ids', store=True)
         if self.sponsorship_id:
             self.name = str(
                 self.sponsorship_id.partner_codega) + " - " + str(
-                    self.sponsorship_id.child_id.code)
+                    self.child_id.code)
         else:
             self.name = _('New correspondence')
 
-    @api.depends('sponsorship_id')
+    @api.depends('sponsorship_id','letter_type')
     def _set_original_language(self):
-        # Get correspondent first spoken lang
-        if self.sponsorship_id.correspondant_id.spoken_langs_ids:
-            self.original_language_id = self.sponsorship_id.correspondant_id\
+        if self.letter_type == 'S2B':
+            if self.partner_id.spoken_langs_ids:
+                self.original_language_id = self.partner_id\
                 .spoken_langs_ids[0]
-            self.destination_language_id = self.sponsorship_id\
-                .correspondant_id.spoken_langs_ids[0]
+            if self.child_id.project_id.country_id.spoken_langs_ids:
+                self.destination_language_id = self.child_id.project_id\
+                .country_id.spoken_langs_ids[0]
+        if self.letter_type == 'B2S':
+            if self.child_id.project_id.country_id.spoken_langs_ids:
+                self.original_language_id = self.child_id.project_id\
+                .country_id.spoken_langs_ids[0]
+            if self.partner_id.spoken_langs_ids:
+                self.destination_language_id = self.partner_id\
+                .spoken_langs_ids[0]
