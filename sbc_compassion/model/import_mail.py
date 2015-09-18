@@ -17,12 +17,11 @@ import zipfile
 import time
 import os
 import copy
-
+import shutil
 import pdb
 from tempfile import TemporaryFile
 import zxing
-from openerp import api, fields, models, _
-from openerp.osv import osv
+from openerp import api, fields, models, _, exceptions
 import sponsorship_correspondance
 
 def check_file(name):
@@ -108,14 +107,7 @@ class ImportMail(models.Model):
     # list to check if attachment changed
     list_name = fields.Text()
     list_name = "DEFAULT"
-    # dict that will be used to create correspondence
-    #WRONG WRONG WRONG WRONG WRONG WRONG WRONG
-    #WRONG WRONG WRONG WRONG WRONG WRONG WRONG
-    #WRONG WRONG WRONG WRONG WRONG WRONG WRONG
-    #WRONG WRONG WRONG WRONG WRONG WRONG WRONG
-    #WRONG WRONG WRONG WRONG WRONG WRONG WRONG
-    #WRONG WRONG WRONG WRONG WRONG WRONG WRONG
-    bar = {'barcode' : [], 'attachment' : []}
+
     
     # link to _count_nber_files
     data = fields.Many2many('ir.attachment') 
@@ -143,62 +135,51 @@ class ImportMail(models.Model):
         Counts the number of scans (if a zip is given, count the number
         inside it)
         """
-        pdb.set_trace()
-        tmp_list_name = self.mapped('data.name')
-        if tmp_list_name != self.list_name.split(';'):
-            self.list_name = list2string(tmp_list_name)
-            # counter
-            tmp = 0
-            # loop over all the attachments
-            for file_ in self.data:
-                if ';' in file_:
-                    raise osv.except_osv(_('Warning!'),
-                                         _("Names should not contain ';'"))
-                # pdf or tiff case
-                #pdb.set_trace()
-                if check_file(file_['name']):
-                    tmp += 1
+        # counter
+        tmp = 0
+        # loop over all the attachments
+        for file_ in self.data:
+            # pdf or tiff case
+            if check_file(file_.name):
+                tmp += 1
                 # zip case
-                elif file_['name'][-4::].lower() == '.zip':
-                    # save the zip file
-                    f = open(self.path+file_['name'],'w')
-                    f.write(base64.b64decode(file_['datas']))
-                    if file_['name'] not in self.list_zip:
-                        self.list_zip = addname(self.list_zip,file_['name'])
+            elif file_.name[-4::].lower() == '.zip':
+                tmp_name_file = self.path+file_.name
+                # save the zip file
+                if not os.path.exists(tmp_name_file):
+                    f = open(tmp_name_file,'w')
+                    f.write(base64.b64decode(file_.datas))
+                    if file_.name not in self.list_zip:
+                        self.list_zip = addname(self.list_zip,file_.name)
                     f.close()
-                    # catch ALL the exceptions that can be raised by class
-                    # zipfile
-                    try:
-                        zip_ = zipfile.ZipFile(self.path+file_['name'],'r')
-                    except zipfile.BadZipfile:
-                        raise osv.except_osv(_('Error!'),
-                                             _('Zip file corrupted (' + 
-                                               file_['name'] + ')'))
-                    except zipfile.LargeZipFile:
-                        raise osv.except_osv(_('Error!'),
-                                             _('Zip64 is not supported(' + 
-                                               file_['name'] + ')'))
+                # catch ALL the exceptions that can be raised by class
+                # zipfile
+                try:
+                    zip_ = zipfile.ZipFile(tmp_name_file,'r')
+                except zipfile.BadZipfile:
+                    raise Warning(_('Zip file corrupted (' + 
+                                    file_.name + ')'))
+                except zipfile.LargeZipFile:
+                    raise Warning(_('Zip64 is not supported(' + 
+                                    file_.name + ')'))
+                else:
+                    list_file = zip_.namelist()
+                    # loop over all files in zip
+                    for tmp_file in list_file:
+                        tmp += check_file(tmp_file)
+        self.nber_file = tmp
+        #self.debug = str(self.mapped('data.name'))
+        # deletes zip removed from the data
+        for f in self.list_zip.split(';'):
+            if f not in self.mapped('data.name') and f!='':
+                if os.path.exists(self.path+f):
+                    tmp = removename(self.list_zip,f)
+                    if tmp != -1:
+                        raise Warning(_("I am not able to delete a file"))
                     else:
-                        list_file = zip_.namelist()
-                        # loop over all files in zip
-                        for tmp_file in list_file:
-                            tmp += check_file(tmp_file)
-            self.nber_file = tmp
-            #self.debug = str(self.mapped('data.name'))
-            # deletes zip removed from the data
-            for f in self.list_zip.split(';'):
-                if f not in self.mapped('data.name') and f!='':
-                    if os.path.exists(self.path+f):
-                        tmp = removename(self.list_zip,f)
-                        if tmp != -1:
-                            raise osv.except_osv(
-                                _("Error!"),_("Problem for deleting a file"))
-                        else:
-                            self.list_zip = tmp
-                        os.remove(self.path+f)
-                        self.debug = self.list_zip
-            self.debug = self.list_zip
-            pdb.set_trace()
+                        self.list_zip = tmp
+                    os.remove(self.path+f)
+        self.debug = self.list_zip
         
     #------------------------ _RUN_ANALYZE -------------------------------------
         
@@ -212,13 +193,12 @@ class ImportMail(models.Model):
         # list for checking if a file come twice
         check = []
         for file_ in self.data:
-            if file_['name'] not in check:
-                check.append(file_['name'])
+            if file_.name not in check:
+                check.append(file_.name)
                 # check for zip
-                if not check_file(file_['name']):
-                    zip_ = zipfile.ZipFile(self.path+file_['name'],'r')
-                    path_zip = path+file_['name'][-4::]
-                    pdb.set_trace()
+                if not check_file(file_.name):
+                    zip_ = zipfile.ZipFile(self.path+file_.name,'r')
+                    path_zip = self.path+file_.name[::-4]
                     if not os.path.exists(path_zip):
                         os.makedirs(path_zip)
                     for f in zip_.namelist():
@@ -227,13 +207,12 @@ class ImportMail(models.Model):
                         """ # -------------------------------------------------
                         zip_.extract(f,path_zip)
                         self.analyze_attachment(path_zip+f)
-                    os.remove(path_zip)
+                    shutil.rmtree(path_zip)
                 else:
                     self.analyze_attachment(
-                        "/tmp/sbc_compassion/" + file_['name'],file_['datas'])
+                        "/tmp/sbc_compassion/" + file_.name,file_.datas)
             else:
-                raise osv.except_osv(_('Warning!'),
-                                     _('Two files are the same'))
+                raise Warning(_('Two files are the same'))
                 return
         
     def analyze_attachment(self,file_,data=None):
@@ -249,7 +228,7 @@ class ImportMail(models.Model):
 
         tmp = zxing.BarCodeReader()
         if isPDF(file_):
-            osv.except_osv('ERROR!','STILL IN DEV')
+            Warning('STILL IN DEV')
         if isTIFF(file_):
             code = tmp.decode(file_)
             if data == None:
@@ -261,5 +240,6 @@ class ImportMail(models.Model):
             })
             print code.data.upper()
             print "ERROR NEED TO CORRECT SPONSORSHIP_ID"
+            os.remove(file_)
         else:
-            osv.except_osv('ERROR','FORMAT NOT ACCEPTED')
+            Warning('FORMAT NOT ACCEPTED')
