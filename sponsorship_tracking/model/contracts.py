@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class recurring_contract(models.Model):
-    _inherit = "recurring.contract"
+    _inherit = 'recurring.contract'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -307,3 +307,26 @@ class recurring_contract(models.Model):
                 parent = self.browse(parent_id)
                 if parent.sds_state == 'sub_waiting':
                     parent.signal_workflow('new_contract_validated')
+
+    @api.model
+    def _needaction_domain_get(self):
+        domain = False
+        menu = self.env.context.get('count_menu')
+        if menu == 'menu_follow_sds':
+            # All contracts followed by user that are sub_waiting or
+            # inform_no_sub or waiting_welcome with color (> 10 days)
+            domain = [
+                ('sds_uid', '=', self.env.user.id),
+                '|', ('sds_state', 'in', ('sub_waiting', 'inform_no_sub')),
+                '&', ('sds_state', '=', 'waiting_welcome'),
+                ('color', '=', 4)]
+        if menu == 'menu_follow_gmc':
+            domain = [
+                ('sds_uid', '=', self.env.user.id),
+                ('gmc_state', '!=', False)]
+        if menu == 'menu_follow_project':
+            domain = [
+                ('sds_uid', '=', self.env.user.id),
+                ('project_state', 'like', 'inform')]
+
+        return domain

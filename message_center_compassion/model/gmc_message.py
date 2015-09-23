@@ -46,7 +46,7 @@ class gmc_message_pool_process(models.TransientModel):
 class gmc_message_pool(models.Model):
     """ Pool of messages exchanged between Compassion CH and GMC. """
     _name = 'gmc.message.pool'
-    _inherit = 'mail.thread'
+    _inherit = ['mail.thread', 'ir.needaction_mixin']
     _description = 'GMC Message'
 
     _order = 'date desc'
@@ -425,3 +425,7 @@ class gmc_message_pool(models.Model):
                       "cannot be cancelled."))
 
         return True
+
+    @api.model
+    def _needaction_domain_get(self):
+        return [('state', 'in', ('new', 'pending'))]

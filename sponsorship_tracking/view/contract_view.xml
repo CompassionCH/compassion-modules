@@ -200,6 +200,7 @@
                     <filter name="active" string="Active" domain="[('state', '=', 'active')]"/>
                     <filter name="waiting" string="Waiting" domain="[('state','in', ('draft','waiting','mandate'))]"/>
                     <filter name="finished" string="Finished" domain="[('state','in', ('cancelled','terminated'))]"/>
+                    <filter name="user" string="My Sponsorships" domain="[('sds_uid', '=', uid)]"/>
 
                     <group expand="0" string="Group By...">
                         <filter string="Start date" domain="[]"  context="{'group_by':'start_date'}"/>
@@ -220,7 +221,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="domain">[('type', 'like', 'S')]</field>
-            <field name="context">{'default_type': 'S'}</field>
+            <field name="context">{'default_type': 'S', 'search_default_user':1, 'count_menu': 'menu_follow_sds'}</field>
             <field name="search_view_id" ref="contract_tracking_filter"/>
         </record>
 
@@ -230,7 +231,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="domain">[('type', 'like', 'S')]</field>
-            <field name="context">{'default_type': 'S', 'group_by': 'gmc_state'}</field>
+            <field name="context">{'default_type': 'S', 'group_by': 'gmc_state', 'search_default_user':1, 'count_menu': 'menu_follow_gmc'}</field>
             <field name="search_view_id" ref="contract_tracking_filter"/>
         </record>
 
@@ -240,7 +241,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="domain">[('type', 'like', 'S')]</field>
-            <field name="context">{'default_type': 'S', 'group_by': 'project_state'}</field>
+            <field name="context">{'default_type': 'S', 'group_by': 'project_state', 'search_default_user':1, 'count_menu': 'menu_follow_project'}</field>
             <field name="search_view_id" ref="contract_tracking_filter"/>
         </record>
         
@@ -307,7 +308,7 @@
         <menuitem id="menu_tracking" parent="child_compassion.menu_sponsorship_root"
                   name="Track sponsorships" sequence="2"/>
         <menuitem action="action_follow_sds" id="menu_follow_sds" parent="menu_tracking"
-                  name="Welcome / SUB" sequence="1"/>
+                  name="Welcome / SUB" sequence="1" groups="child_compassion.group_sponsorship"/>
         <menuitem action="action_follow_gmc" id="menu_follow_gmc" parent="menu_tracking"
                   name="GMC Updates" sequence="2"/>
         <menuitem action="action_follow_project" id="menu_follow_project" parent="menu_tracking"

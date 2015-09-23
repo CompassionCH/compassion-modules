@@ -184,6 +184,7 @@
             <field name="view_id" ref="view_gmc_message_pool_incoming_tree" />
             <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
             <field name="context">{'search_default_incoming':1, 'search_default_pending':1}</field>
+            <field name="domain">[('direction', '=', 'in')]</field>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 No messages.
@@ -199,6 +200,7 @@
             <field name="view_mode">tree,form</field>
             <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
             <field name="context">{'search_default_constituent':1, 'search_default_pending':1}</field>
+            <field name="domain">[('action_id.model', '=', 'res.partner')]</field>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 No messages.
@@ -229,6 +231,7 @@
             <field name="view_mode">tree,form</field>
             <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
             <field name="context">{'search_default_commitment':1, 'search_default_pending':1}</field>
+            <field name="domain">[('action_id.model', '=', 'recurring.contract')]</field>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 No messages.
@@ -245,6 +248,7 @@
             <field name="view_id" ref="view_gmc_message_pool_gift_tree" />
             <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
             <field name="context">{'search_default_gift':1, 'search_default_pending':1}</field>
+            <field name="domain">[('action_id.model', '=', 'account.invoice.line')]</field>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 No messages.

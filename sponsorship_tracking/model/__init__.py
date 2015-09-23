@@ -11,3 +11,4 @@
 
 from . import contracts
 from . import project_compassion
+from . import ir_ui_menu
