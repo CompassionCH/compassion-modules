@@ -162,7 +162,7 @@ class ImportMail(models.TransientModel):
         if not self.list_zip:
             pdb.set_trace()
             self.list_zip = ""
-         removes old files in the directory
+        #removes old files in the directory
         if os.path.exists(self.path):
             onlyfiles = [ f for f in os.listdir(self.path)
                           if os.path.isfile(os.path.join(self.path,f)) ]
