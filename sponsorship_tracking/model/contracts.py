@@ -38,7 +38,8 @@ class recurring_contract(models.Model):
     color = fields.Integer('Color Index')
     no_sub_reason = fields.Char('No sub reason')
     sds_uid = fields.Many2one(
-        'res.users', 'SDS Follower', default=lambda self: self.env.user)
+        'res.users', 'SDS Follower', default=lambda self: self.env.user,
+        copy=False)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -270,7 +271,7 @@ class recurring_contract(models.Model):
     def contract_cancelled(self):
         """ Project state is no more relevant when contract is cancelled. """
         res = super(recurring_contract, self).contract_cancelled()
-        self.write({'project_state': False})
+        self.write({'project_state': False, 'sds_uid': self.env.user.id})
         return res
 
     @api.multi
@@ -278,8 +279,7 @@ class recurring_contract(models.Model):
         """ Project state is no more relevant when contract is terminated.
         We also put the person who terminated the contract as follower. """
         res = super(recurring_contract, self).contract_terminated()
-        self.write({'project_state': False,
-                    'sds_uid': self.env.user.id})
+        self.write({'project_state': False, 'sds_uid': self.env.user.id})
         return res
 
     ##########################################################################
