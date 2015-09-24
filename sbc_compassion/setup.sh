@@ -50,20 +50,21 @@ Start_Install ()
     rm core/target/core-*javadoc.jar
     rm core/target/core-*sources.jar
     # move
+    if [ ! -d "$HOME/.libZxing" ]; then
+	mkdir $HOME/.libZxing
+    fi
     mv core/target/core-*.jar $HOME/.libZxing/core.jar
     # -- JAVASE --
     rm javase/target/javase-*javadoc.jar
     rm javase/target/javase-*sources.jar
-    if [ ! -d "$HOME/.libZxing" ]; then
-	mkdir $HOME/.libZxing
-    fi
     mv javase/target/javase-*.jar $HOME/.libZxing/javase.jar
     # -- JCOMMANDER --
     mv zxingorg/target/zxingorg-*/WEB-INF/lib/jcommander*.jar $HOME/.libZxing/jcommander.jar
-    mv zxingorg/target/zxingorg-*/WEB-INF/lib/ij*.jar $HOME/.libZxing/ij.jar
+    mv zxingorg/target/zxingorg-*/WEB-INF/lib/jai-imageio-core*.jar $HOME/.libZxing/jai-imageio-core.jar
     cd ..
     # remove useless files
     rm -rf zxing
+    rm maven3_3.2.1-0~ppa1_all.deb
     exit 0
 }
 
@@ -72,6 +73,6 @@ Start_Install ()
 if [ -d "./zxing" ]; then
     Yes_No
 else
-    git clone https://github.com/loikki/zxing
+    git clone https://github.com/zxing/zxing
     Start_Install
 fi
