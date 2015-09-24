@@ -143,8 +143,7 @@ class ImportMail(models.TransientModel):
     path = "/tmp/sbc_compassion/"
     # list zip in the many2many
     # use ';' in order to separate the files
-    list_zip = fields.Text("DEFAULT")
-    list_zip = ""
+    list_zip = fields.Text("LIST_ZIP",select="")
 
     
     # link to _count_nber_files
@@ -160,7 +159,10 @@ class ImportMail(models.TransientModel):
         Counts the number of scans (if a zip is given, count the number
         inside it)
         """
-        # removes old files in the directory
+        if not self.list_zip:
+            pdb.set_trace()
+            self.list_zip = ""
+         removes old files in the directory
         if os.path.exists(self.path):
             onlyfiles = [ f for f in os.listdir(self.path)
                           if os.path.isfile(os.path.join(self.path,f)) ]
@@ -188,9 +190,9 @@ class ImportMail(models.TransientModel):
                 if not os.path.exists(tmp_name_file):
                     f = open(tmp_name_file,'w')
                     f.write(base64.b64decode(attachment.with_context(bin_size=False).datas))
+                    f.close()
                     if attachment.name not in self.list_zip:
                         self.list_zip = addname(self.list_zip,attachment.name)
-                    f.close()
                 # catch ALL the exceptions that can be raised by class
                 # zipfile
                 try:
@@ -207,7 +209,6 @@ class ImportMail(models.TransientModel):
                     for tmp_file in list_file:
                         tmp += check_file(tmp_file)
         self.nber_file = tmp
-        #self.debug = str(self.mapped('data.name'))
         # deletes zip removed from the data
         for f in self.list_zip.split(';'):
             if f not in self.mapped('data.name') and f != '':
@@ -230,7 +231,7 @@ class ImportMail(models.TransientModel):
         SAVE ALL PDF AND TIFF
         
         """
-        self.debug = "YOUPI"
+        self.debug += "YOUPI"
         # list for checking if a file come twice
         check = []
         for attachment in self.data:
@@ -301,13 +302,3 @@ class ImportMail(models.TransientModel):
             """
             exceptions.Warning('FORMAT NOT ACCEPTED')
             return 2
-
-
-
-
-    def write_barcode(self,start=[0,0],end=[0.33,0.5]):
-        """
-        Cut a part of the picture in order to reduce the size of the data to analyze
-        :param [float,float] start: Starting relative position (top-left)
-        :param [float,float] end: Ending relative position (bottom-right)
-        """
