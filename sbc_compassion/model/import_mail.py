@@ -22,7 +22,7 @@ import pdb
 from tempfile import TemporaryFile
 import zxing
 from openerp import api, fields, models, _, exceptions
-import sponsorship_correspondence
+import sponsorship_correspondance
 
 def check_file(name):
     """
@@ -30,12 +30,14 @@ def check_file(name):
     return 1 if it is a tiff or a pdf and 0 otherwise.
     
     :param str name: Name of the file to check
-    :return: 1 if pdf or tiff, 0 otherwise
+    :return: 1 if pdf or tiff, 2 if zip, 0 otherwise
     :rtype: int
     """
     if (name[-4::].lower() in ['.pdf','.tif'] or  
         name[-5::].lower() == '.tiff'):
         return 1
+    elif (name[-4::].lower() == '.zip'):
+        return 2
     else:
         return 0
 
@@ -43,26 +45,52 @@ def check_file(name):
 def isPDF(name):
     """
     Check the extension of the name
+
+    :param string name: File name to check
+    :returns: True if PDF, False otherwise
+    :rtype: bool
     """
     if name[-4::].lower() == '.pdf':
-        return 1
+        return True
     else:
-        return 0
+        return False
 
 def isTIFF(name):
     """
     Check the extension of the name
+
+    :param string name: File name to check
+    :returns: True if TIFF, False otherwise
+    :rtype: bool
     """
     if (name[-4::].lower() == '.tif' or
         name[-5::].lower() == '.tiff'):
-        return 1
+        return True
     else:
-        return 0
+        return False
     
+
+def isZIP(name):
+    """
+    Check the extension of the name
+
+    :param string name: File name to check
+    :returns: True if ZIP, False otherwise
+    :rtype: bool
+    """
+    if (name[-4::].lower() == '.zip'):
+        return True
+    else:
+        return False
+
 
 def list2string(list_):
     """
     Transform a list to a string by separating the string in the list by ;
+
+    :param [string] list_: List to transform
+    :returns: Input list as a string and separated by ';'
+    :rtype: String
     """
     tmp = ''
     for i in list_:
@@ -72,12 +100,21 @@ def list2string(list_):
 def addname(string, name):
     """
     Add name to string by separating them with ;
+    The name is put at the end of the string
+
+    :param string string: String where to add the name
+    :param string name: Name to add at the end of string
     """
     return string + name + ';'
 
 def removename(string,name):
     """
-    Remove name in string where string is a string separated with ;
+    Find and remove name in string where string is a string separated with ;
+
+    :param string string: String list separated by ';'
+    :param string name: Name to find in string
+    :returns: string without name or False
+    :rtype: string or bool
     """
     i = string.find(name)
     if i == -1:
@@ -89,7 +126,11 @@ def removename(string,name):
 
 class ImportMail(models.TransientModel):
     """
-    Import mail
+    Model for Import mail
+    This class allows the user to import some letters (individually or in a zip)
+    in the database by doing an automatic analysis.
+    The code is reading some barcodes (QR code) in order to do the analysis 
+    (with the help of the library zxing)
     """
     _name = "import.mail"
     _description = _("Import mail from a zip or a PDF/TIFF")
@@ -104,27 +145,11 @@ class ImportMail(models.TransientModel):
     # use ';' in order to separate the files
     list_zip = fields.Text("DEFAULT")
     list_zip = ""
-    # list to check if attachment changed
-    list_name = fields.Text()
-    list_name = "DEFAULT"
 
     
     # link to _count_nber_files
     data = fields.Many2many('ir.attachment') 
     
-    # removes old files in the directory
-    if os.path.exists(path):
-        onlyfiles = [ f for f in os.listdir(path)
-                      if os.path.isfile(os.path.join(path,f)) ]
-        # loop over files
-        for f in onlyfiles:
-            t = time.time()
-            t -= os.path.getctime(path+f)
-            # if file older than 1 week + 12h
-            if t > 648000:
-                os.remove(f)
-    else:
-        os.makedirs(path)
     
     #-------------------- _COUNT_NBER_FILES ------------------------------------
     
@@ -135,22 +160,36 @@ class ImportMail(models.TransientModel):
         Counts the number of scans (if a zip is given, count the number
         inside it)
         """
+        # removes old files in the directory
+        if os.path.exists(self.path):
+            onlyfiles = [ f for f in os.listdir(self.path)
+                          if os.path.isfile(os.path.join(self.path,f)) ]
+            # loop over files
+            for f in onlyfiles:
+                t = time.time()
+                t -= os.path.getctime(self.path+f)
+                # if file older than 12h
+                if t > 43200:
+                    os.remove(f)
+        else:
+            os.makedirs(self.path)
+
         # counter
         tmp = 0
         # loop over all the attachments
-        for file_ in self.data:
+        for attachment in self.data:
             # pdf or tiff case
-            if check_file(file_.name):
+            if check_file(attachment.name) == 1:
                 tmp += 1
-                # zip case
-            elif file_.name[-4::].lower() == '.zip':
-                tmp_name_file = self.path+file_.name
+            # zip case
+            elif check_file(attachment.name) == 2:
+                tmp_name_file = self.path+attachment.name
                 # save the zip file
                 if not os.path.exists(tmp_name_file):
                     f = open(tmp_name_file,'w')
-                    f.write(base64.b64decode(file_.datas))
-                    if file_.name not in self.list_zip:
-                        self.list_zip = addname(self.list_zip,file_.name)
+                    f.write(base64.b64decode(attachment.with_context(bin_size=False).datas))
+                    if attachment.name not in self.list_zip:
+                        self.list_zip = addname(self.list_zip,attachment.name)
                     f.close()
                 # catch ALL the exceptions that can be raised by class
                 # zipfile
@@ -158,10 +197,10 @@ class ImportMail(models.TransientModel):
                     zip_ = zipfile.ZipFile(tmp_name_file,'r')
                 except zipfile.BadZipfile:
                     raise exceptions.Warning(_('Zip file corrupted (' + 
-                                    file_.name + ')'))
+                                    attachment.name + ')'))
                 except zipfile.LargeZipFile:
                     raise exceptions.Warning(_('Zip64 is not supported(' + 
-                                    file_.name + ')'))
+                                    attachment.name + ')'))
                 else:
                     list_file = zip_.namelist()
                     # loop over all files in zip
@@ -171,16 +210,18 @@ class ImportMail(models.TransientModel):
         #self.debug = str(self.mapped('data.name'))
         # deletes zip removed from the data
         for f in self.list_zip.split(';'):
-            if f not in self.mapped('data.name') and f!='':
+            if f not in self.mapped('data.name') and f != '':
                 if os.path.exists(self.path+f):
                     tmp = removename(self.list_zip,f)
                     if tmp != -1:
-                        raise exceptions.Warning(_("I am not able to delete a file"))
+                        raise exceptions.Warning(
+                            _("I am not able to delete a file"))
                     else:
                         self.list_zip = tmp
                     os.remove(self.path+f)
         self.debug = self.list_zip
         
+
     #------------------------ _RUN_ANALYZE -------------------------------------
         
     @api.one
@@ -192,13 +233,13 @@ class ImportMail(models.TransientModel):
         self.debug = "YOUPI"
         # list for checking if a file come twice
         check = []
-        for file_ in self.data:
-            if file_.name not in check:
-                check.append(file_.name)
+        for attachment in self.data:
+            if attachment.name not in check:
+                check.append(attachment.name)
                 # check for zip
-                if not check_file(file_.name):
-                    zip_ = zipfile.ZipFile(self.path+file_.name,'r')
-                    path_zip = self.path+file_.name[::-4]
+                if check_file(attachment.name) == 2:
+                    zip_ = zipfile.ZipFile(self.path+attachment.name,'r')
+                    path_zip = self.path + os.path.splitext(str(attachment.name))[0]
                     if not os.path.exists(path_zip):
                         os.makedirs(path_zip)
                     for f in zip_.namelist():
@@ -206,11 +247,15 @@ class ImportMail(models.TransientModel):
                         NEED TO CHECK THE DIRECTORY ---------------------------
                         """ # -------------------------------------------------
                         zip_.extract(f,path_zip)
-                        self.analyze_attachment(path_zip+f)
+                        a = self.analyze_attachment(path_zip+f)
                     shutil.rmtree(path_zip)
+                    os.remove(self.path+attachment.name)
+                elif check_file(attachment.name) == 1:
+                    a = self.analyze_attachment(
+                        self.path + attachment.name,
+                        attachment.datas)
                 else:
-                    self.analyze_attachment(
-                        "/tmp/sbc_compassion/" + file_.name,file_.datas)
+                    exceptions.Warning('Still a file in a non-accepted format')
             else:
                 raise exceptions.Warning(_('Two files are the same'))
                 return
@@ -226,28 +271,43 @@ class ImportMail(models.TransientModel):
             f.write(base64.b64decode(data))
             f.close()
 
-        tmp = zxing.BarCode(read=True)
-        if isPDF(file_):
-            exceptions.Warning('STILL IN DEV')
+        tmp = zxing.BarCodeTool()
         if isTIFF(file_):
-            code = tmp.decode(file_)
-            partner,child = code.data.split('XX')
-            pdb.set_trace()
-            sp_id = self.env['sponsorship_correspondence'].search(
-                [('partner_id.codega','=','partner'),
-                 ('child_id.code','=','child')])[0].id
-            exceptions.Warning('BOUH')
-            if data == None:
-                f = open(file_,'r')
-                data = base64.b64encode(f.read())
-                f.close()
-            partner = self.env['partner_id']
-            self.env['sponsorship.correspondence'].create({
-                'letter_image': data,
-                'partner_id': partner,
-                'child_id': child,
-                'sponsorship_id': sp_id,
-            })
-            os.remove(file_)
+            try:
+                code = tmp.decode(file_)
+                partner,child = code.data.split('XX')
+                sp_id = self.env['sponsorship_correspondence'].search(
+                    [('partner_id.codega','=','partner'),
+                     ('child_id.code','=','child')])[0].id
+                
+                if data == None:
+                    f = open(file_,'r')
+                    data = base64.b64encode(f.read())
+                    f.close()
+                partner = self.env['partner_id']
+                self.env['sponsorship.correspondence'].create({
+                    'letter_image': data,
+                    'partner_id': partner,
+                    'child_id': child,
+                    'sponsorship_id': sp_id,
+                })
+                os.remove(file_)
+                return code.data
+            except:
+                return 1
         else:
+            """
+            NEED TO CHECK DIRECTORY
+            """
             exceptions.Warning('FORMAT NOT ACCEPTED')
+            return 2
+
+
+
+
+    def write_barcode(self,start=[0,0],end=[0.33,0.5]):
+        """
+        Cut a part of the picture in order to reduce the size of the data to analyze
+        :param [float,float] start: Starting relative position (top-left)
+        :param [float,float] end: Ending relative position (bottom-right)
+        """

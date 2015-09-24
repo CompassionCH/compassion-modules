@@ -11,18 +11,21 @@
 #
 #  original version on github.com/oostendo/python-zxing
 
-__version__ = '0.3'
+__version__ = '0.4'
 import subprocess, re, os
 
-class BarCode(read):
+class BarCodeTool():
+  """
+  This class needs to use the method decode/encode in order to do something
+  At the initialization, the directories names are set up and the non-changing
+  (between two utilization) part is written
+  """
   location = ""
   command = "java"
-  libs = ["javase.jar", "core.jar", "jcommander.jar", "ij.jar"]
+  libs = ["javase.jar", "core.jar", "jcommander.jar", "jai-imageio-core.jar"]
   args = ["-cp", "LIBS"]
-  if read==True:
-    args.append("com.google.zxing.client.j2se.CommandLineRunner")
-  else:
-    args.append("com.google.zxing.client.j2se.CommandLineEncoder")
+  args_de = ["com.google.zxing.client.j2se.CommandLineRunner"]
+  args_en = ["com.google.zxing.client.j2se.CommandLineEncoder"]
 
   def __init__(self, loc=""):
     if not len(loc):
@@ -33,17 +36,20 @@ class BarCode(read):
 
     self.location = loc
 
-  def start(self, files, try_harder = False, qr_only = False):
+  def decode(self, files, try_harder = False,qr_only=True):
+    """
+    Decodes a/some file/s
+    :param string files: Name of the files to decode
+    :param bool try_harder: Spend more time to find a barcode (if needed)
+    :param bool qr_only: Only check for QR code or not
+    :returns: Information about the barcode
+    :rtype: BarCode
+    """    
     cmd = [self.command]
     cmd += self.args[:] #copy arg values
-    if try_harder:
-      cmd.append("--try_harder")
-    if qr_only:
-      cmd.append("--possibleFormats=QR_CODE")
+    cmd += self.args_de
 
-    libraries = [self.location + "/" + l for l in self.libs]
 
-    cmd = [ c if c != "LIBS" else os.pathsep.join(libraries) for c in cmd ]
     # send one file, or multiple files in a list
     SINGLE_FILE = False
     if type(files) != type(list()):
@@ -52,7 +58,18 @@ class BarCode(read):
     else:
       cmd += files
 
-    (stdout, stderr) = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True).communicate()
+    if try_harder:
+      cmd.append("--try_harder")
+    if qr_only:
+      cmd.append("--possible_formats")
+      cmd.append("QR_CODE")
+
+    libraries = [self.location + "/" + l for l in self.libs]
+
+    cmd = [ c if c != "LIBS" else os.pathsep.join(libraries) for c in cmd ]
+
+    (stdout, stderr) = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                                        universal_newlines=True).communicate()
     codes = []
     file_results = stdout.split("\nfile:")
     for result in file_results:
@@ -61,15 +78,55 @@ class BarCode(read):
         codes.append(None)
         continue
 
-      codes.append(BarCodeReader(result))
+      codes.append(BarCode(result))
 
     if SINGLE_FILE:
       return codes[0]
     else:
       return codes
 
-#this is the barcode class which has
-class BarCodeReader:
+  def encode(self, file_, text, code_format=None, width=None, height=None,
+             errorcorrection=None):
+    """
+    Create a Barcode (written in PNG format [the library can accepts JPG,GIF 
+    as a paramter to the command line])
+    :param string file_: File name where to write the barcode
+    :param string text: Text to encode
+    :param string code_format: Type of barcode (see github, zxing project)
+    :param int width: Width of the ouput image
+    :param int height: Height of the output image
+    """
+
+    cmd = [self.command]
+    cmd += self.args[:] #copy arg values
+    cmd += self.args_en
+    libraries = [self.location + "/" + l for l in self.libs]
+
+    cmd = [ c if c != "LIBS" else os.pathsep.join(libraries) for c in cmd ]
+
+    cmd.append(text)
+    if width != None:
+      cmd.append("--width")
+      cmd.apppend(width)
+    if height != None:
+      cmd.append("--height")
+      cmd.append(height)
+    if code_format != None:
+      cmd.append("--barcode_format")
+      cmd.append(code_format)
+    if errorcorrection != None:
+      cmd.append("--error_correction")
+      cmd.append(errorcorrection)
+
+    cmd.append("--output")
+    cmd.append(file_)
+    (stdout, stderr) = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                                        universal_newlines=True).communicate()
+
+class BarCode:
+  """
+  Class containing all the information about the codebars
+  """
   format = ""
   points = []
   data = ""
@@ -88,7 +145,8 @@ class BarCodeReader:
         self.format = m.group(1)
         continue
 
-      if not raw_block and not parsed_block and not point_block and l == "Raw result:":
+      if (not raw_block and not parsed_block and not point_block and 
+          l == "Raw result:"):
         raw_block = True
         continue
 
@@ -116,9 +174,6 @@ class BarCodeReader:
           self.points.append((float(m.group(2)), float(m.group(3))))
 
     return
-
-
-class BarCodeWriter:
 
 
 if __name__ == "__main__":
