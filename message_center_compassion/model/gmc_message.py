@@ -19,7 +19,6 @@ from datetime import datetime
 import requests
 import logging
 import traceback
-import pdb
 logger = logging.getLogger(__name__)
 
 
@@ -268,7 +267,6 @@ class gmc_message_pool(models.Model):
         """Message Acknowledgement meaning GMC has received our outgoing
         request.
         """
-        pdb.set_trace()
         messages = self.search([('request_id', '=', request_id)])
         state = status.lower()
         for m in messages:
