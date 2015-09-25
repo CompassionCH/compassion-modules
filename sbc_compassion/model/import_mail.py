@@ -15,28 +15,34 @@ between the database and the mail.
 import base64
 import zipfile
 import time
+import subprocess
 import os
 import copy
 import shutil
 import pdb
-from tempfile import TemporaryFile
-import zxing
+
 from openerp import api, fields, models, _, exceptions
 import sponsorship_correspondance
+
+import zxing
 
 def check_file(name):
     """
     Check the name of a file.
     return 1 if it is a tiff or a pdf and 0 otherwise.
     
+    This function can be upgraded in order to include other
+    format (1 for file, 2 for archive, 0 for not supported).
+    In order to have a nice code, one should add the function
+    is... when adding a new format
+    
     :param str name: Name of the file to check
     :return: 1 if pdf or tiff, 2 if zip, 0 otherwise
     :rtype: int
     """
-    if (name[-4::].lower() in ['.pdf','.tif'] or  
-        name[-5::].lower() == '.tiff'):
+    if isPDF(name) or isTIFF(name):
         return 1
-    elif (name[-4::].lower() == '.zip'):
+    elif isZIP(name):
         return 2
     else:
         return 0
@@ -50,7 +56,8 @@ def isPDF(name):
     :returns: True if PDF, False otherwise
     :rtype: bool
     """
-    if name[-4::].lower() == '.pdf':
+    ext = os.path.splitext(name)[1]
+    if ext.lower() == '.pdf':
         return True
     else:
         return False
@@ -63,8 +70,8 @@ def isTIFF(name):
     :returns: True if TIFF, False otherwise
     :rtype: bool
     """
-    if (name[-4::].lower() == '.tif' or
-        name[-5::].lower() == '.tiff'):
+    ext = os.path.splitext(name)[1]
+    if (ext.lower() == '.tif' or ext.lower() == '.tiff'):
         return True
     else:
         return False
@@ -78,7 +85,8 @@ def isZIP(name):
     :returns: True if ZIP, False otherwise
     :rtype: bool
     """
-    if (name[-4::].lower() == '.zip'):
+    ext = os.path.splitext(name)[1]
+    if (ext.lower() == '.zip'):
         return True
     else:
         return False
@@ -103,7 +111,7 @@ def addname(string, name):
     The name is put at the end of the string
 
     :param string string: String where to add the name
-    :param string name: Name to add at the end of string
+    :param string name: Name to add at the end of string (in unicode)
     """
     return string + name + ';'
 
@@ -116,12 +124,16 @@ def removename(string,name):
     :returns: string without name or False
     :rtype: string or bool
     """
-    i = string.find(name)
-    if i == -1:
-        return False
+    print ';' + name +';'
+    tmp = string.replace(';'+name+';',';')
+    if tmp == string:
+        tmp = string.replace(name+';',';')
+        if tmp == string:
+            return -1
+        else:
+            return tmp
     else:
-        return string[i:len(name)+1]
-
+        return tmp
 
 
 class ImportMail(models.TransientModel):
@@ -143,7 +155,7 @@ class ImportMail(models.TransientModel):
     path = "/tmp/sbc_compassion/"
     # list zip in the many2many
     # use ';' in order to separate the files
-    list_zip = fields.Text("LIST_ZIP",select="")
+    list_zip = fields.Text("LIST_ZIP",readonly=True)
 
     
     # link to _count_nber_files
@@ -159,9 +171,10 @@ class ImportMail(models.TransientModel):
         Counts the number of scans (if a zip is given, count the number
         inside it)
         """
-        if not self.list_zip:
-            pdb.set_trace()
+        if self.list_zip == False:
             self.list_zip = ""
+        if self.debug == False:
+            self.debug = "YOUPI"
         #removes old files in the directory
         if os.path.exists(self.path):
             onlyfiles = [ f for f in os.listdir(self.path)
@@ -189,7 +202,8 @@ class ImportMail(models.TransientModel):
                 # save the zip file
                 if not os.path.exists(tmp_name_file):
                     f = open(tmp_name_file,'w')
-                    f.write(base64.b64decode(attachment.with_context(bin_size=False).datas))
+                    f.write(base64.b64decode(attachment.with_context(
+                        bin_size=False).datas))
                     f.close()
                     if attachment.name not in self.list_zip:
                         self.list_zip = addname(self.list_zip,attachment.name)
@@ -214,24 +228,24 @@ class ImportMail(models.TransientModel):
             if f not in self.mapped('data.name') and f != '':
                 if os.path.exists(self.path+f):
                     tmp = removename(self.list_zip,f)
-                    if tmp != -1:
+                    if tmp == -1:
                         raise exceptions.Warning(
-                            _("I am not able to delete a file"))
+                            _("Does not find the file during suppression"))
                     else:
                         self.list_zip = tmp
                     os.remove(self.path+f)
-        self.debug = self.list_zip
         
-
+        
     #------------------------ _RUN_ANALYZE -------------------------------------
         
     @api.one
     def button_run_analyze(self):
         """
-        SAVE ALL PDF AND TIFF
+        Analyze each attachment (decompress zip too) by checking if the file
+        is not done twice (check same name)[, extract zip], use 
+        analyze_attachment at the end
         
         """
-        self.debug += "YOUPI"
         # list for checking if a file come twice
         check = []
         for attachment in self.data:
@@ -240,23 +254,28 @@ class ImportMail(models.TransientModel):
                 # check for zip
                 if check_file(attachment.name) == 2:
                     zip_ = zipfile.ZipFile(self.path+attachment.name,'r')
-                    path_zip = self.path + os.path.splitext(str(attachment.name))[0]
+                    path_zip = self.path + os.path.splitext(
+                        str(attachment.name))[0]
                     if not os.path.exists(path_zip):
                         os.makedirs(path_zip)
                     for f in zip_.namelist():
-                        """ ---------------------------------------------------
-                        NEED TO CHECK THE DIRECTORY ---------------------------
-                        """ # -------------------------------------------------
                         zip_.extract(f,path_zip)
-                        a = self.analyze_attachment(path_zip+f)
+                        absname = path_zip + '/' + f
+                        if os.path.isfile(absname):
+                            self.analyze_attachment(absname)
+                    # delete all the tmp files
                     shutil.rmtree(path_zip)
                     os.remove(self.path+attachment.name)
+                # case with normal format (PDF,TIFF)
                 elif check_file(attachment.name) == 1:
-                    a = self.analyze_attachment(
-                        self.path + attachment.name,
+                    self.analyze_attachment(
+                        self.path + str(attachment.name),
                         attachment.datas)
+                    os.remove(self.path + attachment.name)
                 else:
-                    exceptions.Warning('Still a file in a non-accepted format')
+                    raise exceptions.Warning(
+                        'Still a file in a non-accepted format')
+                    return
             else:
                 raise exceptions.Warning(_('Two files are the same'))
                 return
@@ -265,19 +284,43 @@ class ImportMail(models.TransientModel):
         """
         Analyze attachment (PDF/TIFF) and save everything
         
-        :param ir_attachment file_: current file to analyze
+        :param string file_: Name of the file to analyze
+        :param binary data: Image to scan (by default, read it from hdd)
+        :returns: Barcode (error code: 1 was not able to read it, 2 format\
+                  not accepted)
+        :rtype: String (error code: int)
         """
         if data != None:
             f = open(file_,'w')
             f.write(base64.b64decode(data))
             f.close()
-
-        tmp = zxing.BarCodeTool()
-        if isTIFF(file_):
+        if isPDF(file_):
+            #convert
+            name = os.path.splitext(file_)[0]
+            cmd = ['convert',file_,file_ + '.tif']
+            (stdout, stderr) = subprocess.Popen(
+                cmd, stdout=subprocess.PIPE,
+                universal_newlines=True).communicate()
+            os.remove(file_)
+            file_ = name + '.tif'
+        if isTIFF(file_) or isPDF(file_):
             try:
-                code = tmp.decode(file_)
+                zx = zxing.BarCodeTool()
+                code = zx.decode(file_)
+            except:
+                raise exceptions.Warning(
+                    _("Unable to read file: {}").format(file_))
+            if code == None:
+                raise exceptions.Warning(
+                    _("Not able to read barcode from: {}").format(file_))
+            try:
                 partner,child = code.data.split('XX')
-                sp_id = self.env['sponsorship_correspondence'].search(
+            except:
+                raise exceptions.Warning(
+                    _("Barcode not in the required format in file: {}").format(
+                        file_))
+            try:
+                """sp_id = self.env['sponsorship_correspondence'].search(
                     [('partner_id.codega','=','partner'),
                      ('child_id.code','=','child')])[0].id
                 
@@ -292,13 +335,12 @@ class ImportMail(models.TransientModel):
                     'child_id': child,
                     'sponsorship_id': sp_id,
                 })
-                os.remove(file_)
-                return code.data
+                os.remove(file_)"""
             except:
-                return 1
+                raise exceptions.Warning(
+                    _("Error during writing in database for file: {}").format(
+                        file_))
+                return code.data
         else:
-            """
-            NEED TO CHECK DIRECTORY
-            """
-            exceptions.Warning('FORMAT NOT ACCEPTED')
-            return 2
+            
+            raise exceptions.Warning('Format not accepted in {}'.format(file_))

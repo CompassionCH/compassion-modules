@@ -38,7 +38,7 @@ Yes_No ()
 Start_Install ()
 {
     sudo apt-get update
-    sudo apt-get install gdebi openjdk-7-jdk
+    sudo apt-get install gdebi openjdk-7-jdk imagemagick
     wget http://ppa.launchpad.net/natecarlson/maven3/ubuntu/pool/main/m/maven3/maven3_3.2.1-0~ppa1_all.deb    
     sudo gdebi maven3_3.2.1-0~ppa1_all.deb
     sudo ln -s /usr/share/maven3/bin/mvn /usr/bin/maven
