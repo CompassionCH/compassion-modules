@@ -299,6 +299,16 @@ class gmc_message_pool(models.Model):
             'state': 'fondue'})
         return True
 
+    @api.multi
+    def reset_message(self):
+        self.write({
+            'request_id': False,
+            'state': 'new',
+            'process_date': False,
+            'failure_reason': False
+        })
+        return True
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################

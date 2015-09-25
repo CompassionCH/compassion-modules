@@ -372,8 +372,8 @@ class sponsorship_contract(models.Model):
             [('key', '=', 'sponsorship_compassion.suspend_product_id')],
             limit=1)
         invl_obj = self.env['account.invoice.line']
-        sponsorship_product = self.env['product.product'].search(
-            [('name', '=', 'Sponsorship')])
+        sponsorship_product = self.env['product.product'].with_context(
+            lang='en_US').search([('name', '=', 'Sponsorship')])
         contracts = None
         if suspend_config:
             # Revert future invoices with sponsorship product
@@ -549,8 +549,6 @@ class sponsorship_contract(models.Model):
         to add the 'Sponsor' category, and activate gift contracts.
         """
         super(sponsorship_contract, self).contract_active()
-        # Read data in english
-        self.env.context = self.with_context(lang='en_US').env.context
         sponsor_cat_id = self.env.ref(
             'partner_compassion.res_partner_category_sponsor').id
         con_line_obj = self.env['recurring.contract.line']

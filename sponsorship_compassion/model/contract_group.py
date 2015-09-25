@@ -69,10 +69,6 @@ class contract_group(models.Model):
             invoicer = self.env['recurring.invoicer'].with_context(
                 lang='en_US').create({'source': self._name})
 
-        self.env.context = self.with_context(
-            {'lang': 'en_US',
-             'recurring_invoicer_id': invoicer.id}).env.context
-
         # Search active Sponsorships with automatic birthday gift
         gen_states = self._get_gen_states()
         contract_search = [('birthday_invoice', '>', 0.0),
@@ -84,7 +80,8 @@ class contract_group(models.Model):
 
         # Exclude sponsorship if a gift is already open
         invl_obj = self.env['account.invoice.line']
-        product_id = self.env['product.product'].search(
+        product_id = self.env['product.product'].with_context(
+            lang='en_US').search(
             [('name', '=', GIFT_NAMES[0])])[0].id
 
         for con_id in contract_ids:
@@ -100,11 +97,12 @@ class contract_group(models.Model):
             count = 1
             logger.info("Found {0} Birthday Gifts to generate.".format(total))
 
-            gift_wizard = self.env['generate.gift.wizard'].create({
-                'description': _('Automatic birthday gift'),
-                'invoice_date': datetime.today().strftime(DF),
-                'product_id': product_id,
-                'amount': 0.0})
+            gift_wizard = self.env['generate.gift.wizard'].with_context(
+                recurring_invoicer_id=invoicer.id).create({
+                    'description': _('Automatic birthday gift'),
+                    'invoice_date': datetime.today().strftime(DF),
+                    'product_id': product_id,
+                    'amount': 0.0})
 
             # Generate invoices
             for contract in contract_obj.browse(contract_ids):

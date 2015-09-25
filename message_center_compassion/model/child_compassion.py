@@ -92,6 +92,7 @@ class compassion_child(models.Model):
         child = self.browse(args.get('object_id'))
         return child.write({'state': 'X', 'exit_date': args.get('date')})
 
+    @api.multi
     def depart(self, args):
         """When a depart is done automatically when processing a message:
         1. If the child is sponsored, the sponsorship is terminated with the
