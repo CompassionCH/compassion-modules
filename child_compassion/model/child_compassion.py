@@ -614,7 +614,3 @@ class compassion_child(models.Model):
         self.message_post("The case study has been updated.",
                           "Case Study update", 'comment')
         return True
-
-    # TODO : Move in module child_sync_typo3
-    def _get_gender(self, gender):
-        return 1 if gender == 'M' else 2
