@@ -22,7 +22,7 @@ import shutil
 import pdb
 
 from openerp import api, fields, models, _, exceptions
-import sponsorship_correspondance
+import sponsorship_correspondence
 
 import zxing
 
