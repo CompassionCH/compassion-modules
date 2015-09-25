@@ -35,35 +35,17 @@
     'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-<<<<<<< HEAD
     'depends': ['sponsorship_compassion'],
-=======
-    'description': """
-        The sbc.compassion module can handle the different interactions of
-        correspondence between sponsors and their children sponsorships
-    """,
-    'depends': ['base', 'base_location', 'sponsorship_compassion'],
->>>>>>> e97adb4e8fa02584a2003a63bcff8377c9d11a12
     'external_dependencies': {
         'java': ['zxing'],
     },
     'data': [
-<<<<<<< HEAD
         'security/ir.model.access.csv',
         'views/country_compassion_view.xml',
         'views/partner_compassion_view.xml',
         'views/lang_compassion_view.xml',
         'views/sponsorship_correspondence_view.xml',
         'views/import_mail_view.xml',
-=======
-        # 'security/ir.model.access.csv',
-        # 'templates.xml',
-        'view/import_mail_view.xml',
-        'view/country_compassion_view.xml',
-        'view/partner_compassion_view.xml',
-        'view/lang_compassion_view.xml',
-        'view/sponsorship_correspondance_view.xml',
->>>>>>> e97adb4e8fa02584a2003a63bcff8377c9d11a12
         'data/lang_data.xml',
     ],
     'installable': True,
