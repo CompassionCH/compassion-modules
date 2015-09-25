@@ -1,29 +1,6 @@
 #!/bin/bash
 # Install the Zxing library in $HOME/.libZxing
 
-# start Start_Install function when yes (case insesitive)
-Yes_No ()
-{
-  # print question
-  echo -n "The directory 'zxing' already exists, do you want to use it?: "
-
-  # read answer
-  read YnAnswer
-
-  # all to lower case
-  YnAnswer=$(echo $YnAnswer | awk '{print tolower($0)}')
-
-  # check and act on given answer
-  case $YnAnswer in
-    "yes")  Start_Install ;;
-    "no")   rm -rf zxing; ./setup.sh ;;
-    *)      echo "Please answer yes or no" ; Yes_No ;;
-  esac
-}
-
-
-
-
 ################################################################################
 #                                                                              #
 #                     TO ADD A NEW OPERATION DURING                            #
@@ -37,11 +14,20 @@ Yes_No ()
 # function that is started when answer is yes
 Start_Install ()
 {
-    sudo apt-get update
-    sudo apt-get install gdebi openjdk-7-jdk imagemagick
-    wget http://ppa.launchpad.net/natecarlson/maven3/ubuntu/pool/main/m/maven3/maven3_3.2.1-0~ppa1_all.deb    
-    sudo gdebi maven3_3.2.1-0~ppa1_all.deb
-    sudo ln -s /usr/share/maven3/bin/mvn /usr/bin/maven
+    if [ ! -d "./zxing" ]; then
+	git clone https://github.com/zxing/zxing
+    fi
+    apt-get update
+    command -v convert >/dev/null 2>&1 || { echo >&2 "Install imagemagick.."; apt-get -y install imagemagick; }
+    command -v maven >/dev/null 2>&1 || { echo >&2 "Install maven..";
+	command -v gdebi >/dev/null 2>&1 || { echo >&2 "  Install gdebi.."; apt-get -y install gdebi; }
+	wget http://ppa.launchpad.net/natecarlson/maven3/ubuntu/pool/main/m/maven3/maven3_3.2.1-0~ppa1_all.deb    
+	gdebi maven3_3.2.1-0~ppa1_all.deb
+	ln -s /usr/share/maven3/bin/mvn /usr/bin/maven
+	rm maven3_3.2.1-0~ppa1_all.deb
+    }
+    command -v javac >/dev/null 2>&1 || { echo >&2 "Install java..";     apt-get -y install openjdk-7-jdk; }
+
     cd zxing
     # compile zxing
     maven install
@@ -50,9 +36,7 @@ Start_Install ()
     rm core/target/core-*javadoc.jar
     rm core/target/core-*sources.jar
     # move
-    if [ ! -d "$HOME/.libZxing" ]; then
-	mkdir $HOME/.libZxing
-    fi
+    mkdir $HOME/.libZxing
     mv core/target/core-*.jar $HOME/.libZxing/core.jar
     # -- JAVASE --
     rm javase/target/javase-*javadoc.jar
@@ -64,15 +48,13 @@ Start_Install ()
     cd ..
     # remove useless files
     rm -rf zxing
-    rm maven3_3.2.1-0~ppa1_all.deb
+    chmod -R a+x ~/.libZxing
     exit 0
 }
 
 
+echo "In order to reinstall the libraries, delete the file ~/.libZxing"
 # get a copy of the zxing
-if [ -d "./zxing" ]; then
-    Yes_No
-else
-    git clone https://github.com/zxing/zxing
+if [ ! -d "$HOME/.libZxing" ]; then
     Start_Install
 fi
