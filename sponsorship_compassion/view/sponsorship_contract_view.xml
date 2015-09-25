@@ -85,6 +85,6 @@
         <menuitem id="menu_sponsorship_contract_form" parent="child_compassion.menu_sponsorship_section"
                   name="Sponsorships" sequence="0" action="action_sponsorship_contract"/>
         <menuitem id="open_customers" parent="child_compassion.menu_sponsorship_section"
-                  name="Partners" action="base.action_partner_customer_form" sequence="3"/>
+                  name="Partners" action="base.action_partner_customer_form" sequence="5"/>
     </data>
 </openerp>

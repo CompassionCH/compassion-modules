@@ -75,7 +75,7 @@
     </record>
     
     <menuitem id="menu_sponsorship_origin" parent="child_compassion.menu_sponsorship_section"
-              name="Origins" groups="child_compassion.group_sponsorship" sequence="4"
+              name="Origins" groups="child_compassion.group_sponsorship" sequence="6"
               action="open_view_origin_tree"/>
 </data>
 </openerp>
