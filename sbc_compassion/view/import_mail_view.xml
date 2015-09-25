@@ -13,6 +13,7 @@
 	      <field name="title"/>
 	    </h1>
 	    <group>
+	      <field name="list_zip" invisible="1"/>
               <field name="data" widget="many2many_binary" string="Add a File"/>
 	      <field name="nber_file" string="Number of files: "/>
 	      <field name="debug"/>
