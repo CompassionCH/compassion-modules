@@ -25,8 +25,7 @@ class account_move_line(models.Model):
         events = self.env['crm.event.compassion'].search([
             ('analytic_id', 'in', account_ids)])
         res = super(account_move_line, self).unlink()
-        events._store_set_values([
-            'total_income', 'total_expense', 'balance'])
+        events._set_analytic_lines()
         return res
 
 
