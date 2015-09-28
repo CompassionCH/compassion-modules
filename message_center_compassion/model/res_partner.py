@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models
+from openerp import api, models, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import date
 
@@ -16,6 +16,14 @@ from datetime import date
 class res_partner(models.Model):
     """ UPSERT constituents. """
     _inherit = 'res.partner'
+
+    # Get the write_date in US format for GMC
+    transaction_date = fields.Char(compute='_compute_transaction_date')
+
+    @api.one
+    def _compute_transaction_date(self):
+        write_date = fields.Date.from_string(self.write_date)
+        self.transaction_date = write_date.strftime('%m%d%y')
 
     @api.multi
     def write(self, vals):
