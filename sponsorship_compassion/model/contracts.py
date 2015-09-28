@@ -154,7 +154,7 @@ class sponsorship_contract(models.Model):
             self.invoice_line_ids.filtered(
                 lambda l: l.state == 'paid' and
                 l.product_id.categ_name != GIFT_CATEGORY).mapped(
-                    'invoice_id.date_invoice'))
+                    'invoice_id.date_invoice') or [False])
 
     ##########################################################################
     #                              ORM METHODS                               #
