@@ -292,7 +292,7 @@ class event_compassion(models.Model):
     def _find_parent_analytic(self):
         analytics_obj = self.env['account.analytic.account']
         categ_id = analytics_obj.search(
-            [('name', 'ilike', self.type)], order='id', limit=1).id
+            [('name', '=', self.type.capitalize())], order='id', limit=1).id
         acc_id = analytics_obj.search(
             [('name', '=', self.year), ('parent_id', '=', categ_id)],
             limit=1).id
