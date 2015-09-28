@@ -182,14 +182,12 @@ class compassion_child(models.Model):
             ('X', _('Deallocated'))
         ]
 
+    @api.one
     def _set_has_desc(self):
-        for child in self:
-            child.write({
-                'has_desc_fr': bool(child.desc_fr),
-                'has_desc_de': bool(child.desc_de),
-                'has_desc_it': bool(child.desc_it),
-                'has_desc_en': bool(child.desc_en),
-            })
+        self.has_desc_fr = bool(child.desc_fr)
+        self.has_desc_de = bool(child.desc_de)
+        self.has_desc_it = bool(child.desc_it)
+        self.has_desc_en = bool(child.desc_en)
 
     def _set_available(self):
         for child in self:
