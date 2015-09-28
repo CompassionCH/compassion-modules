@@ -184,10 +184,10 @@ class compassion_child(models.Model):
 
     @api.one
     def _set_has_desc(self):
-        self.has_desc_fr = bool(child.desc_fr)
-        self.has_desc_de = bool(child.desc_de)
-        self.has_desc_it = bool(child.desc_it)
-        self.has_desc_en = bool(child.desc_en)
+        self.has_desc_fr = bool(self.desc_fr)
+        self.has_desc_de = bool(self.desc_de)
+        self.has_desc_it = bool(self.desc_it)
+        self.has_desc_en = bool(self.desc_en)
 
     def _set_available(self):
         for child in self:
