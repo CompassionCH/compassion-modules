@@ -170,7 +170,19 @@ class gmc_message_pool(models.Model):
     @api.model
     def create(self, vals):
         """ Directly put CreateGift messages which have a too long instruction
-        in Failed state. Compute Gift fields."""
+        in Failed state. Compute Gift fields.
+
+        [Workaround] Don't create twice departures messages"""
+        # Check if departure was already received (GMC sends them twice)
+        child_code = vals.get('incoming_key')
+        old_depart = self.search([
+            ('state', 'in', ('success', 'new')),
+            ('event', '=', 'Departure'),
+            ('incoming_key', '=', child_code)], limit=1)
+        if old_depart and (old_depart.state == 'new' or
+                           old_depart.child_id.state == 'F'):
+            return old_depart
+
         message = super(gmc_message_pool, self).create(vals)
         if message.name == 'CreateGift' and message.gift_instructions and \
                 len(message.gift_instructions) > 60:
