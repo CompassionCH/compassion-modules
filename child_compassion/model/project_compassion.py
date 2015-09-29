@@ -194,13 +194,10 @@ class compassion_project(models.Model):
 
     def _has_desc(self):
         for project in self:
-            vals = {
-                'has_desc_fr': bool(project.description_fr),
-                'has_desc_de': bool(project.description_de),
-                'has_desc_it': bool(project.description_it),
-                'has_desc_en': bool(project.description_en)
-            }
-            project.write(vals)
+            project.has_desc_fr = bool(project.description_fr)
+            project.has_desc_de = bool(project.description_de)
+            project.has_desc_it = bool(project.description_it)
+            project.has_desc_en = bool(project.description_en)
 
     @api.model
     def _get_state(self):
