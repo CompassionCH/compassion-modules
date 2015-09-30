@@ -38,7 +38,7 @@
                             <field name="communication_type"/>
                             <field name="is_encourager"/>
                             <field name="mandatory_review"/>
-                            <field name="letter_image" widget='image' string="Letter image"/>
+                            <field name="letter_image" string="Letter image"/>
                             <field name="attachments_ids" widget="many2many_binary" string="Attachments"/>
                             <field name="physical_attachments"/>
                             <field name="attachments_description"/>

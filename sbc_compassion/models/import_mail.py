@@ -146,6 +146,10 @@ class ImportMail(models.TransientModel):
     """
     _name = "import.mail"
     _description = _("Import mail from a zip or a PDF/TIFF")
+
+    ##########################################################################
+    #                                 FIELDS                                 #
+    ##########################################################################
     
     nber_file = fields.Integer(_('Number of files: '),readonly=True,
                                compute="_count_nber_files")
@@ -157,9 +161,9 @@ class ImportMail(models.TransientModel):
     # use ';' in order to separate the files
     list_zip = fields.Text("LIST_ZIP",readonly=True)
 
-    
     # link to _count_nber_files
     data = fields.Many2many('ir.attachment') 
+    import_mail_line_ids = fields.Many2many('import.mail.line')
     
     
     #-------------------- _COUNT_NBER_FILES ------------------------------------
@@ -314,33 +318,50 @@ class ImportMail(models.TransientModel):
                 raise exceptions.Warning(
                     _("Not able to read barcode from: {}").format(file_))
             try:
-                partner,child = code.data.split('XX')
+                partner,child = code.data.split('XX') 
             except:
                 raise exceptions.Warning(
                     _("Barcode not in the required format in file: {}").format(
                         file_))
-            try:
-                """sp_id = self.env['sponsorship_correspondence'].search(
-                    [('partner_id.codega','=','partner'),
-                     ('child_id.code','=','child')])[0].id
-                
-                if data == None:
-                    f = open(file_,'r')
-                    data = base64.b64encode(f.read())
-                    f.close()
-                partner = self.env['partner_id']
-                self.env['sponsorship.correspondence'].create({
-                    'letter_image': data,
-                    'partner_id': partner,
-                    'child_id': child,
-                    'sponsorship_id': sp_id,
-                })
-                os.remove(file_)"""
-            except:
-                raise exceptions.Warning(
-                    _("Error during writing in database for file: {}").format(
-                        file_))
-                return code.data
+
+            # NEED REVIEW
+            # 
+            # template_id
+            # supporter_language (method needed for check if partner langage exist in res.lang.compassion / field have to be set required in import.mail.line)
+            # status (local variable with status selection needed, please refer to the status selection field)
+            #
+            # Problem: the converted jpeg can be opened on a windows PC or with nano, but odoo can't recognize the file. Tried to give a jpeg
+            # to odoo from windows -> same problem
+
+            f_tmp = os.path.splitext(file_)[0] + ".jpeg"
+           
+            cmd = ['convert',file_,f_tmp]
+            (stdout, stderr) = subprocess.Popen(
+                cmd, stdout=subprocess.PIPE,
+                universal_newlines=True).communicate()
+
+            import_mail_line = self.env['import.mail.line'].create({
+                'partner_codega': partner,
+                'child_code': child,
+                'is_encourager': False,
+                'supporter_languages_id': False,
+                'template_id': 'template_1',
+                'status': 'ok'})
+            pdb.set_trace()
+            file_jpeg = open(f_tmp, "r")
+            document_vals = {'name': 'file_.jpeg',
+                'datas': file_jpeg.read(),
+                'datas_fname': 'file_.jpeg',
+                'res_model': 'import.mail.line',
+                'res_id': import_mail_line.id
+                }
+
+            image = self.env['ir.attachment'].create(document_vals)
+            import_mail_line.letter_image_preview = image
+            file_jpeg.close()
+            
+            self.import_mail_line_ids += import_mail_line
+          
         else:
             
             raise exceptions.Warning('Format not accepted in {}'.format(file_))
