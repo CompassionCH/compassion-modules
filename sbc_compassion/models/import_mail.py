@@ -20,7 +20,6 @@ import os
 import copy
 import shutil
 import pdb
-from PIL import Image
 
 from openerp import api, fields, models, _, exceptions
 import sponsorship_correspondence
