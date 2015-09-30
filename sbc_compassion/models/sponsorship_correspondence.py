@@ -10,7 +10,15 @@
 ##############################################################################
 
 from openerp import fields, models, api, _
-
+from PIL import Image
+from cStringIO import StringIO
+# from PIL import Image
+#from PIL import ImageDraw
+#from PIL import ImageFont
+#import urllib.request
+import io
+#import binascii
+import pdb
 
 class SponsorshipCorrespondence(models.Model):
 
@@ -54,6 +62,7 @@ class SponsorshipCorrespondence(models.Model):
     mandatory_review = fields.Boolean(compute='_set_partner_review',
                                       readonly=False, store=True)
     letter_image = fields.Many2one('ir.attachment', required=True)
+    #letter_image_preview = fields.Many2one('ir.attachment', compute='_set_preview')
     attachments_ids = fields.Many2many('ir.attachment')
     physical_attachments = fields.Selection(selection=[
         ('none', _('None')),
@@ -126,3 +135,64 @@ spoken_langs_ids', store=True)
             self.mandatory_review = True
         else:
             self.mandatory_review = False
+
+    # @api.depends('letter_image')
+    # def _set_preview(self):
+    #     if self.letter_image:
+            # buff = StringIO()
+            # buff.write(self.letter_image.datas)
+            # buff.seek(0)
+
+            # # stream = bytes(self.letter_image.datas)
+            # # pdb.set_trace()
+            # # RGBbytes = ''.join([ stream[i+2:i+3] + stream[i+1:i+2] + stream[i:i+1] for i in range(0, len(stream) -1, 4)])
+            # pdb.set_trace()
+            # im = Image.open(buff)
+            # pdb.set_trace()
+            # im.save(fake_file_to_read, "JPEG", quality=100)
+            # self.letter_image_preview = fake_file_to_read.read()
+
+        # if self.letter_image:
+        #     fake_file_to_write = StringIO()
+        #     fake_file_to_write.write(self.letter_image.datas)
+        #     im = Image.open(fake_file_to_write)
+        #     im.thumbnail(im.size)
+        #     im.save(fake_file_to_read, "JPEG", quality=100)
+        #     self.letter_image_preview = fake_file_to_read.read
+
+# /tmp/sbc_compassion/File_
+#io.BytesIO(RGBbytes)
+
+# from PIL import Image
+# from PIL import ImageDraw
+# from PIL import ImageFont
+# import urllib.request
+# import io
+# import binascii
+
+# data = urllib.request.urlopen('http://pastebin.ca/raw/2311595').read()
+# r_data = binascii.unhexlify(data)
+# #r_data = "".unhexlify(chr(int(b_data[i:i+2],16)) for i in range(0, len(b_data),2))
+
+# stream = io.BytesIO(r_data)
+
+# img = Image.open(stream)
+# draw = ImageDraw.Draw(img)
+# font = ImageFont.truetype("arial.ttf",14)
+# draw.text((0, 220),"This is a test11",(255,255,0),font=font)
+# draw = ImageDraw.Draw(img)
+# img.save("a_test.png")
+
+#  outfile = os.path.splitext(os.path.join(root, name))[0] + ".jpg"
+
+
+#  im = Image.open('test.jpg')
+# im.save('test.tiff')
+
+        # if self.letter_image:
+        #     fake_file_to_write = StringIO()
+        #     fake_file_to_write.write(self.letter_image.datas)
+        #     im = Image.open(fake_file_to_write)
+        #     im.thumbnail(im.size)
+        #     im.save(fake_file_to_read, "JPEG", quality=100)
+        #     self.letter_image_preview = fake_file_to_read.read
