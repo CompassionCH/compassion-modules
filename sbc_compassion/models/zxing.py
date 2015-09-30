@@ -95,6 +95,7 @@ class BarCodeTool():
     :param string code_format: Type of barcode (see github, zxing project)
     :param int width: Width of the ouput image
     :param int height: Height of the output image
+    :param int errorcorrection: Correction level (QR code between 0 and 3)
     """
 
     cmd = [self.command]
@@ -115,11 +116,12 @@ class BarCodeTool():
       cmd.append("--barcode_format")
       cmd.append(code_format)
     if errorcorrection != None:
-      cmd.append("--error_correction")
+      cmd.append("--error_correction_level")
       cmd.append(errorcorrection)
 
     cmd.append("--output")
     cmd.append(file_)
+    print cmd
     (stdout, stderr) = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                                         universal_newlines=True).communicate()
 
