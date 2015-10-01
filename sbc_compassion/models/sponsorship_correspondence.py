@@ -54,7 +54,8 @@ class SponsorshipCorrespondence(models.Model):
     mandatory_review = fields.Boolean(compute='_set_partner_review',
                                       readonly=False, store=True)
     letter_image = fields.Many2one('ir.attachment', required=True)
-    #letter_image_preview = fields.Many2one('ir.attachment', compute='_set_preview')
+    # letter_image_preview = fields.Many2one('ir.attachment',
+    # compute='_set_preview')
     attachments_ids = fields.Many2many('ir.attachment')
     physical_attachments = fields.Selection(selection=[
         ('none', _('None')),

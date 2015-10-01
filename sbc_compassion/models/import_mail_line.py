@@ -23,7 +23,9 @@ class ImportMailLine(models.TransientModel):
     #                                 FIELDS                                 #
     ##########################################################################
 
-    sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship', required=True, compute='_set_sponsorship_id')
+    sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship',
+                                     required=True,
+                                     compute='_set_sponsorship_id')
     partner_codega = fields.Char()
     name = fields.Char(compute='_set_name')
     child_code = fields.Char()
