@@ -1,8 +1,3 @@
-"""
-This file reads a zip file containing scans of mail and find the relation
-between the database and the mail.
-"""
-
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
@@ -13,6 +8,12 @@ between the database and the mail.
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+
+"""
+This file reads a zip file containing scans of mail and find the relation
+between the database and the mail.
+"""
+
 import base64
 import zipfile
 import time
