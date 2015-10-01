@@ -1,4 +1,3 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-"access_gmc_message_pool","Full access on gmc.message","model_gmc_message_pool","group_gmc",1,1,1,1
-"limit_access_gmc_message_pool","Limited access on gmc.message","model_gmc_message_pool","child_compassion.group_sponsorship",1,0,1,1
+"access_gmc_message_pool","Full access on gmc.message","model_gmc_message_pool","child_compassion.group_sponsorship",1,1,1,1
 "access_gmc_action","Read access on gmc.action","model_gmc_action","group_gmc",1,0,0,0
