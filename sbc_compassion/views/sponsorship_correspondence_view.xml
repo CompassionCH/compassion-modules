@@ -1,0 +1,72 @@
+<openerp>
+    <data>
+           
+        <record id="view_sponsorship_correspondence_origin_tree" model="ir.ui.view">
+            <field name="name">sponsorship.correspondence.tree</field>
+            <field name="model">sponsorship.correspondence</field>
+            <field name="arch" type="xml">
+                <tree string="Correspondence">
+                    <field name="sponsorship_id"/>
+                    <field name="kit_id"/>
+                    <field name="letter_type"/>
+                    <field name="communication_type"/>
+                    <field name="state"/>
+                    <field name="is_encourager"/>
+                    <field name="mandatory_review"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_sponsorship_correspondence_origin_form" model="ir.ui.view">
+            <field name="name">sponsorship.correspondence.form</field>
+            <field name="model">sponsorship.correspondence</field>
+            <field name="arch" type="xml">
+                <form string="Correspondence">
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                        <group>
+                            <field name="sponsorship_id"/>
+                            <field name="partner_id"/>
+                            <field name="child_id"/>
+                            <field name="kit_id"/>
+                            <field name="letter_type"/>
+                            <field name="communication_type"/>
+                            <field name="is_encourager"/>
+                            <field name="mandatory_review"/>
+                            <field name="letter_image" string="Letter image"/>
+                            <field name="attachments_ids" widget="many2many_binary" string="Attachments"/>
+                            <field name="physical_attachments"/>
+                            <field name="attachments_description"/>
+                            <field name="supporter_languages_ids" string="Partner spoken languages" widget="many2many_tags" options="{'create':False}"/>
+                            <field name="beneficiary_language_ids" string="Child spoken languages" widget="many2many_tags" options="{'create':False}"/>
+                            <field name="original_language_id" string="Original language" options="{'create':False}"/>
+                            <field name="destination_language_id" string="Destination language" options="{'create':False}"/>
+                            <field name="template_id"/>
+                            <field name="original_text"/>
+                            <field name="translated_text"/>
+                            <field name="source"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_compassion_sponsorship_correspondence_form" model="ir.actions.act_window">
+            <field name="name">Correspondence</field>
+            <field name="res_model">sponsorship.correspondence</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_sponsorship_correspondence" parent="child_compassion.menu_sponsorship_root"
+                  name="Correspondence" sequence="1"/>
+
+        <menuitem id="menu_sponsorship_letters" parent="menu_sponsorship_correspondence"
+                  name="Letters" action="action_compassion_sponsorship_correspondence_form" sequence="0"/>
+    </data>
+</openerp>
