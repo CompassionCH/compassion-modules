@@ -20,7 +20,7 @@ def patternRecognition(image,template,box=([0,1],[0,1]),threshold=2,save_res=Fal
     :param bool save_res: Save an image ('sift_result.jpg') showing the keypoints
 
     :returns: None if not enough keypoints found, position of the keypoints (first index image/template)
-    :rtype: np.array()
+    :rtype: np.array(), np.array()
     """
     
     # read images
