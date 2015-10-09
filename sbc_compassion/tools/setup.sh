@@ -49,6 +49,22 @@ Start_Install ()
     # remove useless files
     rm -rf zxing
     chmod -R a+x ~/.libZxing
+
+    # opencv
+    git clone https://github.com/Itseez/opencv
+    git clone https://github.com/Itseez/opencv_contrib
+    mkdir build
+    cd build
+    cmake -D OPENCV_EXTRA_MODULES_PATH=../opencv_contrib/modules -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local -D BUILD_PYTHON_SUPPORT=ON ../opencv
+    make
+    make install
+
+    # clean
+    cd ..
+    rm -rf opencv
+    rm -rf opencv_contrib
+    rm -rf build
+
     exit 0
 }
 
