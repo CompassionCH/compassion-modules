@@ -194,12 +194,10 @@ class ImportMail(models.TransientModel):
         if isPDF(file_):
             # convert
             name = os.path.splitext(file_)[0]
-            cmd = ['convert', file_, file_ + '.tif']
-            (stdout, stderr) = subprocess.Popen(
-                cmd, stdout=subprocess.PIPE,
-                universal_newlines=True).communicate()
+            image = PythonMagick.Image(file_)
+            image.write(name + '.png')
             os.remove(file_)
-            file_ = name + '.tif'
+            file_ = name + '.png'
         if isTIFF(file_) or isPDF(file_):
             try:
                 zx = zxing.BarCodeTool()
@@ -233,10 +231,8 @@ class ImportMail(models.TransientModel):
 
             f_tmp = os.path.splitext(file_)[0] + ".jpeg"
 
-            cmd = ['convert', file_, f_tmp]
-            (stdout, stderr) = subprocess.Popen(
-                cmd, stdout=subprocess.PIPE,
-                universal_newlines=True).communicate()
+            image = PythonMagick.Image(file_)
+            image.write(f_tmp)
 
             import_mail_line = self.env['import.mail.line'].create({
                 'partner_codega': partner,
@@ -245,7 +241,7 @@ class ImportMail(models.TransientModel):
                 'supporter_languages_id': False,
                 'template_id': 'template_1',
                 'status': 'ok'})
-            pdb.set_trace()
+            
             file_jpeg = open(f_tmp, "r")
             document_vals = {'name': 'file_.jpeg',
                              'datas': file_jpeg.read(),
