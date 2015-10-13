@@ -10,7 +10,9 @@
 ##############################################################################
 
 from openerp import fields, models, api
-
+import os, sys
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../tools'))
+from positionpattern import Layout
 
 class ImportMailLine(models.TransientModel):
 
@@ -30,11 +32,12 @@ class ImportMailLine(models.TransientModel):
     name = fields.Char(compute='_set_name')
     child_code = fields.Char()
     template_id = template_id = fields.Selection([
-        ('template_1', 'Template 1'),
-        ('template_2', 'Template 2'),
-        ('template_3', 'Template 3'),
-        ('template_4', 'Template 4'),
-        ('template_5', 'Template 5')], required=True)
+        (Layout.name[0], 'Template 1'),
+        (Layout.name[1], 'Template 2'),
+        (Layout.name[2], 'Template 3'),
+        (Layout.name[3], 'Template 4'),
+        (Layout.name[4], 'Template 5'),
+        (Layout.name[5], 'Template 6')], required=True)
     supporter_languages_id = fields.Many2one(
         'res.lang.compassion')
     is_encourager = fields.Boolean()
