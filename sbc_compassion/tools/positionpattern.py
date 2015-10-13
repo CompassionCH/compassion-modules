@@ -5,7 +5,6 @@ When a layout is modified, only this one needs to be changed (it should at
 least)
 """
 import numpy as np
-from enum import Enum
 
 # position of the upper-right corner of the blue square
 bluesquare = np.array([580,8])
@@ -19,6 +18,9 @@ class Layout:
     Defines the different layouts (in order to add or remove one, needs 
     to modify at least ../models/sponsorship_correspondence.py and
     ../models/import_mail_line.py)
+
+    :param int|str value: Layout (can be the list index, the name of the layout\
+    [e.g. 'L5'] or the name of the pattern)
     """
     name = ['L1','L2','L3','L4','L5','L6']
     # width, height of the referece template
@@ -30,27 +32,42 @@ class Layout:
                 
 
     def __init__(self,value):
+        
         if type(value) == int:
             self.value = number
         elif type(str):
-            self.value = name.index(value)
+            if value in self.name:
+                self.value = name.index(value)
+            elif value in pattern.keys():
+                self.value = pattern[value]
         else:
             raise Exception("Type not accepted ({})".format(type(value)))
 
         self._init_pos()
 
-    def getLayout():
-        return name[self.value]
+    def getLayout(self):
+        """
+        :returns: Name of the layout
+        :rtype: str
+        """
+        return self.name[self.value]
 
-    def getValue():
+    def getValue(self):
+        """
+        :returns: Index in the list of layout
+        :rtype: int
+        """
         return self.value
 
-    def _init_pos():
+    def _init_pos(self):
+        """
+        Set the position that depends on the layout
+        """
         # position given by patternrecognition.keyPointCenter
         # in the reference template.
         # the key needs to be the same name (without the extension) than in  
-        # the directory ./pattern (except for bluesquare that does not depends on
-        # a pattern)
+        # the directory ./pattern (except for bluesquare that does not depends
+        # on a pattern)
         if self.value == 0:
             self.pattern = np.array([300,784])
             # position to cut for the checkboxes in the reference templated
