@@ -10,6 +10,9 @@
 ##############################################################################
 
 from openerp import fields, models, api, _
+import os, sys
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../tools'))
+from positionpattern import Layout
 
 
 class SponsorshipCorrespondence(models.Model):
@@ -73,12 +76,14 @@ spoken_langs_ids', store=True)
         'res.lang.compassion', compute='_set_original_language', store=True)
     destination_language_id = fields.Many2one(
         'res.lang.compassion', compute='_set_original_language', store=True)
+    #need to change in order to avoid mutliple definition
     template_id = fields.Selection(selection=[
-        ('template_1', _('Template 1')),
-        ('template_2', _('Template 2')),
-        ('template_3', _('Template 3')),
-        ('template_4', _('Template 4')),
-        ('template_5', _('Template 5'))], required=True)
+        (Layout.name[0], 'Template 1'),
+        (Layout.name[1], 'Template 2'),
+        (Layout.name[2], 'Template 3'),
+        (Layout.name[3], 'Template 4'),
+        (Layout.name[4], 'Template 5'),
+        (Layout.name[5], 'Template 6')], required=True)
     original_text = fields.Text()
     translated_text = fields.Text()
     source = fields.Selection(selection=[
