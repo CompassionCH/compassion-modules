@@ -50,12 +50,14 @@ class BarCodeTool():
 
         self.location = loc
 
-    def decode(self, files, try_harder=False, qr_only=True):
+    def decode(self, files, try_harder=True, qr_only=True,crop=None):
         """
         Decodes a/some file/s
         :param string files: Name of the files to decode
         :param bool try_harder: Spend more time to find a barcode (if needed)
         :param bool qr_only: Only check for QR code or not
+        :param list crop: Use a subset of the picture [left,top,width,height]\
+        (in pixels)
         :returns: Information about the barcode
         :rtype: BarCode
         """
@@ -76,11 +78,15 @@ class BarCodeTool():
         if qr_only:
             cmd.append("--possible_formats")
             cmd.append("QR_CODE")
-
+        if crop != None:
+            cmd.append("--crop")
+            for i in range(4):
+                cmd.append(str(crop[i]))
+            
         libraries = [self.location + "/" + l for l in self.libs]
 
         cmd = [c if c != "LIBS" else os.pathsep.join(libraries) for c in cmd]
-
+        print cmd
         (stdout, stderr) = subprocess.Popen(
             cmd, stdout=subprocess.PIPE, universal_newlines=True).communicate()
         codes = []
