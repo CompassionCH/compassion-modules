@@ -55,6 +55,20 @@ def isTIFF(name):
     else:
         return False
 
+def isPNG(name):
+    """
+    Check the extension of the name
+
+    :param string name: File name to check
+    :returns: True if PNG, False otherwise
+    :rtype: bool
+    """
+    ext = os.path.splitext(name)[1]
+    if ext.lower() == '.png':
+        return True
+    else:
+        return False
+
 
 def isZIP(name):
     """
