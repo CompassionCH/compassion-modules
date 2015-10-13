@@ -8,4 +8,5 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+from . import tools
 from . import models

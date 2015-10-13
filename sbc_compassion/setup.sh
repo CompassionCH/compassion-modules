@@ -6,15 +6,15 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-IP=192.168.200.113
-USER=openerp
+IP=192.168.201.202
+USER=erp
 
 # opencv 
 scp $USER@$IP:lib/libopencv/* /usr/local/lib/
 ./tools/makelink.sh
 
 # python-opencv
-scp $USER@$IP:lib/pythonopencv/* /usr/local/lib/python2.7/
+scp $USER@$IP:lib/pythonopencv/* /usr/local/lib/python2.7/dist-packages/
 
 # zxing
 if [ -d "$HOME/.libZxing" ]; then

@@ -86,7 +86,6 @@ class BarCodeTool():
         libraries = [self.location + "/" + l for l in self.libs]
 
         cmd = [c if c != "LIBS" else os.pathsep.join(libraries) for c in cmd]
-        print cmd
         (stdout, stderr) = subprocess.Popen(
             cmd, stdout=subprocess.PIPE, universal_newlines=True).communicate()
         codes = []
@@ -127,7 +126,7 @@ class BarCodeTool():
         cmd.append(text)
         if width is not None:
             cmd.append("--width")
-            cmd.apppend(width)
+            cmd.append(width)
         if height is not None:
             cmd.append("--height")
             cmd.append(height)

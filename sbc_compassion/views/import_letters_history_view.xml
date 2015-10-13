@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Form Definition -->
+        <record id="import_letters_history_form" model="ir.ui.view">
+            <field name="name">import.letters.history.form</field>
+            <field name="model">import.letters.history</field>
+            <field name="arch" type="xml">
+            <form string="Imports">
+            <sheet>
+                <h1>
+		  Imported Letter
+                </h1>
+                <group>
+                    <field name="list_zip" invisible="1"/>
+                    <field name="data" widget="many2many_binary" attrs="{'invisible': [('state','!=','draft')]}"/>
+                    <field name="nber_letters"/>
+                </group>
+		<field name="state" invisible="1"/>
+                <field name="letters_line_ids" attrs="{'invisible': [('state', 'not in', ('pending', 'ready'))]}"/>
+                <field name="letters_ids" attrs="{'invisible': [('state', '!=', 'saved')]}"/>
+            </sheet>
+            </form>
+            </field>
+        </record>
+
+        <!-- Tree Definition -->
+        <record id="import_letters_history_tree" model="ir.ui.view">
+            <field name="name">import.letters.history.tree</field>
+            <field name="model">import.letters.history</field>
+            <field name="arch" type="xml">
+            <tree string="Imports" colors="blue:state == 'pending';red:state == 'draft';green:state == 'ready';black:state == 'saved'">
+	      <field name="write_date"/>
+	      <field name="state"/>
+              <field name="nber_letters"/>
+	      <field name="create_date"/>
+            </tree>
+            </field>
+        </record>
+
+
+        <!-- Action Definition -->
+        <record id="action_compassion_import_letters_action" model="ir.actions.act_window">
+            <field name="name">Imports</field>
+            <field name="res_model">import.letters.history</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Menu Definition -->
+        <menuitem id="import_letters_menu" parent="menu_sponsorship_correspondence"
+        name="Imports" action="action_compassion_import_letters_action" sequence="1"/>
+    </data>
+</openerp>

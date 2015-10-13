@@ -8,9 +8,10 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from . import partner_compassion
-from . import lang_compassion
-from . import country_compassion
-from . import sponsorship_correspondence
-from . import import_letters_history
-from . import import_letter_line
+from . import bluecornerfinder
+from . import checkboxreader
+from . import import_mail_functions
+from . import layout
+from . import patternrecognition
+from . import stickerwriter
+from . import zxing

@@ -55,6 +55,7 @@ def isTIFF(name):
     else:
         return False
 
+
 def isPNG(name):
     """
     Check the extension of the name
@@ -119,7 +120,6 @@ def removename(string, name):
     :returns: string without name or False
     :rtype: string or bool
     """
-    print ';' + name + ';'
     tmp = string.replace(';' + name + ';', ';')
     if tmp == string:
         tmp = string.replace(name + ';', ';')
@@ -129,4 +129,3 @@ def removename(string, name):
             return tmp
     else:
         return tmp
-

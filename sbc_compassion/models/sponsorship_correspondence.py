@@ -3,17 +3,19 @@
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Emmanuel Mathier <emmanuel.mathier@gmail.com>
+#    @author: Emanuel Cino, Emmanuel Mathier
 #
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
 
 from openerp import fields, models, api, _
+import os, sys
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../tools'))
+from layout import LayoutLetter
 
 
 class SponsorshipCorrespondence(models.Model):
-
     """ This class holds the data of a Communication Kit between
     a child and a sponsor.
     """
@@ -32,16 +34,11 @@ class SponsorshipCorrespondence(models.Model):
     child_id = fields.Many2one(related='sponsorship_id.child_id', store=True)
     # Field used for identifying correspondence
     kit_id = fields.Integer('Kit id', copy=False, readonly=True)
-    letter_type = fields.Selection(selection=[
-        ('S2B', _('Sponsor to beneficiary')),
-        ('B2S', _('Beneficiary to sponsor'))], required=True)
-    communication_type = fields.Selection(selection=[
-        ('scheduled', _('Scheduled')),
-        ('response', _('Response')),
-        ('thank_you', _('Thank you')),
-        ('third_party', _('Third party')),
-        ('christmas', _('Christmas')),
-        ('introduction', _('Introduction'))])
+    direction = fields.Selection(selection=[
+        ('Supporter To Beneficiary', _('Supporter to beneficiary')),
+        ('Beneficiary To Supporter', _('Beneficiary to supporter'))],
+                                 required=True)
+    communication_type = fields.Selection('get_communication_types')
     state = fields.Selection(selection=[
         ('new', _('New')),
         ('to_translate', _('To translate')),
@@ -73,12 +70,14 @@ spoken_langs_ids', store=True)
         'res.lang.compassion', compute='_set_original_language', store=True)
     destination_language_id = fields.Many2one(
         'res.lang.compassion', compute='_set_original_language', store=True)
+    #need to change in order to avoid mutliple definition
     template_id = fields.Selection(selection=[
-        ('template_1', _('Template 1')),
-        ('template_2', _('Template 2')),
-        ('template_3', _('Template 3')),
-        ('template_4', _('Template 4')),
-        ('template_5', _('Template 5'))], required=True)
+        (LayoutLetter.name[0], 'Template 1'),
+        (LayoutLetter.name[1], 'Template 2'),
+        (LayoutLetter.name[2], 'Template 3'),
+        (LayoutLetter.name[3], 'Template 4'),
+        (LayoutLetter.name[4], 'Template 5'),
+        (LayoutLetter.name[5], 'Template 6')], required=True)
     original_text = fields.Text()
     translated_text = fields.Text()
     source = fields.Selection(selection=[
@@ -95,6 +94,18 @@ spoken_langs_ids', store=True)
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.model
+    def get_communication_types(self):
+        return [
+            ('Beneficiary Initiated Letter', _('Beneficiary Initiated')),
+            ('Final Letter', _('Final Letter')),
+            ('Large Gift Thank You Letter', _('Large Gift Thank You')),
+            ('Small Gift Thank You Letter', _('Small Gift Thank You')),
+            ('New Sponsor Letter', _('New Sponsor Letter')),
+            ('Reciprocal Letter', _('Reciprocal Letter')),
+            ('Scheduled Letter', _('Scheduled')),
+            ('Supporter Letter', _('Supporter Letter')),
+        ]
 
     @api.depends('sponsorship_id')
     def _set_name(self):
@@ -128,3 +139,6 @@ spoken_langs_ids', store=True)
             self.mandatory_review = True
         else:
             self.mandatory_review = False
+
+    def button_import(self):
+        return

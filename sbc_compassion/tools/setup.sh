@@ -18,6 +18,7 @@ Start_Install ()
 	git clone https://github.com/zxing/zxing
     fi
     apt-get update
+    apt-get install cmake
     command -v convert >/dev/null 2>&1 || { echo >&2 "Install imagemagick.."; apt-get -y install imagemagick; }
     command -v maven >/dev/null 2>&1 || { echo >&2 "Install maven..";
 	command -v gdebi >/dev/null 2>&1 || { echo >&2 "  Install gdebi.."; apt-get -y install gdebi; }
@@ -53,6 +54,12 @@ Start_Install ()
     # opencv
     git clone https://github.com/Itseez/opencv
     git clone https://github.com/Itseez/opencv_contrib
+    sudo apt-get -y install libopencv-dev build-essential cmake git libgtk2.0-dev pkg-config python-dev python-numpy 
+    sudo apt-get -y install libdc1394-22 libdc1394-22-dev libjpeg-dev libpng12-dev libtiff4-dev libjasper-dev 
+    sudo apt-get -y install libavcodec-dev libavformat-dev libswscale-dev libxine-dev libgstreamer0.10-dev 
+    sudo apt-get -y install libgstreamer-plugins-base0.10-dev libv4l-dev libtbb-dev libqt4-dev libfaac-dev 
+    sudo apt-get -y install libmp3lame-dev libopencore-amrnb-dev libopencore-amrwb-dev libtheora-dev libvorbis-dev 
+    sudo apt-get -y install maklibxvidcore-dev x264 v4l-utils unzip
     mkdir build
     cd build
     cmake -D OPENCV_EXTRA_MODULES_PATH=../opencv_contrib/modules -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local -D BUILD_PYTHON_SUPPORT=ON ../opencv
@@ -61,9 +68,7 @@ Start_Install ()
 
     # clean
     cd ..
-    rm -rf opencv
-    rm -rf opencv_contrib
-    rm -rf build
+    rm -rf opencv opencv_contrib build
 
     exit 0
 }

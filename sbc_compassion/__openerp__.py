@@ -38,6 +38,7 @@
     'depends': ['sponsorship_compassion', 'web_tree_image'],
     'external_dependencies': {
         'java': ['zxing'],
+        'python': ['magic', 'PythonMagick', 'numpy', 'zxing', 'cv2']
     },
     'data': [
         'security/ir.model.access.csv',
@@ -45,18 +46,10 @@
         'views/partner_compassion_view.xml',
         'views/lang_compassion_view.xml',
         'views/sponsorship_correspondence_view.xml',
-        'views/import_mail_view.xml',
-        'views/import_mail_line_view.xml',
+        'views/import_letters_history_view.xml',
+        'views/import_letter_line_view.xml',
         'data/lang_data.xml',
     ],
     'installable': True,
     'auto_install': False,
-    'description': """
-Installation
-============
-
-To install this module, you need to install dependencies:
-
-* requires python-MySQLdb to be installed on the server.
-""",
 }
