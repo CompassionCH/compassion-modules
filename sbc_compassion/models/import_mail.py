@@ -13,7 +13,7 @@
 This file reads a zip file containing scans of mail and find the relation
 between the database and the mail.
 """
-
+import cv2
 import base64
 import zipfile
 import time
@@ -23,8 +23,13 @@ import shutil
 import pdb
 import PythonMagick
 import sys
+import numpy as np
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../tools'))
 from import_mail_functions import *
+import bluecornerfinder as bcf
+import checkboxreader as cbr
+import patternrecognition as pr
+import positionpattern as pp
 from openerp import api, fields, models, _, exceptions
 # import sponsorship_correspondence
 
@@ -191,17 +196,19 @@ class ImportMail(models.TransientModel):
             f = open(file_, 'w')
             f.write(base64.b64decode(data))
             f.close()
-        if isPDF(file_):
+        if isPDF(file_) or isTIFF(file_):
             # convert
             name = os.path.splitext(file_)[0]
-            image = PythonMagick.Image(file_)
+            image = PythonMagick.Image()
+            image.density("300")
+            image.read(file_)
             image.write(name + '.png')
             os.remove(file_)
             file_ = name + '.png'
-        if isTIFF(file_) or isPDF(file_):
+        if isPNG(file_):
             try:
                 zx = zxing.BarCodeTool()
-                code = zx.decode(file_)
+                code = zx.decode(file_,try_harder=True)
             except:
                 raise exceptions.Warning(
                     _("Unable to read file: {}").format(file_))
@@ -212,8 +219,70 @@ class ImportMail(models.TransientModel):
                 partner, child = code.data.split('XX')
             except:
                 raise exceptions.Warning(
-                    _("Barcode not in the required format in file: {}").format(
+                    _("Barcode ({0}) not in the required format in file: {1}"
+                  ).format(code.data,file_))
+
+            path = os.path.dirname(__file__)+'/../tools/pattern/'
+            listing = os.listdir(os.path.abspath(path))
+            a = 0
+            for f in listing:
+                box = np.array(pp.pattern_pos,float)
+                box[:2] = box[:2]/float(pp.size_ref[0])
+                box[2:] = box[2:]/float(pp.size_ref[1])
+                
+                tmp_key = pr.patternRecognition(
+                    file_,path+f,box=([box[0],box[1]],[box[2],box[3]]))
+                if tmp_key != None and len(tmp_key[0]) > a:
+                    a = len(tmp_key[0])
+                    kimg = tmp_key[0]
+                    ktemp = tmp_key[1]
+                    pattern_file = os.path.splitext(f)[0]
+            ctemp = pr.keyPointCenter(kimg)
+            
+            bluecorner = bcf.BlueCornerFinder(file_)
+            cblue = bluecorner.getIndices()
+            
+            diff_ori = np.array(pp.pattern['bluesquare']-
+                                pp.pattern[pattern_file])
+            diff_scan = np.array(cblue-ctemp)
+            normalization = (np.linalg.norm(diff_ori)*
+                             np.linalg.norm(diff_scan))
+            costheta = np.dot(diff_ori,diff_scan)/normalization
+            sintheta = np.linalg.det([diff_ori,diff_scan])/normalization
+            
+            M = np.array([[costheta, -sintheta],[sintheta, costheta]])
+            
+            scaling = np.array(bluecorner.getSizeOriginal(),dtype=float) \
+                      /np.array(pp.size_ref,dtype=float)
+            scaling = np.array([[scaling[0],0],[0,scaling[1]]])
+            M *= scaling
+            
+            C = cblue-np.dot(M,np.array(pp.pattern['bluesquare']))
+            
+            img = cv2.imread('/home/openerp/layout_test.png')
+            i = pp.checkboxes
+            
+            #co = cimg2
+            
+            for key in pp.checkboxes:
+                w,h = bluecorner.getSizeOriginal()
+                x,y = img.shape[:2]
+                a = i[key][2]*x/h
+                b = i[key][3]*x/h
+                (a,b) = np.round(np.dot(M,np.array([a,b])) + C)
+                c = i[key][0]*y/w
+                d = i[key][1]*y/w
+                (c,d) = np.round(np.dot(M,np.array([c,d])) + C)
+                cv2.imwrite('/home/openerp/check_'+key+'.png',img[a:b+1,c:d+1])
+                
+                
+            A = cbr.CheckboxReader('/home/openerp/check_other.png')               
+            
+            """except:
+                raise exceptions.Warning(
+                    _("Unable to detect patterns in : {}").format(
                         file_))
+               """ 
 
             # NEED REVIEW
             #
