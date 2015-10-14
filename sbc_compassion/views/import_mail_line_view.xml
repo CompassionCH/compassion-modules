@@ -6,12 +6,13 @@
             <field name="name">import.mail.line.tree</field>
             <field name="model">import.mail.line</field>
             <field name="arch" type="xml">
-                <tree string="Import mail lines" options="{'create':False, 'edit':False}" create="false" editable="bottom" edit="false">
-                    <field name="sponsorship_id"/>
-                    <field name="partner_codega"/>
-                    <field name="child_code"/>
-                    <field name="template_id"/>
-                    <field name="supporter_languages_id"/>
+                <tree string="Import mail lines" options="{'create':False, 'edit':True}" create="false" editable="bottom" edit="true">
+                    <field name="sponsorship_status" string="Sponsorship"/>
+		    <field name="sponsorship_id" invisible="1"/>
+                    <field name="partner_codega" string="Partner"/>
+                    <field name="child_code" string="Child"/>
+                    <field name="template_id" string="Template"/>
+                    <field name="supporter_languages_id" string="Language"/>
                     <field name="is_encourager"/>
                     <field name="status"/>
                     <field name="letter_image"/>
