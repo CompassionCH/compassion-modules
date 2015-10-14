@@ -34,12 +34,12 @@ class Layout:
     def __init__(self,value):
         
         if type(value) == int:
-            self.value = number
+            self._setValue(value)
         elif type(str):
             if value in self.name:
-                self.value = name.index(value)
+                self._setValue(name.index(value))
             elif value in pattern.keys():
-                self.value = pattern[value]
+                self._setValue(pattern[value])
         else:
             raise Exception("Type not accepted ({})".format(type(value)))
 
@@ -50,7 +50,10 @@ class Layout:
         :returns: Name of the layout
         :rtype: str
         """
-        return self.name[self.value]
+        if self.value == None:
+            return None
+        else:
+            return self.name[self.value]
 
     def getValue(self):
         """
@@ -58,6 +61,15 @@ class Layout:
         :rtype: int
         """
         return self.value
+
+    def _setValue(self,value):
+        """
+        Done in order to check if the value is right
+        """
+        if value < len(self.name) and value >= 0:
+            self.value = value
+        else:
+            self.value = None
 
     def _init_pos(self):
         """
@@ -72,11 +84,11 @@ class Layout:
             self.pattern = np.array([300,784])
             # position to cut for the checkboxes in the reference templated
             # [min x,max x, min y, max y] // x = for width, y = for height
-            self.checkboxes = { 'fr': [263,284,12,32],
-                                'it': [263,284,32,52],
-                                'de': [263,284,52,72],
-                                'es': [371,390,12,32],
-                                'en': [371,390,32,52],
+            self.checkboxes = { 'fra': [263,284,12,32],
+                                'ita': [263,284,32,52],
+                                'deu': [263,284,52,72],
+                                'spa': [371,390,12,32],
+                                'eng': [371,390,32,52],
                                 'other': [368,390,52,72]
                             }
         
