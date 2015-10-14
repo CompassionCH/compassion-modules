@@ -64,5 +64,11 @@
             <field name="name">Kinyarwanda</field>
             <field name="code_iso">kin</field>
         </record>
+
+	<record id="lang_compassion_italian" model="res.lang.compassion">
+            <field name="name">Italian</field>
+            <field name="code_iso">ita</field>
+        </record>
+
     </data>
 </openerp>
