@@ -31,8 +31,6 @@ import checkboxreader as cbr
 import patternrecognition as pr
 import positionpattern as pp
 from openerp import api, fields, models, _, exceptions
-# import sponsorship_correspondence
-
 import zxing
 
 class ImportMail(models.TransientModel):
@@ -76,8 +74,6 @@ class ImportMail(models.TransientModel):
         """
         if self.list_zip is False:
             self.list_zip = ""
-        if self.debug is False:
-            self.debug = "YOUPI"
         # removes old files in the directory
         if os.path.exists(self.path):
             onlyfiles = [f for f in os.listdir(self.path)
@@ -100,7 +96,7 @@ class ImportMail(models.TransientModel):
             if check_file(attachment.name) == 1:
                 tmp += 1
             # zip case
-            elif check_file(attachment.name) == 2:
+            elif isZIP(attachment.name):
                 tmp_name_file = self.path + attachment.name
                 # save the zip file
                 if not os.path.exists(tmp_name_file):
@@ -164,16 +160,15 @@ class ImportMail(models.TransientModel):
                         zip_.extract(f, path_zip)
                         absname = path_zip + '/' + f
                         if os.path.isfile(absname):
-                            self.analyze_attachment(absname)
+                            self._analyze_attachment(absname)
                     # delete all the tmp files
                     shutil.rmtree(path_zip)
                     os.remove(self.path + attachment.name)
                 # case with normal format (PDF,TIFF)
                 elif check_file(attachment.name) == 1:
-                    self.analyze_attachment(
+                    self._analyze_attachment(
                         self.path + str(attachment.name),
                         attachment.datas)
-                    os.remove(self.path + attachment.name)
                 else:
                     raise exceptions.Warning(
                         'Still a file in a non-accepted format')
@@ -182,7 +177,7 @@ class ImportMail(models.TransientModel):
                 raise exceptions.Warning(_('Two files are the same'))
                 return
 
-    def analyze_attachment(self, file_, data=None):
+    def _analyze_attachment(self, file_, data=None):
         """
         Analyze attachment (PDF/TIFF) and save everything
 
@@ -192,12 +187,20 @@ class ImportMail(models.TransientModel):
                   not accepted)
         :rtype: String (error code: int)
         """
+        file_init = file_
+        # is used in order to know if everything was alright
+        status = 1
+        # in the case of zipfile, the data needs to be saved first
         if data is not None:
             f = open(file_, 'w')
             f.write(base64.b64decode(data))
             f.close()
+        
+        # convert to PNG
         if isPDF(file_) or isTIFF(file_):
-            # convert
+            if data == None:
+                f = open(file_)
+                data = f.read()
             name = os.path.splitext(file_)[0]
             image = PythonMagick.Image()
             image.density("300")
@@ -205,123 +208,158 @@ class ImportMail(models.TransientModel):
             image.write(name + '.png')
             os.remove(file_)
             file_ = name + '.png'
+
+        # now do the computations only if the image is a PNG
         if isPNG(file_):
+            # first compute the QR code
             try:
                 zx = zxing.BarCodeTool()
-                code = zx.decode(file_,try_harder=True)
+                qrcode = zx.decode(file_,try_harder=True)
             except:
-                raise exceptions.Warning(
-                    _("Unable to read file: {}").format(file_))
-            if code is None:
-                raise exceptions.Warning(
-                    _("Not able to read barcode from: {}").format(file_))
-            try:
-                partner, child = code.data.split('XX')
-            except:
-                raise exceptions.Warning(
-                    _("Barcode ({0}) not in the required format in file: {1}"
-                  ).format(code.data,file_))
+                status = 2
+            if qrcode is None:
+                status = 2
+            if 'XX' in qrcode.data:
+                partner, child = qrcode.data.split('XX')
+            else:
+                status = 2
 
-            path = os.path.dirname(__file__)+'/../tools/pattern/'
-            listing = os.listdir(os.path.abspath(path))
-            a = 0
+            # now try to find the layout
+            # loop over all the patterns in the pattern directory
+            pattern_path = os.path.dirname(__file__) + '/../tools/pattern/'
+            listing = os.listdir(os.path.abspath(pattern_path))
+            # number of keypoint related between the picture and the pattern
+            nber_kp = 0
+            pattern_file = None
             for f in listing:
-                box = np.array(pp.pattern_pos,float)
-                box[:2] = box[:2]/float(pp.size_ref[0])
-                box[2:] = box[2:]/float(pp.size_ref[1])
-                
+                # compute a box in order to crop the image
+                box = np.array(pp.Layout.pattern_pos,float)
+                box[:2] = box[:2]/float(pp.Layout.size_ref[0])
+                box[2:] = box[2:]/float(pp.Layout.size_ref[1])
+                # try to recognize the pattern
                 tmp_key = pr.patternRecognition(
-                    file_,path+f,box=([box[0],box[1]],[box[2],box[3]]))
-                if tmp_key != None and len(tmp_key[0]) > a:
-                    a = len(tmp_key[0])
-                    kimg = tmp_key[0]
-                    ktemp = tmp_key[1]
+                    file_,pattern_path+f,box=([box[0],box[1]],[box[2],box[3]]))
+                # check if it is a better result than before
+                if tmp_key != None and len(tmp_key[0]) > nber_kp:
+                    # save all the data if it is better
+                    nber_kp = len(tmp_key[0])
+                    key_img = tmp_key[0]
+                    key_pat = tmp_key[1]
                     pattern_file = os.path.splitext(f)[0]
-            ctemp = pr.keyPointCenter(kimg)
-            
-            bluecorner = bcf.BlueCornerFinder(file_)
-            cblue = bluecorner.getIndices()
-            
-            diff_ori = np.array(pp.pattern['bluesquare']-
-                                pp.pattern[pattern_file])
-            diff_scan = np.array(cblue-ctemp)
-            normalization = (np.linalg.norm(diff_ori)*
-                             np.linalg.norm(diff_scan))
-            costheta = np.dot(diff_ori,diff_scan)/normalization
-            sintheta = np.linalg.det([diff_ori,diff_scan])/normalization
-            
-            M = np.array([[costheta, -sintheta],[sintheta, costheta]])
-            
-            scaling = np.array(bluecorner.getSizeOriginal(),dtype=float) \
-                      /np.array(pp.size_ref,dtype=float)
-            scaling = np.array([[scaling[0],0],[0,scaling[1]]])
-            M *= scaling
-            
-            C = cblue-np.dot(M,np.array(pp.pattern['bluesquare']))
-            
-            img = cv2.imread('/home/openerp/layout_test.png')
-            i = pp.checkboxes
-            
-            #co = cimg2
-            
-            for key in pp.checkboxes:
-                w,h = bluecorner.getSizeOriginal()
-                x,y = img.shape[:2]
-                a = i[key][2]*x/h
-                b = i[key][3]*x/h
-                (a,b) = np.round(np.dot(M,np.array([a,b])) + C)
-                c = i[key][0]*y/w
-                d = i[key][1]*y/w
-                (c,d) = np.round(np.dot(M,np.array([c,d])) + C)
-                cv2.imwrite('/home/openerp/check_'+key+'.png',img[a:b+1,c:d+1])
-                
-                
-            A = cbr.CheckboxReader('/home/openerp/check_other.png')               
-            
-            """except:
-                raise exceptions.Warning(
-                    _("Unable to detect patterns in : {}").format(
-                        file_))
-               """ 
+                    
 
-            # NEED REVIEW
-            #
-            # template_id
-            # supporter_language (method needed for check if partner langage
-            # exist in res.lang.compassion / field have to be set required in
-            # import.mail.line)
-            # status (local variable with status selection needed, please
-            # refer to the status selection field)
+            if pattern_file == None:
+                layout = pp.Layout(-1)
+                lang = None
+            else:
+                # create an instance of layout (contains all the information)
+                # about the position
+                layout = pp.Layout(pattern_file)
+                center_pat = pr.keyPointCenter(key_img)
+                bluecorner = bcf.BlueCornerFinder(file_)
+                center_blue = bluecorner.getIndices()
+                
+                # vector between the blue square and the pattern
+                diff_ref = np.array(pp.bluesquare-
+                                    layout.pattern)
+                diff_scan = np.array(center_blue-center_pat)
+                # need normalize vectors
+                normalization = (np.linalg.norm(diff_ref)*
+                                 np.linalg.norm(diff_scan))
+                # angle between the scan and the ref image
+                costheta = np.dot(diff_ref,diff_scan)/normalization
+                sintheta = np.linalg.det([diff_ref,diff_scan])/normalization
+                
+                # rotation matrix
+                R = np.array([[costheta, -sintheta],[sintheta, costheta]])
+                
+                # scaling matrix (use image size)
+                scaling = np.array(bluecorner.getSizeOriginal(),dtype=float) \
+                          /np.array(layout.size_ref,dtype=float)
+                scaling = np.array([[scaling[0],0],[0,scaling[1]]])
+                
+                # transformation matrix
+                R *= scaling
+                # translation vector
+                C = center_blue-np.dot(R,np.array(pp.bluesquare))
+                
+                # now for the language
+                #
+                # read the file in order to read the checkboxes
+                img = cv2.imread(file_)
+                # copy in order to decrease the line's length
+                i = layout.checkboxes
+                
+                # language
+                lang = None
+                # check if only 1 language is find
+                lang_ok = True
+                # first loop to write the image and find the language
+                for key in layout.checkboxes:
+                    a = i[key][2]
+                    b = i[key][3]
+                    # transform the coordinate system
+                    (a,b) = np.round(np.dot(R,np.array([a,b])) + C)
+                    c = i[key][0]
+                    d = i[key][1]
+                    (c,d) = np.round(np.dot(R,np.array([c,d])) + C)
+                    # new name (if changed, need to change in the remove loop)
+                    file_tmp = os.path.splitext(file_)[0]+'_'+key+'.png'
+                    cv2.imwrite(file_tmp,img[a:b+1,c:d+1])
+                    A = cbr.CheckboxReader(file_tmp)      
+                    # if something happens
+                    if A == True or A == None:
+                        if lang == None:
+                            lang = key
+                            # if a second language has been discovered
+                        else:
+                            lang_ok = False
+                            # change the value for odoo
+                if not lang_ok or lang == 'other' or lang == None:
+                    status = 0
+                    lang = False
+
+                # remove files
+                for key in layout.checkboxes:
+                    os.remove(os.path.splitext(file_)[0]+'_'+key+'.png')
+
+                if lang != False:
+                    lang = self.env['res.lang.compassion'].search([('code_iso','=',lang)]).id
+
+            # TODO
             #
             # Problem: the converted jpeg can be opened on a windows PC or
             # with nano, but odoo can't recognize the file. Tried
             # to give a jpeg
             # to odoo from windows -> same problem
 
-            f_tmp = os.path.splitext(file_)[0] + ".jpeg"
 
-            image = PythonMagick.Image(file_)
-            image.write(f_tmp)
 
+            
             import_mail_line = self.env['import.mail.line'].create({
                 'partner_codega': partner,
                 'child_code': child,
                 'is_encourager': False,
-                'supporter_languages_id': False,
-                'template_id': 'template_1',
-                'status': 'ok'})
+                'supporter_languages_id': lang,
+            })
             
-            file_jpeg = open(f_tmp, "r")
-            document_vals = {'name': 'file_.jpeg',
-                             'datas': file_jpeg.read(),
-                             'datas_fname': 'file_.jpeg',
+            if layout.getLayout() == None:
+                import_mail_line.template_id = ""
+            else:
+                import_mail_line.template_id = layout.getLayout()
+
+            file_png = open(file_, "r")
+            file_data = file_png.read()
+            file_png.close()
+            dfile_ = file_init.split('/')[-1]
+            document_vals = {'name': dfile_,
+                             'datas': data,
+                             'datas_fname': dfile_,
                              'res_model': 'import.mail.line',
                              'res_id': import_mail_line.id
                              }
-
-            image = self.env['ir.attachment'].create(document_vals)
-            import_mail_line.letter_image_preview = image
-            file_jpeg.close()
+            import_mail_line.letter_image = self.env['ir.attachment'].create(document_vals)
+            import_mail_line.letter_image_preview = base64.b64encode(file_data)
 
             self.import_mail_line_ids += import_mail_line
 
