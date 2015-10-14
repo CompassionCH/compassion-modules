@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
-        <!-- Tree Definition -->
-        <record id="view_import_mail_line_tree" model="ir.ui.view">
-            <field name="name">import.mail.line.tree</field>
-            <field name="model">import.mail.line</field>
-            <field name="arch" type="xml">
-                <tree string="Import mail lines" options="{'create':False, 'edit':True}" create="false" editable="bottom" edit="true">
-                    <field name="sponsorship_status" string="Sponsorship"/>
-		    <field name="sponsorship_id" invisible="1"/>
-                    <field name="partner_codega" string="Partner"/>
-                    <field name="child_code" string="Child"/>
-                    <field name="template_id" string="Template"/>
-                    <field name="supporter_languages_id" string="Language"/>
-                    <field name="is_encourager"/>
-                    <field name="status"/>
-                    <field name="letter_image"/>
-                    <field name="letter_image_preview" widget='image' string="Letter image preview"/>
-                </tree>
-            </field>
-        </record>
-    </data>
+  <data>
+    <!-- Tree Definition -->
+    <record id="view_import_mail_line_tree" model="ir.ui.view">
+      <field name="name">import.mail.line.tree</field>
+      <field name="model">import.mail.line</field>
+      <field name="arch" type="xml">
+        <tree string="Import mail lines" options="{'create':False, 'edit':True}" create="false" editable="bottom" edit="true">
+          <field name="status"/>
+          <field name="sponsorship_status" invisible="1"/>
+	  <field name="sponsorship_id" invisible="1"/>
+          <field name="partner_codega"/>
+          <field name="child_code"/>
+          <field name="template_id"/>
+          <field name="supporter_languages_id"/>
+          <field name="is_encourager"/>
+          <field name="letter_image"/>
+          <field name="letter_image_preview" widget='image' string="Letter image preview"/>
+        </tree>
+      </field>
+    </record>
+  </data>
 </openerp>
