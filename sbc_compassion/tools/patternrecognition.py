@@ -38,7 +38,6 @@ def patternRecognition(image,template,box=([0,1],[0,1]),threshold=2,save_res=Fal
     # find matches between the two pictures
     good = findMatches(des1,des2)
 
-    print len(good)
     if save_res:
         img3 = cv2.drawMatchesKnn(img2,kp2,img1,kp1,good,None,flags=2)
         cv2.imwrite('sift_result.png',img3)
