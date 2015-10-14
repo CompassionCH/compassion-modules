@@ -119,7 +119,6 @@ def removename(string, name):
     :returns: string without name or False
     :rtype: string or bool
     """
-    print ';' + name + ';'
     tmp = string.replace(';' + name + ';', ';')
     if tmp == string:
         tmp = string.replace(name + ';', ';')
