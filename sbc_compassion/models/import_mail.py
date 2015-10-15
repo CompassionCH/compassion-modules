@@ -62,6 +62,7 @@ class ImportMail(models.TransientModel):
     # link to _count_nber_files
     data = fields.Many2many('ir.attachment')
     import_mail_line_ids = fields.Many2many('import.mail.line')
+    save_visible = fields.Boolean(computed="_set_save_button")
 
     # -------------------- _COUNT_NBER_FILES ---------------------------------
 
@@ -135,6 +136,18 @@ class ImportMail(models.TransientModel):
                     os.remove(self.path + f)
 
     # ------------------------ _RUN_ANALYZE ----------------------------------
+    
+    @api.one
+    @api.onchange("import_mail_line_ids")
+    def button_save(self):
+        """
+        """
+        if len(self.import_mail_line_ids) > 0:
+            self.save_visible = True
+        else:
+            self.save_visible = False
+        print self.save_visible
+
 
     @api.one
     def button_run_analyze(self):
@@ -219,7 +232,7 @@ class ImportMail(models.TransientModel):
             # loop over all the patterns in the pattern directory
             pattern_file, key_img = self._find_layout(file_)
             if pattern_file == None:
-                layout = pp.Layout(-1)
+                layout = pp.LayoutLetterLetter(-1)
                 lang = None
             else:
                 layout = pp.Layout(pattern_file)
@@ -265,7 +278,6 @@ class ImportMail(models.TransientModel):
             self.import_mail_line_ids += import_mail_line
 
         else:
-
             raise exceptions.Warning('Format not accepted in {}'.format(file_))
 
 
@@ -287,9 +299,9 @@ class ImportMail(models.TransientModel):
         pattern_file = None
         for f in listing:
             # compute a box in order to crop the image
-            box = np.array(pp.Layout.pattern_pos,float)
-            box[:2] = box[:2]/float(pp.Layout.size_ref[0])
-            box[2:] = box[2:]/float(pp.Layout.size_ref[1])
+            box = np.array(pp.LayoutLetter.pattern_pos,float)
+            box[:2] = box[:2]/float(pp.LayoutLetter.size_ref[0])
+            box[2:] = box[2:]/float(pp.LayoutLetter.size_ref[1])
             # try to recognize the pattern
             tmp_key = pr.patternRecognition(
                 file_,pattern_path+f,box=([box[0],box[1]],[box[2],box[3]]))
@@ -389,3 +401,30 @@ class ImportMail(models.TransientModel):
         for key in layout.checkboxes:
             os.remove(os.path.splitext(file_)[0]+'_'+key+'.png')
         return lang
+
+
+
+    @api.one
+    def button_save(self):
+        """
+        save the import_line as a sponsorship_correspondence
+        """            
+        test = True
+        for mail in self.import_mail_line_ids:
+            if mail.status != "OK":
+                test = False
+        if not test:
+            raise exceptions.Warning('Not all the files are OK')
+
+        key = ['partner_codega','name','template_id','letter_image',
+               'is_encourager','supporter_languages_id','child_code',
+               'sponsorship_id']
+        for mail in self.import_mail_line_ids:
+            tmp = mail.read()[0]
+            print tmp.keys()
+            data = {}
+            for i in key:
+                data[i] = mail.read()[0][i]
+            if i == 'letter_image':
+                print data[i]
+            self.env['sponsorship.correspondence'].create(data)
