@@ -12,7 +12,7 @@
 from openerp import fields, models, api, _
 import os, sys
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../tools'))
-from positionpattern import LayoutLetter
+from layout import LayoutLetter
 
 class ImportMailLine(models.TransientModel):
 
