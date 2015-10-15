@@ -18,7 +18,9 @@
                     <field name="nber_file" string="Number of files: "/>
                     <field name="debug"/>
                 </group>
+		<field name="save_visible" invisible="1"/>
                 <button name="button_run_analyze" type="object" string="Run"/>
+                <button name="button_save" type="action" string="Save"/>
                 <field name="import_mail_line_ids" create="False" edit="False"/>
             </sheet>
             </form>
