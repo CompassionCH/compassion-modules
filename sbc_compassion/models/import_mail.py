@@ -29,7 +29,7 @@ from import_mail_functions import *
 import bluecornerfinder as bcf
 import checkboxreader as cbr
 import patternrecognition as pr
-import positionpattern as pp
+import layout as pp # choice due to the old name (positionpattern)
 from openerp import api, fields, models, _, exceptions
 import zxing
 
