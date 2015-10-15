@@ -127,7 +127,7 @@ class BarCodeTool():
         cmd.append(text)
         if width is not None:
             cmd.append("--width")
-            cmd.apppend(width)
+            cmd.append(width)
         if height is not None:
             cmd.append("--height")
             cmd.append(height)
