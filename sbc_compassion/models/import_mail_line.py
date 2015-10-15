@@ -38,7 +38,7 @@ class ImportMailLine(models.TransientModel):
         (Layout.name[2], _('Template 3')),
         (Layout.name[3], _('Template 4')),
         (Layout.name[4], _('Template 5')),
-        (Layout.name[5], _('Template 6')), string=_("Template"))
+        (Layout.name[5], _('Template 6'))], string=_("Template"))
     supporter_languages_id = fields.Many2one(
         'res.lang.compassion',string="Language")
     is_encourager = fields.Boolean(string=_("Encourager"))
