@@ -12,7 +12,7 @@
 from openerp import fields, models, api, _
 import os, sys
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../tools'))
-from positionpattern import Layout
+from positionpattern import LayoutLetter
 
 
 class SponsorshipCorrespondence(models.Model):
@@ -78,12 +78,12 @@ spoken_langs_ids', store=True)
         'res.lang.compassion', compute='_set_original_language', store=True)
     #need to change in order to avoid mutliple definition
     template_id = fields.Selection(selection=[
-        (Layout.name[0], 'Template 1'),
-        (Layout.name[1], 'Template 2'),
-        (Layout.name[2], 'Template 3'),
-        (Layout.name[3], 'Template 4'),
-        (Layout.name[4], 'Template 5'),
-        (Layout.name[5], 'Template 6')], required=True)
+        (LayoutLetter.name[0], 'Template 1'),
+        (LayoutLetter.name[1], 'Template 2'),
+        (LayoutLetter.name[2], 'Template 3'),
+        (LayoutLetter.name[3], 'Template 4'),
+        (LayoutLetter.name[4], 'Template 5'),
+        (LayoutLetter.name[5], 'Template 6')], required=True)
     original_text = fields.Text()
     translated_text = fields.Text()
     source = fields.Selection(selection=[
