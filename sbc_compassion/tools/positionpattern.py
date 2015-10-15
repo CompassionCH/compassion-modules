@@ -15,12 +15,18 @@ pattern = {'triforce': 0,
 
 class Layout:
     """
+    Abstract class in order to do inheritance
+    """
+    size_ref = []
+
+class LayoutLetter(Layout):
+    """
     Defines the different layouts (in order to add or remove one, needs 
     to modify at least ../models/sponsorship_correspondence.py and
     ../models/import_mail_line.py)
 
-    :param int|str value: Layout (can be the list index, the name of the layout\
-    [e.g. 'L5'] or the name of the pattern)
+    :param int|str value: Layout (can be the list index, the name of the \
+    layout [e.g. 'L5'] or the name of the pattern)
     """
     name = ['L1','L2','L3','L4','L5','L6']
     # width, height of the referece template
@@ -93,3 +99,40 @@ class Layout:
                             }
         
         
+
+class LayoutSticker(Layout):
+    """
+    Layout for creating a page of QR code (and name) in order to print them.
+    """
+    # define a few size
+    ref_size = [595, 842]
+    # need 3 for the width direction due to a slight difference between
+    # the one in center and the ones in the borders.
+    sticker_size = [[194,200,194],71]
+    header = 32
+    left = 3
+    # size of the QR code
+    qr_code = 61
+
+    def __init__(self):
+        # margin around the qr code
+        self.margin = (self.sticker_size[1]-self.qr_code)/2
+        # list containing the upper-left corner of the stickers
+        self.layout = []
+        i = self.header
+        while i < self.ref_size[1]:
+            j = self.left
+            for k in self.sticker_size[0]:
+                self.layout.append([j,i])
+                j += k
+            i += self.sticker_size[1]
+
+    def getLayout(self):
+        """
+        Acces to the layout computed by this class.
+
+        :returns: List containing the pixels of the upper-left corner of \
+        each sticker [width,height]
+        :rtype: list
+        """
+        return self.layout
