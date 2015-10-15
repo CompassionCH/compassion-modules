@@ -12,7 +12,7 @@
 from openerp import fields, models, api, _
 import os, sys
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../tools'))
-from positionpattern import Layout
+from positionpattern import LayoutLetter
 
 class ImportMailLine(models.TransientModel):
 
@@ -33,12 +33,12 @@ class ImportMailLine(models.TransientModel):
     name = fields.Char(compute='_set_name')
     child_code = fields.Char(string=_("Child"))
     template_id = fields.Selection([
-        (Layout.name[0], _('Template 1')),
-        (Layout.name[1], _('Template 2')),
-        (Layout.name[2], _('Template 3')),
-        (Layout.name[3], _('Template 4')),
-        (Layout.name[4], _('Template 5')),
-        (Layout.name[5], _('Template 6'))], string=_("Template"))
+        (LayoutLetter.name[0], _('Template 1')),
+        (LayoutLetter.name[1], _('Template 2')),
+        (LayoutLetter.name[2], _('Template 3')),
+        (LayoutLetter.name[3], _('Template 4')),
+        (LayoutLetter.name[4], _('Template 5')),
+        (LayoutLetter.name[5], _('Template 6'))], string=_("Template"))
     supporter_languages_id = fields.Many2one(
         'res.lang.compassion',string="Language")
     is_encourager = fields.Boolean(string=_("Encourager"))
@@ -55,6 +55,7 @@ class ImportMailLine(models.TransientModel):
     ##########################################################################
 
     
+    @api.one
     @api.depends('partner_codega','child_code','sponsorship_id',
                  'supporter_languages_id')
     def _check_status(self):
@@ -70,9 +71,9 @@ class ImportMailLine(models.TransientModel):
         elif len(self.supporter_languages_id) != 1:
             self.status = _('Error in Language')
         else:
-            self.supporter_languages_id.ensure_one()
             self.status = _('OK')
 
+    @api.one
     @api.depends('partner_codega', 'child_code')
     def _set_sponsorship_id(self):
         if self.partner_codega and self.child_code:
@@ -92,6 +93,7 @@ class ImportMailLine(models.TransientModel):
                 self.sponsorship_status = False
                 
 
+    @api.one
     @api.depends('partner_codega','child_code')
     def _set_name(self):
         if self.sponsorship_id:
