@@ -188,8 +188,6 @@ class ImportMail(models.TransientModel):
         :rtype: String (error code: int)
         """
         file_init = file_
-        # is used in order to know if everything was alright
-        status = 1
         # in the case of zipfile, the data needs to be saved first
         if data is not None:
             f = open(file_, 'w')
@@ -212,117 +210,20 @@ class ImportMail(models.TransientModel):
         # now do the computations only if the image is a PNG
         if isPNG(file_):
             # first compute the QR code
-            try:
-                zx = zxing.BarCodeTool()
-                qrcode = zx.decode(file_,try_harder=True)
-            except:
-                status = 2
-            if qrcode is None:
-                status = 2
+            zx = zxing.BarCodeTool()
+            qrcode = zx.decode(file_,try_harder=True)
             if 'XX' in qrcode.data:
                 partner, child = qrcode.data.split('XX')
-            else:
-                status = 2
 
             # now try to find the layout
             # loop over all the patterns in the pattern directory
-            pattern_path = os.path.dirname(__file__) + '/../tools/pattern/'
-            listing = os.listdir(os.path.abspath(pattern_path))
-            # number of keypoint related between the picture and the pattern
-            nber_kp = 0
-            pattern_file = None
-            for f in listing:
-                # compute a box in order to crop the image
-                box = np.array(pp.Layout.pattern_pos,float)
-                box[:2] = box[:2]/float(pp.Layout.size_ref[0])
-                box[2:] = box[2:]/float(pp.Layout.size_ref[1])
-                # try to recognize the pattern
-                tmp_key = pr.patternRecognition(
-                    file_,pattern_path+f,box=([box[0],box[1]],[box[2],box[3]]))
-                # check if it is a better result than before
-                if tmp_key != None and len(tmp_key[0]) > nber_kp:
-                    # save all the data if it is better
-                    nber_kp = len(tmp_key[0])
-                    key_img = tmp_key[0]
-                    key_pat = tmp_key[1]
-                    pattern_file = os.path.splitext(f)[0]
-                    
-
+            pattern_file, key_img = self._find_layout(file_)
             if pattern_file == None:
                 layout = pp.Layout(-1)
                 lang = None
             else:
-                # create an instance of layout (contains all the information)
-                # about the position
                 layout = pp.Layout(pattern_file)
-                center_pat = pr.keyPointCenter(key_img)
-                bluecorner = bcf.BlueCornerFinder(file_)
-                center_blue = bluecorner.getIndices()
-                
-                # vector between the blue square and the pattern
-                diff_ref = np.array(pp.bluesquare-
-                                    layout.pattern)
-                diff_scan = np.array(center_blue-center_pat)
-                # need normalize vectors
-                normalization = (np.linalg.norm(diff_ref)*
-                                 np.linalg.norm(diff_scan))
-                # angle between the scan and the ref image
-                costheta = np.dot(diff_ref,diff_scan)/normalization
-                sintheta = np.linalg.det([diff_ref,diff_scan])/normalization
-                
-                # rotation matrix
-                R = np.array([[costheta, -sintheta],[sintheta, costheta]])
-                
-                # scaling matrix (use image size)
-                scaling = np.array(bluecorner.getSizeOriginal(),dtype=float) \
-                          /np.array(layout.size_ref,dtype=float)
-                scaling = np.array([[scaling[0],0],[0,scaling[1]]])
-                
-                # transformation matrix
-                R *= scaling
-                # translation vector
-                C = center_blue-np.dot(R,np.array(pp.bluesquare))
-                
-                # now for the language
-                #
-                # read the file in order to read the checkboxes
-                img = cv2.imread(file_)
-                # copy in order to decrease the line's length
-                i = layout.checkboxes
-                
-                # language
-                lang = None
-                # check if only 1 language is find
-                lang_ok = True
-                # first loop to write the image and find the language
-                for key in layout.checkboxes:
-                    a = i[key][2]
-                    b = i[key][3]
-                    # transform the coordinate system
-                    (a,b) = np.round(np.dot(R,np.array([a,b])) + C)
-                    c = i[key][0]
-                    d = i[key][1]
-                    (c,d) = np.round(np.dot(R,np.array([c,d])) + C)
-                    # new name (if changed, need to change in the remove loop)
-                    file_tmp = os.path.splitext(file_)[0]+'_'+key+'.png'
-                    cv2.imwrite(file_tmp,img[a:b+1,c:d+1])
-                    A = cbr.CheckboxReader(file_tmp)      
-                    # if something happens
-                    if A == True or A == None:
-                        if lang == None:
-                            lang = key
-                            # if a second language has been discovered
-                        else:
-                            lang_ok = False
-                            # change the value for odoo
-                if not lang_ok or lang == 'other' or lang == None:
-                    status = 0
-                    lang = False
-
-                # remove files
-                for key in layout.checkboxes:
-                    os.remove(os.path.splitext(file_)[0]+'_'+key+'.png')
-
+                lang = self._find_language(file_,key_img,layout)
                 if lang != False:
                     lang = self.env['res.lang.compassion'].search([('code_iso','=',lang)]).id
 
@@ -366,3 +267,125 @@ class ImportMail(models.TransientModel):
         else:
 
             raise exceptions.Warning('Format not accepted in {}'.format(file_))
+
+
+
+
+    def _find_layout(self,file_):
+        """
+        Use the pattern recognition in order to recognize the layout.
+        The template used for the pattern recognition are taken from
+        the directory ../tools/pattern/
+        :param str file_: Filename to analyze
+        :returns: Filename of the template, keypoint of the image
+        :rtype: str, list
+        """
+        pattern_path = os.path.dirname(__file__) + '/../tools/pattern/'
+        listing = os.listdir(os.path.abspath(pattern_path))
+        # number of keypoint related between the picture and the pattern
+        nber_kp = 0
+        pattern_file = None
+        for f in listing:
+            # compute a box in order to crop the image
+            box = np.array(pp.Layout.pattern_pos,float)
+            box[:2] = box[:2]/float(pp.Layout.size_ref[0])
+            box[2:] = box[2:]/float(pp.Layout.size_ref[1])
+            # try to recognize the pattern
+            tmp_key = pr.patternRecognition(
+                file_,pattern_path+f,box=([box[0],box[1]],[box[2],box[3]]))
+            # check if it is a better result than before
+            if tmp_key != None and len(tmp_key[0]) > nber_kp:
+                # save all the data if it is better
+                nber_kp = len(tmp_key[0])
+                key_img = tmp_key[0]
+                key_pat = tmp_key[1]
+                pattern_file = os.path.splitext(f)[0]
+
+            return pattern_file, key_img
+
+
+    def _find_language(self,file_,key_img,layout):
+        """
+        Use the pattern and the blue corner for doing a transformation 
+        (rotation + scaling + translation) in order to crop a small part
+        of the original picture around the position of each languages.
+        
+        This analysis should be quite fast due to the small size of
+        pictures to analyze (should be a square of about 20-30 pixels large).
+
+        :param str file_: Filename
+        :param list key_img: List containing the keypoint detected
+        :param Layout layout: Layout of the image
+        :returns: Language of the letter (defined in Layout, returns None if \
+        not detected)
+        :rtype: str or bool
+        """
+        # create an instance of layout (contains all the information)
+        # about the position
+        center_pat = pr.keyPointCenter(key_img)
+        bluecorner = bcf.BlueCornerFinder(file_)
+        center_blue = bluecorner.getIndices()
+        
+        # vector between the blue square and the pattern
+        diff_ref = np.array(pp.bluesquare-
+                            layout.pattern)
+        diff_scan = np.array(center_blue-center_pat)
+        # need normalize vectors
+        normalization = (np.linalg.norm(diff_ref)*
+                         np.linalg.norm(diff_scan))
+        # angle between the scan and the ref image
+        costheta = np.dot(diff_ref,diff_scan)/normalization
+        sintheta = np.linalg.det([diff_ref,diff_scan])/normalization
+        
+        # rotation matrix
+        R = np.array([[costheta, -sintheta],[sintheta, costheta]])
+        
+        # scaling matrix (use image size)
+        scaling = np.array(bluecorner.getSizeOriginal(),dtype=float) \
+                  /np.array(layout.size_ref,dtype=float)
+        scaling = np.array([[scaling[0],0],[0,scaling[1]]])
+        
+        # transformation matrix
+        R *= scaling
+        # translation vector
+        C = center_blue-np.dot(R,np.array(pp.bluesquare))
+        
+        # now for the language
+        #
+        # read the file in order to read the checkboxes
+        img = cv2.imread(file_)
+        # copy in order to decrease the line's length
+        i = layout.checkboxes
+        
+        # language
+        lang = None
+        # check if only 1 language is find
+        lang_ok = True
+        # first loop to write the image and find the language
+        for key in layout.checkboxes:
+            a = i[key][2]
+            b = i[key][3]
+            # transform the coordinate system
+            (a,b) = np.round(np.dot(R,np.array([a,b])) + C)
+            c = i[key][0]
+            d = i[key][1]
+            (c,d) = np.round(np.dot(R,np.array([c,d])) + C)
+            # new name (if changed, need to change in the remove loop)
+            file_tmp = os.path.splitext(file_)[0]+'_'+key+'.png'
+            cv2.imwrite(file_tmp,img[a:b+1,c:d+1])
+            A = cbr.CheckboxReader(file_tmp)      
+            # if something happens
+            if A == True or A == None:
+                if lang == None:
+                    lang = key
+                    # if a second language has been discovered
+                else:
+                    lang_ok = False
+                    # change the value for odoo
+        if not lang_ok or lang == 'other':
+            lang = None
+
+        # remove files
+        for key in layout.checkboxes:
+            os.remove(os.path.splitext(file_)[0]+'_'+key+'.png')
+        return lang
