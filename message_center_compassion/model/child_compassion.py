@@ -164,6 +164,7 @@ class compassion_child(models.Model):
 
         return True
 
+    @api.multi
     def reset_child_state(self):
         for child in self:
             child.write({'state': child.previous_state,
