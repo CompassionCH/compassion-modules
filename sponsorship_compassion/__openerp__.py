@@ -35,7 +35,7 @@
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['contract_compassion', 'crm',
-                'l10n_ch', 'account_cancel', 'partner_compassion',
+                'account_cancel', 'partner_compassion',
                 'web_m2x_options', 'account_invoice_split_invoice'],
     'data': [
         'view/sponsorship_contract_view.xml',
