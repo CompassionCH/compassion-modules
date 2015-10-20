@@ -10,9 +10,11 @@
 ##############################################################################
 
 from openerp import fields, models, api, _
-import os, sys
+import os
+import sys
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../tools'))
 from layout import LayoutLetter
+
 
 class ImportMailLine(models.TransientModel):
 
@@ -56,17 +58,17 @@ class ImportMailLine(models.TransientModel):
 
     
     @api.one
-    @api.depends('partner_codega','child_code','sponsorship_id',
+    @api.depends('partner_codega', 'child_code', 'sponsorship_id',
                  'supporter_languages_id')
     def _check_status(self):
         """
         """
         # == avoid problems with None
-        if self.sponsorship_status == True and not self.is_encourager.read():
+        if self.sponsorship_status is True and not self.is_encourager.read():
             self.status = _('Sponsorship not found')
-        if not self.sponsorship_status == False:
+        if self.sponsorship_status is True:
             self.status = _('Error in Sponsorship')
-        elif self.template_id not in Layout.name: 
+        elif self.template_id not in LayoutLetter.name: 
             self.status = _('Error in Template')
         elif len(self.supporter_languages_id) != 1:
             self.status = _('Error in Language')
@@ -77,10 +79,10 @@ class ImportMailLine(models.TransientModel):
     @api.depends('partner_codega', 'child_code')
     def _set_sponsorship_id(self):
         if self.partner_codega and self.child_code:
-            test = (self.env['recurring.contract'].search([
-                ('child_id.code','=',self.child_code)]) and
-                    self.env['recurring.contract'].search([
-                        ('partner_codega','=',self.partner_codega)]))
+            test = (self.env['recurring.contract'].search(
+                [('child_id.code', '=', self.child_code)]) and
+                self.env['recurring.contract'].search([
+                ('partner_codega', '=', self.partner_codega)]))
 
             self.sponsorship_id = self.env['recurring.contract'].search([
                 ('child_id.code', '=', self.child_code),
@@ -91,7 +93,7 @@ class ImportMailLine(models.TransientModel):
                 self.sponsorship_status = True
             else:
                 self.sponsorship_status = False
-                
+
 
     @api.one
     @api.depends('partner_codega','child_code')

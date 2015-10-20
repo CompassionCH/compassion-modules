@@ -7,6 +7,7 @@ import numpy as np
 import copy
 from math import copysign
 
+
 class CheckboxReader:
     """
     Read the state of a checkbox contained in an image composed mainly by
@@ -14,7 +15,7 @@ class CheckboxReader:
     The algorithm consists in finding the 4 corners and counting the black
     pixels inside the box.
     In order to find the corners, the image scanned and for each pixel a check
-    is made in order to see if there is 2 black pixels on each direction 
+    is made in order to see if there is 2 black pixels on each direction
     (if only two directions have 2 black pixels and the others are white, a
     corner is assumed).
     With this method, if the image contains an other partial square, it will
@@ -25,7 +26,7 @@ class CheckboxReader:
     It is computed by using 8 different points (corners and middle points
     [between corners]) for a decreasing size of the box.
     The border is assumed to be finish when at least one pixel is white.
-    
+
     The function getState is used in order to obtain the state of the checkbox.
     Three different return values exist:
     - True means that the checkbox is checked
@@ -34,7 +35,7 @@ class CheckboxReader:
     the checkbox is checked and the corner are not found).
     """
 
-    def __init__(self,img,ratiomin=0.01,ratiomax=0.9):
+    def __init__(self, img, ratiomin=0.01, ratiomax=0.9):
         """
         :param str img: Name of the image (file)
         :param float ratiomin: Ratio of black pixel required for being \
@@ -44,7 +45,7 @@ class CheckboxReader:
         self.min = ratiomin
         self.max = ratiomax
         # read the image in greyscale
-        self.img = cv2.imread(img,0)
+        self.img = cv2.imread(img, 0)
         self.h, self.w = self.img.shape[:2]
         self.state = None
         # find all the corners
@@ -67,11 +68,10 @@ class CheckboxReader:
         analysis has not been finished (usually means that the box is checked)
         :rtype: bool or None
         """
-        
+
         return self.state
 
-
-    def _findState(self,border):
+    def _findState(self, border):
         """
         Count the number of pixel and black pixel inside the checkbox.
         Two threshold are applied to the ratio of black pixel obtained.
@@ -98,24 +98,22 @@ class CheckboxReader:
             if d_tmp < d:
                 end = i
                 d = d_tmp
-        
+
         # count the number of (black) pixels
         black = 0
         pixel = 0
-        for i in range(start[0]+border,end[0]-border):
-            for j in range(start[1]+border,end[1]-border):
+        for i in range(start[0]+border, end[0]-border):
+            for j in range(start[1]+border, end[1]-border):
                 pixel += 1
-                if isBlack(self.img[i,j]):
+                if isBlack(self.img[i, j]):
                     black += 1
-        
+
         ratio = float(black)/float(pixel)
 
         self.state = False
         # apply threshold
         if ratio > self.min and ratio < self.max:
             self.state = True
-        
-
 
     def _findCorner(self):
         """
@@ -124,9 +122,9 @@ class CheckboxReader:
         self.corners = []
         for i in range(self.h):
             for j in range(self.w):
-                self._checkPixel(i,j)
+                self._checkPixel(i, j)
 
-    def _checkPixel(self,i,j):
+    def _checkPixel(self, i, j):
         """
         Check the pixel i,j in order to verify its neighbours and to know
         if it is considered as a corner.
@@ -135,50 +133,50 @@ class CheckboxReader:
         :param int j: Second coordinate
         """
         # arrays used in order to simplify the reading
-        down = [False,False]
-        up = [False,False]
-        right = [False,False]
-        left = [False,False]
+        down = [False, False]
+        up = [False, False]
+        right = [False, False]
+        left = [False, False]
         # discard case where i,j is not black and discard case
         # too close to the border
-        if (isBlack(self.img[i,j]) and i>1 and i<self.h-2
-            and j<self.w-2 and j>1):
-            if isBlack(self.img[i+1,j]):
+        if (isBlack(self.img[i, j]) and i > 1 and i < self.h-2 and \
+                j < self.w-2 and j > 1):
+            if isBlack(self.img[i+1, j]):
                 down[0] = True
-            if isBlack(self.img[i+2,j]):
+            if isBlack(self.img[i+2, j]):
                 down[1] = True
-            if isBlack(self.img[i-1,j]):
+            if isBlack(self.img[i-1, j]):
                 up[0] = True
-            if isBlack(self.img[i-2,j]):
+            if isBlack(self.img[i-2, j]):
                 up[1] = True
-            if isBlack(self.img[i,j+1]):
+            if isBlack(self.img[i, j+1]):
                 right[0] = True
-            if isBlack(self.img[i,j+2]):
+            if isBlack(self.img[i, j+2]):
                 right[1] = True
-            if isBlack(self.img[i,j-1]):
+            if isBlack(self.img[i, j-1]):
                 left[0] = True        
-            if isBlack(self.img[i,j-2]):
+            if isBlack(self.img[i, j-2]):
                 left[1] = True        
 
         # check if the pixel is a corner
-        if isCorner(down,up,right,left):
-            self.corners.append((i,j))
+        if isCorner(down, up, right, left):
+            self.corners.append((i, j))
 
     def _checkConnectivity(self):
         """
         Implementation of the connected-component labeling (Two-pass) in order
         to group the corners together.
         Delete in self.corners all the corners that are not inside the
-        For the algorithm, see 
+        For the algorithm, see
         https://en.wikipedia.org/wiki/Connected-component_labeling
         """
         # apply a threshold in order to use the algorithm
-        ret, sure_fg = cv2.threshold(self.img,128,255,0)
+        ret, sure_fg = cv2.threshold(self.img, 128, 255, 0)
         # create an image where each pixel value is the group id
         marker = connectedComponents(sure_fg)
         cluster = []
         # create the clusters
-        while len(self.corners)!=0:
+        while len(self.corners) != 0:
             ind = self.corners[0]
             ref = marker[ind]
             self.corners.pop(0)
@@ -189,7 +187,7 @@ class CheckboxReader:
                     cluster[-1].append(i)
                     tmp.remove(i)
             self.corners = tmp
-            
+
         # find the largest cluster
         self.corners = []
         for i in cluster:
@@ -201,10 +199,10 @@ class CheckboxReader:
         for i in cluster:
             if len(i) == len(self.corners):
                 a += 1
-                
+
         if a > 1:
             raise Exception('Two squares have been detected')
-    
+
     def _findBorder(self):
         """
         Find the thickness of the border.
@@ -219,7 +217,7 @@ class CheckboxReader:
             for j in self.corners:
                 if i != j:
                     dist_max = np.abs(i[0]-j[0])
-                    dist_max = np.maximum(dist_max,np.abs(i[1]-j[1]))
+                    dist_max = np.maximum(dist_max, np.abs(i[1]-j[1]))
                     if dist_max < width:
                         width = dist_max
         i = 1
@@ -231,8 +229,7 @@ class CheckboxReader:
         i = i-1
         return i
 
-
-    def _isStillBorder(self,distance):
+    def _isStillBorder(self, distance):
         """
         Check the 8 points (of _findBorder)
         :param int distance: Distance from the border to try
@@ -245,40 +242,40 @@ class CheckboxReader:
             neigh = []
             # find the corner the most far away
             for j in self.corners:
-                if j!=i:
+                if j != i:
                     neigh.append(j)
                     d[k] = (j[0]-i[0])**2 + (j[1]-i[1])**2
                     k += 1
             d = d.index(max(d))
             k = 0
             # find direction other corners
-            direct = [0,0]
+            direct = [0, 0]
             if abs(neigh[d][0]) > 1:
-                direct[0] = copysign(1,neigh[d][0])*distance
+                direct[0] = copysign(1, neigh[d][0])*distance
             if abs(neigh[d][1]) > 1:
-                direct[1] = copysign(1,neigh[d][1])*distance
+                direct[1] = copysign(1, neigh[d][1])*distance
 
             # check corner
-            ind = [i[0]+direct[0],i[1]+direct[1]]
+            ind = [i[0]+direct[0], i[1]+direct[1]]
             if not isBlack(self.img[tuple(ind)]):
                 return False
             # check pixel between corners
             for j in neigh:
-                if d!=k:
-                    ind = [(i[0]+j[0])/2,(i[0]+j[0])/2]
-                    
-                    mdir = [0,0]
+                if d != k:
+                    ind = [(i[0]+j[0])/2, (i[0]+j[0])/2]
+                    mdir = [0, 0]
                     if abs(j[0]) > 1:
                         mdir[1] = direct[1]
                     if abs(j[1]) > 1:
                         mdir[0] = direct[0]
 
-                    ind = [ind[0]+mdir[0],ind[1]+mdir[1]]
+                    ind = [ind[0]+mdir[0], ind[1]+mdir[1]]
                     if not isBlack(self.img[tuple(ind)]):
                         return False
                 k += 1
 
-def isBlack(pixel,threshold=90):
+
+def isBlack(pixel, threshold=90):
     """
     Check if a pixel is black
     :param int pixel: Pixel value
@@ -292,7 +289,7 @@ def isBlack(pixel,threshold=90):
         return True
 
 
-def isCorner(down,up,right,left):
+def isCorner(down, up, right, left):
     """
     Check if a pixel is a corner.
     :param [bool,bool] down: Pixels below
@@ -303,14 +300,14 @@ def isCorner(down,up,right,left):
     :rtype: bool
     """
 
-    if (isDirectionOK(right,left) and 
-        isDirectionOK(down,up)):
+    if (isDirectionOK(right, left) and
+            isDirectionOK(down, up)):
         return True
     else:
         return False
 
 
-def isDirectionOK(a,b):
+def isDirectionOK(a, b):
     """
     Check if the pixels are TT-FF or FF-TT (T=True, F=False).
     :param [bool,bool] a: Pixel on one side
@@ -326,10 +323,9 @@ def isDirectionOK(a,b):
         return False
     else:
         return True
-        
 
 
-def connectedComponents(img,connectivity=8):
+def connectedComponents(img, connectivity=8):
     """
     Create the image composed of conectivity ids
     :param array img: Image to analyze
@@ -338,26 +334,26 @@ def connectedComponents(img,connectivity=8):
     :rtype: array
     """
     con = np.zeros((3,3),bool)
-    if connectivity==8:
+    if connectivity == 8:
         # 111
         # 110
         # 000
-        con[0,:] = 1
-        con[1,:2] = 1
-    elif connectivity==4:
+        con[0, :] = 1
+        con[1, :2] = 1
+    elif connectivity == 4:
         # 010
         # 110
         # 000
-        con[0,1] = 1
-        con[1,:2] = 1
+        con[0, 1] = 1
+        con[1, :2] = 1
     else:
         raise Exception('{}-connectivity does not exist'.format(connectivity))
 
-    h,w = img.shape[:2]
+    h, w = img.shape[:2]
     # square mask
     mh = (con.shape[0]-1)/2
     mw = mh
-    ret = np.zeros((h,w),np.int8)
+    ret = np.zeros((h, w), np.int8)
     col = 1
     E = []
     # first scan the image and gives temporary ids
@@ -365,17 +361,17 @@ def connectedComponents(img,connectivity=8):
     for i in range(h):
         for j in range(w):
             # if not backgroud
-            if img[i,j] == 0:
+            if img[i, j] == 0:
                 col_tmp = -1
                 # loop over the connectivity mask
                 for x in range(con.shape[0]):
                     for y in range(con.shape[1]):
                         # if we stay inside the image
                         if (i+x-mh < h and i+x-mh >= 0 and
-                            j-mw+y < w and j-mw+y >= 0):
+                                j-mw+y < w and j-mw+y >= 0):
                             # if not background and inside the mask
-                            if ret[i+x-mh,j-mw+y] != 0 and con[x,y]:
-                                a = ret[i+x-mh,j-mw+y]
+                            if ret[i+x-mh, j-mw+y] != 0 and con[x, y]:
+                                a = ret[i+x-mh, j-mw+y]
                                 # if pixel already threated
                                 if col_tmp != -1:
                                     # add to the equivalence list
@@ -390,14 +386,14 @@ def connectedComponents(img,connectivity=8):
                                     col_tmp = a
                 # if no neighbours, create new id
                 if col_tmp == -1:
-                    ret[i,j] = col
+                    ret[i, j] = col
                     E.append([col])
                     col += 1
                 else:
-                    ret[i,j] = col_tmp
+                    ret[i, j] = col_tmp
 
     # create an equivalence table from the list
-    eq_table = col*np.ones(col-1,int)
+    eq_table = col*np.ones(col-1, int)
     for i in range(col-1):
         eq_table[i] = min(E[i])
 
@@ -405,7 +401,6 @@ def connectedComponents(img,connectivity=8):
     # amount of ids)
     for i in range(h):
         for j in range(w):
-            if ret[i,j] != 0:
-                ret[i,j] = eq_table[ret[i,j]-1]
+            if ret[i, j] != 0:
+                ret[i, j] = eq_table[ret[i, j]-1]
     return ret
-
