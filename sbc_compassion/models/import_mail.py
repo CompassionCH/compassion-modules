@@ -190,6 +190,25 @@ class ImportMail(models.TransientModel):
                 raise exceptions.Warning(_('Two files are the same'))
                 return
 
+
+    @api.multi
+    def button_print(self):
+        """
+        """
+        self.ensure_one()
+
+        context = {}
+        return {
+            'name': _('Print'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'label.brand',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'context': context,
+            'target': 'new',
+        }
+
+
     def _analyze_attachment(self, file_, data=None):
         """
         Analyze attachment (PDF/TIFF) and save everything

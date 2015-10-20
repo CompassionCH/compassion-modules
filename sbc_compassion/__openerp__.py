@@ -35,7 +35,7 @@
     'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['sponsorship_compassion', 'web_tree_image'],
+    'depends': ['sponsorship_compassion', 'web_tree_image','label'],
     'external_dependencies': {
         'java': ['zxing'],
     },
