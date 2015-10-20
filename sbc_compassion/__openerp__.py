@@ -35,7 +35,8 @@
     'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['sponsorship_compassion', 'web_tree_image','label'],
+    'depends': ['sponsorship_compassion', 'web_tree_image',
+                'label'],
     'external_dependencies': {
         'java': ['zxing'],
     },
@@ -57,6 +58,12 @@ Installation
 
 To install this module, you need to install dependencies:
 
-* requires python-MySQLdb to be installed on the server.
+    * requires the following libraries (names from apt-get):
+    openexr libgstreamer0.10-0 libgstreamer-plugins-base0.10-0
+    libdc1394-22 libavcodec54 libavformat54 libswscale2
+    libgtk2.0-0 python-pythonmagick
+    * requires python-MySQLdb to be installed on the server.
+    * requires opencv3 and zxing (can be installed with the setup.sh
+    in sbc_compassion)
 """,
 }

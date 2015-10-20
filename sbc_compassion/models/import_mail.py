@@ -33,6 +33,7 @@ import layout as pp # choice due to the old name (positionpattern)
 from openerp import api, fields, models, _, exceptions
 import zxing
 
+
 class ImportMail(models.TransientModel):
 
     """
