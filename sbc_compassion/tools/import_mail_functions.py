@@ -55,6 +55,7 @@ def isTIFF(name):
     else:
         return False
 
+
 def isPNG(name):
     """
     Check the extension of the name
@@ -128,4 +129,3 @@ def removename(string, name):
             return tmp
     else:
         return tmp
-

@@ -7,10 +7,9 @@ least)
 import numpy as np
 
 # position of the upper-right corner of the blue square
-bluesquare = np.array([580,8])
+bluesquare = np.array([580, 8])
 # relation between template and template image (index for Layout.name)
-pattern = {'triforce': 0,
-       }
+pattern = {'triforce': 0}
 
 
 class Layout:
@@ -19,31 +18,30 @@ class Layout:
     """
     size_ref = []
 
+
 class LayoutLetter(Layout):
     """
-    Defines the different layouts (in order to add or remove one, needs 
+    Defines the different layouts (in order to add or remove one, needs
     to modify at least ../models/sponsorship_correspondence.py and
     ../models/import_mail_line.py)
 
     :param int|str value: Layout (can be the list index, the name of the \
     layout [e.g. 'L5'] or the name of the pattern)
     """
-    name = ['L1','L2','L3','L4','L5','L6']
+    name = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6']
     # width, height of the referece template
-    size_ref = [595,842]
+    size_ref = [595, 842]
     # position of to cut for the qr code, pattern
     # [min x,max x, min y, max y]
-    qrcode = [0,150,0,100]
-    pattern_pos = [240,370,730,842]
-                
+    qrcode = [0, 150, 0, 100]
+    pattern_pos = [240, 370, 730, 842]
 
-    def __init__(self,value):
-        
+    def __init__(self, value):
         if type(value) == int:
             self._setValue(value)
         elif type(str):
             if value in self.name:
-                self._setValue(name.index(value))
+                self._setValue(self.name.index(value))
             elif value in pattern.keys():
                 self._setValue(pattern[value])
         else:
@@ -56,7 +54,7 @@ class LayoutLetter(Layout):
         :returns: Name of the layout
         :rtype: str
         """
-        if self.value == None:
+        if self.value is None:
             return None
         else:
             return self.name[self.value]
@@ -68,7 +66,7 @@ class LayoutLetter(Layout):
         """
         return self.value
 
-    def _setValue(self,value):
+    def _setValue(self, value):
         """
         Done in order to check if the value is right
         """
@@ -87,52 +85,12 @@ class LayoutLetter(Layout):
         # the directory ./pattern (except for bluesquare that does not depends
         # on a pattern)
         if self.value == 0:
-            self.pattern = np.array([300,784])
+            self.pattern = np.array([300, 784])
             # position to cut for the checkboxes in the reference templated
             # [min x,max x, min y, max y] // x = for width, y = for height
-            self.checkboxes = { 'fra': [263,284,12,32],
-                                'ita': [263,284,32,52],
-                                'deu': [263,284,52,72],
-                                'spa': [371,390,12,32],
-                                'eng': [371,390,32,52],
-                                'other': [368,390,52,72]
-                            }
-        
-        
-
-class LayoutSticker(Layout):
-    """
-    Layout for creating a page of QR code (and name) in order to print them.
-    """
-    # define a few size
-    ref_size = [2480, 3508]
-    # need 3 for the width direction due to a slight difference between
-    # the one in center and the ones in the borders.
-    sticker_size = [[815,827,815],295]
-    header = 130
-    left = 12
-    # size of the QR code
-    qr_code = 236
-
-    def __init__(self):
-        # margin around the qr code
-        self.margin = (self.sticker_size[1]-self.qr_code)/2
-        # list containing the upper-left corner of the stickers
-        self.layout = []
-        i = self.header
-        while i < self.ref_size[1]:
-            j = self.left
-            for k in self.sticker_size[0]:
-                self.layout.append([j,i])
-                j += k
-            i += self.sticker_size[1]
-
-    def getLayout(self):
-        """
-        Acces to the layout computed by this class.
-
-        :returns: List containing the pixels of the upper-left corner of \
-        each sticker [width,height]
-        :rtype: list
-        """
-        return self.layout
+            self.checkboxes = {'fra': [263, 284, 12, 32],
+                               'ita': [263, 284, 32, 52],
+                               'deu': [263, 284, 52, 72],
+                               'spa': [371, 390, 12, 32],
+                               'eng': [371, 390, 32, 52],
+                               'other': [368, 390, 52, 72]}
