@@ -14,7 +14,7 @@ scp $USER@$IP:lib/libopencv/* /usr/local/lib/
 ./tools/makelink.sh
 
 # python-opencv
-scp $USER@$IP:lib/pythonopencv/* /usr/local/lib/python2.7/
+scp $USER@$IP:lib/pythonopencv/* /usr/local/lib/python2.7/dist-packages/
 
 # zxing
 if [ -d "$HOME/.libZxing" ]; then
