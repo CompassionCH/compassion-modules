@@ -39,7 +39,7 @@ class product(models.Model):
             'Project Gift': 'ProjectGift',
             'Graduation Gift': 'FinalOrGraduationGift'
         }
-        for product in self.with_context(lang='en_US'):
+        for product in self:
             if product.categ_name == GIFT_CATEGORY:
                 product.gmc_name = gmc_names[product.name]
             else:
