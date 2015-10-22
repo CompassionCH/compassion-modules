@@ -23,7 +23,7 @@ import PythonMagick
 import sys
 import numpy as np
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../tools'))
-from import_mail_functions import *
+from import_letter_functions import *
 import bluecornerfinder as bcf
 import checkboxreader as cbr
 import patternrecognition as pr
@@ -32,30 +32,28 @@ from openerp import api, fields, models, _, exceptions
 import zxing
 
 
-class ImportMail(models.TransientModel):
+class ImportLettersHistory(models.Model):
 
     """
-    Model for Import mail
+    Keep an history of the importation of letters.
     This class allows the user to import some letters (individually or in a
     zip) in the database by doing an automatic analysis.
     The code is reading some barcodes (QR code) in order to do the analysis
     (with the help of the library zxing)
     """
-    _name = "import.mail"
-    _description = _("Import mail from a zip or a PDF/TIFF")
+    _name = "import.letters.history"
+    _description = _("""History of the letters imported Import mail from a zip
+    or a PDF/TIFF""")
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
 
     state = fields.Selection([
-        ("import", _("Import Mail")),
-        ("edit", _("Modification")),
-        ("status", "Status")])
+        ("draft", _("Draft")),
+        ("done", _("Modification"))])
     nber_file = fields.Integer(_('Number of files: '), readonly=True,
                                compute="_count_nber_files")
-    title = fields.Text(_("Import Mail"), readonly=True)
-    debug = fields.Text("DEBUG", readonly=True)
     # path where the zipfile are store
     path = "/tmp/sbc_compassion/"
     # list zip in the many2many
@@ -64,7 +62,8 @@ class ImportMail(models.TransientModel):
 
     # link to _count_nber_files
     data = fields.Many2many('ir.attachment')
-    import_mail_line_ids = fields.Many2many('import.mail.line')
+    letters_line_ids = fields.Many2many('import.letters.line')
+    letters_ids = fields.Many2many('sponsorship.correspondence')
     save_visible = fields.Boolean(computed="_set_save_button")
 
     # -------------------- _COUNT_NBER_FILES ---------------------------------
@@ -76,71 +75,75 @@ class ImportMail(models.TransientModel):
         Counts the number of scans (if a zip is given, count the number
         inside it)
         """
-        if self.list_zip is False:
-            self.list_zip = ""
-        # removes old files in the directory
-        if os.path.exists(self.path):
-            onlyfiles = [f for f in os.listdir(self.path)
-                         if os.path.isfile(os.path.join(self.path, f))]
-            # loop over files
-            for f in onlyfiles:
-                t = time.time()
-                t -= os.path.getctime(self.path + f)
-                # if file older than 12h
-                if t > 43200:
-                    os.remove(f)
+        if state == "draft":
+            self.nber_file = max(len(letters_line_ids),
+                                 len(letters_ids))
         else:
-            os.makedirs(self.path)
+            if self.list_zip is False:
+                self.list_zip = ""
+            # removes old files in the directory
+            if os.path.exists(self.path):
+                onlyfiles = [f for f in os.listdir(self.path)
+                             if os.path.isfile(os.path.join(self.path, f))]
+                # loop over files
+                for f in onlyfiles:
+                    t = time.time()
+                    t -= os.path.getctime(self.path + f)
+                    # if file older than 12h
+                    if t > 43200:
+                        os.remove(f)
+            else:
+                os.makedirs(self.path)
 
-        # counter
-        tmp = 0
-        # loop over all the attachments
-        for attachment in self.data:
-            # pdf or tiff case
-            if check_file(attachment.name) == 1:
-                tmp += 1
-            # zip case
-            elif isZIP(attachment.name):
-                tmp_name_file = self.path + attachment.name
-                # save the zip file
-                if not os.path.exists(tmp_name_file):
-                    f = open(tmp_name_file, 'w')
-                    f.write(base64.b64decode(attachment.with_context(
-                        bin_size=False).datas))
-                    f.close()
+            # counter
+            tmp = 0
+            # loop over all the attachments
+            for attachment in self.data:
+                # pdf or tiff case
+                if check_file(attachment.name) == 1:
+                    tmp += 1
+                # zip case
+                elif isZIP(attachment.name):
+                    tmp_name_file = self.path + attachment.name
+                    # save the zip file
+                    if not os.path.exists(tmp_name_file):
+                        f = open(tmp_name_file, 'w')
+                        f.write(base64.b64decode(attachment.with_context(
+                            bin_size=False).datas))
+                        f.close()
                     if attachment.name not in self.list_zip:
                         self.list_zip = addname(self.list_zip, attachment.name)
-                # catch ALL the exceptions that can be raised by class
-                # zipfile
-                try:
-                    zip_ = zipfile.ZipFile(tmp_name_file, 'r')
-                except zipfile.BadZipfile:
-                    raise exceptions.Warning(_('Zip file corrupted (' +
-                                               attachment.name + ')'))
-                except zipfile.LargeZipFile:
-                    raise exceptions.Warning(_('Zip64 is not supported(' +
-                                               attachment.name + ')'))
-                else:
-                    list_file = zip_.namelist()
-                    # loop over all files in zip
-                    for tmp_file in list_file:
-                        tmp += check_file(tmp_file)
-        self.nber_file = tmp
-        # deletes zip removed from the data
-        for f in self.list_zip.split(';'):
-            if f not in self.mapped('data.name') and f != '':
-                if os.path.exists(self.path + f):
-                    tmp = removename(self.list_zip, f)
-                    if tmp == -1:
-                        raise exceptions.Warning(
-                            _("Does not find the file during suppression"))
+                    # catch ALL the exceptions that can be raised by class
+                    # zipfile
+                    try:
+                        zip_ = zipfile.ZipFile(tmp_name_file, 'r')
+                    except zipfile.BadZipfile:
+                        raise exceptions.Warning(_('Zip file corrupted (' +
+                                                   attachment.name + ')'))
+                    except zipfile.LargeZipFile:
+                        raise exceptions.Warning(_('Zip64 is not supported(' +
+                                                   attachment.name + ')'))
                     else:
-                        self.list_zip = tmp
-                    os.remove(self.path + f)
+                        list_file = zip_.namelist()
+                        # loop over all files in zip
+                        for tmp_file in list_file:
+                            tmp += check_file(tmp_file)
+            self.nber_file = tmp
+            # deletes zip removed from the data
+            for f in self.list_zip.split(';'):
+                if f not in self.mapped('data.name') and f != '':
+                    if os.path.exists(self.path + f):
+                        tmp = removename(self.list_zip, f)
+                        if tmp == -1:
+                            raise exceptions.Warning(
+                                _("Does not find the file during suppression"))
+                        else:
+                            self.list_zip = tmp
+                        os.remove(self.path + f)
 
     # ------------------------ _RUN_ANALYZE ----------------------------------
 
-    @api.one
+    @api.multi
     def button_run_analyze(self):
         """
         Analyze each attachment (decompress zip too) by checking if the file
@@ -148,38 +151,38 @@ class ImportMail(models.TransientModel):
         analyze_attachment at the end
 
         """
-        # list for checking if a file come twice
-        check = []
-        for attachment in self.data:
-            if attachment.name not in check:
-                check.append(attachment.name)
-                # check for zip
-                if check_file(attachment.name) == 2:
-                    zip_ = zipfile.ZipFile(self.path + attachment.name, 'r')
-                    path_zip = self.path + os.path.splitext(
-                        str(attachment.name))[0]
-                    if not os.path.exists(path_zip):
-                        os.makedirs(path_zip)
-                    for f in zip_.namelist():
-                        zip_.extract(f, path_zip)
-                        absname = path_zip + '/' + f
-                        if os.path.isfile(absname):
-                            self._analyze_attachment(absname)
-                    # delete all the tmp files
-                    shutil.rmtree(path_zip)
-                    os.remove(self.path + attachment.name)
-                # case with normal format (PDF,TIFF)
-                elif check_file(attachment.name) == 1:
-                    self._analyze_attachment(
-                        self.path + str(attachment.name),
-                        attachment.datas)
+        for inst in self:
+            # list for checking if a file come twice
+            check = []
+            for attachment in inst.data:
+                if attachment.name not in check:
+                    check.append(attachment.name)
+                    # check for zip
+                    if check_file(attachment.name) == 2:
+                        zip_ = zipfile.ZipFile(inst.path + attachment.name, 'r')
+                        path_zip = inst.path + os.path.splitext(
+                            str(attachment.name))[0]
+                        if not os.path.exists(path_zip):
+                            os.makedirs(path_zip)
+                        for f in zip_.namelist():
+                            zip_.extract(f, path_zip)
+                            absname = path_zip + '/' + f
+                            if os.path.isfile(absname):
+                                inst._analyze_attachment(absname)
+                        # delete all the tmp files
+                        shutil.rmtree(path_zip)
+                        os.remove(inst.path + attachment.name)
+                        # case with normal format (PDF,TIFF)
+                    elif check_file(attachment.name) == 1:
+                        inst._analyze_attachment(
+                            inst.path + str(attachment.name),
+                            attachment.datas)
+                    else:
+                        raise exceptions.Warning(
+                            'Still a file in a non-accepted format')
                 else:
-                    raise exceptions.Warning(
-                        'Still a file in a non-accepted format')
+                    raise exceptions.Warning(_('Two files are the same'))
                     return
-            else:
-                raise exceptions.Warning(_('Two files are the same'))
-                return
 
     def _analyze_attachment(self, file_, data=None):
         """
@@ -239,7 +242,7 @@ class ImportMail(models.TransientModel):
             # to give a jpeg
             # to odoo from windows -> same problem
 
-            import_mail_line = self.env['import.mail.line'].create({
+            letters_line = self.env['import.letters.line'].create({
                 'partner_codega': partner,
                 'child_code': child,
                 'is_encourager': False,
@@ -247,9 +250,9 @@ class ImportMail(models.TransientModel):
             })
 
             if layout.getLayout() is None:
-                import_mail_line.template_id = ""
+                letters_line.template_id = ""
             else:
-                import_mail_line.template_id = layout.getLayout()
+                letters_line.template_id = layout.getLayout()
 
             file_png = open(file_, "r")
             file_data = file_png.read()
@@ -258,14 +261,14 @@ class ImportMail(models.TransientModel):
             document_vals = {'name': dfile_,
                              'datas': data,
                              'datas_fname': dfile_,
-                             'res_model': 'import.mail.line',
-                             'res_id': import_mail_line.id
+                             'res_model': 'import.letters.line',
+                             'res_id': letters_line.id
                              }
-            import_mail_line.letter_image = self.env[
+            letters_line.letter_image = self.env[
                 'ir.attachment'].create(document_vals)
-            import_mail_line.letter_image_preview = base64.b64encode(file_data)
+            letters_line.letter_image_preview = base64.b64encode(file_data)
 
-            self.import_mail_line_ids += import_mail_line
+            self.letters_line_ids += letters_line
 
         else:
             raise exceptions.Warning('Format not accepted in {}'.format(file_))
@@ -394,8 +397,8 @@ class ImportMail(models.TransientModel):
         save the import_line as a sponsorship_correspondence
         """            
         test = True
-        for mail in self.import_mail_line_ids:
-            if mail.status != "OK":
+        for letter in self.letters_line_ids:
+            if letter.status != "OK":
                 test = False
         if not test:
             raise exceptions.Warning('Not all the files are OK')
@@ -403,12 +406,12 @@ class ImportMail(models.TransientModel):
         key = ['partner_codega', 'name', 'template_id', 'letter_image',
                'is_encourager', 'supporter_languages_id', 'child_code',
                'sponsorship_id']
-        for mail in self.import_mail_line_ids:
+        for letter in self.letters_line_ids:
             tmp = mail.read()[0]
             print tmp.keys()
             data = {}
             for i in key:
-                data[i] = mail.read()[0][i]
+                data[i] = letter.read()[0][i]
             if i == 'letter_image':
                 print data[i]
             self.env['sponsorship.correspondence'].create(data)

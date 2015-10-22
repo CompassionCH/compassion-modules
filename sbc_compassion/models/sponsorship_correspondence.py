@@ -133,3 +133,6 @@ spoken_langs_ids', store=True)
             self.mandatory_review = True
         else:
             self.mandatory_review = False
+
+    def button_import(self):
+        return
