@@ -161,7 +161,7 @@ class recurring_contract(models.Model):
             if partner_id:
                 other_nums = self.search([
                     ('partner_id', '=', partner_id)]).mapped('num_pol_ga')
-                vals['num_pol_ga'] = max(other_nums) + 1
+                vals['num_pol_ga'] = max(other_nums or [-1]) + 1
         return super(recurring_contract, self).create(vals)
 
     @api.one
