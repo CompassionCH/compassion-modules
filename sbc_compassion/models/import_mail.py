@@ -48,6 +48,10 @@ class ImportMail(models.TransientModel):
     #                                 FIELDS                                 #
     ##########################################################################
 
+    state = fields.Selection([
+        ("import", _("Import Mail")),
+        ("edit", _("Modification")),
+        ("status", "Status")])
     nber_file = fields.Integer(_('Number of files: '), readonly=True,
                                compute="_count_nber_files")
     title = fields.Text(_("Import Mail"), readonly=True)
@@ -219,10 +223,10 @@ class ImportMail(models.TransientModel):
             # loop over all the patterns in the pattern directory
             pattern_file, key_img = self._find_layout(file_)
             if pattern_file == None:
-                layout = pp.LayoutLetterLetter(-1)
+                layout = pp.LayoutLetter(-1)
                 lang = None
             else:
-                layout = pp.Layout(pattern_file)
+                layout = pp.LayoutLetter(pattern_file)
                 lang = self._find_language(file_, key_img, layout)
                 if lang != False:
                     lang = self.env['res.lang.compassion'].search([
