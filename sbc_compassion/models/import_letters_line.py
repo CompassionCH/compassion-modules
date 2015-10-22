@@ -56,7 +56,6 @@ class ImportMailLine(models.TransientModel):
     #                             FIELDS METHODS                             #
     ##########################################################################
 
-    
     @api.one
     @api.depends('partner_codega', 'child_code', 'sponsorship_id',
                  'supporter_languages_id')
@@ -68,7 +67,7 @@ class ImportMailLine(models.TransientModel):
             self.status = _('Sponsorship not found')
         if self.sponsorship_status is True:
             self.status = _('Error in Sponsorship')
-        elif self.template_id not in LayoutLetter.name: 
+        elif self.template_id not in LayoutLetter.name:
             self.status = _('Error in Template')
         elif len(self.supporter_languages_id) != 1:
             self.status = _('Error in Language')
@@ -94,9 +93,8 @@ class ImportMailLine(models.TransientModel):
             else:
                 self.sponsorship_status = False
 
-
     @api.one
-    @api.depends('partner_codega','child_code')
+    @api.depends('partner_codega', 'child_code')
     def _set_name(self):
         if self.sponsorship_id:
             self.name = str(
