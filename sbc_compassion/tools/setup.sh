@@ -18,6 +18,7 @@ Start_Install ()
 	git clone https://github.com/zxing/zxing
     fi
     apt-get update
+    apt-get install cmake
     command -v convert >/dev/null 2>&1 || { echo >&2 "Install imagemagick.."; apt-get -y install imagemagick; }
     command -v maven >/dev/null 2>&1 || { echo >&2 "Install maven..";
 	command -v gdebi >/dev/null 2>&1 || { echo >&2 "  Install gdebi.."; apt-get -y install gdebi; }
@@ -67,9 +68,7 @@ Start_Install ()
 
     # clean
     cd ..
-    rm -rf opencv
-    rm -rf opencv_contrib
-    rm -rf build
+    rm -rf opencv opencv_contrib build
 
     exit 0
 }
