@@ -65,5 +65,6 @@ To install this module, you need to install dependencies:
     * requires python-MySQLdb to be installed on the server.
     * requires opencv3 and zxing (can be installed with the setup.sh
     in sbc_compassion)
+    * requires a java environment
 """,
 }
