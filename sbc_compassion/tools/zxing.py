@@ -86,7 +86,6 @@ class BarCodeTool():
         libraries = [self.location + "/" + l for l in self.libs]
 
         cmd = [c if c != "LIBS" else os.pathsep.join(libraries) for c in cmd]
-        print cmd
         (stdout, stderr) = subprocess.Popen(
             cmd, stdout=subprocess.PIPE, universal_newlines=True).communicate()
         codes = []
