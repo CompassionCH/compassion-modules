@@ -6,8 +6,8 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-IP=192.168.200.113
-USER=openerp
+IP=192.168.201.202
+USER=erp
 
 # opencv 
 scp $USER@$IP:lib/libopencv/* /usr/local/lib/
