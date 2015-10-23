@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Emmanuel Mathier <emmanuel.mathier@gmail.com>
+#    @author: Emanuel Cino, Emmanuel Mathier
 #
 #    The licence is in the file __openerp__.py
 #
@@ -16,7 +16,6 @@ from layout import LayoutLetter
 
 
 class SponsorshipCorrespondence(models.Model):
-
     """ This class holds the data of a Communication Kit between
     a child and a sponsor.
     """
@@ -35,16 +34,11 @@ class SponsorshipCorrespondence(models.Model):
     child_id = fields.Many2one(related='sponsorship_id.child_id', store=True)
     # Field used for identifying correspondence
     kit_id = fields.Integer('Kit id', copy=False, readonly=True)
-    letter_type = fields.Selection(selection=[
-        ('S2B', _('Sponsor to beneficiary')),
-        ('B2S', _('Beneficiary to sponsor'))], required=True)
-    communication_type = fields.Selection(selection=[
-        ('scheduled', _('Scheduled')),
-        ('response', _('Response')),
-        ('thank_you', _('Thank you')),
-        ('third_party', _('Third party')),
-        ('christmas', _('Christmas')),
-        ('introduction', _('Introduction'))])
+    direction = fields.Selection(selection=[
+        ('Supporter To Beneficiary', _('Supporter to beneficiary')),
+        ('Beneficiary To Supporter', _('Beneficiary to supporter'))],
+                                 required=True)
+    communication_type = fields.Selection('get_communication_types')
     state = fields.Selection(selection=[
         ('new', _('New')),
         ('to_translate', _('To translate')),
@@ -100,6 +94,18 @@ spoken_langs_ids', store=True)
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.model
+    def get_communication_types(self):
+        return [
+            ('Beneficiary Initiated Letter', _('Beneficiary Initiated')),
+            ('Final Letter', _('Final Letter')),
+            ('Large Gift Thank You Letter', _('Large Gift Thank You')),
+            ('Small Gift Thank You Letter', _('Small Gift Thank You')),
+            ('New Sponsor Letter', _('New Sponsor Letter')),
+            ('Reciprocal Letter', _('Reciprocal Letter')),
+            ('Scheduled Letter', _('Scheduled')),
+            ('Supporter Letter', _('Supporter Letter')),
+        ]
 
     @api.depends('sponsorship_id')
     def _set_name(self):
