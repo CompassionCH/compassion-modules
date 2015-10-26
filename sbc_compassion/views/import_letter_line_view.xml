@@ -2,11 +2,11 @@
 <openerp>
   <data>
     <!-- Tree Definition -->
-    <record id="view_import_letters_line_tree" model="ir.ui.view">
-      <field name="name">import.letters.line.tree</field>
-      <field name="model">import.letters.line</field>
+    <record id="view_import_letter_line_tree" model="ir.ui.view">
+      <field name="name">import.letter.line.tree</field>
+      <field name="model">import.letter.line</field>
       <field name="arch" type="xml">
-        <tree string="Import letters lines" options="{'create':False, 'edit':True}" create="false" editable="bottom" edit="true">
+        <tree string="Import letters lines" colors="red:status != 'ok';green:status == 'ok'" editable="top">
           <field name="status"/>
           <field name="sponsorship_status" invisible="1"/>
 	  <field name="sponsorship_id" invisible="1"/>
