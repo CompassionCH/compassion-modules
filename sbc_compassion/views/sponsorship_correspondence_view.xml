@@ -1,18 +1,20 @@
 <openerp>
     <data>
-           
+
         <record id="view_sponsorship_correspondence_origin_tree" model="ir.ui.view">
             <field name="name">sponsorship.correspondence.tree</field>
             <field name="model">sponsorship.correspondence</field>
             <field name="arch" type="xml">
                 <tree string="Correspondence">
+                    <field name="scanned_date"/>
                     <field name="sponsorship_id"/>
                     <field name="kit_id"/>
-                    <field name="letter_type"/>
+                    <field name="direction"/>
                     <field name="communication_type"/>
-                    <field name="state"/>
-                    <field name="is_encourager"/>
+                    <field name="relationship"/>
                     <field name="mandatory_review"/>
+                    <field name="status_date"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
@@ -30,26 +32,41 @@
                             <field name="name"/>
                         </h1>
                         <group>
-                            <field name="sponsorship_id"/>
-                            <field name="partner_id"/>
-                            <field name="child_id"/>
-                            <field name="kit_id"/>
-                            <field name="letter_type"/>
-                            <field name="communication_type"/>
-                            <field name="is_encourager"/>
-                            <field name="mandatory_review"/>
-                            <field name="letter_image" string="Letter image"/>
-                            <field name="attachments_ids" widget="many2many_binary" string="Attachments"/>
-                            <field name="physical_attachments"/>
-                            <field name="attachments_description"/>
-                            <field name="supporter_languages_ids" string="Partner spoken languages" widget="many2many_tags" options="{'create':False}"/>
-                            <field name="beneficiary_language_ids" string="Child spoken languages" widget="many2many_tags" options="{'create':False}"/>
-                            <field name="original_language_id" string="Original language" options="{'create':False}"/>
-                            <field name="destination_language_id" string="Destination language" options="{'create':False}"/>
-                            <field name="template_id"/>
-                            <field name="original_text"/>
-                            <field name="translated_text"/>
-                            <field name="source"/>
+                            <group>
+                                <field name="sponsorship_id" options="{
+                                    'create_edit':false,'field_color': 'state', 'search_more':true,
+                                    'colors': {'terminated': 'gray', 'mandate': 'blue', 'waiting': 'blue'}}"/>
+                                <field name="letter_image" widget="binary"/>
+                                <field name="template_id"/>
+                                <field name="direction"/>
+                                <field name="communication_type"/>
+                            </group>
+                            <group>
+                                <field name="kit_id"/>
+                                <field name="relationship"/>
+                                <field name="source"/>
+                                <field name="mandatory_review"/>
+                                <field name="physical_attachments"/>
+                                <field name="attachments_description" attrs="{'invisible': [('physical_attachments', '=', False)]}"/>
+                            </group>
+                            <group string="Supporter">
+                                <field name="correspondant_id"/>
+                                <field name="supporter_languages_ids" string="Partner spoken languages" widget="many2many_tags" options="{'create':False}"/>
+                            </group>
+                            <group string="Beneficiary">
+                                <field name="child_id"/>
+                                <field name="beneficiary_language_ids" string="Child spoken languages" widget="many2many_tags" options="{'create':False}"/>
+                            </group>
+                        </group>
+                        <group string="Letter content">
+                            <group>
+                                <field name="original_language_id" string="Original language" options="{'create':False}"/>
+                                <field name="original_text"/>
+                            </group>
+                            <group>
+                                <field name="destination_language_id" string="Destination language" options="{'create':False}"/>
+                                <field name="translated_text"/>
+                            </group>
                         </group>
                     </sheet>
                 </form>
