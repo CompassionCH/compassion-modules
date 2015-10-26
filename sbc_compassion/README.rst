@@ -14,7 +14,9 @@ To install this module, you need to install dependencies:
     libdc1394-22 libavcodec54 libavformat54 libswscale2
     libgtk2.0-0 python-pythonmagick python-numpy
     * requires opencv3 and zxing (can be installed with the setup.sh
-    in sbc_compassion)
+      in sbc_compassion)
+    * requires a java environment
+    * requires python-magic (sudo pip install python-magic)
 
 Contributors
 ------------

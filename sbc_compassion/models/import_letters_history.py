@@ -17,19 +17,18 @@ import cv2
 import base64
 import zipfile
 import time
-import os
 import shutil
 import PythonMagick
 import sys
 import numpy as np
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../tools'))
-from import_letter_functions import *
-import bluecornerfinder as bcf
-import checkboxreader as cbr
-import patternrecognition as pr
-import layout as pp # choice due to the old name (positionpattern)
-from openerp import api, fields, models, _, exceptions
+from ..tools.import_letter_functions import *
+from ..tools import bluecornerfinder as bcf
+from ..tools import checkboxreader as cbr
+from ..tools import patternrecognition as pr
+from ..tools import layout as pp # choice due to the old name (positionpattern)
 import zxing
+
+from openerp import api, fields, models, _, exceptions
 
 
 # key to save in sponsorship_correspondence
