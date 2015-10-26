@@ -32,6 +32,12 @@ from openerp import api, fields, models, _, exceptions
 import zxing
 
 
+# key to save in sponsorship_correspondence
+key = ['partner_codega', 'name', 'template_id', 'letter_image',
+       'is_encourager', 'supporter_languages_id', 'child_code',
+       'sponsorship_id']
+
+
 class ImportLettersHistory(models.Model):
 
     """
@@ -49,97 +55,131 @@ class ImportLettersHistory(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
 
+    _order = "create_date"
     state = fields.Selection([
         ("draft", _("Draft")),
-        ("done", _("Modification"))])
-    nber_file = fields.Integer(_('Number of files: '), readonly=True,
-                               compute="_count_nber_files")
+        ("pending", _("Pending")),
+        ("ready", _("Ready to be saved")),
+        ("saved", _("Saved"))], compute="_set_ready")
+    nber_letters = fields.Integer(_('Number of letters'), readonly=True,
+                                  compute="_count_nber_letters")
     # path where the zipfile are store
     path = "/tmp/sbc_compassion/"
     # list zip in the many2many
     # use ';' in order to separate the files
     list_zip = fields.Text("LIST_ZIP", readonly=True)
 
-    # link to _count_nber_files
-    data = fields.Many2many('ir.attachment')
-    letters_line_ids = fields.Many2many('import.letters.line')
+    data = fields.Many2many('ir.attachment', string=_("Add a file"))
+    letters_line_ids = fields.Many2many('import.letter.line')
     letters_ids = fields.Many2many('sponsorship.correspondence')
-    save_visible = fields.Boolean(computed="_set_save_button")
-
-    # -------------------- _COUNT_NBER_FILES ---------------------------------
 
     @api.one
-    @api.onchange("data")
-    def _count_nber_files(self):
+    @api.depends("letters_line_ids", "letters_line_ids.status",
+                 "letters_ids", "data")
+    def _set_ready(self):
+        check = True
+        for i in self.letters_line_ids:
+            if i.status != "ok":
+                check = False
+        if check and len(self.letters_line_ids) > 0:
+            self.state = "ready"
+        elif len(self.letters_ids) > 0:
+            self.state = "saved"
+        elif len(self.letters_line_ids) > 0:
+            self.state = "pending"
+        else:
+            self.state = "draft"
+
+    # -------------------- _COUNT_NBER_LETTERS --------------------------------
+
+    @api.model
+    def create(self, vals):
+        result = super(models.Model, self).create(vals)
+        result.button_run_analyze()
+        return result
+
+    @api.multi
+    @api.onchange("data", "letters_line_ids", "letters_ids")
+    def _count_nber_letters(self):
         """
         Counts the number of scans (if a zip is given, count the number
         inside it)
         """
-        if state == "draft":
-            self.nber_file = max(len(letters_line_ids),
-                                 len(letters_ids))
-        else:
-            if self.list_zip is False:
-                self.list_zip = ""
-            # removes old files in the directory
-            if os.path.exists(self.path):
-                onlyfiles = [f for f in os.listdir(self.path)
-                             if os.path.isfile(os.path.join(self.path, f))]
-                # loop over files
-                for f in onlyfiles:
-                    t = time.time()
-                    t -= os.path.getctime(self.path + f)
-                    # if file older than 12h
-                    if t > 43200:
-                        os.remove(f)
-            else:
-                os.makedirs(self.path)
+        for inst in self:
+            if inst.state == "pending" or inst.state == "ready":
+                inst.nber_letters = len(inst.letters_line_ids)
+            elif inst.state == "saved":
+                inst.nber_letters = len(inst.letters_ids)
+            elif inst.state is False or inst.state == "draft":
+                if inst.list_zip is False:
+                    inst.list_zip = ""
+                # removes old files in the directory
+                if os.path.exists(inst.path):
+                    onlyfiles = [f for f in os.listdir(inst.path)
+                                 if os.path.isfile(os.path.join(inst.path, f))]
+                    # loop over files
+                    for f in onlyfiles:
+                        t = time.time()
+                        t -= os.path.getctime(inst.path + f)
+                        # if file older than 12h
+                        if t > 43200:
+                            os.remove(f)
+                else:
+                    os.makedirs(inst.path)
 
-            # counter
-            tmp = 0
-            # loop over all the attachments
-            for attachment in self.data:
-                # pdf or tiff case
-                if check_file(attachment.name) == 1:
-                    tmp += 1
-                # zip case
-                elif isZIP(attachment.name):
-                    tmp_name_file = self.path + attachment.name
-                    # save the zip file
-                    if not os.path.exists(tmp_name_file):
-                        f = open(tmp_name_file, 'w')
-                        f.write(base64.b64decode(attachment.with_context(
-                            bin_size=False).datas))
-                        f.close()
-                    if attachment.name not in self.list_zip:
-                        self.list_zip = addname(self.list_zip, attachment.name)
-                    # catch ALL the exceptions that can be raised by class
-                    # zipfile
-                    try:
-                        zip_ = zipfile.ZipFile(tmp_name_file, 'r')
-                    except zipfile.BadZipfile:
-                        raise exceptions.Warning(_('Zip file corrupted (' +
-                                                   attachment.name + ')'))
-                    except zipfile.LargeZipFile:
-                        raise exceptions.Warning(_('Zip64 is not supported(' +
-                                                   attachment.name + ')'))
-                    else:
-                        list_file = zip_.namelist()
-                        # loop over all files in zip
-                        for tmp_file in list_file:
-                            tmp += check_file(tmp_file)
-            self.nber_file = tmp
-            # deletes zip removed from the data
-            for f in self.list_zip.split(';'):
-                if f not in self.mapped('data.name') and f != '':
-                    if os.path.exists(self.path + f):
-                        tmp = removename(self.list_zip, f)
-                        if tmp == -1:
-                            raise exceptions.Warning(
-                                _("Does not find the file during suppression"))
-                        else:
-                            self.list_zip = tmp
-                        os.remove(self.path + f)
+                # counter
+                tmp = 0
+                # loop over all the attachments
+                for attachment in inst.data:
+                    # pdf or tiff case
+                    if check_file(attachment.name) == 1:
+                        tmp += 1
+                    # zip case
+                    elif isZIP(attachment.name):
+                        tmp_name_file = inst.path + attachment.name
+                        # save the zip file
+                        if not os.path.exists(tmp_name_file):
+                            f = open(tmp_name_file, 'w')
+                            f.write(base64.b64decode(attachment.with_context(
+                                bin_size=False).datas))
+                            f.close()
+                            if attachment.name not in inst.list_zip:
+                                inst.list_zip = addname(inst.list_zip,
+                                                        attachment.name)
+                                # catch ALL the exceptions that can be raised
+                                # by class zipfile
+                                try:
+                                    zip_ = zipfile.ZipFile(tmp_name_file, 'r')
+                                except zipfile.BadZipfile:
+                                    raise exceptions.Warning(
+                                        _('Zip file corrupted (' +
+                                          attachment.name + ')'))
+                                except zipfile.LargeZipFile:
+                                    raise exceptions.Warning(
+                                        _('Zip64 is not supported(' +
+                                          attachment.name + ')'))
+                            list_file = zip_.namelist()
+                            # loop over all files in zip
+                            for tmp_file in list_file:
+                                tmp += (check_file(tmp_file) == 1)
+                inst.nber_letters = tmp
+                # deletes zip removed from the data
+                for f in inst.list_zip.split(';'):
+                    if f not in inst.mapped('data.name') and f != '':
+                        if os.path.exists(inst.path + f):
+                            tmp = removename(inst.list_zip, f)
+                            if tmp == -1:
+                                raise exceptions.Warning(
+                                    _("""Does not find the file
+                                    during suppression"""))
+                            else:
+                                inst.list_zip = tmp
+                            os.remove(inst.path + f)
+            else:
+                raise exceptions.Warning(
+                    _("State: '{}' not implemented".format(inst.state)))
+
+
 
     # ------------------------ _RUN_ANALYZE ----------------------------------
 
@@ -149,7 +189,6 @@ class ImportLettersHistory(models.Model):
         Analyze each attachment (decompress zip too) by checking if the file
         is not done twice (check same name)[, extract zip], use
         analyze_attachment at the end
-
         """
         for inst in self:
             # list for checking if a file come twice
@@ -159,7 +198,8 @@ class ImportLettersHistory(models.Model):
                     check.append(attachment.name)
                     # check for zip
                     if check_file(attachment.name) == 2:
-                        zip_ = zipfile.ZipFile(inst.path + attachment.name, 'r')
+                        zip_ = zipfile.ZipFile(inst.path + attachment.name,
+                                               'r')
                         path_zip = inst.path + os.path.splitext(
                             str(attachment.name))[0]
                         if not os.path.exists(path_zip):
@@ -182,7 +222,8 @@ class ImportLettersHistory(models.Model):
                             'Still a file in a non-accepted format')
                 else:
                     raise exceptions.Warning(_('Two files are the same'))
-                    return
+            for attachment in inst.data:
+                attachment.unlink()
 
     def _analyze_attachment(self, file_, data=None):
         """
@@ -242,7 +283,7 @@ class ImportLettersHistory(models.Model):
             # to give a jpeg
             # to odoo from windows -> same problem
 
-            letters_line = self.env['import.letters.line'].create({
+            letters_line = self.env['import.letter.line'].create({
                 'partner_codega': partner,
                 'child_code': child,
                 'is_encourager': False,
@@ -261,7 +302,7 @@ class ImportLettersHistory(models.Model):
             document_vals = {'name': dfile_,
                              'datas': data,
                              'datas_fname': dfile_,
-                             'res_model': 'import.letters.line',
+                             'res_model': 'import.letter.line',
                              'res_id': letters_line.id
                              }
             letters_line.letter_image = self.env[
@@ -391,27 +432,23 @@ class ImportLettersHistory(models.Model):
             os.remove(os.path.splitext(file_)[0]+'_'+key+'.png')
         return lang
 
-    @api.one
+    @api.multi
     def button_save(self):
         """
         save the import_line as a sponsorship_correspondence
-        """            
+        """
         test = True
-        for letter in self.letters_line_ids:
-            if letter.status != "OK":
+        for inst in self:
+            if inst.state != "ready":
                 test = False
-        if not test:
-            raise exceptions.Warning('Not all the files are OK')
+        if test is False:
+            raise exceptions.Warning(_("Not all data are OK"))
 
-        key = ['partner_codega', 'name', 'template_id', 'letter_image',
-               'is_encourager', 'supporter_languages_id', 'child_code',
-               'sponsorship_id']
-        for letter in self.letters_line_ids:
-            tmp = mail.read()[0]
-            print tmp.keys()
-            data = {}
-            for i in key:
-                data[i] = letter.read()[0][i]
-            if i == 'letter_image':
-                print data[i]
-            self.env['sponsorship.correspondence'].create(data)
+        for inst in self:
+            for letter in inst.letters_line_ids:
+                data = {}
+                for i in key:
+                    data[i] = letter.read()[0][i]
+                inst.letters_ids.write(data)
+            for letter in inst.letters_line_ids:
+                letter.unlink()

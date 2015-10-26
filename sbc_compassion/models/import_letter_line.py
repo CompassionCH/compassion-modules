@@ -16,12 +16,12 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../tools'))
 from layout import LayoutLetter
 
 
-class ImportMailLine(models.TransientModel):
+class ImportLetterLine(models.TransientModel):
 
     """ This class is used for the validation of an exportation.
     """
 
-    _name = 'import.mail.line'
+    _name = 'import.letter.line'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -43,60 +43,64 @@ class ImportMailLine(models.TransientModel):
         (LayoutLetter.name[5], _('Template 6'))], string=_("Template"))
     supporter_languages_id = fields.Many2one(
         'res.lang.compassion',string="Language")
-    is_encourager = fields.Boolean(string=_("Encourager"))
+    is_encourager = fields.Boolean(string=_("Encourager"), default=False)
     letter_image = fields.Many2one('ir.attachment')
     letter_image_preview = fields.Binary()
-    # a little bit complicated due to if, elif,... in _check_status
-    # True -> error in sponsorship_id
-    # None -> one id is found (Perfect case)
-    # False -> error in partner or child
-    status = fields.Char(compute="_check_status")
+
+    status = fields.Selection([
+        ("lang", _("Error in Language")),
+        ("sponsor", _("Error in Sponsorship")),
+        ("encourager", _("Sponsorship not found")),
+        ("temp", _("Error in Template")),
+        ("ok", _("OK"))], compute="_check_status")
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
 
-    @api.one
+    @api.multi
     @api.depends('partner_codega', 'child_code', 'sponsorship_id',
                  'supporter_languages_id')
     def _check_status(self):
         """
         """
-        # == avoid problems with None
-        if self.sponsorship_status is True and not self.is_encourager.read():
-            self.status = _('Sponsorship not found')
-        if self.sponsorship_status is True:
-            self.status = _('Error in Sponsorship')
-        elif self.template_id not in LayoutLetter.name:
-            self.status = _('Error in Template')
-        elif len(self.supporter_languages_id) != 1:
-            self.status = _('Error in Language')
-        else:
-            self.status = _('OK')
+        for inst in self:
+            if inst.sponsorship_status or inst.is_encourager:
+                inst.status = "encourager"
+            if inst.sponsorship_status is True:
+                inst.status = "sponsor"
+            elif inst.template_id not in LayoutLetter.name:
+                inst.status = "temp"
+            elif len(inst.supporter_languages_id) != 1:
+                inst.status = "lang"
+            else:
+                inst.status = "ok"
 
-    @api.one
+    @api.multi
     @api.depends('partner_codega', 'child_code')
     def _set_sponsorship_id(self):
-        if self.partner_codega and self.child_code:
-            test = (self.env['recurring.contract'].search(
-                [('child_id.code', '=', self.child_code)]) and
-                self.env['recurring.contract'].search([
-                ('partner_codega', '=', self.partner_codega)]))
+        for inst in self:
+            if inst.partner_codega and inst.child_code:
+                test = (inst.env['recurring.contract'].search(
+                    [('child_id.code', '=', inst.child_code)]) and
+                    inst.env['recurring.contract'].search([
+                        ('partner_codega', '=', inst.partner_codega)]))
 
-            self.sponsorship_id = self.env['recurring.contract'].search([
-                ('child_id.code', '=', self.child_code),
-                ('partner_codega', '=', self.partner_codega)])
-            if len(self.sponsorship_id) == 1:
-                self.sponsorship_status = None
-            elif test:
-                self.sponsorship_status = True
-            else:
-                self.sponsorship_status = False
+                inst.sponsorship_id = inst.env['recurring.contract'].search([
+                    ('child_id.code', '=', inst.child_code),
+                    ('partner_codega', '=', inst.partner_codega)])
+                if len(inst.sponsorship_id) == 1:
+                    inst.sponsorship_status = None
+                elif test:
+                    inst.sponsorship_status = True
+                else:
+                    inst.sponsorship_status = False
 
-    @api.one
+    @api.multi
     @api.depends('partner_codega', 'child_code')
     def _set_name(self):
-        if self.sponsorship_id:
-            self.name = str(
-                self.sponsorship_id.partner_codega) + " - " + str(
-                    self.child_code)
+        for inst in self:
+            if inst.sponsorship_id:
+                inst.name = str(
+                    inst.sponsorship_id.partner_codega) + " - " + str(
+                        inst.child_code)
