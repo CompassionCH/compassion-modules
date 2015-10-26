@@ -38,6 +38,7 @@
     'depends': ['sponsorship_compassion', 'web_tree_image'],
     'external_dependencies': {
         'java': ['zxing'],
+        'python': ['magic', 'PythonMagick', 'numpy', 'zxing', 'cv2']
     },
     'data': [
         'security/ir.model.access.csv',
@@ -51,19 +52,4 @@
     ],
     'installable': True,
     'auto_install': False,
-    'description': """
-Installation
-============
-
-To install this module, you need to install dependencies:
-
-    * requires the following libraries (names from apt-get):
-      openexr libgstreamer0.10-0 libgstreamer-plugins-base0.10-0
-      libdc1394-22 libavcodec54 libavformat54 libswscale2
-      libgtk2.0-0 python-pythonmagick
-    * requires python-MySQLdb to be installed on the server.
-    * requires opencv3 and zxing (can be installed with the setup.sh
-      in sbc_compassion)
-    * requires a java environment
-""",
 }

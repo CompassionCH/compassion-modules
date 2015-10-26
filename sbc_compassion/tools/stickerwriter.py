@@ -3,7 +3,7 @@
 import cv2
 import numpy as np
 import zxing
-from layout import LayoutSticker
+from layout import LayoutLetter
 from os import remove
 
 class StickerWriter:
@@ -18,7 +18,7 @@ class StickerWriter:
         """
         self.text = text
         self.img = 255*np.ones(self.size,np.uint8)
-        self.lay = LayoutSticker()
+        self.lay = LayoutLetter()
         lay = self.lay.getLayout()
         key = self.text.keys()
         n = len(key)

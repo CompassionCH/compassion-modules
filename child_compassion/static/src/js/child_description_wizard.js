@@ -29,11 +29,12 @@ openerp.child_compassion = function (instance, local) {
         values_changed: function(field, value) {
             var value_en = this.$().parent().find('[data-fieldname="value_en"]').children().text();
             new_desc = this.update_value(field.name, value, value_en);
-            // Store the change.
-            var lang = field.name.replace('value_', '');
-            var desc_field = this.getParent().getParent().getParent().getParent().getParent().fields['desc_' + lang];
-            desc_field.set_value(new_desc);
-
+            if (new_desc) {
+                // Store the change.
+                var lang = field.name.replace('value_', '');
+                var desc_field = this.getParent().getParent().getParent().getParent().getParent().fields['desc_' + lang];
+                desc_field.set_value(new_desc);
+            }
         },
     });
     instance.web.form.widgets.add('autoDescription', 'instance.child_compassion.autoDescription');

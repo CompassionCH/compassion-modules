@@ -134,10 +134,10 @@ class child_property(models.Model):
 
     # Descriptions and pictures
     ###########################
-    desc_en = fields.Text('English description', readonly=True)
-    desc_fr = fields.Text('French description', readonly=True)
-    desc_de = fields.Text('German description', readonly=True)
-    desc_it = fields.Text('Italian description', readonly=True)
+    desc_en = fields.Text('English description')
+    desc_fr = fields.Text('French description')
+    desc_de = fields.Text('German description')
+    desc_it = fields.Text('Italian description')
     pictures_id = fields.Many2one(
         'compassion.child.pictures', 'Child images', readonly=True)
 

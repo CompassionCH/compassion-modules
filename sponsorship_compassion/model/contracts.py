@@ -12,7 +12,7 @@
 from openerp import api, exceptions, fields, models, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
-from datetime import datetime
+from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from lxml import etree
 
@@ -580,16 +580,33 @@ class sponsorship_contract(models.Model):
 
     @api.multi
     def invoice_paid(self, invoice):
-        """ Prevent to reconcile invoices for fund-suspended projects. """
+        """ Prevent to reconcile invoices for fund-suspended projects
+            or sponsorships older than 3 months. """
         for invl in invoice.invoice_line:
             if invl.contract_id and invl.contract_id.child_id:
+                contract = invl.contract_id
+
+                # Check contract is active or terminated recently.
+                if contract.state == 'cancelled':
+                    raise exceptions.Warning(
+                        _("Reconcile error"),
+                        _("The contract %s is not active.") % contract.name)
+                if contract.state == 'terminated' and contract.end_date:
+                    ended_since = date.today() - fields.Date.from_string(
+                        contract.end_date)
+                    if not ended_since.days <= 90:
+                        raise exceptions.Warning(
+                            _("Reconcile error"),
+                            _("The contract %s is not active.")
+                            % contract.name)
+
+                # Check if project allows this kind of payment.
                 payment_allowed = True
-                project = invl.contract_id.child_id.project_id
+                project = contract.child_id.project_id
                 if invl.product_id.categ_name == GIFT_CATEGORY:
                     payment_allowed = \
                         (project.disburse_gifts or
-                         invl.due_date < project.status_date) and \
-                        invl.contract_id.state == 'active'
+                         invl.due_date < project.status_date)
                 elif invl.product_id.categ_name == SPONSORSHIP_CATEGORY:
                     payment_allowed = project.disburse_funds or \
                         invl.due_date < project.status_date
