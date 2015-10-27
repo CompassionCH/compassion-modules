@@ -1,0 +1,74 @@
+<openerp>
+    <data>
+
+        <record id="view_correspondence_template_origin_tree" model="ir.ui.view">
+            <field name="name">sponsorship.correspondence.template.tree</field>
+            <field name="model">sponsorship.correspondence.template</field>
+            <field name="arch" type="xml">
+                <tree string="Correspondence Templates">
+                    <field name="name"/>
+                    <field name="layout"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_correspondence_template_origin_form" model="ir.ui.view">
+            <field name="name">sponsorship.correspondence.template.form</field>
+            <field name="model">sponsorship.correspondence.template</field>
+            <field name="arch" type="xml">
+                <form string="Template">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="layout"/>
+                                <field name="active"/>
+                                <field name="pattern_image" widget="image" width="100" height="100"/>
+                                <separator colspan="2" string="Language checkboxes"/>
+                                <field name="checkbox_ids" context="{'default_template_id': active_id}">
+                                    <tree editable="bottom">
+                                        <field name="language_id"/>
+                                        <field name="x_min"/>
+                                        <field name="x_max"/>
+                                        <field name="y_min"/>
+                                        <field name="y_max"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Metadata">
+                                <field name="page_width"/>
+                                <field name="page_height"/>
+                                <separator colspan="2"/>
+                                <field name="bluesquare_x"/>
+                                <field name="bluesquare_y"/>
+                                <separator colspan="2"/>
+                                <field name="qrcode_x_min"/>
+                                <field name="qrcode_x_max"/>
+                                <field name="qrcode_y_min"/>
+                                <field name="qrcode_y_max"/>
+                                <separator colspan="2"/>
+                                <field name="pattern_x_min"/>
+                                <field name="pattern_x_max"/>
+                                <field name="pattern_y_min"/>
+                                <field name="pattern_y_max"/>
+                            </group>
+                            <group colspan="2">
+                                <field name="template_image" widget="image" width="210" height="297"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_compassion_correspondence_template_form" model="ir.actions.act_window">
+            <field name="name">Correspondence Templates</field>
+            <field name="res_model">sponsorship.correspondence.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_correspondence_template" parent="child_compassion.menu_configuration" action="action_compassion_correspondence_template_form"
+                  name="Correspondence Templates" sequence="1"/>
+    </data>
+</openerp>
