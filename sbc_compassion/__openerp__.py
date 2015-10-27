@@ -10,7 +10,7 @@
 #                            in Jesus' name
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
-#    @author: Emmanuel Mathier <emmanuel.mathier@gmail.com>
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -48,7 +48,9 @@
         'views/sponsorship_correspondence_view.xml',
         'views/import_letters_history_view.xml',
         'views/import_letter_line_view.xml',
+        'views/correspondence_template_view.xml',
         'data/lang_data.xml',
+        'data/correspondence_template_data.xml',
     ],
     'installable': True,
     'auto_install': False,
