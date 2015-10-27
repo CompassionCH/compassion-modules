@@ -1,9 +1,22 @@
+# -*- encoding: utf-8 -*-
+##############################################################################
+#
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Loic Hausammann <loic_hausammann@hotmail.com>
+#
+#    The licence is in the file __openerp__.py
+#
+##############################################################################
 """
 Defines a few functions useful in ../models/import_mail.py
 """
 import os
 
 
+##########################################################################
+#                           GENERAL METHODS                              #
+##########################################################################
 def check_file(name):
     """
     Check the name of a file.

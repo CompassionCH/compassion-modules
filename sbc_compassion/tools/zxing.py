@@ -1,34 +1,35 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Emmanuel Mathier <emmanuel.mathier@gmail.com>
+#    @author: Nate Oostendo <nate@oostendorp.net>
 #
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+# This file has been written by Nate Oostendo but edited inside compassion
+# This header is done for travis and we are not claiming any right on his code
+# (only the modifications).
+"""
+ zxing.py -- a quick and dirty wrapper for zxing for python
 
-########################################################################
-#
-#  zxing.py -- a quick and dirty wrapper for zxing for python
-#
-#  this allows you to send images and get back data from the ZXing
-#  library:  http://code.google.com/p/zxing/
-#
-#  by default, it will expect to be run from the zxing source code directory
-#  otherwise you must specify the location as a parameter to the constructor
-#
-#  original version on github.com/oostendo/python-zxing
+ this allows you to send images and get back data from the ZXing
+ library:  http://code.google.com/p/zxing/
 
-__version__ = '0.4'
+ by default, it will expect to be run from the zxing source code directory
+ otherwise you must specify the location as a parameter to the constructor
+
+ original version on github.com/oostendo/python-zxing
+"""
+
+__version__ = '0.5'
 import subprocess
 import re
 import os
 
 
 class BarCodeTool():
-
     """
     This class needs to use the method decode/encode in order to do something
     At the initialization, the directories names are set up and the
@@ -41,6 +42,9 @@ class BarCodeTool():
     args_de = ["com.google.zxing.client.j2se.CommandLineRunner"]
     args_en = ["com.google.zxing.client.j2se.CommandLineEncoder"]
 
+    ##########################################################################
+    #                               INIT METHOD                              #
+    ##########################################################################
     def __init__(self, loc=""):
         if not len(loc):
             if ("HOME" in os.environ):
@@ -50,7 +54,10 @@ class BarCodeTool():
 
         self.location = loc
 
-    def decode(self, files, try_harder=True, qr_only=True,crop=None):
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    def decode(self, files, try_harder=True, qr_only=True, crop=None):
         """
         Decodes a/some file/s
         :param string files: Name of the files to decode
@@ -78,11 +85,11 @@ class BarCodeTool():
         if qr_only:
             cmd.append("--possible_formats")
             cmd.append("QR_CODE")
-        if crop != None:
+        if crop is not None:
             cmd.append("--crop")
             for i in range(4):
                 cmd.append(str(crop[i]))
-            
+
         libraries = [self.location + "/" + l for l in self.libs]
 
         cmd = [c if c != "LIBS" else os.pathsep.join(libraries) for c in cmd]
@@ -126,10 +133,10 @@ class BarCodeTool():
         cmd.append(text)
         if width is not None:
             cmd.append("--width")
-            cmd.append(width)
+            cmd.append(str(width))
         if height is not None:
             cmd.append("--height")
-            cmd.append(height)
+            cmd.append(str(height))
         if code_format is not None:
             cmd.append("--barcode_format")
             cmd.append(code_format)
@@ -139,13 +146,12 @@ class BarCodeTool():
 
         cmd.append("--output")
         cmd.append(file_)
-        print cmd
+
         (stdout, stderr) = subprocess.Popen(
             cmd, stdout=subprocess.PIPE, universal_newlines=True).communicate()
 
 
 class BarCode:
-
     """
     Class containing all the information about the codebars
     """
@@ -154,6 +160,9 @@ class BarCode:
     data = ""
     raw = ""
 
+    ##########################################################################
+    #                               INIT METHOD                              #
+    ##########################################################################
     def __init__(self, zxing_output):
         lines = zxing_output.split("\n")
         raw_block = False

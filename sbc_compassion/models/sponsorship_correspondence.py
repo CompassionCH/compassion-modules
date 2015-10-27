@@ -13,7 +13,6 @@ import magic
 import base64
 
 from openerp import fields, models, api, exceptions, _
-from ..tools.layout import LayoutLetter
 
 
 class SponsorshipCorrespondence(models.Model):
@@ -79,14 +78,8 @@ class SponsorshipCorrespondence(models.Model):
     destination_language_id = fields.Many2one(
         'res.lang.compassion', compute='_set_languages',
         inverse='_change_language', store=True)
-    #need to change in order to avoid mutliple definition
-    template_id = fields.Selection([
-        (LayoutLetter.name[0], 'Template 1'),
-        (LayoutLetter.name[1], 'Template 2'),
-        (LayoutLetter.name[2], 'Template 3'),
-        (LayoutLetter.name[3], 'Template 4'),
-        (LayoutLetter.name[4], 'Template 5'),
-        (LayoutLetter.name[5], 'Template 6')], 'Template', required=True)
+    template_id = fields.Many2one(
+        'sponsorship.correspondence.template', 'Template')
     original_text = fields.Text()
     translated_text = fields.Text()
     source = fields.Selection(selection=[
