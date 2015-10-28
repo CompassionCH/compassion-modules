@@ -88,10 +88,10 @@ def subsetImage(img, crop_area):
     """
     h, w = img.shape[:2]
     # compute absolute coordinates
-    xmin = round(w*crop_area[0])
-    xmax = round(w*crop_area[1])
-    ymin = round(h*crop_area[2])
-    ymax = round(h*crop_area[3])
+    xmin = round(w * crop_area[0])
+    xmax = round(w * crop_area[1])
+    ymin = round(h * crop_area[2])
+    ymax = round(h * crop_area[3])
     # in opencv first index->height
     return (xmin, ymin), img[ymin:ymax, xmin:xmax]
 
@@ -109,7 +109,7 @@ def findMatches(des1, des2, test=0.8):
     # Apply ratio test
     good = []
     for m, n in matches:
-        if m.distance < test*n.distance:
+        if m.distance < test * n.distance:
             good.append([m])
 
     return good
@@ -133,17 +133,17 @@ def keyPointCenter(keypoint):
         # normalization of the weights
         N = 0
         # return value
-        center = np.array([0.0,0.0])
+        center = np.array([0.0, 0.0])
         for i in keypoint:
             omega = 0
             for j in keypoint:
                 # compute the distance
-                omega += np.sum((np.array(i)-np.array(j))**2)
+                omega += np.sum((np.array(i) - np.array(j)) ** 2)
             # invert the weight in order to have a small one
             # for a keypoint far away
             if omega == 0:
                 omega = 1e-8
-            omega = 1.0/np.sqrt(omega)
+            omega = 1.0 / np.sqrt(omega)
             N += omega
-            center += omega*np.array(i)
-        return center/N
+            center += omega * np.array(i)
+        return center / N

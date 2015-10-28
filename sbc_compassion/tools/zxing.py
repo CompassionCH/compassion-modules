@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-##############################################################################
+#
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
@@ -7,9 +7,9 @@
 #
 #    The licence is in the file __openerp__.py
 #
-##############################################################################
+#
 
-########################################################################
+#
 #
 #  zxing.py -- a quick and dirty wrapper for zxing for python
 #
@@ -50,7 +50,7 @@ class BarCodeTool():
 
         self.location = loc
 
-    def decode(self, files, try_harder=True, qr_only=True,crop=None):
+    def decode(self, files, try_harder=True, qr_only=True, crop=None):
         """
         Decodes a/some file/s
         :param string files: Name of the files to decode
@@ -82,7 +82,7 @@ class BarCodeTool():
             cmd.append("--crop")
             for i in range(4):
                 cmd.append(str(crop[i]))
-            
+
         libraries = [self.location + "/" + l for l in self.libs]
 
         cmd = [c if c != "LIBS" else os.pathsep.join(libraries) for c in cmd]

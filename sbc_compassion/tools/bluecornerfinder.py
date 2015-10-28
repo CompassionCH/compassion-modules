@@ -9,10 +9,11 @@ from math import floor
 
 
 class BlueCornerFinder:
+
     """
     Class used in order to compute the position of the upper-right corner
     of the blue square (is used in order to find the scaling of a scan).
-    This class uses a method that start from the corner and draws a serie of 
+    This class uses a method that start from the corner and draws a serie of
     circle until reaching the corner (check if it is a cluster [more than just
     two in the eight closest pixels]).
 
@@ -33,8 +34,8 @@ class BlueCornerFinder:
         # save the original size
         self.h_ori = h
         self.w_ori = w
-        self.xmin = int(round(box[0]*w))
-        ymax = round(box[1]*h)
+        self.xmin = int(round(box[0] * w))
+        ymax = round(box[1] * h)
         self.img = self.img[:ymax, self.xmin:]
         h, w = self.img.shape[:2]
         self.h = h
@@ -52,7 +53,7 @@ class BlueCornerFinder:
         :rtype: list
         """
         # distance in integer (rounded down)
-        self.dist = np.zeros((self.h,self.w), dtype=int)
+        self.dist = np.zeros((self.h, self.w), dtype=int)
         # is used in order to know when to stop the loop
         # and knowing if a blue pixel has been found in
         # the image
@@ -63,7 +64,7 @@ class BlueCornerFinder:
         while not self.found and self.n < self.w:
             self.n += 1
             # queue containing the next cells
-            self.todo = deque([[0, self.w-self.n-1]])
+            self.todo = deque([[0, self.w - self.n - 1]])
             # scan all the pixel until the end of the queue
             while len(self.todo) != 0:
                 # get and remove first job
@@ -121,21 +122,21 @@ class BlueCornerFinder:
         # the loops are not over the full size because
         # the good pixels are inside a square of size self.n
         # loop over the height
-        for i in range(self.n+1):
+        for i in range(self.n + 1):
             # loop over the width
-            for j in range(self.w-self.n-1, self.w):
+            for j in range(self.w - self.n - 1, self.w):
                 # check if it is on the good ring
                 if self.dist[i, j] == self.n:
                     # check the color of the pixel
                     if checkColor(self.img[i, j], self.threshold):
                         # compute the exact distance (float not int)
-                        tmp = np.sqrt(i**2 + (self.w-j-1)**2)
+                        tmp = np.sqrt(i ** 2 + (self.w - j - 1) ** 2)
                         # check if closer and has at least 2 neighbours
                         if d_exact > tmp and self._checkNext((i, j)):
                             d_exact = tmp
                             ind = [i, j]
         # save the values
-        self.ind = [ind[1]+self.xmin, ind[0]]
+        self.ind = [ind[1] + self.xmin, ind[0]]
         self.dist = d_exact
 
     def _checkNext(self, ind):
@@ -149,39 +150,39 @@ class BlueCornerFinder:
         count = 0
         # check in each direction
         if ind[0] != 0:
-            tmp = (ind[0]-1, ind[1])
+            tmp = (ind[0] - 1, ind[1])
             if checkColor(self.img[tmp], self.threshold):
                 count += 1
             if ind[1] != 0:
-                tmp = (ind[0]-1, ind[1]-1)
+                tmp = (ind[0] - 1, ind[1] - 1)
                 if checkColor(self.img[tmp], self.threshold):
                     count += 1
-            if ind[1] != self.w-1:
-                tmp = (ind[0]-1, ind[1]+1)
+            if ind[1] != self.w - 1:
+                tmp = (ind[0] - 1, ind[1] + 1)
                 if checkColor(self.img[tmp], self.threshold):
                     count += 1
 
-        if ind[0] != self.h-1:
-            tmp = (ind[0]+1, ind[1])
+        if ind[0] != self.h - 1:
+            tmp = (ind[0] + 1, ind[1])
             if checkColor(self.img[tmp], self.threshold):
                 count += 1
             if ind[1] != 0:
-                tmp = (ind[0]+1, ind[1]-1)
+                tmp = (ind[0] + 1, ind[1] - 1)
                 if checkColor(self.img[tmp], self.threshold):
                     count += 1
-            if ind[1] != self.w-1:
-                tmp = (ind[0]+1, ind[1]+1)
+            if ind[1] != self.w - 1:
+                tmp = (ind[0] + 1, ind[1] + 1)
                 if checkColor(self.img[tmp], self.threshold):
                     count += 1
 
-        if ind[1] != self.w-1:
-            tmp = (ind[0], ind[1]+1)
+        if ind[1] != self.w - 1:
+            tmp = (ind[0], ind[1] + 1)
             if checkColor(self.img[tmp], self.threshold):
                 count += 1
 
         if ind[1] != 0:
-            tmp = (ind[0], ind[1]-1)
-            if checkColor(self.img[tmp] , self.threshold):
+            tmp = (ind[0], ind[1] - 1)
+            if checkColor(self.img[tmp], self.threshold):
                 count += 1
 
         # return value for the different cases
@@ -198,21 +199,21 @@ class BlueCornerFinder:
         """
 
         if ind[0] != 0:
-            self._tryPixel((ind[0]-1, ind[1]))
+            self._tryPixel((ind[0] - 1, ind[1]))
             if ind[1] != 0:
-                self._tryPixel((ind[0]-1, ind[1]-1))
-            if ind[1] != self.w-1:
-                self._tryPixel((ind[0]-1, ind[1]+1))
-        if ind[0] != self.h-1:
-            self._tryPixel((ind[0]+1, ind[1]))        
+                self._tryPixel((ind[0] - 1, ind[1] - 1))
+            if ind[1] != self.w - 1:
+                self._tryPixel((ind[0] - 1, ind[1] + 1))
+        if ind[0] != self.h - 1:
+            self._tryPixel((ind[0] + 1, ind[1]))
             if ind[1] != 0:
-                self._tryPixel((ind[0]+1, ind[1]-1))
-            if ind[1] != self.w-1:
-                self._tryPixel((ind[0]+1 ,ind[1]+1))
-        if ind[1] != self.w-1:
-            self._tryPixel((ind[0], ind[1]+1))
+                self._tryPixel((ind[0] + 1, ind[1] - 1))
+            if ind[1] != self.w - 1:
+                self._tryPixel((ind[0] + 1, ind[1] + 1))
+        if ind[1] != self.w - 1:
+            self._tryPixel((ind[0], ind[1] + 1))
         if ind[1] != 0:
-            self._tryPixel((ind[0], ind[1]-1))
+            self._tryPixel((ind[0], ind[1] - 1))
 
     def _tryPixel(self, ind):
         """
@@ -221,7 +222,7 @@ class BlueCornerFinder:
         :param list ind: Indices
         """
         if self.dist[ind] == 0:
-            d = np.sqrt(ind[0]**2 + (self.w-ind[1]-1)**2)
+            d = np.sqrt(ind[0] ** 2 + (self.w - ind[1] - 1) ** 2)
             d = floor(d)
             if d == self.n:
                 if ind not in self.todo:
