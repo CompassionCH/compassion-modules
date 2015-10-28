@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-##############################################################################
+#
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
@@ -7,7 +7,7 @@
 #
 #    The licence is in the file __openerp__.py
 #
-##############################################################################
+#
 from . import bluecornerfinder
 from . import checkboxreader
 from . import import_mail_functions
