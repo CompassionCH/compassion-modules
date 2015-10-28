@@ -1,12 +1,19 @@
 <openerp>
     <data>
+        <!-- Templates -->
+        <record id="default_template" model="sponsorship.correspondence.template">
+            <field name="name">Default Template</field>
+            <field name="layout">L6</field>
+            <field name="page_width">595</field>
+            <field name="page_height">842</field>
+            <field name="checkbox_ids" eval="False"/>
+        </record>
+        
         <record id="test_template" model="sponsorship.correspondence.template">
             <field name="name">Test Template</field>
             <field name="layout">L1</field>
             <field name="page_width">595</field>
             <field name="page_height">842</field>
-            <field name="bluesquare_x">580</field>
-            <field name="bluesquare_y">8</field>
             <field name="qrcode_x_min">0</field>
             <field name="qrcode_x_max">150</field>
             <field name="qrcode_y_min">0</field>
@@ -15,7 +22,8 @@
             <field name="pattern_x_max">370</field>
             <field name="pattern_y_min">730</field>
             <field name="pattern_y_max">842</field>
-            <field name="pattern_image" type="base64" file="sbc_compassion/tools/pattern/triforce.png"/>
+            <field name="pattern_image" type="base64" file="sbc_compassion/static/src/img/triforce.png"/>
+            <field name="template_image" type="base64" file="sbc_compassion/static/src/img/template_test.png"/>
             <field name="checkbox_ids" eval="False"/>
         </record>
 

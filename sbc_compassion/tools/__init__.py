@@ -11,7 +11,6 @@
 from . import bluecornerfinder
 from . import checkboxreader
 from . import import_mail_functions
-from . import layout
 from . import patternrecognition
 from . import stickerwriter
 from . import zxing

@@ -3,7 +3,6 @@
 import cv2
 import numpy as np
 import zxing
-from layout import LayoutLetter
 from os import remove
 
 class StickerWriter:
@@ -18,16 +17,19 @@ class StickerWriter:
         """
         self.text = text
         self.img = 255*np.ones(self.size,np.uint8)
-        self.lay = LayoutLetter()
-        lay = self.lay.getLayout()
-        key = self.text.keys()
-        n = len(key)
-        for i,sticker in enumerate(lay):
-            while i >= n:
-                i -= n
-            name = key[i]
-            code = self.text[key[i]]
-            self._draw(sticker,name,code)
+        ############################
+        # This code is not working with new template models
+        ############################
+        # self.lay = LayoutLetter()
+        # lay = self.lay.getLayout()
+        # key = self.text.keys()
+        # n = len(key)
+        # for i,sticker in enumerate(lay):
+            # while i >= n:
+                # i -= n
+            # name = key[i]
+            # code = self.text[key[i]]
+            # self._draw(sticker,name,code)
 
     def getImage():
         """
