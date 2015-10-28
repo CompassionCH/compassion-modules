@@ -6,3 +6,5 @@
 "access_admin_correspondence_lang_checkbox","Full access on correspondence_checkbox","model_sponsorship_correspondence_lang_checkbox","base.group_erp_manager",1,1,1,1
 "access_correspondence_template","Read access on correspondence_template","model_sponsorship_correspondence_template","child_compassion.group_sponsorship",1,0,0,0
 "access_correspondence_lang_checkbox","Read access on correspondence_checkbox","model_sponsorship_correspondence_lang_checkbox","child_compassion.group_sponsorship",1,0,0,0
+"access_import_letters_history","Access on import_letters_history","model_import_letters_history","child_compassion.group_sponsorship",1,1,1,0
+"access_import_letters_line","Access on import_letters_line","model_import_letter_line","child_compassion.group_sponsorship",1,1,1,1

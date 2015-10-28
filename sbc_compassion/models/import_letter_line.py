@@ -10,10 +10,6 @@
 ##############################################################################
 
 from openerp import fields, models, api, _
-import os
-import sys
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../tools'))
-from layout import LayoutLetter
 
 
 class ImportLetterLine(models.TransientModel):
@@ -31,19 +27,14 @@ class ImportLetterLine(models.TransientModel):
                                      compute='_set_sponsorship_id')
     sponsorship_status = fields.Boolean(compute='_set_sponsorship_id',
                                         readonly=True)
-    partner_codega = fields.Char(string=_("Partner"))
+    partner_codega = fields.Char('Partner')
     name = fields.Char(compute='_set_name')
-    child_code = fields.Char(string=_("Child"))
-    template_id = fields.Selection([
-        (LayoutLetter.name[0], _('Template 1')),
-        (LayoutLetter.name[1], _('Template 2')),
-        (LayoutLetter.name[2], _('Template 3')),
-        (LayoutLetter.name[3], _('Template 4')),
-        (LayoutLetter.name[4], _('Template 5')),
-        (LayoutLetter.name[5], _('Template 6'))], string=_("Template"))
+    child_code = fields.Char('Child')
+    template_id = fields.Many2one(
+        'sponsorship.correspondence.template', 'Template')
     supporter_languages_id = fields.Many2one(
-        'res.lang.compassion',string="Language")
-    is_encourager = fields.Boolean(string=_("Encourager"), default=False)
+        'res.lang.compassion', 'Language')
+    is_encourager = fields.Boolean('Encourager', default=False)
     letter_image = fields.Many2one('ir.attachment')
     letter_image_preview = fields.Binary()
 
@@ -64,12 +55,14 @@ class ImportLetterLine(models.TransientModel):
     def _check_status(self):
         """
         """
+        default_template = self.env.ref('sbc_compassion.default_template')
         for inst in self:
             if inst.sponsorship_status or inst.is_encourager:
                 inst.status = "encourager"
             if inst.sponsorship_status is True:
                 inst.status = "sponsor"
-            elif inst.template_id not in LayoutLetter.name:
+            elif not inst.template_id or (inst.template_id.id ==
+                                          default_template.id):
                 inst.status = "temp"
             elif len(inst.supporter_languages_id) != 1:
                 inst.status = "lang"
