@@ -159,8 +159,9 @@ class recurring_contract(models.Model):
         if 'num_pol_ga' not in vals:
             partner_id = vals.get('partner_id')
             if partner_id:
-                vals['num_pol_ga'] = self.search_count([
-                    ('partner_id', '=', partner_id)])
+                other_nums = self.search([
+                    ('partner_id', '=', partner_id)]).mapped('num_pol_ga')
+                vals['num_pol_ga'] = max(other_nums or [-1]) + 1
         return super(recurring_contract, self).create(vals)
 
     @api.one
