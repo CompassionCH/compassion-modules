@@ -6,31 +6,49 @@ of the center based on the keypoint detected.
 """
 import cv2
 import numpy as np
+import cStringIO
+import base64
+import tempfile
+
+from openerp import _
+from openerp.exceptions import Warning
 
 
-def patternRecognition(image, template, box=([0, 1], [0, 1]), threshold=2,
-                       save_res=False):
+def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
+                       threshold=2, save_res=False):
     """
-    Try to find a pattern in the subset (given by box) of the image.
+    Try to find a pattern in the subset (given by crop_area) of the image.
     :param str image: Name of the image
-    :param str template: Name of the template
-    :param tuple(list) box: Subset of the image to cut (relative position). \
-    First index w/h, second min/max
+    :param str pattern: Pattern image data (encoded in base64)
+    :param list crop_area: Subset of the image to cut (relative position). \
+                           [x_min, x_max, y_min, y_max]
     :param int threshold: Number of keypoints to find in order \
     to define a match
     :param bool save_res: Save an image ('sift_result.jpg')\
     showing the keypoints
 
     :returns: None if not enough keypoints found, position of the keypoints \
-    (first index image/template)
+    (first index image/pattern)
     :rtype: np.array(), np.array()
     """
     # read images
     img1 = cv2.imread(image)
-    img2 = cv2.imread(template)
+    if img1 is None:
+        raise Warning(
+            _("Could not read template image"),
+            _("Template image is broken"))
+    with tempfile.NamedTemporaryFile() as temp:
+        temp.write(base64.b64decode(pattern))
+        temp.flush()
+        img2 = cv2.imread(temp.name,
+                          cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
+        if img2 is None:
+            raise Warning(
+                _("Could not read pattern image"),
+                _("The pattern image is broken"))
 
     # cut the part useful for the recognition
-    (xmin, ymin), img1 = subsetImage(img1, box)
+    (xmin, ymin), img1 = subsetImage(img1, crop_area)
 
     # compute the keypoints
     sift = cv2.xfeatures2d.SIFT_create()
@@ -46,33 +64,31 @@ def patternRecognition(image, template, box=([0, 1], [0, 1]), threshold=2,
 
     if len(good) >= threshold:
         # put in a np.array the position of the image's keypoints
-        ret1 = np.array([kp1[i[0].trainIdx].pt for i in good])
+        keypoints = np.array([kp1[i[0].trainIdx].pt for i in good])
         # compute the position in the original picture
-        ret1 = ret1 + np.array((xmin, ymin))
-        # put in a np.array the position of the template's keypoints
-        ret2 = np.array([kp2[i[0].queryIdx].pt for i in good])
-        return ret1, ret2
+        keypoints = keypoints + np.array((xmin, ymin))
+        return keypoints
     else:
         return None
 
 
-def subsetImage(img, box):
+def subsetImage(img, crop_area):
     """
-    Cut a part of the image given by box.
+    Cut a part of the image given by crop_area.
     Box is a tuple (of 2) containg a list of two elements.
     The tuple gives the choice between the width and the height,
     the list between the min and the max
     :param array img: Image read by cv2.imread
-    :param tuple(list[]) box: Relative coordinate to cut
+    :param list[] crop_area: Relative coordinate to cut
     :returns: Minimum in X and Y and the subset of the image
     :rtype: tuple(),array
     """
     h, w = img.shape[:2]
     # compute absolute coordinates
-    xmin = round(w*box[0][0])
-    xmax = round(w*box[0][1])
-    ymin = round(h*box[1][0])
-    ymax = round(h*box[1][1])
+    xmin = round(w * crop_area[0])
+    xmax = round(w * crop_area[1])
+    ymin = round(h * crop_area[2])
+    ymax = round(h * crop_area[3])
     # in opencv first index->height
     return (xmin, ymin), img[ymin:ymax, xmin:xmax]
 
@@ -90,7 +106,7 @@ def findMatches(des1, des2, test=0.8):
     # Apply ratio test
     good = []
     for m, n in matches:
-        if m.distance < test*n.distance:
+        if m.distance < test * n.distance:
             good.append([m])
 
     return good
@@ -114,17 +130,17 @@ def keyPointCenter(keypoint):
         # normalization of the weights
         N = 0
         # return value
-        center = np.array([0.0,0.0])
+        center = np.array([0.0, 0.0])
         for i in keypoint:
             omega = 0
             for j in keypoint:
                 # compute the distance
-                omega += np.sum((np.array(i)-np.array(j))**2)
+                omega += np.sum((np.array(i) - np.array(j)) ** 2)
             # invert the weight in order to have a small one
             # for a keypoint far away
             if omega == 0:
                 omega = 1e-8
-            omega = 1.0/np.sqrt(omega)
+            omega = 1.0 / np.sqrt(omega)
             N += omega
-            center += omega*np.array(i)
-        return center/N
+            center += omega * np.array(i)
+        return center / N

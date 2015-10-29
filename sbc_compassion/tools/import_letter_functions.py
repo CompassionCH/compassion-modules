@@ -2,6 +2,8 @@
 Defines a few functions useful in ../models/import_mail.py
 """
 import os
+import magic
+from openerp.exceptions import Warning
 
 
 def check_file(name):

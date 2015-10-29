@@ -146,9 +146,7 @@ class child_pictures(models.Model):
             error = True
         if error:
             error_message = json_data.get('error', {'message': html_res})
-            self.env['mail.thread'].with_context(
-                thread_model='compassion.child').message_post(
-                self.env.cr, self.env.user.id, child_id,
+            self.env['compassion.child'].browse(child_id).message_post(
                 error_message.get('message', 'Bad response'),
                 _('Picture update error'), 'comment')
             return False

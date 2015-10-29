@@ -1,0 +1,85 @@
+<openerp>
+    <data>
+        <!-- Templates -->
+        <record id="default_template" model="sponsorship.correspondence.template">
+            <field name="name">Default Template</field>
+            <field name="layout">L6</field>
+            <field name="page_width">595</field>
+            <field name="page_height">842</field>
+            <field name="checkbox_ids" eval="False"/>
+        </record>
+        
+        <record id="test_template" model="sponsorship.correspondence.template">
+            <field name="name">Test Template</field>
+            <field name="layout">L1</field>
+            <field name="page_width">595</field>
+            <field name="page_height">842</field>
+            <field name="qrcode_x_min">0</field>
+            <field name="qrcode_x_max">150</field>
+            <field name="qrcode_y_min">0</field>
+            <field name="qrcode_y_max">100</field>
+            <field name="pattern_x_min">240</field>
+            <field name="pattern_x_max">370</field>
+            <field name="pattern_y_min">730</field>
+            <field name="pattern_y_max">842</field>
+            <field name="pattern_image" type="base64" file="sbc_compassion/static/src/img/triforce.png"/>
+            <field name="template_image" type="base64" file="sbc_compassion/static/src/img/template_test.png"/>
+            <field name="checkbox_ids" eval="False"/>
+        </record>
+
+        <!-- Language checkboxes -->
+        <record id="test_french_checkbox" model="sponsorship.correspondence.lang.checkbox">
+            <field name="template_id" ref="test_template"/>
+            <field name="language_id" ref="lang_compassion_french"/>
+            <field name="x_min">263</field>
+            <field name="x_max">284</field>
+            <field name="y_min">12</field>
+            <field name="y_max">32</field>
+        </record>
+        
+        <record id="test_german_checkbox" model="sponsorship.correspondence.lang.checkbox">
+            <field name="template_id" ref="test_template"/>
+            <field name="language_id" ref="lang_compassion_german"/>
+            <field name="x_min">263</field>
+            <field name="x_max">284</field>
+            <field name="y_min">52</field>
+            <field name="y_max">72</field>
+        </record>
+        
+        <record id="test_italian_checkbox" model="sponsorship.correspondence.lang.checkbox">
+            <field name="template_id" ref="test_template"/>
+            <field name="language_id" ref="lang_compassion_italian"/>
+            <field name="x_min">263</field>
+            <field name="x_max">284</field>
+            <field name="y_min">32</field>
+            <field name="y_max">52</field>
+        </record>
+        
+        <record id="test_english_checkbox" model="sponsorship.correspondence.lang.checkbox">
+            <field name="template_id" ref="test_template"/>
+            <field name="language_id" ref="lang_compassion_english"/>
+            <field name="x_min">371</field>
+            <field name="x_max">390</field>
+            <field name="y_min">32</field>
+            <field name="y_max">52</field>
+        </record>
+        
+        <record id="test_spanish_checkbox" model="sponsorship.correspondence.lang.checkbox">
+            <field name="template_id" ref="test_template"/>
+            <field name="language_id" ref="lang_compassion_spanish"/>
+            <field name="x_min">371</field>
+            <field name="x_max">390</field>
+            <field name="y_min">12</field>
+            <field name="y_max">32</field>
+        </record>
+        
+        <record id="test_other_checkbox" model="sponsorship.correspondence.lang.checkbox">
+            <field name="template_id" ref="test_template"/>
+            <field name="x_min">368</field>
+            <field name="x_max">390</field>
+            <field name="y_min">52</field>
+            <field name="y_max">72</field>
+        </record>
+
+    </data>
+</openerp>

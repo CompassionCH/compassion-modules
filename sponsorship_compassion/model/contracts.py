@@ -849,9 +849,35 @@ class sponsorship_contract(models.Model):
                 "WHERE id = {1:d}".format(
                     amount_deleted,
                     pml_id))
+            # Copy payment move_line to put the amount unreconciled in a
+            # separate move_line
+            self.env.cr.execute("""
+INSERT INTO account_move_line (
+    statement_id, journal_id, date_maturity, partner_id, analytic_account_id,
+    centralisation, company_id, state, blocked, ref, account_id, period_id,
+    date, move_id, name, product_id, product_uom_id, quantity, analytics_id,
+    transaction_ref
+)
+
+SELECT statement_id, journal_id, date_maturity, partner_id,
+       analytic_account_id, centralisation, company_id, state, blocked, ref,
+       account_id, period_id, date, move_id, name, product_id, product_uom_id,
+       quantity, analytics_id, transaction_ref
+
+FROM account_move_line WHERE id = %s""" % pml_id)
+
+            # Update values of the newly inserted line
+            self.env.cr.execute(
+                "UPDATE account_move_line SET "
+                "create_uid = {0:d}, write_uid = {0:d},"
+                "create_date=now(), write_date=now(),"
+                "credit={1:.3f} "
+                "WHERE id = (SELECT max(id) FROM account_move_line)"
+                .format(self.env.user.id, amount_deleted)
+            )
             self.env.invalidate_all()
-            mvl_obj.browse(pml_id).copy({
-                'reconcile_id': False,
-                'credit': amount_deleted})
+            # mvl_obj.browse(pml_id).copy({
+            # 'reconcile_id': False,
+            # 'credit': amount_deleted})
         if unrec_pml:
             mvl_obj.browse(unrec_pml)._remove_move_reconcile()

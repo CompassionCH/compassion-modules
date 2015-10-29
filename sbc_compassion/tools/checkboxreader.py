@@ -9,6 +9,7 @@ from math import copysign
 
 
 class CheckboxReader:
+
     """
     Read the state of a checkbox contained in an image composed mainly by
     the checkbox.
@@ -81,20 +82,20 @@ class CheckboxReader:
         :param int border: Thickness of the border (in pixel)
         """
         start = copy.deepcopy(self.corners[0])
-        d = start[0]**2 + start[1]**2
+        d = start[0] ** 2 + start[1] ** 2
         # find the upper-left (distance from the top-left
         # corner of the picture)
         for i in self.corners:
-            d_tmp = i[0]**2 + i[1]**2
+            d_tmp = i[0] ** 2 + i[1] ** 2
             if d_tmp < d:
                 start = i
                 d = d_tmp
         # find the lower-right corner (distance from the bottom-right
         # corner of the picture)
         end = copy.deepcopy(self.corners[0])
-        d = (self.h-end[0])**2 + (self.w-end[1])**2
+        d = (self.h - end[0]) ** 2 + (self.w - end[1]) ** 2
         for i in self.corners:
-            d_tmp = (self.h-i[0])**2 + (self.w-i[1])**2
+            d_tmp = (self.h - i[0]) ** 2 + (self.w - i[1]) ** 2
             if d_tmp < d:
                 end = i
                 d = d_tmp
@@ -102,13 +103,13 @@ class CheckboxReader:
         # count the number of (black) pixels
         black = 0
         pixel = 0
-        for i in range(start[0]+border, end[0]-border):
-            for j in range(start[1]+border, end[1]-border):
+        for i in range(start[0] + border, end[0] - border):
+            for j in range(start[1] + border, end[1] - border):
                 pixel += 1
                 if isBlack(self.img[i, j]):
                     black += 1
 
-        ratio = float(black)/float(pixel)
+        ratio = float(black) / float(pixel)
 
         self.state = False
         # apply threshold
@@ -139,24 +140,24 @@ class CheckboxReader:
         left = [False, False]
         # discard case where i,j is not black and discard case
         # too close to the border
-        if (isBlack(self.img[i, j]) and i > 1 and i < self.h-2 and \
-                j < self.w-2 and j > 1):
-            if isBlack(self.img[i+1, j]):
+        if (isBlack(self.img[i, j]) and i > 1 and i < self.h - 2 and
+                j < self.w - 2 and j > 1):
+            if isBlack(self.img[i + 1, j]):
                 down[0] = True
-            if isBlack(self.img[i+2, j]):
+            if isBlack(self.img[i + 2, j]):
                 down[1] = True
-            if isBlack(self.img[i-1, j]):
+            if isBlack(self.img[i - 1, j]):
                 up[0] = True
-            if isBlack(self.img[i-2, j]):
+            if isBlack(self.img[i - 2, j]):
                 up[1] = True
-            if isBlack(self.img[i, j+1]):
+            if isBlack(self.img[i, j + 1]):
                 right[0] = True
-            if isBlack(self.img[i, j+2]):
+            if isBlack(self.img[i, j + 2]):
                 right[1] = True
-            if isBlack(self.img[i, j-1]):
-                left[0] = True        
-            if isBlack(self.img[i, j-2]):
-                left[1] = True        
+            if isBlack(self.img[i, j - 1]):
+                left[0] = True
+            if isBlack(self.img[i, j - 2]):
+                left[1] = True
 
         # check if the pixel is a corner
         if isCorner(down, up, right, left):
@@ -216,17 +217,17 @@ class CheckboxReader:
         for i in self.corners:
             for j in self.corners:
                 if i != j:
-                    dist_max = np.abs(i[0]-j[0])
-                    dist_max = np.maximum(dist_max, np.abs(i[1]-j[1]))
+                    dist_max = np.abs(i[0] - j[0])
+                    dist_max = np.maximum(dist_max, np.abs(i[1] - j[1]))
                     if dist_max < width:
                         width = dist_max
         i = 1
         border = True
         # increase the size of the border until reaching the good one
-        while i < width/2 and border:
+        while i < width / 2 and border:
             border = self._isStillBorder(i)
             i += 1
-        i = i-1
+        i = i - 1
         return i
 
     def _isStillBorder(self, distance):
@@ -244,32 +245,32 @@ class CheckboxReader:
             for j in self.corners:
                 if j != i:
                     neigh.append(j)
-                    d[k] = (j[0]-i[0])**2 + (j[1]-i[1])**2
+                    d[k] = (j[0] - i[0]) ** 2 + (j[1] - i[1]) ** 2
                     k += 1
             d = d.index(max(d))
             k = 0
             # find direction other corners
             direct = [0, 0]
             if abs(neigh[d][0]) > 1:
-                direct[0] = copysign(1, neigh[d][0])*distance
+                direct[0] = copysign(1, neigh[d][0]) * distance
             if abs(neigh[d][1]) > 1:
-                direct[1] = copysign(1, neigh[d][1])*distance
+                direct[1] = copysign(1, neigh[d][1]) * distance
 
             # check corner
-            ind = [i[0]+direct[0], i[1]+direct[1]]
+            ind = [i[0] + direct[0], i[1] + direct[1]]
             if not isBlack(self.img[tuple(ind)]):
                 return False
             # check pixel between corners
             for j in neigh:
                 if d != k:
-                    ind = [(i[0]+j[0])/2, (i[0]+j[0])/2]
+                    ind = [(i[0] + j[0]) / 2, (i[0] + j[0]) / 2]
                     mdir = [0, 0]
                     if abs(j[0]) > 1:
                         mdir[1] = direct[1]
                     if abs(j[1]) > 1:
                         mdir[0] = direct[0]
 
-                    ind = [ind[0]+mdir[0], ind[1]+mdir[1]]
+                    ind = [ind[0] + mdir[0], ind[1] + mdir[1]]
                     if not isBlack(self.img[tuple(ind)]):
                         return False
                 k += 1
@@ -333,7 +334,7 @@ def connectedComponents(img, connectivity=8):
     :returns: Image of ids
     :rtype: array
     """
-    con = np.zeros((3,3),bool)
+    con = np.zeros((3, 3), bool)
     if connectivity == 8:
         # 111
         # 110
@@ -351,7 +352,7 @@ def connectedComponents(img, connectivity=8):
 
     h, w = img.shape[:2]
     # square mask
-    mh = (con.shape[0]-1)/2
+    mh = (con.shape[0] - 1) / 2
     mw = mh
     ret = np.zeros((h, w), np.int8)
     col = 1
@@ -367,18 +368,18 @@ def connectedComponents(img, connectivity=8):
                 for x in range(con.shape[0]):
                     for y in range(con.shape[1]):
                         # if we stay inside the image
-                        if (i+x-mh < h and i+x-mh >= 0 and
-                                j-mw+y < w and j-mw+y >= 0):
+                        if (i + x - mh < h and i + x - mh >= 0 and
+                                j - mw + y < w and j - mw + y >= 0):
                             # if not background and inside the mask
-                            if ret[i+x-mh, j-mw+y] != 0 and con[x, y]:
-                                a = ret[i+x-mh, j-mw+y]
+                            if ret[i + x - mh, j - mw + y] != 0 and con[x, y]:
+                                a = ret[i + x - mh, j - mw + y]
                                 # if pixel already threated
                                 if col_tmp != -1:
                                     # add to the equivalence list
-                                    if a not in E[col_tmp-1]:
-                                        E[col_tmp-1].append(a)
-                                    if col_tmp not in E[a-1]:
-                                        E[a-1].append(col_tmp)
+                                    if a not in E[col_tmp - 1]:
+                                        E[col_tmp - 1].append(a)
+                                    if col_tmp not in E[a - 1]:
+                                        E[a - 1].append(col_tmp)
                                     # keep lowest index
                                     if a < col_tmp:
                                         col_tmp = a
@@ -393,8 +394,8 @@ def connectedComponents(img, connectivity=8):
                     ret[i, j] = col_tmp
 
     # create an equivalence table from the list
-    eq_table = col*np.ones(col-1, int)
-    for i in range(col-1):
+    eq_table = col * np.ones(col - 1, int)
+    for i in range(col - 1):
         eq_table[i] = min(E[i])
 
     # gives the final ids (use the equivalence in order to have the smallest
@@ -402,5 +403,5 @@ def connectedComponents(img, connectivity=8):
     for i in range(h):
         for j in range(w):
             if ret[i, j] != 0:
-                ret[i, j] = eq_table[ret[i, j]-1]
+                ret[i, j] = eq_table[ret[i, j] - 1]
     return ret
