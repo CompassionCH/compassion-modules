@@ -10,7 +10,7 @@
 #                            in Jesus' name
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    @author: Emanuel Cino, Yannick Vaucher (Camptocamp SA)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -25,33 +25,20 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-##############################################################################
-
-{
-    'name': "Sponsor to beneficiary communication",
-    'version': '0.1',
-    'category': 'Other',
-    'summary': "SBC - Sponsor to beneficiary communication",
-    'sequence': 150,
-    'author': 'Compassion CH',
-    'website': 'http://www.compassion.ch',
-    'depends': ['onramp_compassion', 'web_tree_image'],
-    'external_dependencies': {
-        'java': ['zxing'],
-        'python': ['magic', 'PythonMagick', 'numpy', 'cv2']
-    },
-    'data': [
-        'security/ir.model.access.csv',
-        'views/country_compassion_view.xml',
-        'views/partner_compassion_view.xml',
-        'views/lang_compassion_view.xml',
-        'views/sponsorship_correspondence_view.xml',
-        'views/import_letters_history_view.xml',
-        'views/import_letter_line_view.xml',
-        'views/correspondence_template_view.xml',
-        'data/lang_data.xml',
-        'data/correspondence_template_data.xml',
-    ],
-    'installable': True,
-    'auto_install': False,
-}
+###############################################################################
+{'name': 'OnRamp Compassion',
+ 'version': '1.1',
+ 'category': 'Misc',
+ 'author': 'Compassion CH',
+ 'maintainer': 'Compassion CH',
+ 'website': 'http://www.compassion.ch',
+ 'depends': ['message_center_compassion'],
+ 'external_dependencies': {
+     'python': ['jwt'],
+ },
+ 'data': [],
+ 'demo': ['demo/res_users.xml'],
+ 'test': [],
+ 'installable': True,
+ 'application': True,
+ }
