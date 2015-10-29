@@ -40,7 +40,6 @@ def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
     with tempfile.NamedTemporaryFile() as temp:
         temp.write(base64.b64decode(pattern))
         temp.flush()
-        # temp.seek(0)
         img2 = cv2.imread(temp.name,
                           cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
         if img2 is None:
@@ -65,12 +64,10 @@ def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
 
     if len(good) >= threshold:
         # put in a np.array the position of the image's keypoints
-        ret1 = np.array([kp1[i[0].trainIdx].pt for i in good])
+        keypoints = np.array([kp1[i[0].trainIdx].pt for i in good])
         # compute the position in the original picture
-        ret1 = ret1 + np.array((xmin, ymin))
-        # put in a np.array the position of the pattern's keypoints
-        # ret2 = np.array([kp2[i[0].queryIdx].pt for i in good])
-        return ret1     # Remark : ret2 is never used !
+        keypoints = keypoints + np.array((xmin, ymin))
+        return keypoints
     else:
         return None
 
