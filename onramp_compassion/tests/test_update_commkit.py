@@ -31,7 +31,7 @@ class TestUpdateCommkit(TestOnramp):
             }
         })
         self.assertTrue(response.code, 201)
-        result = simplejson.loads(response.read())
+        result = simplejson.loads(response.read()).get('result')
         self.assertTrue('ConfirmationId' in result)
         self.assertFalse('ErrorId' in result)
         self.assertEqual(result['Message'],
