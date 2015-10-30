@@ -6,6 +6,8 @@
 import simplejson
 import werkzeug
 import logging
+import uuid
+from datetime import datetime
 
 from openerp import exceptions
 from openerp.http import (
@@ -16,8 +18,27 @@ from openerp.http import (
 _logger = logging.getLogger(__name__)
 _onramp_logger = logging.getLogger('ONRAMP')
 
+# Monkeypatch type of request rooter to use RESTJsonRequest
+old_get_request = Root.get_request
+
+def get_request(self, httprequest):
+    if (httprequest.mimetype == "application/json"
+            and httprequest.environ['PATH_INFO'].startswith('/onramp')):
+        return RESTJsonRequest(httprequest)
+    return old_get_request(self, httprequest)
+
+Root.get_request = get_request
+
 
 class RESTJsonRequest(JsonRequest):
+
+    def __init__(self, *args):
+        self.uuid = str(uuid.uuid4())
+        self.timestamp = datetime.strftime(datetime.now(), '%Y-%m-%dT%H:%M:%S')
+        try:
+            super(RESTJsonRequest, self).__init__(*args)
+        except AttributeError:
+            raise werkzeug.exceptions.BadRequest()
 
     def dispatch(self):
         _onramp_logger.info(
@@ -32,11 +53,11 @@ class RESTJsonRequest(JsonRequest):
         response = {}
         status = 200
         if error is not None:
-            response['error'] = error
-            status = response['error']['code']
+            status = error.get('ErrorCode')
+            response = error
         if result is not None:
+            status = result.pop('code')
             response = result
-            status = result['code']
 
         mime = 'application/json'
         body = simplejson.dumps(response)
@@ -49,46 +70,54 @@ class RESTJsonRequest(JsonRequest):
 
     def _handle_exception(self, exception):
         """Use http exception handler."""
+        error = {
+            'ErrorId': self.uuid,
+            'ErrorTimestamp': self.timestamp,
+            'ErrorClass': 'BusinessException',
+            'ErrorRetryable': False,
+            'ErrorModule': 'REST OnRamp',
+            'ErrorSubModule': 'Rest OnRamp Authorization',
+            'ErrorMethod': 'ValidateToken',
+            'ErrorLoggedInUser': '',
+            'RelatedRecordId': ''
+        }
         try:
             return super(JsonRequest, self)._handle_exception(exception)
         except werkzeug.exceptions.HTTPException:
-            error = {
-                'code': exception.code,
-                'message': exception.message,
+            error.update({
+                'ErrorCode': exception.code,
+                'ErrorCategory': 'CommunicationError',
+                'ErrorMessage': exception.message,
                 'description': exception.description,
-            }
+            })
             return self._json_response(error=error)
         except exceptions.AccessDenied:
-            error = {
-                'code': 401,
-                'message': '401 Unauthorized',
-            }
+            error.update({
+                'ErrorCode': 401,
+                'ErrorCategory': 'AuthorizationError',
+                'ErrorMessage': '401 Unauthorized',
+            })
             return self._json_response(error=error)
         except Exception:
             if not isinstance(exception, (exceptions.Warning,
                               SessionExpiredException)):
                 _logger.exception("Exception during JSON request handling.")
-            error = {
-                'code': 200,
-                'message': "Odoo Server Error",
-                'data': serialize_exception(exception)
-            }
+            error.update({
+                'ErrorCode': 500,
+                'ErrorCategory': 'ApplicationError',
+                'ErrorMessage': 'Odoo Server Error',
+                # 'data': serialize_exception(exception)
+            })
             if isinstance(exception, AuthenticationError):
-                error['code'] = 100
-                error['message'] = "Odoo Session Invalid"
+                error.update({
+                    'ErrorCode': 401,
+                    'ErrorCategory': 'AuthenticationError',
+                    'ErrorMessage': 'Session Invalid',
+                })
             if isinstance(exception, SessionExpiredException):
-                error['code'] = 100
-                error['message'] = "Odoo Session Expired"
+                error.update({
+                    'ErrorCode': 401,
+                    'ErrorCategory': 'AuthenticationError',
+                    'ErrorMessage': 'Session Expired',
+                })
             return self._json_response(error=error)
-
-old_get_request = Root.get_request
-
-
-# Monkeypatch type of request rooter to use RESTJsonRequest
-def get_request(self, httprequest):
-    if (httprequest.mimetype == "application/json"
-            and httprequest.environ['PATH_INFO'].startswith('/api/')):
-        return RESTJsonRequest(httprequest)
-    return old_get_request(self, httprequest)
-
-Root.get_request = get_request
