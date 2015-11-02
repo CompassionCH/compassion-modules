@@ -8,5 +8,4 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from . import ir_http
-# from . import account_invoice
+from . import onramp_logging

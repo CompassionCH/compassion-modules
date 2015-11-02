@@ -9,17 +9,18 @@ import logging
 import uuid
 from datetime import datetime
 
+from ..tools.onramp_logging import ONRAMP_LOGGER
 from openerp import exceptions
 from openerp.http import (
     Response, JsonRequest, Root, SessionExpiredException,
-    AuthenticationError, serialize_exception
+    AuthenticationError
 )
 
 _logger = logging.getLogger(__name__)
-_onramp_logger = logging.getLogger('ONRAMP')
 
 # Monkeypatch type of request rooter to use RESTJsonRequest
 old_get_request = Root.get_request
+
 
 def get_request(self, httprequest):
     if (httprequest.mimetype == "application/json"
@@ -41,7 +42,7 @@ class RESTJsonRequest(JsonRequest):
             raise werkzeug.exceptions.BadRequest()
 
     def dispatch(self):
-        _onramp_logger.info(
+        ONRAMP_LOGGER.info(
             "[%s] %s %s",
             self.httprequest.environ['REQUEST_METHOD'],
             self.httprequest.url,
@@ -62,11 +63,11 @@ class RESTJsonRequest(JsonRequest):
         mime = 'application/json'
         body = simplejson.dumps(response)
 
-        response = Response(body, headers=[('Content-Type', mime),
-                                           ('Content-Length', len(body))],
-                            status=status)
-        _onramp_logger.info(response.response)
-        return response
+        http_response = Response(
+            body, headers=[('Content-Type', mime),
+                           ('Content-Length', len(body))], status=status)
+        ONRAMP_LOGGER.info("[SEND] %s %s", str(status), response)
+        return http_response
 
     def _handle_exception(self, exception):
         """Use http exception handler."""
