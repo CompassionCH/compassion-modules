@@ -126,10 +126,10 @@ class BarCodeTool():
         cmd.append(text)
         if width is not None:
             cmd.append("--width")
-            cmd.append(width)
+            cmd.append(str(width))
         if height is not None:
             cmd.append("--height")
-            cmd.append(height)
+            cmd.append(str(height))
         if code_format is not None:
             cmd.append("--barcode_format")
             cmd.append(code_format)
@@ -139,7 +139,7 @@ class BarCodeTool():
 
         cmd.append("--output")
         cmd.append(file_)
-        print cmd
+
         (stdout, stderr) = subprocess.Popen(
             cmd, stdout=subprocess.PIPE, universal_newlines=True).communicate()
 
