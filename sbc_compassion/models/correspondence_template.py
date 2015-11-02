@@ -132,7 +132,7 @@ class CorrespondenceTemplate(models.Model):
                 0 <= tpl.bluesquare_x <= width and
                 0 <= tpl.bluesquare_y <= height and
                 0 <= tpl.qrcode_x_min <= tpl.qrcode_x_max <= width and
-                0 <= tpl.qrcode_y_min <= tpl.qrcode_y_max  <= height and
+                0 <= tpl.qrcode_y_min <= tpl.qrcode_y_max <= height and
                 0 <= tpl.pattern_x_min <= tpl.pattern_x_max <= width and
                 0 <= tpl.pattern_y_min <= tpl.pattern_y_max <= height)
             if not valid_coordinates:

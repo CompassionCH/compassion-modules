@@ -78,7 +78,7 @@ class BarCodeTool():
         if qr_only:
             cmd.append("--possible_formats")
             cmd.append("QR_CODE")
-        if crop != None:
+        if crop is not None:
             cmd.append("--crop")
             for i in range(4):
                 cmd.append(str(crop[i]))
