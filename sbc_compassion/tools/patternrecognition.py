@@ -1,11 +1,20 @@
 """
+<<<<<<< HEAD
 Define a few function that are useful in order to detect a pattern using the
 sift implementation in opencv.
+=======
+Define a few function that are useful in order to detect a pattern using the sift implementation
+in opencv.
+>>>>>>> comp/sbc-devel
 A method (keyPointCenter) has been defined in order to find an approximation
 of the center based on the keypoint detected.
 """
 import cv2
 import numpy as np
+<<<<<<< HEAD
+=======
+import cStringIO
+>>>>>>> comp/sbc-devel
 import base64
 import tempfile
 
