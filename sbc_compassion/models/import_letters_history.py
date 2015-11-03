@@ -131,17 +131,10 @@ class ImportLettersHistory(models.Model):
                 # loop over all the attachments
                 for attachment in inst.data:
                     # pdf or tiff case
-<<<<<<< HEAD
                     if func.check_file(attachment.name) == 1:
                         tmp += 1
                     # zip case
                     elif func.isZIP(attachment.name):
-=======
-                    if check_file(attachment.name) == 1:
-                        tmp += 1
-                    # zip case
-                    elif isZIP(attachment.name):
->>>>>>> comp/sbc-devel
                         tmp_name_file = inst.path + attachment.name
                         # save the zip file
                         if not os.path.exists(tmp_name_file):
@@ -150,13 +143,8 @@ class ImportLettersHistory(models.Model):
                                 bin_size=False).datas))
                             f.close()
                             if attachment.name not in inst.list_zip:
-<<<<<<< HEAD
                                 inst.list_zip = func.addname(inst.list_zip,
                                                              attachment.name)
-=======
-                                inst.list_zip = addname(inst.list_zip,
-                                                        attachment.name)
->>>>>>> comp/sbc-devel
                                 # catch ALL the exceptions that can be raised
                                 # by class zipfile
                                 try:
@@ -172,21 +160,13 @@ class ImportLettersHistory(models.Model):
                             list_file = zip_.namelist()
                             # loop over all files in zip
                             for tmp_file in list_file:
-<<<<<<< HEAD
                                 tmp += (func.check_file(tmp_file) == 1)
-=======
-                                tmp += (check_file(tmp_file) == 1)
->>>>>>> comp/sbc-devel
                 inst.nber_letters = tmp
                 # deletes zip removed from the data
                 for f in inst.list_zip.split(';'):
                     if f not in inst.mapped('data.name') and f != '':
                         if os.path.exists(inst.path + f):
-<<<<<<< HEAD
                             tmp = func.removename(inst.list_zip, f)
-=======
-                            tmp = removename(inst.list_zip, f)
->>>>>>> comp/sbc-devel
                             if tmp == -1:
                                 raise exceptions.Warning(
                                     _("""Does not find the file
@@ -198,14 +178,7 @@ class ImportLettersHistory(models.Model):
                 raise exceptions.Warning(
                     _("State: '{}' not implemented".format(inst.state)))
 
-<<<<<<< HEAD
     # ------------------------ _RUN_ANALYZE ----------------------------------
-=======
-
-
-    # ------------------------ _RUN_ANALYZE ----------------------------------
-
->>>>>>> comp/sbc-devel
     @api.multi
     def button_run_analyze(self):
         """
@@ -220,11 +193,7 @@ class ImportLettersHistory(models.Model):
                 if attachment.name not in check:
                     check.append(attachment.name)
                     # check for zip
-<<<<<<< HEAD
                     if func.check_file(attachment.name) == 2:
-=======
-                    if check_file(attachment.name) == 2:
->>>>>>> comp/sbc-devel
                         zip_ = zipfile.ZipFile(inst.path + attachment.name,
                                                'r')
                         path_zip = inst.path + os.path.splitext(
@@ -240,11 +209,7 @@ class ImportLettersHistory(models.Model):
                         shutil.rmtree(path_zip)
                         os.remove(inst.path + attachment.name)
                         # case with normal format (PDF,TIFF)
-<<<<<<< HEAD
                     elif func.check_file(attachment.name) == 1:
-=======
-                    elif check_file(attachment.name) == 1:
->>>>>>> comp/sbc-devel
                         inst._analyze_attachment(
                             inst.path + str(attachment.name),
                             attachment.datas)
@@ -274,11 +239,7 @@ class ImportLettersHistory(models.Model):
             f.close()
 
         # convert to PNG
-<<<<<<< HEAD
         if func.isPDF(file_) or func.isTIFF(file_):
-=======
-        if isPDF(file_) or isTIFF(file_):
->>>>>>> comp/sbc-devel
             if data is None:
                 f = open(file_)
                 data = f.read()
@@ -291,11 +252,7 @@ class ImportLettersHistory(models.Model):
             file_ = name + '.png'
 
         # now do the computations only if the image is a PNG
-<<<<<<< HEAD
         if func.isPNG(file_):
-=======
-        if isPNG(file_):
->>>>>>> comp/sbc-devel
             # first compute the QR code
             zx = zxing.BarCodeTool()
             qrcode = zx.decode(file_, try_harder=True)
@@ -399,30 +356,18 @@ class ImportLettersHistory(models.Model):
                             template.get_pattern_center())
         diff_scan = np.array(bluecorner_position-center_pat)
         # need normalize vectors
-<<<<<<< HEAD
         normalization = (np.linalg.norm(diff_ref) *
-=======
-        normalization = (np.linalg.norm(diff_ref)*
->>>>>>> comp/sbc-devel
                          np.linalg.norm(diff_scan))
         # angle between the scan and the ref image
         costheta = np.dot(diff_ref, diff_scan)/normalization
         sintheta = np.linalg.det([diff_ref, diff_scan])/normalization
 
         # rotation matrix
-<<<<<<< HEAD
         R = np.array([[costheta, -sintheta], [sintheta, costheta]])
 
         # scaling matrix (use image size)
         scaling = np.array(bluecorner.getSizeOriginal(), dtype=float) / \
             np.array(template.get_template_size(), dtype=float)
-=======
-        R = np.array([[costheta, -sintheta],[sintheta, costheta]])
-
-        # scaling matrix (use image size)
-        scaling = np.array(bluecorner.getSizeOriginal(),dtype=float) / \
-                  np.array(template.get_template_size(), dtype=float)
->>>>>>> comp/sbc-devel
         scaling = np.array([[scaling[0], 0], [0, scaling[1]]])
 
         # transformation matrix
@@ -446,22 +391,13 @@ class ImportLettersHistory(models.Model):
             c = checkbox.x_min
             d = checkbox.x_max
             # transform the coordinate system
-<<<<<<< HEAD
             (a, b) = np.round(np.dot(R, np.array([a, b])) + C)
             (c, d) = np.round(np.dot(R, np.array([c, d])) + C)
-=======
-            (a, b) = np.round(np.dot(R,np.array([a, b])) + C)
-            (c, d) = np.round(np.dot(R,np.array([c, d])) + C)
->>>>>>> comp/sbc-devel
             # new name (if changed, need to change in the remove loop)
             iso = checkbox.language_id.code_iso or 'other'
             file_tmp = os.path.splitext(file_)[0]+'_'+iso+'.png'
             cv2.imwrite(file_tmp, img[a:b+1, c:d+1])
-<<<<<<< HEAD
             A = cbr.CheckboxReader(file_tmp)
-=======
-            A = cbr.CheckboxReader(file_tmp)      
->>>>>>> comp/sbc-devel
             # if something happens
             if A is True or A is None:
                 # if a second language has been discovered
