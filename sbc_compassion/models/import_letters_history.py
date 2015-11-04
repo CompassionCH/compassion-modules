@@ -114,15 +114,23 @@ class ImportLettersHistory(models.Model):
                     inst.list_zip = ""
                 # removes old files in the directory
                 if os.path.exists(inst.path):
-                    onlyfiles = [f for f in os.listdir(inst.path)
-                                 if os.path.isfile(os.path.join(inst.path, f))]
+                    onlyfiles = [f for f in os.listdir(inst.path)]
                     # loop over files
                     for f in onlyfiles:
                         t = time.time()
                         t -= os.path.getctime(inst.path + f)
                         # if file older than 12h
                         if t > 43200:
-                            os.remove(f)
+                            if os.path.isfile(f):
+                                os.remove(f)
+                            if os.path.isdirectory(f):
+                                shutil.rmtree(f)
+                    # remove magick files that can be generated if the program
+                    # is badly exited
+                    onlyfiles = [f for f in os.listdir('/tmp')]
+                    for f in onlyfiles:
+                        if 'magick' in f:
+                            os.remove('/tmp/'+f)
                 else:
                     os.makedirs(inst.path)
 
