@@ -53,10 +53,10 @@ class CheckboxReader:
         self._findCorner()
         # find the connection between the corners
         # and keep only the largest collection
-        self._checkConnectivity()
+        self.test = self._checkConnectivity()
         # if the collection does not have 4 corners
         # thus self.state stay at None
-        if len(self.corners) == 4:
+        if self.test and len(self.corners) == 4:
             # find how large is the border
             i = self._findBorder()
             # find the state of the checkbox
@@ -202,7 +202,9 @@ class CheckboxReader:
                 a += 1
 
         if a > 1:
-            raise Exception('Two squares have been detected')
+            return False
+        else:
+            return True
 
     def _findBorder(self):
         """

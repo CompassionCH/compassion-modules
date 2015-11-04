@@ -78,10 +78,13 @@ class ImportLetterLine(models.TransientModel):
                     [('child_id.code', '=', inst.child_code)]) and
                     inst.env['recurring.contract'].search([
                         ('partner_codega', '=', inst.partner_codega)]))
-
-                inst.sponsorship_id = inst.env['recurring.contract'].search([
+                temp = inst.env['recurring.contract'].search([
                     ('child_id.code', '=', inst.child_code),
                     ('partner_codega', '=', inst.partner_codega)])
+                # check if only one sponsorship is find and
+                # if not find the best one
+                temp = self.check_sponsorship(temp)
+                inst.sponsorship_id = temp
                 if len(inst.sponsorship_id) == 1:
                     inst.sponsorship_status = None
                 elif test:
@@ -97,3 +100,29 @@ class ImportLetterLine(models.TransientModel):
                 inst.name = str(
                     inst.sponsorship_id.partner_codega) + " - " + str(
                         inst.child_code)
+
+    def check_sponsorship(self, test):
+        """
+        Check if test contains only one item and if not find the best one by
+        looking in first the active ones, and, then by activation date
+
+        :param recurring.contract() test: List of recurring contract
+
+        :returns: Recurring contract (only one item is kept)
+        """
+        # normal case
+        if len(test) == 1:
+            return test
+
+        # try to take only the active one
+        temp = test.filtered(lambda r: r.is_active is True)
+        if len(temp) == 1:
+            return temp
+
+        # if no active contract is detected take the old records
+        if len(temp) == 0:
+            temp = test
+
+        # return the most recent one
+        temp = temp.sorterd(key=lambda r: r.end_date)
+        return temp[-1]

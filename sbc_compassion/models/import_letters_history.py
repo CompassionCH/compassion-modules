@@ -256,9 +256,11 @@ class ImportLettersHistory(models.Model):
             # first compute the QR code
             zx = zxing.BarCodeTool()
             qrcode = zx.decode(file_, try_harder=True)
-            if 'XX' in qrcode.data:
+            if qrcode is not None and 'XX' in qrcode.data:
                 partner, child = qrcode.data.split('XX')
-
+            else:
+                partner = None
+                child = None
             # now try to find the layout
             # loop over all the patterns in the pattern directory
             template, key_img = self._find_template(file_)
@@ -399,7 +401,7 @@ class ImportLettersHistory(models.Model):
             cv2.imwrite(file_tmp, img[a:b+1, c:d+1])
             A = cbr.CheckboxReader(file_tmp)
             # if something happens
-            if A is True or A is None:
+            if A.test is True or A.getState is True or A.getState is None:
                 # if a second language has been discovered
                 if lang:
                     lang_ok = False
