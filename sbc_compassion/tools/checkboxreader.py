@@ -36,15 +36,13 @@ class CheckboxReader:
     the checkbox is checked and the corner are not found).
     """
 
-    def __init__(self, img, ratiomin=0.01, ratiomax=0.9):
+    def __init__(self, img, ratiomin=0.01):
         """
         :param str img: Name of the image (file)
         :param float ratiomin: Ratio of black pixel required for being \
         considered as checked.
-        :param float ratiomax: Same as ratiomin but for the max.
         """
         self.min = ratiomin
-        self.max = ratiomax
         # read the image in greyscale
         self.img = cv2.imread(img, 0)
         self.h, self.w = self.img.shape[:2]
@@ -57,6 +55,8 @@ class CheckboxReader:
         # if the collection does not have 4 corners
         # thus self.state stay at None
         if self.test and len(self.corners) == 4:
+            # change the corners to make a square
+            self.correctCorners()
             # find how large is the border
             i = self._findBorder()
             # find the state of the checkbox
@@ -72,12 +72,68 @@ class CheckboxReader:
 
         return self.state
 
+    def correctCorners(self):
+        """
+        Change the corners in order to have a square.
+        Keep the value of the second lowest, highest, leftmost and
+        rightmost corners for the corners (in some case a point can be far away
+        from the position required to create a corner)
+        """
+        # right
+        right = 0
+        temp = 0
+        # find second smallest value
+        for i in self.corners:
+            if i[0] > right:
+                if i[0] > temp:
+                    right = temp
+                    temp = i[0]
+                else:
+                    right = i[0]
+
+        # left
+        left = right
+        temp = right
+        # find second smallest value
+        for i in self.corners:
+            if i[0] < left:
+                if i[0] < temp:
+                    left = temp
+                    temp = i[0]
+                else:
+                    left = i[0]
+
+        # down
+        down = 0
+        temp = 0
+        # find second smallest value
+        for i in self.corners:
+            if i[1] > down:
+                if i[1] > temp:
+                    down = temp
+                    temp = i[1]
+                else:
+                    down = i[1]
+
+        # up
+        up = down
+        temp = down
+        # find second smallest value
+        for i in self.corners:
+            if i[1] < down:
+                if i[1] < temp:
+                    down = temp
+                    temp = i[1]
+                else:
+                    down = i[1]
+
+        self.corners = [(left,up),(right,up),(right,down),(left,down)]
+                    
     def _findState(self, border):
         """
         Count the number of pixel and black pixel inside the checkbox.
-        Two threshold are applied to the ratio of black pixel obtained.
-        A first one in order to check if something is written inside the
-        checkbox and a second one in order to check if someone removed it.
+        Two threshold are applied to the ratio of black pixel obtained in
+        order to check if something is written inside the checkbox
 
         :param int border: Thickness of the border (in pixel)
         """
@@ -109,11 +165,14 @@ class CheckboxReader:
                 if isBlack(self.img[i, j]):
                     black += 1
 
-        ratio = float(black) / float(pixel)
+        if pixel == 0:
+            ratio = 0
+        else:
+            ratio = float(black) / float(pixel)
 
         self.state = False
         # apply threshold
-        if ratio > self.min and ratio < self.max:
+        if ratio > self.min:
             self.state = True
 
     def _findCorner(self):

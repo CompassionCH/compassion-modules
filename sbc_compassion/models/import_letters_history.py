@@ -27,7 +27,6 @@ from ..tools import zxing
 from ..tools import bluecornerfinder as bcf
 from ..tools import checkboxreader as cbr
 from ..tools import patternrecognition as pr
-
 from openerp import api, fields, models, _, exceptions
 
 
@@ -344,7 +343,28 @@ class ImportLettersHistory(models.Model):
         Use the pattern and the blue corner for doing a transformation
         (rotation + scaling + translation) in order to crop a small part
         of the original picture around the position of each languages.
+        The rotation matrix is given by R, the scaling one by scaling
+        and the translation by C.
+        The rotation angle :math:`\theta` is given by the angle between
+        the template and image vectors that start from the blue square (B)
+        and end at the pattern.
+        The scaling is given in a matrix form where math:`S_1` is the
+        ratio between the width of the image and the one of the template
+        (same for the height with :math:`S_2`)
+        The translation vector is construct with the two previous matrices
+        and the two vectors B (in the image) and B' (in the template)
+        .. math::
+           R = \left(\begin{array}{cc}
+                              \cos(\theta) & -\sin(\theta) \\
+                              \sin(\theta) & \cos(\theta)  \end{array}
+               \right)
 
+           \text{scaling} = \left(\begin{array}{cc}
+                              S_1 & 0 \\
+                              0 & S_2  \end{array}
+               \right)
+
+           C = B-R*B'
         This analysis should be quite fast due to the small size of
         pictures to analyze (should be a square of about 20-30 pixels large).
 
