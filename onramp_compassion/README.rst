@@ -23,18 +23,27 @@ Installation
 
 Configuration
 =============
--
+- Make sure to load the server and connect to the database before using
+  the module. Otherwise the route /onramp may not be active.
     
 Usage
 =====
 To use this module, you need to:
 
 * send POST messages to address /onramp
+* Authorization: Bearer <token> to pass the oauth2 authentification
+* token must be provided by api2.compassion.com
+* Headers must contain valid "x-cim-MessageType", "x-cim-FromAddress" and
+  "x-cim-ToAddress" values.
+* Content-Type: application/json
+
 
 Known issues / Roadmap
 ======================
 
-* Contracts and Sponsorships will be better differenciated.
+* Be more precise with error handling (raise different kind of errors to be
+  able to send more accurate error answers).
+* Implement CommKit message with use of job queues and gmc_messages
 
 Credits
 =======

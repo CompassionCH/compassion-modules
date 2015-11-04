@@ -1,21 +1,13 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
+##############################################################################
 #
-#    Author: Yannick Vaucher
-#    Copyright 2015 Camptocamp SA
+#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Yannick Vaucher, Emanuel Cino <ecino@compassion.ch>
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
+#    The licence is in the file __openerp__.py
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+##############################################################################
 import jwt
 
 from openerp.http import request
@@ -33,6 +25,9 @@ class IrHTTP(models.AbstractModel):
             mode = 'write'
         token_data = request.httprequest.headers.get('Authorization')
         if not token_data:
+            raise Unauthorized()
+        token_authorization = token_data.split()[0]
+        if token_authorization != 'Bearer':
             raise Unauthorized()
         access_token = token_data.split()[1]
 
