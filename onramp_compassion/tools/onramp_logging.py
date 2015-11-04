@@ -20,7 +20,7 @@ _logger_init = False
 
 
 def init_logger():
-    """ Add a new parser especially designed to log messages received and
+    """ Add a new logger especially designed to log messages received and
     sent by the ramp.
     """
     global _logger_init

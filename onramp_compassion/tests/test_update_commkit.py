@@ -1,21 +1,13 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
+##############################################################################
 #
-#    Author: Yannick Vaucher
-#    Copyright 2015 Camptocamp SA
+#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
+#    The licence is in the file __openerp__.py
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+##############################################################################
 import simplejson
 
 from base_test_onramp import TestOnramp
@@ -31,8 +23,13 @@ class TestUpdateCommkit(TestOnramp):
             }
         })
         self.assertTrue(response.code, 201)
-        result = simplejson.loads(response.read()).get('result')
+        result = simplejson.loads(response.read())
         self.assertTrue('ConfirmationId' in result)
         self.assertFalse('ErrorId' in result)
         self.assertEqual(result['Message'],
                          'Your message was successfully received.')
+
+    def test_bad_scenarios(self):
+        self._test_no_token()
+        self._test_bad_token()
+        self._test_body_no_json()
