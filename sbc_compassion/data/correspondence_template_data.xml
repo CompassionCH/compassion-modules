@@ -55,18 +55,18 @@
             <field name="y_max">285</field>
         </record>
                 
-        <record id="test_english_checkbox" model="sponsorship.correspondence.lang.checkbox">
+        <record id="test_spanish_checkbox" model="sponsorship.correspondence.lang.checkbox">
             <field name="template_id" ref="test_template"/>
-            <field name="language_id" ref="lang_compassion_english"/>
+            <field name="language_id" ref="lang_compassion_spanish"/>
             <field name="x_min">1557</field>
             <field name="x_max">1616</field>
             <field name="y_min">65</field>
             <field name="y_max">124</field>
         </record>
         
-        <record id="test_spanish_checkbox" model="sponsorship.correspondence.lang.checkbox">
+        <record id="test_english_checkbox" model="sponsorship.correspondence.lang.checkbox">
             <field name="template_id" ref="test_template"/>
-            <field name="language_id" ref="lang_compassion_spanish"/>
+            <field name="language_id" ref="lang_compassion_english"/>
             <field name="x_min">1557</field>
             <field name="x_max">1616</field>
             <field name="y_min">143</field>
