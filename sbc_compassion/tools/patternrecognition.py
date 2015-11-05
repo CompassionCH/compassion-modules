@@ -123,6 +123,8 @@ def keyPointCenter(keypoint):
     :returns: Coordinates of the center
     :rtype: list[float]
     """
+    if type(keypoint) is bool:
+        return
     if len(keypoint) <= 1:
         return keypoint
     else:

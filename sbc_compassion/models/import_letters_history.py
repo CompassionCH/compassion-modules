@@ -18,9 +18,9 @@ import base64
 import zipfile
 import time
 import shutil
-import PythonMagick
 import numpy as np
 import os
+from wand.image import Image
 
 from ..tools import import_letter_functions as func
 from ..tools import zxing
@@ -251,10 +251,9 @@ class ImportLettersHistory(models.Model):
                 f = open(file_)
                 data = f.read()
             name = os.path.splitext(file_)[0]
-            image = PythonMagick.Image()
-            image.density("300")
-            image.read(file_)
-            image.write(name + '.png')
+            with Image(filename=file_) as img:
+                img.format = 'png'
+                img.save(filename=name + '.png')
             os.remove(file_)
             file_ = name + '.png'
 
@@ -378,6 +377,8 @@ class ImportLettersHistory(models.Model):
         # create an instance of layout (contains all the information)
         # about the position
         center_pat = pr.keyPointCenter(key_img)
+        if center_pat is None:
+            return
         bluecorner = bcf.BlueCornerFinder(file_)
         bluecorner_position = bluecorner.getIndices()
 
@@ -424,14 +425,12 @@ class ImportLettersHistory(models.Model):
             (a, b) = np.round(np.dot(R, np.array([a, b])) + C)
             (c, d) = np.round(np.dot(R, np.array([c, d])) + C)
             # new name (if changed, need to change in the remove loop)
-            iso = checkbox.language_id.code_iso or 'other'
-            file_tmp = os.path.splitext(file_)[0]+'_'+iso+'.png'
-            cv2.imwrite(file_tmp, img[a:b+1, c:d+1])
-            A = cbr.CheckboxReader(file_tmp)
+            A = cbr.CheckboxReader(img[a:b+1, c:d+1])
             # if something happens
-            if A.test is True or A.getState is True or A.getState is None:
+            # if A.test is True or A.getState is True or A.getState is None:
+            if A.getState() is True:
                 # if a second language has been discovered
-                if lang:
+                if lang is not False:
                     lang_ok = False
                 else:
                     # change the value for odoo
@@ -440,12 +439,6 @@ class ImportLettersHistory(models.Model):
             lang = lang.id
         else:
             lang = False
-
-        # remove files   TODO : Use tempfile to avoid manually delete files
-        for iso in template.checkbox_ids.mapped('language_id.code_iso'):
-            if not iso:
-                iso = 'other'
-            os.remove(os.path.splitext(file_)[0]+'_'+iso+'.png')
         return lang
 
     @api.multi
