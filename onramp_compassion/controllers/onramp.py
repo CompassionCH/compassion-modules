@@ -20,8 +20,10 @@ _logger = logging.getLogger(__name__)
 AUTHORIZED_SENDERS = ['CHTest', 'CISalesforce']
 
 # Only those message types will be accepted (checked in the header)
-MESSAGE_TYPES = ['http://schemas.ci.org/ci/services/communications/2015/09/'
-                 'SBCStructured']
+MESSAGE_TYPES = {
+    'CommKitNotification':
+        'http://schemas.ci.org/ci/services/communications/2015/09/'
+        'SBCStructured'}
 
 
 class RestController(http.Controller):
@@ -34,7 +36,15 @@ class RestController(http.Controller):
 
         """
         self._validate_headers()
-        print request.jsonrequest
+        if request.httprequest.headers['x-cim-MessageType'] == MESSAGE_TYPES[
+                'CommKitNotification']:
+            updates = request.jsonrequest.get('CommunicationUpdates')
+            if updates and isinstance(updates, list):
+                correspondence_obj = request.env[
+                    'sponsorship.correspondence'].sudo(request.uid)
+                correspondence_obj.process_commkit_notifications(updates)
+            else:
+                raise AttributeError()
         return {
             'code': 200,
             "ConfirmationId": request.uuid,
@@ -44,7 +54,7 @@ class RestController(http.Controller):
 
     def _validate_headers(self):
         headers = request.httprequest.headers
-        if headers.get('x-cim-MessageType') not in MESSAGE_TYPES:
+        if headers.get('x-cim-MessageType') not in MESSAGE_TYPES.values():
             raise AttributeError()
         if headers.get('x-cim-FromAddress') not in AUTHORIZED_SENDERS:
             raise exceptions.AccessDenied()
