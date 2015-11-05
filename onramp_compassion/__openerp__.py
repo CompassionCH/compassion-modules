@@ -32,7 +32,7 @@
  'author': 'Compassion CH',
  'maintainer': 'Compassion CH',
  'website': 'http://www.compassion.ch',
- 'depends': ['message_center_compassion'],
+ 'depends': ['message_center_compassion', 'sbc_compassion'],
  'external_dependencies': {
      'python': ['jwt'],
  },

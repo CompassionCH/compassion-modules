@@ -35,7 +35,7 @@
     'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['onramp_compassion', 'web_tree_image'],
+    'depends': ['sponsorship_compassion', 'web_tree_image'],
     'external_dependencies': {
         'java': ['zxing'],
         'python': ['magic', 'PythonMagick', 'numpy', 'cv2']
@@ -51,6 +51,7 @@
         'views/correspondence_template_view.xml',
         'data/lang_data.xml',
         'data/correspondence_template_data.xml',
+        'data/correspondence_type.xml',
     ],
     'installable': True,
     'auto_install': False,

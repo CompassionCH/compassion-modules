@@ -68,7 +68,8 @@ Sample Unsuccessful Response
     def __init__(self, *args):
         """ Setup a GUID for any message and keep track of timestamp. """
         self.uuid = str(uuid.uuid4())
-        self.timestamp = datetime.strftime(datetime.now(), '%Y-%m-%dT%H:%M:%S')
+        self.timestamp = datetime.strftime(
+            datetime.now(), '%Y-%m-%dT%H:%M:%S')
         try:
             super(RESTJsonRequest, self).__init__(*args)
         except:

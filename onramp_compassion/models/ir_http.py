@@ -46,6 +46,9 @@ class IrHTTP(models.AbstractModel):
         if mode not in jwt_decoded.get('scope'):
             raise Unauthorized()
         client_id = jwt_decoded.get('client_id')
-        if not request.env['res.users'].sudo().search(
-                [('login', '=', client_id)]):
+        user = request.env['res.users'].sudo().search(
+            [('login', '=', client_id)])
+        if user:
+            request.uid = user.id
+        else:
             raise Unauthorized()
