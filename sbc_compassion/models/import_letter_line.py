@@ -12,7 +12,7 @@
 from openerp import fields, models, api, _
 
 
-class ImportLetterLine(models.TransientModel):
+class ImportLetterLine(models.Model):
     """
     This class is used for the validation of an exportation.
     """

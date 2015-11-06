@@ -129,10 +129,6 @@ class ImportLettersHistory(models.Model):
                 for attachment in inst.data:
                     # pdf or tiff case
                     if func.check_file(attachment.name) == 1:
-                        # remove if PDF is working
-                        if func.isPDF(attachment.name):
-                            Exception(_("PDF not implemented yet"),
-                                      _("Part of the code present"))
                         tmp += 1
                     # zip case
                     elif func.isZIP(attachment.name):
@@ -208,6 +204,9 @@ class ImportLettersHistory(models.Model):
                             zip_.extract(f, path_zip)
                             absname = path_zip + '/' + f
                             if os.path.isfile(absname):
+                                # remove if PDF is working
+                                if func.isPDF(absname):
+                                    raise Exception("PDF not implemented yet")
                                 inst._analyze_attachment(absname)
                         # delete all the tmp files
                         # extracted data
@@ -216,6 +215,9 @@ class ImportLettersHistory(models.Model):
                         os.remove(inst.path + attachment.name)
                     # case with normal format ([PDF,]TIFF)
                     elif func.check_file(attachment.name) == 1:
+                        # remove if PDF is working
+                        if func.isPDF(attachment.name):
+                            raise Exception(_("PDF not implemented yet"))
                         inst._analyze_attachment(
                             inst.path + str(attachment.name),
                             attachment.datas)
