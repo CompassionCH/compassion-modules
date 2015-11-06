@@ -8,7 +8,6 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-
 """
 This file reads a zip file containing scans of mail and find the relation
 between the database and the mail.
@@ -37,7 +36,6 @@ key = ['partner_codega', 'name', 'template_id', 'letter_image',
 
 
 class ImportLettersHistory(models.Model):
-
     """
     Keep an history of the importation of letters.
     This class allows the user to import some letters (individually or in a
@@ -88,12 +86,10 @@ class ImportLettersHistory(models.Model):
         else:
             self.state = "draft"
 
-    # -------------------- _COUNT_NBER_LETTERS --------------------------------
-
     @api.model
     def create(self, vals):
         result = super(models.Model, self).create(vals)
-        result.button_run_analyze()
+        result._run_analyze()
         return result
 
     @api.multi
@@ -124,12 +120,6 @@ class ImportLettersHistory(models.Model):
                                 os.remove(f)
                             if os.path.isdirectory(f):
                                 shutil.rmtree(f)
-                    # remove magick files that can be generated if the program
-                    # is badly exited
-                    onlyfiles = [f for f in os.listdir('/tmp')]
-                    for f in onlyfiles:
-                        if 'magick' in f:
-                            os.remove('/tmp/'+f)
                 else:
                     os.makedirs(inst.path)
 
@@ -139,6 +129,10 @@ class ImportLettersHistory(models.Model):
                 for attachment in inst.data:
                     # pdf or tiff case
                     if func.check_file(attachment.name) == 1:
+                        # remove if PDF is working
+                        if func.isPDF(attachment.name):
+                            Exception(_("PDF not implemented yet"),
+                                      _("Part of the code present"))
                         tmp += 1
                     # zip case
                     elif func.isZIP(attachment.name):
@@ -185,9 +179,10 @@ class ImportLettersHistory(models.Model):
                 raise exceptions.Warning(
                     _("State: '{}' not implemented".format(inst.state)))
 
-    # ------------------------ _RUN_ANALYZE ----------------------------------
-    @api.multi
-    def button_run_analyze(self):
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
+    def _run_analyze(self):
         """
         Analyze each attachment (decompress zip too) by checking if the file
         is not done twice (check same name)[, extract zip], use
@@ -201,10 +196,12 @@ class ImportLettersHistory(models.Model):
                     check.append(attachment.name)
                     # check for zip
                     if func.check_file(attachment.name) == 2:
-                        zip_ = zipfile.ZipFile(inst.path + attachment.name,
-                                               'r')
+                        zip_ = zipfile.ZipFile(
+                            inst.path + attachment.name, 'r')
+
                         path_zip = inst.path + os.path.splitext(
                             str(attachment.name))[0]
+
                         if not os.path.exists(path_zip):
                             os.makedirs(path_zip)
                         for f in zip_.namelist():
@@ -213,9 +210,11 @@ class ImportLettersHistory(models.Model):
                             if os.path.isfile(absname):
                                 inst._analyze_attachment(absname)
                         # delete all the tmp files
+                        # extracted data
                         shutil.rmtree(path_zip)
+                        # zip file
                         os.remove(inst.path + attachment.name)
-                        # case with normal format (PDF,TIFF)
+                    # case with normal format ([PDF,]TIFF)
                     elif func.check_file(attachment.name) == 1:
                         inst._analyze_attachment(
                             inst.path + str(attachment.name),
@@ -225,20 +224,18 @@ class ImportLettersHistory(models.Model):
                             'Still a file in a non-accepted format')
                 else:
                     raise exceptions.Warning(_('Two files are the same'))
+            # remove all the files (now there are inside import_line_ids)
             for attachment in inst.data:
                 attachment.unlink()
 
     def _analyze_attachment(self, file_, data=None):
         """
-        Analyze attachment (PDF/TIFF) and save everything
+        Analyze attachment (PDF/TIFF) and save everything inside
+        import_line_ids.
 
         :param string file_: Name of the file to analyze
         :param binary data: Image to scan (by default, read it from hdd)
-        :returns: Barcode (error code: 1 was not able to read it, 2 format\
-                  not accepted)
-        :rtype: String (error code: int)
         """
-        file_init = file_
         # in the case of zipfile, the data needs to be saved first
         if data is not None:
             f = open(file_, 'w')
@@ -258,6 +255,7 @@ class ImportLettersHistory(models.Model):
             file_ = name + '.png'
 
         # now do the computations only if the image is a PNG
+        img = cv2.imread(file_)
         if func.isPNG(file_):
             # first compute the QR code
             zx = zxing.BarCodeTool()
@@ -269,8 +267,8 @@ class ImportLettersHistory(models.Model):
                 child = None
             # now try to find the layout
             # loop over all the patterns in the pattern directory
-            template, key_img = self._find_template(file_)
-            lang_id = self._find_language(file_, key_img, template)
+            template, key_img = self._find_template(img)
+            lang_id = self._find_language(img, key_img, template)
 
             # TODO
             #
@@ -290,7 +288,7 @@ class ImportLettersHistory(models.Model):
             file_png = open(file_, "r")
             file_data = file_png.read()
             file_png.close()
-            dfile_ = file_init.split('/')[-1]
+            dfile_ = file_.split('/')[-1]
             document_vals = {'name': dfile_,
                              'datas': data,
                              'datas_fname': dfile_,
@@ -306,12 +304,12 @@ class ImportLettersHistory(models.Model):
         else:
             raise exceptions.Warning('Format not accepted in {}'.format(file_))
 
-    def _find_template(self, file_):
+    def _find_template(self, img):
         """
         Use the pattern recognition in order to recognize the layout.
         The template used for the pattern recognition are taken from
         the directory ../tools/pattern/
-        :param str file_: Filename to analyze
+        :param array file_: Image to analyze
         :returns: Pattern image of the template, keypoint of the image
         :rtype: str, list
         """
@@ -327,7 +325,7 @@ class ImportLettersHistory(models.Model):
 
             # try to recognize the pattern
             tmp_key = pr.patternRecognition(
-                file_, template.pattern_image, crop_area)
+                img, template.pattern_image, crop_area)
             # check if it is a better result than before
             if tmp_key is not None and len(tmp_key) > nber_kp:
                 # save all the data if it is better
@@ -337,7 +335,7 @@ class ImportLettersHistory(models.Model):
 
             return matching_template, key_img
 
-    def _find_language(self, file_, key_img, template):
+    def _find_language(self, img, key_img, template):
         """
         Use the pattern and the blue corner for doing a transformation
         (rotation + scaling + translation) in order to crop a small part
@@ -367,7 +365,7 @@ class ImportLettersHistory(models.Model):
         This analysis should be quite fast due to the small size of
         pictures to analyze (should be a square of about 20-30 pixels large).
 
-        :param str file_: Filename
+        :param img: Image to analyze
         :param list key_img: List containing the keypoint detected
         :param CorrespondenceTemplate template: Template of the image
         :returns: Language of the letter (defined in Layout, returns None if \
@@ -377,9 +375,11 @@ class ImportLettersHistory(models.Model):
         # create an instance of layout (contains all the information)
         # about the position
         center_pat = pr.keyPointCenter(key_img)
+        # in case of not being able to detect the pattern
         if center_pat is None:
             return
-        bluecorner = bcf.BlueCornerFinder(file_)
+        # get position of the blue corner
+        bluecorner = bcf.BlueCornerFinder(img)
         bluecorner_position = bluecorner.getIndices()
 
         # vector between the blue square and the pattern
@@ -407,9 +407,6 @@ class ImportLettersHistory(models.Model):
         C = bluecorner_position-np.dot(R, template.get_bluesquare_area())
 
         # now for the language
-        #
-        # read the file in order to read the checkboxes
-        img = cv2.imread(file_)
 
         # language
         lang = False
@@ -441,10 +438,14 @@ class ImportLettersHistory(models.Model):
             lang = False
         return lang
 
+    ##########################################################################
+    #                             VIEW CALLBACKS                             #
+    ##########################################################################
     @api.multi
     def button_save(self):
         """
         save the import_line as a sponsorship_correspondence
+        TODO
         """
         test = True
         for inst in self:

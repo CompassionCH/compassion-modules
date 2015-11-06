@@ -57,17 +57,22 @@ class CheckboxReader:
     - False means that the checkbox is empty
     - None means that a problem occured at a certain point (usually because
     the checkbox is checked and the corner are not found).
+
+    :param img: Image (array or str)
+    :param float ratiomin: Ratio of black pixel required for being \
+        considered as checked.
     """
 
+    ##########################################################################
+    #                               INIT METHOD                              #
+    ##########################################################################
     def __init__(self, img, ratiomin=0.01):
-        """
-        :param str img: Image (array)
-        :param float ratiomin: Ratio of black pixel required for being \
-        considered as checked.
-        """
         self.min = ratiomin
         # read the image in greyscale
-        self.img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+        if isinstance(img, str):
+            self.img = cv2.imread(img, 0)
+        else:
+            self.img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
         self.h, self.w = self.img.shape[:2]
         self.state = None
         self.corners = []
@@ -91,6 +96,9 @@ class CheckboxReader:
             self._findState(i)
         """
 
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
     def getState(self, threshold=8):
         """
         Return the state of the checkbox
@@ -106,11 +114,19 @@ class CheckboxReader:
 
     def getLength(self):
         """
+        Return the number of corners
+        :returns: Number of corners
+        :rtype: int
         """
         return len(self.corners)
 
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
     def _preprocessing(self):
         """
+        Preprocessing done on the picture in order to facilitate the
+        computation (denoising and threshold)
         """
         self.img = cv2.fastNlMeansDenoising(self.img, None, 10, 7, 21)
         self.img = cv2.adaptiveThreshold(self.img, 255,
@@ -405,6 +421,9 @@ class CheckboxReader:
                 k += 1
 
 
+##########################################################################
+#                           GENERAL METHODS                              #
+##########################################################################
 def isBlack(pixel, threshold=127):
     """
     Check if a pixel is black

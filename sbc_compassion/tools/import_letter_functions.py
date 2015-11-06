@@ -4,6 +4,9 @@ Defines a few functions useful in ../models/import_mail.py
 import os
 
 
+##########################################################################
+#                           GENERAL METHODS                              #
+##########################################################################
 def check_file(name):
     """
     Check the name of a file.

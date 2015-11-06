@@ -13,8 +13,8 @@ from openerp import fields, models, api, _
 
 
 class ImportLetterLine(models.TransientModel):
-
-    """ This class is used for the validation of an exportation.
+    """
+    This class is used for the validation of an exportation.
     """
 
     _name = 'import.letter.line'
@@ -54,6 +54,7 @@ class ImportLetterLine(models.TransientModel):
                  'supporter_languages_id')
     def _check_status(self):
         """
+        At each change, check if all the fields are OK
         """
         default_template = self.env.ref('sbc_compassion.default_template')
         for inst in self:
@@ -81,9 +82,9 @@ class ImportLetterLine(models.TransientModel):
                 temp = inst.env['recurring.contract'].search([
                     ('child_id.code', '=', inst.child_code),
                     ('partner_codega', '=', inst.partner_codega)])
-                # check if only one sponsorship is find and
-                # if not find the best one
-                temp = self.check_sponsorship(temp)
+                # check if only one sponsorship is find and,
+                # if not, find the best one
+                temp = self._check_sponsorship(temp)
                 inst.sponsorship_id = temp
                 if len(inst.sponsorship_id) == 1:
                     inst.sponsorship_status = None
@@ -101,7 +102,10 @@ class ImportLetterLine(models.TransientModel):
                     inst.sponsorship_id.partner_codega) + " - " + str(
                         inst.child_code)
 
-    def check_sponsorship(self, test):
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
+    def _check_sponsorship(self, test):
         """
         Check if test contains only one item and if not find the best one by
         looking in first the active ones, and, then by activation date
