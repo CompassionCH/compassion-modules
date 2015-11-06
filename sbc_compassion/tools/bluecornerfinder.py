@@ -14,7 +14,6 @@ the blue square in all the compassion documents.
 """
 import numpy as np
 from collections import deque
-from cv2 import imread
 from math import floor
 from copy import deepcopy
 
@@ -27,7 +26,7 @@ class BlueCornerFinder:
     circle until reaching the corner (check if it is a cluster [more than just
     two in the eight closest pixels]).
 
-    :param img: Image to analyze (array or string)
+    :param img: Image to analyze (array)
     :param list[] box: relative position where to cut the image
     :param int threshold: Threshold applied for the definition of blue
     """
@@ -40,10 +39,7 @@ class BlueCornerFinder:
         Read and cut the image to the requested value.
         """
         self.threshold = threshold
-        if isinstance(img, str):
-            self.img = imread(img)
-        else:
-            self.img = deepcopy(img)
+        self.img = deepcopy(img)
         # get size of the image
         h, w = self.img.shape[:2]
         # save the original size

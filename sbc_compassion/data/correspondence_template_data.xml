@@ -4,16 +4,14 @@
         <record id="default_template" model="sponsorship.correspondence.template">
             <field name="name">Default Template</field>
             <field name="layout">L6</field>
-            <field name="page_width">595</field>
-            <field name="page_height">842</field>
             <field name="checkbox_ids" eval="False"/>
         </record>
         
         <record id="test_template" model="sponsorship.correspondence.template">
             <field name="name">Test Template</field>
             <field name="layout">L1</field>
-            <field name="page_width">2481</field>
-            <field name="page_height">3508</field>
+            <field name="pattern_image" type="base64" file="sbc_compassion/static/src/img/triforce.png"/>
+            <field name="template_image" type="base64" file="sbc_compassion/static/src/img/template_test.png"/>
             <field name="qrcode_x_min">0</field>
             <field name="qrcode_x_max">1000</field>
             <field name="qrcode_y_min">0</field>
@@ -22,8 +20,6 @@
             <field name="pattern_x_max">1600</field>
             <field name="pattern_y_min">3000</field>
             <field name="pattern_y_max">3508</field>
-            <field name="pattern_image" type="base64" file="sbc_compassion/static/src/img/triforce.png"/>
-            <field name="template_image" type="base64" file="sbc_compassion/static/src/img/template_test.png"/>
             <field name="checkbox_ids" eval="False"/>
         </record>
 
