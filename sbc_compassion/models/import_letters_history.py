@@ -206,7 +206,8 @@ class ImportLettersHistory(models.Model):
                             if os.path.isfile(absname):
                                 # remove if PDF is working
                                 if func.isPDF(absname):
-                                    raise Exception("PDF not implemented yet")
+                                    raise exceptions.Warning(
+                                        _("PDF not implemented yet"))
                                 inst._analyze_attachment(absname)
                         # delete all the tmp files
                         # extracted data
@@ -217,7 +218,8 @@ class ImportLettersHistory(models.Model):
                     elif func.check_file(attachment.name) == 1:
                         # remove if PDF is working
                         if func.isPDF(attachment.name):
-                            raise Exception(_("PDF not implemented yet"))
+                            raise exceptions.Warning(
+                                _("PDF not implemented yet"))
                         inst._analyze_attachment(
                             inst.path + str(attachment.name),
                             attachment.datas)
