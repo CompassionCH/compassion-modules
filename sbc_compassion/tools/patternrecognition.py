@@ -31,7 +31,7 @@ def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
                        threshold=2, save_res=False):
     """
     Try to find a pattern in the subset (given by crop_area) of the image.
-    :param image: Image to analyze (array or str)
+    :param image: Image to analyze array
     :param str pattern: Pattern image data (encoded in base64)
     :param list crop_area: Subset of the image to cut (relative position). \
                            [x_min, x_max, y_min, y_max]
@@ -45,10 +45,7 @@ def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
     :rtype: np.array(), np.array()
     """
     # read images
-    if isinstance(image, str):
-        img1 = cv2.imread(image)
-    else:
-        img1 = deepcopy(image)
+    img1 = deepcopy(image)
     if img1 is None:
         raise Warning(
             _("Could not read template image"),
