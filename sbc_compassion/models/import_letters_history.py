@@ -8,7 +8,6 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-
 """
 This file reads a zip file containing scans of mail and find the relation
 between the database and the mail.
@@ -18,15 +17,15 @@ import base64
 import zipfile
 import time
 import shutil
-import PythonMagick
 import numpy as np
+import os
+from wand.image import Image
 
-from ..tools.import_letter_functions import *
+from ..tools import import_letter_functions as func
 from ..tools import zxing
 from ..tools import bluecornerfinder as bcf
 from ..tools import checkboxreader as cbr
 from ..tools import patternrecognition as pr
-
 from openerp import api, fields, models, _, exceptions
 
 
@@ -37,7 +36,6 @@ key = ['partner_codega', 'name', 'template_id', 'letter_image',
 
 
 class ImportLettersHistory(models.Model):
-
     """
     Keep an history of the importation of letters.
     This class allows the user to import some letters (individually or in a
@@ -88,12 +86,10 @@ class ImportLettersHistory(models.Model):
         else:
             self.state = "draft"
 
-    # -------------------- _COUNT_NBER_LETTERS --------------------------------
-
     @api.model
     def create(self, vals):
         result = super(models.Model, self).create(vals)
-        result.button_run_analyze()
+        result._run_analyze()
         return result
 
     @api.multi
@@ -113,15 +109,17 @@ class ImportLettersHistory(models.Model):
                     inst.list_zip = ""
                 # removes old files in the directory
                 if os.path.exists(inst.path):
-                    onlyfiles = [f for f in os.listdir(inst.path)
-                                 if os.path.isfile(os.path.join(inst.path, f))]
+                    onlyfiles = [f for f in os.listdir(inst.path)]
                     # loop over files
                     for f in onlyfiles:
                         t = time.time()
                         t -= os.path.getctime(inst.path + f)
                         # if file older than 12h
                         if t > 43200:
-                            os.remove(f)
+                            if os.path.isfile(f):
+                                os.remove(f)
+                            if os.path.isdirectory(f):
+                                shutil.rmtree(f)
                 else:
                     os.makedirs(inst.path)
 
@@ -130,10 +128,10 @@ class ImportLettersHistory(models.Model):
                 # loop over all the attachments
                 for attachment in inst.data:
                     # pdf or tiff case
-                    if check_file(attachment.name) == 1:
+                    if func.check_file(attachment.name) == 1:
                         tmp += 1
                     # zip case
-                    elif isZIP(attachment.name):
+                    elif func.isZIP(attachment.name):
                         tmp_name_file = inst.path + attachment.name
                         # save the zip file
                         if not os.path.exists(tmp_name_file):
@@ -142,8 +140,8 @@ class ImportLettersHistory(models.Model):
                                 bin_size=False).datas))
                             f.close()
                             if attachment.name not in inst.list_zip:
-                                inst.list_zip = addname(inst.list_zip,
-                                                        attachment.name)
+                                inst.list_zip = func.addname(inst.list_zip,
+                                                             attachment.name)
                                 # catch ALL the exceptions that can be raised
                                 # by class zipfile
                                 try:
@@ -159,13 +157,13 @@ class ImportLettersHistory(models.Model):
                             list_file = zip_.namelist()
                             # loop over all files in zip
                             for tmp_file in list_file:
-                                tmp += (check_file(tmp_file) == 1)
+                                tmp += (func.check_file(tmp_file) == 1)
                 inst.nber_letters = tmp
                 # deletes zip removed from the data
                 for f in inst.list_zip.split(';'):
                     if f not in inst.mapped('data.name') and f != '':
                         if os.path.exists(inst.path + f):
-                            tmp = removename(inst.list_zip, f)
+                            tmp = func.removename(inst.list_zip, f)
                             if tmp == -1:
                                 raise exceptions.Warning(
                                     _("""Does not find the file
@@ -177,12 +175,10 @@ class ImportLettersHistory(models.Model):
                 raise exceptions.Warning(
                     _("State: '{}' not implemented".format(inst.state)))
 
-
-
-    # ------------------------ _RUN_ANALYZE ----------------------------------
-
-    @api.multi
-    def button_run_analyze(self):
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
+    def _run_analyze(self):
         """
         Analyze each attachment (decompress zip too) by checking if the file
         is not done twice (check same name)[, extract zip], use
@@ -195,23 +191,35 @@ class ImportLettersHistory(models.Model):
                 if attachment.name not in check:
                     check.append(attachment.name)
                     # check for zip
-                    if check_file(attachment.name) == 2:
-                        zip_ = zipfile.ZipFile(inst.path + attachment.name,
-                                               'r')
+                    if func.check_file(attachment.name) == 2:
+                        zip_ = zipfile.ZipFile(
+                            inst.path + attachment.name, 'r')
+
                         path_zip = inst.path + os.path.splitext(
                             str(attachment.name))[0]
+
                         if not os.path.exists(path_zip):
                             os.makedirs(path_zip)
                         for f in zip_.namelist():
                             zip_.extract(f, path_zip)
                             absname = path_zip + '/' + f
                             if os.path.isfile(absname):
+                                # remove if PDF is working
+                                if func.isPDF(absname):
+                                    raise exceptions.Warning(
+                                        _("PDF not implemented yet"))
                                 inst._analyze_attachment(absname)
                         # delete all the tmp files
+                        # extracted data
                         shutil.rmtree(path_zip)
+                        # zip file
                         os.remove(inst.path + attachment.name)
-                        # case with normal format (PDF,TIFF)
-                    elif check_file(attachment.name) == 1:
+                    # case with normal format ([PDF,]TIFF)
+                    elif func.check_file(attachment.name) == 1:
+                        # remove if PDF is working
+                        if func.isPDF(attachment.name):
+                            raise exceptions.Warning(
+                                _("PDF not implemented yet"))
                         inst._analyze_attachment(
                             inst.path + str(attachment.name),
                             attachment.datas)
@@ -220,20 +228,18 @@ class ImportLettersHistory(models.Model):
                             'Still a file in a non-accepted format')
                 else:
                     raise exceptions.Warning(_('Two files are the same'))
+            # remove all the files (now there are inside import_line_ids)
             for attachment in inst.data:
                 attachment.unlink()
 
     def _analyze_attachment(self, file_, data=None):
         """
-        Analyze attachment (PDF/TIFF) and save everything
+        Analyze attachment (PDF/TIFF) and save everything inside
+        import_line_ids.
 
         :param string file_: Name of the file to analyze
         :param binary data: Image to scan (by default, read it from hdd)
-        :returns: Barcode (error code: 1 was not able to read it, 2 format\
-                  not accepted)
-        :rtype: String (error code: int)
         """
-        file_init = file_
         # in the case of zipfile, the data needs to be saved first
         if data is not None:
             f = open(file_, 'w')
@@ -241,30 +247,32 @@ class ImportLettersHistory(models.Model):
             f.close()
 
         # convert to PNG
-        if isPDF(file_) or isTIFF(file_):
+        if func.isPDF(file_) or func.isTIFF(file_):
             if data is None:
                 f = open(file_)
                 data = f.read()
             name = os.path.splitext(file_)[0]
-            image = PythonMagick.Image()
-            image.density("300")
-            image.read(file_)
-            image.write(name + '.png')
+            with Image(filename=file_) as img:
+                img.format = 'png'
+                img.save(filename=name + '.png')
             os.remove(file_)
             file_ = name + '.png'
 
         # now do the computations only if the image is a PNG
-        if isPNG(file_):
+        img = cv2.imread(file_)
+        if func.isPNG(file_):
             # first compute the QR code
             zx = zxing.BarCodeTool()
             qrcode = zx.decode(file_, try_harder=True)
-            if 'XX' in qrcode.data:
+            if qrcode is not None and 'XX' in qrcode.data:
                 partner, child = qrcode.data.split('XX')
-
+            else:
+                partner = None
+                child = None
             # now try to find the layout
             # loop over all the patterns in the pattern directory
-            template, key_img = self._find_template(file_)
-            lang_id = self._find_language(file_, key_img, template)
+            template, key_img = self._find_template(img)
+            lang_id = self._find_language(img, key_img, template)
 
             # TODO
             #
@@ -284,7 +292,7 @@ class ImportLettersHistory(models.Model):
             file_png = open(file_, "r")
             file_data = file_png.read()
             file_png.close()
-            dfile_ = file_init.split('/')[-1]
+            dfile_ = file_.split('/')[-1]
             document_vals = {'name': dfile_,
                              'datas': data,
                              'datas_fname': dfile_,
@@ -300,12 +308,12 @@ class ImportLettersHistory(models.Model):
         else:
             raise exceptions.Warning('Format not accepted in {}'.format(file_))
 
-    def _find_template(self, file_):
+    def _find_template(self, img):
         """
         Use the pattern recognition in order to recognize the layout.
         The template used for the pattern recognition are taken from
         the directory ../tools/pattern/
-        :param str file_: Filename to analyze
+        :param array file_: Image to analyze
         :returns: Pattern image of the template, keypoint of the image
         :rtype: str, list
         """
@@ -321,7 +329,7 @@ class ImportLettersHistory(models.Model):
 
             # try to recognize the pattern
             tmp_key = pr.patternRecognition(
-                file_, template.pattern_image, crop_area)
+                img, template.pattern_image, crop_area)
             # check if it is a better result than before
             if tmp_key is not None and len(tmp_key) > nber_kp:
                 # save all the data if it is better
@@ -331,16 +339,37 @@ class ImportLettersHistory(models.Model):
 
             return matching_template, key_img
 
-    def _find_language(self, file_, key_img, template):
+    def _find_language(self, img, key_img, template):
         """
         Use the pattern and the blue corner for doing a transformation
         (rotation + scaling + translation) in order to crop a small part
         of the original picture around the position of each languages.
+        The rotation matrix is given by R, the scaling one by scaling
+        and the translation by C.
+        The rotation angle :math:`\theta` is given by the angle between
+        the template and image vectors that start from the blue square (B)
+        and end at the pattern.
+        The scaling is given in a matrix form where math:`S_1` is the
+        ratio between the width of the image and the one of the template
+        (same for the height with :math:`S_2`)
+        The translation vector is construct with the two previous matrices
+        and the two vectors B (in the image) and B' (in the template)
+        .. math::
+           R = \left(\begin{array}{cc}
+                              \cos(\theta) & -\sin(\theta) \\
+                              \sin(\theta) & \cos(\theta)  \end{array}
+               \right)
 
+           \text{scaling} = \left(\begin{array}{cc}
+                              S_1 & 0 \\
+                              0 & S_2  \end{array}
+               \right)
+
+           C = B-R*B'
         This analysis should be quite fast due to the small size of
         pictures to analyze (should be a square of about 20-30 pixels large).
 
-        :param str file_: Filename
+        :param img: Image to analyze
         :param list key_img: List containing the keypoint detected
         :param CorrespondenceTemplate template: Template of the image
         :returns: Language of the letter (defined in Layout, returns None if \
@@ -350,7 +379,11 @@ class ImportLettersHistory(models.Model):
         # create an instance of layout (contains all the information)
         # about the position
         center_pat = pr.keyPointCenter(key_img)
-        bluecorner = bcf.BlueCornerFinder(file_)
+        # in case of not being able to detect the pattern
+        if center_pat is None:
+            return
+        # get position of the blue corner
+        bluecorner = bcf.BlueCornerFinder(img)
         bluecorner_position = bluecorner.getIndices()
 
         # vector between the blue square and the pattern
@@ -358,18 +391,18 @@ class ImportLettersHistory(models.Model):
                             template.get_pattern_center())
         diff_scan = np.array(bluecorner_position-center_pat)
         # need normalize vectors
-        normalization = (np.linalg.norm(diff_ref)*
+        normalization = (np.linalg.norm(diff_ref) *
                          np.linalg.norm(diff_scan))
         # angle between the scan and the ref image
         costheta = np.dot(diff_ref, diff_scan)/normalization
         sintheta = np.linalg.det([diff_ref, diff_scan])/normalization
 
         # rotation matrix
-        R = np.array([[costheta, -sintheta],[sintheta, costheta]])
+        R = np.array([[costheta, -sintheta], [sintheta, costheta]])
 
         # scaling matrix (use image size)
-        scaling = np.array(bluecorner.getSizeOriginal(),dtype=float) / \
-                  np.array(template.get_template_size(), dtype=float)
+        scaling = np.array(bluecorner.getSizeOriginal(), dtype=float) / \
+            np.array(template.get_template_size(), dtype=float)
         scaling = np.array([[scaling[0], 0], [0, scaling[1]]])
 
         # transformation matrix
@@ -378,9 +411,6 @@ class ImportLettersHistory(models.Model):
         C = bluecorner_position-np.dot(R, template.get_bluesquare_area())
 
         # now for the language
-        #
-        # read the file in order to read the checkboxes
-        img = cv2.imread(file_)
 
         # language
         lang = False
@@ -393,17 +423,15 @@ class ImportLettersHistory(models.Model):
             c = checkbox.x_min
             d = checkbox.x_max
             # transform the coordinate system
-            (a, b) = np.round(np.dot(R,np.array([a, b])) + C)
-            (c, d) = np.round(np.dot(R,np.array([c, d])) + C)
+            (a, b) = np.round(np.dot(R, np.array([a, b])) + C)
+            (c, d) = np.round(np.dot(R, np.array([c, d])) + C)
             # new name (if changed, need to change in the remove loop)
-            iso = checkbox.language_id.code_iso or 'other'
-            file_tmp = os.path.splitext(file_)[0]+'_'+iso+'.png'
-            cv2.imwrite(file_tmp, img[a:b+1, c:d+1])
-            A = cbr.CheckboxReader(file_tmp)      
+            A = cbr.CheckboxReader(img[a:b+1, c:d+1])
             # if something happens
-            if A is True or A is None:
+            # if A.test is True or A.getState is True or A.getState is None:
+            if A.getState() is True:
                 # if a second language has been discovered
-                if lang:
+                if lang is not False:
                     lang_ok = False
                 else:
                     # change the value for odoo
@@ -412,18 +440,16 @@ class ImportLettersHistory(models.Model):
             lang = lang.id
         else:
             lang = False
-
-        # remove files   TODO : Use tempfile to avoid manually delete files
-        for iso in template.checkbox_ids.mapped('language_id.code_iso'):
-            if not iso:
-                iso = 'other'
-            os.remove(os.path.splitext(file_)[0]+'_'+iso+'.png')
         return lang
 
+    ##########################################################################
+    #                             VIEW CALLBACKS                             #
+    ##########################################################################
     @api.multi
     def button_save(self):
         """
         save the import_line as a sponsorship_correspondence
+        TODO
         """
         test = True
         for inst in self:

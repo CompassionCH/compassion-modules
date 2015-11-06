@@ -1,24 +1,37 @@
+# -*- encoding: utf-8 -*-
+##############################################################################
+#
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Loic Hausammann <loic_hausammannn@hotmail.com>
+#
+#    The licence is in the file __openerp__.py
+#
+##############################################################################
 """
-Define a few function that are useful in order to detect a pattern using the sift implementation
-in opencv.
+Define a few function that are useful in order to detect a pattern using the
+sift implementation in opencv.
 A method (keyPointCenter) has been defined in order to find an approximation
 of the center based on the keypoint detected.
 """
 import cv2
 import numpy as np
-import cStringIO
 import base64
 import tempfile
+from copy import deepcopy
 
 from openerp import _
 from openerp.exceptions import Warning
 
 
+##########################################################################
+#                           GENERAL METHODS                              #
+##########################################################################
 def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
                        threshold=2, save_res=False):
     """
     Try to find a pattern in the subset (given by crop_area) of the image.
-    :param str image: Name of the image
+    :param image: Image to analyze (array or str)
     :param str pattern: Pattern image data (encoded in base64)
     :param list crop_area: Subset of the image to cut (relative position). \
                            [x_min, x_max, y_min, y_max]
@@ -32,7 +45,10 @@ def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
     :rtype: np.array(), np.array()
     """
     # read images
-    img1 = cv2.imread(image)
+    if isinstance(image, str):
+        img1 = cv2.imread(image)
+    else:
+        img1 = deepcopy(image)
     if img1 is None:
         raise Warning(
             _("Could not read template image"),
@@ -40,7 +56,6 @@ def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
     with tempfile.NamedTemporaryFile() as temp:
         temp.write(base64.b64decode(pattern))
         temp.flush()
-        # temp.seek(0)
         img2 = cv2.imread(temp.name,
                           cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
         if img2 is None:
@@ -65,12 +80,10 @@ def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
 
     if len(good) >= threshold:
         # put in a np.array the position of the image's keypoints
-        ret1 = np.array([kp1[i[0].trainIdx].pt for i in good])
+        keypoints = np.array([kp1[i[0].trainIdx].pt for i in good])
         # compute the position in the original picture
-        ret1 = ret1 + np.array((xmin, ymin))
-        # put in a np.array the position of the pattern's keypoints
-        # ret2 = np.array([kp2[i[0].queryIdx].pt for i in good])
-        return ret1     # Remark : ret2 is never used !
+        keypoints = keypoints + np.array((xmin, ymin))
+        return keypoints
     else:
         return None
 
@@ -127,6 +140,8 @@ def keyPointCenter(keypoint):
     :returns: Coordinates of the center
     :rtype: list[float]
     """
+    if type(keypoint) is bool:
+        return
     if len(keypoint) <= 1:
         return keypoint
     else:

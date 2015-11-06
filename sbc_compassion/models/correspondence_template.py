@@ -125,24 +125,16 @@ class CorrespondenceTemplate(models.Model):
     def verify_position(self):
         """ Check that position of elements inside template are valid
         coordinates. """
-        for template in self:
-            width = template.page_width
-            height = template.page_height
+        for tpl in self:
+            width = tpl.page_width
+            height = tpl.page_height
             valid_coordinates = (
-                template.bluesquare_x >= 0 and template.bluesquare_x <= width
-                and template.bluesquare_y >= 0 and
-                template.bluesquare_y <= height and template.qrcode_x_min >= 0
-                and template.qrcode_x_min <= template.qrcode_x_max
-                and template.qrcode_x_max <= width and
-                template.qrcode_y_min >= 0 and
-                template.qrcode_y_min <= template.qrcode_y_max and
-                template.qrcode_y_max <= height and
-                template.pattern_x_min >= 0 and
-                template.pattern_x_min <= template.pattern_x_max and
-                template.pattern_x_max <= width and
-                template.pattern_y_min >= 0 and
-                template.pattern_y_min <= template.pattern_y_max and
-                template.pattern_y_max <= height)
+                0 <= tpl.bluesquare_x <= width and
+                0 <= tpl.bluesquare_y <= height and
+                0 <= tpl.qrcode_x_min <= tpl.qrcode_x_max <= width and
+                0 <= tpl.qrcode_y_min <= tpl.qrcode_y_max <= height and
+                0 <= tpl.pattern_x_min <= tpl.pattern_x_max <= width and
+                0 <= tpl.pattern_y_min <= tpl.pattern_y_max <= height)
             if not valid_coordinates:
                 raise ValidationError(_("Please give valid coordinates."))
 
@@ -275,10 +267,8 @@ class CorrespondenceLanguageCheckbox(models.Model):
             width = checkbox.template_id.page_width
             height = checkbox.template_id.page_height
             valid_coordinates = (
-                checkbox.x_min >= 0 and checkbox.x_min < checkbox.x_max and
-                checkbox.x_max <= width and
-                checkbox.y_min >= 0 and checkbox.y_min < checkbox.y_max and
-                checkbox.y_max <= height
+                0 <= checkbox.x_min <= checkbox.x_max <= width and
+                0 <= checkbox.y_min <= checkbox.y_max <= height
             )
             if not valid_coordinates:
                 raise ValidationError(_("Please give valid coordinates."))

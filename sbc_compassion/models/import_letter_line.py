@@ -12,9 +12,9 @@
 from openerp import fields, models, api, _
 
 
-class ImportLetterLine(models.TransientModel):
-
-    """ This class is used for the validation of an exportation.
+class ImportLetterLine(models.Model):
+    """
+    This class is used for the validation of an exportation.
     """
 
     _name = 'import.letter.line'
@@ -54,46 +54,41 @@ class ImportLetterLine(models.TransientModel):
                  'supporter_languages_id')
     def _check_status(self):
         """
+        At each change, check if all the fields are OK
         """
         default_template = self.env.ref('sbc_compassion.default_template')
-        for inst in self:
-            if inst.sponsorship_status or inst.is_encourager:
-                inst.status = "encourager"
-            if inst.sponsorship_status is True:
-                inst.status = "sponsor"
-            elif not inst.template_id or (inst.template_id.id ==
+        for line in self:
+            if line.sponsorship_status or line.is_encourager:
+                line.status = "encourager"
+            if line.sponsorship_status is True:
+                line.status = "sponsor"
+            elif not line.template_id or (line.template_id.id ==
                                           default_template.id):
-                inst.status = "temp"
-            elif len(inst.supporter_languages_id) != 1:
-                inst.status = "lang"
+                line.status = "temp"
+            elif len(line.supporter_languages_id) != 1:
+                line.status = "lang"
             else:
-                inst.status = "ok"
+                line.status = "ok"
 
     @api.multi
     @api.depends('partner_codega', 'child_code')
     def _set_sponsorship_id(self):
-        for inst in self:
-            if inst.partner_codega and inst.child_code:
-                test = (inst.env['recurring.contract'].search(
-                    [('child_id.code', '=', inst.child_code)]) and
-                    inst.env['recurring.contract'].search([
-                        ('partner_codega', '=', inst.partner_codega)]))
-
-                inst.sponsorship_id = inst.env['recurring.contract'].search([
-                    ('child_id.code', '=', inst.child_code),
-                    ('partner_codega', '=', inst.partner_codega)])
-                if len(inst.sponsorship_id) == 1:
-                    inst.sponsorship_status = None
-                elif test:
-                    inst.sponsorship_status = True
+        for line in self:
+            if line.partner_codega and line.child_code:
+                line.sponsorship_id = line.env['recurring.contract'].search([
+                    ('child_id.code', '=', line.child_code),
+                    ('partner_codega', '=', line.partner_codega),
+                    ('is_active', '=', True)], order='end_date desc', limit=1)
+                if len(line.sponsorship_id) == 1:
+                    line.sponsorship_status = None
                 else:
-                    inst.sponsorship_status = False
+                    line.sponsorship_status = False
 
     @api.multi
     @api.depends('partner_codega', 'child_code')
     def _set_name(self):
-        for inst in self:
-            if inst.sponsorship_id:
-                inst.name = str(
-                    inst.sponsorship_id.partner_codega) + " - " + str(
-                        inst.child_code)
+        for line in self:
+            if line.sponsorship_id:
+                line.name = str(
+                    line.sponsorship_id.partner_codega) + " - " + str(
+                        line.child_code)

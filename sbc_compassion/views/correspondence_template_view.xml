@@ -23,7 +23,7 @@
                                 <field name="name"/>
                                 <field name="layout"/>
                                 <field name="active"/>
-                                <field name="pattern_image" widget="image" width="100" height="100" required="1"/>
+                                <field name="pattern_image" widget="image" class="oe_avatar" required="1"/>
                                 <separator colspan="2" string="Language checkboxes"/>
                                 <field name="checkbox_ids" context="{'default_template_id': active_id}">
                                     <tree editable="bottom">
@@ -43,8 +43,8 @@
                                 <field name="bluesquare_y"/>
                                 <separator colspan="2"/>
                                 <field name="qrcode_x_min"/>
-                                <field name="qrcode_x_max"/>
                                 <field name="qrcode_y_min"/>
+                                <field name="qrcode_x_max"/>
                                 <field name="qrcode_y_max"/>
                                 <separator colspan="2"/>
                                 <field name="pattern_x_min"/>
@@ -56,10 +56,10 @@
                                 <field name="pattern_center_y"/>
                             </group>
                             <group>
-                                <field name="template_image" widget="image" width="210" height="297"/>
+                                <field name="template_image" widget="image" required="1" style="max-width: 210px; max-height: 297px;"/>
                             </group>
                             <group>
-                                <field name="detection_result" widget="image" width="210" height="297"/>
+                                <field name="detection_result" widget="image" style="max-width: 210px; max-height: 297px;"/>
                             </group>
                         </group>
                     </sheet>

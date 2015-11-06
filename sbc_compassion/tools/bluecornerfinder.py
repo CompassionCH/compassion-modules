@@ -1,15 +1,25 @@
+# -*- encoding: utf-8 -*-
+##############################################################################
+#
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Loic Hausammann <loic_hausammann@hotmail.com>
+#
+#    The licence is in the file __openerp__.py
+#
+##############################################################################
 """
 Define the class BlueCornerFinder that try to find the upper-right corner of
 the blue square in all the compassion documents.
 """
-import cv2
 import numpy as np
 from collections import deque
+from cv2 import imread
 from math import floor
+from copy import deepcopy
 
 
 class BlueCornerFinder:
-
     """
     Class used in order to compute the position of the upper-right corner
     of the blue square (is used in order to find the scaling of a scan).
@@ -17,18 +27,23 @@ class BlueCornerFinder:
     circle until reaching the corner (check if it is a cluster [more than just
     two in the eight closest pixels]).
 
-
-    :param str img: Name of the file
+    :param img: Image to analyze (array or string)
     :param list[] box: relative position where to cut the image
     :param int threshold: Threshold applied for the definition of blue
     """
 
+    ##########################################################################
+    #                               INIT METHOD                              #
+    ##########################################################################
     def __init__(self, img, box=[0.66, 0.25], threshold=90):
         """
         Read and cut the image to the requested value.
         """
         self.threshold = threshold
-        self.img = cv2.imread(img)
+        if isinstance(img, str):
+            self.img = imread(img)
+        else:
+            self.img = deepcopy(img)
         # get size of the image
         h, w = self.img.shape[:2]
         # save the original size
@@ -43,6 +58,36 @@ class BlueCornerFinder:
         self._readBlueCorner()
         del self.img
 
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    def getIndices(self):
+        """
+        Returns the indices of the blue square
+        :returns: Indices of the blue square (width, height)
+        :rtype: list
+        """
+        return self.ind
+
+    def getDistance(self):
+        """
+        Returns the distance between the blue square and the corner
+        :returns: Distance of the blue square
+        :rtype: float
+        """
+        return self.dist
+
+    def getSizeOriginal(self):
+        """
+        Returns the size of the original image
+        :returns: Size of the original image (width, height)
+        :rtype: list
+        """
+        return [self.w_ori, self.h_ori]
+
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
     def _readBlueCorner(self):
         """
         Is called at the initialization of an instance.
@@ -87,30 +132,6 @@ class BlueCornerFinder:
             self.ind = None
 
         return self.ind
-
-    def getIndices(self):
-        """
-        Returns the indices of the blue square
-        :returns: Indices of the blue square (width, height)
-        :rtype: list
-        """
-        return self.ind
-
-    def getDistance(self):
-        """
-        Returns the distance between the blue square and the corner
-        :returns: Distance of the blue square
-        :rtype: float
-        """
-        return self.dist
-
-    def getSizeOriginal(self):
-        """
-        Returns the size of the original image
-        :returns: Size of the original image (width, height)
-        :rtype: list
-        """
-        return [self.w_ori, self.h_ori]
 
     def _findmin(self):
         """
@@ -229,6 +250,9 @@ class BlueCornerFinder:
                     self.todo.append(ind)
 
 
+##########################################################################
+#                           GENERAL METHODS                              #
+##########################################################################
 def checkColor(pixel, threshold):
     """
     Check if a pixel is blue by using the threshold given
