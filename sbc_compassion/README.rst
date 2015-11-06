@@ -23,7 +23,7 @@ Contributors
 
 * Emanuel Cino <ecino@compassion.ch>
 * Emmanuel Mathier <emmanuel.mathier@gmail.com>
-* Loïc Hausammann<<lic_hausammann@hotmail.com>
+* Loic Hausammann <loic_hausammann@hotmail.com>
 
 Maintainer
 ----------

@@ -1,3 +1,13 @@
+# -*- encoding: utf-8 -*-
+##############################################################################
+#
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Loic Hausammann <loic_hausammannn@hotmail.com>
+#
+#    The licence is in the file __openerp__.py
+#
+##############################################################################
 """
 Define a few function that are useful in order to detect a pattern using the
 sift implementation in opencv.

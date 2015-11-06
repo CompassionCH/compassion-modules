@@ -1,14 +1,16 @@
 # -*- encoding: utf-8 -*-
+##############################################################################
 #
-#
-#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Emmanuel Mathier <emmanuel.mathier@gmail.com>
+#    @author: Nate Oostendo <nate@oostendorp.net>
 #
 #    The licence is in the file __openerp__.py
 #
-#
-
+##############################################################################
+# This file has been written by Nate Oostendo but edited inside compassion
+# This header is done for travis and we are not claiming any right on his code
+# (only the modifications).
 """
  zxing.py -- a quick and dirty wrapper for zxing for python
 
