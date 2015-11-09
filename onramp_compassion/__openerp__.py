@@ -26,19 +26,22 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-{'name': 'OnRamp Compassion',
- 'version': '1.1',
- 'category': 'Misc',
- 'author': 'Compassion CH',
- 'maintainer': 'Compassion CH',
- 'website': 'http://www.compassion.ch',
- 'depends': ['message_center_compassion', 'sbc_compassion'],
- 'external_dependencies': {
-     'python': ['jwt'],
- },
- 'data': [],
- 'demo': ['demo/res_users.xml'],
- 'test': [],
- 'installable': True,
- 'application': True,
- }
+{
+    'name': 'OnRamp Compassion',
+    'version': '1.1',
+    'category': 'Misc',
+    'author': 'Compassion CH',
+    'maintainer': 'Compassion CH',
+    'website': 'http://www.compassion.ch',
+    'depends': ['message_center_compassion', 'sbc_compassion'],
+    'external_dependencies': {
+        'python': ['jwt'],
+    },
+    'data': [
+        'views/gmc_message_view.xml',
+        'data/gmc_action.xml'],
+    'demo': ['demo/res_users.xml'],
+    'test': [],
+    'installable': True,
+    'application': True,
+}

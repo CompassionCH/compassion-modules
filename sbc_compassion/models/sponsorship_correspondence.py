@@ -101,7 +101,8 @@ class SponsorshipCorrespondence(models.Model):
                                       readonly=False, store=True)
     rework_reason = fields.Char()
     rework_comments = fields.Text()
-    letter_url = fields.Char()
+    original_letter_url = fields.Char()
+    final_letter_url = fields.Char()
 
     # 5. SQL Constraints
     ####################

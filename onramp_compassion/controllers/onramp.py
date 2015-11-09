@@ -35,14 +35,16 @@ class RestController(http.Controller):
         It accepts only Communication Kit Notifications.
 
         """
-        self._validate_headers()
+        headers = request.httprequest.headers
+        self._validate_headers(headers)
         if request.httprequest.headers['x-cim-MessageType'] == MESSAGE_TYPES[
                 'CommKitNotification']:
             updates = request.jsonrequest.get('CommunicationUpdates')
             if updates and isinstance(updates, list):
                 correspondence_obj = request.env[
                     'sponsorship.correspondence'].sudo(request.uid)
-                correspondence_obj.process_commkit_notifications(updates)
+                correspondence_obj.process_commkit_notifications(
+                    updates, headers)
             else:
                 raise AttributeError()
         return {
@@ -52,8 +54,7 @@ class RestController(http.Controller):
             "Message": "Your message was successfully received.",
         }
 
-    def _validate_headers(self):
-        headers = request.httprequest.headers
+    def _validate_headers(self, headers):
         if headers.get('x-cim-MessageType') not in MESSAGE_TYPES.values():
             raise AttributeError()
         if headers.get('x-cim-FromAddress') not in AUTHORIZED_SENDERS:
