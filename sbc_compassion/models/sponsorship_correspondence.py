@@ -61,7 +61,8 @@ class SponsorshipCorrespondence(models.Model):
     ##########################
     letter_image = fields.Many2one('ir.attachment')
     letter_format = fields.Selection([
-        ('pdf', 'pdf'), ('tiff', 'tiff')])
+        ('pdf', 'pdf'), ('tiff', 'tiff')],
+        compute='_compute_letter_format')
     physical_attachments = fields.Selection(selection=[
         ('sent_by_mail', _('Sent by mail')),
         ('not_sent', _('Not sent'))])
@@ -206,6 +207,15 @@ class SponsorshipCorrespondence(models.Model):
 
     def _change_language(self):
         return True
+
+    def _compute_letter_format(self):
+        for letter in self:
+            ftype = magic.from_buffer(base64.b64decode(
+                letter.letter_image.datas), True)
+            if 'pdf' in ftype:
+                letter.letter_format = 'pdf'
+            elif 'tiff' in ftype:
+                letter.letter_format = 'tiff'
 
     ##########################################################################
     #                              ORM METHODS                               #

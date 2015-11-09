@@ -11,6 +11,8 @@
 
 import json
 
+from ..tools.onramp_connector import OnrampConnector
+
 from openerp import models, fields, api, _
 from openerp.exceptions import Warning
 
@@ -21,6 +23,24 @@ from openerp.addons.connector.session import ConnectorSession
 class SponsorshipCorrespondence(models.Model):
     _inherit = 'sponsorship.correspondence'
 
+    ##########################################################################
+    #                              ORM METHODS                               #
+    ##########################################################################
+    @api.model
+    def create(self, vals):
+        """ Create a message for sending the CommKit. """
+        letter = super(SponsorshipCorrespondence, self).create(vals)
+        if not self.env.context.get('from_onramp'):
+            action_id = self.env.ref('onramp_compassion.create_commkit').id
+            self.env['gmc.message.pool'].create({
+                'action_id': action_id,
+                'object_id': letter.id
+            })
+        return letter
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
     @api.model
     def process_commkit_notifications(self, commkit_updates, headers,
                                       eta=None):
@@ -47,9 +67,13 @@ class SponsorshipCorrespondence(models.Model):
         to GMC format. """
         self.ensure_one()
         letter = self.with_context(lang='en_US')
+        if not letter.original_letter_url:
+            onramp = OnrampConnector()
+            letter.original_letter_url = onramp.send_letter_image(
+                letter.letter_image.datas, letter.letter_format)
         return {
             'Beneficiary': {
-                'LocalId': letter.child_code,
+                'LocalId': letter.child_id.code,
                 'CompassId': letter.child_id.unique_id,
             },
             'GlobalPartner': {
@@ -59,8 +83,8 @@ class SponsorshipCorrespondence(models.Model):
             'Pages': [],
             'RelationshipType': letter.relationship,
             'SBCGlobalStatus': letter.state,
-            'GlobalPartnerSBCId': letter.id,
-            'OriginalLanguage': letter.original_language_id.name,
+            'GlobalPartnerSBCId': str(letter.id),
+            'OriginalLanguage': letter.original_language_id.name or "",
             'OriginalLetterURL': letter.original_letter_url,
             'SourceSystem': 'Odoo',
             'Template': 'KR-A-1S21-1',   # TODO see template naming schemes
@@ -79,6 +103,9 @@ class SponsorshipCorrespondence(models.Model):
             'state': data.get('Status', self.state)
         })
 
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
     @api.model
     def _commkit_update(self, vals, message_id=None):
         """ Given the message data in vals, update or create a
@@ -114,7 +141,7 @@ class SponsorshipCorrespondence(models.Model):
                 'communication_type_ids': [(6, 0, comm_types)],
                 'relationship': vals['RelationshipType'],
             })
-            commkit = self.create(commkit_vals)
+            commkit = self.with_context(from_onramp=True).create(commkit_vals)
 
         if message_id is not None:
             gmc_message = self.env['gmc.message.pool'].browse(message_id)
@@ -125,6 +152,9 @@ class SponsorshipCorrespondence(models.Model):
         return gmc_message
 
 
+##############################################################################
+#                            CONNECTOR METHODS                               #
+##############################################################################
 def related_action_message(session, job):
     message_id = job.args[2]
     action = {

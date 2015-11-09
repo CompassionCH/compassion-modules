@@ -60,7 +60,7 @@ class GmcMessage(models.Model):
     @api.depends('object_id')
     def _set_letter_id(self):
         for message in self:
-            model = self.action_id.model
+            model = message.action_id.model
             if model == 'sponsorship.correspondence':
                 message.letter_id = message.object_id
 
@@ -84,7 +84,7 @@ class GmcMessage(models.Model):
         }
         if hasattr(data_object, 'convert_for_connect') and \
                 hasattr(data_object, 'get_connect_data'):
-            message_data = object.convert_for_connect()
+            message_data = data_object.convert_for_connect()
             onramp = OnrampConnector()
             status, onramp_answer = onramp.send_message(
                 action.connect_service, action.request_type, message_data)
