@@ -284,13 +284,13 @@ class gmc_message_pool(models.Model):
 
         if self.state == 'pending' and (mess_date <= today or
                                         self.env.context.get('force_send')):
-            res = False
+            message_update = {'process_date': fields.Datetime.now()}
             action = self.action_id
             if action.direction == 'in':
                 if self.partner_country_code in country_codes or \
                         self.env.context.get('test_mode'):
                     try:
-                        res = self._perform_incoming_action()
+                        message_update.update(self._perform_incoming_action())
                     except Exception:
                         self.write({
                             'state': 'failure',
@@ -302,14 +302,13 @@ class gmc_message_pool(models.Model):
                                 'previous_state': self.child_id.state,
                                 'state': 'E'})
                 else:
-                    self.write({
+                    message_update.update({
                         'state': 'failure',
                         'failure_reason': 'Wrong Partner Country'})
-                    res = False
 
             elif action.direction == 'out':
                 try:
-                    res = self._perform_outgoing_action()
+                    message_update.update(self._perform_outgoing_action())
                 except Warning as e:
                     # Put the message in failure state
                     self.write({
@@ -320,17 +319,11 @@ class gmc_message_pool(models.Model):
                     raise
             else:
                 raise NotImplementedError
-            if res:
-                message_update = {
-                    'state': 'pending' if action.direction == 'out'
-                    else 'success',
-                    'process_date': today}
-                if isinstance(res, basestring):
-                    message_update['request_id'] = res
-                self.write(message_update)
-                # Commit all changes of triggered by message before
-                # processing the next message.
-                self.env.cr.commit()
+
+            self.write(message_update)
+            # Commit all changes of triggered by message before
+            # processing the next message.
+            self.env.cr.commit()
 
         elif self.state == 'fondue':
             # Mark Money Sent for Gift Messages
@@ -352,7 +345,8 @@ class gmc_message_pool(models.Model):
             'event': self.event,
         }
         if action.type in ('allocate', 'deallocate', 'depart', 'update'):
-            return getattr(model_obj, action.type)(args)
+            success = getattr(model_obj, action.type)(args)
+            return {'state': 'success' if success else 'failure'}
         else:
             raise Warning(
                 _("Invalid Action"),
@@ -364,11 +358,15 @@ class gmc_message_pool(models.Model):
         """
         action = self.action_id
         object_id = self.object_id
+        # By default, messages are pending until we receive the answer
+        result = {'state': 'pending'}
 
         if self._validate_outgoing_action():
             if self.env.context.get('test_mode'):
                 # Don't send the request when testing.
-                return 'test-uid' + str(randint(0, 999))
+                result['request_id'] = 'test-uid' + str(randint(0, 999))
+                return result
+
             server_url = config.get('middleware_url')
             if not server_url:
                 raise Warning(
@@ -386,8 +384,11 @@ class gmc_message_pool(models.Model):
             logger.debug(r.text)
             success = json_data.get('success')
             if success == 'yes':
-                return json_data.get('uuid')
-        return False
+                result['request_id'] = json_data.get('uuid')
+            else:
+                result['state'] = 'failure'
+                result['failure_reason'] = r.text
+        return result
 
     def _validate_outgoing_action(self):
         """ Validation of outgoing messages before sending them to GMC. """
