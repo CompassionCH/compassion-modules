@@ -44,10 +44,8 @@ class CorrespondenceTemplate(models.Model):
     detection_result = fields.Binary(
         compute='_compute_detection')
     page_width = fields.Integer(
-        readonly=True,
         help='Width of the template in pixels')
     page_height = fields.Integer(
-        readonly=True,
         help='Height of the template in pixels')
     bluesquare_x = fields.Integer(
         readonly=True,
@@ -124,12 +122,12 @@ class CorrespondenceTemplate(models.Model):
     @api.constrains(
         'bluesquare_x', 'bluesquare_y', 'qrcode_x_min', 'qrcode_x_max',
         'qrcode_y_min', 'qrcode_y_max', 'pattern_x_min', 'pattern_x_max',
-        'pattern_y_min', 'pattern_y_max')
+        'pattern_y_min', 'pattern_y_max', 'page_width', 'page_height')
     def verify_position(self):
         """ Check that position of elements inside template are valid
         coordinates. """
         for tpl in self:
-            if not _verify_template_created(tpl):
+            if not _verify_template(tpl):
                 raise ValidationError(_("Please give valid coordinates."))
 
     @api.depends('template_attachment_id')
@@ -166,14 +164,10 @@ class CorrespondenceTemplate(models.Model):
             # TODO : add detection results to original_image
             template.detection_result = original_image
 
-    @api.onchange('template_attachment_id',
-                  'pattern_image', 'template_image')
-    def _compute_template_keypoints(self):
-        """ This method computes all keypoints that can be automatically
-        detected (bluesquare and pattern_center)
-        """
+    @api.onchange('template_image')
+    def _compute_size(self):
         for template in self:
-            if (template.template_image and template.pattern_image):
+            if template.template_image:
                 with tempfile.NamedTemporaryFile() as template_file:
                     template_file.write(base64.b64decode(
                         template.template_image))
@@ -181,26 +175,41 @@ class CorrespondenceTemplate(models.Model):
                     # Find the pattern inside the template image
                     img = imread(template_file.name)
                     template.page_height, template.page_width = img.shape[:2]
-                    # verify that datas are given for the detection
-                    if _verify_template_created(template, equal=False):
-                        # pattern detection
-                        pattern_keypoints = pr.patternRecognition(
-                            img, template.pattern_image,
-                            template.get_pattern_area())
-                        if pattern_keypoints is None:
-                            raise Warning(
-                                _("Pattern not found"),
-                                _("The pattern could not be detected in given "
-                                "template image."))
-                        # find center of the pattern
-                        pattern_center = pr.keyPointCenter(pattern_keypoints)
-                        template.pattern_center_x = pattern_center[0]
-                        template.pattern_center_y = pattern_center[1]
-                        # blue corner detection
-                        bluecorner = bcf.BlueCornerFinder(
-                            img).getIndices()
-                        template.bluesquare_x = bluecorner[0]
-                        template.bluesquare_y = bluecorner[1]
+
+    @api.depends('template_attachment_id',
+                 'pattern_image', 'template_image')
+    def _compute_template_keypoints(self):
+        """ This method computes all keypoints that can be automatically
+        detected (bluesquare and pattern_center)
+        """
+        for template in self:
+            if (template.template_image and template.pattern_image and
+                    _verify_template(template, equal=True)):
+                with tempfile.NamedTemporaryFile() as template_file:
+                    template_file.write(base64.b64decode(
+                        template.template_image))
+                    template_file.flush()
+                    # Find the pattern inside the template image
+                    img = imread(template_file.name)
+                    template.page_height, template.page_width = img.shape[:2]
+                    # pattern detection
+                    pattern_keypoints = pr.patternRecognition(
+                        img, template.pattern_image,
+                        template.get_pattern_area())
+                    if pattern_keypoints is None:
+                        raise Warning(
+                            _("Pattern not found"),
+                            _("The pattern could not be detected in given "
+                              "template image."))
+                    # find center of the pattern
+                    pattern_center = pr.keyPointCenter(pattern_keypoints)
+                    template.pattern_center_x = pattern_center[0]
+                    template.pattern_center_y = pattern_center[1]
+                    # blue corner detection
+                    bluecorner = bcf.BlueCornerFinder(
+                        img).getIndices()
+                    template.bluesquare_x = bluecorner[0]
+                    template.bluesquare_y = bluecorner[1]
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -233,6 +242,10 @@ class CorrespondenceTemplate(models.Model):
     def get_pattern_center(self):
         """ Returns the coordinates of the pattern center. """
         return numpy.array([self.pattern_center_x, self.pattern_center_y])
+
+    ##########################################################################
+    #                            WORKFLOW METHODS                            #
+    ##########################################################################
 
 
 class CorrespondenceLanguageCheckbox(models.Model):
@@ -274,7 +287,7 @@ class CorrespondenceLanguageCheckbox(models.Model):
                 raise ValidationError(_("Please give valid coordinates."))
 
 
-def _verify_template_created(tpl, equal=True):
+def _verify_template(tpl, equal=True):
     """
     Test each position if a CorrespondenceTemplate in order to
     see if 0 < min < max < size where size is the size of the page.

@@ -28,17 +28,16 @@ from openerp.exceptions import Warning
 #                           GENERAL METHODS                              #
 ##########################################################################
 def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
-                       threshold=2, save_res=False):
+                       threshold=2, full_result=False):
     """
     Try to find a pattern in the subset (given by crop_area) of the image.
     :param image: Image to analyze array
-    :param str pattern: Pattern image data (encoded in base64)
+    :param pattern: Pattern image data (array or str encoded in base64)
     :param list crop_area: Subset of the image to cut (relative position). \
                            [x_min, x_max, y_min, y_max]
     :param int threshold: Number of keypoints to find in order \
     to define a match
-    :param bool save_res: Save an image ('sift_result.jpg')\
-    showing the keypoints
+    :param bool full_result: if True, returns result from pattern too
 
     :returns: None if not enough keypoints found, position of the keypoints \
     (first index image/pattern)
@@ -50,15 +49,18 @@ def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
         raise Warning(
             _("Could not read template image"),
             _("Template image is broken"))
-    with tempfile.NamedTemporaryFile() as temp:
-        temp.write(base64.b64decode(pattern))
-        temp.flush()
-        img2 = cv2.imread(temp.name,
-                          cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
-        if img2 is None:
-            raise Warning(
-                _("Could not read pattern image"),
-                _("The pattern image is broken"))
+    if isinstance(pattern, str):
+        with tempfile.NamedTemporaryFile() as temp:
+            temp.write(base64.b64decode(pattern))
+            temp.flush()
+            img2 = cv2.imread(temp.name,
+                              cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
+    else:
+        img2 = pattern
+    if img2 is None:
+        raise Warning(
+            _("Could not read pattern image"),
+            _("The pattern image is broken"))
 
     # cut the part useful for the recognition
     (xmin, ymin), img1 = subsetImage(img1, crop_area)
@@ -71,10 +73,8 @@ def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
     # find matches between the two pictures
     good = findMatches(des1, des2)
 
-    if save_res:
-        img3 = cv2.drawMatchesKnn(img2, kp2, img1, kp1, good, None, flags=2)
-        cv2.imwrite('sift_result.png', img3)
-
+    if full_result:
+        return kp1, kp2, good
     if len(good) >= threshold:
         # put in a np.array the position of the image's keypoints
         keypoints = np.array([kp1[i[0].trainIdx].pt for i in good])
