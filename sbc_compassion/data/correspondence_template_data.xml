@@ -12,6 +12,8 @@
             <field name="layout">L1</field>
             <field name="pattern_image" type="base64" file="sbc_compassion/static/src/img/triforce.png"/>
             <field name="template_image" type="base64" file="sbc_compassion/static/src/img/template_test.png"/>
+	    <field name="page_width">2481</field>
+	    <field name="page_height">3508</field>
             <field name="qrcode_x_min">0</field>
             <field name="qrcode_x_max">1000</field>
             <field name="qrcode_y_min">0</field>

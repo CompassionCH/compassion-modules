@@ -43,8 +43,8 @@
                                 <field name="bluesquare_y"/>
                                 <separator colspan="2"/>
                                 <field name="qrcode_x_min"/>
-                                <field name="qrcode_y_min"/>
                                 <field name="qrcode_x_max"/>
+                                <field name="qrcode_y_min"/>
                                 <field name="qrcode_y_max"/>
                                 <separator colspan="2"/>
                                 <field name="pattern_x_min"/>
@@ -74,7 +74,16 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem id="menu_correspondence_template" parent="child_compassion.menu_configuration" action="action_compassion_correspondence_template_form"
+	<!-- Add item in the 'More' list -->
+        <act_window id="action_cross_check_correspondence_template"
+                    key2="client_action_multi" name="Cross Check Patterns"
+		    res_model="sponsorship.crosscheck"
+		    src_model="sponsorship.correspondence.template"
+                    view_mode="form" target="new" view_type="form"
+        />
+
+
+	<menuitem id="menu_correspondence_template" parent="child_compassion.menu_configuration" action="action_compassion_correspondence_template_form"
                   name="Correspondence Templates" sequence="1"/>
     </data>
 </openerp>
