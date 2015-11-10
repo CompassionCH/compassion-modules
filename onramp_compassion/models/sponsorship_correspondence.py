@@ -87,7 +87,7 @@ class SponsorshipCorrespondence(models.Model):
             'OriginalLanguage': letter.original_language_id.name or "",
             'OriginalLetterURL': letter.original_letter_url,
             'SourceSystem': 'Odoo',
-            'Template': 'KR-A-1S21-1',   # TODO see template naming schemes
+            'Template': letter.template_id.layout,
             'Supporter': {
                 'CompassConstituentId': letter.correspondant_id.ref,
                 'GlobalId': letter.correspondant_id.ref

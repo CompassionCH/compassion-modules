@@ -46,7 +46,9 @@ class RestController(http.Controller):
                 correspondence_obj.process_commkit_notifications(
                     updates, headers)
             else:
-                raise AttributeError()
+                raise AttributeError(
+                    "Value for 'CommunicationUpdates' was not found in "
+                    "the request.")
         return {
             'code': 200,
             "ConfirmationId": request.uuid,
@@ -56,8 +58,8 @@ class RestController(http.Controller):
 
     def _validate_headers(self, headers):
         if headers.get('x-cim-MessageType') not in MESSAGE_TYPES.values():
-            raise AttributeError()
+            raise AttributeError("Unknown MessageType")
         if headers.get('x-cim-FromAddress') not in AUTHORIZED_SENDERS:
-            raise exceptions.AccessDenied()
+            raise exceptions.AccessDenied("Unknown Sender")
         if headers.get('x-cim-ToAddress') != 'CH':
-            raise AttributeError()
+            raise AttributeError("This message is not for me.")
