@@ -1,4 +1,3 @@
-
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
@@ -82,8 +81,8 @@ class CorrespondenceCrosscheck(models.TransientModel):
                                                        full_result=True)
                 img3 = cv2.drawMatchesKnn(img, kp1, img2,
                                           kp2, good, None, flags=2)
-                name = t1.name + '-' + t2.name + '.png'
-                cv2.imwrite(name, img3)
+                name = t1.name + '-' + t2.name
+                cv2.imwrite(name + '.png', img3)
                 with open(name, 'r') as f:
                     img3 = f.read()
                     remove(name)

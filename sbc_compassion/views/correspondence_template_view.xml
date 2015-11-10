@@ -56,10 +56,10 @@
                                 <field name="pattern_center_y"/>
                             </group>
                             <group>
-                                <field name="template_image" widget="image" required="1" style="max-width: 210px; max-height: 297px;"/>
+                              <field name="template_image" widget="image" required="1" width="210px" height="297px"/>
                             </group>
                             <group>
-                                <field name="detection_result" widget="image" style="max-width: 210px; max-height: 297px;"/>
+                                <field name="detection_result" widget="image" width="210px" height="297px"/>
                             </group>
                         </group>
                     </sheet>
