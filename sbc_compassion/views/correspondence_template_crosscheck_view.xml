@@ -16,7 +16,7 @@
         <field name="arch" type="xml">
           <tree edit="false" create="false">
 	    <field name="name"/>
-	    <field name="image"/>
+	    <field name="image" widget="image" display="icon"/>
           </tree>
         </field>
       </record>
