@@ -176,7 +176,8 @@ class compassion_project(models.Model):
     def _set_suspension_state(self):
         if not isinstance(self.id, models.NewId):
             old_value = self.read(['suspension'])[0]['suspension']
-            if self.status in ('A', 'P') and not (
+            is_active = self.status in ('A', 'P')
+            if is_active and not (
                     self.disburse_gifts and self.disburse_funds and
                     self.disburse_unsponsored_funds and
                     self.new_sponsorships_allowed and
@@ -188,8 +189,10 @@ class compassion_project(models.Model):
                         old_value != 'fund-suspended':
                     self.suspend_funds()
                 self.suspension = suspension_status
-            elif old_value == 'fund-suspended':
+            elif is_active and old_value == 'fund-suspended':
                 self._reactivate_project()
+                self.suspension = False
+            elif is_active and old_value == 'suspended':
                 self.suspension = False
 
     def _has_desc(self):

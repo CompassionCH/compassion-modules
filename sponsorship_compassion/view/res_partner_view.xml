@@ -66,5 +66,15 @@
                 </xpath>
             </field>
         </record>
+        <record id="compassion_partner_view_buttons2" model="ir.ui.view">
+            <field name="name">compassion.partner.view.buttons2</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.partner_view_buttons" />
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='%(account.action_invoice_refund_out_tree)d']" position="attributes">
+                    <attribute name="name">%(account.action_invoice_tree)d</attribute>
+                </xpath>
+            </field>
+        </record>
     </data>
 </openerp>

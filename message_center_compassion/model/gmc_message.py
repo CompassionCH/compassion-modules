@@ -102,10 +102,11 @@ class gmc_message_pool(models.Model):
         related='invoice_line_id.price_subtotal', readonly=True, store=True)
     money_sent_date = fields.Datetime('Money sent', readonly=True)
 
-    _sql_constraints = [(
-        'request_id_uniq', 'UNIQUE(request_id)',
-        _("You cannot have two requests with same id.")
-    )]
+    _sql_constraints = [
+        ('request_id_uniq', 'UNIQUE(request_id)',
+         _("You cannot have two requests with same id.")),
+        ('invoice_line_id', 'UNIQUE(action_id,invoice_line_id)',
+         _("You already have a message with this invoice"))]
 
     ##########################################################################
     #                             FIELDS METHODS                             #
