@@ -148,8 +148,10 @@ Sample Unsuccessful Response
             # Raised if JSON could not be parsed or invalid body was received
             error.update({
                 'ErrorCode': 400,
+                'ErrorSubModule': 'Rest OnRamp Message Validation',
+                'ErrorMethod': 'Message Validation',
                 'ErrorCategory': 'InputValidationError',
-                'ErrorMessage': '400 Bad Request',
+                'ErrorMessage': exception.message,
             })
         except AuthenticationError:
                 error.update({

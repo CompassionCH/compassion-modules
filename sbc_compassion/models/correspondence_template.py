@@ -96,12 +96,12 @@ class CorrespondenceTemplate(models.Model):
     def get_gmc_layouts(self):
         """ Returns the layouts available to use with GMC. """
         return [
-            ('L1', _('Layout 1')),
-            ('L2', _('Layout 2')),
-            ('L3', _('Layout 3')),
-            ('L4', _('Layout 4')),
-            ('L5', _('Layout 5')),
-            ('L6', _('Layout 6'))]
+            ('CH-A-1S11-1', _('Layout 1')),
+            ('CH-A-2S01-1', _('Layout 2')),
+            ('CH-A-3S01-1', _('Layout 3')),
+            ('CH-A-4S01-1', _('Layout 4')),
+            ('CH-A-5S01-1', _('Layout 5')),
+            ('CH-A-6S01-1', _('Layout 6'))]
 
     def _get_default_checkboxes(self):
         return [
