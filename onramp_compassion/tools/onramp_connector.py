@@ -37,22 +37,34 @@ class OnrampConnector(object):
     # Holds the token used to authenticate with GMC.
     _token = None
 
+    # Requests Session that will be used accross calls to server
+    _session = None
+
+    # Requests headers for sending messages
+    _headers = None
+
     def __new__(cls):
         """ Inherit method to ensure a single instance exists. """
         if OnrampConnector.__instance is None:
             OnrampConnector.__instance = object.__new__(cls)
+            connect_url = config.get('connect_url')
+            api_key = config.get('connect_api_key')
+            if connect_url and api_key:
+                OnrampConnector.__instance._connect_url = connect_url
+                OnrampConnector.__instance._api_key = api_key
+                session = requests.Session()
+                session.params.update({'api_key': api_key})
+                OnrampConnector.__instance._session = session
+            else:
+                raise Warning(
+                    _('Missing configuration'),
+                    _('Please give connect_url and connect_api_key values '
+                      'in your Odoo configuration file.'))
         return OnrampConnector.__instance
 
     def __init__(self):
         """ Get a fresh token if needed. """
         now = datetime.now()
-        self._connect_url = config.get('connect_url')
-        self._api_key = config.get('connect_api_key')
-        if not self._connect_url or not self._api_key:
-            raise Warning(
-                _('Missing configuration'),
-                _('Please give connect_url and connect_api_key values '
-                  'in your Odoo configuration file.'))
         if not self._token_time or self._token_time+timedelta(hours=1) <= now:
             self._retrieve_token()
 
@@ -63,9 +75,8 @@ class OnrampConnector(object):
 
         Returns the uploaded image URL.
         """
-        headers = self._get_authorization_header({
-            'Content-type': 'image/{0}'.format(image_type)})
-        params = {'api_key': self._api_key, 'doctype': 's2bletter'}
+        headers = {'Content-type': 'image/{0}'.format(image_type)}
+        params = {'doctype': 's2bletter'}
         url = self._connect_url+'images'
         ONRAMP_LOGGER.info(
             "[POST] %s %s %s",
@@ -92,10 +103,10 @@ class OnrampConnector(object):
         :param body: Body of the message to send.
 
         :returns: A dictionary with the content of the answer to the message.
+                  {'code': http_status_code, 'content': response,
+                   'Error': error_message, 'request_id': request id header}
         """
-        headers = self._get_authorization_header({
-            'Content-type': 'application/json'})
-        params = {'api_key': self._api_key}
+        headers = {'Content-type': 'application/json'}
         url = self._connect_url + service_name
         status = 200
         result = False
@@ -106,30 +117,22 @@ class OnrampConnector(object):
             [(k, v) for k, v in headers.iteritems()],
             simplejson.dumps(body))
         if message_type == 'GET':
-            r = requests.get(
-                url, params=params, headers=headers, data=body)
+            r = self._session.get(
+                url, headers=headers, json=body)
             status = r.status_code
             result = r.text
         elif message_type == 'POST':
-            r = requests.post(
-                url, params=params, headers=headers,
-                data=body)
+            r = self._session.post(url, headers=headers, json=body)
             status = r.status_code
+            result = {
+                'code': status,
+                'request_id': r.headers.get('x-cim-RequestId'),
+            }
             try:
-                result = r.json()
-                result['request_id'] = r.headers.get('x-cim-RequestId')
+                result['content'] = r.json()
             except ValueError:
-                result = {
-                    'error': r.text}
-        return status, result
-
-    def _get_authorization_header(self, _headers=None):
-        """ Returns the authorization header in dict format. """
-        if _headers is None:
-            _headers = dict()
-        _headers['Authorization'] = '{token_type} {access_token}'.format(
-            **self._token)
-        return _headers
+                result['Error'] = r.text
+        return result
 
     def _retrieve_token(self):
         """ Retrieves the token from Connect. """
@@ -142,11 +145,12 @@ class OnrampConnector(object):
                   'in your Odoo configuration file.'))
         api_client_secret = base64.b64encode("{0}:{1}".format(client, secret))
         params_post = 'grant_type=client_credentials&scope=read+write'
-        header_post = {"Authorization": "Basic " + api_client_secret,
-                       "Content-type": "application/x-www-form-urlencoded",
-                       "Content-Length": 46,
-                       "Expect": "100-continue",
-                       "Connection": "Keep-Alive"}
+        header_post = {
+            "Authorization": "Basic " + api_client_secret,
+            "Content-type": "application/x-www-form-urlencoded",
+            "Content-Length": 46,
+            "Expect": "100-continue",
+            "Connection": "Keep-Alive"}
         conn = httplib.HTTPSConnection('api2.compassion.com')
         conn.request("POST", "/pcore/connect/token", params_post, header_post)
         response = conn.getresponse()

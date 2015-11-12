@@ -86,13 +86,15 @@ class GmcMessage(models.Model):
                 hasattr(data_object, 'get_connect_data'):
             message_data = data_object.convert_for_connect()
             onramp = OnrampConnector()
-            status, onramp_answer = onramp.send_message(
+            onramp_answer = onramp.send_message(
                 action.connect_service, action.request_type, message_data)
-            if status == 200:
-                data_object.get_connect_data(onramp_answer['Responses'][0])
+            if 200 <= onramp_answer['code'] < 300:
+                # TODO : see if this is not too specific
+                connect_data = onramp_answer['content']['Responses'][0]
+                data_object.get_connect_data(connect_data)
                 result.update({
                     'state': 'success',
-                    'request_id': onramp_answer.get('request_id', False)
+                    'request_id': onramp_answer.get('request_id', False),
                 })
             else:
                 result.update({

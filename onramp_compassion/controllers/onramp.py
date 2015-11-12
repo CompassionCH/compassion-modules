@@ -23,7 +23,13 @@ AUTHORIZED_SENDERS = ['CHTest', 'CISalesforce']
 MESSAGE_TYPES = {
     'CommKitNotification':
         'http://schemas.ci.org/ci/services/communications/2015/09/'
-        'SBCStructured'}
+        'SBCNotification',   # TODO : see the name of this service
+    'CommKit':
+        'http://schemas.ci.org/ci/services/communications/2015/09/'
+        'SBCStructured',
+    'ReservationNotification':
+        'http://schemas.ci.org/ci/messaging/communications/2015/08/'
+        'Notification'}
 
 
 class RestController(http.Controller):
@@ -37,8 +43,10 @@ class RestController(http.Controller):
         """
         headers = request.httprequest.headers
         self._validate_headers(headers)
-        if request.httprequest.headers['x-cim-MessageType'] == MESSAGE_TYPES[
-                'CommKitNotification']:
+        message_type = request.httprequest.headers['x-cim-MessageType']
+
+        # CommKitNotification message
+        if message_type == MESSAGE_TYPES['CommKitNotification']:
             updates = request.jsonrequest.get('CommunicationUpdates')
             if updates and isinstance(updates, list):
                 correspondence_obj = request.env[
@@ -49,6 +57,28 @@ class RestController(http.Controller):
                 raise AttributeError(
                     "Value for 'CommunicationUpdates' was not found in "
                     "the request.")
+
+        # CommKit Update
+        elif message_type == MESSAGE_TYPES['CommKit']:
+            letter_data = request.jsonrequest
+            correspondence_obj = request.env[
+                'sponsorship.correspondence'].sudo(request.uid)
+            if 'CompassionSBCId' not in letter_data:
+                raise AttributeError(
+                    "Body does not contain a valid CommKit Data")
+            correspondence_obj.process_commkit_notifications(
+                [letter_data], headers)
+
+        # TODO [Release 4]: Reservation Notification Messages
+        elif message_type == MESSAGE_TYPES['ReservationNotification']:
+            return {
+                'code': 501,
+                "ConfirmationId": request.uuid,
+                "Timestamp": request.timestamp,
+                "Message":
+                    "Your message was successfully received "
+                    "but we are not processing reservations yet."
+            }
         return {
             'code': 200,
             "ConfirmationId": request.uuid,

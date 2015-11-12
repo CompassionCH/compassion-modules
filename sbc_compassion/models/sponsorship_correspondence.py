@@ -41,7 +41,7 @@ class SponsorshipCorrespondence(models.Model):
         related='sponsorship_id.correspondant_id', store=True)
     child_id = fields.Many2one(related='sponsorship_id.child_id', store=True)
     # Field used for identifying correspondence by GMC
-    kit_id = fields.Integer('Kit id', copy=False, readonly=True)
+    kit_identifier = fields.Char('Kit id', copy=False, readonly=True)
     direction = fields.Selection(
         selection=[
             ('Supporter To Beneficiary', _('Supporter to beneficiary')),
@@ -55,7 +55,7 @@ class SponsorshipCorrespondence(models.Model):
         default=lambda self: [(4, self.env.ref(
             'sbc_compassion.correspondence_type_supporter').id)])
     state = fields.Selection(
-        'get_states', default='Letter scanned in from GP')
+        'get_states', default='Received in the system')
 
     # 2. Attachments and scans
     ##########################
@@ -108,8 +108,8 @@ class SponsorshipCorrespondence(models.Model):
     # 5. SQL Constraints
     ####################
     _sql_constraints = [
-        ('kit_id',
-         'unique(kit_id)',
+        ('kit_identifier',
+         'unique(kit_identifier)',
          _('The kit id already exists in database.'))
     ]
 
@@ -120,34 +120,40 @@ class SponsorshipCorrespondence(models.Model):
     def get_states(self):
         """ Returns the possible states, based on letter direction. """
         child_letter_states = [
-            ('Letter ready to be printed', _('Ready to be printed')),
-            ('Letter printed and sent to ICP', _('Sent to ICP')),
-            ('Letter in FO transcribing, translation and content check '
+            ('Ready to be printed', _('Ready to be printed')),
+            ('Printed and sent to ICP', _('Sent to ICP')),
+            ('Field Office transcribing translation and content check '
              'process', _('FO content check')),
             ('Letter scanned in from FO', _('Scanned in from FO')),
-            ('Letter in SDL FO translation queue', _('SDL FO Translation')),
-            ('Letter in quality check queue', _('Quality Check Queue')),
-            ('Letter in quality check process', _('Quality Check Process')),
-            ('Letter translation and quality check complete',
+            ('Field Office translation queue', _('SDL FO Translation Queue')),
+            ('In Translation', _('SDL FO Translation')),
+            ('Quality check queue', _('Quality Check Queue')),
+            ('Quality check process', _('Quality Check Process')),
+            ('Translation and quality check complete',
              _('Quality Check Done')),
-            ('Letter in SDL GP translation queue', _('To Translate')),
-            ('Letter in composition process', _('Composition Process')),
-            ('Letter published to GP', _('Published')),
-            ('Letter marked for rework', _('Marked for rework')),
-            ('Letter rejected', _('Rejected')),
+            ('Global Partner Translation Process', _('To Translate')),
+            ('Composition process', _('Composition Process')),
+            ('Published to Global Partner', _('Published')),
+            ('Quality check unsuccessful', _('Quality check unsuccessful')),
+            ('Undeliverable', _('Undeliverable')),
+            ('Cancelled', _('Cancelled')),
+            ('Exception', _('Exception')),
         ]
         sponsor_letter_states = [
-            ('Letter scanned in from GP', _('Scanned in')),
-            ('Letter in SDL GP translation queue', _('To Translate')),
-            ('Letter in quality check queue', _('Quality Check Queue')),
-            ('Letter in quality check process', _('Quality Check Process')),
-            ('Letter translation and quality check complete',
+            ('Received in the system', _('Scanned in')),
+            ('Global Partner translation queue', _('To Translate')),
+            ('Global Partner translation process', _('Translating')),
+            ('Quality check queue', _('Quality Check Queue')),
+            ('Quality check process', _('Quality Check Process')),
+            ('Translation and quality check complete',
              _('Quality Check Done')),
-            ('Letter in SDL FO translation queue', _('SDL FO Translation')),
-            ('Letter in composition process', _('Composition Process')),
-            ('Letter printed and sent to ICP', _('Sent to ICP')),
-            ('Letter marked for rework', _('Marked for rework')),
-            ('Letter rejected', _('Rejected')),
+            ('Field Office translation queue', _('SDL FO Translation')),
+            ('Composition process', _('Composition Process')),
+            ('Complete Delivered', _('Delivered')),
+            ('Complete Undelivered', _('Undelivered')),
+            ('Undeliverable', _('Undeliverable')),
+            ('Cancelled', _('Cancelled')),
+            ('Exception', _('Exception')),
         ]
         direction = 'Supporter To Beneficiary'
         try:
@@ -174,14 +180,16 @@ class SponsorshipCorrespondence(models.Model):
 
     @api.depends('sponsorship_id')
     def _set_name(self):
-        if self.sponsorship_id and self.communication_type_ids:
-            self.name = self.communication_type_ids[0].name + ' (' + \
-                self.sponsorship_id.partner_codega + " - " + \
-                self.child_id.code + ')'
-        else:
-            self.name = _('New correspondence')
+        for letter in self:
+            if letter.sponsorship_id and letter.communication_type_ids:
+                letter.name = letter.communication_type_ids[0].name + ' (' + \
+                    letter.sponsorship_id.partner_codega + " - " + \
+                    letter.child_id.code + ')'
+            else:
+                letter.name = _('New correspondence')
 
     @api.depends('sponsorship_id', 'direction')
+    @api.one
     def _set_languages(self):
         if self.direction == 'Supporter To Beneficiary':
             if self.correspondant_id.spoken_langs_ids:
@@ -199,6 +207,7 @@ class SponsorshipCorrespondence(models.Model):
                     .spoken_langs_ids[0]
 
     @api.depends('sponsorship_id')
+    @api.one
     def _set_partner_review(self):
         if self.correspondant_id.mandatory_review:
             self.mandatory_review = True

@@ -8,7 +8,7 @@
                 <tree string="Correspondence">
                     <field name="scanned_date"/>
                     <field name="sponsorship_id"/>
-                    <field name="kit_id"/>
+                    <field name="kit_identifier"/>
                     <field name="direction"/>
                     <field name="relationship"/>
                     <field name="mandatory_review"/>
@@ -41,7 +41,7 @@
                                 <field name="communication_type_ids" widget="many2many_checkboxes"/>
                             </group>
                             <group>
-                                <field name="kit_id"/>
+                                <field name="kit_identifier"/>
                                 <field name="relationship"/>
                                 <field name="source"/>
                                 <field name="mandatory_review"/>
