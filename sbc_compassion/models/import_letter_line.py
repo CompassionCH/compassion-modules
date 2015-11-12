@@ -27,6 +27,8 @@ class ImportLetterLine(models.Model):
                                      compute='_set_sponsorship_id')
     sponsorship_status = fields.Boolean(compute='_set_sponsorship_id',
                                         readonly=True)
+    person = fields.Boolean(compute='_set_sponsorship_id',
+                            readonly=True)
     partner_codega = fields.Char('Partner')
     name = fields.Char(compute='_set_name')
     child_code = fields.Char('Child')
@@ -40,8 +42,8 @@ class ImportLetterLine(models.Model):
 
     status = fields.Selection([
         ("lang", _("Error in Language")),
-        ("sponsor", _("Error in Sponsorship")),
-        ("encourager", _("Sponsorship not found")),
+        ("sponsorship", _("Sponsorship not Found")),
+        ("person", _("Error in Partner or Child")),
         ("temp", _("Error in Template")),
         ("ok", _("OK"))], compute="_check_status")
 
@@ -58,10 +60,10 @@ class ImportLetterLine(models.Model):
         """
         default_template = self.env.ref('sbc_compassion.default_template')
         for line in self:
-            if line.sponsorship_status or line.is_encourager:
-                line.status = "encourager"
-            if line.sponsorship_status is True:
-                line.status = "sponsor"
+            if not line.sponsorship_status:
+                line.status = "sponsorship"
+            if not line.person:
+                line.status = "person"
             elif not line.template_id or (line.template_id.id ==
                                           default_template.id):
                 line.status = "temp"
@@ -80,9 +82,18 @@ class ImportLetterLine(models.Model):
                     ('partner_codega', '=', line.partner_codega),
                     ('is_active', '=', True)], order='end_date desc', limit=1)
                 if len(line.sponsorship_id) == 1:
-                    line.sponsorship_status = None
+                    line.sponsorship_status = True
+                    line.person = True
                 else:
                     line.sponsorship_status = False
+                    if not (len(line.env['recurring.contract'].search([
+                            ('child_id.code', '=', line.child_code)])) > 0 or
+                            len(line.env['recurring.contract'].search([
+                                ('partner_codega', '=',
+                                 line.partner_codega)])) > 0):
+                        line.person = False
+                    else:
+                        line.person = True
 
     @api.multi
     @api.depends('partner_codega', 'child_code')
@@ -92,3 +103,26 @@ class ImportLetterLine(models.Model):
                 line.name = str(
                     line.sponsorship_id.partner_codega) + " - " + str(
                         line.child_code)
+
+    @api.multi
+    def save_lines(self, mandatory_review=False):
+        """
+        """
+        ids = []
+        print 'bou'
+        for letter in self:
+            print letter.letter_image.datas
+            dict_ = {
+                'sponsorship_id': letter.sponsorship_id,
+                'letter_image': letter.letter_image.read()[0]['datas'],
+                'template_id': letter.template_id,
+                'original_language_id': letter.supporter_languages_id
+            }
+            if letter.is_encourager:
+                dict_['relationship'] = 'Encourager'
+            if mandatory_review:
+                dict_['mandatory_review'] = True
+
+            temp_id = self.env['sponsorship.correspondence'].create(dict_)
+            ids.append(temp_id.id)
+        return ids

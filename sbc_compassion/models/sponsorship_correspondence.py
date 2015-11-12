@@ -192,13 +192,18 @@ class SponsorshipCorrespondence(models.Model):
     @api.one
     def _set_languages(self):
         if self.direction == 'Supporter To Beneficiary':
-            if self.correspondant_id.spoken_langs_ids:
-                self.original_language_id = self.correspondant_id\
-                    .spoken_langs_ids[0]
             if self.child_id.project_id.country_id.spoken_langs_ids:
-                self.destination_language_id = self.child_id.project_id\
-                    .country_id.spoken_langs_ids[0]
+                if self.original_language_id in self.child_id.project_id.\
+                   country_id.spoken_langs_ids:
+                    self.destination_language_id = self.original_language_id
+                else:
+                    self.destination_language_id = self.child_id\
+                                                       .project_id\
+                                                       .country_id\
+                                                       .spoken_langs_ids[0]
+
         if self.direction == 'Beneficiary To Supporter':
+            # TODO: take into account the language sent by the child's country
             if self.child_id.project_id.country_id.spoken_langs_ids:
                 self.original_language_id = self.child_id.project_id\
                     .country_id.spoken_langs_ids[0]
@@ -211,8 +216,6 @@ class SponsorshipCorrespondence(models.Model):
     def _set_partner_review(self):
         if self.correspondant_id.mandatory_review:
             self.mandatory_review = True
-        else:
-            self.mandatory_review = False
 
     def _change_language(self):
         return True
@@ -240,11 +243,13 @@ class SponsorshipCorrespondence(models.Model):
         attachment = False
         if letter_image and not isinstance(letter_image, (int, long)):
             # Detect filetype
-            ftype = magic.from_buffer(base64.b64decode(letter_image), True)
+            ftype = magic.from_buffer(base64.b64decode(letter_image),
+                                      True).lower()
+            print 'type', ftype
             if 'pdf' in ftype:
-                type = '.pdf'
+                type_ = '.pdf'
             elif 'tiff' in ftype:
-                type = '.tiff'
+                type_ = '.tiff'
             else:
                 raise exceptions.Warning(
                     _('Unsupported file format'),
@@ -258,7 +263,7 @@ class SponsorshipCorrespondence(models.Model):
         letter = super(SponsorshipCorrespondence, self).create(vals)
         if attachment:
             attachment.write({
-                'name': letter.scanned_date + '_' + letter.name + type,
+                'name': letter.scanned_date + '_' + letter.name + type_,
                 'datas_fname': letter.name,
                 'res_id': letter.id})
         return letter
@@ -269,9 +274,3 @@ class SponsorshipCorrespondence(models.Model):
         if 'state' in vals:
             vals['status_date'] = fields.Date.today()
         return super(SponsorshipCorrespondence, self).write(vals)
-
-    ##########################################################################
-    #                             VIEW CALLBACKS                             #
-    ##########################################################################
-    def button_import(self):
-        return

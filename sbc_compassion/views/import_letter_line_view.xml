@@ -10,13 +10,14 @@
           <field name="status"/>
           <field name="sponsorship_status" invisible="1"/>
 	  <field name="sponsorship_id" invisible="1"/>
+	  <field name="person" invisible="1"/>
           <field name="partner_codega"/>
           <field name="child_code"/>
           <field name="template_id"/>
           <field name="supporter_languages_id"/>
           <field name="is_encourager"/>
           <field name="letter_image"/>
-          <field name="letter_image_preview" widget='image' string="Letter image preview"/>
+          <field name="letter_image_preview" widget='image' display="icon" string="Letter image preview"/>
         </tree>
       </field>
     </record>
