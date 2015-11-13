@@ -97,7 +97,9 @@ class GmcMessage(models.Model):
             else:
                 result.update({
                     'state': 'failure',
-                    'failure_reason': str(onramp_answer.get('error'))
+                    'failure_reason':
+                        '[%s] %s' % (onramp_answer['code'],
+                                     str(onramp_answer.get('Error')))
                 })
         else:
             result.update({

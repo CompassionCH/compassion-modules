@@ -40,7 +40,7 @@ class IrHTTP(models.AbstractModel):
         jwt_decoded = jwt.decode(access_token, options=options)
         # validation
         # is the iss = to Compassions IDP ?
-        if jwt_decoded.get('iss') != 'https://idsrv3.com':
+        if jwt_decoded.get('iss') != 'https://esther.ci.org':
             raise Unauthorized()
         # is scope read or write in scopes ?
         if mode not in jwt_decoded.get('scope'):

@@ -72,9 +72,9 @@ class OnrampConnector(object):
             url,
             [(k, v) for k, v in headers.iteritems()],
             '{image binary data not shown}')
-        r = requests.post(
+        r = self._session.post(
             url, params=params, headers=headers,
-            data=image_data)
+            data=base64.b64decode(image_data))
         letter_url = False
         status = r.status_code
         if status == 201:
@@ -82,7 +82,7 @@ class OnrampConnector(object):
         else:
             raise Warning(
                 _("Error while uploading letter image to GMC."),
-                r.text)
+                '[%s] %s' % (r.status_code, r.text))
         return letter_url
 
     def send_message(self, service_name, message_type, body):
@@ -148,6 +148,14 @@ class OnrampConnector(object):
                        "Expect": "100-continue",
                        "Connection": "Keep-Alive"}
         conn = httplib.HTTPSConnection('api2.compassion.com')
-        conn.request("POST", "/core/connect/token", params_post, header_post)
+        conn.request("POST", "/pcore/connect/token", params_post, header_post)
         response = conn.getresponse()
-        self._token = simplejson.loads(response.read())
+        try:
+            self._token = simplejson.loads(response.read())
+            self._session.headers.update({
+                'Authorization': '{token_type} {access_token}'.format(
+                    **self._token)})
+        except (AttributeError, KeyError):
+            raise Warning(
+                _('Authentication Error'),
+                _('Token validation failed.'))
