@@ -671,7 +671,7 @@ msgstr "Identifiant de l'objet lié"
 #: view:recurring.contract:0
 #, python-format
 msgid "Child Transfer"
-msgstr "Transfert d'enfant"
+msgstr "Nouvelle référence"
 
 #. module: message_center_compassion
 #: code:addons/message_center_compassion/model/gmc_message.py:356

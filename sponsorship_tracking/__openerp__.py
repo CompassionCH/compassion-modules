@@ -40,6 +40,7 @@
     'data': [
         'view/sub_sponsorship_wizard_view.xml',
         'view/contract_view.xml',
+        'view/sponsorship_tracking.xml',
         'workflow/sds_workflow.xml',
         'workflow/project_workflow.xml',
         'data/contract_cron.xml',
