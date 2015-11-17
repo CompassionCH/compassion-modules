@@ -594,7 +594,7 @@ class sponsorship_contract(models.Model):
                 if contract.state == 'terminated' and contract.end_date:
                     ended_since = date.today() - fields.Date.from_string(
                         contract.end_date)
-                    if not ended_since.days <= 90:
+                    if not ended_since.days <= 180:
                         raise exceptions.Warning(
                             _("Reconcile error"),
                             _("The contract %s is not active.")
