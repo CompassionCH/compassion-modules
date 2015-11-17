@@ -1230,7 +1230,7 @@ msgstr "En Création"
 #: code:addons/contract_compassion/model/contracts.py:45
 #, python-format
 msgid "Waiting Mandate"
-msgstr "En Création"
+msgstr "Attente du mandat"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:46

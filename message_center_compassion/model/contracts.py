@@ -134,35 +134,35 @@ class recurring_contract(models.Model):
     @api.multi
     def contract_active(self):
         """ Create messages to GMC when new sponsorship is activated. """
-        super(recurring_contract, self).contract_active()
         message_obj = self.env['gmc.message.pool']
         action_id = 0
         message_vals = dict()
-
-        for contract in self:
-            if 'S' in contract.type:
-                # UpsertConstituent Message
-                action_id = self.get_action_id('UpsertConstituent')
-                partner_id = contract.correspondant_id.id
-                message_vals = {
-                    'action_id': action_id,
-                    'object_id': partner_id,
-                }
-                # Look if one Upsert is already pending for the same partner
-                mess_count = message_obj.search_count([
-                    ('action_id', '=', action_id),
-                    ('partner_id', '=', partner_id),
-                    ('state', '=', 'new')])
-                if not mess_count:
-                    message_obj.create(message_vals)
-
-                # CreateCommitment Message
-                action_id = self.get_action_id('CreateCommitment')
-                message_vals.update({
-                    'action_id': action_id,
-                    'object_id': contract.id,
-                })
+        for contract in self.filtered(
+                lambda c: 'S' in c.type and not c.is_active):
+            # UpsertConstituent Message
+            action_id = self.get_action_id('UpsertConstituent')
+            partner_id = contract.correspondant_id.id
+            message_vals = {
+                'action_id': action_id,
+                'object_id': partner_id,
+            }
+            # Look if one Upsert is already pending for the same partner
+            mess_count = message_obj.search_count([
+                ('action_id', '=', action_id),
+                ('partner_id', '=', partner_id),
+                ('state', '=', 'new')])
+            if not mess_count:
                 message_obj.create(message_vals)
+
+            # CreateCommitment Message
+            action_id = self.get_action_id('CreateCommitment')
+            message_vals.update({
+                'action_id': action_id,
+                'object_id': contract.id,
+            })
+            message_obj.create(message_vals)
+
+        return super(recurring_contract, self).contract_active()
 
     @api.multi
     def contract_terminated(self):
