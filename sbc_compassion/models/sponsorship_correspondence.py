@@ -79,7 +79,7 @@ class SponsorshipCorrespondence(models.Model):
         readonly=True)
     # First spoken lang of partner
     original_language_id = fields.Many2one(
-        'res.lang.compassion', compute='_set_languages',
+        'res.lang.compassion', readonly=True,
         inverse='_change_language', store=True)
     destination_language_id = fields.Many2one(
         'res.lang.compassion', compute='_set_languages',
@@ -98,8 +98,7 @@ class SponsorshipCorrespondence(models.Model):
     relationship = fields.Selection([
         ('Sponsor', _('Sponsor')),
         ('Encourager', _('Encourager'))], default='Sponsor')
-    mandatory_review = fields.Boolean(compute='_set_partner_review',
-                                      readonly=False, store=True)
+    mandatory_review = fields.Boolean(readonly=False, store=True)
     rework_reason = fields.Char()
     rework_comments = fields.Text()
     original_letter_url = fields.Char()
@@ -178,6 +177,7 @@ class SponsorshipCorrespondence(models.Model):
             ('Supporter Letter', _('Supporter Letter')),
         ]
 
+    @api.multi
     @api.depends('sponsorship_id')
     def _set_name(self):
         for letter in self:
@@ -191,31 +191,36 @@ class SponsorshipCorrespondence(models.Model):
     @api.depends('sponsorship_id', 'direction')
     @api.one
     def _set_languages(self):
-        if self.direction == 'Supporter To Beneficiary':
-            if self.child_id.project_id.country_id.spoken_langs_ids:
-                if self.original_language_id in self.child_id.project_id.\
-                   country_id.spoken_langs_ids:
-                    self.destination_language_id = self.original_language_id
-                else:
-                    self.destination_language_id = self.child_id\
-                                                       .project_id\
-                                                       .country_id\
-                                                       .spoken_langs_ids[0]
+        for corr in self:
+            if corr.direction == 'Supporter To Beneficiary':
+                if corr.child_id.project_id.country_id.spoken_langs_ids:
+                    if corr.original_language_id in corr.child_id.project_id.\
+                       country_id.spoken_langs_ids:
+                        corr.destination_language_id = corr.\
+                                                       original_language_id
+                    else:
+                        corr.destination_language_id = corr.child_id\
+                                                           .project_id\
+                                                           .country_id\
+                                                           .spoken_langs_ids[0]
 
-        if self.direction == 'Beneficiary To Supporter':
-            # TODO: take into account the language sent by the child's country
-            if self.child_id.project_id.country_id.spoken_langs_ids:
-                self.original_language_id = self.child_id.project_id\
-                    .country_id.spoken_langs_ids[0]
-            if self.correspondant_id.spoken_langs_ids:
-                self.destination_language_id = self.correspondant_id\
-                    .spoken_langs_ids[0]
+            if corr.direction == 'Beneficiary To Supporter':
+                # TODO: take into account the language sent
+                # by the child's country
+                if corr.child_id.project_id.country_id.spoken_langs_ids:
+                    corr.original_language_id = corr.child_id.project_id\
+                                                             .country_id.\
+                                                             spoken_langs_ids[
+                                                                 0]
+                    if corr.correspondant_id.spoken_langs_ids:
+                        corr.destination_language_id = corr.correspondant_id\
+                                                           .spoken_langs_ids[0]
 
     @api.depends('sponsorship_id')
-    @api.one
     def _set_partner_review(self):
-        if self.correspondant_id.mandatory_review:
-            self.mandatory_review = True
+        for letter in self:
+            if letter.correspondant_id.mandatory_review:
+                letter.mandatory_review = True
 
     def _change_language(self):
         return True
@@ -245,7 +250,6 @@ class SponsorshipCorrespondence(models.Model):
             # Detect filetype
             ftype = magic.from_buffer(base64.b64decode(letter_image),
                                       True).lower()
-            print 'type', ftype
             if 'pdf' in ftype:
                 type_ = '.pdf'
             elif 'tiff' in ftype:
@@ -259,7 +263,6 @@ class SponsorshipCorrespondence(models.Model):
                 'res_model': self._name,
                 'datas': letter_image})
             vals['letter_image'] = attachment.id
-
         letter = super(SponsorshipCorrespondence, self).create(vals)
         if attachment:
             attachment.write({

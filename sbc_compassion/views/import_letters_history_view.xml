@@ -17,12 +17,12 @@
                     <field name="nber_letters"/>
                     <field name="is_mandatory_review"/>
                 </group>
-		<button name="button_save" string="Save"
+		<button name="button_save" string="Final Import"
 			attrs="{'invisible': [('state', 'in', ('saved', 'draft'))]}"
 			type="object" class="oe_highlight"/>
 		<field name="state" invisible="1"/>
                 <field name="letters_line_ids" attrs="{'invisible': [('state', 'not in', ('pending', 'ready'))]}"/>
-                <field name="letters_ids" attrs="{'invisible': [('state', '!=', 'saved')]}"/>
+		<field name="letters_ids" attrs="{'invisible': [('state', '!=', 'saved')]}"/>
             </sheet>
             </form>
             </field>

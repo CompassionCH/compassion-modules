@@ -10,6 +10,7 @@
 ##############################################################################
 
 from openerp import fields, models, api, _
+import base64
 
 
 class ImportLetterLine(models.Model):
@@ -62,8 +63,8 @@ class ImportLetterLine(models.Model):
         for line in self:
             if not line.sponsorship_status:
                 line.status = "sponsorship"
-            if not line.person:
-                line.status = "person"
+                if not line.person:
+                    line.status = "person"
             elif not line.template_id or (line.template_id.id ==
                                           default_template.id):
                 line.status = "temp"
@@ -81,6 +82,12 @@ class ImportLetterLine(models.Model):
                     ('child_id.code', '=', line.child_code),
                     ('partner_codega', '=', line.partner_codega),
                     ('is_active', '=', True)], order='end_date desc', limit=1)
+                if len(line.sponsorship_id) == 0:
+                    line.sponsorship_id = line.env[
+                        'recurring.contract'].search(
+                            [('child_id.code', '=', line.child_code),
+                             ('partner_codega', '=', line.partner_codega)],
+                            order='end_date desc', limit=1)
                 if len(line.sponsorship_id) == 1:
                     line.sponsorship_status = True
                     line.person = True
@@ -109,20 +116,20 @@ class ImportLetterLine(models.Model):
         """
         """
         ids = []
-        print 'bou'
         for letter in self:
-            print letter.letter_image.datas
             dict_ = {
-                'sponsorship_id': letter.sponsorship_id,
-                'letter_image': letter.letter_image.read()[0]['datas'],
-                'template_id': letter.template_id,
-                'original_language_id': letter.supporter_languages_id
+                'sponsorship_id': letter.sponsorship_id.id,
+                'letter_image': letter.letter_image.datas,
+                'template_id': letter.template_id.id,
+                'original_language_id': letter.supporter_languages_id.id,
+                'direction': 'Supporter To Beneficiary'
             }
             if letter.is_encourager:
                 dict_['relationship'] = 'Encourager'
             if mandatory_review:
+                print 'bou'
                 dict_['mandatory_review'] = True
 
             temp_id = self.env['sponsorship.correspondence'].create(dict_)
-            ids.append(temp_id.id)
+            ids.append((4, temp_id.id))
         return ids

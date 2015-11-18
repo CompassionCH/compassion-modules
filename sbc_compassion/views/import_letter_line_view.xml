@@ -16,7 +16,7 @@
           <field name="template_id"/>
           <field name="supporter_languages_id"/>
           <field name="is_encourager"/>
-          <field name="letter_image"/>
+          <field name="letter_image" readonly="1"/>
           <field name="letter_image_preview" widget='image' display="icon" string="Letter image preview"/>
         </tree>
       </field>

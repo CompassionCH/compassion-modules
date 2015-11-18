@@ -68,22 +68,24 @@ class ImportLettersHistory(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.one
+    @api.multi
     @api.depends("letters_line_ids", "letters_line_ids.status",
                  "letters_ids", "data")
     def _set_ready(self):
-        check = True
-        for i in self.letters_line_ids:
-            if i.status != "ok":
-                check = False
-        if check and len(self.letters_line_ids) > 0:
-            self.state = "ready"
-        elif len(self.letters_ids) > 0:
-            self.state = "saved"
-        elif len(self.letters_line_ids) > 0:
-            self.state = "pending"
-        else:
-            self.state = "draft"
+        for letters in self:
+            if len(letters.letters_ids) > 0:
+                letters.state = "saved"
+            elif len(letters.letters_line_ids) > 0:
+                check = True
+                for i in letters.letters_line_ids:
+                    if i.status != "ok":
+                        check = False
+                if check:
+                    letters.state = "ready"
+                else:
+                    letters.state = "pending"
+            else:
+                letters.state = "draft"
 
     @api.model
     def create(self, vals):
@@ -199,16 +201,14 @@ class ImportLettersHistory(models.Model):
                                 attachment.with_context(
                                     bin_size=False).datas))
                             file_.flush()
-                            filename = tempfile.gettempdir() + file_.name
-                            inst._analyze_attachment(filename, attachment.name)
+                            inst._analyze_attachment(file_.name,
+                                                     attachment.name)
                     else:
                         raise exceptions.Warning(
                             'Still a file in a non-accepted format')
                 else:
                     raise exceptions.Warning(_('Two files are the same'))
             # remove all the files (now there are inside import_line_ids)
-            for attachment in inst.data:
-                attachment.unlink()
 
     def _analyze_attachment(self, file_, filename):
         """
@@ -221,13 +221,13 @@ class ImportLettersHistory(models.Model):
         """
         f = open(file_)
         data = f.read()
+        f.close()
         # convert to PNG
         if func.isPDF(file_) or func.isTIFF(file_):
             name = os.path.splitext(file_)[0]
             with Image(filename=file_) as img:
                 img.format = 'png'
                 img.save(filename=name + '.png')
-            os.remove(file_)
             file_png = name + '.png'
         # now do the computations only if the image is a PNG
         img = cv2.imread(file_png)
@@ -259,11 +259,12 @@ class ImportLettersHistory(models.Model):
             'template_id': template.id,
         })
 
-        file_png = open(file_png, "r")
-        file_data = file_png.read()
-        file_png.close()
+        file_png_io = open(file_png, "r")
+        file_data = file_png_io.read()
+        file_png_io.close()
+
         document_vals = {'name': filename,
-                         'datas': data,
+                         'datas': base64.b64encode(data),
                          'datas_fname': filename,
                          'res_model': 'import.letter.line',
                          'res_id': letters_line.id}
@@ -273,6 +274,7 @@ class ImportLettersHistory(models.Model):
         letters_line.letter_image_preview = base64.b64encode(file_data)
 
         self.letters_line_ids += letters_line
+        os.remove(file_png)
 
     def _find_template(self, img):
         """
@@ -419,12 +421,12 @@ class ImportLettersHistory(models.Model):
         # check if all the imports are OK
         for letters_h in self:
             if letters_h.state != "ready":
-                raise exceptions.Warning(_("Not all letters are ready"))
+                raise exceptions.Warning(_("Some letters are not ready"))
         # save the imports
         for letters in self:
+            print letters.is_mandatory_review
             ids = letters.letters_line_ids.save_lines(
                 mandatory_review=letters.is_mandatory_review)
-            print ids
             # letters_ids should be empty before this line
-            letters.letters_ids.write((6, ids))
-            letters.letters_line_ids.write((5))
+            letters.write({'letters_ids': ids})
+            letters.letters_line_ids.unlink()
