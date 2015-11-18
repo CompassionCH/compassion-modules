@@ -23,10 +23,10 @@
  original version on github.com/oostendo/python-zxing
 """
 
-__version__ = '0.5'
 import subprocess
 import re
 import os
+__version__ = '0.5'
 
 
 class BarCodeTool():
@@ -74,7 +74,7 @@ class BarCodeTool():
 
         # send one file, or multiple files in a list
         SINGLE_FILE = False
-        if type(files) != type(list()):
+        if not isinstance(files, list):
             cmd.append(files)
             SINGLE_FILE = True
         else:

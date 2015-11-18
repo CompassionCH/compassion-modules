@@ -67,23 +67,27 @@ class CorrespondenceTemplate(models.Model):
         help='Y Position of the upper-right corner of the bluesquare '
              'in pixels')
     qrcode_x_min = fields.Integer(
+        compute="_compute_size",
         help='Minimum X position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_x_max = fields.Integer(
+        compute="_compute_size",
         help='Maximum X position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_y_min = fields.Integer(
+        compute="_compute_size",
         help='Minimum Y position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_y_max = fields.Integer(
+        compute="_compute_size",
         help='Maximum Y position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     pattern_center_x = fields.Float(
-        readonly=True,
+        compute="_compute_template_keypoints", store=True,
         help='X coordinate of the center of the pattern. '
         'Used to detect the orientation of the pattern in the image')
     pattern_center_y = fields.Float(
-        readonly=True,
+        compute="_compute_template_keypoints", store=True,
         help='Y coordinate of the center of the pattern. '
         'Used to detect the orientation of the pattern in the image')
     pattern_x_min = fields.Integer(
@@ -168,11 +172,72 @@ class CorrespondenceTemplate(models.Model):
                 })
                 self.template_attachment_id = attachment.id
 
-    @api.depends('template_image')
+    @api.onchange('template_image')
+    def _compute_size(self):
+        for template in self:
+            if template.template_image:
+                with tempfile.NamedTemporaryFile() as template_file:
+                    template_file.write(base64.b64decode(
+                        template.with_context(bin_size=False).template_image))
+                    template_file.flush()
+                    # Find the pattern inside the template image
+                    img = cv2.imread(template_file.name)
+                    template.page_height, template.page_width = img.shape[:2]
+                    template.qrcode_x_min = template.page_width * float(
+                        template.env['ir.config_parameter'].get_param(
+                            'qrcode_x_min'))
+                    template.qrcode_x_max = template.page_width * float(
+                        template.env['ir.config_parameter'].get_param(
+                            'qrcode_x_max'))
+                    template.qrcode_y_min = template.page_height * \
+                        float(template.env['ir.config_parameter'].get_param(
+                            'qrcode_y_min'))
+                    template.qrcode_y_max = template.page_height * \
+                        float(template.env['ir.config_parameter'].get_param(
+                            'qrcode_y_max'))
+
+    @api.depends('template_attachment_id',
+                 'pattern_image', 'template_image')
+    def _compute_template_keypoints(self):
+        """ This method computes all keypoints that can be automatically
+        detected (bluesquare and pattern_center)
+        """
+        for template in self:
+            if (template.template_image and template.pattern_image and
+                    _verify_template(template)):
+                with tempfile.NamedTemporaryFile() as template_file:
+                    template_file.write(base64.b64decode(
+                        template.with_context(bin_size=False).template_image))
+                    template_file.flush()
+                    # Find the pattern inside the template image
+                    img = cv2.imread(template_file.name)
+                    template.page_height, template.page_width = img.shape[:2]
+                    # pattern detection
+                    pattern_keypoints = pr.patternRecognition(
+                        img, template.with_context(
+                            bin_size=False).pattern_image,
+                        template.get_pattern_area())
+                    if pattern_keypoints is None:
+                        raise Warning(
+                            _("Pattern not found"),
+                            _("The pattern could not be detected in given "
+                              "template image."))
+                    # find center of the pattern
+                    pattern_center = pr.keyPointCenter(pattern_keypoints)
+                    template.pattern_center_x = pattern_center[0]
+                    template.pattern_center_y = pattern_center[1]
+                    # blue corner detection
+                    bluecorner = bcf.BlueCornerFinder(
+                        img).getIndices()
+                    template.bluesquare_x = bluecorner[0]
+                    template.bluesquare_y = bluecorner[1]
+
+    @api.multi
     def _compute_detection(self):
         for template in self:
             if (_verify_template(template) and template.pattern_image and
                     template.template_image):
+                self._compute_size()
                 original_image = template.with_context(
                     bin_size=False).template_image
                 with tempfile.NamedTemporaryFile(
@@ -237,53 +302,6 @@ class CorrespondenceTemplate(models.Model):
                     cv2.imwrite(template_file.name, img)
                     with open(template_file.name) as f:
                         template.detection_result = base64.b64encode(f.read())
-
-    @api.onchange('template_image')
-    def _compute_size(self):
-        for template in self:
-            if template.template_image:
-                with tempfile.NamedTemporaryFile() as template_file:
-                    template_file.write(base64.b64decode(
-                        template.template_image))
-                    template_file.flush()
-                    # Find the pattern inside the template image
-                    img = cv2.imread(template_file.name)
-                    template.page_height, template.page_width = img.shape[:2]
-
-    @api.depends('template_attachment_id',
-                 'pattern_image', 'template_image')
-    def _compute_template_keypoints(self):
-        """ This method computes all keypoints that can be automatically
-        detected (bluesquare and pattern_center)
-        """
-        for template in self:
-            if (template.template_image and template.pattern_image and
-                    _verify_template(template)):
-                with tempfile.NamedTemporaryFile() as template_file:
-                    template_file.write(base64.b64decode(
-                        template.template_image))
-                    template_file.flush()
-                    # Find the pattern inside the template image
-                    img = cv2.imread(template_file.name)
-                    template.page_height, template.page_width = img.shape[:2]
-                    # pattern detection
-                    pattern_keypoints = pr.patternRecognition(
-                        img, template.pattern_image,
-                        template.get_pattern_area())
-                    if pattern_keypoints is None:
-                        raise Warning(
-                            _("Pattern not found"),
-                            _("The pattern could not be detected in given "
-                              "template image."))
-                    # find center of the pattern
-                    pattern_center = pr.keyPointCenter(pattern_keypoints)
-                    template.pattern_center_x = pattern_center[0]
-                    template.pattern_center_y = pattern_center[1]
-                    # blue corner detection
-                    bluecorner = bcf.BlueCornerFinder(
-                        img).getIndices()
-                    template.bluesquare_x = bluecorner[0]
-                    template.bluesquare_y = bluecorner[1]
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -372,16 +390,12 @@ def _verify_template(tpl):
         valid_coordinates = (
             0 <= tpl.bluesquare_x <= width and
             0 <= tpl.bluesquare_y <= height and
-            0 <= tpl.qrcode_x_min < tpl.qrcode_x_max <= width and
-            0 <= tpl.qrcode_y_min < tpl.qrcode_y_max <= height and
             0 <= tpl.pattern_x_min < tpl.pattern_x_max <= width and
             0 <= tpl.pattern_y_min < tpl.pattern_y_max <= height)
     else:
         valid_coordinates = (
             0 <= tpl.bluesquare_x <= width and
             0 <= tpl.bluesquare_y <= height and
-            0 <= tpl.qrcode_x_min <= tpl.qrcode_x_max <= width and
-            0 <= tpl.qrcode_y_min <= tpl.qrcode_y_max <= height and
             0 <= tpl.pattern_x_min <= tpl.pattern_x_max <= width and
             0 <= tpl.pattern_y_min <= tpl.pattern_y_max <= height)
     return valid_coordinates

@@ -231,16 +231,35 @@ class ImportLettersHistory(models.Model):
             file_png = name + '.png'
         # now do the computations only if the image is a PNG
         img = cv2.imread(file_png)
+        img_height, img_width = img.shape[:2]
         # first compute the QR code
         zx = zxing.BarCodeTool()
-        qrcode = zx.decode(file_png, try_harder=True)
+        left = img_width * float(
+            self.env['ir.config_parameter'].get_param(
+                'qrcode_x_min'))
+        top = img_height * float(
+            self.env['ir.config_parameter'].get_param(
+                'qrcode_y_min'))
+        width = img_width * float(
+            self.env['ir.config_parameter'].get_param(
+                'qrcode_x_max'))
+        width -= left
+        height = img_height * float(
+            self.env['ir.config_parameter'].get_param(
+                'qrcode_y_max'))
+        height -= top
+        qrcode = zx.decode(file_png, try_harder=True, crop=[
+            int(left), int(top), int(width), int(height)])
         if qrcode is None:
-            center = img.shape[:2]/2
-            M = cv2.getRotationMatrix2D(center, 180, 1.0)
-            img = cv2.warpAffine(img, M, center)
-            qrcode = zx.decode(file_png, try_harder=True)
+            img = img[::-1, ::-1]
+            cv2.imwrite(file_png, img)
+            qrcode = zx.decode(file_png, try_harder=True, crop=[
+                int(left), int(top), int(width), int(height)])
             if qrcode is not None:
                 cv2.imwrite(file_, img)
+                f = open(file_)
+                data = f.read()
+                f.close()
         if qrcode is not None and 'XX' in qrcode.data:
             partner, child = qrcode.data.split('XX')
         else:
