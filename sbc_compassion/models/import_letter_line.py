@@ -10,7 +10,6 @@
 ##############################################################################
 
 from openerp import fields, models, api, _
-import base64
 
 
 class ImportLetterLine(models.Model):
@@ -127,9 +126,6 @@ class ImportLetterLine(models.Model):
             if letter.is_encourager:
                 dict_['relationship'] = 'Encourager'
             if mandatory_review:
-                print 'bou'
                 dict_['mandatory_review'] = True
-
-            temp_id = self.env['sponsorship.correspondence'].create(dict_)
-            ids.append((4, temp_id.id))
+            ids.append((0, 0, dict_))
         return ids

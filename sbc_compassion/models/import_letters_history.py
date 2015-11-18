@@ -443,7 +443,6 @@ class ImportLettersHistory(models.Model):
                 raise exceptions.Warning(_("Some letters are not ready"))
         # save the imports
         for letters in self:
-            print letters.is_mandatory_review
             ids = letters.letters_line_ids.save_lines(
                 mandatory_review=letters.is_mandatory_review)
             # letters_ids should be empty before this line
