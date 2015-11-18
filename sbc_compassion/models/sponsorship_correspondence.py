@@ -79,10 +79,9 @@ class SponsorshipCorrespondence(models.Model):
         readonly=True)
     # First spoken lang of partner
     original_language_id = fields.Many2one(
-        'res.lang.compassion', readonly=True,
-        inverse='_change_language', store=True)
+        'res.lang.compassion')
     destination_language_id = fields.Many2one(
-        'res.lang.compassion', compute='_set_languages',
+        'res.lang.compassion', compute='_set_destination_language',
         inverse='_change_language', store=True)
     original_text = fields.Text()
     translated_text = fields.Text()
@@ -98,7 +97,7 @@ class SponsorshipCorrespondence(models.Model):
     relationship = fields.Selection([
         ('Sponsor', _('Sponsor')),
         ('Encourager', _('Encourager'))], default='Sponsor')
-    mandatory_review = fields.Boolean(readonly=False, store=True)
+    mandatory_review = fields.Boolean()
     rework_reason = fields.Char()
     rework_comments = fields.Text()
     original_letter_url = fields.Char()
@@ -188,33 +187,28 @@ class SponsorshipCorrespondence(models.Model):
             else:
                 letter.name = _('New correspondence')
 
-    @api.depends('sponsorship_id', 'direction')
-    @api.one
-    def _set_languages(self):
-        for corr in self:
-            if corr.direction == 'Supporter To Beneficiary':
-                if corr.child_id.project_id.country_id.spoken_langs_ids:
-                    if corr.original_language_id in corr.child_id.project_id.\
-                       country_id.spoken_langs_ids:
-                        corr.destination_language_id = corr.\
-                                                       original_language_id
+    @api.depends('sponsorship_id', 'direction', 'original_language_id')
+    def _set_destination_language(self):
+        for letter in self:
+            if letter.direction == 'Supporter To Beneficiary':
+                if letter.child_id.project_id.country_id.spoken_langs_ids:
+                    if letter.original_language_id in letter.child_id.\
+                       project_id.country_id.spoken_langs_ids:
+                        letter.destination_language_id = letter.\
+                            original_language_id
                     else:
-                        corr.destination_language_id = corr.child_id\
-                                                           .project_id\
-                                                           .country_id\
-                                                           .spoken_langs_ids[0]
+                        letter.destination_language_id = letter\
+                            .child_id.project_id.country_id.spoken_langs_ids[0]
 
-            if corr.direction == 'Beneficiary To Supporter':
-                # TODO: take into account the language sent
-                # by the child's country
-                if corr.child_id.project_id.country_id.spoken_langs_ids:
-                    corr.original_language_id = corr.child_id.project_id\
-                                                             .country_id.\
-                                                             spoken_langs_ids[
-                                                                 0]
-                    if corr.correspondant_id.spoken_langs_ids:
-                        corr.destination_language_id = corr.correspondant_id\
-                                                           .spoken_langs_ids[0]
+            if letter.direction == 'Beneficiary To Supporter':
+                if letter.child_id.project_id.country_id.spoken_langs_ids:
+                    if letter.original_language_id in letter.\
+                       correspondant_id.spoken_langs_ids:
+                        letter.destination_language_id = letter.\
+                            original_language_id
+                    else:
+                        letter.destination_language_id = letter\
+                              .correspondant_id.spoken_langs_ids[0]
 
     @api.depends('sponsorship_id')
     def _set_partner_review(self):

@@ -6,11 +6,11 @@
       <field name="name">import.letter.line.tree</field>
       <field name="model">import.letter.line</field>
       <field name="arch" type="xml">
-        <tree string="Import letters lines" colors="red:status != 'ok';green:status == 'ok'" editable="top">
+        <tree string="Import letters lines" colors="red:status != 'ok';green:status == 'ok'" editable="bottom">
           <field name="status"/>
-          <field name="sponsorship_status" invisible="1"/>
+          <field name="sponsorship_found" invisible="1"/>
 	  <field name="sponsorship_id" invisible="1"/>
-	  <field name="person" invisible="1"/>
+	  <field name="child_partner_found" invisible="1"/>
           <field name="partner_codega"/>
           <field name="child_code"/>
           <field name="template_id"/>

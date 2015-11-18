@@ -59,35 +59,31 @@ class CorrespondenceTemplate(models.Model):
     page_height = fields.Integer(
         help='Height of the template in pixels')
     bluesquare_x = fields.Integer(
-        readonly=True,
+        compute='_compute_template_keypoints', store=True,
         help='X Position of the upper-right corner of the bluesquare '
              'in pixels')
     bluesquare_y = fields.Integer(
-        readonly=True,
+        compute='_compute_template_keypoints', store=True,
         help='Y Position of the upper-right corner of the bluesquare '
              'in pixels')
     qrcode_x_min = fields.Integer(
-        compute="_compute_size",
         help='Minimum X position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_x_max = fields.Integer(
-        compute="_compute_size",
         help='Maximum X position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_y_min = fields.Integer(
-        compute="_compute_size",
         help='Minimum Y position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_y_max = fields.Integer(
-        compute="_compute_size",
         help='Maximum Y position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     pattern_center_x = fields.Float(
-        compute="_compute_template_keypoints", store=True,
+        readonly=True,
         help='X coordinate of the center of the pattern. '
         'Used to detect the orientation of the pattern in the image')
     pattern_center_y = fields.Float(
-        compute="_compute_template_keypoints", store=True,
+        readonly=True,
         help='Y coordinate of the center of the pattern. '
         'Used to detect the orientation of the pattern in the image')
     pattern_x_min = fields.Integer(
@@ -177,8 +173,11 @@ class CorrespondenceTemplate(models.Model):
         for template in self:
             if template.template_image:
                 with tempfile.NamedTemporaryFile() as template_file:
+                    data = template.with_context(bin_size=False).template_image
+                    if not data:
+                        data = template.template_image
                     template_file.write(base64.b64decode(
-                        template.with_context(bin_size=False).template_image))
+                        data))
                     template_file.flush()
                     # Find the pattern inside the template image
                     img = cv2.imread(template_file.name)

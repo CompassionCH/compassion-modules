@@ -21,7 +21,7 @@
 			attrs="{'invisible': [('state', 'in', ('saved', 'draft'))]}"
 			type="object" class="oe_highlight"/>
 		<field name="state" invisible="1"/>
-                <field name="letters_line_ids" attrs="{'invisible': [('state', 'not in', ('pending', 'ready'))]}"/>
+                <field name="import_line_ids" attrs="{'invisible': [('state', 'not in', ('pending', 'ready'))]}"  domain="[('id','=','-1')]"/>
 		<field name="letters_ids" attrs="{'invisible': [('state', '!=', 'saved')]}"/>
             </sheet>
             </form>

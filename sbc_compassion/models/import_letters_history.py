@@ -20,6 +20,7 @@ import os
 from wand.image import Image
 import tempfile
 import shutil
+from glob import glob
 
 from ..tools import import_letter_functions as func
 from ..tools import zxing
@@ -62,30 +63,33 @@ class ImportLettersHistory(models.Model):
     is_mandatory_review = fields.Boolean("Mandatory Review", default=False)
 
     data = fields.Many2many('ir.attachment', string=_("Add a file"))
-    letters_line_ids = fields.Many2many('import.letter.line')
+    import_line_ids = fields.Many2many('import.letter.line')
     letters_ids = fields.Many2many('sponsorship.correspondence')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.multi
-    @api.depends("letters_line_ids", "letters_line_ids.status",
+    @api.depends("import_line_ids", "import_line_ids.status",
                  "letters_ids", "data")
     def _set_ready(self):
-        for letters in self:
-            if len(letters.letters_ids) > 0:
-                letters.state = "saved"
-            elif len(letters.letters_line_ids) > 0:
+        """ Check in which state self is by counting the number of element in
+        each Many2many
+        """
+        for import_letters in self:
+            if import_letters.letters_ids:
+                import_letters.state = "saved"
+            elif import_letters.import_line_ids:
                 check = True
-                for i in letters.letters_line_ids:
+                for i in import_letters.import_line_ids:
                     if i.status != "ok":
                         check = False
                 if check:
-                    letters.state = "ready"
+                    import_letters.state = "ready"
                 else:
-                    letters.state = "pending"
+                    import_letters.state = "pending"
             else:
-                letters.state = "draft"
+                import_letters.state = "draft"
 
     @api.model
     def create(self, vals):
@@ -94,7 +98,7 @@ class ImportLettersHistory(models.Model):
         return result
 
     @api.multi
-    @api.onchange("data", "letters_line_ids", "letters_ids")
+    @api.onchange("data", "import_line_ids", "letters_ids")
     def _count_nber_letters(self):
         """
         Counts the number of scans (if a zip is given, count the number
@@ -102,7 +106,7 @@ class ImportLettersHistory(models.Model):
         """
         for inst in self:
             if inst.state == "pending" or inst.state == "ready":
-                inst.nber_letters = len(inst.letters_line_ids)
+                inst.nber_letters = len(inst.import_line_ids)
             elif inst.state == "saved":
                 inst.nber_letters = len(inst.letters_ids)
             elif inst.state is False or inst.state == "draft":
@@ -153,62 +157,62 @@ class ImportLettersHistory(models.Model):
         is not done twice (check same name)[, extract zip], use
         analyze_attachment at the end
         """
-        for inst in self:
-            # list for checking if a file come twice
-            check = []
-            for attachment in inst.data:
-                if attachment.name not in check:
-                    check.append(attachment.name)
-                    # check for zip
-                    if func.check_file(attachment.name) == 2:
-                        # create a temp file
-                        with tempfile.NamedTemporaryFile(
-                                suffix='.zip') as zip_file:
-                            # write data in tempfile
-                            zip_file.write(base64.b64decode(
-                                attachment.with_context(
-                                    bin_size=False).datas))
-                            zip_file.flush()
-
-                            zip_ = zipfile.ZipFile(
-                                zip_file, 'r')
-                            # loop over files inside zip
-                            directory = tempfile.mkdtemp()
-                            for f in zip_.namelist():
-                                    zip_.extract(
-                                        f, directory)
-                                    absname = directory + \
-                                        '/' + f
-                                    if os.path.isfile(absname):
-                                        # remove if PDF is working
-                                        if func.isPDF(absname):
-                                            raise exceptions.Warning(
-                                                _("PDF not implemented yet"))
-                                        filename = f.split('/')[-1]
-                                        inst._analyze_attachment(absname,
-                                                                 filename)
-                            shutil.rmtree(directory)
-                    # case with normal format ([PDF,]TIFF)
-                    elif func.check_file(attachment.name) == 1:
-                        # remove if PDF is working
-                        if func.isPDF(attachment.name):
-                            raise exceptions.Warning(
-                                _("PDF not implemented yet"))
-                        ext = os.path.splitext(attachment.name)[1]
-                        with tempfile.NamedTemporaryFile(
-                                suffix=ext) as file_:
-                            file_.write(base64.b64decode(
-                                attachment.with_context(
-                                    bin_size=False).datas))
-                            file_.flush()
-                            inst._analyze_attachment(file_.name,
-                                                     attachment.name)
-                    else:
+        self.ensure_one()
+        # list for checking if a file come twice
+        check = []
+        for attachment in self.data:
+            if attachment.name not in check:
+                check.append(attachment.name)
+                # check for zip
+                if func.check_file(attachment.name) == 2:
+                    # create a temp file
+                    with tempfile.NamedTemporaryFile(
+                            suffix='.zip') as zip_file:
+                        # write data in tempfile
+                        zip_file.write(base64.b64decode(
+                            attachment.with_context(
+                                bin_size=False).datas))
+                        zip_file.flush()
+                        zip_ = zipfile.ZipFile(
+                            zip_file, 'r')
+                        # loop over files inside zip
+                        directory = tempfile.mkdtemp()
+                        for f in zip_.namelist():
+                            zip_.extract(
+                                f, directory)
+                            absname = directory + '/' + f
+                            if os.path.isfile(absname):
+                                # remove if PDF is working
+                                if func.isPDF(absname):
+                                    raise exceptions.Warning(
+                                        _("PDF not implemented yet"))
+                                filename = f.split('/')[-1]
+                                self._analyze_attachment(absname,
+                                                         filename)
+                        shutil.rmtree(directory)
+                # case with normal format ([PDF,]TIFF)
+                elif func.check_file(attachment.name) == 1:
+                    # remove if PDF is working
+                    if func.isPDF(attachment.name):
                         raise exceptions.Warning(
-                            'Still a file in a non-accepted format')
+                            _("PDF not implemented yet"))
+                    ext = os.path.splitext(attachment.name)[1]
+                    with tempfile.NamedTemporaryFile(
+                            suffix=ext) as file_:
+                        file_.write(base64.b64decode(
+                            attachment.with_context(
+                                bin_size=False).datas))
+                        file_.flush()
+                        self._analyze_attachment(file_.name,
+                                                 attachment.name)
                 else:
-                    raise exceptions.Warning(_('Two files are the same'))
-            # remove all the files (now there are inside import_line_ids)
+                    raise exceptions.Warning(
+                        'Still a file in a non-accepted format')
+            else:
+                raise exceptions.Warning(_('Two files are the same'))
+        # remove all the files (now there are inside import_line_ids)
+        for letters in self:
+            letters.data.unlink()
 
     def _analyze_attachment(self, file_, filename):
         """
@@ -231,46 +235,23 @@ class ImportLettersHistory(models.Model):
             file_png = name + '.png'
         # now do the computations only if the image is a PNG
         img = cv2.imread(file_png)
-        img_height, img_width = img.shape[:2]
+        MULTIPAGE = False
+        if img is None:
+            file_png = name + '-0' + '.png'
+            img = cv2.imread(file_png)
+            MULTIPAGE = True
+            if img is None:
+                raise Warning("The '{}' image cannot be read".format(filename))
         # first compute the QR code
-        zx = zxing.BarCodeTool()
-        left = img_width * float(
-            self.env['ir.config_parameter'].get_param(
-                'qrcode_x_min'))
-        top = img_height * float(
-            self.env['ir.config_parameter'].get_param(
-                'qrcode_y_min'))
-        width = img_width * float(
-            self.env['ir.config_parameter'].get_param(
-                'qrcode_x_max'))
-        width -= left
-        height = img_height * float(
-            self.env['ir.config_parameter'].get_param(
-                'qrcode_y_max'))
-        height -= top
-        qrcode = zx.decode(file_png, try_harder=True, crop=[
-            int(left), int(top), int(width), int(height)])
-        if qrcode is None:
-            img = img[::-1, ::-1]
-            cv2.imwrite(file_png, img)
-            qrcode = zx.decode(file_png, try_harder=True, crop=[
-                int(left), int(top), int(width), int(height)])
-            if qrcode is not None:
-                cv2.imwrite(file_, img)
-                f = open(file_)
-                data = f.read()
-                f.close()
-        if qrcode is not None and 'XX' in qrcode.data:
-            partner, child = qrcode.data.split('XX')
-        else:
-            partner = None
-            child = None
+        partner, child, data, img = self._find_qrcode(file_png, img, MULTIPAGE,
+                                                      name, filename, file_,
+                                                      data)
         # now try to find the layout
         # loop over all the patterns in the pattern directory
         template, key_img = self._find_template(img)
         lang_id = self._find_language(img, key_img, template)
 
-        letters_line = self.env['import.letter.line'].create({
+        letters_line = self.env['import.letter.line'].sudo().create({
             'partner_codega': partner,
             'child_code': child,
             'is_encourager': False,
@@ -292,8 +273,79 @@ class ImportLettersHistory(models.Model):
             'ir.attachment'].create(document_vals)
         letters_line.letter_image_preview = base64.b64encode(file_data)
 
-        self.letters_line_ids += letters_line
+        self.import_line_ids += letters_line
         os.remove(file_png)
+        if MULTIPAGE:
+            delfiles = glob(name + '*png')
+            print delfiles
+            for file_ in delfiles:
+                os.remove(file_)
+
+    def _find_qrcode(self, file_png, img, MULTIPAGE, name, filename, file_,
+                     data):
+        # get size and position
+        img_height, img_width = img.shape[:2]
+        left = img_width * float(
+            self.env['ir.config_parameter'].get_param(
+                'qrcode_x_min'))
+        top = img_height * float(
+            self.env['ir.config_parameter'].get_param(
+                'qrcode_y_min'))
+        width = img_width * float(
+            self.env['ir.config_parameter'].get_param(
+                'qrcode_x_max'))
+        width -= left
+        height = img_height * float(
+            self.env['ir.config_parameter'].get_param(
+                'qrcode_y_max'))
+        height -= top
+        # decoder
+        zx = zxing.BarCodeTool()
+        # first try
+        qrcode = zx.decode(file_png, try_harder=True, crop=[
+            int(left), int(top), int(width), int(height)])
+        # check if found, if not means that page is rotated
+        if qrcode is None:
+            # rotate image
+            img = img[::-1, ::-1]
+            # save it for zxing
+            cv2.imwrite(file_png, img)
+            # second try
+            qrcode = zx.decode(file_png, try_harder=True, crop=[
+                int(left), int(top), int(width), int(height)])
+            if qrcode is not None:
+                # if multipage, needs to turn all of them
+                if MULTIPAGE:
+                    # Get list of all images filenames to include
+                    image_names = glob(name + '-*.png')
+                    for g in image_names:
+                        # first page already done
+                        if file_png != g:
+                            img_temp = cv2.imread(g)[::-1, ::-1]
+                            cv2.imwrite(g, img_temp)
+
+                    # Create new Image, and extend sequence
+                    # put first page at the begining
+                    with Image() as img_tiff:
+                        img_tiff.sequence.extend(
+                            [Image(filename=img_name)
+                             for img_name in sorted(image_names)])
+                        img_tiff.save(filename=filename)
+                    f = open(filename)
+                    data = f.read()
+                    f.close()
+                # if only one page, far more easy
+                else:
+                    cv2.imwrite(file_, img)
+                    f = open(file_)
+                    data = f.read()
+                    f.close()
+        if qrcode is not None and 'XX' in qrcode.data:
+            partner, child = qrcode.data.split('XX')
+        else:
+            partner = None
+            child = None
+        return partner, child, data, img
 
     def _find_template(self, img):
         """
@@ -443,8 +495,9 @@ class ImportLettersHistory(models.Model):
                 raise exceptions.Warning(_("Some letters are not ready"))
         # save the imports
         for letters in self:
-            ids = letters.letters_line_ids.save_lines(
+            ids = letters.import_line_ids.get_letter_datas(
                 mandatory_review=letters.is_mandatory_review)
             # letters_ids should be empty before this line
             letters.write({'letters_ids': ids})
-            letters.letters_line_ids.unlink()
+            letters.import_line_ids.letter_image.unlink()
+            letters.import_line_ids.unlink()
