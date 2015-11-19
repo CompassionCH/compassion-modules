@@ -13,7 +13,7 @@
 from test_base_module import test_base_module
 from datetime import datetime
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from dateutil.relativedelta import relativedelta
+from openerp import fields
 import logging
 logger = logging.getLogger(__name__)
 
@@ -39,19 +39,6 @@ class test_contract_compassion(test_base_module):
             In this test we are testing states changement of a contract and if
             the old invoice are well cancelled when we pay one invoice.
         """
-        # Creation of a the next fiscal year
-        next_year = (datetime.strptime(
-            (datetime.today().strftime(DF)), DF)
-            + relativedelta(years=+1)).year
-        fiscal_year = self.env['account.fiscalyear'].create({
-            'name': next_year,
-            'code': next_year,
-            'date_start': datetime.strptime((datetime(
-                next_year, 1, 1)).strftime(DF), DF),
-            'date_stop': datetime.strptime((datetime(
-                next_year, 12, 31)).strftime(DF), DF),
-            })
-        fiscal_year.create_period()
         contract_group = self._create_group(
             'do_nothing', self.partners.ids[0], 5,
             self.payment_term_id,
@@ -110,7 +97,14 @@ class test_contract_compassion(test_base_module):
         self.assertEqual(len(invoices), 2)
 
         # Cancelling of the contract
+        date_finish = fields.Datetime.now()
         contract.signal_workflow('contract_terminated')
+        # Check a job for cleaning invoices has been created
+        self.assertTrue(self.env['queue.job'].search([
+            ('name', '=', 'Job for cleaning invoices of contracts.'),
+            ('date_created', '>=', date_finish)]))
+        # Force cleaning invoices immediatley
+        contract._clean_invoices()
         self.assertEqual(contract.state, 'cancelled')
         self.assertEqual(invoices[0].state, 'cancel')
         self.assertEqual(invoices[1].state, 'cancel')

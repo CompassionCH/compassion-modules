@@ -30,7 +30,7 @@ class test_messages(test_base_module):
     def setUp(self):
         super(test_messages, self).setUp()
         self.message_obj = self.env['gmc.message.pool'].with_context(
-            test_mode=True)
+            async_mode=False, test_mode=True)
         self.action_obj = self.env['gmc.action']
         self.child_obj = self.env['compassion.child']
         self.today = date.today().strftime(DF)
@@ -108,11 +108,10 @@ class test_messages(test_base_module):
             'num_pol_ga': randint(700, 999),
             'child_id': child_id,
             'next_invoice_date': self.today,
-            'activation_date': self.today,
             'type': 'S',
         }
         con_obj = self.env['recurring.contract'].with_context(
-            default_type='S')
+            default_type='S', async_mode=False)
         contract = con_obj.create(contract_vals)
         contract.force_activation()
         return contract
@@ -128,6 +127,9 @@ class test_messages(test_base_module):
         if will_fail:
             with self.assertRaises(Warning):
                 messages.process_messages()
+            for message in messages:
+                self.assertEqual(message.state, 'failure')
+            messages.write({'state': 'new'})
         else:
             messages.process_messages()
             status = 'success' if not failure_reason else 'failure'

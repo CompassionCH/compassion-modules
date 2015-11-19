@@ -201,22 +201,6 @@ class sponsorship_contract(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-
-    @api.multi
-    def clean_invoices(self, since_date=None, to_date=None,
-                       keep_lines=None, clean_invoices_paid=True):
-        """ Take into consideration when the sponsor has paid in advance,
-        so that we cancel/modify the paid invoices and let the user decide
-        what to do with the payment.
-        """
-        if clean_invoices_paid:
-            sponsorships = self.filtered(lambda s: s.type == 'S')
-            sponsorships.clean_invoices_paid(since_date, to_date,
-                                             keep_lines=keep_lines)
-
-        return super(sponsorship_contract, self).clean_invoices(
-            since_date, to_date, keep_lines)
-
     def clean_invoices_paid(self, since_date=None, to_date=None, gifts=False,
                             keep_lines=None):
         """ Removes or cancel paid invoices in the given period.
@@ -505,6 +489,20 @@ class sponsorship_contract(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    @api.multi
+    def _clean_invoices(self, since_date=None, to_date=None,
+                        keep_lines=None, clean_invoices_paid=True):
+        """ Take into consideration when the sponsor has paid in advance,
+        so that we cancel/modify the paid invoices and let the user decide
+        what to do with the payment.
+        """
+        if clean_invoices_paid:
+            sponsorships = self.filtered(lambda s: s.type == 'S')
+            sponsorships.clean_invoices_paid(since_date, to_date,
+                                             keep_lines=keep_lines)
+
+        return super(sponsorship_contract, self)._clean_invoices(
+            since_date, to_date, keep_lines)
 
     @api.multi
     def _on_sponsorship_finished(self):

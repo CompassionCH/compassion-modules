@@ -46,18 +46,13 @@ class contract_group(models.Model):
         self.contains_sponsorship = 'S' in types or 'SC' in types
 
     ##########################################################################
-    #                             PUBLIC METHODS                             #
-    ##########################################################################
-
-    def generate_invoices(self, invoicer=None):
-        """ Add birthday gifts generation. """
-        invoicer = self._generate_birthday_gifts(invoicer)
-        invoicer = super(contract_group, self).generate_invoices(invoicer)
-        return invoicer
-
-    ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    def _generate_invoices(self, invoicer=None):
+        """ Add birthday gifts generation. """
+        invoicer = self._generate_birthday_gifts(invoicer)
+        invoicer = super(contract_group, self)._generate_invoices(invoicer)
+        return invoicer
 
     @api.multi
     def _generate_birthday_gifts(self, invoicer=None):

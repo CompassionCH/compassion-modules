@@ -128,9 +128,9 @@ class contract_group(models.Model):
         if len(result) == 26:
             return mod10r(result)
 
-    def clean_invoices(self):
+    def _clean_invoices(self):
         """ Override clean_invoices to delete cancelled invoices """
-        invoices = super(contract_group, self).clean_invoices()
+        invoices = super(contract_group, self)._clean_invoices()
         if invoices:
             inv_ids = invoices.filtered(lambda i: i.state == 'cancel').ids
             self.env.cr.execute(
@@ -206,6 +206,12 @@ class contract_group(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    def _generate_invoices(self, invoicer=None):
+        """Immediately validate invoices after generation."""
+        invoicer = super(contract_group, self)._generate_invoices(invoicer)
+        invoicer.validate_invoices()
+        return invoicer
+
     def _setup_inv_data(self, journal_ids, invoicer):
         """ Inherit to add BVR ref """
         self.ensure_one()

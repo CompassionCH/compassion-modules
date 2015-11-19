@@ -13,6 +13,9 @@ from openerp.exceptions import Warning
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.tools.config import config
 
+from openerp.addons.connector.queue.job import job, related_action
+from openerp.addons.connector.session import ConnectorSession
+
 from random import randint
 from datetime import datetime
 
@@ -207,72 +210,15 @@ class gmc_message_pool(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.one
+    @api.multi
     def process_messages(self):
-        """ Process given messages in pool. """
-
-        # Find company country codes
-        company_obj = self.env['res.company']
-        companies = company_obj.search([])
-        country_codes = companies.mapped('partner_id.country_id.code')
-        today = datetime.now()
-        mess_date = datetime.strptime(self.date[:10], DF)
-
-        if self.state == 'new' and (mess_date <= today or
-                                    self.env.context.get('force_send')):
-            res = False
-            action = self.action_id
-            if action.direction == 'in':
-                if self.partner_country_code in country_codes or \
-                        self.env.context.get('test_mode'):
-                    try:
-                        res = self._perform_incoming_action()
-                    except Exception:
-                        self.write({
-                            'state': 'failure',
-                            'failure_reason': traceback.format_exc()})
-                        if self.child_id and \
-                                self.child_id.state != 'E':
-                            # Put child in error state
-                            self.child_id.write({
-                                'previous_state': self.child_id.state,
-                                'state': 'E'})
-                else:
-                    self.write({
-                        'state': 'failure',
-                        'failure_reason': 'Wrong Partner Country'})
-                    res = False
-
-            elif action.direction == 'out':
-                res = self._perform_outgoing_action()
-            else:
-                raise NotImplementedError
-            if res:
-                message_update = {
-                    'state': 'pending' if action.direction == 'out'
-                    else 'success',
-                    'process_date': today}
-                if isinstance(res, basestring):
-                    message_update['request_id'] = res
-                self.write(message_update)
-                # Commit all changes of triggered by message before
-                # processing the next message.
-                self.env.cr.commit()
-
-        elif self.state == 'fondue':
-            # Mark Money Sent for Gift Messages
-            self.write({
-                'money_sent_date': today,
-                'state': 'success'})
-
-        elif self.state == 'failure':
-            # Set back to new
-            self.write({
-                'request_id': False,
-                'state': 'new',
-                'process_date': False,
-                'failure_reason': False})
-
+        new_messages = self.filtered(lambda m: m.state in ('new', 'failure'))
+        new_messages.write({'state': 'pending', 'failure_reason': False})
+        if self.env.context.get('async_mode', True):
+            session = ConnectorSession.from_env(self.env)
+            process_messages_job.delay(session, self._name, self.ids)
+        else:
+            self._process_messages()
         return True
 
     @api.model
@@ -325,6 +271,75 @@ class gmc_message_pool(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    @api.one
+    def _process_messages(self):
+        """ Process given messages in pool. """
+
+        # Find company country codes
+        company_obj = self.env['res.company']
+        companies = company_obj.search([])
+        country_codes = companies.mapped('partner_id.country_id.code')
+        today = datetime.now()
+        mess_date = datetime.strptime(self.date[:10], DF)
+
+        if self.state == 'pending' and (mess_date <= today or
+                                        self.env.context.get('force_send')):
+            res = False
+            action = self.action_id
+            if action.direction == 'in':
+                if self.partner_country_code in country_codes or \
+                        self.env.context.get('test_mode'):
+                    try:
+                        res = self._perform_incoming_action()
+                    except Exception:
+                        self.write({
+                            'state': 'failure',
+                            'failure_reason': traceback.format_exc()})
+                        if self.child_id and \
+                                self.child_id.state != 'E':
+                            # Put child in error state
+                            self.child_id.write({
+                                'previous_state': self.child_id.state,
+                                'state': 'E'})
+                else:
+                    self.write({
+                        'state': 'failure',
+                        'failure_reason': 'Wrong Partner Country'})
+                    res = False
+
+            elif action.direction == 'out':
+                try:
+                    res = self._perform_outgoing_action()
+                except Warning as e:
+                    # Put the message in failure state
+                    self.write({
+                        'state': 'failure',
+                        'failure_reason': e.args[1]
+                    })
+                    self.env.cr.commit()
+                    raise
+            else:
+                raise NotImplementedError
+            if res:
+                message_update = {
+                    'state': 'pending' if action.direction == 'out'
+                    else 'success',
+                    'process_date': today}
+                if isinstance(res, basestring):
+                    message_update['request_id'] = res
+                self.write(message_update)
+                # Commit all changes of triggered by message before
+                # processing the next message.
+                self.env.cr.commit()
+
+        elif self.state == 'fondue':
+            # Mark Money Sent for Gift Messages
+            self.write({
+                'money_sent_date': today,
+                'state': 'success'})
+
+        return True
+
     def _perform_incoming_action(self):
         """ This method defines what has to be done
         for each incoming message type. """
@@ -452,3 +467,27 @@ class gmc_message_pool(models.Model):
     @api.model
     def _needaction_domain_get(self):
         return [('state', 'in', ('new', 'pending'))]
+
+
+##############################################################################
+#                            CONNECTOR METHODS                               #
+##############################################################################
+def related_action_messages(session, job):
+    message_ids = job.args[1]
+    action = {
+        'name': _("Messages"),
+        'type': 'ir.actions.act_window',
+        'res_model': 'gmc.message.pool',
+        'domain': [('id', 'in', message_ids)],
+        'view_type': 'form',
+        'view_mode': 'tree,form',
+    }
+    return action
+
+
+@job(default_channel='root.gmc_pool')
+@related_action(action=related_action_messages)
+def process_messages_job(session, model_name, message_ids):
+    """Job for processing messages."""
+    messages = session.env[model_name].browse(message_ids)
+    messages._process_messages()

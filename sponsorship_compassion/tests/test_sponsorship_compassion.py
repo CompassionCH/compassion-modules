@@ -11,6 +11,7 @@
 
 
 from datetime import datetime
+from openerp import fields
 from openerp.addons.contract_compassion.tests.test_base_module\
     import test_base_module
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
@@ -87,7 +88,8 @@ class test_sponsorship_compassion(test_base_module):
         self.assertEqual(gift_inv[0].state, 'paid')
 
         # Suspend of the sponsorship contract
-        child.project_id.write({'disburse_funds': False})
+        child.project_id.with_context(
+            async_mode=False).write({'disburse_funds': False})
         invoice1 = self.env['account.invoice'].browse(invoices[1].id)
         self.assertEqual(invoice.state, 'cancel')
         self.assertEqual(invoice1.state, 'cancel')
@@ -96,7 +98,14 @@ class test_sponsorship_compassion(test_base_module):
         child.project_id.write({'disburse_funds': True})
         self.assertEqual(invoice.state, 'open')
         self.assertEqual(invoice1.state, 'open')
+        date_finish = fields.Datetime.now()
         sponsorship.signal_workflow('contract_terminated')
+        # Check a job for cleaning invoices has been created
+        self.assertTrue(self.env['queue.job'].search([
+            ('name', '=', 'Job for cleaning invoices of contracts.'),
+            ('date_created', '>=', date_finish)]))
+        # Force cleaning invoices immediatley
+        sponsorship._clean_invoices()
         self.assertTrue(sponsorship.state, 'terminated')
         self.assertEqual(invoice.state, 'cancel')
         self.assertEqual(invoice1.state, 'cancel')

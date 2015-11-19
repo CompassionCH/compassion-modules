@@ -9,12 +9,16 @@
 #
 ##############################################################################
 
+import logging
+
 from openerp import models, fields, api, exceptions, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from openerp.addons.connector.queue.job import job, related_action
+from openerp.addons.connector.session import ConnectorSession
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -410,9 +414,19 @@ class recurring_contract(models.Model):
               'the sponsorship.'))
 
     def _reset_open_invoices(self):
+        """ Launch the task in asynchrnous job by default. """
+        if self.env.context.get('async_mode', True):
+            session = ConnectorSession.from_env(self.env)
+            reset_open_invoices_job.delay(
+                session, self._name, self.ids)
+        else:
+            self._reset_open_invoices_job()
+        return True
+
+    def _reset_open_invoices_job(self):
         """Clean the open invoices in order to generate new invoices.
         This can be useful if contract was updated when active."""
-        invoices_canceled = super(recurring_contract, self).clean_invoices()
+        invoices_canceled = self._clean_invoices()
         if invoices_canceled:
             invoice_obj = self.env['account.invoice']
             inv_update_ids = set()
@@ -430,12 +444,8 @@ class recurring_contract(models.Model):
                 # the next_invoice_date for the contract to generate again
                 else:
                     contract.rewind_next_invoice_date()
-                    invoicer_id = contract.group_id.generate_invoices()
-                    invoicer = self.env['recurring.invoicer'].browse(
-                        invoicer_id)
-                    if invoicer.invoice_ids:
-                        invoicer.validate_invoices()
-                    else:
+                    invoicer = contract.group_id._generate_invoices()
+                    if not invoicer.invoice_ids:
                         invoicer.unlink()
             # Validate again modified invoices
             validate_invoices = invoice_obj.browse(list(inv_update_ids))
@@ -470,3 +480,27 @@ class recurring_contract(models.Model):
                     contract.group_id.next_invoice_date, DF)
                 if group_date > next_invoice_date:
                     contract.group_id._set_next_invoice_date()
+
+
+##############################################################################
+#                            CONNECTOR METHODS                               #
+##############################################################################
+def related_action_contracts(session, job):
+    contract_ids = job.args[2]
+    action = {
+        'name': _("Contracts"),
+        'type': 'ir.actions.act_window',
+        'res_model': 'recurring.contract',
+        'view_type': 'form',
+        'view_mode': 'tree,form',
+        'domain': [('id', 'in', contract_ids)],
+    }
+    return action
+
+
+@job(default_channel='root.recurring_invoicer')
+@related_action(action=related_action_contracts)
+def reset_open_invoices_job(session, model_name, contract_ids):
+    """Job for generating again open invoices of contracts."""
+    contracts = session.env[model_name].browse(contract_ids)
+    contracts._reset_open_invoices_job()

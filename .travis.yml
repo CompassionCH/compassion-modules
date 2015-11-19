@@ -12,7 +12,7 @@ python:
     - '2.7'
 
 env:
-    - VERSION="8.0" ODOO_REPO="odoo/odoo"
+    - VERSION="8.0" ODOO_REPO="odoo/odoo" EXCLUDE="sbc_compassion"
 
 virtualenv:
   system_site_packages: true
@@ -35,6 +35,7 @@ install:
     - git clone https://github.com/OCA/bank-statement-reconcile.git ${HOME}/build/CompassionCH/bank-statement-reconcile -b 8.0
     - git clone https://github.com/OCA/account-financial-tools.git ${HOME}/build/CompassionCH/account-financial-tools -b 8.0
     - git clone https://github.com/OCA/partner-contact.git ${HOME}/build/CompassionCH/partner-contact -b 8.0
+    - git clone https://github.com/OCA/connector.git ${HOME}/build/CompassionCH/connector -b 8.0
     - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis_install_nightly || echo "Not installing odoo in Pull requests"'
 
 before_script:
