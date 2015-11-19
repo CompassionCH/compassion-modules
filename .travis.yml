@@ -12,12 +12,19 @@ python:
     - '2.7'
 
 env:
-    - VERSION="8.0" ODOO_REPO="odoo/odoo" EXCLUDE="sbc_compassion,onramp_compassion"
+    global:
+        - VERSION="8.0"
+        - ODOO_REPO="odoo/odoo"
+        - EXCLUDE="sbc_compassion,onramp_compassion"
+        - OPENCV_ROOT=${HOME}/opencv
 
 virtualenv:
   system_site_packages: true
 
 install:
+    - travis/install_opencv.sh
+    - export PYTHONPATH=${PYTHONPATH}:${OPENCV_ROOT}/install/lib/python2.7/site-packages
+    - python -c 'import cv2; print("OpenCV version is {}".format(cv2.__version__))'
     - pip install flake8
     - pip install pysftp
     - pip install MySQL-python
@@ -48,4 +55,3 @@ script:
 
 after_success:
     - coveralls
-
