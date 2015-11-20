@@ -21,16 +21,19 @@ from openerp.exceptions import ValidationError, Warning
 from ..tools import patternrecognition as pr
 from ..tools import bluecornerfinder as bcf
 
-# defines a few color for drawing on the result picture (names from wikipedia)
-# BGR
-pattern_color_sq = (34, 139, 34)  # green (forest)
-pattern_color_pt = (0, 128, 0)  # green (html/css color)
-pattern_color_key = (0, 204, 239)  # yellow (munsell)
-bluesquare_color = (51, 2, 196)  # red NCS
-qr_color = (168, 24, 0)  # blue (Pantone)
-lang_color = (0, 97, 232)  # Spanish orange
-# defines scaling for circles radius
-radius_scale = 120
+
+class Style:
+    """ Defines a few color for drawing on the result picture
+    (names from wikipedia).
+    The color order is BGR"""
+    pattern_color_sq = (34, 139, 34)  # green (forest)
+    pattern_color_pt = (0, 128, 0)  # green (html/css color)
+    pattern_color_key = (0, 204, 239)  # yellow (munsell)
+    bluesquare_color = (51, 2, 196)  # red NCS
+    qr_color = (168, 24, 0)  # blue (Pantone)
+    lang_color = (0, 97, 232)  # Spanish orange
+    # defines scaling for circles radius
+    radius_scale = 120
 
 
 class CorrespondenceTemplate(models.Model):
@@ -67,23 +70,27 @@ class CorrespondenceTemplate(models.Model):
         help='Y Position of the upper-right corner of the bluesquare '
              'in pixels')
     qrcode_x_min = fields.Integer(
+        compute="_onchange_template_image",
         help='Minimum X position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_x_max = fields.Integer(
+        compute="_onchange_template_image",
         help='Maximum X position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_y_min = fields.Integer(
+        compute="_onchange_template_image",
         help='Minimum Y position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_y_max = fields.Integer(
+        compute="_onchange_template_image",
         help='Maximum Y position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     pattern_center_x = fields.Float(
-        readonly=True,
+        compute="_compute_template_keypoints", store=True,
         help='X coordinate of the center of the pattern. '
         'Used to detect the orientation of the pattern in the image')
     pattern_center_y = fields.Float(
-        readonly=True,
+        compute="_compute_template_keypoints", store=True,
         help='Y coordinate of the center of the pattern. '
         'Used to detect the orientation of the pattern in the image')
     pattern_x_min = fields.Integer(
@@ -131,8 +138,7 @@ class CorrespondenceTemplate(models.Model):
         ]
 
     @api.constrains(
-        'bluesquare_x', 'bluesquare_y', 'qrcode_x_min', 'qrcode_x_max',
-        'qrcode_y_min', 'qrcode_y_max', 'pattern_x_min', 'pattern_x_max',
+        'bluesquare_x', 'bluesquare_y', 'pattern_x_min', 'pattern_x_max',
         'pattern_y_min', 'pattern_y_max', 'page_width', 'page_height')
     def verify_position(self):
         """ Check that position of elements inside template are valid
@@ -144,7 +150,8 @@ class CorrespondenceTemplate(models.Model):
     @api.depends('template_attachment_id')
     def _compute_image(self):
         for template in self:
-            template.template_image = template.template_attachment_id.datas
+            if template.template_attachment_id:
+                template.template_image = template.template_attachment_id.datas
 
     def _set_image(self):
         if self.template_image:
@@ -159,41 +166,50 @@ class CorrespondenceTemplate(models.Model):
                 # Trigger again computation of keypoints
                 self._compute_template_keypoints()
             else:
-                attachment = self.env['ir.attachment'].create({
-                    'name': self.name,
-                    'res_model': self._name,
-                    'datas': self.template_image,
-                    'datas_fname': self.name,
-                    'res_id': self.id
-                })
-                self.template_attachment_id = attachment.id
+                attachment = self.env[
+                    'ir.attachment'].create({
+                        'name': self.name,
+                        'datas': self.template_image,
+                        'datas_fname': self.name,
+                        'res_model': self._name,
+                        'res_id': self.id
+                    })
+                self.write({'template_attachment_id': attachment.id})
 
     @api.onchange('template_image')
-    def _compute_size(self):
+    def _onchange_template_image(self):
         for template in self:
             if template.template_image:
-                with tempfile.NamedTemporaryFile() as template_file:
+                with tempfile.NamedTemporaryFile(
+                        suffix='.png') as template_file:
                     data = template.with_context(bin_size=False).template_image
                     if not data:
                         data = template.template_image
                     template_file.write(base64.b64decode(
                         data))
                     template_file.flush()
-                    # Find the pattern inside the template image
-                    img = cv2.imread(template_file.name)
-                    template.page_height, template.page_width = img.shape[:2]
-                    template.qrcode_x_min = template.page_width * float(
-                        template.env['ir.config_parameter'].get_param(
-                            'qrcode_x_min'))
-                    template.qrcode_x_max = template.page_width * float(
-                        template.env['ir.config_parameter'].get_param(
-                            'qrcode_x_max'))
-                    template.qrcode_y_min = template.page_height * \
-                        float(template.env['ir.config_parameter'].get_param(
-                            'qrcode_y_min'))
-                    template.qrcode_y_max = template.page_height * \
-                        float(template.env['ir.config_parameter'].get_param(
-                            'qrcode_y_max'))
+                    # compute image size and QR code position
+                    template._compute_img_constant(template_file)
+
+    def _compute_img_constant(self, template_file):
+        """ Compute the position of the QR code and the size of the image
+
+        :param template_file: Temporary file (already written)
+        :returns: Image
+        :rtype: np.array
+
+        """
+        img = cv2.imread(template_file.name)
+        self.page_height, self.page_width = img.shape[:2]
+        self.qrcode_x_min = self.page_width * float(
+            self.env['ir.config_parameter'].get_param('qrcode_x_min'))
+        self.qrcode_x_max = self.page_width * float(
+            self.env['ir.config_parameter'].get_param('qrcode_x_max'))
+        self.qrcode_y_min = self.page_height * \
+            float(self.env['ir.config_parameter'].get_param('qrcode_y_min'))
+        self.qrcode_y_max = self.page_height * \
+            float(self.env['ir.config_parameter'].get_param('qrcode_y_max'))
+        return img
 
     @api.depends('template_attachment_id',
                  'pattern_image', 'template_image')
@@ -201,20 +217,18 @@ class CorrespondenceTemplate(models.Model):
         """ This method computes all keypoints that can be automatically
         detected (bluesquare and pattern_center)
         """
-        for template in self:
-            if (template.template_image and template.pattern_image and
-                    _verify_template(template)):
-                with tempfile.NamedTemporaryFile() as template_file:
+        for template in self.with_context(bin_size=False):
+            if (template.template_image and template.pattern_image):
+                with tempfile.NamedTemporaryFile(
+                        suffix='.png') as template_file:
                     template_file.write(base64.b64decode(
-                        template.with_context(bin_size=False).template_image))
+                        template.template_image))
                     template_file.flush()
-                    # Find the pattern inside the template image
-                    img = cv2.imread(template_file.name)
-                    template.page_height, template.page_width = img.shape[:2]
+                    # compute image size and QR code position
+                    img = template._compute_img_constant(template_file)
                     # pattern detection
                     pattern_keypoints = pr.patternRecognition(
-                        img, template.with_context(
-                            bin_size=False).pattern_image,
+                        img, template.pattern_image,
                         template.get_pattern_area())
                     if pattern_keypoints is None:
                         raise Warning(
@@ -233,37 +247,35 @@ class CorrespondenceTemplate(models.Model):
 
     @api.multi
     def _compute_detection(self):
-        for template in self:
-            if (_verify_template(template) and template.pattern_image and
-                    template.template_image):
-                self._compute_size()
-                original_image = template.with_context(
-                    bin_size=False).template_image
+        for template in self.with_context(bin_size=False):
+            if (template.pattern_image and template.template_image and
+                    _verify_template(template)):
+                original_image = template.template_image
                 with tempfile.NamedTemporaryFile(
                         suffix='.png') as template_file:
                     template_file.write(base64.b64decode(original_image))
                     template_file.flush()
-                    img = cv2.imread(template_file.name)
+                    img = template._compute_img_constant(template_file)
                 # computation before any modifications
                 pattern_keypoints = pr.patternRecognition(
-                    img, template.with_context(bin_size=False).pattern_image,
+                    img, template.pattern_image,
                     template.get_pattern_area())
                 # no reason behind it, just need a scaling
-                radius = template.page_width/radius_scale
+                radius = template.page_width/Style.radius_scale
                 # bluesquare
                 img.itemset((self.bluesquare_y, self.bluesquare_x, 0),
-                            bluesquare_color[0])
+                            Style.bluesquare_color[0])
                 img.itemset((self.bluesquare_y, self.bluesquare_x, 1),
-                            bluesquare_color[1])
+                            Style.bluesquare_color[1])
                 img.itemset((self.bluesquare_y, self.bluesquare_x, 2),
-                            bluesquare_color[2])
+                            Style.bluesquare_color[2])
                 cv2.circle(img, (self.bluesquare_x, self.bluesquare_y),
-                           radius, bluesquare_color)
+                           radius, Style.bluesquare_color)
                 # QR code
                 cv2.rectangle(img,
                               (template.qrcode_x_min, template.qrcode_y_min),
                               (template.qrcode_x_max, template.qrcode_y_max),
-                              qr_color)
+                              Style.qr_color)
                 # Pattern
                 # box
                 pattern_center = (int(self.pattern_center_y),
@@ -271,31 +283,34 @@ class CorrespondenceTemplate(models.Model):
                 cv2.rectangle(img,
                               (template.pattern_x_min, template.pattern_y_min),
                               (template.pattern_x_max, template.pattern_y_max),
-                              pattern_color_sq)
+                              Style.pattern_color_sq)
                 # center
                 img.itemset((pattern_center[0], pattern_center[1], 0),
-                            pattern_color_pt[0])
+                            Style.pattern_color_pt[0])
                 img.itemset((pattern_center[0], pattern_center[1], 1),
-                            pattern_color_pt[1])
+                            Style.pattern_color_pt[1])
                 img.itemset((pattern_center[0], pattern_center[1], 2),
-                            pattern_color_pt[2])
-                cv2.circle(img, pattern_center[::-1], radius, pattern_color_pt)
+                            Style.pattern_color_pt[2])
+                cv2.circle(img, pattern_center[::-1], radius,
+                           Style.pattern_color_pt)
                 # keypoints
                 for key in pattern_keypoints:
                     cv2.line(img, (int(key[0]), int(key[1])),
-                             pattern_center[::-1], pattern_color_key)
+                             pattern_center[::-1],
+                             Style.pattern_color_key)
 
                 # languages
                 for check in template.checkbox_ids:
                     cv2.rectangle(img,
                                   (check.x_min, check.y_min),
                                   (check.x_max, check.y_max),
-                                  lang_color)
+                                  Style.lang_color)
                     pos = (int(check.x_min + check.x_max)/2,
                            int(check.y_min + check.y_max)/2)
                     if check.language_id.code_iso is not False:
                         cv2.putText(img, check.language_id.code_iso, pos,
-                                    cv2.FONT_HERSHEY_SIMPLEX, 1, lang_color)
+                                    cv2.FONT_HERSHEY_SIMPLEX, 1,
+                                    Style.lang_color)
                 with tempfile.NamedTemporaryFile(
                         suffix='.png') as template_file:
                     cv2.imwrite(template_file.name, img)

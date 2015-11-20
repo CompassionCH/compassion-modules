@@ -54,6 +54,9 @@
         'data/correspondence_template_data.xml',
         'data/correspondence_type.xml',
     ],
+    'demo': [
+        'demo/correspondence_template_demo.xml',
+    ],
     'installable': True,
     'auto_install': False,
 }

@@ -25,10 +25,8 @@ class ImportLetterLine(models.Model):
 
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship',
                                      compute='_set_sponsorship_id')
-    sponsorship_found = fields.Boolean(compute='_set_sponsorship_id',
-                                       readonly=True)
-    child_partner_found = fields.Boolean(compute='_set_sponsorship_id',
-                                         readonly=True)
+    sponsorship_found = fields.Boolean(compute='_set_sponsorship_id')
+    child_partner_found = fields.Boolean(compute='_set_sponsorship_id')
     partner_codega = fields.Char('Partner')
     name = fields.Char(compute='_set_name')
     child_code = fields.Char('Child')
@@ -41,10 +39,10 @@ class ImportLetterLine(models.Model):
     letter_image_preview = fields.Binary()
 
     status = fields.Selection([
-        ("no_lang", _("Error in Language")),
+        ("no_lang", _("Language not Detected")),
         ("no_sponsorship", _("Sponsorship not Found")),
         ("no_child_partner", _("Partner or Child not Found")),
-        ("no_template", _("Error in Template")),
+        ("no_template", _("Template not Detected")),
         ("ok", _("OK"))], compute="_check_status")
 
     ##########################################################################
@@ -83,14 +81,8 @@ class ImportLetterLine(models.Model):
             if line.partner_codega and line.child_code:
                 line.sponsorship_id = line.env['recurring.contract'].search([
                     ('child_id.code', '=', line.child_code),
-                    ('partner_codega', '=', line.partner_codega),
-                    ('is_active', '=', True)], order='end_date desc', limit=1)
-                if not line.sponsorship_id:
-                    line.sponsorship_id = line.env[
-                        'recurring.contract'].search(
-                            [('child_id.code', '=', line.child_code),
-                             ('partner_codega', '=', line.partner_codega)],
-                            order='start_date desc', limit=1)
+                    ('partner_codega', '=', line.partner_codega)],
+                    order='is_active desc, end_date desc', limit=1)
                 if line.sponsorship_id:
                     line.sponsorship_found = True
                     line.child_partner_found = True
@@ -116,7 +108,8 @@ class ImportLetterLine(models.Model):
 
     @api.multi
     def get_letter_datas(self, mandatory_review=False):
-        """ Create a list of dictionaries in order to create them inside
+        """ Create a list of dictionaries in order to create some lines inside
+        import_letters_history.
 
         :param mandatory_review: Are all the lines mandatory review?
         :returns: list to use in a write
