@@ -54,9 +54,9 @@ class CorrespondenceMapping(OnrampMapping):
     }
 
     SUPPORTER_MAPPING = {
-        'CompassConstituentId': None,   # Todo Where to find this ?
+        'CompassConstituentId': ('correspondant_id.ref', 'res.partner'),
         'CommunicationDeliveryPreference': None,  # Todo Where to find this ?
-        'GlobalId': ('correspondant_id.ref', 'res.partner'),
+        'GlobalId': None,
         'MandatoryReviewRequired': 'mandatory_review',
         'ObjectUrl': None,
         'PreferredName': ('correspondant_id.name', 'res.partner'),
@@ -104,10 +104,8 @@ class CorrespondenceMapping(OnrampMapping):
 
     FIELDS_TO_SUBMIT = {
         'Beneficiary.LocalId': None,
-        'Beneficiary.CompassId': None,
         'GlobalPartner.Id': None,
-        'Supporter.CompassConstituentId': None,
-        'Supporter.GlobalId': None,
+        'Supporter.CompassConstituentId': lambda id: '65-' + id,
         'Direction': None,
         'Pages': None,
         'RelationshipType': None,
@@ -123,8 +121,6 @@ class CorrespondenceMapping(OnrampMapping):
     CONSTANTS = {
         'SourceSystem': 'Odoo',
         'GlobalPartner.Id': 'CH',
-        'Supporter.CompassConstituentId': '7-3655245',  # TODO: Remove and
-                                                        # fetch properly
         'Pages': [],     # TODO : See how to send info about pages
         'NumberOfPages': 1,     # TODO
     }

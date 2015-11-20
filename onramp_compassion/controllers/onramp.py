@@ -17,7 +17,7 @@ _logger = logging.getLogger(__name__)
 
 # Put any authorized sender here. Its address must be part of the headers
 # in order to handle a request.
-AUTHORIZED_SENDERS = ['CHTest', 'CISalesforce']
+AUTHORIZED_SENDERS = ['CHTest', 'CISalesforce', 'CISFDC']
 
 # Only those message types will be accepted (checked in the header)
 MESSAGE_TYPES = {
@@ -90,6 +90,6 @@ class RestController(http.Controller):
         if headers.get('x-cim-MessageType') not in MESSAGE_TYPES.values():
             raise AttributeError("Unknown MessageType")
         if headers.get('x-cim-FromAddress') not in AUTHORIZED_SENDERS:
-            raise exceptions.AccessDenied("Unknown Sender")
+            raise exceptions.AccessDenied()
         if headers.get('x-cim-ToAddress') != 'CH':
             raise AttributeError("This message is not for me.")
