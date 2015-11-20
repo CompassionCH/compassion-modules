@@ -1,7 +1,8 @@
 #!/bin/sh
 
 # Downloads, builds, and installs OpenCV 3.0.0 to $OPENCV_ROOT/install.
-# Note that OPENCV_ROOT has to be set before calling this script.
+# Note that OPENCV_ROOT has to be set to some writable absolute path
+# before calling this script.
 # You will have to add $OPENCV_ROOT/install/lib/python2.7/site-packages
 # to your PYTHONPATH in order to use OpenCV from python.
 

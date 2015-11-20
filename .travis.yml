@@ -17,11 +17,13 @@ env:
         - ODOO_REPO="odoo/odoo"
         - EXCLUDE="sbc_compassion,onramp_compassion"
         - OPENCV_ROOT=${HOME}/opencv
+        - ZXING_ROOT=${HOME}/.libZxing
 
 virtualenv:
   system_site_packages: true
 
 install:
+    - travis/install_zxing.sh
     - travis/install_opencv.sh
     - export PYTHONPATH=${PYTHONPATH}:${OPENCV_ROOT}/install/lib/python2.7/site-packages
     - python -c 'import cv2; print("OpenCV version is {}".format(cv2.__version__))'
