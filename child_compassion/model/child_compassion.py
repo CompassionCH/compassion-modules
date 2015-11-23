@@ -105,6 +105,7 @@ class compassion_child(models.Model):
     #   study_area, vocational_skills, and future_plans_description
     #   may become automated translated fields if needed
     exit_reason = fields.Char()
+    other_exit_reason = fields.Char()
     gp_exit_reason = fields.Selection(
         'get_gp_exit_reasons', 'Exit reason', track_visibility='onchange')
     exit_date = fields.Date(readonly=True, track_visibility='onchange')
@@ -295,6 +296,7 @@ class compassion_child(models.Model):
             'new_situation_description': json_data['childNewSituation'
                                                    'Description'],
             'exit_reason': json_data['exitReason'],
+            'other_exit_reason': json_data['otherExitReason'],
             'last_letter_sent': json_data['lastChildLetterSent'],
         })
 

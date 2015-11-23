@@ -441,8 +441,6 @@ class sponsorship_contract(models.Model):
         if 'S' in self.type and self.state == 'draft':
             # If state draft correspondant_id=partner_id
             self.correspondant_id = self.partner_id
-        elif 'S' in self.type:
-            self.correspondant_id = self.partner_id
 
     ##########################################################################
     #                            WORKFLOW METHODS                            #

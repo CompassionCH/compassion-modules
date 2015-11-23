@@ -25,8 +25,8 @@
                             <h1>
                                 <field name="name"/>
                             </h1>
-                            <label for="firstname" class="oe_edit_only"/>
-                            <field name="firstname" class="oe_edit_only"/>
+                            <label for="firstname"/>
+                            <field name="firstname"/>
                         </div>
                         <div class="oe_right oe_button_box" name="buttons">
                             <button name="generate_descriptions" string="Generate descriptions" type="object" />
@@ -95,6 +95,7 @@
                                     <field name="future_plans_description" />
                                     <field name="new_situation_description" />
                                     <field name="exit_reason" />
+                                    <field name="other_exit_reason" />
                                     <field name="last_letter_sent" />
                                 </group>
                             </page>
