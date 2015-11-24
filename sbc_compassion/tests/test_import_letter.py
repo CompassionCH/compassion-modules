@@ -58,7 +58,40 @@ class TestImportLetter(unittest.TestCase):
         """Should report error for document that does not contain QR code."""
         # TODO implement
 
+    def test_check_box_reader(self):
+        """Checkboxes should be read correctly."""
+        # Load image that has the French box checked
+        img = self._read_img(self.test_document_normal)
+        # French
+        box = self._make_box(1130, 80)
+        self.assertTrue(self._checked_state(img[box]))
+        # Italian
+        box = self._make_box(1130, 160)
+        self.assertFalse(self._checked_state(img[box]))
+        # German
+        box = self._make_box(1130, 250)
+        self.assertFalse(self._checked_state(img[box]))
+        # Spanish
+        box = self._make_box(1570, 80)
+        self.assertFalse(self._checked_state(img[box]))
+        # English
+        box = self._make_box(1570, 160)
+        self.assertFalse(self._checked_state(img[box]))
+        # Other
+        box = self._make_box(1570, 250)
+        self.assertFalse(self._checked_state(img[box]))
+        # TODO add tests with more documents
+
     def _read_img(self, path):
         img = cv2.imread(path)
         self.assertIsNotNone(img)
         return img
+
+    @staticmethod
+    def _make_box(x, y, size=50):
+        return [slice(y, y + size), slice(x, x + size)]
+
+    @staticmethod
+    def _checked_state(img):
+        checkbox_reader = tools.checkboxreader.CheckboxReader(img)
+        return checkbox_reader.getState()
