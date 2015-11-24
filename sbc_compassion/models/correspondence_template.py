@@ -52,7 +52,6 @@ class CorrespondenceTemplate(models.Model):
     active = fields.Boolean(default=True)
     layout = fields.Selection('get_gmc_layouts', required=True)
     pattern_image = fields.Binary()
-    template_attachment_id = fields.Many2one('ir.attachment', copy=False)
     template_image = fields.Binary(
         compute='_compute_image', inverse='_set_image')
     detection_result = fields.Binary(
@@ -147,11 +146,13 @@ class CorrespondenceTemplate(models.Model):
             if not _verify_template(tpl):
                 raise ValidationError(_("Please give valid coordinates."))
 
-    @api.depends('template_attachment_id')
     def _compute_image(self):
         for template in self:
-            if template.template_attachment_id:
-                template.template_image = template.template_attachment_id.datas
+            attachment = self.env['ir.attachment'].search([
+                ('res_model', '=', self._name),
+                ('res_id', '=', template.id)])
+            if attachment:
+                template.template_image = attachment.datas
 
     def _set_image(self):
         if self.template_image:
@@ -161,46 +162,45 @@ class CorrespondenceTemplate(models.Model):
                 raise Warning(
                     _("Unsupported format"),
                     _("Please only use jpg or png files."))
-            if self.template_attachment_id:
-                self.template_attachment_id.datas = self.template_image
-                # Trigger again computation of keypoints
-                self._compute_template_keypoints()
+            attachment_obj = self.env['ir.attachment']
+            attachment = attachment_obj.search([
+                ('res_model', '=', self._name),
+                ('res_id', '=', self.id)])
+            if attachment:
+                attachment.datas = self.template_image
             else:
-                attachment = self.env[
-                    'ir.attachment'].create({
-                        'name': self.name,
-                        'datas': self.template_image,
-                        'datas_fname': self.name,
-                        'res_model': self._name,
-                        'res_id': self.id
-                    })
-                self.write({'template_attachment_id': attachment.id})
+                attachment = attachment_obj.create({
+                    'name': self.name,
+                    'datas': self.template_image,
+                    'datas_fname': self.name,
+                    'res_model': self._name,
+                    'res_id': self.id
+                })
+            # Trigger again computation of keypoints
+            self._compute_template_keypoints()
 
     @api.onchange('template_image')
     def _onchange_template_image(self):
         for template in self:
-            if template.template_image:
-                with tempfile.NamedTemporaryFile(
-                        suffix='.png') as template_file:
-                    data = template.with_context(bin_size=False).template_image
-                    if not data:
-                        data = template.template_image
-                    template_file.write(base64.b64decode(
-                        data))
-                    template_file.flush()
-                    # compute image size and QR code position
-                    template._compute_img_constant(template_file)
+            # compute image size and QR code position
+            template._compute_img_constant()
 
-    def _compute_img_constant(self, template_file):
+    def _compute_img_constant(self):
         """ Compute the position of the QR code and the size of the image
 
-        :param template_file: Temporary file (already written)
         :returns: Image
         :rtype: np.array
 
         """
-        img = cv2.imread(template_file.name)
-        self.page_height, self.page_width = img.shape[:2]
+        template_cv_image = None
+        data = self.with_context(
+            bin_size=False).template_image or self.template_image
+        if data:
+            with tempfile.NamedTemporaryFile(suffix='.png') as template_file:
+                template_file.write(base64.b64decode(data))
+                template_file.flush()
+                template_cv_image = cv2.imread(template_file.name)
+        self.page_height, self.page_width = template_cv_image.shape[:2]
         self.qrcode_x_min = self.page_width * float(
             self.env['ir.config_parameter'].get_param('qrcode_x_min'))
         self.qrcode_x_max = self.page_width * float(
@@ -209,23 +209,19 @@ class CorrespondenceTemplate(models.Model):
             float(self.env['ir.config_parameter'].get_param('qrcode_y_min'))
         self.qrcode_y_max = self.page_height * \
             float(self.env['ir.config_parameter'].get_param('qrcode_y_max'))
-        return img
 
-    @api.depends('template_attachment_id',
-                 'pattern_image', 'template_image')
+        return template_cv_image
+
+    @api.depends('pattern_image')
     def _compute_template_keypoints(self):
         """ This method computes all keypoints that can be automatically
         detected (bluesquare and pattern_center)
         """
-        for template in self.with_context(bin_size=False):
+        for template in self:
             if (template.template_image and template.pattern_image):
-                with tempfile.NamedTemporaryFile(
-                        suffix='.png') as template_file:
-                    template_file.write(base64.b64decode(
-                        template.template_image))
-                    template_file.flush()
-                    # compute image size and QR code position
-                    img = template._compute_img_constant(template_file)
+                # compute image size and QR code position
+                img = template._compute_img_constant()
+                if img is not None:
                     # pattern detection
                     pattern_keypoints = pr.patternRecognition(
                         img, template.pattern_image,
@@ -247,18 +243,16 @@ class CorrespondenceTemplate(models.Model):
 
     @api.multi
     def _compute_detection(self):
-        for template in self.with_context(bin_size=False):
+        for template in self:
             if (template.pattern_image and template.template_image and
                     _verify_template(template)):
-                original_image = template.template_image
-                with tempfile.NamedTemporaryFile(
-                        suffix='.png') as template_file:
-                    template_file.write(base64.b64decode(original_image))
-                    template_file.flush()
-                    img = template._compute_img_constant(template_file)
+                img = template._compute_img_constant()
+                if img is None:
+                    pass
+
                 # computation before any modifications
                 pattern_keypoints = pr.patternRecognition(
-                    img, template.pattern_image,
+                    img, template.with_context(bin_size=False).pattern_image,
                     template.get_pattern_area())
                 # no reason behind it, just need a scaling
                 radius = template.page_width/Style.radius_scale
@@ -314,8 +308,8 @@ class CorrespondenceTemplate(models.Model):
                 with tempfile.NamedTemporaryFile(
                         suffix='.png') as template_file:
                     cv2.imwrite(template_file.name, img)
-                    with open(template_file.name) as f:
-                        template.detection_result = base64.b64encode(f.read())
+                    template.detection_result = base64.b64encode(
+                        template_file.read())
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
