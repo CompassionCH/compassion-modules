@@ -48,10 +48,7 @@ def isPDF(name):
     :rtype: bool
     """
     ext = os.path.splitext(name)[1]
-    if ext.lower() == '.pdf':
-        return True
-    else:
-        return False
+    return (ext.lower() == '.pdf')
 
 
 def isTIFF(name):
@@ -63,10 +60,7 @@ def isTIFF(name):
     :rtype: bool
     """
     ext = os.path.splitext(name)[1]
-    if (ext.lower() == '.tif' or ext.lower() == '.tiff'):
-        return True
-    else:
-        return False
+    return (ext.lower() == '.tif' or ext.lower() == '.tiff')
 
 
 def isPNG(name):
@@ -78,10 +72,7 @@ def isPNG(name):
     :rtype: bool
     """
     ext = os.path.splitext(name)[1]
-    if ext.lower() == '.png':
-        return True
-    else:
-        return False
+    return (ext.lower() == '.png')
 
 
 def isZIP(name):
@@ -93,7 +84,4 @@ def isZIP(name):
     :rtype: bool
     """
     ext = os.path.splitext(name)[1]
-    if (ext.lower() == '.zip'):
-        return True
-    else:
-        return False
+    return (ext.lower() == '.zip')

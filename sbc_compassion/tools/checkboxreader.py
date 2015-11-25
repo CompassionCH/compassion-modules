@@ -103,10 +103,7 @@ class CheckboxReader:
         :rtype: bool or None
 
         """
-        if len(self.corners) > threshold:
-            return True
-        else:
-            return False
+        return (len(self.corners) > threshold)
 
     def getLength(self):
         """ Return the number of corners
