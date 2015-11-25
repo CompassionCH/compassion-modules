@@ -470,7 +470,7 @@ class recurring_contract(models.Model):
     def _on_group_id_changed(self):
         """Remove lines of open invoices and generate them again
         """
-        self._reset_open_invoices()
+        self._reset_open_invoices_job()
         for contract in self:
             # Update next_invoice_date of group if necessary
             if contract.group_id.next_invoice_date:

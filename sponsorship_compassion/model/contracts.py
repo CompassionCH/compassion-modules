@@ -284,8 +284,8 @@ class sponsorship_contract(models.Model):
         suspend_config = config_obj.search(
             [('key', '=', 'sponsorship_compassion.suspend_product_id')])
         # Cancel invoices in the period of suspension
-        self.clean_invoices(date_start,
-                            keep_lines=_('Center suspended'))
+        self._clean_invoices(
+            date_start, keep_lines=_('Center suspended'))
 
         for contract in self:
             # Add a note in the contract and in the partner.
