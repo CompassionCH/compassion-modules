@@ -70,6 +70,9 @@ def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
     kp1, des1 = sift.detectAndCompute(img1, None)
     kp2, des2 = sift.detectAndCompute(img2, None)
 
+    if des1 is None or des2 is None:
+        return None
+
     # find matches between the two pictures
     good = findMatches(des1, des2)
 

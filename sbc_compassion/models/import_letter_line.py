@@ -25,8 +25,8 @@ class ImportLetterLine(models.Model):
 
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship',
                                      compute='_set_sponsorship_id')
-    sponsorship_status = fields.Boolean(compute='_set_sponsorship_id',
-                                        readonly=True)
+    sponsorship_found = fields.Boolean(compute='_set_sponsorship_id')
+    child_partner_found = fields.Boolean(compute='_set_sponsorship_id')
     partner_codega = fields.Char('Partner')
     name = fields.Char(compute='_set_name')
     child_code = fields.Char('Child')
@@ -39,10 +39,10 @@ class ImportLetterLine(models.Model):
     letter_image_preview = fields.Binary()
 
     status = fields.Selection([
-        ("lang", _("Error in Language")),
-        ("sponsor", _("Error in Sponsorship")),
-        ("encourager", _("Sponsorship not found")),
-        ("temp", _("Error in Template")),
+        ("no_lang", _("Language not Detected")),
+        ("no_sponsorship", _("Sponsorship not Found")),
+        ("no_child_partner", _("Partner or Child not Found")),
+        ("no_template", _("Template not Detected")),
         ("ok", _("OK"))], compute="_check_status")
 
     ##########################################################################
@@ -53,36 +53,49 @@ class ImportLetterLine(models.Model):
     @api.depends('partner_codega', 'child_code', 'sponsorship_id',
                  'supporter_languages_id')
     def _check_status(self):
-        """
-        At each change, check if all the fields are OK
+        """ At each change, check if all the fields are OK
         """
         default_template = self.env.ref('sbc_compassion.default_template')
         for line in self:
-            if line.sponsorship_status or line.is_encourager:
-                line.status = "encourager"
-            if line.sponsorship_status is True:
-                line.status = "sponsor"
+            if not line.sponsorship_found:
+                line.status = "no_sponsorship"
+                if not line.child_partner_found:
+                    line.status = "no_child_partner"
             elif not line.template_id or (line.template_id.id ==
                                           default_template.id):
-                line.status = "temp"
+                line.status = "no_template"
             elif len(line.supporter_languages_id) != 1:
-                line.status = "lang"
+                line.status = "no_lang"
             else:
                 line.status = "ok"
 
     @api.multi
     @api.depends('partner_codega', 'child_code')
     def _set_sponsorship_id(self):
+        """ From the partner codega and the child code, find the record
+        linking them together.
+        At the same time, check if the child, the partner and the sponsorship
+        are found.
+        """
         for line in self:
             if line.partner_codega and line.child_code:
                 line.sponsorship_id = line.env['recurring.contract'].search([
                     ('child_id.code', '=', line.child_code),
-                    ('partner_codega', '=', line.partner_codega),
-                    ('is_active', '=', True)], order='end_date desc', limit=1)
-                if len(line.sponsorship_id) == 1:
-                    line.sponsorship_status = None
+                    ('partner_codega', '=', line.partner_codega)],
+                    order='is_active desc, end_date desc', limit=1)
+                if line.sponsorship_id:
+                    line.sponsorship_found = True
+                    line.child_partner_found = True
                 else:
-                    line.sponsorship_status = False
+                    line.sponsorship_found = False
+                    if not (line.env['recurring.contract'].search([
+                            ('child_id.code', '=', line.child_code)]) and
+                            line.env['recurring.contract'].search([
+                                ('partner_codega', '=',
+                                 line.partner_codega)])):
+                        line.child_partner_found = False
+                    else:
+                        line.child_partner_found = True
 
     @api.multi
     @api.depends('partner_codega', 'child_code')
@@ -92,3 +105,29 @@ class ImportLetterLine(models.Model):
                 line.name = str(
                     line.sponsorship_id.partner_codega) + " - " + str(
                         line.child_code)
+
+    @api.multi
+    def get_letter_datas(self, mandatory_review=False):
+        """ Create a list of dictionaries in order to create some lines inside
+        import_letters_history.
+
+        :param mandatory_review: Are all the lines mandatory review?
+        :returns: list to use in a write
+        :rtype: list[dict{}]
+
+        """
+        letter_datas = []
+        for line in self:
+            vals = {
+                'sponsorship_id': line.sponsorship_id.id,
+                'letter_image': line.letter_image.datas,
+                'template_id': line.template_id.id,
+                'original_language_id': line.supporter_languages_id.id,
+                'direction': 'Supporter To Beneficiary'
+            }
+            if line.is_encourager:
+                vals['relationship'] = 'Encourager'
+            if mandatory_review:
+                vals['mandatory_review'] = True
+            letter_datas.append((0, 0, vals))
+        return letter_datas

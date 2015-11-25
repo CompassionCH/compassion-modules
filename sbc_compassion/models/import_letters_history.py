@@ -15,11 +15,12 @@ between the database and the mail.
 import cv2
 import base64
 import zipfile
-import time
-import shutil
 import numpy as np
 import os
 from wand.image import Image
+import tempfile
+import shutil
+from glob import glob
 
 from ..tools import import_letter_functions as func
 from ..tools import zxing
@@ -59,32 +60,36 @@ class ImportLettersHistory(models.Model):
         ("saved", _("Saved"))], compute="_set_ready")
     nber_letters = fields.Integer(_('Number of letters'), readonly=True,
                                   compute="_count_nber_letters")
-    # path where the zipfile are store
-    path = "/tmp/sbc_compassion/"
-    # list zip in the many2many
-    # use ';' in order to separate the files
-    list_zip = fields.Text("LIST_ZIP", readonly=True)
+    is_mandatory_review = fields.Boolean("Mandatory Review", default=False)
 
     data = fields.Many2many('ir.attachment', string=_("Add a file"))
-    letters_line_ids = fields.Many2many('import.letter.line')
+    import_line_ids = fields.Many2many('import.letter.line')
     letters_ids = fields.Many2many('sponsorship.correspondence')
 
-    @api.one
-    @api.depends("letters_line_ids", "letters_line_ids.status",
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+    @api.multi
+    @api.depends("import_line_ids", "import_line_ids.status",
                  "letters_ids", "data")
     def _set_ready(self):
-        check = True
-        for i in self.letters_line_ids:
-            if i.status != "ok":
-                check = False
-        if check and len(self.letters_line_ids) > 0:
-            self.state = "ready"
-        elif len(self.letters_ids) > 0:
-            self.state = "saved"
-        elif len(self.letters_line_ids) > 0:
-            self.state = "pending"
-        else:
-            self.state = "draft"
+        """ Check in which state self is by counting the number of element in
+        each Many2many
+        """
+        for import_letters in self:
+            if import_letters.letters_ids:
+                import_letters.state = "saved"
+            elif import_letters.import_line_ids:
+                check = True
+                for i in import_letters.import_line_ids:
+                    if i.status != "ok":
+                        check = False
+                if check:
+                    import_letters.state = "ready"
+                else:
+                    import_letters.state = "pending"
+            else:
+                import_letters.state = "draft"
 
     @api.model
     def create(self, vals):
@@ -93,7 +98,7 @@ class ImportLettersHistory(models.Model):
         return result
 
     @api.multi
-    @api.onchange("data", "letters_line_ids", "letters_ids")
+    @api.onchange("data", "import_line_ids", "letters_ids")
     def _count_nber_letters(self):
         """
         Counts the number of scans (if a zip is given, count the number
@@ -101,28 +106,10 @@ class ImportLettersHistory(models.Model):
         """
         for inst in self:
             if inst.state == "pending" or inst.state == "ready":
-                inst.nber_letters = len(inst.letters_line_ids)
+                inst.nber_letters = len(inst.import_line_ids)
             elif inst.state == "saved":
                 inst.nber_letters = len(inst.letters_ids)
             elif inst.state is False or inst.state == "draft":
-                if inst.list_zip is False:
-                    inst.list_zip = ""
-                # removes old files in the directory
-                if os.path.exists(inst.path):
-                    onlyfiles = [f for f in os.listdir(inst.path)]
-                    # loop over files
-                    for f in onlyfiles:
-                        t = time.time()
-                        t -= os.path.getctime(inst.path + f)
-                        # if file older than 12h
-                        if t > 43200:
-                            if os.path.isfile(f):
-                                os.remove(f)
-                            if os.path.isdirectory(f):
-                                shutil.rmtree(f)
-                else:
-                    os.makedirs(inst.path)
-
                 # counter
                 tmp = 0
                 # loop over all the attachments
@@ -132,45 +119,31 @@ class ImportLettersHistory(models.Model):
                         tmp += 1
                     # zip case
                     elif func.isZIP(attachment.name):
-                        tmp_name_file = inst.path + attachment.name
-                        # save the zip file
-                        if not os.path.exists(tmp_name_file):
-                            f = open(tmp_name_file, 'w')
-                            f.write(base64.b64decode(attachment.with_context(
-                                bin_size=False).datas))
-                            f.close()
-                            if attachment.name not in inst.list_zip:
-                                inst.list_zip = func.addname(inst.list_zip,
-                                                             attachment.name)
-                                # catch ALL the exceptions that can be raised
-                                # by class zipfile
-                                try:
-                                    zip_ = zipfile.ZipFile(tmp_name_file, 'r')
-                                except zipfile.BadZipfile:
-                                    raise exceptions.Warning(
-                                        _('Zip file corrupted (' +
-                                          attachment.name + ')'))
-                                except zipfile.LargeZipFile:
-                                    raise exceptions.Warning(
-                                        _('Zip64 is not supported(' +
-                                          attachment.name + ')'))
-                            list_file = zip_.namelist()
-                            # loop over all files in zip
-                            for tmp_file in list_file:
-                                tmp += (func.check_file(tmp_file) == 1)
-                inst.nber_letters = tmp
-                # deletes zip removed from the data
-                for f in inst.list_zip.split(';'):
-                    if f not in inst.mapped('data.name') and f != '':
-                        if os.path.exists(inst.path + f):
-                            tmp = func.removename(inst.list_zip, f)
-                            if tmp == -1:
+                        # create a tempfile and read it
+                        with tempfile.NamedTemporaryFile(
+                                suffix='.zip') as zip_file:
+                            zip_file.write(base64.b64decode(
+                                attachment.with_context(
+                                    bin_size=False).datas))
+                            zip_file.flush()
+                            # catch ALL the exceptions that can be raised
+                            # by class zipfile
+                            try:
+                                zip_ = zipfile.ZipFile(zip_file.name, 'r')
+                                list_file = zip_.namelist()
+                                # loop over all files in zip
+                                for tmp_file in list_file:
+                                    tmp += (func.check_file(tmp_file) == 1)
+                            except zipfile.BadZipfile:
                                 raise exceptions.Warning(
-                                    _("""Does not find the file
-                                    during suppression"""))
-                            else:
-                                inst.list_zip = tmp
-                            os.remove(inst.path + f)
+                                    _('Zip file corrupted (' +
+                                      attachment.name + ')'))
+                            except zipfile.LargeZipFile:
+                                raise exceptions.Warning(
+                                    _('Zip64 is not supported(' +
+                                      attachment.name + ')'))
+
+                inst.nber_letters = tmp
             else:
                 raise exceptions.Warning(
                     _("State: '{}' not implemented".format(inst.state)))
@@ -184,129 +157,195 @@ class ImportLettersHistory(models.Model):
         is not done twice (check same name)[, extract zip], use
         analyze_attachment at the end
         """
-        for inst in self:
-            # list for checking if a file come twice
-            check = []
-            for attachment in inst.data:
-                if attachment.name not in check:
-                    check.append(attachment.name)
-                    # check for zip
-                    if func.check_file(attachment.name) == 2:
+        self.ensure_one()
+        # list for checking if a file come twice
+        check = []
+        for attachment in self.data:
+            if attachment.name not in check:
+                check.append(attachment.name)
+                # check for zip
+                if func.check_file(attachment.name) == 2:
+                    # create a temp file
+                    with tempfile.NamedTemporaryFile(
+                            suffix='.zip') as zip_file:
+                        # write data in tempfile
+                        zip_file.write(base64.b64decode(
+                            attachment.with_context(
+                                bin_size=False).datas))
+                        zip_file.flush()
                         zip_ = zipfile.ZipFile(
-                            inst.path + attachment.name, 'r')
-
-                        path_zip = inst.path + os.path.splitext(
-                            str(attachment.name))[0]
-
-                        if not os.path.exists(path_zip):
-                            os.makedirs(path_zip)
+                            zip_file, 'r')
+                        # loop over files inside zip
+                        directory = tempfile.mkdtemp()
                         for f in zip_.namelist():
-                            zip_.extract(f, path_zip)
-                            absname = path_zip + '/' + f
+                            zip_.extract(
+                                f, directory)
+                            absname = directory + '/' + f
                             if os.path.isfile(absname):
                                 # remove if PDF is working
                                 if func.isPDF(absname):
                                     raise exceptions.Warning(
                                         _("PDF not implemented yet"))
-                                inst._analyze_attachment(absname)
-                        # delete all the tmp files
-                        # extracted data
-                        shutil.rmtree(path_zip)
-                        # zip file
-                        os.remove(inst.path + attachment.name)
-                    # case with normal format ([PDF,]TIFF)
-                    elif func.check_file(attachment.name) == 1:
-                        # remove if PDF is working
-                        if func.isPDF(attachment.name):
-                            raise exceptions.Warning(
-                                _("PDF not implemented yet"))
-                        inst._analyze_attachment(
-                            inst.path + str(attachment.name),
-                            attachment.datas)
-                    else:
+                                filename = f.split('/')[-1]
+                                self._analyze_attachment(absname,
+                                                         filename)
+                        shutil.rmtree(directory)
+                # case with normal format ([PDF,]TIFF)
+                elif func.check_file(attachment.name) == 1:
+                    # remove if PDF is working
+                    if func.isPDF(attachment.name):
                         raise exceptions.Warning(
-                            'Still a file in a non-accepted format')
+                            _("PDF not implemented yet"))
+                    ext = os.path.splitext(attachment.name)[1]
+                    with tempfile.NamedTemporaryFile(
+                            suffix=ext) as file_:
+                        file_.write(base64.b64decode(
+                            attachment.with_context(
+                                bin_size=False).datas))
+                        file_.flush()
+                        self._analyze_attachment(file_.name,
+                                                 attachment.name)
                 else:
-                    raise exceptions.Warning(_('Two files are the same'))
-            # remove all the files (now there are inside import_line_ids)
-            for attachment in inst.data:
-                attachment.unlink()
+                    raise exceptions.Warning(
+                        'Still a file in a non-accepted format')
+            else:
+                raise exceptions.Warning(_('Two files are the same'))
+        # remove all the files (now there are inside import_line_ids)
+        for letters in self:
+            letters.data.unlink()
 
-    def _analyze_attachment(self, file_, data=None):
+    def _analyze_attachment(self, file_, filename):
         """
         Analyze attachment (PDF/TIFF) and save everything inside
         import_line_ids.
+        The filename is given separately due to the name given by tempfile
 
-        :param string file_: Name of the file to analyze
-        :param binary data: Image to scan (by default, read it from hdd)
+        :param str file_: Name of the file to analyze
+        :param str filename: Filename to give in odoo
         """
-        # in the case of zipfile, the data needs to be saved first
-        if data is not None:
-            f = open(file_, 'w')
-            f.write(base64.b64decode(data))
-            f.close()
-
+        f = open(file_)
+        data = f.read()
+        f.close()
         # convert to PNG
         if func.isPDF(file_) or func.isTIFF(file_):
-            if data is None:
-                f = open(file_)
-                data = f.read()
             name = os.path.splitext(file_)[0]
             with Image(filename=file_) as img:
                 img.format = 'png'
                 img.save(filename=name + '.png')
-            os.remove(file_)
-            file_ = name + '.png'
-
+            file_png = name + '.png'
         # now do the computations only if the image is a PNG
-        img = cv2.imread(file_)
-        if func.isPNG(file_):
-            # first compute the QR code
-            zx = zxing.BarCodeTool()
-            qrcode = zx.decode(file_, try_harder=True)
-            if qrcode is not None and 'XX' in qrcode.data:
-                partner, child = qrcode.data.split('XX')
-            else:
-                partner = None
-                child = None
-            # now try to find the layout
-            # loop over all the patterns in the pattern directory
-            template, key_img = self._find_template(img)
-            lang_id = self._find_language(img, key_img, template)
+        img = cv2.imread(file_png)
+        MULTIPAGE = False
+        if img is None:
+            file_png = name + '-0' + '.png'
+            img = cv2.imread(file_png)
+            MULTIPAGE = True
+            if img is None:
+                raise Warning("The '{}' image cannot be read".format(filename))
+        # first compute the QR code
+        partner, child, data, img = self._find_qrcode(file_png, img, MULTIPAGE,
+                                                      name, filename, file_,
+                                                      data)
+        # now try to find the layout
+        # loop over all the patterns in the pattern directory
+        template, key_img = self._find_template(img)
+        lang_id = self._find_language(img, key_img, template)
 
-            # TODO
-            #
-            # Problem: the converted jpeg can be opened on a windows PC or
-            # with nano, but odoo can't recognize the file. Tried
-            # to give a jpeg
-            # to odoo from windows -> same problem
+        letters_line = self.env['import.letter.line'].sudo().create({
+            'partner_codega': partner,
+            'child_code': child,
+            'is_encourager': False,
+            'supporter_languages_id': lang_id,
+            'template_id': template.id,
+        })
 
-            letters_line = self.env['import.letter.line'].create({
-                'partner_codega': partner,
-                'child_code': child,
-                'is_encourager': False,
-                'supporter_languages_id': lang_id,
-                'template_id': template.id,
-            })
+        file_png_io = open(file_png, "r")
+        file_data = file_png_io.read()
+        file_png_io.close()
 
-            file_png = open(file_, "r")
-            file_data = file_png.read()
-            file_png.close()
-            dfile_ = file_.split('/')[-1]
-            document_vals = {'name': dfile_,
-                             'datas': data,
-                             'datas_fname': dfile_,
-                             'res_model': 'import.letter.line',
-                             'res_id': letters_line.id
-                             }
-            letters_line.letter_image = self.env[
-                'ir.attachment'].create(document_vals)
-            letters_line.letter_image_preview = base64.b64encode(file_data)
+        document_vals = {'name': filename,
+                         'datas': base64.b64encode(data),
+                         'datas_fname': filename,
+                         'res_model': 'import.letter.line',
+                         'res_id': letters_line.id}
 
-            self.letters_line_ids += letters_line
+        letters_line.letter_image = self.env[
+            'ir.attachment'].create(document_vals)
+        letters_line.letter_image_preview = base64.b64encode(file_data)
 
+        self.import_line_ids += letters_line
+        os.remove(file_png)
+        if MULTIPAGE:
+            delfiles = glob(name + '*png')
+            print delfiles
+            for file_ in delfiles:
+                os.remove(file_)
+
+    def _find_qrcode(self, file_png, img, MULTIPAGE, name, filename, file_,
+                     data):
+        # get size and position
+        img_height, img_width = img.shape[:2]
+        left = img_width * float(
+            self.env['ir.config_parameter'].get_param(
+                'qrcode_x_min'))
+        top = img_height * float(
+            self.env['ir.config_parameter'].get_param(
+                'qrcode_y_min'))
+        width = img_width * float(
+            self.env['ir.config_parameter'].get_param(
+                'qrcode_x_max'))
+        width -= left
+        height = img_height * float(
+            self.env['ir.config_parameter'].get_param(
+                'qrcode_y_max'))
+        height -= top
+        # decoder
+        zx = zxing.BarCodeTool()
+        # first try
+        qrcode = zx.decode(file_png, try_harder=True, crop=[
+            int(left), int(top), int(width), int(height)])
+        # check if found, if not means that page is rotated
+        if qrcode is None:
+            # rotate image
+            img = img[::-1, ::-1]
+            # save it for zxing
+            cv2.imwrite(file_png, img)
+            # second try
+            qrcode = zx.decode(file_png, try_harder=True, crop=[
+                int(left), int(top), int(width), int(height)])
+            if qrcode is not None:
+                # if multipage, needs to turn all of them
+                if MULTIPAGE:
+                    # Get list of all images filenames to include
+                    image_names = glob(name + '-*.png')
+                    for g in image_names:
+                        # first page already done
+                        if file_png != g:
+                            img_temp = cv2.imread(g)[::-1, ::-1]
+                            cv2.imwrite(g, img_temp)
+
+                    # Create new Image, and extend sequence
+                    # put first page at the begining
+                    with Image() as img_tiff:
+                        img_tiff.sequence.extend(
+                            [Image(filename=img_name)
+                             for img_name in sorted(image_names)])
+                        img_tiff.save(filename=filename)
+                    f = open(filename)
+                    data = f.read()
+                    f.close()
+                # if only one page, far more easy
+                else:
+                    cv2.imwrite(file_, img)
+                    f = open(file_)
+                    data = f.read()
+                    f.close()
+        if qrcode is not None and 'XX' in qrcode.data:
+            partner, child = qrcode.data.split('XX')
         else:
-            raise exceptions.Warning('Format not accepted in {}'.format(file_))
+            partner = None
+            child = None
+        return partner, child, data, img
 
     def _find_template(self, img):
         """
@@ -449,20 +488,16 @@ class ImportLettersHistory(models.Model):
     def button_save(self):
         """
         save the import_line as a sponsorship_correspondence
-        TODO
         """
-        test = True
-        for inst in self:
-            if inst.state != "ready":
-                test = False
-        if test is False:
-            raise exceptions.Warning(_("Not all data are OK"))
-
-        for inst in self:
-            for letter in inst.letters_line_ids:
-                data = {}
-                for i in key:
-                    data[i] = letter.read()[0][i]
-                inst.letters_ids.write(data)
-            for letter in inst.letters_line_ids:
-                letter.unlink()
+        # check if all the imports are OK
+        for letters_h in self:
+            if letters_h.state != "ready":
+                raise exceptions.Warning(_("Some letters are not ready"))
+        # save the imports
+        for letters in self:
+            ids = letters.import_line_ids.get_letter_datas(
+                mandatory_review=letters.is_mandatory_review)
+            # letters_ids should be empty before this line
+            letters.write({'letters_ids': ids})
+            letters.import_line_ids.letter_image.unlink()
+            letters.import_line_ids.unlink()

@@ -79,10 +79,9 @@ class SponsorshipCorrespondence(models.Model):
         readonly=True)
     # First spoken lang of partner
     original_language_id = fields.Many2one(
-        'res.lang.compassion', compute='_set_languages',
-        inverse='_change_language', store=True)
+        'res.lang.compassion')
     destination_language_id = fields.Many2one(
-        'res.lang.compassion', compute='_set_languages',
+        'res.lang.compassion', compute='_set_destination_language',
         inverse='_change_language', store=True)
     original_text = fields.Text()
     translated_text = fields.Text()
@@ -98,8 +97,7 @@ class SponsorshipCorrespondence(models.Model):
     relationship = fields.Selection([
         ('Sponsor', _('Sponsor')),
         ('Encourager', _('Encourager'))], default='Sponsor')
-    mandatory_review = fields.Boolean(compute='_set_partner_review',
-                                      readonly=False, store=True)
+    mandatory_review = fields.Boolean()
     rework_reason = fields.Char()
     rework_comments = fields.Text()
     original_letter_url = fields.Char()
@@ -178,6 +176,7 @@ class SponsorshipCorrespondence(models.Model):
             ('Supporter Letter', _('Supporter Letter')),
         ]
 
+    @api.multi
     @api.depends('sponsorship_id')
     def _set_name(self):
         for letter in self:
@@ -188,31 +187,34 @@ class SponsorshipCorrespondence(models.Model):
             else:
                 letter.name = _('New correspondence')
 
-    @api.depends('sponsorship_id', 'direction')
-    @api.one
-    def _set_languages(self):
-        if self.direction == 'Supporter To Beneficiary':
-            if self.correspondant_id.spoken_langs_ids:
-                self.original_language_id = self.correspondant_id\
-                    .spoken_langs_ids[0]
-            if self.child_id.project_id.country_id.spoken_langs_ids:
-                self.destination_language_id = self.child_id.project_id\
-                    .country_id.spoken_langs_ids[0]
-        if self.direction == 'Beneficiary To Supporter':
-            if self.child_id.project_id.country_id.spoken_langs_ids:
-                self.original_language_id = self.child_id.project_id\
-                    .country_id.spoken_langs_ids[0]
-            if self.correspondant_id.spoken_langs_ids:
-                self.destination_language_id = self.correspondant_id\
-                    .spoken_langs_ids[0]
+    @api.depends('sponsorship_id', 'direction', 'original_language_id')
+    def _set_destination_language(self):
+        for letter in self:
+            if letter.direction == 'Supporter To Beneficiary':
+                if letter.child_id.project_id.country_id.spoken_langs_ids:
+                    if letter.original_language_id in letter.child_id.\
+                       project_id.country_id.spoken_langs_ids:
+                        letter.destination_language_id = letter.\
+                            original_language_id
+                    else:
+                        letter.destination_language_id = letter\
+                            .child_id.project_id.country_id.spoken_langs_ids[0]
+
+            if letter.direction == 'Beneficiary To Supporter':
+                if letter.child_id.project_id.country_id.spoken_langs_ids:
+                    if letter.original_language_id in letter.\
+                       correspondant_id.spoken_langs_ids:
+                        letter.destination_language_id = letter.\
+                            original_language_id
+                    else:
+                        letter.destination_language_id = letter\
+                              .correspondant_id.spoken_langs_ids[0]
 
     @api.depends('sponsorship_id')
-    @api.one
     def _set_partner_review(self):
-        if self.correspondant_id.mandatory_review:
-            self.mandatory_review = True
-        else:
-            self.mandatory_review = False
+        for letter in self:
+            if letter.correspondant_id.mandatory_review:
+                letter.mandatory_review = True
 
     def _change_language(self):
         return True
@@ -240,11 +242,12 @@ class SponsorshipCorrespondence(models.Model):
         attachment = False
         if letter_image and not isinstance(letter_image, (int, long)):
             # Detect filetype
-            ftype = magic.from_buffer(base64.b64decode(letter_image), True)
+            ftype = magic.from_buffer(base64.b64decode(letter_image),
+                                      True).lower()
             if 'pdf' in ftype:
-                type = '.pdf'
+                type_ = '.pdf'
             elif 'tiff' in ftype:
-                type = '.tiff'
+                type_ = '.tiff'
             else:
                 raise exceptions.Warning(
                     _('Unsupported file format'),
@@ -254,11 +257,10 @@ class SponsorshipCorrespondence(models.Model):
                 'res_model': self._name,
                 'datas': letter_image})
             vals['letter_image'] = attachment.id
-
         letter = super(SponsorshipCorrespondence, self).create(vals)
         if attachment:
             attachment.write({
-                'name': letter.scanned_date + '_' + letter.name + type,
+                'name': letter.scanned_date + '_' + letter.name + type_,
                 'datas_fname': letter.name,
                 'res_id': letter.id})
         return letter
@@ -269,9 +271,3 @@ class SponsorshipCorrespondence(models.Model):
         if 'state' in vals:
             vals['status_date'] = fields.Date.today()
         return super(SponsorshipCorrespondence, self).write(vals)
-
-    ##########################################################################
-    #                             VIEW CALLBACKS                             #
-    ##########################################################################
-    def button_import(self):
-        return

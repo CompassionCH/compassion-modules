@@ -13,13 +13,16 @@
 		  Imported Letter
                 </h1>
                 <group>
-                    <field name="list_zip" invisible="1"/>
                     <field name="data" widget="many2many_binary" attrs="{'invisible': [('state','!=','draft')]}"/>
                     <field name="nber_letters"/>
+                    <field name="is_mandatory_review"/>
                 </group>
+		<button name="button_save" string="Final Import"
+			attrs="{'invisible': [('state', 'in', ('saved', 'draft'))]}"
+			type="object" class="oe_highlight"/>
 		<field name="state" invisible="1"/>
-                <field name="letters_line_ids" attrs="{'invisible': [('state', 'not in', ('pending', 'ready'))]}"/>
-                <field name="letters_ids" attrs="{'invisible': [('state', '!=', 'saved')]}"/>
+                <field name="import_line_ids" attrs="{'invisible': [('state', 'not in', ('pending', 'ready'))]}"  domain="[('id','=','-1')]"/>
+		<field name="letters_ids" attrs="{'invisible': [('state', '!=', 'saved')]}"/>
             </sheet>
             </form>
             </field>
@@ -30,7 +33,8 @@
             <field name="name">import.letters.history.tree</field>
             <field name="model">import.letters.history</field>
             <field name="arch" type="xml">
-            <tree string="Imports" colors="blue:state == 'pending';red:state == 'draft';green:state == 'ready';black:state == 'saved'">
+              <tree string="Imports"
+		    colors="blue:state == 'pending';red:state == 'draft';green:state == 'ready';black:state == 'saved'">
 	      <field name="write_date"/>
 	      <field name="state"/>
               <field name="nber_letters"/>
