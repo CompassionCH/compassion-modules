@@ -11,7 +11,7 @@
 
 import unittest
 
-import tools
+from .. import tools
 
 import logging
 import cv2
