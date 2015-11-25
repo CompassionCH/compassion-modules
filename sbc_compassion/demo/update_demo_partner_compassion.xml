@@ -1,0 +1,275 @@
+<openerp>
+  <data>
+    <record id="partner_compassion.partner_01" model="res.partner">
+      <field name="mandatory_review">True</field>
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_spanish)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_02" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_english)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_03" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_italian)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_04" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_english)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_05" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_spanish),(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_06" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_07" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_german)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_08" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_english),(4,lang_compassion_german)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_09" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_french),(4,lang_compassion_italian)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_10" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_french),(4,lang_compassion_english)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_11" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_french),(4,lang_compassion_german)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_12" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_spanish),(4,lang_compassion_italian)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_13" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_spanish),(4,lang_compassion_english)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_14" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_spanish),(4,lang_compassion_german)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_15" model="res.partner">
+      <field name="mandatory_review">True</field>
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_english),(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_16" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_italian),(4,lang_compassion_english)]"/>
+    </record>
+    
+    <record id="partner_compassion.partner_17" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_italian),(4,lang_compassion_german)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_18" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_italian),(4,lang_compassion_english),(4,lang_compassion_spanish),(4,lang_compassion_french),(4,lang_compassion_german)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_19" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_portuguese)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_20" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_french),(4,lang_compassion_portuguese)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_21" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_thai),(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_22" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_thai)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_23" model="res.partner">
+      <field name="mandatory_review">True</field>
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_german)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_24" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_hindi)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_25" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_hindi),(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_26" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_amharic)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_27" model="res.partner">
+      <field name="mandatory_review">True</field>
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_portuguese),(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_28" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_amharic),(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_29" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_haitien_creole)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_30" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_haitien_creole),(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_31" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_french),(4,lang_compassion_indonesian)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_32" model="res.partner">
+      <field name="mandatory_review">True</field>
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_french),(4,lang_compassion_thai)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_33" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_swahili),(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_34" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_indonesian)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_35" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_swahili)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_36" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_filipino)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_37" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_filipino),(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_38" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_kinyarwanda)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_39" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_kinyarwanda),(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_40" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_german)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_41" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_english)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_42" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_spanish)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_43" model="res.partner">
+      <field name="mandatory_review">True</field>
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_english),(4,lang_compassion_hindi)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_44" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_italian)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_45" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_french),(4,lang_compassion_german)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_46" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_italian),(4,lang_compassion_german)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_47" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_spanish)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_48" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_german),(4,lang_compassion_spanish)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_49" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_italian)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_50" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_german),(4,lang_compassion_english)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_51" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_english),(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_52" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_53" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_french),(4,lang_compassion_english)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_54" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_55" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_spanish),(4,lang_compassion_english)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_56" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_italian),(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_57" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_spanish)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_58" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_german)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_59" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_italian)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_60" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_spanish)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_61" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_english)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_62" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_63" model="res.partner">
+      <field name="mandatory_review">True</field>
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_amharic)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_64" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_italian),(4,lang_compassion_italian)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_65" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_french)]"/>
+    </record>
+
+    <record id="partner_compassion.partner_66" model="res.partner">
+      <field name="spoken_langs_ids" eval="[(4,lang_compassion_italian)]"/>
+    </record>
+
+  </data>
+</openerp>

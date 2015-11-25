@@ -46,14 +46,16 @@
         'view/generate_gift_view.xml',
         'view/account_invoice_split_wizard_view.xml',
         'view/child_view.xml',
-        'data/lang.xml',
         'data/sequence.xml',
         'data/sponsorship_product.xml',
         'data/analytic_accounting.xml',
         'workflow/contract_workflow.xml',
     ],
     'demo': [
-        'demo/sponsorship_compassion_demo.xml'
+        'demo/sponsorship_compassion_demo.xml',
+        'demo/recurring.contract.group.csv',
+        'demo/recurring.contract.csv',
+        'demo/install.xml'
     ],
     'installable': True,
     'auto_install': False,
