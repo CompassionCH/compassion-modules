@@ -29,37 +29,54 @@ class TestImportLetter(unittest.TestCase):
     def setUp(self):
         self.test_document_normal = os.path.join(THIS_DIR,
                                                  'testdata/normal.png')
+        self.test_document_noise = os.path.join(THIS_DIR, 'testdata/noise.png')
+        self.test_document_white = os.path.join(THIS_DIR, 'testdata/white.png')
 
     def test_blue_corner_finder_should_find(self):
-        """Blue corner should be found at known coordinates."""
+        """
+        Blue corner should be found at known coordinates.
+        """
         img = self._read_img(self.test_document_normal)
-        bluecorner = tools.bluecornerfinder.BlueCornerFinder(img)
-        bluecorner_position = bluecorner.getIndices()
-        self.assertEqual(bluecorner_position, [2438, 76])
+        blue_corner_position = self._blue_corner_position(img)
+        self.assertEqual(blue_corner_position, [2439, 77])
         # TODO add tests with more documents
 
     def test_blue_corner_finder_should_not_find(self):
-        """Blue corner should not be found."""
+        """
+        Blue corner should not be found.
+        """
+        img = self._read_img(self.test_document_white)
+        blue_corner_position = self._blue_corner_position(img)
+        self.assertIsNone(blue_corner_position)
 
     def test_pattern_recognition(self):
-        """TODO doc"""
+        """
+        Pattern should be recognized correctly.
+        """
         # TODO: need image files or base64 representation of patterns to test
 
     def test_zxing_read_qr_code(self):
-        """QR code should be read correctly."""
-        bar_code_tool = tools.zxing.BarCodeTool()
-        path = os.path.abspath(self.test_document_normal)
-        qr_code = bar_code_tool.decode(path,
-                                       try_harder=True)
+        """
+        QR code should be read correctly.
+        """
+        qr_code = self._qr_decode(self.test_document_normal)
+        self.assertIsNotNone(qr_code)
         self.assertEqual(qr_code.data, "1509540XXGU4920269\n")
         # TODO add tests with more documents
 
     def test_zxing_no_qr_code(self):
-        """Should report error for document that does not contain QR code."""
-        # TODO implement
+        """
+        Should report error for document that does not contain QR code.
+        """
+        qr_code = self._qr_decode(self.test_document_noise)
+        self.assertIsNone(qr_code)
+        qr_code = self._qr_decode(self.test_document_white)
+        self.assertIsNone(qr_code)
 
     def test_check_box_reader(self):
-        """Checkboxes should be read correctly."""
+        """
+        Checkboxes should be read correctly.
+        """
         # Load image that has the French box checked
         img = self._read_img(self.test_document_normal)
         # French
@@ -86,6 +103,18 @@ class TestImportLetter(unittest.TestCase):
         img = cv2.imread(path)
         self.assertIsNotNone(img)
         return img
+
+    @staticmethod
+    def _qr_decode(path):
+        path = os.path.abspath(path)
+        bar_code_tool = tools.zxing.BarCodeTool()
+        qr_code = bar_code_tool.decode(path, try_harder=True)
+        return qr_code
+
+    @staticmethod
+    def _blue_corner_position(img):
+        blue_corner_finder = tools.bluecornerfinder.BlueCornerFinder(img)
+        return blue_corner_finder.getIndices()
 
     @staticmethod
     def _make_box(x, y, size=50):
