@@ -9,28 +9,31 @@
 #
 ##############################################################################
 
-import unittest
-
 from .. import tools
+from openerp.tests import common
 
 import logging
 import cv2
+import numpy as np
 import os
 
 logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)
 
 
-class TestImportLetter(unittest.TestCase):
+class TestTools(common.TransactionCase):
     """
-    TODO doc
+    Tests all utility functions used for importing letters.
     """
 
     def setUp(self):
+        super(TestTools, self).setUp()
         self.test_document_normal = os.path.join(THIS_DIR,
                                                  'testdata/normal.png')
         self.test_document_noise = os.path.join(THIS_DIR, 'testdata/noise.png')
         self.test_document_white = os.path.join(THIS_DIR, 'testdata/white.png')
+        template_obj = self.env['sponsorship.correspondence.template']
+        self.templates = template_obj.search([('pattern_image', '!=', False)])
 
     def test_blue_corner_finder_should_find(self):
         """
@@ -53,7 +56,21 @@ class TestImportLetter(unittest.TestCase):
         """
         Pattern should be recognized correctly.
         """
-        # TODO: need image files or base64 representation of patterns to test
+        template, pattern_center = self._pattern_recognition(
+            self.test_document_normal)
+        self.assertEqual(template.name, 'Test Template 1')
+        np.testing.assert_allclose(pattern_center,
+                                   np.array([1247.08, 3308.57]),
+                                   atol=0.1)
+
+    def test_pattern_recognition_no_pattern(self):
+        """
+        Pattern should not be found.
+        """
+        template, _ = self._pattern_recognition(self.test_document_noise)
+        self.assertIsNone(template)
+        template, _ = self._pattern_recognition(self.test_document_white)
+        self.assertIsNone(template)
 
     def test_zxing_read_qr_code(self):
         """
@@ -61,7 +78,7 @@ class TestImportLetter(unittest.TestCase):
         """
         qr_code = self._qr_decode(self.test_document_normal)
         self.assertIsNotNone(qr_code)
-        self.assertEqual(qr_code.data, "1509540XXGU4920269\n")
+        self.assertEqual(qr_code.data, '1509540XXGU4920269\n')
         # TODO add tests with more documents
 
     def test_zxing_no_qr_code(self):
@@ -103,6 +120,10 @@ class TestImportLetter(unittest.TestCase):
         img = cv2.imread(path)
         self.assertIsNotNone(img)
         return img
+
+    def _pattern_recognition(self, path):
+        img = self._read_img(path)
+        return tools.patternrecognition.find_template(img, self.templates)
 
     @staticmethod
     def _qr_decode(path):

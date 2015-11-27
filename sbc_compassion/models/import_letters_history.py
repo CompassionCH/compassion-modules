@@ -269,8 +269,8 @@ class ImportLettersHistory(models.Model):
 
         # now try to find the layout
         # loop over all the patterns in the pattern directory
-        template, key_img = self._find_template(img)
-        lang_id = self._find_language(img, key_img, template)
+        template, pattern_center = self._find_template(img)
+        lang_id = self._find_language(img, pattern_center, template)
 
         if self.force_template:
             template = self.force_template
@@ -418,36 +418,16 @@ class ImportLettersHistory(models.Model):
 
     def _find_template(self, img):
         """
-        Use the pattern recognition in order to recognize the layout.
-        The template used for the pattern recognition are taken from
-        the directory ../tools/pattern/
-        :param array file_: Image to analyze
-        :returns: Pattern image of the template, keypoint of the image
-        :rtype: str, list
+        Use pattern recognition to detect which template correponds to img.
+        :param img: Image to analyze
+        :returns: Detected template, center position of detected pattern
+        :rtype: template, layout
         """
-        template_obj = self.env['sponsorship.correspondence.template']
-        # number of keypoint related between the picture and the pattern
-        nber_kp = 0
-        key_img = False
-        matching_template = self.env.ref('sbc_compassion.default_template')
+        templates = self.env['sponsorship.correspondence.template'].search(
+            [('pattern_image', '!=', False)])
+        return pr.find_template(img, templates)
 
-        for template in template_obj.search([('pattern_image', '!=', False)]):
-            # Crop the image to speedup detection and avoid false positives
-            crop_area = template.get_pattern_area()
-
-            # try to recognize the pattern
-            tmp_key = pr.patternRecognition(
-                img, template.pattern_image, crop_area)
-            # check if it is a better result than before
-            if tmp_key is not None and len(tmp_key) > nber_kp:
-                # save all the data if it is better
-                nber_kp = len(tmp_key)
-                key_img = tmp_key
-                matching_template = template
-
-            return matching_template, key_img
-
-    def _find_language(self, img, key_img, template):
+    def _find_language(self, img, pattern_center, template):
         """
         Use the pattern and the blue corner for doing a transformation
         (rotation + scaling + translation) in order to crop a small part
@@ -478,17 +458,14 @@ class ImportLettersHistory(models.Model):
         pictures to analyze (should be a square of about 20-30 pixels large).
 
         :param img: Image to analyze
-        :param list key_img: List containing the keypoint detected
+        :param pattern_center: Center position of detected pattern
         :param CorrespondenceTemplate template: Template of the image
         :returns: Language of the letter (defined in Layout, returns None if \
         not detected)
         :rtype: str or bool
         """
-        # create an instance of layout (contains all the information)
-        # about the position
-        center_pat = pr.keyPointCenter(key_img)
         # in case of not being able to detect the pattern
-        if center_pat is None:
+        if pattern_center is None:
             return
         # get position of the blue corner
         bluecorner = bcf.BlueCornerFinder(img)
@@ -497,7 +474,7 @@ class ImportLettersHistory(models.Model):
         # vector between the blue square and the pattern
         diff_ref = np.array(template.get_bluesquare_area() -
                             template.get_pattern_center())
-        diff_scan = np.array(bluecorner_position-center_pat)
+        diff_scan = np.array(bluecorner_position-pattern_center)
         # need normalize vectors
         normalization = (np.linalg.norm(diff_ref) *
                          np.linalg.norm(diff_scan))
