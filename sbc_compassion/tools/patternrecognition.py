@@ -27,7 +27,7 @@ from openerp.exceptions import Warning
 ##########################################################################
 #                           GENERAL METHODS                              #
 ##########################################################################
-def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
+def patternRecognition(image, pattern, crop_area=None,
                        threshold=2, full_result=False):
     """
     Try to find a pattern in the subset (given by crop_area) of the image.
@@ -43,6 +43,8 @@ def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
     (first index image/pattern)
     :rtype: np.array(), np.array()
     """
+    if crop_area is None:
+        crop_area = [0, 1, 0, 1]
     # read images
     img1 = deepcopy(image)
     if img1 is None:

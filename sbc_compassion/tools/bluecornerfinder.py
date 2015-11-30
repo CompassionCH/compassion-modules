@@ -34,10 +34,12 @@ class BlueCornerFinder:
     ##########################################################################
     #                               INIT METHOD                              #
     ##########################################################################
-    def __init__(self, img, box=[0.66, 0.25], threshold=90):
+    def __init__(self, img, box=None, threshold=90):
         """
         Read and cut the image to the requested value.
         """
+        if box is None:
+            box = [0.66, 0.25]
         self.ind = None
         self.threshold = threshold
         self.img = deepcopy(img)
@@ -197,7 +199,7 @@ class BlueCornerFinder:
         """
         Compute the distance of the pixel (if not already done)
         and append the pixel in the todo queue when required
-        :param list ind: Indices
+        :param tuple ind: Indices
         """
         if self.dist[ind] == 0:
             d = np.sqrt(ind[0] ** 2 + (self.w - ind[1] - 1) ** 2)
