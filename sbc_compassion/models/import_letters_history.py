@@ -9,7 +9,7 @@
 #
 ##############################################################################
 """
-This file reads a zip file containing scans of mail and find the relation
+This module reads a zip file containing scans of mail and finds the relation
 between the database and the mail.
 """
 import cv2
@@ -32,11 +32,11 @@ from openerp import api, fields, models, _, exceptions
 
 class ImportLettersHistory(models.Model):
     """
-    Keep an history of the importation of letters.
+    Keep history of imported letters.
     This class allows the user to import some letters (individually or in a
-    zip) in the database by doing an automatic analysis.
-    The code is reading some barcodes (QR code) in order to do the analysis
-    (with the help of the library zxing)
+    zip file) in the database by doing an automatic analysis.
+    The code is reading QR codes in order to detect child and partner codes
+    for every letter, using the zxing library for code detection.
     """
     _name = "import.letters.history"
     _description = _("""History of the letters imported Import mail from a zip
@@ -73,7 +73,7 @@ class ImportLettersHistory(models.Model):
     @api.depends("import_line_ids", "import_line_ids.status",
                  "letters_ids", "data")
     def _set_ready(self):
-        """ Check in which state self is by counting the number of element in
+        """ Check in which state self is by counting the number of elements in
         each Many2many
         """
         for import_letters in self:
@@ -95,8 +95,8 @@ class ImportLettersHistory(models.Model):
     @api.onchange("data", "import_line_ids", "letters_ids")
     def _count_nber_letters(self):
         """
-        Counts the number of scans (if a zip is given, count the number
-        inside it)
+        Counts the number of scans. If a zip file is given, the number of
+        scans inside is counted.
         """
         for inst in self:
             if inst.state == "open" or inst.state == "ready":
@@ -176,16 +176,17 @@ class ImportLettersHistory(models.Model):
     ##########################################################################
     def _run_analyze(self):
         """
-        Analyze each attachment (decompress zip too) by checking if the file
-        is not done twice (check same name)[, extract zip], use
-        analyze_attachment at the end
+        Analyze each attachment:
+        - check for duplicate file names and skip them
+        - decompress zip file if necessary
+        - call _analyze_attachment for every resulting file
         """
         self.ensure_one()
-        # list for checking if a file come twice
-        check = []
+        # keep track of file names to detect duplicates
+        file_name_history = []
         for attachment in self.data:
-            if attachment.name not in check:
-                check.append(attachment.name)
+            if attachment.name not in file_name_history:
+                file_name_history.append(attachment.name)
                 # check for zip
                 if func.check_file(attachment.name) == 2:
                     # create a temp file
@@ -233,7 +234,7 @@ class ImportLettersHistory(models.Model):
                         'Still a file in a non-accepted format')
             else:
                 raise exceptions.Warning(_('Two files are the same'))
-        # remove all the files (now there are inside import_line_ids)
+        # remove all the files (now they are inside import_line_ids)
         self.data.unlink()
 
     def _analyze_attachment(self, file_, filename):
@@ -242,7 +243,7 @@ class ImportLettersHistory(models.Model):
         import_line_ids.
         The filename is given separately due to the name given by tempfile
 
-        :param str file_: Name of the file to analyze
+        :param str file_: Path of the file to analyze
         :param str filename: Filename to give in odoo
         """
         f = open(file_)
@@ -340,7 +341,7 @@ class ImportLettersHistory(models.Model):
         height -= top
         # decoder
         zx = zxing.BarCodeTool()
-        # first try
+        # first attempt
         qrcode = zx.decode(file_png, try_harder=True, crop=[
             int(left), int(top), int(width), int(height)])
         # check if found, if not means that page is rotated
@@ -349,7 +350,7 @@ class ImportLettersHistory(models.Model):
             img = img[::-1, ::-1]
             # save it for zxing
             cv2.imwrite(file_png, img)
-            # second try
+            # second attempt
             qrcode = zx.decode(file_png, try_harder=True, crop=[
                 int(left), int(top), int(width), int(height)])
             # if the QR code is found
@@ -389,7 +390,7 @@ class ImportLettersHistory(models.Model):
         name = os.path.splitext(file_)[0]
         if MULTIPAGE:
             file_png = name + '-0' + '.png'
-            # Get list of all images filenames to include
+            # Get list of all image file names to include
             image_names = glob(name + '-*.png')
             for g in image_names:
                 # first page already done
@@ -398,7 +399,7 @@ class ImportLettersHistory(models.Model):
                     cv2.imwrite(g, img_temp)
 
             # Create new Image, and extend sequence
-            # put first page at the begining
+            # put first page at the beginning
             with Image() as img_tiff:
                 img_tiff.sequence.extend(
                     [Image(filename=img_name)
@@ -418,7 +419,7 @@ class ImportLettersHistory(models.Model):
 
     def _find_template(self, img):
         """
-        Use pattern recognition to detect which template correponds to img.
+        Use pattern recognition to detect which template corresponds to img.
         :param img: Image to analyze
         :returns: Detected template, center position of detected pattern
         :rtype: template, layout
@@ -431,7 +432,8 @@ class ImportLettersHistory(models.Model):
         """
         Use the pattern and the blue corner for doing a transformation
         (rotation + scaling + translation) in order to crop a small part
-        of the original picture around the position of each languages.
+        of the original picture around the position of each language
+        check box.
         The rotation matrix is given by R, the scaling one by scaling
         and the translation by C.
         The rotation angle :math:`\theta` is given by the angle between
@@ -440,7 +442,7 @@ class ImportLettersHistory(models.Model):
         The scaling is given in a matrix form where math:`S_1` is the
         ratio between the width of the image and the one of the template
         (same for the height with :math:`S_2`)
-        The translation vector is construct with the two previous matrices
+        The translation vector is constructed from the two previous matrices
         and the two vectors B (in the image) and B' (in the template)
         .. math::
            R = \left(\begin{array}{cc}
@@ -454,7 +456,7 @@ class ImportLettersHistory(models.Model):
                \right)
 
            C = B-R*B'
-        This analysis should be quite fast due to the small size of
+        This analysis should be quite fast due to the small size of the
         pictures to analyze (should be a square of about 20-30 pixels large).
 
         :param img: Image to analyze
@@ -464,7 +466,7 @@ class ImportLettersHistory(models.Model):
         not detected)
         :rtype: str or bool
         """
-        # in case of not being able to detect the pattern
+        # if pattern has not been detected
         if pattern_center is None:
             return
         # get position of the blue corner
@@ -475,7 +477,7 @@ class ImportLettersHistory(models.Model):
         diff_ref = np.array(template.get_bluesquare_area() -
                             template.get_pattern_center())
         diff_scan = np.array(bluecorner_position-pattern_center)
-        # need normalize vectors
+        # need normalized vectors
         normalization = (np.linalg.norm(diff_ref) *
                          np.linalg.norm(diff_scan))
         # angle between the scan and the ref image
@@ -499,7 +501,7 @@ class ImportLettersHistory(models.Model):
 
         # language
         lang = False
-        # check if only 1 language is find
+        # check if only 1 language was found
         lang_ok = True
         # first loop to write the image and find the language
         for checkbox in template.checkbox_ids:

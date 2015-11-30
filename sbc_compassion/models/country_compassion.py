@@ -14,7 +14,7 @@ from openerp import fields, models
 
 class CompassionCountry(models.Model):
 
-    """ This class upgrade the countries to add spoken languages
+    """ This class upgrades the countries to add spoken languages
     to match Compassion needs.
     """
 

@@ -14,7 +14,7 @@ from openerp import fields, models
 
 class ResLang(models.Model):
 
-    """ This class add spoken languages to match Compassion needs.
+    """ This class adds spoken languages to match Compassion needs.
     """
 
     _name = 'res.lang.compassion'

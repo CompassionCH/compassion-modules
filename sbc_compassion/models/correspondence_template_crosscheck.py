@@ -18,7 +18,7 @@ from os import remove
 
 class CorrespondenceCrosscheck(models.TransientModel):
     """
-    Model computing the crosscheck between all the pattern in
+    Model computing the crosscheck between all the patterns in
     sponsorship.correspondence.template and showing them in a wizard.
     """
 
@@ -37,13 +37,13 @@ class CorrespondenceCrosscheck(models.TransientModel):
     def _default_file_(self):
         """
         Compute the default value for the field file_
-        This method run a pattern recognition between all the choosen patterns
-        or if only one is selected between this one and all the others.
+        This method runs a pattern recognition between all the chosen patterns
+        or, if only one is selected, between this one and all the others.
         """
         # take active ids
         ret = []
         active_ids = self.env.context['active_ids']
-        # avoid template without pattern
+        # avoid templates without pattern
         tpl = self.env['sponsorship.correspondence.template'].search(
             [('id', 'in', active_ids), ('pattern_image', '!=', None)])
         # loop over all the active templates

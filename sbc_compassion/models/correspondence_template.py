@@ -23,7 +23,7 @@ from ..tools import bluecornerfinder as bcf
 
 
 class Style:
-    """ Defines a few color for drawing on the result picture
+    """ Defines a few colors for drawing on the result picture
     (names from wikipedia).
     The color order is BGR"""
     pattern_color_sq = (34, 139, 34)  # green (forest)
@@ -62,11 +62,11 @@ class CorrespondenceTemplate(models.Model):
         help='Height of the template in pixels')
     bluesquare_x = fields.Integer(
         compute='_compute_template_keypoints', store=True,
-        help='X Position of the upper-right corner of the bluesquare '
+        help='X Position of the upper-right corner of the blue square '
              'in pixels')
     bluesquare_y = fields.Integer(
         compute='_compute_template_keypoints', store=True,
-        help='Y Position of the upper-right corner of the bluesquare '
+        help='Y Position of the upper-right corner of the blue square '
              'in pixels')
     qrcode_x_min = fields.Integer(
         compute="_onchange_template_image",
@@ -216,8 +216,8 @@ class CorrespondenceTemplate(models.Model):
 
     @api.depends('pattern_image')
     def _compute_template_keypoints(self):
-        """ This method computes all keypoints that can be automatically
-        detected (bluesquare and pattern_center)
+        """ This method computes all key points that can be automatically
+        detected (blue square and pattern_center)
         """
         for template in self:
             if (template.template_image and template.pattern_image):
@@ -258,7 +258,7 @@ class CorrespondenceTemplate(models.Model):
                     template.get_pattern_area())
                 # no reason behind it, just need a scaling
                 radius = template.page_width/Style.radius_scale
-                # bluesquare
+                # blue square
                 img.itemset((self.bluesquare_y, self.bluesquare_x, 0),
                             Style.bluesquare_color[0])
                 img.itemset((self.bluesquare_y, self.bluesquare_x, 1),
@@ -289,7 +289,7 @@ class CorrespondenceTemplate(models.Model):
                             Style.pattern_color_pt[2])
                 cv2.circle(img, pattern_center[::-1], radius,
                            Style.pattern_color_pt)
-                # keypoints
+                # key points
                 for key in pattern_keypoints:
                     cv2.line(img, (int(key[0]), int(key[1])),
                              pattern_center[::-1],
@@ -332,7 +332,7 @@ class CorrespondenceTemplate(models.Model):
         return area
 
     def get_bluesquare_area(self):
-        """ Returns the coordinates of the bluesquare upper-right corner
+        """ Returns the coordinates of the blue square upper-right corner
             [x, y]
         """
         return numpy.array([self.bluesquare_x, self.bluesquare_y])
@@ -352,9 +352,9 @@ class CorrespondenceTemplate(models.Model):
 
 class CorrespondenceLanguageCheckbox(models.Model):
     """ This class represents a checkbox that can be present in a template
-    and can be ticked by the supporter to select the lang in which the letter
-    is written. It gives the position of the checkbox inside a template in
-    order to find it and verify if it is ticked or not. """
+    and can be ticked by the supporter to select the language in which the
+    letter is written. It gives the position of the checkbox inside a template
+    in order to find it and verify if it is ticked or not. """
 
     _name = 'sponsorship.correspondence.lang.checkbox'
 
