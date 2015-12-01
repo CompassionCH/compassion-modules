@@ -27,6 +27,12 @@ MESSAGE_TYPES = {
     'CommKit':
         'http://schemas.ci.org/ci/services/communications/2015/09/'
         'SBCStructured',
+    'CommKitDetails':
+        'http://schemas.ci.org/ci/messaging/communications/2015/08/'
+        'SBCCommunicationDetails',
+    'CommKitUpdates':
+        'http://schemas.ci.org/ci/messaging/communications/2015/08/'
+        'CommunicationUpdates',
     'ReservationNotification':
         'http://schemas.ci.org/ci/messaging/communications/2015/08/'
         'Notification'}
@@ -59,7 +65,10 @@ class RestController(http.Controller):
                     "the request.")
 
         # CommKit Update
-        elif message_type == MESSAGE_TYPES['CommKit']:
+        elif message_type in (MESSAGE_TYPES['CommKit'],
+                              MESSAGE_TYPES['CommKitDetails'],
+                              MESSAGE_TYPES['CommKitUpdates'],
+                              ):
             letter_data = request.jsonrequest
             correspondence_obj = request.env[
                 'sponsorship.correspondence'].sudo(request.uid)

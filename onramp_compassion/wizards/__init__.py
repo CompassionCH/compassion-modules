@@ -8,8 +8,4 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from . import tools
-from . import mappings
-from . import controllers
-from . import models
-from . import wizards
+from . import get_letter_image_wizard
