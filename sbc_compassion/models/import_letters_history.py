@@ -41,24 +41,28 @@ class ImportLettersHistory(models.Model):
     _name = "import.letters.history"
     _description = _("""History of the letters imported Import mail from a zip
     or a PDF/TIFF""")
+    _order = "create_date desc"
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
 
-    _order = "create_date"
     state = fields.Selection([
         ("draft", _("Draft")),
-        ("pending", _("Pending")),
-        ("ready", _("Ready to be saved")),
-        ("saved", _("Saved"))], compute="_set_ready")
-    nber_letters = fields.Integer(_('Number of letters'), readonly=True,
-                                  compute="_count_nber_letters")
-    is_mandatory_review = fields.Boolean("Mandatory Review", default=False)
-
+        ("open", _("Open")),
+        ("ready", _("Ready")),
+        ("done", _("Done"))], compute="_set_ready")
+    nber_letters = fields.Integer(
+        'Number of letters', readonly=True, compute="_count_nber_letters")
+    is_mandatory_review = fields.Boolean(
+        'Mandatory Review',
+        states={'done': [('readonly', True)]})
     data = fields.Many2many('ir.attachment', string="Add a file")
-    import_line_ids = fields.Many2many('import.letter.line')
-    letters_ids = fields.Many2many('sponsorship.correspondence')
+    import_line_ids = fields.One2many(
+        'import.letter.line', 'import_id', 'Files to process')
+    letters_ids = fields.One2many(
+        'sponsorship.correspondence', 'import_id', 'Imported letters',
+        readonly=True)
     force_template = fields.Many2one('sponsorship.correspondence.template',
                                      'Force Template')
 
@@ -74,7 +78,7 @@ class ImportLettersHistory(models.Model):
         """
         for import_letters in self:
             if import_letters.letters_ids:
-                import_letters.state = "saved"
+                import_letters.state = "done"
             elif import_letters.import_line_ids:
                 check = True
                 for i in import_letters.import_line_ids:
@@ -83,15 +87,9 @@ class ImportLettersHistory(models.Model):
                 if check:
                     import_letters.state = "ready"
                 else:
-                    import_letters.state = "pending"
+                    import_letters.state = "open"
             else:
                 import_letters.state = "draft"
-
-    @api.model
-    def create(self, vals):
-        result = super(models.Model, self).create(vals)
-        result._run_analyze()
-        return result
 
     @api.multi
     @api.onchange("data", "import_line_ids", "letters_ids")
@@ -101,9 +99,9 @@ class ImportLettersHistory(models.Model):
         inside it)
         """
         for inst in self:
-            if inst.state == "pending" or inst.state == "ready":
+            if inst.state == "open" or inst.state == "ready":
                 inst.nber_letters = len(inst.import_line_ids)
-            elif inst.state == "saved":
+            elif inst.state == "done":
                 inst.nber_letters = len(inst.letters_ids)
             elif inst.state is False or inst.state == "draft":
                 # counter
@@ -143,6 +141,35 @@ class ImportLettersHistory(models.Model):
             else:
                 raise exceptions.Warning(
                     _("State: '{}' not implemented".format(inst.state)))
+
+    ##########################################################################
+    #                             VIEW CALLBACKS                             #
+    ##########################################################################
+    @api.multi
+    def button_import(self):
+        for letters_import in self:
+            if letters_import.data:
+                letters_import._run_analyze()
+        return True
+
+    @api.multi
+    def button_save(self):
+        """
+        save the import_line as a sponsorship_correspondence
+        """
+        # check if all the imports are OK
+        for letters_h in self:
+            if letters_h.state != "ready":
+                raise exceptions.Warning(_("Some letters are not ready"))
+        # save the imports
+        for letters in self:
+            ids = letters.import_line_ids.get_letter_datas(
+                mandatory_review=letters.is_mandatory_review)
+            # letters_ids should be empty before this line
+            letters.write({'letters_ids': ids})
+            letters.import_line_ids.letter_image.unlink()
+            letters.import_line_ids.unlink()
+        return True
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -207,8 +234,7 @@ class ImportLettersHistory(models.Model):
             else:
                 raise exceptions.Warning(_('Two files are the same'))
         # remove all the files (now there are inside import_line_ids)
-        for letters in self:
-            letters.data.unlink()
+        self.data.unlink()
 
     def _analyze_attachment(self, file_, filename):
         """
@@ -254,7 +280,7 @@ class ImportLettersHistory(models.Model):
             'supporter_languages_id': lang_id,
             'template_id': template.id,
         })
-        letters_line = self.env['import.letter.line'].sudo().create(line_vals)
+        letters_line = self.env['import.letter.line'].create(line_vals)
 
         file_png_io = open(file_png, "r")
         file_data = file_png_io.read()
@@ -523,24 +549,3 @@ class ImportLettersHistory(models.Model):
         else:
             lang = False
         return lang
-
-    ##########################################################################
-    #                             VIEW CALLBACKS                             #
-    ##########################################################################
-    @api.multi
-    def button_save(self):
-        """
-        save the import_line as a sponsorship_correspondence
-        """
-        # check if all the imports are OK
-        for letters_h in self:
-            if letters_h.state != "ready":
-                raise exceptions.Warning(_("Some letters are not ready"))
-        # save the imports
-        for letters in self:
-            ids = letters.import_line_ids.get_letter_datas(
-                mandatory_review=letters.is_mandatory_review)
-            # letters_ids should be empty before this line
-            letters.write({'letters_ids': ids})
-            letters.import_line_ids.letter_image.unlink()
-            letters.import_line_ids.unlink()

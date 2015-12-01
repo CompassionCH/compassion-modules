@@ -47,7 +47,6 @@
         'views/lang_compassion_view.xml',
         'views/sponsorship_correspondence_view.xml',
         'views/import_letters_history_view.xml',
-        'views/import_letter_line_view.xml',
         'views/correspondence_template_view.xml',
         'views/correspondence_template_crosscheck_view.xml',
         'data/lang_data.xml',

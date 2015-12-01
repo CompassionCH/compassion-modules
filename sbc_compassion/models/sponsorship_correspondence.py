@@ -102,6 +102,7 @@ class SponsorshipCorrespondence(models.Model):
     rework_comments = fields.Text()
     original_letter_url = fields.Char()
     final_letter_url = fields.Char()
+    import_id = fields.Many2one('import.letters.history')
 
     # 5. SQL Constraints
     ####################

@@ -37,6 +37,7 @@ class ImportLetterLine(models.Model):
     is_encourager = fields.Boolean('Encourager', default=False)
     letter_image = fields.Many2one('ir.attachment')
     letter_image_preview = fields.Binary()
+    import_id = fields.Many2one('import.letters.history')
 
     status = fields.Selection([
         ("no_lang", _("Language not Detected")),

@@ -35,7 +35,7 @@
                                 <field name="sponsorship_id" options="{
                                     'create_edit':false,'field_color': 'state', 'search_more':true,
                                     'colors': {'terminated': 'gray', 'mandate': 'blue', 'waiting': 'blue'}}"/>
-                                <field name="letter_image" widget="binary" required="1"/>
+                                <field name="letter_image" widget="binary" required="1" class="oe_edit_only"/>
                                 <field name="template_id"/>
                                 <field name="direction"/>
                                 <field name="communication_type_ids" widget="many2many_checkboxes"/>
