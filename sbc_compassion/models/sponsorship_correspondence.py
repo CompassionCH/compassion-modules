@@ -169,7 +169,6 @@ class SponsorshipCorrespondence(models.Model):
             ('Published to Global Partner', _('Published')),
             # TODO: Check the following states with GMC to validate them...
             ('Quality check unsuccessful', _('Quality check unsuccessful')),
-            ('Undeliverable', _('Undeliverable')),
             ('Cancelled', _('Cancelled')),
             ('Exception', _('Exception')),
         ]
