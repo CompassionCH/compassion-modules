@@ -62,7 +62,7 @@ class ImportLettersHistory(models.Model):
                                   compute="_count_nber_letters")
     is_mandatory_review = fields.Boolean("Mandatory Review", default=False)
 
-    data = fields.Many2many('ir.attachment', string=_("Add a file"))
+    data = fields.Many2many('ir.attachment', "Add a file")
     import_line_ids = fields.Many2many('import.letter.line')
     letters_ids = fields.Many2many('sponsorship.correspondence')
 
@@ -243,21 +243,19 @@ class ImportLettersHistory(models.Model):
             if img is None:
                 raise Warning("The '{}' image cannot be read".format(filename))
         # first compute the QR code
-        partner, child, data, img = self._find_qrcode(file_png, img, MULTIPAGE,
-                                                      name, filename, file_,
-                                                      data)
+        line_vals, data, img = self._find_qrcode(img, MULTIPAGE, file_, data)
+
         # now try to find the layout
         # loop over all the patterns in the pattern directory
         template, key_img = self._find_template(img)
         lang_id = self._find_language(img, key_img, template)
 
-        letters_line = self.env['import.letter.line'].sudo().create({
-            'partner_codega': partner,
-            'child_code': child,
+        line_vals.update({
             'is_encourager': False,
             'supporter_languages_id': lang_id,
             'template_id': template.id,
         })
+        letters_line = self.env['import.letter.line'].sudo().create(line_vals)
 
         file_png_io = open(file_png, "r")
         file_data = file_png_io.read()
@@ -277,12 +275,28 @@ class ImportLettersHistory(models.Model):
         os.remove(file_png)
         if MULTIPAGE:
             delfiles = glob(name + '*png')
-            print delfiles
             for file_ in delfiles:
                 os.remove(file_)
 
-    def _find_qrcode(self, file_png, img, MULTIPAGE, name, filename, file_,
+    def _find_qrcode(self, img, MULTIPAGE, file_,
                      data):
+        """
+        Read the image and try to find the QR code.
+        The image should be currently saved as a png with the same name
+        than file_ (except for the extension).
+        Data is given in order to give the possibility to overwrite it when
+        the file is scanned in the wrong direction.
+
+        :param np.array img: Image to analyze
+        :param bool MULTIPAGE: If the file is multipage
+        :param file_: Name of the temporary file
+        :returns: {partner_id, child_id}, data, img
+        :rtype: dict, str, np.array
+        """
+        name = os.path.splitext(file_)[0]
+        file_png = name + '.png'
+        if MULTIPAGE:
+            file_png = name + '-0' + '.png'
         # get size and position
         img_height, img_width = img.shape[:2]
         left = img_width * float(
@@ -313,39 +327,69 @@ class ImportLettersHistory(models.Model):
             # second try
             qrcode = zx.decode(file_png, try_harder=True, crop=[
                 int(left), int(top), int(width), int(height)])
+            # if the QR code is found
             if qrcode is not None:
-                # if multipage, needs to turn all of them
-                if MULTIPAGE:
-                    # Get list of all images filenames to include
-                    image_names = glob(name + '-*.png')
-                    for g in image_names:
-                        # first page already done
-                        if file_png != g:
-                            img_temp = cv2.imread(g)[::-1, ::-1]
-                            cv2.imwrite(g, img_temp)
-
-                    # Create new Image, and extend sequence
-                    # put first page at the begining
-                    with Image() as img_tiff:
-                        img_tiff.sequence.extend(
-                            [Image(filename=img_name)
-                             for img_name in sorted(image_names)])
-                        img_tiff.save(filename=filename)
-                    f = open(filename)
-                    data = f.read()
-                    f.close()
-                # if only one page, far more easy
-                else:
-                    cv2.imwrite(file_, img)
-                    f = open(file_)
-                    data = f.read()
-                    f.close()
+                # replace the image by the returned one
+                data = self._save_img(MULTIPAGE, file_, img)
         if qrcode is not None and 'XX' in qrcode.data:
-            partner, child = qrcode.data.split('XX')
+            partner_id, child_id = qrcode.data.split('XX')
+            child_id = self.env['compassion.child'].search(
+                [('code', '=', child_id)]).id
+            partner_id = self.env['res.partner'].search(
+                [('ref', '=', partner_id)]).id
+
         else:
-            partner = None
-            child = None
-        return partner, child, data, img
+            partner_id = None
+            child_id = None
+
+        dict_odoo = {
+            'partner_id': partner_id,
+            'child_id': child_id,
+        }
+        return dict_odoo, data, img
+
+    def _save_img(self, MULTIPAGE, file_, img):
+        """
+        This method is called when an image is scanned in the wrong direction.
+        It consists in saving the image (returning is already done before).
+        In case of multipage, the pages need to be returned.
+
+        :param bool MULTIPAGE: If the file is a multipage one
+        :param str file_: Name of the file
+        :param np.array img: Image
+        :returns: Data contained in the file
+        :rtype: str
+        """
+        # if multipage, needs to turn all of them
+        name = os.path.splitext(file_)[0]
+        if MULTIPAGE:
+            file_png = name + '-0' + '.png'
+            # Get list of all images filenames to include
+            image_names = glob(name + '-*.png')
+            for g in image_names:
+                # first page already done
+                if file_png != g:
+                    img_temp = cv2.imread(g)[::-1, ::-1]
+                    cv2.imwrite(g, img_temp)
+
+            # Create new Image, and extend sequence
+            # put first page at the begining
+            with Image() as img_tiff:
+                img_tiff.sequence.extend(
+                    [Image(filename=img_name)
+                     for img_name in sorted(image_names)])
+                img_tiff.save(filename=file_)
+                f = open(file_)
+                data = f.read()
+                f.close()
+        # case with only one page
+        else:
+            file_png = name + '.png'
+            cv2.imwrite(file_, img)
+            f = open(file_)
+            data = f.read()
+            f.close()
+        return data
 
     def _find_template(self, img):
         """
