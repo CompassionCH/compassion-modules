@@ -72,3 +72,10 @@ class compassion_country(models.Model):
         url += ('/ci/v1/countries/' + api_mess + '/' + api_value +
                 '?api_key=' + api_key)
         return url
+
+    @api.model
+    def _set_demo_data(self):
+        """
+        Update the info of the demo countries
+        """
+        self.search([]).update_informations()

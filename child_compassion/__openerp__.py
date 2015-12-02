@@ -56,7 +56,11 @@
         'data/delegate_child_compassion_cron.xml',
         'data/child_compassion_template.xml',
     ],
-    'demo': [],
+    'demo': [
+        'demo/compassion.country.csv',
+        'demo/install.xml',
+        'demo/compassion.child.csv'
+    ],
     'installable': True,
     'auto_install': False,
 }

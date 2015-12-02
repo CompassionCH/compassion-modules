@@ -70,5 +70,19 @@
             <field name="code_iso">ita</field>
         </record>
 
+	<record id="lang_compassion_bahasa_indonesia" model="res.lang.compassion">
+	  <field name="name">Bahasa Indonesia</field>
+	  <field name="code_iso">ind</field>
+	</record>
+	
+	<record id="lang_compassion_quechua" model="res.lang.compassion">
+	  <field name="name">Quechua</field>
+	  <field name="code_iso">que</field>
+	</record>
+
+	<record id="lang_compassion_aymara" model="res.lang.compassion">
+	  <field name="name">Aymara</field>
+	  <field name="code_iso">aym</field>
+	</record>
     </data>
 </openerp>

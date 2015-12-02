@@ -56,6 +56,8 @@
     ],
     'demo': [
         'demo/correspondence_template_demo.xml',
+        'demo/update_demo_partner_compassion.xml',
+        'demo/update_demo_child_compassion.xml',
     ],
     'installable': True,
     'auto_install': False,
