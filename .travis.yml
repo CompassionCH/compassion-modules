@@ -15,7 +15,7 @@ env:
     global:
         - VERSION="8.0"
         - ODOO_REPO="odoo/odoo"
-        - EXCLUDE="onramp_compassion"
+        - EXCLUDE="sbc_compassion,onramp_compassion,label"
         - OPENCV_ROOT=${HOME}/opencv
         - ZXING_ROOT=${HOME}/.libZxing
 
