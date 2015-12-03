@@ -7,25 +7,41 @@
             <field name="name">import.letters.history.form</field>
             <field name="model">import.letters.history</field>
             <field name="arch" type="xml">
-            <form string="Imports">
-            <sheet>
-                <h1>
-		  Imported Letter
-                </h1>
-                <group>
-                    <field name="data" widget="many2many_binary" attrs="{'invisible': [('state','!=','draft')]}"/>
-                    <field name="nber_letters"/>
-                    <field name="is_mandatory_review"/>
-                </group>
-		<button name="button_save" string="Final Import"
-			attrs="{'invisible': [('state', 'in', ('saved', 'draft'))]}"
-			type="object" class="oe_highlight"/>
-		<field name="force_template" attrs="{'invisible': [('state','!=','draft')]}"/>
-		<field name="state" invisible="1"/>
-                <field name="import_line_ids" attrs="{'invisible': [('state', 'not in', ('pending', 'ready'))]}"  domain="[('id','=','-1')]"/>
-		<field name="letters_ids" attrs="{'invisible': [('state', '!=', 'saved')]}"/>
-            </sheet>
-            </form>
+                <form string="Imports">
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                        <button name="button_save" string="Import Letters" states="ready" type="object" class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <h1>Imported Letters</h1>
+                        <group>
+                            <label for="data" string="Files" states="draft"/>
+                            <div states="draft">
+                                <field name="data" widget="many2many_binary"/>
+                                <separator/>
+                                <button name="button_import" string="Load Files" type="object"/>
+                            </div>
+                            <field name="nber_letters"/>
+                            <field name="is_mandatory_review"/>
+                            <field name="force_template" states="draft"/>
+                        </group>
+                        <group>
+                            <field name="import_line_ids" states="open,ready" domain="[('id','=','-1')]">
+                                <tree colors="red:status != 'ok';green:status == 'ok'" create="false" editable="bottom">
+                                    <field name="letter_image" readonly="1" string="Filename"/>
+                                    <field name="status"/>
+                                    <field name="partner_id"/>
+                                    <field name="child_id"/>
+                                    <field name="template_id"/>
+                                    <field name="supporter_languages_id"/>
+                                    <field name="is_encourager"/>
+                                    <field name="letter_image_preview" widget='image' display="icon" string="Letter image preview"/>
+                                </tree>
+                            </field>
+                            <field name="letters_ids" states="done"/>
+                        </group>
+                    </sheet>
+                </form>
             </field>
         </record>
 
@@ -34,13 +50,14 @@
             <field name="name">import.letters.history.tree</field>
             <field name="model">import.letters.history</field>
             <field name="arch" type="xml">
-              <tree string="Imports"
-		    colors="blue:state == 'pending';red:state == 'draft';green:state == 'ready';black:state == 'saved'">
-	      <field name="write_date"/>
-	      <field name="state"/>
-              <field name="nber_letters"/>
-	      <field name="create_date"/>
-            </tree>
+                <tree string="Imports"
+		    colors="blue:state == 'draft';black:state == 'open';green:state == 'ready';grey:state == 'done'">
+                    <field name="create_date"/>
+                    <field name="write_date"/>
+                    <field name="nber_letters"/>
+                    <field name="is_mandatory_review"/>
+                    <field name="state"/>
+                </tree>
             </field>
         </record>
 

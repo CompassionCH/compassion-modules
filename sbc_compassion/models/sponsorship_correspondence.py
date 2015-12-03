@@ -54,8 +54,9 @@ class SponsorshipCorrespondence(models.Model):
         'Communication type',
         default=lambda self: [(4, self.env.ref(
             'sbc_compassion.correspondence_type_supporter').id)])
-    state = fields.Selection(
-        'get_states', default='Received in the system')
+    state = fields.Selection('get_states', default='Received in the system')
+    s2b_state = fields.Selection('get_s2b_states', compute='_compute_states')
+    b2s_state = fields.Selection('get_b2s_states', compute='_compute_states')
 
     # 2. Attachments and scans
     ##########################
@@ -102,6 +103,7 @@ class SponsorshipCorrespondence(models.Model):
     rework_comments = fields.Text()
     original_letter_url = fields.Char()
     final_letter_url = fields.Char()
+    import_id = fields.Many2one('import.letters.history')
 
     # 5. SQL Constraints
     ####################
@@ -116,28 +118,14 @@ class SponsorshipCorrespondence(models.Model):
     ##########################################################################
     @api.model
     def get_states(self):
-        """ Returns the possible states, based on letter direction. """
-        child_letter_states = [
-            ('Ready to be printed', _('Ready to be printed')),
-            ('Printed and sent to ICP', _('Sent to ICP')),
-            ('Field Office transcribing translation and content check '
-             'process', _('FO content check')),
-            ('Letter scanned in from FO', _('Scanned in from FO')),
-            ('Field Office translation queue', _('SDL FO Translation Queue')),
-            ('In Translation', _('SDL FO Translation')),
-            ('Quality check queue', _('Quality Check Queue')),
-            ('Quality check process', _('Quality Check Process')),
-            ('Translation and quality check complete',
-             _('Quality Check Done')),
-            ('Global Partner Translation Process', _('To Translate')),
-            ('Composition process', _('Composition Process')),
-            ('Published to Global Partner', _('Published')),
-            ('Quality check unsuccessful', _('Quality check unsuccessful')),
-            ('Undeliverable', _('Undeliverable')),
-            ('Cancelled', _('Cancelled')),
-            ('Exception', _('Exception')),
-        ]
-        sponsor_letter_states = [
+        """ Returns all the possible states. """
+        return list(set(self.get_s2b_states()) | set(self.get_b2s_states()))
+
+    @api.model
+    def get_s2b_states(self):
+        """ Supporter to Beneficiary states, in correct order. """
+        # * means state is to be clarified by GMC
+        return [
             ('Received in the system', _('Scanned in')),
             ('Global Partner translation queue', _('To Translate')),
             ('Global Partner translation process', _('Translating')),
@@ -145,23 +133,51 @@ class SponsorshipCorrespondence(models.Model):
             ('Quality check process', _('Quality Check Process')),
             ('Translation and quality check complete',
              _('Quality Check Done')),
-            ('Field Office translation queue', _('SDL FO Translation')),
+            ('Field Office translation queue', _('SDL FO Translation Queue')),
             ('Composition process', _('Composition Process')),
+            ('Printed and sent to ICP', _('Sent to ICP')),
+            # TODO: Check the following states with GMC to validate them...
             ('Complete Delivered', _('Delivered')),
             ('Complete Undelivered', _('Undelivered')),
             ('Undeliverable', _('Undeliverable')),
             ('Cancelled', _('Cancelled')),
             ('Exception', _('Exception')),
+            ('Quality check unsuccessful', _('Quality check failed')),
         ]
-        direction = 'Supporter To Beneficiary'
-        try:
-            direction = self.direction
-        except AttributeError:
-            direction = self.env.context.get('default_direction', direction)
-        if direction == 'Beneficiary To Supporter':
-            return child_letter_states
-        else:
-            return sponsor_letter_states
+
+    @api.model
+    def get_b2s_states(self):
+        """ Beneficiary to Supporter states, in correct order. """
+        # * means state is to be clarified by GMC
+        return [
+            ('Ready to be printed', _('Ready to be printed')),  # *
+            ('Field Office transcribing translation and content check '
+             'process', _('FO content check')),  # *
+            ('Field Office translation queue', _('SDL FO Translation Queue')),
+            ('In Translation', _('SDL FO Translation')),    # *
+            ('Quality check queue', _('Quality Check Queue')),
+            ('Quality check process', _('Quality Check Process')),
+            ('Translation and quality check complete',
+             _('Quality Check Done')),  # *
+            ('Global Partner translation queue', _('To Translate')),
+            ('Global Partner translation process', _('Translating')),
+            ('Composition process', _('Composition Process')),
+            ('Published to Global Partner', _('Published')),
+            # TODO: Check the following states with GMC to validate them...
+            ('Quality check unsuccessful', _('Quality check unsuccessful')),
+            ('Undeliverable', _('Undeliverable')),
+            ('Cancelled', _('Cancelled')),
+            ('Exception', _('Exception')),
+        ]
+
+    @api.multi
+    def _compute_states(self):
+        """ Sets the internal states (s2b and b2s). """
+        for letter in self:
+            if letter.direction == 'Supporter To Beneficiary':
+                letter.s2b_state = letter.state
+            else:
+                letter.b2s_state = letter.state
 
     @api.model
     def get_communication_types(self):

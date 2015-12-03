@@ -192,23 +192,25 @@ class CorrespondenceTemplate(models.Model):
         :rtype: np.array
 
         """
-        template_cv_image = None
         data = self.with_context(
             bin_size=False).template_image or self.template_image
-        if data:
-            with tempfile.NamedTemporaryFile(suffix='.png') as template_file:
-                template_file.write(base64.b64decode(data))
-                template_file.flush()
-                template_cv_image = cv2.imread(template_file.name)
+        if not data:
+            return None
+
+        with tempfile.NamedTemporaryFile(suffix='.png') as template_file:
+            template_file.write(base64.b64decode(data))
+            template_file.flush()
+            template_cv_image = cv2.imread(template_file.name)
         self.page_height, self.page_width = template_cv_image.shape[:2]
+        config_obj = self.env['ir.config_parameter']
         self.qrcode_x_min = self.page_width * float(
-            self.env['ir.config_parameter'].get_param('qrcode_x_min'))
+            config_obj.get_param('qrcode_x_min'))
         self.qrcode_x_max = self.page_width * float(
-            self.env['ir.config_parameter'].get_param('qrcode_x_max'))
+            config_obj.get_param('qrcode_x_max'))
         self.qrcode_y_min = self.page_height * \
-            float(self.env['ir.config_parameter'].get_param('qrcode_y_min'))
+            float(config_obj.get_param('qrcode_y_min'))
         self.qrcode_y_max = self.page_height * \
-            float(self.env['ir.config_parameter'].get_param('qrcode_y_max'))
+            float(config_obj.get_param('qrcode_y_max'))
 
         return template_cv_image
 
