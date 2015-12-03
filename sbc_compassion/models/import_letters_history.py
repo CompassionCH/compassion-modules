@@ -30,12 +30,6 @@ from ..tools import patternrecognition as pr
 from openerp import api, fields, models, _, exceptions
 
 
-# key to save in sponsorship_correspondence
-key = ['partner_codega', 'name', 'template_id', 'letter_image',
-       'is_encourager', 'supporter_languages_id', 'child_code',
-       'sponsorship_id']
-
-
 class ImportLettersHistory(models.Model):
     """
     Keep an history of the importation of letters.
@@ -62,9 +56,11 @@ class ImportLettersHistory(models.Model):
                                   compute="_count_nber_letters")
     is_mandatory_review = fields.Boolean("Mandatory Review", default=False)
 
-    data = fields.Many2many('ir.attachment', "Add a file")
+    data = fields.Many2many('ir.attachment', string="Add a file")
     import_line_ids = fields.Many2many('import.letter.line')
     letters_ids = fields.Many2many('sponsorship.correspondence')
+    force_template = fields.Many2one('sponsorship.correspondence.template',
+                                     'Force Template')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -249,6 +245,9 @@ class ImportLettersHistory(models.Model):
         # loop over all the patterns in the pattern directory
         template, key_img = self._find_template(img)
         lang_id = self._find_language(img, key_img, template)
+
+        if self.force_template:
+            template = self.force_template
 
         line_vals.update({
             'is_encourager': False,
