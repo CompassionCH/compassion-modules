@@ -116,8 +116,40 @@ class BlueCornerFinder:
                 # check if a good blue pixel is found
                 if checkColor(self.img[tuple(ind)], self.threshold):
                     if self._checkNext(ind):
-                        self.ind = [ind[1] + self.xmin, ind[0]]
                         found = True
+
+        # case where a blue pixel has been found
+        if found:
+            self._findmin()
+        else:
+            self.ind = None
+
+    def _findmin(self):
+        """
+        From the distance map and the 'ring' where a blue pixel has been found,
+        compute the position with a blue pixel the closest to the corner.
+        """
+        d_exact = np.inf
+        ind = [0, 0]
+        # the loops are not over the full size because
+        # the pixels of interest are inside a square of size self.n
+        # loop over the height
+        for i in range(min(self.h, self.n + 1)):
+            # loop over the width
+            for j in range(max(0, self.w - self.n - 1), self.w):
+                # check if it is on the good ring
+                if self.dist[i, j] == self.n:
+                    # check the color of the pixel
+                    if checkColor(self.img[i, j], self.threshold):
+                        # compute the exact distance (float not int)
+                        tmp = np.sqrt(i ** 2 + (self.w - j - 1) ** 2)
+                        # check if closer and has at least 2 neighbors
+                        if d_exact > tmp and self._checkNext((i, j)):
+                            d_exact = tmp
+                            ind = [i, j]
+        # save the values
+        self.ind = [ind[1] + self.xmin, ind[0]]
+        self.dist = d_exact
 
     def _checkNext(self, ind):
         """

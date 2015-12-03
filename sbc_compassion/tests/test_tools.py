@@ -41,7 +41,7 @@ class TestTools(common.TransactionCase):
         """
         img = self._read_img(self.test_document_normal)
         blue_corner_position = self._blue_corner_position(img)
-        self.assertEqual(blue_corner_position, [2439, 77])
+        self.assertEqual(blue_corner_position, [2438, 76])
         # TODO add tests with more documents
 
     def test_blue_corner_finder_should_not_find(self):
