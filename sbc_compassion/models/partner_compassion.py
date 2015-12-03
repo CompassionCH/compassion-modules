@@ -14,7 +14,7 @@ from openerp import fields, models
 
 class ResPartner(models.Model):
 
-    """ This class upgrade the partners to add spoken languages
+    """ This class upgrades the partners to add spoken languages
     to match Compassion needs.
     """
 

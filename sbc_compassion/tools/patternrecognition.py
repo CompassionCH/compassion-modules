@@ -27,7 +27,7 @@ from openerp.exceptions import Warning
 ##########################################################################
 #                           GENERAL METHODS                              #
 ##########################################################################
-def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
+def patternRecognition(image, pattern, crop_area=None,
                        threshold=2, full_result=False):
     """
     Try to find a pattern in the subset (given by crop_area) of the image.
@@ -43,6 +43,8 @@ def patternRecognition(image, pattern, crop_area=[0, 1, 0, 1],
     (first index image/pattern)
     :rtype: np.array(), np.array()
     """
+    if crop_area is None:
+        crop_area = [0, 1, 0, 1]
     # read images
     img1 = deepcopy(image)
     if img1 is None:
@@ -128,30 +130,31 @@ def findMatches(des1, des2, test=0.8):
     return good
 
 
-def keyPointCenter(keypoint):
+def keyPointCenter(keypoints):
     """
     Compute the Center of the keypoints by using a weight computed
     with the distance (therefore a point far away from the main group
     [for example in case of error in the matching function] will have
     a small weight)
 
-    :param np.array() keypoint: Keypoints computed by \
+    :param np.array() keypoints: Keypoints computed by \
     :func:`patternRecognition` for either the image or the template
     :returns: Coordinates of the center
     :rtype: list[float]
     """
-    if type(keypoint) is bool:
+    # if not keypoints:
+    if type(keypoints) is bool:
         return
-    if len(keypoint) <= 1:
-        return keypoint
+    if len(keypoints) <= 1:
+        return keypoints
     else:
         # normalization of the weights
         N = 0
         # return value
         center = np.array([0.0, 0.0])
-        for i in keypoint:
+        for i in keypoints:
             omega = 0
-            for j in keypoint:
+            for j in keypoints:
                 # compute the distance
                 omega += np.sum((np.array(i) - np.array(j)) ** 2)
             # invert the weight in order to have a small one
@@ -162,3 +165,33 @@ def keyPointCenter(keypoint):
             N += omega
             center += omega * np.array(i)
         return center / N
+
+
+def find_template(img, templates):
+    """
+    Use pattern recognition to detect which template correponds to img.
+    :param img: Image to analyze
+    :param templates: Collection of all templates
+    :returns: Detected template, center position of detected pattern
+    :rtype: template, layout
+    """
+    # number of keypoint related between the picture and the pattern
+    max_num_keypoints = 0
+    key_img = False
+    matching_template = None
+
+    for template in templates:
+        # Crop the image to speedup detection and avoid false positives
+        crop_area = template.get_pattern_area()
+
+        # try to recognize the pattern
+        tmp_key = patternRecognition(
+            img, template.pattern_image, crop_area)
+        # check if it is a better result than before
+        if tmp_key is not None and len(tmp_key) > max_num_keypoints:
+            # save all the data if it is better
+            max_num_keypoints = len(tmp_key)
+            key_img = tmp_key
+            matching_template = template
+
+        return matching_template, keyPointCenter(key_img)

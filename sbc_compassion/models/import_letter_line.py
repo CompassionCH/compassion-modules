@@ -14,7 +14,7 @@ from openerp import fields, models, api, _
 
 class ImportLetterLine(models.Model):
     """
-    This class is used for the validation of an exportation.
+    This class is used for the validation of an export.
     """
 
     _name = 'import.letter.line'
@@ -108,7 +108,7 @@ class ImportLetterLine(models.Model):
                         line.child_id.code)
 
     @api.multi
-    def get_letter_datas(self, mandatory_review=False):
+    def get_letter_data(self, mandatory_review=False):
         """ Create a list of dictionaries in order to create some lines inside
         import_letters_history.
 
@@ -117,7 +117,7 @@ class ImportLetterLine(models.Model):
         :rtype: list[dict{}]
 
         """
-        letter_datas = []
+        letter_data = []
         for line in self:
             vals = {
                 'sponsorship_id': line.sponsorship_id.id,
@@ -130,5 +130,5 @@ class ImportLetterLine(models.Model):
                 vals['relationship'] = 'Encourager'
             if mandatory_review:
                 vals['mandatory_review'] = True
-            letter_datas.append((0, 0, vals))
-        return letter_datas
+            letter_data.append((0, 0, vals))
+        return letter_data

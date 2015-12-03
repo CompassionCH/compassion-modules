@@ -34,10 +34,13 @@ class BlueCornerFinder:
     ##########################################################################
     #                               INIT METHOD                              #
     ##########################################################################
-    def __init__(self, img, box=[0.66, 0.25], threshold=90):
+    def __init__(self, img, box=None, threshold=90):
         """
         Read and cut the image to the requested value.
         """
+        if box is None:
+            box = [0.66, 0.25]
+        self.ind = None
         self.threshold = threshold
         self.img = deepcopy(img)
         # get size of the image
@@ -65,14 +68,6 @@ class BlueCornerFinder:
         """
         return self.ind
 
-    def getDistance(self):
-        """
-        Returns the distance between the blue square and the corner
-        :returns: Distance of the blue square
-        :rtype: float
-        """
-        return self.dist
-
     def getSizeOriginal(self):
         """
         Returns the size of the original image
@@ -98,18 +93,20 @@ class BlueCornerFinder:
         # is used in order to know when to stop the loop
         # and knowing if a blue pixel has been found in
         # the image
-        self.found = False
+        found = False
         # distance to the corner (rounded down)
         self.n = -1
         # the scan stop if we reach an other corner
-        while not self.found and self.n < self.w:
+        while not found and self.n < self.w:
             self.n += 1
+            # print("N {}".format(self.n))
             # queue containing the next cells
-            self.todo = deque([[0, self.w - self.n - 1]])
+            self.todo = deque([(0, self.w - self.n - 1)])
             # scan all the pixel until the end of the queue
             while len(self.todo) != 0:
                 # get and remove first job
                 ind = self.todo[0]
+                # print(ind)
                 self.todo.popleft()
                 # set distance in the map
                 self.dist[ind] = self.n
@@ -119,15 +116,13 @@ class BlueCornerFinder:
                 # check if a good blue pixel is found
                 if checkColor(self.img[tuple(ind)], self.threshold):
                     if self._checkNext(ind):
-                        self.found = True
+                        found = True
 
         # case where a blue pixel has been found
-        if self.found:
+        if found:
             self._findmin()
         else:
             self.ind = None
-
-        return self.ind
 
     def _findmin(self):
         """
@@ -137,18 +132,18 @@ class BlueCornerFinder:
         d_exact = np.inf
         ind = [0, 0]
         # the loops are not over the full size because
-        # the good pixels are inside a square of size self.n
+        # the pixels of interest are inside a square of size self.n
         # loop over the height
-        for i in range(self.n + 1):
+        for i in range(min(self.h, self.n + 1)):
             # loop over the width
-            for j in range(self.w - self.n - 1, self.w):
+            for j in range(max(0, self.w - self.n - 1), self.w):
                 # check if it is on the good ring
                 if self.dist[i, j] == self.n:
                     # check the color of the pixel
                     if checkColor(self.img[i, j], self.threshold):
                         # compute the exact distance (float not int)
                         tmp = np.sqrt(i ** 2 + (self.w - j - 1) ** 2)
-                        # check if closer and has at least 2 neighbours
+                        # check if closer and has at least 2 neighbors
                         if d_exact > tmp and self._checkNext((i, j)):
                             d_exact = tmp
                             ind = [i, j]
@@ -236,7 +231,7 @@ class BlueCornerFinder:
         """
         Compute the distance of the pixel (if not already done)
         and append the pixel in the todo queue when required
-        :param list ind: Indices
+        :param tuple ind: Indices
         """
         if self.dist[ind] == 0:
             d = np.sqrt(ind[0] ** 2 + (self.w - ind[1] - 1) ** 2)

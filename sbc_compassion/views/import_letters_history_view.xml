@@ -35,7 +35,7 @@
                                     <field name="template_id"/>
                                     <field name="supporter_languages_id"/>
                                     <field name="is_encourager"/>
-                                    <field name="letter_image_preview" widget='image' display="icon" string="Letter image preview"/>
+                                    <field name="letter_image_preview" widget='image' display="icon" string="Letter image preview" readonly="1"/>
                                 </tree>
                             </field>
                             <field name="letters_ids" states="done"/>
@@ -51,7 +51,7 @@
             <field name="model">import.letters.history</field>
             <field name="arch" type="xml">
                 <tree string="Imports"
-		    colors="blue:state == 'draft';black:state == 'open';green:state == 'ready';grey:state == 'done'">
+                      colors="blue:state == 'draft';black:state == 'open';green:state == 'ready';grey:state == 'done'">
                     <field name="create_date"/>
                     <field name="write_date"/>
                     <field name="nber_letters"/>
@@ -74,6 +74,6 @@
 
         <!-- Menu Definition -->
         <menuitem id="import_letters_menu" parent="menu_sponsorship_correspondence"
-        name="Imports" action="action_compassion_import_letters_action" sequence="1"/>
+                  name="Imports" action="action_compassion_import_letters_action" sequence="1"/>
     </data>
 </openerp>
