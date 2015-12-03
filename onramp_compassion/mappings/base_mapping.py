@@ -161,7 +161,8 @@ class OnrampMapping(object):
                 res[connect_name] = value
         return res
 
-    def _convert_connect_data(self, connect_name, value_mapping, value):
+    def _convert_connect_data(self, connect_name, value_mapping, value,
+                              relation_search=None):
         """ Converts a received data from Connect to odoo field:value
             dictionary.
 
@@ -169,6 +170,8 @@ class OnrampMapping(object):
             :param value_mapping: The value of the mapping for this field
                                   found in CONNECT_MAPPING
             :param value: Connect value for the field.
+            :param relation_search: Optional additional search domain to
+                                    limit the search results of a relation.
 
             :returns: a dictionary holding the field:value pair for Odoo"""
         result = dict()
@@ -177,8 +180,11 @@ class OnrampMapping(object):
             relation_obj = self.env[value_mapping[1]]
             correspondence_field = value_mapping[0].split('.')[0]
             relation_field = value_mapping[0].split('.')[-1]
-            relation_ids = relation_obj.search([
-                (relation_field, '=', value)]).ids
+            operator = 'in' if isinstance(value, list) else '='
+            if relation_search is None:
+                relation_search = list()
+            relation_search.extend([(relation_field, operator, value)])
+            relation_ids = relation_obj.search(relation_search).ids
             if correspondence_field.endswith('ids') and relation_ids:
                 # Many2many write
                 result[correspondence_field] = [(6, 0, relation_ids)]

@@ -125,12 +125,16 @@ class CorrespondenceMapping(OnrampMapping):
         'NumberOfPages': 1,     # TODO
     }
 
-    def _convert_connect_data(self, connect_name, value_mapping, value):
-        """ Remove 65- suffix from partner reference. """
+    def _convert_connect_data(self, connect_name, value_mapping, value,
+                              relation_search=None):
+        """ Remove 65- suffix from partner reference and look only
+            for non-company partners.
+        """
         if connect_name == 'CompassConstituentId':
             value = value[3:]
+            relation_search = [('is_company', '=', False)]
         return super(CorrespondenceMapping, self)._convert_connect_data(
-            connect_name, value_mapping, value)
+            connect_name, value_mapping, value, relation_search)
 
     def _process_odoo_data(self, odoo_data):
         # Replace child and correspondant values with sponsorship
