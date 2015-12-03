@@ -27,9 +27,9 @@ class ImportLetterLine(models.Model):
                                      compute='_set_sponsorship_id')
     sponsorship_found = fields.Boolean(compute='_set_sponsorship_id')
     child_partner_found = fields.Boolean(compute='_set_sponsorship_id')
-    partner_codega = fields.Char('Partner')
+    partner_id = fields.Many2one('res.partner', 'Partner')
     name = fields.Char(compute='_set_name')
-    child_code = fields.Char('Child')
+    child_id = fields.Many2one('compassion.child', 'Child')
     template_id = fields.Many2one(
         'sponsorship.correspondence.template', 'Template')
     supporter_languages_id = fields.Many2one(
@@ -50,7 +50,7 @@ class ImportLetterLine(models.Model):
     ##########################################################################
 
     @api.multi
-    @api.depends('partner_codega', 'child_code', 'sponsorship_id',
+    @api.depends('partner_id', 'child_id', 'sponsorship_id',
                  'supporter_languages_id')
     def _check_status(self):
         """ At each change, check if all the fields are OK
@@ -70,7 +70,7 @@ class ImportLetterLine(models.Model):
                 line.status = "ok"
 
     @api.multi
-    @api.depends('partner_codega', 'child_code')
+    @api.depends('partner_id', 'child_id')
     def _set_sponsorship_id(self):
         """ From the partner codega and the child code, find the record
         linking them together.
@@ -78,10 +78,10 @@ class ImportLetterLine(models.Model):
         are found.
         """
         for line in self:
-            if line.partner_codega and line.child_code:
+            if line.partner_id and line.child_id:
                 line.sponsorship_id = line.env['recurring.contract'].search([
-                    ('child_id.code', '=', line.child_code),
-                    ('partner_codega', '=', line.partner_codega)],
+                    ('child_code', '=', line.child_id.code),
+                    ('partner_codega', '=', line.partner_id.ref)],
                     order='is_active desc, end_date desc', limit=1)
                 if line.sponsorship_id:
                     line.sponsorship_found = True
@@ -89,22 +89,22 @@ class ImportLetterLine(models.Model):
                 else:
                     line.sponsorship_found = False
                     if not (line.env['recurring.contract'].search([
-                            ('child_id.code', '=', line.child_code)]) and
+                            ('child_code', '=', line.child_id.code)]) and
                             line.env['recurring.contract'].search([
                                 ('partner_codega', '=',
-                                 line.partner_codega)])):
+                                 line.partner_id.ref)])):
                         line.child_partner_found = False
                     else:
                         line.child_partner_found = True
 
     @api.multi
-    @api.depends('partner_codega', 'child_code')
+    @api.depends('partner_id', 'child_id')
     def _set_name(self):
         for line in self:
             if line.sponsorship_id:
                 line.name = str(
                     line.sponsorship_id.partner_codega) + " - " + str(
-                        line.child_code)
+                        line.child_id.code)
 
     @api.multi
     def get_letter_datas(self, mandatory_review=False):
