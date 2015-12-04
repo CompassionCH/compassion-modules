@@ -107,6 +107,9 @@ class CorrespondenceTemplate(models.Model):
     checkbox_ids = fields.One2many(
         'sponsorship.correspondence.lang.checkbox', 'template_id',
         default=lambda self: self._get_default_checkboxes())
+    nber_keypoints = fields.Integer(
+        "Number of key points", compute="_compute_template_keypoints",
+        store=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -233,6 +236,7 @@ class CorrespondenceTemplate(models.Model):
                             _("Pattern not found"),
                             _("The pattern could not be detected in given "
                               "template image."))
+                    self.nber_keypoints = pattern_keypoints.shape[0]
                     # find center of the pattern
                     pattern_center = pr.keyPointCenter(pattern_keypoints)
                     template.pattern_center_x = pattern_center[0]
@@ -267,6 +271,17 @@ class CorrespondenceTemplate(models.Model):
                             Style.bluesquare_color[2])
                 cv2.circle(img, (self.bluesquare_x, self.bluesquare_y),
                            radius, Style.bluesquare_color)
+                config = self.env['ir.config_parameter']
+                bc_x_min = int(
+                    float(config.get_param('bluecorner_x_min')) *
+                    template.page_width)
+                bc_y_max = int(
+                    float(config.get_param('bluecorner_y_max')) *
+                    template.page_height)
+                cv2.rectangle(img,
+                              (bc_x_min, 0), (template.page_width, bc_y_max),
+                              Style.bluesquare_color)
+
                 # QR code
                 cv2.rectangle(img,
                               (template.qrcode_x_min, template.qrcode_y_min),

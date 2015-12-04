@@ -163,7 +163,7 @@ class ImportLettersHistory(models.Model):
                 raise exceptions.Warning(_("Some letters are not ready"))
         # save the imports
         for letters in self:
-            ids = letters.import_line_ids.get_letter_datas(
+            ids = letters.import_line_ids.get_letter_data(
                 mandatory_review=letters.is_mandatory_review)
             # letters_ids should be empty before this line
             letters.write({'letters_ids': ids})
@@ -271,9 +271,12 @@ class ImportLettersHistory(models.Model):
         # now try to find the layout
         # loop over all the patterns in the pattern directory
         template, pattern_center = self._find_template(img)
-        lang_id = self._find_language(img, pattern_center, template)
+        if template != self.env.ref('sbc_compassion.default_template'):
+            lang_id = self._find_language(img, pattern_center, template)
+        else:
+            lang_id = None
 
-        if self.force_template:
+        if self.force_template and self.force_template is not None:
             template = self.force_template
 
         line_vals.update({
@@ -348,13 +351,13 @@ class ImportLettersHistory(models.Model):
         if qrcode is None:
             # rotate image
             img = img[::-1, ::-1]
-            # save it for zxing
-            cv2.imwrite(file_png, img)
             # second attempt
             qrcode = zx.decode(file_png, try_harder=True, crop=[
                 int(left), int(top), int(width), int(height)])
             # if the QR code is found
             if qrcode is not None:
+                # save it for zxing
+                cv2.imwrite(file_png, img)
                 # replace the image by the returned one
                 data = self._save_img(MULTIPAGE, file_, img)
         if qrcode is not None and 'XX' in qrcode.data:
@@ -426,7 +429,16 @@ class ImportLettersHistory(models.Model):
         """
         templates = self.env['sponsorship.correspondence.template'].search(
             [('pattern_image', '!=', False)])
-        return pr.find_template(img, templates)
+        threshold = float(
+            self.env.ref('sbc_compassion.threshold_keypoints_template').value)
+        threshold = 0.29
+        return_value = pr.find_template(img, templates, threshold=threshold)
+        if return_value[0] is None:
+            index = np.array(([0, 0], [0, 0]))
+            return_value = (
+                self.env.ref('sbc_compassion.default_template'),
+                index)
+        return return_value
 
     def _find_language(self, img, pattern_center, template):
         """
@@ -470,8 +482,14 @@ class ImportLettersHistory(models.Model):
         if pattern_center is None:
             return
         # get position of the blue corner
-        bluecorner = bcf.BlueCornerFinder(img)
+        box = [float(
+            self.env['ir.config_parameter'].get_param('bluecorner_x_min')),
+               float(
+            self.env['ir.config_parameter'].get_param('bluecorner_y_max'))]
+        bluecorner = bcf.BlueCornerFinder(img, box=box)
         bluecorner_position = bluecorner.getIndices()
+        if bluecorner_position is None:
+            return False
 
         # vector between the blue square and the pattern
         diff_ref = np.array(template.get_bluesquare_area() -
@@ -496,6 +514,7 @@ class ImportLettersHistory(models.Model):
         R *= scaling
         # translation vector
         C = bluecorner_position-np.dot(R, template.get_bluesquare_area())
+        h, w = img.shape[:2]
 
         # now for the language
 
@@ -513,6 +532,8 @@ class ImportLettersHistory(models.Model):
             (a, b) = np.round(np.dot(R, np.array([a, b])) + C)
             (c, d) = np.round(np.dot(R, np.array([c, d])) + C)
             # new name (if changed, need to change in the remove loop)
+            if not (0 < a < b < h and 0 < c < d < w):
+                continue
             A = cbr.CheckboxReader(img[a:b+1, c:d+1])
             # if something happens
             # if A.test is True or A.getState is True or A.getState is None:

@@ -81,8 +81,8 @@ class ImportLetterLine(models.Model):
         for line in self:
             if line.partner_id and line.child_id:
                 line.sponsorship_id = line.env['recurring.contract'].search([
-                    ('child_code', '=', line.child_id.code),
-                    ('partner_codega', '=', line.partner_id.ref)],
+                    ('child_id', '=', line.child_id.id),
+                    ('partner_id', '=', line.partner_id.id)],
                     order='is_active desc, end_date desc', limit=1)
                 if line.sponsorship_id:
                     line.sponsorship_found = True

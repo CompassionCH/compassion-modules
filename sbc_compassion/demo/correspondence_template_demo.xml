@@ -1,31 +1,10 @@
 <openerp>
   <data>
-    <!-- QR Code -->
-    <record id="qrcode_x_min" model="ir.config_parameter">
-      <field name="key">qrcode_x_min</field>
-      <field name="value">0.0</field>
-    </record>
-    
-    <record id="qrcode_x_max" model="ir.config_parameter">
-      <field name="key">qrcode_x_max</field>
-      <field name="value">0.42</field>
-    </record>
-    
-    <record id="qrcode_y_min" model="ir.config_parameter">
-      <field name="key">qrcode_y_min</field>
-      <field name="value">0.0</field>
-    </record>
-    
-    <record id="qrcode_y_max" model="ir.config_parameter">
-      <field name="key">qrcode_y_max</field>
-      <field name="value">0.13</field>
-    </record>
-
     <!-- First template -->
     <record id="test_template1" model="sponsorship.correspondence.template">
       <field name="name">Test Template 1</field>
       <field name="layout">CH-A-1S11-1</field>
-      <field name="pattern_image" type="base64" file="sbc_compassion/static/src/img/triforce.png"/>
+      <field name="pattern_image" type="base64" file="sbc_compassion/static/src/img/mario.png"/>
       <field name="template_image" type="base64" file="sbc_compassion/static/src/img/template_test1.png"/>
       <!-- Just need to be larger than all the others values.
 	   They will be computed during the initialization. -->

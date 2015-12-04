@@ -191,7 +191,7 @@ def connectedComponents(img, connectivity=8):
     # square mask
     mh = (con.shape[0] - 1) / 2
     mw = mh
-    ret = np.zeros((h, w), np.int8)
+    ret = np.zeros((h, w), np.int16)
     col = 1
     E = []
     # first scan the image and gives temporary ids

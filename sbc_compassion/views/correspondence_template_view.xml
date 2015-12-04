@@ -54,6 +54,7 @@
                                 <separator colspan="2"/>
                                 <field name="pattern_center_x"/>
                                 <field name="pattern_center_y"/>
+				<field name="nber_keypoints"/>
                             </group>
                             <group>
                               <field name="template_image" widget="image" required="1" width="210px" height="297px"/>
