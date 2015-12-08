@@ -9,7 +9,7 @@
 
     <record id="threshold_keypoints_template" model="ir.config_parameter">
       <field name="key">threshold_keypoints_template</field>
-      <field name="value">0.25</field>
+      <field name="value">0.4</field>
     </record>
 
     <!-- QR Code -->

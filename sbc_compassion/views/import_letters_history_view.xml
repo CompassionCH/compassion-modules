@@ -33,7 +33,7 @@
                                     <field name="partner_id"/>
                                     <field name="child_id"/>
                                     <field name="template_id"/>
-                                    <field name="supporter_languages_id"/>
+                                    <field name="letter_language_id"/>
                                     <field name="is_encourager"/>
                                     <field name="letter_image_preview" widget='image' display="icon" string="Letter image preview" readonly="1"/>
                                 </tree>

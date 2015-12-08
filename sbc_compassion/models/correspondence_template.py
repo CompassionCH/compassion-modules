@@ -236,7 +236,7 @@ class CorrespondenceTemplate(models.Model):
                             _("Pattern not found"),
                             _("The pattern could not be detected in given "
                               "template image."))
-                    self.nber_keypoints = pattern_keypoints.shape[0]
+                    template.nber_keypoints = pattern_keypoints.shape[0]
                     # find center of the pattern
                     pattern_center = pr.keyPointCenter(pattern_keypoints)
                     template.pattern_center_x = pattern_center[0]

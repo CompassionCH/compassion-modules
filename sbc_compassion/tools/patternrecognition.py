@@ -177,7 +177,7 @@ def find_template(img, templates, threshold=0.8):
     :rtype: template, layout
     """
     # number of keypoint related between the picture and the pattern
-    max_num_keypoints = 0
+    max_ratio_keypoints = 0.0
     key_img = False
     matching_template = None
 
@@ -190,10 +190,11 @@ def find_template(img, templates, threshold=0.8):
             img, template.pattern_image, crop_area)
         # check if it is a better result than before
         if (tmp_key is not None and
-                (template.nber_keypoints*threshold < len(tmp_key) >
-                 max_num_keypoints)):
+                (threshold < float(len(tmp_key)) / float(
+                    template.nber_keypoints) > max_ratio_keypoints)):
             # save all the data if it is better
-            max_num_keypoints = len(tmp_key)
+            max_ratio_keypoints = float(
+                len(tmp_key))/float(template.nber_keypoints)
             key_img = tmp_key
             matching_template = template
 

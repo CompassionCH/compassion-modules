@@ -272,16 +272,19 @@ class ImportLettersHistory(models.Model):
         # loop over all the patterns in the pattern directory
         template, pattern_center = self._find_template(img)
         if template != self.env.ref('sbc_compassion.default_template'):
-            lang_id = self._find_language(img, pattern_center, template)
+            lang_id = self._find_languages(img, pattern_center, template)
+            if len(lang_id) == 1:
+                lang_id = lang_id[0]
+            else:
+                lang_id = False
         else:
-            lang_id = None
-
+            lang_id = False
         if self.force_template and self.force_template is not None:
             template = self.force_template
 
         line_vals.update({
             'is_encourager': False,
-            'supporter_languages_id': lang_id,
+            'letter_language_id': lang_id,
             'template_id': template.id,
         })
         letters_line = self.env['import.letter.line'].create(line_vals)
@@ -352,6 +355,7 @@ class ImportLettersHistory(models.Model):
             # rotate image
             img = img[::-1, ::-1]
             # second attempt
+            cv2.imwrite(file_png, img)
             qrcode = zx.decode(file_png, try_harder=True, crop=[
                 int(left), int(top), int(width), int(height)])
             # if the QR code is found
@@ -360,12 +364,16 @@ class ImportLettersHistory(models.Model):
                 cv2.imwrite(file_png, img)
                 # replace the image by the returned one
                 data = self._save_img(MULTIPAGE, file_, img)
+            else:
+                cv2.imwrite(file_png, img[::-1, ::-1])
+                qrcode = zx.decode(file_png, try_harder=True)
         if qrcode is not None and 'XX' in qrcode.data:
             partner_id, child_id = qrcode.data.split('XX')
             child_id = self.env['compassion.child'].search(
                 [('code', '=', child_id)]).id
             partner_id = self.env['res.partner'].search(
-                [('ref', '=', partner_id)]).id
+                [('ref', '=', partner_id),
+                 ('is_company', '=', False)]).id
 
         else:
             partner_id = None
@@ -431,16 +439,14 @@ class ImportLettersHistory(models.Model):
             [('pattern_image', '!=', False)])
         threshold = float(
             self.env.ref('sbc_compassion.threshold_keypoints_template').value)
-        threshold = 0.29
-        return_value = pr.find_template(img, templates, threshold=threshold)
-        if return_value[0] is None:
-            index = np.array(([0, 0], [0, 0]))
-            return_value = (
-                self.env.ref('sbc_compassion.default_template'),
-                index)
-        return return_value
+        template, pattern_center = pr.find_template(img, templates,
+                                                    threshold=threshold)
+        if template is None:
+            pattern_center = np.array(([0, 0], [0, 0]))
+            template = self.env.ref('sbc_compassion.default_template')
+        return template, pattern_center
 
-    def _find_language(self, img, pattern_center, template):
+    def _find_languages(self, img, pattern_center, template):
         """
         Use the pattern and the blue corner for doing a transformation
         (rotation + scaling + translation) in order to crop a small part
@@ -474,22 +480,21 @@ class ImportLettersHistory(models.Model):
         :param img: Image to analyze
         :param pattern_center: Center position of detected pattern
         :param CorrespondenceTemplate template: Template of the image
-        :returns: Language of the letter (defined in Layout, returns None if \
-        not detected)
-        :rtype: str or bool
+        :returns: Languages detected
+        :rtype: list
         """
         # if pattern has not been detected
         if pattern_center is None:
-            return
+            return []
         # get position of the blue corner
         box = [float(
             self.env['ir.config_parameter'].get_param('bluecorner_x_min')),
-               float(
+            float(
             self.env['ir.config_parameter'].get_param('bluecorner_y_max'))]
         bluecorner = bcf.BlueCornerFinder(img, box=box)
         bluecorner_position = bluecorner.getIndices()
         if bluecorner_position is None:
-            return False
+            return []
 
         # vector between the blue square and the pattern
         diff_ref = np.array(template.get_bluesquare_area() -
@@ -519,9 +524,7 @@ class ImportLettersHistory(models.Model):
         # now for the language
 
         # language
-        lang = False
-        # check if only 1 language was found
-        lang_ok = True
+        lang = []
         # first loop to write the image and find the language
         for checkbox in template.checkbox_ids:
             a = checkbox.y_min
@@ -538,14 +541,5 @@ class ImportLettersHistory(models.Model):
             # if something happens
             # if A.test is True or A.getState is True or A.getState is None:
             if A.getState() is True:
-                # if a second language has been discovered
-                if lang is not False:
-                    lang_ok = False
-                else:
-                    # change the value for odoo
-                    lang = checkbox.language_id
-        if lang and lang_ok:
-            lang = lang.id
-        else:
-            lang = False
+                    lang.append(checkbox.language_id.id)
         return lang
