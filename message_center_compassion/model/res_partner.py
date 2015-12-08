@@ -33,7 +33,7 @@ class res_partner(models.Model):
         return super(res_partner, self).write(vals)
 
     @api.multi
-    def write_from_gp(self, vals):
+    def gp_write(self, vals):
         """ GP always send firstname and lastname. We check if they changed.
         """
         new_firstname = vals.get('firstname')
