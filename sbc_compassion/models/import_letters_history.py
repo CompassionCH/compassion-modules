@@ -164,6 +164,21 @@ class ImportLettersHistory(models.Model):
             letters.import_line_ids.unlink()
         return True
 
+    @api.multi
+    def button_review(self):
+        """ Returns a form view for import lines in order to browse them """
+        self.ensure_one()
+        return {
+            'name': _('Review Imports'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'import.letters.review',
+            'context': self.with_context(
+                line_ids=self.import_line_ids.ids).env.context,
+            'target': 'current',
+        }
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################

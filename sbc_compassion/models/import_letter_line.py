@@ -36,13 +36,14 @@ class ImportLetterLine(models.Model):
     letter_image = fields.Many2one('ir.attachment')
     letter_image_preview = fields.Binary()
     import_id = fields.Many2one('import.letters.history')
+    reviewed = fields.Boolean()
 
     status = fields.Selection([
         ("no_lang", _("Language not Detected")),
         ("no_sponsorship", _("Sponsorship not Found")),
         ("no_child_partner", _("Partner or Child not Found")),
         ("no_template", _("Template not Detected")),
-        ("ok", _("OK"))], compute="_check_status")
+        ("ok", _("OK"))], compute="_check_status", store=True, readonly=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -50,7 +51,7 @@ class ImportLetterLine(models.Model):
 
     @api.multi
     @api.depends('partner_id', 'child_id', 'sponsorship_id',
-                 'letter_language_id')
+                 'letter_language_id', 'import_id.force_template')
     def _check_status(self):
         """ At each change, check if all the fields are OK
         """
