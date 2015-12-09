@@ -83,11 +83,10 @@ def generate_test(dataset):
         letters = imports.import_line_ids
         self.assertEqual(len(letters), 1)
         letter = letters[0]
-        expected_partner, expected_child = dataset["barcode"].split("XX")
         if "partner" not in problems:
-            self.assertEqual(letter.partner_id.ref, expected_partner)
+            self.assertEqual(letter.partner_id.ref, dataset["partner"])
         if "child" not in problems:
-            self.assertEqual(letter.child_id.code, expected_child)
+            self.assertEqual(letter.child_id.code, dataset["child"])
         template_id = template_list[dataset["template_id"]]
         self.assertEqual(letter.template_id.id, template_id)
         if "lang" not in problems:
@@ -103,10 +102,9 @@ class TestLetterImportGenerator(type):
     def __new__(mcs, name, bases, dict):
         file_list = read_csv()
         for f in file_list:
-            if f["travis_test"] == "1":
-                sanitized_filename = re.sub(r"[^a-zA-Z0-9]", "_", f["name"])
-                test_name = "test_import_{}".format(sanitized_filename)
-                dict[test_name] = generate_test(f)
+            sanitized_filename = re.sub(r"[^a-zA-Z0-9]", "_", f["name"])
+            test_name = "test_import_{}".format(sanitized_filename)
+            dict[test_name] = generate_test(f)
         return type.__new__(mcs, name, bases, dict)
 
 
