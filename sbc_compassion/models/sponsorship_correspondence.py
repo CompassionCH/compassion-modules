@@ -198,7 +198,7 @@ class SponsorshipCorrespondence(models.Model):
         for letter in self:
             if letter.sponsorship_id and letter.communication_type_ids:
                 letter.name = letter.communication_type_ids[0].name + ' (' + \
-                    letter.sponsorship_id.partner_codega + " - " + \
+                    letter.sponsorship_id.partner_id.ref + " - " + \
                     letter.child_id.code + ')'
             else:
                 letter.name = _('New correspondence')

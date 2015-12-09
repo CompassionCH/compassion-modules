@@ -25,14 +25,12 @@ class ImportLetterLine(models.Model):
 
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship',
                                      compute='_set_sponsorship_id')
-    sponsorship_found = fields.Boolean(compute='_set_sponsorship_id')
-    child_partner_found = fields.Boolean(compute='_set_sponsorship_id')
     partner_id = fields.Many2one('res.partner', 'Partner')
     name = fields.Char(compute='_set_name')
     child_id = fields.Many2one('compassion.child', 'Child')
     template_id = fields.Many2one(
         'sponsorship.correspondence.template', 'Template')
-    supporter_languages_id = fields.Many2one(
+    letter_language_id = fields.Many2one(
         'res.lang.compassion', 'Language')
     is_encourager = fields.Boolean('Encourager', default=False)
     letter_image = fields.Many2one('ir.attachment')
@@ -52,20 +50,24 @@ class ImportLetterLine(models.Model):
 
     @api.multi
     @api.depends('partner_id', 'child_id', 'sponsorship_id',
-                 'supporter_languages_id')
+                 'letter_language_id')
     def _check_status(self):
         """ At each change, check if all the fields are OK
         """
         default_template = self.env.ref('sbc_compassion.default_template')
         for line in self:
-            if not line.sponsorship_found:
-                line.status = "no_sponsorship"
-                if not line.child_partner_found:
+            valid_template = (
+                line.template_id and not
+                (line.template_id == default_template !=
+                 line.import_id.force_template))
+            if not line.sponsorship_id:
+                if not (line.child_id and line.partner_id):
                     line.status = "no_child_partner"
-            elif not line.template_id or (line.template_id.id ==
-                                          default_template.id):
+                else:
+                    line.status = "no_sponsorship"
+            elif not valid_template:
                 line.status = "no_template"
-            elif len(line.supporter_languages_id) != 1:
+            elif len(line.letter_language_id) != 1:
                 line.status = "no_lang"
             else:
                 line.status = "ok"
@@ -81,22 +83,9 @@ class ImportLetterLine(models.Model):
         for line in self:
             if line.partner_id and line.child_id:
                 line.sponsorship_id = line.env['recurring.contract'].search([
-                    ('child_code', '=', line.child_id.code),
-                    ('partner_codega', '=', line.partner_id.ref)],
+                    ('child_id', '=', line.child_id.id),
+                    ('partner_id', '=', line.partner_id.id)],
                     order='is_active desc, end_date desc', limit=1)
-                if line.sponsorship_id:
-                    line.sponsorship_found = True
-                    line.child_partner_found = True
-                else:
-                    line.sponsorship_found = False
-                    if not (line.env['recurring.contract'].search([
-                            ('child_code', '=', line.child_id.code)]) and
-                            line.env['recurring.contract'].search([
-                                ('partner_codega', '=',
-                                 line.partner_id.ref)])):
-                        line.child_partner_found = False
-                    else:
-                        line.child_partner_found = True
 
     @api.multi
     @api.depends('partner_id', 'child_id')
@@ -123,7 +112,7 @@ class ImportLetterLine(models.Model):
                 'sponsorship_id': line.sponsorship_id.id,
                 'letter_image': line.letter_image.datas,
                 'template_id': line.template_id.id,
-                'original_language_id': line.supporter_languages_id.id,
+                'original_language_id': line.letter_language_id.id,
                 'direction': 'Supporter To Beneficiary'
             }
             if line.is_encourager:
