@@ -42,16 +42,16 @@ def read_csv():
 
 
 def import_letters(letters_obj, filename):
-    """ Reads and imports a letter into the database. """
+    """ Reads and imports letters into the database. """
     path = os.path.join(IMPORT_DIR, filename)
     file_content = get_file_content(path)
     attachment = {
         "name": filename,
         "db_datas": file_content,
     }
-    letter = letters_obj.create({"data": [(0, 0, attachment)]})
-    letter.button_import()
-    return letter
+    letters = letters_obj.create({"data": [(0, 0, attachment)]})
+    letters.button_import()
+    return letters
 
 
 def get_template_list(data_obj):
