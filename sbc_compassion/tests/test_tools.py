@@ -41,8 +41,7 @@ class TestTools(common.TransactionCase):
         """
         img = self._read_img(self.test_document_normal)
         blue_corner_position = self._blue_corner_position(img)
-        self.assertEqual(blue_corner_position, [2438, 76])
-        # TODO add tests with more documents
+        self.assertEqual(blue_corner_position, [2416, 76])
 
     def test_blue_corner_finder_should_not_find(self):
         """
@@ -58,9 +57,10 @@ class TestTools(common.TransactionCase):
         """
         template, pattern_center = self._pattern_recognition(
             self.test_document_normal)
-        self.assertEqual(template.name, 'Test Template 1')
+        self.assertIsNotNone(template)
+        self.assertEqual(template.name, 'Test Template 2')
         np.testing.assert_allclose(pattern_center,
-                                   np.array([1247.08, 3308.57]),
+                                   np.array([1273.47, 3298.65]),
                                    atol=0.1)
 
     def test_pattern_recognition_no_pattern(self):
@@ -78,8 +78,7 @@ class TestTools(common.TransactionCase):
         """
         qr_code = self._qr_decode(self.test_document_normal)
         self.assertIsNotNone(qr_code)
-        self.assertEqual(qr_code.data, '1509540XXGU4920269\n')
-        # TODO add tests with more documents
+        self.assertEqual(qr_code.data, '1512093XXDR1611115\n')
 
     def test_zxing_no_qr_code(self):
         """
@@ -94,27 +93,26 @@ class TestTools(common.TransactionCase):
         """
         Checkboxes should be read correctly.
         """
-        # Load image that has the French box checked
+        # Load image that has the French and Italian box checked
         img = self._read_img(self.test_document_normal)
         # French
-        box = self._make_box(1130, 80)
+        box = self._make_box(1260, 120)
         self.assertTrue(self._checked_state(img[box]))
         # Italian
-        box = self._make_box(1130, 160)
-        self.assertFalse(self._checked_state(img[box]))
+        box = self._make_box(1260, 200)
+        self.assertTrue(self._checked_state(img[box]))
         # German
-        box = self._make_box(1130, 250)
+        box = self._make_box(1260, 280)
         self.assertFalse(self._checked_state(img[box]))
         # Spanish
-        box = self._make_box(1570, 80)
+        box = self._make_box(1700, 120)
         self.assertFalse(self._checked_state(img[box]))
         # English
-        box = self._make_box(1570, 160)
+        box = self._make_box(1700, 200)
         self.assertFalse(self._checked_state(img[box]))
         # Other
-        box = self._make_box(1570, 250)
+        box = self._make_box(1700, 280)
         self.assertFalse(self._checked_state(img[box]))
-        # TODO add tests with more documents
 
     def _read_img(self, path):
         img = cv2.imread(path)
@@ -123,7 +121,7 @@ class TestTools(common.TransactionCase):
 
     def _pattern_recognition(self, path):
         img = self._read_img(path)
-        return tools.patternrecognition.find_template(img, self.templates)
+        return tools.patternrecognition.find_template(img, self.templates, 0.3)
 
     @staticmethod
     def _qr_decode(path):
