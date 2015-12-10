@@ -27,7 +27,7 @@
                             <field name="force_template" states="draft,open"/>
                         </group>
                         <group>
-                            <button name="button_review" string="Review Imports" type="object" states="open"/>
+                            <button name="button_review" string="Review Imports" type="object" states="open" colspan="2"/>
                             <field name="import_line_ids" states="open,ready" domain="[('id','=','-1')]">
                                 <tree colors="red:status != 'ok';green:status == 'ok'" create="false" editable="bottom">
                                     <field name="letter_image" readonly="1" string="Filename"/>
@@ -53,7 +53,7 @@
             <field name="model">import.letters.history</field>
             <field name="arch" type="xml">
                 <tree string="Imports"
-                      colors="blue:state == 'draft';black:state == 'open';green:state == 'ready';grey:state == 'done'">
+                      colors="blue:state == 'draft';black:state in ('open','pending');green:state == 'ready';grey:state == 'done'">
                     <field name="create_date"/>
                     <field name="write_date"/>
                     <field name="nber_letters"/>

@@ -35,7 +35,7 @@ def import_letters(letters_obj, filename):
         "db_datas": file_content,
     }
     letters = letters_obj.create({"data": [(0, 0, attachment)]})
-    letters.button_import()
+    letters.with_context(async_mode=False).button_import()
     return letters
 
 
