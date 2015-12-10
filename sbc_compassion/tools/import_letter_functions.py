@@ -11,6 +11,7 @@
 """
 Defines a few functions useful in ../models/import_mail.py
 """
+import csv
 import os
 
 
@@ -85,3 +86,22 @@ def isZIP(name):
     """
     ext = os.path.splitext(name)[1]
     return (ext.lower() == '.zip')
+
+
+def read_csv(csv_file):
+    """
+    Reads a .csv file and returns its content as a list of dicts.
+
+    Just like in csv.reader, csv_file can be any object which supports the
+    iterator protocol and returns a string each time its next method is called.
+    File objects and list objects are both suitable.
+    """
+    file_list = []
+    reader = csv.reader(csv_file)
+    header = reader.next()
+    for row in reader:
+        values = {}
+        for key, value in zip(header, row):
+            values[key] = value
+        file_list.append(values)
+    return file_list

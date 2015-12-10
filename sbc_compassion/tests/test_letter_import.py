@@ -9,10 +9,10 @@
 #
 ##############################################################################
 
+from .. import tools
 from openerp.tests import common
 
 import base64
-import csv
 import os
 import re
 
@@ -24,21 +24,6 @@ def get_file_content(path):
     with open(path, "rb") as f:
         file_content = f.read()
         return base64.b64encode(file_content)
-
-
-def read_csv():
-    """ Reads a .csv file and returns its content as a dict. """
-    file_index = os.path.join(IMPORT_DIR, "travis_files.csv")
-    file_list = []
-    with open(file_index, 'rb') as csvfile:
-        reader = csv.reader(csvfile)
-        header = reader.next()
-        for row in reader:
-            values = {}
-            for key, value in zip(header, row):
-                values[key] = value
-            file_list.append(values)
-    return file_list
 
 
 def import_letters(letters_obj, filename):
@@ -100,11 +85,13 @@ class TestLetterImportGenerator(type):
     Generates a test function for each entry of a list of files.
     """
     def __new__(mcs, name, bases, dict):
-        file_list = read_csv()
-        for f in file_list:
-            sanitized_filename = re.sub(r"[^a-zA-Z0-9]", "_", f["name"])
-            test_name = "test_import_{}".format(sanitized_filename)
-            dict[test_name] = generate_test(f)
+        file_index = os.path.join(IMPORT_DIR, "travis_files.csv")
+        with open(file_index, 'rb') as csv_file:
+            file_list = tools.import_letter_functions.read_csv(csv_file)
+            for f in file_list:
+                sanitized_filename = re.sub(r"[^a-zA-Z0-9]", "_", f["name"])
+                test_name = "test_import_{}".format(sanitized_filename)
+                dict[test_name] = generate_test(f)
         return type.__new__(mcs, name, bases, dict)
 
 
