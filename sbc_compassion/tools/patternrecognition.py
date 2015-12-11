@@ -82,7 +82,7 @@ def patternRecognition(image, pattern, crop_area=None,
         return kp1, kp2, good
     if len(good) >= threshold:
         # put in a np.array the position of the image's keypoints
-        keypoints = np.array([kp1[i[0].trainIdx].pt for i in good])
+        keypoints = np.array([kp1[i[0].queryIdx].pt for i in good])
         # compute the position in the original picture
         keypoints = keypoints + np.array((xmin, ymin))
         return keypoints
@@ -120,7 +120,7 @@ def findMatches(des1, des2, test=0.8):
     :rtype: list[Keypoints]
     """
     bf = cv2.BFMatcher()
-    matches = bf.knnMatch(des2, des1, k=2)
+    matches = bf.knnMatch(des1, des2, k=2)
     # Apply ratio test
     good = []
     for m, n in matches:
@@ -167,23 +167,46 @@ def keyPointCenter(keypoints):
         return center / N
 
 
-def find_template(img, templates, threshold=0.8):
+def find_template(img, templates, test=False, threshold=0.8):
     """
     Use pattern recognition to detect which template correponds to img.
     :param img: Image to analyze
     :param templates: Collection of all templates
+    :param bool test: Enable the test mode (return an image as the last
+    parameter). If False, the image is None.
     :param threshold: Ratio of the templates' keypoints requested
-    :returns: Detected template, center position of detected pattern
-    :rtype: template, layout
+    :returns: Detected template, center position of detected pattern,
+    image showing the detected keypoints for all the template
+    :rtype: template, layout, None or np.array
     """
     # number of keypoint related between the picture and the pattern
     max_ratio_keypoints = 0.0
     key_img = False
     matching_template = None
+    if test:
+        test_img = []
+    else:
+        test_img = None
 
     for template in templates:
         # Crop the image to speedup detection and avoid false positives
         crop_area = template.get_pattern_area()
+
+        if test:
+            recognition = patternRecognition(
+                img, template.pattern_image, crop_area, full_result=True)
+            with tempfile.NamedTemporaryFile() as temp:
+                temp.write(base64.b64decode(template.pattern_image))
+                temp.flush()
+                img2 = cv2.imread(temp.name)
+            (xmin, ymin), img1 = subsetImage(img, crop_area)
+            if recognition is not None:
+                kp1, kp2, good = recognition
+                img3 = cv2.drawMatchesKnn(img1, kp1, img2,
+                                          kp2, good, None, flags=2)
+            else:
+                img3 = img1
+            test_img.append(img3)
 
         # try to recognize the pattern
         tmp_key = patternRecognition(
@@ -197,5 +220,4 @@ def find_template(img, templates, threshold=0.8):
                 len(tmp_key))/float(template.nber_keypoints)
             key_img = tmp_key
             matching_template = template
-
-    return matching_template, keyPointCenter(key_img)
+    return matching_template, keyPointCenter(key_img), test_img

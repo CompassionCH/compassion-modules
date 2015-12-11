@@ -10,7 +10,7 @@
 	   They will be computed during the initialization. -->
       <field name="page_width">2480</field>
       <field name="page_height">3507</field>
-      <field name="pattern_x_min">1050</field>
+      <field name="pattern_x_min">1100</field>
       <field name="pattern_x_max">1500</field>
       <field name="pattern_y_min">3150</field>
       <field name="pattern_y_max">3450</field>
@@ -79,9 +79,9 @@
       <field name="template_image" type="base64" file="sbc_compassion/static/src/img/template_test2.png"/>
       <field name="page_width">2481</field>
       <field name="page_height">3508</field>
-      <field name="pattern_x_min">1050</field>
+      <field name="pattern_x_min">1100</field>
       <field name="pattern_x_max">1500</field>
-      <field name="pattern_y_min">3050</field>
+      <field name="pattern_y_min">3100</field>
       <field name="pattern_y_max">3500</field>
       <field name="checkbox_ids" eval="False"/>
     </record>
