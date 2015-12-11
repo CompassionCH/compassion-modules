@@ -18,6 +18,7 @@ class ImportLetterLine(models.Model):
     """
 
     _name = 'import.letter.line'
+    _order = 'reviewed,status'
 
     ##########################################################################
     #                                 FIELDS                                 #

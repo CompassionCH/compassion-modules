@@ -10,7 +10,6 @@
 ##############################################################################
 from openerp import models, api, fields, _
 from openerp.exceptions import Warning
-import pdb
 
 
 class ImportReview(models.TransientModel):

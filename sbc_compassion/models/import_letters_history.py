@@ -99,7 +99,7 @@ class ImportLettersHistory(models.Model):
         scans inside is counted.
         """
         for inst in self:
-            if inst.state == "open" or inst.state == "ready":
+            if inst.state in ("open", "pending", "ready"):
                 inst.nber_letters = len(inst.import_line_ids)
             elif inst.state == "done":
                 inst.nber_letters = len(inst.letters_ids)
@@ -173,7 +173,7 @@ class ImportLettersHistory(models.Model):
                 mandatory_review=letters.is_mandatory_review)
             # letters_ids should be empty before this line
             letters.write({'letters_ids': ids})
-            letters.import_line_ids.letter_image.unlink()
+            letters.mapped('import_line_ids.letter_image').unlink()
             letters.import_line_ids.unlink()
         return True
 
@@ -260,16 +260,15 @@ class ImportLettersHistory(models.Model):
         self.import_completed = True
 
     def _analyze_attachment(self, file_, filename):
-        line_vals, document_vals, file_data = func.analyze_attachment(
+        line_vals, document_vals = func.analyze_attachment(
             self.env, file_, filename, self.force_template)
         letters_line = self.env['import.letter.line'].create(line_vals)
         document_vals.update({
             'res_id': letters_line.id,
             'res_model': 'import.letter.line'
         })
-        letters_line.letter_image = self.env[
-            'ir.attachment'].create(document_vals)
-        letters_line.letter_image_preview = base64.b64encode(file_data)
+        letters_line.letter_image = self.env['ir.attachment'].create(
+            document_vals)
         self.import_line_ids += letters_line
 
 
