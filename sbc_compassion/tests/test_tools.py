@@ -60,8 +60,8 @@ class TestTools(common.TransactionCase):
         self.assertIsNotNone(template)
         self.assertEqual(template.name, 'Test Template 2')
         np.testing.assert_allclose(pattern_center,
-                                   np.array([1273.47, 3298.65]),
-                                   atol=0.1)
+                                   np.array([1273, 3301]),
+                                   atol=1)
 
     def test_pattern_recognition_no_pattern(self):
         """
@@ -121,7 +121,10 @@ class TestTools(common.TransactionCase):
 
     def _pattern_recognition(self, path):
         img = self._read_img(path)
-        return tools.patternrecognition.find_template(img, self.templates, 0.3)
+        # when the parameter test=False (default value)
+        # find_template returns a third parameter equals to None
+        return tools.patternrecognition.find_template(
+            img, self.templates, 0.3)[:2]
 
     @staticmethod
     def _qr_decode(path):

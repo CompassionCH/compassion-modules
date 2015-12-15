@@ -31,7 +31,7 @@ class ImportLettersHistory(models.Model):
     for every letter, using the zxing library for code detection.
     """
     _name = "import.letters.history"
-    _description = _("""History of the letters imported Import mail from a zip
+    _description = _("""History of the letters imported from a zip
     or a PDF/TIFF""")
     _order = "create_date desc"
 
@@ -231,6 +231,14 @@ class ImportLettersHistory(models.Model):
         self.data.unlink()
 
     def _analyze_attachment(self, file_, filename):
-        letters_line = func.analyze_attachment(self.env, file_, filename,
-                                               self.force_template)
+        line_vals, document_vals, file_data = func.analyze_attachment(
+            self.env, file_, filename, self.force_template)
+        letters_line = self.env['import.letter.line'].create(line_vals)
+        document_vals.update({
+            'res_id': letters_line.id,
+            'res_model': 'import.letter.line'
+        })
+        letters_line.letter_image = self.env[
+            'ir.attachment'].create(document_vals)
+        letters_line.letter_image_preview = base64.b64encode(file_data)
         self.import_line_ids += letters_line

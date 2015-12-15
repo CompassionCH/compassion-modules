@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Form Definition -->
+        <record id="test_import_letters_history_form" model="ir.ui.view">
+            <field name="name">test.import.letters.history.form</field>
+            <field name="model">test.import.letters.history</field>
+            <field name="arch" type="xml">
+                <form string="Imports">
+                    <header>
+                        <field name="state" invisible="1"/>
+                        <button name="button_import" string="Run Test" type="object"/>
+                    </header>
+                    <sheet>
+                        <h1>Test Imported Letters</h1>
+                        <group>
+			  <group>
+                            <label for="data" string="Letters" states="draft"/>
+                            <div states="draft">
+                              <field name="data" widget="many2many_binary"/>
+                            </div>
+                            <field name="nber_test" invisible="1"/>
+                            <field name="nber_letters" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+			    <field name="test_ok" attrs="{'invisible': [('state','not in', ['open'])]}"/>
+			    <field name="template_ok" attrs="{'invisible': [('state','not in', ['open'])]}"/>
+			  </group>
+			  <group>
+                            <label for="csv_file_ids" string="CSV Files" states="draft"/>
+                            <div states="draft">
+                              <field name="csv_file_ids" widget="many2many_binary"/>
+			    </div>
+			    <field name="full_output" attrs="{'invisible': [('state','in', ['open'])]}"/>
+			    <field name="qr_ok" attrs="{'invisible': [('state','not in', ['open'])]}"/>
+			    <field name="lang_ok" attrs="{'invisible': [('state','not in', ['open'])]}"/>
+			  </group>
+                        </group>
+                        <group>
+                            <field name="test_import_line_ids" states="open" domain="[('id','=','-1')]">
+                                <tree colors="red:status != 'ok';green:status == 'ok'" create="false" editable="bottom">
+                                    <field name="letter_image" readonly="1" string="Filename"/>
+                                    <field name="letter_image_preview" widget='image_preview' display="icon" readonly="1"/>
+                                    <field name="error"/>
+                                    <field name="partner_id"/>
+                                    <field name="child_id"/>
+				    <field name="qr_preview" widget='image_preview' display="icon" readonly="1"/>
+                                    <field name="template_id"/>
+				    <field name="template_preview" widget='image_preview' display="icon" readonly="1"/>
+                                    <field name="test_letter_languages_id"/>
+				    <field name="lang_preview" widget='image_preview' display="icon" readonly="1"/>
+                                    <field name="status" invisible="1"/>
+                                </tree>
+                            </field>
+                            <field name="letters_ids" states="done"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree Definition -->
+        <record id="test_import_letters_history_tree" model="ir.ui.view">
+            <field name="name">test.import.letters.history.tree</field>
+            <field name="model">test.import.letters.history</field>
+            <field name="arch" type="xml">
+                <tree string="Imports"
+                      colors="blue:state == 'draft';black:state == 'open';grey:state == 'done'">
+                    <field name="create_date"/>
+                    <field name="write_date"/>
+		    <field name="test_ok" attrs="{'invisible': [('state','not in', ['open'])]}"/>
+		    <field name="template_ok" attrs="{'invisible': [('state','not in', ['open'])]}"/>
+		    <field name="qr_ok" attrs="{'invisible': [('state','not in', ['open'])]}"/>
+		    <field name="lang_ok" attrs="{'invisible': [('state','not in', ['open'])]}"/>
+		    <field name="state" invisible="1"/>
+                    <field name="nber_test" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!-- Action Definition -->
+        <record id="action_compassion_test_import_letters_action" model="ir.actions.act_window">
+            <field name="name">Test Imports</field>
+            <field name="res_model">test.import.letters.history</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Menu Definition -->
+        <menuitem id="test_import_letters_menu" parent="child_compassion.menu_configuration"
+                  name="Test Imports" action="action_compassion_test_import_letters_action" sequence="2"/>
+    </data>
+</openerp>
