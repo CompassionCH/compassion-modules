@@ -510,9 +510,7 @@ def _find_languages(env, img, pattern_center, line_vals, test):
     R = np.array([[costheta, -sintheta], [sintheta, costheta]])
 
     # scaling matrix (use image size)
-    scaling = np.array(bluecorner.getSizeOriginal(), dtype=float) / \
-        np.array(template.get_template_size(), dtype=float)
-    scaling = np.array([[scaling[0], 0], [0, scaling[1]]])
+    scaling = np.linalg.norm(diff_scan)/np.linalg.norm(diff_ref)
 
     # transformation matrix
     R *= scaling
