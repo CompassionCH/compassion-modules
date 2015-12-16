@@ -4,6 +4,7 @@
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emmanuel Mathier <emmanuel.mathier@gmail.com>
+#    @author: Loic Hausammann <loic_hausammann@hotmail.com>
 #
 #    The licence is in the file __openerp__.py
 #
@@ -147,6 +148,9 @@ class ImportLettersHistory(models.Model):
     ##########################################################################
     @api.multi
     def button_import(self):
+        """
+        Analyze the attachment in order to create the letter's lines
+        """
         for letters_import in self:
             if letters_import.data:
                 letters_import.state = 'pending'

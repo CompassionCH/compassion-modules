@@ -63,6 +63,7 @@ class BlueCornerFinder:
     def getIndices(self):
         """
         Returns the indices of the blue square
+
         :returns: Indices of the blue square (width, height)
         :rtype: list
         """
@@ -71,6 +72,7 @@ class BlueCornerFinder:
     def getSizeOriginal(self):
         """
         Returns the size of the original image
+
         :returns: Size of the original image (width, height)
         :rtype: list
         """
@@ -153,8 +155,9 @@ class BlueCornerFinder:
 
     def _checkNext(self, ind):
         """
-        Check the pixel next to the position 'ind' in order
+        Check the pixel next to the position :py:attr:`ind` in order
         to check if the pixel is isolated or is in a cluster.
+
         :param list ind: Position to check
         :returns: True if at least 2 blue pixel are in the 8 closest pixels
         :rtype: bool
@@ -207,6 +210,7 @@ class BlueCornerFinder:
         """
         Look the 8 closest pixels and append them in the todo queue
         (if they are at the good distance)
+
         :param list ind: Indices
         """
 
@@ -231,6 +235,7 @@ class BlueCornerFinder:
         """
         Compute the distance of the pixel (if not already done)
         and append the pixel in the todo queue when required
+
         :param tuple ind: Indices
         """
         if self.dist[ind] == 0:
@@ -247,6 +252,7 @@ class BlueCornerFinder:
 def checkColor(pixel, threshold):
     """
     Check if a pixel is blue by using the threshold given
+
     :param list pixel: BGR color
     :param int threshold: Threshold applied for each channel
     """

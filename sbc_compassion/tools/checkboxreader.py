@@ -17,10 +17,20 @@ import numpy as np
 
 
 class CheckboxConstant:
-    """ Define some element for the morphological operator
+    """ Define some elements for the morphological operator
     """
+    #: (`array`) Cross Element (x)
+    xelem = np.zeros((5, 5), np.uint8)
+    # the choice of rect as a variable is for avoiding
+    # a new variable in the doc
+    for rect in range(5):
+        xelem[rect, rect] = 1
+        xelem[4-rect, rect] = 1
+    #: (`array`) Rectangle Element
     rect = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+    #: (`array`) Cross Element (+)
     cross = cv2.getStructuringElement(cv2.MORPH_CROSS, (5, 5))
+    #: (`array`) Diamond Element
     diamond = np.ones((5, 5), np.uint8)
     diamond[0, 0] = 0
     diamond[0, 1] = 0
@@ -34,11 +44,6 @@ class CheckboxConstant:
     diamond[0, 4] = 0
     diamond[0, 3] = 0
     diamond[1, 4] = 0
-
-    xelem = np.zeros((5, 5), np.uint8)
-    for i in range(5):
-        xelem[i, i] = 1
-        xelem[4-i, i] = 1
 
 
 class CheckboxReader:
