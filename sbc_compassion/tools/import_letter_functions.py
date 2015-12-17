@@ -150,10 +150,13 @@ def analyze_attachment(env, file_, filename, force_template, test=False):
     :param str filename: Filename to give in odoo
     :param sponsorship.correspondence.template force_template: Template
     :param bool test: Test import or not
+
+    :returns: Import Line values, IR Attachment values
+    :rtype: dict, dict
     """
-    f = open(file_)
-    data = f.read()
-    f.close()
+    line_vals = {}
+    document_vals = {}
+
     # convert to PNG
     if isPDF(file_) or isTIFF(file_):
         name = os.path.splitext(file_)[0]
@@ -163,80 +166,78 @@ def analyze_attachment(env, file_, filename, force_template, test=False):
         file_png = name + '.png'
     # now do the computations only if the image is a PNG
     img = cv2.imread(file_png)
-    MULTIPAGE = False
+    is_multipage = False
     if img is None:
         file_png = name + '-0' + '.png'
         img = cv2.imread(file_png)
-        MULTIPAGE = True
+        is_multipage = True
         if img is None:
             raise exceptions.Warning(
                 "The '{}' image cannot be read".format(filename))
     # first compute the QR code
-    line_vals, data, img = _find_qrcode(env, img, MULTIPAGE, file_, data, test)
-    # now try to find the layout
-    # loop over all the patterns in the pattern directory
-    line_vals, pattern_center = _find_template(env, img, line_vals, test)
-    if line_vals['template_id'] != env.ref('sbc_compassion.default_template'):
-        line_vals = _find_languages(env, img, pattern_center, line_vals, test)
-    else:
-        line_vals.update({
-            'letter_language_id': False
-        })
-        if test:
-            line_vals.update({
-                'lang_preview': '',
-                'test_letter_languages_id': ''
-            })
-    if force_template and force_template is not None:
-        line_vals.update({
-            'template_id': force_template.id
-        })
-
-    line_vals.update({
-        'is_encourager': False,
-        'template_id': line_vals['template_id'].id
-    })
-
-    file_png_io = open(file_png, "r")
-    file_data = file_png_io.read()
-    file_png_io.close()
-
+    data, img = _find_qrcode(env, line_vals, img, is_multipage, file_, test)
     document_vals = {
         'name': filename,
         'datas': base64.b64encode(data),
         'datas_fname': filename,
     }
 
+    # now try to find the layout
+    # loop over all the patterns in the pattern directory
+    pattern_center = _find_template(env, img, line_vals, test)
+    if line_vals['template_id'] != env.ref(
+            'sbc_compassion.default_template').id:
+        _find_languages(env, img, pattern_center, line_vals, test)
+    else:
+        line_vals['letter_language_id'] = False
+        if test:
+            line_vals.update({
+                'lang_preview': '',
+                'test_letter_languages_id': ''
+            })
+    if force_template:
+        line_vals['template_id'] = force_template.id
+
+    # Downsize png image for saving it in a preview field
+    with Image(filename=file_png) as img:
+        img.resize(img.width/4, img.height/4)
+        line_vals['letter_image_preview'] = base64.b64encode(img.make_blob())
+
+    # Remove all temp files written to disk
     os.remove(file_png)
-    if MULTIPAGE:
+    if is_multipage:
         delfiles = glob(name + '*png')
         for file_ in delfiles:
             os.remove(file_)
-    return line_vals, document_vals, file_data
+
+    return line_vals, document_vals
 
 
-def _find_qrcode(env, img, MULTIPAGE, file_,
-                 data, test):
+def _find_qrcode(env, line_vals, img, is_multipage, file_, test):
     """
     Read the image and try to find the QR code.
     The image should be currently saved as a png with the same name
     than file_ (except for the extension).
-    Data is given in order to give the possibility to overwrite it when
-    the file is scanned in the wrong direction.
+    If QR Code is in wrong orientation, this method will return the given
+    file.
     In case of test, the output dictonnary contains the image of the QR code
     too.
 
     :param env env: Odoo variable env
+    :param dict line_vals: Dictionary that will hold values for import line
     :param np.array img: Image to analyze
-    :param bool MULTIPAGE: If the file is multipage
+    :param bool is_multipage: If the file is multipage
     :param file_: Name of the temporary file
     :param bool test: Save the image of the QR code or not
-    :returns: {partner_id, child_id}, data, img
-    :rtype: dict, str, np.array
+    :returns: data, img
+    :rtype: str, np.array
     """
     name = os.path.splitext(file_)[0]
     file_png = name + '.png'
-    if MULTIPAGE:
+    f = open(file_)
+    data = f.read()
+    f.close()
+    if is_multipage:
         file_png = name + '-0' + '.png'
     # get size and position
     img_height, img_width = img.shape[:2]
@@ -281,7 +282,7 @@ def _find_qrcode(env, img, MULTIPAGE, file_,
             # save it for zxing
             cv2.imwrite(file_png, img)
             # replace the image by the returned one
-            data = _save_img(MULTIPAGE, file_, img)
+            data = _save_img(is_multipage, file_, img)
         else:
             img = img[::-1, ::-1]
             cv2.imwrite(file_png, img)
@@ -289,15 +290,15 @@ def _find_qrcode(env, img, MULTIPAGE, file_,
 
     partner_id, child_id = decodeBarcode(env, qrcode)
 
-    dict_odoo = {
+    line_vals.update({
         'partner_id': partner_id,
         'child_id': child_id,
-    }
+    })
     if test:
-        dict_odoo.update({
+        line_vals.update({
             'qr_preview': test_data
         })
-    return dict_odoo, data, img
+    return data, img
 
 
 def testDirectionQRcode(barcode):
@@ -356,13 +357,13 @@ def readEncode(img, format_img='png'):
     return base64.b64encode(test_data)
 
 
-def _save_img(MULTIPAGE, file_, img):
+def _save_img(is_multipage, file_, img):
     """
     This method is called when an image is scanned in the wrong direction.
     It consists in saving the image (returning is already done before).
     In case of multipage, the pages need to be returned.
 
-    :param bool MULTIPAGE: If the file is a multipage one
+    :param bool is_multipage: If the file is a multipage one
     :param str file_: Name of the file
     :param np.array img: Image
     :returns: Data contained in the file
@@ -370,7 +371,7 @@ def _save_img(MULTIPAGE, file_, img):
     """
     # if multipage, needs to turn all of them
     name = os.path.splitext(file_)[0]
-    if MULTIPAGE:
+    if is_multipage:
         file_png = name + '-0' + '.png'
         # Get list of all image file names to include
         image_names = glob(name + '-*.png')
@@ -407,8 +408,8 @@ def _find_template(env, img, line_vals, test):
     :param img: Image to analyze
     :param dict line_vals: Dictonnary containing the data for a line
     :param bool test: Enable the test mode (will save some img)
-    :returns: line_vals (updated), center position of detected pattern
-    :rtype: dict, layout
+    :returns: center position of detected pattern
+    :rtype: layout
     """
     templates = env['sponsorship.correspondence.template'].search(
         [('pattern_image', '!=', False)])
@@ -418,18 +419,14 @@ def _find_template(env, img, line_vals, test):
         img, templates, threshold=threshold, test=test)
     if test:
         img = manyImages2OneImage(img, 1)
-        line_vals.update({
-            'template_preview': img
-        })
+        line_vals['template_preview'] = img
 
     if template is None:
         pattern_center = np.array(([0, 0], [0, 0]))
         template = env.ref('sbc_compassion.default_template')
 
-    line_vals.update({
-        'template_id': template
-    })
-    return line_vals, pattern_center
+    line_vals['template_id'] = template.id
+    return pattern_center
 
 
 def _find_languages(env, img, pattern_center, line_vals, test):
@@ -469,8 +466,7 @@ def _find_languages(env, img, pattern_center, line_vals, test):
     :param dict line_vals: Dictonnary containing the data for a line
     (and the template)
     :param bool test: Enable the test mode (will save some img)
-    :returns: line_vals (updated)
-    :rtype: dict
+    :returns: None
     """
     line_vals['letter_language_id'] = False
     if test:
@@ -485,9 +481,10 @@ def _find_languages(env, img, pattern_center, line_vals, test):
 
     # if pattern has not been detected
     if pattern_center is None:
-        return line_vals
+        return
 
-    template = line_vals['template_id']
+    template = env['sponsorship.correspondence.template'].browse(
+        line_vals['template_id'])
     # get position of the blue corner
     box = [float(
         env['ir.config_parameter'].get_param('bluecorner_x_min')),
@@ -496,7 +493,7 @@ def _find_languages(env, img, pattern_center, line_vals, test):
     bluecorner = bcf.BlueCornerFinder(img, box=box)
     bluecorner_position = bluecorner.getIndices()
     if bluecorner_position is None:
-        return line_vals
+        return
 
     # vector between the blue square and the pattern
     diff_ref = np.array(template.get_bluesquare_area() -
@@ -575,9 +572,7 @@ def _find_languages(env, img, pattern_center, line_vals, test):
         })
     if len(lang) == 1:
         lang = lang[0]
-        line_vals.update({
-            'letter_language_id': lang,
-        })
+        line_vals['letter_language_id'] = lang
     return line_vals
 
 

@@ -9,7 +9,8 @@
             <field name="arch" type="xml">
                 <form string="Imports">
                     <header>
-                        <field name="state" widget="statusbar"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,open,done"/>
+                        <field name="import_completed" invisible="1"/>
                         <button name="button_save" string="Import Letters" states="ready" type="object" class="oe_highlight"/>
                     </header>
                     <sheet>
@@ -23,9 +24,10 @@
                             </div>
                             <field name="nber_letters"/>
                             <field name="is_mandatory_review"/>
-                            <field name="force_template" states="draft"/>
+                            <field name="force_template" states="draft,open"/>
                         </group>
                         <group>
+                            <button name="button_review" string="Review Imports" type="object" states="open" colspan="2"/>
                             <field name="import_line_ids" states="open,ready" domain="[('id','=','-1')]">
                                 <tree colors="red:status != 'ok';green:status == 'ok'" create="false" editable="bottom">
                                     <field name="letter_image" readonly="1" string="Filename"/>
@@ -51,7 +53,7 @@
             <field name="model">import.letters.history</field>
             <field name="arch" type="xml">
                 <tree string="Imports"
-                      colors="blue:state == 'draft';black:state == 'open';green:state == 'ready';grey:state == 'done'">
+                      colors="blue:state == 'draft';black:state in ('open','pending');green:state == 'ready';grey:state == 'done'">
                     <field name="create_date"/>
                     <field name="write_date"/>
                     <field name="nber_letters"/>

@@ -21,6 +21,9 @@ import shutil
 from ..tools import import_letter_functions as func
 from openerp import api, fields, models, _, exceptions
 
+from openerp.addons.connector.queue.job import job, related_action
+from openerp.addons.connector.session import ConnectorSession
+
 
 class ImportLettersHistory(models.Model):
     """
@@ -41,9 +44,11 @@ class ImportLettersHistory(models.Model):
 
     state = fields.Selection([
         ("draft", _("Draft")),
+        ("pending", _("Analyzing")),
         ("open", _("Open")),
         ("ready", _("Ready")),
-        ("done", _("Done"))], compute="_set_ready")
+        ("done", _("Done"))], compute="_compute_state", store=True)
+    import_completed = fields.Boolean()
     nber_letters = fields.Integer(
         'Number of letters', readonly=True, compute="_count_nber_letters")
     is_mandatory_review = fields.Boolean(
@@ -64,15 +69,15 @@ class ImportLettersHistory(models.Model):
     ##########################################################################
     @api.multi
     @api.depends("import_line_ids", "import_line_ids.status",
-                 "letters_ids", "data")
-    def _set_ready(self):
+                 "letters_ids", "data", "import_completed")
+    def _compute_state(self):
         """ Check in which state self is by counting the number of elements in
         each Many2many
         """
         for import_letters in self:
             if import_letters.letters_ids:
                 import_letters.state = "done"
-            elif import_letters.import_line_ids:
+            elif import_letters.import_completed:
                 check = True
                 for i in import_letters.import_line_ids:
                     if i.status != "ok":
@@ -81,6 +86,8 @@ class ImportLettersHistory(models.Model):
                     import_letters.state = "ready"
                 else:
                     import_letters.state = "open"
+            elif import_letters.import_line_ids:
+                import_letters.state = "pending"
             else:
                 import_letters.state = "draft"
 
@@ -92,7 +99,7 @@ class ImportLettersHistory(models.Model):
         scans inside is counted.
         """
         for inst in self:
-            if inst.state == "open" or inst.state == "ready":
+            if inst.state in ("open", "pending", "ready"):
                 inst.nber_letters = len(inst.import_line_ids)
             elif inst.state == "done":
                 inst.nber_letters = len(inst.letters_ids)
@@ -142,7 +149,13 @@ class ImportLettersHistory(models.Model):
     def button_import(self):
         for letters_import in self:
             if letters_import.data:
-                letters_import._run_analyze()
+                letters_import.state = 'pending'
+                if self.env.context.get('async_mode', True):
+                    session = ConnectorSession.from_env(self.env)
+                    import_letters_job.delay(
+                        session, self._name, letters_import.id)
+                else:
+                    letters_import._run_analyze()
         return True
 
     @api.multi
@@ -160,9 +173,24 @@ class ImportLettersHistory(models.Model):
                 mandatory_review=letters.is_mandatory_review)
             # letters_ids should be empty before this line
             letters.write({'letters_ids': ids})
-            letters.import_line_ids.letter_image.unlink()
+            letters.mapped('import_line_ids.letter_image').unlink()
             letters.import_line_ids.unlink()
         return True
+
+    @api.multi
+    def button_review(self):
+        """ Returns a form view for import lines in order to browse them """
+        self.ensure_one()
+        return {
+            'name': _('Review Imports'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'import.letters.review',
+            'context': self.with_context(
+                line_ids=self.import_line_ids.ids).env.context,
+            'target': 'current',
+        }
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -229,16 +257,40 @@ class ImportLettersHistory(models.Model):
                 raise exceptions.Warning(_('Two files are the same'))
         # remove all the files (now they are inside import_line_ids)
         self.data.unlink()
+        self.import_completed = True
 
     def _analyze_attachment(self, file_, filename):
-        line_vals, document_vals, file_data = func.analyze_attachment(
+        line_vals, document_vals = func.analyze_attachment(
             self.env, file_, filename, self.force_template)
         letters_line = self.env['import.letter.line'].create(line_vals)
         document_vals.update({
             'res_id': letters_line.id,
             'res_model': 'import.letter.line'
         })
-        letters_line.letter_image = self.env[
-            'ir.attachment'].create(document_vals)
-        letters_line.letter_image_preview = base64.b64encode(file_data)
+        letters_line.letter_image = self.env['ir.attachment'].create(
+            document_vals)
         self.import_line_ids += letters_line
+
+
+##############################################################################
+#                            CONNECTOR METHODS                               #
+##############################################################################
+def related_action_imports(session, job):
+    import_model = job.args[1]
+    import_id = job.args[2]
+    action = {
+        'type': 'ir.actions.act_window',
+        'res_model': import_model,
+        'view_type': 'form',
+        'view_mode': 'form',
+        'res_id': import_id,
+    }
+    return action
+
+
+@job(default_channel='root.sbc_compassion')
+@related_action(action=related_action_imports)
+def import_letters_job(session, model_name, import_id):
+    """Job for importing letters."""
+    import_history = session.env[model_name].browse(import_id)
+    import_history._run_analyze()

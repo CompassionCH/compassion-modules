@@ -8,8 +8,6 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-import base64
-
 from openerp import models, fields, _, api
 from ..tools import import_letter_functions as func
 
@@ -44,7 +42,7 @@ class TestImportLetters(models.TransientModel):
         # (this function does not create a import.letter.line, therefore,
         # the computation is wrong later)
         self.nber_test = self.nber_letters
-        line_vals, document_vals, file_data = func.analyze_attachment(
+        line_vals, document_vals = func.analyze_attachment(
             self.env, file_, filename, self.force_template, test=True)
 
         error = func.testline(self.env, line_vals, self.csv_file_ids,
@@ -63,7 +61,6 @@ class TestImportLetters(models.TransientModel):
             })
             letters_line.letter_image = self.env[
                 'ir.attachment'].create(document_vals)
-            letters_line.letter_image_preview = base64.b64encode(file_data)
             letters_line._check_status()
             self.test_import_line_ids += letters_line
 
