@@ -42,6 +42,5 @@
       <field name="key">bluecorner_x_min</field>
       <field name="value">0.9</field>
     </record>
-
   </data>
 </openerp>
