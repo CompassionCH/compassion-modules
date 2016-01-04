@@ -9,7 +9,7 @@
 #
 ##############################################################################
 """
-Defines a few functions useful in ../models/import_mail.py
+Defines a few functions useful in ../models/import_letters_history.py
 """
 import csv
 import os
@@ -100,6 +100,7 @@ def update_stat_text(test_import):
     """ Update the text for the stats in test_import ("12/34 (35.3%)").
     Test is used in order to know if the number of passed test needs to be
     increased.
+
     :param test.import.letters.history test_import: Item to check
     :returns: Updated Item
     :rtype: test.import.letters.history
@@ -131,6 +132,13 @@ def update_stat_text(test_import):
 
 
 def write_text_test(nber, tot):
+    """ Write a text with the following form: "24/70 (34.28%)"
+
+    :param int nber: Number of good case (24 in the example)
+    :param int tot: Total number of case (70 in the example)
+    :return: Text
+    :rtype: str
+    """
     ratio = float(nber) / float(tot)
     text = str(nber) + '/' + str(tot) + ' (' + str.format(
         "{0:.2f}", 100*ratio) + '%)'
@@ -217,7 +225,7 @@ def _find_qrcode(env, line_vals, img, is_multipage, file_, test):
     """
     Read the image and try to find the QR code.
     The image should be currently saved as a png with the same name
-    than file_ (except for the extension).
+    than :py:attr:`file_` (except for the extension).
     If QR Code is in wrong orientation, this method will return the given
     file.
     In case of test, the output dictonnary contains the image of the QR code
@@ -303,6 +311,7 @@ def _find_qrcode(env, line_vals, img, is_multipage, file_, test):
 
 def testDirectionQRcode(barcode):
     """ Test if the direction of the QR code is correct
+
     :param Barcode barcode: Data from zxing
     :return: True if the qrcode is in the right direction
     :rtype: bool
@@ -321,6 +330,7 @@ def testDirectionQRcode(barcode):
 def decodeBarcode(env, barcode):
     """ Split the barcode and return the id of the partner and the child.
     If the partner is not found, return None (same for the child).
+
     :param env: Odoo environment
     :param Barcode barcode:
     :return: partner.id, Child.id
@@ -344,6 +354,7 @@ def readEncode(img, format_img='png'):
     """
     Create a tempfile, write the image on it and return a base64 encoded
     string
+
     :param np.array img: Image
     :param str format_img: Format image
     :returns: Data (encoded in base64)
@@ -404,6 +415,7 @@ def _save_img(is_multipage, file_, img):
 def _find_template(env, img, line_vals, test):
     """
     Use pattern recognition to detect which template corresponds to img.
+
     :param env env: Odoo variable env
     :param img: Image to analyze
     :param dict line_vals: Dictonnary containing the data for a line
@@ -430,7 +442,7 @@ def _find_template(env, img, line_vals, test):
 
 
 def _find_languages(env, img, pattern_center, line_vals, test):
-    """
+    r"""
     Use the pattern and the blue corner for doing a transformation
     (rotation + scaling + translation) in order to crop a small part
     of the original picture around the position of each language
@@ -440,31 +452,30 @@ def _find_languages(env, img, pattern_center, line_vals, test):
     The rotation angle :math:`\theta` is given by the angle between
     the template and image vectors that start from the blue square (B)
     and end at the pattern.
-    The scaling is given in a matrix form where math:`S_1` is the
-    ratio between the width of the image and the one of the template
-    (same for the height with :math:`S_2`)
+    The scaling is given in a matrix form where :math:`S_1` is the distance
+    between the blue corner and the pattern in the scan (:math:`S_2` for the
+    reference)
     The translation vector is constructed from the two previous matrices
     and the two vectors B (in the image) and B' (in the template)
+
     .. math::
       R = \left(\begin{array}{cc}
         \cos(\theta) & -\sin(\theta) \\
         \sin(\theta) & \cos(\theta)  \end{array}
       \right)
 
-      \text{scaling} = \left(\begin{array}{cc}
-        S_1 & 0 \\
-        0 & S_2  \end{array}
-      \right)
+      \text{scaling} = \frac{S_1}{S_2}
 
       C = B-R*B'
+
     This analysis should be quite fast due to the small size of the
     pictures to analyze (should be a square of about 20-30 pixels large).
 
     :param env env: Odoo variable env
     :param img: Image to analyze
     :param pattern_center: Center position of detected pattern
-    :param dict line_vals: Dictonnary containing the data for a line
-    (and the template)
+    :param dict line_vals: Dictonnary containing the data for a line\
+        (and the template)
     :param bool test: Enable the test mode (will save some img)
     :returns: None
     """
@@ -510,9 +521,7 @@ def _find_languages(env, img, pattern_center, line_vals, test):
     R = np.array([[costheta, -sintheta], [sintheta, costheta]])
 
     # scaling matrix (use image size)
-    scaling = np.array(bluecorner.getSizeOriginal(), dtype=float) / \
-        np.array(template.get_template_size(), dtype=float)
-    scaling = np.array([[scaling[0], 0], [0, scaling[1]]])
+    scaling = np.linalg.norm(diff_scan)/np.linalg.norm(diff_ref)
 
     # transformation matrix
     R *= scaling
@@ -579,6 +588,7 @@ def _find_languages(env, img, pattern_center, line_vals, test):
 def manyImages2OneImage(test_img, col):
     """ Create an image from a list of image
     by creating a layout (with col columns)
+
     :param list test_img: list of array
     :param int col: Number of columns wanted
     """
@@ -626,6 +636,7 @@ def manyImages2OneImage(test_img, col):
 def computeRowSize(img):
     """
     Compute the size of a row in manyImages2OneImage
+
     :param list img: List of images
     :returns: height, width
     :rtype: int, int

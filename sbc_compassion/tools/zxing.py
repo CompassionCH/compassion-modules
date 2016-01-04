@@ -60,11 +60,12 @@ class BarCodeTool():
     def decode(self, files, try_harder=True, qr_only=True, crop=None):
         """
         Decodes a/some file/s
+
         :param string files: Name of the files to decode
         :param bool try_harder: Spend more time to find a barcode (if needed)
         :param bool qr_only: Only check for QR code or not
         :param list crop: Use a subset of the picture [left,top,width,height]\
-        (in pixels)
+            (in pixels)
         :returns: Information about the barcode
         :rtype: BarCode
         """
@@ -115,6 +116,7 @@ class BarCodeTool():
         """
         Create a Barcode (written in PNG format [the library can accepts JPG,
         GIF as a paramter to the command line])
+
         :param string file_: File name where to write the barcode
         :param string text: Text to encode
         :param string code_format: Type of barcode (see github, zxing project)

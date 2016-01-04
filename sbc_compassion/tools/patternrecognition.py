@@ -31,6 +31,7 @@ def patternRecognition(image, pattern, crop_area=None,
                        threshold=2, full_result=False):
     """
     Try to find a pattern in the subset (given by crop_area) of the image.
+
     :param image: Image to analyze array
     :param pattern: Pattern image data (array or str encoded in base64)
     :param list crop_area: Subset of the image to cut (relative position). \
@@ -96,6 +97,7 @@ def subsetImage(img, crop_area):
     Box is a tuple (of 2) containg a list of two elements.
     The tuple gives the choice between the width and the height,
     the list between the min and the max
+
     :param array img: Image read by cv2.imread
     :param list[] crop_area: Relative coordinate to cut
     :returns: Minimum in X and Y and the subset of the image
@@ -114,6 +116,7 @@ def subsetImage(img, crop_area):
 def findMatches(des1, des2, test=0.8):
     """
     Look through the descriptor in order to find some matches.
+
     :param list[] des1: Descriptor of the image
     :param list[] des2: Descriptor of the template
     :returns: Matches found in the descriptors
@@ -170,13 +173,14 @@ def keyPointCenter(keypoints):
 def find_template(img, templates, test=False, threshold=0.8):
     """
     Use pattern recognition to detect which template correponds to img.
+
     :param img: Image to analyze
     :param templates: Collection of all templates
-    :param bool test: Enable the test mode (return an image as the last
-    parameter). If False, the image is None.
+    :param bool test: Enable the test mode (return an image as the last \
+        parameter). If False, the image is None.
     :param threshold: Ratio of the templates' keypoints requested
-    :returns: Detected template, center position of detected pattern,
-    image showing the detected keypoints for all the template
+    :returns: Detected template, center position of detected pattern,\
+        image showing the detected keypoints for all the template
     :rtype: template, layout, None or np.array
     """
     # number of keypoint related between the picture and the pattern
