@@ -3,8 +3,7 @@
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Emmanuel Mathier <emmanuel.mathier@gmail.com>
-#    @author: Loic Hausammann <loic_hausammann@hotmail.com>
+#    @author: Emmanuel Mathier, Loic Hausammann <loic_hausammann@hotmail.com>
 #
 #    The licence is in the file __openerp__.py
 #
