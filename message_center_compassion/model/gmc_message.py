@@ -383,7 +383,7 @@ class gmc_message_pool(models.Model):
                     _('NetworkError'),
                     _('An error occured while sending message.'))
             json_data = r.json()
-            logger.debug(r.text)
+            logger.info(r.text)
             success = json_data.get('success')
             if success == 'yes':
                 return json_data.get('uuid')

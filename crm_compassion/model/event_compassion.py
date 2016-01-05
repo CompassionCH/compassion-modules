@@ -95,6 +95,10 @@ class event_compassion(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.multi
+    def update_analytics(self):
+        self._set_analytic_lines()
+
     @api.one
     @api.depends('analytic_id', 'analytic_id.line_ids',
                  'analytic_id.line_ids.amount')
