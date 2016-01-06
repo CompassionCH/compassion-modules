@@ -22,7 +22,8 @@ class res_partner(models.Model):
 
     @api.one
     def _compute_transaction_date(self):
-        write_date = fields.Date.from_string(self.write_date)
+        write_date = fields.Date.from_string(self.write_date or
+                                             fields.Date.today())
         self.transaction_date = write_date.strftime('%Y-%m-%d')
 
     @api.multi
