@@ -48,6 +48,7 @@
                                 <field name="relationship"/>
                                 <field name="source"/>
                                 <field name="mandatory_review"/>
+                                <field name="is_first_letter"/>
                                 <field name="physical_attachments"/>
                                 <field name="attachments_description" attrs="{'invisible': [('physical_attachments', '=', False)]}"/>
                             </group>

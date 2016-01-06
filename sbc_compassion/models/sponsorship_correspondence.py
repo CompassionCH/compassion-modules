@@ -99,6 +99,10 @@ class SponsorshipCorrespondence(models.Model):
         ('Sponsor', _('Sponsor')),
         ('Encourager', _('Encourager'))], default='Sponsor')
     mandatory_review = fields.Boolean()
+    is_first_letter = fields.Boolean(
+        compute='_compute_is_first',
+        store=True,
+        readonly=True)
     rework_reason = fields.Char()
     rework_comments = fields.Text()
     original_letter_url = fields.Char()
@@ -178,6 +182,21 @@ class SponsorshipCorrespondence(models.Model):
                 letter.s2b_state = letter.state
             else:
                 letter.b2s_state = letter.state
+
+    @api.multi
+    @api.depends('sponsorship_id')
+    def _compute_is_first(self):
+        """ Sets the value true if is the first letter. """
+        for letter in self:
+            if letter.sponsorship_id:
+                count = self.search_count([
+                    ('sponsorship_id', '=', letter.sponsorship_id.id),
+                    ('direction', '=', "Beneficiary To Supporter")
+                    ])
+                if count == 0:
+                    letter.is_first_letter = True
+                    break
+            letter.is_first_letter = False
 
     @api.model
     def get_communication_types(self):
