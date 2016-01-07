@@ -38,6 +38,7 @@
         'python': ['jwt'],
     },
     'data': [
+        'security/ir.model.access.csv',
         'views/gmc_message_view.xml',
         'views/get_letter_image_wizard_view.xml',
         'data/gmc_action.xml'],

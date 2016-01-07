@@ -22,7 +22,7 @@ _logger = logging.getLogger(__name__)
 class RestController(http.Controller):
 
     @http.route('/b2s_image', type='http', auth='public', methods=['GET'])
-    def handler_b2s_image(self):
+    def handler_b2s_image(self, id):
         """ Handler for `/b2s_image` url for json data.
 
         It accepts only Communication Kit Notifications.
@@ -30,9 +30,9 @@ class RestController(http.Controller):
         """
         headers = request.httprequest.headers
         self._validate_headers(headers)
-        correspondence_obj = request.env['sponsorship.correspondence'].sudo()
-        test = correspondence_obj.browse(10)
-        response = Response(base64.b64decode(test.letter_image.datas),
+        hostedletter_obj = request.env['sponsorship.hostedletter'].sudo()
+        hosted_letter = hostedletter_obj.search([('uuid', '=', id)])
+        response = Response(base64.b64decode(hosted_letter.letter_file.datas),
                             mimetype='application/pdf')
         _logger.info("A sponsor requested a child letter image !")
         return response

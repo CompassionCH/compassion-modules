@@ -8,6 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+from . import hosted_letter
 from . import ir_http
 from . import sponsorship_correspondence
 from . import gmc_message

@@ -9,7 +9,9 @@
 #
 ##############################################################################
 
+import base64
 import json
+import urllib2
 
 from ..tools.onramp_connector import OnrampConnector
 from ..mappings import base_mapping as mapping
@@ -22,6 +24,9 @@ from openerp.addons.connector.session import ConnectorSession
 
 class SponsorshipCorrespondence(models.Model):
     _inherit = 'sponsorship.correspondence'
+
+    hosted_letter_id = fields.Many2one('sponsorship.hostedletter',
+                                       default=lambda self: self._retrieve_letter())
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -93,6 +98,20 @@ class SponsorshipCorrespondence(models.Model):
         SponsorshipCorrespondence object. """
         letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
         commkit_vals = letter_mapping.get_vals_from_connect(data)
+
+        # Download and store letter
+        letter_url = commkit_vals['original_letter_url']
+        response = urllib2.urlopen(letter_url)
+        letter_file = response.read()
+        attachment = self.env['ir.attachment'].create({
+            "name": letter_url,
+            "db_datas": base64.b64encode(letter_file),
+        })
+        hosted_letter = self.env['sponsorship.hostedletter'].create({
+            'letter_file': attachment.id,
+        })
+        commkit_vals['hosted_letter_id'] = hosted_letter.id
+
         kit_identifier = commkit_vals.get('kit_identifier')
         commkit = self.search([('kit_identifier', '=', kit_identifier)])
         if commkit:
