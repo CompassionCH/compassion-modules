@@ -1,0 +1,16 @@
+numpy
+wand
+mock
+python-magic
+urllib3
+python-dateutil
+simplejson
+psycopg2
+Werkzeug
+lxml
+decorator
+unittest2
+reportlab
+Mako
+python_jwt
+psutil

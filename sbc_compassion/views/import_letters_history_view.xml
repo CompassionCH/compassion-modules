@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Form Definition -->
+        <record id="import_letters_history_form" model="ir.ui.view">
+            <field name="name">import.letters.history.form</field>
+            <field name="model">import.letters.history</field>
+            <field name="arch" type="xml">
+                <form string="Imports">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,open,done"/>
+                        <field name="import_completed" invisible="1"/>
+                        <button name="button_save" string="Import Letters" states="ready" type="object" class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <h1>Imported Letters</h1>
+                        <group>
+                            <label for="data" string="Files" states="draft"/>
+                            <div states="draft">
+                                <field name="data" widget="many2many_binary"/>
+                                <separator/>
+                                <button name="button_import" string="Load Files" type="object"/>
+                            </div>
+                            <field name="nber_letters"/>
+                            <field name="is_mandatory_review"/>
+                            <field name="force_template" states="draft,open"/>
+                        </group>
+                        <group>
+                            <button name="button_review" string="Review Imports" type="object" states="open" colspan="2"/>
+                            <field name="import_line_ids" states="open,ready" domain="[('id','=','-1')]">
+                                <tree colors="red:status != 'ok';green:status == 'ok'" create="false" editable="bottom">
+                                    <field name="letter_image" readonly="1" string="Filename"/>
+                                    <field name="status"/>
+                                    <field name="partner_id"/>
+                                    <field name="child_id"/>
+                                    <field name="template_id"/>
+                                    <field name="letter_language_id"/>
+                                    <field name="is_encourager"/>
+                                    <field name="letter_image_preview" widget='image' display="icon" string="Letter image preview" readonly="1"/>
+                                </tree>
+                            </field>
+                            <field name="letters_ids" states="done"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree Definition -->
+        <record id="import_letters_history_tree" model="ir.ui.view">
+            <field name="name">import.letters.history.tree</field>
+            <field name="model">import.letters.history</field>
+            <field name="arch" type="xml">
+                <tree string="Imports"
+                      colors="blue:state == 'draft';black:state in ('open','pending');green:state == 'ready';grey:state == 'done'">
+                    <field name="create_date"/>
+                    <field name="write_date"/>
+                    <field name="nber_letters"/>
+                    <field name="is_mandatory_review"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!-- Action Definition -->
+        <record id="action_compassion_import_letters_action" model="ir.actions.act_window">
+            <field name="name">Imports</field>
+            <field name="res_model">import.letters.history</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Menu Definition -->
+        <menuitem id="import_letters_menu" parent="menu_sponsorship_correspondence"
+                  name="Imports" action="action_compassion_import_letters_action" sequence="1"/>
+    </data>
+</openerp>

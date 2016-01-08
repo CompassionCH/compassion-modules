@@ -1,0 +1,90 @@
+<openerp>
+    <data>
+
+        <record id="view_correspondence_template_origin_tree" model="ir.ui.view">
+            <field name="name">sponsorship.correspondence.template.tree</field>
+            <field name="model">sponsorship.correspondence.template</field>
+            <field name="arch" type="xml">
+                <tree string="Correspondence Templates">
+                    <field name="name"/>
+                    <field name="layout"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_correspondence_template_origin_form" model="ir.ui.view">
+            <field name="name">sponsorship.correspondence.template.form</field>
+            <field name="model">sponsorship.correspondence.template</field>
+            <field name="arch" type="xml">
+                <form string="Template">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="layout"/>
+                                <field name="active"/>
+                                <field name="pattern_image" widget="image" class="oe_avatar" required="1"/>
+                                <separator colspan="2" string="Language checkboxes"/>
+                                <field name="checkbox_ids" context="{'default_template_id': active_id}">
+                                    <tree editable="bottom">
+                                        <field name="language_id"/>
+                                        <field name="x_min"/>
+                                        <field name="x_max"/>
+                                        <field name="y_min"/>
+                                        <field name="y_max"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Metadata">
+                                <field name="page_width"/>
+                                <field name="page_height"/>
+                                <separator colspan="2"/>
+                                <field name="bluesquare_x"/>
+                                <field name="bluesquare_y"/>
+                                <separator colspan="2"/>
+                                <field name="qrcode_x_min"/>
+                                <field name="qrcode_x_max"/>
+                                <field name="qrcode_y_min"/>
+                                <field name="qrcode_y_max"/>
+                                <separator colspan="2"/>
+                                <field name="pattern_x_min"/>
+                                <field name="pattern_x_max"/>
+                                <field name="pattern_y_min"/>
+                                <field name="pattern_y_max"/>
+                                <separator colspan="2"/>
+                                <field name="pattern_center_x"/>
+                                <field name="pattern_center_y"/>
+				<field name="nber_keypoints"/>
+                            </group>
+                            <group>
+                              <field name="template_image" widget="image" required="1" width="210px" height="297px"/>
+                            </group>
+                            <group>
+                                <field name="detection_result" widget="image" width="210px" height="297px"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_compassion_correspondence_template_form" model="ir.actions.act_window">
+            <field name="name">Correspondence Templates</field>
+            <field name="res_model">sponsorship.correspondence.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+	<!-- Add item in the 'More' list -->
+        <act_window id="action_cross_check_correspondence_template"
+                    key2="client_action_multi" name="Cross Check Patterns"
+		    res_model="sponsorship.crosscheck"
+		    src_model="sponsorship.correspondence.template"
+                    view_mode="form" target="new" view_type="form"
+        />
+
+
+	<menuitem id="menu_correspondence_template" parent="child_compassion.menu_configuration" action="action_compassion_correspondence_template_form"
+                  name="Correspondence Templates" sequence="1"/>
+    </data>
+</openerp>

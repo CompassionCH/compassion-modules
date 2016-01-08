@@ -17,6 +17,7 @@ ADDRESS_FIELDS = [
 
 
 class ResPartner(models.Model):
+
     """ This class upgrade the partners to match Compassion needs.
     """
 
