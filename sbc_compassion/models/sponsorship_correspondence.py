@@ -186,7 +186,8 @@ class SponsorshipCorrespondence(models.Model):
     @api.multi
     @api.depends('sponsorship_id')
     def _compute_is_first(self):
-        """ Sets the value true if is the first letter. """
+        """ Sets the value at true if is the first letter\
+                from the beneficiary. """
         for letter in self:
             if letter.sponsorship_id:
                 count = self.search_count([
@@ -195,8 +196,8 @@ class SponsorshipCorrespondence(models.Model):
                     ])
                 if count == 0:
                     letter.is_first_letter = True
-                    break
-            letter.is_first_letter = False
+                else:
+                    letter.is_first_letter = False
 
     @api.model
     def get_communication_types(self):
