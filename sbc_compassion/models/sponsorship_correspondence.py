@@ -103,6 +103,7 @@ class SponsorshipCorrespondence(models.Model):
         compute='_compute_is_first',
         store=True,
         readonly=True)
+    marked_for_rework = fields.Boolean()
     rework_reason = fields.Char()
     rework_comments = fields.Text()
     original_letter_url = fields.Char()
@@ -169,7 +170,6 @@ class SponsorshipCorrespondence(models.Model):
             ('Published to Global Partner', _('Published')),
             # TODO: Check the following states with GMC to validate them...
             ('Quality check unsuccessful', _('Quality check unsuccessful')),
-            ('Undeliverable', _('Undeliverable')),
             ('Cancelled', _('Cancelled')),
             ('Exception', _('Exception')),
         ]

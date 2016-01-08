@@ -77,12 +77,9 @@ class OnrampConnector(object):
         """
         headers = {'Content-type': 'image/{0}'.format(image_type)}
         params = {'doctype': 's2bletter'}
-        url = self._connect_url+'images'
-        ONRAMP_LOGGER.info(
-            "[POST] %s %s %s",
-            url,
-            [(k, v) for k, v in headers.iteritems()],
-            '{image binary data not shown}')
+        url = self._connect_url+'images/documents'
+        self._log_message(
+            'POST', url, headers, '{image binary data not shown}')
         r = self._session.post(
             url, params=params, headers=headers,
             data=base64.b64decode(image_data))
@@ -95,6 +92,22 @@ class OnrampConnector(object):
                 _("Error while uploading letter image to GMC."),
                 '[%s] %s' % (r.status_code, r.text))
         return letter_url
+
+    def get_letter_image(self, letter_url, type='jpeg', pages=0, dpi=96):
+        """ Calls Letter Image Service from Onramp U.S. and get the data
+        http://developer.compassion.com/docs/read/compassion_connect2/
+        service_catalog/Image_Retrieval
+        """
+        params = {
+            'format': type,
+            'pg': pages,
+            'dpi': dpi}
+        self._log_message('GET', letter_url)
+        r = self._session.get(letter_url, params=params)
+        letter_data = None
+        if r.status_code == 200:
+            letter_data = base64.b64encode(r.content)
+        return letter_data
 
     def send_message(self, service_name, message_type, body):
         """ Sends a message to Compassion Connect.
@@ -110,12 +123,7 @@ class OnrampConnector(object):
         url = self._connect_url + service_name
         status = 200
         result = False
-        ONRAMP_LOGGER.info(
-            "[%s] %s %s %s",
-            message_type,
-            url,
-            [(k, v) for k, v in headers.iteritems()],
-            simplejson.dumps(body))
+        self._log_message(message_type, url, headers, body)
         if message_type == 'GET':
             r = self._session.get(
                 url, headers=headers, json=body)
@@ -163,3 +171,17 @@ class OnrampConnector(object):
             raise Warning(
                 _('Authentication Error'),
                 _('Token validation failed.'))
+
+    def _log_message(self, type, url, headers=None, message=None):
+        if headers is None:
+            headers = dict()
+        if message is None:
+            message = '{empty}'
+        complete_headers = headers.copy()
+        complete_headers.update(self._session.headers)
+        ONRAMP_LOGGER.info(
+            "[%s] %s %s %s",
+            type,
+            url,
+            [(k, v) for k, v in complete_headers.iteritems()],
+            simplejson.dumps(message))

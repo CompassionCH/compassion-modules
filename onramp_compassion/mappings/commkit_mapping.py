@@ -54,9 +54,9 @@ class CorrespondenceMapping(OnrampMapping):
     }
 
     SUPPORTER_MAPPING = {
-        'CompassConstituentId': None,   # Todo Where to find this ?
+        'CompassConstituentId': ('correspondant_id.ref', 'res.partner'),
         'CommunicationDeliveryPreference': None,  # Todo Where to find this ?
-        'GlobalId': ('correspondant_id.ref', 'res.partner'),
+        'GlobalId': None,
         'MandatoryReviewRequired': 'mandatory_review',
         'ObjectUrl': None,
         'PreferredName': ('correspondant_id.name', 'res.partner'),
@@ -91,9 +91,9 @@ class CorrespondenceMapping(OnrampMapping):
                              'res.lang.compassion'),
         'OriginalLetterURL': 'original_letter_url',
         'TransactionId': None,
-        'IsMarkedForRework': None,
-        'ResasonForRework': None,
-        'ReworkComments': None,
+        'MarkedForRework': 'marked_for_rework',
+        'ReasonForRework': 'rework_reason',
+        'ReworkComments': 'rework_comments',
         'Template': ('template_id.layout',
                      'sponsorship.correspondence.template'),
         'TranslatedBy': None,
@@ -104,10 +104,8 @@ class CorrespondenceMapping(OnrampMapping):
 
     FIELDS_TO_SUBMIT = {
         'Beneficiary.LocalId': None,
-        'Beneficiary.CompassId': None,
         'GlobalPartner.Id': None,
-        'Supporter.CompassConstituentId': None,
-        'Supporter.GlobalId': None,
+        'Supporter.CompassConstituentId': lambda id: '65-' + id,
         'Direction': None,
         'Pages': None,
         'RelationshipType': None,
@@ -123,11 +121,20 @@ class CorrespondenceMapping(OnrampMapping):
     CONSTANTS = {
         'SourceSystem': 'Odoo',
         'GlobalPartner.Id': 'CH',
-        'Supporter.CompassConstituentId': '7-3655245',  # TODO: Remove and
-                                                        # fetch properly
         'Pages': [],     # TODO : See how to send info about pages
         'NumberOfPages': 1,     # TODO
     }
+
+    def _convert_connect_data(self, connect_name, value_mapping, value,
+                              relation_search=None):
+        """ Remove 65- suffix from partner reference and look only
+            for non-company partners.
+        """
+        if connect_name == 'CompassConstituentId':
+            value = value[3:]
+            relation_search = [('is_company', '=', False)]
+        return super(CorrespondenceMapping, self)._convert_connect_data(
+            connect_name, value_mapping, value, relation_search)
 
     def _process_odoo_data(self, odoo_data):
         # Replace child and correspondant values with sponsorship

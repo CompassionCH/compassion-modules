@@ -17,15 +17,15 @@ _logger = logging.getLogger(__name__)
 
 # Put any authorized sender here. Its address must be part of the headers
 # in order to handle a request.
-AUTHORIZED_SENDERS = ['CHTest', 'CISalesforce']
+AUTHORIZED_SENDERS = ['CHTest', 'CISalesforce', 'CISFDC']
 
 # Only those message types will be accepted (checked in the header)
 MESSAGE_TYPES = {
     'CommKitNotification':
-        'http://schemas.ci.org/ci/services/communications/2015/09/'
-        'SBCNotification',   # TODO : see the name of this service
-    'CommKit':
-        'http://schemas.ci.org/ci/services/communications/2015/09/'
+        'http://schemas.ci.org/ci/messaging/communications/2015/08/'
+        'CommunicationUpdates',
+    'FinalCommKit':
+        'http://schemas.ci.org/ci/messaging/communications/2015/09/'
         'SBCStructured',
     'ReservationNotification':
         'http://schemas.ci.org/ci/messaging/communications/2015/08/'
@@ -45,29 +45,18 @@ class RestController(http.Controller):
         self._validate_headers(headers)
         message_type = request.httprequest.headers['x-cim-MessageType']
 
-        # CommKitNotification message
-        if message_type == MESSAGE_TYPES['CommKitNotification']:
-            updates = request.jsonrequest.get('CommunicationUpdates')
-            if updates and isinstance(updates, list):
-                correspondence_obj = request.env[
-                    'sponsorship.correspondence'].sudo(request.uid)
-                correspondence_obj.process_commkit_notifications(
-                    updates, headers)
-            else:
-                raise AttributeError(
-                    "Value for 'CommunicationUpdates' was not found in "
-                    "the request.")
-
-        # CommKit Update
-        elif message_type == MESSAGE_TYPES['CommKit']:
-            letter_data = request.jsonrequest
+        # CommKit (contains either a list of commkits or a single commkit)
+        if message_type in (MESSAGE_TYPES['CommKitNotification'],
+                            MESSAGE_TYPES['FinalCommKit']):
+            json_data = request.jsonrequest
+            updates = json_data.get('Responses', [json_data])
+            for commkit_data in updates:
+                if 'CompassionSBCId' not in commkit_data:
+                    raise AttributeError(
+                        "Body does not contain a valid CommKit Data")
             correspondence_obj = request.env[
                 'sponsorship.correspondence'].sudo(request.uid)
-            if 'CompassionSBCId' not in letter_data:
-                raise AttributeError(
-                    "Body does not contain a valid CommKit Data")
-            correspondence_obj.process_commkit_notifications(
-                [letter_data], headers)
+            correspondence_obj.process_commkit_notifications(updates, headers)
 
         # TODO [Release 4]: Reservation Notification Messages
         elif message_type == MESSAGE_TYPES['ReservationNotification']:
@@ -90,6 +79,6 @@ class RestController(http.Controller):
         if headers.get('x-cim-MessageType') not in MESSAGE_TYPES.values():
             raise AttributeError("Unknown MessageType")
         if headers.get('x-cim-FromAddress') not in AUTHORIZED_SENDERS:
-            raise exceptions.AccessDenied("Unknown Sender")
+            raise exceptions.AccessDenied()
         if headers.get('x-cim-ToAddress') != 'CH':
             raise AttributeError("This message is not for me.")

@@ -9,10 +9,13 @@
 #
 ##############################################################################
 import jwt
+import logging
 
 from openerp.http import request
 from openerp import models
 from werkzeug.exceptions import Unauthorized
+
+logger = logging.getLogger(__name__)
 
 
 class IrHTTP(models.AbstractModel):
@@ -46,6 +49,7 @@ class IrHTTP(models.AbstractModel):
         if mode not in jwt_decoded.get('scope'):
             raise Unauthorized()
         client_id = jwt_decoded.get('client_id')
+        logger.info("TOKEN CLIENT IS -----------------> " + client_id)
         user = request.env['res.users'].sudo().search(
             [('login', '=', client_id)])
         if user:

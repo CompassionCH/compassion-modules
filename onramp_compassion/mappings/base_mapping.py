@@ -80,33 +80,18 @@ class OnrampMapping(object):
                     value, _mapping.get(field)))
             else:
                 value_mapping = _mapping.get(field)
-                if value_mapping and value:
-                    if isinstance(value_mapping, tuple):
-                        # Relational field
-                        relation_obj = self.env[value_mapping[1]]
-                        correspondence_field = value_mapping[0].split('.')[0]
-                        relation_field = value_mapping[0].split('.')[-1]
-                        relation_ids = relation_obj.search([
-                            (relation_field, '=', value)]).ids
-                        if correspondence_field.endswith('ids'):
-                            # Many2many write
-                            odoo_vals[correspondence_field] = [
-                                (6, 0, relation_ids)]
-                        else:
-                            # Many2one write
-                            odoo_vals[
-                                correspondence_field] = relation_ids[0]
-                    else:
-                        # Regular field
-                        mapped_value = value
-                        if value_mapping.endswith('_id') or \
-                                value_mapping == 'id':
-                            mapped_value = int(value)
-                        if field.startswith('Is'):
-                            mapped_value = True if \
-                                value.lower() == 'true' else False
-                        odoo_vals[value_mapping] = mapped_value
-
+                is_list_dict = False
+                if isinstance(value, list):
+                    # Check if we receive a list of dictionnaries and
+                    # recursively call function to get the mapping of each
+                    for item in value:
+                        if isinstance(item, collections.Mapping):
+                            is_list_dict = True
+                            odoo_vals.update(self.get_vals_from_connect(
+                                item, value_mapping))
+                if value_mapping and value and not is_list_dict:
+                    odoo_vals.update(self._convert_connect_data(
+                        field, value_mapping, value))
         if odoo_vals:
             self._process_odoo_data(odoo_vals)
         return odoo_vals
@@ -155,7 +140,7 @@ class OnrampMapping(object):
         self._process_connect_data(connect_data)
         return connect_data
 
-    def _convert_connect_data(self, field_name, value, mapping=None):
+    def _convert_odoo_data(self, field_name, value, mapping=None):
         """ Given a field_name and its value, returns a dictionary for Connect
             {'ConnectFieldName': connect_value}
 
@@ -166,15 +151,54 @@ class OnrampMapping(object):
             mapping = self.CONNECT_MAPPING
         for connect_name, connect_map in mapping.iteritems():
             if isinstance(connect_map, collections.Mapping):
-                # Recursively call _convert_connect_data to build
+                # Recursively call _convert_odoo_data to build
                 # the structure of connect message
-                section_value = self._convert_connect_data(
+                section_value = self._convert_odoo_data(
                     field_name, value, connect_map)
                 if section_value:
                     res[connect_name] = section_value
             elif field_name == connect_map:
                 res[connect_name] = value
         return res
+
+    def _convert_connect_data(self, connect_name, value_mapping, value,
+                              relation_search=None):
+        """ Converts a received data from Connect to odoo field:value
+            dictionary.
+
+            :param connect_name: Field name of Connect
+            :param value_mapping: The value of the mapping for this field
+                                  found in CONNECT_MAPPING
+            :param value: Connect value for the field.
+            :param relation_search: Optional additional search domain to
+                                    limit the search results of a relation.
+
+            :returns: a dictionary holding the field:value pair for Odoo"""
+        result = dict()
+        if isinstance(value_mapping, tuple):
+            # Relational field
+            relation_obj = self.env[value_mapping[1]]
+            correspondence_field = value_mapping[0].split('.')[0]
+            relation_field = value_mapping[0].split('.')[-1]
+            operator = 'in' if isinstance(value, list) else '='
+            if relation_search is None:
+                relation_search = list()
+            relation_search.extend([(relation_field, operator, value)])
+            relation_ids = relation_obj.search(relation_search).ids
+            if correspondence_field.endswith('ids') and relation_ids:
+                # Many2many write
+                result[correspondence_field] = [(6, 0, relation_ids)]
+            elif relation_ids:
+                # Many2one write
+                result[correspondence_field] = relation_ids[0]
+        else:
+            # Regular field
+            mapped_value = value
+            if value_mapping.endswith('_id') or value_mapping == 'id':
+                mapped_value = int(value)
+            result[value_mapping] = mapped_value
+
+        return result
 
     def _create_dict_from_path(self, path, value):
         """ Creates nested dictionaries given a path and a value.
