@@ -103,6 +103,7 @@ class SponsorshipCorrespondence(models.Model):
         compute='_compute_is_first',
         store=True,
         readonly=True)
+    marked_for_rework = fields.Boolean()
     rework_reason = fields.Char()
     rework_comments = fields.Text()
     original_letter_url = fields.Char()

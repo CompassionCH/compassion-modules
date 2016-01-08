@@ -196,8 +196,6 @@ class OnrampMapping(object):
             mapped_value = value
             if value_mapping.endswith('_id') or value_mapping == 'id':
                 mapped_value = int(value)
-            if connect_name.startswith('Is'):
-                mapped_value = True if value.lower() == 'true' else False
             result[value_mapping] = mapped_value
 
         return result
