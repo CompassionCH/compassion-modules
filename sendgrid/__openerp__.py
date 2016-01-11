@@ -35,6 +35,7 @@
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'data': [
+        'security/ir.model.access.csv',
         'view/sendgrid_email_view.xml',
         'view/sendgrid_template_view.xml',
     ],

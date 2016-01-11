@@ -11,7 +11,7 @@
 import logging
 import base64
 
-from openerp import http
+from openerp import fields, http
 from openerp.http import request
 
 from werkzeug.wrappers import Response
@@ -32,6 +32,8 @@ class RestController(http.Controller):
         self._validate_headers(headers)
         hostedletter_obj = request.env['sponsorship.hostedletter'].sudo()
         hosted_letter = hostedletter_obj.search([('uuid', '=', id)])
+        hosted_letter.last_read = fields.Datetime.now()
+        hosted_letter.read_count += 1
         response = Response(base64.b64decode(hosted_letter.letter_file.datas),
                             mimetype='application/pdf')
         _logger.info("A sponsor requested a child letter image !")

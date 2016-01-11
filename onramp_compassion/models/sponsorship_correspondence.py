@@ -112,12 +112,16 @@ class SponsorshipCorrespondence(models.Model):
         })
         commkit_vals['hosted_letter_id'] = hosted_letter.id
 
+        # Write/update commkit
         kit_identifier = commkit_vals.get('kit_identifier')
         commkit = self.search([('kit_identifier', '=', kit_identifier)])
         if commkit:
             commkit.write(commkit_vals)
         else:
             commkit = self.with_context(from_onramp=True).create(commkit_vals)
+
+        # Send email to sponsor
+        commkit._send_email()
 
         if message_id is not None:
             gmc_message = self.env['gmc.message.pool'].browse(message_id)
@@ -126,6 +130,23 @@ class SponsorshipCorrespondence(models.Model):
                 'state': 'success',
                 'process_date': fields.Datetime.now()})
         return gmc_message
+
+    @api.one
+    def _send_email(self):
+        sponsor = '{} {}'.format(self.correspondant_id.firstname,
+                                 self.correspondant_id.lastname)
+        child = self.child_id.firstname
+        letter_url = self.hosted_letter_id.read_url
+        sendgrid_email = self.env['sendgrid.email'].create({
+            'email_to': self.correspondant_id.email,
+            'template_id': 2,   # TODO: choose from language
+            'substitution_ids': [
+                (0, _, {'key': 'sponsor', 'value': sponsor}),
+                (0, _, {'key': 'child', 'value': child}),
+                (0, _, {'key': 'letter_url', 'value': letter_url}),
+            ],
+        })
+        sendgrid_email.send()
 
 
 ##############################################################################
