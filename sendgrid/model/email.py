@@ -9,9 +9,10 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, _
+from openerp import models, fields, api, exceptions, _
 from openerp.tools.config import config
 
+import logging
 import sendgrid
 
 
@@ -19,6 +20,8 @@ SUBSTITUTION_PREFIX = '{'
 SUBSTITUTION_POSTFIX = '}'
 
 STATUS_OK = 200
+
+_logger = logging.getLogger(__name__)
 
 
 class Email(models.Model):
@@ -50,6 +53,14 @@ class Email(models.Model):
                 'ConfigError',
                 _('Missing sendgrid_from_address in conf file'))
 
+        production_mode = config.get('sendgrid_production_mode')
+
+        test_address = config.get('sendgrid_test_address')
+        if not test_address:
+            # From SendGrid documentation: All messages to this domain are
+            # accepted for delivery and then immediately deleted.
+            test_address = 'odoo@sink.sendgrid.net'
+
         sg = sendgrid.SendGridClient(api_key)
         message = sendgrid.Mail()
 
@@ -64,10 +75,16 @@ class Email(models.Model):
         html = self.body_html if self.body_html else ' '
         message.set_html(html)
 
-        # From SendGrid documentation: All messages to this domain are accepted for
-        #                              delivery and then immediately deleted.
-        # message.add_to('compassion@sink.sendgrid.net')
-        message.add_to('roman.compassion@gmail.com')
+        if production_mode:
+            message.add_to(self.email_to)
+        else:
+            _logger.info('Sending email to test address {}'.format(
+                         test_address))
+            _logger.info('Set sendgrid_production_mode=1 in odoo.conf in'
+                         ' order to use real destination address, or set'
+                         ' set sendgrid_test_address={test_address} to'
+                         ' use another test address.')
+            message.add_to(test_address)
 
         if self.template_id:
             message.add_filter('templates', 'enable', '1')
@@ -78,14 +95,12 @@ class Email(models.Model):
             formatted_key = '{}{}{}'.format(SUBSTITUTION_PREFIX,
                                             substitution.key,
                                             SUBSTITUTION_POSTFIX)
-            print(formatted_key, substitution.value)
             message.add_substitution(formatted_key, substitution.value)
 
         status, msg = sg.send(message)
 
         if status == STATUS_OK:
-            print('EMAIL SENT!')
+            _logger.info("Email sent!")
             self.sent_date = fields.Datetime.now()
         else:
-            # TODO raise error
-            print('Failed with message: {}'.format(message))
+            _logger.error("Failed to send email: {}".format(message))
