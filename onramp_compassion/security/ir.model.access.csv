@@ -1,2 +1,3 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
 "access_sponsorship_hostedletter","Full access on sponsorship_hostedletter","model_sponsorship_hostedletter","child_compassion.group_sponsorship",1,1,1,1
+"access_sponsorship_templatelist","Full access on sponsorship_templatelist","model_sponsorship_templatelist","child_compassion.group_sponsorship",1,1,1,1
