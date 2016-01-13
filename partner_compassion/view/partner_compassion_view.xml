@@ -78,7 +78,7 @@
 
                 <!-- Add correspondance tab -->
                 <xpath expr="//page[@string='Contacts']" position="before">
-                    <page string="Correspondance">
+                    <page string="Correspondence">
                         <group>
                             <group>
                                 <field name="ref" required="1"/>

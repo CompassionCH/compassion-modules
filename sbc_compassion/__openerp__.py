@@ -42,6 +42,7 @@
     },
     'data': [
         'security/ir.model.access.csv',
+        'views/contracts_view.xml',
         'views/country_compassion_view.xml',
         'views/partner_compassion_view.xml',
         'views/lang_compassion_view.xml',

@@ -15,3 +15,4 @@ from . import sponsorship_correspondence
 from . import correspondence_template
 from . import import_letters_history
 from . import import_letter_line
+from . import contracts

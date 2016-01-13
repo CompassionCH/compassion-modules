@@ -1,7 +1,7 @@
 <openerp>
     <data>
 
-        <record id="view_sponsorship_correspondence_origin_tree" model="ir.ui.view">
+        <record id="view_sponsorship_correspondence_tree" model="ir.ui.view">
             <field name="name">sponsorship.correspondence.tree</field>
             <field name="model">sponsorship.correspondence</field>
             <field name="arch" type="xml">
@@ -18,7 +18,23 @@
             </field>
         </record>
 
-        <record id="view_sponsorship_correspondence_origin_form" model="ir.ui.view">
+        <record id="view_sponsorship_correspondence_tree_details" model="ir.ui.view">
+            <field name="name">sponsorship.correspondence.tree.details</field>
+            <field name="model">sponsorship.correspondence</field>
+            <field name="arch" type="xml">
+                <tree string="Correspondence">
+                    <field name="scanned_date"/>
+                    <field name="communication_type_ids"/>
+                    <field name="template_id"/>
+                    <field name="original_language_id"/>
+                    <field name="destination_language_id"/>
+                    <field name="relationship"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_sponsorship_correspondence_form" model="ir.ui.view">
             <field name="name">sponsorship.correspondence.form</field>
             <field name="model">sponsorship.correspondence</field>
             <field name="arch" type="xml">
@@ -51,6 +67,9 @@
                                 <field name="is_first_letter"/>
                                 <field name="physical_attachments"/>
                                 <field name="attachments_description" attrs="{'invisible': [('physical_attachments', '=', False)]}"/>
+                                <field name="marked_for_rework" invisible="1"/>
+                                <field name="rework_reason" attrs="{'invisible': [('marked_for_rework', '=', False)]}"/>
+                                <field name="rework_comments" attrs="{'invisible': [('marked_for_rework', '=', False)]}"/>
                             </group>
                             <group string="Supporter">
                                 <field name="correspondant_id"/>
@@ -72,6 +91,10 @@
                             </group>
                         </group>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>
