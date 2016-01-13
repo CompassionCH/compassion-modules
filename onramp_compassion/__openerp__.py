@@ -33,7 +33,7 @@
     'author': 'Compassion CH',
     'maintainer': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['message_center_compassion', 'sbc_compassion', 'sendgrid'],
+    'depends': ['message_center_compassion', 'sbc_compassion', 'sbc_email'],
     'external_dependencies': {
         'python': ['jwt'],
     },
@@ -41,7 +41,6 @@
         'security/ir.model.access.csv',
         'views/gmc_message_view.xml',
         'views/get_letter_image_wizard_view.xml',
-        'views/template_list_view.xml',
         'data/gmc_action.xml'],
     'demo': ['demo/res_users.xml'],
     'test': [],
