@@ -24,4 +24,4 @@ class CompassionCountry(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
 
-    spoken_langs_ids = fields.Many2many('res.lang.compassion')
+    spoken_lang_ids = fields.Many2many('res.lang.compassion')

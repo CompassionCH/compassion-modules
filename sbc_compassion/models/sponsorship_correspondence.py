@@ -27,6 +27,8 @@ class SponsorshipCorrespondence(models.Model):
     """
     _name = 'sponsorship.correspondence'
 
+    _inherit = ['mail.thread']
+
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
@@ -35,7 +37,8 @@ class SponsorshipCorrespondence(models.Model):
     ###############################
     sponsorship_id = fields.Many2one(
         'recurring.contract', 'Sponsorship', required=True, domain=[
-            ('state', 'not in', ['draft', 'cancelled'])])
+            ('state', 'not in', ['draft', 'cancelled'])],
+        track_visibility='onchange')
     name = fields.Char(compute='_set_name')
     correspondant_id = fields.Many2one(
         related='sponsorship_id.correspondant_id', store=True)
@@ -54,7 +57,9 @@ class SponsorshipCorrespondence(models.Model):
         'Communication type',
         default=lambda self: [(4, self.env.ref(
             'sbc_compassion.correspondence_type_supporter').id)])
-    state = fields.Selection('get_states', default='Received in the system')
+    state = fields.Selection(
+        'get_states', default='Received in the system',
+        track_visibility='onchange')
     s2b_state = fields.Selection('get_s2b_states', compute='_compute_states')
     b2s_state = fields.Selection('get_b2s_states', compute='_compute_states')
 
@@ -74,9 +79,9 @@ class SponsorshipCorrespondence(models.Model):
     # 3. Letter language and text information
     #########################################
     supporter_languages_ids = fields.Many2many(
-        related='correspondant_id.spoken_langs_ids', readonly=True)
+        related='correspondant_id.spoken_lang_ids', readonly=True)
     beneficiary_language_ids = fields.Many2many(
-        related='child_id.project_id.country_id.spoken_langs_ids',
+        related='child_id.project_id.country_id.spoken_lang_ids',
         readonly=True)
     # First spoken lang of partner
     original_language_id = fields.Many2one(
@@ -229,24 +234,24 @@ class SponsorshipCorrespondence(models.Model):
     def _set_destination_language(self):
         for letter in self:
             if letter.direction == 'Supporter To Beneficiary':
-                if letter.child_id.project_id.country_id.spoken_langs_ids:
+                if letter.child_id.project_id.country_id.spoken_lang_ids:
                     if letter.original_language_id in letter.child_id.\
-                       project_id.country_id.spoken_langs_ids:
+                       project_id.country_id.spoken_lang_ids:
                         letter.destination_language_id = letter.\
                             original_language_id
                     else:
                         letter.destination_language_id = letter\
-                            .child_id.project_id.country_id.spoken_langs_ids[0]
+                            .child_id.project_id.country_id.spoken_lang_ids[0]
 
             if letter.direction == 'Beneficiary To Supporter':
-                if letter.child_id.project_id.country_id.spoken_langs_ids:
+                if letter.child_id.project_id.country_id.spoken_lang_ids:
                     if letter.original_language_id in letter.\
-                       correspondant_id.spoken_langs_ids:
+                       correspondant_id.spoken_lang_ids:
                         letter.destination_language_id = letter.\
                             original_language_id
                     else:
                         letter.destination_language_id = letter\
-                              .correspondant_id.spoken_langs_ids[0]
+                              .correspondant_id.spoken_lang_ids[0]
 
     @api.depends('sponsorship_id')
     def _set_partner_review(self):
