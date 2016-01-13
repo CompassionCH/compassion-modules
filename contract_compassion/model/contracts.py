@@ -137,8 +137,10 @@ class recurring_contract(models.Model):
         return [('O', _('General'))]
 
     @api.one
-    @api.depends('group_id.recurring_unit', 'group_id.recurring_value')
+    @api.depends('group_id.recurring_unit', 'group_id.recurring_value',
+                 'group_id.advance_billing_months')
     def _set_frequency(self):
+        recurring_value = 0
         frequencies = {
             '1 month': 'Monthly',
             '2 month': 'Bimonthly',
@@ -148,11 +150,17 @@ class recurring_contract(models.Model):
             '12 month': 'Annual',
             '1 year': 'Annual',
         }
-        recurring_value = self.group_id.recurring_value
-        recurring_unit = self.group_id.recurring_unit
+        if self.type == 'S':
+            recurring_value = self.group_id.advance_billing_months
+            recurring_unit = 'month'
+        else:
+            recurring_value = self.group_id.recurring_value
+            recurring_unit = self.group_id.recurring_unit
         frequency = "{0} {1}".format(recurring_value, recurring_unit)
         if frequency in frequencies:
             frequency = frequencies[frequency]
+        else:
+            frequency = 'Every ' + frequency + 's'
         self.group_freq = frequency
 
     ##########################################################################
