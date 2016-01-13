@@ -89,12 +89,14 @@
             <field name="model">sponsorship.correspondence</field>
             <field name="arch" type="xml">
                 <search>
-                    <filter name="direction" string="Supporter To Beneficiary" domain="[('direction','=','Supporter To Beneficiary')]" />
+                    <filter name="directionSTB" string="Supporter To Beneficiary" domain="[('direction','=','Supporter To Beneficiary')]" />
                     <separator />
-                    <filter name="direction" string="Beneficiary To Supporter" domain="[('direction','=','Beneficiary To Supporter')]" />
+                    <filter name="directionBTS" string="Beneficiary To Supporter" domain="[('direction','=','Beneficiary To Supporter')]" />
 
                     <group expand="0" string="Group By">
                         <filter string="Partner" domain="[]" context="{'group_by': 'correspondant_id'}" />
+                        <filter string="Sponsorship" domain="[]" context="{'group_by': 'sponsorship_id'}" />
+                        <filter string="State" domain="[]" context="{'group_by': 'state'}" />
                     </group>
 
                     <field name="direction" />
