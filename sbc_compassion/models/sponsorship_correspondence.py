@@ -102,8 +102,10 @@ class SponsorshipCorrespondence(models.Model):
     is_first_letter = fields.Boolean(
         compute='_compute_is_first',
         store=True,
+        readonly=True,
+        string='First letter from Beneficiary')
+    marked_for_rework = fields.Boolean(
         readonly=True)
-    marked_for_rework = fields.Boolean()
     rework_reason = fields.Char()
     rework_comments = fields.Text()
     original_letter_url = fields.Char()

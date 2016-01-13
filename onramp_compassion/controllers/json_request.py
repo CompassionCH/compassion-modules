@@ -28,8 +28,8 @@ old_get_request = Root.get_request
 
 
 def get_request(self, httprequest):
-    if (httprequest.mimetype == "application/json"
-            and httprequest.environ['PATH_INFO'].startswith('/onramp')):
+    if (httprequest.mimetype == "application/json" and
+            httprequest.environ['PATH_INFO'].startswith('/onramp')):
         return RESTJsonRequest(httprequest)
     return old_get_request(self, httprequest)
 

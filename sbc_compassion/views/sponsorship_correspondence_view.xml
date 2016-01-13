@@ -83,6 +83,30 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <!-- Extends the search on sponsorship correspondence -->
+        <record id="sponsorship_correspondence_view_search" model="ir.ui.view">
+            <field name="name">sponsorship.correspondence.search</field>
+            <field name="model">sponsorship.correspondence</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter name="directionSTB" string="Supporter To Beneficiary" domain="[('direction','=','Supporter To Beneficiary')]" />
+                    <separator />
+                    <filter name="directionBTS" string="Beneficiary To Supporter" domain="[('direction','=','Beneficiary To Supporter')]" />
+
+                    <group expand="0" string="Group By">
+                        <filter string="Partner" domain="[]" context="{'group_by': 'correspondant_id'}" />
+                        <filter string="Sponsorship" domain="[]" context="{'group_by': 'sponsorship_id'}" />
+                        <filter string="State" domain="[]" context="{'group_by': 'state'}" />
+                    </group>
+
+                    <field name="direction" />
+                    <field name="child_id" />
+                    <field name="state" />
+                    <field name="correspondant_id" />
+                </search>
+            </field>
+        </record>
+        
         <menuitem id="menu_sponsorship_correspondence" parent="child_compassion.menu_sponsorship_root"
                   name="Correspondence" sequence="1"/>
 
