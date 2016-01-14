@@ -18,7 +18,8 @@ class Templates(object):
         """
         Constructs SendGrid Templates object.
 
-        See https://sendgrid.com/docs/API_Reference/Web_API_v3/Transactional_Templates/templates.html
+        See
+        https://sendgrid.com/docs/API_Reference/Web_API_v3/Transactional_Templates/templates.html
         """
         self._base_endpoint = "/v3/templates"
         self._endpoint = "/v3/templates"

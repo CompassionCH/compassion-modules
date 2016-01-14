@@ -29,7 +29,7 @@
 
 
 {
-    'name': 'Compassion SendGrid',
+    'name': 'SendGrid',
     'version': '0.1',
     'category': 'Other',
     'author': 'Compassion CH',

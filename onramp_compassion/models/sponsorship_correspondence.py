@@ -133,6 +133,8 @@ class SponsorshipCorrespondence(models.Model):
 ##############################################################################
 #                            CONNECTOR METHODS                               #
 ##############################################################################
+
+
 def related_action_message(session, job):
     message_id = job.args[2]
     action = {

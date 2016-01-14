@@ -1,8 +1,8 @@
 .. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
     :alt: License: AGPL-3
 
-Compassion SendGrid
-===================
+SendGrid
+========
 
 This module integrates the basic functionality of
 `SendGrid <https://sendgrid.com/>`_ with Odoo. It can send transactional emails

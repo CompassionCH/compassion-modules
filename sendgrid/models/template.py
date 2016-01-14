@@ -9,13 +9,12 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from openerp import models, fields, api, exceptions, _
 from openerp.tools.config import config
 
 import json
 import sendgrid
 from ..tools import sendgrid_templates
-
 
 
 class Template(models.Model):
@@ -30,7 +29,6 @@ class Template(models.Model):
 
     @api.one
     def update(self):
-        # TODO: remove duplication
         api_key = config.get('sendgrid_api_key')
         if not api_key:
             raise exceptions.Warning(

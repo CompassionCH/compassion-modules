@@ -66,13 +66,13 @@ class Email(models.Model):
 
         message.set_from(from_address)
 
-        subject = self.subject if self.subject else ' '
+        subject = self.subject or ' '
         message.set_subject(subject)
 
-        text = self.body_text if self.body_text else ' '
+        text = self.body_text or ' '
         message.set_text(text)
 
-        html = self.body_html if self.body_html else ' '
+        html = self.body_html or ' '
         message.set_html(html)
 
         if production_mode:
