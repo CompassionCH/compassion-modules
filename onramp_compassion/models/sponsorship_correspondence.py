@@ -99,12 +99,15 @@ class SponsorshipCorrespondence(models.Model):
         commkit_vals = letter_mapping.get_vals_from_connect(data)
 
         # Download and store letter
-        letter_url = commkit_vals['original_letter_url']
-        response = urllib2.urlopen(letter_url)
-        letter_file = response.read()
+        letter_url = commkit_vals['final_letter_url']
+        image_data = OnrampConnector().get_letter_image(letter_url, 'pdf')
+        if image_data is None:
+            raise Warning(
+                _('Image does not exist'),
+                _("Image requested was not found remotely."))
         attachment = self.env['ir.attachment'].create({
             "name": letter_url,
-            "db_datas": base64.b64encode(letter_file),
+            "db_datas": image_data,
         })
         hosted_letter = self.env['sponsorship.hostedletter'].create({
             'letter_file': attachment.id,
