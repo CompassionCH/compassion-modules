@@ -30,12 +30,12 @@ class RestController(http.Controller):
         """
         headers = request.httprequest.headers
         self._validate_headers(headers)
-        hostedletter_obj = request.env['sponsorship.hostedletter'].sudo()
-        hosted_letter = hostedletter_obj.search([('uuid', '=', id)])
-        hosted_letter.last_read = fields.Datetime.now()
-        hosted_letter.read_count += 1
-        response = Response(base64.b64decode(hosted_letter.letter_file.datas),
-                            mimetype='application/pdf')
+        correspondence_obj = request.env['sponsorship.correspondence'].sudo()
+        correspondence = correspondence_obj.search([('uuid', '=', id)])
+        correspondence.last_read = fields.Datetime.now()
+        correspondence.read_count += 1
+        data = base64.b64decode(correspondence.letter_image.datas)
+        response = Response(data, mimetype='application/pdf')
         _logger.info("A sponsor requested a child letter image !")
         return response
 

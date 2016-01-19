@@ -9,9 +9,7 @@
 #
 ##############################################################################
 
-import base64
 import json
-import urllib2
 
 from ..tools.onramp_connector import OnrampConnector
 from ..mappings import base_mapping as mapping
@@ -24,8 +22,6 @@ from openerp.addons.connector.session import ConnectorSession
 
 class SponsorshipCorrespondence(models.Model):
     _inherit = 'sponsorship.correspondence'
-
-    hosted_letter_id = fields.Many2one('sponsorship.hostedletter')
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -109,10 +105,7 @@ class SponsorshipCorrespondence(models.Model):
             "name": letter_url,
             "db_datas": image_data,
         })
-        hosted_letter = self.env['sponsorship.hostedletter'].create({
-            'letter_file': attachment.id,
-        })
-        commkit_vals['hosted_letter_id'] = hosted_letter.id
+        commkit_vals['letter_image'] = attachment.id
 
         # Write/update commkit
         kit_identifier = commkit_vals.get('kit_identifier')
