@@ -37,7 +37,8 @@ class Email(models.Model):
     body_text = fields.Text()
     sent_date = fields.Datetime()
     substitution_ids = fields.One2many('sendgrid.substitution', 'email_id')
-    template_id = fields.Many2one('sendgrid.template')
+    layout_template_id = fields.Many2one('sendgrid.template')
+    text_template_id = fields.Many2one('email.template')
 
     @api.one
     def send(self):
@@ -66,14 +67,17 @@ class Email(models.Model):
 
         message.set_from(from_address)
 
-        subject = self.subject or ' '
-        message.set_subject(subject)
+        if self.text_template_id:
+            message.set_subject(self.text_template_id.subject)
+            message.set_html(self.text_template_id.body_html)
+        else:
+            subject = self.subject or ' '
+            message.set_subject(subject)
+            html = self.body_html or ' '
+            message.set_html(html)
 
         text = self.body_text or ' '
         message.set_text(text)
-
-        html = self.body_html or ' '
-        message.set_html(html)
 
         if production_mode:
             message.add_to(self.email_to)
@@ -86,10 +90,10 @@ class Email(models.Model):
                          ' use another test address.')
             message.add_to(test_address)
 
-        if self.template_id:
+        if self.layout_template_id:
             message.add_filter('templates', 'enable', '1')
             message.add_filter('templates', 'template_id',
-                               self.template_id.remote_id)
+                               self.layout_template_id.remote_id)
 
         for substitution in self.substitution_ids:
             formatted_key = '{}{}{}'.format(SUBSTITUTION_PREFIX,

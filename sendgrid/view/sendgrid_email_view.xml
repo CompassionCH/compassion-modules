@@ -21,7 +21,8 @@
                         <group colspan="2" col="2">
                             <field name="email_to"/>
                             <field name="subject"/>
-                            <field name="template_id"/>
+                            <field name="layout_template_id"/>
+                            <field name="text_template_id"/>
                             <field name="sent_date" readonly="1"/>
                         </group>
 
@@ -49,7 +50,8 @@
                     <field name="email_to"/>
                     <field name="subject"/>
                     <field name="sent_date"/>
-                    <field name="template_id"/>
+                    <field name="layout_template_id"/>
+                    <field name="text_template_id"/>
                 </tree>
             </field>
         </record>
