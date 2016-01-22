@@ -324,6 +324,14 @@ class SponsorshipCorrespondence(models.Model):
         return super(SponsorshipCorrespondence, self).write(vals)
 
     ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+
+    @api.one
+    def send_email(self):
+        pass
+
+    ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
     def _get_read_url(self):
