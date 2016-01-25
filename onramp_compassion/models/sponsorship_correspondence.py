@@ -94,18 +94,22 @@ class SponsorshipCorrespondence(models.Model):
         letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
         commkit_vals = letter_mapping.get_vals_from_connect(data)
 
-        # Download and store letter
-        letter_url = commkit_vals['final_letter_url']
-        image_data = OnrampConnector().get_letter_image(letter_url, 'pdf')
-        if image_data is None:
-            raise Warning(
-                _('Image does not exist'),
-                _("Image requested was not found remotely."))
-        attachment = self.env['ir.attachment'].create({
-            "name": letter_url,
-            "db_datas": image_data,
-        })
-        commkit_vals['letter_image'] = attachment.id
+        is_published = (commkit_vals.get('state') ==
+                        'Published to Global Partner')
+
+        if is_published:
+            # Download and store letter
+            letter_url = commkit_vals['final_letter_url']
+            image_data = OnrampConnector().get_letter_image(letter_url, 'pdf')
+            if image_data is None:
+                raise Warning(
+                    _('Image does not exist'),
+                    _("Image requested was not found remotely."))
+            attachment = self.env['ir.attachment'].create({
+                "name": letter_url,
+                "db_datas": image_data,
+            })
+            commkit_vals['letter_image'] = attachment.id
 
         # Write/update commkit
         kit_identifier = commkit_vals.get('kit_identifier')
@@ -115,8 +119,8 @@ class SponsorshipCorrespondence(models.Model):
         else:
             commkit = self.with_context(from_onramp=True).create(commkit_vals)
 
-        # Send email to sponsor
-        commkit.send_email()
+        if is_published:
+            commkit.process_letter()
 
         if message_id is not None:
             gmc_message = self.env['gmc.message.pool'].browse(message_id)

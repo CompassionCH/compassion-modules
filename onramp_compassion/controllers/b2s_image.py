@@ -32,8 +32,10 @@ class RestController(http.Controller):
         self._validate_headers(headers)
         correspondence_obj = request.env['sponsorship.correspondence'].sudo()
         correspondence = correspondence_obj.search([('uuid', '=', id)])
-        correspondence.last_read = fields.Datetime.now()
-        correspondence.read_count += 1
+        correspondence.write({
+            'last_read': fields.Datetime.now(),
+            'read_count': correspondence.read_count + 1,
+        })
         data = base64.b64decode(correspondence.letter_image.datas)
         response = Response(data, mimetype='application/pdf')
         _logger.info("A sponsor requested a child letter image !")

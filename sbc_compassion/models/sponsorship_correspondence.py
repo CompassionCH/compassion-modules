@@ -328,7 +328,7 @@ class SponsorshipCorrespondence(models.Model):
     ##########################################################################
 
     @api.one
-    def send_email(self):
+    def process_letter(self):
         pass
 
     ##########################################################################
