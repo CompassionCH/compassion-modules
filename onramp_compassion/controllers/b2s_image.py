@@ -11,9 +11,10 @@
 import logging
 import base64
 
-from openerp import http
+from openerp import fields, http
 from openerp.http import request
 
+from werkzeug.exceptions import BadRequest, NotFound
 from werkzeug.wrappers import Response
 
 _logger = logging.getLogger(__name__)
@@ -22,18 +23,26 @@ _logger = logging.getLogger(__name__)
 class RestController(http.Controller):
 
     @http.route('/b2s_image', type='http', auth='public', methods=['GET'])
-    def handler_b2s_image(self):
+    def handler_b2s_image(self, id=None):
         """ Handler for `/b2s_image` url for json data.
 
         It accepts only Communication Kit Notifications.
 
         """
+        if id is None:
+            raise BadRequest()
         headers = request.httprequest.headers
         self._validate_headers(headers)
         correspondence_obj = request.env['sponsorship.correspondence'].sudo()
-        test = correspondence_obj.browse(10)
-        response = Response(base64.b64decode(test.letter_image.datas),
-                            mimetype='application/pdf')
+        correspondence = correspondence_obj.search([('uuid', '=', id)])
+        if not correspondence:
+            raise NotFound()
+        correspondence.write({
+            'last_read': fields.Datetime.now(),
+            'read_count': correspondence.read_count + 1,
+        })
+        data = base64.b64decode(correspondence.letter_image.datas)
+        response = Response(data, mimetype='application/pdf')
         _logger.info("A sponsor requested a child letter image !")
         return response
 

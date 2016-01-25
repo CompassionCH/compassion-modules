@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Downloads, builds, and installs OpenCV 3.0.0 to $OPENCV_ROOT/install.
+# Downloads, builds, and installs OpenCV 3.1.0 to $OPENCV_ROOT/install.
 # Note that OPENCV_ROOT has to be set to some writable absolute path
 # before calling this script.
 # You will have to add $OPENCV_ROOT/install/lib/python2.7/site-packages
@@ -14,8 +14,8 @@ OPENCV_BUILD_DIR=${OPENCV_ROOT}/build
 OPENCV_INSTALL_DIR=${OPENCV_ROOT}/install
 OPENCV_CONTRIB_DIR=${OPENCV_ROOT}/contrib
 
-git clone https://github.com/Itseez/opencv.git -b 3.0.0 ${OPENCV_ROOT}
-git clone https://github.com/Itseez/opencv_contrib -b 3.0.0 ${OPENCV_CONTRIB_DIR}
+git clone https://github.com/Itseez/opencv.git -b 3.1.0 ${OPENCV_ROOT}
+git clone https://github.com/Itseez/opencv_contrib -b 3.1.0 ${OPENCV_CONTRIB_DIR}
 
 mkdir -p ${OPENCV_BUILD_DIR}
 mkdir -p ${OPENCV_INSTALL_DIR}

@@ -11,6 +11,7 @@
 
 import magic
 import base64
+import uuid
 
 from openerp import fields, models, api, exceptions, _
 
@@ -124,6 +125,13 @@ class SponsorshipCorrespondence(models.Model):
          'unique(kit_identifier)',
          _('The kit id already exists in database.'))
     ]
+
+    # 6. Letter remote access and stats
+    ###################################
+    uuid = fields.Char(required=True, default=lambda self: self._get_uuid())
+    read_url = fields.Char(compute='_get_read_url')
+    last_read = fields.Datetime()
+    read_count = fields.Integer()
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -314,3 +322,21 @@ class SponsorshipCorrespondence(models.Model):
         if 'state' in vals:
             vals['status_date'] = fields.Date.today()
         return super(SponsorshipCorrespondence, self).write(vals)
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+
+    @api.one
+    def process_letter(self):
+        pass
+
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
+    def _get_read_url(self):
+        base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+        self.read_url = "{}/b2s_image?id={}".format(base_url, self.uuid)
+
+    def _get_uuid(self):
+        return str(uuid.uuid4())
