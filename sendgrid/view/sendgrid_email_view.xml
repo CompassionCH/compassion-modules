@@ -15,7 +15,8 @@
             <field name="arch" type="xml">
                 <form string="Email">
                     <header>
-                        <button name="send" string="Send" type="object"/>
+                        <field name="state" widget="statusbar"/>
+                        <button name="send" string="Send" type="object" states="new" class="oe_highlight"/>
                     </header>
                     <sheet>
                         <group colspan="2" col="2">
@@ -46,12 +47,13 @@
             <field name="name">sendgrid.email.tree</field>
             <field name="model">sendgrid.email</field>
             <field name="arch" type="xml">
-                <tree string="Emails">
+                <tree string="Emails" colors="black:state == 'new'; gray:state == 'sent'">
                     <field name="email_to"/>
                     <field name="subject"/>
                     <field name="sent_date"/>
                     <field name="layout_template_id"/>
                     <field name="text_template_id"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>

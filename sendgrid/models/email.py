@@ -35,10 +35,13 @@ class Email(models.Model):
     subject = fields.Char()
     body_html = fields.Text()
     body_text = fields.Text()
-    sent_date = fields.Datetime()
+    sent_date = fields.Datetime(copy=False)
     substitution_ids = fields.One2many('sendgrid.substitution', 'email_id')
     layout_template_id = fields.Many2one('sendgrid.template')
     text_template_id = fields.Many2one('email.template')
+    state = fields.Selection([
+        ('new', _('New')),
+        ('sent', _('Sent'))], default='new')
 
     @api.one
     def send(self):
@@ -105,6 +108,9 @@ class Email(models.Model):
 
         if status == STATUS_OK:
             _logger.info("Email sent!")
-            self.sent_date = fields.Datetime.now()
+            self.write({
+                'sent_date': fields.Datetime.now(),
+                'state': 'sent'
+            })
         else:
             _logger.error("Failed to send email: {}".format(message))
