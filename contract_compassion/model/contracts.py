@@ -60,6 +60,11 @@ class recurring_contract(models.Model):
         'Partner Contract Number', required=True)
     end_reason = fields.Selection('get_ending_reasons')
     end_date = fields.Date(readonly=True, track_visibility='onchange')
+    paid_months = fields.Integer(
+        compute='_set_months_paid',
+        readonly=True,
+        string='Mois payés',
+        store=False)
     origin_id = fields.Many2one(
         'recurring.contract.origin', 'Origin', ondelete='restrict',
         track_visibility='onchange')
@@ -75,7 +80,8 @@ class recurring_contract(models.Model):
         ondelete='restrict', track_visibility='onchange')
     type = fields.Selection('_get_type', required=True)
     group_freq = fields.Char(
-        'Frequency', compute='_set_frequency', store=True, readonly=True)
+        string='Fréquence de payement',
+        compute='_set_frequency', store=True, readonly=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -162,6 +168,35 @@ class recurring_contract(models.Model):
         else:
             frequency = 'Every ' + frequency + 's'
         self.group_freq = frequency
+
+    @api.multi
+    def _set_months_paid(self):
+        """This is a query returning the number of months paid for a
+        sponsorship."""
+#         pdb.set_trace()
+        self._cr.execute(
+            "SELECT c.id as contract_id, "
+            "12 * (EXTRACT(year FROM next_invoice_date) - "
+            "      EXTRACT(year FROM current_date))"
+            " + EXTRACT(month FROM c.next_invoice_date) - 1"
+            " - COALESCE(due.total, 0) as paidmonth "
+            "FROM recurring_contract c left join ("
+            # Open invoices to find how many months are due
+            "   select contract_id, count(distinct invoice_id) as total "
+            "   from account_invoice_line l join product_product p on "
+            "       l.product_id = p.id "
+            "   where state='open' and "
+            # Exclude gifts from count
+            "   categ_name != 'Sponsor gifts'"
+            "   group by contract_id"
+            ") due on due.contract_id = c.id "
+            "WHERE c.id in (%s)" % ",".join([str(id) for id in self.ids])
+        )
+        res = self._cr.dictfetchall()
+        dict_contract_id_paidmonth = {
+            row['contract_id']: int(row['paidmonth']) for row in res}
+        for contract in self:
+            contract.paid_months = dict_contract_id_paidmonth[contract.id]
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -291,11 +326,12 @@ class recurring_contract(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Contract',
             'view_type': 'form',
-            'view_mode': 'form',
+            'view_mode': 'form,tree',
             'res_model': self._name,
             'res_id': self.id,
             'target': 'current',
-            'context': self.with_context(default_type=self.type).env.context
+            'domain': [["partner_id", "=", self.partner_id.id]],
+            'context': "{'partner_contracts_view': False, 'default_type': 'S'}"
         }
 
     ##########################################################################
