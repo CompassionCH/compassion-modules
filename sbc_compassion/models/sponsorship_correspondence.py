@@ -131,7 +131,7 @@ class SponsorshipCorrespondence(models.Model):
     uuid = fields.Char(required=True, default=lambda self: self._get_uuid())
     read_url = fields.Char(compute='_get_read_url')
     last_read = fields.Datetime()
-    read_count = fields.Integer()
+    read_count = fields.Integer(default=0)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -209,7 +209,7 @@ class SponsorshipCorrespondence(models.Model):
                     ('sponsorship_id', '=', letter.sponsorship_id.id),
                     ('direction', '=', "Beneficiary To Supporter")
                     ])
-                if count == 0:
+                if count == 1:
                     letter.is_first_letter = True
                 else:
                     letter.is_first_letter = False
@@ -334,9 +334,12 @@ class SponsorshipCorrespondence(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    @api.multi
     def _get_read_url(self):
         base_url = self.env['ir.config_parameter'].get_param('web.base.url')
-        self.read_url = "{}/b2s_image?id={}".format(base_url, self.uuid)
+        for letter in self:
+            letter.read_url = "{}/b2s_image?id={}".format(
+                base_url, letter.uuid)
 
     def _get_uuid(self):
         return str(uuid.uuid4())
