@@ -27,21 +27,31 @@ _logger = logging.getLogger(__name__)
 class Email(models.Model):
     """ Email message sent through SendGrid """
     _name = 'sendgrid.email'
+    _order = 'sent_date desc'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    email_to = fields.Char()
+    email_to = fields.Char(required=True)
+    email_from = fields.Char(
+        required=True,
+        default=lambda self: self.get_default_from())
+    cc_address = fields.Char()
     subject = fields.Char()
     body_html = fields.Text()
     body_text = fields.Text()
     sent_date = fields.Datetime(copy=False)
-    substitution_ids = fields.One2many('sendgrid.substitution', 'email_id')
+    substitution_ids = fields.One2many(
+        'sendgrid.substitution', 'email_id', copy=True)
     layout_template_id = fields.Many2one('sendgrid.template')
     text_template_id = fields.Many2one('email.template')
     state = fields.Selection([
         ('new', _('New')),
         ('sent', _('Sent'))], default='new')
+
+    @api.model
+    def get_default_from(self):
+        return config.get('sendgrid_from_address')
 
     @api.one
     def send(self):
@@ -50,12 +60,6 @@ class Email(models.Model):
             raise exceptions.Warning(
                 'ConfigError',
                 _('Missing sendgrid_api_key in conf file'))
-
-        from_address = config.get('sendgrid_from_address')
-        if not from_address:
-            raise exceptions.Warning(
-                'ConfigError',
-                _('Missing sendgrid_from_address in conf file'))
 
         production_mode = config.get('sendgrid_production_mode')
 
@@ -68,7 +72,7 @@ class Email(models.Model):
         sg = sendgrid.SendGridClient(api_key)
         message = sendgrid.Mail()
 
-        message.set_from(from_address)
+        message.set_from(self.email_from)
 
         if self.text_template_id:
             message.set_subject(self.text_template_id.subject)
@@ -84,6 +88,8 @@ class Email(models.Model):
 
         if production_mode:
             message.add_to(self.email_to)
+            if self.cc_address:
+                message.add_cc(self.cc_address)
         else:
             _logger.info('Sending email to test address {}'.format(
                          test_address))

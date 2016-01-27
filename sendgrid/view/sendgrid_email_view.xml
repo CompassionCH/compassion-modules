@@ -4,7 +4,7 @@
         <!-- TODO: move -->
         <!-- Top menu item -->
         <menuitem name="SendGrid"
-                  id="menu_sendgrid_root"/>
+                  id="menu_sendgrid_root" groups="base.group_erp_manager"/>
         <menuitem id="menu_sendgrid_section" parent="menu_sendgrid_root"
                   name="SendGrid"/>
 
@@ -21,6 +21,9 @@
                     <sheet>
                         <group colspan="2" col="2">
                             <field name="email_to"/>
+                            <field name="email_from"/>
+                            <field name="cc_address"/>
+                            <separator colspan="2"/>
                             <field name="subject"/>
                             <field name="layout_template_id"/>
                             <field name="text_template_id"/>
