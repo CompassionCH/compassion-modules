@@ -154,3 +154,17 @@ class res_partner(models.Model):
             [('code', '=', '1050')]).ids
         return self.with_context(
             search_default_account_id=account_ids[0]).show_move_lines()
+
+    @api.multi
+    def open_contracts(self):
+        """ Used to bypass opening a contract in popup mode from
+        res_partner view. """
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Contracts',
+            'res_model': 'recurring.contract',
+            "views": [[False, "tree"], [False, "form"]],
+            'res_id': self.contracts_fully_managed[0].id,
+            'domain': [["partner_id", "=", self.id]],
+            }
