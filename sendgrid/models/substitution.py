@@ -21,5 +21,5 @@ class Substitution(models.Model):
     ##########################################################################
     key = fields.Char()
     value = fields.Char()
-    email_id = fields.Many2one('sendgrid.email', required=True,
+    email_id = fields.Many2one('mail.mail', required=True,
                                ondelete='cascade')

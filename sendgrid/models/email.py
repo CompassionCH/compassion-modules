@@ -26,35 +26,24 @@ _logger = logging.getLogger(__name__)
 
 class Email(models.Model):
     """ Email message sent through SendGrid """
-    _name = 'sendgrid.email'
-    _order = 'sent_date desc'
+    _inherit = 'mail.mail'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    email_to = fields.Char(required=True)
-    email_from = fields.Char(
-        required=True,
-        default=lambda self: self.get_default_from())
-    cc_address = fields.Char()
-    subject = fields.Char()
-    body_html = fields.Text()
     body_text = fields.Text()
     sent_date = fields.Datetime(copy=False)
     substitution_ids = fields.One2many(
         'sendgrid.substitution', 'email_id', copy=True)
     layout_template_id = fields.Many2one('sendgrid.template')
     text_template_id = fields.Many2one('email.template')
-    state = fields.Selection([
-        ('new', _('New')),
-        ('sent', _('Sent'))], default='new')
 
     @api.model
     def get_default_from(self):
         return config.get('sendgrid_from_address')
 
     @api.one
-    def send(self):
+    def send_sendgrid(self):
         api_key = config.get('sendgrid_api_key')
         if not api_key:
             raise exceptions.Warning(
@@ -75,11 +64,24 @@ class Email(models.Model):
         message.set_from(self.email_from)
 
         if self.text_template_id:
-            message.set_subject(self.text_template_id.subject)
-            message.set_html(self.text_template_id.body_html)
-        else:
-            message.set_subject(self.subject or ' ')
-            message.set_html(self.body_html or ' ')
+            substitution_dict = {}
+            for substitution in self.substitution_ids:
+                substitution_dict[substitution.key] = substitution.value
+            self.subject = self.text_template_id.subject.format(
+                **substitution_dict)
+            self.body_html = self.text_template_id.body_html.format(
+                **substitution_dict)
+
+        message.set_subject(self.subject or ' ')
+
+        html = self.body_html or ' '
+        message.set_html(html)
+
+        # Update message body in associated message, which will be shown in
+        # message history view for linked odoo object defined through fields
+        # model and res_id
+        self.mail_message_id.body = html
+
         message.set_text(self.body_text or ' ')
 
         if production_mode:
