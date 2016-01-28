@@ -165,5 +165,6 @@ class res_partner(models.Model):
             'res_model': 'recurring.contract',
             "views": [[False, "tree"], [False, "form"]],
             'res_id': self.contracts_fully_managed[0].id,
-            'domain': [["partner_id", "=", self.id]],
+            'domain': ['|', ('correspondant_id', '=', self.id),
+                       ('partner_id', '=', self.id)],
             }
