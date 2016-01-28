@@ -60,11 +60,9 @@ class recurring_contract(models.Model):
         'Partner Contract Number', required=True)
     end_reason = fields.Selection('get_ending_reasons')
     end_date = fields.Date(readonly=True, track_visibility='onchange')
-    paid_months = fields.Integer(
+    months_paid = fields.Integer(
         compute='_set_months_paid',
-        readonly=True,
-        string='Mois payés',
-        store=False)
+        string='Mois payés')
     origin_id = fields.Many2one(
         'recurring.contract.origin', 'Origin', ondelete='restrict',
         track_visibility='onchange')
@@ -196,7 +194,7 @@ class recurring_contract(models.Model):
         dict_contract_id_paidmonth = {
             row['contract_id']: int(row['paidmonth']) for row in res}
         for contract in self:
-            contract.paid_months = dict_contract_id_paidmonth[contract.id]
+            contract.months_paid = dict_contract_id_paidmonth[contract.id]
 
     ##########################################################################
     #                              ORM METHODS                               #

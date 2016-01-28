@@ -21,7 +21,7 @@
                     <field name="payment_term_id" position="after">
                         <field name="group_freq" invisible="not context.get('partner_contracts_view')"/>
                         <field name="last_paid_invoice_date" invisible="not context.get('partner_contracts_view')"/>
-                        <field name="paid_months" invisible="not context.get('partner_contracts_view')"/>
+                        <field name="months_paid" invisible="not context.get('partner_contracts_view')"/>
                     </field>
                     <field name="reference" position="replace" />
                 </data>
@@ -87,7 +87,7 @@
                         </group>
                         <group>
                             <field name="group_freq"/>
-                            <field name="paid_months"/>
+                            <field name="months_paid"/>
                             <field name="last_paid_invoice_date"/>
                         </group>
                     </group>
