@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import fields, models, _
+from openerp import fields, models, api, _
 
 
 class ResPartner(models.Model):
@@ -34,3 +34,15 @@ class ResPartner(models.Model):
     send_original = fields.Boolean(
         help='Indicates that we request the original letters for this sponsor'
         )
+
+    @api.multi
+    def open_letters(self):
+        """ Open the tree view correspondence of partner """
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Letters',
+            'res_model': 'sponsorship.correspondence',
+            "views": [[False, "tree"], [False, "form"]],
+            'domain': [["correspondant_id", "=", self.id]],
+            }
