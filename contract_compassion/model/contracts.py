@@ -62,7 +62,7 @@ class recurring_contract(models.Model):
     end_date = fields.Date(readonly=True, track_visibility='onchange')
     months_paid = fields.Integer(
         compute='_set_months_paid',
-        string='Mois payés')
+        string='Months paid')
     origin_id = fields.Many2one(
         'recurring.contract.origin', 'Origin', ondelete='restrict',
         track_visibility='onchange')
@@ -78,7 +78,7 @@ class recurring_contract(models.Model):
         ondelete='restrict', track_visibility='onchange')
     type = fields.Selection('_get_type', required=True)
     group_freq = fields.Char(
-        string='Fréquence de payement',
+        string='Payment frequency',
         compute='_set_frequency', store=True, readonly=True)
 
     ##########################################################################
@@ -146,13 +146,13 @@ class recurring_contract(models.Model):
     def _set_frequency(self):
         recurring_value = 0
         frequencies = {
-            '1 month': 'Monthly',
-            '2 month': 'Bimonthly',
-            '3 month': 'Quarterly',
-            '4 month': 'Four-monthly',
-            '6 month': 'Bi-annual',
-            '12 month': 'Annual',
-            '1 year': 'Annual',
+            '1 month': _('Monthly'),
+            '2 month': _('Bimonthly'),
+            '3 month': _('Quarterly'),
+            '4 month': _('Four-monthly'),
+            '6 month': _('Bi-annual'),
+            '12 month': _('Annual'),
+            '1 year': _('Annual'),
         }
         if self.type == 'S':
             recurring_value = self.group_id.advance_billing_months
@@ -171,7 +171,6 @@ class recurring_contract(models.Model):
     def _set_months_paid(self):
         """This is a query returning the number of months paid for a
         sponsorship."""
-#         pdb.set_trace()
         self._cr.execute(
             "SELECT c.id as contract_id, "
             "12 * (EXTRACT(year FROM next_invoice_date) - "
