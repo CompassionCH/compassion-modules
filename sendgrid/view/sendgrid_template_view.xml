@@ -39,9 +39,9 @@
             <field name="view_id" ref="view_sendgrid_template_tree"/>
         </record>
 
-        <menuitem id="menu_sendgrid_template" parent="menu_sendgrid_section"
-                  name="SendGrid Templates"
+        <!-- Add menu entry in Settings/Email -->
+        <menuitem name="SendGrid Templates" id="menu_sendgrid_template"
+                  parent="base.menu_email"
                   action="sendgrid.open_view_sendgrid_template_tree"/>
-
     </data>
 </openerp>
