@@ -60,6 +60,9 @@ class recurring_contract(models.Model):
         'Partner Contract Number', required=True)
     end_reason = fields.Selection('get_ending_reasons')
     end_date = fields.Date(readonly=True, track_visibility='onchange')
+    months_paid = fields.Integer(
+        compute='_set_months_paid',
+        string='Months paid')
     origin_id = fields.Many2one(
         'recurring.contract.origin', 'Origin', ondelete='restrict',
         track_visibility='onchange')
@@ -75,7 +78,8 @@ class recurring_contract(models.Model):
         ondelete='restrict', track_visibility='onchange')
     type = fields.Selection('_get_type', required=True)
     group_freq = fields.Char(
-        'Frequency', compute='_set_frequency', store=True, readonly=True)
+        string='Payment frequency',
+        compute='_set_frequency', store=True, readonly=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -137,23 +141,59 @@ class recurring_contract(models.Model):
         return [('O', _('General'))]
 
     @api.one
-    @api.depends('group_id.recurring_unit', 'group_id.recurring_value')
+    @api.depends('group_id.recurring_unit', 'group_id.recurring_value',
+                 'group_id.advance_billing_months')
     def _set_frequency(self):
+        recurring_value = 0
         frequencies = {
-            '1 month': 'Monthly',
-            '2 month': 'Bimonthly',
-            '3 month': 'Quarterly',
-            '4 month': 'Four-monthly',
-            '6 month': 'Bi-annual',
-            '12 month': 'Annual',
-            '1 year': 'Annual',
+            '1 month': _('Monthly'),
+            '2 month': _('Bimonthly'),
+            '3 month': _('Quarterly'),
+            '4 month': _('Four-monthly'),
+            '6 month': _('Bi-annual'),
+            '12 month': _('Annual'),
+            '1 year': _('Annual'),
         }
-        recurring_value = self.group_id.recurring_value
-        recurring_unit = self.group_id.recurring_unit
+        if self.type == 'S':
+            recurring_value = self.group_id.advance_billing_months
+            recurring_unit = 'month'
+        else:
+            recurring_value = self.group_id.recurring_value
+            recurring_unit = self.group_id.recurring_unit
         frequency = "{0} {1}".format(recurring_value, recurring_unit)
         if frequency in frequencies:
             frequency = frequencies[frequency]
+        else:
+            frequency = 'Every ' + frequency + 's'
         self.group_freq = frequency
+
+    @api.multi
+    def _set_months_paid(self):
+        """This is a query returning the number of months paid for a
+        sponsorship."""
+        self._cr.execute(
+            "SELECT c.id as contract_id, "
+            "12 * (EXTRACT(year FROM next_invoice_date) - "
+            "      EXTRACT(year FROM current_date))"
+            " + EXTRACT(month FROM c.next_invoice_date) - 1"
+            " - COALESCE(due.total, 0) as paidmonth "
+            "FROM recurring_contract c left join ("
+            # Open invoices to find how many months are due
+            "   select contract_id, count(distinct invoice_id) as total "
+            "   from account_invoice_line l join product_product p on "
+            "       l.product_id = p.id "
+            "   where state='open' and "
+            # Exclude gifts from count
+            "   categ_name != 'Sponsor gifts'"
+            "   group by contract_id"
+            ") due on due.contract_id = c.id "
+            "WHERE c.id in (%s)" % ",".join([str(id) for id in self.ids])
+        )
+        res = self._cr.dictfetchall()
+        dict_contract_id_paidmonth = {
+            row['contract_id']: int(row['paidmonth']) for row in res}
+        for contract in self:
+            contract.months_paid = dict_contract_id_paidmonth[contract.id]
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -273,22 +313,6 @@ class recurring_contract(models.Model):
                 payment_term in ('LSV', 'Postfinance') and not is_active):
             next_invoice_date = next_invoice_date + relativedelta(months=+1)
         self.next_invoice_date = next_invoice_date.strftime(DF)
-
-    @api.multi
-    def open_contract(self):
-        """ Used to bypass opening a contract in popup mode from
-        res_partner view. """
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Contract',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': self._name,
-            'res_id': self.id,
-            'target': 'current',
-            'context': self.with_context(default_type=self.type).env.context
-        }
 
     ##########################################################################
     #                            WORKFLOW METHODS                            #
