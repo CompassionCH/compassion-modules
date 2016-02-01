@@ -131,6 +131,7 @@ class res_partner(models.Model):
         context = self.with_context({
             'default_partner_id': self.id,
             'default_type': 'S',
+            'type': 'S',
         }).env.context
         return {
             'type': 'ir.actions.act_window',
