@@ -18,7 +18,7 @@
         <record id="view_res_partner_compassion_line_button_form" model="ir.ui.view">
             <field name="name">partner.compassion.line.button.form</field>
             <field name="model">res.partner</field>
-            <field name="inherit_id" ref="sponsorship_compassion.view_res_partner_invoice_line_button_form"/>
+            <field name="inherit_id" ref="partner_compassion.view_partner_form_compassion"/>
             <field eval="18" name="priority"/>
             <field name="arch" type="xml">
                 <!-- Add button letter in tab correspondence -->
