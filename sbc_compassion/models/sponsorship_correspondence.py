@@ -28,7 +28,7 @@ class SponsorshipCorrespondence(models.Model):
     """
     _name = 'sponsorship.correspondence'
 
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'ir.needaction_mixin']
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -201,7 +201,7 @@ class SponsorshipCorrespondence(models.Model):
                 count = self.search_count([
                     ('sponsorship_id', '=', letter.sponsorship_id.id),
                     ('direction', '=', "Beneficiary To Supporter")
-                    ])
+                ])
                 if count == 1:
                     letter.is_first_letter = True
                 else:
@@ -336,3 +336,9 @@ class SponsorshipCorrespondence(models.Model):
 
     def _get_uuid(self):
         return str(uuid.uuid4())
+
+    @api.model
+    def _needaction_domain_get(self):
+        domain = ['&', ('direction', '=', 'Beneficiary To Supporter'),
+                  ('state', '=', 'Published to Global Partner')]
+        return domain
