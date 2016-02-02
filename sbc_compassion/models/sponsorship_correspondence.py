@@ -126,13 +126,6 @@ class SponsorshipCorrespondence(models.Model):
          _('The kit id already exists in database.'))
     ]
 
-    # 6. Letter remote access and stats
-    ###################################
-    uuid = fields.Char(required=True, default=lambda self: self._get_uuid())
-    read_url = fields.Char(compute='_get_read_url')
-    last_read = fields.Datetime()
-    read_count = fields.Integer(default=0)
-
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################

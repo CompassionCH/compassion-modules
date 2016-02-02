@@ -104,18 +104,21 @@
             <field name="res_model">sponsorship.correspondence</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_state_published':1, 'search_default_direction_bts':1}</field>
         </record>
-
+        
         <!-- Extends the search on sponsorship correspondence -->
         <record id="sponsorship_correspondence_view_search" model="ir.ui.view">
             <field name="name">sponsorship.correspondence.search</field>
             <field name="model">sponsorship.correspondence</field>
             <field name="arch" type="xml">
                 <search>
-                    <filter name="directionSTB" string="Supporter To Beneficiary" domain="[('direction','=','Supporter To Beneficiary')]" />
+                    <filter name="direction_stb" string="Supporter To Beneficiary" domain="[('direction','=','Supporter To Beneficiary')]" />
                     <separator />
-                    <filter name="directionBTS" string="Beneficiary To Supporter" domain="[('direction','=','Beneficiary To Supporter')]" />
-
+                    <filter name="direction_bts" string="Beneficiary To Supporter" domain="[('direction','=','Beneficiary To Supporter')]" />
+                    <separator />
+                    <filter name="state_published" string="Published state" domain="[('state','=','Published to Global Partner')]" />
+                    
                     <group expand="0" string="Group By">
                         <filter string="Partner" domain="[]" context="{'group_by': 'correspondant_id'}" />
                         <filter string="Sponsorship" domain="[]" context="{'group_by': 'sponsorship_id'}" />
