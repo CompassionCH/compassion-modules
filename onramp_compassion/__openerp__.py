@@ -28,7 +28,7 @@
 ##############################################################################
 {
     'name': 'OnRamp Compassion',
-    'version': '1.1',
+    'version': '8.0.1',
     'category': 'Misc',
     'author': 'Compassion CH',
     'maintainer': 'Compassion CH',
