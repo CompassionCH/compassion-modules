@@ -50,14 +50,14 @@ class SponsorshipCorrespondence(models.Model):
         selection=[
             ('Supporter To Beneficiary', _('Supporter to beneficiary')),
             ('Beneficiary To Supporter', _('Beneficiary to supporter'))],
-        required=True, default='Supporter To Beneficiary')
+        required=True, default='Supporter To Beneficiary', readonly=True)
     communication_type_ids = fields.Many2many(
         'sponsorship.correspondence.type',
         'sponsorship_correspondence_type_relation',
         'correspondence_id', 'type_id',
         'Communication type',
         default=lambda self: [(4, self.env.ref(
-            'sbc_compassion.correspondence_type_supporter').id)])
+            'sbc_compassion.correspondence_type_supporter').id)], readonly=True)
     state = fields.Selection(
         'get_states', default='Received in the system',
         track_visibility='onchange')
