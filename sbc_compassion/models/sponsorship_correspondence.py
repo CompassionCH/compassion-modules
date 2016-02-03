@@ -336,9 +336,3 @@ class SponsorshipCorrespondence(models.Model):
 
     def _get_uuid(self):
         return str(uuid.uuid4())
-
-    @api.model
-    def _needaction_domain_get(self):
-        domain = ['&', ('direction', '=', 'Beneficiary To Supporter'),
-                  ('state', '=', 'Published to Global Partner')]
-        return domain

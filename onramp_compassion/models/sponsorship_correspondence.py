@@ -23,7 +23,7 @@ from openerp.addons.connector.session import ConnectorSession
 class SponsorshipCorrespondence(models.Model):
     _inherit = 'sponsorship.correspondence'
 
-    # 6. Letter remote access and stats
+    # Letter remote access and stats
     ###################################
     uuid = fields.Char(required=True, default=lambda self: self._get_uuid())
     read_url = fields.Char(compute='_get_read_url')
@@ -136,6 +136,13 @@ class SponsorshipCorrespondence(models.Model):
                 'state': 'success',
                 'process_date': fields.Datetime.now()})
         return gmc_message
+
+    @api.model
+    def _needaction_domain_get(self):
+        domain = [('direction', '=', 'Beneficiary To Supporter'),
+                  ('state', '=', 'Published to Global Partner'),
+                  ('last_read', '=', False)]
+        return domain
 
 ##############################################################################
 #                            CONNECTOR METHODS                               #
