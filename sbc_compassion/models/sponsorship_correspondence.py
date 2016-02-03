@@ -28,7 +28,7 @@ class SponsorshipCorrespondence(models.Model):
     """
     _name = 'sponsorship.correspondence'
 
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'ir.needaction_mixin']
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -50,14 +50,14 @@ class SponsorshipCorrespondence(models.Model):
         selection=[
             ('Supporter To Beneficiary', _('Supporter to beneficiary')),
             ('Beneficiary To Supporter', _('Beneficiary to supporter'))],
-        required=True, default='Supporter To Beneficiary')
+        required=True, default='Supporter To Beneficiary', readonly=True)
     communication_type_ids = fields.Many2many(
         'sponsorship.correspondence.type',
         'sponsorship_correspondence_type_relation',
         'correspondence_id', 'type_id',
         'Communication type',
         default=lambda self: [(4, self.env.ref(
-            'sbc_compassion.correspondence_type_supporter').id)])
+            'sbc_compassion.correspondence_type_supporter').id)], readonly=True)
     state = fields.Selection(
         'get_states', default='Received in the system',
         track_visibility='onchange')
@@ -125,13 +125,6 @@ class SponsorshipCorrespondence(models.Model):
          'unique(kit_identifier)',
          _('The kit id already exists in database.'))
     ]
-
-    # 6. Letter remote access and stats
-    ###################################
-    uuid = fields.Char(required=True, default=lambda self: self._get_uuid())
-    read_url = fields.Char(compute='_get_read_url')
-    last_read = fields.Datetime()
-    read_count = fields.Integer(default=0)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -208,7 +201,7 @@ class SponsorshipCorrespondence(models.Model):
                 count = self.search_count([
                     ('sponsorship_id', '=', letter.sponsorship_id.id),
                     ('direction', '=', "Beneficiary To Supporter")
-                    ])
+                ])
                 if count == 1:
                     letter.is_first_letter = True
                 else:

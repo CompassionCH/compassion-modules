@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Add column last_read in the tree view sponsorship_correspondance -->
+        <record id="view_sponsorship_correspondence_tree_compassion" model="ir.ui.view">
+            <field name="name">sponsorship.correspondence.tree</field>
+            <field name="model">sponsorship.correspondence</field>
+            <field name="inherit_id" ref="sbc_compassion.view_sponsorship_correspondence_tree" />
+            <field name="arch" type="xml">
+                <field name="status_date" position="after">
+                    <field name="last_read" />
+                </field>
+            </field>
+        </record>
+
+        <!-- Extends the search on sponsorship correspondence with filter unread -->
+        <record id="sponsorship_correspondence_view_search_compassion" model="ir.ui.view">
+            <field name="name">sponsorship.correspondence.search</field>
+            <field name="model">sponsorship.correspondence</field>
+            <field name="inherit_id" ref="sbc_compassion.sponsorship_correspondence_view_search" />
+            <field name="arch" type="xml">
+                <search>
+                    <separator />
+                    <filter name="unread" string="Unread" domain="[('last_read','=',False)]" />
+                </search>
+            </field>
+        </record>
+
+        <!-- Extends action by add a default search on state unread -->
+        <record id="sbc_compassion.action_compassion_sponsorship_correspondence_form" model="ir.actions.act_window">
+            <field name="context">{'search_default_state_published':1, 'search_default_direction_bts':1, 'search_default_unread':1,}</field>
+        </record>
+    </data>
+</openerp>
