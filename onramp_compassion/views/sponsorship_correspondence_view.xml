@@ -28,7 +28,7 @@
 
         <!-- Extends action by add a default search on state unread -->
         <record id="sbc_compassion.action_compassion_sponsorship_correspondence_form" model="ir.actions.act_window">
-            <field name="context">{'search_default_state_published':1, 'search_default_direction_bts':1, 'search_default_unread':1,}</field>
+            <field name="context">{'search_default_state_published':1, 'search_default_unread':1,}</field>
         </record>
     </data>
 </openerp>
