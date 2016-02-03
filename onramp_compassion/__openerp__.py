@@ -40,6 +40,7 @@
     'data': [
         'views/gmc_message_view.xml',
         'views/get_letter_image_wizard_view.xml',
+        'views/sponsorship_correspondence_view.xml',
         'data/gmc_action.xml'],
     'demo': ['demo/res_users.xml'],
     'test': [],
