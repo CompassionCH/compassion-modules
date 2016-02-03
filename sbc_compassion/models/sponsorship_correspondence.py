@@ -57,7 +57,8 @@ class SponsorshipCorrespondence(models.Model):
         'correspondence_id', 'type_id',
         'Communication type',
         default=lambda self: [(4, self.env.ref(
-            'sbc_compassion.correspondence_type_supporter').id)], readonly=True)
+            'sbc_compassion.correspondence_type_supporter').id)],
+        readonly=True)
     state = fields.Selection(
         'get_states', default='Received in the system',
         track_visibility='onchange')
