@@ -1,58 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <!-- TODO: move -->
-        <!-- Top menu item -->
-        <menuitem name="SendGrid"
-                  id="menu_sendgrid_root"/>
-        <menuitem id="menu_sendgrid_section" parent="menu_sendgrid_root"
-                  name="SendGrid"/>
-
-        <!-- Form view -->
-        <record id="view_sendgrid_email_form" model="ir.ui.view">
-            <field name="name">sendgrid.email.form</field>
-            <field name="model">sendgrid.email</field>
+        <!-- Extension of mail.mail form view -->
+        <record model="ir.ui.view" id="email_message_tree_view">
+            <field name="name">mail.mail.sendgrid</field>
+            <field name="model">mail.mail</field>
+            <field name="inherit_id" ref="mail.view_mail_form"/>
             <field name="arch" type="xml">
-                <form string="Email">
-                    <header>
-                        <button name="send" string="Send" type="object"/>
-                    </header>
-                    <sheet>
-                        <group colspan="2" col="2">
-                            <field name="email_to"/>
-                            <field name="subject"/>
+                <button name="send" position="after">
+                    <button name="send_sendgrid" string="Send (SendGrid)" type="object"/>
+                </button>
+                <page string="Attachments" position="after">
+                    <page string="SendGrid">
+                        <group>
                             <field name="layout_template_id"/>
                             <field name="text_template_id"/>
                             <field name="sent_date" readonly="1"/>
+                            <field name="body_text"/>
                         </group>
-
-                        <notebook colspan="4">
-                            <page string="Message body (HTML)">
-                                <field name="body_html" nolabel="1"/>
-                            </page>
-                            <page string="Message body (Text)">
-                                <field name="body_text" nolabel="1"/>
-                            </page>
-                        </notebook>
-
                         <field name="substitution_ids" widget="one2many_list"/>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
-        <!-- Tree view -->
-        <record id="view_sendgrid_email_tree" model="ir.ui.view">
-            <field name="name">sendgrid.email.tree</field>
-            <field name="model">sendgrid.email</field>
-            <field name="arch" type="xml">
-                <tree string="Emails">
-                    <field name="email_to"/>
-                    <field name="subject"/>
-                    <field name="sent_date"/>
-                    <field name="layout_template_id"/>
-                    <field name="text_template_id"/>
-                </tree>
+                    </page>
+                </page>
             </field>
         </record>
 
@@ -67,19 +35,5 @@
                 </tree>
             </field>
         </record>
-
-        <!-- Action opening the tree view -->
-        <record id="open_view_sendgrid_email_tree" model="ir.actions.act_window">
-            <field name="name">Email</field>
-            <field name="res_model">sendgrid.email</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form,tree</field>
-            <field name="view_id" ref="view_sendgrid_email_tree"/>
-        </record>
-
-        <menuitem id="menu_sendgrid_email" parent="menu_sendgrid_section"
-                  name="SendGrid Emails"
-                  action="sendgrid.open_view_sendgrid_email_tree"/>
-
     </data>
 </openerp>

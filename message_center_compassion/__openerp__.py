@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion CH Message Center',
-    'version': '1.6',
+    'version': '8.0.1',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',

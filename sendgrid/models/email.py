@@ -26,33 +26,29 @@ _logger = logging.getLogger(__name__)
 
 class Email(models.Model):
     """ Email message sent through SendGrid """
-    _name = 'sendgrid.email'
+    _inherit = 'mail.mail'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    email_to = fields.Char()
-    subject = fields.Char()
-    body_html = fields.Text()
     body_text = fields.Text()
-    sent_date = fields.Datetime()
-    substitution_ids = fields.One2many('sendgrid.substitution', 'email_id')
+    sent_date = fields.Datetime(copy=False)
+    substitution_ids = fields.One2many(
+        'sendgrid.substitution', 'email_id', copy=True)
     layout_template_id = fields.Many2one('sendgrid.template')
     text_template_id = fields.Many2one('email.template')
 
+    @api.model
+    def get_default_from(self):
+        return config.get('sendgrid_from_address')
+
     @api.one
-    def send(self):
+    def send_sendgrid(self):
         api_key = config.get('sendgrid_api_key')
         if not api_key:
             raise exceptions.Warning(
                 'ConfigError',
                 _('Missing sendgrid_api_key in conf file'))
-
-        from_address = config.get('sendgrid_from_address')
-        if not from_address:
-            raise exceptions.Warning(
-                'ConfigError',
-                _('Missing sendgrid_from_address in conf file'))
 
         production_mode = config.get('sendgrid_production_mode')
 
@@ -65,22 +61,33 @@ class Email(models.Model):
         sg = sendgrid.SendGridClient(api_key)
         message = sendgrid.Mail()
 
-        message.set_from(from_address)
+        message.set_from(self.email_from)
 
         if self.text_template_id:
-            message.set_subject(self.text_template_id.subject)
-            message.set_html(self.text_template_id.body_html)
-        else:
-            subject = self.subject or ' '
-            message.set_subject(subject)
-            html = self.body_html or ' '
-            message.set_html(html)
+            substitution_dict = {}
+            for substitution in self.substitution_ids:
+                substitution_dict[substitution.key] = substitution.value
+            self.subject = self.text_template_id.subject.format(
+                **substitution_dict)
+            self.body_html = self.text_template_id.body_html.format(
+                **substitution_dict)
 
-        text = self.body_text or ' '
-        message.set_text(text)
+        message.set_subject(self.subject or ' ')
+
+        html = self.body_html or ' '
+        message.set_html(html)
+
+        # Update message body in associated message, which will be shown in
+        # message history view for linked odoo object defined through fields
+        # model and res_id
+        self.mail_message_id.body = html
+
+        message.set_text(self.body_text or ' ')
 
         if production_mode:
             message.add_to(self.email_to)
+            if self.cc_address:
+                message.add_cc(self.cc_address)
         else:
             _logger.info('Sending email to test address {}'.format(
                          test_address))
@@ -105,6 +112,9 @@ class Email(models.Model):
 
         if status == STATUS_OK:
             _logger.info("Email sent!")
-            self.sent_date = fields.Datetime.now()
+            self.write({
+                'sent_date': fields.Datetime.now(),
+                'state': 'sent'
+            })
         else:
             _logger.error("Failed to send email: {}".format(message))

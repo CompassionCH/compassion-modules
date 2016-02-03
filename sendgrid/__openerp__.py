@@ -30,10 +30,11 @@
 
 {
     'name': 'SendGrid',
-    'version': '0.1',
+    'version': '8.0.1',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
+    'depends': ['base', 'mail'],
     'data': [
         'security/ir.model.access.csv',
         'view/sendgrid_email_view.xml',

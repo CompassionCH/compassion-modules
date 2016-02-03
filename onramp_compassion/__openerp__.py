@@ -28,7 +28,7 @@
 ##############################################################################
 {
     'name': 'OnRamp Compassion',
-    'version': '1.1',
+    'version': '8.0.1',
     'category': 'Misc',
     'author': 'Compassion CH',
     'maintainer': 'Compassion CH',
@@ -40,6 +40,7 @@
     'data': [
         'views/gmc_message_view.xml',
         'views/get_letter_image_wizard_view.xml',
+        'views/sponsorship_correspondence_view.xml',
         'data/gmc_action.xml'],
     'demo': ['demo/res_users.xml'],
     'test': [],

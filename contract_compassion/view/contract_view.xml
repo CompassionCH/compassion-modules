@@ -19,11 +19,9 @@
                         <field name="partner_codega" invisible="context.get('partner_contracts_view')" />
                     </field>
                     <field name="payment_term_id" position="after">
-                        <field name="group_freq" />
-                        <field name="origin_id" />
-                    </field>
-                    <field name="state" position="after">
-                        <button name="open_contract" type="object" invisible="not context.get('partner_contracts_view')" icon="STOCK_JUMP_TO" />
+                        <field name="group_freq" invisible="not context.get('partner_contracts_view')"/>
+                        <field name="last_paid_invoice_date" invisible="not context.get('partner_contracts_view')"/>
+                        <field name="months_paid" invisible="not context.get('partner_contracts_view')"/>
                     </field>
                     <field name="reference" position="replace" />
                 </data>
@@ -86,6 +84,11 @@
                                         'R':'red', 'N':'blue'}, 'field_color':'state'}"/>
                             <field name="end_reason" states="terminated,cancelled"/>
                             <field name="num_pol_ga" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="group_freq"/>
+                            <field name="months_paid"/>
+                            <field name="last_paid_invoice_date"/>
                         </group>
                     </group>
                 </xpath> 

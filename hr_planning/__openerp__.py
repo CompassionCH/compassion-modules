@@ -29,7 +29,7 @@
 
 {
     'name': 'Compassion CH - Planning',
-    'version': '1.1',
+    'version': '8.0.1',
     'category': 'CRM',
     'sequence': 150,
     'author': 'Compassion CH',
