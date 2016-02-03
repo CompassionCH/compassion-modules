@@ -1,0 +1,1393 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* sbc_compassion
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-02-02 12:38+0000\n"
+"PO-Revision-Date: 2016-02-02 14:21+0100\n"
+"Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: fr_CH\n"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.template,active:0
+msgid "Active"
+msgstr "Actif"
+
+#. module: sbc_compassion
+#: field:test.import.letters.history,csv_file_ids:0
+msgid "Add a CSV file"
+msgstr "Ajouter un fichier CSV"
+
+#. module: sbc_compassion
+#: field:import.letters.history,data:0
+#: field:test.import.letters.history,data:0
+msgid "Add a file"
+msgstr "Ajouter un fichier"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letters_history.py:47
+#: selection:import.letters.history,state:0
+#: selection:test.import.letters.history,state:0
+#, python-format
+msgid "Analyzing"
+msgstr "Analyse"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,attachments_description:0
+msgid "Attachments description"
+msgstr "Description des envois"
+
+#. module: sbc_compassion
+#: view:sponsorship.correspondence:sbc_compassion.view_sponsorship_correspondence_form
+msgid "Beneficiary"
+msgstr "Enfant"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:220
+#, python-format
+msgid "Beneficiary Initiated"
+msgstr "Initié par l'enfant"
+
+#. module: sbc_compassion
+#: view:sponsorship.correspondence:sbc_compassion.sponsorship_correspondence_view_search
+msgid "Beneficiary To Supporter"
+msgstr "Enfant à Parrain"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:52
+#: selection:sponsorship.correspondence,direction:0
+#, python-format
+msgid "Beneficiary to supporter"
+msgstr "Enfant à Parrain"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.template,bluesquare_x:0
+msgid "Bluesquare x"
+msgstr "Bluesquare x"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.template,bluesquare_y:0
+msgid "Bluesquare y"
+msgstr "Bluesquare y"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/partner_compassion.py:31
+#: selection:res.partner,delivery_preference:0
+#, python-format
+msgid "By e-mail"
+msgstr "Par e-mail"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/partner_compassion.py:32
+#: selection:res.partner,delivery_preference:0
+#, python-format
+msgid "By postal service"
+msgstr "Par poste"
+
+#. module: sbc_compassion
+#: view:test.import.letters.history:sbc_compassion.test_import_letters_history_form
+msgid "CSV Files"
+msgstr "Fichiers CSV"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:163
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:188
+#, python-format
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.template,checkbox_ids:0
+msgid "Checkbox ids"
+msgstr "Checkbox ids"
+
+#. module: sbc_compassion
+#: field:import.letter.line,child_id:0
+#: field:test.import.letter.line,child_id:0
+msgid "Child"
+msgstr "Enfant"
+
+#. module: sbc_compassion
+#: view:sponsorship.correspondence:sbc_compassion.view_sponsorship_correspondence_form
+msgid "Child spoken languages"
+msgstr "Langues de l'enfant"
+
+#. module: sbc_compassion
+#: field:res.lang.compassion,code_iso:0
+msgid "Code iso"
+msgstr "Code iso"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:98
+#: selection:sponsorship.correspondence,source:0
+#, python-format
+msgid "Compassion website"
+msgstr "Site Internet"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:157
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:184
+#, python-format
+msgid "Composition Process"
+msgstr "Composition Process"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_recurring_contract
+msgid "Contract for recurring invoicing"
+msgstr "Contract for recurring invoicing"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,correspondant_id:0
+msgid "Correspondant"
+msgstr "Correspondant"
+
+#. module: sbc_compassion
+#: model:ir.actions.act_window,name:sbc_compassion.action_compassion_sponsorship_correspondence_form
+#: model:ir.ui.menu,name:sbc_compassion.menu_sponsorship_correspondence
+#: view:recurring.contract:sbc_compassion.view_contracts_correspondence_form
+#: view:sponsorship.correspondence:sbc_compassion.view_sponsorship_correspondence_form
+#: view:sponsorship.correspondence:sbc_compassion.view_sponsorship_correspondence_tree
+#: view:sponsorship.correspondence:sbc_compassion.view_sponsorship_correspondence_tree_details
+msgid "Correspondence"
+msgstr "Correspondance"
+
+#. module: sbc_compassion
+#: view:sponsorship.crosscheck:sbc_compassion.view_sponsorship_correspondence_crosscheck
+msgid "Correspondence Crosscheck"
+msgstr "Correspondence Crosscheck"
+
+#. module: sbc_compassion
+#: model:ir.actions.act_window,name:sbc_compassion.action_compassion_correspondence_template_form
+#: model:ir.ui.menu,name:sbc_compassion.menu_correspondence_template
+#: view:sponsorship.correspondence.template:sbc_compassion.view_correspondence_template_origin_tree
+msgid "Correspondence Templates"
+msgstr "Correspondence Templates"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/tools/patternrecognition.py:65
+#, python-format
+msgid "Could not read pattern image"
+msgstr "Could not read pattern image"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/tools/patternrecognition.py:53
+#, python-format
+msgid "Could not read template image"
+msgstr "Could not read template image"
+
+#. module: sbc_compassion
+#: view:compassion.country:sbc_compassion.view_country_origin_tree
+#: model:ir.actions.act_window,name:sbc_compassion.action_compassion_country_form
+#: model:ir.ui.menu,name:sbc_compassion.menu_country
+msgid "Countries"
+msgstr "Pays"
+
+#. module: sbc_compassion
+#: field:crosscheck.image,create_uid:0 field:import.letter.line,create_uid:0
+#: field:import.letters.history,create_uid:0
+#: field:import.letters.review,create_uid:0
+#: field:res.lang.compassion,create_uid:0
+#: field:sponsorship.correspondence,create_uid:0
+#: field:sponsorship.correspondence.lang.checkbox,create_uid:0
+#: field:sponsorship.correspondence.template,create_uid:0
+#: field:sponsorship.correspondence.type,create_uid:0
+#: field:sponsorship.crosscheck,create_uid:0
+#: field:test.import.letter.line,create_uid:0
+#: field:test.import.letters.history,create_uid:0
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: sbc_compassion
+#: field:crosscheck.image,create_date:0 field:import.letter.line,create_date:0
+#: field:import.letters.history,create_date:0
+#: field:import.letters.review,create_date:0
+#: field:res.lang.compassion,create_date:0
+#: field:sponsorship.correspondence,create_date:0
+#: field:sponsorship.correspondence.lang.checkbox,create_date:0
+#: field:sponsorship.correspondence.template,create_date:0
+#: field:sponsorship.correspondence.type,create_date:0
+#: field:sponsorship.crosscheck,create_date:0
+#: field:test.import.letter.line,create_date:0
+#: field:test.import.letters.history,create_date:0
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: sbc_compassion
+#: model:ir.actions.act_window,name:sbc_compassion.action_cross_check_correspondence_template
+msgid "Cross Check Patterns"
+msgstr "Cross Check Patterns"
+
+#. module: sbc_compassion
+#: field:import.letters.review,current_line_id:0
+msgid "Current line id"
+msgstr "Current line id"
+
+#. module: sbc_compassion
+#: field:import.letters.review,current_line_index:0
+msgid "Current line index"
+msgstr "Current line index"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:160
+#, python-format
+msgid "Delivered"
+msgstr "Transmis"
+
+#. module: sbc_compassion
+#: field:res.partner,delivery_preference:0
+msgid "Delivery preference"
+msgstr "Préférence d'envoi"
+
+#. module: sbc_compassion
+#: help:res.partner,delivery_preference:0
+msgid "Delivery preference for Child letters"
+msgstr "Préference d'envoi pour lettres d'enfant"
+
+#. module: sbc_compassion
+#: view:sponsorship.correspondence:sbc_compassion.view_sponsorship_correspondence_form
+msgid "Destination language"
+msgstr "Langue destination"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,destination_language_id:0
+msgid "Destination language id"
+msgstr "Langue destination"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,direction:0
+msgid "Direction"
+msgstr "Direction"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letters_history.py:50
+#: selection:import.letters.history,state:0
+#: selection:test.import.letters.history,state:0
+#, python-format
+msgid "Done"
+msgstr "Effectué"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letters_history.py:46
+#: selection:import.letters.history,state:0
+#: selection:test.import.letters.history,state:0
+#, python-format
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:97
+#: selection:sponsorship.correspondence,source:0
+#, python-format
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:106
+#: field:import.letter.line,is_encourager:0
+#: selection:sponsorship.correspondence,relationship:0
+#: field:test.import.letter.line,is_encourager:0
+#, python-format
+msgid "Encourager"
+msgstr "Encourager"
+
+#. module: sbc_compassion
+#: field:test.import.letter.line,error:0
+msgid "Error"
+msgstr "Erreur"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:164
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:189
+#, python-format
+msgid "Exception"
+msgstr "Exception"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:175
+#, python-format
+msgid "FO content check"
+msgstr "Vérification du FO"
+
+#. module: sbc_compassion
+#: field:sponsorship.crosscheck,file_:0
+msgid "File "
+msgstr "Fichier"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/tools/import_letter_functions.py:55
+#, python-format
+msgid "File '{}' is not a csv file"
+msgstr "'{}' n'est pas un csv valide"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/tools/import_letter_functions.py:66
+#, python-format
+msgid "File '{}' not found in the csv files"
+msgstr "File '{}' not found in the csv files"
+
+#. module: sbc_compassion
+#: view:import.letters.history:sbc_compassion.import_letters_history_form
+#: view:test.import.letters.history:sbc_compassion.test_import_letters_history_form
+msgid "Filename"
+msgstr "Nom de fichier"
+
+#. module: sbc_compassion
+#: view:import.letters.history:sbc_compassion.import_letters_history_form
+msgid "Files"
+msgstr "Fichiers"
+
+#. module: sbc_compassion
+#: field:import.letters.history,import_line_ids:0
+#: field:test.import.letters.history,import_line_ids:0
+#: field:test.import.letters.history,test_import_line_ids:0
+msgid "Files to process"
+msgstr "Fichiers à traiter"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:221
+#, python-format
+msgid "Final Letter"
+msgstr "Lettre finale"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,final_letter_url:0
+msgid "Final letter url"
+msgstr "Lien lettre finale"
+
+#. module: sbc_compassion
+#: view:import.letters.review:sbc_compassion.view_import_letter_review
+msgid "Finish"
+msgstr "Terminer"
+
+#. module: sbc_compassion
+#: field:import.letters.history,force_template:0
+#: field:test.import.letters.history,force_template:0
+msgid "Force Template"
+msgstr "Forcer le modèle"
+
+#. module: sbc_compassion
+#: field:test.import.letters.history,full_output:0
+msgid "Full output"
+msgstr "Full output"
+
+#. module: sbc_compassion
+#: view:sponsorship.correspondence:sbc_compassion.sponsorship_correspondence_view_search
+msgid "Group By"
+msgstr "Grouper Par"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence.template,page_height:0
+msgid "Height of the template in pixels"
+msgstr "Height of the template in pixels"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_import_letters_history
+msgid ""
+"History of the letters imported Import mail from a zip\n"
+"    or a PDF/TIFF"
+msgstr ""
+"History of the letters imported Import mail from a zip\n"
+"    or a PDF/TIFF"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letters_history.py:37
+#, python-format
+msgid ""
+"History of the letters imported from a zip\n"
+"    or a PDF/TIFF"
+msgstr ""
+"History of the letters imported from a zip\n"
+"    or a PDF/TIFF"
+
+#. module: sbc_compassion
+#: field:crosscheck.image,id:0 field:import.letter.line,id:0
+#: field:import.letters.history,id:0 field:import.letters.review,id:0
+#: field:res.lang.compassion,id:0 field:sponsorship.correspondence,id:0
+#: field:sponsorship.correspondence.lang.checkbox,id:0
+#: field:sponsorship.correspondence.template,id:0
+#: field:sponsorship.correspondence.type,id:0
+#: field:sponsorship.crosscheck,id:0 field:test.import.letter.line,id:0
+#: field:test.import.letters.history,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: sbc_compassion
+#: model:ir.ui.menu,name:sbc_compassion.menu_open_view_spoken_langs_form
+msgid "ISO639-3"
+msgstr "ISO639-3"
+
+#. module: sbc_compassion
+#: field:crosscheck.image,image:0
+msgid "Image"
+msgstr "Image"
+
+#. module: sbc_compassion
+#: view:import.letters.history:sbc_compassion.import_letters_history_form
+msgid "Import Letters"
+msgstr "Import des Lettres"
+
+#. module: sbc_compassion
+#: field:import.letters.history,import_completed:0
+#: field:test.import.letters.history,import_completed:0
+msgid "Import completed"
+msgstr "Import terminé"
+
+#. module: sbc_compassion
+#: field:import.letter.line,import_id:0
+#: field:sponsorship.correspondence,import_id:0
+#: field:test.import.letter.line,import_id:0
+msgid "Import id"
+msgstr "Import id"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/wizards/import_review.py:92
+#, python-format
+msgid "Import is not valid"
+msgstr "Import non valide"
+
+#. module: sbc_compassion
+#: field:import.letters.review,import_line_ids:0
+msgid "Import line ids"
+msgstr "Lignes d'import"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_import_mail
+msgid "Import mail from a zip or a PDF/TIFF"
+msgstr "Importer le courrier depuis un zip ou PDF/TIFF"
+
+#. module: sbc_compassion
+#: view:import.letters.history:sbc_compassion.import_letters_history_form
+msgid "Imported Letters"
+msgstr "Lettres importées"
+
+#. module: sbc_compassion
+#: field:import.letters.history,letters_ids:0
+#: field:test.import.letters.history,letters_ids:0
+msgid "Imported letters"
+msgstr "Lettres importées"
+
+#. module: sbc_compassion
+#: view:import.letters.history:sbc_compassion.import_letters_history_form
+#: view:import.letters.history:sbc_compassion.import_letters_history_tree
+#: model:ir.actions.act_window,name:sbc_compassion.action_compassion_import_letters_action
+#: model:ir.ui.menu,name:sbc_compassion.import_letters_menu
+#: view:test.import.letters.history:sbc_compassion.test_import_letters_history_form
+#: view:test.import.letters.history:sbc_compassion.test_import_letters_history_tree
+msgid "Imports"
+msgstr "Imports"
+
+#. module: sbc_compassion
+#: help:res.partner,send_original:0
+msgid "Indicates that we request the original letters for this sponsor"
+msgstr "Demander les originaux pour ce parrain"
+
+#. module: sbc_compassion
+#: help:res.partner,mandatory_review:0
+msgid ""
+"Indicates that we should review the letters of this sponsor before sending "
+"them to GMC."
+msgstr "Forcer la vérification du contenu des lettres du parrain"
+
+#. module: sbc_compassion
+#: view:compassion.country:sbc_compassion.view_country_origin_tree
+#: view:res.lang.compassion:sbc_compassion.view_spoken_langs_origin_tree
+msgid "Iso code"
+msgstr "Iso code"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,kit_identifier:0
+msgid "Kit id"
+msgstr "Kit id"
+
+#. module: sbc_compassion
+#: field:res.lang.compassion,lang_id:0
+msgid "Lang id"
+msgstr "Langue"
+
+#. module: sbc_compassion
+#: field:import.letter.line,letter_language_id:0
+#: field:test.import.letter.line,letter_language_id:0
+msgid "Language"
+msgstr "Langue"
+
+#. module: sbc_compassion
+#: view:sponsorship.correspondence.template:sbc_compassion.view_correspondence_template_origin_form
+msgid "Language checkboxes"
+msgstr "Language checkboxes"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.lang.checkbox,language_id:0
+msgid "Language id"
+msgstr "Langue"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letter_line.py:43
+#: selection:import.letter.line,status:0
+#: selection:test.import.letter.line,status:0
+#, python-format
+msgid "Language not Detected"
+msgstr "Langue non détectée"
+
+#. module: sbc_compassion
+#: field:test.import.letter.line,test_letter_languages_id:0
+msgid "Languages"
+msgstr "Langues"
+
+#. module: sbc_compassion
+#: field:test.import.letter.line,lang_preview:0
+msgid "Languages preview"
+msgstr "Aperçu des langues"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:222
+#, python-format
+msgid "Large Gift Thank You"
+msgstr "Remerciement grand cadeau"
+
+#. module: sbc_compassion
+#: field:crosscheck.image,write_uid:0 field:import.letter.line,write_uid:0
+#: field:import.letters.history,write_uid:0
+#: field:import.letters.review,write_uid:0
+#: field:res.lang.compassion,write_uid:0
+#: field:sponsorship.correspondence,write_uid:0
+#: field:sponsorship.correspondence.lang.checkbox,write_uid:0
+#: field:sponsorship.correspondence.template,write_uid:0
+#: field:sponsorship.correspondence.type,write_uid:0
+#: field:sponsorship.crosscheck,write_uid:0
+#: field:test.import.letter.line,write_uid:0
+#: field:test.import.letters.history,write_uid:0
+msgid "Last Updated by"
+msgstr "Modifié par"
+
+#. module: sbc_compassion
+#: field:crosscheck.image,write_date:0 field:import.letter.line,write_date:0
+#: field:import.letters.history,write_date:0
+#: field:import.letters.review,write_date:0
+#: field:res.lang.compassion,write_date:0
+#: field:sponsorship.correspondence,write_date:0
+#: field:sponsorship.correspondence.lang.checkbox,write_date:0
+#: field:sponsorship.correspondence.template,write_date:0
+#: field:sponsorship.correspondence.type,write_date:0
+#: field:sponsorship.crosscheck,write_date:0
+#: field:test.import.letter.line,write_date:0
+#: field:test.import.letters.history,write_date:0
+msgid "Last Updated on"
+msgstr "Modifié le"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.template,layout:0
+msgid "Layout"
+msgstr "Layout"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/correspondence_template.py:120
+#, python-format
+msgid "Layout 1"
+msgstr "Layout 1"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/correspondence_template.py:121
+#, python-format
+msgid "Layout 2"
+msgstr "Layout 2"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/correspondence_template.py:122
+#, python-format
+msgid "Layout 3"
+msgstr "Layout 3"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/correspondence_template.py:123
+#, python-format
+msgid "Layout 4"
+msgstr "Layout 4"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/correspondence_template.py:124
+#, python-format
+msgid "Layout 5"
+msgstr "Layout 5"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/correspondence_template.py:125
+#, python-format
+msgid "Layout 6"
+msgstr "Layout 6"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:96
+#: selection:sponsorship.correspondence,source:0
+#, python-format
+msgid "Letter"
+msgstr "Lettre"
+
+#. module: sbc_compassion
+#: view:sponsorship.correspondence:sbc_compassion.view_sponsorship_correspondence_form
+msgid "Letter content"
+msgstr "Contenu de lettre"
+
+#. module: sbc_compassion
+#: field:import.letter.line,letter_image:0
+#: field:sponsorship.correspondence,letter_image:0
+#: field:test.import.letter.line,letter_image:0
+msgid "Letter image"
+msgstr "Image de la lettre"
+
+#. module: sbc_compassion
+#: field:import.letter.line,letter_image_preview:0
+#: view:import.letters.history:sbc_compassion.import_letters_history_form
+#: field:test.import.letter.line,letter_image_preview:0
+msgid "Letter image preview"
+msgstr "Aperçu de la lettre"
+
+#. module: sbc_compassion
+#: model:ir.ui.menu,name:sbc_compassion.menu_sponsorship_letters
+#: view:res.partner:sbc_compassion.view_res_partner_compassion_line_button_form
+#: view:test.import.letters.history:sbc_compassion.test_import_letters_history_form
+msgid "Letters"
+msgstr "Lettres"
+
+#. module: sbc_compassion
+#: view:import.letters.history:sbc_compassion.import_letters_history_form
+msgid "Load Files"
+msgstr "Charger les Fichiers"
+
+#. module: sbc_compassion
+#: field:import.letters.history,is_mandatory_review:0
+#: field:test.import.letters.history,is_mandatory_review:0
+msgid "Mandatory Review"
+msgstr "Vérification Obligatoire"
+
+#. module: sbc_compassion
+#: field:res.partner,mandatory_review:0
+#: field:sponsorship.correspondence,mandatory_review:0
+msgid "Mandatory review"
+msgstr "Vérification Obligatoire"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence.lang.checkbox,x_max:0
+msgid ""
+"Maximum X position of the area in which to look for the checkbox inside the "
+"template (given in pixels)"
+msgstr ""
+"Maximum X position of the area in which to look for the checkbox inside the "
+"template (given in pixels)"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence.template,pattern_x_max:0
+msgid ""
+"Maximum X position of the area in which to look for the pattern inside the "
+"template (given in pixels)"
+msgstr ""
+"Maximum X position of the area in which to look for the pattern inside the "
+"template (given in pixels)"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence.lang.checkbox,y_max:0
+msgid ""
+"Maximum Y position of the area in which to look for the checkbox inside the "
+"template (given in pixels)"
+msgstr ""
+"Maximum Y position of the area in which to look for the checkbox inside the "
+"template (given in pixels)"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence.template,pattern_y_max:0
+msgid ""
+"Maximum Y position of the area in which to look for the pattern inside the "
+"template (given in pixels)"
+msgstr ""
+"Maximum Y position of the area in which to look for the pattern inside the "
+"template (given in pixels)"
+
+#. module: sbc_compassion
+#: view:sponsorship.correspondence.template:sbc_compassion.view_correspondence_template_origin_form
+msgid "Metadata"
+msgstr "Metadata"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence.lang.checkbox,x_min:0
+msgid ""
+"Minimum X position of the area in which to look for the checkbox inside the "
+"template (given in pixels)"
+msgstr ""
+"Minimum X position of the area in which to look for the checkbox inside the "
+"template (given in pixels)"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence.template,pattern_x_min:0
+msgid ""
+"Minimum X position of the area in which to look for the pattern inside the "
+"template (given in pixels)"
+msgstr ""
+"Minimum X position of the area in which to look for the pattern inside the "
+"template (given in pixels)"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence.lang.checkbox,y_min:0
+msgid ""
+"Minimum Y position of the area in which to look for the checkbox inside the "
+"template (given in pixels)"
+msgstr ""
+"Minimum Y position of the area in which to look for the checkbox inside the "
+"template (given in pixels)"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence.template,pattern_y_min:0
+msgid ""
+"Minimum Y position of the area in which to look for the pattern inside the "
+"template (given in pixels)"
+msgstr ""
+"Minimum Y position of the area in which to look for the pattern inside the "
+"template (given in pixels)"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/wizards/import_letters_test.py:25
+#: model:ir.model,name:sbc_compassion.model_test_import_letters_history
+#, python-format
+msgid ""
+"Module testing the import of\n"
+"    letters (import.letters.history)"
+msgstr ""
+"Module testing the import of\n"
+"    letters (import.letters.history)"
+
+#. module: sbc_compassion
+#: field:test.import.letters.history,nber_test:0
+msgid "NBER OF FILE"
+msgstr "Nmbre de fichiers"
+
+#. module: sbc_compassion
+#: field:crosscheck.image,name:0 field:res.lang.compassion,name:0
+#: field:sponsorship.correspondence.template,name:0
+#: field:sponsorship.correspondence.type,name:0
+msgid "Name"
+msgstr "Nom"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:224
+#, python-format
+msgid "New Sponsor Letter"
+msgstr "Nouvelle lettre de parrain"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:239
+#, python-format
+msgid "New correspondence"
+msgstr "Nouvelle lettre"
+
+#. module: sbc_compassion
+#: view:import.letters.review:sbc_compassion.view_import_letter_review
+msgid "Next"
+msgstr "Suivant"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:75
+#: selection:sponsorship.correspondence,physical_attachments:0
+#, python-format
+msgid "Not sent"
+msgstr "Non envoyé"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.template,nber_keypoints:0
+msgid "Number of key points"
+msgstr "Number of key points"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letter_line.py:47
+#: selection:import.letter.line,status:0
+#: selection:test.import.letter.line,status:0
+#, python-format
+msgid "OK"
+msgstr "OK"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letters_history.py:48
+#: selection:import.letters.history,state:0
+#: selection:test.import.letters.history,state:0
+#, python-format
+msgid "Open"
+msgstr "Ouvrir"
+
+#. module: sbc_compassion
+#: view:sponsorship.correspondence:sbc_compassion.view_sponsorship_correspondence_form
+msgid "Original language"
+msgstr "Langue source"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,original_language_id:0
+msgid "Original language id"
+msgstr "Langue source"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,original_letter_url:0
+msgid "Original letter url"
+msgstr "Lien lettre originale"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,original_text:0
+msgid "Original text"
+msgstr "Texte original"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letters_history.py:236
+#: code:addons/sbc_compassion/models/import_letters_history.py:246
+#, python-format
+msgid "PDF not implemented yet"
+msgstr "PDF not implemented yet"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.template,page_height:0
+msgid "Page height"
+msgstr "Page height"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.template,page_width:0
+msgid "Page width"
+msgstr "Page width"
+
+#. module: sbc_compassion
+#: field:import.letter.line,partner_id:0
+#: model:ir.model,name:sbc_compassion.model_res_partner
+#: view:sponsorship.correspondence:sbc_compassion.sponsorship_correspondence_view_search
+#: field:test.import.letter.line,partner_id:0
+msgid "Partner"
+msgstr "Partenaire"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letter_line.py:45
+#: selection:import.letter.line,status:0
+#: selection:test.import.letter.line,status:0
+#, python-format
+msgid "Partner or Child not Found"
+msgstr "Partenaire ou Enfant non trouvé"
+
+#. module: sbc_compassion
+#: view:sponsorship.correspondence:sbc_compassion.view_sponsorship_correspondence_form
+msgid "Partner spoken languages"
+msgstr "Langues du parrain"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.template,pattern_center_x:0
+msgid "Pattern center x"
+msgstr "Pattern center x"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.template,pattern_center_y:0
+msgid "Pattern center y"
+msgstr "Pattern center y"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.template,pattern_image:0
+msgid "Pattern image"
+msgstr "Pattern image"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/correspondence_template.py:236
+#, python-format
+msgid "Pattern not found"
+msgstr "Pattern not found"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.template,pattern_x_max:0
+msgid "Pattern x max"
+msgstr "Pattern x max"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.template,pattern_x_min:0
+msgid "Pattern x min"
+msgstr "Pattern x min"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.template,pattern_y_max:0
+msgid "Pattern y max"
+msgstr "Pattern y max"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.template,pattern_y_min:0
+msgid "Pattern y min"
+msgstr "Pattern y min"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,physical_attachments:0
+msgid "Physical attachments"
+msgstr "Attachés physique"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/correspondence_template.py:150
+#: code:addons/sbc_compassion/models/correspondence_template.py:404
+#, python-format
+msgid "Please give valid coordinates."
+msgstr "Please give valid coordinates."
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/correspondence_template.py:167
+#, python-format
+msgid "Please only use jpg or png files."
+msgstr "Seulement JPG ou PNG S.V.P."
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/wizards/import_review.py:93
+#, python-format
+msgid "Please review this import before going to the next."
+msgstr "Veuillez s.v.p. vérifier cet import avant de passer au suivant"
+
+#. module: sbc_compassion
+#: view:import.letters.review:sbc_compassion.view_import_letter_review
+msgid "Postpone"
+msgstr "Mettre de côté"
+
+#. module: sbc_compassion
+#: field:import.letters.review,postpone_import_id:0
+msgid "Postpone import id"
+msgstr "Postpone import id"
+
+#. module: sbc_compassion
+#: field:recurring.contract,reading_language:0
+msgid "Preferred language"
+msgstr "Langue préférée"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:185
+#, python-format
+msgid "Published"
+msgstr "Publiée"
+
+#. module: sbc_compassion
+#: field:test.import.letter.line,qr_preview:0
+msgid "QR code preview"
+msgstr "QR code preview"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:155
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:181
+#, python-format
+msgid "Quality Check Done"
+msgstr "Quality Check Done"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:153
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:179
+#, python-format
+msgid "Quality Check Process"
+msgstr "Quality Check Process"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:152
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:178
+#, python-format
+msgid "Quality Check Queue"
+msgstr "Quality Check Queue"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:165
+#, python-format
+msgid "Quality check failed"
+msgstr "Quality check failed"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:187
+#, python-format
+msgid "Quality check unsuccessful"
+msgstr "Quality check unsuccessful"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letters_history.py:49
+#: selection:import.letters.history,state:0
+#: selection:test.import.letters.history,state:0
+#, python-format
+msgid "Ready"
+msgstr "Prêt"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:173
+#, python-format
+msgid "Ready to be printed"
+msgstr "Prêt pour impression"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:225
+#, python-format
+msgid "Reciprocal Letter"
+msgstr "Lettre réciproque"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,relationship:0
+msgid "Relationship"
+msgstr "Relation"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letters_history.py:188
+#: view:import.letters.history:sbc_compassion.import_letters_history_form
+#, python-format
+msgid "Review Imports"
+msgstr "Vérifier les Imports"
+
+#. module: sbc_compassion
+#: field:import.letter.line,reviewed:0
+#: field:test.import.letter.line,reviewed:0
+msgid "Reviewed"
+msgstr "Vérifié"
+
+#. module: sbc_compassion
+#: view:test.import.letters.history:sbc_compassion.test_import_letters_history_form
+msgid "Run Test"
+msgstr "Run Test"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:177
+#, python-format
+msgid "SDL FO Translation"
+msgstr "SDL FO Translation"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:156
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:176
+#, python-format
+msgid "SDL FO Translation Queue"
+msgstr "SDL FO Translation Queue"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,scanned_date:0
+msgid "Scanned date"
+msgstr "Date de scan"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:149
+#, python-format
+msgid "Scanned in"
+msgstr "Scanned in"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:226
+#, python-format
+msgid "Scheduled"
+msgstr "Scheduled"
+
+#. module: sbc_compassion
+#: field:res.partner,send_original:0
+msgid "Send original"
+msgstr "Envoyer l'original"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:74
+#: selection:sponsorship.correspondence,physical_attachments:0
+#, python-format
+msgid "Sent by mail"
+msgstr "Envoyé par courrier"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:158
+#, python-format
+msgid "Sent to ICP"
+msgstr "Sent to ICP"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:223
+#, python-format
+msgid "Small Gift Thank You"
+msgstr "Remerciement petit cadeau"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letters_history.py:172
+#, python-format
+msgid "Some letters are not ready"
+msgstr "Certaines lettres ne sont pas prêtes"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,source:0
+msgid "Source"
+msgstr "Source"
+
+#. module: sbc_compassion
+#: field:compassion.country,spoken_lang_ids:0
+msgid "Spoken lang ids"
+msgstr "Langues parlées"
+
+#. module: sbc_compassion
+#: view:compassion.country:sbc_compassion.view_compassion_country_form
+#: view:compassion.country:sbc_compassion.view_country_origin_tree
+msgid "Spoken langs"
+msgstr "Langues parlées"
+
+#. module: sbc_compassion
+#: view:res.lang.compassion:sbc_compassion.view_spoken_langs_origin_tree
+#: field:res.partner,spoken_lang_ids:0
+msgid "Spoken languages"
+msgstr "Langues parlées"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:105
+#: selection:sponsorship.correspondence,relationship:0
+#, python-format
+msgid "Sponsor"
+msgstr "Parrain"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,child_id:0
+msgid "Sponsored child"
+msgstr "Enfant"
+
+#. module: sbc_compassion
+#: field:import.letters.review,sponsorship_id:0
+#: view:sponsorship.correspondence:sbc_compassion.sponsorship_correspondence_view_search
+#: field:sponsorship.correspondence,sponsorship_id:0
+msgid "Sponsorship"
+msgstr "Parrainage"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letter_line.py:44
+#: selection:import.letter.line,status:0
+#: selection:test.import.letter.line,status:0
+#, python-format
+msgid "Sponsorship not Found"
+msgstr "Parrainage non trouvé"
+
+#. module: sbc_compassion
+#: field:import.letters.history,state:0
+#: view:sponsorship.correspondence:sbc_compassion.sponsorship_correspondence_view_search
+#: field:sponsorship.correspondence,state:0
+#: field:test.import.letters.history,state:0
+msgid "State"
+msgstr "Etat"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letters_history.py:143
+#, python-format
+msgid "State: '{}' not implemented"
+msgstr "L'état '{}' n'existe pas"
+
+#. module: sbc_compassion
+#: field:import.letter.line,status:0 field:test.import.letter.line,status:0
+msgid "Status"
+msgstr "Etat"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,status_date:0
+msgid "Status date"
+msgstr "Date Etat"
+
+#. module: sbc_compassion
+#: view:sponsorship.correspondence:sbc_compassion.view_sponsorship_correspondence_form
+msgid "Supporter"
+msgstr "Parrain"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:227
+#, python-format
+msgid "Supporter Letter"
+msgstr "Lettre de parrain"
+
+#. module: sbc_compassion
+#: view:sponsorship.correspondence:sbc_compassion.sponsorship_correspondence_view_search
+msgid "Supporter To Beneficiary"
+msgstr "Parrain à Enfant"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:51
+#: selection:sponsorship.correspondence,direction:0
+#, python-format
+msgid "Supporter to beneficiary"
+msgstr "Parrain à Enfant"
+
+#. module: sbc_compassion
+#: field:import.letter.line,template_id:0
+#: field:sponsorship.correspondence,template_id:0
+#: view:sponsorship.correspondence.template:sbc_compassion.view_correspondence_template_origin_form
+#: field:test.import.letter.line,template_id:0
+msgid "Template"
+msgstr "Modèle"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.lang.checkbox,template_id:0
+msgid "Template id"
+msgstr "Modèle"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/tools/patternrecognition.py:54
+#, python-format
+msgid "Template image is broken"
+msgstr "L'image du modèle est fichue"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letter_line.py:46
+#: selection:import.letter.line,status:0
+#: selection:test.import.letter.line,status:0
+#, python-format
+msgid "Template not Detected"
+msgstr "Modèle non détecté"
+
+#. module: sbc_compassion
+#: field:test.import.letter.line,template_preview:0
+msgid "Template preview"
+msgstr "Aperçu du modèle"
+
+#. module: sbc_compassion
+#: view:test.import.letters.history:sbc_compassion.test_import_letters_history_form
+msgid "Test Imported Letters"
+msgstr "Test Imported Letters"
+
+#. module: sbc_compassion
+#: model:ir.actions.act_window,name:sbc_compassion.action_compassion_test_import_letters_action
+#: model:ir.ui.menu,name:sbc_compassion.test_import_letters_menu
+msgid "Test Imports"
+msgstr "Test Imports"
+
+#. module: sbc_compassion
+#: field:test.import.letter.line,test_import_id:0
+msgid "Test import id"
+msgstr "Test import id"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:126
+#: sql_constraint:sponsorship.correspondence:0
+#, python-format
+msgid "The kit id already exists in database."
+msgstr "La lettre est déjà en base"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/correspondence_template.py:237
+#, python-format
+msgid "The pattern could not be detected in given template image."
+msgstr "The pattern could not be detected in given template image."
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/tools/patternrecognition.py:66
+#, python-format
+msgid "The pattern image is broken"
+msgstr "The pattern image is broken"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:150
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:182
+#, python-format
+msgid "To Translate"
+msgstr "A traduire"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,translated_text:0
+msgid "Translated text"
+msgstr "Texte traduit"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:151
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:183
+#, python-format
+msgid "Translating"
+msgstr "En traduction"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letters_history.py:260
+#, python-format
+msgid "Two files are the same"
+msgstr "Deux fichiers identiques"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:162
+#, python-format
+msgid "Undeliverable"
+msgstr "Undeliverable"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:161
+#, python-format
+msgid "Undelivered"
+msgstr "Undelivered"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:304
+#, python-format
+msgid "Unsupported file format"
+msgstr "Format de fichier non pris en charge"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/correspondence_template.py:166
+#, python-format
+msgid "Unsupported format"
+msgstr "Format non pris en charge"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence.template,page_width:0
+msgid "Width of the template in pixels"
+msgstr "Width of the template in pixels"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence.template,bluesquare_x:0
+msgid "X Position of the upper-right corner of the blue square in pixels"
+msgstr "X Position of the upper-right corner of the blue square in pixels"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence.template,pattern_center_x:0
+msgid ""
+"X coordinate of the center of the pattern. Used to detect the orientation of "
+"the pattern in the image"
+msgstr ""
+"X coordinate of the center of the pattern. Used to detect the orientation of "
+"the pattern in the image"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.lang.checkbox,x_max:0
+msgid "X max"
+msgstr "X max"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.lang.checkbox,x_min:0
+msgid "X min"
+msgstr "X min"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence.template,bluesquare_y:0
+msgid "Y Position of the upper-right corner of the blue square in pixels"
+msgstr "Y Position of the upper-right corner of the blue square in pixels"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence.template,pattern_center_y:0
+msgid ""
+"Y coordinate of the center of the pattern. Used to detect the orientation of "
+"the pattern in the image"
+msgstr ""
+"Y coordinate of the center of the pattern. Used to detect the orientation of "
+"the pattern in the image"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.lang.checkbox,y_max:0
+msgid "Y max"
+msgstr "Y max"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence.lang.checkbox,y_min:0
+msgid "Y min"
+msgstr "Y min"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:305
+#, python-format
+msgid "You can only attach tiff or pdf files"
+msgstr "Seulement des tiff ou pdf s.v.p."
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letters_history.py:133
+#, python-format
+msgid "Zip file corrupted ()"
+msgstr "Fichier corrompu"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letters_history.py:137
+#, python-format
+msgid "Zip64 is not supported()"
+msgstr "Zip64 is not supported()"
+
+#. module: sbc_compassion
+#: model:ir.actions.act_window,name:sbc_compassion.action_spoken_langs_form
+msgid "view_compassion_spoken_langs_tree"
+msgstr "view_compassion_spoken_langs_tree"

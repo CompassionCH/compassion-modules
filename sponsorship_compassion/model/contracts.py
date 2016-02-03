@@ -15,10 +15,13 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from lxml import etree
+import csv
+import os
 
 from .product import GIFT_CATEGORY, SPONSORSHIP_CATEGORY, FUND_CATEGORY
 import logging
 logger = logging.getLogger(__name__)
+THIS_DIR = os.path.dirname(__file__)
 
 
 class sponsorship_line(models.Model):
@@ -877,3 +880,41 @@ FROM account_move_line WHERE id = %s""" % pml_id)
             # 'credit': amount_deleted})
         if unrec_pml:
             mvl_obj.browse(unrec_pml)._remove_move_reconcile()
+
+    @api.model
+    def _set_demo_data(self):
+        """ Set the state of the demo datas.
+        Read the states from demo/recurring.contract.csv
+        """
+        file = THIS_DIR + '/../demo/recurring.contract.csv'
+        with open(file, 'rb') as csvfile:
+            reader = csv.reader(csvfile, delimiter=',')
+            header = True
+            for row in reader:
+                if header:
+                    contract_id = row.index('id')
+                    state = row.index('state')
+                    header = False
+                    continue
+
+                if row[state] == 'active':
+                    self.env.ref('sponsorship_compassion.{}'.format(
+                        row[contract_id])).contract_active()
+                elif row[state] == 'draft':
+                    continue
+                elif row[state] == 'mandate':
+                    self.env.ref('sponsorship_compassion.{}'.format(
+                        row[contract_id])).contract_waiting_mandate()
+                elif row[state] == 'waiting':
+                    self.env.ref('sponsorship_compassion.{}'.format(
+                        row[contract_id])).contract_waiting()
+
+                elif row[state] == 'terminated':
+                    self.env.ref('sponsorship_compassion.{}'.format(
+                        row[contract_id])).contract_terminated()
+
+                elif row[state] == 'cancelled':
+                    self.env.ref('sponsorship_compassion.{}'.format(
+                        row[contract_id])).contract_cancelled()
+                else:
+                    raise Warning('State not implemented')

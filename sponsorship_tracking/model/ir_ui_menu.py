@@ -20,8 +20,9 @@ class IrUiMenu(models.Model):
     def get_needaction_data(self):
         res = dict()
         for menu in self:
-            if menu.action and menu.action.context:
-                new_context = dict()
+            new_context = dict()
+            if (menu.action and hasattr(menu.action, 'context') and
+                    menu.action.context):
                 try:
                     new_context = ast.literal_eval(menu.action.context)
                     new_context.update(self.env.context)

@@ -1,0 +1,25 @@
+<openerp>
+    <data>
+      <record id="view_sponsorship_correspondence_crosscheck" model="ir.ui.view">
+        <field name="name">sponsorship.crosscheck.form</field>
+        <field name="model">sponsorship.crosscheck</field>
+        <field name="arch" type="xml">
+          <form string="Correspondence Crosscheck">
+	    <field name="file_"/>
+          </form>
+        </field>
+      </record>
+
+      <record id="view_crosscheck_image_tree" model="ir.ui.view">
+        <field name="name">crosscheck.image.tree</field>
+        <field name="model">crosscheck.image</field>
+        <field name="arch" type="xml">
+          <tree edit="false" create="false">
+	    <field name="name"/>
+	    <field name="image" widget="image" display="icon"/>
+          </tree>
+        </field>
+      </record>
+      
+    </data>
+</openerp>

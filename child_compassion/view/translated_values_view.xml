@@ -2,7 +2,7 @@
 <openerp>
     <data>
         <!-- Top menu item -->
-        <menuitem id="menu_translated_value" parent="menu_sponsorship_root" name="Translated value" sequence="5"/>
+        <menuitem id="menu_configuration" parent="menu_sponsorship_root" name="Configuration" sequence="15"/>
 
         <!--Compassion child form view -->
         <record id="view_translated_value_tree" model="ir.ui.view">
@@ -28,7 +28,7 @@
         </record>
 
         <!--Compassion child form view -->
-        <menuitem id="menu_translated_value_translations" parent="menu_translated_value" name="Translations" action="open_view_translated_value_tree" sequence="0" />
+        <menuitem id="menu_configuration_translations" parent="menu_configuration" name="Translations" action="open_view_translated_value_tree" sequence="0" />
 
     </data>
 </openerp>

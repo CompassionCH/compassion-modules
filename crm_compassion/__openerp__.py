@@ -29,7 +29,7 @@
 
 {
     'name': 'Compassion CH - Events',
-    'version': '1.4.1',
+    'version': '8.0.1',
     'category': 'CRM',
     'sequence': 150,
     'author': 'Compassion CH',

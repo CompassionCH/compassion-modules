@@ -1,0 +1,50 @@
+<openerp>
+    <data>
+        <record id="view_message_form" model="ir.ui.view">
+            <field name="name">gmc.message.onramp.form</field>
+            <field name="model">gmc.message.pool</field>
+            <field name="inherit_id" ref="message_center_compassion.view_gmc_message_pool_form"/>
+            <field name="arch" type="xml">
+                <field name="child_id" position="after">
+                    <field name="letter_id" attrs="{'invisible':[('letter_id','=',False)]}" />
+                </field>
+            </field>
+        </record>
+        
+        <record id="view_gmc_message_pool_commkit_tree" model="ir.ui.view">
+            <field name="name">gmc.message.pool.outgoing.tree</field>
+            <field name="model">gmc.message.pool</field>
+            <field name="priority">12</field>
+            <field name="arch" type="xml">
+                <tree string="Message Pool" colors="blue:state == 'new';black:state == 'pending';gray:state == 'success';red:state == 'failure'" create="false">
+                    <field name="action_id" />
+                    <field name="date" />
+                    <field name="process_date" />
+                    <field name="letter_id" />
+                    <field name="partner_id" />
+                    <field name="child_id" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="action_gmc_message_create_commkit" model="ir.actions.act_window">
+            <field name="name">CommKit</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">gmc.message.pool</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_gmc_message_pool_commkit_tree" />
+            <field name="search_view_id" ref="message_center_compassion.view_gmc_message_pool_filter"/>
+            <field name="context">{'search_default_pending':1}</field>
+            <field name="domain">[('action_id.model', '=', 'sponsorship.correspondence')]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                No messages.
+              </p>
+            </field>
+        </record>
+        
+        <menuitem id="menu_message_commkit_create" parent="message_center_compassion.menu_message_outgoing" action="action_gmc_message_create_commkit" sequence="9"/>
+    </data>
+</openerp>

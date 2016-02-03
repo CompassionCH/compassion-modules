@@ -12,10 +12,10 @@
                 </xpath>
 
                 <!-- Redefine how contracts are shown. -->
-                <xpath expr="//page[@string='Contracts']" position="replace"/>
-                <xpath expr="//page[@string='Correspondance']" position="before">
+                <xpath expr="//page[@string='Contracts']" position="replace">
                     <page string="Sponsorships" groups="child_compassion.group_sponsorship">
                         <button name="create_contract" string="Add" type="object"/>
+                        <button name="open_contracts" string="Details" type="object"/>
                         <field name="contracts_fully_managed" invisible="True" />
                         <field name="contracts_paid" invisible="True" />
                         <field name="contracts_correspondant" invisible="True" />

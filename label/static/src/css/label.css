@@ -1,0 +1,24 @@
+div.o_label_table_cell {
+    overflow: hidden;
+    width:100%;
+    height:100%;
+}
+div.o_label_barcode {
+    overflow: hidden;
+    width:100%;
+    height:100%;
+}
+div.o_label_div_cell {
+    overflow: hidden;
+    width:100%;
+    height:100%;
+}
+table.o_label_page_table {
+    width: 100%; height: 100%;
+}
+table.o_label_cell_table {
+    width: 100%; height: 100%;
+}
+table.o_label_text_table {
+    width: 100%; height: 100%;
+}

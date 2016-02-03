@@ -1,0 +1,33 @@
+<openerp>
+    <data>
+        <record id="view_partner_form_compassion" model="ir.ui.view">
+            <field name="name">res.partner.form.compassion</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="partner_compassion.view_partner_form_compassion"/>
+            <field name="arch" type="xml">
+                <!-- Add correspondence options -->
+                <xpath expr="//page[@string='Correspondence']/group/group">
+                    <field name="spoken_lang_ids" widget="many2many_tags" options="{'create':False}"/>
+                    <field name="delivery_preference"/>
+                    <field name="send_original"/>
+                    <field name="mandatory_review"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="view_res_partner_compassion_line_button_form" model="ir.ui.view">
+            <field name="name">partner.compassion.line.button.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="partner_compassion.view_partner_form_compassion"/>
+            <field eval="18" name="priority"/>
+            <field name="arch" type="xml">
+                <!-- Add button letter in tab correspondence -->
+                <xpath expr="//page[@string='Correspondence']/group" position="before">
+                    <button name="open_letters" string="Letters" type="object"/>
+                </xpath>
+            </field>
+        </record>
+        
+        
+    </data>
+</openerp>

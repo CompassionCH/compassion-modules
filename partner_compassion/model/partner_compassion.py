@@ -17,6 +17,7 @@ ADDRESS_FIELDS = [
 
 
 class ResPartner(models.Model):
+
     """ This class upgrade the partners to match Compassion needs.
     """
 
@@ -60,16 +61,19 @@ class ResPartner(models.Model):
         return [(r['code'], r['name']) for r in res]
 
     @api.multi
+    @api.depends('category_id')
     def _is_church(self):
         """ Tell if the given Partners are Church Partners
             (by looking at their categories). """
 
         # Retrieve all the categories and check if one is Church
+        church_category = self.env['res.partner.category'].with_context(
+            lang='en_US').search([('name', '=', 'Church')], limit=1)
         for record in self:
-            record.is_church = False
-            for category in record.category_id:
-                if category.name.upper() in ('CHURCH', 'EGLISE', 'KIRCHE'):
-                    record.is_church = True
+            is_church = False
+            if church_category in record.category_id:
+                is_church = True
+            record.is_church = is_church
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

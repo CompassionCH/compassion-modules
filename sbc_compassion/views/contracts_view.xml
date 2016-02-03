@@ -1,0 +1,27 @@
+<openerp>
+    <data>
+        <record id="view_contracts_correspondence_form" model="ir.ui.view">
+            <field name="name">recurring.contract.correspondence</field>
+            <field name="model">recurring.contract</field>
+            <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
+            <field name="arch" type="xml">
+                 <!-- Add correspondence to sponsorships -->
+                <xpath expr="//page[@string='Contract lines']" position="after">
+                    <page string="Correspondence" attrs="{'invisible': [('type', 'not in', ['S','SC'])]}">
+                        <group>
+                            <field name="reading_language" options="{'create':False}"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="sponsor_letter_ids" context="{'tree_view_ref': 'sbc_compassion.view_sponsorship_correspondence_tree_details'}"/>
+                            </group>
+                            <group>
+                                <field name="child_letter_ids" context="{'tree_view_ref': 'sbc_compassion.view_sponsorship_correspondence_tree_details'}"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

@@ -30,7 +30,7 @@
 
 {
     'name': 'Add partner fields for Compassion',
-    'version': '1.5',
+    'version': '8.0.1',
     'category': 'Partner',
     'sequence': 150,
     'author': 'Compassion CH',
@@ -39,11 +39,14 @@
                 'email_template', 'account_banking_mandate'],
     'data': [
         'view/partner_compassion_view.xml',
+        'data/lang.xml',
         'data/partner_sequence.xml',
         'data/partner_title_data.xml',
         'data/partner_category_data.xml',
     ],
-    'demo': [],
+    'demo': [
+        'demo/res.partner.csv'
+    ],
     'installable': True,
     'auto_install': False,
 }

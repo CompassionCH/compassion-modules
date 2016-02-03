@@ -419,8 +419,8 @@ class compassion_child(models.Model):
                 'birthdate': json_data.get('birthDate') or False,
                 'gender': json_data.get('gender'),
                 'unique_id': json_data.get('childID'),
-                'completion_date': json_data.get('cdspCompletionDate')
-                or False,
+                'completion_date': json_data.get('cdspCompletionDate') or
+                False,
             }
             child.write(vals)
         return True

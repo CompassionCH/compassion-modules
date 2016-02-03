@@ -80,8 +80,8 @@
             <field eval="18" name="priority"/>
             <field name="arch" type="xml">
                 <data>
-                    <field name="origin_id" position="after">
-                        <field name="user_id" />
+                    <field name="group_freq" position="after">
+                        <field name="user_id" invisible="context.get('partner_contracts_view')"/>
                     </field>
                 </data>
             </field>

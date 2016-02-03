@@ -1,0 +1,59 @@
+<openerp>
+  <data>
+    <record id="child_compassion.brazil" model="compassion.country">
+      <field name="spoken_lang_ids" eval="[(4,lang_compassion_portuguese)]"/>
+    </record>
+
+    <record id="child_compassion.rwanda" model="compassion.country">
+      <field name="spoken_lang_ids" eval="[(4,lang_compassion_kinyarwanda),(4,lang_compassion_french),(4,lang_compassion_english)]"/>
+    </record>
+
+    <record id="child_compassion.philippines" model="compassion.country">
+      <field name="spoken_lang_ids" eval="[(4,lang_compassion_filipino)]"/>
+    </record>
+
+    <record id="child_compassion.india" model="compassion.country">
+      <field name="spoken_lang_ids" eval="[(4,lang_compassion_hindi)]"/>
+    </record>
+
+    <record id="child_compassion.ethiopia" model="compassion.country">
+      <field name="spoken_lang_ids" eval="[(4,lang_compassion_amharic)]"/>
+    </record>
+
+    <record id="child_compassion.haiti" model="compassion.country">
+      <field name="spoken_lang_ids" eval="[(4,lang_compassion_french),(4,lang_compassion_haitien_creole)]"/>
+    </record>
+
+    <record id="child_compassion.indonesia" model="compassion.country">
+      <field name="spoken_lang_ids" eval="[(4,lang_compassion_bahasa_indonesia)]"/>
+    </record>
+
+    <record id="child_compassion.kenya" model="compassion.country">
+      <field name="spoken_lang_ids" eval="[(4,lang_compassion_english),(4,lang_compassion_swahili)]"/>
+    </record>
+
+    <record id="child_compassion.peru" model="compassion.country">
+      <field name="spoken_lang_ids" eval="[(4,lang_compassion_spanish),(4,lang_compassion_quechua)]"/>
+    </record>
+
+    <record id="child_compassion.dominican_republic" model="compassion.country">
+      <field name="spoken_lang_ids" eval="[(4,lang_compassion_spanish)]"/>
+    </record>
+
+    <record id="child_compassion.thailand" model="compassion.country">
+      <field name="spoken_lang_ids" eval="[(4,lang_compassion_thai)]"/>
+    </record>
+
+    <record id="child_compassion.ecuador" model="compassion.country">
+      <field name="spoken_lang_ids" eval="[(4,lang_compassion_spanish)]"/>
+    </record>
+
+    <record id="child_compassion.bolivia" model="compassion.country">
+      <field name="spoken_lang_ids" eval="[(4,lang_compassion_spanish),(4,lang_compassion_quechua),(4,lang_compassion_aymara)]"/>
+    </record>
+
+    <record id="child_compassion.mexico" model="compassion.country">
+      <field name="spoken_lang_ids" eval="[(4,lang_compassion_spanish)]"/>
+    </record>
+</data>
+</openerp>
