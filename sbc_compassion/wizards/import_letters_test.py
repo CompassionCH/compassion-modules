@@ -86,6 +86,6 @@ class TestImportLettersLine(models.TransientModel):
     qr_preview = fields.Binary("QR code preview")
     lang_preview = fields.Binary("Languages preview")
     template_preview = fields.Binary("Template preview")
-    test_letter_languages_id = fields.Text("Languages")
+    test_letter_language = fields.Text("Language")
     test_import_id = fields.Many2one('test.import.letters.history')
     error = fields.Text("Error")
