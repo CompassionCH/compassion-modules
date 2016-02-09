@@ -12,6 +12,7 @@
 This module reads a zip file containing scans of mail and finds the relation
 between the database and the mail.
 """
+import logging
 import base64
 import zipfile
 import os
@@ -23,6 +24,8 @@ from openerp import api, fields, models, _, exceptions
 
 from openerp.addons.connector.queue.job import job, related_action
 from openerp.addons.connector.session import ConnectorSession
+
+logger = logging.getLogger(__name__)
 
 
 class ImportLettersHistory(models.Model):
@@ -208,6 +211,8 @@ class ImportLettersHistory(models.Model):
         self.ensure_one()
         # keep track of file names to detect duplicates
         file_name_history = []
+        logger.info("Imported letters analysis started...")
+        progress = 1
         for attachment in self.data:
             if attachment.name not in file_name_history:
                 file_name_history.append(attachment.name)
@@ -226,6 +231,9 @@ class ImportLettersHistory(models.Model):
                         # loop over files inside zip
                         directory = tempfile.mkdtemp()
                         for f in zip_.namelist():
+                            logger.info(
+                                "Analyzing letter {}/{}".format(
+                                    progress, self.nber_letters))
                             zip_.extract(
                                 f, directory)
                             absname = directory + '/' + f
@@ -237,9 +245,12 @@ class ImportLettersHistory(models.Model):
                                 filename = f.split('/')[-1]
                                 self._analyze_attachment(absname,
                                                          filename)
+                            progress += 1
                         shutil.rmtree(directory)
                 # case with normal format ([PDF,]TIFF)
                 elif func.check_file(attachment.name) == 1:
+                    logger.info("Analyzing letter {}/{}".format(
+                        progress, self.nber_letters))
                     # remove if PDF is working
                     if func.isPDF(attachment.name):
                         raise exceptions.Warning(
@@ -253,14 +264,17 @@ class ImportLettersHistory(models.Model):
                         file_.flush()
                         self._analyze_attachment(file_.name,
                                                  attachment.name)
+                    progress += 1
                 else:
                     raise exceptions.Warning(
                         'Still a file in a non-accepted format')
             else:
                 raise exceptions.Warning(_('Two files are the same'))
+
         # remove all the files (now they are inside import_line_ids)
         self.data.unlink()
         self.import_completed = True
+        logger.info("Imported letters analysis completed.")
 
     def _analyze_attachment(self, file_, filename):
         line_vals, document_vals = func.analyze_attachment(
