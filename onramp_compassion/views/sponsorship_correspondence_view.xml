@@ -30,5 +30,17 @@
         <record id="sbc_compassion.action_compassion_sponsorship_correspondence_form" model="ir.actions.act_window">
             <field name="context">{'search_default_state_published':1, 'search_default_unread':1,}</field>
         </record>
+        
+        <!-- Add button for re-downloading letter image -->
+        <record id="correspondence_form_image" model="ir.ui.view">
+            <field name="name">sponsorship.correspondence.download.image</field>
+            <field name="model">sponsorship.correspondence</field>
+            <field name="inherit_id" ref="sbc_compassion.view_sponsorship_correspondence_form" />
+            <field name="arch" type="xml">
+                <header>
+                    <button name="download_attach_letter_image" type="object" string="Reload image" states="Published to Global Partner"/>
+                </header>
+            </field>
+        </record>
     </data>
 </openerp>

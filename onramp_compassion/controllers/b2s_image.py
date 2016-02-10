@@ -9,9 +9,8 @@
 #
 ##############################################################################
 import logging
-import base64
 
-from openerp import fields, http, _
+from openerp import http
 from openerp.http import request
 
 from werkzeug.exceptions import BadRequest, NotFound
@@ -39,15 +38,7 @@ class RestController(http.Controller):
         correspondence = correspondence_obj.search([('uuid', '=', id)])
         if not correspondence:
             raise NotFound()
-        correspondence.write({
-            'last_read': fields.Datetime.now(),
-            'read_count': correspondence.read_count + 1,
-        })
-        data = base64.b64decode(correspondence.letter_image.datas)
-        message = _("The sponsor requested the child letter image.")
-        if user is not None:
-            message = _("User requested the child letter image.")
-        correspondence.message_post(message, _("Letter downloaded"))
+        data = correspondence.get_image()
         response = Response(data, mimetype='application/pdf')
         return response
 
