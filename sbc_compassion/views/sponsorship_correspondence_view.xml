@@ -81,6 +81,7 @@
                             </group>
                         </group>
                         <group string="Letter content">
+                            <field name="nbr_pages" />
                             <group>
                                 <field name="original_language_id" string="Original language" options="{'create':False}"/>
                                 <field name="original_text"/>
