@@ -89,8 +89,8 @@ class Email(models.Model):
 
         if production_mode:
             message.add_to(self.email_to)
-            if self.cc_address:
-                message.add_cc(self.cc_address)
+            if self.email_cc:
+                message.add_cc(self.email_cc)
         else:
             _logger.info('Sending email to test address {}'.format(
                          test_address))
