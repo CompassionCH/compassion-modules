@@ -1,8 +1,8 @@
 id,lang,name,ref
 partner_01,en_US,"Bob Marley",1512077
-partner_02,fr_CH,"Spiderman",1512078
-partner_03,fr_CH,"Wolverine",1512079
-partner_04,de_DE,"The Flash",1512080
+partner_02,en_US,"Spiderman",1512078
+partner_03,en_US,"Wolverine",1512079
+partner_04,en_US,"The Flash",1512080
 partner_05,en_US,"The Atom",1512081
 partner_06,en_US,"Geralt of Rivia",1512082
 partner_07,en_US,"Aquaman",1512083

@@ -34,7 +34,7 @@
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['sponsorship_compassion', 'partner_firstname', 'connector'],
+    'depends': ['sponsorship_compassion', 'connector'],
     'external_dependencies': {
         'python': ['requests'],
     },

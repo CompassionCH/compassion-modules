@@ -40,6 +40,7 @@
             <field name="arch" type="xml">
                 <form string="Correspondence">
                     <header>
+                        <field name="state" invisible="1"/>
                         <field name="s2b_state" widget="statusbar" attrs="{'invisible': [('direction', '!=', 'Supporter To Beneficiary')]}"
                                statusbar_visible="Received in the system,Global Partner translation queue,Field Office translation queue,Composition process,Printed and sent to ICP"/>
                         <field name="b2s_state" widget="statusbar" attrs="{'invisible': [('direction', '=', 'Supporter To Beneficiary')]}"

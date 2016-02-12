@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Loic Hausammann <loic_hausammann@hotmail.com>
+#    @author: Loic Hausammann <loic_hausammann@hotmail.com>, Emanuel Cino
 #
 #    The licence is in the file __openerp__.py
 #
@@ -19,8 +19,8 @@ import zxing
 import tempfile
 import patternrecognition as pr
 import checkboxreader as cbr
-import bluecornerfinder as bcf
 import numpy as np
+import sys
 from math import ceil
 from glob import glob
 from wand.image import Image
@@ -81,15 +81,8 @@ def testline(env, line_vals, csv_file_ids, doc_name):
         error = error + 'barcode,\n'
 
     # Test that languages detected are the same as given in the csv file
-    lang_ok = True
-    letter_languages_id = line_vals['test_letter_languages_id'].split(',')
-    for lang in letter_languages_id:
-        lang_ok = lang_ok and lang in values['lang']
-    line_nber_lang = len(letter_languages_id)
-    csv_nber_lang = len(values['lang'].split(','))
-    lang_ok = lang_ok and line_nber_lang == csv_nber_lang
-
-    if not lang_ok:
+    letter_language = line_vals['test_letter_language']
+    if letter_language != values['lang']:
         error = error + 'lang,\n'
 
     # remove the two last character (',\n')
@@ -192,16 +185,16 @@ def analyze_attachment(env, file_, filename, force_template, test=False):
 
     # now try to find the layout
     # loop over all the patterns in the pattern directory
-    pattern_center = _find_template(env, img, line_vals, test)
+    _find_template(env, img, line_vals, test)
     if line_vals['template_id'] != env.ref(
             'sbc_compassion.default_template').id:
-        _find_languages(env, img, pattern_center, line_vals, test)
+        _find_languages(env, img, line_vals, test)
     else:
         line_vals['letter_language_id'] = False
         if test:
             line_vals.update({
                 'lang_preview': '',
-                'test_letter_languages_id': ''
+                'test_letter_language': ''
             })
     if force_template:
         line_vals['template_id'] = force_template.id
@@ -346,7 +339,8 @@ def decodeBarcode(env, barcode):
                 [('code', '=', child_code)]).id
             partner_id = env['res.partner'].search(
                 [('ref', '=', partner_ref),
-                 ('is_company', '=', False)]).id
+                 ('is_company', '=', False),
+                 ('contract_ids', '!=', False)], limit=1).id
     return partner_id, child_id
 
 
@@ -441,114 +435,73 @@ def _find_template(env, img, line_vals, test):
     return pattern_center
 
 
-def _find_languages(env, img, pattern_center, line_vals, test):
+def _find_languages(env, img, line_vals, test):
     r"""
-    Use the pattern and the blue corner for doing a transformation
-    (rotation + scaling + translation) in order to crop a small part
+    Crop a small part
     of the original picture around the position of each language
     check box.
-    The rotation matrix is given by R, the scaling one by scaling
-    and the translaion by C.
-    The rotation angle :math:`\theta` is given by the angle between
-    the template and image vectors that start from the blue square (B)
-    and end at the pattern.
-    The scaling is given in a matrix form where :math:`S_1` is the distance
-    between the blue corner and the pattern in the scan (:math:`S_2` for the
-    reference)
-    The translation vector is constructed from the two previous matrices
-    and the two vectors B (in the image) and B' (in the template)
 
-    .. math::
-      R = \left(\begin{array}{cc}
-        \cos(\theta) & -\sin(\theta) \\
-        \sin(\theta) & \cos(\theta)  \end{array}
-      \right)
-
-      \text{scaling} = \frac{S_1}{S_2}
-
-      C = B-R*B'
+    [TODO] Implement again something to transform coordinates and be
+           tolerant when scans are not in same dpi as template or are
+           misaligned.
 
     This analysis should be quite fast due to the small size of the
     pictures to analyze (should be a square of about 20-30 pixels large).
 
+    Algorithm for finding the checked language is the following:
+    1. Get the histogram of the cropped picture of the checkbox
+    2. Consider only the dark pixels (brightness value between 0-120)
+       (Max brightness is 256)
+    3. Look for the checkbox which has the most dark pixels count, as the
+       checked checkbox must be darker than the empty ones.
+    4. Returns true (checked) only if the pixels count is 20% more than the
+       second candidate checkbox, and only if the second candidate has less
+       than 20% more of dark pixels.
+
     :param env env: Odoo variable env
     :param img: Image to analyze
-    :param pattern_center: Center position of detected pattern
     :param dict line_vals: Dictonnary containing the data for a line\
         (and the template)
     :param bool test: Enable the test mode (will save some img)
     :returns: None
     """
     line_vals['letter_language_id'] = False
-    if test:
-        # The color order is BGR
-        lang_color = (0, 97, 232)
-        corner_color = (0, 255, 0)
-
-        line_vals.update({
-            'lang_preview': '',
-            'test_letter_languages_id': ''
-        })
-
-    # if pattern has not been detected
-    if pattern_center is None:
-        return
-
     template = env['sponsorship.correspondence.template'].browse(
         line_vals['template_id'])
-    # get position of the blue corner
-    box = [float(
-        env['ir.config_parameter'].get_param('bluecorner_x_min')),
-        float(
-        env['ir.config_parameter'].get_param('bluecorner_y_max'))]
-    bluecorner = bcf.BlueCornerFinder(img, box=box)
-    bluecorner_position = bluecorner.getIndices()
-    if bluecorner_position is None:
+    if not template:
         return
 
-    # vector between the blue square and the pattern
-    diff_ref = np.array(template.get_bluesquare_area() -
-                        template.get_pattern_center())
-    diff_scan = np.array(bluecorner_position-pattern_center)
-    # need normalized vectors
-    normalization = (np.linalg.norm(diff_ref) *
-                     np.linalg.norm(diff_scan))
-    # angle between the scan and the ref image
-    costheta = np.dot(diff_ref, diff_scan)/normalization
-    sintheta = np.linalg.det([diff_ref, diff_scan])/normalization
+    # Color for writing lang in test result image. The color order is BGR
+    lang_color = (0, 97, 232)
+    test_img = []
 
-    # rotation matrix
-    R = np.array([[costheta, -sintheta], [sintheta, costheta]])
-
-    # scaling matrix (use image size)
-    scaling = np.linalg.norm(diff_scan)/np.linalg.norm(diff_ref)
-
-    # transformation matrix
-    R *= scaling
-    # translation vector
-    C = bluecorner_position-np.dot(R, template.get_bluesquare_area())
     h, w = img.shape[:2]
+    # Candidate for checked language (checkbox, pixels count)
+    maxDark = (0, 0)
+    # Second candidate
+    secondDark = (0, 0)
+    # Checkbox which has the less dark pixels count
+    minDark = (sys.maxint, sys.maxint)
 
-    # now for the language
-
-    # language
-    lang = []
-    if test:
-        test_img = []
-    # first loop to write the image and find the language
     for checkbox in template.checkbox_ids:
         a = checkbox.y_min
         b = checkbox.y_max
         c = checkbox.x_min
         d = checkbox.x_max
-        # transform the coordinate system
-        (a, b) = np.round(np.dot(R, np.array([a, b])) + C)
-        (c, d) = np.round(np.dot(R, np.array([c, d])) + C)
-        # new name (if changed, need to change in the remove loop)
         if not (0 < a < b < h and 0 < c < d < w):
             continue
-        A = cbr.CheckboxReader(img[a:b+1, c:d+1])
+        checkbox_image = cbr.CheckboxReader(img[a:b+1, c:d+1])
+        sumLows = checkbox_image.get_pixels_count(max_brightness=120)
+        if sumLows > maxDark[1]:
+            secondDark = maxDark
+            maxDark = (checkbox, sumLows)
+        elif sumLows > secondDark[1]:
+            secondDark = (checkbox, sumLows)
+        elif sumLows < minDark[1]:
+            minDark = (checkbox, sumLows)
+
         if test:
+            # Produce image of checkboxes to see the result of the crop
             pos = (int(checkbox.x_max-checkbox.x_min)/2,
                    int(checkbox.y_max-checkbox.y_min)/2)
             img_lang = np.copy(img[a:b+1, c:d+1])
@@ -557,32 +510,21 @@ def _find_languages(env, img, pattern_center, line_vals, test):
                 cv2.putText(img_lang, code_iso, pos,
                             cv2.FONT_HERSHEY_SIMPLEX, 1,
                             lang_color)
-            for corners in A.corners:
-                img_lang[corners] = corner_color
             test_img.append(img_lang)
-        # if something happens
-        # if A.test is True or A.getState is True or A.getState is None:
-        if A.getState() is True:
-            lang.append(checkbox.language_id.id)
+
+    # A checked box represents 20% of pixels
+    # We test the difference between second checkbox with most dark
+    # pixels and checkbox with the least dark pixels is less than 20%
+    maxDiff = maxDark[1] - secondDark[1]
+    minDiff = secondDark[1] - minDark[1]
+    found = minDiff < 0.2 * minDark[1] < maxDiff
+    if found:
+        lang = maxDark[0].language_id
+        line_vals['letter_language_id'] = lang.id
     if test:
         test_data = manyImages2OneImage(test_img, 2)
-        test_lang = ''
-        for l in lang:
-            lang_db = env['res.lang.compassion'].search([
-                ('id', '=', l)])
-            if lang_db:
-                test_lang = test_lang + lang_db.code_iso + ','
-            else:
-                test_lang = test_lang + 'other,'
-
-        line_vals.update({
-            'lang_preview': test_data,
-            'test_letter_languages_id': test_lang[:-1]
-        })
-    if len(lang) == 1:
-        lang = lang[0]
-        line_vals['letter_language_id'] = lang
-    return line_vals
+        line_vals['lang_preview'] = test_data
+        line_vals['test_letter_language'] = lang.code_iso if found else ''
 
 
 def manyImages2OneImage(test_img, col):
@@ -619,8 +561,8 @@ def manyImages2OneImage(test_img, col):
             pad_left = (width_img - width_row) / (col_temp + 1)
         else:
             col_temp = len(test_img) - col*row
-            if col_temp == 0:
-                col_temp = col
+            if col_temp <= 0:
+                col_temp += col
             pad_left = (width_img - width_row) / (col_temp + 1)
         for c in range(col_temp):
             h, w = test_img[r*col+c].shape[:2]

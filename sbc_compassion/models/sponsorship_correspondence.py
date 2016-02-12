@@ -100,7 +100,7 @@ class SponsorshipCorrespondence(models.Model):
 
     # 4. Additional information
     ###########################
-    status_date = fields.Date()
+    status_date = fields.Date(default=fields.Date.today())
     scanned_date = fields.Date(default=fields.Date.today())
     relationship = fields.Selection([
         ('Sponsor', _('Sponsor')),
@@ -282,6 +282,8 @@ class SponsorshipCorrespondence(models.Model):
         # Write scanned_date for supporter letters
         if vals.get('direction') == 'Supporter To Beneficiary':
             vals['scanned_date'] = fields.Date.today()
+        else:
+            vals['status_date'] = fields.Date.today()
 
         letter_image = vals.get('letter_image')
         attachment = False
@@ -316,14 +318,6 @@ class SponsorshipCorrespondence(models.Model):
         if 'state' in vals:
             vals['status_date'] = fields.Date.today()
         return super(SponsorshipCorrespondence, self).write(vals)
-
-    ##########################################################################
-    #                             PUBLIC METHODS                             #
-    ##########################################################################
-
-    @api.one
-    def process_letter(self):
-        pass
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

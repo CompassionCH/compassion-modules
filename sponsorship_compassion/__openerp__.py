@@ -30,12 +30,11 @@
 
 {
     'name': 'Compassion Sponsorships',
-    'version': '8.0.1',
+    'version': '8.0.2',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['contract_compassion', 'crm',
-                'account_cancel', 'partner_compassion',
+    'depends': ['contract_compassion', 'crm', 'account_cancel',
                 'web_m2x_options', 'account_invoice_split_invoice'],
     'data': [
         'view/sponsorship_contract_view.xml',
@@ -49,9 +48,12 @@
         'data/sequence.xml',
         'data/sponsorship_product.xml',
         'data/analytic_accounting.xml',
+        'data/partner_sequence.xml',
+        'data/lang_data.xml',
         'workflow/contract_workflow.xml',
     ],
     'demo': [
+        'demo/res.partner.csv',
         'demo/sponsorship_compassion_demo.xml',
         'demo/recurring.contract.group.csv',
         'demo/recurring.contract.csv',

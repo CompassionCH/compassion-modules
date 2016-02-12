@@ -23,7 +23,7 @@ class ResPartner(models.Model):
     ##########################################################################
 
     spoken_lang_ids = fields.Many2many(
-        'res.lang.compassion', string='Spoken languages', required=True)
+        'res.lang.compassion', string='Spoken languages')
     mandatory_review = fields.Boolean(
         help='Indicates that we should review the letters of this sponsor '
              'before sending them to GMC.')
@@ -46,3 +46,11 @@ class ResPartner(models.Model):
             "views": [[False, "tree"], [False, "form"]],
             'domain': [["correspondant_id", "=", self.id]],
             }
+
+    @api.onchange('lang')
+    def onchange_main_language(self):
+        lang = self.env['res.lang'].search([('code', '=', self.lang)])
+        spoken_lang = self.env['res.lang.compassion'].search([
+            ('lang_id', '=', lang.id)])
+        if spoken_lang:
+            self.spoken_lang_ids += spoken_lang

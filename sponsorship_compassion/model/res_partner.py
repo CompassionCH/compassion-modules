@@ -18,6 +18,9 @@ class res_partner(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
+    ref = fields.Char(
+        required=True,
+        default=lambda self: self.env['ir.sequence'].get('partner.ref'))
     contracts_fully_managed = fields.One2many(
         "recurring.contract", compute='_get_related_contracts',
         string='Fully managed sponsorships',
@@ -164,8 +167,7 @@ class res_partner(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Contracts',
             'res_model': 'recurring.contract',
-            "views": [[False, "tree"], [False, "form"]],
-            'res_id': self.contracts_fully_managed[0].id,
+            'views': [[False, "tree"], [False, "form"]],
             'domain': ['|', ('correspondant_id', '=', self.id),
                        ('partner_id', '=', self.id)],
             }

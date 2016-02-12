@@ -14,6 +14,7 @@ from openerp.tools.config import config
 
 import logging
 import sendgrid
+import re
 
 
 SUBSTITUTION_PREFIX = '{'
@@ -82,12 +83,14 @@ class Email(models.Model):
         # model and res_id
         self.mail_message_id.body = html
 
-        message.set_text(self.body_text or ' ')
+        p = re.compile(r'<.*?>')  # Remove HTML markers
+        text_only = self.body_text or p.sub('', html.replace('<br/>', '\n'))
+        message.set_text(text_only)
 
         if production_mode:
             message.add_to(self.email_to)
-            if self.cc_address:
-                message.add_cc(self.cc_address)
+            if self.email_cc:
+                message.add_cc(self.email_cc)
         else:
             _logger.info('Sending email to test address {}'.format(
                          test_address))
