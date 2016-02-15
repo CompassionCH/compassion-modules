@@ -56,8 +56,6 @@ class SponsorshipCorrespondence(models.Model):
         'sponsorship_correspondence_type_relation',
         'correspondence_id', 'type_id',
         'Communication type',
-        default=lambda self: [(4, self.env.ref(
-            'sbc_compassion.correspondence_type_supporter').id)],
         readonly=True)
     state = fields.Selection(
         'get_states', default='Received in the system',
@@ -279,11 +277,18 @@ class SponsorshipCorrespondence(models.Model):
     @api.model
     def create(self, vals):
         """ Letter image field is in binary so we convert to ir.attachment """
-        # Write scanned_date for supporter letters
-        if vals.get('direction') == 'Supporter To Beneficiary':
-            vals['scanned_date'] = fields.Date.today()
+        # Fill missing fields
+        if vals.get('direction',
+                    'Supporter To Beneficiary') == 'Supporter To Beneficiary':
+            vals['communication_type_ids'] = [(
+                4, self.env.ref(
+                    'sbc_compassion.correspondence_type_supporter').id)]
         else:
             vals['status_date'] = fields.Date.today()
+            if 'communication_type_ids' not in vals:
+                vals['communication_type_ids'] = [(
+                    4, self.env.ref(
+                        'sbc_compassion.correspondence_type_bene').id)]
 
         letter_image = vals.get('letter_image')
         attachment = False
