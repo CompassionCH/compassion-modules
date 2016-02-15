@@ -170,4 +170,6 @@ class res_partner(models.Model):
             'views': [[False, "tree"], [False, "form"]],
             'domain': ['|', ('correspondant_id', '=', self.id),
                        ('partner_id', '=', self.id)],
+            'context': self.with_context({
+                'default_type': 'S'}).env.context,
             }
