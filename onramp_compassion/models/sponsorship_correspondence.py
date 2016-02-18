@@ -11,6 +11,7 @@
 
 import json
 import base64
+import uuid
 
 from ..tools.onramp_connector import OnrampConnector
 from ..mappings import base_mapping as mapping
@@ -30,6 +31,17 @@ class SponsorshipCorrespondence(models.Model):
     read_url = fields.Char(compute='_get_read_url')
     last_read = fields.Datetime()
     read_count = fields.Integer(default=0)
+
+    def _get_uuid(self):
+        return str(uuid.uuid4())
+
+    @api.multi
+    def _get_read_url(self):
+        base_url = self.env['ir.config_parameter'].get_param(
+            'web.external.url')
+        for letter in self:
+            letter.read_url = "{}/b2s_image?id={}".format(
+                base_url, letter.uuid)
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -135,6 +147,7 @@ class SponsorshipCorrespondence(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+
     @api.model
     def _commkit_update(self, data, message_id=None):
         """ Given the message data, update or create a
