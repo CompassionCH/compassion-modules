@@ -9,8 +9,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
-#    @author: Roman Zoller
+#    Copyright (C) 2015-2016 Compassion CH (http://www.compassion.ch)
+#    @author: Roman Zoller, Emanuel Cino
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -30,15 +30,17 @@
 
 {
     'name': 'SendGrid',
-    'version': '8.0.1',
+    'version': '8.0.2',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['base', 'mail'],
+    'depends': ['base', 'email_template'],
     'data': [
         'security/ir.model.access.csv',
         'view/sendgrid_email_view.xml',
         'view/sendgrid_template_view.xml',
+        'view/mail_compose_message_view.xml',
+        'view/email_template_view.xml',
     ],
     'demo': [],
     'installable': True,

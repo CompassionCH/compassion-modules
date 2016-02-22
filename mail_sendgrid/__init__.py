@@ -9,6 +9,6 @@
 #
 ##############################################################################
 
-from . import email
-from . import substitution
-from . import template
+from . import models
+from . import tools
+from . import wizards
