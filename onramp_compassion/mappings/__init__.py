@@ -10,3 +10,4 @@
 ##############################################################################
 from . import base_mapping
 from . import commkit_mapping
+from . import page_mapping

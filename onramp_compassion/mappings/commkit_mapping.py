@@ -9,6 +9,7 @@
 #
 ##############################################################################
 from base_mapping import OnrampMapping
+import pdb
 
 
 class CorrespondenceMapping(OnrampMapping):
@@ -45,14 +46,6 @@ class CorrespondenceMapping(OnrampMapping):
         'ObjectUrl': None
     }
 
-    PAGES_MAPPING = {
-        'EnglishTranslatedText': None,
-        'FinalPageURL': None,
-        'OriginalPageURL': None,
-        'OriginalText': None,
-        'TranslatedText': None
-    }
-
     SUPPORTER_MAPPING = {
         'CompassConstituentId': ('correspondant_id.ref', 'res.partner'),
         'CommunicationDeliveryPreference': None,  # Todo Where to find this ?
@@ -69,7 +62,7 @@ class CorrespondenceMapping(OnrampMapping):
         'FontSize': None,
         'Font': None,
         'GlobalPartner': GLOBAL_PARTNER_MAPPING,
-        'Pages': PAGES_MAPPING,
+        'Pages': ('page_ids', 'sponsorship.correspondence.page'),
         'Direction': 'direction',
         'PrintType': None,
         'RelationshipType': 'relationship',
@@ -121,8 +114,6 @@ class CorrespondenceMapping(OnrampMapping):
     CONSTANTS = {
         'SourceSystem': 'Odoo',
         'GlobalPartner.Id': 'CH',
-        'Pages': [],     # TODO : See how to send info about pages
-        'NumberOfPages': 1,     # TODO
     }
 
     def _convert_connect_data(self, connect_name, value_mapping, value,
@@ -146,3 +137,21 @@ class CorrespondenceMapping(OnrampMapping):
             del odoo_data['correspondant_id']
             if sponsorship:
                 odoo_data['sponsorship_id'] = sponsorship.id
+        # Replace dict by a tuple for the ORM update/create
+        if 'page_ids' in odoo_data:
+            pdb.set_trace()
+            for page in odoo_data['page_ids']:
+                odoo_data['page_ids'].remove(page)
+                try:
+                    page_id = \
+                        self.env['sponsorship.correspondence.page'].search(
+                            [(
+                                'original_page_url',
+                                '=',
+                                page['original_page_url']
+                            )]
+                        )[0].id
+                    orm_tuple = (1, page_id, page)
+                except:
+                    orm_tuple = (0, 0, page)
+                odoo_data['page_ids'].insert(0, orm_tuple)
