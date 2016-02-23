@@ -26,8 +26,9 @@ class SponsorshipCorrespondence(models.Model):
     a child and a sponsor.
     """
     _name = 'sponsorship.correspondence'
-
     _inherit = ['mail.thread', 'ir.needaction_mixin']
+    _description = 'Letter'
+    _order = 'status_date desc, scanned_date asc'
 
     ##########################################################################
     #                                 FIELDS                                 #
