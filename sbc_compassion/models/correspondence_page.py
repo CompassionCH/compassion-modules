@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields
+from openerp import models, fields, _
 
 
 class CorrespondencePage(models.Model):
@@ -30,5 +30,13 @@ class CorrespondencePage(models.Model):
     translated_text = fields.Text()
 
     ##########################################################################
-    #                             FIELDS METHODS                             #
+    #                             PRIVATE METHODS                            #
     ##########################################################################
+    _sql_constraints = [
+        ('original_page_url',
+         'unique(original_page_url)',
+         _('The pages already exists in database.')),
+        ('final_page_url',
+         'unique(final_page_url)',
+         _('The pages already exists in database.')),
+    ]
