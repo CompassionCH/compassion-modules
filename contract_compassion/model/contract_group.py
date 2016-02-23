@@ -219,11 +219,12 @@ class contract_group(models.Model):
             journal_ids, invoicer)
 
         ref = ''
+        bank_terms = self.env['account.payment.term'].with_context(
+            lang='en_US').search(
+            ['|', ('name', 'like', 'LSV'), ('name', 'like', 'Postfinance')])
         if self.bvr_reference:
             ref = self.bvr_reference
-        elif (self.payment_term_id and
-              (_('LSV') in self.payment_term_id.name or
-               _('Direct Debit') in self.payment_term_id.name)):
+        elif self.payment_term_id in bank_terms:
             seq = self.env['ir.sequence']
             ref = mod10r(seq.next_by_code('contract.bvr.ref'))
         inv_data.update({
