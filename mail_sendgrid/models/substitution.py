@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Roman Zoller
+#    @author: Roman Zoller, Emanuel Cino
 #
 #    The licence is in the file __openerp__.py
 #
@@ -20,6 +20,9 @@ class Substitution(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     key = fields.Char()
+    lang = fields.Char()
+    email_template_id = fields.Many2one(
+        'email.template', ondelete='cascade')
+    email_id = fields.Many2one(
+        'mail.mail', ondelete='cascade')
     value = fields.Char()
-    email_id = fields.Many2one('mail.mail', required=True,
-                               ondelete='cascade')

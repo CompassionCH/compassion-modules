@@ -11,7 +11,6 @@
 
 import magic
 import base64
-import uuid
 
 from openerp import fields, models, api, exceptions, _
 
@@ -27,8 +26,9 @@ class SponsorshipCorrespondence(models.Model):
     a child and a sponsor.
     """
     _name = 'sponsorship.correspondence'
-
     _inherit = ['mail.thread', 'ir.needaction_mixin']
+    _description = 'Letter'
+    _order = 'status_date desc, scanned_date asc'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -323,16 +323,3 @@ class SponsorshipCorrespondence(models.Model):
         if 'state' in vals:
             vals['status_date'] = fields.Date.today()
         return super(SponsorshipCorrespondence, self).write(vals)
-
-    ##########################################################################
-    #                             PRIVATE METHODS                            #
-    ##########################################################################
-    @api.multi
-    def _get_read_url(self):
-        base_url = self.env['ir.config_parameter'].get_param('web.base.url')
-        for letter in self:
-            letter.read_url = "{}/b2s_image?id={}".format(
-                base_url, letter.uuid)
-
-    def _get_uuid(self):
-        return str(uuid.uuid4())

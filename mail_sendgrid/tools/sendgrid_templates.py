@@ -36,11 +36,13 @@ class Templates(object):
 
     @endpoint.setter
     def endpoint(self, value):
-        self._endpoint = value
+        self._endpoint = self._base_endpoint + value
 
     @property
     def client(self):
         return self._client
 
-    def get(self):
+    def get(self, template_id=None):
+        if template_id:
+            self.endpoint = '/' + template_id
         return self.client.get(self)

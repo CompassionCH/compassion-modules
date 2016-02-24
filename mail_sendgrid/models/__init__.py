@@ -9,5 +9,8 @@
 #
 ##############################################################################
 
-from . import models
-from . import tools
+from . import email
+from . import substitution
+from . import sendgrid_template
+from . import email_template
+from . import email_lang_template

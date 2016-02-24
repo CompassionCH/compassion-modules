@@ -1,0 +1,168 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* sendgrid
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-02-23 13:42+0000\n"
+"PO-Revision-Date: 2016-02-23 14:45+0100\n"
+"Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
+"Language-Team: \n"
+"Language: fr_CH\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.6.4\n"
+
+#. module: mail_sendgrid
+#: view:mail.mail:mail_sendgrid.email_form_view
+msgid "Attachments"
+msgstr "Pièces jointes"
+
+#. module: mail_sendgrid
+#: view:email.template:mail_sendgrid.view_email_template_sendgrid_form
+msgid "Email Configuration"
+msgstr "Configuration Email"
+
+#. module: mail_sendgrid
+#: model:ir.model,name:mail_sendgrid.model_email_template_preview
+msgid "Email Template Preview"
+msgstr "Aperçu modèle e-mail"
+
+#. module: mail_sendgrid
+#: model:ir.model,name:mail_sendgrid.model_email_template
+msgid "Email Templates"
+msgstr "Modèles d'e-mails"
+
+#. module: mail_sendgrid
+#: model:ir.model,name:mail_sendgrid.model_mail_compose_message
+msgid "Email composition wizard"
+msgstr "Email composition wizard"
+
+#. module: mail_sendgrid
+#: view:email.template:mail_sendgrid.view_email_template_sendgrid_form
+msgid "Get substitutions from templates"
+msgstr "Charger les substitutions SendGrid"
+
+#. module: mail_sendgrid
+#: view:mail.compose.message:mail_sendgrid.email_compose_message_sendgrid_form
+#: view:sendgrid.template:mail_sendgrid.view_sendgrid_template_form
+msgid "Html"
+msgstr "Html"
+
+#. module: mail_sendgrid
+#: model:ir.model,name:mail_sendgrid.model_mail_message
+msgid "Message"
+msgstr "Message"
+
+#. module: mail_sendgrid
+#: code:addons/mail_sendgrid/models/email.py:86
+#: code:addons/mail_sendgrid/models/sendgrid_template.py:46
+#, python-format
+msgid "Missing sendgrid_api_key in conf file"
+msgstr "Missing sendgrid_api_key in conf file"
+
+#. module: mail_sendgrid
+#: model:ir.model,name:mail_sendgrid.model_mail_mail
+msgid "Outgoing Mails"
+msgstr "Messages Sortants"
+
+#. module: mail_sendgrid
+#: view:sendgrid.template:mail_sendgrid.view_sendgrid_template_form
+msgid "Plain text"
+msgstr "Texte brut"
+
+#. module: mail_sendgrid
+#: view:mail.mail:mail_sendgrid.email_form_view
+msgid "Send (SendGrid)"
+msgstr "Envoyer (SendGrid)"
+
+#. module: mail_sendgrid
+#: view:mail.mail:mail_sendgrid.email_form_view
+msgid "Send Now"
+msgstr "Envoyer maintenant"
+
+#. module: mail_sendgrid
+#: view:email.template:mail_sendgrid.view_email_template_sendgrid_form
+#: view:mail.mail:mail_sendgrid.email_form_view
+msgid "SendGrid"
+msgstr "SendGrid"
+
+#. module: mail_sendgrid
+#: view:mail.compose.message:mail_sendgrid.email_compose_message_sendgrid_form
+msgid "SendGrid Preview"
+msgstr "Aperçu SendGrid"
+
+#. module: mail_sendgrid
+#: model:ir.ui.menu,name:mail_sendgrid.menu_sendgrid_template
+msgid "SendGrid Templates"
+msgstr "Templates SendGrid"
+
+#. module: mail_sendgrid
+#: model:ir.actions.act_window,name:mail_sendgrid.open_view_sendgrid_template_tree
+#: view:sendgrid.template:mail_sendgrid.view_sendgrid_template_form
+msgid "Template"
+msgstr "Gabarit"
+
+#. module: mail_sendgrid
+#: view:sendgrid.substitution:mail_sendgrid.view_sendgrid_substitution_line_tree
+msgid "Template substitutions"
+msgstr "Substitutions"
+
+#. module: mail_sendgrid
+#: view:sendgrid.template:mail_sendgrid.view_sendgrid_template_tree
+msgid "Templates"
+msgstr "Gabarits"
+
+#. module: mail_sendgrid
+#: view:sendgrid.template:mail_sendgrid.view_sendgrid_template_form
+msgid "Update"
+msgstr "Mettre à jour"
+
+#~ msgid "Body text"
+#~ msgstr "Corps de texte"
+
+#~ msgid "Created by"
+#~ msgstr "Créé par"
+
+#~ msgid "Created on"
+#~ msgstr "Créé le"
+
+#~ msgid "Email id"
+#~ msgstr "Email"
+
+#~ msgid "ID"
+#~ msgstr "Id"
+
+#~ msgid "Key"
+#~ msgstr "Mot-clé"
+
+#~ msgid "Last Updated by"
+#~ msgstr "Modifié par"
+
+#~ msgid "Last Updated on"
+#~ msgstr "Modifié le"
+
+#~ msgid "Layout template id"
+#~ msgstr "Gabarit"
+
+#~ msgid "Name"
+#~ msgstr "Nom"
+
+#~ msgid "Remote id"
+#~ msgstr "Id distant"
+
+#~ msgid "Sent date"
+#~ msgstr "Date d'envoi"
+
+#~ msgid "Substitution ids"
+#~ msgstr "Substitutions"
+
+#~ msgid "Text template id"
+#~ msgstr "Modèle de texte"
+
+#~ msgid "Value"
+#~ msgstr "Valeur"

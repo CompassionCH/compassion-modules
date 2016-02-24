@@ -6,16 +6,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-02 12:38+0000\n"
-"PO-Revision-Date: 2016-02-02 14:21+0100\n"
+"POT-Creation-Date: 2016-02-23 13:30+0000\n"
+"PO-Revision-Date: 2016-02-23 14:41+0100\n"
 "Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
 "Language-Team: \n"
+"Language: fr_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 1.6.4\n"
-"Language: fr_CH\n"
 
 #. module: sbc_compassion
 #: field:sponsorship.correspondence.template,active:0
@@ -34,7 +34,7 @@ msgid "Add a file"
 msgstr "Ajouter un fichier"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/import_letters_history.py:47
+#: code:addons/sbc_compassion/models/import_letters_history.py:50
 #: selection:import.letters.history,state:0
 #: selection:test.import.letters.history,state:0
 #, python-format
@@ -52,7 +52,7 @@ msgid "Beneficiary"
 msgstr "Enfant"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:220
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:212
 #, python-format
 msgid "Beneficiary Initiated"
 msgstr "Initié par l'enfant"
@@ -99,8 +99,8 @@ msgid "CSV Files"
 msgstr "Fichiers CSV"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:163
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:188
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:155
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:180
 #, python-format
 msgid "Cancelled"
 msgstr "Annulé"
@@ -127,15 +127,20 @@ msgid "Code iso"
 msgstr "Code iso"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:98
+#: field:sponsorship.correspondence,communication_type_ids:0
+msgid "Communication type"
+msgstr "Type de communication"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:97
 #: selection:sponsorship.correspondence,source:0
 #, python-format
 msgid "Compassion website"
 msgstr "Site Internet"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:157
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:184
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:149
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:176
 #, python-format
 msgid "Composition Process"
 msgstr "Composition Process"
@@ -237,7 +242,12 @@ msgid "Current line index"
 msgstr "Current line index"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:160
+#: help:sponsorship.correspondence,message_last_post:0
+msgid "Date of the last message posted on the record."
+msgstr "Date of the last message posted on the record."
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:152
 #, python-format
 msgid "Delivered"
 msgstr "Transmis"
@@ -268,7 +278,7 @@ msgid "Direction"
 msgstr "Direction"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/import_letters_history.py:50
+#: code:addons/sbc_compassion/models/import_letters_history.py:53
 #: selection:import.letters.history,state:0
 #: selection:test.import.letters.history,state:0
 #, python-format
@@ -276,7 +286,7 @@ msgid "Done"
 msgstr "Effectué"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/import_letters_history.py:46
+#: code:addons/sbc_compassion/models/import_letters_history.py:49
 #: selection:import.letters.history,state:0
 #: selection:test.import.letters.history,state:0
 #, python-format
@@ -284,14 +294,19 @@ msgid "Draft"
 msgstr "Brouillon"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:97
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:96
 #: selection:sponsorship.correspondence,source:0
 #, python-format
 msgid "E-Mail"
 msgstr "E-Mail"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:106
+#: model:ir.model,name:sbc_compassion.model_sponsorship_correspondence
+msgid "Email Thread"
+msgstr "Email Thread"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:105
 #: field:import.letter.line,is_encourager:0
 #: selection:sponsorship.correspondence,relationship:0
 #: field:test.import.letter.line,is_encourager:0
@@ -305,14 +320,14 @@ msgid "Error"
 msgstr "Erreur"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:164
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:189
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:156
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:181
 #, python-format
 msgid "Exception"
 msgstr "Exception"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:175
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:167
 #, python-format
 msgid "FO content check"
 msgstr "Vérification du FO"
@@ -353,7 +368,7 @@ msgid "Files to process"
 msgstr "Fichiers à traiter"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:221
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:213
 #, python-format
 msgid "Final Letter"
 msgstr "Lettre finale"
@@ -367,6 +382,16 @@ msgstr "Lien lettre finale"
 #: view:import.letters.review:sbc_compassion.view_import_letter_review
 msgid "Finish"
 msgstr "Terminer"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,is_first_letter:0
+msgid "First letter from Beneficiary"
+msgstr "Première lettre"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,message_follower_ids:0
+msgid "Followers"
+msgstr "Followers"
 
 #. module: sbc_compassion
 #: field:import.letters.history,force_template:0
@@ -390,16 +415,8 @@ msgid "Height of the template in pixels"
 msgstr "Height of the template in pixels"
 
 #. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letters_history.py:40
 #: model:ir.model,name:sbc_compassion.model_import_letters_history
-msgid ""
-"History of the letters imported Import mail from a zip\n"
-"    or a PDF/TIFF"
-msgstr ""
-"History of the letters imported Import mail from a zip\n"
-"    or a PDF/TIFF"
-
-#. module: sbc_compassion
-#: code:addons/sbc_compassion/models/import_letters_history.py:37
 #, python-format
 msgid ""
 "History of the letters imported from a zip\n"
@@ -407,6 +424,15 @@ msgid ""
 msgstr ""
 "History of the letters imported from a zip\n"
 "    or a PDF/TIFF"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence,message_summary:0
+msgid ""
+"Holds the Chatter summary (number of messages, ...). This summary is "
+"directly in html format in order to be inserted in kanban views."
+msgstr ""
+"Holds the Chatter summary (number of messages, ...). This summary is "
+"directly in html format in order to be inserted in kanban views."
 
 #. module: sbc_compassion
 #: field:crosscheck.image,id:0 field:import.letter.line,id:0
@@ -424,6 +450,11 @@ msgstr "ID"
 #: model:ir.ui.menu,name:sbc_compassion.menu_open_view_spoken_langs_form
 msgid "ISO639-3"
 msgstr "ISO639-3"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence,message_unread:0
+msgid "If checked new messages require your attention."
+msgstr "If checked new messages require your attention."
 
 #. module: sbc_compassion
 #: field:crosscheck.image,image:0
@@ -460,11 +491,6 @@ msgid "Import line ids"
 msgstr "Lignes d'import"
 
 #. module: sbc_compassion
-#: model:ir.model,name:sbc_compassion.model_import_mail
-msgid "Import mail from a zip or a PDF/TIFF"
-msgstr "Importer le courrier depuis un zip ou PDF/TIFF"
-
-#. module: sbc_compassion
 #: view:import.letters.history:sbc_compassion.import_letters_history_form
 msgid "Imported Letters"
 msgstr "Lettres importées"
@@ -498,6 +524,11 @@ msgid ""
 msgstr "Forcer la vérification du contenu des lettres du parrain"
 
 #. module: sbc_compassion
+#: field:sponsorship.correspondence,message_is_follower:0
+msgid "Is a Follower"
+msgstr "Is a Follower"
+
+#. module: sbc_compassion
 #: view:compassion.country:sbc_compassion.view_country_origin_tree
 #: view:res.lang.compassion:sbc_compassion.view_spoken_langs_origin_tree
 msgid "Iso code"
@@ -516,6 +547,7 @@ msgstr "Langue"
 #. module: sbc_compassion
 #: field:import.letter.line,letter_language_id:0
 #: field:test.import.letter.line,letter_language_id:0
+#: field:test.import.letter.line,test_letter_language:0
 msgid "Language"
 msgstr "Langue"
 
@@ -538,20 +570,20 @@ msgid "Language not Detected"
 msgstr "Langue non détectée"
 
 #. module: sbc_compassion
-#: field:test.import.letter.line,test_letter_languages_id:0
-msgid "Languages"
-msgstr "Langues"
-
-#. module: sbc_compassion
 #: field:test.import.letter.line,lang_preview:0
 msgid "Languages preview"
 msgstr "Aperçu des langues"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:222
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:214
 #, python-format
 msgid "Large Gift Thank You"
 msgstr "Remerciement grand cadeau"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,message_last_post:0
+msgid "Last Message Date"
+msgstr "Last Message Date"
 
 #. module: sbc_compassion
 #: field:crosscheck.image,write_uid:0 field:import.letter.line,write_uid:0
@@ -582,6 +614,11 @@ msgstr "Modifié par"
 #: field:test.import.letters.history,write_date:0
 msgid "Last Updated on"
 msgstr "Modifié le"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,last_read:0
+msgid "Last read"
+msgstr "Last read"
 
 #. module: sbc_compassion
 #: field:sponsorship.correspondence.template,layout:0
@@ -625,7 +662,7 @@ msgid "Layout 6"
 msgstr "Layout 6"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:96
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:95
 #: selection:sponsorship.correspondence,source:0
 #, python-format
 msgid "Letter"
@@ -652,7 +689,7 @@ msgstr "Aperçu de la lettre"
 
 #. module: sbc_compassion
 #: model:ir.ui.menu,name:sbc_compassion.menu_sponsorship_letters
-#: view:res.partner:sbc_compassion.view_res_partner_compassion_line_button_form
+#: view:res.partner:sbc_compassion.view_partner_form_sbc
 #: view:test.import.letters.history:sbc_compassion.test_import_letters_history_form
 msgid "Letters"
 msgstr "Lettres"
@@ -673,6 +710,11 @@ msgstr "Vérification Obligatoire"
 #: field:sponsorship.correspondence,mandatory_review:0
 msgid "Mandatory review"
 msgstr "Vérification Obligatoire"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,marked_for_rework:0
+msgid "Marked for rework"
+msgstr "Marqué à corriger"
 
 #. module: sbc_compassion
 #: help:sponsorship.correspondence.lang.checkbox,x_max:0
@@ -709,6 +751,16 @@ msgid ""
 msgstr ""
 "Maximum Y position of the area in which to look for the pattern inside the "
 "template (given in pixels)"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,message_ids:0
+msgid "Messages"
+msgstr "Messages"
+
+#. module: sbc_compassion
+#: help:sponsorship.correspondence,message_ids:0
+msgid "Messages and communication history"
+msgstr "Messages and communication history"
 
 #. module: sbc_compassion
 #: view:sponsorship.correspondence.template:sbc_compassion.view_correspondence_template_origin_form
@@ -775,13 +827,13 @@ msgid "Name"
 msgstr "Nom"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:224
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:216
 #, python-format
 msgid "New Sponsor Letter"
-msgstr "Nouvelle lettre de parrain"
+msgstr "Lettre pour nouveau parrain"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:239
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:231
 #, python-format
 msgid "New correspondence"
 msgstr "Nouvelle lettre"
@@ -792,7 +844,7 @@ msgid "Next"
 msgstr "Suivant"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:75
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:74
 #: selection:sponsorship.correspondence,physical_attachments:0
 #, python-format
 msgid "Not sent"
@@ -812,12 +864,12 @@ msgid "OK"
 msgstr "OK"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/import_letters_history.py:48
+#: code:addons/sbc_compassion/models/import_letters_history.py:51
 #: selection:import.letters.history,state:0
 #: selection:test.import.letters.history,state:0
 #, python-format
 msgid "Open"
-msgstr "Ouvrir"
+msgstr "A vérifier"
 
 #. module: sbc_compassion
 #: view:sponsorship.correspondence:sbc_compassion.view_sponsorship_correspondence_form
@@ -840,8 +892,8 @@ msgid "Original text"
 msgstr "Texte original"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/import_letters_history.py:236
-#: code:addons/sbc_compassion/models/import_letters_history.py:246
+#: code:addons/sbc_compassion/models/import_letters_history.py:244
+#: code:addons/sbc_compassion/models/import_letters_history.py:257
 #, python-format
 msgid "PDF not implemented yet"
 msgstr "PDF not implemented yet"
@@ -958,9 +1010,14 @@ msgid "Preferred language"
 msgstr "Langue préférée"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:185
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:177
 #, python-format
 msgid "Published"
+msgstr "Publiée"
+
+#. module: sbc_compassion
+#: view:sponsorship.correspondence:sbc_compassion.sponsorship_correspondence_view_search
+msgid "Published state"
 msgstr "Publiée"
 
 #. module: sbc_compassion
@@ -969,40 +1026,45 @@ msgid "QR code preview"
 msgstr "QR code preview"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:155
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:181
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:147
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:173
 #, python-format
 msgid "Quality Check Done"
-msgstr "Quality Check Done"
+msgstr "Contrôle Qualité Terminé"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:153
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:179
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:145
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:171
 #, python-format
 msgid "Quality Check Process"
-msgstr "Quality Check Process"
+msgstr "Contrôle Qualité"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:152
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:178
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:144
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:170
 #, python-format
 msgid "Quality Check Queue"
-msgstr "Quality Check Queue"
+msgstr "En Attente Contrôle Qualité"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:165
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:157
 #, python-format
 msgid "Quality check failed"
-msgstr "Quality check failed"
+msgstr "Contrôle Qualité Echoué"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:187
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:179
 #, python-format
 msgid "Quality check unsuccessful"
-msgstr "Quality check unsuccessful"
+msgstr "Contrôle Qualité Echoué"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/import_letters_history.py:49
+#: field:sponsorship.correspondence,read_count:0
+msgid "Read count"
+msgstr "Nombre lectures"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/import_letters_history.py:52
 #: selection:import.letters.history,state:0
 #: selection:test.import.letters.history,state:0
 #, python-format
@@ -1010,13 +1072,13 @@ msgid "Ready"
 msgstr "Prêt"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:173
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:165
 #, python-format
 msgid "Ready to be printed"
 msgstr "Prêt pour impression"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:225
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:217
 #, python-format
 msgid "Reciprocal Letter"
 msgstr "Lettre réciproque"
@@ -1027,7 +1089,7 @@ msgid "Relationship"
 msgstr "Relation"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/import_letters_history.py:188
+#: code:addons/sbc_compassion/models/import_letters_history.py:191
 #: view:import.letters.history:sbc_compassion.import_letters_history_form
 #, python-format
 msgid "Review Imports"
@@ -1040,22 +1102,32 @@ msgid "Reviewed"
 msgstr "Vérifié"
 
 #. module: sbc_compassion
+#: field:sponsorship.correspondence,rework_comments:0
+msgid "Rework comments"
+msgstr "Commentaires de correction"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,rework_reason:0
+msgid "Rework reason"
+msgstr "Remarques de correction"
+
+#. module: sbc_compassion
 #: view:test.import.letters.history:sbc_compassion.test_import_letters_history_form
 msgid "Run Test"
 msgstr "Run Test"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:177
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:169
 #, python-format
 msgid "SDL FO Translation"
-msgstr "SDL FO Translation"
+msgstr "Traduction FO"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:156
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:176
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:148
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:168
 #, python-format
 msgid "SDL FO Translation Queue"
-msgstr "SDL FO Translation Queue"
+msgstr "En Attente Traduction FO"
 
 #. module: sbc_compassion
 #: field:sponsorship.correspondence,scanned_date:0
@@ -1063,16 +1135,16 @@ msgid "Scanned date"
 msgstr "Date de scan"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:149
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:141
 #, python-format
 msgid "Scanned in"
-msgstr "Scanned in"
+msgstr "Scannée"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:226
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:218
 #, python-format
 msgid "Scheduled"
-msgstr "Scheduled"
+msgstr "Planifiée"
 
 #. module: sbc_compassion
 #: field:res.partner,send_original:0
@@ -1080,26 +1152,26 @@ msgid "Send original"
 msgstr "Envoyer l'original"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:74
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:73
 #: selection:sponsorship.correspondence,physical_attachments:0
 #, python-format
 msgid "Sent by mail"
 msgstr "Envoyé par courrier"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:158
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:150
 #, python-format
 msgid "Sent to ICP"
-msgstr "Sent to ICP"
+msgstr "Envoyée au Centre d'Accueil"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:223
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:215
 #, python-format
 msgid "Small Gift Thank You"
 msgstr "Remerciement petit cadeau"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/import_letters_history.py:172
+#: code:addons/sbc_compassion/models/import_letters_history.py:175
 #, python-format
 msgid "Some letters are not ready"
 msgstr "Certaines lettres ne sont pas prêtes"
@@ -1127,7 +1199,7 @@ msgid "Spoken languages"
 msgstr "Langues parlées"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:105
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:104
 #: selection:sponsorship.correspondence,relationship:0
 #, python-format
 msgid "Sponsor"
@@ -1162,7 +1234,7 @@ msgid "State"
 msgstr "Etat"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/import_letters_history.py:143
+#: code:addons/sbc_compassion/models/import_letters_history.py:146
 #, python-format
 msgid "State: '{}' not implemented"
 msgstr "L'état '{}' n'existe pas"
@@ -1178,12 +1250,17 @@ msgid "Status date"
 msgstr "Date Etat"
 
 #. module: sbc_compassion
+#: field:sponsorship.correspondence,message_summary:0
+msgid "Summary"
+msgstr "Summary"
+
+#. module: sbc_compassion
 #: view:sponsorship.correspondence:sbc_compassion.view_sponsorship_correspondence_form
 msgid "Supporter"
 msgstr "Parrain"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:227
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:219
 #, python-format
 msgid "Supporter Letter"
 msgstr "Lettre de parrain"
@@ -1249,7 +1326,7 @@ msgid "Test import id"
 msgstr "Test import id"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:126
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:125
 #: sql_constraint:sponsorship.correspondence:0
 #, python-format
 msgid "The kit id already exists in database."
@@ -1268,8 +1345,8 @@ msgid "The pattern image is broken"
 msgstr "The pattern image is broken"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:150
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:182
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:142
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:174
 #, python-format
 msgid "To Translate"
 msgstr "A traduire"
@@ -1280,32 +1357,37 @@ msgid "Translated text"
 msgstr "Texte traduit"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:151
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:183
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:143
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:175
 #, python-format
 msgid "Translating"
 msgstr "En traduction"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/import_letters_history.py:260
+#: code:addons/sbc_compassion/models/import_letters_history.py:272
 #, python-format
 msgid "Two files are the same"
 msgstr "Deux fichiers identiques"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:162
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:154
 #, python-format
 msgid "Undeliverable"
 msgstr "Undeliverable"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:161
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:153
 #, python-format
 msgid "Undelivered"
 msgstr "Undelivered"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:304
+#: field:sponsorship.correspondence,message_unread:0
+msgid "Unread Messages"
+msgstr "Unread Messages"
+
+#. module: sbc_compassion
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:305
 #, python-format
 msgid "Unsupported file format"
 msgstr "Format de fichier non pris en charge"
@@ -1315,6 +1397,11 @@ msgstr "Format de fichier non pris en charge"
 #, python-format
 msgid "Unsupported format"
 msgstr "Format non pris en charge"
+
+#. module: sbc_compassion
+#: field:sponsorship.correspondence,uuid:0
+msgid "Uuid"
+msgstr "Uuid"
 
 #. module: sbc_compassion
 #: help:sponsorship.correspondence.template,page_width:0
@@ -1370,19 +1457,19 @@ msgid "Y min"
 msgstr "Y min"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:305
+#: code:addons/sbc_compassion/models/sponsorship_correspondence.py:306
 #, python-format
 msgid "You can only attach tiff or pdf files"
 msgstr "Seulement des tiff ou pdf s.v.p."
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/import_letters_history.py:133
+#: code:addons/sbc_compassion/models/import_letters_history.py:136
 #, python-format
 msgid "Zip file corrupted ()"
 msgstr "Fichier corrompu"
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/models/import_letters_history.py:137
+#: code:addons/sbc_compassion/models/import_letters_history.py:140
 #, python-format
 msgid "Zip64 is not supported()"
 msgstr "Zip64 is not supported()"
@@ -1391,3 +1478,16 @@ msgstr "Zip64 is not supported()"
 #: model:ir.actions.act_window,name:sbc_compassion.action_spoken_langs_form
 msgid "view_compassion_spoken_langs_tree"
 msgstr "view_compassion_spoken_langs_tree"
+
+#~ msgid ""
+#~ "History of the letters imported Import mail from a zip\n"
+#~ "    or a PDF/TIFF"
+#~ msgstr ""
+#~ "History of the letters imported Import mail from a zip\n"
+#~ "    or a PDF/TIFF"
+
+#~ msgid "Import mail from a zip or a PDF/TIFF"
+#~ msgstr "Importer le courrier depuis un zip ou PDF/TIFF"
+
+#~ msgid "Languages"
+#~ msgstr "Langues"
