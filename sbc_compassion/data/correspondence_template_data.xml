@@ -46,14 +46,19 @@
     <!-- UPDATE MICHAEL SANDOZ 02.2016
         folder paths imported scan letter and treatment done scan letter
     -->
-    <record id="scan_letter_imported" model="ir.config_parameter">
-      <field name="key">scan_letter_imported</field>
-      <field name="value">/Letters_MS_test/imported/</field>
+    <record id="sbc_compassion.share_on_nas" model="ir.config_parameter">
+      <field name="key">sbc_compassion.share_on_nas</field>
+      <field name="value">Public</field>
     </record>
     
-    <record id="scan_letter_done" model="ir.config_parameter">
-      <field name="key">scan_letter_done</field>
-      <field name="value">/Letters_MS_test/done/</field>
+    <record id="sbc_compassion.scan_letter_imports" model="ir.config_parameter">
+      <field name="key">sbc_compassion.scan_letter_imported</field>
+      <field name="value">/Scan Lettres S2B/Imports/</field>
+    </record>
+    
+    <record id="sbc_compassion.scan_letter_done" model="ir.config_parameter">
+      <field name="key">sbc_compassion.scan_letter_done</field>
+      <field name="value">/Scan Lettres S2B/Done/</field>
     </record>
   </data>
 </openerp>

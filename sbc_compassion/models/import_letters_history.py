@@ -250,7 +250,7 @@ class ImportLettersHistory(models.Model):
                                 filename = f.split('/')[-1]
                                 self._analyze_attachment(absname,
                                                          filename)
-                                # saved imported letter to 'GP' NAS folder
+                                # saved imported letter to a share location NAS folder
                                 self._copy_imported_to_done_letter(attachment)
                             progress += 1
                         shutil.rmtree(directory)
@@ -267,7 +267,7 @@ class ImportLettersHistory(models.Model):
                         file_.flush()
                         self._analyze_attachment(file_.name,
                                                  attachment.name)
-                        # saved imported letter to 'GP' NAS folder
+                        # saved imported letter to a share location NAS folder
                         self._copy_imported_to_done_letter(attachment)
                     progress += 1
                 else:
@@ -296,11 +296,11 @@ class ImportLettersHistory(models.Model):
 
     def _save_imported_letter(self, attachment):
         """
-        Save attachment letter to 'GP' on NAS
+        Save attachment letter to a share location on NAS
             - attachment : the attachment to save 
         Done by M. Sandoz 02.2016
         """
-        """ Store letter on GP: """
+        """ Store letter on a share location on NAS: """
         # Retrieve configuration
         smb_user = config.get('smb_user')
         smb_pass = config.get('smb_pwd')
@@ -321,16 +321,18 @@ class ImportLettersHistory(models.Model):
                 file_.flush()
                 file_.seek(0)
                 config_obj = self.env['ir.config_parameter']
+                share_nas = (config_obj.search(
+                    [('key', '=', 'sbc_compassion.share_on_nas')])[0]).value
                 imported_letter_path = (config_obj.search(
-                    [('key', '=', 'scan_letter_imported')])[0]).value + attachment.name
-                smb_conn.storeFile('GP', imported_letter_path, file_)
+                    [('key', '=', 'sbc_compassion.scan_letter_imported')])[0]).value + attachment.name
+                smb_conn.storeFile(share_nas, imported_letter_path, file_)
 
         return True
 
 
     def _copy_imported_to_done_letter(self, attachment):
         """ 
-        Copy letter from 'imported' folder to 'done' folder on  'GP' on NAS
+        Copy letter from 'imported' folder to 'done' folder on  a share location on NAS
             - attachment: the attachment corresponding to the letter to copy
         Done by M. Sandoz 02.2016                 
         """
@@ -349,12 +351,14 @@ class ImportLettersHistory(models.Model):
 
             # Delete file in the imported letter folder
             config_obj = self.env['ir.config_parameter']
+            share_nas = (config_obj.search(
+                    [('key', '=', 'sbc_compassion.share_on_nas')])[0]).value
             imported_letter_path = (config_obj.search(
-                [('key', '=', 'scan_letter_imported')])[0]).value + attachment.name
+                [('key', '=', 'sbc_compassion.scan_letter_imported')])[0]).value + attachment.name
             try:
-                smb_conn.deleteFiles('GP', imported_letter_path)
+                smb_conn.deleteFiles(share_nas, imported_letter_path)
             except Exception as inst:
-                logger.info('Try to delete a file not on NAS')
+                logger.info('Failed to delete a file not on NAS')
             # Copy file in attachment in the done letter folder
             with tempfile.NamedTemporaryFile(
                     suffix=ext) as file_:
@@ -363,8 +367,8 @@ class ImportLettersHistory(models.Model):
                 file_.flush()
                 file_.seek(0)
                 done_letter_path = (config_obj.search(
-                    [('key', '=', 'scan_letter_done')])[0]).value + attachment.name
-                smb_conn.storeFile('GP', done_letter_path, file_)
+                    [('key', '=', 'sbc_compassion.scan_letter_done')])[0]).value + attachment.name
+                smb_conn.storeFile(share_nas, done_letter_path, file_)
         return True
 
 
