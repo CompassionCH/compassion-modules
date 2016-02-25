@@ -38,7 +38,8 @@
     'depends': ['sponsorship_compassion', 'web_tree_image'],
     'external_dependencies': {
         'java': ['zxing'],
-        'python': ['magic', 'wand', 'numpy', 'cv2']
+        'python': ['magic', 'wand', 'numpy', 'cv2'],
+        'python': ['smb']
     },
     'data': [
         'security/ir.model.access.csv',

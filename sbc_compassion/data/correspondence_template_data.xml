@@ -42,5 +42,18 @@
       <field name="key">bluecorner_x_min</field>
       <field name="value">0.7</field>
     </record>
+    
+    <!-- UPDATE MICHAEL SANDOZ 02.2016
+        folder paths imported scan letter and treatment done scan letter
+    -->
+    <record id="scan_letter_imported" model="ir.config_parameter">
+      <field name="key">scan_letter_imported</field>
+      <field name="value">/Letters_MS_test/imported/</field>
+    </record>
+    
+    <record id="scan_letter_done" model="ir.config_parameter">
+      <field name="key">scan_letter_done</field>
+      <field name="value">/Letters_MS_test/done/</field>
+    </record>
   </data>
 </openerp>

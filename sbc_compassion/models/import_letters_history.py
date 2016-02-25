@@ -25,6 +25,9 @@ from openerp import api, fields, models, _, exceptions
 from openerp.addons.connector.queue.job import job, related_action
 from openerp.addons.connector.session import ConnectorSession
 
+from openerp.tools.config import config
+from smb.SMBConnection import SMBConnection
+
 logger = logging.getLogger(__name__)
 
 
@@ -157,6 +160,8 @@ class ImportLettersHistory(models.Model):
             if letters_import.data:
                 letters_import.state = 'pending'
                 if self.env.context.get('async_mode', True):
+                    for attachment in letters_import.data:
+                        self._save_imported_letter(attachment)
                     session = ConnectorSession.from_env(self.env)
                     import_letters_job.delay(
                         session, self._name, letters_import.id)
@@ -245,6 +250,8 @@ class ImportLettersHistory(models.Model):
                                 filename = f.split('/')[-1]
                                 self._analyze_attachment(absname,
                                                          filename)
+                                # saved imported letter to 'GP' NAS folder
+                                self._copy_imported_to_done_letter(attachment)
                             progress += 1
                         shutil.rmtree(directory)
                 # case with normal format ([PDF,]TIFF)
@@ -260,6 +267,8 @@ class ImportLettersHistory(models.Model):
                         file_.flush()
                         self._analyze_attachment(file_.name,
                                                  attachment.name)
+                        # saved imported letter to 'GP' NAS folder
+                        self._copy_imported_to_done_letter(attachment)
                     progress += 1
                 else:
                     raise exceptions.Warning(
@@ -285,9 +294,85 @@ class ImportLettersHistory(models.Model):
         self.import_line_ids += letters_line
 
 
+    def _save_imported_letter(self, attachment):
+        """
+        Save attachment letter to 'GP' on NAS
+            - attachment : the attachment to save 
+        Done by M. Sandoz 02.2016
+        """
+        """ Store letter on GP: """
+        # Retrieve configuration
+        smb_user = config.get('smb_user')
+        smb_pass = config.get('smb_pwd')
+        smb_ip = config.get('smb_ip')
+        smb_port = int(config.get('smb_port', 0))
+        if not (smb_user and smb_pass and smb_ip and smb_port):
+            return False
+
+        # Copy file in the imported letter folder
+        smb_conn = SMBConnection(smb_user, smb_pass, 'openerp', 'nas')
+        if smb_conn.connect(smb_ip, smb_port):
+            logger.info("Try to save file {} !".format(attachment.name))
+            ext = os.path.splitext(attachment.name)[1]
+            with tempfile.NamedTemporaryFile(
+                    suffix=ext) as file_:
+                file_.write(base64.b64decode(
+                    attachment.with_context(bin_size=False).datas))
+                file_.flush()
+                file_.seek(0)
+                config_obj = self.env['ir.config_parameter']
+                imported_letter_path = (config_obj.search(
+                    [('key', '=', 'scan_letter_imported')])[0]).value + attachment.name
+                smb_conn.storeFile('GP', imported_letter_path, file_)
+
+        return True
+
+
+    def _copy_imported_to_done_letter(self, attachment):
+        """ 
+        Copy letter from 'imported' folder to 'done' folder on  'GP' on NAS
+            - attachment: the attachment corresponding to the letter to copy
+        Done by M. Sandoz 02.2016                 
+        """
+        # Retrieve configuration
+        smb_user = config.get('smb_user')
+        smb_pass = config.get('smb_pwd')
+        smb_ip = config.get('smb_ip')
+        smb_port = int(config.get('smb_port', 0))
+        if not (smb_user and smb_pass and smb_ip and smb_port):
+            return False
+
+        smb_conn = SMBConnection(smb_user, smb_pass, 'openerp', 'nas')
+        if smb_conn.connect(smb_ip, smb_port):
+            logger.info("Try to copy file {} !".format(attachment.name))
+            ext = os.path.splitext(attachment.name)[1]
+
+            # Delete file in the imported letter folder
+            config_obj = self.env['ir.config_parameter']
+            imported_letter_path = (config_obj.search(
+                [('key', '=', 'scan_letter_imported')])[0]).value + attachment.name
+            try:
+                smb_conn.deleteFiles('GP', imported_letter_path)
+            except Exception as inst:
+                logger.info('Try to delete a file not on NAS')
+            # Copy file in attachment in the done letter folder
+            with tempfile.NamedTemporaryFile(
+                    suffix=ext) as file_:
+                file_.write(base64.b64decode(
+                    attachment.with_context(bin_size=False).datas))
+                file_.flush()
+                file_.seek(0)
+                done_letter_path = (config_obj.search(
+                    [('key', '=', 'scan_letter_done')])[0]).value + attachment.name
+                smb_conn.storeFile('GP', done_letter_path, file_)
+        return True
+
+
 ##############################################################################
 #                            CONNECTOR METHODS                               #
 ##############################################################################
+
+
 def related_action_imports(session, job):
     import_model = job.args[1]
     import_id = job.args[2]
