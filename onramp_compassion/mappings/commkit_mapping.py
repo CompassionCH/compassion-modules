@@ -79,7 +79,7 @@ class CorrespondenceMapping(OnrampMapping):
         'IsOriginalLetterMailed': None,
         'ItemNotScannedEligible': None,
         'ItemNotScannedNotEligible': None,
-        'NumberOfPages': None,
+        'NumberOfPages': 'nbr_pages',
         'OriginalLanguage': ('original_language_id.name',
                              'res.lang.compassion'),
         'OriginalLetterURL': 'original_letter_url',
@@ -142,6 +142,7 @@ class CorrespondenceMapping(OnrampMapping):
             pdb.set_trace()
             for page in odoo_data['page_ids']:
                 odoo_data['page_ids'].remove(page)
+                # if page_url already exist update it
                 try:
                     page_id = \
                         self.env['sponsorship.correspondence.page'].search(
@@ -152,6 +153,7 @@ class CorrespondenceMapping(OnrampMapping):
                             )]
                         )[0].id
                     orm_tuple = (1, page_id, page)
+                # else create a new one
                 except:
                     orm_tuple = (0, 0, page)
                 odoo_data['page_ids'].insert(0, orm_tuple)

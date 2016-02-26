@@ -28,10 +28,25 @@ class PageMapping(OnrampMapping):
         'EnglishTranslatedText': 'english_translated_text',
         'TranslatedText': 'translated_text'
     }
-    
+
+    FIELDS_TO_SUBMIT = {
+        'OriginalPageURL': None,
+        'FinalPageURL': None,
+        'OriginalText': None,
+        'EnglishTranslatedText': None,
+        'TranslatedText': None
+    }
+
+    def _process_connect_data(self, connect_data):
+        fields = (
+            'OriginalText', 'EnglishTranslatedText', 'TranslatedText')
+        for field in fields:
+            connect_data[field] = [connect_data[field]]
+
     def _process_odoo_data(self, odoo_data):
         # Concatenation of all line in one text
-        fields = ('original_text','english_translated_text','translated_text')
+        fields = (
+            'original_text', 'english_translated_text', 'translated_text')
         for field in fields:
             if field in odoo_data:
                 odoo_data[field] = ' '.join(odoo_data[field])

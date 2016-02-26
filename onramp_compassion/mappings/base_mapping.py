@@ -134,7 +134,16 @@ class OnrampMapping(object):
 
             value = odoo_object
             for field in field_name.split('.'):
-                value = getattr(value, field)
+                # Field One2Many
+                if field.endswith('ids'):
+                    value = list()
+                    sub_mapping = new_onramp_mapping(
+                        field_mapping[1], self.env)
+                    for element in getattr(odoo_object, field):
+                        value.append(sub_mapping.get_connect_data(element))
+                # Other fields
+                else:
+                    value = getattr(value, field)
             convert_func = self.FIELDS_TO_SUBMIT[connect_name]
             if convert_func is not None:
                 value = convert_func(value)
