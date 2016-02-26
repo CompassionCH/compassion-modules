@@ -9,7 +9,6 @@
 #
 ##############################################################################
 from base_mapping import OnrampMapping
-import pdb
 
 
 class CorrespondenceMapping(OnrampMapping):
@@ -139,7 +138,6 @@ class CorrespondenceMapping(OnrampMapping):
                 odoo_data['sponsorship_id'] = sponsorship.id
         # Replace dict by a tuple for the ORM update/create
         if 'page_ids' in odoo_data:
-            pdb.set_trace()
             for page in odoo_data['page_ids']:
                 odoo_data['page_ids'].remove(page)
                 # if page_url already exist update it
