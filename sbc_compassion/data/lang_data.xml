@@ -1,5 +1,6 @@
 <openerp>
     <data>
+        <!-- Compassion languages -->
         <record id="lang_compassion_english" model="res.lang.compassion">
             <field name="name">English</field>
             <field name="code_iso">eng</field>

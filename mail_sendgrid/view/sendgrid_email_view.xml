@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Extension of mail.mail form view -->
+        <record model="ir.ui.view" id="email_form_view">
+            <field name="name">mail.mail.sendgrid</field>
+            <field name="model">mail.mail</field>
+            <field name="inherit_id" ref="mail.view_mail_form"/>
+            <field name="arch" type="xml">
+                <button name="send" position="replace">
+                    <field name="send_method" invisible="1"/>
+                    <button name="send" string="Send Now" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('send_method', 'not in', ['sendgrid','traditional']), ('state', '!=', 'outgoing')]}"/>
+                    <button name="send_sendgrid" string="Send (SendGrid)" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('send_method', '=', 'sendgrid'), ('state', '!=', 'outgoing')]}"/>
+                </button>
+                <page string="Attachments" position="after">
+                    <page string="SendGrid">
+                        <group>
+                            <field name="sendgrid_template_id"/>
+                            <field name="sent_date" readonly="1"/>
+                            <field name="body_text"/>
+                        </group>
+                        <field name="substitution_ids" widget="one2many_list"/>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+        <!-- Substitution line view -->
+        <record id="view_sendgrid_substitution_line_tree" model="ir.ui.view">
+            <field name="name">sendgrid.substitution.tree</field>
+            <field name="model">sendgrid.substitution</field>
+            <field name="arch" type="xml">
+                <tree string="Template substitutions" editable="bottom">
+                    <field name="key"/>
+                    <field name="value"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</openerp>

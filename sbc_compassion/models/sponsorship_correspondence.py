@@ -11,7 +11,6 @@
 
 import magic
 import base64
-import uuid
 
 from openerp import fields, models, api, exceptions, _
 
@@ -27,8 +26,9 @@ class SponsorshipCorrespondence(models.Model):
     a child and a sponsor.
     """
     _name = 'sponsorship.correspondence'
-
     _inherit = ['mail.thread', 'ir.needaction_mixin']
+    _description = 'Letter'
+    _order = 'status_date desc, scanned_date asc'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -104,7 +104,7 @@ class SponsorshipCorrespondence(models.Model):
 
     # 4. Additional information
     ###########################
-    status_date = fields.Date()
+    status_date = fields.Date(default=fields.Date.today())
     scanned_date = fields.Date(default=fields.Date.today())
     relationship = fields.Selection([
         ('Sponsor', _('Sponsor')),
@@ -292,9 +292,18 @@ class SponsorshipCorrespondence(models.Model):
     @api.model
     def create(self, vals):
         """ Letter image field is in binary so we convert to ir.attachment """
-        # Write scanned_date for supporter letters
-        if vals.get('direction') == 'Supporter To Beneficiary':
-            vals['scanned_date'] = fields.Date.today()
+        # Fill missing fields
+        if vals.get('direction',
+                    'Supporter To Beneficiary') == 'Supporter To Beneficiary':
+            vals['communication_type_ids'] = [(
+                4, self.env.ref(
+                    'sbc_compassion.correspondence_type_supporter').id)]
+        else:
+            vals['status_date'] = fields.Date.today()
+            if 'communication_type_ids' not in vals:
+                vals['communication_type_ids'] = [(
+                    4, self.env.ref(
+                        'sbc_compassion.correspondence_type_bene').id)]
 
         letter_image = vals.get('letter_image')
         attachment = False
@@ -329,24 +338,3 @@ class SponsorshipCorrespondence(models.Model):
         if 'state' in vals:
             vals['status_date'] = fields.Date.today()
         return super(SponsorshipCorrespondence, self).write(vals)
-
-    ##########################################################################
-    #                             PUBLIC METHODS                             #
-    ##########################################################################
-
-    @api.one
-    def process_letter(self):
-        pass
-
-    ##########################################################################
-    #                             PRIVATE METHODS                            #
-    ##########################################################################
-    @api.multi
-    def _get_read_url(self):
-        base_url = self.env['ir.config_parameter'].get_param('web.base.url')
-        for letter in self:
-            letter.read_url = "{}/b2s_image?id={}".format(
-                base_url, letter.uuid)
-
-    def _get_uuid(self):
-        return str(uuid.uuid4())

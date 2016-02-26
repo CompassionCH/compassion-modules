@@ -10,6 +10,8 @@
 ##############################################################################
 
 import json
+import base64
+import uuid
 
 from ..tools.onramp_connector import OnrampConnector
 from ..mappings import base_mapping as mapping
@@ -29,6 +31,17 @@ class SponsorshipCorrespondence(models.Model):
     read_url = fields.Char(compute='_get_read_url')
     last_read = fields.Datetime()
     read_count = fields.Integer(default=0)
+
+    def _get_uuid(self):
+        return str(uuid.uuid4())
+
+    @api.multi
+    def _get_read_url(self):
+        base_url = self.env['ir.config_parameter'].get_param(
+            'web.external.url')
+        for letter in self:
+            letter.read_url = "{}/b2s_image?id={}".format(
+                base_url, letter.uuid)
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -91,9 +104,50 @@ class SponsorshipCorrespondence(models.Model):
         letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
         return self.write(letter_mapping.get_vals_from_connect(data))
 
+    def process_letter(self):
+        """ Method called when new B2S letter is Published. """
+        self.download_attach_letter_image()
+
+    @api.multi
+    def download_attach_letter_image(self):
+        """ Download letter image from US service and attach to letter. """
+        for letter in self:
+            # Download and store letter
+            letter_url = letter.final_letter_url
+            image_data = OnrampConnector().get_letter_image(
+                letter_url, 'pdf', dpi=300)
+            if image_data is None:
+                raise Warning(
+                    _('Image does not exist'),
+                    _("Image requested was not found remotely."))
+            name = letter.kit_identifier + '_' + fields.Date.today() + '.pdf'
+            letter.letter_image = self.env['ir.attachment'].create({
+                "name": name,
+                "db_datas": image_data,
+                'res_model': self._name,
+                'res_id': letter.id,
+            })
+
+    def get_image(self, user=None):
+        """ Method for retrieving the image and updating the read status of
+        the letter.
+        """
+        self.ensure_one()
+        self.write({
+            'last_read': fields.Datetime.now(),
+            'read_count': self.read_count + 1,
+        })
+        data = base64.b64decode(self.letter_image.datas)
+        message = _("The sponsor requested the child letter image.")
+        if user is not None:
+            message = _("User requested the child letter image.")
+        self.message_post(message, _("Letter downloaded"))
+        return data
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+
     @api.model
     def _commkit_update(self, data, message_id=None):
         """ Given the message data, update or create a
@@ -101,27 +155,15 @@ class SponsorshipCorrespondence(models.Model):
         letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
         commkit_vals = letter_mapping.get_vals_from_connect(data)
 
-        is_published = (commkit_vals.get('state') ==
-                        'Published to Global Partner')
-
-        if is_published:
-            # Download and store letter
-            letter_url = commkit_vals['final_letter_url']
-            image_data = OnrampConnector().get_letter_image(letter_url, 'pdf')
-            if image_data is None:
-                raise Warning(
-                    _('Image does not exist'),
-                    _("Image requested was not found remotely."))
-            attachment = self.env['ir.attachment'].create({
-                "name": letter_url,
-                "db_datas": image_data,
-            })
-            commkit_vals['letter_image'] = attachment.id
+        published_state = 'Published to Global Partner'
+        is_published = commkit_vals.get('state') == published_state
 
         # Write/update commkit
         kit_identifier = commkit_vals.get('kit_identifier')
         commkit = self.search([('kit_identifier', '=', kit_identifier)])
         if commkit:
+            # Avoid to publish twice a same letter
+            is_published = is_published and commkit.state != published_state
             commkit.write(commkit_vals)
         else:
             commkit = self.with_context(from_onramp=True).create(commkit_vals)

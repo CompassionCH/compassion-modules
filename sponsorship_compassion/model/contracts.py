@@ -508,30 +508,10 @@ class sponsorship_contract(models.Model):
     @api.multi
     def _on_sponsorship_finished(self):
         """ Called when a sponsorship is terminated or cancelled:
-        Remove sponsor from the child, terminate related gift
-        contracts, and remove sponsor category if sponsor has no other
-        active sponsorships.
+        Remove sponsor from the child and terminate related gift contracts.
         """
-        category_obj = self.env['res.partner.category'].with_context(
-            lang='en_US')
-
-        sponsor_cat_id = category_obj.search([('name', '=', 'Sponsor')])[0].id
-        old_sponsor_cat_id = category_obj.search(
-            [('name', '=', 'Old Sponsor')])[0].id
-
         for sponsorship in self:
             sponsorship.child_id.write({'sponsor_id': False})
-
-            contract_count = self.env['recurring.contract'].search_count([
-                ('partner_id', '=', sponsorship.partner_id.id),
-                ('state', '=', 'active'),
-                ('type', 'like', 'S')])
-            if not contract_count:
-                # Replace sponsor category by old sponsor category
-                sponsorship.partner_id.write({
-                    'category_id': [(3, sponsor_cat_id),
-                                    (4, old_sponsor_cat_id)]})
-
             gift_contract_lines = self.env['recurring.contract.line'].search([
                 ('sponsorship_id', '=', sponsorship.id)])
             for line in gift_contract_lines:
@@ -544,18 +524,14 @@ class sponsorship_contract(models.Model):
     @api.multi
     def contract_active(self):
         """ Hook for doing something when contract is activated.
-        Update child to mark it has been sponsored, update partner
-        to add the 'Sponsor' category, and activate gift contracts.
+        Update child to mark it has been sponsored,
+        and activate gift contracts.
         """
         super(sponsorship_contract, self).contract_active()
-        sponsor_cat_id = self.env.ref(
-            'partner_compassion.res_partner_category_sponsor').id
         con_line_obj = self.env['recurring.contract.line']
         for contract in self:
             if 'S' in contract.type:
                 contract.child_id.write({'has_been_sponsored': True})
-                contract.partner_id.write({
-                    'category_id': [(4, sponsor_cat_id)]})
                 gift_contract_lines = con_line_obj.search([
                     ('sponsorship_id', '=', contract.id)])
                 gift_contract_lines.mapped('contract_id').signal_workflow(
