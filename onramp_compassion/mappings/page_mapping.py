@@ -41,7 +41,8 @@ class PageMapping(OnrampMapping):
         fields = (
             'OriginalText', 'EnglishTranslatedText', 'TranslatedText')
         for field in fields:
-            connect_data[field] = [connect_data[field]]
+            if field in connect_data:
+                connect_data[field] = [connect_data[field]]
 
     def _process_odoo_data(self, odoo_data):
         # Concatenation of all line in one text

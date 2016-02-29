@@ -94,7 +94,6 @@ class OnrampMapping(object):
                                 field_odoo[0], list())
                             list_dict.append(
                                 sub_mapping.get_vals_from_connect(item))
-
                 if field_odoo and value_connect and not is_list_dict:
                     odoo_values.update(self._convert_connect_data(
                         field_connect, field_odoo, value_connect))

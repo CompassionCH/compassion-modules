@@ -56,8 +56,6 @@ class SponsorshipCorrespondence(models.Model):
         'sponsorship_correspondence_type_relation',
         'correspondence_id', 'type_id',
         'Communication type',
-        default=lambda self: [(4, self.env.ref(
-            'sbc_compassion.correspondence_type_supporter').id)],
         readonly=True)
     state = fields.Selection(
         'get_states', default='Received in the system',
@@ -91,8 +89,8 @@ class SponsorshipCorrespondence(models.Model):
     destination_language_id = fields.Many2one(
         'res.lang.compassion', compute='_set_destination_language',
         inverse='_change_language', store=True)
-    original_text = fields.Text(compute='_compute_page')
-    translated_text = fields.Text(compute='_compute_page')
+    original_text = fields.Text(compute='_compute_page', inverse='_set_page')
+    translated_text = fields.Text(compute='_compute_page', inverse='_set_page')
     source = fields.Selection(selection=[
         ('letter', _('Letter')),
         ('email', _('E-Mail')),
@@ -267,12 +265,14 @@ class SponsorshipCorrespondence(models.Model):
 
     @api.depends('page_ids')
     def _compute_page(self):
-        self.original_text = ''
-        self.translated_text = ''
-        self.nbr_pages = len(self.page_ids)
+        original_text = ''
+        translated_text = ''
         for page in self.page_ids:
-            self.original_text += (page.original_text + '\n')
-            self.translated_text += (page.translated_text + '\n')
+            original_text += (page.original_text + '\n')
+            translated_text += (page.translated_text + '\n')
+        self.original_text = original_text
+        self.translated_text = translated_text
+        self.nbr_pages = len(self.page_ids)
 
     def _change_language(self):
         return True
