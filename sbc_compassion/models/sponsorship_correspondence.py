@@ -11,6 +11,7 @@
 
 import magic
 import base64
+import pdb
 
 from openerp import fields, models, api, exceptions, _
 
@@ -89,8 +90,9 @@ class SponsorshipCorrespondence(models.Model):
     destination_language_id = fields.Many2one(
         'res.lang.compassion', compute='_set_destination_language',
         inverse='_change_language', store=True)
-    original_text = fields.Text(compute='_compute_page', inverse='_set_page')
-    translated_text = fields.Text(compute='_compute_page', inverse='_set_page')
+    original_text = fields.Text(
+        compute='_compute_page', inverse='_inverse_page')
+    translated_text = fields.Text(compute='_compute_page')
     source = fields.Selection(selection=[
         ('letter', _('Letter')),
         ('email', _('E-Mail')),
@@ -265,14 +267,34 @@ class SponsorshipCorrespondence(models.Model):
 
     @api.depends('page_ids')
     def _compute_page(self):
-        original_text = ''
-        translated_text = ''
-        for page in self.page_ids:
-            original_text += (page.original_text + '\n')
-            translated_text += (page.translated_text + '\n')
-        self.original_text = original_text
-        self.translated_text = translated_text
+        self.original_text = self._get_original_text('original_text')
+        self.translated_text = self._get_original_text('translated_text')
         self.nbr_pages = len(self.page_ids)
+
+    def _inverse_page(self):
+        pdb.set_trace()
+        if len(self.page_ids) > 0:
+            # Keep only the first page and remove the other
+            self.page_ids[0].write({
+                'original_text': self.original_text,
+                'translated_text': self._get_original_text('translated_text')})
+            self.page_ids[1:].unlink()
+        else:
+            self.page_ids.create(
+                {'sponsorship_correspondence_id': self.id,
+                 'original_text': self.original_text,
+                 'translated_text': self.translated_text})
+
+    def _get_original_text(self, source_text):
+        if len(self.page_ids) > 1:
+            all_text = ''
+            for page in self.page_ids:
+                all_text += (getattr(page, source_text) + '\n\n')
+            return all_text
+        elif len(self.page_ids) == 1:
+            return getattr(self.page_ids[0], source_text)
+        else:
+            return ''
 
     def _change_language(self):
         return True
