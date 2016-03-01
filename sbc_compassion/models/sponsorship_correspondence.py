@@ -288,7 +288,7 @@ class SponsorshipCorrespondence(models.Model):
             if 'communication_type_ids' not in vals:
                 vals['communication_type_ids'] = [(
                     4, self.env.ref(
-                        'sbc_compassion.correspondence_type_bene').id)]
+                        'sbc_compassion.correspondence_type_scheduled').id)]
 
         letter_image = vals.get('letter_image')
         attachment = False
