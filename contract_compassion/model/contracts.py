@@ -314,6 +314,22 @@ class recurring_contract(models.Model):
             next_invoice_date = next_invoice_date + relativedelta(months=+1)
         self.next_invoice_date = next_invoice_date.strftime(DF)
 
+    @api.multi
+    def open_contract(self):
+        """ Used to bypass opening a contract in popup mode from
+        res_partner view. """
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Contract',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': self._name,
+            'res_id': self.id,
+            'target': 'current',
+            'context': self.with_context(default_type=self.type).env.context
+        }
+
     ##########################################################################
     #                            WORKFLOW METHODS                            #
     ##########################################################################
