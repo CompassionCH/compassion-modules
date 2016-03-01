@@ -138,18 +138,16 @@ class CorrespondenceMapping(OnrampMapping):
                 odoo_data['sponsorship_id'] = sponsorship.id
         # Replace dict by a tuple for the ORM update/create
         if 'page_ids' in odoo_data:
-            pages = dict()
+            pages = list()
             for page in odoo_data['page_ids']:
-                odoo_data['page_ids'].remove(page)
-                # if page_url already exist update it
                 page_id = \
                     self.env['sponsorship.correspondence.page'].search(
                         [(
                             'original_page_url',
                             '=',
                             page['original_page_url']
-                        )]
-                    )[0].id
+                        )], limit=1).id
+                # if page_url already exist update it
                 if page_id:
                     orm_tuple = (1, page_id, page)
                 # else create a new one
