@@ -29,6 +29,9 @@ class generate_gift_wizard(models.TransientModel):
         'product.product', "Gift Type", required=True)
     invoice_date = fields.Date(default=datetime.today().strftime(DF))
     description = fields.Char("Additional comments", size=200)
+    force = fields.Boolean(
+        'Force creation', help="Creates the gift even if one was already "
+        "made the same year.")
 
     @api.multi
     def generate_invoice(self):
@@ -56,20 +59,23 @@ class generate_gift_wizard(models.TransientModel):
                                         child is missing !'))
                         if self.product_id.name == GIFT_NAMES[0]:
                             invoice_date = self.compute_date_birthday_invoice(
-                                contract.child_id.birthdate, self.invoice_date)
-                            # If a gift was already made for that date, create
-                            # one for next year.
+                                contract.child_id.birthdate,
+                                self.invoice_date)
+                            begin_year = fields.Date.from_string(
+                                self.invoice_date).replace(month=1, day=1)
+                            end_year = begin_year.replace(month=12, day=31)
+                            # If a gift was already made for the year, abort
                             invoice_line_ids = self.env[
                                 'account.invoice.line'].search([
                                     ('product_id', '=', self.product_id.id),
-                                    ('due_date', '=', invoice_date),
-                                    ('contract_id', '=', contract.id)])
-                            if invoice_line_ids:
-                                invoice_date = (
-                                    datetime.strptime(
-                                        invoice_date,
-                                        DF) + relativedelta(months=12)
-                                ).strftime(DF)
+                                    ('due_date', '>=', fields.Date.to_string(
+                                        begin_year)),
+                                    ('due_date', '<=', fields.Date.to_string(
+                                        end_year)),
+                                    ('contract_id', '=', contract.id),
+                                    ('state', '!=', 'cancel')])
+                            if invoice_line_ids and not self.force:
+                                continue
                         else:
                             invoice_date = self.invoice_date
                         inv_data = {
