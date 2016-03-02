@@ -89,12 +89,17 @@ class SponsorshipCorrespondence(models.Model):
     destination_language_id = fields.Many2one(
         'res.lang.compassion', compute='_set_destination_language',
         inverse='_change_language', store=True)
-    original_text = fields.Text()
-    translated_text = fields.Text()
+    original_text = fields.Text(
+        compute='_compute_texts', inverse='_inverse_page')
+    translated_text = fields.Text(compute='_compute_texts')
     source = fields.Selection(selection=[
         ('letter', _('Letter')),
         ('email', _('E-Mail')),
         ('website', _('Compassion website'))], default='letter')
+    page_ids = fields.One2many(
+        'sponsorship.correspondence.page', 'sponsorship_correspondence_id')
+    nbr_pages = fields.Integer(
+        string='Number of pages', compute='_compute_page')
 
     # 4. Additional information
     ###########################
@@ -258,6 +263,34 @@ class SponsorshipCorrespondence(models.Model):
         for letter in self:
             if letter.correspondant_id.mandatory_review:
                 letter.mandatory_review = True
+
+    @api.depends('page_ids')
+    def _compute_texts(self):
+        self.original_text = self._get_original_text('original_text')
+        self.translated_text = self._get_original_text('translated_text')
+        self.nbr_pages = len(self.page_ids)
+
+    @api.one
+    def _inverse_page(self):
+        if self.page_ids:
+            # Keep only the first page and remove the other
+            self.page_ids[0].write({
+                'original_text': self.original_text,
+                'translated_text': self._get_original_text('translated_text')})
+            self.page_ids[1:].unlink()
+        else:
+            self.page_ids.create(
+                {'sponsorship_correspondence_id': self.id,
+                 'original_text': self.original_text,
+                 'translated_text': self.translated_text})
+
+    def _get_original_text(self, source_text):
+        if len(self.page_ids) > 1:
+            return '\n\n'.join(self.page_ids.mapped(source_text))
+        elif len(self.page_ids) == 1:
+            return getattr(self.page_ids[0], source_text)
+        else:
+            return ''
 
     def _change_language(self):
         return True
