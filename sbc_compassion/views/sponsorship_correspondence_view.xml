@@ -83,8 +83,10 @@
                         </group>
                         <group string="Letter content">
                             <group>
+                                <field name="nbr_pages" />
                                 <field name="original_language_id" string="Original language" options="{'create':False}"/>
                                 <field name="original_text"/>
+                                <field name="english_text"/>
                             </group>
                             <group>
                                 <field name="destination_language_id" string="Destination language" options="{'create':False}"/>

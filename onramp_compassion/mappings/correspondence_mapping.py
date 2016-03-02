@@ -45,14 +45,6 @@ class CorrespondenceMapping(OnrampMapping):
         'ObjectUrl': None
     }
 
-    PAGES_MAPPING = {
-        'EnglishTranslatedText': None,
-        'FinalPageURL': None,
-        'OriginalPageURL': None,
-        'OriginalText': None,
-        'TranslatedText': None
-    }
-
     SUPPORTER_MAPPING = {
         'CompassConstituentId': ('correspondant_id.ref', 'res.partner'),
         'CommunicationDeliveryPreference': None,  # Todo Where to find this ?
@@ -69,7 +61,7 @@ class CorrespondenceMapping(OnrampMapping):
         'FontSize': None,
         'Font': None,
         'GlobalPartner': GLOBAL_PARTNER_MAPPING,
-        'Pages': PAGES_MAPPING,
+        'Pages': ('page_ids', 'sponsorship.correspondence.page'),
         'Direction': 'direction',
         'PrintType': None,
         'RelationshipType': 'relationship',
@@ -86,7 +78,7 @@ class CorrespondenceMapping(OnrampMapping):
         'IsOriginalLetterMailed': None,
         'ItemNotScannedEligible': None,
         'ItemNotScannedNotEligible': None,
-        'NumberOfPages': None,
+        'NumberOfPages': 'nbr_pages',
         'OriginalLanguage': ('original_language_id.name',
                              'res.lang.compassion'),
         'OriginalLetterURL': 'original_letter_url',
@@ -121,8 +113,6 @@ class CorrespondenceMapping(OnrampMapping):
     CONSTANTS = {
         'SourceSystem': 'Odoo',
         'GlobalPartner.Id': 'CH',
-        'Pages': [],     # TODO : See how to send info about pages
-        'NumberOfPages': 1,     # TODO
     }
 
     def _convert_connect_data(self, connect_name, value_mapping, value,
@@ -146,3 +136,22 @@ class CorrespondenceMapping(OnrampMapping):
             del odoo_data['correspondant_id']
             if sponsorship:
                 odoo_data['sponsorship_id'] = sponsorship.id
+        # Replace dict by a tuple for the ORM update/create
+        if 'page_ids' in odoo_data:
+            pages = list()
+            for page in odoo_data['page_ids']:
+                page_id = \
+                    self.env['sponsorship.correspondence.page'].search(
+                        [(
+                            'original_page_url',
+                            '=',
+                            page['original_page_url']
+                        )], limit=1).id
+                # if page_url already exist update it
+                if page_id:
+                    orm_tuple = (1, page_id, page)
+                # else create a new one
+                else:
+                    orm_tuple = (0, 0, page)
+                pages.append(orm_tuple)
+            odoo_data['page_ids'] = pages
