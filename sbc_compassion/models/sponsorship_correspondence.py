@@ -11,7 +11,6 @@
 
 import magic
 import base64
-import pdb
 
 from openerp import fields, models, api, exceptions, _
 
@@ -272,8 +271,7 @@ class SponsorshipCorrespondence(models.Model):
         self.nbr_pages = len(self.page_ids)
 
     def _inverse_page(self):
-        pdb.set_trace()
-        if len(self.page_ids) > 0:
+        if self.page_ids:
             # Keep only the first page and remove the other
             self.page_ids[0].write({
                 'original_text': self.original_text,
