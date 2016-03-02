@@ -55,7 +55,7 @@ class GmcMessage(models.Model):
                 letter = self.env[model].browse(message.object_id)
                 message.child_id = letter.child_id.id
             else:
-                super(GmcMessage, message)._set_partner_id()
+                super(GmcMessage, message)._set_child_id()
 
     @api.depends('object_id')
     def _set_letter_id(self):

@@ -70,11 +70,12 @@
 			<field name="model">recurring.contract</field>
             <field name="inherit_id" ref="sponsorship_compassion.view_sponsorship_contract_form_compassion"/>
 			<field name="arch" type="xml">
-                <button name="button_generate_invoices" position="after">
+                <button name="open_invoices" position="after">
                     <button name="switch_contract_view" 
                             type="object" 
                             string="Open SDS view" context="{'view_id':'view_follow_contract_form_compassion'}"
-                            attrs="{'invisible': [('type', 'not in', ['S', 'SC'])]}"/>
+                            attrs="{'invisible': [('type', 'not in', ['S', 'SC'])]}"
+                            class="oe_inline oe_stat_button" icon="fa-history"/>
                 </button>
 <!--                 <field name="partner_id" position="after">
                     <field name="sds_uid" invisible="1"/>
