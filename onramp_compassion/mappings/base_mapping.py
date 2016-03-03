@@ -10,10 +10,11 @@
 ##############################################################################
 import collections
 
-
 # Utility method to update nested dictionaries
 # http://stackoverflow.com/questions/3232943/
 # update-value-of-a-nested-dictionary-of-varying-depth
+
+
 def nested_update(_dic, _dic_update):
     for key, value in _dic_update.iteritems():
         if isinstance(value, collections.Mapping):
@@ -68,33 +69,37 @@ class OnrampMapping(object):
 
     def get_vals_from_connect(self, commkit_data, _mapping=None):
         """ Converts Compassion Connect data into a dictionary of
-        odoo.model field values.
+        odoo.model field_connect values.
         """
         if _mapping is None:
             _mapping = self.CONNECT_MAPPING
-        odoo_vals = dict()
-        for field, value in commkit_data.iteritems():
-            if isinstance(value, collections.Mapping):
+        odoo_values = dict()
+        for field_connect, value_connect in commkit_data.iteritems():
+            if isinstance(value_connect, collections.Mapping):
                 # Recursively call function to get the mapping of the section
-                odoo_vals.update(self.get_vals_from_connect(
-                    value, _mapping.get(field)))
+                odoo_values.update(self.get_vals_from_connect(
+                    value_connect, _mapping.get(field_connect)))
             else:
-                value_mapping = _mapping.get(field)
+                field_odoo = _mapping.get(field_connect)
                 is_list_dict = False
-                if isinstance(value, list):
+                if isinstance(value_connect, list):
                     # Check if we receive a list of dictionnaries and
                     # recursively call function to get the mapping of each
-                    for item in value:
+                    for item in value_connect:
                         if isinstance(item, collections.Mapping):
                             is_list_dict = True
-                            odoo_vals.update(self.get_vals_from_connect(
-                                item, value_mapping))
-                if value_mapping and value and not is_list_dict:
-                    odoo_vals.update(self._convert_connect_data(
-                        field, value_mapping, value))
-        if odoo_vals:
-            self._process_odoo_data(odoo_vals)
-        return odoo_vals
+                            sub_mapping = new_onramp_mapping(
+                                field_odoo[1], self.env)
+                            list_dict = odoo_values.setdefault(
+                                field_odoo[0], list())
+                            list_dict.append(
+                                sub_mapping.get_vals_from_connect(item))
+                if field_odoo and value_connect and not is_list_dict:
+                    odoo_values.update(self._convert_connect_data(
+                        field_connect, field_odoo, value_connect))
+        if odoo_values:
+            self._process_odoo_data(odoo_values)
+        return odoo_values
 
     def get_connect_data(self, odoo_object, fields_to_submit=None):
         """ Convert an Odoo object into valid data for Compassion Connect.
@@ -128,7 +133,16 @@ class OnrampMapping(object):
 
             value = odoo_object
             for field in field_name.split('.'):
-                value = getattr(value, field)
+                # Field One2Many
+                if field.endswith('ids'):
+                    value = list()
+                    sub_mapping = new_onramp_mapping(
+                        field_mapping[1], self.env)
+                    for element in getattr(odoo_object, field):
+                        value.append(sub_mapping.get_connect_data(element))
+                # Other fields
+                else:
+                    value = getattr(value, field)
             convert_func = self.FIELDS_TO_SUBMIT[connect_name]
             if convert_func is not None:
                 value = convert_func(value)

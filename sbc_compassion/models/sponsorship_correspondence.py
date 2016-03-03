@@ -85,16 +85,21 @@ class SponsorshipCorrespondence(models.Model):
         readonly=True)
     # First spoken lang of partner
     original_language_id = fields.Many2one(
-        'res.lang.compassion')
+        'res.lang.compassion', 'Original language')
     destination_language_id = fields.Many2one(
-        'res.lang.compassion', compute='_set_destination_language',
-        inverse='_change_language', store=True)
-    original_text = fields.Text()
-    translated_text = fields.Text()
+        'res.lang.compassion', 'Destination language')
+    original_text = fields.Text(
+        compute='_compute_texts', inverse='_inverse_page')
+    english_text = fields.Text(compute='_compute_texts')
+    translated_text = fields.Text(compute='_compute_texts')
     source = fields.Selection(selection=[
         ('letter', _('Letter')),
         ('email', _('E-Mail')),
         ('website', _('Compassion website'))], default='letter')
+    page_ids = fields.One2many(
+        'sponsorship.correspondence.page', 'sponsorship_correspondence_id')
+    nbr_pages = fields.Integer(
+        string='Number of pages', compute='_compute_texts')
 
     # 4. Additional information
     ###########################
@@ -230,34 +235,47 @@ class SponsorshipCorrespondence(models.Model):
             else:
                 letter.name = _('New correspondence')
 
-    @api.depends('sponsorship_id', 'direction', 'original_language_id')
     def _set_destination_language(self):
-        for letter in self:
-            if letter.direction == 'Supporter To Beneficiary':
-                if letter.child_id.project_id.country_id.spoken_lang_ids:
-                    if letter.original_language_id in letter.child_id.\
-                       project_id.country_id.spoken_lang_ids:
-                        letter.destination_language_id = letter.\
-                            original_language_id
-                    else:
-                        letter.destination_language_id = letter\
-                            .child_id.project_id.country_id.spoken_lang_ids[0]
-
-            if letter.direction == 'Beneficiary To Supporter':
-                if letter.child_id.project_id.country_id.spoken_lang_ids:
-                    if letter.original_language_id in letter.\
-                       correspondant_id.spoken_lang_ids:
-                        letter.destination_language_id = letter.\
-                            original_language_id
-                    else:
-                        letter.destination_language_id = letter\
-                              .correspondant_id.spoken_lang_ids[0]
+        """ Called at creation to setup the destination language of
+        supporter letters. """
+        self.ensure_one()
+        if self.direction == 'Supporter To Beneficiary':
+            dest_langs = self.child_id.project_id.country_id.spoken_lang_ids
+            if self.original_language_id in dest_langs:
+                self.destination_language_id = self.original_language_id
+            else:
+                self.destination_language_id = dest_langs[0]
 
     @api.depends('sponsorship_id')
     def _set_partner_review(self):
         for letter in self:
             if letter.correspondant_id.mandatory_review:
                 letter.mandatory_review = True
+
+    @api.depends('page_ids')
+    def _compute_texts(self):
+        self.original_text = self._get_original_text('original_text')
+        self.translated_text = self._get_original_text('translated_text')
+        self.english_text = self._get_original_text('english_translated_text')
+        self.nbr_pages = len(self.page_ids)
+
+    @api.one
+    def _inverse_page(self):
+        if self.page_ids:
+            # Keep only the first page and remove the other
+            self.page_ids[0].write({
+                'original_text': self.original_text,
+                'translated_text': self._get_original_text('translated_text')})
+            self.page_ids[1:].unlink()
+        else:
+            self.page_ids.create(
+                {'sponsorship_correspondence_id': self.id,
+                 'original_text': self.original_text,
+                 'translated_text': self.translated_text})
+
+    def _get_original_text(self, source_text):
+        """ Gets the desired text (original/translated) from the pages. """
+        return '\n\n'.join(self.page_ids.mapped(source_text))
 
     def _change_language(self):
         return True
@@ -276,8 +294,9 @@ class SponsorshipCorrespondence(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
-        """ Letter image field is in binary so we convert to ir.attachment """
-        # Fill missing fields
+        """ Fill missing fields.
+        Letter image field is in binary so we convert to ir.attachment
+        """
         if vals.get('direction',
                     'Supporter To Beneficiary') == 'Supporter To Beneficiary':
             vals['communication_type_ids'] = [(
@@ -288,7 +307,7 @@ class SponsorshipCorrespondence(models.Model):
             if 'communication_type_ids' not in vals:
                 vals['communication_type_ids'] = [(
                     4, self.env.ref(
-                        'sbc_compassion.correspondence_type_bene').id)]
+                        'sbc_compassion.correspondence_type_scheduled').id)]
 
         letter_image = vals.get('letter_image')
         attachment = False
@@ -310,6 +329,7 @@ class SponsorshipCorrespondence(models.Model):
                 'datas': letter_image})
             vals['letter_image'] = attachment.id
         letter = super(SponsorshipCorrespondence, self).create(vals)
+        letter._set_destination_language()
         if attachment:
             attachment.write({
                 'name': letter.scanned_date + '_' + letter.name + type_,
