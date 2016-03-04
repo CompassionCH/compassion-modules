@@ -140,13 +140,12 @@ class CorrespondenceMapping(OnrampMapping):
         if 'page_ids' in odoo_data:
             pages = list()
             for page in odoo_data['page_ids']:
-                page_id = \
-                    self.env['sponsorship.correspondence.page'].search(
-                        [(
-                            'original_page_url',
-                            '=',
-                            page['original_page_url']
-                        )], limit=1).id
+                page_url = page.get('original_page_url')
+                if not page_url:
+                    # We don't need to save pages not accessible
+                    continue
+                page_id = self.env['sponsorship.correspondence.page'].search(
+                    [('original_page_url', '=', page_url)], limit=1).id
                 # if page_url already exist update it
                 if page_id:
                     orm_tuple = (1, page_id, page)
@@ -154,4 +153,4 @@ class CorrespondenceMapping(OnrampMapping):
                 else:
                     orm_tuple = (0, 0, page)
                 pages.append(orm_tuple)
-            odoo_data['page_ids'] = pages
+            odoo_data['page_ids'] = pages or False
