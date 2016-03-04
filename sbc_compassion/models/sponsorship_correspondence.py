@@ -99,7 +99,7 @@ class SponsorshipCorrespondence(models.Model):
     page_ids = fields.One2many(
         'sponsorship.correspondence.page', 'sponsorship_correspondence_id')
     nbr_pages = fields.Integer(
-        string='Number of pages', compute='_compute_page')
+        string='Number of pages', compute='_compute_texts')
 
     # 4. Additional information
     ###########################
