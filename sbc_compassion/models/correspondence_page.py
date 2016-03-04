@@ -25,9 +25,9 @@ class CorrespondencePage(models.Model):
 
     original_page_url = fields.Char()
     final_page_url = fields.Char()
-    original_text = fields.Text()
-    english_translated_text = fields.Text()
-    translated_text = fields.Text()
+    original_text = fields.Text(default='')
+    english_translated_text = fields.Text(default='')
+    translated_text = fields.Text(default='')
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
