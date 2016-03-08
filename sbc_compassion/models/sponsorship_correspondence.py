@@ -348,7 +348,7 @@ class SponsorshipCorrespondence(models.Model):
                 4, self.env.ref(
                     'sbc_compassion.correspondence_type_supporter').id)]
         else:
-            vals['status_date'] = fields.Date.today()
+            vals['status_date'] = fields.Datetime.now()
             if 'communication_type_ids' not in vals:
                 vals['communication_type_ids'] = [(
                     4, self.env.ref(
