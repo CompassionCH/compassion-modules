@@ -10,9 +10,8 @@
                     <field name="sponsorship_id"/>
                     <field name="kit_identifier"/>
                     <field name="direction"/>
-                    <field name="relationship"/>
-                    <field name="mandatory_review"/>
                     <field name="status_date"/>
+                    <field name="translator_id"/>
                     <field name="state"/>
                 </tree>
             </field>
@@ -85,10 +84,12 @@
                             <group>
                                 <field name="nbr_pages" />
                                 <field name="original_language_id" string="Original language" options="{'create':False}"/>
-                                <field name="original_text"/>
+                                <field name="original_text" attrs="{'readonly': [('state', '!=', 'Received in the system')]}"/>
                                 <field name="english_text"/>
                             </group>
                             <group>
+                                <field name="translator" attrs="{'invisible': ['|', ('translator', '=', False), ('translator_id', '!=', False)]}"/>
+                                <field name="translator_id" attrs="{'invisible': [('translator', '=', False)]}"/>
                                 <field name="destination_language_id" string="Destination language" options="{'create':False}"/>
                                 <field name="translated_text"/>
                             </group>
@@ -116,22 +117,22 @@
             <field name="model">sponsorship.correspondence</field>
             <field name="arch" type="xml">
                 <search>
+                    <field name="kit_identifier"/>
+                    <field name="child_id" />
+                    <field name="correspondant_id" />
+                    <field name="direction" />
+                    <field name="state" />
                     <filter name="direction_stb" string="Supporter To Beneficiary" domain="[('direction','=','Supporter To Beneficiary')]" />
                     <separator />
                     <filter name="direction_bts" string="Beneficiary To Supporter" domain="[('direction','=','Beneficiary To Supporter')]" />
                     <separator />
                     <filter name="state_published" string="Published state" domain="[('state','=','Published to Global Partner')]" />
-                    
                     <group expand="0" string="Group By">
                         <filter string="Partner" domain="[]" context="{'group_by': 'correspondant_id'}" />
                         <filter string="Sponsorship" domain="[]" context="{'group_by': 'sponsorship_id'}" />
                         <filter string="State" domain="[]" context="{'group_by': 'state'}" />
+                        <filter string="Translator" domain="[]" context="{'group_by': 'translator_id'}" />
                     </group>
-
-                    <field name="direction" />
-                    <field name="child_id" />
-                    <field name="state" />
-                    <field name="correspondant_id" />
                 </search>
             </field>
         </record>

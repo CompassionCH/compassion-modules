@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <!-- Add column last_read in the tree view sponsorship_correspondance -->
+        <!-- Add column last_read and read_count in the tree view sponsorship_correspondance -->
         <record id="view_sponsorship_correspondence_tree_compassion" model="ir.ui.view">
             <field name="name">sponsorship.correspondence.tree</field>
             <field name="model">sponsorship.correspondence</field>
@@ -9,6 +9,20 @@
             <field name="arch" type="xml">
                 <field name="status_date" position="after">
                     <field name="last_read" />
+                    <field name="read_count" />
+                </field>
+            </field>
+        </record>
+        
+        <!-- Add last_read and read_count in form view -->
+        <record id="view_sponsorship_correspondence_form_compassion" model="ir.ui.view">
+            <field name="name">sponsorship.correspondence.form</field>
+            <field name="model">sponsorship.correspondence</field>
+            <field name="inherit_id" ref="sbc_compassion.view_sponsorship_correspondence_form" />
+            <field name="arch" type="xml">
+                <field name="rework_comments" position="after">
+                    <field name="last_read" />
+                    <field name="read_count" />
                 </field>
             </field>
         </record>

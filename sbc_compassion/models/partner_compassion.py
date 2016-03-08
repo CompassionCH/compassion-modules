@@ -34,6 +34,7 @@ class ResPartner(models.Model):
     send_original = fields.Boolean(
         help='Indicates that we request the original letters for this sponsor'
         )
+    translator_email = fields.Char(help='e-mail address used in SDL')
 
     @api.multi
     def open_letters(self):
