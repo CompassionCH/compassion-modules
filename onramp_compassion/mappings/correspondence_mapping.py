@@ -88,7 +88,7 @@ class CorrespondenceMapping(OnrampMapping):
         'ReworkComments': 'rework_comments',
         'Template': ('template_id.layout',
                      'sponsorship.correspondence.template'),
-        'TranslatedBy': None,
+        'TranslatedBy': 'translator',
         'TranslationLanguage': ('destination_language_id.name',
                                 'res.lang.compassion'),
         'Supporter': SUPPORTER_MAPPING

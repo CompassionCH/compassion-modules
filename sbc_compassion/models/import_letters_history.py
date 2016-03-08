@@ -251,10 +251,6 @@ class ImportLettersHistory(models.Model):
                 elif func.check_file(attachment.name) == 1:
                     logger.info("Analyzing letter {}/{}".format(
                         progress, self.nber_letters))
-                    # remove if PDF is working
-                    if func.isPDF(attachment.name):
-                        raise exceptions.Warning(
-                            _("PDF not implemented yet"))
                     ext = os.path.splitext(attachment.name)[1]
                     with tempfile.NamedTemporaryFile(
                             suffix=ext) as file_:

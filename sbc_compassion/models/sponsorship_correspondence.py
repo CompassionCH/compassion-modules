@@ -11,6 +11,7 @@
 
 import magic
 import base64
+import re
 
 from openerp import fields, models, api, exceptions, _
 
@@ -28,7 +29,7 @@ class SponsorshipCorrespondence(models.Model):
     _name = 'sponsorship.correspondence'
     _inherit = ['mail.thread', 'ir.needaction_mixin']
     _description = 'Letter'
-    _order = 'status_date desc, scanned_date asc'
+    _order = 'status_date desc'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -103,7 +104,7 @@ class SponsorshipCorrespondence(models.Model):
 
     # 4. Additional information
     ###########################
-    status_date = fields.Date(default=fields.Date.today())
+    status_date = fields.Datetime(default=fields.Date.today())
     scanned_date = fields.Date(default=fields.Date.today())
     relationship = fields.Selection([
         ('Sponsor', _('Sponsor')),
@@ -121,6 +122,10 @@ class SponsorshipCorrespondence(models.Model):
     original_letter_url = fields.Char()
     final_letter_url = fields.Char()
     import_id = fields.Many2one('import.letters.history')
+    translator = fields.Char()
+    translator_id = fields.Many2one(
+        'res.partner', 'Translator', compute='_compute_translator',
+        inverse='_set_translator', store=True)
 
     # 5. SQL Constraints
     ####################
@@ -288,6 +293,46 @@ class SponsorshipCorrespondence(models.Model):
                 letter.letter_format = 'pdf'
             elif 'tiff' in ftype:
                 letter.letter_format = 'tiff'
+
+    @api.multi
+    @api.depends('translator')
+    def _compute_translator(self):
+        partner_obj = self.env['res.partner']
+        for letter in self:
+            if letter.translator:
+                match = re.search('(.*)\[(.*)\]', letter.translator)
+                if match:
+                    (name, email) = match.group(1, 2)
+                    # 1. Search by e-mail
+                    partner = partner_obj.search([
+                        '|', ('email', '=', email),
+                        ('translator_email', '=', email)])
+                    if len(partner) == 1:
+                        letter.translator_id = partner
+                        continue
+                    # 2. Search by name
+                    words = name.split()
+                    partner = partner_obj.search([('name', 'like', words[0])])
+                    if len(words) > 1:
+                        for word in words[1:]:
+                            partner = partner.filtered(
+                                lambda p: word in p.name)
+                            if len(partner) == 1:
+                                break
+                    if len(partner) == 1:
+                        letter.translator_id = partner
+
+    @api.multi
+    def _set_translator(self):
+        """ Sets the translator e-mail address. """
+        for letter in self:
+            match = re.search('(.*)\[(.*)\]', letter.translator)
+            if match:
+                letter.translator_id.translator_email = match.group(2)
+                other_letters = self.search([
+                    ('translator', '=', letter.translator),
+                    ('translator_id', '!=', letter.translator_id.id)])
+                other_letters._compute_translator()
 
     ##########################################################################
     #                              ORM METHODS                               #
