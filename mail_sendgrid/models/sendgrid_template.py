@@ -34,8 +34,9 @@ class SendgridTemplate(models.Model):
 
     def _compute_keywords(self):
         for template in self:
-            keywords = template.get_keywords()
-            self.detected_keywords = ';'.join(keywords)
+            if template.html_content:
+                keywords = template.get_keywords()
+                self.detected_keywords = ';'.join(keywords)
 
     @api.one
     def update(self):
