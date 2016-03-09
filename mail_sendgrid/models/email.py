@@ -103,6 +103,8 @@ class Email(models.Model):
         test_address = config.get('sendgrid_test_address')
         if not test_address:
             message.add_to(self.email_to)
+            for recipient in self.recipient_ids:
+                message.add_to(recipient.email)
             if self.email_cc:
                 message.add_cc(self.email_cc)
         else:
