@@ -50,7 +50,7 @@ class SponsorshipCorrespondence(models.Model):
     def create(self, vals):
         """ Create a message for sending the CommKit. """
         letter = super(SponsorshipCorrespondence, self).create(vals)
-        if not self.env.context.get('from_onramp'):
+        if not self.env.context.get('no_comm_kit'):
             action_id = self.env.ref('onramp_compassion.create_commkit').id
             self.env['gmc.message.pool'].create({
                 'action_id': action_id,
@@ -166,7 +166,7 @@ class SponsorshipCorrespondence(models.Model):
             is_published = is_published and commkit.state != published_state
             commkit.write(commkit_vals)
         else:
-            commkit = self.with_context(from_onramp=True).create(commkit_vals)
+            commkit = self.with_context(no_comm_kit=True).create(commkit_vals)
 
         if is_published:
             commkit.process_letter()
