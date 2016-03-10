@@ -124,7 +124,7 @@ class SponsorshipCorrespondence(models.Model):
     import_id = fields.Many2one('import.letters.history')
     translator = fields.Char()
     translator_id = fields.Many2one(
-        'res.partner', 'Translator', compute='_compute_translator',
+        'res.partner', 'GP Translator', compute='_compute_translator',
         inverse='_set_translator', store=True)
 
     # 5. SQL Constraints
@@ -386,5 +386,5 @@ class SponsorshipCorrespondence(models.Model):
     def write(self, vals):
         """ Keep track of state changes. """
         if 'state' in vals:
-            vals['status_date'] = fields.Date.today()
+            vals['status_date'] = fields.Datetime.now()
         return super(SponsorshipCorrespondence, self).write(vals)
