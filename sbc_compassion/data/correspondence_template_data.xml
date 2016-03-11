@@ -20,7 +20,7 @@
     
     <record id="qrcode_x_max" model="ir.config_parameter">
       <field name="key">qrcode_x_max</field>
-      <field name="value">0.6</field>
+      <field name="value">0.7</field>
     </record>
     
     <record id="qrcode_y_min" model="ir.config_parameter">

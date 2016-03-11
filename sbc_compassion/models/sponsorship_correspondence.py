@@ -357,21 +357,7 @@ class SponsorshipCorrespondence(models.Model):
         letter_image = vals.get('letter_image')
         attachment = False
         if letter_image and not isinstance(letter_image, (int, long)):
-            # Detect filetype
-            ftype = magic.from_buffer(base64.b64decode(letter_image),
-                                      True).lower()
-            if 'pdf' in ftype:
-                type_ = '.pdf'
-            elif 'tiff' in ftype:
-                type_ = '.tiff'
-            else:
-                raise exceptions.Warning(
-                    _('Unsupported file format'),
-                    _('You can only attach tiff or pdf files'))
-            attachment = self.env['ir.attachment'].create({
-                'name': 'New letter',
-                'res_model': self._name,
-                'datas': letter_image})
+            attachment, type_ = self._get_letter_attachment(letter_image)
             vals['letter_image'] = attachment.id
         letter = super(SponsorshipCorrespondence, self).create(vals)
         letter._set_destination_language()
@@ -387,4 +373,43 @@ class SponsorshipCorrespondence(models.Model):
         """ Keep track of state changes. """
         if 'state' in vals:
             vals['status_date'] = fields.Datetime.now()
+        # Allow to change letter image from the user interface
+        letter_image = vals.get('letter_image')
+        if letter_image and not isinstance(letter_image, (int, long)):
+            self.ensure_one()
+            attachment = self._get_letter_attachment(letter_image, self)[0]
+            vals['letter_image'] = attachment.id
         return super(SponsorshipCorrespondence, self).write(vals)
+
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
+    def _get_letter_attachment(self, image_data, letter=None):
+        """ Method that takes png/pdf binary data, create an ir.attachment
+        with it and returns its id. Useful for creating the letter image.
+
+        :returns (ir.attachement, string): attachment record, file type
+        """
+        # Detect filetype
+        ftype = magic.from_buffer(base64.b64decode(image_data),
+                                  True).lower()
+        if 'pdf' in ftype:
+            type_ = '.pdf'
+        elif 'tiff' in ftype:
+            type_ = '.tiff'
+        else:
+            raise exceptions.Warning(
+                _('Unsupported file format'),
+                _('You can only attach tiff or pdf files'))
+        vals = {
+            'name': 'New letter' + type_,
+            'res_model': self._name,
+            'datas': image_data
+        }
+        if letter:
+            vals.update({
+                'name': letter.kit_identifier + '_' + type_,
+                'datas_fname': letter.name,
+                'res_id': letter.id
+            })
+        return self.env['ir.attachment'].create(vals), type_

@@ -106,7 +106,7 @@ class CorrespondenceTemplate(models.Model):
              'pattern inside the template (given in pixels)')
     checkbox_ids = fields.One2many(
         'sponsorship.correspondence.lang.checkbox', 'template_id',
-        default=lambda self: self._get_default_checkboxes())
+        default=lambda self: self._get_default_checkboxes(), copy=True)
     nber_keypoints = fields.Integer(
         "Number of key points", compute="_compute_template_keypoints",
         store=True)
@@ -359,10 +359,6 @@ class CorrespondenceTemplate(models.Model):
     def get_pattern_center(self):
         """ Returns the coordinates of the pattern center. """
         return numpy.array([self.pattern_center_x, self.pattern_center_y])
-
-    ##########################################################################
-    #                            WORKFLOW METHODS                            #
-    ##########################################################################
 
 
 class CorrespondenceLanguageCheckbox(models.Model):
