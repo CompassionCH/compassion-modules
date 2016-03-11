@@ -146,6 +146,9 @@ def analyze_attachment(env, file_, filename, force_template, test=False):
     The test parameter is used to know if a real line needs to be created
     or a test.import.letter.line.
 
+    Beware that image is converted to 300DPI, so templates should be defined
+    with 300DPI images. Scans should also be with 300 DPI for better results.
+
     :param env env: Odoo variable env
     :param str file_: Path of the file to analyze
     :param str filename: Filename to give in odoo
@@ -161,7 +164,7 @@ def analyze_attachment(env, file_, filename, force_template, test=False):
     # convert to PNG
     if isPDF(file_) or isTIFF(file_):
         name = os.path.splitext(file_)[0]
-        with Image(filename=file_) as img:
+        with Image(filename=file_, resolution=300) as img:
             img.format = 'png'
             img.save(filename=name + '.png')
         file_png = name + '.png'
