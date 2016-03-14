@@ -12,8 +12,15 @@
                 <input type="hidden" name="session_id" value="" t-if="widget.session.override_session"/>
                 <input type="hidden" name="callback" t-att-value="fileupload_id"/>
                 <t t-raw="0"/>
-                <input type="file" class="oe_form_binary_file" multiple="" name="ufile" t-if="widget.widget!='image'"/>
-                <input type="file" class="oe_form_binary_file" multiple="" name="ufile" accept="image/*" t-if="widget.widget=='image'"/>
+                <!-- Michael Sandoz adding: Specify here models where multiple selection will be active -->
+                <t t-if="widget.__parentedParent.model == 'import.letters.history'">
+	                <input type="file" class="oe_form_binary_file" multiple="" name="ufile" t-if="widget.widget!='image'"/>
+	                <input type="file" class="oe_form_binary_file" multiple="" name="ufile" accept="image/*" t-if="widget.widget=='image'"/>
+                </t> 
+                <t t-if="widget.__parentedParent.model != 'import.letters.history'">-->
+	                <input type="file" class="oe_form_binary_file" name="ufile" t-if="widget.widget!='image'"/>
+	                <input type="file" class="oe_form_binary_file" name="ufile" accept="image/*" t-if="widget.widget=='image'"/>
+                </t>
             </form>
             <iframe t-att-id="fileupload_id" t-att-name="fileupload_id" style="display: none"/>
         </div>

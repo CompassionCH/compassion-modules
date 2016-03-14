@@ -473,6 +473,11 @@ msgid "Import completed"
 msgstr "Import terminé"
 
 #. module: sbc_compassion
+#: field:import.letters.history,from_imports_nas_folder
+msgid "Import all content from NAS Imports folder"
+msgstr "Importer tout le contenu du dossier Imports sur le NAS"
+
+#. module: sbc_compassion
 #: field:import.letter.line,import_id:0
 #: field:sponsorship.correspondence,import_id:0
 #: field:test.import.letter.line,import_id:0
