@@ -16,12 +16,13 @@
                     <sheet>
                         <h1>Imported Letters</h1>
                         <group>
+                        	<field name="from_imports_nas_folder" states="draft"/>
                             <label for="data" string="Files" states="draft"/>
                             <div states="draft">
-                                <field name="data" widget="many2many_binary"/>
-                                <separator/>
-                                <button name="button_import" string="Load Files" type="object"/>
+                                <field name="data" widget="many2many_binary" attrs="{'invisible':[('from_imports_nas_folder', '==', True)]}"/>
                             </div>
+                            <separator/>
+                            <button name="button_import" string="Load Files" type="object"/>
                             <field name="nber_letters"/>
                             <field name="is_mandatory_review"/>
                             <field name="force_template" states="draft,open"/>

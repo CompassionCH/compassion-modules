@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="assets_backend" name="sync_mail assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/sync_mail_multi_attach/static/src/js/mail_multi_attach.js"></script>
+                <link rel="stylesheet" href="/sync_mail_multi_attach/static/src/css/style.css"/>
+            </xpath>
+        </template>
+    </data>
+</openerp>
