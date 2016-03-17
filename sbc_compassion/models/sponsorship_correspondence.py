@@ -326,13 +326,14 @@ class SponsorshipCorrespondence(models.Model):
     def _set_translator(self):
         """ Sets the translator e-mail address. """
         for letter in self:
-            match = re.search('(.*)\[(.*)\]', letter.translator)
-            if match:
-                letter.translator_id.translator_email = match.group(2)
-                other_letters = self.search([
-                    ('translator', '=', letter.translator),
-                    ('translator_id', '!=', letter.translator_id.id)])
-                other_letters._compute_translator()
+            if letter.translator:
+                match = re.search('(.*)\[(.*)\]', letter.translator)
+                if match:
+                    letter.translator_id.translator_email = match.group(2)
+                    other_letters = self.search([
+                        ('translator', '=', letter.translator),
+                        ('translator_id', '!=', letter.translator_id.id)])
+                    other_letters._compute_translator()
 
     ##########################################################################
     #                              ORM METHODS                               #
