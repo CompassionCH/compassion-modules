@@ -280,7 +280,8 @@ class SponsorshipCorrespondence(models.Model):
 
     def _get_original_text(self, source_text):
         """ Gets the desired text (original/translated) from the pages. """
-        return '\n\n'.join(self.page_ids.mapped(source_text))
+        txt = self.page_ids.filtered(source_text).mapped(source_text)
+        return '\n\n'.join(txt)
 
     def _change_language(self):
         return True
