@@ -15,10 +15,8 @@ between the database and the mail.
 import logging
 import base64
 import zipfile
-import os
-import tempfile
-import shutil
 
+from io import BytesIO
 from ..tools import import_letter_functions as func
 from openerp import api, fields, models, _, exceptions
 
@@ -117,28 +115,24 @@ class ImportLettersHistory(models.Model):
                     # zip case
                     elif func.isZIP(attachment.name):
                         # create a tempfile and read it
-                        with tempfile.NamedTemporaryFile(
-                                suffix='.zip') as zip_file:
-                            zip_file.write(base64.b64decode(
-                                attachment.with_context(
-                                    bin_size=False).datas))
-                            zip_file.flush()
-                            # catch ALL the exceptions that can be raised
-                            # by class zipfile
-                            try:
-                                zip_ = zipfile.ZipFile(zip_file.name, 'r')
-                                list_file = zip_.namelist()
-                                # loop over all files in zip
-                                for tmp_file in list_file:
-                                    tmp += (func.check_file(tmp_file) == 1)
-                            except zipfile.BadZipfile:
-                                raise exceptions.Warning(
-                                    _('Zip file corrupted (' +
-                                      attachment.name + ')'))
-                            except zipfile.LargeZipFile:
-                                raise exceptions.Warning(
-                                    _('Zip64 is not supported(' +
-                                      attachment.name + ')'))
+                        zip_file = BytesIO(base64.b64decode(
+                            attachment.with_context(bin_size=False).datas))
+                        # catch ALL the exceptions that can be raised
+                        # by class zipfile
+                        try:
+                            zip_ = zipfile.ZipFile(zip_file, 'r')
+                            list_file = zip_.namelist()
+                            # loop over all files in zip
+                            for tmp_file in list_file:
+                                tmp += (func.check_file(tmp_file) == 1)
+                        except zipfile.BadZipfile:
+                            raise exceptions.Warning(
+                                _('Zip file corrupted (' +
+                                  attachment.name + ')'))
+                        except zipfile.LargeZipFile:
+                            raise exceptions.Warning(
+                                _('Zip64 is not supported(' +
+                                  attachment.name + ')'))
 
                 inst.nber_letters = tmp
             else:
@@ -216,54 +210,27 @@ class ImportLettersHistory(models.Model):
         for attachment in self.data:
             if attachment.name not in file_name_history:
                 file_name_history.append(attachment.name)
+                file_data = base64.b64decode(attachment.with_context(
+                    bin_size=False).datas)
                 # check for zip
                 if func.check_file(attachment.name) == 2:
-                    # create a temp file
-                    with tempfile.NamedTemporaryFile(
-                            suffix='.zip') as zip_file:
-                        # write data in tempfile
-                        zip_file.write(base64.b64decode(
-                            attachment.with_context(
-                                bin_size=False).datas))
-                        zip_file.flush()
-                        zip_ = zipfile.ZipFile(
-                            zip_file, 'r')
-                        # loop over files inside zip
-                        directory = tempfile.mkdtemp()
-                        for f in zip_.namelist():
-                            logger.info(
-                                "Analyzing letter {}/{}".format(
-                                    progress, self.nber_letters))
-                            zip_.extract(
-                                f, directory)
-                            absname = directory + '/' + f
-                            if os.path.isfile(absname):
-                                # remove if PDF is working
-                                if func.isPDF(absname):
-                                    raise exceptions.Warning(
-                                        _("PDF not implemented yet"))
-                                filename = f.split('/')[-1]
-                                self._analyze_attachment(absname,
-                                                         filename)
-                            progress += 1
-                        shutil.rmtree(directory)
-                # case with normal format ([PDF,]TIFF)
+                    zip_file = BytesIO(file_data)
+                    zip_ = zipfile.ZipFile(zip_file, 'r')
+                    for f in zip_.namelist():
+                        logger.info(
+                            "Analyzing letter {}/{}".format(
+                                progress, self.nber_letters))
+                        self._analyze_attachment(zip_.read(f), f)
+                        progress += 1
+                # case with normal format (PDF,TIFF)
                 elif func.check_file(attachment.name) == 1:
                     logger.info("Analyzing letter {}/{}".format(
                         progress, self.nber_letters))
-                    ext = os.path.splitext(attachment.name)[1]
-                    with tempfile.NamedTemporaryFile(
-                            suffix=ext) as file_:
-                        file_.write(base64.b64decode(
-                            attachment.with_context(
-                                bin_size=False).datas))
-                        file_.flush()
-                        self._analyze_attachment(file_.name,
-                                                 attachment.name)
+                    self._analyze_attachment(file_data, attachment.name)
                     progress += 1
                 else:
                     raise exceptions.Warning(
-                        'Still a file in a non-accepted format')
+                        'Only zip/pdf/tiff files are supported.')
             else:
                 raise exceptions.Warning(_('Two files are the same'))
 
@@ -272,17 +239,18 @@ class ImportLettersHistory(models.Model):
         self.import_completed = True
         logger.info("Imported letters analysis completed.")
 
-    def _analyze_attachment(self, file_, filename):
+    def _analyze_attachment(self, file_data, file_name):
         line_vals, document_vals = func.analyze_attachment(
-            self.env, file_, filename, self.force_template)
-        letters_line = self.env['import.letter.line'].create(line_vals)
-        document_vals.update({
-            'res_id': letters_line.id,
-            'res_model': 'import.letter.line'
-        })
-        letters_line.letter_image = self.env['ir.attachment'].create(
-            document_vals)
-        self.import_line_ids += letters_line
+            self.env, file_data, file_name, self.force_template)
+        for i in xrange(0, len(line_vals)):
+            letters_line = self.env['import.letter.line'].create(line_vals[i])
+            document_vals[i].update({
+                'res_id': letters_line.id,
+                'res_model': 'import.letter.line'
+            })
+            letters_line.letter_image = self.env['ir.attachment'].create(
+                document_vals[i])
+            self.import_line_ids += letters_line
 
 
 ##############################################################################

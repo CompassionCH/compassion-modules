@@ -17,6 +17,7 @@ import cv2
 
 from openerp import fields, models, api, _
 from openerp.exceptions import ValidationError, Warning
+from wand.image import Image
 
 from ..tools import patternrecognition as pr
 from ..tools import bluecornerfinder as bcf
@@ -41,6 +42,8 @@ class CorrespondenceTemplate(models.Model):
     all information relative to position of metadata in the Template, like for
     instance where the QR Code is supposed to be, where the language
     checkboxes will be found, where the pattern will be, etc...
+
+    Template images should be in 300 DPI
     """
 
     _name = 'sponsorship.correspondence.template'
@@ -53,7 +56,8 @@ class CorrespondenceTemplate(models.Model):
     layout = fields.Selection('get_gmc_layouts', required=True)
     pattern_image = fields.Binary()
     template_image = fields.Binary(
-        compute='_compute_image', inverse='_set_image')
+        compute='_compute_image', inverse='_set_image',
+        help='Use 300 DPI images')
     detection_result = fields.Binary(
         compute='_compute_detection')
     page_width = fields.Integer(
@@ -106,7 +110,7 @@ class CorrespondenceTemplate(models.Model):
              'pattern inside the template (given in pixels)')
     checkbox_ids = fields.One2many(
         'sponsorship.correspondence.lang.checkbox', 'template_id',
-        default=lambda self: self._get_default_checkboxes())
+        default=lambda self: self._get_default_checkboxes(), copy=True)
     nber_keypoints = fields.Integer(
         "Number of key points", compute="_compute_template_keypoints",
         store=True)
@@ -159,22 +163,25 @@ class CorrespondenceTemplate(models.Model):
 
     def _set_image(self):
         if self.template_image:
-            ftype = magic.from_buffer(
-                base64.b64decode(self.template_image), True)
+            datas = base64.b64decode(self.template_image)
+            ftype = magic.from_buffer(datas, True)
             if not ('jpg' in ftype or 'jpeg' in ftype or 'png' in ftype):
                 raise Warning(
                     _("Unsupported format"),
                     _("Please only use jpg or png files."))
+            # Be sure image is in 300 DPI
+            with Image(blob=datas, resolution=300) as img:
+                datas = base64.b64encode(img.make_blob())
             attachment_obj = self.env['ir.attachment']
             attachment = attachment_obj.search([
                 ('res_model', '=', self._name),
                 ('res_id', '=', self.id)])
             if attachment:
-                attachment.datas = self.template_image
+                attachment.datas = datas
             else:
                 attachment = attachment_obj.create({
                     'name': self.name,
-                    'datas': self.template_image,
+                    'datas': datas,
                     'datas_fname': self.name,
                     'res_model': self._name,
                     'res_id': self.id
@@ -359,10 +366,6 @@ class CorrespondenceTemplate(models.Model):
     def get_pattern_center(self):
         """ Returns the coordinates of the pattern center. """
         return numpy.array([self.pattern_center_x, self.pattern_center_y])
-
-    ##########################################################################
-    #                            WORKFLOW METHODS                            #
-    ##########################################################################
 
 
 class CorrespondenceLanguageCheckbox(models.Model):

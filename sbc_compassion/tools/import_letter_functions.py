@@ -22,7 +22,6 @@ import checkboxreader as cbr
 import numpy as np
 import sys
 from math import ceil
-from glob import glob
 from wand.image import Image
 from collections import namedtuple
 
@@ -68,22 +67,22 @@ def testline(env, line_vals, csv_file_ids, doc_name):
     template_csv = env.ref(
         'sbc_compassion.'+values['template_id'])
     if template_csv.id != line_vals['template_id']:
-        error = error + 'template,\n'
+        error += 'template,\n'
 
     # Test that the barcode detection matches the result given in csv file
-    BarcodeTuple = namedtuple('BarcodeTuple', ['data'])
-    barcode = BarcodeTuple(values['barcode'])
+    barcode_tuple = namedtuple('BarcodeTuple', ['data'])
+    barcode = barcode_tuple(values['barcode'])
     partner_detected, child_detected = decodeBarcode(env, barcode)
     # 1) we check the case where the barcode was not detected and was not
     # expected
     if (line_vals['child_id'] != child_detected or
             line_vals['partner_id'] != partner_detected):
-        error = error + 'barcode,\n'
+        error += 'barcode,\n'
 
     # Test that languages detected are the same as given in the csv file
     letter_language = line_vals['test_letter_language']
     if letter_language != values['lang']:
-        error = error + 'lang,\n'
+        error += 'lang,\n'
 
     # remove the two last character (',\n')
     return error[:-2]
@@ -138,7 +137,7 @@ def write_text_test(nber, tot):
     return text
 
 
-def analyze_attachment(env, file_, filename, force_template, test=False):
+def analyze_attachment(env, file_data, file_name, force_template, test=False):
     """
     Analyze attachment (PDF/TIFF) and save everything inside
     import_line_ids.
@@ -146,77 +145,74 @@ def analyze_attachment(env, file_, filename, force_template, test=False):
     The test parameter is used to know if a real line needs to be created
     or a test.import.letter.line.
 
+    Beware that image is converted to 300DPI, so templates should be defined
+    with 300DPI images. Scans should also be with 300 DPI for better results.
+
     :param env env: Odoo variable env
-    :param str file_: Path of the file to analyze
-    :param str filename: Filename to give in odoo
+    :param str file_data: Binary data of the image file to analyze
+    :param str file_name: Name of the image file to analyze
     :param sponsorship.correspondence.template force_template: Template
     :param bool test: Test import or not
 
     :returns: Import Line values, IR Attachment values
-    :rtype: dict, dict
+    :rtype: list(dict), list(dict)
     """
-    line_vals = {}
-    document_vals = {}
+    line_vals = list()
+    document_vals = list()
+    letter_datas = list()
 
-    # convert to PNG
-    if isPDF(file_) or isTIFF(file_):
-        name = os.path.splitext(file_)[0]
-        with Image(filename=file_) as img:
-            img.format = 'png'
-            img.save(filename=name + '.png')
-        file_png = name + '.png'
-    # now do the computations only if the image is a PNG
-    img = cv2.imread(file_png)
-    is_multipage = False
-    if img is None:
-        file_png = name + '-0' + '.png'
-        img = cv2.imread(file_png)
-        is_multipage = True
-        if img is None:
-            raise exceptions.Warning(
-                "The '{}' image cannot be read".format(filename))
-    # first compute the QR code
-    data, img = _find_qrcode(env, line_vals, img, is_multipage, file_, test)
-    document_vals = {
-        'name': filename,
-        'datas': base64.b64encode(data),
-        'datas_fname': filename,
-    }
+    with Image(blob=file_data, resolution=300) as original_image:
+        # Split the image each time a new QR code is found and create
+        # ir.attachment values for each splitted image
+        letter_indexes, imgs = _find_qrcodes(
+            env, line_vals, original_image, test)
 
-    # now try to find the layout
-    # loop over all the patterns in the pattern directory
-    _find_template(env, img, line_vals, test)
-    if line_vals['template_id'] != env.ref(
-            'sbc_compassion.default_template').id:
-        _find_languages(env, img, line_vals, test)
-    else:
-        line_vals['letter_language_id'] = False
-        if test:
-            line_vals.update({
-                'lang_preview': '',
-                'test_letter_language': ''
-            })
-    if force_template:
-        line_vals['template_id'] = force_template.id
+        # Construct the datas for each detected letter: store as PDF
+        if len(letter_indexes) > 1:
+            last_index = 0
+            for index in letter_indexes[1:]:
+                filename = 'page-' + str(last_index) + '.pdf'
+                with Image() as letter_image:
+                    letter_image.sequence.extend(
+                        original_image.sequence[last_index:index])
+                    letter_image.save(filename=filename)
+                last_index = index
+                with open(filename) as file:
+                    letter_datas.append(file.read())
+                os.remove(filename)
+        else:
+            letter_datas.append(file_data)
 
-    # Downsize png image for saving it in a preview field
-    with Image(filename=file_png) as img:
-        img.resize(img.width/4, img.height/4)
-        line_vals['letter_image_preview'] = base64.b64encode(img.make_blob())
-
-    # Remove all temp files written to disk
-    os.remove(file_png)
-    if is_multipage:
-        delfiles = glob(name + '*png')
-        for file_ in delfiles:
-            os.remove(file_)
+    # now try to find the layout for all splitted letters
+    file_split = file_name.split('.')
+    for i in range(0, len(letter_datas)):
+        attach_name = file_split[0] + '-' + str(i) + '.pdf'
+        document_vals.append({
+            'name': attach_name,
+            'datas': base64.b64encode(letter_datas[i]),
+            'datas_fname': attach_name,
+        })
+        letter_vals = line_vals[i]
+        _find_template(env, imgs[i], letter_vals, test)
+        if letter_vals['template_id'] != env.ref(
+                'sbc_compassion.default_template').id:
+            _find_languages(env, imgs[i], letter_vals, test)
+        else:
+            letter_vals['letter_language_id'] = False
+            if test:
+                letter_vals.update({
+                    'lang_preview': '',
+                    'test_letter_language': ''
+                })
+        if force_template:
+            letter_vals['template_id'] = force_template.id
 
     return line_vals, document_vals
 
 
-def _find_qrcode(env, line_vals, img, is_multipage, file_, test):
+def _find_qrcodes(env, line_vals, original_image, test):
     """
-    Read the image and try to find the QR code.
+    Read the image and try to find the QR codes.
     The image should be currently saved as a png with the same name
     than :py:attr:`file_` (except for the extension).
     If QR Code is in wrong orientation, this method will return the given
@@ -226,80 +222,98 @@ def _find_qrcode(env, line_vals, img, is_multipage, file_, test):
 
     :param env env: Odoo variable env
     :param dict line_vals: Dictionary that will hold values for import line
-    :param np.array img: Image to analyze
-    :param bool is_multipage: If the file is multipage
-    :param file_: Name of the temporary file
+    :param original_image: Wand Image of the png converted file
     :param bool test: Save the image of the QR code or not
-    :returns: data, img
-    :rtype: str, np.array
+    :returns: binary data of images, numpy arrays of pages to analyze further
+    :rtype: list(str), list(np.array)
     """
-    name = os.path.splitext(file_)[0]
-    file_png = name + '.png'
-    f = open(file_)
-    data = f.read()
-    f.close()
-    if is_multipage:
-        file_png = name + '-0' + '.png'
-    # get size and position
-    img_height, img_width = img.shape[:2]
+    letter_indexes = list()
+    page_imgs = list()
+
+    previous_qrcode = ''
+    # Holds the indexes of the pages where a new letter is detected
+    for page in original_image.sequence:
+        index = page.index
+        qrcode, img, test_data = _decode_page(env, page, test)
+        if (qrcode is not None and qrcode.data != previous_qrcode) or \
+                index == 0:
+            previous_qrcode = qrcode and qrcode.data
+            letter_indexes.append(index)
+            page_imgs.append(img)
+
+            partner_id, child_id = decodeBarcode(env, qrcode)
+            # Downsize png image for saving it in a preview field
+            with page.clone() as page_preview:
+                page_preview.transform(resize='25%')
+                preview_data = base64.b64encode(page_preview.make_blob('png'))
+            values = {
+                'partner_id': partner_id,
+                'child_id': child_id,
+                'letter_image_preview': preview_data
+            }
+            if test:
+                values.update({'qr_preview': test_data})
+            line_vals.append(values)
+    letter_indexes.append(index)
+
+    return letter_indexes, page_imgs
+
+
+def _decode_page(env, page, test):
+    """
+    Read the image and try to find the QR codes.
+    The image should be currently saved as a png with the same name
+    than :py:attr:`file_` (except for the extension).
+    If QR Code is in wrong orientation, this method will return the given
+    file.
+    In case of test, the output dictonnary contains the image of the QR code
+    too.
+    The page must be saved in the file page.png !
+
+    :param SingleImage page: Wand SingleImage of the page
+    :returns: decoded qrcode, numpy array of page and test image data to show
+              the detection
+    :rtype: str, binary
+    """
+    # decoder
+    zx = zxing.BarCodeTool()
+    with Image(image=page) as page_image:
+        page_data = np.asarray(bytearray(page_image.make_blob('png')))
+        img = cv2.imdecode(page_data, 1)    # Read in color
+        if img is None:
+            return None, None, None
+        # Save cropped file on disk for qrcode detection
+        left, right, top, bottom = _get_qr_crop(env, page.width, page.height)
+        with page_image[left:right, top:bottom] as cropped:
+            filename = os.getcwd() + '/page.png'
+            test_data = cropped.make_blob('png')
+            cropped.save(filename=filename)
+            qrcode = zx.decode(filename, try_harder=True)
+
+    os.remove(filename)
+    return qrcode, img, test_data
+
+
+def _get_qr_crop(env, img_width, img_height):
+    """ Computes the area to be croped for searching the QR code,
+    given image height and width.
+
+    :returns: left, right, top, bottom
+    :rtype: int, int, int, int
+    """
     left = img_width * float(
         env['ir.config_parameter'].get_param(
             'qrcode_x_min'))
+    right = img_width * float(
+        env['ir.config_parameter'].get_param(
+            'qrcode_x_max'))
     top = img_height * float(
         env['ir.config_parameter'].get_param(
             'qrcode_y_min'))
-    width = img_width * float(
-        env['ir.config_parameter'].get_param(
-            'qrcode_x_max'))
-    width -= left
-    height = img_height * float(
+    bottom = img_height * float(
         env['ir.config_parameter'].get_param(
             'qrcode_y_max'))
-    height -= top
-    # decoder
-    zx = zxing.BarCodeTool()
-    # first attempt
-    qrcode = zx.decode(file_png, try_harder=True, crop=[
-        int(left), int(top), int(width), int(height)])
-    if test:
-        right = int(left)+int(width)
-        bottom = int(top) + int(height)
-        test_img = cv2.imread(file_png)[int(top):bottom, int(left):right]
-        test_data = readEncode(test_img)
-    # check if found, if not means that page is rotated
-    if qrcode is None:
-        # rotate image
-        img = img[::-1, ::-1]
-        # second attempt
-        cv2.imwrite(file_png, img)
-        qrcode = zx.decode(file_png, try_harder=True, crop=[
-            int(left), int(top), int(width), int(height)])
-        # if the QR code is found
-        if qrcode is not None and testDirectionQRcode(qrcode):
-            right = int(left)+int(width)
-            bottom = int(top) + int(height)
-            test_img = cv2.imread(file_png)[int(top):bottom, int(left):right]
-            test_data = readEncode(test_img)
-            # save it for zxing
-            cv2.imwrite(file_png, img)
-            # replace the image by the returned one
-            data = _save_img(is_multipage, file_, img)
-        else:
-            img = img[::-1, ::-1]
-            cv2.imwrite(file_png, img)
-            qrcode = zx.decode(file_png, try_harder=True)
-
-    partner_id, child_id = decodeBarcode(env, qrcode)
-
-    line_vals.update({
-        'partner_id': partner_id,
-        'child_id': child_id,
-    })
-    if test:
-        line_vals.update({
-            'qr_preview': test_data
-        })
-    return data, img
+    return int(left), int(right), int(top), int(bottom)
 
 
 def testDirectionQRcode(barcode):
@@ -339,8 +353,7 @@ def decodeBarcode(env, barcode):
                 [('code', '=', child_code)]).id
             partner_id = env['res.partner'].search(
                 [('ref', '=', partner_ref),
-                 ('is_company', '=', False),
-                 ('contract_ids', '!=', False)], limit=1).id
+                 ('is_company', '=', False)], limit=1).id
     return partner_id, child_id
 
 
@@ -360,50 +373,6 @@ def readEncode(img, format_img='png'):
             test_data = f.read()
             f.close()
     return base64.b64encode(test_data)
-
-
-def _save_img(is_multipage, file_, img):
-    """
-    This method is called when an image is scanned in the wrong direction.
-    It consists in saving the image (returning is already done before).
-    In case of multipage, the pages need to be returned.
-
-    :param bool is_multipage: If the file is a multipage one
-    :param str file_: Name of the file
-    :param np.array img: Image
-    :returns: Data contained in the file
-    :rtype: str
-    """
-    # if multipage, needs to turn all of them
-    name = os.path.splitext(file_)[0]
-    if is_multipage:
-        file_png = name + '-0' + '.png'
-        # Get list of all image file names to include
-        image_names = glob(name + '-*.png')
-        for g in image_names:
-            # first page already done
-            if file_png != g:
-                img_temp = cv2.imread(g)[::-1, ::-1]
-                cv2.imwrite(g, img_temp)
-
-        # Create new Image, and extend sequence
-        # put first page at the beginning
-        with Image() as img_tiff:
-            img_tiff.sequence.extend(
-                [Image(filename=img_name)
-                 for img_name in sorted(image_names)])
-            img_tiff.save(filename=file_)
-            f = open(file_)
-            data = f.read()
-            f.close()
-    # case with only one page
-    else:
-        file_png = name + '.png'
-        cv2.imwrite(file_, img)
-        f = open(file_)
-        data = f.read()
-        f.close()
-    return data
 
 
 def _find_template(env, img, line_vals, test):
