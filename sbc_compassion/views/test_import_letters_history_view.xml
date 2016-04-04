@@ -30,7 +30,6 @@
                                 <div states="draft">
                                     <field name="csv_file_ids" widget="many2many_binary"/>
                                 </div>
-                                <field name="full_output" states="draft"/>
                                 <field name="qr_ok" states="open,ready"/>
                                 <field name="lang_ok" states="open,ready"/>
                             </group>
@@ -39,15 +38,15 @@
                             <field name="test_import_line_ids" states="open,ready" domain="[('id','=','-1')]">
                                 <tree colors="red:status != 'ok';green:status == 'ok'" create="false" editable="bottom">
                                     <field name="letter_image" readonly="1" string="Filename"/>
-                                    <field name="letter_image_preview" widget='image_preview' display="icon" readonly="1"/>
+                                    <field name="letter_image_preview" widget='image' display="icon" readonly="1"/>
                                     <field name="error"/>
                                     <field name="partner_id"/>
                                     <field name="child_id"/>
-                                    <field name="qr_preview" widget='image_preview' display="icon" readonly="1"/>
+                                    <field name="qr_preview" widget='image' display="icon" readonly="1"/>
                                     <field name="template_id"/>
-                                    <field name="template_preview" widget='image_preview' display="icon" readonly="1"/>
+                                    <field name="template_preview" widget='image' display="icon" readonly="1"/>
                                     <field name="test_letter_language"/>
-                                    <field name="lang_preview" widget='image_preview' display="icon" readonly="1"/>
+                                    <field name="lang_preview" widget='image' display="icon" readonly="1"/>
                                     <field name="status" invisible="1"/>
                                 </tree>
                             </field>

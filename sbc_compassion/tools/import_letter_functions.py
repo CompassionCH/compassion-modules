@@ -13,10 +13,10 @@ Defines a few functions useful in ../models/import_letters_history.py
 """
 import csv
 import os
+
 import cv2
 import base64
 import zxing
-import tempfile
 import patternrecognition as pr
 import checkboxreader as cbr
 import numpy as np
@@ -61,8 +61,8 @@ def testline(env, line_vals, csv_file_ids, doc_name):
             values = csv_line
             break
     else:
-        raise exceptions.Warning(
-            _("File '{}' not found in the csv files".format(doc_name)))
+        # If no csv is given, don't check
+        return error
     # Test that the template is the same as given in the csv
     template_csv = env.ref(
         'sbc_compassion.'+values['template_id'])
@@ -102,14 +102,14 @@ def update_stat_text(test_import):
     tpl = 0
     lang = 0
     for line in test_import.test_import_line_ids:
-        if len(line.error) > 0:
+        if line.error:
             test += 1
-        if 'template' in line.error:
-            tpl += 1
-        if 'barcode' in line.error:
-            qr += 1
-        if 'lang' in line.error:
-            lang += 1
+            if 'template' in line.error:
+                tpl += 1
+            if 'barcode' in line.error:
+                qr += 1
+            if 'lang' in line.error:
+                lang += 1
 
     test = test_import.nber_test - test
     tpl = test_import.nber_test - tpl
@@ -222,7 +222,7 @@ def _find_qrcodes(env, line_vals, original_image, test):
 
     :param env env: Odoo variable env
     :param dict line_vals: Dictionary that will hold values for import line
-    :param original_image: Wand Image of the png converted file
+    :param original_image: Wand Image of the original image file
     :param bool test: Save the image of the QR code or not
     :returns: binary data of images, numpy arrays of pages to analyze further
     :rtype: list(str), list(np.array)
@@ -234,7 +234,7 @@ def _find_qrcodes(env, line_vals, original_image, test):
     # Holds the indexes of the pages where a new letter is detected
     for page in original_image.sequence:
         index = page.index
-        qrcode, img, test_data = _decode_page(env, page, test)
+        qrcode, img, test_data = _decode_page(env, page)
         if (qrcode is not None and qrcode.data != previous_qrcode) or \
                 index == 0:
             previous_qrcode = qrcode and qrcode.data
@@ -252,14 +252,14 @@ def _find_qrcodes(env, line_vals, original_image, test):
                 'letter_image_preview': preview_data
             }
             if test:
-                values.update({'qr_preview': test_data})
+                values['qr_preview'] = base64.b64encode(test_data)
             line_vals.append(values)
     letter_indexes.append(index)
 
     return letter_indexes, page_imgs
 
 
-def _decode_page(env, page, test):
+def _decode_page(env, page):
     """
     Read the image and try to find the QR codes.
     The image should be currently saved as a png with the same name
@@ -367,12 +367,7 @@ def readEncode(img, format_img='png'):
     :returns: Data (encoded in base64)
     :rtype: str
     """
-    with tempfile.NamedTemporaryFile(suffix='.'+format_img) as temp_file:
-            cv2.imwrite(temp_file.name, img)
-            f = open(temp_file.name)
-            test_data = f.read()
-            f.close()
-    return base64.b64encode(test_data)
+    return base64.b64encode(cv2.imencode('.png', img)[1])
 
 
 def _find_template(env, img, line_vals, test):
@@ -380,7 +375,7 @@ def _find_template(env, img, line_vals, test):
     Use pattern recognition to detect which template corresponds to img.
 
     :param env env: Odoo variable env
-    :param img: Image to analyze
+    :param img: Opencv Image to analyze
     :param dict line_vals: Dictonnary containing the data for a line
     :param bool test: Enable the test mode (will save some img)
     :returns: center position of detected pattern
@@ -390,11 +385,11 @@ def _find_template(env, img, line_vals, test):
         [('pattern_image', '!=', False)])
     threshold = float(
         env.ref('sbc_compassion.threshold_keypoints_template').value)
-    template, pattern_center, img = pr.find_template(
+    template, pattern_center, result_img = pr.find_template(
         img, templates, threshold=threshold, test=test)
     if test:
-        img = manyImages2OneImage(img, 1)
-        line_vals['template_preview'] = img
+        result_preview = manyImages2OneImage(result_img, 1)
+        line_vals['template_preview'] = result_preview
 
     if template is None:
         pattern_center = np.array(([0, 0], [0, 0]))

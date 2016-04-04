@@ -174,7 +174,7 @@ def find_template(img, templates, test=False, threshold=0.8):
     """
     Use pattern recognition to detect which template correponds to img.
 
-    :param img: Image to analyze
+    :param img: Opencv Image to analyze
     :param templates: Collection of all templates
     :param bool test: Enable the test mode (return an image as the last \
         parameter). If False, the image is None.
