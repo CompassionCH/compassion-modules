@@ -28,7 +28,7 @@
                                              'create': false, 'create_edit': false}"
                                    domain="[('correspondant_id', '=', partner_id), ('type', 'like', 'S')]"/>
                             <field name="template_id"/>
-                            <field name="language_id"/>
+                            <field name="language_id" widget="radio"/>
                             <field name="is_encourager"/>
                             <field name="letter_image" widget="image"/>
                         </group>
