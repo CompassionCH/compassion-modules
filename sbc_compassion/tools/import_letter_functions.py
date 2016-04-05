@@ -151,7 +151,7 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
     :param env env: Odoo variable env
     :param str file_data: Binary data of the image file to analyze
     :param str file_name: Name of the image file to analyze
-    :param sponsorship.correspondence.template force_template: Template
+    :param correspondence.template force_template: Template
     :param bool test: Test import or not
 
     :returns: Import Line values, IR Attachment values
@@ -381,7 +381,7 @@ def _find_template(env, img, line_vals, test):
     :returns: center position of detected pattern
     :rtype: layout
     """
-    templates = env['sponsorship.correspondence.template'].search(
+    templates = env['correspondence.template'].search(
         [('pattern_image', '!=', False)])
     threshold = float(
         env.ref('sbc_compassion.threshold_keypoints_template').value)
@@ -430,7 +430,7 @@ def _find_languages(env, img, line_vals, test):
     :returns: None
     """
     line_vals['letter_language_id'] = False
-    template = env['sponsorship.correspondence.template'].browse(
+    template = env['correspondence.template'].browse(
         line_vals['template_id'])
     if not template:
         return

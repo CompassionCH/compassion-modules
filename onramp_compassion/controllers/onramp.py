@@ -55,7 +55,7 @@ class RestController(http.Controller):
                     raise AttributeError(
                         "Body does not contain a valid CommKit Data")
             correspondence_obj = request.env[
-                'sponsorship.correspondence'].sudo(request.uid)
+                'correspondence'].sudo(request.uid)
             correspondence_obj.process_commkit_notifications(updates, headers)
 
         # TODO [Release 4]: Reservation Notification Messages

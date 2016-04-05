@@ -46,7 +46,7 @@ class CorrespondenceTemplate(models.Model):
     Template images should be in 300 DPI
     """
 
-    _name = 'sponsorship.correspondence.template'
+    _name = 'correspondence.template'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -109,7 +109,7 @@ class CorrespondenceTemplate(models.Model):
         help='Maximum Y position of the area in which to look for the '
              'pattern inside the template (given in pixels)')
     checkbox_ids = fields.One2many(
-        'sponsorship.correspondence.lang.checkbox', 'template_id',
+        'correspondence.lang.checkbox', 'template_id',
         default=lambda self: self._get_default_checkboxes(), copy=True)
     nber_keypoints = fields.Integer(
         "Number of key points", compute="_compute_template_keypoints",
@@ -374,10 +374,10 @@ class CorrespondenceLanguageCheckbox(models.Model):
     letter is written. It gives the position of the checkbox inside a template
     in order to find it and verify if it is ticked or not. """
 
-    _name = 'sponsorship.correspondence.lang.checkbox'
+    _name = 'correspondence.lang.checkbox'
 
     template_id = fields.Many2one(
-        'sponsorship.correspondence.template', required=True,
+        'correspondence.template', required=True,
         ondelete='cascade')
     language_id = fields.Many2one('res.lang.compassion')
     x_min = fields.Integer(

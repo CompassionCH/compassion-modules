@@ -17,17 +17,18 @@ from openerp import fields, models, api, exceptions, _
 
 
 class CorrespondenceType(models.Model):
-    _name = 'sponsorship.correspondence.type'
+    _name = 'correspondence.type'
 
     name = fields.Char(required=True)
 
 
-class SponsorshipCorrespondence(models.Model):
+class Correspondence(models.Model):
     """ This class holds the data of a Communication Kit between
     a child and a sponsor.
     """
-    _name = 'sponsorship.correspondence'
-    _inherit = ['mail.thread', 'ir.needaction_mixin']
+    _name = 'correspondence'
+    _inherit = [
+            'mail.thread', 'ir.needaction_mixin', 'correspondence.metadata']
     _description = 'Letter'
     _order = 'status_date desc'
 
@@ -53,8 +54,8 @@ class SponsorshipCorrespondence(models.Model):
             ('Beneficiary To Supporter', _('Beneficiary to supporter'))],
         required=True, default='Supporter To Beneficiary', readonly=True)
     communication_type_ids = fields.Many2many(
-        'sponsorship.correspondence.type',
-        'sponsorship_correspondence_type_relation',
+        'correspondence.type',
+        'correspondence_type_relation',
         'correspondence_id', 'type_id',
         'Communication type',
         readonly=True)
@@ -70,12 +71,6 @@ class SponsorshipCorrespondence(models.Model):
     letter_format = fields.Selection([
         ('pdf', 'pdf'), ('tiff', 'tiff')],
         compute='_compute_letter_format')
-    physical_attachments = fields.Selection(selection=[
-        ('sent_by_mail', _('Sent by mail')),
-        ('not_sent', _('Not sent'))])
-    attachments_description = fields.Text()
-    template_id = fields.Many2one(
-        'sponsorship.correspondence.template', 'Template')
 
     # 3. Letter language and text information
     #########################################
@@ -98,7 +93,7 @@ class SponsorshipCorrespondence(models.Model):
         ('email', _('E-Mail')),
         ('website', _('Compassion website'))], default='letter')
     page_ids = fields.One2many(
-        'sponsorship.correspondence.page', 'sponsorship_correspondence_id')
+        'correspondence.page', 'correspondence_id')
     nbr_pages = fields.Integer(
         string='Number of pages', compute='_compute_texts')
 
@@ -109,7 +104,6 @@ class SponsorshipCorrespondence(models.Model):
     relationship = fields.Selection([
         ('Sponsor', _('Sponsor')),
         ('Encourager', _('Encourager'))], default='Sponsor')
-    mandatory_review = fields.Boolean()
     is_first_letter = fields.Boolean(
         compute='_compute_is_first',
         store=True,
@@ -274,7 +268,7 @@ class SponsorshipCorrespondence(models.Model):
             self.page_ids[1:].unlink()
         else:
             self.page_ids.create(
-                {'sponsorship_correspondence_id': self.id,
+                {'correspondence_id': self.id,
                  'original_text': self.original_text,
                  'translated_text': self.translated_text})
 
@@ -361,7 +355,7 @@ class SponsorshipCorrespondence(models.Model):
         if letter_image and not isinstance(letter_image, (int, long)):
             attachment, type_ = self._get_letter_attachment(letter_image)
             vals['letter_image'] = attachment.id
-        letter = super(SponsorshipCorrespondence, self).create(vals)
+        letter = super(Correspondence, self).create(vals)
         letter._set_destination_language()
         if attachment:
             attachment.write({
@@ -381,7 +375,7 @@ class SponsorshipCorrespondence(models.Model):
             self.ensure_one()
             attachment = self._get_letter_attachment(letter_image, self)[0]
             vals['letter_image'] = attachment.id
-        return super(SponsorshipCorrespondence, self).write(vals)
+        return super(Correspondence, self).write(vals)
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

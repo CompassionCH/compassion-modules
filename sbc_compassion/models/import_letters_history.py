@@ -60,9 +60,9 @@ class ImportLettersHistory(models.Model):
         'import.letter.line', 'import_id', 'Files to process',
         ondelete='cascade')
     letters_ids = fields.One2many(
-        'sponsorship.correspondence', 'import_id', 'Imported letters',
+        'correspondence', 'import_id', 'Imported letters',
         readonly=True)
-    force_template = fields.Many2one('sponsorship.correspondence.template',
+    force_template = fields.Many2one('correspondence.template',
                                      'Force Template')
 
     ##########################################################################
@@ -161,7 +161,7 @@ class ImportLettersHistory(models.Model):
     @api.multi
     def button_save(self):
         """
-        save the import_line as a sponsorship_correspondence
+        save the import_line as a correspondence
         """
         # check if all the imports are OK
         for letters_h in self:

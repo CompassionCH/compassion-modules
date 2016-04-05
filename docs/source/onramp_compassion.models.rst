@@ -8,7 +8,7 @@ Submodules
 
    onramp_compassion.models.gmc_message
    onramp_compassion.models.ir_http
-   onramp_compassion.models.sponsorship_correspondence
+   onramp_compassion.models.correspondence
 
 Module contents
 ---------------

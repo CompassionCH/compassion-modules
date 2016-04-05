@@ -30,7 +30,7 @@ class ImportLetterLine(models.Model):
     name = fields.Char(compute='_set_name')
     child_id = fields.Many2one('compassion.child', 'Child')
     template_id = fields.Many2one(
-        'sponsorship.correspondence.template', 'Template')
+        'correspondence.template', 'Template')
     letter_language_id = fields.Many2one(
         'res.lang.compassion', 'Language')
     is_encourager = fields.Boolean('Encourager', default=False)

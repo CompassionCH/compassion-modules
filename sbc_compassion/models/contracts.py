@@ -30,10 +30,10 @@ class Contracts(models.Model):
         'res.lang.compassion', related='reading_language',
         help='By now equals to reading language. Could be used in the future')
     child_letter_ids = fields.Many2many(
-        'sponsorship.correspondence', string='Child letters',
+        'correspondence', string='Child letters',
         compute='_get_letters')
     sponsor_letter_ids = fields.Many2many(
-        'sponsorship.correspondence', string='Sponsor letters',
+        'correspondence', string='Sponsor letters',
         compute='_get_letters')
 
     ##########################################################################
@@ -42,7 +42,7 @@ class Contracts(models.Model):
     def _get_letters(self):
         """ Retrieve correspondence of sponsorship contracts. """
         for sponsorship in self:
-            letters_obj = self.env['sponsorship.correspondence']
+            letters_obj = self.env['correspondence']
             letters = letters_obj.search([
                 ('sponsorship_id', '=', sponsorship.id)])
             sponsorship.child_letter_ids = letters.filtered(

@@ -32,7 +32,7 @@ class TestTools(common.TransactionCase):
                                                  'testdata/normal.png')
         self.test_document_noise = os.path.join(THIS_DIR, 'testdata/noise.png')
         self.test_document_white = os.path.join(THIS_DIR, 'testdata/white.png')
-        template_obj = self.env['sponsorship.correspondence.template']
+        template_obj = self.env['correspondence.template']
         self.templates = template_obj.search([('pattern_image', '!=', False)])
 
     def test_blue_corner_finder_should_find(self):

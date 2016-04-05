@@ -29,9 +29,9 @@
 
 {
     'name': "Sponsor to beneficiary communication",
-    'version': '8.0.1',
+    'version': '8.0.1.1',
     'category': 'Other',
-    'summary': "SBC - Sponsor to beneficiary communication",
+    'summary': "SBC - Supporter to Beneficiary Communication",
     'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -46,7 +46,7 @@
         'views/country_compassion_view.xml',
         'views/partner_compassion_view.xml',
         'views/lang_compassion_view.xml',
-        'views/sponsorship_correspondence_view.xml',
+        'views/correspondence_view.xml',
         'views/import_letters_history_view.xml',
         'views/correspondence_template_view.xml',
         'views/correspondence_template_crosscheck_view.xml',

@@ -24,9 +24,6 @@ class ImportReview(models.TransientModel):
     #                                 FIELDS                                 #
     ##########################################################################
     progress = fields.Float(compute='_get_current_line', store=True)
-    import_line_ids = fields.Many2many(
-        'import.letter.line', readonly=True,
-        default=lambda self: self._get_default_lines())
     current_line_index = fields.Integer(default=0)
     count = fields.Integer(compute='_get_current_line', store=True)
     nb_lines = fields.Integer(compute='_get_current_line', store=True)
@@ -50,17 +47,13 @@ class ImportReview(models.TransientModel):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.model
-    def _get_default_lines(self):
-        return self.env.context['line_ids']
-
     @api.one
     @api.depends('current_line_index')
     def _get_current_line(self):
-        if self.env.context['line_ids']:
-            self.current_line_id = self.env.context['line_ids'][
-                self.current_line_index]
-            self.nb_lines = len(self.env.context['line_ids'])
+        line_ids = self.env.context.get('line_ids')
+        if line_ids:
+            self.current_line_id = line_ids[self.current_line_index]
+            self.nb_lines = len(line_ids)
             self.count = self.current_line_index + 1
             self.progress = (float(self.count) / self.nb_lines) * 100
             self.letter_image = self.with_context(
