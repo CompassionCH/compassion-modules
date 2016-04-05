@@ -84,14 +84,14 @@
                             <group>
                                 <field name="nbr_pages" />
                                 <field name="original_language_id" string="Original language" options="{'create':False}"/>
-                                <field name="original_text" attrs="{'readonly': [('state', '!=', 'Received in the system')]}"/>
-                                <field name="english_text"/>
+                                <field name="original_text" readonly="1"/>
+                                <field name="english_text" readonly="1"/>
                             </group>
                             <group>
                                 <field name="translator" attrs="{'invisible': ['|', ('translator', '=', False), ('translator_id', '!=', False)]}"/>
                                 <field name="translator_id" attrs="{'invisible': [('translator', '=', False)]}"/>
-                                <field name="destination_language_id" string="Destination language" options="{'create':False}"/>
-                                <field name="translated_text"/>
+                                <field name="destination_language_id" string="Destination language" options="{'create':False}" readonly="1"/>
+                                <field name="translated_text" readonly="1"/>
                             </group>
                         </group>
                     </sheet>
