@@ -28,8 +28,8 @@ class ImportReview(models.TransientModel):
     count = fields.Integer(compute='_get_current_line', store=True)
     nb_lines = fields.Integer(compute='_get_current_line', store=True)
     current_line_id = fields.Many2one(
-        'import.letter.line', compute='_get_current_line', store=True,
-        readonly=True)
+        'import.letter.line', 'Letter', compute='_get_current_line',
+        store=True, readonly=True)
     postpone_import_id = fields.Many2one('import.letters.history')
 
     # Import line related fields
@@ -43,6 +43,12 @@ class ImportReview(models.TransientModel):
         related='current_line_id.letter_language_id',
         domain=[('translatable', '=', True)])
     is_encourager = fields.Boolean(related='current_line_id.is_encourager')
+    mandatory_review = fields.Boolean(
+        related='current_line_id.mandatory_review')
+    physical_attachments = fields.Selection(
+        related='current_line_id.physical_attachments')
+    attachments_description = fields.Char(
+        related='current_line_id.attachments_description')
 
     ##########################################################################
     #                             FIELDS METHODS                             #

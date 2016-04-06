@@ -22,9 +22,13 @@
                                 <separator/>
                                 <button name="button_import" string="Load Files" type="object"/>
                             </div>
+                            <field name="config_id" widget="radio"/>
                             <field name="nber_letters"/>
-                            <field name="is_mandatory_review"/>
-                            <field name="force_template" states="draft,open"/>
+                            <field name="mandatory_review"/>
+                            <field name="is_encourager"/>
+                            <field name="physical_attachments"/>
+                            <field name="attachments_description"/>
+                            <field name="template_id" states="draft,open"/>
                         </group>
                         <group>
                             <button name="button_review" string="Review Imports" type="object" states="open" colspan="2"/>
@@ -37,6 +41,9 @@
                                     <field name="template_id"/>
                                     <field name="letter_language_id"/>
                                     <field name="is_encourager"/>
+                                    <field name="mandatory_review"/>
+                                    <field name="physical_attachments"/>
+                                    <field name="attachments_description"/>
                                     <field name="letter_image_preview" widget='image' display="icon" string="Letter image preview" readonly="1"/>
                                 </tree>
                             </field>
@@ -57,7 +64,7 @@
                     <field name="create_date"/>
                     <field name="write_date"/>
                     <field name="nber_letters"/>
-                    <field name="is_mandatory_review"/>
+                    <field name="mandatory_review"/>
                     <field name="state"/>
                 </tree>
             </field>

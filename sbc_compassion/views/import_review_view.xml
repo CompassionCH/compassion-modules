@@ -17,19 +17,30 @@
                     <field name="progress" widget="progressbar"/>
                     <sheet>
                         <group>
-                            <field name="current_line_id"/>
-                            <field name="state"/>
-                            <field name="partner_id" attrs="{'invisible': [('partner_id', '!=', False)]}"/>
-                            <field name="child_id" invisible="1"/>
-                            <field name="sponsorship_id" attrs="{'invisible': [('child_id', '!=', False), ('partner_id', '!=', False)]}"
-                                   options="{'colors':{'waiting':'green','terminated':'grey','cancelled':'grey','mandate':'red'},
+                            <group colspan="2">
+                                <field name="current_line_id"/>
+                                <field name="state"/>
+                                <field name="partner_id" attrs="{'invisible': [('partner_id', '!=', False)]}"/>
+                                <field name="child_id" invisible="1"/>
+                                <field name="sponsorship_id" attrs="{'invisible': [('child_id', '!=', False), ('partner_id', '!=', False)]}"
+                                       options="{'colors':{'waiting':'green','terminated':'grey','cancelled':'grey','mandate':'red'},
                                              'field_color':'state',
                                              'create': false, 'create_edit': false}"
-                                   domain="[('correspondant_id', '=', partner_id), ('type', 'like', 'S')]"/>
-                            <field name="template_id"/>
-                            <field name="language_id" widget="radio"/>
-                            <field name="is_encourager"/>
-                            <field name="letter_image" widget="image"/>
+                                       domain="[('correspondant_id', '=', partner_id), ('type', 'like', 'S')]"/>
+                            </group>
+                            <group>
+                                <field name="template_id"/>
+                                <field name="language_id" widget="radio"/>
+                            </group>
+                            <group>
+                                <field name="is_encourager"/>
+                                <field name="mandatory_review"/>
+                                <field name="physical_attachments"/>
+                                <field name="attachments_description"/>
+                            </group>
+                            <group colspan="2">
+                                <field name="letter_image" widget="image"/>
+                            </group>
                         </group>
                     </sheet>
                 </form>

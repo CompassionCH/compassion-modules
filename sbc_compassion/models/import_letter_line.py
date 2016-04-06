@@ -8,7 +8,6 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-
 from openerp import fields, models, api, _
 
 
@@ -18,6 +17,7 @@ class ImportLetterLine(models.Model):
     """
 
     _name = 'import.letter.line'
+    _inherit = 'import.letter.config'
     _order = 'reviewed,status'
 
     ##########################################################################
@@ -29,16 +29,12 @@ class ImportLetterLine(models.Model):
     partner_id = fields.Many2one('res.partner', 'Partner')
     name = fields.Char(compute='_set_name')
     child_id = fields.Many2one('compassion.child', 'Child')
-    template_id = fields.Many2one(
-        'correspondence.template', 'Template')
     letter_language_id = fields.Many2one(
         'res.lang.compassion', 'Language')
-    is_encourager = fields.Boolean('Encourager', default=False)
     letter_image = fields.Many2one('ir.attachment')
     letter_image_preview = fields.Binary()
     import_id = fields.Many2one('import.letters.history')
     reviewed = fields.Boolean()
-
     status = fields.Selection([
         ("no_lang", _("Language not Detected")),
         ("no_sponsorship", _("Sponsorship not Found")),
@@ -47,12 +43,21 @@ class ImportLetterLine(models.Model):
         ("ok", _("OK"))], compute="_check_status", store=True, readonly=True)
 
     ##########################################################################
+    #                              ORM METHODS                               #
+    ##########################################################################
+    @api.model
+    def create(self, vals):
+        line = super(ImportLetterLine, self).create(vals)
+        line.write(line.import_id.get_correspondence_metadata())
+        return line
+
+    ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
 
     @api.multi
     @api.depends('partner_id', 'child_id', 'sponsorship_id',
-                 'letter_language_id', 'import_id.force_template')
+                 'letter_language_id', 'import_id.template_id')
     def _check_status(self):
         """ At each change, check if all the fields are OK
         """
@@ -61,7 +66,7 @@ class ImportLetterLine(models.Model):
             valid_template = (
                 line.template_id and not
                 (line.template_id == default_template !=
-                 line.import_id.force_template))
+                 line.import_id.template_id))
             if not line.sponsorship_id:
                 if not (line.child_id and line.partner_id):
                     line.status = "no_child_partner"
@@ -99,27 +104,25 @@ class ImportLetterLine(models.Model):
                         line.child_id.code)
 
     @api.multi
-    def get_letter_data(self, mandatory_review=False):
+    def get_letter_data(self):
         """ Create a list of dictionaries in order to create some lines inside
         import_letters_history.
 
-        :param mandatory_review: Are all the lines mandatory review?
         :returns: list to use in a write
         :rtype: list[dict{}]
 
         """
         letter_data = []
         for line in self:
-            vals = {
+            vals = line.get_correspondence_metadata()
+            vals.update({
                 'sponsorship_id': line.sponsorship_id.id,
                 'letter_image': line.letter_image.datas,
-                'template_id': line.template_id.id,
                 'original_language_id': line.letter_language_id.id,
                 'direction': 'Supporter To Beneficiary'
-            }
+            })
             if line.is_encourager:
                 vals['relationship'] = 'Encourager'
-            if mandatory_review:
-                vals['mandatory_review'] = True
+            del vals['is_encourager']
             letter_data.append((0, 0, vals))
         return letter_data

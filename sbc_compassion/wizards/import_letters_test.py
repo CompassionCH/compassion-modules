@@ -42,7 +42,7 @@ class TestImportLetters(models.TransientModel):
         # the computation is wrong later)
         self.nber_test = self.nber_letters
         line_vals, document_vals = func.analyze_attachment(
-            self.env, file_, filename, self.force_template, test=True)
+            self.env, file_, filename, self.template_id, test=True)
 
         for i in xrange(0, len(line_vals)):
             error = func.testline(self.env, line_vals[i], self.csv_file_ids,
