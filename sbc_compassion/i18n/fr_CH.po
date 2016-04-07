@@ -671,7 +671,7 @@ msgstr "Lettre"
 #. module: sbc_compassion
 #: view:correspondence:sbc_compassion.view_correspondence_form
 msgid "Letter content"
-msgstr "Contenu de lettre"
+msgstr "Contenu de la lettre"
 
 #. module: sbc_compassion
 #: field:import.letter.line,letter_image:0

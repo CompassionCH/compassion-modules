@@ -85,9 +85,14 @@ class Correspondence(models.Model):
     destination_language_id = fields.Many2one(
         'res.lang.compassion', 'Destination language')
     original_text = fields.Text(
-        compute='_compute_texts', inverse='_inverse_page')
-    english_text = fields.Text(compute='_compute_texts')
-    translated_text = fields.Text(compute='_compute_texts')
+        compute='_compute_original_text',
+        inverse='_inverse_page')
+    english_text = fields.Text(
+        compute='_compute_english_translated_text',
+        inverse='_inverse_page')
+    translated_text = fields.Text(
+        compute='_compute_translated_text',
+        inverse='_inverse_page')
     source = fields.Selection(selection=[
         ('letter', _('Letter')),
         ('email', _('E-Mail')),
@@ -95,7 +100,7 @@ class Correspondence(models.Model):
     page_ids = fields.One2many(
         'correspondence.page', 'correspondence_id')
     nbr_pages = fields.Integer(
-        string='Number of pages', compute='_compute_texts')
+        string='Number of pages', compute='_compute_nbr_pages')
 
     # 4. Additional information
     ###########################
@@ -234,17 +239,6 @@ class Correspondence(models.Model):
             else:
                 letter.name = _('New correspondence')
 
-    def _set_destination_language(self):
-        """ Called at creation to setup the destination language of
-        supporter letters. """
-        self.ensure_one()
-        if self.direction == 'Supporter To Beneficiary':
-            dest_langs = self.child_id.project_id.country_id.spoken_lang_ids
-            if self.original_language_id in dest_langs:
-                self.destination_language_id = self.original_language_id
-            else:
-                self.destination_language_id = dest_langs[0]
-
     @api.depends('sponsorship_id')
     def _set_partner_review(self):
         for letter in self:
@@ -252,10 +246,19 @@ class Correspondence(models.Model):
                 letter.mandatory_review = True
 
     @api.depends('page_ids')
-    def _compute_texts(self):
-        self.original_text = self._get_original_text('original_text')
-        self.translated_text = self._get_original_text('translated_text')
-        self.english_text = self._get_original_text('english_translated_text')
+    def _compute_original_text(self):
+        self.original_text = self._get_text('original_text')
+
+    @api.depends('page_ids')
+    def _compute_translated_text(self):
+        self.translated_text = self._get_text('translated_text')
+
+    @api.depends('page_ids')
+    def _compute_english_translated_text(self):
+        self.english_text = self._get_text('english_translated_text')
+
+    @api.depends('page_ids')
+    def _compute_nbr_pages(self):
         self.nbr_pages = len(self.page_ids)
 
     @api.one
@@ -264,15 +267,18 @@ class Correspondence(models.Model):
             # Keep only the first page and remove the other
             self.page_ids[0].write({
                 'original_text': self.original_text,
-                'translated_text': self._get_original_text('translated_text')})
+                'english_translated_text': self.english_text,
+                'translated_text': self.translated_text,
+            })
             self.page_ids[1:].unlink()
         else:
             self.page_ids.create(
                 {'correspondence_id': self.id,
                  'original_text': self.original_text,
-                 'translated_text': self.translated_text})
+                 'english_translated_text': self.english_text,
+                 'translated_text': self.translated_text},)
 
-    def _get_original_text(self, source_text):
+    def _get_text(self, source_text):
         """ Gets the desired text (original/translated) from the pages. """
         txt = self.page_ids.filtered(source_text).mapped(source_text)
         return '\n\n'.join(txt)
@@ -356,7 +362,6 @@ class Correspondence(models.Model):
             attachment, type_ = self._get_letter_attachment(letter_image)
             vals['letter_image'] = attachment.id
         letter = super(Correspondence, self).create(vals)
-        letter._set_destination_language()
         if attachment:
             attachment.write({
                 'name': letter.scanned_date + '_' + letter.name + type_,
