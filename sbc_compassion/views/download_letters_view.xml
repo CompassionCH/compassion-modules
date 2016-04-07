@@ -1,0 +1,29 @@
+<openerp>
+    <data>
+        <record id="correspondence_download_wizard_form" model="ir.ui.view">
+            <field name="name">correspondence.download.wizard.form</field>
+            <field name="model">correspondence.download.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <p>You can download an archive file from here.</p>
+                        <group>
+                            <field name="fname" invisible="1"/>
+                            <field name="download_data"
+                                   filename="fname"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="get_letters" special="cancel"
+                                string="Close" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="action_download_letter"
+            name="Download archive"
+            res_model="correspondence.download.wizard" src_model="sponsorship.correspondence"
+            view_mode="form" target="new" view_type="form" key2="client_action_multi"/>
+    </data>
+</openerp>
