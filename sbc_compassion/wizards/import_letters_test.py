@@ -35,7 +35,6 @@ class TestImportLetters(models.TransientModel):
     test_import_line_ids = fields.One2many(
         'test.import.letter.line', 'test_import_id', 'Files to process',
         ondelete='cascade')
-    full_output = fields.Boolean("Full output")
 
     def _analyze_attachment(self, file_, filename):
         # first save the value of nber_letters
@@ -43,24 +42,24 @@ class TestImportLetters(models.TransientModel):
         # the computation is wrong later)
         self.nber_test = self.nber_letters
         line_vals, document_vals = func.analyze_attachment(
-            self.env, file_, filename, self.force_template, test=True)
+            self.env, file_, filename, self.template_id, test=True)
 
-        error = func.testline(self.env, line_vals, self.csv_file_ids,
-                              document_vals['name'])
-        if self.full_output or (self.csv_file_ids and
-                                error):
-            line_vals.update({
-                'error': error
-            })
+        for i in xrange(0, len(line_vals)):
+            error = func.testline(self.env, line_vals[i], self.csv_file_ids,
+                                  document_vals[i]['name'])
+            if error:
+                line_vals[i].update({
+                    'error': error
+                })
             # create all the data
             letters_line = self.env['test.import.letter.line'].create(
-                line_vals)
-            document_vals.update({
+                line_vals[i])
+            document_vals[i].update({
                 'res_id': letters_line.id,
                 'res_model': 'test.import.letter.line'
             })
             letters_line.letter_image = self.env[
-                'ir.attachment'].create(document_vals)
+                'ir.attachment'].create(document_vals[i])
             letters_line._check_status()
             self.test_import_line_ids += letters_line
 

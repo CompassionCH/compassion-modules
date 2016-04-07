@@ -23,55 +23,47 @@ class ImportReview(models.TransientModel):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    progress = fields.Float(default=0.0, compute='_compute_progress')
-    import_line_ids = fields.Many2many(
-        'import.letter.line', readonly=True,
-        default=lambda self: self._get_default_lines())
+    progress = fields.Float(compute='_get_current_line', store=True)
     current_line_index = fields.Integer(default=0)
-    count = fields.Integer(compute='_compute_count')
-    nb_lines = fields.Integer(compute='_compute_count')
+    count = fields.Integer(compute='_get_current_line', store=True)
+    nb_lines = fields.Integer(compute='_get_current_line', store=True)
     current_line_id = fields.Many2one(
-        'import.letter.line', compute='_get_current_line', store=True,
-        readonly=True)
-    postpone_import_id = fields.Many2one(
-        'import.letters.history')
+        'import.letter.line', 'Letter', compute='_get_current_line',
+        store=True, readonly=True)
+    postpone_import_id = fields.Many2one('import.letters.history')
 
     # Import line related fields
     state = fields.Selection(related='current_line_id.status', readonly=True)
-    letter_image = fields.Binary(
-        related='current_line_id.letter_image_preview', readonly=True)
+    letter_image = fields.Binary(compute='_get_current_line')
     partner_id = fields.Many2one(related='current_line_id.partner_id')
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
     child_id = fields.Many2one(related='current_line_id.child_id')
     template_id = fields.Many2one(related='current_line_id.template_id')
     language_id = fields.Many2one(
-        related='current_line_id.letter_language_id')
+        related='current_line_id.letter_language_id',
+        domain=[('translatable', '=', True)])
     is_encourager = fields.Boolean(related='current_line_id.is_encourager')
+    mandatory_review = fields.Boolean(
+        related='current_line_id.mandatory_review')
+    physical_attachments = fields.Selection(
+        related='current_line_id.physical_attachments')
+    attachments_description = fields.Char(
+        related='current_line_id.attachments_description')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.model
-    def _get_default_lines(self):
-        return self.env.context['line_ids']
-
-    @api.depends('import_line_ids', 'current_line_index')
-    def _get_current_line(self):
-        for wizard in self:
-            if wizard.import_line_ids:
-                wizard.current_line_id = wizard.import_line_ids[
-                    wizard.current_line_index]
-
-    @api.depends('import_line_ids')
-    def _compute_count(self):
-        for wizard in self:
-            wizard.nb_lines = len(wizard.import_line_ids)
-            wizard.count = wizard.current_line_index + 1
-
+    @api.one
     @api.depends('current_line_index')
-    def _compute_progress(self):
-        for wizard in self:
-            wizard.progress = (float(wizard.count) / wizard.nb_lines) * 100
+    def _get_current_line(self):
+        line_ids = self.env.context.get('line_ids')
+        if line_ids:
+            self.current_line_id = line_ids[self.current_line_index]
+            self.nb_lines = len(line_ids)
+            self.count = self.current_line_index + 1
+            self.progress = (float(self.count) / self.nb_lines) * 100
+            self.letter_image = self.with_context(
+                    bin_size=False).current_line_id.letter_image_preview
 
     @api.onchange('sponsorship_id')
     def _get_partner_child(self):
@@ -87,12 +79,12 @@ class ImportReview(models.TransientModel):
     def next(self):
         """ Load the next import line in the view. """
         self.ensure_one()
-        if self.current_line_id.status != 'ok':
+        if self.current_line_id.status not in ('ok', 'no_template'):
             raise Warning(
                 _("Import is not valid"),
                 _("Please review this import before going to the next."))
         self.current_line_id.reviewed = True
-        self.current_line_index = self.current_line_index + 1
+        self.current_line_index += 1
 
     @api.multi
     def finish(self):
@@ -119,4 +111,4 @@ class ImportReview(models.TransientModel):
                 'import_completed': True})
             self.postpone_import_id = postpone_import
         self.current_line_id.import_id = postpone_import
-        self.current_line_index = self.current_line_index + 1
+        self.current_line_index += 1

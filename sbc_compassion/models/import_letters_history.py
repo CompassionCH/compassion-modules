@@ -35,6 +35,7 @@ class ImportLettersHistory(models.Model):
     for every letter, using the zxing library for code detection.
     """
     _name = "import.letters.history"
+    _inherit = 'import.letter.config'
     _description = _("""History of the letters imported from a zip
     or a PDF/TIFF""")
     _order = "create_date desc"
@@ -52,18 +53,15 @@ class ImportLettersHistory(models.Model):
     import_completed = fields.Boolean()
     nber_letters = fields.Integer(
         'Number of letters', readonly=True, compute="_count_nber_letters")
-    is_mandatory_review = fields.Boolean(
-        'Mandatory Review',
-        states={'done': [('readonly', True)]})
     data = fields.Many2many('ir.attachment', string="Add a file")
     import_line_ids = fields.One2many(
         'import.letter.line', 'import_id', 'Files to process',
         ondelete='cascade')
     letters_ids = fields.One2many(
-        'sponsorship.correspondence', 'import_id', 'Imported letters',
+        'correspondence', 'import_id', 'Imported letters',
         readonly=True)
-    force_template = fields.Many2one('sponsorship.correspondence.template',
-                                     'Force Template')
+    config_id = fields.Many2one(
+            'import.letter.config', 'Import settings')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -161,7 +159,7 @@ class ImportLettersHistory(models.Model):
     @api.multi
     def button_save(self):
         """
-        save the import_line as a sponsorship_correspondence
+        save the import_line as a correspondence
         """
         # check if all the imports are OK
         for letters_h in self:
@@ -169,8 +167,7 @@ class ImportLettersHistory(models.Model):
                 raise exceptions.Warning(_("Some letters are not ready"))
         # save the imports
         for letters in self:
-            ids = letters.import_line_ids.get_letter_data(
-                mandatory_review=letters.is_mandatory_review)
+            ids = letters.import_line_ids.get_letter_data()
             # letters_ids should be empty before this line
             letters.write({'letters_ids': ids})
             letters.mapped('import_line_ids.letter_image').unlink()
@@ -191,6 +188,14 @@ class ImportLettersHistory(models.Model):
                 line_ids=self.import_line_ids.ids).env.context,
             'target': 'current',
         }
+
+    @api.onchange('config_id')
+    @api.one
+    def onchange_config(self):
+        config = self.config_id
+        if config:
+            for field, val in config.get_correspondence_metadata().iteritems():
+                setattr(self, field, val)
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -241,8 +246,9 @@ class ImportLettersHistory(models.Model):
 
     def _analyze_attachment(self, file_data, file_name):
         line_vals, document_vals = func.analyze_attachment(
-            self.env, file_data, file_name, self.force_template)
+            self.env, file_data, file_name, self.template_id)
         for i in xrange(0, len(line_vals)):
+            line_vals[i]['import_id'] = self.id
             letters_line = self.env['import.letter.line'].create(line_vals[i])
             document_vals[i].update({
                 'res_id': letters_line.id,
@@ -250,7 +256,7 @@ class ImportLettersHistory(models.Model):
             })
             letters_line.letter_image = self.env['ir.attachment'].create(
                 document_vals[i])
-            self.import_line_ids += letters_line
+            # self.import_line_ids += letters_line
 
 
 ##############################################################################

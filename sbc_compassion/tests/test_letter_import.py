@@ -59,7 +59,7 @@ def get_template_list(data_obj):
     corresponding values.
     """
     data = data_obj.search(
-        [("model", "=", "sponsorship.correspondence.template")])
+        [("model", "=", "correspondence.template")])
     template_list = {}
     for d in data:
         template_list[d.name] = d.res_id

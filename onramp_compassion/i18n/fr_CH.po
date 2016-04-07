@@ -74,7 +74,7 @@ msgid "Dpi value must be between 96 and 1200"
 msgstr "Dpi value must be between 96 and 1200"
 
 #. module: onramp_compassion
-#: model:ir.model,name:onramp_compassion.model_sponsorship_correspondence
+#: model:ir.model,name:onramp_compassion.model_correspondence
 msgid "Email Thread"
 msgstr "Email Thread"
 
@@ -127,7 +127,7 @@ msgid "Image"
 msgstr "Image"
 
 #. module: onramp_compassion
-#: code:addons/onramp_compassion/models/sponsorship_correspondence.py:109
+#: code:addons/onramp_compassion/models/correspondence.py:109
 #: code:addons/onramp_compassion/wizards/get_letter_image_wizard.py:64
 #, python-format
 msgid "Image does not exist"
@@ -144,7 +144,7 @@ msgid "Image preview"
 msgstr "Aperçu de l'image"
 
 #. module: onramp_compassion
-#: code:addons/onramp_compassion/models/sponsorship_correspondence.py:110
+#: code:addons/onramp_compassion/models/correspondence.py:110
 #: code:addons/onramp_compassion/wizards/get_letter_image_wizard.py:65
 #, python-format
 msgid "Image requested was not found remotely."
@@ -166,13 +166,13 @@ msgid "Letter"
 msgstr "Lettre"
 
 #. module: onramp_compassion
-#: code:addons/onramp_compassion/models/sponsorship_correspondence.py:132
+#: code:addons/onramp_compassion/models/correspondence.py:132
 #, python-format
 msgid "Letter downloaded"
 msgstr "Lettre téléchargée"
 
 #. module: onramp_compassion
-#: code:addons/onramp_compassion/models/sponsorship_correspondence.py:184
+#: code:addons/onramp_compassion/models/correspondence.py:184
 #, python-format
 msgid "Message"
 msgstr "Message"
@@ -232,7 +232,7 @@ msgstr ""
 "configuration file."
 
 #. module: onramp_compassion
-#: view:sponsorship.correspondence:onramp_compassion.correspondence_form_image
+#: view:correspondence:onramp_compassion.correspondence_form_image
 msgid "Reload image"
 msgstr "Recharger l'image"
 
@@ -253,7 +253,7 @@ msgid "Retrieve letter image"
 msgstr "Télécharger l'image de la lettre"
 
 #. module: onramp_compassion
-#: code:addons/onramp_compassion/models/sponsorship_correspondence.py:129
+#: code:addons/onramp_compassion/models/correspondence.py:129
 #, python-format
 msgid "The sponsor requested the child letter image."
 msgstr "Le parrain a récupéré la lettre."
@@ -265,12 +265,12 @@ msgid "Token validation failed."
 msgstr "Token validation failed."
 
 #. module: onramp_compassion
-#: view:sponsorship.correspondence:onramp_compassion.sponsorship_correspondence_view_search_compassion
+#: view:correspondence:onramp_compassion.correspondence_view_search_compassion
 msgid "Unread"
 msgstr "Non lu"
 
 #. module: onramp_compassion
-#: code:addons/onramp_compassion/models/sponsorship_correspondence.py:131
+#: code:addons/onramp_compassion/models/correspondence.py:131
 #, python-format
 msgid "User requested the child letter image."
 msgstr "L'employé a imprimé la lettre."

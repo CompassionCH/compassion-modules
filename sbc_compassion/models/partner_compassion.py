@@ -43,7 +43,7 @@ class ResPartner(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Letters',
-            'res_model': 'sponsorship.correspondence',
+            'res_model': 'correspondence',
             "views": [[False, "tree"], [False, "form"]],
             'domain': [["correspondant_id", "=", self.id]],
             }

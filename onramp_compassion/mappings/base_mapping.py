@@ -47,7 +47,7 @@ class OnrampMapping(object):
     #
     #       Caution : it supports only direct relations ! If you traverse
     #       several models for the relation, you should put a related
-    #       field in the sponsorship.correspondence model in order to get
+    #       field in the correspondence model in order to get
     #       the mapping work !
     CONNECT_MAPPING = dict()
 

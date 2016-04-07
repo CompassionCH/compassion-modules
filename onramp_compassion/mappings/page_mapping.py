@@ -19,7 +19,7 @@ class PageMapping(OnrampMapping):
     http://developer.compassion.com/docs/read/compassion_connect2/
     Communication_Kit_Fields_and_Sample_JSON
     """
-    ODOO_MODEL = 'sponsorship.correspondence.page'
+    ODOO_MODEL = 'correspondence.page'
 
     CONNECT_MAPPING = {
         'OriginalPageURL': 'original_page_url',

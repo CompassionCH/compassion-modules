@@ -12,7 +12,7 @@ Submodules
    sbc_compassion.models.import_letters_history
    sbc_compassion.models.lang_compassion
    sbc_compassion.models.partner_compassion
-   sbc_compassion.models.sponsorship_correspondence
+   sbc_compassion.models.correspondence
 
 Module contents
 ---------------

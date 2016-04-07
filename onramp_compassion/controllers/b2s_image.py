@@ -32,7 +32,7 @@ class RestController(http.Controller):
             raise BadRequest()
         headers = request.httprequest.headers
         self._validate_headers(headers)
-        correspondence_obj = request.env['sponsorship.correspondence'].sudo()
+        correspondence_obj = request.env['correspondence'].sudo()
         if user is not None:
             correspondence_obj = correspondence_obj.sudo(user)
         correspondence = correspondence_obj.search([('uuid', '=', id)])

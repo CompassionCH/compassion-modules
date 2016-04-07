@@ -19,10 +19,10 @@ from os import remove
 class CorrespondenceCrosscheck(models.TransientModel):
     """
     Model computing the crosscheck between all the patterns in
-    sponsorship.correspondence.template and showing them in a wizard.
+    correspondence.template and showing them in a wizard.
     """
 
-    _name = 'sponsorship.crosscheck'
+    _name = 'correspondence.template.crosscheck'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -44,19 +44,19 @@ class CorrespondenceCrosscheck(models.TransientModel):
         ret = []
         active_ids = self.env.context['active_ids']
         # avoid templates without pattern
-        tpl = self.env['sponsorship.correspondence.template'].search(
+        tpl = self.env['correspondence.template'].search(
             [('id', 'in', active_ids), ('pattern_image', '!=', None)])
         # loop over all the active templates
         for t1 in tpl:
             # if only one element check with all the other ones
             if len(tpl) == 1:
                 tpl2 = self.env[
-                    'sponsorship.correspondence.template'].search([
+                    'correspondence.template'].search([
                         ('pattern_image', '!=', None)])
             # if more, do only the ones not done yet
             else:
                 tpl2 = self.env[
-                    'sponsorship.correspondence.template'].search([
+                    'correspondence.template'].search([
                         ('id', '>=', t1.id), ('pattern_image', '!=', None)])
 
             # create the first pattern image

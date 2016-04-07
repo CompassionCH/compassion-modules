@@ -23,7 +23,7 @@ from openerp.addons.connector.session import ConnectorSession
 
 
 class SponsorshipCorrespondence(models.Model):
-    _inherit = 'sponsorship.correspondence'
+    _inherit = 'correspondence'
 
     # Letter remote access and stats
     ###################################
