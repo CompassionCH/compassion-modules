@@ -11,3 +11,4 @@
 from . import correspondence_template_crosscheck
 from . import import_letters_test
 from . import import_review
+from . import download_letters
