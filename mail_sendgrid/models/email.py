@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-
+import base64
 import logging
 import sendgrid
 import re
@@ -119,6 +119,10 @@ class Email(models.Model):
 
         for substitution in self.substitution_ids:
             message.add_substitution(substitution.key, substitution.value)
+
+        for attachment in self.attachment_ids:
+            message.add_attachment_stream(attachment.name,
+                                          base64.b64decode(attachment.datas))
 
         sg = sendgrid.SendGridClient(api_key)
         status, msg = sg.send(message)
