@@ -17,6 +17,7 @@ from ..tools.onramp_connector import OnrampConnector
 from ..mappings import base_mapping as mapping
 
 from openerp import models, fields, api, _
+from openerp.exceptions import Warning
 
 from openerp.addons.connector.queue.job import job, related_action
 from openerp.addons.connector.session import ConnectorSession
