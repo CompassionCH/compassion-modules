@@ -109,24 +109,31 @@ class SponsorshipCorrespondence(models.Model):
         self.download_attach_letter_image()
 
     @api.multi
-    def download_attach_letter_image(self):
+    def download_attach_letter_image(self, context=None,
+                                     type='final_letter_url'):
         """ Download letter image from US service and attach to letter. """
         for letter in self:
             # Download and store letter
-            letter_url = letter.final_letter_url
-            image_data = OnrampConnector().get_letter_image(
-                letter_url, 'pdf', dpi=300)
+            letter_url = getattr(letter, type)
+            image_data = None
+            if letter_url:
+                image_data = OnrampConnector().get_letter_image(
+                    letter_url, 'pdf', dpi=300)
             if image_data is None:
                 raise Warning(
                     _('Image does not exist'),
                     _("Image requested was not found remotely."))
-            name = letter.kit_identifier + '_' + fields.Date.today() + '.pdf'
+            name = letter.child_id.code + '_' + letter.kit_identifier + '.pdf'
             letter.letter_image = self.env['ir.attachment'].create({
                 "name": name,
                 "db_datas": image_data,
                 'res_model': self._name,
                 'res_id': letter.id,
             })
+
+    @api.multi
+    def attach_original(self):
+        self.download_attach_letter_image(type='original_letter_url')
 
     def get_image(self, user=None):
         """ Method for retrieving the image and updating the read status of
