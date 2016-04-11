@@ -61,7 +61,7 @@ class ImportLettersHistory(models.Model):
         'correspondence', 'import_id', 'Imported letters',
         readonly=True)
     config_id = fields.Many2one(
-            'import.letter.config', 'Import settings')
+        'import.letter.config', 'Import settings')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -90,52 +90,53 @@ class ImportLettersHistory(models.Model):
             else:
                 import_letters.state = "draft"
 
-    @api.multi
-    @api.onchange("data", "import_line_ids", "letters_ids")
+    @api.one
+    @api.onchange("data")
     def _count_nber_letters(self):
         """
         Counts the number of scans. If a zip file is given, the number of
         scans inside is counted.
         """
-        for inst in self:
-            if inst.state in ("open", "pending", "ready"):
-                inst.nber_letters = len(inst.import_line_ids)
-            elif inst.state == "done":
-                inst.nber_letters = len(inst.letters_ids)
-            elif inst.state is False or inst.state == "draft":
-                # counter
-                tmp = 0
-                # loop over all the attachments
-                for attachment in inst.data:
-                    # pdf or tiff case
-                    if func.check_file(attachment.name) == 1:
-                        tmp += 1
-                    # zip case
-                    elif func.isZIP(attachment.name):
-                        # create a tempfile and read it
-                        zip_file = BytesIO(base64.b64decode(
-                            attachment.with_context(bin_size=False).datas))
-                        # catch ALL the exceptions that can be raised
-                        # by class zipfile
-                        try:
-                            zip_ = zipfile.ZipFile(zip_file, 'r')
-                            list_file = zip_.namelist()
-                            # loop over all files in zip
-                            for tmp_file in list_file:
-                                tmp += (func.check_file(tmp_file) == 1)
-                        except zipfile.BadZipfile:
-                            raise exceptions.Warning(
-                                _('Zip file corrupted (' +
-                                  attachment.name + ')'))
-                        except zipfile.LargeZipFile:
-                            raise exceptions.Warning(
-                                _('Zip64 is not supported(' +
-                                  attachment.name + ')'))
+        self.ensure_one()
 
-                inst.nber_letters = tmp
-            else:
-                raise exceptions.Warning(
-                    _("State: '{}' not implemented".format(inst.state)))
+        if self.state in ("open", "pending", "ready"):
+            self.nber_letters = len(self.import_line_ids)
+        elif self.state == "done":
+            self.nber_letters = len(self.letters_ids)
+        elif self.state is False or self.state == "draft":
+            # counter
+            tmp = 0
+            # loop over all the attachments
+            for attachment in self.data:
+                # pdf or tiff case
+                if func.check_file(attachment.name) == 1:
+                    tmp += 1
+                # zip case
+                elif func.isZIP(attachment.name):
+                    # create a tempfile and read it
+                    zip_file = BytesIO(base64.b64decode(
+                        attachment.with_context(bin_size=False).datas))
+                    # catch ALL the exceptions that can be raised
+                    # by class zipfile
+                    try:
+                        zip_ = zipfile.ZipFile(zip_file, 'r')
+                        list_file = zip_.namelist()
+                        # loop over all files in zip
+                        for tmp_file in list_file:
+                            tmp += (func.check_file(tmp_file) == 1)
+                    except zipfile.BadZipfile:
+                        raise exceptions.Warning(
+                            _('Zip file corrupted (' +
+                              attachment.name + ')'))
+                    except zipfile.LargeZipFile:
+                        raise exceptions.Warning(
+                            _('Zip64 is not supported(' +
+                              attachment.name + ')'))
+
+            self.nber_letters = tmp
+        else:
+            raise exceptions.Warning(
+                _("State: '{}' not implemented".format(self.state)))
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -225,7 +226,7 @@ class ImportLettersHistory(models.Model):
                         logger.info(
                             "Analyzing letter {}/{}".format(
                                 progress, self.nber_letters))
-                        self._analyze_attachment(zip_.read(f), f)
+                        self._analyze_attachment(zip_.read(f), f, True)
                         progress += 1
                 # case with normal format (PDF,TIFF)
                 elif func.check_file(attachment.name) == 1:
@@ -244,7 +245,7 @@ class ImportLettersHistory(models.Model):
         self.import_completed = True
         logger.info("Imported letters analysis completed.")
 
-    def _analyze_attachment(self, file_data, file_name):
+    def _analyze_attachment(self, file_data, file_name, is_zipfile=False):
         line_vals, document_vals = func.analyze_attachment(
             self.env, file_data, file_name, self.template_id)
         for i in xrange(0, len(line_vals)):
