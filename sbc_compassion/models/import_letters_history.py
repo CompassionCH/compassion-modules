@@ -39,6 +39,7 @@ class ImportLettersHistory(models.Model):
     _description = _("""History of the letters imported from a zip
     or a PDF/TIFF""")
     _order = "create_date desc"
+    _rec_name = 'create_date'
 
     ##########################################################################
     #                                 FIELDS                                 #

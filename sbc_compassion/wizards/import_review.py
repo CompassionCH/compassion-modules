@@ -41,7 +41,7 @@ class ImportReview(models.TransientModel):
     template_id = fields.Many2one(related='current_line_id.template_id')
     language_id = fields.Many2one(
         related='current_line_id.letter_language_id',
-        domain=[('translatable', '=', True)])
+        order='translatable desc, id asc')
     is_encourager = fields.Boolean(related='current_line_id.is_encourager')
     mandatory_review = fields.Boolean(
         related='current_line_id.mandatory_review')
@@ -91,6 +91,7 @@ class ImportReview(models.TransientModel):
         """ Return to import view. """
         self.ensure_one()
         import_history = self.current_line_id.import_id
+        import_history.import_line_ids.check_status()
         return {
             'type': 'ir.actions.act_window',
             'view_type': 'form',

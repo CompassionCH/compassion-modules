@@ -40,16 +40,21 @@ class ImportLetterLine(models.Model):
         ("no_sponsorship", _("Sponsorship not Found")),
         ("no_child_partner", _("Partner or Child not Found")),
         ("no_template", _("Template not Detected")),
-        ("ok", _("OK"))], compute="_check_status", store=True, readonly=True)
+        ("ok", _("OK"))], compute="check_status", store=True, readonly=True)
 
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
     @api.model
     def create(self, vals):
-        line = super(ImportLetterLine, self).create(vals)
-        line.write(line.import_id.get_correspondence_metadata())
-        return line
+        # Fetch default values in import configuration.
+        create_vals = dict()
+        if vals.get('import_id'):
+            config = self.env['import.letters.history'].browse(
+                vals['import_id'])
+            create_vals = config.get_correspondence_metadata()
+        create_vals.update(vals)
+        return super(ImportLetterLine, self).create(create_vals)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -58,7 +63,7 @@ class ImportLetterLine(models.Model):
     @api.multi
     @api.depends('partner_id', 'child_id', 'sponsorship_id',
                  'letter_language_id', 'import_id.template_id')
-    def _check_status(self):
+    def check_status(self):
         """ At each change, check if all the fields are OK
         """
         default_template = self.env.ref('sbc_compassion.default_template')
