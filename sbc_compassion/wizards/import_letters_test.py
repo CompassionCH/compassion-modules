@@ -60,7 +60,7 @@ class TestImportLetters(models.TransientModel):
             })
             letters_line.letter_image = self.env[
                 'ir.attachment'].create(document_vals[i])
-            letters_line._check_status()
+            letters_line.check_status()
             self.test_import_line_ids += letters_line
 
     @api.multi
