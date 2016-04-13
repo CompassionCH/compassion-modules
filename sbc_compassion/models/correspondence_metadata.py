@@ -42,6 +42,7 @@ class CorrespondenceMetadata(models.AbstractModel):
         """
         self.ensure_one()
         vals = self.read(self.get_fields())[0]
-        vals['template_id'] = vals['template_id'][0]
+        if vals.get('template_id'):
+            vals['template_id'] = vals['template_id'][0]
         del(vals['id'])
         return vals
