@@ -171,15 +171,13 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
         if len(letter_indexes) > 1:
             last_index = 0
             for index in letter_indexes[1:]:
-                filename = 'page-' + str(last_index) + '.pdf'
                 with Image() as letter_image:
                     letter_image.sequence.extend(
                         original_image.sequence[last_index:index])
-                    letter_image.save(filename=filename)
+                    letter_image.make_blob()
+                    letter_image.compression = 'group4'
+                    letter_datas.append(letter_image.make_blob('pdf'))
                 last_index = index
-                with open(filename) as file:
-                    letter_datas.append(file.read())
-                os.remove(filename)
         else:
             letter_datas.append(file_data)
 
