@@ -37,7 +37,7 @@
             <field name="view_id" ref="view_gmc_message_pool_commkit_tree" />
             <field name="search_view_id" ref="message_center_compassion.view_gmc_message_pool_filter"/>
             <field name="context">{'search_default_pending':1}</field>
-            <field name="domain">[('action_id.model', '=', 'correspondence')]</field>
+            <field name="domain">[('action_id.model', '=', 'correspondence'),('direction','=','out')]</field>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 No messages.
