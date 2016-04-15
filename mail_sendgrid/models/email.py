@@ -86,6 +86,13 @@ class Email(models.Model):
                 _('Missing sendgrid_api_key in conf file'))
 
         message = sendgrid.Mail()
+
+        test_address_from = config.get('sendgrid_from_address')
+        if test_address_from:
+            _logger.info('Sending email from test address {}'.format(
+                         test_address_from))
+            self.email_from = test_address_from
+
         message.set_from(self.email_from)
         message.set_subject(self.subject or ' ')
         html = self.body_html or ' '
