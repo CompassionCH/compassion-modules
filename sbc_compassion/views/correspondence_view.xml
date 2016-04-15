@@ -44,6 +44,10 @@
                                statusbar_visible="Received in the system,Global Partner translation queue,Field Office translation queue,Composition process,Printed and sent to ICP"/>
                         <field name="b2s_state" widget="statusbar" attrs="{'invisible': [('direction', '=', 'Supporter To Beneficiary')]}"
                                statusbar_visible="Field Office translation queue,Global Partner translation queue,Composition process,Published to Global Partner"/>
+                        <button type="object" name="compose_letter_image"
+                                string="Compose letter"
+                                states="Published to Global Partner"
+                                groups="base.erp_manager"/>
                     </header>
                     <sheet>
                         <h1>

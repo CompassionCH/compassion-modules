@@ -8,12 +8,14 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-
 import magic
 import base64
 import re
 
 from openerp import fields, models, api, exceptions, _
+
+from wand.drawing import Drawing
+from wand.image import Image
 
 
 class CorrespondenceType(models.Model):
@@ -381,6 +383,33 @@ class Correspondence(models.Model):
             attachment = self._get_letter_attachment(letter_image, self)[0]
             vals['letter_image'] = attachment.id
         return super(Correspondence, self).write(vals)
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    @api.multi
+    def compose_letter_image(self):
+        """ Takes the translated text and append it in a new page inside
+        the image letter.
+        :return: True
+        """
+        for letter in self:
+            image_data = base64.b64decode(letter.letter_image.datas)
+            with Image(blob=image_data, resolution=300) as letter_image:
+                page = letter_image.sequence[0]
+                translation_page = Image(width=page.width, height=page.height)
+                text = Drawing()
+                text.font = 'Tetria LT Com'
+                text.font_size = 40
+                text.text(100, 100, letter.translated_text)
+                text.draw(translation_page)
+                letter_image.sequence.append(translation_page)
+                # Image not compressed if not making the blob!
+                letter_image.make_blob()
+                letter_image.compression = 'group4'
+                image_data = base64.b64encode(letter_image.make_blob('pdf'))
+            letter.letter_image.datas = image_data
+        return True
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
