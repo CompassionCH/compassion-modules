@@ -13,6 +13,8 @@ Defines a few functions useful in ../models/import_letters_history.py
 """
 import csv
 import os
+import logging
+from io import BytesIO
 
 import cv2
 import base64
@@ -24,8 +26,11 @@ import sys
 from math import ceil
 from wand.image import Image
 from collections import namedtuple
+from pyPdf import PdfFileWriter, PdfFileReader
 
 from openerp import _, exceptions
+
+logger = logging.getLogger(__name__)
 
 ##########################################################################
 #                           GENERAL METHODS                              #
@@ -160,26 +165,27 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
     line_vals = list()
     document_vals = list()
     letter_datas = list()
+    logger.info("Import letter : {}".format(file_name))
 
-    with Image(blob=file_data, resolution=300) as original_image:
-        # Split the image each time a new QR code is found and create
-        # ir.attachment values for each splitted image
-        letter_indexes, imgs = _find_qrcodes(
-            env, line_vals, original_image, test)
+    inputpdf = PdfFileReader(BytesIO(file_data))
+    letter_indexes, imgs = _find_qrcodes(
+        env, line_vals, inputpdf, test)
 
-        # Construct the datas for each detected letter: store as PDF
-        if len(letter_indexes) > 1:
-            last_index = 0
-            for index in letter_indexes[1:]:
-                with Image() as letter_image:
-                    letter_image.sequence.extend(
-                        original_image.sequence[last_index:index])
-                    letter_image.make_blob()
-                    letter_image.compression = 'group4'
-                    letter_datas.append(letter_image.make_blob())
-                last_index = index
-        else:
-            letter_datas.append(file_data)
+    # Construct the datas for each detected letter: store as PDF
+    logger.info("... found {} letters!".format(len(letter_indexes)))
+    if len(letter_indexes) > 1:
+        last_index = 0
+        for index in letter_indexes[1:]:
+            output = PdfFileWriter()
+            letter_data = BytesIO()
+            for i in xrange(last_index, index):
+                output.addPage(inputpdf.getPage(i))
+            output.write(letter_data)
+            letter_data.seek(0)
+            letter_datas.append(letter_data.read())
+            last_index = index
+    else:
+        letter_datas.append(file_data)
 
     # now try to find the layout for all splitted letters
     file_split = file_name.split('.')
@@ -194,8 +200,11 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
         _find_template(env, imgs[i], letter_vals, test)
         if letter_vals['template_id'] != env.ref(
                 'sbc_compassion.default_template').id:
+            logger.info("...Letter {} : template found!".format(i))
             _find_languages(env, imgs[i], letter_vals, test)
+            logger.info("...Letter {} : language analysis done.".format(i))
         else:
+            logger.info("...Letter {} : default template".format(i))
             letter_vals['letter_language_id'] = False
             if test:
                 letter_vals.update({
@@ -208,7 +217,7 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
     return line_vals, document_vals
 
 
-def _find_qrcodes(env, line_vals, original_image, test):
+def _find_qrcodes(env, line_vals, inputpdf, test):
     """
     Read the image and try to find the QR codes.
     The image should be currently saved as a png with the same name
@@ -220,29 +229,35 @@ def _find_qrcodes(env, line_vals, original_image, test):
 
     :param env env: Odoo variable env
     :param dict line_vals: Dictionary that will hold values for import line
-    :param original_image: Wand Image of the original image file
+    :param inputpdf: PDFReader of the original pdf file
     :param bool test: Save the image of the QR code or not
     :returns: binary data of images, numpy arrays of pages to analyze further
     :rtype: list(str), list(np.array)
     """
+    # Holds the indexes of the pages where a new letter is detected
     letter_indexes = list()
     page_imgs = list()
 
     previous_qrcode = ''
-    # Holds the indexes of the pages where a new letter is detected
-    for page in original_image.sequence:
-        index = page.index
-        qrcode, img, test_data = _decode_page(env, page)
+    for i in xrange(inputpdf.numPages):
+        output = PdfFileWriter()
+        output.addPage(inputpdf.getPage(i))
+        page_buffer = BytesIO()
+        output.write(page_buffer)
+        page_buffer.seek(0)
+        qrcode, img, test_data = _decode_page(env, page_buffer.read())
         if (qrcode is not None and qrcode.data != previous_qrcode) or \
-                index == 0:
+                i == 0:
             previous_qrcode = qrcode and qrcode.data
-            letter_indexes.append(index)
+            letter_indexes.append(i)
             page_imgs.append(img)
 
             partner_id, child_id = decodeBarcode(env, qrcode)
             # Downsize png image for saving it in a preview field
-            with page.clone() as page_preview:
-                page_preview.transform(resize='25%')
+            page_buffer.seek(0)
+            with Image(blob=page_buffer.read(),
+                       resolution=150) as page_preview:
+                page_preview.transform(resize='50%')
                 preview_data = base64.b64encode(page_preview.make_blob('png'))
             values = {
                 'partner_id': partner_id,
@@ -252,12 +267,12 @@ def _find_qrcodes(env, line_vals, original_image, test):
             if test:
                 values['qr_preview'] = base64.b64encode(test_data)
             line_vals.append(values)
-    letter_indexes.append(index+1)
+    letter_indexes.append(i+1)
 
     return letter_indexes, page_imgs
 
 
-def _decode_page(env, page):
+def _decode_page(env, page_data):
     """
     Read the image and try to find the QR codes.
     The image should be currently saved as a png with the same name
@@ -268,20 +283,21 @@ def _decode_page(env, page):
     too.
     The page must be saved in the file page.png !
 
-    :param SingleImage page: Wand SingleImage of the page
+    :param string page_data: Data of the PDF single page
     :returns: decoded qrcode, numpy array of page and test image data to show
               the detection
     :rtype: str, binary
     """
     # decoder
     zx = zxing.BarCodeTool()
-    with Image(image=page) as page_image:
+    with Image(blob=page_data, resolution=300) as page_image:
         page_data = np.asarray(bytearray(page_image.make_blob('png')))
         img = cv2.imdecode(page_data, 1)    # Read in color
         if img is None:
             return None, None, None
         # Save cropped file on disk for qrcode detection
-        left, right, top, bottom = _get_qr_crop(env, page.width, page.height)
+        left, right, top, bottom = _get_qr_crop(
+            env, page_image.width, page_image.height)
         with page_image[left:right, top:bottom] as cropped:
             filename = os.getcwd() + '/page.png'
             test_data = cropped.make_blob('png')
@@ -348,7 +364,8 @@ def decodeBarcode(env, barcode):
         if len(barcode_split) == 2:
             partner_ref, child_code = barcode_split
             child_id = env['compassion.child'].search(
-                [('code', '=', child_code)]).id
+                [('code', '=', child_code)],
+                order='id desc', limit=1).id
             partner_id = env['res.partner'].search(
                 [('ref', '=', partner_ref),
                  ('is_company', '=', False)], limit=1).id
@@ -558,7 +575,7 @@ def computeRowSize(img):
 def check_file(name):
     """
     Check the name of a file.
-    return 1 if it is a tiff or a pdf and 0 otherwise.
+    return 1 if it is a pdf and 0 otherwise.
 
     This function can be upgraded in order to include other
     format (1 for file, 2 for archive, 0 for not supported).
@@ -566,10 +583,10 @@ def check_file(name):
     is... when adding a new format
 
     :param str name: Name of the file to check
-    :return: 1 if pdf or tiff, 2 if zip, 0 otherwise
+    :return: 1 if pdf, 2 if zip, 0 otherwise
     :rtype: int
     """
-    if isPDF(name) or isTIFF(name):
+    if isPDF(name):
         return 1
     elif isZIP(name):
         return 2

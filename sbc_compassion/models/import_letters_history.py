@@ -98,8 +98,6 @@ class ImportLettersHistory(models.Model):
         Counts the number of scans. If a zip file is given, the number of
         scans inside is counted.
         """
-        self.ensure_one()
-
         if self.state in ("open", "pending", "ready"):
             self.nber_letters = len(self.import_line_ids)
         elif self.state == "done":
@@ -237,7 +235,7 @@ class ImportLettersHistory(models.Model):
                     progress += 1
                 else:
                     raise exceptions.Warning(
-                        'Only zip/pdf/tiff files are supported.')
+                        'Only zip/pdf files are supported.')
             else:
                 raise exceptions.Warning(_('Two files are the same'))
 
