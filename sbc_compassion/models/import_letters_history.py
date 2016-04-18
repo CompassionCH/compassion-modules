@@ -265,8 +265,8 @@ class ImportLettersHistory(models.Model):
 #                            CONNECTOR METHODS                               #
 ##############################################################################
 def related_action_imports(session, job):
-    import_model = job.args[1]
-    import_id = job.args[2]
+    import_model = job.args[0]
+    import_id = job.args[1]
     action = {
         'type': 'ir.actions.act_window',
         'res_model': import_model,

@@ -176,7 +176,7 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
                         original_image.sequence[last_index:index])
                     letter_image.make_blob()
                     letter_image.compression = 'group4'
-                    letter_datas.append(letter_image.make_blob('pdf'))
+                    letter_datas.append(letter_image.make_blob())
                 last_index = index
         else:
             letter_datas.append(file_data)
@@ -252,7 +252,7 @@ def _find_qrcodes(env, line_vals, original_image, test):
             if test:
                 values['qr_preview'] = base64.b64encode(test_data)
             line_vals.append(values)
-    letter_indexes.append(index)
+    letter_indexes.append(index+1)
 
     return letter_indexes, page_imgs
 
