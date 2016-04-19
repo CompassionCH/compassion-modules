@@ -20,7 +20,7 @@
                             <div states="draft">
                                 <field name="data" widget="many2many_binary"/>
                                 <separator/>
-                                <button name="button_import" string="Load Files" type="object"/>
+                                <button name="button_import" string="Load Files" type="object" attrs="{'invisible':[('state', '!=', 'draft')]}"/>
                             </div>
                             <field name="config_id" widget="radio"/>
                             <field name="nber_letters"/>

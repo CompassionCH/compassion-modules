@@ -53,7 +53,7 @@ class ImportLettersHistory(models.Model):
         ("done", _("Done"))], compute="_compute_state", store=True)
     import_completed = fields.Boolean()
     nber_letters = fields.Integer(
-        'Number of letters', readonly=True, compute="_count_nber_letters")
+        "Number of files", readonly=True, compute="_count_nber_letters")
     data = fields.Many2many('ir.attachment', string="Add a file")
     import_line_ids = fields.One2many(
         'import.letter.line', 'import_id', 'Files to process',
