@@ -45,6 +45,13 @@ def rename_tables(cr):
         correspondence_template_crosscheck_id_seq;
         """
     )
+    # Rename layout 6
+    cr.execute(
+        """
+        Update correspondence_template set layout='CH-A-6S11-1'
+        Where layoute='CH-A-6S01-1';
+        """
+    )
 
 
 def migrate(cr, version):

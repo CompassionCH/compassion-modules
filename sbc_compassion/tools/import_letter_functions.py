@@ -172,7 +172,7 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
         env, line_vals, inputpdf, test)
 
     # Construct the datas for each detected letter: store as PDF
-    logger.info("... found {} letters!".format(len(letter_indexes)))
+    logger.info("... found {} letters!".format(len(letter_indexes)-1 or 1))
     if len(letter_indexes) > 1:
         last_index = 0
         for index in letter_indexes[1:]:
@@ -246,8 +246,7 @@ def _find_qrcodes(env, line_vals, inputpdf, test):
         output.write(page_buffer)
         page_buffer.seek(0)
         qrcode, img, test_data = _decode_page(env, page_buffer.read())
-        if (qrcode is not None and qrcode.data != previous_qrcode) or \
-                i == 0:
+        if (qrcode and qrcode.data != previous_qrcode) or i == 0:
             previous_qrcode = qrcode and qrcode.data
             letter_indexes.append(i)
             page_imgs.append(img)

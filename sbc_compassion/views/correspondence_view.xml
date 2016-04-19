@@ -46,8 +46,7 @@
                                statusbar_visible="Field Office translation queue,Global Partner translation queue,Composition process,Published to Global Partner"/>
                         <button type="object" name="compose_letter_image"
                                 string="Compose letter"
-                                states="Published to Global Partner"
-                                groups="base.erp_manager"/>
+                                states="Published to Global Partner"/>
                     </header>
                     <sheet>
                         <h1>
