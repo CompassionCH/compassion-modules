@@ -126,7 +126,7 @@ class CorrespondenceTemplate(models.Model):
             ('CH-A-3S01-1', _('Layout 3')),
             ('CH-A-4S01-1', _('Layout 4')),
             ('CH-A-5S01-1', _('Layout 5')),
-            ('CH-A-6S01-1', _('Layout 6'))]
+            ('CH-A-6S11-1', _('Layout 6'))]
 
     def _get_default_checkboxes(self):
         return [
