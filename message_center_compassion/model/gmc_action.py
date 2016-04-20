@@ -68,7 +68,7 @@ class gmc_action(models.Model):
         ]
 
     @api.one
-    @api.constrains('model', 'direction', 'action_type')
+    @api.constrains('model', 'direction')
     def _validate_action(self):
         """ Test if the action can be performed on given model. """
         valid = False
@@ -80,8 +80,8 @@ class gmc_action(models.Model):
 
         if not valid:
             raise ValidationError(
-                _("Invalid action (%s, %s, %s).") % (
-                    self.direction, self.model, self.action_type))
+                _("Invalid action (%s, %s).") % (
+                    self.direction, self.model))
 
     def get_action_id(self, name):
         """ Returns the id of the action given its name. """

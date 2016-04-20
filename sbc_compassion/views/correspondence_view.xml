@@ -1,9 +1,9 @@
 <openerp>
     <data>
 
-        <record id="view_sponsorship_correspondence_tree" model="ir.ui.view">
-            <field name="name">sponsorship.correspondence.tree</field>
-            <field name="model">sponsorship.correspondence</field>
+        <record id="view_correspondence_tree" model="ir.ui.view">
+            <field name="name">correspondence.tree</field>
+            <field name="model">correspondence</field>
             <field name="arch" type="xml">
                 <tree string="Correspondence">
                     <field name="scanned_date"/>
@@ -17,9 +17,9 @@
             </field>
         </record>
 
-        <record id="view_sponsorship_correspondence_tree_details" model="ir.ui.view">
-            <field name="name">sponsorship.correspondence.tree.details</field>
-            <field name="model">sponsorship.correspondence</field>
+        <record id="view_correspondence_tree_details" model="ir.ui.view">
+            <field name="name">correspondence.tree.details</field>
+            <field name="model">correspondence</field>
             <field name="arch" type="xml">
                 <tree string="Correspondence">
                     <field name="scanned_date"/>
@@ -33,9 +33,9 @@
             </field>
         </record>
 
-        <record id="view_sponsorship_correspondence_form" model="ir.ui.view">
-            <field name="name">sponsorship.correspondence.form</field>
-            <field name="model">sponsorship.correspondence</field>
+        <record id="view_correspondence_form" model="ir.ui.view">
+            <field name="name">correspondence.form</field>
+            <field name="model">correspondence</field>
             <field name="arch" type="xml">
                 <form string="Correspondence">
                     <header>
@@ -44,6 +44,9 @@
                                statusbar_visible="Received in the system,Global Partner translation queue,Field Office translation queue,Composition process,Printed and sent to ICP"/>
                         <field name="b2s_state" widget="statusbar" attrs="{'invisible': [('direction', '=', 'Supporter To Beneficiary')]}"
                                statusbar_visible="Field Office translation queue,Global Partner translation queue,Composition process,Published to Global Partner"/>
+                        <button type="object" name="compose_letter_image"
+                                string="Compose letter"
+                                states="Published to Global Partner"/>
                     </header>
                     <sheet>
                         <h1>
@@ -83,15 +86,15 @@
                         <group string="Letter content">
                             <group>
                                 <field name="nbr_pages" />
-                                <field name="original_language_id" string="Original language" options="{'create':False}"/>
-                                <field name="original_text" attrs="{'readonly': [('state', '!=', 'Received in the system')]}"/>
-                                <field name="english_text"/>
+                                <field name="original_language_id" string="Original language" options="{'create':False}" required="1"/>
+                                <field name="original_text" readonly="1"/>
+                                <field name="english_text" readonly="1"/>
                             </group>
                             <group>
                                 <field name="translator" attrs="{'invisible': ['|', ('translator', '=', False), ('translator_id', '!=', False)]}"/>
                                 <field name="translator_id" attrs="{'invisible': [('translator', '=', False)]}"/>
-                                <field name="destination_language_id" string="Destination language" options="{'create':False}"/>
-                                <field name="translated_text"/>
+                                <field name="destination_language_id" string="Destination language" options="{'create':False}" readonly="1"/>
+                                <field name="translated_text" readonly="1"/>
                             </group>
                         </group>
                     </sheet>
@@ -103,18 +106,18 @@
             </field>
         </record>
 
-        <record id="action_compassion_sponsorship_correspondence_form" model="ir.actions.act_window">
+        <record id="action_compassion_correspondence_form" model="ir.actions.act_window">
             <field name="name">Correspondence</field>
-            <field name="res_model">sponsorship.correspondence</field>
+            <field name="res_model">correspondence</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="context">{'search_default_state_published':1}</field>
         </record>
         
         <!-- Extends the search on sponsorship correspondence -->
-        <record id="sponsorship_correspondence_view_search" model="ir.ui.view">
-            <field name="name">sponsorship.correspondence.search</field>
-            <field name="model">sponsorship.correspondence</field>
+        <record id="correspondence_view_search" model="ir.ui.view">
+            <field name="name">correspondence.search</field>
+            <field name="model">correspondence</field>
             <field name="arch" type="xml">
                 <search>
                     <field name="kit_identifier"/>
@@ -137,10 +140,10 @@
             </field>
         </record>
         
-        <menuitem id="menu_sponsorship_correspondence" parent="child_compassion.menu_sponsorship_root"
+        <menuitem id="menu_correspondence" parent="child_compassion.menu_sponsorship_root"
                   name="Correspondence" sequence="1"/>
 
-        <menuitem id="menu_sponsorship_letters" parent="menu_sponsorship_correspondence"
-                  name="Letters" action="action_compassion_sponsorship_correspondence_form" sequence="0"/>
+        <menuitem id="menu_sponsorship_letters" parent="menu_correspondence"
+                  name="Letters" action="action_compassion_correspondence_form" sequence="0"/>
     </data>
 </openerp>

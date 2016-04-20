@@ -9,5 +9,5 @@
 #
 ##############################################################################
 from . import ir_http
-from . import sponsorship_correspondence
+from . import correspondence
 from . import gmc_message

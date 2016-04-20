@@ -19,7 +19,7 @@ class CorrespondenceMapping(OnrampMapping):
     http://developer.compassion.com/docs/read/compassion_connect2/
     Communication_Kit_Fields_and_Sample_JSON
     """
-    ODOO_MODEL = 'sponsorship.correspondence'
+    ODOO_MODEL = 'correspondence'
 
     BENEFICIARY_MAPPING = {
         'Age': None,
@@ -61,14 +61,14 @@ class CorrespondenceMapping(OnrampMapping):
         'FontSize': None,
         'Font': None,
         'GlobalPartner': GLOBAL_PARTNER_MAPPING,
-        'Pages': ('page_ids', 'sponsorship.correspondence.page'),
+        'Pages': ('page_ids', 'correspondence.page'),
         'Direction': 'direction',
         'PrintType': None,
         'RelationshipType': 'relationship',
         'SBCGlobalStatus': 'state',
         'Status': 'state',
         'SBCTypes': ('communication_type_ids.name',
-                     'sponsorship.correspondence.type'),
+                     'correspondence.type'),
         'CompassionSBCId': 'kit_identifier',
         'FinalLetterURL': 'final_letter_url',
         'GlobalPartnerSBCId': 'id',
@@ -87,7 +87,7 @@ class CorrespondenceMapping(OnrampMapping):
         'ReasonForRework': 'rework_reason',
         'ReworkComments': 'rework_comments',
         'Template': ('template_id.layout',
-                     'sponsorship.correspondence.template'),
+                     'correspondence.template'),
         'TranslatedBy': 'translator',
         'TranslationLanguage': ('destination_language_id.name',
                                 'res.lang.compassion'),
@@ -144,7 +144,7 @@ class CorrespondenceMapping(OnrampMapping):
                 if not page_url:
                     # We don't need to save pages not accessible
                     continue
-                page_id = self.env['sponsorship.correspondence.page'].search(
+                page_id = self.env['correspondence.page'].search(
                     [('original_page_url', '=', page_url)], limit=1).id
                 # if page_url already exist update it
                 if page_id:

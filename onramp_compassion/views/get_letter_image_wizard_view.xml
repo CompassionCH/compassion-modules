@@ -26,7 +26,7 @@
 
         <act_window id="action_retrieve_image"
             name="Retrieve image"
-            res_model="letter.image.wizard" src_model="sponsorship.correspondence"
+            res_model="letter.image.wizard" src_model="correspondence"
             view_mode="form" target="new" view_type="form" />
     </data>
 </openerp>

@@ -47,7 +47,7 @@ class GetLetterImageWizard(models.TransientModel):
 
     @api.multi
     def get_image(self):
-        letter = self.env['sponsorship.correspondence'].browse(
+        letter = self.env['correspondence'].browse(
             self.env.context.get('active_id'))
         onramp = OnrampConnector()
         image_data = None

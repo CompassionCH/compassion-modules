@@ -1,8 +1,8 @@
 <openerp>
     <data>
-      <record id="view_sponsorship_correspondence_crosscheck" model="ir.ui.view">
-        <field name="name">sponsorship.crosscheck.form</field>
-        <field name="model">sponsorship.crosscheck</field>
+      <record id="view_correspondence_crosscheck" model="ir.ui.view">
+        <field name="name">correspondence.template.crosscheck.form</field>
+        <field name="model">correspondence.template.crosscheck</field>
         <field name="arch" type="xml">
           <form string="Correspondence Crosscheck">
 	    <field name="file_"/>

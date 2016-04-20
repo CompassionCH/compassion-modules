@@ -34,14 +34,14 @@ class GmcMessage(models.Model):
     headers = fields.Text()
     content = fields.Text()
     letter_id = fields.Many2one(
-        'sponsorship.correspondence', 'Letter', compute='_set_letter_id',
+        'correspondence', 'Letter', compute='_set_letter_id',
         store=True)
 
     @api.depends('object_id')
     def _set_partner_id(self):
         for message in self:
             model = message.action_id.model
-            if model == 'sponsorship.correspondence':
+            if model == 'correspondence':
                 letter = self.env[model].browse(message.object_id)
                 message.partner_id = letter.correspondant_id.id
             else:
@@ -51,7 +51,7 @@ class GmcMessage(models.Model):
     def _set_child_id(self):
         for message in self:
             model = message.action_id.model
-            if model == 'sponsorship.correspondence':
+            if model == 'correspondence':
                 letter = self.env[model].browse(message.object_id)
                 message.child_id = letter.child_id.id
             else:
@@ -61,7 +61,7 @@ class GmcMessage(models.Model):
     def _set_letter_id(self):
         for message in self:
             model = message.action_id.model
-            if model == 'sponsorship.correspondence':
+            if model == 'correspondence':
                 message.letter_id = message.object_id
 
     def _perform_outgoing_action(self):

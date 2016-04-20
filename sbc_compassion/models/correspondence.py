@@ -8,26 +8,29 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-
 import magic
 import base64
 import re
 
 from openerp import fields, models, api, exceptions, _
 
+from wand.drawing import Drawing
+from wand.image import Image
+
 
 class CorrespondenceType(models.Model):
-    _name = 'sponsorship.correspondence.type'
+    _name = 'correspondence.type'
 
     name = fields.Char(required=True)
 
 
-class SponsorshipCorrespondence(models.Model):
+class Correspondence(models.Model):
     """ This class holds the data of a Communication Kit between
     a child and a sponsor.
     """
-    _name = 'sponsorship.correspondence'
-    _inherit = ['mail.thread', 'ir.needaction_mixin']
+    _name = 'correspondence'
+    _inherit = [
+        'mail.thread', 'ir.needaction_mixin', 'correspondence.metadata']
     _description = 'Letter'
     _order = 'status_date desc'
 
@@ -53,8 +56,8 @@ class SponsorshipCorrespondence(models.Model):
             ('Beneficiary To Supporter', _('Beneficiary to supporter'))],
         required=True, default='Supporter To Beneficiary', readonly=True)
     communication_type_ids = fields.Many2many(
-        'sponsorship.correspondence.type',
-        'sponsorship_correspondence_type_relation',
+        'correspondence.type',
+        'correspondence_type_relation',
         'correspondence_id', 'type_id',
         'Communication type',
         readonly=True)
@@ -70,12 +73,6 @@ class SponsorshipCorrespondence(models.Model):
     letter_format = fields.Selection([
         ('pdf', 'pdf'), ('tiff', 'tiff')],
         compute='_compute_letter_format')
-    physical_attachments = fields.Selection(selection=[
-        ('sent_by_mail', _('Sent by mail')),
-        ('not_sent', _('Not sent'))])
-    attachments_description = fields.Text()
-    template_id = fields.Many2one(
-        'sponsorship.correspondence.template', 'Template')
 
     # 3. Letter language and text information
     #########################################
@@ -90,17 +87,22 @@ class SponsorshipCorrespondence(models.Model):
     destination_language_id = fields.Many2one(
         'res.lang.compassion', 'Destination language')
     original_text = fields.Text(
-        compute='_compute_texts', inverse='_inverse_page')
-    english_text = fields.Text(compute='_compute_texts')
-    translated_text = fields.Text(compute='_compute_texts')
+        compute='_compute_original_text',
+        inverse='_inverse_page')
+    english_text = fields.Text(
+        compute='_compute_english_translated_text',
+        inverse='_inverse_page')
+    translated_text = fields.Text(
+        compute='_compute_translated_text',
+        inverse='_inverse_page')
     source = fields.Selection(selection=[
         ('letter', _('Letter')),
         ('email', _('E-Mail')),
         ('website', _('Compassion website'))], default='letter')
     page_ids = fields.One2many(
-        'sponsorship.correspondence.page', 'sponsorship_correspondence_id')
+        'correspondence.page', 'correspondence_id')
     nbr_pages = fields.Integer(
-        string='Number of pages', compute='_compute_texts')
+        string='Number of pages', compute='_compute_nbr_pages')
 
     # 4. Additional information
     ###########################
@@ -109,7 +111,6 @@ class SponsorshipCorrespondence(models.Model):
     relationship = fields.Selection([
         ('Sponsor', _('Sponsor')),
         ('Encourager', _('Encourager'))], default='Sponsor')
-    mandatory_review = fields.Boolean()
     is_first_letter = fields.Boolean(
         compute='_compute_is_first',
         store=True,
@@ -240,17 +241,6 @@ class SponsorshipCorrespondence(models.Model):
             else:
                 letter.name = _('New correspondence')
 
-    def _set_destination_language(self):
-        """ Called at creation to setup the destination language of
-        supporter letters. """
-        self.ensure_one()
-        if self.direction == 'Supporter To Beneficiary':
-            dest_langs = self.child_id.project_id.country_id.spoken_lang_ids
-            if self.original_language_id in dest_langs:
-                self.destination_language_id = self.original_language_id
-            else:
-                self.destination_language_id = dest_langs[0]
-
     @api.depends('sponsorship_id')
     def _set_partner_review(self):
         for letter in self:
@@ -258,10 +248,19 @@ class SponsorshipCorrespondence(models.Model):
                 letter.mandatory_review = True
 
     @api.depends('page_ids')
-    def _compute_texts(self):
-        self.original_text = self._get_original_text('original_text')
-        self.translated_text = self._get_original_text('translated_text')
-        self.english_text = self._get_original_text('english_translated_text')
+    def _compute_original_text(self):
+        self.original_text = self._get_text('original_text')
+
+    @api.depends('page_ids')
+    def _compute_translated_text(self):
+        self.translated_text = self._get_text('translated_text')
+
+    @api.depends('page_ids')
+    def _compute_english_translated_text(self):
+        self.english_text = self._get_text('english_translated_text')
+
+    @api.depends('page_ids')
+    def _compute_nbr_pages(self):
         self.nbr_pages = len(self.page_ids)
 
     @api.one
@@ -270,17 +269,21 @@ class SponsorshipCorrespondence(models.Model):
             # Keep only the first page and remove the other
             self.page_ids[0].write({
                 'original_text': self.original_text,
-                'translated_text': self._get_original_text('translated_text')})
+                'english_translated_text': self.english_text,
+                'translated_text': self.translated_text,
+            })
             self.page_ids[1:].unlink()
         else:
             self.page_ids.create(
-                {'sponsorship_correspondence_id': self.id,
+                {'correspondence_id': self.id,
                  'original_text': self.original_text,
-                 'translated_text': self.translated_text})
+                 'english_translated_text': self.english_text,
+                 'translated_text': self.translated_text},)
 
-    def _get_original_text(self, source_text):
+    def _get_text(self, source_text):
         """ Gets the desired text (original/translated) from the pages. """
-        return '\n\n'.join(self.page_ids.mapped(source_text))
+        txt = self.page_ids.filtered(source_text).mapped(source_text)
+        return '\n\n'.join(txt)
 
     def _change_language(self):
         return True
@@ -326,13 +329,14 @@ class SponsorshipCorrespondence(models.Model):
     def _set_translator(self):
         """ Sets the translator e-mail address. """
         for letter in self:
-            match = re.search('(.*)\[(.*)\]', letter.translator)
-            if match:
-                letter.translator_id.translator_email = match.group(2)
-                other_letters = self.search([
-                    ('translator', '=', letter.translator),
-                    ('translator_id', '!=', letter.translator_id.id)])
-                other_letters._compute_translator()
+            if letter.translator:
+                match = re.search('(.*)\[(.*)\]', letter.translator)
+                if match:
+                    letter.translator_id.translator_email = match.group(2)
+                    other_letters = self.search([
+                        ('translator', '=', letter.translator),
+                        ('translator_id', '!=', letter.translator_id.id)])
+                    other_letters._compute_translator()
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -357,24 +361,9 @@ class SponsorshipCorrespondence(models.Model):
         letter_image = vals.get('letter_image')
         attachment = False
         if letter_image and not isinstance(letter_image, (int, long)):
-            # Detect filetype
-            ftype = magic.from_buffer(base64.b64decode(letter_image),
-                                      True).lower()
-            if 'pdf' in ftype:
-                type_ = '.pdf'
-            elif 'tiff' in ftype:
-                type_ = '.tiff'
-            else:
-                raise exceptions.Warning(
-                    _('Unsupported file format'),
-                    _('You can only attach tiff or pdf files'))
-            attachment = self.env['ir.attachment'].create({
-                'name': 'New letter',
-                'res_model': self._name,
-                'datas': letter_image})
+            attachment, type_ = self._get_letter_attachment(letter_image)
             vals['letter_image'] = attachment.id
-        letter = super(SponsorshipCorrespondence, self).create(vals)
-        letter._set_destination_language()
+        letter = super(Correspondence, self).create(vals)
         if attachment:
             attachment.write({
                 'name': letter.scanned_date + '_' + letter.name + type_,
@@ -387,4 +376,70 @@ class SponsorshipCorrespondence(models.Model):
         """ Keep track of state changes. """
         if 'state' in vals:
             vals['status_date'] = fields.Datetime.now()
-        return super(SponsorshipCorrespondence, self).write(vals)
+        # Allow to change letter image from the user interface
+        letter_image = vals.get('letter_image')
+        if letter_image and not isinstance(letter_image, (int, long)):
+            self.ensure_one()
+            attachment = self._get_letter_attachment(letter_image, self)[0]
+            vals['letter_image'] = attachment.id
+        return super(Correspondence, self).write(vals)
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    @api.multi
+    def compose_letter_image(self):
+        """ Takes the translated text and append it in a new page inside
+        the image letter.
+        :return: True
+        """
+        for letter in self:
+            image_data = base64.b64decode(letter.letter_image.datas)
+            with Image(blob=image_data, resolution=300) as letter_image:
+                page = letter_image.sequence[0]
+                translation_page = Image(width=page.width, height=page.height)
+                text = Drawing()
+                text.font = 'Tetria LT Com'
+                text.font_size = 40
+                text.text(100, 100, letter.translated_text)
+                text.draw(translation_page)
+                letter_image.sequence.append(translation_page)
+                # Image not compressed if not making the blob!
+                letter_image.make_blob('pdf')
+                letter_image.compression = 'group4'
+                image_data = base64.b64encode(letter_image.make_blob('pdf'))
+            letter.letter_image.datas = image_data
+        return True
+
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
+    def _get_letter_attachment(self, image_data, letter=None):
+        """ Method that takes png/pdf binary data, create an ir.attachment
+        with it and returns its id. Useful for creating the letter image.
+
+        :returns (ir.attachement, string): attachment record, file type
+        """
+        # Detect filetype
+        ftype = magic.from_buffer(base64.b64decode(image_data),
+                                  True).lower()
+        if 'pdf' in ftype:
+            type_ = '.pdf'
+        elif 'tiff' in ftype:
+            type_ = '.tiff'
+        else:
+            raise exceptions.Warning(
+                _('Unsupported file format'),
+                _('You can only attach tiff or pdf files'))
+        vals = {
+            'name': 'New letter' + type_,
+            'res_model': self._name,
+            'datas': image_data
+        }
+        if letter:
+            vals.update({
+                'name': letter.kit_identifier + '_' + type_,
+                'datas_fname': letter.name,
+                'res_id': letter.id
+            })
+        return self.env['ir.attachment'].create(vals), type_

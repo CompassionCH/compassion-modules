@@ -23,7 +23,7 @@
 
         <act_window id="action_download_letter"
             name="Download archive"
-            res_model="correspondence.download.wizard" src_model="sponsorship.correspondence"
+            res_model="correspondence.download.wizard" src_model="correspondence"
             view_mode="form" target="new" view_type="form" key2="client_action_multi"/>
     </data>
 </openerp>

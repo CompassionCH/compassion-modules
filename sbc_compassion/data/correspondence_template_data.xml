@@ -1,7 +1,7 @@
 <openerp>
   <data noupdate="1">
     <!-- Templates -->
-    <record id="default_template" model="sponsorship.correspondence.template">
+    <record id="default_template" model="correspondence.template">
       <field name="name">Default Template</field>
       <field name="layout">CH-A-6S01-1</field>
       <field name="checkbox_ids" eval="False"/>
@@ -20,7 +20,7 @@
     
     <record id="qrcode_x_max" model="ir.config_parameter">
       <field name="key">qrcode_x_max</field>
-      <field name="value">0.6</field>
+      <field name="value">0.3</field>
     </record>
     
     <record id="qrcode_y_min" model="ir.config_parameter">

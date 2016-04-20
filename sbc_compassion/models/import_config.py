@@ -1,0 +1,27 @@
+# -*- encoding: utf-8 -*-
+##############################################################################
+#
+#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Emanuel Cino <ecino@compassion.ch>
+#
+#    The licence is in the file __openerp__.py
+#
+##############################################################################
+
+from openerp import models, fields
+
+
+class ImportConfig(models.Model):
+    """ This class defines all metadata of a correspondence"""
+
+    _name = 'import.letter.config'
+    _inherit = 'correspondence.metadata'
+
+    name = fields.Char()
+    is_encourager = fields.Boolean('Encourager')
+
+    def get_fields(self):
+        res = super(ImportConfig, self).get_fields()
+        res.append('is_encourager')
+        return res

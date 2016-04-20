@@ -15,13 +15,13 @@ from openerp import models, fields, _
 class CorrespondencePage(models.Model):
     """ This class defines a page used for in sponsorship correspondence"""
 
-    _name = 'sponsorship.correspondence.page'
+    _name = 'correspondence.page'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    sponsorship_correspondence_id = fields.Many2one(
-        'sponsorship.correspondence', ondelete='cascade', required=True)
+    correspondence_id = fields.Many2one(
+        'correspondence', ondelete='cascade', required=True)
 
     original_page_url = fields.Char()
     final_page_url = fields.Char()

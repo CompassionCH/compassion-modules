@@ -2,8 +2,8 @@
     <data>
 
         <record id="view_correspondence_template_origin_tree" model="ir.ui.view">
-            <field name="name">sponsorship.correspondence.template.tree</field>
-            <field name="model">sponsorship.correspondence.template</field>
+            <field name="name">correspondence.template.tree</field>
+            <field name="model">correspondence.template</field>
             <field name="arch" type="xml">
                 <tree string="Correspondence Templates">
                     <field name="name"/>
@@ -13,8 +13,8 @@
         </record>
 
         <record id="view_correspondence_template_origin_form" model="ir.ui.view">
-            <field name="name">sponsorship.correspondence.template.form</field>
-            <field name="model">sponsorship.correspondence.template</field>
+            <field name="name">correspondence.template.form</field>
+            <field name="model">correspondence.template</field>
             <field name="arch" type="xml">
                 <form string="Template">
                     <sheet>
@@ -70,7 +70,7 @@
 
         <record id="action_compassion_correspondence_template_form" model="ir.actions.act_window">
             <field name="name">Correspondence Templates</field>
-            <field name="res_model">sponsorship.correspondence.template</field>
+            <field name="res_model">correspondence.template</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
@@ -78,8 +78,8 @@
 	<!-- Add item in the 'More' list -->
         <act_window id="action_cross_check_correspondence_template"
                     key2="client_action_multi" name="Cross Check Patterns"
-		    res_model="sponsorship.crosscheck"
-		    src_model="sponsorship.correspondence.template"
+		    res_model="correspondence.template.crosscheck"
+		    src_model="correspondence.template"
                     view_mode="form" target="new" view_type="form"
         />
 

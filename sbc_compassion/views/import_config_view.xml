@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Form Definition -->
+        <record id="import_letters_config_form" model="ir.ui.view">
+            <field name="name">import.letter.config.form</field>
+            <field name="model">import.letter.config</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="template_id"/>
+                            <field name="mandatory_review"/>
+                            <field name="is_encourager"/>
+                        </group>
+                        <group>
+                            <field name="physical_attachments"/>
+                            <field name="attachments_description"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action Definition -->
+        <record id="import_letter_config_action" model="ir.actions.act_window">
+            <field name="name">Letter Import Config</field>
+            <field name="res_model">import.letter.config</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menu Definition -->
+        <menuitem id="import_letter_config_menu" parent="child_compassion.menu_configuration"
+                  name="Letter Import" action="import_letter_config_action" sequence="10"/>
+    </data>
+</openerp>

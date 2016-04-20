@@ -17,6 +17,7 @@ import cv2
 
 from openerp import fields, models, api, _
 from openerp.exceptions import ValidationError, Warning
+from wand.image import Image
 
 from ..tools import patternrecognition as pr
 from ..tools import bluecornerfinder as bcf
@@ -41,9 +42,11 @@ class CorrespondenceTemplate(models.Model):
     all information relative to position of metadata in the Template, like for
     instance where the QR Code is supposed to be, where the language
     checkboxes will be found, where the pattern will be, etc...
+
+    Template images should be in 300 DPI
     """
 
-    _name = 'sponsorship.correspondence.template'
+    _name = 'correspondence.template'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -53,7 +56,8 @@ class CorrespondenceTemplate(models.Model):
     layout = fields.Selection('get_gmc_layouts', required=True)
     pattern_image = fields.Binary()
     template_image = fields.Binary(
-        compute='_compute_image', inverse='_set_image')
+        compute='_compute_image', inverse='_set_image',
+        help='Use 300 DPI images')
     detection_result = fields.Binary(
         compute='_compute_detection')
     page_width = fields.Integer(
@@ -105,8 +109,8 @@ class CorrespondenceTemplate(models.Model):
         help='Maximum Y position of the area in which to look for the '
              'pattern inside the template (given in pixels)')
     checkbox_ids = fields.One2many(
-        'sponsorship.correspondence.lang.checkbox', 'template_id',
-        default=lambda self: self._get_default_checkboxes())
+        'correspondence.lang.checkbox', 'template_id',
+        default=lambda self: self._get_default_checkboxes(), copy=True)
     nber_keypoints = fields.Integer(
         "Number of key points", compute="_compute_template_keypoints",
         store=True)
@@ -122,7 +126,7 @@ class CorrespondenceTemplate(models.Model):
             ('CH-A-3S01-1', _('Layout 3')),
             ('CH-A-4S01-1', _('Layout 4')),
             ('CH-A-5S01-1', _('Layout 5')),
-            ('CH-A-6S01-1', _('Layout 6'))]
+            ('CH-A-6S11-1', _('Layout 6'))]
 
     def _get_default_checkboxes(self):
         return [
@@ -159,22 +163,25 @@ class CorrespondenceTemplate(models.Model):
 
     def _set_image(self):
         if self.template_image:
-            ftype = magic.from_buffer(
-                base64.b64decode(self.template_image), True)
+            datas = base64.b64decode(self.template_image)
+            ftype = magic.from_buffer(datas, True)
             if not ('jpg' in ftype or 'jpeg' in ftype or 'png' in ftype):
                 raise Warning(
                     _("Unsupported format"),
                     _("Please only use jpg or png files."))
+            # Be sure image is in 300 DPI
+            with Image(blob=datas, resolution=300) as img:
+                datas = base64.b64encode(img.make_blob())
             attachment_obj = self.env['ir.attachment']
             attachment = attachment_obj.search([
                 ('res_model', '=', self._name),
                 ('res_id', '=', self.id)])
             if attachment:
-                attachment.datas = self.template_image
+                attachment.datas = datas
             else:
                 attachment = attachment_obj.create({
                     'name': self.name,
-                    'datas': self.template_image,
+                    'datas': datas,
                     'datas_fname': self.name,
                     'res_model': self._name,
                     'res_id': self.id
@@ -360,10 +367,6 @@ class CorrespondenceTemplate(models.Model):
         """ Returns the coordinates of the pattern center. """
         return numpy.array([self.pattern_center_x, self.pattern_center_y])
 
-    ##########################################################################
-    #                            WORKFLOW METHODS                            #
-    ##########################################################################
-
 
 class CorrespondenceLanguageCheckbox(models.Model):
     """ This class represents a checkbox that can be present in a template
@@ -371,10 +374,10 @@ class CorrespondenceLanguageCheckbox(models.Model):
     letter is written. It gives the position of the checkbox inside a template
     in order to find it and verify if it is ticked or not. """
 
-    _name = 'sponsorship.correspondence.lang.checkbox'
+    _name = 'correspondence.lang.checkbox'
 
     template_id = fields.Many2one(
-        'sponsorship.correspondence.template', required=True,
+        'correspondence.template', required=True,
         ondelete='cascade')
     language_id = fields.Many2one('res.lang.compassion')
     x_min = fields.Integer(
