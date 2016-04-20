@@ -405,7 +405,7 @@ class Correspondence(models.Model):
                 text.draw(translation_page)
                 letter_image.sequence.append(translation_page)
                 # Image not compressed if not making the blob!
-                letter_image.make_blob()
+                letter_image.make_blob('pdf')
                 letter_image.compression = 'group4'
                 image_data = base64.b64encode(letter_image.make_blob('pdf'))
             letter.letter_image.datas = image_data
