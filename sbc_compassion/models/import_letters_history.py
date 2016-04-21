@@ -17,6 +17,8 @@ import base64
 import zipfile
 
 from io import BytesIO
+from openerp.exceptions import Warning
+
 from ..tools import import_letter_functions as func
 from openerp import api, fields, models, _, exceptions
 
@@ -35,7 +37,7 @@ class ImportLettersHistory(models.Model):
     for every letter, using the zxing library for code detection.
     """
     _name = "import.letters.history"
-    _inherit = 'import.letter.config'
+    _inherit = ['import.letter.config', 'mail.thread']
     _description = _("""History of the letters imported from a zip
     or a PDF/TIFF""")
     _order = "create_date desc"
@@ -50,7 +52,8 @@ class ImportLettersHistory(models.Model):
         ("pending", _("Analyzing")),
         ("open", _("Open")),
         ("ready", _("Ready")),
-        ("done", _("Done"))], compute="_compute_state", store=True)
+        ("done", _("Done"))], compute="_compute_state", store=True,
+        track_visibility='onchange')
     import_completed = fields.Boolean()
     nber_letters = fields.Integer(
         "Number of files", readonly=True, compute="_count_nber_letters")
@@ -136,6 +139,23 @@ class ImportLettersHistory(models.Model):
         else:
             raise exceptions.Warning(
                 _("State: '{}' not implemented".format(self.state)))
+
+    ##########################################################################
+    #                              ORM METHODS                               #
+    ##########################################################################
+    @api.model
+    def create(self, vals):
+        if 'config_id' in vals:
+            other_import = self.search_count([
+                ('config_id', '=', vals['config_id']),
+                ('state', '!=', 'done')])
+            if other_import:
+                raise Warning(
+                    _("Another import with the same configuration is "
+                      "already open. Please finish it before creating a new "
+                      "one.")
+                )
+        return super(ImportLettersHistory, self).create(vals)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

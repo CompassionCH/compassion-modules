@@ -114,6 +114,9 @@ class CorrespondenceTemplate(models.Model):
     nber_keypoints = fields.Integer(
         "Number of key points", compute="_compute_template_keypoints",
         store=True)
+    usage_count = fields.Integer(
+        compute='_compute_usage_count'
+    )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -334,6 +337,13 @@ class CorrespondenceTemplate(models.Model):
                     cv2.imwrite(template_file.name, img)
                     template.detection_result = base64.b64encode(
                         template_file.read())
+
+    @api.multi
+    def _compute_usage_count(self):
+        for template in self:
+            template.usage_count = self.env['correspondence'].search_count([
+                ('template_id', '=', template.id)
+            ])
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
