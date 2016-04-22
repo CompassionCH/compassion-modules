@@ -38,7 +38,7 @@ class RestController(http.Controller):
         correspondence = correspondence_obj.search([('uuid', '=', id)])
         if not correspondence:
             raise NotFound()
-        data = correspondence.get_image()
+        data = correspondence.get_image(user)
         response = Response(data, mimetype='application/pdf')
         return response
 

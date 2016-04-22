@@ -8,6 +8,7 @@
                 <tree string="Correspondence Templates">
                     <field name="name"/>
                     <field name="layout"/>
+                    <field name="usage_count"/>
                 </tree>
             </field>
         </record>
@@ -24,6 +25,7 @@
                                 <field name="layout"/>
                                 <field name="active"/>
                                 <field name="pattern_image" widget="image" class="oe_avatar" required="1"/>
+                                <field name="usage_count"/>
                                 <separator colspan="2" string="Language checkboxes"/>
                                 <field name="checkbox_ids" context="{'default_template_id': active_id}">
                                     <tree editable="bottom">

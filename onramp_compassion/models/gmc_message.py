@@ -10,7 +10,8 @@
 ##############################################################################
 from ..tools.onramp_connector import OnrampConnector
 
-from openerp import api, models, fields
+from openerp import api, models, fields, _
+from openerp.exceptions import Warning
 
 
 class GmcMessage(models.Model):
@@ -31,12 +32,18 @@ class GmcMessage(models.Model):
     """
     _inherit = 'gmc.message.pool'
 
+    ##########################################################################
+    #                                 FIELDS                                 #
+    ##########################################################################
     headers = fields.Text()
     content = fields.Text()
     letter_id = fields.Many2one(
         'correspondence', 'Letter', compute='_set_letter_id',
         store=True)
 
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
     @api.depends('object_id')
     def _set_partner_id(self):
         for message in self:
@@ -64,18 +71,33 @@ class GmcMessage(models.Model):
             if model == 'correspondence':
                 message.letter_id = message.object_id
 
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
     def _perform_outgoing_action(self):
         """ If message is destinated to new Onramp, send them directly.
         Otherwise, use old method with middleware. """
         action = self.action_id
         result = False
         if action.connect_service:
-            result = self._proccess_to_compassion_connect()
+            result = self._process_to_compassion_connect()
         else:
             result = super(GmcMessage, self)._perform_outgoing_action()
         return result
 
-    def _proccess_to_compassion_connect(self):
+    def _validate_outgoing_action(self):
+        super(GmcMessage, self)._validate_outgoing_action()
+        if self.action_id.name == 'CreateCommKit':
+            sponsorship = self.letter_id.sponsorship_id
+            if not sponsorship.activation_date:
+                raise Warning(
+                    _("Commitment not sent to GMC (%s - %s)") % (
+                        sponsorship.partner_id.ref, sponsorship.child_code),
+                    _("The commitment is not yet active.")
+                )
+        return True
+
+    def _process_to_compassion_connect(self):
         """ Send a message to Compassion Connect (new Onramp) """
         action = self.action_id
         data_object = self.env[action.model].browse(self.object_id)
