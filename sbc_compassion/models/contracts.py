@@ -59,8 +59,7 @@ class Contracts(models.Model):
             1. Sponsor main language if child speaks that language
             2. Any language spoken by both sponsor and child other than
                English
-            3. English, if Sponsor understands it
-            4. Sponsor main language
+            3. English
         """
         for sponsorship in self:
             if sponsorship.correspondant_id and sponsorship.child_id:
@@ -80,7 +79,5 @@ class Contracts(models.Model):
                                     sponsor_languages) - english
                     if common_langs:
                         sponsorship.reading_language = common_langs[0]
-                    elif english in sponsor_languages:
-                        sponsorship.reading_language = english
                     else:
-                        sponsorship.reading_language = sponsor_main_lang
+                        sponsorship.reading_language = english

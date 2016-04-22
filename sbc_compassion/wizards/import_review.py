@@ -35,6 +35,10 @@ class ImportReview(models.TransientModel):
     # Import line related fields
     state = fields.Selection(related='current_line_id.status', readonly=True)
     letter_image = fields.Binary(compute='_get_current_line')
+    letter_file = fields.Binary(
+        'Letter file', readonly=True,
+        related='current_line_id.letter_image.datas')
+    fname = fields.Char(related='current_line_id.letter_image.name')
     partner_id = fields.Many2one(related='current_line_id.partner_id')
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
     child_id = fields.Many2one(related='current_line_id.child_id')
@@ -72,6 +76,16 @@ class ImportReview(models.TransientModel):
             if child:
                 wizard.child_id = child
 
+    @api.onchange('partner_id')
+    def _get_default_sponsorship(self):
+        self.ensure_one()
+        if self.partner_id:
+            sponsorships = self.env['recurring.contract'].search([
+                ('correspondant_id', '=', self.partner_id.id)
+            ])
+            if len(sponsorships) == 1:
+                self.sponsorship_id = sponsorships
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
@@ -83,8 +97,11 @@ class ImportReview(models.TransientModel):
             raise Warning(
                 _("Import is not valid"),
                 _("Please review this import before going to the next."))
+        self.write({
+            'current_line_index': self.current_line_index + 1,
+            'sponsorship_id': False,
+        })
         self.current_line_id.reviewed = True
-        self.current_line_index += 1
 
     @api.multi
     def finish(self):
