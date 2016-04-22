@@ -31,6 +31,8 @@
                             <group>
                                 <field name="template_id"/>
                                 <field name="language_id"/>
+                                <field name="fname" invisible="1"/>
+                                <field name="letter_file" filename="fname"/>
                             </group>
                             <group>
                                 <field name="is_encourager"/>

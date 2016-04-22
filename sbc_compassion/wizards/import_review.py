@@ -35,6 +35,10 @@ class ImportReview(models.TransientModel):
     # Import line related fields
     state = fields.Selection(related='current_line_id.status', readonly=True)
     letter_image = fields.Binary(compute='_get_current_line')
+    letter_file = fields.Binary(
+        'Letter file', readonly=True,
+        related='current_line_id.letter_image.datas')
+    fname = fields.Char(related='current_line_id.letter_image.name')
     partner_id = fields.Many2one(related='current_line_id.partner_id')
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
     child_id = fields.Many2one(related='current_line_id.child_id')
