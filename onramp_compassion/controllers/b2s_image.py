@@ -15,6 +15,7 @@ from openerp.http import request
 
 from werkzeug.exceptions import BadRequest, NotFound
 from werkzeug.wrappers import Response
+from werkzeug.datastructures import Headers
 
 _logger = logging.getLogger(__name__)
 
@@ -39,7 +40,16 @@ class RestController(http.Controller):
         if not correspondence:
             raise NotFound()
         data = correspondence.get_image(user)
-        response = Response(data, mimetype='application/pdf')
+        headers = Headers()
+        headers.add(
+            'Content-Disposition', 'attachment',
+            filename=correspondence.letter_image.name)
+        if correspondence.letter_format == 'zip':
+            response = Response(data, content_type='application/zip',
+                                headers=headers)
+        else:
+            response = Response(data, content_type='application/pdf',
+                                headers=headers)
         return response
 
     def _validate_headers(self, headers):

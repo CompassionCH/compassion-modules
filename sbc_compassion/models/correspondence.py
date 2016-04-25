@@ -71,7 +71,7 @@ class Correspondence(models.Model):
     ##########################
     letter_image = fields.Many2one('ir.attachment')
     letter_format = fields.Selection([
-        ('pdf', 'pdf'), ('tiff', 'tiff')],
+        ('pdf', 'pdf'), ('tiff', 'tiff'), ('zip', 'zip')],
         compute='_compute_letter_format')
 
     # 3. Letter language and text information
@@ -296,6 +296,8 @@ class Correspondence(models.Model):
                 letter.letter_format = 'pdf'
             elif 'tiff' in ftype:
                 letter.letter_format = 'tiff'
+            elif 'zip' in ftype:
+                letter.letter_format = 'zip'
 
     @api.multi
     @api.depends('translator')
