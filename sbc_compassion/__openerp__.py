@@ -52,11 +52,12 @@
         'views/correspondence_template_crosscheck_view.xml',
         'views/test_import_letters_history_view.xml',
         'views/import_review_view.xml',
-        'views/import_config_view.xml',
+        'views/config_view.xml',
         'views/download_letters_view.xml',
         'data/lang_data.xml',
         'data/correspondence_template_data.xml',
         'data/correspondence_type.xml',
+        'data/child_layouts.xml',
     ],
     'demo': [
         'demo/correspondence_template_demo.xml',

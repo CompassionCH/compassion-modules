@@ -11,6 +11,8 @@
 
 from openerp import models, fields, _
 
+BOX_SEPARATOR = '#BOX#'
+
 
 class CorrespondencePage(models.Model):
     """ This class defines a page used for in sponsorship correspondence"""

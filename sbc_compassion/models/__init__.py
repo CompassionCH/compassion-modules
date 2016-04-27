@@ -19,3 +19,5 @@ from . import import_config
 from . import import_letters_history
 from . import import_letter_line
 from . import contracts
+from . import correspondence_b2s_layout
+from . import correspondence_translation_box

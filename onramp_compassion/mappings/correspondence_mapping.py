@@ -119,10 +119,16 @@ class CorrespondenceMapping(OnrampMapping):
                               relation_search=None):
         """ Remove 65- suffix from partner reference and look only
             for non-company partners.
+            Replace mapping for template to look for B2S templates.
         """
         if connect_name == 'CompassConstituentId':
             value = value[3:]
             relation_search = [('is_company', '=', False)]
+        if connect_name == 'Template' and not value.startswith('CH'):
+            value_mapping = ('b2s_layout_id.code', 'correspondence.b2s.layout')
+            # Value is FO-X-YYYY-Z and we are only interested in YYYY
+            # which holds the template code (like 1S11 for layout 1)
+            value = value[5:9]
         return super(CorrespondenceMapping, self)._convert_connect_data(
             connect_name, value_mapping, value, relation_search)
 

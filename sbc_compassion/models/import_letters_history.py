@@ -145,7 +145,7 @@ class ImportLettersHistory(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
-        if 'config_id' in vals:
+        if vals.get('config_id'):
             other_import = self.search_count([
                 ('config_id', '=', vals['config_id']),
                 ('state', '!=', 'done')])

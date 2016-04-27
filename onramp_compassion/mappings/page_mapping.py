@@ -9,6 +9,8 @@
 #
 ##############################################################################
 from base_mapping import OnrampMapping
+from openerp.addons.sbc_compassion.models.correspondence_page import \
+    BOX_SEPARATOR
 
 
 class PageMapping(OnrampMapping):
@@ -45,9 +47,9 @@ class PageMapping(OnrampMapping):
                 connect_data[field] = [connect_data[field]]
 
     def _process_odoo_data(self, odoo_data):
-        # Concatenation of all line in one text
+        # Concatenation of all boxes in one text
         fields = (
             'original_text', 'english_translated_text', 'translated_text')
         for field in fields:
             if field in odoo_data:
-                odoo_data[field] = ' '.join(odoo_data[field])
+                odoo_data[field] = BOX_SEPARATOR.join(odoo_data[field])
