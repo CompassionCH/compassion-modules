@@ -111,7 +111,7 @@ class SponsorshipCorrespondence(models.Model):
         for letter in self:
             if letter.original_language_id not in \
                     letter.correspondant_id.spoken_lang_ids:
-                letter.compose_letter()
+                letter.compose_letter_image()
 
     @api.multi
     def download_attach_letter_image(self, context=None,
