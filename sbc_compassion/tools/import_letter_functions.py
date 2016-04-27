@@ -197,7 +197,10 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
             'datas_fname': attach_name,
         })
         letter_vals = line_vals[i]
-        _find_template(env, imgs[i], letter_vals, test)
+        if force_template:
+            letter_vals['template_id'] = force_template.id
+        else:
+            _find_template(env, imgs[i], letter_vals, test)
         if letter_vals['template_id'] != env.ref(
                 'sbc_compassion.default_template').id:
             logger.info("...Letter {} : template found!".format(i))
@@ -211,8 +214,6 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
                     'lang_preview': '',
                     'test_letter_language': ''
                 })
-        if force_template:
-            letter_vals['template_id'] = force_template.id
 
     return line_vals, document_vals
 
