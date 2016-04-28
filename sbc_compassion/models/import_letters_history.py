@@ -145,7 +145,7 @@ class ImportLettersHistory(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
-        if 'config_id' in vals:
+        if vals.get('config_id'):
             other_import = self.search_count([
                 ('config_id', '=', vals['config_id']),
                 ('state', '!=', 'done')])
@@ -245,7 +245,7 @@ class ImportLettersHistory(models.Model):
                         logger.info(
                             "Analyzing letter {}/{}".format(
                                 progress, self.nber_letters))
-                        self._analyze_attachment(zip_.read(f), f, True)
+                        self._analyze_attachment(zip_.read(f), f)
                         progress += 1
                 # case with normal format (PDF,TIFF)
                 elif func.check_file(attachment.name) == 1:
@@ -264,7 +264,7 @@ class ImportLettersHistory(models.Model):
         self.import_completed = True
         logger.info("Imported letters analysis completed.")
 
-    def _analyze_attachment(self, file_data, file_name, is_zipfile=False):
+    def _analyze_attachment(self, file_data, file_name):
         line_vals, document_vals = func.analyze_attachment(
             self.env, file_data, file_name, self.template_id)
         for i in xrange(0, len(line_vals)):

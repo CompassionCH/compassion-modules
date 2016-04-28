@@ -1,0 +1,135 @@
+<openerp>
+    <data>
+        <!-- Translation Boxes -->
+        <record id="l1_box_1" model="correspondence.translation.box">
+            <field name="name">L1-1-1</field>
+            <field name="text_length">560</field>
+            <field name="left">4.6</field>
+            <field name="top">7.75</field>
+            <field name="width">3.1</field>
+        </record>
+        <record id="l1_box_2" model="correspondence.translation.box">
+            <field name="name">L1-2-1</field>
+            <field name="text_length">900</field>
+            <field name="left">0.6</field>
+            <field name="top">8.6</field>
+            <field name="width">7.2</field>
+        </record>
+
+        <record id="l2_box_1" model="correspondence.translation.box">
+            <field name="name">L2-1-1</field>
+            <field name="text_length">1200</field>
+            <field name="left">5.4</field>
+            <field name="top">2.1</field>
+            <field name="width">2.2</field>
+        </record>
+        <record id="l2_box_2" model="correspondence.translation.box">
+            <field name="name">L2-2-1</field>
+            <field name="text_length">1100</field>
+            <field name="left">4.4</field>
+            <field name="top">5.5</field>
+            <field name="width">3.2</field>
+        </record>
+
+        <record id="l3_box_1" model="correspondence.translation.box">
+            <field name="name">L3-1-1</field>
+            <field name="text_length">1500</field>
+            <field name="left">4.4</field>
+            <field name="top">2.2</field>
+            <field name="width">3</field>
+        </record>
+        <record id="l3_box_2" model="correspondence.translation.box">
+            <field name="name">L3-2-1</field>
+            <field name="text_length">1700</field>
+            <field name="left">4.4</field>
+            <field name="top">0.8</field>
+            <field name="width">3</field>
+        </record>
+
+        <record id="l4_box_1" model="correspondence.translation.box">
+            <field name="name">L4-2-1</field>
+            <field name="text_length">2000</field>
+            <field name="left">0.5</field>
+            <field name="top">0.7</field>
+            <field name="width">7</field>
+        </record>
+
+        <record id="l5_box_1" model="correspondence.translation.box">
+            <field name="name">L5-1-1</field>
+            <field name="text_length">1100</field>
+            <field name="left">3</field>
+            <field name="top">7</field>
+            <field name="width">4.7</field>
+        </record>
+        <record id="l5_box_2" model="correspondence.translation.box">
+            <field name="name">L5-2-1</field>
+            <field name="text_length">650</field>
+            <field name="left">3</field>
+            <field name="top">3.3</field>
+            <field name="width">4.7</field>
+        </record>
+        <record id="l5_box_3" model="correspondence.translation.box">
+            <field name="name">L5-2-2</field>
+            <field name="text_length">650</field>
+            <field name="left">3</field>
+            <field name="top">9.2</field>
+            <field name="width">4.7</field>
+        </record>
+
+        <record id="l6_box_1" model="correspondence.translation.box">
+            <field name="name">L6-2-1</field>
+            <field name="text_length">5200</field>
+            <field name="left">0.5</field>
+            <field name="top">0.5</field>
+            <field name="width">7</field>
+        </record>
+
+
+        <!-- Child letter layouts -->
+        <record id="b2s_l1" model="correspondence.b2s.layout">
+            <field name="name">L1</field>
+            <field name="code">1S11</field>
+            <field name="page_1_box_ids" eval="[(4,l1_box_1)]"/>
+            <field name="page_2_box_ids" eval="[(4,l1_box_2)]"/>
+            <field name="additional_page_box_id" ref="l6_box_1"/>
+        </record>
+
+        <record id="b2s_l2" model="correspondence.b2s.layout">
+            <field name="name">L2</field>
+            <field name="code">2S11</field>
+            <field name="page_1_box_ids" eval="[(4,l2_box_1)]"/>
+            <field name="page_2_box_ids" eval="[(4,l2_box_2)]"/>
+            <field name="additional_page_box_id" ref="l6_box_1"/>
+        </record>
+
+        <record id="b2s_l3" model="correspondence.b2s.layout">
+            <field name="name">L3</field>
+            <field name="code">3S11</field>
+            <field name="page_1_box_ids" eval="[(4,l3_box_1)]"/>
+            <field name="page_2_box_ids" eval="[(4,l3_box_2)]"/>
+            <field name="additional_page_box_id" ref="l6_box_1"/>
+        </record>
+
+        <record id="b2s_l4" model="correspondence.b2s.layout">
+            <field name="name">L4</field>
+            <field name="code">4S01</field>
+            <field name="page_2_box_ids" eval="[(4,l4_box_1)]"/>
+            <field name="additional_page_box_id" ref="l6_box_1"/>
+        </record>
+
+        <record id="b2s_l5" model="correspondence.b2s.layout">
+            <field name="name">L5</field>
+            <field name="code">5S12</field>
+            <field name="page_1_box_ids" eval="[(4,l5_box_1)]"/>
+            <field name="page_2_box_ids" eval="[(4,l5_box_2),(4,l5_box_3)]"/>
+            <field name="additional_page_box_id" ref="l6_box_1"/>
+        </record>
+
+        <record id="b2s_l6" model="correspondence.b2s.layout">
+            <field name="name">L6</field>
+            <field name="code">6S11</field>
+            <field name="page_2_box_ids" eval="[(4,l6_box_1)]"/>
+            <field name="additional_page_box_id" ref="l6_box_1"/>
+        </record>
+    </data>
+</openerp>

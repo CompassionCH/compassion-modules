@@ -124,9 +124,12 @@ class ImportReview(models.TransientModel):
         """ Move the line in another import. """
         self.ensure_one()
         postpone_import = self.postpone_import_id
+        current_import = self.current_line_id.import_id
         if not postpone_import:
-            postpone_import = self.env['import.letters.history'].create({
-                'import_completed': True})
+            import_vals = current_import.get_correspondence_metadata()
+            import_vals['import_completed'] = True
+            postpone_import = self.env['import.letters.history'].create(
+                import_vals)
             self.postpone_import_id = postpone_import
         self.current_line_id.import_id = postpone_import
         self.current_line_index += 1

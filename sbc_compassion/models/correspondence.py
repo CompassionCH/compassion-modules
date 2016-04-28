@@ -13,9 +13,10 @@ import base64
 import re
 
 from openerp import fields, models, api, exceptions, _
+from pyPdf import PdfFileWriter, PdfFileReader
+from io import BytesIO
 
-from wand.drawing import Drawing
-from wand.image import Image
+from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
 
 
 class CorrespondenceType(models.Model):
@@ -88,13 +89,13 @@ class Correspondence(models.Model):
         'res.lang.compassion', 'Destination language')
     original_text = fields.Text(
         compute='_compute_original_text',
-        inverse='_inverse_page')
+        inverse='_inverse_original')
     english_text = fields.Text(
         compute='_compute_english_translated_text',
-        inverse='_inverse_page')
+        inverse='_inverse_english')
     translated_text = fields.Text(
         compute='_compute_translated_text',
-        inverse='_inverse_page')
+        inverse='_inverse_translated')
     source = fields.Selection(selection=[
         ('letter', _('Letter')),
         ('email', _('E-Mail')),
@@ -103,6 +104,7 @@ class Correspondence(models.Model):
         'correspondence.page', 'correspondence_id')
     nbr_pages = fields.Integer(
         string='Number of pages', compute='_compute_nbr_pages')
+    b2s_layout_id = fields.Many2one('correspondence.b2s.layout', 'B2S layout')
 
     # 4. Additional information
     ###########################
@@ -264,26 +266,43 @@ class Correspondence(models.Model):
         self.nbr_pages = len(self.page_ids)
 
     @api.one
-    def _inverse_page(self):
+    def _inverse_original(self):
+        self._set_text('original_text', self.original_text)
+
+    @api.one
+    def _inverse_english(self):
+        self._set_text('english_translated_text', self.english_text)
+
+    @api.one
+    def _inverse_translated(self):
+        self._set_text('translated_text', self.translated_text)
+
+    @api.one
+    def _set_text(self, field, text):
+        # Try to put text in correct pages (the text should contain
+        # separators).
+        if not text:
+            return
+        pages_text = text.split(PAGE_SEPARATOR)
         if self.page_ids:
-            # Keep only the first page and remove the other
-            self.page_ids[0].write({
-                'original_text': self.original_text,
-                'english_translated_text': self.english_text,
-                'translated_text': self.translated_text,
-            })
-            self.page_ids[1:].unlink()
+            if len(pages_text) <= len(self.page_ids):
+                for i in xrange(0, len(pages_text)):
+                    setattr(self.page_ids[i], field, pages_text[i].strip('\n'))
+            else:
+                for i in xrange(0, len(self.page_ids)):
+                    setattr(self.page_ids[i], field, pages_text[i].strip('\n'))
+                last_page_text = getattr(self.page_ids[i], field)
+                last_page_text += '\n\n' + '\n\n'.join(pages_text[i+1:])
         else:
-            self.page_ids.create(
-                {'correspondence_id': self.id,
-                 'original_text': self.original_text,
-                 'english_translated_text': self.english_text,
-                 'translated_text': self.translated_text},)
+            for i in xrange(0, len(pages_text)):
+                self.page_ids.create({
+                    field: pages_text[i].strip('\n'),
+                    'correspondence_id': self.id})
 
     def _get_text(self, source_text):
         """ Gets the desired text (original/translated) from the pages. """
         txt = self.page_ids.filtered(source_text).mapped(source_text)
-        return '\n\n'.join(txt)
+        return ('\n'+PAGE_SEPARATOR+'\n').join(txt)
 
     def _change_language(self):
         return True
@@ -391,26 +410,98 @@ class Correspondence(models.Model):
     ##########################################################################
     @api.multi
     def compose_letter_image(self):
-        """ Takes the translated text and append it in a new page inside
-        the image letter.
-        :return: True
         """
-        for letter in self:
-            image_data = base64.b64decode(letter.letter_image.datas)
-            with Image(blob=image_data, resolution=300) as letter_image:
-                page = letter_image.sequence[0]
-                translation_page = Image(width=page.width, height=page.height)
-                text = Drawing()
-                text.font = 'Tetria LT Com'
-                text.font_size = 40
-                text.text(100, 100, letter.translated_text)
-                text.draw(translation_page)
-                letter_image.sequence.append(translation_page)
-                # Image not compressed if not making the blob!
-                letter_image.make_blob('pdf')
-                letter_image.compression = 'group4'
-                image_data = base64.b64encode(letter_image.make_blob('pdf'))
-            letter.letter_image.datas = image_data
+        Puts the translated text of a letter inside the original image given
+        the child letter layout.
+        :return: True if the composition succeeded, False otherwise
+        """
+        self.ensure_one()
+        layout = self.b2s_layout_id
+        image_data = base64.b64decode(self.letter_image.datas)
+        text = self.translated_text or self.english_text
+        if not text or not layout:
+            return False
+
+        # Read the existing PDF of the letter
+        existing_pdf = PdfFileReader(BytesIO(image_data))
+        # Prepare a new composed PDF
+        final_pdf = PdfFileWriter()
+        # Holds the text that cannot fit in the box
+        remaining_text = ''
+
+        def get_chars(t): return "".join(re.findall("[a-zA-Z]+", t))
+        for i in xrange(0, existing_pdf.numPages):
+            page = self.page_ids[i]
+            text = page.translated_text or page.english_translated_text or ''
+            if len(get_chars(remaining_text+text)) < 3:
+                # Page with less than 3 characters are not considered valid
+                # for translation. Just keep the original page.
+                final_pdf.addPage(existing_pdf.getPage(i))
+                continue
+            # Take the boxes depending on which page we handle
+            if i == 0:
+                boxes = layout.page_1_box_ids
+            elif i == 1:
+                boxes = layout.page_2_box_ids
+            else:
+                boxes = layout.additional_page_box_id
+            if not boxes:
+                remaining_text = text
+                continue
+            box_texts = text.split(BOX_SEPARATOR)
+            if len(box_texts) > len(boxes):
+                # There should never be more text than expected by the
+                # layout.
+                return False
+
+            # Construct new PDF for the current page
+            page_output = PdfFileWriter()
+            page_output.addPage(existing_pdf.getPage(i))
+            if i > 1:
+                # Add the original page to the final pdf. Translation will
+                # come in separate page.
+                final_pdf.addPage(page_output.getPage(0))
+            # Compose the text for each box inside the page
+            for j in xrange(0, len(box_texts)):
+                text = remaining_text + box_texts[j]
+                remaining_text = ''
+                box = boxes[j]
+                # Check that the text can fit in the box
+                if len(text) > box.text_length:
+                    # Log when text is too long to see if that happens a lot
+                    self.message_post(
+                        'Translation went out of the translation box',
+                        'Translation too long')
+                    trunc = text[:box.text_length]
+                    remaining_text = text[box.text_length:]
+                    text = trunc
+
+                translation_pdf = box.get_pdf(text)
+                if i <= 1:
+                    # Merge the translation on the existing page
+                    page = page_output.getPage(j)
+                    page.mergePage(translation_pdf.getPage(0))
+                    page_output.addPage(page)
+                else:
+                    # Add translation in a separate page
+                    final_pdf.addPage(translation_pdf.getPage(0))
+
+            # Write the last version of the page into final pdf
+            if i <= 1:
+                final_pdf.addPage(page_output.getPage(j))
+
+        # Add page if there is remaining text
+        if remaining_text:
+            translation_pdf = layout.additional_page_box_id.get_pdf(
+                remaining_text)
+            final_pdf.addPage(translation_pdf.getPage(0))
+
+        # Finally write the pdf back into letter_image
+        output_stream = BytesIO()
+        final_pdf.write(output_stream)
+        output_stream.seek(0)
+        self.letter_image.datas = base64.b64encode(output_stream.read())
+
         return True
 
     ##########################################################################
