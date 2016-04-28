@@ -58,7 +58,8 @@
                                     'create_edit':false,'field_color': 'state', 'search_more':true,
                                     'colors': {'terminated': 'gray', 'mandate': 'blue', 'waiting': 'blue'}}"/>
                                 <field name="letter_image" widget="binary" required="1" class="oe_edit_only"/>
-                                <field name="template_id"/>
+                                <field name="template_id" attrs="{'invisible': [('direction','=','Beneficiary To Supporter')]}"/>
+                                <field name="b2s_layout_id" attrs="{'invisible': [('direction','=','Supporter To Beneficiary')]}"/>
                                 <field name="direction"/>
                                 <field name="communication_type_ids" widget="many2many_checkboxes"/>
                             </group>
@@ -83,20 +84,33 @@
                                 <field name="beneficiary_language_ids" string="Child spoken languages" widget="many2many_tags" options="{'create':False}"/>
                             </group>
                         </group>
-                        <group string="Letter content">
-                            <group>
-                                <field name="nbr_pages" />
-                                <field name="original_language_id" string="Original language" options="{'create':False}" required="1"/>
-                                <field name="original_text" readonly="1"/>
-                                <field name="english_text" readonly="1"/>
-                            </group>
-                            <group>
-                                <field name="translator" attrs="{'invisible': ['|', ('translator', '=', False), ('translator_id', '!=', False)]}"/>
-                                <field name="translator_id" attrs="{'invisible': [('translator', '=', False)]}"/>
-                                <field name="destination_language_id" string="Destination language" options="{'create':False}"/>
-                                <field name="translated_text" readonly="1"/>
-                            </group>
-                        </group>
+                        <notebook>
+                            <page string="Letter content">
+                                <group>
+                                    <group>
+                                        <field name="nbr_pages" />
+                                        <field name="original_language_id" string="Original language" options="{'create':False}" required="1"/>
+                                        <field name="original_text" readonly="1"/>
+                                        <field name="english_text" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="translator" attrs="{'invisible': ['|', ('translator', '=', False), ('translator_id', '!=', False)]}"/>
+                                        <field name="translator_id" attrs="{'invisible': [('translator', '=', False)]}"/>
+                                        <field name="destination_language_id" string="Destination language" options="{'create':False}"/>
+                                        <field name="translated_text" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Pages">
+                                <field name="page_ids">
+                                    <tree>
+                                        <field name="original_text"/>
+                                        <field name="english_translated_text"/>
+                                        <field name="translated_text"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids" widget="mail_followers"/>
