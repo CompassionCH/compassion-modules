@@ -16,7 +16,7 @@ from openerp import fields, models, api, exceptions, _
 from pyPdf import PdfFileWriter, PdfFileReader
 from io import BytesIO
 
-from .correspondence_page import BOX_SEPARATOR
+from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
 
 
 class CorrespondenceType(models.Model):
@@ -89,13 +89,13 @@ class Correspondence(models.Model):
         'res.lang.compassion', 'Destination language')
     original_text = fields.Text(
         compute='_compute_original_text',
-        inverse='_inverse_page')
+        inverse='_inverse_original')
     english_text = fields.Text(
         compute='_compute_english_translated_text',
-        inverse='_inverse_page')
+        inverse='_inverse_english')
     translated_text = fields.Text(
         compute='_compute_translated_text',
-        inverse='_inverse_page')
+        inverse='_inverse_translated')
     source = fields.Selection(selection=[
         ('letter', _('Letter')),
         ('email', _('E-Mail')),
@@ -104,7 +104,7 @@ class Correspondence(models.Model):
         'correspondence.page', 'correspondence_id')
     nbr_pages = fields.Integer(
         string='Number of pages', compute='_compute_nbr_pages')
-    b2s_layout_id = fields.Many2one('correspondence.b2s.layout')
+    b2s_layout_id = fields.Many2one('correspondence.b2s.layout', 'B2S layout')
 
     # 4. Additional information
     ###########################
@@ -266,26 +266,43 @@ class Correspondence(models.Model):
         self.nbr_pages = len(self.page_ids)
 
     @api.one
-    def _inverse_page(self):
+    def _inverse_original(self):
+        self._set_text('original_text', self.original_text)
+
+    @api.one
+    def _inverse_english(self):
+        self._set_text('english_translated_text', self.english_text)
+
+    @api.one
+    def _inverse_translated(self):
+        self._set_text('translated_text', self.translated_text)
+
+    @api.one
+    def _set_text(self, field, text):
+        # Try to put text in correct pages (the text should contain
+        # separators).
+        if not text:
+            return
+        pages_text = text.split(PAGE_SEPARATOR)
         if self.page_ids:
-            # Keep only the first page and remove the other
-            self.page_ids[0].write({
-                'original_text': self.original_text,
-                'english_translated_text': self.english_text,
-                'translated_text': self.translated_text,
-            })
-            self.page_ids[1:].unlink()
+            if len(pages_text) <= len(self.page_ids):
+                for i in xrange(0, len(pages_text)):
+                    setattr(self.page_ids[i], field, pages_text[i].strip('\n'))
+            else:
+                for i in xrange(0, len(self.page_ids)):
+                    setattr(self.page_ids[i], field, pages_text[i].strip('\n'))
+                last_page_text = getattr(self.page_ids[i], field)
+                last_page_text += '\n\n' + '\n\n'.join(pages_text[i+1:])
         else:
-            self.page_ids.create(
-                {'correspondence_id': self.id,
-                 'original_text': self.original_text,
-                 'english_translated_text': self.english_text,
-                 'translated_text': self.translated_text},)
+            for i in xrange(0, len(pages_text)):
+                self.page_ids.create({
+                    field: pages_text[i].strip('\n'),
+                    'correspondence_id': self.id})
 
     def _get_text(self, source_text):
         """ Gets the desired text (original/translated) from the pages. """
         txt = self.page_ids.filtered(source_text).mapped(source_text)
-        return '\n\n'.join(txt).replace(BOX_SEPARATOR, '\n')
+        return ('\n'+PAGE_SEPARATOR+'\n').join(txt)
 
     def _change_language(self):
         return True

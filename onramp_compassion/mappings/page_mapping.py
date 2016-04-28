@@ -13,6 +13,10 @@ from openerp.addons.sbc_compassion.models.correspondence_page import \
     BOX_SEPARATOR
 
 
+def _format_text(text):
+        return text and text.split('\n' + BOX_SEPARATOR + '\n') or ['']
+
+
 class PageMapping(OnrampMapping):
     """ This class contains the mapping between Odoo fields and GMC field names
     for the model Sponsorship Correspondence.
@@ -34,17 +38,10 @@ class PageMapping(OnrampMapping):
     FIELDS_TO_SUBMIT = {
         'OriginalPageURL': None,
         'FinalPageURL': None,
-        'OriginalText': None,
-        'EnglishTranslatedText': None,
-        'TranslatedText': None
+        'OriginalText': lambda text: _format_text(text),
+        'EnglishTranslatedText': lambda text: _format_text(text),
+        'TranslatedText': lambda text: _format_text(text)
     }
-
-    def _process_connect_data(self, connect_data):
-        fields = (
-            'OriginalText', 'EnglishTranslatedText', 'TranslatedText')
-        for field in fields:
-            if field in connect_data:
-                connect_data[field] = [connect_data[field]]
 
     def _process_odoo_data(self, odoo_data):
         # Concatenation of all boxes in one text
