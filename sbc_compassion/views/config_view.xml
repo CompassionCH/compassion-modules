@@ -60,7 +60,7 @@
                     <field name="left"/>
                     <field name="top"/>
                     <field name="width"/>
-                    <field name="text_length"/>
+                    <field name="nb_lines"/>
                 </tree>
             </field>
         </record>

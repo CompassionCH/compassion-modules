@@ -30,12 +30,12 @@ class CorrespondenceTranslationBox(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     name = fields.Char()
-    text_length = fields.Integer(
-        help='Maximum text length authorized in the box. If the text is longer'
-             ', it will be cut.')
     left = fields.Float()
     top = fields.Float()
     width = fields.Float()
+    nb_lines = fields.Integer(
+        help='Maximum lines authorized in the box.'
+    )
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -54,13 +54,16 @@ class CorrespondenceTranslationBox(models.Model):
         text_wrap = self._wrap_text(text, can._fontname, can._fontsize)
         top = self.top*inch
         left = self.left*inch
-        for line in text_wrap:
+        for line in text_wrap[:self.nb_lines+1]:
             can.drawString(left, top, line)
             top += can._leading
         can.save()
         # Move to the beginning of the StringIO buffer
         packet.seek(0)
-        return PdfFileReader(packet)
+        remaining = ''
+        if len(text_wrap) > self.nb_lines:
+            remaining = ' '.join(text_wrap[self.nb_lines+1:])
+        return PdfFileReader(packet), remaining
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -74,21 +77,24 @@ class CorrespondenceTranslationBox(models.Model):
         :return: List of lines
         :rtype: list(str)
         """
-        text_width = stringWidth(text, font_name, font_size) / inch
         text_wrap = list()
-        if text_width > self.width:
-            ratio = self.width / text_width
-            line_length = int(len(text) * ratio)
-            words = text.split(' ')
-            line = ''
-            for word in words:
-                if len(line) + len(word) < line_length:
-                    line += word + ' '
-                else:
-                    text_wrap.append(line)
-                    line = word + ' '
-            text_wrap.append(line)
-        else:
-            text_wrap = [text]
+        for line in text.split('\n'):
+            text_width = stringWidth(line, font_name, font_size) / inch
+            line_wrap = list()
+            if text_width > self.width:
+                ratio = self.width / text_width
+                line_length = int(len(line) * ratio)
+                words = line.split(' ')
+                sub_line = ''
+                for word in words:
+                    if len(sub_line) + len(word) < line_length:
+                        sub_line += word + ' '
+                    else:
+                        line_wrap.append(sub_line)
+                        sub_line = word + ' '
+                line_wrap.append(sub_line)
+            else:
+                line_wrap = [line]
+            text_wrap.extend(line_wrap)
 
         return text_wrap
