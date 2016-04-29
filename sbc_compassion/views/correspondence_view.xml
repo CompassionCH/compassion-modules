@@ -97,7 +97,7 @@
                                         <field name="translator" attrs="{'invisible': ['|', ('translator', '=', False), ('translator_id', '!=', False)]}"/>
                                         <field name="translator_id" attrs="{'invisible': [('translator', '=', False)]}"/>
                                         <field name="destination_language_id" string="Destination language" options="{'create':False}"/>
-                                        <field name="translated_text" readonly="1"/>
+                                        <field name="translated_text"/>
                                     </group>
                                 </group>
                             </page>
