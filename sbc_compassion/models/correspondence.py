@@ -372,6 +372,11 @@ class Correspondence(models.Model):
             vals['communication_type_ids'] = [(
                 4, self.env.ref(
                     'sbc_compassion.correspondence_type_supporter').id)]
+            default_template = self.env.ref('sbc_compassion.default_template')
+            if vals.get('template_id',
+                        default_template.id) != default_template.id and not \
+                    vals.get('page_ids'):
+                vals['page_ids'] = [(0, 0, {}), (0, 0, {})]
         else:
             vals['status_date'] = fields.Datetime.now()
             if 'communication_type_ids' not in vals:
@@ -405,6 +410,16 @@ class Correspondence(models.Model):
             vals['letter_image'] = attachment.id
         return super(Correspondence, self).write(vals)
 
+    @api.multi
+    def unlink(self):
+        for letter in self:
+            if letter.kit_identifier or letter.state == 'Global Partner ' \
+                                                        'translation queue':
+                raise exceptions.Warning(
+                    _("You cannot delete a letter which is in "
+                      "translation or already sent to GMC."))
+        super(Correspondence, self).unlink()
+        
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
@@ -428,25 +443,41 @@ class Correspondence(models.Model):
         final_pdf = PdfFileWriter()
         # Holds the text that cannot fit in the box
         remaining_text = ''
+        additional_pages_header = 'Page '
+        if self.correspondant_id.lang == 'de_DE':
+            additional_pages_header = 'Seite '
+        elif self.correspondant_id.lang == 'it_IT':
+            additional_pages_header = 'Pagina '
 
         def get_chars(t): return "".join(re.findall("[a-zA-Z]+", t))
+
         for i in xrange(0, existing_pdf.numPages):
-            page = self.page_ids[i]
-            text = page.translated_text or page.english_translated_text or ''
-            if len(get_chars(remaining_text+text)) < 3:
+            text = ''
+            if len(self.page_ids) > i:
+                page = self.page_ids[i]
+                text = page.translated_text or page.english_translated_text \
+                    or ''
+            if len(get_chars(text)) < 3:
                 # Page with less than 3 characters are not considered valid
                 # for translation. Just keep the original page.
                 final_pdf.addPage(existing_pdf.getPage(i))
                 continue
+
             # Take the boxes depending on which page we handle
+            boxes = False
             if i == 0:
                 boxes = layout.page_1_box_ids
             elif i == 1:
                 boxes = layout.page_2_box_ids
-            else:
-                boxes = layout.additional_page_box_id
             if not boxes:
-                remaining_text = text
+                # For subsequent pages, translation will go at the end of pdf.
+                final_pdf.addPage(existing_pdf.getPage(i))
+                if remaining_text:
+                    remaining_text += '\n\n' + additional_pages_header +\
+                        str(i+1) + ':\n' + text
+                else:
+                    remaining_text = additional_pages_header + str(i+1) +\
+                                     ':\n' + text
                 continue
             box_texts = text.split(BOX_SEPARATOR)
             if len(box_texts) > len(boxes):
@@ -457,43 +488,32 @@ class Correspondence(models.Model):
             # Construct new PDF for the current page
             page_output = PdfFileWriter()
             page_output.addPage(existing_pdf.getPage(i))
-            if i > 1:
-                # Add the original page to the final pdf. Translation will
-                # come in separate page.
-                final_pdf.addPage(page_output.getPage(0))
+
             # Compose the text for each box inside the page
             for j in xrange(0, len(box_texts)):
                 text = remaining_text + box_texts[j]
-                remaining_text = ''
                 box = boxes[j]
+                translation_pdf, remaining_text = box.get_pdf(text)
+
                 # Check that the text can fit in the box
-                if len(text) > box.text_length:
+                if remaining_text:
                     # Log when text is too long to see if that happens a lot
                     self.message_post(
                         'Translation went out of the translation box',
                         'Translation too long')
-                    trunc = text[:box.text_length]
-                    remaining_text = text[box.text_length:]
-                    text = trunc
 
-                translation_pdf = box.get_pdf(text)
-                if i <= 1:
-                    # Merge the translation on the existing page
-                    page = page_output.getPage(j)
-                    page.mergePage(translation_pdf.getPage(0))
-                    page_output.addPage(page)
-                else:
-                    # Add translation in a separate page
-                    final_pdf.addPage(translation_pdf.getPage(0))
+                # Merge the translation on the existing page
+                page = page_output.getPage(j)
+                page.mergePage(translation_pdf.getPage(0))
+                page_output.addPage(page)
 
             # Write the last version of the page into final pdf
-            if i <= 1:
-                final_pdf.addPage(page_output.getPage(j))
+            final_pdf.addPage(page_output.getPage(j))
 
-        # Add page if there is remaining text
-        if remaining_text:
-            translation_pdf = layout.additional_page_box_id.get_pdf(
-                remaining_text)
+        # Add pages if there is remaining text
+        while remaining_text:
+            box = layout.additional_page_box_id
+            translation_pdf, remaining_text = box.get_pdf(remaining_text)
             final_pdf.addPage(translation_pdf.getPage(0))
 
         # Finally write the pdf back into letter_image

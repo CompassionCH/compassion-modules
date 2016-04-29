@@ -36,8 +36,7 @@ class ImportReview(models.TransientModel):
     state = fields.Selection(related='current_line_id.status', readonly=True)
     letter_image = fields.Binary(compute='_get_current_line')
     letter_file = fields.Binary(
-        'Letter file', readonly=True,
-        related='current_line_id.letter_image.datas')
+        'Letter file', readonly=True, compute='_get_current_line')
     fname = fields.Char(related='current_line_id.letter_image.name')
     partner_id = fields.Many2one(related='current_line_id.partner_id')
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
@@ -53,6 +52,7 @@ class ImportReview(models.TransientModel):
         related='current_line_id.physical_attachments')
     attachments_description = fields.Char(
         related='current_line_id.attachments_description')
+    edit = fields.Boolean('Edit mode')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -67,7 +67,9 @@ class ImportReview(models.TransientModel):
             self.count = self.current_line_index + 1
             self.progress = (float(self.count) / self.nb_lines) * 100
             self.letter_image = self.with_context(
-                    bin_size=False).current_line_id.letter_image_preview
+                bin_size=False).current_line_id.letter_image_preview
+            self.letter_file = self.with_context(
+                bin_size=False).current_line_id.letter_image.datas
 
     @api.onchange('sponsorship_id')
     def _get_partner_child(self):

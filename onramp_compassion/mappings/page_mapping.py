@@ -8,6 +8,8 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+from HTMLParser import HTMLParser
+
 from base_mapping import OnrampMapping
 from openerp.addons.sbc_compassion.models.correspondence_page import \
     BOX_SEPARATOR
@@ -45,8 +47,10 @@ class PageMapping(OnrampMapping):
 
     def _process_odoo_data(self, odoo_data):
         # Concatenation of all boxes in one text
+        html_parser = HTMLParser()
         fields = (
             'original_text', 'english_translated_text', 'translated_text')
         for field in fields:
             if field in odoo_data:
-                odoo_data[field] = BOX_SEPARATOR.join(odoo_data[field])
+                odoo_data[field] = BOX_SEPARATOR.join(
+                    html_parser.unescape(odoo_data[field]))

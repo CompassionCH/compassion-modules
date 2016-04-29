@@ -25,7 +25,6 @@
                     <field name="read_count" />
                 </field>
                 <header>
-                    <button name="download_attach_letter_image" type="object" string="Reload image" states="Published to Global Partner"/>
                     <button name="attach_original" type="object"
                             string="Replace by original"
                             states="Published to Global Partner"/>

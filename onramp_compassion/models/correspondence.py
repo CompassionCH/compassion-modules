@@ -107,15 +107,14 @@ class SponsorshipCorrespondence(models.Model):
 
     def process_letter(self):
         """ Method called when new B2S letter is Published. """
-        self.download_attach_letter_image('original_letter_url')
+        self.download_attach_letter_image(type='original_letter_url')
         for letter in self:
             if letter.original_language_id not in \
                     letter.correspondant_id.spoken_lang_ids:
                 letter.compose_letter_image()
 
     @api.multi
-    def download_attach_letter_image(self, context=None,
-                                     type='final_letter_url'):
+    def download_attach_letter_image(self, type='final_letter_url'):
         """ Download letter image from US service and attach to letter. """
         for letter in self:
             # Download and store letter
