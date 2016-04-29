@@ -419,7 +419,7 @@ class Correspondence(models.Model):
                     _("You cannot delete a letter which is in "
                       "translation or already sent to GMC."))
         super(Correspondence, self).unlink()
-        
+
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
