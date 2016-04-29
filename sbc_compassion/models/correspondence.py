@@ -372,6 +372,11 @@ class Correspondence(models.Model):
             vals['communication_type_ids'] = [(
                 4, self.env.ref(
                     'sbc_compassion.correspondence_type_supporter').id)]
+            default_template = self.env.ref('sbc_compassion.default_template')
+            if vals.get('template_id',
+                        default_template.id) != default_template.id and not \
+                    vals.get('page_ids'):
+                vals['page_ids'] = [(0, 0, {}), (0, 0, {})]
         else:
             vals['status_date'] = fields.Datetime.now()
             if 'communication_type_ids' not in vals:
@@ -405,6 +410,16 @@ class Correspondence(models.Model):
             vals['letter_image'] = attachment.id
         return super(Correspondence, self).write(vals)
 
+    @api.multi
+    def unlink(self):
+        for letter in self:
+            if letter.kit_identifier or letter.state == 'Global Partner ' \
+                                                        'translation queue':
+                raise exceptions.Warning(
+                    _("You cannot delete a letter which is in "
+                      "translation or already sent to GMC."))
+        super(Correspondence, self).unlink()
+        
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################

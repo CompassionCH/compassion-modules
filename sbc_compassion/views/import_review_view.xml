@@ -20,9 +20,10 @@
                             <group colspan="2">
                                 <field name="current_line_id"/>
                                 <field name="state"/>
-                                <field name="partner_id" attrs="{'invisible': [('partner_id', '!=', False)]}"/>
+                                <field name="edit"/>
+                                <field name="partner_id" attrs="{'invisible': [('partner_id', '!=', False), ('edit', '=', False)]}"/>
                                 <field name="child_id" invisible="1"/>
-                                <field name="sponsorship_id" attrs="{'invisible': [('child_id', '!=', False), ('partner_id', '!=', False)]}"
+                                <field name="sponsorship_id" attrs="{'invisible': [('child_id', '!=', False), ('partner_id', '!=', False), ('edit', '=', False)]}"
                                        options="{'colors':{'waiting':'green','terminated':'grey','cancelled':'grey','mandate':'red'},
                                              'field_color':'state',
                                              'create': false, 'create_edit': false}"
