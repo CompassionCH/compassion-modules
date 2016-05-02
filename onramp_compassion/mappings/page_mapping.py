@@ -52,5 +52,5 @@ class PageMapping(OnrampMapping):
             'original_text', 'english_translated_text', 'translated_text')
         for field in fields:
             if field in odoo_data:
-                odoo_data[field] = BOX_SEPARATOR.join(
-                    html_parser.unescape(odoo_data[field]))
+                odoo_data[field] = html_parser.unescape(BOX_SEPARATOR.join(
+                    odoo_data[field]))

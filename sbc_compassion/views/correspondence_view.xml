@@ -26,7 +26,7 @@
                     <field name="communication_type_ids"/>
                     <field name="template_id"/>
                     <field name="original_language_id"/>
-                    <field name="destination_language_id"/>
+                    <field name="translation_language_id"/>
                     <field name="relationship"/>
                     <field name="state"/>
                 </tree>
@@ -94,9 +94,9 @@
                                         <field name="english_text" readonly="1"/>
                                     </group>
                                     <group>
-                                        <field name="translator" attrs="{'invisible': ['|', ('translator', '=', False), ('translator_id', '!=', False)]}"/>
-                                        <field name="translator_id" attrs="{'invisible': [('translator', '=', False)]}"/>
-                                        <field name="destination_language_id" string="Destination language" options="{'create':False}"/>
+                                        <field name="translator" attrs="{'invisible': [('translator', '=', False)]}"/>
+                                        <field name="translator_id" attrs="{'invisible': [('translator_id', '=', False)]}"/>
+                                        <field name="translation_language_id" string="Destination language" options="{'create':False}"/>
                                         <field name="translated_text"/>
                                     </group>
                                 </group>

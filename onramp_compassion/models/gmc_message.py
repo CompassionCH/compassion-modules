@@ -78,8 +78,7 @@ class GmcMessage(models.Model):
         """ If message is destinated to new Onramp, send them directly.
         Otherwise, use old method with middleware. """
         action = self.action_id
-        result = False
-        if action.connect_service:
+        if action.connect_service and self._validate_outgoing_action():
             result = self._process_to_compassion_connect()
         else:
             result = super(GmcMessage, self)._perform_outgoing_action()

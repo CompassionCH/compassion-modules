@@ -10,7 +10,7 @@
 ##############################################################################
 import StringIO
 from openerp import models, fields
-from pyPdf.pdf import PdfFileReader
+from pyPdf.pdf import PdfFileReader, PdfFileWriter
 from reportlab.lib.units import inch
 from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfgen.canvas import Canvas
@@ -40,13 +40,14 @@ class CorrespondenceTranslationBox(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    def get_pdf(self, text):
+    def get_pdf(self, text, use_design=False):
         """
         Given the text, produces an A4 blank PDF with the text put in the
         position given by the tranlsation box.
         :param text: Text to put inside a translation box
+        :param use_design: Set to true to use a design in the background
         :return: Rendered PDF
-        :rtype: pypdf.PdfFileReader
+        :rtype: pypdf.PdfFileReader if use_design is False or PdfFileWriter
         """
         self.ensure_one()
         packet = StringIO.StringIO()
@@ -63,7 +64,17 @@ class CorrespondenceTranslationBox(models.Model):
         remaining = ''
         if len(text_wrap) > self.nb_lines:
             remaining = ' '.join(text_wrap[self.nb_lines+1:])
-        return PdfFileReader(packet), remaining
+        out_pdf = PdfFileReader(packet)
+        if use_design:
+            design_pdf_path = self.env['ir.config_parameter'].get_param(
+                'sbc_compassion.composition_design')
+            if design_pdf_path:
+                design_pdf = PdfFileReader(file(design_pdf_path, 'rb'))
+                page = design_pdf.getPage(0)
+                page.mergePage(out_pdf.getPage(0))
+                out_pdf = PdfFileWriter()
+                out_pdf.addPage(page)
+        return out_pdf, remaining
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

@@ -85,8 +85,9 @@ class Correspondence(models.Model):
     # First spoken lang of partner
     original_language_id = fields.Many2one(
         'res.lang.compassion', 'Original language')
-    destination_language_id = fields.Many2one(
-        'res.lang.compassion', 'Destination language')
+    translation_language_id = fields.Many2one(
+        'res.lang.compassion', 'Translation language',
+        oldname='destination_language_id')
     original_text = fields.Text(
         compute='_compute_original_text',
         inverse='_inverse_original')
@@ -372,11 +373,8 @@ class Correspondence(models.Model):
             vals['communication_type_ids'] = [(
                 4, self.env.ref(
                     'sbc_compassion.correspondence_type_supporter').id)]
-            default_template = self.env.ref('sbc_compassion.default_template')
-            if vals.get('template_id',
-                        default_template.id) != default_template.id and not \
-                    vals.get('page_ids'):
-                vals['page_ids'] = [(0, 0, {}), (0, 0, {})]
+            if not vals.get('translation_language_id'):
+                vals['translation_language_id'] = vals['original_language_id']
         else:
             vals['status_date'] = fields.Datetime.now()
             if 'communication_type_ids' not in vals:
@@ -395,6 +393,14 @@ class Correspondence(models.Model):
                 'name': letter.scanned_date + '_' + letter.name + type_,
                 'datas_fname': letter.name,
                 'res_id': letter.id})
+            # Set the correct number of pages
+            image_data = base64.b64decode(attachment.datas)
+            image_pdf = PdfFileReader(BytesIO(image_data))
+            if letter.nbr_pages < image_pdf.numPages:
+                pages = list()
+                for i in range(letter.nbr_pages, image_pdf.numPages):
+                    pages.append((0, 0, {'correspondence_id': letter.id}))
+                letter.write({'page_ids': pages})
         return letter
 
     @api.multi
@@ -457,7 +463,7 @@ class Correspondence(models.Model):
                 page = self.page_ids[i]
                 text = page.translated_text or page.english_translated_text \
                     or ''
-            if len(get_chars(text)) < 3:
+            if len(get_chars(remaining_text + text)) < 3:
                 # Page with less than 3 characters are not considered valid
                 # for translation. Just keep the original page.
                 final_pdf.addPage(existing_pdf.getPage(i))
@@ -513,7 +519,7 @@ class Correspondence(models.Model):
         # Add pages if there is remaining text
         while remaining_text:
             box = layout.additional_page_box_id
-            translation_pdf, remaining_text = box.get_pdf(remaining_text)
+            translation_pdf, remaining_text = box.get_pdf(remaining_text, True)
             final_pdf.addPage(translation_pdf.getPage(0))
 
         # Finally write the pdf back into letter_image

@@ -89,7 +89,7 @@ class CorrespondenceMapping(OnrampMapping):
         'Template': ('template_id.layout',
                      'correspondence.template'),
         'TranslatedBy': 'translator',
-        'TranslationLanguage': ('destination_language_id.name',
+        'TranslationLanguage': ('translation_language_id.name',
                                 'res.lang.compassion'),
         'Supporter': SUPPORTER_MAPPING
     }
