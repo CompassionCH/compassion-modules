@@ -294,9 +294,9 @@ msgstr "Préference d'envoi pour lettres d'enfant"
 
 #. module: sbc_compassion
 #: view:correspondence:sbc_compassion.view_correspondence_form
-#: field:correspondence,destination_language_id:0
-msgid "Destination language"
-msgstr "Langue destination"
+#: field:correspondence,translation_language_id:0
+msgid "Translation language"
+msgstr "Langue de traduction"
 
 #. module: sbc_compassion
 #: field:correspondence,direction:0
