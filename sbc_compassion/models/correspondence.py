@@ -264,7 +264,8 @@ class Correspondence(models.Model):
 
     @api.depends('page_ids')
     def _compute_nbr_pages(self):
-        self.nbr_pages = len(self.page_ids)
+        for letter in self:
+            letter.nbr_pages = len(letter.page_ids)
 
     @api.one
     def _inverse_original(self):
