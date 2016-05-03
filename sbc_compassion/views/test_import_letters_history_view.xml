@@ -35,7 +35,7 @@
                             </group>
                         </group>
                         <group>
-                            <field name="test_import_line_ids" states="open,ready" domain="[('id','=','-1')]">
+                            <field name="test_import_line_ids">
                                 <tree colors="red:status != 'ok';green:status == 'ok'" create="false" editable="bottom">
                                     <field name="letter_image" readonly="1" string="Filename"/>
                                     <field name="letter_image_preview" widget='image' display="icon" readonly="1"/>
@@ -50,7 +50,6 @@
                                     <field name="status" invisible="1"/>
                                 </tree>
                             </field>
-                            <field name="letters_ids" states="done"/>
                         </group>
                     </sheet>
                 </form>

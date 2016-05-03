@@ -476,7 +476,7 @@ def _find_languages(env, img, line_vals, test):
             maxDark = (checkbox, sumLows)
         elif sumLows > secondDark[1]:
             secondDark = (checkbox, sumLows)
-        elif sumLows < minDark[1]:
+        if sumLows < minDark[1]:
             minDark = (checkbox, sumLows)
 
         if test:
@@ -503,7 +503,7 @@ def _find_languages(env, img, line_vals, test):
     if test:
         test_data = manyImages2OneImage(test_img, 2)
         line_vals['lang_preview'] = test_data
-        line_vals['test_letter_language'] = lang.code_iso if found else ''
+        line_vals['test_letter_language'] = lang.code_iso if found else 'nope'
 
 
 def manyImages2OneImage(test_img, col):

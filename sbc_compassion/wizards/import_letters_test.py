@@ -52,6 +52,7 @@ class TestImportLetters(models.TransientModel):
                     'error': error
                 })
             # create all the data
+            line_vals[i]['test_import_id'] = self.id
             letters_line = self.env['test.import.letter.line'].create(
                 line_vals[i])
             document_vals[i].update({
