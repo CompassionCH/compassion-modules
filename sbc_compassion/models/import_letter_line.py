@@ -126,7 +126,8 @@ class ImportLetterLine(models.Model):
                 'letter_image': line.letter_image.datas,
                 'original_language_id': line.letter_language_id.id,
                 'direction': 'Supporter To Beneficiary',
-                'original_text': line.original_text
+                'original_text': line.original_text,
+                'source': line.source,
             })
             if line.is_encourager:
                 vals['relationship'] = 'Encourager'
