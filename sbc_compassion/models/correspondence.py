@@ -97,10 +97,6 @@ class Correspondence(models.Model):
     translated_text = fields.Text(
         compute='_compute_translated_text',
         inverse='_inverse_translated')
-    source = fields.Selection(selection=[
-        ('letter', _('Letter')),
-        ('email', _('E-Mail')),
-        ('website', _('Compassion website'))], default='letter')
     page_ids = fields.One2many(
         'correspondence.page', 'correspondence_id')
     nbr_pages = fields.Integer(

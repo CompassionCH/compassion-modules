@@ -29,6 +29,11 @@ class CorrespondenceMetadata(models.AbstractModel):
     template_id = fields.Many2one(
         'correspondence.template', 'Template')
     mandatory_review = fields.Boolean()
+    source = fields.Selection(selection=[
+        ('letter', _('Letter')),
+        ('email', _('E-Mail')),
+        ('website', _('Compassion website')),
+        ('compassion', _('Written by Compasion'))], default='letter')
 
     @api.model
     def get_fields(self):
