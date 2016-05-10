@@ -11,8 +11,5 @@
 
 from . import gmc_message
 from . import gmc_action
-from . import child_compassion
-from . import child_properties
-from . import contracts
-from . import res_partner
-from . import invoice_line
+from . import gmc_action_connect
+from . import ir_http

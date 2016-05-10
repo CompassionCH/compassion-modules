@@ -11,12 +11,17 @@
 import magic
 import base64
 import re
+import uuid
 
 from openerp import fields, models, api, exceptions, _
 from pyPdf import PdfFileWriter, PdfFileReader
 from io import BytesIO
 
 from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
+from ..tools.onramp_connector import SBCConnector
+
+from openerp.addons.message_center_compassion.mappings import base_mapping as \
+    mapping
 
 
 class CorrespondenceType(models.Model):
@@ -126,6 +131,13 @@ class Correspondence(models.Model):
     translator_id = fields.Many2one(
         'res.partner', 'GP Translator', compute='_compute_translator',
         inverse='_set_translator', store=True)
+
+    # Letter remote access and stats
+    ###################################
+    uuid = fields.Char(required=True, default=lambda self: self._get_uuid())
+    read_url = fields.Char(compute='_get_read_url')
+    last_read = fields.Datetime()
+    read_count = fields.Integer(default=0)
 
     # 5. SQL Constraints
     ####################
@@ -357,6 +369,17 @@ class Correspondence(models.Model):
                         ('translator_id', '!=', letter.translator_id.id)])
                     other_letters._compute_translator()
 
+    def _get_uuid(self):
+        return str(uuid.uuid4())
+
+    @api.multi
+    def _get_read_url(self):
+        base_url = self.env['ir.config_parameter'].get_param(
+            'web.external.url')
+        for letter in self:
+            letter.read_url = "{}/b2s_image?id={}".format(
+                base_url, letter.uuid)
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -398,6 +421,14 @@ class Correspondence(models.Model):
                 for i in range(letter.nbr_pages, image_pdf.numPages):
                     pages.append((0, 0, {'correspondence_id': letter.id}))
                 letter.write({'page_ids': pages})
+
+        if not self.env.context.get('no_comm_kit'):
+            action_id = self.env.ref('sbc_compassion.create_letter').id
+            self.env['gmc.message.pool'].create({
+                'action_id': action_id,
+                'object_id': letter.id
+            })
+
         return letter
 
     @api.multi
@@ -527,6 +558,101 @@ class Correspondence(models.Model):
 
         return True
 
+    @api.model
+    def process_commkit(self, vals):
+        """ Update or Create the letter with given values. """
+        published_state = 'Published to Global Partner'
+        is_published = vals.get('state') == published_state
+
+        # Write/update letter
+        kit_identifier = vals.get('kit_identifier')
+        letter = self.search([('kit_identifier', '=', kit_identifier)])
+        if letter:
+            # Avoid to publish twice a same letter
+            is_published = is_published and letter.state != published_state
+            letter.write(vals)
+        else:
+            letter = self.with_context(no_comm_kit=True).create(vals)
+
+        if is_published:
+            letter.process_letter()
+
+        return letter.id
+
+    def convert_for_connect(self):
+        """
+        Method called when Create CommKit message is processed.
+        (TODO) Upload the image to Persistence and convert correspondence data
+        to GMC format.
+
+        TODO : Remove this method and use mapping directly in message center.
+        """
+        self.ensure_one()
+        letter = self.with_context(lang='en_US')
+        if not letter.original_letter_url:
+            onramp = SBCConnector()
+            letter.original_letter_url = onramp.send_letter_image(
+                letter.letter_image.datas, letter.letter_format)
+        letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
+        return letter_mapping.get_connect_data(letter)
+
+    def get_connect_data(self, data):
+        """ Enrich correspondence data with GMC data after CommKit Submission.
+        """
+        self.ensure_one()
+        letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
+        return self.write(letter_mapping.get_vals_from_connect(data))
+
+    def process_letter(self):
+        """ Method called when new B2S letter is Published. """
+        self.download_attach_letter_image(type='original_letter_url')
+        for letter in self:
+            if letter.original_language_id not in \
+                    letter.correspondant_id.spoken_lang_ids:
+                letter.compose_letter_image()
+
+    @api.multi
+    def download_attach_letter_image(self, type='final_letter_url'):
+        """ Download letter image from US service and attach to letter. """
+        for letter in self:
+            # Download and store letter
+            letter_url = getattr(letter, type)
+            image_data = None
+            if letter_url:
+                image_data = SBCConnector().get_letter_image(
+                    letter_url, 'pdf', dpi=300)
+            if image_data is None:
+                raise Warning(
+                    _('Image does not exist'),
+                    _("Image requested was not found remotely."))
+            name = letter.child_id.code + '_' + letter.kit_identifier + '.pdf'
+            letter.letter_image = self.env['ir.attachment'].create({
+                "name": name,
+                "db_datas": image_data,
+                'res_model': self._name,
+                'res_id': letter.id,
+            })
+
+    @api.multi
+    def attach_original(self):
+        self.download_attach_letter_image(type='original_letter_url')
+
+    def get_image(self, user=None):
+        """ Method for retrieving the image and updating the read status of
+        the letter.
+        """
+        self.ensure_one()
+        self.write({
+            'last_read': fields.Datetime.now(),
+            'read_count': self.read_count + 1,
+        })
+        data = base64.b64decode(self.letter_image.datas)
+        message = _("The sponsor requested the child letter image.")
+        if user is not None:
+            message = _("User requested the child letter image.")
+        self.message_post(message, _("Letter downloaded"))
+        return data
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
@@ -559,3 +685,10 @@ class Correspondence(models.Model):
                 'res_id': letter.id
             })
         return self.env['ir.attachment'].create(vals), type_
+
+    @api.model
+    def _needaction_domain_get(self):
+        domain = [('direction', '=', 'Beneficiary To Supporter'),
+                  ('state', '=', 'Published to Global Partner'),
+                  ('last_read', '=', False)]
+        return domain

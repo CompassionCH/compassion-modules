@@ -16,10 +16,6 @@
                     <field name="action_id" />
                     <field name="date" />
                     <field name="process_date" />
-                    <field name="child_id" />
-                    <field name="project_id" />
-                    <field name="incoming_key"/>
-                    <field name="event"/>
                     <field name="state" />
                 </tree>
             </field>
@@ -33,37 +29,18 @@
                     <field name="action_id" />
                     <field name="date" />
                     <field name="process_date" />
-                    <field name="partner_id" />
-                    <field name="child_id" />
                     <field name="state" />
                 </tree>
             </field>
         </record>
-        <record id="view_gmc_message_pool_gift_tree" model="ir.ui.view">
-            <field name="name">gmc.message.pool.gift.tree</field>
-            <field name="model">gmc.message.pool</field>
-            <field name="priority">19</field>
-            <field name="arch" type="xml">
-                <tree string="Message Pool" colors="blue:state == 'new';black:state == 'pending';gray:state == 'success';red:state == 'failure'" create="false">
-                    <field name="action_id" />
-                    <field name="date" />
-                    <field name="process_date" />
-                    <field name="partner_id" />
-                    <field name="child_id" />
-                    <field name="gift_type" />
-                    <field name="gift_instructions" />
-                    <field name="gift_amount" />
-                    <field name="state" />
-                </tree>
-            </field>
-        </record>
+
         
         <!-- GMC Message Pool form view -->
         <record id="view_gmc_message_pool_form" model="ir.ui.view">
             <field name="name">gmc.message.pool.form</field>
             <field name="model">gmc.message.pool</field>
             <field name="arch" type="xml">
-                <form string="GMC Message" version="7.0" create="false">
+                <form string="GMC Message" create="false">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="new,pending,success" />
                         <button name="process_messages" type="object" class="oe_highlight" string="Process Message" states="new" />
@@ -82,21 +59,12 @@
                             <field name="date" />
                             <field name="process_date" />
                             <field name="request_id" attrs="{'invisible':[('direction','=','in')]}" states="pending"/>
-                            <field name="partner_id" attrs="{'invisible':[('partner_id','=',False)]}" />
-                            <field name="child_id" attrs="{'invisible':[('child_id','=',False)]}" />
-                            <field name="project_id" attrs="{'invisible':[('project_id','=',False)]}" />
-                            <field name="invoice_line_id" invisible="1" />
-                            <field name="incoming_key" attrs="{'invisible':[('incoming_key','=',False)]}" />
-                            <field name="event" attrs="{'invisible':[('direction','=','out')]}"/>
                             <field name="failure_reason"/>
-                        </group>
-                        <group attrs="{'invisible':[('name','!=','CreateGift')]}">
-                            <field name="gift_type" />
-                            <field name="gift_instructions" />
-                            <field name="gift_amount" />
                         </group>
                         <group>
                             <field name="description" colspan="4"/>
+                            <field name="headers" colspan="4"/>
+                            <field name="content" colspan="4"/>
                         </group>
                         
                     </sheet>
@@ -109,7 +77,7 @@
         </record>
 
 
-        <!-- GMC Action form view -->
+        <!-- GMC Action views -->
         <record id="view_gmc_action_form" model="ir.ui.view">
             <field name="name">gmc.action.form</field>
             <field name="model">gmc.action</field>
@@ -120,11 +88,34 @@
                             <field name="name"/>
                             <field name="direction"/>
                             <field name="model"/>
-                            <field name="type"/>
                             <field name="description"/>
+                            <field name="connect_service"/>
+                            <field name="request_type"/>
+                            <field name="auto_process"/>
                         </group>
                     </sheet>
                 </form>
+            </field>
+        </record>
+        <record id="view_gmc_action_tree" model="ir.ui.view">
+            <field name="name">gmc.action.tree</field>
+            <field name="model">gmc.action</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="direction"/>
+                    <field name="model"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_gmc_action_connect_tree" model="ir.ui.view">
+            <field name="name">gmc.action.connect.tree</field>
+            <field name="model">gmc.action.connect</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="connect_schema"/>
+                    <field name="action_id"/>
+                </tree>
             </field>
         </record>
 
@@ -139,18 +130,11 @@
                     <field name="action_id"/>
                     <field name="date"/>
                     <field name="process_date"/>
-                    <field name="child_id"/>
-                    <field name="partner_id"/>
                     <filter string="Incoming" name="incoming" domain="[('direction','=','in')]" context="{'group_by':'action_id'}" />
-                    <filter string="Constituent" name="constituent" domain="['|',('name','like','Constituent'),('name','like','Email')]" />
-                    <filter string="Child" name="child" domain="['|',('name','like','Child'),('name','like','Project')]" />
-                    <filter string="Commitment" name="commitment" domain="[('name','like','Commitment')]" context="{'group_by':'action_id'}"/>
-                    <filter string="CreateGift" name="gift" domain="[('name','=','CreateGift')]" context="{'group_by':'date'}" />
                     <separator />
                     <filter string="Pending" name="pending" domain="['|', ('state','=','pending'), ('state','=','new')]" />
                     <filter string="Failed" name="failure" domain="[('state','=','failure')]" />
                     <filter string="Success" name="success" domain="[('state','=','success')]" />
-                    <filter string="To Deliver" name="deliver" domain="[('state','=','fondue')]" />
                     <group expand="0" string="Group By...">
                         <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
                         <filter string="Date" domain="[]" context="{'group_by':'date'}"/>
@@ -181,8 +165,6 @@
             <field name="res_model">gmc.message.pool</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="view_gmc_message_pool_incoming_tree" />
-            <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
             <field name="context">{'search_default_incoming':1, 'search_default_pending':1}</field>
             <field name="domain">[('direction', '=', 'in')]</field>
             <field name="help" type="html">
@@ -191,81 +173,32 @@
               </p>
             </field>
         </record>
-        
-        <record id="action_gmc_message_constituent_form" model="ir.actions.act_window">
-            <field name="name">Constituent</field>
+
+        <record id="action_gmc_action" model="ir.actions.act_window">
+            <field name="name">GMC Action</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">gmc.message.pool</field>
+            <field name="res_model">gmc.action</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
-            <field name="context">{'search_default_constituent':1, 'search_default_pending':1}</field>
-            <field name="domain">[('action_id.model', '=', 'res.partner')]</field>
-            <field name="help" type="html">
-              <p class="oe_view_nocontent_create">
-                No messages.
-              </p>
-            </field>
         </record>
-        
-        <record id="action_gmc_message_child_form" model="ir.actions.act_window">
-            <field name="name">Child</field>
+
+        <record id="action_gmc_action_connect" model="ir.actions.act_window">
+            <field name="name">GMC Action to Connect</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">gmc.message.pool</field>
+            <field name="res_model">gmc.action.connect</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
-            <field name="context">{'search_default_child':1, 'search_default_pending':1}</field>
-            <field name="help" type="html">
-              <p class="oe_view_nocontent_create">
-                No messages.
-              </p>
-            </field>
         </record>
-        
-        <record id="action_gmc_message_commitment_form" model="ir.actions.act_window">
-            <field name="name">Commitment</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">gmc.message.pool</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
-            <field name="context">{'search_default_commitment':1, 'search_default_pending':1}</field>
-            <field name="domain">[('action_id.model', '=', 'recurring.contract')]</field>
-            <field name="help" type="html">
-              <p class="oe_view_nocontent_create">
-                No messages.
-              </p>
-            </field>
-        </record>
-        
-        <record id="action_gmc_message_gift_form" model="ir.actions.act_window">
-            <field name="name">Gift</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">gmc.message.pool</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="view_gmc_message_pool_gift_tree" />
-            <field name="search_view_id" ref="view_gmc_message_pool_filter"/>
-            <field name="context">{'search_default_gift':1, 'search_default_pending':1}</field>
-            <field name="domain">[('action_id.model', '=', 'account.invoice.line')]</field>
-            <field name="help" type="html">
-              <p class="oe_view_nocontent_create">
-                No messages.
-              </p>
-            </field>
-        </record>
-        
-        
+
         <!-- Menu Items -->
-        <menuitem id="menu_message_center" parent="child_compassion.menu_sponsorship_root" name="Message Center" groups="group_gmc" sequence="15" />
-        <menuitem id="menu_message_incoming" parent="menu_message_center" action="action_gmc_message_incoming_form" sequence="1" />
+        <menuitem id="menu_message_center" name="Message Center" groups="group_gmc" />
+        <menuitem id="menu_message_incoming" parent="menu_message_center" name="Incoming Messages" sequence="1" />
+        <menuitem id="menu_message_incoming_all" parent="menu_message_incoming" action="action_gmc_message_incoming_form" sequence="1" />
         <menuitem id="menu_message_outgoing" name="Outgoing Messages" parent="menu_message_center" sequence="2"/>
-        <menuitem id="menu_message_constituent" parent="menu_message_outgoing" action="action_gmc_message_constituent_form" sequence="5"/>
-        <menuitem id="menu_message_commitment" parent="menu_message_outgoing" action="action_gmc_message_commitment_form" sequence="7"/>
-        <menuitem id="menu_message_gift" parent="menu_message_outgoing" action="action_gmc_message_gift_form" sequence="8"/>
-        
-        
+        <menuitem id="menu_message_config" parent="menu_message_center" name="Configuration" groups="base.group_erp_manager"/>
+        <menuitem id="menu_message_action" action="action_gmc_action" parent="menu_message_config"/>
+        <menuitem id="menu_message_action_connect" action="action_gmc_action_connect" parent="menu_message_config"/>
+
         <!-- Process Message Views -->
         <record id="message_pool_process" model="ir.ui.view">
             <field name="name">gmc.message.pool.process.form</field>

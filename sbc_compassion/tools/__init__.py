@@ -13,3 +13,4 @@ from . import checkboxreader
 from . import import_letter_functions
 from . import patternrecognition
 from . import zxing
+from . import onramp_connector
