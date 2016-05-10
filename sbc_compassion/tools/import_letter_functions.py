@@ -433,9 +433,9 @@ def _find_languages(env, img, line_vals, test):
        (Max brightness is 256)
     3. Look for the checkbox which has the most dark pixels count, as the
        checked checkbox must be darker than the empty ones.
-    4. Returns true (checked) only if the pixels count is 20% more than the
+    4. Returns true (checked) only if the pixels count is 25% more than the
        second candidate checkbox, and only if the second candidate has less
-       than 20% more of dark pixels.
+       than 25% more of dark pixels.
 
     :param env env: Odoo variable env
     :param img: Image to analyze
@@ -493,10 +493,10 @@ def _find_languages(env, img, line_vals, test):
 
     # A checked box represents 20% of pixels
     # We test the difference between second checkbox with most dark
-    # pixels and checkbox with the least dark pixels is less than 20%
+    # pixels and checkbox with the least dark pixels is less than 25%
     maxDiff = maxDark[1] - secondDark[1]
     minDiff = secondDark[1] - minDark[1]
-    found = minDiff < 0.2 * minDark[1] < maxDiff
+    found = minDiff <= 0.25 * minDark[1] < maxDiff
     if found:
         lang = maxDark[0].language_id
         line_vals['letter_language_id'] = lang.id
