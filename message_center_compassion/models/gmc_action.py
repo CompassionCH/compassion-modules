@@ -12,7 +12,7 @@ from openerp import api, models, fields, _
 from openerp.exceptions import ValidationError
 
 
-class gmc_action(models.Model):
+class GmcAction(models.Model):
     """
     A GMC Action defines what has to be done for a specific OffRamp
     message of the Compassion International specification.
@@ -35,37 +35,14 @@ class gmc_action(models.Model):
         'Message Direction', required=True)
     name = fields.Char('GMC Message', size=20, required=True)
     model = fields.Char('OSV Model', size=30)
-    type = fields.Selection('_get_message_types', 'Action Type',
-                            required=True)
     description = fields.Text('Action to execute')
-
-    def _get_message_types(self):
-        res = self._get_incoming_message_types(
-        ) + self._get_outgoing_message_types()
-        # Extend with methods for both incoming and outgoing messages.
-        res.append(
-            ('update', 'Update Object'),
-        )
-
-        return res
-
-    def _get_incoming_message_types(self):
-        """ Incoming message types calling specific method on an object.
-            The method should exist on the given model.
-        """
-        return [
-            ('allocate', 'Allocate new Child'),
-            ('deallocate', 'Deallocate Child'),
-            ('depart', 'Depart Child'),
-        ]
-
-    def _get_outgoing_message_types(self):
-        """ Outgoing messages sent to the middleware. """
-        return [
-            ('create', 'Create object'),
-            ('cancel', 'Cancel object'),
-            ('upsert', 'Create or Update object'),
-        ]
+    connect_service = fields.Char()
+    auto_process = fields.Boolean()
+    request_type = fields.Selection([
+        ('GET', 'GET'),
+        ('POST', 'POST'),
+        ('PUT', 'PUT'),
+    ])
 
     @api.one
     @api.constrains('model', 'direction')
@@ -74,7 +51,7 @@ class gmc_action(models.Model):
         valid = False
         if self.direction == 'in':
             model_obj = self.env[self.model]
-            valid = hasattr(model_obj, self.type)
+            valid = hasattr(model_obj, 'process_commkit')
         elif self.direction == 'out':
             valid = True
 

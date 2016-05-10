@@ -9,4 +9,7 @@
 #
 ##############################################################################
 
-from . import model
+from . import models
+from . import tools
+from . import mappings
+from . import controllers
