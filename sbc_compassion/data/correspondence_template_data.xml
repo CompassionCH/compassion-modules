@@ -3,7 +3,7 @@
     <!-- Templates -->
     <record id="default_template" model="correspondence.template">
       <field name="name">Default Template</field>
-      <field name="layout">CH-A-6S01-1</field>
+      <field name="layout">CH-A-6S11-1</field>
       <field name="checkbox_ids" eval="False"/>
     </record>
 
