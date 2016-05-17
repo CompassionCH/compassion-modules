@@ -41,6 +41,7 @@
                                     <field name="template_id"/>
                                     <field name="letter_language_id"/>
                                     <field name="is_encourager"/>
+                                    <field name="original_text"/>
                                     <field name="mandatory_review"/>
                                     <field name="physical_attachments"/>
                                     <field name="attachments_description"/>

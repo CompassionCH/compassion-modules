@@ -18,6 +18,7 @@
                         <group>
                             <field name="physical_attachments"/>
                             <field name="attachments_description"/>
+                            <field name="source"/>
                         </group>
                     </group>
                 </form>

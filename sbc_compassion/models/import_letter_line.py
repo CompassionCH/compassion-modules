@@ -41,6 +41,7 @@ class ImportLetterLine(models.Model):
         ("no_child_partner", _("Partner or Child not Found")),
         ("no_template", _("Template not Detected")),
         ("ok", _("OK"))], compute="check_status", store=True, readonly=True)
+    original_text = fields.Text()
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -124,7 +125,9 @@ class ImportLetterLine(models.Model):
                 'sponsorship_id': line.sponsorship_id.id,
                 'letter_image': line.letter_image.datas,
                 'original_language_id': line.letter_language_id.id,
-                'direction': 'Supporter To Beneficiary'
+                'direction': 'Supporter To Beneficiary',
+                'original_text': line.original_text,
+                'source': line.source,
             })
             if line.is_encourager:
                 vals['relationship'] = 'Encourager'

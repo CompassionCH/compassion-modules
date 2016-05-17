@@ -97,10 +97,6 @@ class Correspondence(models.Model):
     translated_text = fields.Text(
         compute='_compute_translated_text',
         inverse='_inverse_translated')
-    source = fields.Selection(selection=[
-        ('letter', _('Letter')),
-        ('email', _('E-Mail')),
-        ('website', _('Compassion website'))], default='letter')
     page_ids = fields.One2many(
         'correspondence.page', 'correspondence_id')
     nbr_pages = fields.Integer(
@@ -375,7 +371,8 @@ class Correspondence(models.Model):
                 4, self.env.ref(
                     'sbc_compassion.correspondence_type_supporter').id)]
             if not vals.get('translation_language_id'):
-                vals['translation_language_id'] = vals['original_language_id']
+                vals['translation_language_id'] = vals.get(
+                    'original_language_id')
         else:
             vals['status_date'] = fields.Datetime.now()
             if 'communication_type_ids' not in vals:

@@ -85,7 +85,7 @@ class generate_gift_wizard(models.TransientModel):
                             'partner_id': partner.id,
                             'journal_id': journal_id,
                             'date_invoice': invoice_date,
-                            'payment_term': 1,  # Immediate payment
+                            'payment_term': contract.payment_term_id.id,
                             'bvr_reference': self._generate_bvr_reference(
                                 contract, self.product_id),
                             'recurring_invoicer_id': self.env.context.get(
