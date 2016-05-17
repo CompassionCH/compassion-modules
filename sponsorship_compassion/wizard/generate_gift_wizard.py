@@ -138,7 +138,7 @@ class generate_gift_wizard(models.TransientModel):
 
         # Give a better name to invoice_line
         if not self.description:
-            inv_line_data['name'] = contract.child_id.code
+            inv_line_data['name'] = contract.child_code
             inv_line_data['name'] += " - " + contract.child_id.birthdate \
                 if product.name == GIFT_NAMES[0] else ""
 

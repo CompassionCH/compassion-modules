@@ -107,7 +107,7 @@ class ImportLetterLine(models.Model):
             if line.sponsorship_id:
                 line.name = str(
                     line.sponsorship_id.partner_codega) + " - " + str(
-                        line.child_id.code)
+                        line.child_id.local_id)
 
     @api.multi
     def get_letter_data(self):

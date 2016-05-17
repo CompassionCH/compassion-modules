@@ -34,7 +34,7 @@ class test_webservice(common.TransactionCase):
     def _create_child(self, child_code, child_name):
         child_obj = self.env['compassion.child']
         child_id = child_obj.create({
-            'code': child_code,
+            'local_id': child_code,
             'name': child_name,
         }).id
         return child_id
@@ -125,7 +125,7 @@ class test_webservice(common.TransactionCase):
         self.assertTrue(child.project_id.description_de)
 
         # Test the data
-        self.assertEqual(child.code, "TZ1120316")
+        self.assertEqual(child.local_id, "TZ01120316")
         self.assertEqual(child.name, "Happiness Joseph")
         self.assertEqual(child.firstname, "Happiness")
         self.assertEqual(child.gender, "F")
