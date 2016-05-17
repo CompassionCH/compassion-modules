@@ -39,7 +39,7 @@ class recurring_contract(models.Model):
     child_name = fields.Char(
         'Sponsored child name', related='child_id.name', readonly=True)
     child_code = fields.Char(
-        'Sponsored child code', related='child_id.code', readonly=True)
+        'Sponsored child code', related='child_id.local_id', readonly=True)
     partner_codega = fields.Char(
         'Partner ref', related='partner_id.ref', readonly=True)
     activation_date = fields.Date(readonly=True, copy=False)

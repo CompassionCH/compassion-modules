@@ -23,10 +23,10 @@ class CorrespondenceMapping(OnrampMapping):
 
     BENEFICIARY_MAPPING = {
         'Age': None,
-        'CompassId': ('child_id.unique_id', 'compassion.child'),
+        'CompassId': ('child_id.compass_id', 'compassion.child'),
         'Gender': None,
-        'GlobalId': None,
-        'LocalId': ('child_id.code', 'compassion.child'),
+        'GlobalId': ('child_id.global_id', 'compassion.child'),
+        'LocalId': ('child_id.local_id', 'compassion.child'),
         'Name': None,
         'ObjectUrl': None
     }

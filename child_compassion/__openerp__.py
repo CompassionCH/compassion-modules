@@ -9,8 +9,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
-#    @author: Cyril Sester <csester@compassion.ch>
+#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
+#    @author: Cyril Sester <csester@compassion.ch>, Emanuel Cino
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Children',
-    'version': '8.0.1',
+    'version': '8.0.2.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -42,20 +42,22 @@
     'data': [
         'security/sponsorship_groups.xml',
         'security/ir.model.access.csv',
-        'view/child_depart_wizard_view.xml',
-        'view/child_compassion_view.xml',
-        'view/child_compassion_property_view.xml',
-        'view/child_description_wizard_view.xml',
-        'view/project_compassion_view.xml',
-        'view/translated_values_view.xml',
-        'view/country_compassion_view.xml',
-        'view/delegate_child_wizard.xml',
-        'view/undelegate_child_wizard.xml',
-        'view/project_description_wizard_view.xml',
-        'view/project_compassion_age_groups_view.xml',
+        'views/child_compassion_view.xml',
+        'views/project_compassion_view.xml',
+        'views/country_compassion_view.xml',
+        'views/delegate_child_wizard.xml',
+        'views/undelegate_child_wizard.xml',
+        'views/project_compassion_age_groups_view.xml',
         'workflow/child_workflow.xml',
         'data/delegate_child_compassion_cron.xml',
         'data/child_compassion_template.xml',
+        'data/child.hobby.csv',
+        'data/child.household.duty.csv',
+        'data/child.project.activity.csv',
+        'data/child.school.subject.csv',
+        'data/child.christian.activity.csv',
+        'data/child.chronic.illness.csv',
+        'data/child.physical.disability.csv',
     ],
     'demo': [
         'demo/compassion.country.csv',

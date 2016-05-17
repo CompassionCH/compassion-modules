@@ -1,0 +1,14 @@
+id,name
+household_duty _animal,Animal Care
+household_duty _market,Buying Or Selling In Market
+household_duty _water,Carries Water
+household_duty _childcare,Child Care
+household_duty _cleaning,Cleaning
+household_duty _gardening,Gardening Or Farming
+household_duty _firewood,Gathers Firewood
+household_duty _kitchen,Kitchen Help
+household_duty _makingbed,Making Beds
+household_duty _errands,Running Errands
+household_duty _sewing,Sewing
+household_duty _teaching,Teaching Others
+household_duty _clothes,Washing Clothes

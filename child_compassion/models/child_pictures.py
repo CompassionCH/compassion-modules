@@ -66,11 +66,11 @@ class child_pictures(models.Model):
 
         # Retrieve Fullshot
         image_date = self._get_picture(
-            child.id, child.code, pictures.id, 'Fullshot', dpi=300,
+            child.id, child.local_id, pictures.id, 'Fullshot', dpi=300,
             width=1500, height=1200)
         # Retrieve Headshot
         image_date = image_date and self._get_picture(
-            child.id, child.code, pictures.id)
+            child.id, child.local_id, pictures.id)
 
         if not image_date:
             # We could not retrieve a picture, we cancel the creation

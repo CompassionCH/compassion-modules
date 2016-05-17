@@ -190,7 +190,7 @@ class test_messages(test_base_module):
             self.assertFalse(child.has_been_sponsored)
             self.assertTrue(child.name)
             self.assertTrue(child.case_study_ids)
-            self.assertTrue(child.unique_id)
+            self.assertTrue(child.global_id)
 
         # Create a commitment for one child
         contract = self._create_active_contract(child_ids[0])
@@ -230,12 +230,12 @@ class test_messages(test_base_module):
         ######################################################################
         contract = self._create_active_contract(child_ids[1])
         self._create_incoming_message(
-            'update', 'compassion.child', child_ids[1], 'UG8360007',
+            'update', 'compassion.child', child_ids[1], 'UG08360007',
             'Transfer')
         child = children[1]
         self.assertEqual(contract.state, 'active')
         self.assertEqual(child.state, 'P')
-        self.assertEqual(child.code, 'UG8360007')
+        self.assertEqual(child.local_id, 'UG08360007')
         self.assertEqual(child.sponsor_id.id, contract.partner_id.id)
         self.assertEqual(contract.state, 'active')
         self.assertEqual(contract.gmc_state, 'transfer')

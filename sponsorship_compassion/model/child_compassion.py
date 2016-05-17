@@ -48,7 +48,7 @@ class child_compassion(models.Model):
                 child.unsponsored_since = contract.end_date
             elif not child.has_been_sponsored:
                 # Retrieve the information from the webservice
-                url = self.get_url(child.code, 'information')
+                url = self.get_url(child.local_id, 'information')
                 r = requests.get(url)
                 json_data = r.json()
                 if r.status_code == 200:
@@ -57,7 +57,7 @@ class child_compassion(models.Model):
                 else:
                     logger.error(
                         'An error occured while fetching the unsponsored '
-                        ' date of child %s.' % child.code +
+                        ' date of child %s.' % child.local_id +
                         json_data['error']['message'])
 
     @api.multi
