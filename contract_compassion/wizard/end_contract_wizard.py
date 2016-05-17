@@ -16,11 +16,8 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from lxml import etree
 from datetime import datetime
 
-from openerp.addons.child_compassion.wizard.child_depart_wizard \
-    import IP_COUNTRIES
 
-
-class end_contract_wizard(models.TransientModel):
+class EndContractWizard(models.TransientModel):
     _name = 'end.contract.wizard'
 
     end_date = fields.Date(
@@ -32,10 +29,6 @@ class end_contract_wizard(models.TransientModel):
         'compassion.child', 'Child',
         default=lambda self: self._get_child_id())
     end_reason = fields.Selection('_get_end_reason', required=True)
-    do_transfer = fields.Boolean('I want to transfer the child')
-    transfer_country_id = fields.Many2one(
-        'res.country', 'Country',
-        domain=[('code', 'in', IP_COUNTRIES)])
 
     @api.model
     def _get_child_id(self):
@@ -50,7 +43,7 @@ class end_contract_wizard(models.TransientModel):
     @api.v7
     def fields_view_get(self, cr, user, view_id=None, view_type='form',
                         context=None, toolbar=False, submenu=False):
-        res = super(end_contract_wizard, self).fields_view_get(
+        res = super(EndContractWizard, self).fields_view_get(
             cr, user, view_id, view_type, context, toolbar, submenu)
         # If there is no child in contract, hide field
         if view_type == 'form' and not self._get_child_id(cr, user, context):

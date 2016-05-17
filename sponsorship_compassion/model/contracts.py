@@ -304,7 +304,7 @@ class sponsorship_contract(models.Model):
                 "for child {1}. <b>"
                 "<br/>Invoices due in the suspension period "
                 "are automatically cancelled.".format(
-                    project_code, contract.child_id.code),
+                    project_code, contract.child_code),
                 "Project Suspended", 'comment')
 
         # Change invoices if config tells to do so.

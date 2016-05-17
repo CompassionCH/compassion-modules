@@ -99,51 +99,51 @@ class compassion_project(models.Model):
     # Miscellaneous Information (retrieved from community API)
     ##########################################################
     #   a. Automatic translated values
-    floor_material_ids = fields.Many2many(
-        'compassion.translated.value', 'project_property_to_value',
-        'project_id', 'value_id', _('Floor material'),
-        domain=[('property_name', '=', 'floor_material')],
-        track_visibility='onchange')
-    wall_material_ids = fields.Many2many(
-        'compassion.translated.value', 'project_property_to_value',
-        'project_id', 'value_id', _('Wall material'),
-        domain=[('property_name', '=', 'wall_material')],
-        track_visibility='onchange')
-    roof_material_ids = fields.Many2many(
-        'compassion.translated.value', 'project_property_to_value',
-        'project_id', 'value_id', _('Roof material'),
-        domain=[('property_name', '=', 'roof_material')],
-        track_visibility='onchange')
-    spoken_languages_ids = fields.Many2many(
-        'compassion.translated.value', 'project_property_to_value',
-        'project_id', 'value_id', _('Spoken languages'),
-        domain=[('property_name', '=', 'spoken_languages')],
-        track_visibility='onchange')
-    primary_diet_ids = fields.Many2many(
-        'compassion.translated.value', 'project_property_to_value',
-        'project_id', 'value_id', _('Primary diet'),
-        domain=[('property_name', '=', 'primary_diet')],
-        track_visibility='onchange')
-    health_problems_ids = fields.Many2many(
-        'compassion.translated.value', 'project_property_to_value',
-        'project_id', 'value_id', _('Health problems'),
-        domain=[('property_name', '=', 'health_problems')],
-        track_visibility='onchange')
-    primary_occupation_ids = fields.Many2many(
-        'compassion.translated.value', 'project_property_to_value',
-        'project_id', 'value_id', _('Primary occupation'),
-        domain=[('property_name', '=', 'primary_occupation')],
-        track_visibility='onchange')
-    terrain_description_ids = fields.Many2many(
-        'compassion.translated.value', 'project_property_to_value',
-        'project_id', 'value_id', _('Terrain description'),
-        domain=[('property_name', '=', 'terrain_description')],
-        track_visibility='onchange')
-    distance_from_closest_city_ids = fields.Many2many(
-        'compassion.translated.value', 'project_property_to_value',
-        'project_id', 'value_id', _('Distance from closest city'),
-        domain=[('property_name', '=', 'distance_from_closest_city')],
-        track_visibility='onchange')
+    # floor_material_ids = fields.Many2many(
+    #     'compassion.translated.value', 'project_property_to_value',
+    #     'project_id', 'value_id', _('Floor material'),
+    #     domain=[('property_name', '=', 'floor_material')],
+    #     track_visibility='onchange')
+    # wall_material_ids = fields.Many2many(
+    #     'compassion.translated.value', 'project_property_to_value',
+    #     'project_id', 'value_id', _('Wall material'),
+    #     domain=[('property_name', '=', 'wall_material')],
+    #     track_visibility='onchange')
+    # roof_material_ids = fields.Many2many(
+    #     'compassion.translated.value', 'project_property_to_value',
+    #     'project_id', 'value_id', _('Roof material'),
+    #     domain=[('property_name', '=', 'roof_material')],
+    #     track_visibility='onchange')
+    # spoken_languages_ids = fields.Many2many(
+    #     'compassion.translated.value', 'project_property_to_value',
+    #     'project_id', 'value_id', _('Spoken languages'),
+    #     domain=[('property_name', '=', 'spoken_languages')],
+    #     track_visibility='onchange')
+    # primary_diet_ids = fields.Many2many(
+    #     'compassion.translated.value', 'project_property_to_value',
+    #     'project_id', 'value_id', _('Primary diet'),
+    #     domain=[('property_name', '=', 'primary_diet')],
+    #     track_visibility='onchange')
+    # health_problems_ids = fields.Many2many(
+    #     'compassion.translated.value', 'project_property_to_value',
+    #     'project_id', 'value_id', _('Health problems'),
+    #     domain=[('property_name', '=', 'health_problems')],
+    #     track_visibility='onchange')
+    # primary_occupation_ids = fields.Many2many(
+    #     'compassion.translated.value', 'project_property_to_value',
+    #     'project_id', 'value_id', _('Primary occupation'),
+    #     domain=[('property_name', '=', 'primary_occupation')],
+    #     track_visibility='onchange')
+    # terrain_description_ids = fields.Many2many(
+    #     'compassion.translated.value', 'project_property_to_value',
+    #     'project_id', 'value_id', _('Terrain description'),
+    #     domain=[('property_name', '=', 'terrain_description')],
+    #     track_visibility='onchange')
+    # distance_from_closest_city_ids = fields.Many2many(
+    #     'compassion.translated.value', 'project_property_to_value',
+    #     'project_id', 'value_id', _('Distance from closest city'),
+    #     domain=[('property_name', '=', 'distance_from_closest_city')],
+    #     track_visibility='onchange')
     #   b. Static Values
     gps_latitude = fields.Float(_('GPS latitude'))
     gps_longitude = fields.Float(_('GPS longitude'))
@@ -274,6 +274,7 @@ class compassion_project(models.Model):
 
     @api.multi
     def generate_descriptions(self):
+        # TODO Implement with new modelisation
         for project in self:
             if not project.last_update_date:
                 raise exceptions.Warning(
@@ -282,14 +283,7 @@ class compassion_project(models.Model):
                       'information before generating the descriptions') %
                     project.code)
 
-        return {
-            'name': _('Description generation'),
-            'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': 'project.description.wizard',
-            'target': 'new',
-        }
+        return True
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

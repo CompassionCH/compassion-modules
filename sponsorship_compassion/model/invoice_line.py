@@ -48,7 +48,7 @@ class account_invoice(models.Model):
                 invoice.children = _("{0} children".format(str(len(
                     children))))
             elif children:
-                invoice.children = children.code
+                invoice.children = children.local_id
             else:
                 invoice.children = False
 

@@ -13,10 +13,9 @@
             <field name="name">compassion.child.form</field>
             <field name="model">compassion.child</field>
             <field name="arch" type="xml">
-                <form string="Child" version="7.0">
+                <form string="Child">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="N,P,F" />
-                        <button name="%(action_child_depart)d" class="oe_highlight" string="Depart" type="action" invisible="1"/>
                     </header>
                     <sheet>
                         <field name="portrait" widget='image' class="oe_left oe_avatar" options='{"size": [90, 90]}' />
@@ -36,18 +35,17 @@
                             <page string="General Information">
                                 <group>
                                     <group>
-                                        <field name="code" />
+                                        <field name="local_id" />
                                         <field name="project_id" />
                                         <field name="gender" />
                                         <field name="birthdate" />
                                         <field name="sponsor_id" />
                                     </group>
                                     <group>
-                                        <field name="unique_id" />
+                                        <field name="global_id" />
                                         <field name="type" />
                                         <field name="date" />
                                         <field name="completion_date" />
-                                        <field name="exit_date" />
                                     </group>
                                     <group attrs="{'invisible': [('delegated_to', '=', False)]}">
                                         <field name="delegated_to" />
@@ -63,8 +61,9 @@
                                     </group>
                                 </group>
                             </page>
-                            <page string="Case studies">
-                                <field name="case_study_ids" />
+                            <page string="Lifecycle Events">
+                                <field name="lifecycle_ids" />
+                                <field name="assessment_ids" />
                             </page>
                             <page string="Descriptions">
                                 <group>
@@ -73,8 +72,20 @@
                                     <field name="desc_de" />
                                     <field name="desc_it" />
                                 </group>
+                                <group>
+                                    <field name="christian_activity_ids"/>
+                                    <field name="physical_disability_ids"/>
+                                    <field name="chronic_illness_ids"/>
+                                    <field name="hobby_ids"/>
+                                    <field name="duty_ids"/>
+                                    <field name="activity_ids"/>
+                                    <field name="subject_ids"/>
+                                    <field name="education_level"/>
+                                    <field name="us_grade_level"/>
+                                    <field name="academic_performance"/>
+                                </group>
                             </page>
-                            <page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '>', 0)]}">
+                            <!--<page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '>', 0)]}">
                                 <group>
                                     <field name="gp_exit_reason" />
                                     <field name="exit_date" />
@@ -104,7 +115,7 @@
                                 <group>
                                     <field name="transfer_country_id" />
                                 </group>
-                            </page>
+                            </page>-->
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -126,7 +137,7 @@
                     red:state == 'R';
                     gray:state in ('F', 'X')">
                     <field name="name"/>
-                    <field name="code"/>
+                    <field name="local_id"/>
                     <field name="date"/>
                     <field name="sponsor_id"/>
                     <field name="state"/>
@@ -134,11 +145,6 @@
                     <field name="date_delegation"/>
                     <field name="date_end_delegation"/>
                     <field name="delegated_comment"/>
-                    <field name="date_info"/>
-                    <field name="has_desc_fr"/>
-                    <field name="has_desc_de"/>
-                    <field name="has_desc_it"/>
-                    <field name="has_desc_en"/>
                 </tree>
             </field>
         </record>
@@ -150,7 +156,7 @@
             <field name="arch" type="xml">
                 <search string="Search child">
                     <field name="name" filter_domain="['|', ('name', 'ilike', self), ('firstname', 'ilike', self)]"/>
-                    <field name="code"/>
+                    <field name="local_id"/>
                     <field name="sponsor_id"/>
                     <field name="sponsor_ref"/>
                     <field name="state"/>
