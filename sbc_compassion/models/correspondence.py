@@ -26,8 +26,9 @@ from openerp.addons.message_center_compassion.mappings import base_mapping as \
 
 class CorrespondenceType(models.Model):
     _name = 'correspondence.type'
-
-    name = fields.Char(required=True)
+    _inherit = 'connect.multipicklist'
+    res_model = 'correspondence'
+    res_field = 'communication_type_ids'
 
 
 class Correspondence(models.Model):
@@ -248,7 +249,7 @@ class Correspondence(models.Model):
             if letter.sponsorship_id and letter.communication_type_ids:
                 letter.name = letter.communication_type_ids[0].name + ' (' + \
                     letter.sponsorship_id.partner_id.ref + " - " + \
-                    letter.child_id.code + ')'
+                    letter.child_id.local_id + ')'
             else:
                 letter.name = _('New correspondence')
 
@@ -626,7 +627,8 @@ class Correspondence(models.Model):
                 raise Warning(
                     _('Image does not exist'),
                     _("Image requested was not found remotely."))
-            name = letter.child_id.code + '_' + letter.kit_identifier + '.pdf'
+            name = letter.child_id.local_id + '_' + letter.kit_identifier + \
+                '.pdf'
             letter.letter_image = self.env['ir.attachment'].create({
                 "name": name,
                 "db_datas": image_data,

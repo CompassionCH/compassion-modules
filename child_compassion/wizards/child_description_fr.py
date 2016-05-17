@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Cyril Sester , Kevin Cristi, David Coninckx
+#    @author: Cyril Sester , Kevin Cristi, David Coninckx, Emanuel Cino
 #
 #    The licence is in the file __openerp__.py
 #
@@ -13,18 +13,19 @@ from datetime import datetime, date
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 
-class Child_description_fr:
+class ChildDescriptionFr(object):
 
     @classmethod
-    def gen_fr_translation(
-            cls, child, case_study):
-        desc_fr = cls._get_guardians_info_fr(child, case_study)
+    def gen_fr_translation(cls, child):
+        # TODO uncomment when Household description is fixed
+        # desc_fr = cls._get_guardians_info_fr(child)
+        # desc_fr += u'\r\n\r\n'
+        desc_fr = ''
+        desc_fr += cls._get_school_info_fr(child)
         desc_fr += u'\r\n\r\n'
-        desc_fr += cls._get_school_info_fr(child, case_study)
-        desc_fr += u'\r\n\r\n'
-        desc_fr += cls._gen_christ_act_fr(child, case_study)
-        desc_fr += cls._gen_family_act_info_fr(child, case_study)
-        desc_fr += cls._gen_hobbies_info_fr(child, case_study)
+        desc_fr += cls._gen_christ_act_fr(child)
+        desc_fr += cls._gen_family_act_info_fr(child)
+        desc_fr += cls._gen_hobbies_info_fr(child)
         return desc_fr
 
     @classmethod
@@ -56,53 +57,47 @@ class Child_description_fr:
         return res
 
     @classmethod
-    def _gen_christ_act_fr(cls, child, case_study):
+    def _gen_christ_act_fr(cls, child):
         ''' Generate the christian activities description part.
             Words as 'à', 'aux', ... are included in value_fr field.
         '''
-        if not case_study.christian_activities_ids:
+        if not child.christian_activity_ids:
             return ''
-        activities = [
-            activity.get_translated_value('fr')
-            for activity in case_study.christian_activities_ids]
+        activities = child.christian_activity_ids.mapped('name')
         activities_str = cls._gen_list_string(activities)
         res = u"A l'Église, %s participe %s. " % (
             'il' if child.gender == 'M' else 'elle', activities_str)
         return res
 
     @classmethod
-    def _gen_family_act_info_fr(
-            cls, child, case_study):
+    def _gen_family_act_info_fr(cls, child):
         ''' Generate the family duties description part. There are 2 kind of
             activities:
              - Standards : introduced by 'aide à faire' and having
                 the determinant in value_fr
              - Specials : having the action verb included in value_fr
         '''
-        if not case_study.family_duties_ids:
+        if not child.duty_ids:
             return ''
 
-        activities = [activity.get_translated_value('fr')
-                      for activity in case_study.family_duties_ids]
-
+        activities = child.duty_ids.mapped('name')
         res = u"A la maison, %s aide %s. " % (
             'il' if child.gender == 'M' else 'elle',
             cls._gen_list_string(activities))
         return res
 
     @classmethod
-    def _gen_hobbies_info_fr(cls, child, case_study):
+    def _gen_hobbies_info_fr(cls, child):
         ''' Generate the hobbies description part.
              There are 2 kind of hobbies :
              - games, which are introduced by 'jouer' and having
                 the determinant included in value_fr
              - verbs, which are simply printed without any decoration.
         '''
-        if not case_study.hobbies_ids:
+        if not child.hobby_ids:
             return ''
 
-        activities = [activity.get_translated_value('fr')
-                      for activity in case_study.hobbies_ids]
+        activities = child.hobby_ids.mapped('name')
 
         res = u"%s aime %s. " % (
             'Il' if child.gender == 'M'
@@ -110,7 +105,7 @@ class Child_description_fr:
         return res
 
     @classmethod
-    def _get_school_info_fr(cls, child, case_study):
+    def _get_school_info_fr(cls, child):
         ''' Generate the school description part. Description includes :
              - If child is attending school
              - Reason why not attending school if relevant and existing
@@ -140,28 +135,25 @@ class Child_description_fr:
         # the value of us_school_level can also be blank
         res = child.firstname
 
-        if case_study.attending_school_flag:
-            if (case_study.us_school_level and case_study.us_school_level in
-                    ordinals):
+        if not child.not_enrolled_reason:
+            if child.us_grade_level and child.us_grade_level in ordinals:
                 try:
-                    int(case_study.us_school_level)
+                    int(child.us_grade_level)
                     res += (u' est %s'
-                            % ordinals[case_study.us_school_level])
+                            % ordinals[child.us_grade_level])
                 except:
                     res += (u' est %s'
-                            % ordinals[case_study.us_school_level])
+                            % ordinals[child.us_grade_level])
             else:
                 res += u" va à l'école"
-            if case_study.school_performance:
+            if child.academic_performance:
                 res += u' et %s a des résultats %s. ' % (
                     u'il' if child.gender == 'M' else u'elle',
-                    case_study.school_performance[0].get_translated_value(
-                        'fr'))
-            if case_study.school_best_subject:
+                    child.academic_performance)
+            if child.major_course_study:
                 res += u'%s aime bien %s. ' % (
                     u'Il' if child.gender == 'M' else u'Elle',
-                    case_study.school_best_subject[0].get_translated_value(
-                        'fr'))
+                    child.major_course_study)
             else:
                 res += '.'
         else:
@@ -175,12 +167,14 @@ class Child_description_fr:
         return res
 
     @classmethod
-    def _get_guardians_info_fr(cls, child, case_study):
-        ''' Generate the guardian description part. Guardians jobs are
-            also included here.
-        '''
+    def _get_guardians_info_fr(cls, child):
+        """
+        FIXME
+        Generate the guardian description part. Guardians jobs are
+        also included here.
+        """
         res = u''
-        if not case_study.guardians_ids:
+        if not child.household_id:
             return ''
         male_values = ['father', 'uncle', 'brother', 'grandfather',
                        'stepfather', 'godfather']
@@ -193,8 +187,8 @@ class Child_description_fr:
 
         # Separate male_guardian female_guardians and add guardians to
         # live_with
-        for guardian in case_study.guardians_ids:
-            value = guardian.get_translated_value('fr')
+        for guardian in child.household_id.member_ids.filtered('is_caregiver'):
+            value = guardian.role
 
             if guardian.value_en != 'institutional worker':
                 # Male guardian
@@ -225,16 +219,16 @@ class Child_description_fr:
         live_with = cls._regroup_parents(live_with)
 
         # Get number of brothers and sisters
-        if case_study.nb_brothers == 1:
+        if child.nb_brothers == 1:
             live_with['brothers'] = u'{0} frère'.format(prefix[0])
-        elif case_study.nb_brothers > 1:
+        elif child.nb_brothers > 1:
             live_with['brothers'] = u'{0} {1} frères'.format(
-                prefix[2], cls._number_to_string(case_study.nb_brothers))
-        if case_study.nb_sisters == 1:
+                prefix[2], cls._number_to_string(child.nb_brothers))
+        if child.nb_sisters == 1:
             live_with['sisters'] = u'{0} soeur'.format(prefix[1])
-        elif case_study.nb_sisters > 1:
+        elif child.nb_sisters > 1:
             live_with['sisters'] = u'{0} {1} soeurs'.format(
-                prefix[2], cls._number_to_string(case_study.nb_sisters))
+                prefix[2], cls._number_to_string(child.nb_sisters))
 
         # Live in institute or not
         if live_in_institut:
@@ -244,12 +238,11 @@ class Child_description_fr:
             res = '%s vit avec %s. ' % (
                 child.firstname, cls._gen_list_string(live_with.values()))
 
-        res += cls._get_parents_info(
-            child, case_study)
+        res += cls._get_parents_info(child)
         # Generate guardians job
 
         res += cls._get_guardians_jobs_fr(
-            child, case_study,
+            child,
             male_guardians.items()[0] if male_guardians else False,
             female_guardians.items()[0] if female_guardians else False)
         return res
@@ -269,8 +262,7 @@ class Child_description_fr:
         return live_with
 
     @classmethod
-    def _get_parents_info(cls, child,
-                          case_study):
+    def _get_parents_info(cls, child, case_study):
         res = u''
 
         # Get tags for female/male and same tags
