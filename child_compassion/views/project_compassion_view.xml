@@ -6,7 +6,7 @@
 			<field name="name">compassion.project.form</field>
 			<field name="model">compassion.project</field>
 			<field name="arch" type="xml">
-				<form string="Project" version="7.0">
+				<form string="Project">
 					<header>
 						<field name="status" widget="statusbar" />
 					</header>
@@ -24,14 +24,12 @@
                         <group>
                             <group>
                                 <field name="icp_id" />
-                                <field name="type" />
                                 <field name="suspension" />
                                 <field name="status_date" />
                                 <field name="status_comment" />
                             </group>
                             <group>
-                                <field name="start_date" />
-                                <field name="stop_date" />
+                                <field name="program_start_date" />
                                 <field name="last_update_date" />
                                 <field name="country_id" />
                             </group>
@@ -41,18 +39,14 @@
                                 <group>
                                     <group string="Community">
                                         <field name="local_church_name" />
-                                        <field name="hiv_category" />
-                                        <field name="month_school_year_begins" />
-                                        <field name="country_denomination" />
-                                        <field name="western_denomination" />
                                         <field name="community_name" />
                                     </group>
                                     <group string="Field Status">
-                                        <field name="disburse_funds"/>
-                                        <field name="disburse_gifts"/>
-                                        <field name="disburse_unsponsored_funds"/>
-                                        <field name="new_sponsorships_allowed"/>
-                                        <field name="additional_quota_allowed"/>
+                                        <field name="lifecycle_ids"/>
+                                        <field name="disburse_cdsp_funds"/>
+                                        <field name="disburse_csp_funds"/>
+                                        <field name="disburse_s2b_letters"/>
+                                        <field name="disburse_b2s_letters"/>
                                     </group>
                                 </group>
                             </page>
@@ -113,10 +107,6 @@
                     <field name="name" />
                     <field name="icp_id" />
                     <field name="last_update_date" />
-                    <field name="has_desc_fr" />
-                    <field name="has_desc_de" />
-                    <field name="has_desc_it" />
-                    <field name="has_desc_en" />
                     <field name="suspension" />
                 </tree>
             </field>
