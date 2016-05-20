@@ -120,4 +120,4 @@ class HouseholdMembers(models.Model):
             ('Step Father', _('Step Father')),
             ('Step Mother', _('Step Mother')),
             ('Uncle', _('Uncle')),
-    ]
+        ]
