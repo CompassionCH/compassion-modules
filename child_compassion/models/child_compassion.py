@@ -268,10 +268,10 @@ class CompassionChild(models.Model):
     def _set_project(self):
         if self.local_id:
             project = self.env['compassion.project'].search(
-                [('code', '=', self.local_id[:5])], limit=1)
+                [('icp_id', '=', self.local_id[:5])], limit=1)
             if not project:
                 project = self.env['compassion.project'].create({
-                    'code': self.local_id[:5],
+                    'icp_id': self.local_id[:5],
                     'name': self.local_id[:5],
                 })
             self.project_id = project.id
