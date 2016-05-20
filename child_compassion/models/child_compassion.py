@@ -283,9 +283,7 @@ class CompassionChild(models.Model):
             ('I', _('On Internet')),
             ('Z', _('Reinstated')),
             ('P', _('Sponsored')),
-            ('R', _('Waiting new sponsor')),
             ('F', _('Departed')),
-            ('X', _('Deallocated'))
         ]
 
     def _set_available(self):
@@ -307,7 +305,7 @@ class CompassionChild(models.Model):
         """Called by CRON to update delegated children.
         :param Recordset self: empty Recordset
         """
-        children = self.search([('state', 'not in', ['F', 'X', 'P'])])
+        children = self.search([('state', 'not in', ['F', 'P'])])
         children_to_delegate = self.copy()
         children_to_undelegate = list()
 
@@ -368,9 +366,6 @@ class CompassionChild(models.Model):
             if self.state == 'F':
                 # Child reinstatement
                 state = 'Z'
-            else:
-                # Child is waiting a new sponsor
-                state = 'R'
         if self.sponsor_id:
             # Child is already sponsored
             state = 'P'
@@ -389,7 +384,6 @@ class CompassionChild(models.Model):
         """ Is called when a child changes his status to 'F' or 'X'."""
         if self.state == 'F':
             self.sponsor_id = False
-            self.get_exit_details()
         return True
 
     ##########################################################################
