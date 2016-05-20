@@ -13,7 +13,7 @@ from . import child_compassion
 from . import child_pictures
 from . import country_compassion
 from . import project_compassion
-from . import project_age_group
 from . import child_property
 from . import child_assessment
 from . import child_lifecycle_event
+from . import household

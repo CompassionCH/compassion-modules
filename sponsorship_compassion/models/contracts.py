@@ -292,7 +292,7 @@ class sponsorship_contract(models.Model):
 
         for contract in self:
             # Add a note in the contract and in the partner.
-            project_code = contract.child_id.project_id.code
+            project_code = contract.child_id.project_id.icp_id
             contract.message_post(
                 "The project {0} was suspended and funds are retained."
                 "<br/>Invoices due in the suspension period "
@@ -589,7 +589,7 @@ class sponsorship_contract(models.Model):
                     raise exceptions.Warning(
                         _("Reconcile error"),
                         _("The project %s is fund-suspended. You cannot "
-                          "reconcile invoice (%s).") % (project.code,
+                          "reconcile invoice (%s).") % (project.icp_id,
                                                         invoice.id))
         super(sponsorship_contract, self).invoice_paid(invoice)
 

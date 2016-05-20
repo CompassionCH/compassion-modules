@@ -23,7 +23,7 @@
 						</div>
                         <group>
                             <group>
-                                <field name="code" />
+                                <field name="icp_id" />
                                 <field name="type" />
                                 <field name="suspension" />
                                 <field name="status_date" />
@@ -94,9 +94,6 @@
                                         <field name="spiritual_needs" />
                                     </group>
                                 </group>
-                                <group>
-                                    <field name="age_group_ids" />
-                                </group>
                             </page>
                         </notebook>
                     </sheet>
@@ -114,7 +111,7 @@
             <field name="arch" type="xml">
                 <tree string="project">
                     <field name="name" />
-                    <field name="code" />
+                    <field name="icp_id" />
                     <field name="last_update_date" />
                     <field name="has_desc_fr" />
                     <field name="has_desc_de" />
@@ -131,7 +128,7 @@
             <field name="arch" type="xml">
                 <search string="Search project">
                     <field name="name"/>
-                    <field name="code"/>
+                    <field name="icp_id"/>
                     <field name="status"/>
                     <field name="last_update_date"/>
                     <filter name="suspended" string="Suspended" domain="[('suspension','in',('suspended','fund-suspended'))]"/>

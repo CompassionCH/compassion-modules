@@ -24,7 +24,7 @@ class project_compassion(models.Model):
         """
         res = super(project_compassion, self).suspend_funds()
         contracts = self.env['recurring.contract'].search([
-            ('child_code', 'like', self.code),
+            ('child_code', 'like', self.icp_id),
             ('state', 'in', ('active', 'waiting', 'mandate'))])
         res = res and contracts.suspend_contract()
 
@@ -38,7 +38,7 @@ class project_compassion(models.Model):
         """
         res = super(project_compassion, self)._reactivate_project()
         contracts = self.env['recurring.contract'].search([
-            ('child_code', 'like', self.code),
+            ('child_code', 'like', self.icp_id),
             ('state', 'in', ('active', 'waiting', 'mandate'))])
         contracts.reactivate_contract()
         return res
