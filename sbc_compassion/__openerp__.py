@@ -55,7 +55,6 @@
         'views/config_view.xml',
         'views/download_letters_view.xml',
         'views/get_letter_image_wizard_view.xml',
-        'data/lang_data.xml',
         'data/correspondence_template_data.xml',
         'data/correspondence_type.xml',
         'data/child_layouts.xml',

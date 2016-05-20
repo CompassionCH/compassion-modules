@@ -1,0 +1,24 @@
+id,name
+cognitive_act_art,Art And Music
+cognitive_act_basic,Basic Life-Skill Training
+cognitive_act_career,Career Guidance
+cognitive_act_computer,Computer Classes
+cognitive_act_contests,Contests (Age Graded)
+cognitive_act_creativity,Creativity Club
+cognitive_act_mentorship_early,Early Mentorship Programs
+cognitive_act_stimultation_baby,Early Stimulation For Baby
+cognitive_act_educ_assistance,Educational Assistance
+cognitive_act_educ_tous,Educational tours/trips
+cognitive_act_internships,Internships/job attachments
+cognitive_act_mentorship,Mentorship
+cognitive_act_multi_sensory_play,Multi-Sensory Play
+cognitive_act_panel_discussion,Panel Discussion
+cognitive_act_pre_literacy_games,Pre-Literacy Games
+cognitive_act_pre_numeracy_games,Pre-Numeracy Games
+cognitive_act_prize_giving,Prize Giving Days
+cognitive_act_remedial,Remedial Classes (Age Graded)
+cognitive_act_science_congress,Science Congress
+cognitive_act_trade_fairs,Trade Fairs
+cognitive_act_tutoring,Tutoring
+cognitive_act_vocational_ex,Vocational Training (External Institute)
+cognitive_act_vocational_in,Vocational Training (In-Church)

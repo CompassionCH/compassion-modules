@@ -33,8 +33,6 @@ class child_pictures(models.Model):
     fullshot = fields.Binary(compute='set_pictures')
     headshot = fields.Binary(compute='set_pictures')
     date = fields.Date('Date of pictures')
-    case_study_id = fields.Many2one(
-        'compassion.child.property', 'Case study', readonly=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -90,23 +88,6 @@ class child_pictures(models.Model):
             pictures = same_pictures[0]
         else:
             pictures.write({'date': image_date})
-
-        if not pictures.case_study_id:
-            # Attach the picture to the last Case Study
-            case_study = child.case_study_ids and child.case_study_ids[0]
-            if case_study and not case_study.pictures_id:
-                six_months = 180
-                case_study_date = case_study.info_date
-                case_study_date = datetime.strptime(case_study_date, DF)
-
-                picture_date = pictures.date
-                picture_date = datetime.strptime(picture_date, DF)
-
-                date_diff = abs((case_study_date - picture_date).days)
-
-                if (date_diff <= six_months or child.type == 'LDP'):
-                    case_study.attach_pictures(pictures.id)
-                    pictures.write({'case_study_id': case_study.id})
 
         return pictures
 
