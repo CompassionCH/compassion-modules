@@ -20,10 +20,17 @@ from openerp.tools.config import config
 logger = logging.getLogger(__name__)
 
 
-class compassion_project(models.Model):
+class ProjectInvolvement(models.Model):
+    _inherit = 'connect.multipicklist'
+    _name = 'project.involvement'
+    res_model = 'compassion.project'
+    res_field = 'involvement_ids'
+
+
+class CompassionProject(models.Model):
     """ A compassion project """
     _name = 'compassion.project'
-    _rec_name = 'code'
+    _rec_name = 'icp_id'
     _inherit = 'mail.thread'
 
     ##########################################################################
@@ -32,14 +39,27 @@ class compassion_project(models.Model):
 
     # General Information
     #####################
-    name = fields.Char(size=128, required=True, default='/')
-    code = fields.Char(size=128, required=True)
+    icp_id = fields.Char(required=True, oldname='code')
+    child_center_name = fields.Char()
+    child_center_original_name = fields.Char()
+    local_church_name = fields.Char()
+    local_church_original_name = fields.Char()
+    name = fields.Char(related='child_center_name')
+    website = fields.Char()
+    social_media_site = fields.Char()
+    involvement_ids = fields.Many2many(
+        'compassion.project.involvement', string='Involvement')
+    available_for_visits = fields.Boolean()
+    nb_csp_kids = fields.Integer('CSP kids count')
+    nb_cdsp_kids = fields.Integer('CDSP kids count')
+    last_update_date = fields.Date('Last update')
+
+
     country_id = fields.Many2one('compassion.country', 'Country')
     type = fields.Selection([
         ('CDSP', 'CDSP'), ('CSP', 'CSP')], 'Program type')
     start_date = fields.Date('Partnership begining')
     stop_date = fields.Date('Partnership ending')
-    last_update_date = fields.Date('Last update')
     suspension = fields.Selection([
         ('suspended', _('Suspended')),
         ('fund-suspended', _('Suspended & fund retained'))], 'Suspension',
@@ -79,7 +99,6 @@ class compassion_project(models.Model):
 
     # Community Information
     #######################
-    local_church_name = fields.Char('Local church name')
     hiv_category = fields.Selection([
         ('AFFCTD', _('Affected')),
         ('NOTAFF', _('Not affected'))],
@@ -160,12 +179,6 @@ class compassion_project(models.Model):
     social_needs = fields.Text(_('Social needs'))
     spiritual_needs = fields.Text(_('Spiritual needs'))
 
-    #   d. Age groups section
-    age_group_ids = fields.One2many(
-        'compassion.project.age.group', 'project_id',
-        _('Age group'),
-        readonly=True, track_visibility="onchange")
-
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
@@ -216,7 +229,7 @@ class compassion_project(models.Model):
     @api.model
     def create(self, vals):
         """Get informations of project on creation. """
-        res = super(compassion_project, self).create(vals)
+        res = super(CompassionProject, self).create(vals)
         res.update_informations()
         return res
 
@@ -258,10 +271,10 @@ class compassion_project(models.Model):
         for project in self:
             values = None
             try:
-                values, community_id = self._update_program_info(project.code)
+                values, community_id = self._update_program_info(project.icp_id)
                 values.update(self._update_community_info(community_id))
                 if values['type'] == 'CDSP':
-                    values.update(self._update_cdsp_info(project.code))
+                    values.update(self._update_cdsp_info(project.icp_id))
                 project._get_age_groups()
             except exceptions.Warning as e:
                 # Log error
@@ -281,7 +294,7 @@ class compassion_project(models.Model):
                     _('Generation error'),
                     _('Missing information for project %s. Please update its '
                       'information before generating the descriptions') %
-                    project.code)
+                    project.icp_id)
 
         return True
 
@@ -346,7 +359,7 @@ class compassion_project(models.Model):
         self.ensure_one()
         # Delete old age_groups
         self.age_group_ids.unlink()
-        json_data = self._cornerstone_fetch(self.code + '/agegroups',
+        json_data = self._cornerstone_fetch(self.icp_id + '/agegroups',
                                             'cdspimplementors')
         value_obj = self.env['compassion.translated.value']
         age_project_obj = self.env['compassion.project.age.group']

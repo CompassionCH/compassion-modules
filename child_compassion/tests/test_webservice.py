@@ -26,7 +26,7 @@ class test_webservice(common.TransactionCase):
     def _create_project(self, project_code, project_name):
         project_obj = self.env['compassion.project']
         project_id = project_obj.create({
-            'code': project_code,
+            'icp_id': project_code,
             'name': project_name,
         }).id
         return project_id

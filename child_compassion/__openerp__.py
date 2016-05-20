@@ -47,7 +47,6 @@
         'views/country_compassion_view.xml',
         'views/delegate_child_wizard.xml',
         'views/undelegate_child_wizard.xml',
-        'views/project_compassion_age_groups_view.xml',
         'workflow/child_workflow.xml',
         'data/delegate_child_compassion_cron.xml',
         'data/child_compassion_template.xml',
@@ -58,6 +57,7 @@
         'data/child.christian.activity.csv',
         'data/child.chronic.illness.csv',
         'data/child.physical.disability.csv',
+        'data/project.involvement.csv',
     ],
     'demo': [
         'demo/compassion.country.csv',

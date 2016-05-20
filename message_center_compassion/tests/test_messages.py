@@ -255,7 +255,7 @@ class test_messages(test_base_module):
         self.assertEqual(contract.gmc_state, 'picture')
 
         project_id = self.env['compassion.project'].search(
-            [('code', '=', child_keys[1][:5])])[0].id
+            [('icp_id', '=', child_keys[1][:5])])[0].id
         self._create_incoming_message(
             'update', 'compassion.project', project_id)
 
