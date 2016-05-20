@@ -9,8 +9,6 @@
 #
 ##############################################################################
 from . import partner_compassion
-from . import lang_compassion
-from . import country_compassion
 from . import correspondence_metadata
 from . import correspondence
 from . import correspondence_page
