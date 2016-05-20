@@ -10,13 +10,9 @@
 ##############################################################################
 
 import logging
-import requests
-import urllib3
-import certifi
 
-from openerp import models, fields, api, exceptions, _
+from openerp import models, fields, api, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from openerp.tools.config import config
 from datetime import datetime
 
 from ..wizards.child_description_fr import ChildDescriptionFr
