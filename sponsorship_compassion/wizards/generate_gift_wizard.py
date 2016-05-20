@@ -16,7 +16,7 @@ from openerp.tools import mod10r
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-from ..model.product import GIFT_NAMES
+from ..models.product import GIFT_NAMES
 import time
 
 
