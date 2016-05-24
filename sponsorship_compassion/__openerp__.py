@@ -50,6 +50,7 @@
         'data/partner_sequence.xml',
         'data/lang_data.xml',
         'workflow/contract_workflow.xml',
+        'security/ir.model.access.csv',
     ],
     'demo': [
         'demo/res.partner.csv',
