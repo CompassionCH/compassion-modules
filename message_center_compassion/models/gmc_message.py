@@ -150,7 +150,7 @@ class GmcMessagePool(models.Model):
                     self.env.cr.rollback()
                     self.env.invalidate_all()
                     # Write error
-                    self.write({
+                    message_update.update({
                         'state': 'failure',
                         'failure_reason': traceback.format_exc()})
 

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino, Cyril Sester
 #
@@ -20,12 +20,64 @@ from ..wizards.child_description_fr import ChildDescriptionFr
 logger = logging.getLogger(__name__)
 
 
+class GenericChild(models.AbstractModel):
+    """ Generic information of children shared by subclasses:
+        - compassion.child : sponsored children
+        - compassion.global.child : available children in global pool
+    """
+    _name = 'compassion.generic.child'
+
+    # General Information
+    #####################
+    global_id = fields.Char('Global ID')
+    local_id = fields.Char(
+        'Local ID', size=10, required=True, oldname='code',
+        help='Child reference')
+    project_id = fields.Many2one('compassion.project', 'Project')
+    name = fields.Char()
+    firstname = fields.Char()
+    lastname = fields.Char()
+    preferred_name = fields.Char()
+    gender = fields.Selection([('F', 'Female'), ('M', 'Male')])
+    birthdate = fields.Date()
+    is_orphan = fields.Boolean()
+    sponsorship_status = fields.Selection([
+        ('Sponsored', 'Sponsored'),
+        ('Unsponsored', 'Unsponsored'),
+    ])
+    unsponsored_since = fields.Date()
+
+
+class GlobalChild(models.TransientModel):
+    """ Available child in the global childpool
+    """
+    _name = 'compassion.global.child'
+    _inherit = 'compassion.generic.child'
+    _description = 'Global Child'
+
+    portrait = fields.Binary()
+    fullshot = fields.Binary()
+    is_area_hiv_affected = fields.Boolean()
+    is_special_needs = fields.Boolean()
+    priority_score = fields.Integer(help='How fast the child should be '
+                                         'sponsored')
+    correspondent_score = fields.Integer(help='Score based on how long the '
+                                              'child is waiting')
+    holding_global_partner_id = fields.Many2one(
+        'compassion.global.partner', 'Holding global partner'
+    )
+    hold_expiration_date = fields.Datetime()
+    source_code = fields.Char(
+        'origin of the hold'
+    )
+
+
 class CompassionChild(models.Model):
     """ A sponsored child """
     _name = 'compassion.child'
     _rec_name = 'local_id'
-    _inherit = 'mail.thread'
-    _description = "Child"
+    _inherit = ['compassion.generic.child', 'mail.thread']
+    _description = "Sponsored Child"
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -34,16 +86,6 @@ class CompassionChild(models.Model):
     # General Information
     #####################
     compass_id = fields.Char('Compass ID', oldname='unique_id')
-    global_id = fields.Char('Global ID')
-    local_id = fields.Char(
-        'Local ID', size=10, required=True, track_visibility='onchange',
-        oldname='local_id', help=_('Child reference'))
-    name = fields.Char()
-    firstname = fields.Char(track_visibility='onchange')
-    lastname = fields.Char(track_visibility='onchange')
-    preferred_name = fields.Char()
-    gender = fields.Selection([('F', 'Female'), ('M', 'Male')])
-    birthdate = fields.Date(track_visibility='onchange')
     estimated_birthdate = fields.Boolean()
     cognitive_age_group = fields.Selection([
         ('0-2', '0-2'),
@@ -54,28 +96,16 @@ class CompassionChild(models.Model):
         ('15-18', '15-18'),
         ('19+', '19+'),
     ])
-    is_orphan = fields.Boolean(track_visibility='onchange')
-    beneficiary_status = fields.Selection([
-        ('Draft', 'Draft'),
-        ('Active', 'Active'),
-    ])
-    sponsorship_status = fields.Selection([
-        ('Sponsored', 'Sponsored'),
-        ('Unsponsored', 'Unsponsored'),
-    ])
     cdsp_type = fields.Selection([
         ('Home based', 'Home based'),
         ('Center based', 'Center based'),
     ], track_visibility='onchange')
     last_review_date = fields.Date()
-    project_id = fields.Many2one(
-        'compassion.project', 'Project', store=True, compute='_set_project')
     type = fields.Selection(
         [('CDSP', 'CDSP'), ('LDP', 'LDP')], required=True, default='CDSP')
     date = fields.Date('Allocation date')
     completion_date = fields.Date(track_visibility='onchange')
     completion_date_change_reason = fields.Char()
-    unsponsored_since = fields.Date()
     state = fields.Selection(
         '_get_child_states', readonly=True, required=True,
         track_visibility='onchange', default='N')
