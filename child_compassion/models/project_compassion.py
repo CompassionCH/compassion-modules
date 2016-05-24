@@ -9,13 +9,8 @@
 #
 ##############################################################################
 
-import requests
-import urllib3
-import certifi
-import json
 import logging
 from openerp import models, fields, api, exceptions, _
-from openerp.tools.config import config
 
 logger = logging.getLogger(__name__)
 

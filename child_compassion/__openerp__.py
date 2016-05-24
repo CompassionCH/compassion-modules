@@ -72,6 +72,7 @@
         'data/icp.school.cost.csv',
         'data/icp.sociological.activity.csv',
         'data/icp.spiritual.activity.csv',
+        'data/fo.high.risk.csv',
     ],
     'demo': [
         'demo/compassion.child.csv'
