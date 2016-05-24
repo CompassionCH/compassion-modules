@@ -115,6 +115,8 @@ class CompassionChild(models.Model):
     sponsor_ref = fields.Char(
         'Sponsor reference', related='sponsor_id.ref')
     has_been_sponsored = fields.Boolean()
+    hold_id = fields.Many2one('compassion.hold', 'Hold')
+    active = fields.Boolean(default=True)
 
     # Beneficiary Favorites
     #######################
@@ -326,6 +328,25 @@ class CompassionChild(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
+    @api.model
+    def create(self, vals):
+        """
+        If child with global_id already exists, update it instead of creating
+        a new one.
+        """
+        global_id = vals.get('global_id')
+        child = False
+        if global_id:
+            child = self.search([
+                ('global_id', '=', global_id),
+                ('active', '=', False)
+            ])
+            if child:
+                vals['active'] = True
+                child.write(vals)
+        if not child:
+            child = super(CompassionChild, self).create(vals)
+        return child
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -396,9 +417,17 @@ class CompassionChild(models.Model):
             if self.state == 'F':
                 # Child reinstatement
                 state = 'Z'
+                # TODO The child should be on reinstatement hold
+                # Convert the hold to have time to propose it on the
+                # previous sponsor
         if self.sponsor_id:
             # Child is already sponsored
             state = 'P'
+        else:
+            # Child has lost his sponsor. We inactivate it to release it
+            # to the global child pool.
+            if not self.hold_id:
+                self.active = False
         self.state = state
         return True
 
@@ -409,11 +438,10 @@ class CompassionChild(models.Model):
             'has_been_sponsored': True})
         return True
 
-    @api.one
+    @api.multi
     def child_departed(self):
-        """ Is called when a child changes his status to 'F' or 'X'."""
-        if self.state == 'F':
-            self.sponsor_id = False
+        """ Is called when a child changes his status to 'F'. """
+        self.write({'sponsor_id': False})
         return True
 
     ##########################################################################

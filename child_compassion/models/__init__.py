@@ -22,3 +22,4 @@ from . import lang_compassion
 from . import project_lifecycle_event
 from . import project_need
 from . import global_partner
+from . import compassion_hold
