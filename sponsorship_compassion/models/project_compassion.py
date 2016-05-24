@@ -12,7 +12,7 @@
 from openerp import api, models
 
 
-class project_compassion(models.Model):
+class ProjectCompassion(models.Model):
     _inherit = 'compassion.project'
 
     @api.one
@@ -22,7 +22,7 @@ class project_compassion(models.Model):
         during the period of suspension.
         We also remove the children on internet.
         """
-        res = super(project_compassion, self).suspend_funds()
+        res = super(ProjectCompassion, self).suspend_funds()
         contracts = self.env['recurring.contract'].search([
             ('child_code', 'like', self.icp_id),
             ('state', 'in', ('active', 'waiting', 'mandate'))])
@@ -36,7 +36,7 @@ class project_compassion(models.Model):
         or we change open invoices if fund is set to replace sponsorship
         product. We also change attribution of invoices paid in advance.
         """
-        res = super(project_compassion, self)._reactivate_project()
+        res = super(ProjectCompassion, self)._reactivate_project()
         contracts = self.env['recurring.contract'].search([
             ('child_code', 'like', self.icp_id),
             ('state', 'in', ('active', 'waiting', 'mandate'))])
