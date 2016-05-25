@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data>
         <record id="group_sponsorship" model="res.groups">
             <field name="name">Manage sponsorships</field>
             <field name="comment">the user will have access to all sponsorships and related data.</field>
