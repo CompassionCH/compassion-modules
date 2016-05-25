@@ -20,6 +20,7 @@
                 </tree>
             </field>
         </record>
+
         <record id="view_gmc_message_pool_outgoing_tree" model="ir.ui.view">
             <field name="name">gmc.message.pool.outgoing.tree</field>
             <field name="model">gmc.message.pool</field>
@@ -174,6 +175,21 @@
             </field>
         </record>
 
+        <record id="action_gmc_message_outgoing_form" model="ir.actions.act_window">
+            <field name="name">Outgoing Messages</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">gmc.message.pool</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_pending':1}</field>
+            <field name="domain">[('direction', '=', 'out')]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                No messages.
+              </p>
+            </field>
+        </record>
+
         <record id="action_gmc_action" model="ir.actions.act_window">
             <field name="name">GMC Action</field>
             <field name="type">ir.actions.act_window</field>
@@ -195,6 +211,7 @@
         <menuitem id="menu_message_incoming" parent="menu_message_center" name="Incoming Messages" sequence="1" />
         <menuitem id="menu_message_incoming_all" parent="menu_message_incoming" action="action_gmc_message_incoming_form" sequence="1" />
         <menuitem id="menu_message_outgoing" name="Outgoing Messages" parent="menu_message_center" sequence="2"/>
+        <menuitem id="menu_message_outgoing_gmc_action" parent="menu_message_outgoing" action="action_gmc_message_outgoing_form"  sequence="1"/>
         <menuitem id="menu_message_config" parent="menu_message_center" name="Configuration" groups="base.group_erp_manager"/>
         <menuitem id="menu_message_action" action="action_gmc_action" parent="menu_message_config"/>
         <menuitem id="menu_message_action_connect" action="action_gmc_action_connect" parent="menu_message_config"/>
