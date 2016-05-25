@@ -31,7 +31,7 @@ class GenericChild(models.AbstractModel):
     #####################
     global_id = fields.Char('Global ID')
     local_id = fields.Char(
-        'Local ID', size=10, required=True, oldname='code',
+        'Local ID', size=11, required=True, oldname='code',
         help='Child reference')
     project_id = fields.Many2one('compassion.project', 'Project')
     name = fields.Char()
@@ -323,7 +323,7 @@ class CompassionChild(models.Model):
             child.is_available = child.state in self._available_states()
 
     def _available_states(self):
-        return ['N', 'D', 'Z', 'R']
+        return ['N', 'D', 'Z']
 
     ##########################################################################
     #                              ORM METHODS                               #
