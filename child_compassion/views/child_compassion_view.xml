@@ -40,6 +40,7 @@
                                         <field name="gender" />
                                         <field name="birthdate" />
                                         <field name="sponsor_id" />
+                                        <field name="hold_id" />
                                     </group>
                                     <group>
                                         <field name="global_id" />

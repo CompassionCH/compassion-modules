@@ -28,11 +28,10 @@ class CompassionProject(models.Model):
     # General Information
     #####################
     icp_id = fields.Char(required=True, oldname='code')
-    child_center_name = fields.Char()
+    name = fields.Char()
     child_center_original_name = fields.Char()
     local_church_name = fields.Char()
     local_church_original_name = fields.Char()
-    name = fields.Char(related='child_center_name')
     website = fields.Char()
     social_media_site = fields.Char()
     involvement_ids = fields.Many2many('icp.involvement', string='Involvement')
@@ -309,8 +308,11 @@ class CompassionProject(models.Model):
 
     @api.multi
     def _compute_country(self):
-        # TODO Implement this
-        pass
+        for project in self:
+            country = self.env['res.country'].search([
+                ('code', '=', project.icp_id[:2])
+            ])
+            project.country_id = country
 
     @api.model
     def _get_months(self):

@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Children',
-    'version': '8.0.2.0',
+    'version': '8.0.3.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -48,7 +48,7 @@
         'views/undelegate_child_wizard.xml',
         'workflow/child_workflow.xml',
         'data/delegate_child_compassion_cron.xml',
-        'data/child_compassion_template.xml',
+        'data/migrate_r4.xml',
         'data/child.hobby.csv',
         'data/child.household.duty.csv',
         'data/child.project.activity.csv',
