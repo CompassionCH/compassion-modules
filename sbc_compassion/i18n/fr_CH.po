@@ -560,11 +560,6 @@ msgid "Imports"
 msgstr "Imports"
 
 #. module: sbc_compassion
-#: help:res.partner,send_original:0
-msgid "Indicates that we request the original letters for this sponsor"
-msgstr "Demander les originaux pour ce parrain"
-
-#. module: sbc_compassion
 #: help:res.partner,mandatory_review:0
 msgid ""
 "Indicates that we should review the letters of this sponsor before sending "
@@ -1232,11 +1227,6 @@ msgstr "Scannée"
 #, python-format
 msgid "Scheduled"
 msgstr "Planifiée"
-
-#. module: sbc_compassion
-#: field:res.partner,send_original:0
-msgid "Send original"
-msgstr "Envoyer l'original"
 
 #. module: sbc_compassion
 #: code:addons/sbc_compassion/models/correspondence_metadata.py:26
