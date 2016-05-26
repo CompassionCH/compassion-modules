@@ -30,13 +30,11 @@
 
 {
     'name': 'Compassion Sponsorships Tracking',
-    'version': '8.0.1',
+    'version': '8.0.3',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': [
-        'message_center_compassion',
-        ],
+    'depends': ['sponsorship_compassion'],
     'data': [
         'view/sub_sponsorship_wizard_view.xml',
         'view/contract_view.xml',
