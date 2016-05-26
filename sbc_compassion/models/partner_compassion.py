@@ -31,9 +31,6 @@ class ResPartner(models.Model):
         ('digital', _('By e-mail')),
         ('physical', _('By postal service'))], default='digital',
         required=True, help='Delivery preference for Child letters')
-    send_original = fields.Boolean(
-        help='Indicates that we request the original letters for this sponsor'
-        )
     translator_email = fields.Char(help='e-mail address used in SDL')
 
     @api.multi
