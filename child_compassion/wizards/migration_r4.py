@@ -13,7 +13,7 @@ from openerp import models, api
 logger = logging.getLogger(__name__)
 
 
-class MigrationR4(models.Model):
+class MigrationR4(models.TransientModel):
     """ Perform migrations after upgrading the module
     """
     _name = 'migration.r4'
@@ -37,10 +37,10 @@ class MigrationR4(models.Model):
             'hold_id': hold.id,
             'to_migrate_r4': False
         })
-        for child in available_children:
+        # for child in available_children:
             # TODO Implement when holds are implemented
             # TODO Are children automatically put on hold for us?
             # TODO Should we also update information of children?
-            logger.info("nothing to do for this child.")
+            # logger.info("nothing to do for this child.")
 
         return True
