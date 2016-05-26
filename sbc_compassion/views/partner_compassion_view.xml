@@ -12,7 +12,6 @@
                 <field name="lang" position="after">
                     <field name="spoken_lang_ids" widget="many2many_tags" options="{'create':False}" attrs="{'required': [('is_company', '=', False), ('customer', '=', True)]}"/>
                     <field name="delivery_preference"/>
-                    <field name="send_original"/>
                     <field name="mandatory_review"/>
                 </field>
             </field>

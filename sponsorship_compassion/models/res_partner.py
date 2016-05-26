@@ -37,6 +37,9 @@ class res_partner(models.Model):
     receivable_items = fields.Integer(compute='_set_count_items')
     has_sponsorships = fields.Boolean(
         compute='_compute_has_sponsorships', store=True)
+    send_original = fields.Boolean(
+        help='Indicates that we request the original letters for this sponsor'
+        )
 
     ##########################################################################
     #                             FIELDS METHODS                             #

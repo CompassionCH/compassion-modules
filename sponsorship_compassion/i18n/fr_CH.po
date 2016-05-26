@@ -136,6 +136,11 @@ msgid "will add 3 months if empty"
 msgstr "Cela rajoutera 3 mois si vide"
 
 #. module: sponsorship_compassion
+#: help:res.partner,send_original:0
+msgid "Indicates that we request the original letters for this sponsor"
+msgstr "Demander les originaux pour ce parrain"
+
+#. module: sponsorship_compassion
 #: code:addons/sponsorship_compassion/model/invoice_line.py:60
 #, python-format
 msgid "{0} children"
@@ -987,6 +992,11 @@ msgstr "Account Entry"
 #: view:res.partner:0 field:res.partner,contracts_paid:0
 msgid "Sponsorships as payer only"
 msgstr "Uniquement payeur"
+
+#. module: sponsorship_compassion
+#: field:res.partner,send_original:0
+msgid "Send original"
+msgstr "Envoyer l'original"
 
 #. module: sponsorship_compassion
 #: help:recurring.contract,is_active:0
