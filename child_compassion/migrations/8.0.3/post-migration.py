@@ -21,8 +21,3 @@ UPDATE compassion_child SET local_id = left(local_id, 2) || '0' ||
 UPDATE compassion_project SET icp_id = left(icp_id, 2) || '0' || right(
     icp_id, 3);
     """)
-
-    # Remove migration column
-    cr.execute("""
-ALTER TABLE compassion_child DROP to_migrate_r4;
-    """)

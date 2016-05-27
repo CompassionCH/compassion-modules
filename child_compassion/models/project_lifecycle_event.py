@@ -13,7 +13,7 @@
 from openerp import models, fields
 
 
-class ProjectNeed(models.Model):
+class ProjectLifecycle(models.Model):
     _name = 'compassion.project.ile'
     _description = 'Project lifecycle event'
     _order = 'date desc'
