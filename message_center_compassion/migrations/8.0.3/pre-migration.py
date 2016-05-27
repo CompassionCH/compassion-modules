@@ -24,3 +24,9 @@ UPDATE gmc_message_pool m SET old_action = (
 ), action_id = NULL;
 DELETE FROM gmc_action;
     """)
+
+    # Reconstruct security rules
+    cr.execute("""
+UPDATE ir_model_data SET module = 'message_center_compassion'
+WHERE name = 'module_category_compassion';
+    """)

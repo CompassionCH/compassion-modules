@@ -20,27 +20,28 @@ class MigrationR4(models.TransientModel):
 
     @api.model
     def perform_migration(self):
+        # Only execute migration for 8.0.1.4.1 -> 8.0.3.0
+        child_compassion_module = self.env['ir.module.module'].search([
+            ('name', '=', 'child_compassion')
+        ])
+        if child_compassion_module.latest_version == '8.0.1.4.1':
+            self._perform_migration()
+        return True
+
+    def _perform_migration(self):
         """
         Finds available children and try to put them on hold
         """
         logger.info("MIGRATION : Putting hold on available children")
-        child_obj = self.env['compassion.child']
         hold = self.env['compassion.hold'].create({
                 'name': 'Fake hold',
                 'type': 'Consignment Hold'
         })
-        self.env.cr.execute(
-            'select id from compassion_child where to_migrate_r4 = true')
-        child_ids = [r[0] for r in self.env.cr.fetchall()]
-        available_children = child_obj.browse(child_ids)
-        available_children.write({
-            'hold_id': hold.id,
-            'to_migrate_r4': False
-        })
+        available_children = self.env['compassion.child'].search([(
+            'state', 'in', ['N', 'D', 'I']
+        )])
+        available_children.write({'hold_id': hold.id})
         # for child in available_children:
-            # TODO Implement when holds are implemented
-            # TODO Are children automatically put on hold for us?
-            # TODO Should we also update information of children?
-            # logger.info("nothing to do for this child.")
-
-        return True
+        # TODO Implement when holds are implemented
+        # TODO Are children automatically put on hold for us?
+        # logger.info("nothing to do for this child.")

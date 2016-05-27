@@ -43,10 +43,11 @@
                                     </group>
                                     <group string="Field Status">
                                         <field name="lifecycle_ids"/>
-                                        <field name="disburse_cdsp_funds"/>
-                                        <field name="disburse_csp_funds"/>
-                                        <field name="disburse_s2b_letters"/>
-                                        <field name="disburse_b2s_letters"/>
+                                        <field name="hold_cdsp_funds"/>
+                                        <field name="hold_csp_funds"/>
+                                        <field name="hold_gifts"/>
+                                        <field name="hold_s2b_letters"/>
+                                        <field name="hold_b2s_letters"/>
                                     </group>
                                 </group>
                             </page>
@@ -67,20 +68,11 @@
                             <page string="Miscellaneous">
                                 <group>
                                     <group> 
-                                        <!--<field name="primary_diet_ids" widget="many2many_tags" />-->
                                         <field name="closest_city" />
-                                        <!--<field name="distance_from_closest_city_ids" widget="many2many_tags"/>
-                                        <field name="terrain_description_ids" widget="many2many_tags" />-->
                                         <field name="community_population" />
-                                        <!--<field name="floor_material_ids" widget="many2many_tags" />
-                                        <field name="wall_material_ids" widget="many2many_tags" />
-                                        <field name="roof_material_ids" widget="many2many_tags" />
-                                        <field name="spoken_languages_ids" widget="many2many_tags" />
-                                        <field name="health_problems_ids" widget="many2many_tags" />-->
                                     </group>
                                     <group>
                                         <field name="unemployment_rate" />
-                                        <!--<field name="primary_occupation_ids" widget="many2many_tags" />-->
                                         <field name="monthly_income" />
                                         <field name="economic_needs" />
                                         <field name="education_needs" />

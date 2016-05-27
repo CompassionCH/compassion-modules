@@ -285,11 +285,11 @@ class CompassionProject(models.Model):
     status_date = fields.Date(
         'Last status change', track_visibility='onchange')
     status_comment = fields.Char()
-    disburse_cdsp_funds = fields.Boolean(compute='_compute_disbursements')
-    disburse_csp_funds = fields.Boolean(compute='_compute_disbursements')
-    disburse_gifts = fields.Boolean(compute='_compute_disbursements')
-    disburse_s2b_letters = fields.Boolean(compute='_compute_disbursements')
-    disburse_b2s_letters = fields.Boolean(compute='_compute_disbursements')
+    hold_cdsp_funds = fields.Boolean(related='lifecycle_ids.hold_cdsp_funds')
+    hold_csp_funds = fields.Boolean(related='lifecycle_ids.hold_csp_funds')
+    hold_gifts = fields.Boolean(related='lifecycle_ids.hold_gifts')
+    hold_s2b_letters = fields.Boolean(related='lifecycle_ids.hold_s2b_letters')
+    hold_b2s_letters = fields.Boolean(related='lifecycle_ids.hold_b2s_letters')
 
     # Project Descriptions
     ######################
@@ -301,11 +301,6 @@ class CompassionProject(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.multi
-    def _compute_disbursements(self):
-        # TODO Implement this
-        pass
-
     @api.multi
     def _compute_country(self):
         for project in self:
@@ -321,28 +316,19 @@ class CompassionProject(models.Model):
     @api.depends('lifecycle_ids')
     @api.one
     def _set_suspension_state(self):
-        # TODO Redefine this
-        pass
-        # if not isinstance(self.id, models.NewId):
-        #     old_value = self.read(['suspension'])[0]['suspension']
-        #     is_active = self.status in ('A', 'P')
-        #     if is_active and not (
-        #             self.disburse_gifts and self.disburse_funds and
-        #             self.disburse_unsponsored_funds and
-        #             self.new_sponsorships_allowed and
-        #             self.additional_quota_allowed):
-        #         suspension_status = 'suspended' if self.disburse_funds \
-        #             else 'fund-suspended'
-        #
-        #         if suspension_status == 'fund-suspended' and \
-        #                 old_value != 'fund-suspended':
-        #             self.suspend_funds()
-        #         self.suspension = suspension_status
-        #     elif is_active and old_value == 'fund-suspended':
-        #         self._reactivate_project()
-        #         self.suspension = False
-        #     elif is_active and old_value == 'suspended':
-        #         self.suspension = False
+        old_value = self.read(['suspension'])[0]['suspension']
+        if self.lifecycle_ids:
+            last_info = self.lifecycle_ids[0]
+            if last_info.type == 'Suspension':
+                suspension_status = 'fund-suspended' if \
+                    last_info.hold_cdsp_funds else 'suspended'
+                if suspension_status != old_value:
+                    self.suspend_funds()
+                self.suspension = suspension_status
+            elif last_info.type == 'Reactivation':
+                if old_value == 'fund-suspended':
+                    self._reactivate_project()
+                self.suspension = False
 
     @api.model
     def _get_state(self):
