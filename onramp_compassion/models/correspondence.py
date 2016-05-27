@@ -129,8 +129,8 @@ class SponsorshipCorrespondence(models.Model):
                     _("Image requested was not found remotely."))
             name = letter.child_id.code + '_' + letter.kit_identifier + '.pdf'
             letter.letter_image = self.env['ir.attachment'].create({
-                "name": name,
-                "db_datas": image_data,
+                'name': name,
+                'datas': image_data,
                 'res_model': self._name,
                 'res_id': letter.id,
             })
