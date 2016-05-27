@@ -8,7 +8,6 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-
 from openerp import api, fields, models, _
 
 
@@ -36,10 +35,27 @@ class res_partner(models.Model):
         string='Other contracts')
     unrec_items = fields.Integer(compute='_set_count_items')
     receivable_items = fields.Integer(compute='_set_count_items')
+    has_sponsorships = fields.Boolean(
+        compute='_compute_has_sponsorships', store=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.multi
+    @api.depends('category_id')
+    def _compute_has_sponsorships(self):
+        """
+        A partner is sponsor if he is correspondent of at least one
+        sponsorship.
+        """
+        for partner in self:
+            partner.has_sponsorships = self.env[
+                'recurring.contract'].search_count([
+                    '|', ('partner_id', '=', partner.id),
+                    ('correspondant_id', '=', partner.id),
+                    ('type', 'like', 'S')
+                ])
+
     @api.multi
     def _get_related_contracts(self):
         """ Returns the contracts of the sponsor of given type

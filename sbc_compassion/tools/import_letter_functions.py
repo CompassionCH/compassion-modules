@@ -368,7 +368,7 @@ def decodeBarcode(env, barcode):
                 order='id desc', limit=1).id
             partner_id = env['res.partner'].search(
                 [('ref', '=', partner_ref),
-                 ('is_company', '=', False)], limit=1).id
+                 ('has_sponsorships', '=', True)], limit=1).id
     return partner_id, child_id
 
 

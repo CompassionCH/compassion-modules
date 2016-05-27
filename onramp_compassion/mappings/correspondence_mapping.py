@@ -123,7 +123,7 @@ class CorrespondenceMapping(OnrampMapping):
         """
         if connect_name == 'CompassConstituentId':
             value = value[3:]
-            relation_search = [('is_company', '=', False)]
+            relation_search = [('has_sponsorships', '=', True)]
         if connect_name == 'Template' and not value.startswith('CH'):
             value_mapping = ('b2s_layout_id.code', 'correspondence.b2s.layout')
             # Value is FO-X-YYYY-Z and we are only interested in YYYY
