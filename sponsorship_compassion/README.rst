@@ -1,6 +1,8 @@
 .. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
-    :alt: License: AGPL-3
+   :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
+   :alt: License: AGPL-3
 
+=======================
 Compassion Sponsorships
 =======================
 
@@ -40,7 +42,8 @@ To use this module, you need to:
 Known issues / Roadmap
 ======================
 
-* Contracts and Sponsorships will be better differenciated.
+* Remove localization from this module -> should be specific for Switzerland
+* Tests for R4
 
 Credits
 =======
