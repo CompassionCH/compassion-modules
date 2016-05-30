@@ -21,8 +21,11 @@ ALTER TABLE gmc_message_pool ADD COLUMN old_action character varying;
 ALTER TABLE gmc_message_pool ALTER COLUMN action_id DROP NOT NULL;
 UPDATE gmc_message_pool m SET old_action = (
     SELECT name from gmc_action where id = m.action_id
-), action_id = NULL;
-DELETE FROM gmc_action;
+), action_id = NULL
+WHERE action_id NOT IN (
+  SELECT id FROM gmc_action WHERE name IN ('CreateCommKit', 'UpdateCommKit')
+);
+DELETE FROM gmc_action WHERE name NOT IN ('CreateCommKit', 'UpdateCommKit');
     """)
 
     # Reconstruct security rules

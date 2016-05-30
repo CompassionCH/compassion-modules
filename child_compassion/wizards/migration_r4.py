@@ -34,14 +34,12 @@ class MigrationR4(models.TransientModel):
         """
         logger.info("MIGRATION : Putting hold on available children")
         hold = self.env['compassion.hold'].create({
-                'name': 'Fake hold',
-                'type': 'Consignment Hold'
+            'name': 'Pre-R4 Allocated children hold',
+            'type': 'Consignment Hold',
+            'channel': 'Hold for allocated children',
+            'source_code': 'Please update hold_id once known'
         })
         available_children = self.env['compassion.child'].search([(
             'state', 'in', ['N', 'D', 'I']
         )])
         available_children.write({'hold_id': hold.id})
-        # for child in available_children:
-        # TODO Implement when holds are implemented
-        # TODO Are children automatically put on hold for us?
-        # logger.info("nothing to do for this child.")
