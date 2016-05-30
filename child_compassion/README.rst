@@ -1,28 +1,27 @@
 .. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
-    :alt: License: AGPL-3
+   :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
+   :alt: License: AGPL-3
 
+===================
 Compassion Children
 ===================
 
-Setup child and projects for sponsorship management.
-Webservice information retrieving is also done in this module.
+Setup child and projects related objects for using with TCPT R4.
+Contains Beneficiary, Beneficiary Lifecycle, ICP, ICP Lifecycle,
+Child Holds and Global Child Pool management, Field Office,
+Household, and other related objects...
 
 Installation
 ============
 
-To install this module, you need to:
-
-* install certifi (sudo pip install certifi)
-* install urllib3 (sudo pip install urllib3)
+This module depends on message_center_compassion to manage
+messages with GMC Connect.
 
 Configuration
 =============
 
-To configure this module, you need to:
-
-* add settings in .conf file of Odoo
-* compass_url = <url to compass webservice>
-* compass_api_key = <your developer key for compass webservices>
+You need to add "Manage sponsorships" access rights to the users
+who will have access to Beneficiary and ICP data.
 
 Usage
 =====
@@ -34,7 +33,8 @@ To use this module, you need to:
 Known issues / Roadmap
 ======================
 
-* Javascript code is not working in V8 for generate_descriptions_wizard
+* Implement mappings and messages for R4
+* Tests for R4
 
 Credits
 =======
