@@ -14,14 +14,16 @@ def migrate(cr, version):
     if not version:
         return
 
-    # Update children that are in invalid states for R4
+    # Move old actions of onramp_compassion
     cr.execute("""
-UPDATE compassion_child SET state = 'F' WHERE state = 'X';
-UPDATE compassion_child SET state = 'N' WHERE state = 'R';
+UPDATE ir_model_data SET module = 'sbc_compassion', name = 'update_letter'
+WHERE name = 'update_commkit';
+UPDATE ir_model_data SET module = 'sbc_compassion', name = 'create_letter'
+WHERE name = 'create_commkit';
     """)
 
-    # Move languages from sbc_compassion module
+    # Move fields from module onramp_compassion
     cr.execute("""
-    UPDATE ir_model_data SET module = 'child_compassion'
-    WHERE module = 'sbc_compassion' AND name LIKE 'lang_compassion%';
-        """)
+UPDATE ir_model_data SET module = 'sbc_compassion'
+WHERE module = 'onramp_compassion' AND model = 'ir.model.fields';
+    """)
