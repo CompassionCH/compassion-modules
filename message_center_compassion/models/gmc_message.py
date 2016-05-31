@@ -211,11 +211,13 @@ class GmcMessagePool(models.Model):
                     'request_id': onramp_answer.get('request_id', False),
                 })
             else:
+                fail = onramp_answer.get('content', {
+                    'Error': onramp_answer.get('Error', 'None')})
                 result.update({
                     'state': 'failure',
                     'failure_reason':
                         '[%s] %s' % (onramp_answer['code'],
-                                     str(onramp_answer.get('Error')))
+                                     str(fail.get('Error', 'None')))
                 })
         else:
             result.update({
