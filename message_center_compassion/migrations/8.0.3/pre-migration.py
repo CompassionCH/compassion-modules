@@ -33,3 +33,10 @@ DELETE FROM gmc_action WHERE name NOT IN ('CreateCommKit', 'UpdateCommKit');
 UPDATE ir_model_data SET module = 'message_center_compassion'
 WHERE name = 'module_category_compassion';
     """)
+
+    # Move fields from module onramp_compassion
+    cr.execute("""
+UPDATE ir_model_data SET module = 'message_center_compassion'
+WHERE name IN ('field_gmc_message_pool_content',
+               'field_gmc_message_pool_headers');
+    """)

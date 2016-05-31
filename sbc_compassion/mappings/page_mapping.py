@@ -10,7 +10,8 @@
 ##############################################################################
 from HTMLParser import HTMLParser
 
-from base_mapping import OnrampMapping
+from openerp.addons.message_center_compassion.mappings.base_mapping import \
+    OnrampMapping
 from openerp.addons.sbc_compassion.models.correspondence_page import \
     BOX_SEPARATOR
 

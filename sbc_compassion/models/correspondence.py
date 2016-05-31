@@ -86,7 +86,7 @@ class Correspondence(models.Model):
     supporter_languages_ids = fields.Many2many(
         related='correspondant_id.spoken_lang_ids', readonly=True)
     beneficiary_language_ids = fields.Many2many(
-        related='child_id.project_id.country_id.spoken_lang_ids',
+        related='child_id.project_id.field_office_id.spoken_language_ids',
         readonly=True)
     # First spoken lang of partner
     original_language_id = fields.Many2one(

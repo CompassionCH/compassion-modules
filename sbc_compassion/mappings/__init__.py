@@ -8,7 +8,5 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from . import tools
-from . import models
-from . import wizards
-from . import mappings
+from . import correspondence_mapping
+from . import page_mapping
