@@ -8,7 +8,8 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from base_mapping import OnrampMapping
+from openerp.addons.message_center_compassion.mappings.base_mapping import \
+    OnrampMapping
 
 
 class CorrespondenceMapping(OnrampMapping):

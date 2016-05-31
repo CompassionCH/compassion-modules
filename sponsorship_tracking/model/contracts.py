@@ -18,7 +18,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class recurring_contract(models.Model):
+class RecurringContract(models.Model):
     _inherit = 'recurring.contract'
 
     ##########################################################################
@@ -29,6 +29,8 @@ class recurring_contract(models.Model):
         track_visibility='onchange', select=True, copy=False)
     sds_state_date = fields.Date(
         'SDS state date', readonly=True, copy=False)
+    cancel_gifts_on_termination = fields.Boolean(
+        'Cancel pending gifts if sponsorship is terminated')
     project_id = fields.Many2one(
         'compassion.project', 'Project', related='child_id.project_id',
         readonly=True)
@@ -84,7 +86,7 @@ class recurring_contract(models.Model):
         if 'parent_id' in vals:
             self._parent_id_changed(vals['parent_id'])
 
-        return super(recurring_contract, self).write(vals)
+        return super(RecurringContract, self).write(vals)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -107,12 +109,6 @@ class recurring_contract(models.Model):
         contracts = self.search([('project_state', '=', value)])
         contracts.signal_workflow('project_mail_sent')
         return True
-
-    @api.model
-    def button_reset_gmc_state(self, value):
-        """ Button called from Kanban view on all contracts of one group. """
-        contracts = self.search([('gmc_state', '=', value)])
-        return contracts.reset_gmc_state()
 
     # CRON Methods
     ##############
@@ -172,7 +168,7 @@ class recurring_contract(models.Model):
     @api.onchange('partner_id')
     def on_change_partner_id(self):
         """ Find parent sponsorship if any is sub_waiting. """
-        super(recurring_contract, self).on_change_partner_id()
+        super(RecurringContract, self).on_change_partner_id()
 
         if 'S' in self.type:
             origin_id = self.env['recurring.contract.origin'].search(
@@ -246,7 +242,7 @@ class recurring_contract(models.Model):
                 state = result[groupby]
                 result[groupby] = (state, state_dict.get(state))
 
-        return super(recurring_contract, self)._read_group_fill_results(
+        return super(RecurringContract, self)._read_group_fill_results(
             domain, groupby,
             remaining_groupbys, aggregated_fields, count_field,
             read_group_result, read_group_order
@@ -270,7 +266,7 @@ class recurring_contract(models.Model):
     @api.multi
     def contract_cancelled(self):
         """ Project state is no more relevant when contract is cancelled. """
-        res = super(recurring_contract, self).contract_cancelled()
+        res = super(RecurringContract, self).contract_cancelled()
         self.write({'project_state': False, 'sds_uid': self.env.user.id})
         return res
 
@@ -278,7 +274,7 @@ class recurring_contract(models.Model):
     def contract_terminated(self):
         """ Project state is no more relevant when contract is terminated.
         We also put the person who terminated the contract as follower. """
-        res = super(recurring_contract, self).contract_terminated()
+        res = super(RecurringContract, self).contract_terminated()
         self.write({'project_state': False, 'sds_uid': self.env.user.id})
         return res
 

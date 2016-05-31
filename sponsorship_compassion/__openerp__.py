@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Sponsorships',
-    'version': '8.0.2',
+    'version': '8.0.3.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
