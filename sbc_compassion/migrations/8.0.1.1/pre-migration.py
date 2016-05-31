@@ -49,7 +49,7 @@ def rename_tables(cr):
     cr.execute(
         """
         Update correspondence_template set layout='CH-A-6S11-1'
-        Where layoute='CH-A-6S01-1';
+        Where layout='CH-A-6S01-1';
         """
     )
 

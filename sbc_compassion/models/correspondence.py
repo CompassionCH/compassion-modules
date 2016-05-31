@@ -501,6 +501,8 @@ class Correspondence(models.Model):
 
                 # Check that the text can fit in the box
                 if remaining_text:
+                    # Add a return to separate remaining text from following
+                    remaining_text += '\n\n'
                     # Log when text is too long to see if that happens a lot
                     self.message_post(
                         'Translation went out of the translation box',
