@@ -51,11 +51,10 @@ class compassion_child(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def allocate(self, args):
-        child_id = args.get('object_id')
-        if child_id:
+        child = self.search([('code', '=', args.get('code'))])
+        if child:
             # Child already exists, put it back to available state
             # and erase exit details
-            child = self.browse(child_id)
             if child.state == 'P':
                 raise Warning(
                     _("Child allocation error"),
@@ -69,6 +68,7 @@ class compassion_child(models.Model):
                     'exit_date': False,
                     'exit_reason': False,
                     'gp_exit_reason': False})
+            args['object_id'] = child.id
         else:
             # Allocate new child
             child_vals = {
