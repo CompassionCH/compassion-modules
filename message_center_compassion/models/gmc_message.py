@@ -62,7 +62,9 @@ class GmcMessagePool(models.Model):
     description = fields.Text(
         'Action to execute', related='action_id.description', readonly=True)
     direction = fields.Selection(related='action_id.direction', store=True)
-    object_id = fields.Integer('Related Id')
+    object_id = fields.Integer('Resource')
+    res_name = fields.Char(compute='_compute_res_name', store=True)
+    partner_id = fields.Many2one('res.partner', 'Partner')
 
     request_id = fields.Char('Unique request ID', readonly=True)
     date = fields.Datetime(
@@ -88,6 +90,20 @@ class GmcMessagePool(models.Model):
          _("You cannot have two requests with same id."))]
 
     ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+    @api.depends('object_id', 'action_id')
+    def _compute_res_name(self):
+        for message in self:
+            try:
+                res_object = self.env[message.action_id.model].browse(
+                    message.object_id)
+                if res_object:
+                    message.res_name = res_object.name
+            except KeyError:
+                message.res_name = 'Unknown'
+
+    ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
     @api.model
@@ -100,6 +116,10 @@ class GmcMessagePool(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.multi
+    def update_res_name(self):
+        self._compute_res_name()
+
     @api.multi
     def process_messages(self):
         new_messages = self.filtered(lambda m: m.state in ('new', 'failure'))
@@ -128,6 +148,18 @@ class GmcMessagePool(models.Model):
             'failure_reason': False
         })
         return True
+
+    @api.multi
+    def open_related(self):
+        self.ensure_one()
+        return {
+            'name': 'Related object',
+            'type': 'ir.actions.act_window',
+            'res_model': self.action_id.model,
+            'res_id': self.object_id,
+            'view_type': 'form',
+            'view_mode': 'form',
+        }
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

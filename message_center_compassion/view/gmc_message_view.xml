@@ -14,6 +14,7 @@
             <field name="arch" type="xml">
                 <tree string="Message Pool" colors="blue:state == 'new';black:state == 'pending';gray:state == 'success';red:state == 'failure'" create="false">
                     <field name="action_id" />
+                    <field name="res_name"/>
                     <field name="date" />
                     <field name="process_date" />
                     <field name="state" />
@@ -28,6 +29,7 @@
             <field name="arch" type="xml">
                 <tree string="Message Pool" colors="blue:state == 'new';black:state == 'pending';gray:state == 'success';red:state == 'failure'" create="false">
                     <field name="action_id" />
+                    <field name="res_name"/>
                     <field name="date" />
                     <field name="process_date" />
                     <field name="state" />
@@ -47,6 +49,7 @@
                         <button name="process_messages" type="object" class="oe_highlight" string="Process Message" states="new" />
                         <button name="reset_message" type="object" string="Set back to New" states="failure,pending"/>
                         <button name="force_success" type="object" string="Success" groups="base.group_erp_manager" attrs="{'invisible':[('state','=','success')]}"/>
+                        <button name="open_related" type="object" string="Related"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -59,6 +62,8 @@
                             <field name="direction" invisible="1" />
                             <field name="date" />
                             <field name="process_date" />
+                            <field name="res_name"/>
+                            <field name="partner_id"/>
                             <field name="request_id" attrs="{'invisible':[('direction','=','in')]}" states="pending"/>
                             <field name="failure_reason"/>
                         </group>
@@ -129,8 +134,7 @@
             <field name="arch" type="xml">
                 <search string="Search Partner">
                     <field name="action_id"/>
-                    <field name="date"/>
-                    <field name="process_date"/>
+                    <field name="partner_id"/>
                     <filter string="Incoming" name="incoming" domain="[('direction','=','in')]" context="{'group_by':'action_id'}" />
                     <separator />
                     <filter string="Pending" name="pending" domain="['|', ('state','=','pending'), ('state','=','new')]" />
@@ -140,6 +144,7 @@
                         <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
                         <filter string="Date" domain="[]" context="{'group_by':'date'}"/>
                         <filter string="Process Date" domain="[]" context="{'group_by':'process_date'}"/>
+                        <filter string="Partner" domain="[]" context="{'group_by':'partner_id'}"/>
                     </group>
                 </search>
             </field>
