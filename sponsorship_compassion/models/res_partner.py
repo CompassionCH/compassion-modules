@@ -10,6 +10,9 @@
 ##############################################################################
 from openerp import api, fields, models, _
 
+from openerp.addons.message_center_compassion.mappings import base_mapping \
+    as mapping
+
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
@@ -30,6 +33,9 @@ class res_partner(models.Model):
     contracts_correspondant = fields.One2many(
         "recurring.contract", compute='_get_related_contracts',
         string='Sponsorships as correspondant only')
+    mandatory_review = fields.Boolean(
+        help='Indicates that we should review the letters of this sponsor '
+             'before sending them to GMC.')
     other_contract_ids = fields.One2many(
         "recurring.contract", compute='_get_related_contracts',
         string='Other contracts')
@@ -39,7 +45,7 @@ class res_partner(models.Model):
         compute='_compute_has_sponsorships', store=True)
     send_original = fields.Boolean(
         help='Indicates that we request the original letters for this sponsor'
-        )
+    )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -96,6 +102,27 @@ class res_partner(models.Model):
             partner.receivable_items = move_line_obj.search_count([
                 ('partner_id', '=', partner.id),
                 ('account_id.code', '=', '1050')])
+
+    ##########################################################################
+    #                              ORM METHODS                               #
+    ##########################################################################
+    @api.model
+    def create(self, vals):
+        partner = super(res_partner, self).create(vals)
+
+        action_id = self.env.ref('sponsorship_compassion.create_partner').id
+        self.env['gmc.message.pool'].create({
+            'action_id': action_id,
+            'object_id': partner.id
+        })
+        return partner
+
+    # @api.multi
+    # def write(self, vals):
+    #     pass
+    #
+    #
+    #
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -191,4 +218,32 @@ class res_partner(models.Model):
                        ('partner_id', '=', self.id)],
             'context': self.with_context({
                 'default_type': 'S'}).env.context,
-            }
+        }
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    @api.model
+    def process_commkit(self, commkit_data, model_action):
+        """ Never used... nothing come from GMC about partner! """
+        object_mapping = mapping.new_onramp_mapping(self._name, self.env)
+        object_data = object_mapping.get_vals_from_connect(commkit_data)
+        # TODO update if partner exist.
+        partner = self.create(object_data)
+        return partner.id
+
+    def convert_for_connect(self):
+        """
+        Method called when Create message is processed.
+        """
+        self.ensure_one()
+        partner_mapping = mapping.new_onramp_mapping(self._name, self.env)
+        return partner_mapping.get_connect_data(self)
+
+    def get_connect_data(self, data):
+        """ Enrich correspondence data with GMC data after CommKit Submission.
+        """
+        pass
+        # self.ensure_one()
+        # letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
+        # return self.write(letter_mapping.get_vals_from_connect(data))

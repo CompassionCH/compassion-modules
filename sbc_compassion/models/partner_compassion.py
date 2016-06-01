@@ -24,9 +24,6 @@ class ResPartner(models.Model):
 
     spoken_lang_ids = fields.Many2many(
         'res.lang.compassion', string='Spoken languages')
-    mandatory_review = fields.Boolean(
-        help='Indicates that we should review the letters of this sponsor '
-             'before sending them to GMC.')
     delivery_preference = fields.Selection([
         ('digital', _('By e-mail')),
         ('physical', _('By postal service'))], default='digital',
