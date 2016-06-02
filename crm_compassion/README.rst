@@ -13,6 +13,10 @@ new model for tracking upcoming events.
  * Portal users have an analytic account to track sponsorships gained by them
  * Can set ambassadors to sponsorships in order to track who brought them
 
+ Warning: This module deactivates e-mail notification for calendar events !
+    If you want to enable it again, please remove the config_parameter
+    'calendar.block_mail'.
+
 Usage
 =====
 
@@ -23,7 +27,7 @@ To use this module, you need to:
 Known issues / Roadmap
 ======================
 
-* Migrate module to V8
+...
 
 Credits
 =======

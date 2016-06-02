@@ -62,17 +62,18 @@ class Email(models.Model):
     @api.multi
     def send(self, auto_commit=False, raise_exception=False):
         """ Override send to select the method to send the e-mail. """
-        send_method = self.send_method
-        if send_method == 'traditional':
-            return super(Email, self).send(auto_commit, raise_exception)
-        elif send_method == 'sendgrid':
-            return self.send_sendgrid()
-        else:
-            _logger.warning(
-                "Traditional e-mails are disabled. Please remove system "
-                "parameter mail_sendgrid.send_method if you want to send "
-                "e-mails through your configured SMTP.")
-            self.write({'state': 'exception'})
+        for email in self:
+            send_method = email.send_method
+            if send_method == 'traditional':
+                return super(Email, email).send(auto_commit, raise_exception)
+            elif send_method == 'sendgrid':
+                return email.send_sendgrid()
+            else:
+                _logger.warning(
+                    "Traditional e-mails are disabled. Please remove system "
+                    "parameter mail_sendgrid.send_method if you want to send "
+                    "e-mails through your configured SMTP.")
+                email.write({'state': 'exception'})
         return True
 
     @api.one

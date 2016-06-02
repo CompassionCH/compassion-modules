@@ -91,6 +91,7 @@ class event_compassion(models.Model):
     # This field circumvents problem for passing parent_id in a subview.
     parent_copy = fields.Many2one(
         'account.analytic.account', related='parent_id')
+    calendar_event_id = fields.Many2one('calendar.event')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -180,6 +181,12 @@ class event_compassion(models.Model):
             'analytic_id': analytic_id,
             'project_id': project_id,
         })
+
+        # Add calendar event
+        calendar_event = self.env[
+            'calendar.event'].create(event._get_calendar_vals())
+        event.with_context(no_calendar=True).calendar_event_id = calendar_event
+
         return event
 
     @api.multi
@@ -201,6 +208,8 @@ class event_compassion(models.Model):
                     # Only administrator has write access to origins.
                     self.env['recurring.contract.origin'].sudo().browse(
                         event.origin_id.id).write({'name': event.full_name})
+                if not self.env.context.get('no_calendar'):
+                    event.calendar_event_id.write(self._get_calendar_vals())
 
         return True
 
@@ -220,7 +229,25 @@ class event_compassion(models.Model):
                 if event.analytic_id:
                     event.analytic_id.unlink()
                 event.origin_id.unlink()
+                event.calendar_event_id.unlink()
         return super(event_compassion, self).unlink()
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    @api.model
+    def update_calendar_events(self):
+        """Put calendar event for old events missing it."""
+        events = self.with_context(no_calendar=True).search([])
+        calendar_obj = self.env['calendar.event']
+        for event in events:
+            calendar_vals = event._get_calendar_vals()
+            if event.calendar_event_id:
+                event.calendar_event_id.write(calendar_vals)
+            else:
+                calendar_event = calendar_obj.create(calendar_vals)
+                event.calendar_event_id = calendar_event
+        return True
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -309,3 +336,35 @@ class event_compassion(models.Model):
                 'parent_id': categ_id
             }).id
         return acc_id
+
+    def _get_calendar_vals(self):
+        """
+        Gets the calendar event values given the event
+        :return: dictionary of calendar.event values
+        """
+        self.ensure_one()
+        number_of_days = 1
+        start_date = fields.Datetime.from_string(self.start_date)
+        if self.end_date:
+            end_date = fields.Datetime.from_string(self.end_date)
+            number_of_days = (end_date - start_date).days
+        calendar_vals = {
+            'name': self.name,
+            'compassion_event_id': self.id,
+            'categ_ids': [
+                (6, 0, [self.env.ref('crm_compassion.calendar_event').id])],
+            'duration': number_of_days * 8,
+            'description': self.description,
+            'location': self.city,
+            'user_id': self.user_id.id,
+            'partner_ids': [
+                (6, 0, (self.staff_ids | self.partner_id |
+                        self.user_id.partner_id).ids)],
+            'start': self.start_date,
+            'stop': self.end_date or self.start_date,
+            'allday': self.end_date and (
+                    self.start_date[0:10] != self.end_date[0:10]),
+            'state': 'open',  # to block that meeting date in the calendar
+            'class': 'confidential',
+        }
+        return calendar_vals
