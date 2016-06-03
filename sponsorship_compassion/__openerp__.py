@@ -49,6 +49,7 @@
         'data/analytic_accounting.xml',
         'data/partner_sequence.xml',
         'data/lang_data.xml',
+        'data/gmc_action.xml',
         'workflow/contract_workflow.xml',
         'security/ir.model.access.csv',
     ],
