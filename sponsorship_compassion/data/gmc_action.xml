@@ -1,8 +1,8 @@
 <openerp>
     <data>
-        <record id="create_update_partner" model="gmc.action">
+        <record id="upsert_partner" model="gmc.action">
             <field name="direction">out</field>
-            <field name="name">CreateUpdatePartner</field>
+            <field name="name">UpsertPartner</field>
             <field name="model">res.partner</field>
             <field name="description">This will send or update a Partner to GMC.</field>
             <field name="connect_service">supporters</field>
