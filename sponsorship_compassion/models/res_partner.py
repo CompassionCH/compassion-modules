@@ -23,6 +23,7 @@ class res_partner(models.Model):
     ref = fields.Char(
         required=True,
         default=lambda self: self.env['ir.sequence'].get('partner.ref'))
+    global_id = fields.Char()
     contracts_fully_managed = fields.One2many(
         "recurring.contract", compute='_get_related_contracts',
         string='Fully managed sponsorships',
@@ -93,19 +94,25 @@ class res_partner(models.Model):
     def create(self, vals):
         partner = super(res_partner, self).create(vals)
 
-        action_id = self.env.ref('sponsorship_compassion.create_partner').id
+        action_id = self.env.ref(
+            'sponsorship_compassion.create_update_partner').id
         self.env['gmc.message.pool'].create({
             'action_id': action_id,
             'object_id': partner.id
         })
         return partner
 
-    # @api.multi
-    # def write(self, vals):
-    #     pass
-    #
-    #
-    #
+    @api.multi
+    def write(self, vals):
+
+        action_id = self.env.ref('sponsorship_compassion.create_partner').id
+        self.env['gmc.message.pool'].create({
+            'action_id': action_id,
+            'object_id': self.id
+        })
+
+
+
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -208,7 +215,7 @@ class res_partner(models.Model):
     ##########################################################################
     @api.model
     def process_commkit(self, commkit_data, model_action):
-        """ Never used... nothing come from GMC about partner! """
+        """ Never used... nothing come from GMC about partner now! """
         object_mapping = mapping.new_onramp_mapping(self._name, self.env)
         object_data = object_mapping.get_vals_from_connect(commkit_data)
         # TODO update if partner exist.

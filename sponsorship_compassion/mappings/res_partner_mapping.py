@@ -11,6 +11,14 @@
 from openerp.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
+def find_gender(title):
+    if title in ('Madam', 'Miss'):
+        return 'Female'
+    elif title in ('Mister', 'Sir'):
+        return 'Male'
+    else:
+        'Unknown'
+
 
 class ResPartnerMapping(OnrampMapping):
     """ This class contains the mapping between Odoo fields and GMC field
@@ -20,7 +28,7 @@ class ResPartnerMapping(OnrampMapping):
     ODOO_MODEL = 'res.partner'
 
     CONNECT_MAPPING = {
-        'GlobalId': 'ref',
+        'GPID': 'ref',
         'Gender': ('title.name', 'res.partner.title'),
         'MandatoryReviewRequired': 'mandatory_review',
         'PreferredName': 'name',
@@ -28,31 +36,27 @@ class ResPartnerMapping(OnrampMapping):
     }
 
     FIELDS_TO_SUBMIT = {
-        'GlobalId': lambda ref: '65-' + ref,
-        'Gender': lambda gen: 'Female' if gen in ('Madam', 'Miss') else
-        'Mister',
+        'Gender': lambda title: find_gender(title),
         'MandatoryReviewRequired': None,
         'PreferredName': None,
-        'CommunicationDeliveryPreference': lambda
-            original: 'Physical Original Document' if original else
-        "Printed Digital Document",
-
-        "GlobalPartner": "Australia",
-        "FirstName": "a",
-        # "GlobalId": "a",
-        "GPID": "AU",
-        "LastName": "a",
-        "Status": "Active",
-        "StatusReason": "Account Merge"
+        'CommunicationDeliveryPreference':
+            lambda original: 'Physical Original Document' if original else
+            "Printed Digital Document",
+        "GlobalPartner": None,
+        "GPID": lambda ref: '65-' + ref,
+        "FirstName": None,
+        "LastName": None,
+        "Status": None
     }
 
     CONSTANTS = {
-        # TODO Update with GMC need data
-        "GlobalPartner": "Australia",
-        "FirstName": "a",
-        # "GlobalId": "a",
-        "GPID": "AU",
-        "LastName": "a",
+        "GlobalPartner": "Switzerland",
         "Status": "Active",
-        "StatusReason": "Account Merge"
+        'LastName': 'lastname',
+        'FirstName': 'firstname'
     }
+
+    def _process_connect_data(self, odoo_data):
+        c_odoo_data = odoo_data.copy()
+        odoo_data.clear()
+        odoo_data.update({'SupporterProfile': c_odoo_data})
