@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Cyril Sester, Emanuel Cino
 #
@@ -14,7 +14,7 @@ from openerp.addons.message_center_compassion.mappings import base_mapping \
     as mapping
 
 
-class res_partner(models.Model):
+class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     ##########################################################################
@@ -107,29 +107,16 @@ class res_partner(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
-    def create(self, vals):
-        partner = super(res_partner, self).create(vals)
-
-        action_id = self.env.ref(
-            'sponsorship_compassion.create_update_partner').id
-        self.env['gmc.message.pool'].create({
-            'action_id': action_id,
-            'object_id': partner.id
-        })
-        return partner
-
     @api.multi
     def write(self, vals):
+        notify_vals = ['firstname', 'lastname', 'name',
+                       'mandatory_review', 'send_original']
+        notify = reduce(lambda prev, val: prev or val in vals, notify_vals,
+                        False)
+        if notify and not self.env.context.get('no_upsert'):
+            self.upsert_constituent()
 
-        action_id = self.env.ref('sponsorship_compassion.create_partner').id
-        self.env['gmc.message.pool'].create({
-            'action_id': action_id,
-            'object_id': self.id
-        })
-
-
-
+        return super(ResPartner, self).write(vals)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -254,3 +241,26 @@ class res_partner(models.Model):
         # self.ensure_one()
         # letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
         # return self.write(letter_mapping.get_vals_from_connect(data))
+
+    def upsert_constituent(self):
+        """If partner has active contracts, UPSERT Constituent in GMC."""
+        for partner in self:
+            contract_count = self.env['recurring.contract'].search_count([
+                ('correspondant_id', '=', partner.id),
+                ('state', 'not in', ('terminated', 'cancelled'))])
+            if contract_count:
+                # UpsertConstituent Message if not one already pending
+                message_obj = self.env['gmc.message.pool']
+                action_id = self.env.ref(
+                    'sponsorship_compassion.upsert_partner').id
+                messages = message_obj.search([
+                    ('partner_id', '=', partner.id),
+                    ('state', '=', 'new'),
+                    ('action_id', '=', action_id)])
+                if not messages:
+                    message_vals = {
+                        'action_id': action_id,
+                        'object_id': partner.id,
+                        'partner_id': partner.id,
+                    }
+                    message_obj.create(message_vals)
