@@ -561,49 +561,40 @@ class Correspondence(models.Model):
         return True
 
     @api.model
-    def process_commkit(self, vals):
+    def process_commkit(self, commkit_data):
         """ Update or Create the letter with given values. """
-        published_state = 'Published to Global Partner'
-        is_published = vals.get('state') == published_state
+        letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
+        letter_ids = list()
+        for commkit in commkit_data.get('Responses', [commkit_data]):
+            vals = letter_mapping.get_vals_from_connect(commkit)
+            published_state = 'Published to Global Partner'
+            is_published = vals.get('state') == published_state
 
-        # Write/update letter
-        kit_identifier = vals.get('kit_identifier')
-        letter = self.search([('kit_identifier', '=', kit_identifier)])
-        if letter:
-            # Avoid to publish twice a same letter
-            is_published = is_published and letter.state != published_state
-            letter.write(vals)
-        else:
-            letter = self.with_context(no_comm_kit=True).create(vals)
+            # Write/update letter
+            kit_identifier = vals.get('kit_identifier')
+            letter = self.search([('kit_identifier', '=', kit_identifier)])
+            if letter:
+                # Avoid to publish twice a same letter
+                is_published = is_published and letter.state != published_state
+                letter.write(vals)
+            else:
+                letter = self.with_context(no_comm_kit=True).create(vals)
 
-        if is_published:
-            letter.process_letter()
+            if is_published:
+                letter.process_letter()
+            letter_ids.append(letter.id)
 
-        return letter.id
+        return letter_ids
 
-    def convert_for_connect(self):
+    def on_send_to_connect(self):
         """
-        Method called when Create CommKit message is processed.
-        (TODO) Upload the image to Persistence and convert correspondence data
-        to GMC format.
-
-        TODO : Remove this method and use mapping directly in message center.
+        Method called before Letter is sent to GMC.
+        Upload the image to Persistence if not already done.
         """
-        self.ensure_one()
-        letter = self.with_context(lang='en_US')
-        if not letter.original_letter_url:
-            onramp = SBCConnector()
+        onramp = SBCConnector()
+        for letter in self.filtered(lambda l: not l.original_letter_url):
             letter.original_letter_url = onramp.send_letter_image(
                 letter.letter_image.datas, letter.letter_format)
-        letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
-        return letter_mapping.get_connect_data(letter)
-
-    def get_connect_data(self, data):
-        """ Enrich correspondence data with GMC data after CommKit Submission.
-        """
-        self.ensure_one()
-        letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
-        return self.write(letter_mapping.get_vals_from_connect(data))
 
     def process_letter(self):
         """ Method called when new B2S letter is Published. """

@@ -6,6 +6,8 @@
             <field name="model">res.partner</field>
             <field name="description">This will send or update a Partner to GMC.</field>
             <field name="connect_service">supporters</field>
+            <field name="connect_outgoing_wrapper">SupporterProfile</field>
+            <field name="connect_answer_wrapper">SupporterProfileResponse</field>
             <field name="request_type">POST</field>
         </record>
     </data>
