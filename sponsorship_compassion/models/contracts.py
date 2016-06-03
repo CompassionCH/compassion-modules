@@ -56,7 +56,7 @@ class sponsorship_line(models.Model):
         return res
 
 
-class sponsorship_contract(models.Model):
+class SponsorshipContract(models.Model):
     _inherit = 'recurring.contract'
 
     ##########################################################################
@@ -86,7 +86,7 @@ class sponsorship_contract(models.Model):
 
     @api.model
     def get_ending_reasons(self):
-        res = super(sponsorship_contract, self).get_ending_reasons()
+        res = super(SponsorshipContract, self).get_ending_reasons()
         context = self.env.context
         if 'active_id' in context and \
                 context.get('active_model') == self._name:
@@ -143,7 +143,7 @@ class sponsorship_contract(models.Model):
 
     @api.model
     def _get_type(self):
-        res = super(sponsorship_contract, self)._get_type()
+        res = super(SponsorshipContract, self)._get_type()
         res.extend([
             ('G', _('Child Gift')),
             ('S', _('Sponsorship')),
@@ -175,7 +175,7 @@ class sponsorship_contract(models.Model):
                  'date_delegation': False, 'date_end_delegation': False}
             )
 
-        return super(sponsorship_contract, self).create(vals)
+        return super(SponsorshipContract, self).create(vals)
 
     @api.multi
     def write(self, vals):
@@ -183,7 +183,7 @@ class sponsorship_contract(models.Model):
         if 'child_id' in vals:
                 self._on_change_child_id(vals)
 
-        return super(sponsorship_contract, self).write(vals)
+        return super(SponsorshipContract, self).write(vals)
 
     @api.multi
     def unlink(self):
@@ -199,7 +199,7 @@ class sponsorship_contract(models.Model):
                     contract.child_id.sponsor_id.id
                 if child_sponsor_id == contract.correspondant_id.id:
                     contract.child_id.write({'sponsor_id': False})
-        return super(sponsorship_contract, self).unlink()
+        return super(SponsorshipContract, self).unlink()
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -422,7 +422,7 @@ class sponsorship_contract(models.Model):
     def fields_view_get(self, cr, uid, view_id=None, view_type='form',
                         context=None, toolbar=False, submenu=False):
         """ Display only contract type needed in view. """
-        res = super(sponsorship_contract, self).fields_view_get(
+        res = super(SponsorshipContract, self).fields_view_get(
             cr, uid, view_id, view_type, context, toolbar, submenu)
 
         if view_type == 'form' and (isinstance(res['fields'], dict) and
@@ -440,7 +440,7 @@ class sponsorship_contract(models.Model):
     @api.one
     @api.onchange('partner_id')
     def on_change_partner_id(self):
-        super(sponsorship_contract, self).on_change_partner_id()
+        super(SponsorshipContract, self).on_change_partner_id()
         if 'S' in self.type and self.state == 'draft':
             # If state draft correspondant_id=partner_id
             self.correspondant_id = self.partner_id
@@ -450,7 +450,7 @@ class sponsorship_contract(models.Model):
     ##########################################################################
     @api.multi
     def contract_cancelled(self):
-        res = super(sponsorship_contract, self).contract_cancelled()
+        res = super(SponsorshipContract, self).contract_cancelled()
 
         self.filtered(lambda c: c.type == 'S')._on_sponsorship_finished()
 
@@ -458,7 +458,7 @@ class sponsorship_contract(models.Model):
 
     @api.multi
     def contract_terminated(self):
-        res = super(sponsorship_contract, self).contract_terminated()
+        res = super(SponsorshipContract, self).contract_terminated()
 
         self.filtered(lambda c: c.type == 'S')._on_sponsorship_finished()
 
@@ -485,7 +485,7 @@ class sponsorship_contract(models.Model):
                     "where id = %s", [contract.id])
                 self.env.invalidate_all()
 
-        return super(sponsorship_contract, self).contract_waiting()
+        return super(SponsorshipContract, self).contract_waiting()
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -502,7 +502,7 @@ class sponsorship_contract(models.Model):
             sponsorships.clean_invoices_paid(since_date, to_date,
                                              keep_lines=keep_lines)
 
-        return super(sponsorship_contract, self)._clean_invoices(
+        return super(SponsorshipContract, self)._clean_invoices(
             since_date, to_date, keep_lines)
 
     @api.multi
@@ -526,16 +526,26 @@ class sponsorship_contract(models.Model):
         """ Hook for doing something when contract is activated.
         Update child to mark it has been sponsored,
         and activate gift contracts.
+        Send messages to GMC.
         """
-        super(sponsorship_contract, self).contract_active()
+        for contract in self.filtered(
+                lambda c: 'S' in c.type and not c.is_active):
+            # UpsertConstituent Message
+            partner = contract.correspondant_id
+            partner.upser_constituent()
+
+            # TODO : Create Sponsorship Message
+
+        super(SponsorshipContract, self).contract_active()
         con_line_obj = self.env['recurring.contract.line']
-        for contract in self:
-            if 'S' in contract.type:
-                contract.child_id.write({'has_been_sponsored': True})
-                gift_contract_lines = con_line_obj.search([
-                    ('sponsorship_id', '=', contract.id)])
-                gift_contract_lines.mapped('contract_id').signal_workflow(
-                    'contract_active')
+        for contract in self.filtered(lambda c: 'S' in c.type):
+            contract.child_id.write({'has_been_sponsored': True})
+            gift_contract_lines = con_line_obj.search([
+                ('sponsorship_id', '=', contract.id)])
+            gift_contract_lines.mapped('contract_id').signal_workflow(
+                'contract_active')
+
+        return True
 
     @api.multi
     def _on_change_child_id(self, vals):
@@ -591,7 +601,7 @@ class sponsorship_contract(models.Model):
                         _("The project %s is fund-suspended. You cannot "
                           "reconcile invoice (%s).") % (project.icp_id,
                                                         invoice.id))
-        super(sponsorship_contract, self).invoice_paid(invoice)
+        super(SponsorshipContract, self).invoice_paid(invoice)
 
     @api.one
     @api.constrains('group_id')
