@@ -88,6 +88,7 @@ class OnrampConnector(object):
                 url, headers=headers, json=body)
             status = r.status_code
             result = r.text
+            self._log_message(status, 'RESULT', message=result)
         elif message_type == 'POST':
             r = self._session.post(url, headers=headers, json=body)
             status = r.status_code
@@ -95,6 +96,7 @@ class OnrampConnector(object):
                 'code': status,
                 'request_id': r.headers.get('x-cim-RequestId'),
             }
+            self._log_message(status, 'RESULT', message=r.text)
             try:
                 result['content'] = r.json()
             except ValueError:

@@ -38,16 +38,12 @@ class RestController(http.Controller):
             request.uid).search([('connect_schema', '=', message_type)])
         if action_connect:
             action = action_connect.action_id
-            json_data = request.jsonrequest
-            # TODO : See if all messages follow this structure
-            updates = json_data.get('Responses', [json_data])
-            for commkit_data in updates:
-                request.env['gmc.message.pool'].sudo(request.uid).create({
-                    'request_id': request.uuid,
-                    'action_id': action.id,
-                    'headers': json.dumps(dict(headers.items())),
-                    'content': json.dumps(commkit_data)
-                })
+            request.env['gmc.message.pool'].sudo(request.uid).create({
+                'request_id': request.uuid,
+                'action_id': action.id,
+                'headers': json.dumps(dict(headers.items())),
+                'content': json.dumps(request.text)
+            })
             result.update({
                 "code": 200,
                 "Message": "Your message was successfully received."
