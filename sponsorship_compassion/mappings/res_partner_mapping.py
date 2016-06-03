@@ -29,7 +29,7 @@ class ResPartnerMapping(OnrampMapping):
     ODOO_MODEL = 'res.partner'
 
     CONNECT_MAPPING = {
-        'GlobalId': 'global_id',
+        'GlobalID': 'global_id',
         'GPID': 'ref',
         'Gender': ('title.name', 'res.partner.title'),
         'MandatoryReviewRequired': 'mandatory_review',
@@ -46,11 +46,12 @@ class ResPartnerMapping(OnrampMapping):
         'CommunicationDeliveryPreference':
             lambda original: 'Physical Original Document' if original else
             "Printed Digital Document",
-        "GlobalPartner": None,
-        "GPID": lambda ref: '65-' + ref,
-        "FirstName": None,
-        "LastName": None,
-        "Status": None
+        'GlobalPartner': None,
+        'GPID': lambda ref: '65-' + ref,
+        'FirstName': None,
+        'LastName': None,
+        'Status': None,
+        'GlobalID': None,
     }
 
     CONSTANTS = {
@@ -58,12 +59,16 @@ class ResPartnerMapping(OnrampMapping):
         "Status": "Active",
     }
 
-    def _process_connect_data(self, odoo_data):
-        # Don't send global id if not set.
-        if not odoo_data.get('GlobalId') and 'GlobalId' in odoo_data:
-            del odoo_data['GlobalId']
+    def _process_connect_data(self, connect_data):
+        """Don't send GlobalID if not set."""
+        if not connect_data.get('GlobalID') and 'GlobalID' in connect_data:
+            del connect_data['GlobalID']
 
-        # Put message inside SupporterProfile tag
-        c_odoo_data = odoo_data.copy()
-        odoo_data.clear()
-        odoo_data.update({'SupporterProfile': [c_odoo_data]})
+    def _convert_connect_data(self, connect_name, value_mapping, value,
+                              relation_search=None):
+        """ Remove 65- suffix from partner reference
+        """
+        if connect_name == 'GPID':
+            value = value[3:]
+        return super(ResPartnerMapping, self)._convert_connect_data(
+            connect_name, value_mapping, value, relation_search)

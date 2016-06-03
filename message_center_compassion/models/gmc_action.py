@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -14,19 +14,21 @@ from openerp.exceptions import ValidationError
 
 class GmcAction(models.Model):
     """
-    A GMC Action defines what has to be done for a specific OffRamp
+    A GMC Action defines what has to be done for a specific
     message of the Compassion International specification.
 
     A GMC Action can be originated either from an incoming or an outgoing
     message read from the GMC Message Pool class.
 
     Incoming actions :
-        - Execute a method of a given OpenERP Object.
-        - Each incoming action should map to some code to execute defined
-          in the _perform_incoming_action() method.
+        - Calls a method 'process_commkit' of the action model which must
+          return a list of ids of the updated records.
 
     Outgoing actions :
-        - Execute a method by calling Buckhill's middleware.
+        - The object can implement 'on_send_to_connect' method in order
+          to execute some code before sending the object to GMC.
+        - Calls a write on the action model with the
+          answer sent by GMC when message was successfully transmitted.
     """
     _name = 'gmc.action'
 
@@ -37,6 +39,12 @@ class GmcAction(models.Model):
     model = fields.Char('OSV Model', size=30)
     description = fields.Text('Action to execute')
     connect_service = fields.Char()
+    connect_outgoing_wrapper = fields.Char(
+        help='Tag in which multiple messages can be encapsulated'
+    )
+    connect_answer_wrapper = fields.Char(
+        help='Tag in which answer is found (for outgoing messages)'
+    )
     auto_process = fields.Boolean()
     request_type = fields.Selection([
         ('GET', 'GET'),
@@ -48,12 +56,10 @@ class GmcAction(models.Model):
     @api.constrains('model', 'direction')
     def _validate_action(self):
         """ Test if the action can be performed on given model. """
-        valid = False
+        valid = True
+        model_obj = self.env[self.model]
         if self.direction == 'in':
-            model_obj = self.env[self.model]
             valid = hasattr(model_obj, 'process_commkit')
-        elif self.direction == 'out':
-            valid = True
 
         if not valid:
             raise ValidationError(

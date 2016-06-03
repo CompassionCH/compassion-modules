@@ -10,9 +10,6 @@
 ##############################################################################
 from openerp import api, fields, models, _
 
-from openerp.addons.message_center_compassion.mappings import base_mapping \
-    as mapping
-
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -217,31 +214,6 @@ class ResPartner(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.model
-    def process_commkit(self, commkit_data, model_action):
-        """ Never used... nothing come from GMC about partner now! """
-        object_mapping = mapping.new_onramp_mapping(self._name, self.env)
-        object_data = object_mapping.get_vals_from_connect(commkit_data)
-        # TODO update if partner exist.
-        partner = self.create(object_data)
-        return partner.id
-
-    def convert_for_connect(self):
-        """
-        Method called when Create message is processed.
-        """
-        self.ensure_one()
-        partner_mapping = mapping.new_onramp_mapping(self._name, self.env)
-        return partner_mapping.get_connect_data(self)
-
-    def get_connect_data(self, data):
-        """ Enrich correspondence data with GMC data after CommKit Submission.
-        """
-        pass
-        # self.ensure_one()
-        # letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
-        # return self.write(letter_mapping.get_vals_from_connect(data))
-
     def upsert_constituent(self):
         """If partner has active contracts, UPSERT Constituent in GMC."""
         for partner in self:
