@@ -16,3 +16,5 @@ from . import project_project
 from . import analytic_account
 from . import account_invoice_line
 from . import res_partner
+from . import calendar_event
+from . import hr_holidays
