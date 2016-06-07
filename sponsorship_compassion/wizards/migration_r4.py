@@ -68,12 +68,16 @@ class MigrationR4(models.TransientModel):
         Migrate the old CreateCommitment messages
         """
         logger.info("MIGRATION 8.0.3 ----> CreateCommitment")
+        messages.write({'action_id': self.env.ref(
+            'sponsorship_compassion.create_sponsorship').id})
 
     def _cancel_commitments(self, messages):
         """
         Migrate the old CancelCommitment messages
         """
         logger.info("MIGRATION 8.0.3 ----> CancelCommitment")
+        messages.write({'action_id': self.env.ref(
+            'sponsorship_compassion.cancel_sponsorship').id})
 
     def _upsert_constituents(self, messages):
         """
