@@ -45,7 +45,6 @@ class MigrationR4(models.TransientModel):
         # UpsertConstituent
         messages = self._get_messages('UpsertConstituent')
         self._upsert_constituents(messages)
-        messages.unlink()
 
         # CreateGift
         messages = self._get_messages('CreateGift')
@@ -80,6 +79,8 @@ class MigrationR4(models.TransientModel):
         Migrate the old UpsertConstituent messages
         """
         logger.info("MIGRATION 8.0.3 ----> UpsertConstituent")
+        messages.write({'action_id': self.env.ref(
+            'sponsorship_compassion.upsert_partner').id})
 
     def _create_gifts(self, messages):
         """
