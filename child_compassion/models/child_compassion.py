@@ -117,6 +117,7 @@ class CompassionChild(models.Model):
     has_been_sponsored = fields.Boolean()
     hold_id = fields.Many2one('compassion.hold', 'Hold')
     active = fields.Boolean(default=True)
+    exit_reason = fields.Char(compute='_compute_exit_reason')
 
     # Beneficiary Favorites
     #######################
@@ -324,6 +325,14 @@ class CompassionChild(models.Model):
 
     def _available_states(self):
         return ['N', 'D', 'Z']
+
+    def _compute_exit_reason(self):
+        for child in self:
+            exit_details = child.lifecycle_ids.with_context(
+                lang='en_US').filtered(
+                lambda l: l.type in ('Planned Exit', 'Unplanned Exit'))
+            if exit_details:
+                child.exit_reason = exit_details[0].request_reason
 
     ##########################################################################
     #                              ORM METHODS                               #
