@@ -255,7 +255,7 @@ class GmcMessagePool(models.Model):
 
         object_mapping = mapping.new_onramp_mapping(action.model, self.env)
         if action.connect_outgoing_wrapper:
-            # Send multiple objects in a single message to GMC
+            # Send multiple objects in a single message to GMCs
             message_data = {action.connect_outgoing_wrapper: list()}
             for data_object in data_objects:
                 message_data[action.connect_outgoing_wrapper].append(
