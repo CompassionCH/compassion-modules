@@ -34,7 +34,7 @@ class ChildLifecycleEvent(models.Model):
         # Planned Exit
         ('Reached Maximum Age', 'Reached Maximum Age'),
         ('Reached the end of the relevant programs available at the church '
-         'partner ', 'Reached the end of the relevant programs available'),
+         'partner', 'Reached the end of the relevant programs available'),
         # Reinstatement
         ('Beneficiary Exit was a mistake', 'Exit was a mistake'),
         ('Beneficiary Moved Back', 'Beneficiary Moved Back'),
@@ -62,10 +62,10 @@ class ChildLifecycleEvent(models.Model):
         ('Child sponsored by another organization',
          'Child sponsored by another organization'),
         ('Death of caregiver creates situation where child cannot continue',
-         'Death of caregiver creates situation where child cannot continue'),
+         'Death of caregiver'),
         ('Death of child', 'Death of child'),
         ('Family Circumstances Have Changed Positively So That Child No '
-         'Longer Needs Compassion’s Assistance',
+         'Longer Needs Compassion\'s Assistance',
          'Family Circumstances Have Changed Positively'),
         ('Family moved where a Compassion project with relevant programs is '
          'not available', 'Family moved where a Compassion project with \
