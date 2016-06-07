@@ -9,4 +9,6 @@
 #
 ##############################################################################
 from . import res_partner_mapping
+from . import sponsorship_mapping
+from . import cancel_sponsorship_mapping
 
