@@ -255,19 +255,28 @@ class GmcMessagePool(models.Model):
 
         object_mapping = mapping.new_onramp_mapping(action.model, self.env)
         if action.connect_outgoing_wrapper:
-            # Send multiple objects in a single message to GMC
+            # Object is wrapped in a tag. ("MessageTag": [objects_to_send])
             message_data = {action.connect_outgoing_wrapper: list()}
-            for data_object in data_objects:
-                message_data[action.connect_outgoing_wrapper].append(
-                    object_mapping.get_connect_data(data_object)
-                )
-            self._send_message(message_data)
+            if action.batch_send:
+                # Send multiple objects in a single message to GMC
+                for data_object in data_objects:
+                    message_data[action.connect_outgoing_wrapper].append(
+                        object_mapping.get_connect_data(data_object)
+                    )
+                self._send_message(message_data)
+            else:
+                # Send individual message for each object
+                for i in range(0, len(data_objects)):
+                    message_data[action.connect_outgoing_wrapper] = [
+                        object_mapping.get_connect_data(data_objects[i])
+                    ]
+                    self[i]._send_message(message_data)
 
         else:
-            # Send individual message for each object
-            for data_object in data_objects:
-                message_data = object_mapping.get_connect_data(data_object)
-                self._send_message(message_data)
+            # Send individual message for each object without Wrapper
+            for i in range(0, len(data_objects)):
+                message_data = object_mapping.get_connect_data(data_objects[i])
+                self[i]._send_message(message_data)
 
     def _send_message(self, message_data):
         """Sends the prepared message and gets the answer from GMC."""

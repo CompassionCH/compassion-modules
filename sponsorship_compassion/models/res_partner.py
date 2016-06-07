@@ -106,6 +106,7 @@ class ResPartner(models.Model):
     ##########################################################################
     @api.multi
     def write(self, vals):
+        res = super(ResPartner, self).write(vals)
         notify_vals = ['firstname', 'lastname', 'name',
                        'mandatory_review', 'send_original']
         notify = reduce(lambda prev, val: prev or val in vals, notify_vals,
@@ -113,7 +114,7 @@ class ResPartner(models.Model):
         if notify and not self.env.context.get('no_upsert'):
             self.upsert_constituent()
 
-        return super(ResPartner, self).write(vals)
+        return res
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

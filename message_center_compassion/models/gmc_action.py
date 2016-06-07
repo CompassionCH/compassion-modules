@@ -38,14 +38,21 @@ class GmcAction(models.Model):
     name = fields.Char('GMC Message', size=20, required=True)
     model = fields.Char('OSV Model', size=30)
     description = fields.Text('Action to execute')
-    connect_service = fields.Char()
+    connect_service = fields.Char(
+        help='URL endpoint for sending messages to GMC'
+    )
     connect_outgoing_wrapper = fields.Char(
         help='Tag in which multiple messages can be encapsulated'
     )
     connect_answer_wrapper = fields.Char(
         help='Tag in which answer is found (for outgoing messages)'
     )
-    auto_process = fields.Boolean()
+    batch_send = fields.Boolean(
+        help='True if multiple objects can be sent through a single message'
+    )
+    auto_process = fields.Boolean(
+        help='Set to True for processing the message as soon as it is created.'
+    )
     request_type = fields.Selection([
         ('GET', 'GET'),
         ('POST', 'POST'),
