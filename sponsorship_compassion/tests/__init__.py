@@ -9,4 +9,4 @@
 #
 ##############################################################################
 
-from . import test_sponsorship_compassion
+# from . import test_sponsorship_compassion
