@@ -80,6 +80,8 @@ class recurring_contract(models.Model):
     group_freq = fields.Char(
         string='Payment frequency',
         compute='_set_frequency', store=True, readonly=True)
+    transfer_partner_id = fields.Many2one(
+        'compassion.global.partner', 'Transferred to')
 
     ##########################################################################
     #                             FIELDS METHODS                             #

@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class MigrationR4(models.TransientModel):
     """ Perform migrations after upgrading the module
     """
-    _name = 'migration.r4'
+    _inherit = 'migration.r4'
 
     @api.model
     def perform_migration(self):
@@ -50,6 +50,14 @@ class MigrationR4(models.TransientModel):
         messages = self._get_messages('CreateGift')
         self._create_gifts(messages)
         messages.unlink()
+
+        # Remove backup column for old messages
+        self.env.cr.execute(
+            "ALTER TABLE gmc_message_pool DROP COLUMN old_action;"
+        )
+
+        # Restore transfer country for sponsorships terminated
+        self._restore_transferred_sponsorships()
 
     def _get_messages(self, type):
         """
@@ -91,3 +99,29 @@ class MigrationR4(models.TransientModel):
         Migrate the old CreateGift messages
         """
         logger.info("MIGRATION 8.0.3 ----> CreateGift")
+
+    def _restore_transferred_sponsorships(self):
+        """
+        Put the global partner to which the sponsorship was transferred.
+        """
+        logger.info("MIGRATION 8.0.3 ----> Transfer Country of Sponsorships.")
+        sponsorships = self.env['recurring.contract'].search([
+            ('state', '=', 'terminated'),
+            ('type', 'like', 'S'),
+            ('end_reason', '=', '4')    # (=Sponsor moved)
+        ])
+        for sponsorship in sponsorships:
+            child_id = sponsorship.child_id.id
+            self.env.cr.execute(
+                "SELECT transfer_country_backup FROM compassion_child "
+                "WHERE id = " + str(child_id) + ";"
+            )
+            country_id = self.env.cr.fetchone()[0]
+            if country_id:
+                global_partner = self.env['compassion.global.partner'].search(
+                    [('country_id', '=', country_id)]
+                )
+                sponsorship.transfer_partner_id = global_partner
+        self.env.cr.execute(
+            "ALTER TABLE compassion_child DROP COLUMN transfer_country_backup;"
+        )
