@@ -9,6 +9,7 @@
 #
 ##############################################################################
 from openerp import api, fields, models, _
+from functools import reduce
 
 
 class ResPartner(models.Model):
@@ -225,14 +226,10 @@ class ResPartner(models.Model):
                 message_obj = self.env['gmc.message.pool']
                 action_id = self.env.ref(
                     'sponsorship_compassion.upsert_partner').id
-                messages = message_obj.search([
-                    ('partner_id', '=', partner.id),
-                    ('state', '=', 'new'),
-                    ('action_id', '=', action_id)])
-                if not messages:
-                    message_vals = {
-                        'action_id': action_id,
-                        'object_id': partner.id,
-                        'partner_id': partner.id,
-                    }
-                    message_obj.create(message_vals)
+
+                message_vals = {
+                    'action_id': action_id,
+                    'object_id': partner.id,
+                    'partner_id': partner.id,
+                }
+                message_obj.create(message_vals)

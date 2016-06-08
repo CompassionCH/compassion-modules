@@ -523,15 +523,16 @@ class SponsorshipContract(models.Model):
                 else:
                     contract.signal_workflow('contract_terminated')
 
-            # Create Sponsorship Message
+            # Cancel Sponsorship Message
             message_obj = self.env['gmc.message.pool']
             action_id = self.env.ref(
                 'sponsorship_compassion.cancel_sponsorship').id
 
-            logger.info("DELETE MESSAGE CREATED")
             message_vals = {
                 'action_id': action_id,
-                'object_id': sponsorship.id
+                'object_id': sponsorship.id,
+                'partner_id': sponsorship.correspondant_id.id,
+                'child_id': sponsorship.child_id.id
             }
             message_obj.create(message_vals)
 
@@ -548,21 +549,15 @@ class SponsorshipContract(models.Model):
             partner = contract.correspondant_id
             partner.upsert_constituent()
 
-            # Create Sponsorship Message
             message_obj = self.env['gmc.message.pool']
             action_id = self.env.ref(
                 'sponsorship_compassion.create_sponsorship').id
 
-            messages = message_obj.search([
-                ('partner_id', '=', partner.id),
-                ('state', '=', 'new'),
-                ('action_id', '=', action_id)])
-            if not messages:
-                message_vals = {
-                    'action_id': action_id,
-                    'object_id': contract.id
-                }
-                message_obj.create(message_vals)
+            message_vals = {
+                'action_id': action_id,
+                'object_id': contract.id
+            }
+            message_obj.create(message_vals)
 
         super(SponsorshipContract, self).contract_active()
         con_line_obj = self.env['recurring.contract.line']

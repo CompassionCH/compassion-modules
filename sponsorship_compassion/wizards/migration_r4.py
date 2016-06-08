@@ -35,12 +35,10 @@ class MigrationR4(models.TransientModel):
         # CreateCommitment
         messages = self._get_messages('CreateCommitment')
         self._create_commitments(messages)
-        messages.unlink()
 
         # CancelCommitment
         messages = self._get_messages('CancelCommitment')
         self._cancel_commitments(messages)
-        messages.unlink()
 
         # UpsertConstituent
         messages = self._get_messages('UpsertConstituent')

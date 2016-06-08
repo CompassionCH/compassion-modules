@@ -111,7 +111,14 @@ class GmcMessagePool(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
-        message = super(GmcMessagePool, self).create(vals)
+        message = self.search([
+            ('object_id', '=', vals['object_id']),
+            ('state', 'in', ('new', 'pending')),
+            ('action_id', '=', vals['action_id'])])
+
+        if not message:
+            message = super(GmcMessagePool, self).create(vals)
+
         if message.action_id.auto_process:
             message.process_messages()
         return message
@@ -253,9 +260,10 @@ class GmcMessagePool(models.Model):
         if hasattr(data_objects, 'on_send_to_connect'):
             data_objects.on_send_to_connect()
 
-        object_mapping = mapping.new_onramp_mapping(action.model, self.env)
+        object_mapping = mapping.new_onramp_mapping(
+            action.model, self.env, action.name)
         if action.connect_outgoing_wrapper:
-            # Send multiple objects in a single message to GMCs
+            # Send multiple objects in a single message to GMC
             message_data = {action.connect_outgoing_wrapper: list()}
             for data_object in data_objects:
                 message_data[action.connect_outgoing_wrapper].append(
@@ -281,7 +289,8 @@ class GmcMessagePool(models.Model):
                 lang='en_US').browse(self.mapped('object_id'))
             results = onramp_answer.get('content', {}).get(
                 action.connect_answer_wrapper, [])
-            object_mapping = mapping.new_onramp_mapping(action.model, self.env)
+            object_mapping = mapping.new_onramp_mapping(action.model, self.env,
+                                                        action.name)
             for i in range(0, len(results)):
                 result = results[i]
                 content_sent = message_data.get(
