@@ -11,11 +11,8 @@
 from openerp.addons.message_center_compassion.mappings.base_mapping \
     import OnrampMapping
 
-import logging
-logger = logging.getLogger(__name__)
 
-
-class SponsorshipMapping(OnrampMapping):
+class BaseSponsorshipMapping(OnrampMapping):
     """ This class contains the mapping between Odoo fields and GMC field names
     for the model Sponsorship.
 
@@ -24,8 +21,10 @@ class SponsorshipMapping(OnrampMapping):
     Communication_Kit_Fields_and_Sample_JSON
     """
     ODOO_MODEL = 'recurring.contract'
+    ACTION = 'default'
 
     CONNECT_MAPPING = {
+        "Commitment_ID": "id",
         "CommitmentEndDate": "end_date",
         "CompassNeedKey": ('child_id.local_id', 'compassion.child'),
         "CorrespondenceEndDate": "end_date",
@@ -33,33 +32,24 @@ class SponsorshipMapping(OnrampMapping):
         "CorrespondentSupporterGlobalID": None,
         "FinalCommitmentOfLine": None,
         "HoldID": "reference",
+        "HoldType": "type",
         "PrimaryHoldOwner": ('partner_id.name', 'res.partner'),
         "SecondaryHoldOwner": None,
         "SponsorCorrespondenceLanguage": ('reading_language.id',
                                           'res.lang.compassion'),
         "SponsorSupporterGlobalID": ('partner_id.global_id', 'res.partner'),
         "Beneficiary_GlobalID": ('child_id.global_id', 'compassion.child'),
+        "Beneficiary_HoldExpirationDate": "end_date",
         "Channel_Name": "channel",
         "LinkType": None,
+        "DelinkType": None,
         "ParentCommitmentID": None
-    }
-
-    FIELDS_TO_SUBMIT = {
-        "HoldID": None,
-        "IsSponsorCorrespondent": None,
-        "PrimaryHoldOwner": None,
-        "SponsorGlobalPartnerID": None,
-        "SponsorSupporterGlobalID": None,
-        "Beneficiary_GlobalID": None
     }
 
     CONSTANTS = {
         "CorrespondentGlobalPartnerID": "CH",
         "IsSponsorCorrespondent": False,
-        "SponsorGlobalPartnerID": "CH"
+        "SponsorGlobalPartnerID": "CH",
+        "FinalCommitmentOfLine": "",
+        "GlobalPartner_ID": "CH"
     }
-
-    def _process_connect_data(self, odoo_data):
-        # Don't send global id if not set.
-        if not odoo_data.get('GlobalId') and 'GlobalId' in odoo_data:
-            del odoo_data['GlobalId']

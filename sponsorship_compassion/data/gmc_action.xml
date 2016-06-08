@@ -10,8 +10,7 @@
             <field name="connect_answer_wrapper">SupporterProfileResponse</field>
             <field name="request_type">POST</field>
         </record>
-        <!-- Sponsorship Messages 
-        	Creation -->
+        <!-- Sponsorship Message Creation -->
         <record id="create_sponsorship" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">CreateSponsorship</field>
@@ -22,7 +21,7 @@
             <field name="connect_answer_wrapper">BeneficiaryCommitmentListResponse</field>
             <field name="request_type">POST</field>
         </record>
-        <!-- Cancel -->
+        <!-- Sponsorship Message Cancel -->
         <record id="cancel_sponsorship" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">CancelSponsorship</field>
