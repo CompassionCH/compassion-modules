@@ -436,6 +436,7 @@ class CompassionChild(models.Model):
             # Child has lost his sponsor. We inactivate it to release it
             # to the global child pool.
             if not self.hold_id:
+                state = 'F'
                 self.active = False
         self.state = state
         return True

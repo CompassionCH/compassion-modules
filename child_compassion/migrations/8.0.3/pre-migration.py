@@ -25,3 +25,9 @@ UPDATE compassion_child SET state = 'N' WHERE state = 'R';
     UPDATE ir_model_data SET module = 'child_compassion'
     WHERE module = 'sbc_compassion' AND name LIKE 'lang_compassion%';
         """)
+
+    # Save transfer country for restoring it in contracts
+    cr.execute("""
+ALTER TABLE compassion_child ADD COLUMN transfer_country_backup INTEGER;
+UPDATE compassion_child SET transfer_country_backup = transfer_country_id;
+    """)
