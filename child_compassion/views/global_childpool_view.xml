@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Childpool search form view -->
+        <record id="view_compassion_childpool_form" model="ir.ui.view">
+            <field name="name">compassion.childpool.search.form</field>
+            <field name="model">compassion.childpool.search</field>
+            <field name="arch" type="xml">
+                <form string="Global Childpool">
+                    <header>
+                        <button name="do_search" string="Search" type="object" class="oe_highlight"/>
+                        <button name="rich_mix" string="Rich Mix" type="object" class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <group string="Search Parameters">
+                            <group>
+                                <field name="field_office_ids" widget="many2many_tags"/>
+                                <field name="icp_ids" widget="many2many_tags"/>
+                                <field name="icp_name"/>
+                                <field name="min_days_waiting"/>
+                                <field name="source_code"/>
+                            </group>
+                            <group>
+                                <field name="child_name"/>
+                                <field name="gender"/>
+                                <field name="min_age"/>
+                                <field name="max_age"/>
+                                <field name="birthday_month"/>
+                                <field name="birthday_day"/>
+                                <field name="birthday_year"/>
+                            </group>
+                            <group>
+                                <field name="hiv_affected_area"/>
+                                <field name="is_orphan"/>
+                                <field name="has_siblings"/>
+                                <field name="has_special_needs"/>
+                            </group>
+                            <group/>
+                            <group>
+                                <field name="skip"/>
+                                <field name="take"/>
+                            </group>
+                        </group>
+                        <group string="Search Results">
+                            <field name="nb_found"/>
+                            <field name="global_child_ids" mode="kanban" widget="many2many_kanban"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Childpool search search view -->
+        <record id="view_compassion_childpool_search" model="ir.ui.view">
+            <field name="name">compassion.childpool.search.search</field>
+            <field name="model">compassion.childpool.search</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="global_child_ids"/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Country" context="{'group_by': 'global_child_ids.icp_id.field_office_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Compassion global child kanban view -->
+        <record id="view_compassion_childpool_kanban" model="ir.ui.view">
+            <field name="name">compassion.global.child.kanban</field>
+            <field name="model">compassion.global.child</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="name"/>
+                    <field name="local_id"/>
+                    <field name="gender"/>
+                    <field name="priority_score"/>
+                    <field name="portrait"/>
+                    <field name="unsponsored_since"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-att-class="color + (record.priority_score.raw_value > 10 ? ' oe_kanban_color_alert' : '')" style="position: relative">
+                                <a type="delete" style="position: absolute; right: 0; padding: 4px; diplay: inline-block">X</a>
+                                <div class="oe_module_vignette">
+                                    <a type="open">
+                                        <t t-if="record.portrait and record.portrait.raw_value !== false">
+                                            <img t-att-src="'data:image/png;base64,'+record.portrait.raw_value" class="oe_avatar oe_kanban_avatar_smallbox"/>
+                                        </t>
+                                    </a>
+                                    <div class="oe_module_desc">
+                                        <div class="oe_kanban_box_content oe_kanban_color_bglight oe_kanban_color_border">
+                                            <table class="oe_kanban_table">
+                                                <tr>
+                                                    <td class="oe_kanban_title1" align="left" valign="middle">
+                                                        <h4><a type="open"><field name="name"/></a></h4>
+                                                        <div t-if="record.local_id.raw_value">Code: <field name="local_id"/></div>
+                                                        <div t-if="record.gender.raw_value">Gender: <field name="gender"/></div>
+                                                        <div t-if="record.priority_score.raw_value">Priority: <field name="priority_score"/></div>
+                                                        <div t-if="record.unsponsored_since.raw_value">Waiting since: <field name="unsponsored_since"/></div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Action opening the tree view -->
+        <record id="open_view_childpool" model="ir.actions.act_window">
+            <field name="name">Global Childpool</field>
+            <field name="res_model">compassion.childpool.search</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+        </record>
+
+        <menuitem id="menu_global_pool" parent="menu_sponsorship_section"
+                  name="Global Childpool" action="open_view_childpool"
+                  sequence="1"/>
+    </data>
+</openerp>

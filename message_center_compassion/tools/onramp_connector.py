@@ -68,11 +68,13 @@ class OnrampConnector(object):
         if not self._token_time or self._token_time+timedelta(hours=1) <= now:
             self._retrieve_token()
 
-    def send_message(self, service_name, message_type, body):
+    def send_message(self, service_name, message_type, body, params=None):
         """ Sends a message to Compassion Connect.
         :param service_name: The service name to reach inside Connect
         :param message_type: GET, POST or PUT
         :param body: Body of the message to send.
+        :param params: Optional Dictionary of HTTP Request parameters
+                                (put inside the url)
 
         :returns: A dictionary with the content of the answer to the message.
                   {'code': http_status_code, 'content': response,
@@ -83,25 +85,38 @@ class OnrampConnector(object):
         status = 200
         result = False
         self._log_message(message_type, url, headers, body)
+        param_string = self._encode_params(params)
         if message_type == 'GET':
             r = self._session.get(
-                url, headers=headers, json=body)
-            status = r.status_code
-            result = r.text
-            self._log_message(status, 'RESULT', message=result)
+                url, headers=headers, params=param_string)
         elif message_type == 'POST':
-            r = self._session.post(url, headers=headers, json=body)
-            status = r.status_code
-            result = {
-                'code': status,
-                'request_id': r.headers.get('x-cim-RequestId'),
-            }
-            self._log_message(status, 'RESULT', message=r.text)
-            try:
-                result['content'] = r.json()
-            except ValueError:
-                result['Error'] = r.text
+            r = self._session.post(
+                url, headers=headers, json=body, params=param_string)
+        status = r.status_code
+        result = {
+            'code': status,
+            'request_id': r.headers.get('x-cim-RequestId'),
+        }
+        self._log_message(status, 'RESULT', message=r.text)
+        try:
+            result['content'] = r.json()
+        except ValueError:
+            result['Error'] = r.text
         return result
+
+    def _encode_params(self, params):
+        """
+        Takes a dictionary and encode it for URL parameters
+        :param params: dictionary
+        :return: string
+        """
+        formatted_params = self._session.params.copy()
+        for key, value in params.iteritems():
+            if isinstance(value, list):
+                value = ','.join([str(v) for v in value])
+            formatted_params[key] = value
+        return u'&'.join(u'%s=%s' % (k, v) for k, v in
+                         formatted_params.iteritems())
 
     def _retrieve_token(self):
         """ Retrieves the token from Connect. """
