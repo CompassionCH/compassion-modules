@@ -19,6 +19,14 @@
                             <field name="end_date"/>
                             <field name="end_reason"/>
                         </group>
+                        <group/>
+                        <group attrs="{'invisible': [('end_reason', '!=', '4')]}">
+                            <!-- Transfer child form -->
+                            <field name="do_transfer" />
+                            <field name="transfer_country_id"
+                                   attrs="{'invisible': [('do_transfer', '=', False)],
+                                           'required': [('do_transfer', '=', True)]}" />
+                        </group>
                     </group>
 
                     <!-- Action buttons in footer -->

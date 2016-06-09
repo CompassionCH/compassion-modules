@@ -34,7 +34,7 @@
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['mail', 'web_m2x_options', 'document',
+    'depends': ['mail', 'web_m2x_options', 'document', 'auditlog',
                 'message_center_compassion'],
     'external_dependencies': {},
     'data': [

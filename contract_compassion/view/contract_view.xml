@@ -86,6 +86,7 @@
                                    options="{'create': false, 'm2o_dialog': false, 'create_edit': false, 'colors':{
                                         'R':'red', 'N':'blue'}, 'field_color':'state'}"/>
                             <field name="end_reason" states="terminated,cancelled"/>
+                            <field name="transfer_partner_id" attrs="{'invisible': [('transfer_partner_id', '=', False)]}"/>
                             <field name="num_pol_ga" invisible="1"/>
                         </group>
                         <group>

@@ -29,6 +29,9 @@ class EndContractWizard(models.TransientModel):
         'compassion.child', 'Child',
         default=lambda self: self._get_child_id())
     end_reason = fields.Selection('_get_end_reason', required=True)
+    do_transfer = fields.Boolean('I want to transfer the child')
+    transfer_country_id = fields.Many2one(
+        'compassion.global.partner', 'Country')
 
     @api.model
     def _get_child_id(self):
@@ -61,8 +64,11 @@ class EndContractWizard(models.TransientModel):
         contract = self.contract_id
 
         # Terminate contract
-        contract.write({'end_reason': self.end_reason,
-                        'end_date': self.end_date})
+        contract.write({
+            'end_reason': self.end_reason,
+            'end_date': self.end_date,
+            'transfer_partner_id': self.transfer_country_id.id,
+        })
         contract.signal_workflow('contract_terminated')
 
         return True
