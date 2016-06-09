@@ -109,6 +109,7 @@ class OnrampMapping(object):
 
     def get_connect_data(self, odoo_object, fields_to_submit=None):
         """ Convert an Odoo object into valid data for Compassion Connect.
+        :param odoo_object: One odoo Record.
         :param fields_to_submit: list of field names to convert.
                                  if not given, will take what is defined
                                  by default in the mapping class.
@@ -140,7 +141,7 @@ class OnrampMapping(object):
             value = odoo_object
             for field in field_name.split('.'):
                 # Field One2Many
-                if field.endswith('ids'):
+                if field_name.endswith('ids'):
                     value = list()
                     if len(field_mapping) == 2:
                         sub_mapping = new_onramp_mapping(
@@ -150,9 +151,12 @@ class OnrampMapping(object):
                             field_mapping[1], self.env, field_mapping[2])
                     for element in getattr(odoo_object, field):
                         value.append(sub_mapping.get_connect_data(element))
+
                 # Other fields
                 else:
-                    value = getattr(value, field)
+                    value = value.mapped(field) if len(value) > 1 else \
+                        getattr(value, field)
+
             convert_func = self.FIELDS_TO_SUBMIT[connect_name]
             if convert_func is not None:
                 value = convert_func(value)
@@ -219,7 +223,11 @@ class OnrampMapping(object):
             # Regular field
             mapped_value = value
             if value_mapping.endswith('_id') or value_mapping == 'id':
-                mapped_value = int(value)
+                try:
+                    mapped_value = int(value)
+                except ValueError:
+                    mapped_value = value
+
             result[value_mapping] = mapped_value
 
         return result

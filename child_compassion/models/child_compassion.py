@@ -41,6 +41,21 @@ class GenericChild(models.AbstractModel):
     gender = fields.Selection([('F', 'Female'), ('M', 'Male')])
     birthdate = fields.Date()
     is_orphan = fields.Boolean()
+    beneficiary_state = fields.Selection([
+        ("Available", "Available"),
+        ("Change Commitment Hold", "Change Commitment Hold"),
+        ("Consignment Hold", "Consignment Hold"),
+        ("Delinquent Mass Cancel Hold", "Delinquent Mass Cancel Hold"),
+        ("E-Commerce Hold", "E-Commerce Hold"),
+        ("Inactive", "Inactive"),
+        ("Ineligible", "Ineligible"),
+        ("No Money Hold", "No Money Hold"),
+        ("Reinstatement Hold", "Reinstatement Hold"),
+        ("Reservation Hold", "Reservation Hold"),
+        ("Sponsor Cancel Hold", "Sponsor Cancel Hold"),
+        ("Sponsored", "Sponsored"),
+        ("Sub Child Hold", "Sub Child Hold"),
+    ])
     sponsorship_status = fields.Selection([
         ('Sponsored', 'Sponsored'),
         ('Unsponsored', 'Unsponsored'),
@@ -57,6 +72,7 @@ class GlobalChild(models.TransientModel):
 
     portrait = fields.Binary()
     fullshot = fields.Binary()
+    image_url = fields.Char()
     is_area_hiv_affected = fields.Boolean()
     is_special_needs = fields.Boolean()
     priority_score = fields.Integer(help='How fast the child should be '

@@ -30,6 +30,7 @@ class FieldOffice(models.Model):
     country = fields.Char()
     country_id = fields.Many2one('res.country', 'Country',
                                  compute='_compute_country')
+    country_code = fields.Char(related='country_id.code')
     street = fields.Char()
     city = fields.Char()
     province = fields.Char()
