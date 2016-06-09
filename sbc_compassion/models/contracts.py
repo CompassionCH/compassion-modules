@@ -22,8 +22,6 @@ class Contracts(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
 
-    reading_language = fields.Many2one(
-        'res.lang.compassion', 'Preferred language', required=True)
     writing_language = fields.Many2one(
         'res.lang.compassion', related='reading_language',
         help='By now equals to reading language. Could be used in the future')

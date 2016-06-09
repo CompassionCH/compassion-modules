@@ -34,6 +34,7 @@ class OnrampMapping(object):
     """
 
     ODOO_MODEL = ''
+    ACTION = 'default'
 
     # Dictionary containing the mapping in the following format :
     #   {'ConnectServiceFieldName' : 'odoo_field_name'}
@@ -42,8 +43,8 @@ class OnrampMapping(object):
     #
     #   - string : any existing field in the Odoo model
     #   - None : indicates we don't use the field value.
-    #   - (relational_path, model) : For relational fields,
-    #                                a tuple precising the relation model.
+    #   - (relational_path, model, optional_action : For relational fields,
+    #           a tuple precising the relation model and an optional action.
     #
     #       Caution : it supports only direct relations ! If you traverse
     #       several models for the relation, you should put a related
@@ -88,8 +89,13 @@ class OnrampMapping(object):
                     for item in value_connect:
                         if isinstance(item, collections.Mapping):
                             is_list_dict = True
-                            sub_mapping = new_onramp_mapping(
-                                field_odoo[1], self.env)
+                            if len(field_odoo) == 2:
+                                sub_mapping = new_onramp_mapping(
+                                    field_odoo[1], self.env)
+                            else:
+                                sub_mapping = new_onramp_mapping(
+                                    field_odoo[1], self.env,
+                                    field_odoo[2])
                             list_dict = odoo_values.setdefault(
                                 field_odoo[0], list())
                             list_dict.append(
@@ -136,8 +142,12 @@ class OnrampMapping(object):
                 # Field One2Many
                 if field.endswith('ids'):
                     value = list()
-                    sub_mapping = new_onramp_mapping(
-                        field_mapping[1], self.env)
+                    if len(field_mapping) == 2:
+                        sub_mapping = new_onramp_mapping(
+                            field_mapping[1], self.env)
+                    else:
+                        sub_mapping = new_onramp_mapping(
+                            field_mapping[1], self.env, field_mapping[2])
                     for element in getattr(odoo_object, field):
                         value.append(sub_mapping.get_connect_data(element))
                 # Other fields
@@ -287,13 +297,15 @@ def itersubclasses(cls, _seen=None):
                 yield sub
 
 
-def new_onramp_mapping(model, env):
+def new_onramp_mapping(model, env, action='default'):
     """Return an instance of the good Mapping class based on the given model.
 
     :param model: model name of the mapping.
+    :param action: action name (not mandatory, specify when a model has many
+    actions)
     :return: class instance for given model mapping.
     """
     for cls in itersubclasses(OnrampMapping):
-        if cls.ODOO_MODEL == model:
+        if cls.ODOO_MODEL == model and cls.ACTION == action:
             return cls(env)
     raise ValueError

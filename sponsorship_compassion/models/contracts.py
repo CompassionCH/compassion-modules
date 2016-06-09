@@ -79,6 +79,8 @@ class SponsorshipContract(models.Model):
         "child's birthday."), track_visibility='onchange')
     contract_line_ids = fields.One2many(default=lambda self:
                                         self._get_standard_lines())
+    reading_language = fields.Many2one(
+        'res.lang.compassion', 'Preferred language', required=False)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -98,7 +100,7 @@ class SponsorshipContract(models.Model):
                 ('1', _("Depart of child")),
                 ('10', _("Subreject")),
                 ('11', _("Exchange of sponsor"))
-                ])
+            ])
             res.sort(key=lambda tup: int(float(tup[0])))  # Sort res
         return res
 
@@ -181,7 +183,7 @@ class SponsorshipContract(models.Model):
     def write(self, vals):
         """ Perform various checks on contract modification """
         if 'child_id' in vals:
-                self._on_change_child_id(vals)
+            self._on_change_child_id(vals)
 
         return super(SponsorshipContract, self).write(vals)
 
@@ -192,7 +194,7 @@ class SponsorshipContract(models.Model):
             if 'S' in contract.type and contract.state != 'draft':
                 raise exceptions.Warning(_('Warning'),
                                          _('You cannot delete a validated '
-                                         'sponsorship.'))
+                                           'sponsorship.'))
             # Remove sponsor of child
             if 'S' in contract.type and contract.child_id:
                 child_sponsor_id = contract.child_id.sponsor_id and \
@@ -521,6 +523,19 @@ class SponsorshipContract(models.Model):
                 else:
                     contract.signal_workflow('contract_terminated')
 
+            # Cancel Sponsorship Message
+            message_obj = self.env['gmc.message.pool']
+            action_id = self.env.ref(
+                'sponsorship_compassion.cancel_sponsorship').id
+
+            message_vals = {
+                'action_id': action_id,
+                'object_id': sponsorship.id,
+                'partner_id': sponsorship.correspondant_id.id,
+                'child_id': sponsorship.child_id.id
+            }
+            message_obj.create(message_vals)
+
     @api.multi
     def contract_active(self):
         """ Hook for doing something when contract is activated.
@@ -532,9 +547,17 @@ class SponsorshipContract(models.Model):
                 lambda c: 'S' in c.type and not c.is_active):
             # UpsertConstituent Message
             partner = contract.correspondant_id
-            partner.upser_constituent()
+            partner.upsert_constituent()
 
-            # TODO : Create Sponsorship Message
+            message_obj = self.env['gmc.message.pool']
+            action_id = self.env.ref(
+                'sponsorship_compassion.create_sponsorship').id
+
+            message_vals = {
+                'action_id': action_id,
+                'object_id': contract.id
+            }
+            message_obj.create(message_vals)
 
         super(SponsorshipContract, self).contract_active()
         con_line_obj = self.env['recurring.contract.line']

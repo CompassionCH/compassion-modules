@@ -303,7 +303,7 @@ class Correspondence(models.Model):
                 for i in xrange(0, len(self.page_ids)):
                     setattr(self.page_ids[i], field, pages_text[i].strip('\n'))
                 last_page_text = getattr(self.page_ids[i], field)
-                last_page_text += '\n\n' + '\n\n'.join(pages_text[i+1:])
+                last_page_text += '\n\n' + '\n\n'.join(pages_text[i + 1:])
         else:
             for i in xrange(0, len(pages_text)):
                 self.page_ids.create({
@@ -313,7 +313,7 @@ class Correspondence(models.Model):
     def _get_text(self, source_text):
         """ Gets the desired text (original/translated) from the pages. """
         txt = self.page_ids.filtered(source_text).mapped(source_text)
-        return ('\n'+PAGE_SEPARATOR+'\n').join(txt)
+        return ('\n' + PAGE_SEPARATOR + '\n').join(txt)
 
     def _change_language(self):
         return True
@@ -510,10 +510,10 @@ class Correspondence(models.Model):
                 final_pdf.addPage(existing_pdf.getPage(i))
                 if remaining_text:
                     remaining_text += '\n\n' + additional_pages_header +\
-                        str(i+1) + ':\n' + text
+                        str(i + 1) + ':\n' + text
                 else:
-                    remaining_text = additional_pages_header + str(i+1) +\
-                                     ':\n' + text
+                    remaining_text = additional_pages_header + str(i + 1) +\
+                        ':\n' + text
                 continue
             box_texts = text.split(BOX_SEPARATOR)
             if len(box_texts) > len(boxes):
