@@ -85,6 +85,8 @@ class OnrampConnector(object):
         status = 200
         result = False
         self._log_message(message_type, url, headers, body)
+        if params is None:
+            params = dict()
         param_string = self._encode_params(params)
         if message_type == 'GET':
             r = self._session.get(
