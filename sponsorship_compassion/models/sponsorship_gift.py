@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import fields, models
+from openerp import fields, models, api
 
 
 class SponsorshipGift(models.Model):
@@ -17,20 +17,23 @@ class SponsorshipGift(models.Model):
 
     # Related records
     #################
-    partner_id = fields.Many2one(
-        'res.partner', 'Partner', required=True
-    )
     sponsorship_id = fields.Many2one(
-        'recurring.contract', 'Sponsorship'
+        'recurring.contract', 'Sponsorship', required=True
+    )
+    partner_id = fields.Many2one(
+        'res.partner', 'Partner', related='sponsorship_id.partner_id',
+        store=True
     )
     project_id = fields.Many2one(
-        'compassion.project', 'Project'
+        'compassion.project', 'Project',
+        related='sponsorship_id.child_id.project_id', store=True
     )
     child_id = fields.Many2one(
-        'compassion.child', 'Child'
+        'compassion.child', 'Child', related='sponsorship_id.child_id',
+        store=True
     )
     invoice_line_ids = fields.Many2many(
-        'account.invoice.line', 'Invoice lines'
+        'account.invoice.line', string='Invoice lines', required=True,
     )
     payment_id = fields.Many2one(
         'account.move', 'Payment'
@@ -38,17 +41,20 @@ class SponsorshipGift(models.Model):
 
     # Gift information
     ##################
+    name = fields.Char(compute='_compute_name')
     gmc_gift_id = fields.Char()
-    date_partner_paid = fields.Date()
+    date_partner_paid = fields.Date(
+        compute='_compute_invoice_fields', store=True
+    )
     date_sent = fields.Datetime()
     date_money_sent = fields.Datetime()
-    amount = fields.Float()
+    amount = fields.Float(compute='_compute_invoice_fields', store=True)
     instructions = fields.Char()
     gift_type = fields.Selection([
         ('Project Gift', 'Project Gift'),
         ('Family Gift', 'Family Gift'),
         ('Beneficiary Gift', 'Beneficiary Gift'),
-    ])
+    ], required=True)
     attribution = fields.Selection([
         ('Center Based Programming', 'CDSP'),
         ('Home Based Programming (Survival & Early Childhood)', 'CSP'),
@@ -56,7 +62,7 @@ class SponsorshipGift(models.Model):
         ('Sponsored Child Family', 'Sponsored Child Family'),
         ('Survival Neediest', 'Survival Neediest'),
         ('Sponsorship', 'Sponsorship'),
-    ])
+    ], required=True)
     sponsorship_gift_type = fields.Selection([
         ('Birthday', 'Birthday'),
         ('General', 'General'),
@@ -68,13 +74,13 @@ class SponsorshipGift(models.Model):
         ('open', 'Pending'),
         ('fund_due', 'Fund Due'),
         ('fund_delivered', 'Fund Delivered'),
-    ])
+    ], default='draft')
     gmc_state = fields.Selection([
         ('draft', 'Not in the system'),
         ('In Progress (Active)', 'In Progress'),
         ('Delivered', 'Delivered'),
         ('Undeliverable', 'Undeliverable'),
-    ])
+    ], default='draft')
     undeliverable_reason = fields.Selection([
         ('Project Transitioned', 'Project Transitioned'),
         ('Beneficiary Exited', 'Beneficiary Exited'),
@@ -83,3 +89,24 @@ class SponsorshipGift(models.Model):
     ])
     threshold_alert = fields.Boolean(
         help='Partner exceeded the maximum gift amount allowed')
+
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+    @api.depends('invoice_line_ids')
+    def _compute_invoice_fields(self):
+        for gift in self:
+            pay_dates = gift.mapped('invoice_line_ids.last_payment')
+            amounts = gift.mapped('invoice_line_ids.price_subtotal')
+            gift.date_partner_paid = fields.Date.to_string(max(
+                map(lambda d: fields.Date.from_string(d), pay_dates)))
+            gift.amount = sum(amounts)
+
+    def _compute_name(self):
+        for gift in self:
+            if gift.gift_type != 'Beneficiary Gift':
+                name = gift.gift_type
+            else:
+                name = gift.sponsorship_gift_type + ' Gift'
+            name += ' [' + gift.sponsorship_id.name + ']'
+            gift.name = name
