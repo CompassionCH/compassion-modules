@@ -8,6 +8,8 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+import re
+
 from ..tools.onramp_connector import OnrampConnector
 from ..mappings import base_mapping as mapping
 
@@ -290,8 +292,9 @@ class GmcMessagePool(models.Model):
         """Sends the prepared message and gets the answer from GMC."""
         action = self.mapped('action_id')
         onramp = OnrampConnector()
+        url_endpoint = self._get_url_endpoint()
         onramp_answer = onramp.send_message(
-            action.connect_service, action.request_type, message_data)
+            url_endpoint, action.request_type, message_data)
         if 200 <= onramp_answer['code'] < 300:
             # Success, loop through answer to get individual results
             data_objects = self.env[action.model].with_context(
@@ -330,6 +333,25 @@ class GmcMessagePool(models.Model):
                     '[%s] %s' % (onramp_answer['code'],
                                  str(fail.get('Error', 'None')))
             })
+
+    def _get_url_endpoint(self):
+        """ Gets the endpoint of GMC based on the action. """
+        url_endpoint = self.mapped('action_id').connect_service
+        if '{$object' in url_endpoint:
+            url_endpoint = re.sub(
+                '\{(\$object\.)(.+?)\}',
+                lambda match: self._replace_object_string(match),
+                url_endpoint
+            )
+        return url_endpoint
+
+    def _replace_object_string(self, object_match):
+        """ Takes a string like {$object.field} and returns the field. """
+        self.ensure_one()
+        object = self.env[self.action_id.model].browse(self.object_id)
+        field_name = object_match.groups()[1]
+        field_value = object.mapped(field_name)[0]
+        return str(field_value)
 
     def _validate_outgoing_action(self):
         """ Inherit to add message validation before sending it."""
