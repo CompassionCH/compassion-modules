@@ -19,6 +19,7 @@ class GenericChildMapping(OnrampMapping):
         # Fields used in Search Message (for global child)
         'Beneficiary_GlobalID': 'global_id',
         'Beneficiary_LocalID': 'local_id',
+        'LocalNumber': 'local_id',
         'FieldOffice_Name': ('project_id.field_office_id.name',
                              'compassion.field.office'),
         'CorrespondentScore': 'correspondent_score',

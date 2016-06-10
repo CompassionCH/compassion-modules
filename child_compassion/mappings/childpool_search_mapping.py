@@ -17,6 +17,7 @@ class ChilpoolSearchMapping(OnrampMapping):
     Childpool mapping for searching available children from GMC.
     """
     ODOO_MODEL = 'compassion.childpool.search'
+    ACTION = "profile_search"
 
     CONNECT_MAPPING = {
         'gender': 'gender',
@@ -48,3 +49,17 @@ class ChilpoolSearchMapping(OnrampMapping):
         for key, value in temp_data.iteritems():
             if not value:
                 del connect_data[key]
+
+
+class ChilpoolSearchMixMapping(OnrampMapping):
+    """
+    Childpool mapping for searching mix of available children from GMC.
+    """
+    ODOO_MODEL = 'compassion.childpool.search'
+    ACTION = "rich_mix"
+
+    CONNECT_MAPPING = {
+        'numberOfBeneficiaries': 'take',
+    }
+
+    FIELDS_TO_SUBMIT = {'numberOfBeneficiaries': None}
