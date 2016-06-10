@@ -69,20 +69,16 @@ class GlobalChildSearch(models.TransientModel):
         # Remove previous search results
         self.global_child_ids = False
 
-        mapping = base_mapping.new_onramp_mapping(self._name, self.env)
+        mapping = base_mapping.new_onramp_mapping(self._name, self.env,
+                                                  "profile_search")
         params = mapping.get_connect_data(self)
         onramp = OnrampConnector()
         result = onramp.send_message(
             'beneficiaries/availabilitysearch', 'GET', None, params)
         if result['code'] == 200:
             self.nb_found = result['content']['NumberOfBeneficiaries']
-            children = result['content']['BeneficiarySearchResponseList']
-            mapping = base_mapping.new_onramp_mapping(
-                'compassion.global.child', self.env)
-            for child_data in children:
-                child_vals = mapping.get_vals_from_connect(child_data)
-                self.global_child_ids += self.env[
-                    'compassion.global.child'].create(child_vals)
+            self._map_and_create_json_oject(result['content']
+                                            ['BeneficiarySearchResponseList'])
         else:
             raise Warning(
                 result.get('content', result)['Error'])
@@ -92,4 +88,28 @@ class GlobalChildSearch(models.TransientModel):
     @api.multi
     def rich_mix(self):
         self.ensure_one()
+        # Remove previous search results
+        self.global_child_ids = False
+
+        mapping = base_mapping.new_onramp_mapping(self._name, self.env,
+                                                  "rich_mix")
+        params = mapping.get_connect_data(self)
+        onramp = OnrampConnector()
+        result = onramp.send_message(
+            'beneficiaries/richmix', 'GET', None, params)
+        if result['code'] == 200:
+            self._map_and_create_json_oject(result['content']
+                                            ['BeneficiaryRichMixResponseList'])
+        else:
+            raise Warning(
+                result.get('content', result)['Error'])
+
         return True
+
+    def _map_and_create_json_oject(self, children):
+        mapping = base_mapping.new_onramp_mapping(
+            'compassion.global.child', self.env)
+        for child_data in children:
+            child_vals = mapping.get_vals_from_connect(child_data)
+            self.global_child_ids += self.env[
+                'compassion.global.child'].create(child_vals)
