@@ -363,8 +363,12 @@ def decodeBarcode(env, barcode):
         barcode_split = barcode.data.split('XX')
         if len(barcode_split) == 2:
             partner_ref, child_code = barcode_split
+            child_ref_field = 'local_id'
+            if len(child_code.strip()) == 9:
+                # Old reference
+                child_ref_field = 'code'
             child_id = env['compassion.child'].search(
-                [('local_id', '=', child_code)],
+                [(child_ref_field, '=', child_code)],
                 order='id desc', limit=1).id
             partner_id = env['res.partner'].search(
                 [('ref', '=', partner_ref),

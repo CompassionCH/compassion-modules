@@ -16,8 +16,8 @@ def migrate(cr, version):
 
     # Child and project codes are one character longer
     cr.execute("""
-UPDATE compassion_child SET local_id = left(local_id, 2) || '0' ||
-    substring(local_id from 3 for 3) || '0' || right(local_id, 4);
+UPDATE compassion_child SET local_id = left(code, 2) || '0' ||
+    substring(code from 3 for 3) || '0' || right(code, 4);
 UPDATE compassion_project SET icp_id = left(icp_id, 2) || '0' || right(
     icp_id, 3);
     """)

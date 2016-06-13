@@ -31,8 +31,7 @@ class GenericChild(models.AbstractModel):
     #####################
     global_id = fields.Char('Global ID')
     local_id = fields.Char(
-        'Local ID', size=11, required=True, oldname='code',
-        help='Child reference')
+        'Local ID', size=11, required=True, help='Child reference')
     project_id = fields.Many2one('compassion.project', 'Project')
     name = fields.Char()
     firstname = fields.Char()
@@ -101,6 +100,7 @@ class CompassionChild(models.Model):
 
     # General Information
     #####################
+    code = fields.Char(help='Old child reference')
     compass_id = fields.Char('Compass ID', oldname='unique_id')
     estimated_birthdate = fields.Boolean()
     cognitive_age_group = fields.Selection([
