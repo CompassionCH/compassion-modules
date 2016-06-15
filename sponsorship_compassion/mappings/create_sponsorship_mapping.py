@@ -19,7 +19,7 @@ class CreateSponsorship(BaseSponsorshipMapping):
     http://developer.compassion.com/docs/read/compassion_connect2/
     Communication_Kit_Fields_and_Sample_JSON
     """
-    ACTION = 'CreateSponsorship'
+    MAPPING_NAME = 'CreateSponsorship'
 
     FIELDS_TO_SUBMIT = {
         "HoldID": None,

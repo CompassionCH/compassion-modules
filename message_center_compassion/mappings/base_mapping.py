@@ -34,7 +34,7 @@ class OnrampMapping(object):
     """
 
     ODOO_MODEL = ''
-    ACTION = 'default'
+    MAPPING_NAME = 'default'
 
     # Dictionary containing the mapping in the following format :
     #   {'ConnectServiceFieldName' : 'odoo_field_name'}
@@ -305,6 +305,6 @@ def new_onramp_mapping(model, env, action='default'):
     :return: class instance for given model mapping.
     """
     for cls in itersubclasses(OnrampMapping):
-        if cls.ODOO_MODEL == model and cls.ACTION == action:
+        if cls.ODOO_MODEL == model and cls.MAPPING_NAME == action:
             return cls(env)
     raise ValueError

@@ -27,7 +27,7 @@ class ResPartnerMapping(OnrampMapping):
     """
 
     ODOO_MODEL = 'res.partner'
-    ACTION = 'UpsertPartner'
+    MAPPING_NAME = 'UpsertPartner'
 
     CONNECT_MAPPING = {
         'GlobalID': 'global_id',

@@ -263,7 +263,7 @@ class GmcMessagePool(models.Model):
             data_objects.on_send_to_connect()
 
         object_mapping = mapping.new_onramp_mapping(
-            action.model, self.env, action.name)
+            action.model, self.env, action.mapping_name)
         if action.connect_outgoing_wrapper:
             # Object is wrapped in a tag. ("MessageTag": [objects_to_send])
             message_data = {action.connect_outgoing_wrapper: list()}

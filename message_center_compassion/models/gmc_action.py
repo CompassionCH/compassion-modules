@@ -38,6 +38,7 @@ class GmcAction(models.Model):
     name = fields.Char('GMC Message', size=20, required=True)
     model = fields.Char('OSV Model', size=30)
     description = fields.Text('Action to execute')
+    mapping_name = fields.Char()
     connect_service = fields.Char(
         help='URL endpoint for sending messages to GMC'
     )
