@@ -127,8 +127,8 @@ class contract_group(models.Model):
                 contract_line, invoice)
 
             # If project is suspended, either skip invoice or replace product
-            if contract.type == 'S' and not \
-                    contract.child_id.project_id.disburse_funds:
+            if contract.type == 'S' and \
+                    contract.child_id.project_id.hold_cdsp_funds:
                 config_obj = self.env['ir.config_parameter']
                 suspend_config = config_obj.search([(
                     'key', '=',

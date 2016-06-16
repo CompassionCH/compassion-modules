@@ -613,10 +613,10 @@ class SponsorshipContract(models.Model):
                 project = contract.child_id.project_id
                 if invl.product_id.categ_name == GIFT_CATEGORY:
                     payment_allowed = \
-                        (project.disburse_gifts or
+                        (not project.hold_gifts or
                          invl.due_date < project.status_date)
                 elif invl.product_id.categ_name == SPONSORSHIP_CATEGORY:
-                    payment_allowed = project.disburse_funds or \
+                    payment_allowed = not project.hold_cdsp_funds or \
                         invl.due_date < project.status_date
                 if not payment_allowed:
                     raise exceptions.Warning(
