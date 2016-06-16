@@ -64,8 +64,8 @@ class GlobalChildSearch(models.TransientModel):
         'compassion.global.child', 'childpool_children_rel',
         string='Available Children', readonly=True,
     )
-    nb_male = fields.Integer(compute='_compute_nb_children')
-    nb_female = fields.Integer(compute='_compute_nb_children')
+    nb_male = fields.Integer('Boys', compute='_compute_nb_children')
+    nb_female = fields.Integer('Girls', compute='_compute_nb_children')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
