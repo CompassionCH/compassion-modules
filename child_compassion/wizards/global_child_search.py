@@ -8,8 +8,8 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-
-from openerp import models, fields, api
+from math import ceil
+from openerp import models, fields, api, _
 from openerp.exceptions import Warning
 
 from openerp.addons.message_center_compassion.tools.onramp_connector import \
@@ -35,11 +35,11 @@ class GlobalChildSearch(models.TransientModel):
     field_office_ids = fields.Many2many(
         'compassion.field.office', 'childpool_field_office_search_rel',
         string='Field Offices')
-    min_age = fields.Integer()
-    max_age = fields.Integer()
-    birthday_month = fields.Integer()
-    birthday_day = fields.Integer()
-    birthday_year = fields.Integer()
+    min_age = fields.Integer(size=2)
+    max_age = fields.Integer(size=2)
+    birthday_month = fields.Integer(size=2)
+    birthday_day = fields.Integer(size=2)
+    birthday_year = fields.Integer(size=4)
     child_name = fields.Char()
     icp_ids = fields.Many2many(
         'compassion.project', 'childpool_project_search_rel',
@@ -49,67 +49,189 @@ class GlobalChildSearch(models.TransientModel):
     is_orphan = fields.Boolean()
     has_siblings = fields.Boolean()
     has_special_needs = fields.Boolean()
-    min_days_waiting = fields.Integer()
+    min_days_waiting = fields.Integer(size=4)
     source_code = fields.Char()
 
     # Pagination
-    skip = fields.Integer()
-    take = fields.Integer(default=80)
+    skip = fields.Integer(size=4)
+    take = fields.Integer(default=80, size=4)
 
     # Returned children
     nb_found = fields.Integer('Number of matching children', readonly=True)
+    nb_selected = fields.Integer(
+        'Selected children', compute='_compute_nb_children')
     global_child_ids = fields.Many2many(
         'compassion.global.child', 'childpool_children_rel',
         string='Available Children', readonly=True,
     )
+    nb_male = fields.Integer(compute='_compute_nb_children')
+    nb_female = fields.Integer(compute='_compute_nb_children')
 
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+    def _compute_nb_children(self):
+        for search in self:
+            search.nb_selected = len(search.global_child_ids)
+            search.nb_male = len(search.global_child_ids.filtered(
+                lambda child: child.gender == 'M'))
+            search.nb_female = len(search.global_child_ids.filtered(
+                lambda child: child.gender == 'F'))
+
+    ##########################################################################
+    #                             VIEW CALLBACKS                             #
+    ##########################################################################
     @api.multi
     def do_search(self):
         self.ensure_one()
         # Remove previous search results
-        self.global_child_ids = False
+        self.global_child_ids.unlink()
+        self._call_search_service(
+            'profile_search', 'beneficiaries/availabilitysearch',
+            'BeneficiarySearchResponseList')
+        return True
 
-        mapping = base_mapping.new_onramp_mapping(self._name, self.env,
-                                                  "profile_search")
-        params = mapping.get_connect_data(self)
-        onramp = OnrampConnector()
-        result = onramp.send_message(
-            'beneficiaries/availabilitysearch', 'GET', None, params)
-        if result['code'] == 200:
-            self.nb_found = result['content']['NumberOfBeneficiaries']
-            self._map_and_create_json_oject(result['content']
-                                            ['BeneficiarySearchResponseList'])
-        else:
-            raise Warning(
-                result.get('content', result)['Error'])
-
+    @api.multi
+    def add_search(self):
+        self.ensure_one()
+        self.skip += self.nb_selected
+        self._call_search_service(
+            'profile_search', 'beneficiaries/availabilitysearch',
+            'BeneficiarySearchResponseList')
+        if self.nb_found == 0:
+            raise Warning(_('No children found.'))
         return True
 
     @api.multi
     def rich_mix(self):
         self.ensure_one()
         # Remove previous search results
-        self.global_child_ids = False
-
-        mapping = base_mapping.new_onramp_mapping(self._name, self.env,
-                                                  "rich_mix")
-        params = mapping.get_connect_data(self)
-        onramp = OnrampConnector()
-        result = onramp.send_message(
-            'beneficiaries/richmix', 'GET', None, params)
-        if result['code'] == 200:
-            self._map_and_create_json_oject(result['content']
-                                            ['BeneficiaryRichMixResponseList'])
-        else:
-            raise Warning(
-                result.get('content', result)['Error'])
-
+        self.global_child_ids.unlink()
+        self._call_search_service(
+            'rich_mix', 'beneficiaries/richmix',
+            'BeneficiaryRichMixResponseList')
         return True
 
-    def _map_and_create_json_oject(self, children):
+    @api.multi
+    def country_mix(self):
+        """
+        Tries to find an even number of children for each country.
+        :return:
+        """
+        country_codes = self.env['compassion.field.office'].search([]).mapped(
+            'field_office_id')
+        children = {code: self.env['compassion.global.child'] for code in
+                    country_codes}
+        max_per_country = ceil(float(self.take) / len(country_codes))
+        found_children = self.env['compassion.global.child']
+        all_children = self.env['compassion.global.child']
+        nb_found = 0
+        tries = 0
+        while nb_found < self.take:
+            all_children += self.global_child_ids
+            self.take_more()
+            for child in self.global_child_ids - all_children:
+                child_country = child.local_id[0:2]
+                country_pool = children.get(child_country)
+                if country_pool is not None and len(country_pool) < \
+                        max_per_country:
+                    children[child_country] = country_pool + child
+                    found_children += child
+                    nb_found += 1
+                if nb_found == self.take:
+                    break
+            self.skip += self.take
+            tries += 1
+            if tries > 5:
+                raise Warning(
+                    _("Cannot find enough availalbe children in all "
+                      "countries. Try with less"))
+
+        # Delete leftover children
+        (self.global_child_ids - found_children).unlink()
+        return True
+
+    @api.multi
+    def filter(self):
+        self.ensure_one()
+        matching = self.global_child_ids.filtered(
+            lambda child: self._does_match(child))
+        (self.global_child_ids - matching).unlink()
+        # Specify filter is applied
+        self.nb_found = len(self.global_child_ids)
+        return True
+
+    @api.multi
+    def take_more(self):
+        self.ensure_one()
+        # Use rich mix
+        self._call_search_service(
+            'rich_mix', 'beneficiaries/richmix',
+            'BeneficiaryRichMixResponseList')
+        return True
+
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
+    def _call_search_service(self, mapping_name, service_name, result_name):
+        """
+        Calls the given search service for the global childpool
+        :param mapping_name: Name of the action mapping to use the correct
+                             mapping.
+        :param service_name: URL endpoint of the search service to call
+        :param result_name: Name of the wrapping tag for the answer
+        :return:
+        """
         mapping = base_mapping.new_onramp_mapping(
-            'compassion.global.child', self.env)
-        for child_data in children:
-            child_vals = mapping.get_vals_from_connect(child_data)
-            self.global_child_ids += self.env[
-                'compassion.global.child'].create(child_vals)
+            self._name, self.env, mapping_name)
+        params = mapping.get_connect_data(self)
+        onramp = OnrampConnector()
+        result = onramp.send_message(service_name, 'GET', None, params)
+        if result['code'] == 200:
+            self.nb_found = result['content'].get('NumberOfBeneficiaries', 0)
+            mapping = base_mapping.new_onramp_mapping(
+                'compassion.global.child', self.env)
+            for child_data in result['content'][result_name]:
+                child_vals = mapping.get_vals_from_connect(child_data)
+                child_vals['search_view_id'] = self.id
+                self.global_child_ids += self.env[
+                    'compassion.global.child'].create(child_vals)
+        else:
+            raise Warning(result.get('content', result)['Error'])
+
+    def _does_match(self, child):
+        """ Returns if the selected criterias correspond to the given child.
+        """
+        if self.field_office_ids and child.project_id.field_office_id not in \
+                self.field_office_ids:
+            return False
+        if self.icp_ids and child.project_id not in self.icp_ids:
+            return False
+        if self.icp_name and self.icp_name not in child.project_id.name:
+            return False
+        if self.child_name and self.child_name not in child.name:
+            return False
+        if self.gender and child.gender != self.gender[0]:
+            return False
+        if self.hiv_affected_area and not child.is_area_hiv_affected:
+            return False
+        if self.is_orphan and not child.is_orphan:
+            return False
+        if self.has_special_needs and not child.is_special_needs:
+            return False
+        if self.min_age and child.age < self.min_age:
+            return False
+        if self.max_age and child.age > self.max_age:
+            return False
+        if self.min_days_waiting and child.waiting_days < \
+                self.min_days_waiting:
+            return False
+        birthdate = fields.Date.from_string(child.birthdate)
+        if self.birthday_month and self.birthday_month != birthdate.month:
+            return False
+        if self.birthday_day and self.birthday_day != birthdate.day:
+            return False
+        if self.birthday_year and self.birthday_year != birthdate.year:
+            return False
+
+        return True

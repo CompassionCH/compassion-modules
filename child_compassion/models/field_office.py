@@ -10,7 +10,7 @@
 ##############################################################################
 
 
-from openerp import api, models, fields
+from openerp import models, fields
 
 
 class FieldOffice(models.Model):
@@ -28,8 +28,7 @@ class FieldOffice(models.Model):
     website = fields.Char()
     social_media_site = fields.Char()
     country = fields.Char()
-    country_id = fields.Many2one('res.country', 'Country',
-                                 compute='_compute_country')
+    country_id = fields.Many2one('res.country', 'Country')
     country_code = fields.Char(related='country_id.code')
     street = fields.Char()
     city = fields.Char()
@@ -78,10 +77,6 @@ class FieldOffice(models.Model):
     icp_min_children = fields.Integer(
         help='Minimum number of children for an ICP'
     )
-
-    @api.model
-    def _compute_country(self):
-        pass
 
 
 class FieldOfficeHighRisks(models.Model):

@@ -31,6 +31,7 @@
                             <group>
                                 <field name="program_start_date" />
                                 <field name="last_update_date" />
+                                <field name="field_office_id" />
                                 <field name="country_id" />
                             </group>
                         </group>

@@ -45,6 +45,7 @@
         'views/delegate_child_wizard.xml',
         'views/undelegate_child_wizard.xml',
         'views/global_childpool_view.xml',
+        'views/field_office_view.xml',
         'workflow/child_workflow.xml',
         'data/delegate_child_compassion_cron.xml',
         'data/migrate_r4.xml',
