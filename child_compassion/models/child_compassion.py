@@ -35,7 +35,7 @@ class GenericChild(models.AbstractModel):
     project_id = fields.Many2one('compassion.project', 'Project')
     field_office_id = fields.Many2one(
         'compassion.field.office', 'Field office',
-        related='project_id.field_office_id', store=True)
+        related='project_id.field_office_id')
     name = fields.Char()
     firstname = fields.Char()
     lastname = fields.Char()
@@ -79,6 +79,7 @@ class GlobalChild(models.TransientModel):
     color = fields.Integer(compute='_compute_color')
     is_area_hiv_affected = fields.Boolean()
     is_special_needs = fields.Boolean()
+    field_office_id = fields.Many2one(store=True)
     search_view_id = fields.Many2one(
         'compassion.childpool.search'
     )
