@@ -47,7 +47,7 @@ class CompassionProject(models.Model):
     ######################
     country = fields.Char()
     country_id = fields.Many2one('res.country', 'Country',
-                                 compute='_compute_country')
+                                 related='field_office_id.country_id')
     street = fields.Char()
     city = fields.Char()
     state_province = fields.Char()
@@ -56,7 +56,8 @@ class CompassionProject(models.Model):
     gps_longitude = fields.Float()
     cluster = fields.Char()
     territory = fields.Char()
-    field_office_id = fields.Many2one('compassion.field.office')
+    field_office_id = fields.Many2one(
+        'compassion.field.office', compute='_compute_field_office', store=True)
 
     # Church information
     ####################
@@ -302,12 +303,12 @@ class CompassionProject(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.multi
-    def _compute_country(self):
+    @api.depends('icp_id')
+    def _compute_field_office(self):
+        fo_obj = self.env['compassion.field.office']
         for project in self:
-            country = self.env['res.country'].search([
-                ('code', '=', project.icp_id[:2])
-            ])
-            project.country_id = country
+            fo = fo_obj.search([('field_office_id', '=', project.icp_id[:2])])
+            project.field_office_id = fo.id
 
     @api.model
     def _get_months(self):
@@ -349,6 +350,11 @@ class CompassionProject(models.Model):
         self.message_post(
             "The project was suspended and funds are retained.",
             "Project Suspended", 'comment')
+        return True
+
+    @api.model
+    def set_missing_field_offices(self):
+        self.search([('field_office_id', '=', False)])._compute_field_office()
         return True
 
     ##########################################################################

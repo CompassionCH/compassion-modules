@@ -31,8 +31,7 @@ class GenericChild(models.AbstractModel):
     #####################
     global_id = fields.Char('Global ID')
     local_id = fields.Char(
-        'Local ID', size=11, required=True, oldname='code',
-        help='Child reference')
+        'Local ID', size=11, required=True, help='Child reference')
     project_id = fields.Many2one('compassion.project', 'Project')
     name = fields.Char()
     firstname = fields.Char()
@@ -40,6 +39,7 @@ class GenericChild(models.AbstractModel):
     preferred_name = fields.Char()
     gender = fields.Selection([('F', 'Female'), ('M', 'Male')])
     birthdate = fields.Date()
+    age = fields.Integer()
     is_orphan = fields.Boolean()
     beneficiary_state = fields.Selection([
         ("Available", "Available"),
@@ -73,8 +73,15 @@ class GlobalChild(models.TransientModel):
     portrait = fields.Binary()
     fullshot = fields.Binary()
     image_url = fields.Char()
+    color = fields.Integer(compute='_compute_color')
     is_area_hiv_affected = fields.Boolean()
     is_special_needs = fields.Boolean()
+    field_office_id = fields.Many2one(
+        'compassion.field.office', 'Field office',
+        related='project_id.field_office_id', store=True)
+    search_view_id = fields.Many2one(
+        'compassion.childpool.search'
+    )
     priority_score = fields.Integer(help='How fast the child should be '
                                          'sponsored')
     correspondent_score = fields.Integer(help='Score based on how long the '
@@ -82,10 +89,16 @@ class GlobalChild(models.TransientModel):
     holding_global_partner_id = fields.Many2one(
         'compassion.global.partner', 'Holding global partner'
     )
+    waiting_days = fields.Integer()
     hold_expiration_date = fields.Datetime()
     source_code = fields.Char(
         'origin of the hold'
     )
+
+    @api.multi
+    def _compute_color(self):
+        for child in self:
+            child.color = 6 if child.gender == 'M' else 9
 
 
 class CompassionChild(models.Model):
@@ -101,6 +114,7 @@ class CompassionChild(models.Model):
 
     # General Information
     #####################
+    code = fields.Char(help='Old child reference')
     compass_id = fields.Char('Compass ID', oldname='unique_id')
     estimated_birthdate = fields.Boolean()
     cognitive_age_group = fields.Selection([

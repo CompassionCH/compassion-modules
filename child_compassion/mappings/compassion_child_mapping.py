@@ -20,13 +20,12 @@ class GenericChildMapping(OnrampMapping):
         'Beneficiary_GlobalID': 'global_id',
         'Beneficiary_LocalID': 'local_id',
         'LocalNumber': 'local_id',
-        'FieldOffice_Name': ('project_id.field_office_id.name',
-                             'compassion.field.office'),
         'CorrespondentScore': 'correspondent_score',
         'IsSpecialNeeds': 'is_special_needs',
         'SourceCode': 'source_code',
         'PriorityScore': 'priority_score',
         'FullBodyImageURL': 'image_url',
+        'MinDaysWaiting': 'waiting_days',
 
         # Fields for DetailedInformation message (for compassion.child)
         'GlobalId': 'global_id',
@@ -35,11 +34,7 @@ class GenericChildMapping(OnrampMapping):
         # Fields shared for both child types
         'Age': 'age',
         'BirthDate': 'birthdate',
-        'Country': ('project_id.field_office_id.country_id.code',
-                    'res.country'),
         'ICP_ID': ('project_id.icp_id', 'compassion.project'),
-        'FieldOffice_Name': ('project_id.field_office_id.name',
-                             'compassion.field.office'),
         'FirstName': 'firstname',
         'LastName': 'lastname',
         'PreferredName': 'preferred_name',
@@ -59,6 +54,19 @@ class GenericChildMapping(OnrampMapping):
         gender = odoo_data.get('gender')
         if gender:
             odoo_data['gender'] = gender[0]
+
+    def _convert_connect_data(self, connect_name, value_mapping, value,
+                              relation_search=None):
+        """ Create compassion project if not existent. """
+        result = super(GenericChildMapping, self)._convert_connect_data(
+            connect_name, value_mapping, value, relation_search
+        )
+        if connect_name == 'ICP_ID' and not result.get('project_id'):
+            project = self.env['compassion.project'].create({
+                'icp_id': value
+            })
+            result['project_id'] = project.id
+        return result
 
 
 class GlobalChildMapping(GenericChildMapping):

@@ -59,6 +59,9 @@ class MigrationR4(models.TransientModel):
         # Restore transfer country for sponsorships terminated
         self._restore_transferred_sponsorships()
 
+        # Rename sponsorships with new child codes
+        self.env['recurring.contract'].search([])._set_name()
+
     def _get_messages(self, type):
         """
         Returns the old messages
