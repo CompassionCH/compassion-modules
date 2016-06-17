@@ -285,7 +285,8 @@ class GmcMessagePool(models.Model):
         else:
             # Send individual message for each object without Wrapper
             for i in range(0, len(data_objects)):
-                message_data = object_mapping.get_connect_data(data_objects[i])
+                message_data = object_mapping.get_connect_data(
+                    data_objects[i])
                 self[i]._send_message(message_data)
 
     def _send_message(self, message_data):
@@ -293,15 +294,20 @@ class GmcMessagePool(models.Model):
         action = self.mapped('action_id')
         onramp = OnrampConnector()
         url_endpoint = self._get_url_endpoint()
-        onramp_answer = onramp.send_message(
-            url_endpoint, action.request_type, message_data)
+        if action.request_type == 'GET':
+            onramp_answer = onramp.send_message(
+                url_endpoint, action.request_type, params=message_data)
+        else:
+            onramp_answer = onramp.send_message(
+                url_endpoint, action.request_type, body=message_data)
         if 200 <= onramp_answer['code'] < 300:
             # Success, loop through answer to get individual results
             data_objects = self.env[action.model].with_context(
                 lang='en_US').browse(self.mapped('object_id'))
             results = onramp_answer.get('content', {}).get(
                 action.connect_answer_wrapper, [])
-            object_mapping = mapping.new_onramp_mapping(action.model, self.env,
+            object_mapping = mapping.new_onramp_mapping(action.model,
+                                                        self.env,
                                                         action.name)
             for i in range(0, len(results)):
                 result = results[i]

@@ -31,6 +31,55 @@ class GenericChildMapping(OnrampMapping):
         'GlobalId': 'global_id',
         'LocalBeneficiaryId': 'local_id',
 
+        'AcademicPerformance': 'academic_performance',
+        'ActiveProgram': 'type',
+        'AgeInYearsAndMonths': None,
+        'BeneficiaryStatus': 'state',
+        'Birthdate': 'estimated_birthdate',
+        'CDSPType': 'cdsp_type',
+        'ChristianActivities': (
+            'christian_activity_ids.name', 'child.christian.activity'),
+        'ChronicIllness': ('chronic_illness_ids.name',
+                           'child.chronic.illness'),
+        'CognitiveAgeGroup': 'cognitive_age_group',
+        'CommunityName': ('project_id.community_name', 'compassion.project'),
+        'CompassBeneficiaryID': 'compass_id',
+        'CorrespondenceLanguage': 'correspondence_language',
+        'CurrentUniversityYearOfStudy': 'university_year',
+        'EstimatedBirthDate': 'estimated_birthdate',
+        'ExpectedTransitionDateToSponsorship': None,
+        'FO': ('project_id.name', 'compassion.project'),
+        'FavoriteProjectActivities': ('activity_ids.name',
+                                      'child.project.activity'),
+        'FavoriteSubjectInSchool': (
+            'subject_ids.name', 'child.school.subject'),
+        'FormalEducationLevel': 'education_level',
+        'HeightInCm': 'height',
+        'HouseholdDuties': ('duty_ids.name', 'child.household.duty'),
+        'HouseholdInformation': ('household_id', 'compassion.household'),
+        'HouseholdMembersList': ('household_id.member_ids',
+                                 'compassion.household.member'),
+        'ICPID': ('project_id.icp_id', 'compassion.project'),
+        'LastReviewedDate': 'last_review_date',
+        'LocalBeneficiaryNumber': None,
+        'LocalGradeLevel': 'local_grade_level',
+        'MajorCourseOfStudy': 'major_course_study',
+        'MentalDevelopmentConditions': None,
+        'NameInNonLatinChar': 'non_latin_name',
+        'NotEnrolledInEducationReason': 'not_enrolled_reason',
+        'PhysicalDisabilities': ('physical_disability_ids.name',
+                                 'child.physical.disability'),
+        'PlannedCompletionDate': 'completion_date',
+        'PlannedCompletionDateChangeReason': None,
+        'PrimaryCaregiverName': None,
+        'ReligiousAffiliation': None,
+        'SponsoredStatus': 'sponsorship_status',
+        'ThingsILikeAge1To2': ('hobby_ids.name', 'child.hobby'),
+        'ThingsILikeAge3Plus': ('hobby_ids.name', 'child.hobby'),
+        'TypeOfVocationalEducation': 'vocational_training_type',
+        'USEquivalentGradeLevel': 'local_grade_level',
+        'WeightInKg': 'weight',
+
         # Fields shared for both child types
         'Age': 'age',
         'BirthDate': 'birthdate',
@@ -76,10 +125,13 @@ class GlobalChildMapping(GenericChildMapping):
 
 
 class CompassionChildMapping(GenericChildMapping):
-    """
-    ====> TODO : Add all fields for the message GetDetailedInformation
-    """
     ODOO_MODEL = 'compassion.child'
+    MAPPING_NAME = 'GetDetails'
 
-    # TODO
-    FIELDS_TO_SUBMIT = {}
+    FIELDS_TO_SUBMIT = {
+        'gpid': None,
+    }
+
+    CONSTANTS = {
+        'gpid': 'CH',
+    }

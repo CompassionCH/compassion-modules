@@ -22,6 +22,7 @@ class Household(models.Model):
     child_ids = fields.One2many(
         'compassion.child', 'household_id', 'Beneficiaries')
     name = fields.Char()
+    number_beneficiaries = fields.Integer()
 
     # Parents
     #########

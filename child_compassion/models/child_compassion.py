@@ -10,11 +10,10 @@
 ##############################################################################
 
 import logging
+from datetime import datetime
 
 from openerp import models, fields, api, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from datetime import datetime
-
 from ..wizards.child_description_fr import ChildDescriptionFr
 
 logger = logging.getLogger(__name__)
@@ -30,6 +29,8 @@ class GenericChild(models.AbstractModel):
     # General Information
     #####################
     global_id = fields.Char('Global ID', required=True, readonly=True)
+    correspondence_language = fields.Many2one(
+        'res.lang.compassion', 'Correspondence language')
     local_id = fields.Char(
         'Local ID', size=11, required=True, help='Child reference',
         readonly=True)
@@ -152,7 +153,7 @@ class CompassionChild(models.Model):
     hold_id = fields.Many2one('compassion.hold', 'Hold', readonly=True)
     active = fields.Boolean(default=True)
     exit_reason = fields.Char(compute='_compute_exit_reason')
-
+    non_latin_name = fields.Char()
     # Beneficiary Favorites
     #######################
     hobby_ids = fields.Many2many('child.hobby', string='Hobbies',
@@ -245,7 +246,6 @@ class CompassionChild(models.Model):
         ('5', '5'),
         ('6', '6'),
         ('7', '7'),
-
     ], readonly=True)
     major_course_study = fields.Selection([
         ('Accounting', _('accounting')),
@@ -392,6 +392,7 @@ class CompassionChild(models.Model):
                 child.write(vals)
         if not child:
             child = super(CompassionChild, self).create(vals)
+        child.get_infos()
         return child
 
     ##########################################################################
@@ -432,7 +433,16 @@ class CompassionChild(models.Model):
         """Get the most recent case study, basic informations, updates
            portrait picture and creates the project if it doesn't exist.
         """
-        # TODO Implement with new service
+        message_obj = self.env['gmc.message.pool']
+        action_id = self.env.ref(
+            'child_compassion.beneficiaries_details').id
+
+        message_vals = {
+            'action_id': action_id,
+            'object_id': self.id,
+            'child_id': self.id,
+        }
+        message_obj.with_context(async_mode=False).create(message_vals)
         self.generate_descriptions()
         return True
 

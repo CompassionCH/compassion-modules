@@ -69,7 +69,8 @@ class OnrampConnector(object):
                 timedelta(hours=1) <= now:
             self._retrieve_token()
 
-    def send_message(self, service_name, message_type, body, params=None):
+    def send_message(self, service_name, message_type, body=None,
+                     params=None):
         """ Sends a message to Compassion Connect.
         :param service_name: The service name to reach inside Connect
         :param message_type: GET, POST or PUT
