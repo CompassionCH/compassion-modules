@@ -24,34 +24,42 @@
                             <h1>
                                 <field name="name"/>
                             </h1>
-                            <label for="firstname"/>
-                            <field name="firstname"/>
+                            <div class="oe_inline">
+                                <label for="firstname"/>
+                                <field name="firstname"/>
+                                <label for="preferred_name"/>
+                                <field name="preferred_name"/>
+                            </div>
                         </div>
                         <div class="oe_right oe_button_box" name="buttons">
-                            <button name="generate_descriptions" string="Generate descriptions" type="object" />
-                            <button name="get_infos" string="get infos" type="object" />
+                            <button name="get_infos" string="get infos" type="object" icon="fa-refresh" class="oe_stat_button"/>
                         </div>
                         <notebook>
                             <page string="General Information">
                                 <group>
                                     <group>
-                                        <field name="local_id" />
-                                        <field name="project_id" />
-                                        <field name="gender" />
-                                        <field name="birthdate" />
-                                        <field name="sponsor_id" />
-                                        <field name="hold_id" />
+                                        <field name="local_id"/>
+                                        <field name="project_id"/>
+                                        <field name="gender"/>
+                                        <field name="birthdate"/>
+                                        <field name="estimated_birthdate"/>
+                                        <field name="sponsor_id"/>
+                                        <field name="beneficiary_state"/>
+                                        <field name="hold_id"/>
                                     </group>
                                     <group>
-                                        <field name="global_id" />
-                                        <field name="type" />
-                                        <field name="date" />
-                                        <field name="completion_date" />
+                                        <field name="global_id"/>
+                                        <field name="type"/>
+                                        <field name="cdsp_type"/>
+                                        <field name="date"/>
+                                        <field name="completion_date"/>
+                                        <field name="completion_date_change_reason" attrs="{'invisible': [('completion_date_change_reason', '=', False)]}"/>
+                                        <field name="exit_reason" attrs="{'invisible': [('state', '!=', 'F')]}"/>
                                     </group>
                                     <group attrs="{'invisible': [('delegated_to', '=', False)]}">
-                                        <field name="delegated_to" />
+                                        <field name="delegated_to"/>
                                         <field name="date_delegation"/>
-                                        <field name="delegated_comment" />
+                                        <field name="delegated_comment"/>
                                     </group>
                                     <group colspan="2">
                                         <field name="pictures_ids">
@@ -63,8 +71,25 @@
                                 </group>
                             </page>
                             <page string="Lifecycle Events">
-                                <field name="lifecycle_ids" />
-                                <field name="assessment_ids" />
+                                <label for="lifecycle_ids"/>
+                                <field name="lifecycle_ids" context="{'default_child_id': active_id}">
+                                    <tree>
+                                        <field name="date"/>
+                                        <field name="type"/>
+                                    </tree>
+                                </field>
+                                <label for="assessment_ids"/>
+                                <field name="assessment_ids" readonly="1">
+                                    <tree>
+                                        <field name="date"/>
+                                        <field name="weight"/>
+                                        <field name="height"/>
+                                        <field name="physical_score"/>
+                                        <field name="cognitive_score"/>
+                                        <field name="spiritual_score"/>
+                                        <field name="sociological_score"/>
+                                    </tree>
+                                </field>
                             </page>
                             <page string="Descriptions">
                                 <group>
@@ -73,50 +98,43 @@
                                     <field name="desc_de" />
                                     <field name="desc_it" />
                                 </group>
+                            </page>
+                            <page string="Detailed Information">
                                 <group>
-                                    <field name="christian_activity_ids"/>
-                                    <field name="physical_disability_ids"/>
-                                    <field name="chronic_illness_ids"/>
-                                    <field name="hobby_ids"/>
-                                    <field name="duty_ids"/>
-                                    <field name="activity_ids"/>
-                                    <field name="subject_ids"/>
-                                    <field name="education_level"/>
-                                    <field name="us_grade_level"/>
-                                    <field name="academic_performance"/>
+                                    <group>
+                                        <field name="last_review_date"/>
+                                    </group>
+                                    <group/>
+                                    <group string="Activities">
+                                        <field name="hobby_ids" widget="many2many_tags"/>
+                                        <field name="christian_activity_ids" widget="many2many_tags"/>
+                                        <field name="activity_ids" widget="many2many_tags"/>
+                                    </group>
+                                    <group string="Household">
+                                        <field name="is_orphan"/>
+                                        <field name="household_id"/>
+                                        <field name="duty_ids" widget="many2many_tags"/>
+                                    </group>
+                                    <group string="Education">
+                                        <field name="education_level"/>
+                                        <field name="not_enrolled_reason" attrs="{'invisible': [('education_level', '!=', 'Not Enrolled')]}"/>
+                                        <field name="local_grade_level"/>
+                                        <field name="us_grade_level"/>
+                                        <field name="vocational_training_type"/>
+                                        <field name="academic_performance" attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"/>
+                                        <field name="subject_ids" widget="many2many_tags" attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"/>
+                                        <field name="major_course_study" attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"/>
+                                        <field name="university_year" attrs="{'invisible': [('education_level', '!=', 'University Graduate')]}"/>
+                                    </group>
+                                    <group string="Health">
+                                        <field name="cognitive_age_group"/>
+                                        <field name="weight"/>
+                                        <field name="height"/>
+                                        <field name="chronic_illness_ids" widget="many2many_tags"/>
+                                        <field name="physical_disability_ids" widget="many2many_tags"/>
+                                    </group>
                                 </group>
                             </page>
-                            <!--<page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '>', 0)]}">
-                                <group>
-                                    <field name="gp_exit_reason" />
-                                    <field name="exit_date" />
-                                    <field name="last_attended_project" />
-                                    <field name="presented_gospel" />
-                                    <field name="professes_faith" />
-                                    <field name="faith_description" />
-                                    <field name="primary_school" />
-                                    <field name="us_grade_completed" />
-                                    <field name="study_area" />
-                                    <field name="vocational_training" />
-                                    <field name="vocational_skills" />
-                                    <field name="disease_free" />
-                                    <field name="health_description" />
-                                    <field name="social_description" />
-                                    <field name="exit_description" />
-                                    <field name="steps_prevent_description" />
-                                    <field name="future_plans_description" />
-                                    <field name="new_situation_description" />
-                                    <field name="exit_reason" />
-                                    <field name="other_exit_reason" />
-                                    <field name="last_letter_sent" />
-                                </group>
-                            </page>
-                            <page string="Exit Details" attrs="{'invisible': ['|', ('state', '!=', 'F'), ('transfer_country_id', '=', False)]}">
-                                <p>Child transferred to a partner country</p>
-                                <group>
-                                    <field name="transfer_country_id" />
-                                </group>
-                            </page>-->
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -169,6 +187,102 @@
                         <filter string="Allocation Date" domain="[]" context="{'group_by':'date'}"/>
                     </group>
                 </search>
+            </field>
+        </record>
+
+        <!-- Lifecycle Events Form View -->
+        <record id="view_child_lifecycle_form" model="ir.ui.view">
+            <field name="name">compassion.child.ble.form</field>
+            <field name="model">compassion.child.ble</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="type"/>
+                            <field name="request_reason"/>
+                            <field name="comments"/>
+                        </group>
+                        <group/>
+                        <group attrs="{'invisible': [('type', '!=', 'Planned Exit')]}">
+                            <field name="last_attended_project"/>
+                            <field name="primary_school_finished"/>
+                            <field name="confesses_jesus_savior"/>
+                            <field name="final_letter_sent"/>
+                        </group>
+                        <group attrs="{'invisible': [('type', '!=', 'Planned Exit')]}">
+                            <field name="sponsor_impact"/>
+                            <field name="new_situation"/>
+                            <field name="future_hopes"/>
+                            <field name="family_impact"/>
+                        </group>
+                        <group attrs="{'invisible': [('type', '!=', 'Unplanned Exit')]}">
+                            <field name="child_death_date"/>
+                            <field name="child_death_circumstances"/>
+                        </group>
+                        <group attrs="{'invisible': [('type', '!=', 'Unplanned Exit')]}">
+                            <field name="child_death_category"/>
+                            <field name="child_death_subcategory"/>
+                        </group>
+                        <group attrs="{'invisible': [('type', '!=', 'Reinstatement/Return')]}">
+                            <field name="other_reinstatement_reason"/>
+                        </group>
+                        <group attrs="{'invisible': [('type', '!=', 'Transfer')]}">
+                            <field name="old_project_id"/>
+                            <field name="transfer_arrival_date"/>
+                            <field name="other_transfer_reason"/>
+                        </group>
+                        <group attrs="{'invisible': [('type', '!=', 'Transition')]}">
+                            <field name="transition_type"/>
+                        </group>
+                        <group attrs="{'invisible': [('type', '!=', 'Registration')]}">
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!-- Household Form View -->
+        <record id="view_child_household_form" model="ir.ui.view">
+            <field name="name">compassion.household.form</field>
+            <field name="model">compassion.household</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="household_id"/>
+                        </group>
+                        <group/>
+                        <group>
+                            <field name="parents_together"/>
+                            <field name="marital_status"/>
+                            <field name="youth_headed_household"/>
+                        </group>
+                        <group/>
+                        <group string="Father">
+                            <field name="father_alive"/>
+                            <field name="father_living_with_child"/>
+                            <field name="male_guardian_job_type"/>
+                            <field name="male_guardian_job"/>
+                        </group>
+                        <group string="Mother">
+                            <field name="mother_alive"/>
+                            <field name="mother_living_with_child"/>
+                            <field name="female_guardian_job_type"/>
+                            <field name="female_guardian_job"/>
+                        </group>
+                    </group>
+                    <separator string="Members"/>
+                    <field name="member_ids">
+                        <tree>
+                            <field name="name"/>
+                            <field name="role"/>
+                            <field name="is_primary_caregiver"/>
+                            <field name="is_caregiver"/>
+                        </tree>
+                    </field>
+                </form>
             </field>
         </record>
 
