@@ -20,7 +20,7 @@
 			<field eval="18" name="priority"/>
 			<field name="arch" type="xml">
                 <!-- Add sponsorships view to children -->
-				<xpath expr="//page[@string='Descriptions']" position="after">
+				<xpath expr="//notebook">
                     <page string="Sponsorships">
                         <group>
                             <field name="unsponsored_since" attrs="{'invisible': [('unsponsored_since', '=', False)]}"/>

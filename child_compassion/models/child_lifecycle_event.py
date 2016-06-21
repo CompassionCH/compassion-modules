@@ -26,6 +26,8 @@ class ChildLifecycleEvent(models.Model):
         ('Planned Exit', 'Planned Exit'),
         ('Reinstatement/Return', 'Reinstatement'),
         ('Transfer', 'Transfer'),
+        ('Registration', 'Registration'),
+        ('Transition', 'Transition'),
         ('Unplanned Exit', 'Unplanned Exit'),
     ])
 
