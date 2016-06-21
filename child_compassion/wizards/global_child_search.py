@@ -67,6 +67,8 @@ class GlobalChildSearch(models.TransientModel):
     nb_male = fields.Integer('Boys', compute='_compute_nb_children')
     nb_female = fields.Integer('Girls', compute='_compute_nb_children')
 
+    hold_expiration_date = fields.Datetime()
+
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
@@ -111,6 +113,71 @@ class GlobalChildSearch(models.TransientModel):
             'rich_mix', 'beneficiaries/richmix',
             'BeneficiaryRichMixResponseList')
         return True
+
+    @api.multi
+    def make_a_hold(self):
+        """ Create hold and send to Connect """
+        holds = self.env['compassion.hold']
+        messages = self.env['gmc.message.pool']
+        for child in self.global_child_ids:
+            # Save children form global children to compassion children
+            child_vals = {
+                'global_id': child.global_id,
+                'local_id': child.local_id,
+                'project_id': '' if child.project_id is None
+                else child.project_id.id,
+                'field_office_id': child.field_office_id,
+                'name': child.name,
+                'firstname': child.firstname,
+                'lastname': child.lastname,
+                'preferred_name': child.preferred_name,
+                'gender': child.gender,
+                'birthdate': child.birthdate,
+                'age': child.age,
+                'is_orphan': child.is_orphan,
+                'beneficiary_state ': child.beneficiary_state,
+                'sponsorship_status': child.sponsorship_status,
+                'unsponsored_since': child.unsponsored_since,
+            }
+            child_comp = self.env['compassion.child'].create(child_vals)
+
+            # Create Holds for children to reserve
+            hold_vals = {
+                'name': "",
+                'child_id': child_comp.id,
+                'type': 'Consignment Hold',
+                'expiration_date': self.hold_expiration_date,
+                'primary_owner': 'Rose-Marie Reber',
+                'secondary_owner': 'Carole Rochat',
+                'no_money_yield_rate': '1.1',
+                'yield_rate': '1.1',
+                'channel': '',
+                'source_code': '',
+            }
+            hold = holds.create(hold_vals)
+            holds += hold
+
+            # create messages to send to Connect
+            action_id = self.env.ref('child_compassion.create_hold').id
+
+            messages += messages.create({
+                'action_id': action_id,
+                'object_id': hold.id
+            })
+        messages.with_context(async_mode=False).process_messages()
+
+        # update compassion children with hold_id received
+        for hold in holds:
+            child_to_update = hold.child_id
+            if hold.hold_id:
+                child_vals = {
+                    'hold_id': hold.id,
+                }
+                child_to_update.write(child_vals)
+            else:
+                # delete child if no hold_id received
+                child_to_update.unlink()
+                hold.unlink()
 
     @api.multi
     def country_mix(self):

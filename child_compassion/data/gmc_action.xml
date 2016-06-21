@@ -1,0 +1,16 @@
+<openerp>
+    <data>
+        <!-- Hold Message Creation -->
+        <record id="create_hold" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">create_hold</field>
+            <field name="model">compassion.hold</field>
+            <field name="description">This will send a new Hold to GMC.</field>
+            <field name="connect_service">beneficiaries/holds</field>
+            <field name="connect_outgoing_wrapper">BeneficiaryHoldRequestList</field>
+            <field name="connect_answer_wrapper">BeneficiaryHoldResponseList</field>
+            <field name="request_type">POST</field>
+            <field name="batch_send">True</field>
+        </record>
+    </data>
+</openerp>

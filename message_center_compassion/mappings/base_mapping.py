@@ -117,7 +117,6 @@ class OnrampMapping(object):
         connect_data = dict()
         if fields_to_submit is None:
             fields_to_submit = self.FIELDS_TO_SUBMIT.keys()
-
         for connect_name in fields_to_submit:
             # Constant values are not retrieved from Odoo fields
             if connect_name in self.CONSTANTS:
@@ -151,7 +150,6 @@ class OnrampMapping(object):
                             field_mapping[1], self.env, field_mapping[2])
                     for element in getattr(odoo_object, field):
                         value.append(sub_mapping.get_connect_data(element))
-
                 # Other fields
                 else:
                     value = value.mapped(field) if len(value) > 1 else \
@@ -221,14 +219,7 @@ class OnrampMapping(object):
                 result[correspondence_field] = relation_ids[0]
         else:
             # Regular field
-            mapped_value = value
-            if value_mapping.endswith('_id') or value_mapping == 'id':
-                try:
-                    mapped_value = int(value)
-                except ValueError:
-                    mapped_value = value
-
-            result[value_mapping] = mapped_value
+            result[value_mapping] = value
 
         return result
 

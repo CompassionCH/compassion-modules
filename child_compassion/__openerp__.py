@@ -60,6 +60,7 @@
         'data/icp.church.ministry.csv',
         'data/icp.program.csv',
         'data/global_partner.xml',
+        'data/gmc_action.xml',
         'data/lang_data.xml',
         'data/connect.month.csv',
         'data/icp.church.facility.csv',
