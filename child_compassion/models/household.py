@@ -132,8 +132,13 @@ class HouseholdMembers(models.Model):
     _name = 'compassion.household.member'
     _inherit = 'translatable.model'
 
+    beneficiary_global_id = fields.Char()
+    beneficiary_local_id = fields.Char()
     household_id = fields.Many2one(
-        'compassion.household', 'Household', required=True, ondelete='cascade')
+        'compassion.household', 'Household',
+        required=True, ondelete='cascade')
+    is_caregiver = fields.Boolean()
+    is_primary_caregiver = fields.Boolean()
     name = fields.Char()
     role = fields.Selection('_get_roles')
     male_role = fields.Boolean(compute='_compute_gender', store=True)

@@ -16,17 +16,22 @@ class HouseHoldMapping(OnrampMapping):
     ODOO_MODEL = 'compassion.household'
 
     CONNECT_MAPPING = {
-        "HouseholdName": 'name',
-        "NumberOfLinkedBeneficiaries": 'number_beneficiaries',
-        "HouseholdId": "household_id",
-        "TogetherNow": 'parents_together',
-        "IsNaturalFatherAlive": "father_alive",
-        "NaturalFatherLivingWithChild": "father_living_with_child",
-        "IsNaturalMotherAlive": "mother_alive",
-        "NaturalMotherLivingWithChild": "mother_living_with_child",
-        "FatherOrMaleGuardianEmplStatus": "male_guardian_job_type",
-        "MotherOrFemaleGuardianEmplStatus": "female_guardian_job_type",
-        "FatherOrMaleGuardianOcc": "male_guardian_job"
+        "BeneficiaryHouseholdMemberList": ('member_ids',
+                                           'compassion.household.member'),
+        "FemaleGuardianEmploymentStatus": 'female_guardian_job_type',
+        "FemaleGuardianOccupation": 'female_guardian_job',
+        "Household_ID": "household_id",
+        "Household_Name": "name",
+        "IsNaturalFatherLivingWithChild": 'father_living_with_child',
+        "IsNaturalMotherLivingWithChild": 'mother_living_with_child',
+        "MaleGuardianEmploymentStatus": 'male_guardian_job_type',
+        "MaleGuardianOccupation": "male_guardian_job",
+        "NaturalFatherAlive": "father_alive",
+        "NaturalMotherAlive": "mother_alive",
+        "NumberOfSiblingBeneficiaries": "number_beneficiaries",
+        "ParentsMaritalStatus": "marital_status",
+        "ParentsTogether": "parents_together",
+        "SourceKitName": "HouseholdKit",
     }
 
 
@@ -34,9 +39,11 @@ class HouseholdMemberMapping(OnrampMapping):
     ODOO_MODEL = 'compassion.household.member'
 
     CONNECT_MAPPING = {
-        "Role": "role",
-        "Name": "FatherCaregiver",
+        "Beneficiary_GlobalID": 'beneficiary_global_id',
+        "Beneficiary_LocalID": 'beneficiary_local_id',
+        "FullName": None,
+        "HouseholdMemberRole": 'role',
+        "HouseholdMember_Name": 'name',
         "IsCaregiver": 'is_caregiver',
         "IsPrimaryCaregiver": 'is_primary_caregiver',
-        "CompassionBenefName": ""
     }
