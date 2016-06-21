@@ -10,15 +10,16 @@
 ##############################################################################
 
 
-from openerp import api, models, _
+from openerp import api, models, fields, _
 
 
-class ICPProperty(models.AbstractModel):
+class ICPProperty(models.TransientModel):
     """ An ICP property is a class linked to projects to describe
     the project hobbies/activities/etc... in several languages. """
     _name = 'icp.property'
     _inherit = 'connect.multipicklist'
     res_model = 'compassion.project'
+    value = fields.Char(translate=True)
 
 
 class ProjectInvolvement(models.Model):
@@ -105,6 +106,8 @@ class ConnectMonth(models.Model):
     _name = 'connect.month'
     _inherit = 'connect.multipicklist'
     _description = 'Connect month'
+
+    name = fields.Char(translate=True)
 
     @api.model
     def get_months_selection(self):

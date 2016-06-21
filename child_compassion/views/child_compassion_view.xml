@@ -32,7 +32,7 @@
                             </div>
                         </div>
                         <div class="oe_right oe_button_box" name="buttons">
-                            <button name="get_infos" string="get infos" type="object" icon="fa-refresh" class="oe_stat_button"/>
+                            <button name="get_infos" string="get info" type="object" icon="fa-refresh" class="oe_stat_button"/>
                         </div>
                         <notebook>
                             <page string="General Information">

@@ -10,15 +10,16 @@
 ##############################################################################
 
 
-from openerp import models
+from openerp import models, fields
 
 
-class ChildProperty(models.AbstractModel):
+class ChildProperty(models.TransientModel):
     """ A child property is a class linked to children to describe
     the child hobbies/activities/etc... in several languages. """
     _name = 'child.property'
     _inherit = 'connect.multipicklist'
     res_model = 'compassion.child'
+    value = fields.Char(translate=True)
 
 
 class HouseholdDuty(models.Model):

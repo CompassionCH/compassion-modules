@@ -9,6 +9,7 @@
 #
 ##############################################################################
 
+from . import translate_model
 from . import child_compassion
 from . import child_pictures
 from . import field_office

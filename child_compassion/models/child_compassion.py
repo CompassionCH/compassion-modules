@@ -84,10 +84,10 @@ class GlobalChild(models.TransientModel):
     search_view_id = fields.Many2one(
         'compassion.childpool.search'
     )
-    priority_score = fields.Integer(help='How fast the child should be '
-                                         'sponsored')
-    correspondent_score = fields.Integer(help='Score based on how long the '
-                                              'child is waiting')
+    priority_score = fields.Float(help='How fast the child should be '
+                                       'sponsored')
+    correspondent_score = fields.Float(help='Score based on how long the '
+                                            'child is waiting')
     holding_global_partner_id = fields.Many2one(
         'compassion.global.partner', 'Holding global partner'
     )
@@ -107,7 +107,8 @@ class CompassionChild(models.Model):
     """ A sponsored child """
     _name = 'compassion.child'
     _rec_name = 'local_id'
-    _inherit = ['compassion.generic.child', 'mail.thread']
+    _inherit = ['compassion.generic.child', 'mail.thread',
+                'translatable.model']
     _description = "Sponsored Child"
 
     ##########################################################################
@@ -211,30 +212,30 @@ class CompassionChild(models.Model):
         ('PK', 'PK'),
     ], readonly=True)
     academic_performance = fields.Selection([
-        ('Above Average', 'Above Average'),
-        ('Average', 'Average'),
-        ('Below Average', 'Below Average'),
+        ('Above Average', _('above average')),
+        ('Average', _('average')),
+        ('Below Average', _('below average')),
     ], readonly=True)
     vocational_training_type = fields.Selection([
-        ('Agriculture', 'Agriculture'),
-        ('Automotive', 'Automotive'),
-        ('Business/Administrative', 'Business/Administrative'),
-        ('Clothing Trades', 'Clothing Trades'),
-        ('Computer Technology', 'Computer Technology'),
-        ('Construction/ Tradesman', 'Construction/ Tradesman'),
-        ('Cooking / Food Service', 'Cooking / Food Service'),
-        ('Cosmetology', 'Cosmetology'),
-        ('Electrical/ Electronics', 'Electrical/ Electronics'),
-        ('Graphic Arts', 'Graphic Arts'),
+        ('Agriculture', _('agriculture')),
+        ('Automotive', _('automotive')),
+        ('Business/Administrative', _('business administration')),
+        ('Clothing Trades', _('clothing trades')),
+        ('Computer Technology', _('computer technology')),
+        ('Construction/ Tradesman', _('construction')),
+        ('Cooking / Food Service', _('cooking and food service')),
+        ('Cosmetology', _('cosmetology')),
+        ('Electrical/ Electronics', _('electronics')),
+        ('Graphic Arts', _('graphic arts')),
         ('Income-Generating Program at Project',
-         'Income-Generating Program at Project'),
-        ('Manufacturing/ Fabrication', 'Manufacturing/ Fabrication'),
-        ('Medical/ Health Services', 'Medical/ Health Services'),
+         _('income-generating program at project')),
+        ('Manufacturing/ Fabrication', _('manufacturing')),
+        ('Medical/ Health Services', _('medical health services')),
         ('Not enrolled', 'Not enrolled'),
         ('Other', 'Other'),
-        ('Telecommunication', 'Telecommunication'),
-        ('Transportation', 'Transportation'),
-        ('Transportation/ Driver', 'Transportation/ Driver'),
+        ('Telecommunication', _('telecommunication')),
+        ('Transportation', _('transportation')),
+        ('Transportation/ Driver', _('driver')),
     ], readonly=True)
     university_year = fields.Selection([
         ('1', '1'),
@@ -247,32 +248,31 @@ class CompassionChild(models.Model):
 
     ], readonly=True)
     major_course_study = fields.Selection([
-        ('Accounting', 'Accounting'),
-        ('Agriculture', 'Agriculture'),
-        ('Biology / Medicine', 'Biology / Medicine'),
-        ('Business / Management / Commerce',
-         'Business / Management / Commerce'),
-        ('Community Development', 'Community Development'),
-        ('Computer Science / Information Technology',
-         'Computer Science / Information Technology'),
-        ('Criminology / Law Enforcement', 'Criminology / Law Enforcement'),
-        ('Economics', 'Economics'),
-        ('Education', 'Education'),
-        ('Engineering', 'Engineering'),
-        ('English', 'English'),
-        ('Graphic Arts / Fine Arts', 'Graphic Arts / Fine Arts'),
-        ('History', 'History'),
-        ('Hospitality / Hotel Management', 'Hospitality / Hotel Management'),
-        ('Law', 'Law'),
-        ('Mathematics', 'Mathematics'),
-        ('Nursing', 'Nursing'),
+        ('Accounting', _('accounting')),
+        ('Agriculture', _('agriculture')),
+        ('Biology / Medicine', _('biology/medicine')),
+        ('Business / Management / Commerce', _('business management')),
+        ('Community Development', _('community development')),
+        ('Computer Science / Information Technology', _('computer science')),
+        ('Criminology / Law Enforcement', _('criminology')),
+        ('Economics', _('economics')),
+        ('Education', _('education')),
+        ('Engineering', _('engineering')),
+        ('English', _('english')),
+        ('Graphic Arts / Fine Arts', _('graphic arts')),
+        ('History', _('history')),
+        ('Hospitality / Hotel Management', _('hospitality / hotel '
+                                             'management')),
+        ('Law', _('law')),
+        ('Mathematics', _('mathematics')),
+        ('Nursing', _('nursing')),
         ('Other', 'Other'),
-        ('Psychology', 'Psychology'),
-        ('Sales and Marketing', 'Sales and Marketing'),
-        ('Science', 'Science'),
-        ('Sociology / Social Science', 'Sociology / Social Science'),
-        ('Theology', 'Theology'),
-        ('Tourism', 'Tourism'),
+        ('Psychology', _('Psychology')),
+        ('Sales and Marketing', _('sales and marketing')),
+        ('Science', _('science')),
+        ('Sociology / Social Science', _('sociology')),
+        ('Theology', _('theology')),
+        ('Tourism', _('tourism')),
     ], readonly=True)
     not_enrolled_reason = fields.Char(readonly=True)
 
@@ -433,6 +433,7 @@ class CompassionChild(models.Model):
            portrait picture and creates the project if it doesn't exist.
         """
         # TODO Implement with new service
+        self.generate_descriptions()
         return True
 
     @api.multi

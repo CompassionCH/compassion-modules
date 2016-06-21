@@ -1,16 +1,16 @@
-id,name
-disability_blind,Blind
-disability_deaf,Deaf
-disability_leftarm,Disabled Left Arm
-disability_leftfoot,Disabled Left Foot
-disability_lefthand,Disabled Left Hand
-disability_leftleg,Disabled Left Leg
-disability_rightarm,Disabled Right Arm
-disability_rightfoot,Disabled Right Foot
-disability_righthand,Disabled Right Hand
-disability_rightleg,Disabled Right Leg
-disability_spine,Disabled Spine
-disability_hearing,Impaired Hearing
-disability_sight,Impaired Sight
-disability_speech,Impaired Speech
-disability_mute,Mute
+id,name,value
+disability_blind,Blind,blind
+disability_deaf,Deaf,deaf
+disability_leftarm,Disabled Left Arm,disabled left arm
+disability_leftfoot,Disabled Left Foot,disabled left foot
+disability_lefthand,Disabled Left Hand,disabled left hand
+disability_leftleg,Disabled Left Leg,disabled left leg
+disability_rightarm,Disabled Right Arm,disabled right arm
+disability_rightfoot,Disabled Right Foot,disabled right foot
+disability_righthand,Disabled Right Hand,disabled right hand
+disability_rightleg,Disabled Right Leg,disabled right leg
+disability_spine,Disabled Spine,disabled spine
+disability_hearing,Impaired Hearing,impaired hearing
+disability_sight,Impaired Sight,impaired sight
+disability_speech,Impaired Speech,impaired speech
+disability_mute,Mute,mute

@@ -10,12 +10,13 @@
 ##############################################################################
 
 
-from openerp import models, fields, _
+from openerp import api, models, fields, _
 
 
 class Household(models.Model):
     _name = 'compassion.household'
     _description = 'Household'
+    _inherit = 'translatable.model'
 
     household_id = fields.Char(required=True)
     child_ids = fields.One2many(
@@ -28,11 +29,12 @@ class Household(models.Model):
     father_alive = fields.Selection('_get_yes_no')
     father_living_with_child = fields.Boolean()
     marital_status = fields.Selection([
-        ('Married', 'Married'),
-        ('Never Married', 'Never Married'),
-        ('Unknown', 'Unknown'),
-        ('Were Married, Now Divorced Or Permanently Separated', 'Divorced'),
-        ('Were Married, Now Separated By Death', 'Separated By Death'),
+        ('Married', _('are married')),
+        ('Never Married', _('were never married')),
+        ('Unknown', 'unknown'),
+        ('Were Married, Now Divorced Or Permanently Separated',
+         _('are divorced')),
+        ('Were Married, Now Separated By Death', _('are separated by death')),
     ])
     mother_alive = fields.Selection('_get_yes_no')
     mother_living_with_child = fields.Boolean()
@@ -41,19 +43,58 @@ class Household(models.Model):
     # Employment
     ############
     male_guardian_job_type = fields.Selection([
-        ('Regularly Employed', 'Regularly Employed'),
-        ('Sometimes Employed', 'Sometimes Employed'),
-        ('Not Employed', 'Not Employed'),
+        ('Regularly Employed', 'Regular'),
+        ('Sometimes Employed', 'Sometimes employed'),
+        ('Not Employed', 'Not employed'),
     ])
     male_guardian_job = fields.Selection('_get_jobs')
     female_guardian_job_type = fields.Selection([
-        ('Regularly Employed', 'Regularly Employed'),
-        ('Sometimes Employed', 'Sometimes Employed'),
-        ('Not Employed', 'Not Employed'),
+        ('Regularly Employed', 'Regular'),
+        ('Sometimes Employed', 'Sometimes employed'),
+        ('Not Employed', 'Not employed'),
     ])
     female_guardian_job = fields.Selection('_get_jobs')
     member_ids = fields.One2many(
         'compassion.household.member', 'household_id', 'Members')
+    nb_brothers = fields.Integer(compute='_compute_siblings')
+    nb_sisters = fields.Integer(compute='_compute_siblings')
+
+    @api.multi
+    def _compute_siblings(self):
+        for household in self:
+            brothers = household.member_ids.filtered(
+                lambda member: member.role in (
+                    'Brother', 'Beneficiary - Male'))
+            sisters = household.member_ids.filtered(
+                lambda member: member.role in (
+                    'Sister', 'Beneficiary - Female'))
+            household.nb_brothers = len(brothers) - 1
+            household.nb_sisters = len(sisters) - 1
+
+    @api.multi
+    def get_male_guardian(self):
+        self.ensure_one()
+        caregiver = self.member_ids.filtered(
+            lambda member: member.is_primary_caregiver and member.male_role)
+        return caregiver.translate('role')
+
+    @api.multi
+    def get_female_guardian(self):
+        self.ensure_one()
+        caregiver = self.member_ids.filtered(
+            lambda member: member.is_primary_caregiver and member.female_role)
+        return caregiver.translate('role')
+
+    @api.multi
+    def get_caregivers(self):
+        """ Returns valid names for caregivers. """
+        self.ensure_one()
+        caregivers = self.member_ids.filtered(
+            lambda member: member.is_caregiver and member.role not in (
+                'Brother', 'Sister', 'Beneficiary - Male',
+                'Beneficiary - Female'
+            ))
+        return caregivers
 
     def _get_yes_no(self):
         return [
@@ -64,60 +105,94 @@ class Household(models.Model):
 
     def _get_jobs(self):
         return [
-            ('Agriculture/ Farmer', _('Farmer')),
-            ('Baker', _('Baker')),
-            ('Church Employee/ Project Worker', _('Church Employee')),
-            ('Clothing Trade', _('Clothing Trade')),
-            ('Construction/ Tradesman', _('Construction')),
-            ('Day Labor/ Different Jobs', _('Day Labor')),
-            ('Factory Worker', _('Factory Worker')),
-            ('Fisherman', _('Fisherman')),
-            ('Food Services', _('Food Services')),
-            ('Janitor', _('Janitor')),
-            ('Mechanic', _('Mechanic')),
-            ('Merchant/ Seller', _('Merchant')),
-            ('Other', _('Other')),
-            ('Security/ Guard', _('Security/ Guard')),
-            ('Teacher', _('Teacher')),
-            ('Transportation/ Driver', _('Driver')),
-            ('Unknown', _('Unknown')),
-            ('Welder', _('Welder')),
+            ('Agriculture/ Farmer', _('is a farmer')),
+            ('Baker', _('is a baker')),
+            ('Church Employee/ Project Worker', _('works for the local '
+                                                  'church')),
+            ('Clothing Trade', _('works in clothing trade')),
+            ('Construction/ Tradesman', _('works in construction')),
+            ('Day Labor/ Different Jobs', _('does daily jobs')),
+            ('Factory Worker', _('works in a factory')),
+            ('Fisherman', _('is a fisherman')),
+            ('Food Services', _('works in food services')),
+            ('Janitor', _('is janitor')),
+            ('Mechanic', _('is mechanic')),
+            ('Merchant/ Seller', _('is merchant')),
+            ('Other', 'other'),
+            ('Security/ Guard', _('is a security guard')),
+            ('Teacher', _('is a teacher')),
+            ('Transportation/ Driver', _('is a driver')),
+            ('Unknown', 'unknown'),
+            ('Welder', _('is a welder')),
         ]
 
 
 class HouseholdMembers(models.Model):
     _name = 'compassion.household.member'
+    _inherit = 'translatable.model'
 
     household_id = fields.Many2one(
         'compassion.household', 'Household', required=True, ondelete='cascade')
     name = fields.Char()
     role = fields.Selection('_get_roles')
+    male_role = fields.Boolean(compute='_compute_gender', store=True)
+    female_role = fields.Boolean(compute='_compute_gender', store=True)
+    other_role = fields.Boolean(compute='_compute_gender', store=True)
     is_primary_caregiver = fields.Boolean()
     is_caregiver = fields.Boolean()
 
-    def get_role_keys(self):
+    def _get_roles(self):
+        return self._get_male_roles() + self._get_female_roles() + \
+               self._get_other_roles()
+
+    def _get_male_roles(self):
         return [
-            role[0].lowers().replace(' ', '') for role in self._get_roles()
+            ('Father', _('father')),
+            ('Grandfather', _('grandfather')),
+            ('Uncle', _('uncle')),
+            ('Step Father', _('step father')),
+            ('Godfather', _('godfather')),
+            ('Brother', _('brother')),
+            ('Beneficiary - Male', 'Beneficiary - Male'),
         ]
 
-    def _get_roles(self):
+    def _get_female_roles(self):
         return [
-            ('Aunt', _('Aunt')),
-            ('Beneficiary - Female', _('Beneficiary - Female')),
-            ('Beneficiary - Male', _('Beneficiary - Male')),
-            ('Brother', _('Brother')),
-            ('Father', _('Father')),
-            ('Foster parent', _('Foster parent')),
-            ('Friend', _('Friend')),
-            ('Godfather', _('Godfather')),
-            ('Godmother', _('Godmother')),
-            ('Grandfather', _('Grandfather')),
-            ('Grandmother', _('Grandmother')),
-            ('Mother', _('Mother')),
-            ('Other non-relative', _('Other non-relative')),
-            ('Other relative', _('Other relative')),
-            ('Sister', _('Sister')),
-            ('Step Father', _('Step Father')),
-            ('Step Mother', _('Step Mother')),
-            ('Uncle', _('Uncle')),
+            ('Mother', _('mother')),
+            ('Grandmother', _('grandmother')),
+            ('Aunt', _('aunt')),
+            ('Step Mother', _('step mother')),
+            ('Godmother', _('godmother')),
+            ('Sister', _('sister')),
+            ('Beneficiary - Female', 'Beneficiary - Female'),
         ]
+
+    def _get_other_roles(self):
+        return [
+            ('Foster parent', _('foster parent')),
+            ('Friend', _('friend')),
+            ('Other non-relative', _('other non-relative')),
+            ('Other relative', _('other relative')),
+        ]
+
+    @api.depends('role')
+    @api.multi
+    def _compute_gender(self):
+        for caregiver in self:
+            if caregiver.role in dict(self._get_male_roles()).keys():
+                caregiver.male_role = True
+            elif caregiver.role in dict(self._get_female_roles()).keys():
+                caregiver.female_role = True
+            else:
+                caregiver.other_role = True
+
+    @api.multi
+    def contains(self, roles):
+        """ True if the recordset contains given roles. """
+        members = self.filtered(lambda member: member.role in roles)
+        return len(members) == len(roles)
+
+    @api.multi
+    def remove(self, role):
+        """ Returns the recordset without given role. """
+        return self.filtered(lambda member: member.role != role)
