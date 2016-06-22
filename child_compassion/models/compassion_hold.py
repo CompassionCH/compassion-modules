@@ -18,9 +18,7 @@ class CompassionHold(models.Model):
 
     name = fields.Char('Name')
     hold_id = fields.Char()
-    child_ids = fields.One2many(
-        'compassion.child', 'hold_id', 'Children on hold'
-    )
+    child_id = fields.Many2one('compassion.child', 'Child on hold')
     type = fields.Selection([
         ('Available', 'Available'),
         ('Change Commitment Hold', 'Change Commitment Hold'),

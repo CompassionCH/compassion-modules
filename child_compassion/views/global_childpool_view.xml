@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <form string="Global Childpool">
                     <header>
+                    	<button name="make_a_hold" string="Make a hold" type="object" class="oe_highlight" attrs="{'invisible': ['|',('nb_selected', '=', 0), ('hold_expiration_date', '=', False)]}"/>
                     </header>
                     <sheet>
                         <h1>Today I'm feeling we will sponsor new children!</h1>
@@ -56,6 +57,9 @@
                                 </group>
                             </page>
                         </notebook>
+                        <div class="oe_inline">
+                        	<field name="hold_expiration_date" attrs="{'invisible': [('nb_selected', '=', 0)]}"/>
+                        </div>
                         <separator string="Search Results"/>
                         <group>
                             <field name="nb_selected"/>

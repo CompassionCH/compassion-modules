@@ -65,7 +65,8 @@ class OnrampConnector(object):
     def __init__(self):
         """ Get a fresh token if needed. """
         now = datetime.now()
-        if not self._token_time or self._token_time+timedelta(hours=1) <= now:
+        if not self._token_time or self._token_time + \
+                timedelta(hours=1) <= now:
             self._retrieve_token()
 
     def send_message(self, service_name, message_type, body, params=None):
@@ -117,8 +118,10 @@ class OnrampConnector(object):
             if isinstance(value, list):
                 value = ','.join([str(v) for v in value])
             formatted_params[key] = value
-        return u'&'.join(u'%s=%s' % (k, v) for k, v in
-                         formatted_params.iteritems())
+
+        string_returned = u'&'.join(u'%s=%s' % (k, v) for k, v in
+                                    formatted_params.iteritems())
+        return string_returned.encode('utf-8')
 
     def _retrieve_token(self):
         """ Retrieves the token from Connect. """
