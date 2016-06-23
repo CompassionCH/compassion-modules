@@ -227,14 +227,17 @@
                         <group attrs="{'invisible': [('type', '!=', 'Reinstatement/Return')]}">
                             <field name="other_reinstatement_reason"/>
                         </group>
+                        <group attrs="{'invisible': [('type', '!=', 'Reinstatement/Return')]}"/>
                         <group attrs="{'invisible': [('type', '!=', 'Transfer')]}">
                             <field name="old_project_id"/>
                             <field name="transfer_arrival_date"/>
                             <field name="other_transfer_reason"/>
                         </group>
+                        <group attrs="{'invisible': [('type', '!=', 'Transfer')]}"/>
                         <group attrs="{'invisible': [('type', '!=', 'Transition')]}">
                             <field name="transition_type"/>
                         </group>
+                        <group attrs="{'invisible': [('type', '!=', 'Transition')]}"/>
                         <group attrs="{'invisible': [('type', '!=', 'Registration')]}">
                         </group>
                     </group>

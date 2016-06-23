@@ -20,8 +20,9 @@ class ChildLifecycleEvent(models.Model):
     _order = 'date desc'
 
     child_id = fields.Many2one(
-        'compassion.child', 'Child', required=True, ondelete='cascade')
-    date = fields.Datetime()
+        'compassion.child', 'Child', required=True, ondelete='cascade',
+        readonly=True)
+    date = fields.Datetime(readonly=True)
     type = fields.Selection([
         ('Planned Exit', 'Planned Exit'),
         ('Reinstatement/Return', 'Reinstatement'),
@@ -29,7 +30,7 @@ class ChildLifecycleEvent(models.Model):
         ('Registration', 'Registration'),
         ('Transition', 'Transition'),
         ('Unplanned Exit', 'Unplanned Exit'),
-    ])
+    ], readonly=True)
 
     # All reasons for all request types
     request_reason = fields.Selection([
@@ -77,32 +78,32 @@ class ChildLifecycleEvent(models.Model):
          'in program', 'Taken out of project by parents'),
         ('Unjustified absence from program activities for Greater Than 2 '
          'months', 'Unjustified absence for greater than 2 months'),
-    ])
+    ], readonly=True)
 
     # Common fields
     ###############
-    comments = fields.Char()
+    comments = fields.Char(readonly=True)
 
     # Planned Exit fields
     #####################
-    last_attended_project = fields.Date()
-    primary_school_finished = fields.Boolean()
-    confesses_jesus_savior = fields.Boolean()
-    final_letter_sent = fields.Boolean()
-    sponsor_impact = fields.Char()
-    new_situation = fields.Char()
-    future_hopes = fields.Char()
-    family_impact = fields.Char()
+    last_attended_project = fields.Date(readonly=True)
+    primary_school_finished = fields.Boolean(readonly=True)
+    confesses_jesus_savior = fields.Boolean(readonly=True)
+    final_letter_sent = fields.Boolean(readonly=True)
+    sponsor_impact = fields.Char(readonly=True)
+    new_situation = fields.Char(readonly=True)
+    future_hopes = fields.Char(readonly=True)
+    family_impact = fields.Char(readonly=True)
 
     # Reinstatement fields
     ######################
-    other_reinstatement_reason = fields.Char()
+    other_reinstatement_reason = fields.Char(readonly=True)
 
     # Transfer fields
     #################
-    old_project_id = fields.Many2one('compassion.project')
-    transfer_arrival_date = fields.Date()
-    other_transfer_reason = fields.Char()
+    old_project_id = fields.Many2one('compassion.project', readonly=True)
+    transfer_arrival_date = fields.Date(readonly=True)
+    other_transfer_reason = fields.Char(readonly=True)
 
     # Transition fields
     ###################
@@ -111,12 +112,12 @@ class ChildLifecycleEvent(models.Model):
         ('Survival to Sponsorship-Home', 'Survival to Home'),
         ('Traditional Survival to Sponsorship-Center',
          'Traditional Survival to Center'),
-    ])
+    ], readonly=True)
 
     # Unplanned Exit fields
     #######################
-    child_death_date = fields.Date()
-    child_death_circumstances = fields.Char()
+    child_death_date = fields.Date(readonly=True)
+    child_death_circumstances = fields.Char(readonly=True)
     child_death_category = fields.Selection([
         ('Abuse', 'Abuse'),
         ('Fatal Accident or Suicide', 'Fatal Accident or Suicide'),
@@ -129,7 +130,7 @@ class ChildLifecycleEvent(models.Model):
         ('Unknown Cause', 'Unknown Cause'),
         ('Vaccine-Preventable Diseases', 'Vaccine-Preventable Diseases'),
         ('Vector-Borne', 'Vector-Borne'),
-    ])
+    ], readonly=True)
     child_death_subcategory = fields.Selection([
         ('Abortion-related', 'Abortion-related'),
         ('Anemia', 'Anemia'),
@@ -194,4 +195,4 @@ class ChildLifecycleEvent(models.Model):
         ('Violence', 'Violence'),
         ('West Nile Virus', 'West Nile Virus'),
         ('Yellow Fever', 'Yellow Fever'),
-    ])
+    ], readonly=True)
