@@ -296,7 +296,7 @@ def itersubclasses(cls, _seen=None):
                 yield sub
 
 
-def new_onramp_mapping(model, env, action='default'):
+def new_onramp_mapping(model, env, mapping_name='default'):
     """Return an instance of the good Mapping class based on the given model.
 
     :param model: model name of the mapping.
@@ -305,6 +305,6 @@ def new_onramp_mapping(model, env, action='default'):
     :return: class instance for given model mapping.
     """
     for cls in itersubclasses(OnrampMapping):
-        if cls.ODOO_MODEL == model and cls.MAPPING_NAME == action:
+        if cls.ODOO_MODEL == model and cls.MAPPING_NAME == mapping_name:
             return cls(env)
     raise ValueError

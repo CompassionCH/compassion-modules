@@ -19,6 +19,7 @@
             <field name="name">BeneficiariesDetails</field>
             <field name="mapping_name">GetDetails</field>
             <field name="model">compassion.child</field>
+            <field name="connect_answer_wrapper">BeneficiaryResponseList</field>
             <field name="description">This will update child</field>
             <field name="connect_service">beneficiaries/{$object.global_id}/details</field>
             <field name="request_type">GET</field>

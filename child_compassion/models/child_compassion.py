@@ -47,7 +47,7 @@ class GenericChild(models.AbstractModel):
     age = fields.Integer(readonly=True)
     is_orphan = fields.Boolean(readonly=True)
     beneficiary_state = fields.Selection([
-        ("Available", "Available"),
+        ("Active", "Active"),
         ("Change Commitment Hold", "Change Commitment Hold"),
         ("Consignment Hold", "Consignment Hold"),
         ("Delinquent Mass Cancel Hold", "Delinquent Mass Cancel Hold"),
@@ -229,10 +229,17 @@ class CompassionChild(models.Model):
         ('Electrical/ Electronics', _('electronics')),
         ('Graphic Arts', _('graphic arts')),
         ('Income-Generating Program at Project',
+<<<<<<< 30bc762c92c158de71f6cdb9adb7f0539605a66f
          _('income-generating program at project')),
         ('Manufacturing/ Fabrication', _('manufacturing')),
         ('Medical/ Health Services', _('medical health services')),
         ('Not enrolled', 'Not enrolled'),
+=======
+         'Income-Generating Program at Project'),
+        ('Manufacturing/ Fabrication', 'Manufacturing/ Fabrication'),
+        ('Medical/ Health Services', 'Medical/ Health Services'),
+        ('Not Enrolled', 'Not Enrolled'),
+>>>>>>> Update mappings for get details
         ('Other', 'Other'),
         ('Telecommunication', _('telecommunication')),
         ('Transportation', _('transportation')),
@@ -310,9 +317,15 @@ class CompassionChild(models.Model):
     )
     pictures_ids = fields.One2many(
         'compassion.child.pictures', 'child_id', 'Child pictures',
+<<<<<<< 30bc762c92c158de71f6cdb9adb7f0539605a66f
         track_visibility='onchange', readonly=True)
     household_id = fields.Many2one('compassion.household', 'Household',
                                    readonly=True)
+=======
+        track_visibility='onchange')
+    household_ids = fields.Many2many('compassion.household',
+                                     string='Household')
+>>>>>>> Update mappings for get details
     portrait = fields.Binary(related='pictures_ids.headshot')
     fullshot = fields.Binary(related='pictures_ids.fullshot')
 

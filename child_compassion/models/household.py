@@ -20,7 +20,7 @@ class Household(models.Model):
 
     household_id = fields.Char(required=True)
     child_ids = fields.One2many(
-        'compassion.child', 'household_id', 'Beneficiaries')
+        'compassion.child', 'household_ids', 'Beneficiaries')
     name = fields.Char()
     number_beneficiaries = fields.Integer()
 
