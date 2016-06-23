@@ -10,7 +10,9 @@
 ##############################################################################
 
 import logging
-from openerp import models, fields, api, exceptions, _
+from openerp import models, fields, api, _
+
+from ..wizards.project_description_fr import Project_description_fr
 
 logger = logging.getLogger(__name__)
 
@@ -365,18 +367,15 @@ class CompassionProject(models.Model):
         """ Get the most recent informations for selected projects and update
             them accordingly. """
         # TODO Redefine this
+        self.generate_descriptions()
         return True
 
     @api.multi
     def generate_descriptions(self):
         # TODO Implement with new modelisation
         for project in self:
-            if not project.last_update_date:
-                raise exceptions.Warning(
-                    _('Generation error'),
-                    _('Missing information for project %s. Please update its '
-                      'information before generating the descriptions') %
-                    project.icp_id)
+            project.description_fr = Project_description_fr.gen_fr_translation(
+                project.with_context(lang='fr_CH'))
 
         return True
 

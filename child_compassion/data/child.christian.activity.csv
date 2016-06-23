@@ -1,7 +1,7 @@
-id,name
-christian_activity_bible,Bible Class
-christian_activity_camp,Camp
-christian_activity_choir,Choir
-christian_activity_sundayschool,Sunday School/Church
-christian_activity_vacationbibleschool,Vacation Bible School
-christian_activity_youthgroup,Youth Group
+id,name,value
+christian_activity_bible,Bible Class,the bible class
+christian_activity_camp,Camp,the camps
+christian_activity_choir,Choir,the choir
+christian_activity_sundayschool,Sunday School/Church,the sunday school
+christian_activity_vacationbibleschool,Vacation Bible School,the vacation bible school
+christian_activity_youthgroup,Youth Group,the youth group

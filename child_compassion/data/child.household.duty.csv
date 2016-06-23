@@ -1,14 +1,14 @@
-id,name
-household_duty _animal,Animal Care
-household_duty _market,Buying Or Selling In Market
-household_duty _water,Carries Water
-household_duty _childcare,Child Care
-household_duty _cleaning,Cleaning
-household_duty _gardening,Gardening Or Farming
-household_duty _firewood,Gathers Firewood
-household_duty _kitchen,Kitchen Help
-household_duty _makingbed,Making Beds
-household_duty _errands,Running Errands
-household_duty _sewing,Sewing
-household_duty _teaching,Teaching Others
-household_duty _clothes,Washing Clothes
+id,name,value
+household_duty _animal,Animal Care,animal care
+household_duty _market,Buying Or Selling In Market,buying or selling in market
+household_duty _water,Carries Water,carrying water
+household_duty _childcare,Child Care,child care
+household_duty _cleaning,Cleaning,cleaning
+household_duty _gardening,Gardening Or Farming,gardening or farming
+household_duty _firewood,Gathers Firewood,gathering firewood
+household_duty _kitchen,Kitchen Help,kitchen help
+household_duty _makingbed,Making Beds,making beds
+household_duty _errands,Running Errands,running errands
+household_duty _sewing,Sewing,sewing
+household_duty _teaching,Teaching Others,teaching others
+household_duty _clothes,Washing Clothes,washing clothes

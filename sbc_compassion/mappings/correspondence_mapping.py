@@ -105,7 +105,7 @@ class CorrespondenceMapping(OnrampMapping):
         'RelationshipType': None,
         'SBCGlobalStatus': None,
         'GlobalPartnerSBCId': str,
-        'OriginalLanguage': None,
+        # 'OriginalLanguage': None,
         'OriginalLetterURL': None,
         'Template': None,
         'SourceSystem': None,
