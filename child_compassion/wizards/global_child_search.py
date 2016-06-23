@@ -172,6 +172,8 @@ class GlobalChildSearch(models.TransientModel):
             if hold.hold_id:
                 child_vals = {
                     'hold_id': hold.id,
+                    'active': True,
+                    'state': 'N',
                 }
                 child_to_update.write(child_vals)
             else:

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--Compassion field office form view -->
+        <record id="view_compassion_holds_form" model="ir.ui.view">
+            <field name="name">compassion.hold.form</field>
+            <field name="model">compassion.hold</field>
+            <field name="arch" type="xml">
+                <form string="Holds">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" />
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="hold_id" />
+                                <field name="child_name">
+                                </field>
+                                <field name="primary_owner" />
+                                <field name="secondary_owner" />
+                            </group>
+                            <group>
+                                <field name="type" />
+                                <field name="expiration_date" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="view_compassion_holds_tree" model="ir.ui.view">
+            <field name="name">compassion.hold.tree</field>
+            <field name="model">compassion.hold</field>
+            <field name="arch" type="xml">
+                <tree string="holds">
+                    <field name="hold_id" />
+                    <field name="child_name" />
+                    <field name="expiration_date" />
+                    <field name="primary_owner" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="open_view_holds" model="ir.actions.act_window">
+            <field name="name">Holds Management</field>
+            <field name="res_model">compassion.hold</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_holds" parent="menu_sponsorship_section"
+            name="Holds" action="open_view_holds" sequence="1" />
+    </data>
+</openerp>

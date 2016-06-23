@@ -9,16 +9,19 @@
 #
 ##############################################################################
 
-
-from openerp import models, fields
+from openerp import api, models, fields
+from functools import reduce
 
 
 class CompassionHold(models.Model):
     _name = 'compassion.hold'
 
     name = fields.Char('Name')
-    hold_id = fields.Char()
-    child_id = fields.Many2one('compassion.child', 'Child on hold')
+    hold_id = fields.Char(readonly=True)
+    child_id = fields.Many2one('compassion.child', 'Child on hold',
+                               readonly=True)
+    child_name = fields.Char(
+        'Child on hold', related='child_id.name', readonly=True)
     type = fields.Selection([
         ('Available', 'Available'),
         ('Change Commitment Hold', 'Change Commitment Hold'),
@@ -41,3 +44,31 @@ class CompassionHold(models.Model):
     yield_rate = fields.Float()
     channel = fields.Char()
     source_code = fields.Char()
+
+    ##########################################################################
+    #                              ORM METHODS                               #
+    ##########################################################################
+    @api.multi
+    def write(self, vals):
+        res = super(CompassionHold, self).write(vals)
+        notify_vals = ['name', 'primary_owner', 'type', 'mandatory_review',
+                       'expiration_date']
+        notify = reduce(lambda prev, val: prev or val in vals, notify_vals,
+                        False)
+        if notify and not self.env.context.get('no_upsert'):
+            self.update_hold()
+
+        return res
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    def update_hold(self):
+        message_obj = self.env['gmc.message.pool']
+        action_id = self.env.ref('child_compassion.create_hold').id
+
+        message_vals = {
+            'action_id': action_id,
+            'object_id': self.id
+        }
+        message_obj.create(message_vals)
