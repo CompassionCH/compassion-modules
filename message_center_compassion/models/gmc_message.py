@@ -305,7 +305,7 @@ class GmcMessagePool(models.Model):
             data_objects = self.env[action.model].with_context(
                 lang='en_US').browse(self.mapped('object_id'))
             results = onramp_answer.get('content', {}).get(
-            action.connect_answer_wrapper, [])
+                action.connect_answer_wrapper, [])
             object_mapping = mapping.new_onramp_mapping(action.model,
                                                         self.env,
                                                         action.mapping_name)

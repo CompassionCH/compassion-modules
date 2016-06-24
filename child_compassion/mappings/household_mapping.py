@@ -31,8 +31,24 @@ class HouseHoldMapping(OnrampMapping):
         "NumberOfSiblingBeneficiaries": "number_beneficiaries",
         "ParentsMaritalStatus": "marital_status",
         "ParentsTogether": "parents_together",
-        "SourceKitName": "HouseholdKit",
+
+        # Not define
+        "SourceKitName": None,
     }
+
+    def _process_odoo_data(self, odoo_data):
+        # Replace dict by a tuple for the ORM update/create
+        if 'member_ids' in odoo_data:
+            # Remove all member
+            household_id = odoo_data['household_id']
+            self.env['compassion.household.member'].search(
+                [('household_id', '=', household_id)]).unlink()
+
+            member_list = list()
+            for member in odoo_data['member_ids']:
+                orm_tuple = (0, 0, member)
+                member_list.append(orm_tuple)
+            odoo_data['member_ids'] = member_list or False
 
 
 class HouseholdMemberMapping(OnrampMapping):

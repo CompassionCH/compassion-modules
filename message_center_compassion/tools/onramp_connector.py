@@ -142,7 +142,7 @@ class OnrampConnector(object):
             "Expect": "100-continue",
             "Connection": "Keep-Alive"}
         conn = httplib.HTTPSConnection('api2.compassion.com')
-        conn.request("POST", "/core/connect/token", params_post, header_post)
+        conn.request("POST", "/pcore/connect/token", params_post, header_post)
         response = conn.getresponse()
         try:
             self._token = simplejson.loads(response.read())

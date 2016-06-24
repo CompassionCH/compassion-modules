@@ -170,7 +170,7 @@ class ChildDescriptionFr(object):
         also included here.
         """
         res = u''
-        household = child.household_id
+        household = child.household_ids
         if not household:
             return ''
 
@@ -201,16 +201,16 @@ class ChildDescriptionFr(object):
                 live_with.append("{0} {1}".format(prefix[2], role))
 
         # Get number of brothers and sisters
-        if household.nb_brothers == 1:
-            live_with['brothers'] = u'{0} frère'.format(prefix[0])
-        elif household.nb_brothers > 1:
-            live_with['brothers'] = u'{0} {1} frères'.format(
-                prefix[2], cls._number_to_string(child.nb_brothers))
-        if household.nb_sisters == 1:
-            live_with['sisters'] = u'{0} soeur'.format(prefix[1])
-        elif household.nb_sisters > 1:
-            live_with['sisters'] = u'{0} {1} soeurs'.format(
-                prefix[2], cls._number_to_string(child.nb_sisters))
+        # if household.nb_brothers == 1:
+        #     live_with['brothers'] = u'{0} frère'.format(prefix[0])
+        # elif household.nb_brothers > 1:
+        #     live_with['brothers'] = u'{0} {1} frères'.format(
+        #         prefix[2], cls._number_to_string(household.nb_brothers))
+        # if household.nb_sisters == 1:
+        #     live_with['sisters'] = u'{0} soeur'.format(prefix[1])
+        # elif household.nb_sisters > 1:
+        #     live_with['sisters'] = u'{0} {1} soeurs'.format(
+        #         prefix[2], cls._number_to_string(household.nb_sisters))
 
         res = u'%s vit avec %s. ' % (
             child.firstname, cls._gen_list_string(live_with))

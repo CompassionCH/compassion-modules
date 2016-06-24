@@ -113,6 +113,7 @@ class Household(models.Model):
             ('Clothing Trade', _('works in clothing trade')),
             ('Construction/ Tradesman', _('works in construction')),
             ('Day Labor/ Different Jobs', _('does daily jobs')),
+            ('Health Care Worker', _('Health care worker')),
             ('Factory Worker', _('works in a factory')),
             ('Fisherman', _('is a fisherman')),
             ('Food Services', _('works in food services')),
@@ -144,8 +145,6 @@ class HouseholdMembers(models.Model):
     male_role = fields.Boolean(compute='_compute_gender', store=True)
     female_role = fields.Boolean(compute='_compute_gender', store=True)
     other_role = fields.Boolean(compute='_compute_gender', store=True)
-    is_primary_caregiver = fields.Boolean()
-    is_caregiver = fields.Boolean()
 
     def _get_roles(self):
         return self._get_male_roles() + self._get_female_roles() + \

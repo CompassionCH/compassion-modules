@@ -89,7 +89,7 @@ class OnrampMapping(object):
                     for item in value_connect:
                         if isinstance(item, collections.Mapping):
                             is_list_dict = True
-                            if len(field_odoo) == 2:
+                            if len(field_odoo) >= 2:
                                 sub_mapping = new_onramp_mapping(
                                     field_odoo[1], self.env)
                             else:
