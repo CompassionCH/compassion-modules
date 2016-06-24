@@ -20,8 +20,9 @@ class Household(models.Model):
 
     household_id = fields.Char(required=True)
     child_ids = fields.One2many(
-        'compassion.child', 'household_id', 'Beneficiaries')
+        'compassion.child', 'household_ids', 'Beneficiaries')
     name = fields.Char()
+    number_beneficiaries = fields.Integer()
 
     # Parents
     #########
@@ -112,6 +113,7 @@ class Household(models.Model):
             ('Clothing Trade', _('works in clothing trade')),
             ('Construction/ Tradesman', _('works in construction')),
             ('Day Labor/ Different Jobs', _('does daily jobs')),
+            ('Health Care Worker', _('Health care worker')),
             ('Factory Worker', _('works in a factory')),
             ('Fisherman', _('is a fisherman')),
             ('Food Services', _('works in food services')),
@@ -131,15 +133,18 @@ class HouseholdMembers(models.Model):
     _name = 'compassion.household.member'
     _inherit = 'translatable.model'
 
+    beneficiary_global_id = fields.Char()
+    beneficiary_local_id = fields.Char()
     household_id = fields.Many2one(
-        'compassion.household', 'Household', required=True, ondelete='cascade')
+        'compassion.household', 'Household',
+        required=True, ondelete='cascade')
+    is_caregiver = fields.Boolean()
+    is_primary_caregiver = fields.Boolean()
     name = fields.Char()
     role = fields.Selection('_get_roles')
     male_role = fields.Boolean(compute='_compute_gender', store=True)
     female_role = fields.Boolean(compute='_compute_gender', store=True)
     other_role = fields.Boolean(compute='_compute_gender', store=True)
-    is_primary_caregiver = fields.Boolean()
-    is_caregiver = fields.Boolean()
 
     def _get_roles(self):
         return self._get_male_roles() + self._get_female_roles() + \

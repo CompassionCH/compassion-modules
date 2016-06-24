@@ -21,7 +21,7 @@ class BaseSponsorshipMapping(OnrampMapping):
     Communication_Kit_Fields_and_Sample_JSON
     """
     ODOO_MODEL = 'recurring.contract'
-    ACTION = 'default'
+    MAPPING_NAME = 'default'
 
     CONNECT_MAPPING = {
         "Commitment_ID": "id",

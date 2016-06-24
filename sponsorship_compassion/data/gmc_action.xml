@@ -14,6 +14,7 @@
         <record id="create_sponsorship" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">CreateSponsorship</field>
+            <field name="mapping_name">CreateSponsorship</field>
             <field name="model">recurring.contract</field>
             <field name="description">This will send a new Sponsorship to GMC.</field>
             <field name="connect_service">communications</field>
@@ -25,6 +26,7 @@
         <record id="cancel_sponsorship" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">CancelSponsorship</field>
+            <field name="mapping_name">CancelSponsorship</field>
             <field name="model">recurring.contract</field>
             <field name="description">This will cancel a Sponsorship to GMC.</field>
             <field name="connect_service">communications</field>

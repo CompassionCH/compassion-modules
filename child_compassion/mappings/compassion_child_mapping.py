@@ -16,37 +16,103 @@ class GenericChildMapping(OnrampMapping):
     ODOO_MODEL = 'compassion.generic.child'
 
     CONNECT_MAPPING = {
-        # Fields used in Search Message (for global child)
+
+        'LocalBeneficiaryId': 'local_id',
+        'AcademicPerformance_Name': 'academic_performance',
+        'ActiveProgram': 'type',
+        'Age': 'age',
+        'BeneficiaryHousehold': ('household_ids', 'compassion.household'),
+        'BeneficiaryHouseholdList': ('household_ids', 'compassion.household'),
+        'BeneficiaryState': 'beneficiary_state',
+        'Beneficiary_Gender': 'gender',
         'Beneficiary_GlobalID': 'global_id',
         'Beneficiary_LocalID': 'local_id',
-        'LocalNumber': 'local_id',
-        'CorrespondentScore': 'correspondent_score',
-        'IsSpecialNeeds': 'is_special_needs',
-        'SourceCode': 'source_code',
-        'PriorityScore': 'priority_score',
-        'FullBodyImageURL': 'image_url',
-        'MinDaysWaiting': 'waiting_days',
-
-        # Fields for DetailedInformation message (for compassion.child)
-        'GlobalId': 'global_id',
-        'LocalBeneficiaryId': 'local_id',
-
-        # Fields shared for both child types
-        'Age': 'age',
+        'Beneficiary_LocalNumber': 'local_id',
         'BirthDate': 'birthdate',
-        'ICP_ID': ('project_id.icp_id', 'compassion.project'),
+        'Birthdate': 'birthdate',
+        'CDSPType': 'cdsp_type',
+        'ChristianActivity_Name': (
+            'christian_activity_ids.name', 'child.christian.activity'),
+        'ChronicIllness_Name': (
+            'chronic_illness_ids.name', 'child.chronic.illness'),
+        'CognitiveAgeGroup_Name': 'cognitive_age_group',
+        'CompassChildID': 'compass_id',
+        'CompassID': 'compass_id',
+        'CorrespondenceLanguage': 'correspondence_language',
+        'CorrespondentScore': 'correspondent_score',
+        'CurrentUniversityYearOfStudy': 'university_year',
+        'FavoriteProjectActivity': (
+            'activity_ids.name', 'child.project.activity'),
+        'FavoriteSchoolSubject': ('subject_ids.name', 'child.school.subject'),
         'FirstName': 'firstname',
-        'LastName': 'lastname',
-        'PreferredName': 'preferred_name',
+        'FormalEducationLevel': 'education_level',
+        'FullBodyImageURL': 'image_url',
         'FullName': 'name',
         'Gender': 'gender',
-        'IsHivAffectedArea': 'is_area_hiv_affected',
-        'IsOrphan': 'is_orphan',
-        'WaitingSinceDate': 'unsponsored_since',
-        'BeneficiaryState': 'beneficiary_state',
-        'HoldingGlobalPartner': ('holding_global_partner_id.name',
-                                 'compassion.global.partner'),
+        'GlobalId': 'global_id',
+        'GradeLevelLocal_Name': 'local_grade_level',
+        'GradeLevelUS_Name': 'local_grade_level',
+        'HeightInCm': 'height',
         'HoldExpirationDate': 'hold_expiration_date',
+        'HoldingGlobalPartner': (
+            'holding_global_partner_id.name', 'compassion.global.partner'),
+        'HouseholdDuty_Name': ('duty_ids.name', 'child.household.duty'),
+        'ICPID': ('project_id.icp_id', 'compassion.project'),
+        'ICP_ID': ('project_id.icp_id', 'compassion.project'),
+        'IsHivAffectedArea': 'is_area_hiv_affected',
+        'IsBirthDateEstimated': 'estimated_birthdate',
+        'IsInHIVAffectedArea': 'is_area_hiv_affected',
+        'IsOrphan': 'is_orphan',
+        'IsSpecialNeeds': 'is_special_needs',
+        'LastName': 'lastname',
+        'LastReviewDate': 'last_review_date',
+        'LocalNumber': 'local_id',
+        'MajorCourseOfStudy': 'major_course_study',
+        'MinDaysWaiting': 'waiting_days',
+        'NameInNonLatinChar': 'non_latin_name',
+        'NotEnrolledInEducationReason': 'not_enrolled_reason',
+        'PhysicalDisability_Name': (
+            'physical_disability_ids.name', 'child.physical.disability'),
+        'PlannedCompletionDate': 'completion_date',
+        'PreferredName': 'preferred_name',
+        'PriorityScore': 'priority_score',
+        'SourceCode': 'source_code',
+        'SponsorshipStatus': 'sponsorship_status',
+        'SponsoredStatus': 'sponsorship_status',
+        'ThingsILike': ('hobby_ids.name', 'child.hobby'),
+        'ThingsILikeAge1To2': ('hobby_ids.name', 'child.hobby'),
+        'ThingsILikeToDoAge3Plus': ('hobby_ids.name', 'child.hobby'),
+        'TypeOfVocationalEducation': 'vocational_training_type',
+        'USEquivalentGradeLevel': 'local_grade_level',
+        'VocationalTrainingType_Name': 'vocational_training_type',
+        'WaitingSinceDate': 'unsponsored_since',
+        'WeightInKg': 'weight',
+
+        # Not define
+        'AgeInYearsAndMonths': None,
+        'Beneficiary_FundType': None,
+        'BeneficiaryStatus': None,
+        'Cluster_Name': None,
+        'Community_Name': None,
+        'Country': None,
+        'Country_Name': None,
+        'ExpectedTransitionDateToSponsorship': None,
+        'FieldOffice_Name': None,
+        'FO': None,
+        'FundType': None,
+        'ICP_Country': None,
+        'ICP_Name': None,
+        'LastPhotoDate': None,
+        'LocalBeneficiaryNumber': None,
+        'MentalDevelopmentConditions': None,
+        'PlannedCompletionDateChangeReason': None,
+        'PrimaryCaregiverName': None,
+        'ProgramDeliveryType': None,
+        'RecordType_Name': None,
+        'ReligiousAffiliation': None,
+        'ReviewStatus': None,
+        'SourceKitName': None,
+        'UniversityYearOfStudy': None,
     }
 
     def _process_odoo_data(self, odoo_data):
@@ -76,10 +142,30 @@ class GlobalChildMapping(GenericChildMapping):
 
 
 class CompassionChildMapping(GenericChildMapping):
-    """
-    ====> TODO : Add all fields for the message GetDetailedInformation
-    """
     ODOO_MODEL = 'compassion.child'
+    MAPPING_NAME = 'GetDetails'
 
-    # TODO
-    FIELDS_TO_SUBMIT = {}
+    FIELDS_TO_SUBMIT = {
+        'gpid': None,
+    }
+
+    CONSTANTS = {
+        'gpid': 'CH',
+    }
+
+    def _process_odoo_data(self, odoo_data):
+        if 'gender' in odoo_data:
+            if odoo_data['gender'] == 'Female':
+                odoo_data['gender'] = 'F'
+            else:
+                odoo_data['gender'] = 'M'
+        # Replace dict by a tuple for the ORM update/create
+        if 'household_ids' in odoo_data:
+            household_list = list()
+            for household in odoo_data['household_ids']:
+                self.env['compassion.household'].search(
+                    [('household_id', '=', household[
+                        'household_id'])]).unlink()
+                orm_tuple = (0, 0, household)
+                household_list.append(orm_tuple)
+            odoo_data['household_ids'] = household_list or False

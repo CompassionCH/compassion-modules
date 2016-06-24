@@ -34,7 +34,7 @@ class OnrampMapping(object):
     """
 
     ODOO_MODEL = ''
-    ACTION = 'default'
+    MAPPING_NAME = 'default'
 
     # Dictionary containing the mapping in the following format :
     #   {'ConnectServiceFieldName' : 'odoo_field_name'}
@@ -89,7 +89,7 @@ class OnrampMapping(object):
                     for item in value_connect:
                         if isinstance(item, collections.Mapping):
                             is_list_dict = True
-                            if len(field_odoo) == 2:
+                            if len(field_odoo) >= 2:
                                 sub_mapping = new_onramp_mapping(
                                     field_odoo[1], self.env)
                             else:
@@ -296,7 +296,7 @@ def itersubclasses(cls, _seen=None):
                 yield sub
 
 
-def new_onramp_mapping(model, env, action='default'):
+def new_onramp_mapping(model, env, mapping_name='default'):
     """Return an instance of the good Mapping class based on the given model.
 
     :param model: model name of the mapping.
@@ -305,6 +305,6 @@ def new_onramp_mapping(model, env, action='default'):
     :return: class instance for given model mapping.
     """
     for cls in itersubclasses(OnrampMapping):
-        if cls.ODOO_MODEL == model and cls.ACTION == action:
+        if cls.ODOO_MODEL == model and cls.MAPPING_NAME == mapping_name:
             return cls(env)
     raise ValueError

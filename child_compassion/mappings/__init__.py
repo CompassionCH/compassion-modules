@@ -12,3 +12,4 @@
 from . import childpool_create_hold_mapping
 from . import childpool_search_mapping
 from . import compassion_child_mapping
+from . import household_mapping

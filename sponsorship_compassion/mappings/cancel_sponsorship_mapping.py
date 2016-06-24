@@ -16,7 +16,7 @@ class CancelSponsorship(BaseSponsorshipMapping):
     for delete a sponsorship.
     """
 
-    ACTION = 'CancelSponsorship'
+    MAPPING_NAME = 'CancelSponsorship'
 
     FIELDS_TO_SUBMIT = {
         "FinalCommitmentOfLine": None,

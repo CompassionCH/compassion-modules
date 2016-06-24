@@ -12,6 +12,7 @@
         <record id="create_letter" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">CreateLetter</field>
+            <field name="mapping_name">CreateLetter</field>
             <field name="model">correspondence</field>
             <field name="description">This will send a new Sponsorship Correspondence to GMC.</field>
             <field name="connect_service">communications</field>
