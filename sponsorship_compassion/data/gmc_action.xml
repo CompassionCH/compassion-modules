@@ -3,6 +3,7 @@
         <record id="upsert_partner" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">UpsertPartner</field>
+            <field name="mapping_name">UpsertPartner</field>
             <field name="model">res.partner</field>
             <field name="description">This will send or update a Partner to GMC.</field>
             <field name="connect_service">supporters</field>
@@ -17,9 +18,9 @@
             <field name="mapping_name">CreateSponsorship</field>
             <field name="model">recurring.contract</field>
             <field name="description">This will send a new Sponsorship to GMC.</field>
-            <field name="connect_service">communications</field>
+            <field name="connect_service">supporters/sponsorships</field>
             <field name="connect_outgoing_wrapper">BeneficiaryCommitmentList</field>
-            <field name="connect_answer_wrapper">BeneficiaryCommitmentListResponse</field>
+            <field name="connect_answer_wrapper">BeneficiaryCommitmentResponseList</field>
             <field name="request_type">POST</field>
         </record>
         <!-- Sponsorship Message Cancel -->
@@ -29,7 +30,7 @@
             <field name="mapping_name">CancelSponsorship</field>
             <field name="model">recurring.contract</field>
             <field name="description">This will cancel a Sponsorship to GMC.</field>
-            <field name="connect_service">communications</field>
+            <field name="connect_service">supporters/sponsorships/cancel</field>
             <field name="connect_outgoing_wrapper">BeneficiaryCommitmentCancellationList</field>
             <field name="connect_answer_wrapper">BeneficiaryCommitmentCancellationListResponse</field>
             <field name="request_type">POST</field>

@@ -27,7 +27,8 @@ class CreateSponsorship(BaseSponsorshipMapping):
         "PrimaryHoldOwner": None,
         "SponsorGlobalPartnerID": None,
         "SponsorSupporterGlobalID": None,
-        "Beneficiary_GlobalID": None
+        "Beneficiary_GlobalID": None,
+        "CommitmentID": None
     }
 
     def _process_connect_data(self, odoo_data):

@@ -49,7 +49,6 @@ class GenericChild(models.AbstractModel):
     age = fields.Integer(readonly=True)
     is_orphan = fields.Boolean(readonly=True)
     beneficiary_state = fields.Selection([
-        ("Active", "Active"),
         ("Available", "Available"),
         ("Change Commitment Hold", "Change Commitment Hold"),
         ("Consignment Hold", "Consignment Hold"),

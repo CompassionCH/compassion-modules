@@ -24,14 +24,15 @@ class BaseSponsorshipMapping(OnrampMapping):
     MAPPING_NAME = 'default'
 
     CONNECT_MAPPING = {
-        "Commitment_ID": "id",
+        "Commitment_ID": "global_id",
+        "CommitmentID": "global_id",
         "CommitmentEndDate": "end_date",
         "CompassNeedKey": ('child_id.local_id', 'compassion.child'),
         "CorrespondenceEndDate": "end_date",
         "CorrespondentCorrespondenceLanguage": None,
         "CorrespondentSupporterGlobalID": None,
         "FinalCommitmentOfLine": None,
-        "HoldID": "reference",
+        "HoldID": ('child_id.hold_id.hold_id', 'compassion.hold'),
         "HoldType": "type",
         "PrimaryHoldOwner": ('partner_id.name', 'res.partner'),
         "SecondaryHoldOwner": None,
@@ -39,7 +40,7 @@ class BaseSponsorshipMapping(OnrampMapping):
                                           'res.lang.compassion'),
         "SponsorSupporterGlobalID": ('partner_id.global_id', 'res.partner'),
         "Beneficiary_GlobalID": ('child_id.global_id', 'compassion.child'),
-        "Beneficiary_HoldExpirationDate": "end_date",
+        "HoldExpirationDate": "end_date",
         "Channel_Name": "channel",
         "LinkType": None,
         "DelinkType": None,
@@ -51,5 +52,6 @@ class BaseSponsorshipMapping(OnrampMapping):
         "IsSponsorCorrespondent": False,
         "SponsorGlobalPartnerID": "CH",
         "FinalCommitmentOfLine": "",
-        "GlobalPartner_ID": "CH"
+        "GlobalPartner_ID": "CH",
+        "HoldType": "Sponsor Cancel Hold"
     }

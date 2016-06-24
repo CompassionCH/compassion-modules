@@ -82,6 +82,8 @@ class SponsorshipContract(models.Model):
     reading_language = fields.Many2one(
         'res.lang.compassion', 'Preferred language', required=False)
 
+    global_id = fields.Char()
+
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################

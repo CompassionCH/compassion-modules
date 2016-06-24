@@ -335,11 +335,16 @@ class GmcMessagePool(models.Model):
             # Complete failure (messages were not processed)
             fail = onramp_answer.get('content', {
                 'Error': onramp_answer.get('Error', 'None')})
+            results = onramp_answer.get('content', {}).get(
+                action.connect_answer_wrapper, [])
+            error_message = str(fail.get('Error', 'None'))
             self.write({
                 'state': 'failure',
                 'failure_reason':
                     '[%s] %s' % (onramp_answer['code'],
-                                 str(fail.get('Error', 'None')))
+                                 error_message if
+                                 error_message != 'None' else
+                                 (results if results else error_message))
             })
 
     def _get_url_endpoint(self):

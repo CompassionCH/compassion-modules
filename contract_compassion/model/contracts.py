@@ -59,7 +59,7 @@ class recurring_contract(models.Model):
     num_pol_ga = fields.Integer(
         'Partner Contract Number', required=True)
     end_reason = fields.Selection('get_ending_reasons')
-    end_date = fields.Date(readonly=True, track_visibility='onchange')
+    end_date = fields.Datetime(readonly=True, track_visibility='onchange')
     months_paid = fields.Integer(
         compute='_set_months_paid',
         string='Months paid')
