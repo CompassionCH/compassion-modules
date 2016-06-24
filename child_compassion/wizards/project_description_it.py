@@ -1,16 +1,17 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Kevin Cristi, David Coninckx
+#    @author: Kevin Cristi, David Coninckx, Emanuel Cino
 #
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+from openerp import _
 
 
-class Project_description_it:
+class ProjectDescriptionIt:
 
     @classmethod
     def gen_it_translation(cls, project):
@@ -19,11 +20,13 @@ class Project_description_it:
         desc_it += cls._gen_primary_diet_it(project)
         desc_it += cls._gen_health_prob_it(project)
         desc_it += cls._gen_primary_occup_it(project)
+        desc_it += u'\r\n\r\n'
+        desc_it += cls._get_needs_it(project)
 
         return desc_it
 
     @classmethod
-    def _gen_list_string(cls, word_list, separator, last_separator):
+    def _gen_list_string(cls, word_list, separator=', ', last_separator=' e '):
         res = ''
         if word_list:
             res = separator.join(word_list[:-1])
@@ -38,12 +41,9 @@ class Project_description_it:
         """ Generate the project name, the localization and infos
             about the community
         """
-        project_community_name = project.community_name.split('-')[0]
-        project_community_population = u"{:,}".format(
-            project.community_population).replace(',', "'")
         res = (u"Questo bambino vive in una comunitá del %s dove "
-               u"risiendono circa %s abitanti." % (
-                   project_community_name, project_community_population))
+               u"risiendono circa %s abitanti. " % (
+                project.city, str(project.community_population)))
 
         return res
 
@@ -52,26 +52,24 @@ class Project_description_it:
         """ Generate house build materials, there are no specificities
             in this part
         """
-        floor_mat = [mat.get_translated_value('it')
-                     for mat in project.floor_material_ids]
-        wall_mat = [mat.get_translated_value('it')
-                    for mat in project.wall_material_ids]
-        roof_mat = [mat.get_translated_value('it')
-                    for mat in project.roof_material_ids]
+        floor_mat = project.typical_floor_material != 'Other' and \
+            project.translate('typical_floor_material')
+        wall_mat = project.typical_wall_material != 'Other' and \
+            project.translate('typical_wall_material')
+        roof_mat = project.typical_roof_material != 'Other' and \
+            project.translate('typical_roof_material')
 
-        materials = []
+        materials = list()
         if floor_mat:
-            materials.append(u"il pavimento in %s" %
-                             cls._gen_list_string(floor_mat, ', ', ' e '))
+            materials.append(u"il pavimento in " + floor_mat)
         if wall_mat:
-            materials.append(u"le mura in %s" %
-                             cls._gen_list_string(wall_mat, ', ', ' e '))
+            materials.append(u"le mura in " + wall_mat)
         if roof_mat:
-            materials.append(u"il tetto in %s" %
-                             cls._gen_list_string(roof_mat, ', ', ' e '))
+            materials.append(u"il tetto in " + roof_mat)
+
         if materials:
             res = (u"Le case hanno " +
-                   cls._gen_list_string(materials, ', ', ' e ') + ". ")
+                   cls._gen_list_string(materials) + ". ")
         else:
             res = ""
 
@@ -82,18 +80,16 @@ class Project_description_it:
         """ Generate spoken languages(s) and primary diet, there are
             no specificities in this part
         """
-        primary_diet = [diet.get_translated_value('it')
-                        for diet in project.primary_diet_ids]
-        spoken_languages = [lang.get_translated_value('it')
-                            for lang in project.spoken_languages_ids]
+        primary_diets = project.primary_diet_ids.mapped('value')
 
-        if spoken_languages:
-            res = u"La lingua parlata é il %s. " % (spoken_languages[0])
+        if project.primary_language_id:
+            res = (u"La lingua parlata é il "
+                   u"%s. " % _(project.primary_language_id.name))
         else:
             res = ""
 
         res += (u"La dieta regionale consiste di: %s. " % (
-                cls._gen_list_string(primary_diet, ', ', ' e ')))
+            cls._gen_list_string(primary_diets)))
 
         return res
 
@@ -102,16 +98,17 @@ class Project_description_it:
         """ Generate health problemes of this region, there
             are no specificities in this part
         """
-        health_prob = [prob.get_translated_value('it')
-                       for prob in project.health_problems_ids]
+        health_prob = project.field_office_id.high_risk_ids.mapped('value')
 
         if health_prob:
             sing_plur_subj = (u"Le malattie"
                               if len(health_prob) > 1 else u"La malattia")
+
             sing_plur_verb = (u"sono " +
-                              cls._gen_list_string(health_prob, ', ', ' e ')
+                              cls._gen_list_string(health_prob)
                               if len(health_prob) > 1 else u"è " +
-                              health_prob[0])
+                                                           health_prob[0])
+
             res = (u"%s piú comuni in questa zona %s. " % (
                 sing_plur_subj, sing_plur_verb))
         else:
@@ -124,8 +121,7 @@ class Project_description_it:
         """ Generate primary occupation and monthly income, check if need to
             round the income
         """
-        primary_occup = [occup.get_translated_value('it')
-                         for occup in project.primary_occupation_ids]
+        primary_occup = project.primary_adults_occupation_ids.mapped('value')
         monthly_income = int(round(project.monthly_income))
 
         if primary_occup:
@@ -146,12 +142,21 @@ class Project_description_it:
         return res
 
     @classmethod
-    def _get_needs_pattern_it(cls, project):
+    def _get_needs_it(cls, project):
         """ Create the needs' description pattern to fill by hand
         """
-        res = (u"Questa comunitá ha bisogno di (...). Grazie al suo "
-               u"sostegno il personale del %s di (...) potrá "
-               u"offrire al bambino un'educazione cristiana, " +
-               "(...).") % (project.name)
+        need_desc = \
+            u"Grazie al suo sostegno il personale del Project " \
+            u"potrá {school_paid}. Activities: "\
+            u"{icp_activities}.{parent_activities}"
 
-        return res
+        vals = {
+            'school_paid': cls._gen_list_string(
+                project.school_cost_paid_ids.mapped('value')),
+            'icp_activities': cls._gen_list_string(
+                project.get_activities(max_per_type=2)),
+            'parent_activities': u" Le genitori. " if
+            project.activities_for_parents else u""
+        }
+
+        return need_desc.format(**vals)

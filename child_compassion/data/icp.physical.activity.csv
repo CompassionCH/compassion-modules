@@ -1,22 +1,22 @@
-id,name
-physical_act_health_education,Age Graded Health Education
-physical_act_athletics,Athletics
-physical_act_motor_play,Fine/Gross Motor Play
-physical_act_growth_monitoring,Growth Monitoring
-physical_act_health_kits,Health Kits
-physical_act_health_referral,Health Referral
-physical_act_health_screening,Health Screening
-physical_act_hygiene_training,Hygiene Training
-physical_act_immunization,Immunization
-physical_act_indoor_outdoor_games,Indoor And Outdoor Games
-physical_act_medical_camps,Medical Camps
-physical_act_medical_checkups,Medical Checkups
-physical_act_nutrition_caregivers,Nutrition Education For Caregivers
-physical_act_nutrition,Nutritional Lessons
-physical_act_sanitation,Sanitation Demonstration Units
-physical_act_soccer,Soccer Tournaments
-physical_act_supplement_feeding,Supplemental Feeding
-physical_act_swimming,Swimming
-physical_act_team_building,Team Building Activities (Age Graded)
-physical_act_therapeutic_feeding,Therapeutic Feeding
-physical_act_vaccinations,Vaccinations
+id,name,value
+physical_act_health_education,Age Graded Health Education,age graded health education
+physical_act_athletics,Athletics,athletics
+physical_act_motor_play,Fine/Gross Motor Play,fine/gross motor play
+physical_act_growth_monitoring,Growth Monitoring,growth monitoring
+physical_act_health_kits,Health Kits,health kits
+physical_act_health_referral,Health Referral,health referral
+physical_act_health_screening,Health Screening,health screening
+physical_act_hygiene_training,Hygiene Training,hygiene training
+physical_act_immunization,Immunization,immunization
+physical_act_indoor_outdoor_games,Indoor And Outdoor Games,indoor and outdoor games
+physical_act_medical_camps,Medical Camps,medical camps
+physical_act_medical_checkups,Medical Checkups,medical checkups
+physical_act_nutrition_caregivers,Nutrition Education For Caregivers,nutrition education for caregivers
+physical_act_nutrition,Nutritional Lessons,nutritional lessons
+physical_act_sanitation,Sanitation Demonstration Units,sanitation demonstration units
+physical_act_soccer,Soccer Tournaments,soccer tournaments
+physical_act_supplement_feeding,Supplemental Feeding,supplemental feeding
+physical_act_swimming,Swimming,swimming
+physical_act_team_building,Team Building Activities (Age Graded),team building activities
+physical_act_therapeutic_feeding,Therapeutic Feeding,therapeutic feeding
+physical_act_vaccinations,Vaccinations,vaccinations

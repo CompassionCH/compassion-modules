@@ -85,3 +85,5 @@ class FieldOfficeHighRisks(models.Model):
     _description = 'FO high risk'
     res_model = 'compassion.field.office'
     res_field = 'high_risk_ids'
+
+    value = fields.Char(translate=True)

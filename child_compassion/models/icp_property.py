@@ -68,24 +68,28 @@ class ICPSpiritualActivity(models.Model):
     _name = 'icp.spiritual.activity'
     _inherit = 'icp.property'
     _description = 'ICP spiritual activity'
+    _order = 'name'
 
 
 class ICPCognitiveActivity(models.Model):
     _name = 'icp.cognitive.activity'
     _inherit = 'icp.property'
     _description = 'ICP cognitive activity'
+    _order = 'name'
 
 
 class ICPPhysicalActivity(models.Model):
     _name = 'icp.physical.activity'
     _inherit = 'icp.property'
     _description = 'ICP physical activity'
+    _order = 'name'
 
 
 class ICPSociologicalActivity(models.Model):
     _name = 'icp.sociological.activity'
     _inherit = 'icp.property'
     _description = 'ICP sociological activity'
+    _order = 'name'
 
 
 class ICPCommunityOccupation(models.Model):
