@@ -19,43 +19,45 @@ class ProjectLifecycle(models.Model):
     _order = 'date desc'
 
     project_id = fields.Many2one(
-        'compassion.project', required=True, ondelete='cascade')
-    date = fields.Date()
+        'compassion.project', required=True, ondelete='cascade', readonly=True)
+    date = fields.Date(readonly=True)
     type = fields.Selection([
-        ('Reactivation', 'Reactivation'),
         ('Suspension', 'Suspension'),
+        ('Reactivation', 'Reactivation'),
         ('Transition', 'Transition'),
-    ])
-    reason = fields.Char()
-    details = fields.Text()
-    action_plan = fields.Text()
+    ], readonly=True)
+    reason = fields.Char(readonly=True)
+    details = fields.Text(readonly=True)
+    action_plan = fields.Text(readonly=True)
 
     # Reactivation
     ##############
-    icp_improvement_desc = fields.Text()
+    icp_improvement_desc = fields.Text(readonly=True)
 
     # Suspension
     ############
-    suspension_start_date = fields.Date()
-    suspension_end_date = fields.Date()
+    suspension_start_date = fields.Date(readonly=True)
+    suspension_end_date = fields.Date(readonly=True)
 
-    hold_cdsp_funds = fields.Boolean()
-    hold_csp_funds = fields.Boolean()
-    hold_gifts = fields.Boolean()
-    hold_s2b_letters = fields.Boolean()
-    hold_b2s_letters = fields.Boolean()
-    hold_child_updates = fields.Boolean()
+    hold_cdsp_funds = fields.Boolean(readonly=True)
+    hold_csp_funds = fields.Boolean(readonly=True)
+    hold_gifts = fields.Boolean(readonly=True)
+    hold_s2b_letters = fields.Boolean(readonly=True)
+    hold_b2s_letters = fields.Boolean(readonly=True)
+    hold_child_updates = fields.Boolean(readonly=True)
 
-    extension_1 = fields.Boolean(help='Suspension is extended by 30 days')
-    extension_1_reason = fields.Text()
+    extension_1 = fields.Boolean(
+        help='Suspension is extended by 30 days', readonly=True)
+    extension_1_reason = fields.Text(readonly=True)
     extension_2 = fields.Boolean(
-        help='Suspension is extended by additional 30 days (60 in total)')
-    extension_2_reason = fields.Text()
+        help='Suspension is extended by additional 30 days (60 in total)',
+        readonly=True)
+    extension_2_reason = fields.Text(readonly=True)
 
     # Transition
     ############
-    actual_transition_date = fields.Date()
-    transition_complete = fields.Boolean()
-    future_involvement = fields.Char()
-    celebration_details = fields.Char()
-    relationship_strengths = fields.Char()
+    actual_transition_date = fields.Date(readonly=True)
+    transition_complete = fields.Boolean(readonly=True)
+    future_involvement = fields.Char(readonly=True)
+    celebration_details = fields.Char(readonly=True)
+    relationship_strengths = fields.Char(readonly=True)
