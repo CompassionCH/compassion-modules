@@ -18,7 +18,7 @@ class ChilpoolCreateHoldMapping(OnrampMapping):
     Childpool mapping for searching available children from GMC.
     """
     ODOO_MODEL = 'compassion.hold'
-    ACTION = "create_hold"
+    MAPPING_NAME = "create_hold"
 
     CONNECT_MAPPING = {
         # Fields used in Search Message (for global child)

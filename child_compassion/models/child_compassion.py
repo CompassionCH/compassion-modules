@@ -48,6 +48,7 @@ class GenericChild(models.AbstractModel):
     is_orphan = fields.Boolean(readonly=True)
     beneficiary_state = fields.Selection([
         ("Active", "Active"),
+        ("Available", "Available"),
         ("Change Commitment Hold", "Change Commitment Hold"),
         ("Consignment Hold", "Consignment Hold"),
         ("Delinquent Mass Cancel Hold", "Delinquent Mass Cancel Hold"),
@@ -311,8 +312,8 @@ class CompassionChild(models.Model):
     pictures_ids = fields.One2many(
         'compassion.child.pictures', 'child_id', 'Child pictures',
         track_visibility='onchange', readonly=True)
-    household_ids = fields.Many2many('compassion.household',
-                                     string='Household', readonly=True)
+    household_id = fields.Many2one('compassion.household', 'Household',
+                                   readonly=True)
     portrait = fields.Binary(related='pictures_ids.headshot')
     fullshot = fields.Binary(related='pictures_ids.fullshot')
 

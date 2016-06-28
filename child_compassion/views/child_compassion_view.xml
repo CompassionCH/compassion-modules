@@ -112,7 +112,7 @@
                                     </group>
                                     <group string="Household">
                                         <field name="is_orphan"/>
-                                        <field name="household_ids"/>
+                                        <field name="household_id"/>
                                         <field name="duty_ids" widget="many2many_tags"/>
                                     </group>
                                     <group string="Education">

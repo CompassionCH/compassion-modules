@@ -170,7 +170,7 @@ class ChildDescriptionFr(object):
         also included here.
         """
         res = u''
-        household = child.household_ids
+        household = child.household_id
         if not household:
             return ''
 

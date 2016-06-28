@@ -21,8 +21,8 @@ class GenericChildMapping(OnrampMapping):
         'AcademicPerformance_Name': 'academic_performance',
         'ActiveProgram': 'type',
         'Age': 'age',
-        'BeneficiaryHousehold': ('household_ids', 'compassion.household'),
-        'BeneficiaryHouseholdList': ('household_ids', 'compassion.household'),
+        'BeneficiaryHousehold': ('household_id', 'compassion.household'),
+        'BeneficiaryHouseholdList': ('household_id', 'compassion.household'),
         'BeneficiaryState': 'beneficiary_state',
         'Beneficiary_Gender': 'gender',
         'Beneficiary_GlobalID': 'global_id',
@@ -159,13 +159,14 @@ class CompassionChildMapping(GenericChildMapping):
                 odoo_data['gender'] = 'F'
             else:
                 odoo_data['gender'] = 'M'
-        # Replace dict by a tuple for the ORM update/create
-        if 'household_ids' in odoo_data:
-            household_list = list()
-            for household in odoo_data['household_ids']:
-                self.env['compassion.household'].search(
-                    [('household_id', '=', household[
-                        'household_id'])]).unlink()
-                orm_tuple = (0, 0, household)
-                household_list.append(orm_tuple)
-            odoo_data['household_ids'] = household_list or False
+        # Replace list of dict by the household id (created or updated)
+        if 'household_id' in odoo_data:
+            household_data = odoo_data['household_id'][0]
+            household = self.env['compassion.household'].search(
+                [('household_id', '=', household_data[
+                    'household_id'])])
+            if household:
+                household.write(household_data)
+                odoo_data['household_id'] = household.id
+            else:
+                odoo_data['household_id'] = household.create(household_data).id

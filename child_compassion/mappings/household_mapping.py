@@ -40,9 +40,9 @@ class HouseHoldMapping(OnrampMapping):
         # Replace dict by a tuple for the ORM update/create
         if 'member_ids' in odoo_data:
             # Remove all member
-            household_id = odoo_data['household_id']
-            self.env['compassion.household.member'].search(
-                [('household_id', '=', household_id)]).unlink()
+            household = self.env[self.ODOO_MODEL].search(
+                [('household_id', '=', odoo_data['household_id'])])
+            household.member_ids.unlink()
 
             member_list = list()
             for member in odoo_data['member_ids']:
