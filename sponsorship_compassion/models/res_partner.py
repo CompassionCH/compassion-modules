@@ -45,10 +45,26 @@ class ResPartner(models.Model):
     send_original = fields.Boolean(
         help='Indicates that we request the original letters for this sponsor'
     )
+    photo_delivery_preference = fields.Selection(
+        selection='_get_delivery_preference_selection',
+        default='digital',
+        required=True,
+        help='Delivery preference for Child photo')
+    global_communication_delivery_preference = fields.Selection(
+        selection='_get_delivery_preference_selection',
+        default='digital',
+        required=True,
+        help='Delivery preference for Global Communication')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.model
+    def _get_delivery_preference_selection(self):
+        return [
+            ('digital', _('By e-mail')),
+            ('physical', _('By postal service'))]
+
     @api.multi
     @api.depends('category_id')
     def _compute_has_sponsorships(self):
