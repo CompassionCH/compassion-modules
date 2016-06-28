@@ -15,6 +15,8 @@ from datetime import datetime
 from openerp import models, fields, api, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from ..wizards.child_description_fr import ChildDescriptionFr
+from ..wizards.child_description_de import ChildDescriptionDe
+from ..wizards.child_description_it import ChildDescriptionIt
 
 logger = logging.getLogger(__name__)
 
@@ -461,6 +463,10 @@ class CompassionChild(models.Model):
         self.ensure_one()
         self.desc_fr = ChildDescriptionFr.gen_fr_translation(
             self.with_context(lang='fr_CH'))
+        self.desc_de = ChildDescriptionDe.gen_de_translation(
+            self.with_context(lang='de_DE'))
+        self.desc_it = ChildDescriptionIt.gen_it_translation(
+            self.with_context(lang='it_IT'))
 
     ##########################################################################
     #                            WORKFLOW METHODS                            #
