@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import fields, models, api, _
+from openerp import fields, models, api
 
 
 class ResPartner(models.Model):
@@ -24,10 +24,12 @@ class ResPartner(models.Model):
 
     spoken_lang_ids = fields.Many2many(
         'res.lang.compassion', string='Spoken languages')
-    delivery_preference = fields.Selection([
-        ('digital', _('By e-mail')),
-        ('physical', _('By postal service'))], default='digital',
-        required=True, help='Delivery preference for Child letters')
+    letter_delivery_preference = fields.Selection(
+        selection='_get_delivery_preference_selection',
+        default='digital',
+        required=True,
+        help='Delivery preference for Child Letters',
+        oldname='delivery_preference')
     translator_email = fields.Char(help='e-mail address used in SDL')
 
     @api.multi
