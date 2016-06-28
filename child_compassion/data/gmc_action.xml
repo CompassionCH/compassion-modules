@@ -3,7 +3,8 @@
         <!-- Hold Message Creation -->
         <record id="create_hold" model="gmc.action">
             <field name="direction">out</field>
-            <field name="name">create_hold</field>
+            <field name="name">CreateHold</field>
+            <field name="mapping_name">create_hold</field>
             <field name="model">compassion.hold</field>
             <field name="description">This will send a new Hold to GMC.</field>
             <field name="connect_service">beneficiaries/holds</field>

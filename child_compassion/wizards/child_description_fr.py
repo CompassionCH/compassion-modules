@@ -19,6 +19,7 @@ class ChildDescriptionFr(object):
         desc_fr = cls._get_guardians_info_fr(child)
         desc_fr += u'\r\n\r\n'
         desc_fr += cls._get_school_info_fr(child)
+        desc_fr += cls._get_illness(child)
         desc_fr += u'\r\n\r\n'
         desc_fr += cls._gen_christ_act_fr(child)
         desc_fr += cls._gen_family_act_info_fr(child)
@@ -60,7 +61,7 @@ class ChildDescriptionFr(object):
         '''
         if not child.christian_activity_ids:
             return ''
-        activities = child.christian_activity_ids.mapped('name')
+        activities = child.christian_activity_ids.mapped('value')
         activities_str = cls._gen_list_string(activities)
         res = u"A l'Église, %s participe %s. " % (
             'il' if child.gender == 'M' else 'elle', activities_str)
@@ -77,7 +78,7 @@ class ChildDescriptionFr(object):
         if not child.duty_ids:
             return ''
 
-        activities = child.duty_ids.mapped('name')
+        activities = child.duty_ids.mapped('value')
         res = u"A la maison, %s aide %s. " % (
             'il' if child.gender == 'M' else 'elle',
             cls._gen_list_string(activities))
@@ -94,7 +95,7 @@ class ChildDescriptionFr(object):
         if not child.hobby_ids:
             return ''
 
-        activities = child.hobby_ids.mapped('name')
+        activities = child.hobby_ids.mapped('value')
 
         res = u"%s aime %s. " % (
             'Il' if child.gender == 'M'
@@ -170,7 +171,7 @@ class ChildDescriptionFr(object):
         also included here.
         """
         res = u''
-        household = child.household_ids
+        household = child.household_id
         if not household:
             return ''
 
@@ -190,7 +191,7 @@ class ChildDescriptionFr(object):
             caregivers = caregivers.remove('Step Father')
             caregivers = caregivers.remove('Step Mother')
 
-        prefix = [u'son', u'sa', u'un']
+        prefix = [u'son', u'sa', u'un', u'ses']
         for caregiver in caregivers:
             role = caregiver.translate('role')
             if caregiver.male_role:
@@ -201,19 +202,20 @@ class ChildDescriptionFr(object):
                 live_with.append("{0} {1}".format(prefix[2], role))
 
         # Get number of brothers and sisters
-        # if household.nb_brothers == 1:
-        #     live_with['brothers'] = u'{0} frère'.format(prefix[0])
-        # elif household.nb_brothers > 1:
-        #     live_with['brothers'] = u'{0} {1} frères'.format(
-        #         prefix[2], cls._number_to_string(household.nb_brothers))
-        # if household.nb_sisters == 1:
-        #     live_with['sisters'] = u'{0} soeur'.format(prefix[1])
-        # elif household.nb_sisters > 1:
-        #     live_with['sisters'] = u'{0} {1} soeurs'.format(
-        #         prefix[2], cls._number_to_string(household.nb_sisters))
+        if household.nb_brothers == 1:
+            live_with.append(u'{0} frère'.format(prefix[0]))
+        elif household.nb_brothers > 1:
+            live_with.append(u'{0} {1} frères'.format(
+                prefix[3], cls._number_to_string(household.nb_brothers)))
+        if household.nb_sisters == 1:
+            live_with.append(u'{0} soeur'.format(prefix[1]))
+        elif household.nb_sisters > 1:
+            live_with.append(u'{0} {1} soeurs'.format(
+                prefix[3], cls._number_to_string(household.nb_sisters)))
 
-        res = u'%s vit avec %s. ' % (
-            child.firstname, cls._gen_list_string(live_with))
+        if live_with:
+            res = u'%s vit avec %s. ' % (
+                child.firstname, cls._gen_list_string(live_with))
 
         res += cls._get_parents_info(household)
 
@@ -289,3 +291,12 @@ class ChildDescriptionFr(object):
             res = female_job_desc.capitalize() + '.'
 
         return res
+
+    @classmethod
+    def _get_illness(cls, child):
+        if child.chronic_illness_ids or child.physical_disability_ids:
+            res = u'\r\n\r\n{firstname} a {illness}.'
+            illness = child.chronic_illness_ids.mapped(
+                'value') + child.physical_disability_ids.mapped('value')
+            return res.format(firstname=child.firstname, illness=illness)
+        return u''

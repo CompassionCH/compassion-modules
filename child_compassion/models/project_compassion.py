@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Cyril Sester, Kevin Cristi, Emanuel Cino
 #
@@ -12,7 +12,11 @@
 import logging
 from openerp import models, fields, api, _
 
-from ..wizards.project_description_fr import Project_description_fr
+import sys
+
+from ..wizards.project_description_fr import ProjectDescriptionFr
+from ..wizards.project_description_de import ProjectDescriptionDe
+from ..wizards.project_description_it import ProjectDescriptionIt
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +25,7 @@ class CompassionProject(models.Model):
     """ A compassion project """
     _name = 'compassion.project'
     _rec_name = 'icp_id'
-    _inherit = 'mail.thread'
+    _inherit = ['mail.thread', 'translatable.model']
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -119,52 +123,52 @@ class CompassionProject(models.Model):
     # ICP Activities
     ################
     spiritual_activity_babies_ids = fields.Many2many(
-        'icp.spiritual.activity', string='Spiritual activities (0-5)',
-        readonly=True
+        'icp.spiritual.activity', 'icp_spiritual_baby_act',
+        string='Spiritual activities (0-5)', readonly=True
     )
     spiritual_activity_kids_ids = fields.Many2many(
-        'icp.spiritual.activity', string='Spiritual activities (6-11)',
-        readonly=True
+        'icp.spiritual.activity', 'icp_spiritual_kid_act',
+        string='Spiritual activities (6-11)', readonly=True
     )
     spiritual_activity_ados_ids = fields.Many2many(
-        'icp.spiritual.activity', string='Spiritual activities (12+)',
-        readonly=True
+        'icp.spiritual.activity', 'icp_spiritual_ado_act',
+        string='Spiritual activities (12+)', readonly=True
     )
     cognitive_activity_babies_ids = fields.Many2many(
-        'icp.cognitive.activity', string='Cognitive activities (0-5)',
-        readonly=True
+        'icp.cognitive.activity', 'icp_cognitive_baby_act',
+        string='Cognitive activities (0-5)', readonly=True
     )
     cognitive_activity_kids_ids = fields.Many2many(
-        'icp.cognitive.activity', string='Cognitive activities (6-11)',
-        readonly=True
+        'icp.cognitive.activity', 'icp_cognitive_kid_act',
+        string='Cognitive activities (6-11)', readonly=True
     )
     cognitive_activity_ados_ids = fields.Many2many(
-        'icp.cognitive.activity', string='Cognitive activities (12+)',
-        readonly=True
+        'icp.cognitive.activity', 'icp_cognitive_ado_act',
+        string='Cognitive activities (12+)', readonly=True
     )
     physical_activity_babies_ids = fields.Many2many(
-        'icp.physical.activity', string='Physical activities (0-5)',
-        readonly=True
+        'icp.physical.activity', 'icp_physical_baby_act',
+        string='Physical activities (0-5)', readonly=True
     )
     physical_activity_kids_ids = fields.Many2many(
-        'icp.physical.activity', string='Physical activities (6-11)',
-        readonly=True
+        'icp.physical.activity', 'icp_physical_kid_act',
+        string='Physical activities (6-11)', readonly=True
     )
     physical_activity_ados_ids = fields.Many2many(
-        'icp.physical.activity', string='Physical activities (12+)',
-        readonly=True
+        'icp.physical.activity', 'icp_physical_ado_act',
+        string='Physical activities (12+)', readonly=True
     )
     socio_activity_babies_ids = fields.Many2many(
-        'icp.sociological.activity', string='Sociological activities (0-5)',
-        readonly=True
+        'icp.sociological.activity', 'icp_socio_baby_act',
+        string='Sociological activities (0-5)', readonly=True
     )
     socio_activity_kids_ids = fields.Many2many(
-        'icp.sociological.activity', string='Sociological activities (6-11)',
-        readonly=True
+        'icp.sociological.activity', 'icp_socio_kid_act',
+        string='Sociological activities (6-11)', readonly=True
     )
     socio_activity_ados_ids = fields.Many2many(
-        'icp.sociological.activity', string='Sociological activities (12+)',
-        readonly=True
+        'icp.sociological.activity', 'icp_socio_ado_act',
+        string='Sociological activities (12+)', readonly=True
     )
     activities_for_parents = fields.Char(readonly=True)
 
@@ -206,51 +210,21 @@ class CompassionProject(models.Model):
         ('Moderate', 'Moderate'),
     ], readonly=True)
     community_terrain = fields.Selection([
-        ('Coastal', 'Coastal'),
-        ('Desert', 'Desert'),
-        ('Forested', 'Forested'),
-        ('Hilly', 'Hilly'),
-        ('Island', 'Island'),
-        ('Jungle', 'Jungle'),
-        ('Lake', 'Lake'),
-        ('Mountainous', 'Mountainous'),
+        ('Coastal', _('coastal')),
+        ('Desert', _('desert')),
+        ('Forested', _('forested')),
+        ('Hilly', _('hilly')),
+        ('Island', _('island')),
+        ('Jungle', _('jungle')),
+        ('Lake', _('lake')),
+        ('Mountainous', _('mountainous')),
         ('Other', 'Other'),
-        ('Plains/Flat Land', 'Plains/Flat Land'),
-        ('Valley', 'Valley'),
+        ('Plains/Flat Land', _('plains')),
+        ('Valley', _('valley')),
     ], readonly=True)
-    typical_roof_material = fields.Selection([
-        ('Bamboo', 'Bamboo'),
-        ('Cardboard', 'Cardboard'),
-        ('Cement', 'Cement'),
-        ('Leaves/Grass/Thatch', 'Leaves/Grass/Thatch'),
-        ('Other', 'Other'),
-        ('Plastic Sheets', 'Plastic Sheets'),
-        ('Tile', 'Tile'),
-        ('Tin/Corrugated Iron', 'Tin/Corrugated Iron'),
-        ('Wood', 'Wood'),
-    ], readonly=True)
-    typical_floor_material = fields.Selection([
-        ('Bamboo', 'Bamboo'),
-        ('Cardboard', 'Cardboard'),
-        ('Cement', 'Cement'),
-        ('Cloth/Carpet', 'Cloth/Carpet'),
-        ('Dirt', 'Dirt'),
-        ('Leave/Grass', 'Leave/Grass'),
-        ('Other', 'Other'),
-        ('Tile', 'Tile'),
-        ('Wood', 'Wood'),
-    ], readonly=True)
-    typical_wall_material = fields.Selection([
-        ('Bamboo', 'Bamboo'),
-        ('Brick/Block/Cement', 'Brick/Block/Cement'),
-        ('Cardboard', 'Cardboard'),
-        ('Leaves/Grass', 'Leaves/Grass'),
-        ('Mud/Earth/Clay/Adobe', 'Mud/Earth/Clay/Adobe'),
-        ('Other', 'Other'),
-        ('Plastic', 'Plastic'),
-        ('Tin', 'Tin'),
-        ('Wood', 'Wood'),
-    ], readonly=True)
+    typical_roof_material = fields.Selection('_get_materials', readonly=True)
+    typical_floor_material = fields.Selection('_get_materials', readonly=True)
+    typical_wall_material = fields.Selection('_get_materials', readonly=True)
     average_coolest_temperature = fields.Float(readonly=True)
     coolest_month = fields.Selection('_get_months', readonly=True)
     average_warmest_temperature = fields.Float(readonly=True)
@@ -362,6 +336,19 @@ class CompassionProject(models.Model):
             ('T', _('Terminated'))
         ]
 
+    def _get_materials(self):
+        return [
+            ('Bamboo', _('bamboo')),
+            ('Cardboard', _('cardboard')),
+            ('Cement', _('cement')),
+            ('Leaves/Grass/Thatch', _('leaves, grass and thatch')),
+            ('Other', 'Other'),
+            ('Plastic Sheets', _('plastic sheets')),
+            ('Tile', _('tile')),
+            ('Tin/Corrugated Iron', _('tin')),
+            ('Wood', _('wood')),
+        ]
+
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
@@ -380,6 +367,28 @@ class CompassionProject(models.Model):
         self.search([('field_office_id', '=', False)])._compute_field_office()
         return True
 
+    @api.multi
+    def get_activities(self, max_per_type=sys.maxint):
+        icp_activities = list()
+        all_activities = [
+            (self.mapped('spiritual_activity_babies_ids') +
+             self.mapped('spiritual_activity_kids_ids') +
+             self.mapped('spiritual_activity_ados_ids')).sorted(),
+            (self.mapped('cognitive_activity_babies_ids') +
+             self.mapped('cognitive_activity_kids_ids') +
+             self.mapped('cognitive_activity_ados_ids')).sorted(),
+            (self.mapped('physical_activity_babies_ids') +
+             self.mapped('physical_activity_kids_ids') +
+             self.mapped('physical_activity_ados_ids')).sorted(),
+            (self.mapped('socio_activity_babies_ids') +
+             self.mapped('socio_activity_kids_ids') +
+             self.mapped('socio_activity_ados_ids')).sorted()
+        ]
+        for activities in all_activities:
+            max_number_act = min(len(activities), max_per_type)
+            icp_activities.extend(activities[:max_number_act].mapped('value'))
+        return icp_activities
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
@@ -393,10 +402,13 @@ class CompassionProject(models.Model):
 
     @api.multi
     def generate_descriptions(self):
-        # TODO Implement with new modelisation
         for project in self:
-            project.description_fr = Project_description_fr.gen_fr_translation(
+            project.description_fr = ProjectDescriptionFr.gen_fr_translation(
                 project.with_context(lang='fr_CH'))
+            project.description_de = ProjectDescriptionDe.gen_de_translation(
+                project.with_context(lang='de_DE'))
+            project.description_it = ProjectDescriptionIt.gen_it_translation(
+                project.with_context(lang='it_IT'))
 
         return True
 

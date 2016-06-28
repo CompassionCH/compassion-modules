@@ -20,7 +20,7 @@ class Household(models.Model):
 
     household_id = fields.Char(required=True)
     child_ids = fields.One2many(
-        'compassion.child', 'household_ids', 'Beneficiaries')
+        'compassion.child', 'household_id', 'Beneficiaries')
     name = fields.Char()
     number_beneficiaries = fields.Integer()
 
@@ -126,6 +126,12 @@ class Household(models.Model):
             ('Transportation/ Driver', _('is a driver')),
             ('Unknown', 'unknown'),
             ('Welder', _('is a welder')),
+            # TODO see if these values are only in test
+            ('Carpenter', _('is a carpenter')),
+            ('Electrician', _('is an electrician')),
+            ('Fish Seller', _('is a fish seller')),
+            ('Gardener', _('is a gardener')),
+            ('Construction Worker', _('is a construction worker')),
         ]
 
 

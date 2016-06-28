@@ -26,12 +26,13 @@ class TranslateModel(models.AbstractModel):
         if definition:
             for record in self:
                 raw_value = getattr(record, field, False)
-                if definition['type'] in ('char', 'text'):
-                    val = _(raw_value)
-                elif definition['type'] == 'selection':
-                    val = _(dict(definition['selection'])[raw_value])
-                if val:
-                    res.append(val)
+                if raw_value:
+                    if definition['type'] in ('char', 'text'):
+                        val = _(raw_value)
+                    elif definition['type'] == 'selection':
+                        val = _(dict(definition['selection'])[raw_value])
+                    if val:
+                        res.append(val)
         if len(res) == 1:
             res = res[0]
         return res or ''
