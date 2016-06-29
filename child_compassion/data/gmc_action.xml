@@ -24,6 +24,7 @@
             <field name="connect_service">beneficiaries/{$object.global_id}/details</field>
             <field name="request_type">GET</field>
             <field name="auto_process">True</field>
+            <field name="success_method">details_answer</field>
         </record>
         <!-- Get ICP details -->
         <record id="icp_details" model="gmc.action">
@@ -35,6 +36,7 @@
             <field name="connect_service">churchpartners/{$object.icp_id}/kits/icpkit</field>
             <field name="request_type">GET</field>
             <field name="auto_process">True</field>
+            <field name="success_method">details_answer</field>
         </record>
     </data>
 </openerp>

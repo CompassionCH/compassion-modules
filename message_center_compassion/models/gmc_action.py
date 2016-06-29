@@ -48,6 +48,11 @@ class GmcAction(models.Model):
     connect_answer_wrapper = fields.Char(
         help='Tag in which answer is found (for outgoing messages)'
     )
+    success_method = fields.Char(
+        default='write',
+        help='method to call on the object upon success delivery '
+             '(will pass the received answer as parameter as dictionary)'
+    )
     batch_send = fields.Boolean(
         help='True if multiple objects can be sent through a single message'
     )

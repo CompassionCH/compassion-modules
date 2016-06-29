@@ -320,8 +320,10 @@ class GmcMessagePool(models.Model):
                 }
                 if result.get('Code', 2000) == 2000:
                     # Individual message was successfully processed
-                    data_objects[i].write(
-                        object_mapping.get_vals_from_connect(result))
+                    answer_vals = [object_mapping.get_vals_from_connect(
+                        result)]
+                    getattr(data_objects[i], action.success_method)(
+                        *answer_vals)
                     mess_vals['state'] = 'success'
                 else:
                     mess_vals.update({

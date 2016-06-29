@@ -38,7 +38,8 @@ class GenericChildMapping(OnrampMapping):
         'CognitiveAgeGroup_Name': 'cognitive_age_group',
         'CompassChildID': 'compass_id',
         'CompassID': 'compass_id',
-        'CorrespondenceLanguage': 'correspondence_language',
+        'CorrespondenceLanguage': ('correspondence_language_id.name',
+                                   'res.lang.compassion'),
         'CorrespondentScore': 'correspondent_score',
         'CurrentUniversityYearOfStudy': 'university_year',
         'FavoriteProjectActivity': (

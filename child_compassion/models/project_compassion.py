@@ -366,7 +366,7 @@ class CompassionProject(models.Model):
     @api.model
     def create(self, vals):
         project = super(CompassionProject, self).create(vals)
-        project.update_informations()
+        project.update_informations(async_mode=True)
         return project
 
     ##########################################################################
@@ -409,11 +409,18 @@ class CompassionProject(models.Model):
             icp_activities.extend(activities[:max_number_act].mapped('value'))
         return icp_activities
 
+    def details_answer(self, vals):
+        """ Called when receiving the answer of GetDetails message. """
+        self.ensure_one()
+        self.write(vals)
+        self.generate_descriptions()
+        return True
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     @api.multi
-    def update_informations(self):
+    def update_informations(self, context=None, async_mode=False):
         """ Get the most recent informations for selected projects and update
             them accordingly. """
         message_obj = self.env['gmc.message.pool']
@@ -422,8 +429,7 @@ class CompassionProject(models.Model):
             'action_id': action_id,
             'object_id': self.id,
         }
-        message_obj.with_context(async_mode=False).create(message_vals)
-        self.generate_descriptions()
+        message_obj.with_context(async_mode=async_mode).create(message_vals)
         return True
 
     @api.multi
