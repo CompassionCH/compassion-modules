@@ -24,7 +24,7 @@ class ProjectReservation(models.Model):
     )
     campaign_event_identifier = fields.Char()
     expiration_date = fields.Date(required=True)
-    hold_expiration_date = fields.DateTime(required=True)
+    hold_expiration_date = fields.Datetime(required=True)
     hold_yield_rate = fields.Integer()
     is_reservation_auto_approved = fields.Boolean(required=True)
     number_of_beneficiaries = fields.Integer(required=True)
