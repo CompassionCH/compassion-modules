@@ -46,8 +46,9 @@ class CompassionProject(models.Model):
     nb_csp_kids = fields.Integer('CSP kids count', readonly=True)
     nb_cdsp_kids = fields.Integer('CDSP kids count', readonly=True)
     last_update_date = fields.Date('Last update', readonly=True)
-    engaged_partner_ids = fields.Many2many(
-        'compassion.global.partner', string='GP with church engagement',
+    interested_partner_ids = fields.Many2many(
+        'compassion.global.partner',
+        string='GP interested with a church engagement',
         readonly=True)
 
     # Location information
@@ -186,8 +187,10 @@ class CompassionProject(models.Model):
     monthly_income = fields.Float(
         help='Average family income in local currency', readonly=True)
     unemployment_rate = fields.Float(readonly=True)
-    annual_primary_school_cost = fields.Float(readonly=True)
-    annual_secondary_school_cost = fields.Float(readonly=True)
+    annual_primary_school_cost = fields.Float(
+        readonly=True, help='In local currency')
+    annual_secondary_school_cost = fields.Float(
+        readonly=True, help='In local currency')
     school_cost_paid_ids = fields.Many2many(
         'icp.school.cost', string='School costs paid by ICP', readonly=True
     )
@@ -254,6 +257,7 @@ class CompassionProject(models.Model):
     #############
     partnership_start_date = fields.Date(oldname='start_date', readonly=True)
     program_start_date = fields.Date(readonly=True)
+    program_end_date = fields.Date(readonly=True)
 
     # Program Settings
     ##################
@@ -333,21 +337,37 @@ class CompassionProject(models.Model):
         return [
             ('A', _('Active')),
             ('P', _('Phase-out')),
-            ('T', _('Terminated'))
+            ('T', _('Terminated')),
+            ('TR', _('Transitioned')),
+            ('S', _('Suspended')),
         ]
 
     def _get_materials(self):
         return [
             ('Bamboo', _('bamboo')),
+            ('Brick/Block/Cement', _('brick, block and cement')),
             ('Cardboard', _('cardboard')),
             ('Cement', _('cement')),
+            ('Cloth/Carpet', _('cloth and carpet')),
+            ('Dirt', _('dirt')),
             ('Leaves/Grass/Thatch', _('leaves, grass and thatch')),
+            ('Leaves/Grass', _('leaves and grass')),
+            ('Mud/Earth/Clay/Adobe', _('mud, earth, clay and adobe')),
             ('Other', 'Other'),
             ('Plastic Sheets', _('plastic sheets')),
             ('Tile', _('tile')),
             ('Tin/Corrugated Iron', _('tin')),
             ('Wood', _('wood')),
         ]
+
+    ##########################################################################
+    #                              ORM METHODS                               #
+    ##########################################################################
+    @api.model
+    def create(self, vals):
+        project = super(CompassionProject, self).create(vals)
+        project.update_informations()
+        return project
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -396,7 +416,13 @@ class CompassionProject(models.Model):
     def update_informations(self):
         """ Get the most recent informations for selected projects and update
             them accordingly. """
-        # TODO Redefine this
+        message_obj = self.env['gmc.message.pool']
+        action_id = self.env.ref('child_compassion.icp_details').id
+        message_vals = {
+            'action_id': action_id,
+            'object_id': self.id,
+        }
+        message_obj.with_context(async_mode=False).create(message_vals)
         self.generate_descriptions()
         return True
 

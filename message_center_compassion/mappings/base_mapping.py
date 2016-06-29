@@ -304,6 +304,8 @@ def new_onramp_mapping(model, env, mapping_name='default'):
     actions)
     :return: class instance for given model mapping.
     """
+    if not mapping_name:
+        mapping_name = 'default'
     for cls in itersubclasses(OnrampMapping):
         if cls.ODOO_MODEL == model and cls.MAPPING_NAME == mapping_name:
             return cls(env)

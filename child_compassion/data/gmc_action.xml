@@ -13,8 +13,7 @@
             <field name="request_type">POST</field>
             <field name="batch_send">True</field>
         </record>
-    </data>
-    <data><!-- Get beneficiaries details -->
+        <!-- Get beneficiaries details -->
         <record id="beneficiaries_details" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">BeneficiariesDetails</field>
@@ -23,6 +22,17 @@
             <field name="connect_answer_wrapper">BeneficiaryResponseList</field>
             <field name="description">This will update child</field>
             <field name="connect_service">beneficiaries/{$object.global_id}/details</field>
+            <field name="request_type">GET</field>
+            <field name="auto_process">True</field>
+        </record>
+        <!-- Get ICP details -->
+        <record id="icp_details" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">ICPDetails</field>
+            <field name="model">compassion.project</field>
+            <field name="connect_answer_wrapper">ICPResponseList</field>
+            <field name="description">This will update the project</field>
+            <field name="connect_service">churchpartners/{$object.icp_id}/kits/icpkit</field>
             <field name="request_type">GET</field>
             <field name="auto_process">True</field>
         </record>
