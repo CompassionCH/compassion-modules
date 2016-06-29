@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--Compassion project reservation form view -->
+        <record id="view_compassion_reservation_form"
+                model="ir.ui.view">
+            <field name="name">icp.reservation.form</field>
+            <field name="model">icp.reservation</field>
+            <field name="arch" type="xml">
+                <form string="Reservation">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="channel_name" />
+                                <field name="icp_id" />
+                                <field name="campaign_event_identifier" />
+                                <field name="expiration_date" />
+                                <field name="number_of_beneficiaries" />
+                                <field name="primary_owner" />
+                            </group>
+                            <group>
+                                <field name="hold_expiration_date" />
+                                <field name="hold_yield_rate" />
+                                <field name="is_reservation_auto_approved" />
+                                <field name="secondary_owner" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action opening the tree view -->
+        <record id="open_view_reservation_form" model="ir.actions.act_window">
+            <field name="name">Reservation</field>
+            <field name="res_model">icp.reservation</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_sponsorship_reservation"
+                  parent="menu_sponsorship_section" name="Reservations"
+                  action="child_compassion.open_view_reservation_form"
+                  sequence="1"/>
+
+    </data>
+</openerp>

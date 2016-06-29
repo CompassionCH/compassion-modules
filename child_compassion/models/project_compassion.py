@@ -170,6 +170,9 @@ class CompassionProject(models.Model):
         'icp.sociological.activity', 'icp_socio_ado_act',
         string='Sociological activities (12+)', readonly=True
     )
+    reservation_id = fields.Many2one(
+        'icp.reservation', string='Project Reservation'
+    )
     activities_for_parents = fields.Char(readonly=True)
 
     # Community information

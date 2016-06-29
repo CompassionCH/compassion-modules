@@ -25,3 +25,4 @@ from . import project_need
 from . import global_partner
 from . import compassion_hold
 from . import gmc_message
+from . import project_reservation

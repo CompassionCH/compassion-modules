@@ -67,6 +67,9 @@
                                         <field name="first_scheduled_letter"/>
                                         <field name="second_scheduled_letter"/>
                                     </group>
+                                    <group string="Reservation">
+                                        <field name="reservation_id" context="{'default_project_id': active_id}"/>
+                                    </group>
                                 </group>
                             </page>
                             <page string="Descriptions">
