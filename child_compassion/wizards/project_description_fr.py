@@ -150,16 +150,18 @@ class ProjectDescriptionFr:
     @classmethod
     def _get_needs_fr(cls, project):
         """ Create the needs' description """
+        school_costs = cls._gen_list_string(
+            project.school_cost_paid_ids.mapped('value'))
+        school_paid = u"Votre parrainage permet au " \
+            u"personnel du centre d'accueil d'offrir à cet enfant " \
+            u"{} pour l'école. ".format(school_costs) if school_costs else u""
         need_desc = \
-            u"Votre parrainage permet au " \
-            u"personnel du centre d'accueil d'offrir à cet enfant {" \
-            u"school_paid} pour l'école. Le centre d'accueil organise " \
+            u"{school_paid}Le centre d'accueil organise " \
             u"de nombreuses activités dont " \
             u"{icp_activities}.{parent_activities}"
 
         vals = {
-            'school_paid': cls._gen_list_string(
-                project.school_cost_paid_ids.mapped('value')),
+            'school_paid': school_paid,
             'icp_activities': cls._gen_list_string(
                 project.get_activities(max_per_type=2)),
             'parent_activities': u" Des rencontres sont aussi organisées pour "

@@ -31,7 +31,7 @@ class GenericChild(models.AbstractModel):
     # General Information
     #####################
     global_id = fields.Char('Global ID', required=True, readonly=True)
-    correspondence_language = fields.Many2one(
+    correspondence_language_id = fields.Many2one(
         'res.lang.compassion', 'Correspondence language')
     local_id = fields.Char(
         'Local ID', size=11, required=True, help='Child reference',
@@ -395,7 +395,7 @@ class CompassionChild(models.Model):
                 child.write(vals)
         if not child:
             child = super(CompassionChild, self).create(vals)
-        child.get_infos()
+        child.get_infos(async_mode=True)
         return child
 
     ##########################################################################
@@ -428,11 +428,18 @@ class CompassionChild(models.Model):
 
         return True
 
+    def details_answer(self, vals):
+        """ Called when receiving the answer of GetDetails message. """
+        self.ensure_one()
+        self.write(vals)
+        self.generate_descriptions()
+        return True
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     @api.multi
-    def get_infos(self):
+    def get_infos(self, context=None, async_mode=False):
         """Get the most recent case study, basic informations, updates
            portrait picture and creates the project if it doesn't exist.
         """
@@ -445,8 +452,7 @@ class CompassionChild(models.Model):
             'object_id': self.id,
             'child_id': self.id,
         }
-        message_obj.with_context(async_mode=False).create(message_vals)
-        self.generate_descriptions()
+        message_obj.with_context(async_mode=async_mode).create(message_vals)
         return True
 
     @api.multi
@@ -459,7 +465,6 @@ class CompassionChild(models.Model):
 
     @api.multi
     def generate_descriptions(self):
-        # TODO Add other languages
         self.ensure_one()
         self.desc_fr = ChildDescriptionFr.gen_fr_translation(
             self.with_context(lang='fr_CH'))

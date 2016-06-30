@@ -8,7 +8,7 @@
 			<field name="arch" type="xml">
 				<form string="Project">
 					<header>
-						<field name="status" widget="statusbar" />
+						<field name="status" widget="statusbar" statusbar_visible="A,P,T"/>
 					</header>
 					<sheet>
 						<div class="oe_title">

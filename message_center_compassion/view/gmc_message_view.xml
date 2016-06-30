@@ -88,16 +88,24 @@
             <field name="name">gmc.action.form</field>
             <field name="model">gmc.action</field>
             <field name="arch" type="xml">
-                <form string="GMC Action" version="7.0">
+                <form string="GMC Action">
                     <sheet>
                         <group>
-                            <field name="name"/>
-                            <field name="direction"/>
-                            <field name="model"/>
-                            <field name="description"/>
-                            <field name="connect_service"/>
-                            <field name="request_type"/>
-                            <field name="auto_process"/>
+                            <group>
+                                <field name="name"/>
+                                <field name="direction"/>
+                                <field name="model"/>
+                                <field name="description"/>
+                                <field name="connect_service"/>
+                                <field name="request_type"/>
+                            </group>
+                            <group>
+                                <field name="connect_outgoing_wrapper"/>
+                                <field name="connect_answer_wrapper"/>
+                                <field name="success_method"/>
+                                <field name="batch_send"/>
+                                <field name="auto_process"/>
+                            </group>
                         </group>
                     </sheet>
                 </form>

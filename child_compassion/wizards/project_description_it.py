@@ -145,14 +145,18 @@ class ProjectDescriptionIt:
     def _get_needs_it(cls, project):
         """ Create the needs' description pattern to fill by hand
         """
-        need_desc = \
+        school_costs = cls._gen_list_string(
+            project.school_cost_paid_ids.mapped('value'))
+        school_paid = \
             u"Grazie al suo sostegno il personale del Project " \
-            u"potrá {school_paid}. Activities: "\
+            u"potrá {school_paid}. ".format(school_costs) if school_costs \
+            else u""
+        need_desc = \
+            u"{school_paid}Activities: "\
             u"{icp_activities}.{parent_activities}"
 
         vals = {
-            'school_paid': cls._gen_list_string(
-                project.school_cost_paid_ids.mapped('value')),
+            'school_paid': school_paid,
             'icp_activities': cls._gen_list_string(
                 project.get_activities(max_per_type=2)),
             'parent_activities': u" Le genitori. " if

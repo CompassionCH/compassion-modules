@@ -132,6 +132,8 @@ class Household(models.Model):
             ('Fish Seller', _('is a fish seller')),
             ('Gardener', _('is a gardener')),
             ('Construction Worker', _('is a construction worker')),
+            ('Food Vendor', _('is a food vendor')),
+            ('Guard / Watchman', _('is a guard')),
         ]
 
 
