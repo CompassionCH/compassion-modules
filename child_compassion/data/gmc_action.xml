@@ -13,6 +13,19 @@
             <field name="request_type">POST</field>
             <field name="batch_send">True</field>
         </record>
+        <!-- Hold Message Release -->
+        <record id="release_hold" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">ReleaseHold</field>
+            <field name="mapping_name">release_hold</field>
+            <field name="model">compassion.hold</field>
+            <field name="description">This will release a Hold on GMC.</field>
+            <field name="connect_service">beneficiaries/holds/release</field>
+            <field name="connect_outgoing_wrapper">BeneficiaryHoldReleaseRequestList</field>
+            <field name="connect_answer_wrapper">BeneficiaryHoldReleaseResponseList</field>
+            <field name="request_type">POST</field>
+            <field name="batch_send">True</field>
+        </record>
         <!-- Get beneficiaries details -->
         <record id="beneficiaries_details" model="gmc.action">
             <field name="direction">out</field>

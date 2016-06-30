@@ -60,8 +60,8 @@ class Contracts(models.Model):
         for sponsorship in self:
             if sponsorship.correspondant_id and sponsorship.child_id:
                 sponsor = sponsorship.correspondant_id
-                child_languages = sponsorship.child_id.project_id.country_id.\
-                    spoken_lang_ids
+                child_languages = sponsorship.child_id.field_office_id.\
+                    spoken_language_ids
                 sponsor_languages = sponsor.spoken_lang_ids
                 lang_obj = self.env['res.lang.compassion']
                 sponsor_main_lang = lang_obj.search([
@@ -70,7 +70,7 @@ class Contracts(models.Model):
                     sponsorship.reading_language = sponsor_main_lang
                 else:
                     english = self.env.ref(
-                        'sbc_compassion.lang_compassion_english')
+                        'child_compassion.lang_compassion_english')
                     common_langs = (child_languages &
                                     sponsor_languages) - english
                     if common_langs:

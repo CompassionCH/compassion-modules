@@ -9,6 +9,7 @@
 #
 ##############################################################################
 from base_sponsorship_mapping import BaseSponsorshipMapping
+from datetime import datetime
 
 
 class CancelSponsorship(BaseSponsorshipMapping):
@@ -21,10 +22,18 @@ class CancelSponsorship(BaseSponsorshipMapping):
     FIELDS_TO_SUBMIT = {
         "FinalCommitmentOfLine": None,
         "Beneficiary_GlobalID": None,
-        "Beneficiary_HoldExpirationDate": None,
+        "HoldExpirationDate": None,
         "Commitment_ID": None,
         "SponsorSupporterGlobalID": None,
         "GlobalPartner_ID": None,
-        "SponsorSupporterGlobalID": None,
-        "HoldType": None
+        "HoldType": None,
+        "PrimaryHoldOwner": None
     }
+
+    def _process_connect_data(self, connect_data):
+        # Set end date to correct format for Connect
+        if 'HoldExpirationDate' in connect_data:
+            endDateStr = connect_data.get('HoldExpirationDate')
+            endDate = datetime.strptime(endDateStr, "%Y-%m-%d %H:%M:%S")
+            connect_data['HoldExpirationDate'] = endDate.strftime(
+                "%Y-%m-%dT%H:%M:%SZ")

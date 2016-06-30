@@ -9,8 +9,8 @@
 #
 ##############################################################################
 
-from openerp import api, models, fields
-from functools import reduce
+from openerp import api, models, fields, _
+from openerp.exceptions import Warning
 
 
 class CompassionHold(models.Model):
@@ -44,6 +44,7 @@ class CompassionHold(models.Model):
     yield_rate = fields.Float()
     channel = fields.Char()
     source_code = fields.Char()
+    active = fields.Boolean(default=True, readonly=True)
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -59,6 +60,25 @@ class CompassionHold(models.Model):
             self.update_hold()
 
         return res
+
+    @api.multi
+    def unlink(self):
+        message_obj = self.env['gmc.message.pool']
+        action_id = self.env.ref('child_compassion.release_hold').id
+
+        self.active = False
+        message_vals = {
+            'action_id': action_id,
+            'object_id': self.id
+        }
+
+        if self.child_id.sponsor_id:
+            raise Warning(_("Cancel impossible"), _("This hold is on a "
+                                                    "sponsored child!"))
+        else:
+            self.child_id.active = False
+            message_obj.create(message_vals)
+        return
 
     ##########################################################################
     #                             PUBLIC METHODS                             #

@@ -35,12 +35,28 @@
             <field name="name">compassion.hold.tree</field>
             <field name="model">compassion.hold</field>
             <field name="arch" type="xml">
-                <tree string="holds">
+                <tree colors="grey:active == False; black:active == True" string="Holds">
                     <field name="hold_id" />
                     <field name="child_name" />
                     <field name="expiration_date" />
                     <field name="primary_owner" />
+                    <field name="active"/>
                 </tree>
+            </field>
+        </record>
+
+        <!-- Search view -->
+        <record id="view_child_compassion_filter" model="ir.ui.view">
+            <field name="name">compassion.hold.select</field>
+            <field name="model">compassion.hold</field>
+            <field name="arch" type="xml">
+                <search string="Search hold">
+                    <field name="child_name" filter_domain="[('child_name', 'ilike', self)]"/>
+                    <field name="hold_id"/>
+                    <field name="primary_owner"/>
+                    <filter name="active" string="Active" domain="[('active','=',True)]"/>
+                    <filter name="inactive" string="Inactive" domain="[('active','=',False)]"/>
+                </search>
             </field>
         </record>
 
@@ -49,6 +65,9 @@
             <field name="res_model">compassion.hold</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_compassion_holds_tree"/>
+            <field name="context">{'search_default_active':1}</field>
+
         </record>
 
         <menuitem id="menu_holds" parent="menu_sponsorship_section"

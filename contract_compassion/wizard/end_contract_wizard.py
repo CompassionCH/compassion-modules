@@ -20,7 +20,7 @@ from datetime import datetime
 class EndContractWizard(models.TransientModel):
     _name = 'end.contract.wizard'
 
-    end_date = fields.Date(
+    end_date = fields.Datetime(
         required=True, default=datetime.today().strftime(DF))
     contract_id = fields.Many2one(
         'recurring.contract', 'Contract',
