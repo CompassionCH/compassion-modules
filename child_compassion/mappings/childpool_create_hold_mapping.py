@@ -15,13 +15,12 @@ from datetime import datetime
 
 class ChilpoolCreateHoldMapping(OnrampMapping):
     """
-    Childpool mapping for searching available children from GMC.
+    Childpool mapping for reserving available children from GMC.
     """
     ODOO_MODEL = 'compassion.hold'
     MAPPING_NAME = "create_hold"
 
     CONNECT_MAPPING = {
-        # Fields used in Search Message (for global child)
         'Beneficiary_GlobalID': ('child_id.global_id', 'compassion.child'),
         "BeneficiaryState": 'type',
         'EstimatedNoMoneyYieldRate': 'no_money_yield_rate',
@@ -61,3 +60,16 @@ class ChilpoolCreateHoldMapping(OnrampMapping):
             endDate = datetime.strptime(endDateStr, "%Y-%m-%d %H:%M:%S")
             connect_data['HoldEndDate'] = endDate.strftime(
                 "%Y-%m-%dT%H:%M:%SZ")
+
+
+class ChilpoolReleaseHoldMapping(ChilpoolCreateHoldMapping):
+    """
+        Childpool mapping for realease children on GMC.
+        """
+    MAPPING_NAME = "release_hold"
+
+    FIELDS_TO_SUBMIT = {
+        'Beneficiary_GlobalID': None,
+        "HoldID": None,
+        "GlobalPartner_ID": None,
+    }
