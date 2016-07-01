@@ -27,6 +27,7 @@ class CancelSponsorship(BaseSponsorshipMapping):
         "SponsorSupporterGlobalID": None,
         "GlobalPartner_ID": None,
         "HoldType": None,
+        "DelinkType": None,
         "PrimaryHoldOwner": None
     }
 

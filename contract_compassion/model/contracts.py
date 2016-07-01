@@ -82,6 +82,7 @@ class recurring_contract(models.Model):
         compute='_set_frequency', store=True, readonly=True)
     transfer_partner_id = fields.Many2one(
         'compassion.global.partner', 'Transferred to')
+    hold_expiration_date = fields.Datetime()
 
     ##########################################################################
     #                             FIELDS METHODS                             #

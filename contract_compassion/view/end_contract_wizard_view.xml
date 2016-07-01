@@ -18,6 +18,7 @@
                             <field name="child_id" readonly="1"/>
                             <field name="end_date"/>
                             <field name="end_reason"/>
+                            <field name="hold_expiration_date"/>
                         </group>
                         <group/>
                         <group attrs="{'invisible': [('end_reason', '!=', '4')]}">
