@@ -316,10 +316,6 @@ class RecurringContract(models.Model):
                 '|', ('sds_state', 'in', ('sub_waiting', 'inform_no_sub')),
                 '&', ('sds_state', '=', 'waiting_welcome'),
                 ('color', '=', 4)]
-        if menu == 'menu_follow_gmc':
-            domain = [
-                ('sds_uid', '=', self.env.user.id),
-                ('gmc_state', '!=', False)]
         if menu == 'menu_follow_project':
             domain = [
                 ('sds_uid', '=', self.env.user.id),

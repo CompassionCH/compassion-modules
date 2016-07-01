@@ -100,7 +100,7 @@ class CommunicationConfig(models.Model):
             return self.send_mode
         else:
             return getattr(
-                partner, self.send_mode_pref_field.name,  'none')
+                partner, self.send_mode_pref_field,  'none')
 
     def inform_sponsor(self, partner, object_id, auto_send=None,
                        email_template=None, report=None, _from=None, to=None):
@@ -154,7 +154,7 @@ class CommunicationConfig(models.Model):
                     email_template, object_id, email_vals)
                 if auto_send:
                     email.send_sendgrid()
-                message = email.message_id
+                message = email.mail_message_id
                 partner.message_post(message.body, message.subject)
                 return email
 
