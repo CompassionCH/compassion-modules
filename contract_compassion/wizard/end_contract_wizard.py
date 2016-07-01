@@ -32,6 +32,8 @@ class EndContractWizard(models.TransientModel):
     do_transfer = fields.Boolean('I want to transfer the child')
     transfer_country_id = fields.Many2one(
         'compassion.global.partner', 'Country')
+    hold_expiration_date = fields.Datetime(default=datetime.today(
+        ).strftime(DF))
 
     @api.model
     def _get_child_id(self):
@@ -68,6 +70,7 @@ class EndContractWizard(models.TransientModel):
             'end_reason': self.end_reason,
             'end_date': self.end_date,
             'transfer_partner_id': self.transfer_country_id.id,
+            'hold_expiration_date': self.hold_expiration_date,
         })
         contract.signal_workflow('contract_terminated')
 
