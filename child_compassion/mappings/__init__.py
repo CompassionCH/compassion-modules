@@ -14,3 +14,4 @@ from . import childpool_search_mapping
 from . import compassion_child_mapping
 from . import household_mapping
 from . import icp_mapping
+from . import project_reservation_mapping
