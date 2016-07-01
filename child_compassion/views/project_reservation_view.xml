@@ -9,17 +9,23 @@
             <field name="arch" type="xml">
                 <form string="Reservation">
                     <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" />
+                            </h1>
+                        </div>
                         <group>
                             <group>
                                 <field name="channel_name" />
                                 <field name="icp_id" />
                                 <field name="campaign_event_identifier" />
                                 <field name="expiration_date" />
-                                <field name="number_of_beneficiaries" />
-                                <field name="primary_owner" />
+                                <field name="hold_expiration_date" />
                             </group>
                             <group>
-                                <field name="hold_expiration_date" />
+                                <field name="number_of_beneficiaries" />
+                                <field name="primary_owner" />
                                 <field name="hold_yield_rate" />
                                 <field name="is_reservation_auto_approved" />
                                 <field name="secondary_owner" />

@@ -52,4 +52,36 @@
             <field name="success_method">details_answer</field>
         </record>
     </data>
+    <data>
+        <!-- Reservation Message Creation -->
+        <record id="create_reservation" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">CreateReservation</field>
+            <field name="mapping_name">create_reservation</field>
+            <field name="model">icp.reservation</field>
+            <field name="description">This will send a new Reservation to GMC
+                .</field>
+            <field name="connect_service">churchpartners/reservations</field>
+            <field name="connect_outgoing_wrapper">GlobalPartnerReservationRequestList</field>
+            <field name="connect_answer_wrapper">GlobalPartnerReservationResponseList</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">True</field>
+        </record>
+    </data>
+    <data>
+        <!-- Reservation Message Release -->
+        <record id="cancel_reservation" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">CancelReservation</field>
+            <field name="mapping_name">cancel_reservation</field>
+            <field name="model">icp.reservation</field>
+            <field name="description">This will send a reservation
+                cancelling request to GMC.</field>
+            <field name="connect_service">churchpartners/reservations/cancellations</field>
+            <field name="connect_outgoing_wrapper">ReservationCancelRequestList</field>
+            <field name="connect_answer_wrapper">ReservationCancelResponseList</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">True</field>
+        </record>
+    </data>
 </openerp>
