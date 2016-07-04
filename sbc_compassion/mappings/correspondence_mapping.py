@@ -21,7 +21,6 @@ class CorrespondenceMapping(OnrampMapping):
     Communication_Kit_Fields_and_Sample_JSON
     """
     ODOO_MODEL = 'correspondence'
-    MAPPING_NAME = 'CreateLetter'
 
     BENEFICIARY_MAPPING = {
         'Age': None,

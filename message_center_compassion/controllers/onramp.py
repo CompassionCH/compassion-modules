@@ -42,7 +42,7 @@ class RestController(http.Controller):
                 'request_id': request.uuid,
                 'action_id': action.id,
                 'headers': json.dumps(dict(headers.items())),
-                'content': json.dumps(request.text)
+                'content': json.dumps(request.jsonrequest)
             })
             result.update({
                 "code": 200,

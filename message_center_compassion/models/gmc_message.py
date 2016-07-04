@@ -113,10 +113,12 @@ class GmcMessagePool(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
-        message = self.search([
-            ('object_id', '=', vals['object_id']),
-            ('state', 'in', ('new', 'pending')),
-            ('action_id', '=', vals['action_id'])])
+        message = False
+        if 'object_id' in vals:
+            message = self.search([
+                ('object_id', '=', vals['object_id']),
+                ('state', 'in', ('new', 'pending')),
+                ('action_id', '=', vals['action_id'])])
 
         if not message:
             message = super(GmcMessagePool, self).create(vals)
@@ -246,7 +248,7 @@ class GmcMessagePool(models.Model):
         action = self.action_id
         model_obj = self.env[action.model]
         commkit_data = json.loads(self.content)
-        object_ids = model_obj.process_commkit(commkit_data)
+        object_ids = map(str, model_obj.process_commkit(commkit_data))
         return {
             'state': 'success' if object_ids else 'failure',
             'object_ids': ','.join(object_ids)

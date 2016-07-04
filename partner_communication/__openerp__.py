@@ -9,7 +9,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -27,44 +27,18 @@
 #
 ##############################################################################
 
+
 {
-    'name': "Sponsor to beneficiary communication",
+    'name': 'Partner Communication',
     'version': '8.0.3.0',
     'category': 'Other',
-    'summary': "SBC - Supporter to Beneficiary Communication",
-    'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['sponsorship_compassion', 'web_tree_image',
-                'partner_communication'],
-    'external_dependencies': {
-        'java': ['zxing'],
-        'python': ['magic', 'wand', 'numpy', 'cv2']
-    },
+    'depends': ['mail_sendgrid'],
     'data': [
         'security/ir.model.access.csv',
-        'views/config_view.xml',
-        'views/contracts_view.xml',
-        'views/partner_compassion_view.xml',
-        'views/lang_compassion_view.xml',
-        'views/correspondence_view.xml',
-        'views/import_letters_history_view.xml',
-        'views/correspondence_template_view.xml',
-        'views/correspondence_template_crosscheck_view.xml',
-        'views/test_import_letters_history_view.xml',
-        'views/import_review_view.xml',
-        'views/download_letters_view.xml',
-        'views/get_letter_image_wizard_view.xml',
-        'data/correspondence_template_data.xml',
-        'data/correspondence_type.xml',
-        'data/child_layouts.xml',
-        'data/gmc_action.xml',
     ],
-    'demo': [
-        'demo/correspondence_template_demo.xml',
-        'demo/update_demo_partner_compassion.xml',
-        # 'demo/update_demo_child_compassion.xml',
-    ],
+    'demo': [],
     'installable': True,
     'auto_install': False,
 }

@@ -40,3 +40,9 @@ UPDATE ir_model_data SET module = 'message_center_compassion'
 WHERE name IN ('field_gmc_message_pool_content',
                'field_gmc_message_pool_headers');
     """)
+
+    # Move field gmc_state to module sponsorship_switzerland
+    cr.execute("""
+UPDATE ir_model_data SET module='sponsorship_switzerland'
+WHERE name = 'field_recurring_contract_gmc_state'
+    """)
