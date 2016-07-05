@@ -11,17 +11,15 @@
 
 from openerp import models, fields, api
 from openerp.osv import orm
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 from lxml import etree
-from datetime import datetime
 
 
 class EndContractWizard(models.TransientModel):
     _name = 'end.contract.wizard'
 
     end_date = fields.Datetime(
-        required=True, default=datetime.today().strftime(DF))
+        required=True, default=fields.Datetime.now())
     contract_id = fields.Many2one(
         'recurring.contract', 'Contract',
         default=lambda self: self.env.context.get('active_id'))
@@ -32,8 +30,9 @@ class EndContractWizard(models.TransientModel):
     do_transfer = fields.Boolean('I want to transfer the child')
     transfer_country_id = fields.Many2one(
         'compassion.global.partner', 'Country')
-    hold_expiration_date = fields.Datetime(default=datetime.today(
-        ).strftime(DF))
+    has_new_hold = fields.Boolean('Keep child on hold', default=True)
+    hold_expiration_date = fields.Datetime(default=fields.Datetime.now(),
+                                           required=True)
 
     @api.model
     def _get_child_id(self):
@@ -64,6 +63,16 @@ class EndContractWizard(models.TransientModel):
     def end_contract(self):
         self.ensure_one()
         contract = self.contract_id
+        child = contract.child_id
+        hold = child.hold_id
+
+        if not self.has_new_hold:
+            # child will be inactive after this choice
+            self.hold_expiration_date = fields.Datetime.now()
+            child.write({'active': False})
+
+        # in all case current hold became inactive
+        hold.write({'active': False})
 
         # Terminate contract
         contract.write({
