@@ -63,3 +63,4 @@ access_admin_household_member,Full access on household member,model_compassion_h
 access_global_partner,Read access on global partner,model_compassion_global_partner,group_sponsorship,1,0,0,0
 access_admin_global_partner,Full access on global partner,model_compassion_global_partner,base.group_erp_manager,1,1,1,1
 access_compassion_hold,Full access on compassion hold,model_compassion_hold,group_sponsorship,1,1,1,1
+access_major_field,Full access on major revision fields,model_child_major_field,group_sponsorship,1,1,1,1

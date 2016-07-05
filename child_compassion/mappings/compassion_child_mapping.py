@@ -33,6 +33,8 @@ class GenericChildMapping(OnrampMapping):
         'CDSPType': 'cdsp_type',
         'ChristianActivity_Name': (
             'christian_activity_ids.name', 'child.christian.activity'),
+        'ChronicIllness': (
+            'chronic_illness_ids.name', 'child.chronic.illness'),
         'ChronicIllness_Name': (
             'chronic_illness_ids.name', 'child.chronic.illness'),
         'CognitiveAgeGroup_Name': 'cognitive_age_group',
@@ -72,11 +74,15 @@ class GenericChildMapping(OnrampMapping):
         'MinDaysWaiting': 'waiting_days',
         'NameInNonLatinChar': 'non_latin_name',
         'NotEnrolledInEducationReason': 'not_enrolled_reason',
+        'PhysicalDisability': (
+            'physical_disability_ids.name', 'child.physical.disability'),
         'PhysicalDisability_Name': (
             'physical_disability_ids.name', 'child.physical.disability'),
         'PlannedCompletionDate': 'completion_date',
+        'PlannedCompletionDateChangeReason': 'completion_date_change_reason',
         'PreferredName': 'preferred_name',
         'PriorityScore': 'priority_score',
+        'RevisedValues': 'revised_value_ids',
         'SourceCode': 'source_code',
         'SponsorshipStatus': 'sponsorship_status',
         'SponsoredStatus': 'sponsorship_status',
@@ -106,7 +112,6 @@ class GenericChildMapping(OnrampMapping):
         'LastPhotoDate': None,
         'LocalBeneficiaryNumber': None,
         'MentalDevelopmentConditions': None,
-        'PlannedCompletionDateChangeReason': None,
         'PrimaryCaregiverName': None,
         'ProgramDeliveryType': None,
         'RecordType_Name': None,
@@ -171,3 +176,15 @@ class CompassionChildMapping(GenericChildMapping):
                 odoo_data['household_id'] = household.id
             else:
                 odoo_data['household_id'] = household.create(household_data).id
+
+        # Unlink old revised values and create new ones
+        if 'revised_value_ids' in odoo_data:
+            child = self.env['compassion.child'].search([
+                ('global_id', '=', odoo_data['global_id'])])
+            child.revised_value_ids.unlink()
+            for value in odoo_data['revised_value_ids']:
+                self.env['child.major.field'].create({
+                    'name': value,
+                    'child_id': child.id,
+                })
+            del odoo_data['revised_value_ids']

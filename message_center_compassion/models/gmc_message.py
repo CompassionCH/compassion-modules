@@ -245,10 +245,14 @@ class GmcMessagePool(models.Model):
     def _perform_incoming_action(self):
         """ Convert the data incoming from Connect into Odoo object values
         and call the process_commkit method on the related object. """
-        action = self.action_id
-        model_obj = self.env[action.model]
-        commkit_data = json.loads(self.content)
-        object_ids = map(str, model_obj.process_commkit(commkit_data))
+        object_ids = list()
+        action = self.mapped('action_id')
+        for message in self:
+            model_obj = self.env[action.model]
+            commkit_data = [json.loads(message.content)]
+            object_ids.extend(
+                map(str,
+                    getattr(model_obj, action.incoming_method)(*commkit_data)))
         return {
             'state': 'success' if object_ids else 'failure',
             'object_ids': ','.join(object_ids)
