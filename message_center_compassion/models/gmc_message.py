@@ -255,7 +255,9 @@ class GmcMessagePool(models.Model):
                     getattr(model_obj, action.incoming_method)(*commkit_data)))
         return {
             'state': 'success' if object_ids else 'failure',
-            'object_ids': ','.join(object_ids)
+            'object_ids': ','.join(object_ids),
+            'failure_reason': 'No related objects found.' if not object_ids
+            else False
         }
 
     def _perform_outgoing_action(self):

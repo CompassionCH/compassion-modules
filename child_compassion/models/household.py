@@ -12,6 +12,8 @@
 
 from openerp import api, models, fields, _
 
+from ..mappings.household_mapping import HouseHoldMapping
+
 
 class Household(models.Model):
     _name = 'compassion.household'
@@ -23,6 +25,10 @@ class Household(models.Model):
         'compassion.child', 'household_id', 'Beneficiaries')
     name = fields.Char()
     number_beneficiaries = fields.Integer()
+    revised_value_ids = fields.One2many(
+        'compassion.major.revision', 'household_id', 'Major revisions',
+        readonly=True
+    )
 
     # Parents
     #########
@@ -40,6 +46,7 @@ class Household(models.Model):
     mother_alive = fields.Selection('_get_yes_no')
     mother_living_with_child = fields.Boolean()
     youth_headed_household = fields.Boolean()
+    primary_caregiver = fields.Char(compute='_compute_primary_caregiver')
 
     # Employment
     ############
@@ -71,6 +78,13 @@ class Household(models.Model):
                     'Sister', 'Beneficiary - Female'))
             household.nb_brothers = len(brothers) - 1
             household.nb_sisters = len(sisters) - 1
+
+    @api.multi
+    def _compute_primary_caregiver(self):
+        for household in self:
+            primary_caregiver = household.member_ids.filtered(
+                'is_primary_caregiver')
+            household.primary_caregiver = primary_caregiver.translate('role')
 
     @api.multi
     def get_male_guardian(self):
@@ -137,10 +151,30 @@ class Household(models.Model):
             ('Domestic Service / Housekeeper', ('is a domestic')),
         ]
 
+    def process_commkit(self, commkit_data):
+        """ Household Major Revision """
+        household_ids = list()
+        household_mapping = HouseHoldMapping(self.env)
+        for household_data in commkit_data.get('BeneficiaryHouseholdList',
+                                               [commkit_data]):
+            household = self.search([
+                ('household_id', '=', household_data.get('Household_ID'))])
+            if household:
+                household_ids.append(household.id)
+                household_vals = household_mapping.get_vals_from_connect(
+                    household_data)
+                household._major_revision(household_vals)
+        return household_ids
+
+    def _major_revision(self, vals):
+        self.ensure_one()
+        self.write(vals)
+
 
 class HouseholdMembers(models.Model):
     _name = 'compassion.household.member'
     _inherit = 'translatable.model'
+    _description = 'Household Member'
 
     beneficiary_global_id = fields.Char()
     beneficiary_local_id = fields.Char()

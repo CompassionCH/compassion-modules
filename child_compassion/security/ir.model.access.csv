@@ -7,7 +7,7 @@ access_res_lang_compassion,Read only access on res_lang_compassion,model_res_lan
 access_admin_res_lang_compassion,Full access on res_lang_compassion,model_res_lang_compassion,base.group_erp_manager,1,1,1,1
 access_child_assessement,Read access on child_assessement,model_compassion_child_cdpr,group_sponsorship,1,0,1,0
 access_child_lifecycle,Read access on child lifecycle,model_compassion_child_ble,group_sponsorship,1,0,1,0
-access_child_household,Read access on child household,model_compassion_household,group_sponsorship,1,0,1,0
+access_child_household,Read access on child household,model_compassion_household,group_sponsorship,1,1,1,0
 access_child_household_duty,Read access on household duty,model_child_household_duty,group_sponsorship,1,0,1,0
 access_child_project_activity,Read access on child project activity,model_child_project_activity,group_sponsorship,1,0,1,0
 access_child_school_subject,Read access on child school subject,model_child_school_subject,group_sponsorship,1,0,1,0
@@ -58,10 +58,10 @@ access_admin_icp_diet,Full access on icp diet,model_icp_diet,base.group_erp_mana
 access_admin_project_lifecycle,Full access on project_lifecycle,model_compassion_project_ile,base.group_erp_manager,1,1,1,1
 access_admin_project_need,Full access on project need,model_compassion_project_need,base.group_erp_manager,1,1,1,1
 access_field_office,Full access on field office,model_compassion_field_office,group_sponsorship,1,1,1,1
-access_household_member,Read access on household member,model_compassion_household_member,group_sponsorship,1,0,1,0
+access_household_member,Full access on household member,model_compassion_household_member,group_sponsorship,1,1,1,1
 access_admin_household_member,Full access on household member,model_compassion_household_member,base.group_erp_manager,1,0,1,0
 access_global_partner,Read access on global partner,model_compassion_global_partner,group_sponsorship,1,0,0,0
 access_admin_global_partner,Full access on global partner,model_compassion_global_partner,base.group_erp_manager,1,1,1,1
 access_compassion_hold,Full access on compassion hold,model_compassion_hold,group_sponsorship,1,1,1,1
-access_major_field,Full access on major revision fields,model_child_major_field,group_sponsorship,1,1,1,1
 access_icp_reservation,Full access on ICP reservations,model_icp_reservation,group_sponsorship,1,1,1,1
+access_major_revision,Full access on major revision fields,model_compassion_major_revision,group_sponsorship,1,1,1,1
