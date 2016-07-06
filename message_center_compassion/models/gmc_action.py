@@ -21,22 +21,23 @@ class GmcAction(models.Model):
     message read from the GMC Message Pool class.
 
     Incoming actions :
-        - Calls a method 'process_commkit' of the action model which must
+        - Calls a method 'incoming_method'
+          ('process_commkit' by default) of the action model which must
           return a list of ids of the updated records.
 
     Outgoing actions :
         - The object can implement 'on_send_to_connect' method in order
           to execute some code before sending the object to GMC.
-        - Calls a write on the action model with the
-          answer sent by GMC when message was successfully transmitted.
+        - Calls 'success_method' (write by default) on the action model with
+          the answer sent by GMC when message was successfully transmitted.
     """
     _name = 'gmc.action'
 
     direction = fields.Selection(
         [('in', _('Incoming Message')), ('out', _('Outgoing Message'))],
         'Message Direction', required=True)
-    name = fields.Char('GMC Message', size=20, required=True)
-    model = fields.Char('OSV Model', size=30)
+    name = fields.Char('GMC Message', required=True)
+    model = fields.Char('Model')
     description = fields.Text('Action to execute')
     mapping_name = fields.Char()
     connect_service = fields.Char(
@@ -53,6 +54,11 @@ class GmcAction(models.Model):
         help='method to call on the object upon success delivery '
              '(will pass the received answer as parameter as dictionary)'
     )
+    incoming_method = fields.Char(
+        default='process_commkit',
+        help='method called on the object when receiving incoming message '
+             '(will pass the received json as parameter as dictionary)'
+    )
     batch_send = fields.Boolean(
         help='True if multiple objects can be sent through a single message'
     )
@@ -66,13 +72,13 @@ class GmcAction(models.Model):
     ])
 
     @api.one
-    @api.constrains('model', 'direction')
+    @api.constrains('model', 'direction', 'incoming_method')
     def _validate_action(self):
         """ Test if the action can be performed on given model. """
         valid = True
         model_obj = self.env[self.model]
         if self.direction == 'in':
-            valid = hasattr(model_obj, 'process_commkit')
+            valid = hasattr(model_obj, self.incoming_method)
 
         if not valid:
             raise ValidationError(

@@ -17,6 +17,7 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from ..wizards.child_description_fr import ChildDescriptionFr
 from ..wizards.child_description_de import ChildDescriptionDe
 from ..wizards.child_description_it import ChildDescriptionIt
+from ..mappings.compassion_child_mapping import CompassionChildMapping
 
 logger = logging.getLogger(__name__)
 
@@ -311,6 +312,9 @@ class CompassionChild(models.Model):
     assessment_ids = fields.One2many(
         'compassion.child.cdpr', 'child_id', 'Assessments', readonly=True
     )
+    revised_value_ids = fields.One2many(
+        'child.major.field', 'child_id', 'Major revisions', readonly=True
+    )
     pictures_ids = fields.One2many(
         'compassion.child.pictures', 'child_id', 'Child pictures',
         track_visibility='onchange', readonly=True)
@@ -435,6 +439,21 @@ class CompassionChild(models.Model):
         self.generate_descriptions()
         return True
 
+    @api.model
+    def major_revision(self, commkit_data):
+        """ Called when a MajorRevision Kit is received. """
+        child_ids = list()
+        child_mapping = CompassionChildMapping(self.env)
+        for child_data in commkit_data.get('BeneficiaryMajorRevisionList',
+                                           [commkit_data]):
+            global_id = child_data.get('Beneficiary_GlobalID')
+            child = self.search([('global_id', '=', global_id)])
+            if child:
+                child_ids.append(child.id)
+                child._major_revision(child_mapping.get_vals_from_connect(
+                    child_data))
+        return child_ids
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
@@ -533,3 +552,10 @@ class CompassionChild(models.Model):
                 "Picture update", 'comment')
 
         return pictures
+
+    def _major_revision(self, vals):
+        """ Private method when a major revision is received for a child.
+            :param vals: Record values received from connect
+        """
+        self.ensure_one()
+        self.write(vals)

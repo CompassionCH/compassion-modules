@@ -51,37 +51,47 @@
             <field name="auto_process">True</field>
             <field name="success_method">details_answer</field>
         </record>
-    </data>
-    <data>
         <!-- Reservation Message Creation -->
         <record id="create_reservation" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">CreateReservation</field>
             <field name="mapping_name">create_reservation</field>
             <field name="model">icp.reservation</field>
-            <field name="description">This will send a new Reservation to GMC
-                .</field>
+            <field name="description">This will send a new Reservation to GMC.</field>
             <field name="connect_service">churchpartners/reservations</field>
             <field name="connect_outgoing_wrapper">GlobalPartnerReservationRequestList</field>
             <field name="connect_answer_wrapper">GlobalPartnerReservationResponseList</field>
             <field name="request_type">POST</field>
             <field name="auto_process">True</field>
         </record>
-    </data>
-    <data>
         <!-- Reservation Message Release -->
         <record id="cancel_reservation" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">CancelReservation</field>
             <field name="mapping_name">cancel_reservation</field>
             <field name="model">icp.reservation</field>
-            <field name="description">This will send a reservation
-                cancelling request to GMC.</field>
+            <field name="description">This will send a reservation cancelling request to GMC.</field>
             <field name="connect_service">churchpartners/reservations/cancellations</field>
             <field name="connect_outgoing_wrapper">ReservationCancelRequestList</field>
             <field name="connect_answer_wrapper">ReservationCancelResponseList</field>
             <field name="request_type">POST</field>
             <field name="auto_process">True</field>
+        </record>
+        <!-- Beneficiary Major Revision -->
+        <record id="major_revision" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">BeneficiaryMajorRevision</field>
+            <field name="mapping_name">cancel_reservation</field>
+            <field name="model">compassion.child</field>
+            <field name="incoming_method">major_revision</field>
+            <field name="description">This will update the child with the major changes that happened.</field>
+            <field name="auto_process">True</field>
+        </record>
+
+        <!-- Action to Connect mappings -->
+        <record id="major_revision_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/MajorRevisionKit</field>
+            <field name="action_id" ref="major_revision"/>
         </record>
     </data>
 </openerp>
