@@ -194,6 +194,7 @@ class CompassionChild(models.Model):
         ('High school 1', 'High school 1'),
         ('High school 2', 'High school 2'),
         ('High school 3', 'High school 3'),
+        ('Not Enrolled', 'Not Enrolled'),
     ], readonly=True)
     us_grade_level = fields.Selection([
         ('P', 'P'),
