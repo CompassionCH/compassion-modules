@@ -32,7 +32,7 @@ class BaseSponsorshipMapping(OnrampMapping):
         "CorrespondentCorrespondenceLanguage": None,
         "CorrespondentSupporterGlobalID": None,
         "FinalCommitmentOfLine": None,
-        "HoldID": ('child_id.hold_id.hold_id', 'compassion.child'),
+        "HoldID": None,
         "HoldType": None,
         "PrimaryHoldOwner": ('partner_id.name', 'res.partner'),
         "SecondaryHoldOwner": None,
