@@ -7,6 +7,9 @@
             <field name="model">compassion.hold</field>
             <field name="arch" type="xml">
                 <form string="Holds">
+                    <header>
+                        <button name="release_hold" type="object" string="Release Hold" attrs="{'invisible': [('expiration_date', '=', False)]}"/>
+                    </header>
                     <sheet>
                         <div class="oe_title">
                             <label for="name" class="oe_edit_only" />
@@ -67,7 +70,6 @@
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_compassion_holds_tree"/>
             <field name="context">{'search_default_active':1}</field>
-
         </record>
 
         <menuitem id="menu_holds" parent="menu_sponsorship_section"
