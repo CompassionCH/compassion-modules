@@ -28,7 +28,7 @@ class ChildAssessmentMapping(OnrampMapping):
         'SocioEmotionalOutcomeScore': 'sociological_score',
         'SpiritualOutcomeScore': 'spiritual_score',
         'Age': 'age',
-        'Beneficiary_GlobalID': 'child_id',
+        'Beneficiary_GlobalID': ('child_id.global_id', 'compassion.child'),
         'CDPRAgeGroup': 'cdpr_age_group',
         'SourceKitName': 'source_kit_name',
     }

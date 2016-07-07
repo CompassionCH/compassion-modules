@@ -42,11 +42,5 @@ class ChildAssessment(models.Model):
                                                 self.env,
                                                 'beneficiary_cdpr')
         vals = child_assessment_mapping.get_vals_from_connect(commkit_data)
-        child = self.env['compassion.child'].search([(
-            'global_id',
-            '=',
-            vals.get('child_id')
-        )])
-        vals['child_id'] = child.id
         child_assessment = self.create(vals)
-        return child_assessment
+        return [child_assessment.id]
