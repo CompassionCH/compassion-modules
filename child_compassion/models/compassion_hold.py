@@ -46,6 +46,24 @@ class CompassionHold(models.Model):
     source_code = fields.Char()
     active = fields.Boolean(default=True, readonly=True)
 
+    @api.multi
+    def release_hold(self):
+        message_obj = self.env['gmc.message.pool']
+        action_id = self.env.ref('child_compassion.release_hold').id
+
+        self.active = False
+        message_vals = {
+            'action_id': action_id,
+            'object_id': self.id
+        }
+
+        if self.child_id.sponsor_id:
+            raise Warning(_("Cancel impossible"), _("This hold is on a "
+                                                    "sponsored child!"))
+        else:
+            self.child_id.active = False
+            message_obj.create(message_vals)
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -63,21 +81,7 @@ class CompassionHold(models.Model):
 
     @api.multi
     def unlink(self):
-        message_obj = self.env['gmc.message.pool']
-        action_id = self.env.ref('child_compassion.release_hold').id
-
-        self.active = False
-        message_vals = {
-            'action_id': action_id,
-            'object_id': self.id
-        }
-
-        if self.child_id.sponsor_id:
-            raise Warning(_("Cancel impossible"), _("This hold is on a "
-                                                    "sponsored child!"))
-        else:
-            self.child_id.active = False
-            message_obj.create(message_vals)
+        self.release_hold()
         return
 
     ##########################################################################
