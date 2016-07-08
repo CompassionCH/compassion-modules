@@ -39,18 +39,11 @@ class CommunicationConfig(models.Model):
     )
     email_template_id = fields.Many2one(
         'email.template', 'Email template')
-    report_id = fields.Many2many(
+    report_id = fields.Many2one(
         'ir.actions.report.xml', 'Letter template')
     from_employee_id = fields.Many2one(
         'hr.employee', 'Communication From',
         help='The sponsor will receive the communication from this employee'
-    )
-    email_ids = fields.One2many(
-        'mail.mail', 'communication_config_id', 'Generated e-mails',
-        help='Track e-mails generated from this configuration'
-    )
-    paper_usage_count = fields.Integer(
-        help='How many times a paper was print with this configuration'
     )
 
     ##########################################################################
@@ -92,76 +85,24 @@ class CommunicationConfig(models.Model):
 
     def get_inform_mode(self, partner):
         """ Returns how the partner should be informed for the given
-        communication.
+        communication (digital, physical or False).
         :param partner: res.partner record
+        :returns: send_mode (auto/digital/False), auto_mode (True/False)
         """
         self.ensure_one()
         if self.send_mode != 'partner_preference':
-            return self.send_mode
+            send_mode = self.send_mode
         else:
-            return getattr(
-                partner, self.send_mode_pref_field,  'none')
+            send_mode = getattr(
+                partner, self.send_mode_pref_field,  False)
 
-    def inform_sponsor(self, partner, object_id, auto_send=None,
-                       email_template=None, report=None, _from=None, to=None):
-        """ Sends a communication to the sponsor based on the configuration.
-        :param partner: res.partner record
-        :param object_id: record id generating the e-mail or report. This
-                          record will be used to construct dynamic templates.
-        :param auto_send: optional field for overriding communication
-                          configuration (useful to prevent or force auto_send)
-        :param email_template: optional e-mail template to override the
-                               default set in the config
-        :param report: optional report to override the default set in the
-                       config
-        :param _from: optional e-mail address to override the sender of the
-                      communication.
-        :param to: optional e-mail address to override the recipient of the
-                   communication.
-
-        :returns: Email or Report record if one was generated, False if
-                  nothing was done.
-        """
-        self.ensure_one()
-        send_mode = self.get_inform_mode(partner)
+        auto_mode = 'auto' in send_mode
+        send_mode = send_mode.replace('auto_', '')
         if send_mode == 'none':
-            return False
-
-        if auto_send is None:
-            auto_send = 'auto' in send_mode
-        if email_template is None:
-            email_template = self.email_template_id
-
-        if 'digital' in send_mode and email_template:
-            if _from is None:
-                _from = self.from_employee_id.work_email or self.env[
-                    'ir.config_parameter'].get_param(
-                    'partner_communication.default_from_address')
-            if _from and (to or partner.email):
-                # Send by e-mail
-                email_vals = {
-                    'email_from': _from,
-                    'recipient_ids': [(4, partner.id)],
-                    'communication_config_id': self.id
-                }
-                if to:
-                    # Replace partner e-mail by specified address
-                    email_vals['email_to'] = to
-                    del email_vals['recipient_ids']
-
-                email = self.env['mail.compose.message'].with_context(
-                    lang=partner.lang).create_emails(
-                    email_template, object_id, email_vals)
-                if auto_send:
-                    email.send_sendgrid()
-                message = email.mail_message_id
-                partner.message_post(message.body, message.subject)
-                return email
-
-        if 'physical' in send_mode or self.print_if_not_email:
-            # TODO Print letter
-            self.paper_usage_count += 1
-            return False
-
-        # A valid path was not found
-        return False
+            send_mode = False
+        if send_mode == 'digital' and not partner.email:
+            if self.print_if_not_email:
+                send_mode = 'physical'
+            else:
+                send_mode = False
+        return send_mode, auto_mode

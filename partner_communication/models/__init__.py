@@ -10,5 +10,6 @@
 ##############################################################################
 
 from . import communication_config
+from . import communication_job
 from . import res_partner
 from . import email

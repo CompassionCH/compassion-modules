@@ -1,0 +1,51 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="communication_config_form">
+            <field name="name">communication.config.form</field>
+            <field name="model">partner.communication.config</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="send_mode"/>
+                                <field name="send_mode_pref_field"/>
+                                <field name="print_if_not_email"/>
+                            </group>
+                            <group>
+                                <field name="email_template_id"/>
+                                <field name="report_id"/>
+                                <field name="from_employee_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="communication_config_tree">
+            <field name="name">communication.config.tree</field>
+            <field name="model">partner.communication.config</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="send_mode"/>
+                    <field name="print_if_not_email"/>
+                    <field name="from_employee_id"/>
+                    <field name="email_template_id"/>
+                    <field name="report_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_communication_config" model="ir.actions.act_window">
+            <field name="name">Communication config</field>
+            <field name="res_model">partner.communication.config</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Rules" id="menu_communication_config" parent="menu_communication" sequence="2" action="action_communication_config"/>
+    </data>
+</openerp>

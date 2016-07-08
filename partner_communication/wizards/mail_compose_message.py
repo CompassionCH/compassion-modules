@@ -23,19 +23,7 @@ class EmailComposeMessage(models.TransientModel):
         :param res_ids: ids of the resource objects
         :return: browse records of created e-mails (one per resource object)
         """
-        if not isinstance(res_ids, list):
-            res_ids = [res_ids]
-        wizard = self.sudo().with_context(active_ids=res_ids).create({
-            'template_id': template.id,
-            'composition_mode': 'mass_mail',
-            'model': template.model,
-            'author_id': 111,   # Sent with user Emanuel Cino
-        })
-        # Fetch template values.
-        wizard.write(
-            wizard.onchange_template_id(
-                template.id, 'mass_mail', False, False)['value'])
-        all_mail_values = self.get_mail_values(wizard, res_ids)
+        all_mail_values = self._get_mail_values(template, res_ids)
         email_obj = self.env['mail.mail']
         emails = email_obj
         for res_id in res_ids:
@@ -44,3 +32,40 @@ class EmailComposeMessage(models.TransientModel):
                 mail_values.update(default_mail_values)
             emails += email_obj.create(mail_values)
         return emails
+
+    @api.model
+    def get_generated_html(self, template, res_ids):
+        """ Helper to generate a new e-mail given a template and objects.
+
+        :param int template: email.template record
+        :param res_ids: ids of the resource objects
+        :return: html code generated for the e-mail (list if len(res_ids)>1)
+        """
+        all_mail_values = self._get_mail_values(template, res_ids)
+        email_bodies = list()
+        for res_id in res_ids:
+            email_bodies.append(all_mail_values[res_id]['body_html'])
+        if len(email_bodies) == 1:
+            email_bodies = email_bodies[0]
+        return email_bodies
+
+    def _get_mail_values(self, template, res_ids):
+        """ Helper to get e-mail values given a template and objects.
+
+        :param int template: email.template record
+        :param res_ids: ids of the resource objects
+        :return: list of dictionaries containing e-mail values
+        """
+        if not isinstance(res_ids, list):
+            res_ids = [res_ids]
+        wizard = self.sudo().with_context(active_ids=res_ids).create({
+            'template_id': template.id,
+            'composition_mode': 'mass_mail',
+            'model': template.model,
+            'author_id': 111,  # Sent with user Emanuel Cino
+        })
+        # Fetch template values.
+        wizard.write(
+            wizard.onchange_template_id(
+                template.id, 'mass_mail', False, False)['value'])
+        return self.get_mail_values(wizard, res_ids)
