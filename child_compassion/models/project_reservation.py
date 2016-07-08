@@ -59,3 +59,8 @@ class ProjectReservation(models.Model):
         }
         message_obj.with_context(async_mode=False).create(message_vals)
         return
+
+    @api.model
+    def process_commkit(self, commkit_data):
+        # TODO Implement
+        return False
