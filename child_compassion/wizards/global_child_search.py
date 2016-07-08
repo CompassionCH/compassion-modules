@@ -124,8 +124,7 @@ class GlobalChildSearch(models.TransientModel):
             child_vals = {
                 'global_id': child.global_id,
                 'local_id': child.local_id,
-                'project_id': '' if child.project_id is None
-                else child.project_id.id,
+                'project_id': child.project_id.id,
                 'field_office_id': child.field_office_id,
                 'name': child.name,
                 'firstname': child.firstname,

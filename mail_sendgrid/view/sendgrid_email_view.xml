@@ -12,6 +12,9 @@
                     <button name="send" string="Send Now" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('send_method', 'not in', ['sendgrid','traditional']), ('state', '!=', 'outgoing')]}"/>
                     <button name="send_sendgrid" string="Send (SendGrid)" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('send_method', '=', 'sendgrid'), ('state', '!=', 'outgoing')]}"/>
                 </button>
+                <field name="body_html" position="attributes">
+                    <attribute name="widget">html</attribute>
+                </field>
                 <page string="Attachments" position="after">
                     <page string="SendGrid">
                         <group>

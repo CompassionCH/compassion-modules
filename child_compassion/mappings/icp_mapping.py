@@ -62,7 +62,7 @@ class ICPMapping(OnrampMapping):
         'ChildDevelopmentCenterName': 'name',
         'ChildDevelopmentCenterNameLocalLanguage':
             'child_center_original_name',
-        'ChurchMinistry': ('ministry_ids', 'icp.church.ministry'),
+        'ChurchMinistry': ('ministry_ids.name', 'icp.church.ministry'),
         'City': 'city',
         'Cluster': 'cluster',
         'CognitiveActivities0To5': ('cognitive_activity_babies_ids.name',

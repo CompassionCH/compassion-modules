@@ -10,7 +10,7 @@
 ##############################################################################
 
 
-from openerp import models, fields
+from openerp import api, models, fields
 
 
 class FieldOffice(models.Model):
@@ -77,6 +77,32 @@ class FieldOffice(models.Model):
     icp_min_children = fields.Integer(
         help='Minimum number of children for an ICP'
     )
+
+    ##########################################################################
+    #                              ORM METHODS                               #
+    ##########################################################################
+    @api.model
+    def create(self, vals):
+        field_office = super(FieldOffice, self).create(vals)
+        field_office.update_informations(async_mode=True)
+        return field_office
+
+    ##########################################################################
+    #                             VIEW CALLBACKS                             #
+    ##########################################################################
+    @api.multi
+    def update_informations(self, context=None, async_mode=False):
+        """ Get the most recent informations for selected field offices and
+        update them accordingly. """
+        # TODO
+        # message_obj = self.env['gmc.message.pool']
+        # action_id = self.env.ref('child_compassion.icp_details').id
+        # message_vals = {
+        #     'action_id': action_id,
+        #     'object_id': self.id,
+        # }
+        # message_obj.with_context(async_mode=async_mode).create(message_vals)
+        return True
 
 
 class FieldOfficeHighRisks(models.Model):

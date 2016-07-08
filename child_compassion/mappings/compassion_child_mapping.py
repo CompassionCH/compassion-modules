@@ -183,7 +183,7 @@ class CompassionChildMapping(GenericChildMapping):
                 ('global_id', '=', odoo_data['global_id'])])
             child.revised_value_ids.unlink()
             for value in odoo_data['revised_value_ids']:
-                self.env['child.major.field'].create({
+                self.env['compassion.major.revision'].create({
                     'name': value,
                     'child_id': child.id,
                 })

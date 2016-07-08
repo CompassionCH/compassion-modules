@@ -81,7 +81,6 @@
         <record id="major_revision" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">BeneficiaryMajorRevision</field>
-            <field name="mapping_name">cancel_reservation</field>
             <field name="model">compassion.child</field>
             <field name="incoming_method">major_revision</field>
             <field name="description">This will update the child with the major changes that happened.</field>
@@ -102,6 +101,13 @@
             <field name="model">icp.reservation</field>
             <field name="description">This handles the reception of a reserved Beneficiary.</field>
             <field name="auto_process">1</field>
+        <!-- Household Major Revision -->
+        <record id="major_revision_household" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">HouseholdMajorRevision</field>
+            <field name="model">compassion.household</field>
+            <field name="description">This will update the household with the major changes that happened.</field>
+            <field name="auto_process">True</field>
         </record>
 
         <!-- Action to Connect mappings -->
@@ -116,6 +122,9 @@
         <record id="beneficiary_reservation_to_hold_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/03/ReservationHoldReminder</field>
             <field name="action_id" ref="beneficiary_reservation_to_hold"/>
+        <record id="major_revision_household_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/HouseholdMajorRevisionKit</field>
+            <field name="action_id" ref="major_revision_household"/>
         </record>
     </data>
 </openerp>

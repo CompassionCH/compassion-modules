@@ -313,7 +313,8 @@ class CompassionChild(models.Model):
         'compassion.child.cdpr', 'child_id', 'Assessments', readonly=True
     )
     revised_value_ids = fields.One2many(
-        'child.major.field', 'child_id', 'Major revisions', readonly=True
+        'compassion.major.revision', 'child_id', 'Major revisions',
+        readonly=True
     )
     pictures_ids = fields.One2many(
         'compassion.child.pictures', 'child_id', 'Child pictures',
