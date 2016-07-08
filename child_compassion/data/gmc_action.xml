@@ -87,11 +87,35 @@
             <field name="description">This will update the child with the major changes that happened.</field>
             <field name="auto_process">True</field>
         </record>
+        <!-- Beneficiary CDPR Messages -->
+        <record id="beneficiary_cdpr" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">BeneficiaryCDPR</field>
+            <field name="model">compassion.child.cdpr</field>
+            <field name="description">This handles the reception of a Beneficiary CDPR.</field>
+            <field name="auto_process">1</field>
+        </record>
+        <!-- Reservation Messages -->
+        <record id="beneficiary_reservation_to_hold" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">BeneficiaryRes</field>
+            <field name="model">icp.reservation</field>
+            <field name="description">This handles the reception of a reserved Beneficiary.</field>
+            <field name="auto_process">1</field>
+        </record>
 
         <!-- Action to Connect mappings -->
         <record id="major_revision_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/MajorRevisionKit</field>
             <field name="action_id" ref="major_revision"/>
+        </record>
+        <record id="beneficiary_cdpr_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/CDPRAssessmentKit</field>
+            <field name="action_id" ref="beneficiary_cdpr"/>
+        </record>
+        <record id="beneficiary_reservation_to_hold_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/03/ReservationHoldReminder</field>
+            <field name="action_id" ref="beneficiary_reservation_to_hold"/>
         </record>
     </data>
 </openerp>

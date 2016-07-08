@@ -82,8 +82,6 @@
                                 <field name="assessment_ids" readonly="1">
                                     <tree>
                                         <field name="date"/>
-                                        <field name="weight"/>
-                                        <field name="height"/>
                                         <field name="physical_score"/>
                                         <field name="cognitive_score"/>
                                         <field name="spiritual_score"/>

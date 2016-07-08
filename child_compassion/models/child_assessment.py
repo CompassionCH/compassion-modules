@@ -10,7 +10,10 @@
 ##############################################################################
 
 
-from openerp import models, fields
+from openerp import models, fields, api
+
+from openerp.addons.message_center_compassion.mappings import base_mapping as \
+    mapping
 
 
 class ChildAssessment(models.Model):
@@ -19,13 +22,25 @@ class ChildAssessment(models.Model):
     _description = 'Child CDPR Assessment'
     _order = 'date desc'
 
+    assesment_type = fields.Char()
     child_id = fields.Many2one(
-        'compassion.child', 'Child', required=True, ondelete='cascade')
+        'compassion.child', 'Child', required=True, ondelete='cascade'
+    )
     date = fields.Datetime()
-    weight = fields.Char()
-    height = fields.Char()
     age = fields.Char()
     physical_score = fields.Char()
     cognitive_score = fields.Char()
     spiritual_score = fields.Char()
     sociological_score = fields.Char('Socio-Emotional score')
+    cdpr_age_group = fields.Char()
+    source_kit_name = fields.Char()
+
+    @api.model
+    def process_commkit(self, commkit_data):
+        child_assessment_mapping = mapping.new_onramp_mapping(
+                                                self._name,
+                                                self.env,
+                                                'beneficiary_cdpr')
+        vals = child_assessment_mapping.get_vals_from_connect(commkit_data)
+        child_assessment = self.create(vals)
+        return [child_assessment.id]

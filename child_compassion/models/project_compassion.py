@@ -51,6 +51,11 @@ class CompassionProject(models.Model):
         string='GP interested with a church engagement',
         readonly=True)
 
+    _sql_constraints = [
+        ('icp_id_uniq', 'unique(icp_id)',
+         'The ICP Id must be unique.'),
+    ]
+
     # Location information
     ######################
     country = fields.Char(readonly=True)
@@ -172,7 +177,7 @@ class CompassionProject(models.Model):
         string='Sociological activities (12+)', readonly=True
     )
     reservation_id = fields.Many2one(
-        'icp.reservation', string='Project Reservation'
+        'icp.reservation', string='Project Reservation', ondelete='cascade'
     )
     activities_for_parents = fields.Char(readonly=True)
 
