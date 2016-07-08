@@ -1,0 +1,92 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="communication_job_form">
+            <field name="name">communication.job.form</field>
+            <field name="model">partner.communication.job</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                        <button name="send" string="Send Now" type="object" class="oe_highlight" states='pending'/>
+                        <button name="reset" string="Retry" type="object" states='done,cancel'/>
+                        <button name="cancel" string="Cancel" type="object" states='pending'/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="config_id"/>
+                                <field name="partner_id"/>
+                                <field name="send_mode"/>
+                                <field name="auto_send"/>
+                            </group>
+                            <group>
+                                <field name="from_employee_id"/>
+                                <field name="email_template_id"/>
+                                <field name="report_id"/>
+                                <field name="email_to"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="body_html"/>
+                        </group>
+                        <group>
+                            <field name="sent_date"/>
+                            <field name="email_id"/>
+                            <field name="generated_document"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="communication_job_tree">
+            <field name="name">communication.job.tree</field>
+            <field name="model">partner.communication.job</field>
+            <field name="arch" type="xml">
+                <tree colors="blue:state=='pending';grey:state=='done';red:state=='cancel'" create="false">
+                    <field name="date"/>
+                    <field name="config_id"/>
+                    <field name="partner_id"/>
+                    <field name="send_mode"/>
+                    <field name="email_to"/>
+                    <field name="body_html"/>
+                    <field name="state"/>
+                    <field name="sent_date"/>
+                    <button name="send" string="Send Now" type="object" icon="gtk-media-play" states='pending'/>
+                    <button name="reset" string="Retry" type="object" icon="gtk-redo" states='done,cancel'/>
+                    <button name="cancel" string="Cancel" type="object" icon="terp-gtk-stop" states='pending'/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="communication_job_search">
+            <field name="name">communication.job.search</field>
+            <field name="model">partner.communication.job</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="config_id"/>
+                    <field name="partner_id"/>
+                    <filter string="Pending" name="pending" domain="[('state', '=', 'pending')]" context=""/>
+                    <filter string="Letters" name="digital" domain="[('send_mode', '=', 'physical')]" context=""/>
+                    <filter string="E-mails" name="physical" domain="[('send_mode', '=', 'digital')]" context=""/>
+                    <group expand="0" string="Group By">
+                        <filter string="Status" name="status" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Partner" name="partner" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter string="Communication" name="config" domain="[]" context="{'group_by':'config_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_communication_job" model="ir.actions.act_window">
+            <field name="name">Communication Job</field>
+            <field name="res_model">partner.communication.job</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_pending': True}</field>
+        </record>
+
+        <menuitem name="Partner Communication" id="menu_communication" parent="mail.mail_feeds_main" sequence="1"/>
+        <menuitem name="Jobs" parent="menu_communication" id="menu_communication_jobs" sequence="1" action="action_communication_job"/>
+    </data>
+</openerp>

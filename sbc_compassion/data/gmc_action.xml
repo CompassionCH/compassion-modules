@@ -2,6 +2,7 @@
     <data>
         <!-- Letter Messages -->
         <record id="update_letter" model="gmc.action">
+            <field name="name">UpdateLetter</field>
             <field name="direction">in</field>
             <field name="model">correspondence</field>
             <field name="description">This will update a Sponsorship Correspondence object.</field>
@@ -9,6 +10,7 @@
         </record>
 
         <record id="create_letter" model="gmc.action">
+            <field name="name">CreateLetter</field>
             <field name="direction">out</field>
             <field name="mapping_name">CreateLetter</field>
             <field name="model">correspondence</field>

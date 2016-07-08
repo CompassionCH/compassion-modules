@@ -101,6 +101,7 @@
             <field name="model">icp.reservation</field>
             <field name="description">This handles the reception of a reserved Beneficiary.</field>
             <field name="auto_process">1</field>
+        </record>
         <!-- Household Major Revision -->
         <record id="major_revision_household" model="gmc.action">
             <field name="direction">in</field>
@@ -122,6 +123,7 @@
         <record id="beneficiary_reservation_to_hold_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/03/ReservationHoldReminder</field>
             <field name="action_id" ref="beneficiary_reservation_to_hold"/>
+        </record>
         <record id="major_revision_household_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/HouseholdMajorRevisionKit</field>
             <field name="action_id" ref="major_revision_household"/>

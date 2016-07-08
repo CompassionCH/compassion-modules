@@ -37,6 +37,8 @@
     'depends': ['mail_sendgrid'],
     'data': [
         'security/ir.model.access.csv',
+        'views/communication_job_view.xml',
+        'views/communication_config_view.xml',
     ],
     'demo': [],
     'installable': True,
