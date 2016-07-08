@@ -10,7 +10,7 @@
 ##############################################################################
 
 
-from openerp import models, fields
+from openerp import models, fields, api
 
 
 class ChildLifecycleEvent(models.Model):
@@ -196,3 +196,9 @@ class ChildLifecycleEvent(models.Model):
         ('West Nile Virus', 'West Nile Virus'),
         ('Yellow Fever', 'Yellow Fever'),
     ], readonly=True)
+
+    @api.model
+    def process_commkit(self, commkit_data):
+        print '-------------------------------------------------------'
+        print '-       PROCESS COMMKIT IN child_lifecycle_event      -'
+        print '-------------------------------------------------------'
