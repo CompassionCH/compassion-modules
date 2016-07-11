@@ -37,30 +37,54 @@ class ProjectReservation(models.Model):
     @api.model
     def create(self, vals):
         res = super(ProjectReservation, self).create(vals)
-        message_obj = self.env['gmc.message.pool']
-        action_id = self.env.ref('child_compassion.create_reservation').id
+        self.handle_reservation('child_compassion.create_reservation', res)
+        return res
 
-        message_vals = {
-            'action_id': action_id,
-            'object_id': res.id,
-        }
-        message_obj.with_context(async_mode=False).create(message_vals)
+    @api.multi
+    def write(self, vals):
+        res = super(ProjectReservation, self).write(vals)
+        if not self.env.context.get('creating') and self.active:
+            self.with_context(creating=False).handle_reservation(
+                'child_compassion.create_reservation', res)
         return res
 
     @api.multi
     def unlink(self):
-        message_obj = self.env['gmc.message.pool']
-        action_id = self.env.ref('child_compassion.cancel_reservation').id
-
-        self.active = False
-        message_vals = {
-            'action_id': action_id,
-            'object_id': self.id
-        }
-        message_obj.with_context(async_mode=False).create(message_vals)
+        self.cancel_reservation()
         return
+
+    @api.multi
+    def cancel_reservation(self):
+        self.active = False
+        self.handle_reservation('child_compassion.cancel_reservation')
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': self._name,
+            'res_id': self.id,
+            'target': 'current'
+        }
 
     @api.model
     def process_commkit(self, commkit_data):
         # TODO Implement
         return False
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    def handle_reservation(self, action, res=False):
+        message_obj = self.env['gmc.message.pool']
+
+        action_id = self.env.ref(action).id
+        object_id = res.id if type(res) is not bool else self.id
+        message_vals = {
+            'action_id': action_id,
+            'object_id': object_id
+        }
+        pool = message_obj.with_context(async_mode=False,
+                                        creating=True).create(message_vals)
+        if pool.failure_reason:
+            raise Warning("Reservation impossible", pool.failure_reason)
+        return

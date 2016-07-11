@@ -8,6 +8,9 @@
             <field name="model">icp.reservation</field>
             <field name="arch" type="xml">
                 <form string="Reservation">
+                    <header>
+                        <button name="cancel_reservation" type="object" string="Cancel Reservation" attrs="{'invisible': [('hold_expiration_date', '=', False)]}" />
+                    </header>
                     <sheet>
                         <div class="oe_title">
                             <label for="name" class="oe_edit_only" />
