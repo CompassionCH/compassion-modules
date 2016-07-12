@@ -50,6 +50,7 @@
         'views/project_reservation_view.xml',
         'workflow/child_workflow.xml',
         'data/delegate_child_compassion_cron.xml',
+        'data/compassion_hold_cron.xml',
         'data/migrate_r4.xml',
         'data/child.hobby.csv',
         'data/child.household.duty.csv',
