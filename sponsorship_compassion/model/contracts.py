@@ -204,68 +204,19 @@ class sponsorship_contract(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    def clean_invoices_paid(self, since_date=None, to_date=None, gifts=False,
-                            keep_lines=None):
-        """ Removes or cancel paid invoices in the given period.
-
-        - The process bypasses the ORM by directly removing the invoice_lines
-          concerning the given contracts. It also splits the sponsor's
-          payment in order to be able to change the attribution of the amount
-          that was destined to the cancelled contract.
-
-        Note: direct access to database avoids to unreconcile and reconcile
-              again invoices, which is a huge performance gain.
+    def clean_invoices_paid(self, since_date=None, to_date=None, gifts=False):
+        """ Unreconcile paid invoices in the given period, so that they
+            can be cleaned with the clean_invoices process.
         """
         # Find all paid invoice lines after the given date
         inv_line_obj = self.env['account.invoice.line']
         invl_search = self._filter_clean_invoices(since_date, to_date, gifts)
         inv_lines = inv_line_obj.search(invl_search)
+        reconciles = inv_lines.mapped('invoice_id.payment_ids.reconcile_id')
 
-        # Invoice and move lines that need to be removed/updated
-        to_remove_inv = set()
-        to_update_inv = set()
-        to_remove_mvl = list()
-        to_remove_move = list()
-        # Dictionary containing the total debit_lines in account 1050
-        # for each invoice. These lines will be updated.
-        # dict of format {move_line_id: debit_amount}
-        to_update_mvl = dict()
-        # Dictionary containing payment move_lines that need to be splitted
-        # dict of format {move_line_id: amount_removed}
-        split_payment_mvl = dict()
-        unrec_pml = list()
-
-        # Store data that is removed to pass it in sub_modules
-        # Dictionary is in the following format :
-        # {invoice_line_id: [invoice_id, child_code, product_name, amount]}
-        invl_rm_data = dict()
-
-        # 1. Determine which action has to be done for each invoice_line
-        self._how_to_clean_invl(
-            inv_lines, to_remove_inv, to_update_inv,
-            to_remove_mvl, to_remove_move, to_update_mvl, split_payment_mvl,
-            unrec_pml, invl_rm_data)
-        # 2. Manually remove invoice_lines, move_lines, empty invoices/moves
-        #    and reconcile refs that are no longer valid
-        if inv_lines:
-            # Call the hook for letting other modules handle the removal.
-            self._on_invoice_line_removal(invl_rm_data)
-
-            self._clean_paid_invoice_lines(list(to_remove_inv),
-                                           list(to_update_inv),
-                                           inv_lines.ids,
-                                           keep_lines)
-
-            self._clean_move_lines(to_remove_mvl, to_remove_move,
-                                   to_update_mvl)
-
-            # Update the total field of invoices
-            self.env['account.invoice'].browse(
-                list(to_update_inv)).button_compute(set_total=True)
-
-            # 2.2. Split or unreconcile payment so that the amount deleted is
-            #      isolated.
-            self._unrec_split_payment(split_payment_mvl, unrec_pml)
+        # Unreconcile paid invoices
+        reconciles.mapped('line_id')._remove_move_reconcile()
+        reconciles.unlink()
 
         return True
 
@@ -383,12 +334,13 @@ class sponsorship_contract(models.Model):
 
             invoices = invl_lines.mapped('invoice_id')
             contracts = invl_lines.mapped('contract_id')
-            mvls_paid = invoices.filtered(
+            reconciles = invoices.filtered(
                 lambda inv: inv.state == 'paid').mapped(
-                'payment_ids.reconcile_id.line_id')
+                'payment_ids.reconcile_id')
 
             # Unreconcile paid invoices
-            mvls_paid._remove_move_reconcile()
+            reconciles.mapped('line_id')._remove_move_reconcile()
+            reconciles.unlink()
             # Cancel and confirm again invoices to update move lines
             invoices.action_cancel()
             invoices.action_cancel_draft()
@@ -499,8 +451,7 @@ class sponsorship_contract(models.Model):
         """
         if clean_invoices_paid:
             sponsorships = self.filtered(lambda s: s.type == 'S')
-            sponsorships.clean_invoices_paid(since_date, to_date,
-                                             keep_lines=keep_lines)
+            sponsorships.clean_invoices_paid(since_date, to_date)
 
         return super(sponsorship_contract, self)._clean_invoices(
             since_date, to_date, keep_lines)
@@ -680,182 +631,6 @@ class sponsorship_contract(models.Model):
             invl_search.append(('due_date', '<=', to_date))
 
         return invl_search
-
-    @api.multi
-    def _how_to_clean_invl(self, inv_lines, to_remove_inv,
-                           to_update_inv, to_remove_mvl, to_remove_move,
-                           to_update_mvl, split_payment_mvl, unrec_pml,
-                           invl_rm_data):
-        """ Determine which action has to be done for each invoice_line for
-        method clean_invoices_paid. See that method for the parameters.
-        """
-        to_update_inv.update(inv_lines.mapped('invoice_id.id'))
-
-        invl_rm_data.update([
-            (invl.id,
-             [invl.invoice_id.id, invl.contract_id.child_code,
-              invl.product_id.name, invl.price_subtotal])
-            for invl in inv_lines.filtered(
-                lambda invl: invl.contract_id.type == 'S')])
-        for inv_line in inv_lines:
-            invoice = inv_line.invoice_id
-            mvl_found = False
-            for mvl in inv_line.invoice_id.move_id.line_id:
-                # 1. Update the move related with the invoice
-                if not mvl_found and \
-                        mvl.product_id.id == inv_line.product_id.id \
-                        and mvl.credit == inv_line.price_subtotal \
-                        and mvl.id not in to_remove_mvl:
-                    # Mark mvl corresponding to invoice_line to be removed
-                    to_remove_mvl.append(mvl.id)
-                    mvl_found = True
-                elif mvl.debit > 0 and mvl.account_id.code == '1050':
-                    # Remove amount of invoice_line from debit line
-                    # (the debit line corresponds to the total amount of
-                    #  the invoice)
-                    total_debit = to_update_mvl.get(mvl.id, mvl.debit)
-                    to_update_mvl[mvl.id] = total_debit - \
-                        inv_line.price_subtotal
-                    if to_update_mvl[mvl.id] == 0:
-                        # We deleted all invoice_lines and can delete the
-                        # move associated with this invoice.
-                        to_remove_mvl.append(mvl.id)
-                        to_remove_move.append(mvl.move_id.id)
-
-                    # 2. Update payment lines related with the invoice
-                    for pml in mvl.reconcile_id.line_id:
-                        if pml.credit > inv_line.price_subtotal:
-                            amount_deleted = split_payment_mvl.get(pml.id,
-                                                                   0.000)
-                            split_payment_mvl[pml.id] = amount_deleted + \
-                                inv_line.price_subtotal
-                            if pml.credit == split_payment_mvl[pml.id]:
-                                # The payment is fully unreconciled and thus
-                                # don't need to be splitted
-                                del split_payment_mvl[pml.id]
-                                unrec_pml.append(pml.id)
-                            elif pml.credit < split_payment_mvl[pml.id]:
-                                self._clean_error()
-                            # Update only one payment_line per invoice_line
-                            break
-
-            if not mvl_found:
-                self._clean_error()
-
-            # Mark empty invoice to be removed
-            other_lines = invoice.mapped('invoice_line')
-            remaining_lines_ids = other_lines.filtered(
-                lambda invl: invl not in inv_lines).ids
-            if not remaining_lines_ids:
-                to_remove_inv.add(invoice.id)
-
-        to_update_inv -= to_remove_inv
-
-    @api.multi
-    def _clean_paid_invoice_lines(self, to_remove_inv, to_update_inv,
-                                  inv_line_ids, keep_lines=None):
-        """ Remove or cancel the invoice lines.
-        - to_remove_inv : invoices which are totally cleaned
-        - to_update_inv : invoices which still contains valid invoice_lines
-        """
-        invoices = self.env['account.invoice'].browse(to_remove_inv)
-        inv_line_obj = self.env['account.invoice.line']
-        if keep_lines:
-            # Cancel invoices instead of deleting them
-            invoices.write({'move_id': False})
-            invoices.signal_workflow('invoice_cancel')
-            for invoice in invoices:
-                invoice.message_post(_("Invoice Cancelled"), 'comment')
-
-            # Isolate invoice lines in cancelled invoices instead of
-            # deleting them
-            invl_to_cancel = inv_line_obj.browse(inv_line_ids).filtered(
-                lambda invl: invl.invoice_id.id in to_update_inv)
-
-            self._move_cancel_lines(invl_to_cancel, keep_lines)
-
-        else:
-            # Delete invoice lines and empty invoices
-            self.env.cr.execute(
-                "DELETE FROM account_invoice_line WHERE id in ({0})"
-                .format(','.join(str(id) for id in inv_line_ids)))
-            if to_remove_inv:
-                self.env.cr.execute(
-                    "DELETE FROM account_invoice WHERE id in ({0})"
-                    .format(','.join(str(id) for id in to_remove_inv)))
-            self.env.invalidate_all()
-
-    @api.multi
-    def _clean_move_lines(self, to_remove_mvl, to_remove_move,
-                          to_update_mvl):
-        """ Remove move lines, invalid reconcile refs, empty moves and
-        update total move lines of invoices after paid invoices were
-        cleaned.
-        """
-        mvl_ids_string = ','.join(str(id) for id in to_remove_mvl)
-        self.env.cr.execute(
-            "DELETE FROM account_move_line WHERE id in ({0});"
-            "DELETE FROM account_move_reconcile rec WHERE ("
-            "   SELECT count(*) FROM account_move_line "
-            "   WHERE reconcile_id = rec.id) < 2;"
-            .format(mvl_ids_string))
-        if to_remove_move:
-            self.env.cr.execute(
-                "DELETE FROM account_move WHERE id IN ({0})"
-                .format(','.join(str(id) for id in to_remove_move)))
-        for mvl, amount in to_update_mvl.iteritems():
-            self.env.cr.execute(
-                "UPDATE account_move_line SET debit={0:.3f} "
-                "WHERE id = {1:d}".format(amount, mvl))
-        self.env.invalidate_all()
-
-    @api.multi
-    def _unrec_split_payment(self, payment_data, unrec_pml):
-        """ Method that splits a payment into two move_lines so that
-        the amount which was cleaned from the paid invoice can be isolated
-        and easily reconciled later.
-        - payment_data (dict): {move_line_id: amount_cleaned}
-        - unrec_pml (list): payment_lines which are totally unreconciled
-        """
-        mvl_obj = self.env['account.move.line']
-        for pml_id, amount_deleted in payment_data.iteritems():
-            self.env.cr.execute(
-                "UPDATE account_move_line SET credit=credit-{0:.3f} "
-                "WHERE id = {1:d}".format(
-                    amount_deleted,
-                    pml_id))
-            # Copy payment move_line to put the amount unreconciled in a
-            # separate move_line
-            self.env.cr.execute("""
-INSERT INTO account_move_line (
-    statement_id, journal_id, date_maturity, partner_id, analytic_account_id,
-    centralisation, company_id, state, blocked, ref, account_id, period_id,
-    date, move_id, name, product_id, product_uom_id, quantity, analytics_id,
-    transaction_ref
-)
-
-SELECT statement_id, journal_id, date_maturity, partner_id,
-       analytic_account_id, centralisation, company_id, state, blocked, ref,
-       account_id, period_id, date, move_id, name, product_id, product_uom_id,
-       quantity, analytics_id, transaction_ref
-
-FROM account_move_line WHERE id = %s""" % pml_id)
-
-            # Update values of the newly inserted line
-            self.env.cr.execute(
-                "UPDATE account_move_line SET "
-                "create_uid = {0:d}, write_uid = {0:d},"
-                "create_date=now(), write_date=now(),"
-                "credit={1:.3f} "
-                "WHERE id = (SELECT max(id) FROM account_move_line)"
-                .format(self.env.user.id, amount_deleted)
-            )
-            self.env.invalidate_all()
-            # mvl_obj.browse(pml_id).copy({
-            # 'reconcile_id': False,
-            # 'credit': amount_deleted})
-        if unrec_pml:
-            mvl_obj.browse(unrec_pml)._remove_move_reconcile()
 
     @api.model
     def _set_demo_data(self):
