@@ -9,8 +9,6 @@
 #
 ##############################################################################
 
-from datetime import datetime
-
 from openerp import models, fields, api
 
 
@@ -40,9 +38,8 @@ class ProjectReservation(models.Model):
     def check_reservation_validity(self):
         expired_reservations = self.env['icp.reservation'].search([
             ('expiration_date', '<',
-             datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+             fields.Datetime.now())
         ])
-
         for reservation in expired_reservations:
             reservation.active = False
         return True

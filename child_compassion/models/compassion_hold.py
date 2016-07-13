@@ -9,8 +9,6 @@
 #
 ##############################################################################
 
-from datetime import datetime
-
 from openerp import api, models, fields, _
 from openerp.exceptions import Warning
 
@@ -70,9 +68,8 @@ class CompassionHold(models.Model):
     def check_hold_validity(self):
         expired_holds = self.env['compassion.hold'].search([
             ('expiration_date', '<',
-             datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+             fields.Datetime.now())
         ])
-
         for hold in expired_holds:
             hold.active = False
         return True
