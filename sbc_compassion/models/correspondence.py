@@ -518,8 +518,11 @@ class Correspondence(models.Model):
             box_texts = text.split(BOX_SEPARATOR)
             if len(box_texts) > len(boxes):
                 # There should never be more text than expected by the
-                # layout.
-                return False
+                # layout. Try with only one text.
+                if len(boxes) == 1:
+                    box_texts = [text.replace(BOX_SEPARATOR, '\n\n')]
+                else:
+                    return False
 
             # Construct new PDF for the current page
             page_output = PdfFileWriter()
@@ -601,10 +604,12 @@ class Correspondence(models.Model):
     def process_letter(self):
         """ Method called when new B2S letter is Published. """
         self.download_attach_letter_image(type='original_letter_url')
+        res = True
         for letter in self:
             if letter.original_language_id not in \
                     letter.correspondant_id.spoken_lang_ids:
-                letter.compose_letter_image()
+                res = res and letter.compose_letter_image()
+        return res
 
     @api.multi
     def download_attach_letter_image(self, type='final_letter_url'):
