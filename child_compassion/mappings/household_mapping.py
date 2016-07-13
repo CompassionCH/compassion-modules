@@ -70,7 +70,7 @@ class HouseholdMemberMapping(OnrampMapping):
     ODOO_MODEL = 'compassion.household.member'
 
     CONNECT_MAPPING = {
-        "Beneficiary_GlobalID": 'beneficiary_global_id',
+        "Beneficiary_GlobalID": ('child_id.global_id', 'compassion.child'),
         "Beneficiary_LocalID": 'beneficiary_local_id',
         "FullName": None,
         "HouseholdMemberRole": 'role',

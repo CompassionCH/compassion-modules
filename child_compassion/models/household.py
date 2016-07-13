@@ -176,8 +176,10 @@ class HouseholdMembers(models.Model):
     _inherit = 'translatable.model'
     _description = 'Household Member'
 
-    beneficiary_global_id = fields.Char()
     beneficiary_local_id = fields.Char()
+    child_id = fields.Many2one(
+        'compassion.child', 'Child'
+    )
     household_id = fields.Many2one(
         'compassion.household', 'Household',
         required=True, ondelete='cascade')

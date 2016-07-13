@@ -35,6 +35,19 @@ class ProjectReservation(models.Model):
     active = fields.Boolean(default=True, readonly=True)
 
     @api.model
+    def check_reservation_validity(self):
+        expired_reservations = self.env['icp.reservation'].search([
+            ('expiration_date', '<',
+             fields.Datetime.now())
+        ])
+        for reservation in expired_reservations:
+            reservation.active = False
+        return True
+
+    ##########################################################################
+    #                             ORM METHODS                                #
+    ##########################################################################
+    @api.model
     def create(self, vals):
         res = super(ProjectReservation, self).create(vals)
         self.handle_reservation('child_compassion.create_reservation', res)

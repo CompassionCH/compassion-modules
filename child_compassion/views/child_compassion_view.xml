@@ -278,6 +278,7 @@
                     <separator string="Members"/>
                     <field name="member_ids">
                         <tree>
+                            <field name="child_id"/>
                             <field name="name"/>
                             <field name="role"/>
                             <field name="is_primary_caregiver"/>

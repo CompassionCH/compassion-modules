@@ -64,6 +64,16 @@ class CompassionHold(models.Model):
             self.child_id.active = False
             message_obj.create(message_vals)
 
+    @api.model
+    def check_hold_validity(self):
+        expired_holds = self.env['compassion.hold'].search([
+            ('expiration_date', '<',
+             fields.Datetime.now())
+        ])
+        for hold in expired_holds:
+            hold.active = False
+        return True
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
