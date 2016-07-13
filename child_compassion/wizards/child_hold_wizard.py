@@ -39,7 +39,7 @@ class ChildHoldWizard(models.TransientModel):
     secondary_owner = fields.Char()
     no_money_yield_rate = fields.Float()
     yield_rate = fields.Float()
-    channel = fields.Integer()
+    channel = fields.Char()
 
     ##########################################################################
     #                             FIELDS METHODS                             #
