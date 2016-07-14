@@ -8,7 +8,8 @@
             <field name="arch" type="xml">
                 <form string="Global Childpool">
                     <header>
-                    	<button name="make_a_hold" string="Make a hold" type="object" class="oe_highlight" attrs="{'invisible': ['|',('nb_selected', '=', 0), ('hold_expiration_date', '=', False)]}"/>
+                    	<button name="make_a_hold" string="Make a hold" type="object" class="oe_highlight" attrs="{'invisible': [('nb_selected', '=', 0)]}"/>
+
                     </header>
                     <sheet>
                         <h1>Today I'm feeling we will sponsor new children!</h1>
@@ -57,9 +58,6 @@
                                 </group>
                             </page>
                         </notebook>
-                        <div class="oe_inline">
-                        	<field name="hold_expiration_date" attrs="{'invisible': [('nb_selected', '=', 0)]}"/>
-                        </div>
                         <separator string="Search Results"/>
                         <group>
                             <field name="nb_selected"/>
@@ -130,6 +128,30 @@
             </field>
         </record>
 
+        <record id="view_compassion_global_child_attributes_form" model="ir.ui.view">
+            <field name="name">child.hold.wizard.form</field>
+            <field name="model">child.hold.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="type"/>
+                            <field name="hold_expiration_date"/>
+                            <field name="primary_owner"/>
+                            <field name="secondary_owner"/>
+                            <field name="no_money_yield_rate"/>
+                            <field name="yield_rate"/>
+                            <field name="channel"/>
+                        </group>
+                        <footer>
+                            <button name="send" string="Validate" type="object" class="oe_highlight"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
         <!-- Global Child Form View -->
         <record id="view_compassion_global_child_form" model="ir.ui.view">
             <field name="name">compassion.global.child.form</field>
@@ -170,7 +192,6 @@
                         <group attrs="{'invisible': [('holding_global_partner_id', '=', False)]}">
                             <field name="sponsorship_status"/>
                             <field name="holding_global_partner_id"/>
-                            <field name="hold_expiration_date"/>
                             <field name="source_code"/>
                         </group>
                     </group>
