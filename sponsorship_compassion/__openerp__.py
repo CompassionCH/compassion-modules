@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Sponsorships',
-    'version': '8.0.3.0',
+    'version': '8.0.3.1',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -53,6 +53,7 @@
         'data/lang_data.xml',
         'data/gmc_action.xml',
         'data/migrate_r4.xml',
+        'data/migrate_analytic.xml',
         'workflow/contract_workflow.xml',
         'security/ir.model.access.csv',
     ],

@@ -11,3 +11,4 @@
 
 from . import generate_gift_wizard
 from . import migration_r4
+from . import migration_analytic
