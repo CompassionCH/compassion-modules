@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    @author: Emanuel Cino <ecino@compassion.ch>, Philippe Heer
 #
 #    The licence is in the file __openerp__.py
 #
@@ -11,6 +11,8 @@
 
 
 from openerp import models, fields, api
+from openerp.addons.message_center_compassion.mappings \
+    import base_mapping as mapping
 
 
 class ChildLifecycleEvent(models.Model):
@@ -22,12 +24,13 @@ class ChildLifecycleEvent(models.Model):
     child_id = fields.Many2one(
         'compassion.child', 'Child', required=True, ondelete='cascade',
         readonly=True)
+    global_id = fields.Char(readonly=True)
     date = fields.Datetime(readonly=True)
     type = fields.Selection([
         ('Planned Exit', 'Planned Exit'),
-        ('Reinstatement/Return', 'Reinstatement'),
-        ('Transfer', 'Transfer'),
         ('Registration', 'Registration'),
+        ('Reinstatement', 'Reinstatement'),
+        ('Transfer', 'Transfer'),
         ('Transition', 'Transition'),
         ('Unplanned Exit', 'Unplanned Exit'),
     ], readonly=True)
@@ -39,7 +42,7 @@ class ChildLifecycleEvent(models.Model):
         ('Reached the end of the relevant programs available at the church '
          'partner', 'Reached the end of the relevant programs available'),
         # Reinstatement
-        ('Beneficiary Exit was a mistake', 'Exit was a mistake'),
+        ('Beneficiary Exit was mistake', 'Exit was mistake'),
         ('Beneficiary Moved Back', 'Beneficiary Moved Back'),
         ('Family Needs Help Again', 'Family Needs Help Again'),
         ('No Longer Sponsored by Another Organization',
@@ -82,13 +85,19 @@ class ChildLifecycleEvent(models.Model):
 
     # Common fields
     ###############
-    comments = fields.Char(readonly=True)
+    # comments = fields.Char(readonly=True)
+    status = fields.Selection([
+        ('Cancelled', 'Cancelled'),
+        ('Closed', 'Closed'),
+        ('In Progress', 'In Progress'),
+        ('Open', 'Open'),
+    ])
 
     # Planned Exit fields
     #####################
     last_attended_project = fields.Date(readonly=True)
     primary_school_finished = fields.Boolean(readonly=True)
-    confesses_jesus_savior = fields.Boolean(readonly=True)
+    # confesses_jesus_savior = fields.Boolean(readonly=True)
     final_letter_sent = fields.Boolean(readonly=True)
     sponsor_impact = fields.Char(readonly=True)
     new_situation = fields.Char(readonly=True)
@@ -104,6 +113,10 @@ class ChildLifecycleEvent(models.Model):
     old_project_id = fields.Many2one('compassion.project', readonly=True)
     transfer_arrival_date = fields.Date(readonly=True)
     other_transfer_reason = fields.Char(readonly=True)
+    current_project = fields.Char(readonly=True)
+    new_project = fields.Char(readonly=True)
+    new_program = fields.Char(readonly=True)
+    previously_active_program = fields.Char(readonly=True)
 
     # Transition fields
     ###################
@@ -117,7 +130,8 @@ class ChildLifecycleEvent(models.Model):
     # Unplanned Exit fields
     #######################
     child_death_date = fields.Date(readonly=True)
-    child_death_circumstances = fields.Char(readonly=True)
+    death_intervention_information = fields.Char(readonly=True)
+
     child_death_category = fields.Selection([
         ('Abuse', 'Abuse'),
         ('Fatal Accident or Suicide', 'Fatal Accident or Suicide'),
@@ -199,6 +213,12 @@ class ChildLifecycleEvent(models.Model):
 
     @api.model
     def process_commkit(self, commkit_data):
-        print '-------------------------------------------------------'
-        print '-       PROCESS COMMKIT IN child_lifecycle_event      -'
-        print '-------------------------------------------------------'
+        lifecycle_mapping = mapping.new_onramp_mapping(
+            self._name,
+            self.env,
+            'new_child_lifecyle')
+
+        vals = lifecycle_mapping.get_vals_from_connect(commkit_data)
+        lifecycle = self.with_context().create(vals)
+
+        return [lifecycle.id]

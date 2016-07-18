@@ -113,7 +113,7 @@
         <!-- Lifecycle Message -->
         <record id="new_life_cycle" model="gmc.action">
             <field name="direction">in</field>
-            <field name="name">NewLifeCycle</field>
+            <field name="name">ChildLifeCycle</field>
             <field name="model">compassion.child.ble</field>
             <field name="description">This will create a new life cycle event.</field>
             <field name="auto_process">1</field>

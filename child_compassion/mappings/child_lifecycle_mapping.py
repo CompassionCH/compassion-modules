@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    @author: Philippe Heer <heerphilippe@msn.com>
 #
 #    The licence is in the file __openerp__.py
 #
@@ -27,26 +27,27 @@ class ICPMapping(OnrampMapping):
         'LastAttendedDate': 'last_attended_project',
         'NewSituation': 'new_situation',
         'SponsorImpact': 'sponsor_impact',
-        'CurrentICP': None,
-        'Status': 'Cancelled',
-        'DeathInterventionInformation': None,
+        'CurrentICP': 'current_project',
+        'Status': 'status',
+        'DeathInterventionInformation': 'death_intervention_information',
         'EffectiveDate': 'date',
-        'BeneficiaryLifecycleEvent_ID': None,
+        'BeneficiaryLifecycleEvent_ID': 'global_id',
         'ReasonForRequest': 'request_reason',
-        'RecordType': 'Planned Exit',
-        'ExpectedArrivalDate': None,
+        'ExpectedArrivalDate': 'transfer_arrival_date',
         'NewBeneficiaryLocalNumber': ('child_id.local_id', 'compassion.child'),
-        'NewICPID': None,
+        'NewICPID': 'new_project',
         'OtherReasonForTransfer': 'other_transfer_reason',
         'BeneficiaryTransitionType': 'transition_type',
-        'NewProgram': None,
-        'PreviouslyActiveProgram': None,
-        'BeneficiaryStatus': None,
+        'NewProgram': 'new_program',
+        'PreviouslyActiveProgram': 'previously_active_program',
         'Beneficiary_GlobalID': ('child_id.global_id', 'compassion.child'),
-        'Beneficiary_LocalID': ('child_id.local_id', 'compassion.child'),
+        'RecordType': 'type',
 
         # Not used in Odoo
+        'Beneficiary_LocalID': None,
+        'BeneficiaryStatus': None,
         'NewICPName': None,
+        'SourceKitName': None,
     }
 
     FIELDS_TO_SUBMIT = {
@@ -54,6 +55,5 @@ class ICPMapping(OnrampMapping):
     }
 
     CONSTANTS = {
-        'SourceKitName': 'BeneficiaryLifecycleEventKit',
-        'BeneficiaryStatus': 'Active',
+
     }
