@@ -70,6 +70,13 @@ class CompassionHold(models.Model):
             ('expiration_date', '<',
              fields.Datetime.now())
         ])
+
+        for expired_hold in expired_holds:
+            child = self.env['compassion.child'].search([
+                ('id', '=', expired_hold.child_id.id)
+            ])
+            child.active = False
+
         for hold in expired_holds:
             hold.active = False
         return True
