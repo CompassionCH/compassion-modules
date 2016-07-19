@@ -269,14 +269,14 @@
                             <field name="hold_child_updates"/>
                         </group>
                         <group attrs="{'invisible': [('type', '!=', 'Transition')]}">
-                            <field name="actual_transition_date"/>
+                            <field name="transition_date"/>
                             <field name="transition_complete"/>
                             <field name="future_involvement"/>
                         </group>
-                        <group attrs="{'invisible': [('type', '!=', 'Transition')]}">
-                            <field name="celebration_details"/>
-                            <field name="relationship_strengths"/>
-                        </group>
+                        <!--<group attrs="{'invisible': [('type', '!=', 'Transition')]}">-->
+                            <!--<field name="celebration_details"/>-->
+                            <!--<field name="relationship_strengths"/>-->
+                        <!--</group>-->
                     </group>
                 </form>
             </field>
