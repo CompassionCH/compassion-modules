@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <form string="Holds">
                     <header>
-                        <button name="release_hold" type="object" string="Release Hold" attrs="{'invisible': [('expiration_date', '=', False)]}"/>
+                        <button name="release_hold" type="object" string="Release Hold" attrs="{'invisible': [('active', '=', False)]}" />
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -27,6 +27,7 @@
                             <group>
                                 <field name="type" />
                                 <field name="expiration_date" />
+                                <field name="active" attrs="{'invisible': [('active', '=', True)]}" />
                             </group>
                         </group>
                     </sheet>
