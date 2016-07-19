@@ -72,13 +72,9 @@ class CompassionHold(models.Model):
         ])
 
         for expired_hold in expired_holds:
-            child = self.env['compassion.child'].search([
-                ('id', '=', expired_hold.child_id.id)
-            ])
-            child.active = False
+            expired_hold.child_id.active = False
+            expired_hold.active = False
 
-        for hold in expired_holds:
-            hold.active = False
         return True
 
     ##########################################################################

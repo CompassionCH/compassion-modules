@@ -178,7 +178,7 @@ class CompassionChildMapping(GenericChildMapping):
                 odoo_data['household_id'] = household.create(household_data).id
 
         # Unlink old revised values and create new ones
-        if 'revised_value_ids' in odoo_data:
+        if isinstance(odoo_data.get('revised_value_ids'), list):
             child = self.env['compassion.child'].search([
                 ('global_id', '=', odoo_data['global_id'])])
             child.revised_value_ids.unlink()

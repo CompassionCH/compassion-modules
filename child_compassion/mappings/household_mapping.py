@@ -54,7 +54,7 @@ class HouseHoldMapping(OnrampMapping):
             odoo_data['member_ids'] = member_list or False
 
         # Unlink old revised values and create new ones
-        if 'revised_value_ids' in odoo_data:
+        if isinstance(odoo_data.get('revised_value_ids'), list):
             household = self.env[self.ODOO_MODEL].search(
                 [('household_id', '=', odoo_data['household_id'])])
             household.revised_value_ids.unlink()
