@@ -20,8 +20,7 @@
                         <group>
                             <group>
                                 <field name="hold_id" />
-                                <field name="child_name">
-                                </field>
+                                <field name="child_id" />
                                 <field name="primary_owner" />
                                 <field name="secondary_owner" />
                             </group>
