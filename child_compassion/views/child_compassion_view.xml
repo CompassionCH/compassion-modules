@@ -65,7 +65,7 @@
                                         <field name="has_been_sponsored"/>
                                         <field name="active"/>
                                         <field name="non_latin_name"/>
-                                        <field name="revised_value_ids"/>
+                                        <field name="revised_value_ids" widget="many2many_tags"/>
                                     </group>
                                     <group attrs="{'invisible': [('delegated_to', '=', False)]}">
                                         <field name="delegated_to"/>
