@@ -131,6 +131,17 @@
                                         <field name="chronic_illness_ids" widget="many2many_tags"/>
                                         <field name="physical_disability_ids" widget="many2many_tags"/>
                                     </group>
+                                    <group string="Notes" colspan="2">
+                                        <field name="note_ids">
+                                            <tree>
+                                                <field name="body"/>
+                                                <field name="record_type"/>
+                                                <field name="type"/>
+                                                <field name="visibility"/>
+                                                <field name="source_code"/>
+                                            </tree>
+                                        </field>
+                                    </group>
                                 </group>
                             </page>
                         </notebook>

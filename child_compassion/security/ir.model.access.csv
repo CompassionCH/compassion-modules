@@ -66,3 +66,4 @@ access_compassion_hold,Full access on compassion hold,model_compassion_hold,grou
 access_icp_reservation,Full access on ICP reservations,model_icp_reservation,group_sponsorship,1,1,1,0
 access_icp_reservation,Full access on ICP reservations,model_icp_reservation,base.group_erp_manager,1,1,1,1
 access_major_revision,Full access on major revision fields,model_compassion_major_revision,group_sponsorship,1,1,1,1
+access_compassion_child_note,Full access on child notes,model_compassion_child_note,group_sponsorship,1,1,1,1
