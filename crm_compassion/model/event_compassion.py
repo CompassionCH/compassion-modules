@@ -78,8 +78,11 @@ class event_compassion(models.Model):
         compute='_set_analytic_lines', readonly=True, store=True)
     balance = fields.Float(
         compute='_set_analytic_lines', readonly=True, store=True)
+    number_reserve_children = fields.Integer(
+        'Number of children to reserve', track_visibility='onchange',
+        required=True)
     planned_sponsorships = fields.Integer(
-        'Expected sponsorships', track_visibility='onchange')
+        'Expected sponsorships', track_visibility='onchange', required=True)
     lead_id = fields.Many2one(
         'crm.lead', 'Opportunity', track_visibility='onchange')
     won_sponsorships = fields.Integer(
