@@ -48,6 +48,7 @@
         'views/field_office_view.xml',
         'views/child_holds_view.xml',
         'views/project_reservation_view.xml',
+        'views/field_office_disaster_alert_view.xml',
         'workflow/child_workflow.xml',
         'data/delegate_child_compassion_cron.xml',
         'data/validity_checks_cron.xml',

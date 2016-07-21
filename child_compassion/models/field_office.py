@@ -48,6 +48,10 @@ class FieldOffice(models.Model):
         'fo.high.risk', string='Beneficiary high risks'
     )
 
+    disaster_alert_ids = fields.Many2many(
+        'fo.disaster.alert', string='Disaster alerts'
+    )
+
     development_plan_frequency = fields.Integer(
         help='Frequency in months at which the FO makes a development plan'
     )

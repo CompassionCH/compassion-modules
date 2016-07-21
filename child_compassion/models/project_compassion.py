@@ -260,6 +260,9 @@ class CompassionProject(models.Model):
     spiritual_needs = fields.Text(readonly=True)
     primary_diet_ids = fields.Many2many(
         'icp.diet', string='Primary diet', readonly=True)
+    icp_disaster_impact_ids = fields.One2many(
+        'icp.disaster.impact', 'fo_disaster_alert_id', 'ICP Disaster Impact'
+    )
 
     # Partnership
     #############

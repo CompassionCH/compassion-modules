@@ -323,6 +323,9 @@ class CompassionChild(models.Model):
                                    readonly=True)
     portrait = fields.Binary(related='pictures_ids.headshot')
     fullshot = fields.Binary(related='pictures_ids.fullshot')
+    child_disaster_impact_ids = fields.One2many(
+        'child.disaster.impact', 'child_id', 'Child Disaster Impact'
+    )
 
     # Descriptions
     ##############

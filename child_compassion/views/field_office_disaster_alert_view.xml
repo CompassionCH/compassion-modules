@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--Field office disaster form view -->
+        <record id="view_field_office_disaster" model="ir.ui.view">
+            <field name="name">fo.disaster.alert.form</field>
+            <field name="model">fo.disaster.alert</field>
+            <field name="arch" type="xml">
+                <form string="Field Office Disaster Alert">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="disaster_name"/>
+                            <h1>
+                                <field name="disaster_name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="area_description"/>
+                                <field name="close_date"/>
+                                <field name="disaster_date"/>
+                                <field name="disaster_status"/>
+                                <field name="disaster_type"/>
+                            </group>
+                            <group>
+                                <field name="is_additional_funds_requested"/>
+                                <field name="is_communication_sensitive"/>
+                                <field name="is_estimated_damage_over_one_million_usd"/>
+                                <field name="severity_level"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Estimations">
+                                <group>
+                                    <group>
+                                        <field name="estimated_basic_supplies_needed"/>
+                                        <field name="estimated_homes_destroyed"/>
+                                        <field name="estimated_loss_of_life"/>
+                                        <field name="estimated_loss_of_livelihood"/>
+                                    </group>
+                                    <group>
+                                        <field name="estimated_not_attending_project"/>
+                                        <field name="estimated_rehabilitation_funds_usd"/>
+                                        <field name="estimated_relief_funds_usd"/>
+                                        <field name="estimated_serious_injuries"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Field Office">
+                                <group>
+                                    <group>
+                                        <field name="field_office_name">
+                                            <tree>
+                                                <field name="name"/>
+                                            </tree>
+                                        </field>
+                                        <field name="fo_disaster_update_ids">
+                                            <tree>
+                                                <field name="name"/>
+                                                <field name="summary"/>
+                                            </tree>
+                                        </field>
+                                    </group>
+                                    <group>
+                                        <field name="field_office_damage"/>
+                                        <field name="field_office_impact_description"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Impact">
+                                <group>
+                                    <group colspan="2">
+                                        <field name="icp_disaster_impact_ids">
+                                            <tree>
+                                                <field name="impact_on_icp_program"/>
+                                                <field name="disaster_status"/>
+                                                <field name="infrastructure"/>
+                                            </tree>
+                                        </field>
+                                        <field name="child_disaster_impact_ids">
+                                            <tree>
+                                                <field name="name"/>
+                                                <field name="beneficiary_location"/>
+                                                <field name="beneficiary_physical_condition"/>
+                                                <field name="disaster_status"/>
+                                            </tree>
+                                        </field>
+                                    </group>
+                                    <group>
+                                        <field name="impact_description"/>
+                                        <field name="impact_on_icp_infrastructure_damaged"/>
+                                        <field name="impact_on_icp_infrastructure_destroyed"/>
+                                    </group>
+                                    <group>
+                                        <field name="impact_on_icp_program_temporarily_closed"/>
+                                        <field name="impact_to_field_office_operations"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Reports">
+                                <group>
+                                    <group>
+                                        <field name="reported_loss_of_life_beneficiaries"/>
+                                        <field name="reported_loss_of_life_caregivers"/>
+                                        <field name="reported_loss_of_life_siblings"/>
+                                        <field name="reported_number_beneficiaries_impacted"/>
+                                    </group>
+                                    <group>
+                                        <field name="reported_number_of_icps_impacted"/>
+                                        <field name="reported_serious_injuries_beneficaries"/>
+                                        <field name="reported_serious_injuries_caregivers"/>
+                                        <field name="reported_serious_injuries_siblings"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Reports">
+                                <group>
+                                    <field name="reported_loss_of_life_beneficiaries"/>
+                                </group>
+                            </page>
+                            <page string="Others">
+                                <group>
+                                    <field name="source_kit_name"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="open_view_field_office_disaster" model="ir.actions.act_window">
+            <field name="name">Disaster Alerts</field>
+            <field name="res_model">fo.disaster.alert</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_sponsorship_field_office_disaster_alert" parent="menu_sponsorship_section" name="Disaster Alerts" action="open_view_field_office_disaster" sequence="6"/>
+    </data>
+</openerp>
