@@ -50,6 +50,7 @@
         'view/account_invoice_line.xml',
         'view/res_partner_view.xml',
         'view/calendar_event_view.xml',
+        'view/demand_planning.xml',
     ],
     'demo': [],
     'installable': True,
