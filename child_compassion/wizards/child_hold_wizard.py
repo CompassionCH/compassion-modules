@@ -33,9 +33,9 @@ class ChildHoldWizard(models.TransientModel):
         ('Reservation Hold', _('Reservation Hold')),
         ('Sponsor Cancel Hold', _('Sponsor Cancel Hold')),
         ('Sponsored', _('Sponsored')),
-        ('Sub Child Hold', _('Sub Child Hold'))])
-    hold_expiration_date = fields.Datetime()
-    primary_owner = fields.Char()
+        ('Sub Child Hold', _('Sub Child Hold'))], required=True)
+    hold_expiration_date = fields.Datetime(required=True)
+    primary_owner = fields.Char(required=True)
     secondary_owner = fields.Char()
     no_money_yield_rate = fields.Float()
     yield_rate = fields.Float()
