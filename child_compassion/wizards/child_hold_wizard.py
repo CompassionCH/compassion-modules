@@ -98,22 +98,7 @@ class ChildHoldWizard(models.TransientModel):
                 'action_id': action_id,
                 'object_id': hold.id
             })
-        messages.with_context(async_mode=False).process_messages()
-
-        # update compassion children with hold_id received
-        for hold in holds:
-            child_to_update = hold.child_id
-            if hold.hold_id:
-                child_vals = {
-                    'hold_id': hold.id,
-                    'active': True,
-                    'state': 'N',
-                }
-                child_to_update.write(child_vals)
-            else:
-                # delete child if no hold_id received
-                child_to_update.unlink()
-                hold.unlink()
+        messages.process_messages()
 
         return {
             'name': _('Created holds'),

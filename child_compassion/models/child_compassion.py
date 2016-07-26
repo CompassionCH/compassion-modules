@@ -400,7 +400,7 @@ class CompassionChild(models.Model):
                 child.write(vals)
         if not child:
             child = super(CompassionChild, self).create(vals)
-        child.get_infos(async_mode=True)
+        child.with_context(async_mode=True).get_infos()
         return child
 
     ##########################################################################
@@ -459,7 +459,7 @@ class CompassionChild(models.Model):
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     @api.multi
-    def get_infos(self, context=None, async_mode=False):
+    def get_infos(self):
         """Get the most recent case study, basic informations, updates
            portrait picture and creates the project if it doesn't exist.
         """
@@ -472,7 +472,7 @@ class CompassionChild(models.Model):
             'object_id': self.id,
             'child_id': self.id,
         }
-        message_obj.with_context(async_mode=async_mode).create(message_vals)
+        message_obj.create(message_vals)
         return True
 
     @api.multi

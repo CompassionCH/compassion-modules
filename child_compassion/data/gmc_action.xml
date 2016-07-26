@@ -10,6 +10,7 @@
             <field name="connect_service">beneficiaries/holds</field>
             <field name="connect_outgoing_wrapper">BeneficiaryHoldRequestList</field>
             <field name="connect_answer_wrapper">BeneficiaryHoldResponseList</field>
+            <field name="success_method">hold_sent</field>
             <field name="request_type">POST</field>
             <field name="batch_send">True</field>
         </record>

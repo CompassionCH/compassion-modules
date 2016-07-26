@@ -8,6 +8,4 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from . import json_request
-from . import onramp
-from . import b2s_image
+from . import web_children_hold
