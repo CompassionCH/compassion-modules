@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Sponsorships',
-    'version': '8.0.2',
+    'version': '8.0.2.5',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -50,6 +50,7 @@
         'data/analytic_accounting.xml',
         'data/partner_sequence.xml',
         'data/lang_data.xml',
+        'data/migrate_analytic.xml',
         'workflow/contract_workflow.xml',
     ],
     'demo': [

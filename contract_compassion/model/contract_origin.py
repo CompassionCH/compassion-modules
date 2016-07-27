@@ -113,4 +113,16 @@ class contract_origin(models.Model):
                 res = origins[0]
             else:
                 raise
+
+        # Put analytic account of the user if it exists
+        partner = res.partner_id
+        if res.type == 'partner' and partner and not res.analytic_id:
+            partner_name = partner.name
+            if partner.parent_id:
+                partner_name = partner.parent_id.name + ', ' + partner_name
+            analytic_account = self.env[
+                'account.analytic.account'].with_context(lang='en_US').search(
+                    [('name', '=', partner_name)], limit=1)
+            res.analytic_id = analytic_account
+
         return res

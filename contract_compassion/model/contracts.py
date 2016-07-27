@@ -57,7 +57,7 @@ class recurring_contract(models.Model):
              "contract was activated.")
     # Field used for identifying gifts from sponsor (because of bad GP)
     num_pol_ga = fields.Integer(
-        'Partner Contract Number', required=True)
+        'Partner Contract Number', required=True, copy=False)
     end_reason = fields.Selection('get_ending_reasons')
     end_date = fields.Date(readonly=True, track_visibility='onchange')
     months_paid = fields.Integer(
@@ -207,15 +207,6 @@ class recurring_contract(models.Model):
                     ('partner_id', '=', partner_id)]).mapped('num_pol_ga')
                 vals['num_pol_ga'] = max(other_nums or [-1]) + 1
         return super(recurring_contract, self).create(vals)
-
-    @api.one
-    def copy(self, default=None):
-        if default is None:
-            default = dict()
-        default.update({
-            'num_pol_ga': self.num_pol_ga + 1
-        })
-        return super(recurring_contract, self).copy(default)
 
     @api.multi
     def write(self, vals):
