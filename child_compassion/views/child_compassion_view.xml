@@ -201,7 +201,7 @@
                     <field name="sponsor_ref"/>
                     <field name="state"/>
                     <field name="type"/>
-                    <filter name="available" string="Available" domain="[('state','in',('N','D','I','R','E'))]" context="{'group_by':'state'}"/>
+                    <filter name="available" string="Available" domain="[('state','in',('N','D','I','R','E')), ('project_id.suspension', '=', False)]" context="{'group_by':'state'}"/>
                     <filter name="sponsored" string="Sponsored" domain="[('state','=','P')]" help="Sponsored children"/>
                     <filter name="departed" string="Departed" domain="[('state','=','F')]" help="Departed children"/>
                     <group expand="0" string="Group By...">

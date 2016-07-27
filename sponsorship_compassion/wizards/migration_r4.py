@@ -23,11 +23,11 @@ class MigrationR4(models.TransientModel):
 
     @api.model
     def perform_migration(self):
-        # Only execute migration for 8.0.2 -> 8.0.3.0
+        # Only execute migration for 8.0.2.5 -> 8.0.3.0
         sponsorship_compassion_module = self.env['ir.module.module'].search([
             ('name', '=', 'sponsorship_compassion')
         ])
-        if sponsorship_compassion_module.latest_version == '8.0.2':
+        if sponsorship_compassion_module.latest_version == '8.0.2.5':
             self._perform_migration()
         return True
 

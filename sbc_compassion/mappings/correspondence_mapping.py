@@ -104,6 +104,7 @@ class CorrespondenceMapping(OnrampMapping):
         'RelationshipType': None,
         'SBCGlobalStatus': None,
         'GlobalPartnerSBCId': str,
+        # Put again language if GMC can handle it.
         # 'OriginalLanguage': None,
         'OriginalLetterURL': None,
         'Template': None,
