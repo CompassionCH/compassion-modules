@@ -12,7 +12,7 @@
             <field name="connect_answer_wrapper">BeneficiaryHoldResponseList</field>
             <field name="success_method">hold_sent</field>
             <field name="request_type">POST</field>
-            <field name="batch_send">True</field>
+            <field name="batch_send">1</field>
         </record>
         <!-- Hold Message Release -->
         <record id="release_hold" model="gmc.action">
@@ -25,7 +25,7 @@
             <field name="connect_outgoing_wrapper">BeneficiaryHoldReleaseRequestList</field>
             <field name="connect_answer_wrapper">BeneficiaryHoldReleaseResponseList</field>
             <field name="request_type">POST</field>
-            <field name="batch_send">True</field>
+            <field name="batch_send">1</field>
         </record>
         <!-- Get beneficiaries details -->
         <record id="beneficiaries_details" model="gmc.action">
@@ -37,7 +37,7 @@
             <field name="description">This will update child</field>
             <field name="connect_service">beneficiaries/{$object.global_id}/details</field>
             <field name="request_type">GET</field>
-            <field name="auto_process">True</field>
+            <field name="auto_process">1</field>
             <field name="success_method">details_answer</field>
         </record>
         <!-- Get ICP details -->
@@ -49,7 +49,7 @@
             <field name="description">This will update the project</field>
             <field name="connect_service">churchpartners/{$object.icp_id}/kits/icpkit</field>
             <field name="request_type">GET</field>
-            <field name="auto_process">True</field>
+            <field name="auto_process">1</field>
             <field name="success_method">details_answer</field>
         </record>
         <!-- Reservation Message Creation -->
@@ -63,7 +63,7 @@
             <field name="connect_outgoing_wrapper">GlobalPartnerReservationRequestList</field>
             <field name="connect_answer_wrapper">GlobalPartnerReservationResponseList</field>
             <field name="request_type">POST</field>
-            <field name="auto_process">True</field>
+            <field name="auto_process">1</field>
         </record>
         <!-- Reservation Message Release -->
         <record id="cancel_reservation" model="gmc.action">
@@ -76,7 +76,7 @@
             <field name="connect_outgoing_wrapper">ReservationCancelRequestList</field>
             <field name="connect_answer_wrapper">ReservationCancelResponseList</field>
             <field name="request_type">POST</field>
-            <field name="auto_process">True</field>
+            <field name="auto_process">1</field>
         </record>
         <!-- Beneficiary Major Revision -->
         <record id="major_revision" model="gmc.action">
@@ -85,7 +85,7 @@
             <field name="model">compassion.child</field>
             <field name="incoming_method">major_revision</field>
             <field name="description">This will update the child with the major changes that happened.</field>
-            <field name="auto_process">True</field>
+            <field name="auto_process">1</field>
         </record>
         <!-- Beneficiary CDPR Messages -->
         <record id="beneficiary_cdpr" model="gmc.action">
@@ -109,7 +109,15 @@
             <field name="name">HouseholdMajorRevision</field>
             <field name="model">compassion.household</field>
             <field name="description">This will update the household with the major changes that happened.</field>
-            <field name="auto_process">True</field>
+            <field name="auto_process">1</field>
+        </record>
+        <!-- Beneficiary Note -->
+        <record id="beneficiary_note" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">BeneficiaryNote</field>
+            <field name="model">compassion.child.note</field>
+            <field name="description">This handles the reception of a Beneficiary note.</field>
+            <field name="auto_process">1</field>
         </record>
 
         <!-- Action to Connect mappings -->
@@ -128,6 +136,10 @@
         <record id="major_revision_household_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/HouseholdMajorRevisionKit</field>
             <field name="action_id" ref="major_revision_household"/>
+        </record>
+        <record id="beneficiary_note_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/NotesKit</field>
+            <field name="action_id" ref="beneficiary_note"/>
         </record>
     </data>
 </openerp>
