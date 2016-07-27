@@ -91,7 +91,7 @@
                         </group>
                         <notebook>
                             <page string="Allocated children">
-                                <field name="hold_ids"/>
+                                <field name="allocate_child_ids"/>
                             </page>
                             <page string="Internal Notes">
                                 <field name="description"/>
@@ -128,6 +128,8 @@
                     <field name="parent_id"/>
                     <field name="type"/>
                     <field name="city"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
                     <group expand="0" string="Group By...">
                         <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
                         <filter string="Customer" domain="[]" context="{'group_by':'partner_id'}"/>

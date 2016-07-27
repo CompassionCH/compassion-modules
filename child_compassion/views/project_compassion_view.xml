@@ -29,17 +29,22 @@
                             </group>
                             <group>
                                 <field name="program_start_date" />
+                                <field name="program_end_date" />
                                 <field name="last_update_date" />
                                 <field name="field_office_id" />
                                 <field name="country_id" />
+                                <field name="country" />
                             </group>
                         </group>
 						<notebook>
 							<page string="General Information">
                                 <group>
                                     <group string="Community">
+                                        <field name="child_center_original_name"/>
                                         <field name="local_church_name"/>
+                                        <field name="local_church_original_name"/>
                                         <field name="community_name"/>
+                                        <field name="involvement_ids" widget="many2many_tags"/>
                                         <field name="website"/>
                                         <field name="social_media_site"/>
                                         <field name="available_for_visits"/>
@@ -66,6 +71,7 @@
                                         <field name="partnership_start_date"/>
                                         <field name="first_scheduled_letter"/>
                                         <field name="second_scheduled_letter"/>
+                                        <field name="interested_partner_ids" widget="many2many_tags"/>
                                     </group>
                                     <group string="Reservation">
                                         <field name="reservation_id" context="{'default_project_id': active_id}"/>
@@ -92,6 +98,7 @@
                                         <field name="street"/>
                                         <field name="zip_code" class="oe_inline"/>
                                         <field name="city"/>
+                                        <field name="state_province"/>
                                         <field name="cluster"/>
                                         <field name="territory"/>
                                         <field name="closest_city"/>
@@ -99,6 +106,8 @@
                                         <field name="time_to_airport"/>
                                         <field name="transport_mode_to_airport"/>
                                         <field name="time_to_medical_facility"/>
+                                        <field name="gps_latitude"/>
+                                        <field name="gps_longitude"/>
                                     </group>
                                     <group string="Church Information">
                                         <field name="church_foundation_date"/>

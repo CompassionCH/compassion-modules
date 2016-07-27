@@ -57,16 +57,18 @@ class ChildHoldWizard(models.TransientModel):
 
     @api.multi
     def send(self):
-        dictionnary = super(ChildHoldWizard, self).send()
+        action = super(ChildHoldWizard, self).send()
 
         if self.env.context.get('event_id') is None:
-            return dictionnary
+            return action
         else:
-            del dictionnary['domain']
-            dictionnary.update({'view_mode': 'form,tree'})
-            dictionnary.update({'res_model': 'crm.event.compassion'})
-            dictionnary.update({'res_id': self.env.context.get('event_id')})
-            return dictionnary
+            del action['domain']
+            action.update({
+                'view_mode': 'form,tree',
+                'res_model': 'crm.event.compassion',
+                'res_id': self.env.context.get('event_id')
+            })
+            return action
 
 
 class account_move_line(models.Model):
@@ -117,8 +119,10 @@ class event_compassion(models.Model):
     hold_ids = fields.One2many('compassion.hold',
                                'event_id',
                                readonly=True)
-    available_children_ids = fields.One2many('compassion.child',
-                                             related='hold_ids.child_id'),
+    allocate_child_ids = fields.One2many(
+        'compassion.child',
+        related='hold_ids.child_id',
+        string='children allocated'),
     staff_ids = fields.Many2many(
         'res.partner', 'partners_to_staff_event', 'event_id', 'partner_id',
         'Staff')
@@ -446,6 +450,6 @@ class event_compassion(models.Model):
             'target': 'current',
             'context': self.with_context({
                 'number_allocate_children': self.number_allocate_children,
-                'event_id': self._ids[0],
+                'event_id': self._id
             }).env.context
         }
