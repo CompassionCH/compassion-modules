@@ -42,10 +42,14 @@
                                         <field name="project_id"/>
                                         <field name="gender"/>
                                         <field name="birthdate"/>
+                                        <field name="age"/>
                                         <field name="estimated_birthdate"/>
                                         <field name="sponsor_id"/>
                                         <field name="beneficiary_state"/>
                                         <field name="hold_id"/>
+                                        <!--newly added-->
+                                        <field name="correspondence_language_id"/>
+                                        <field name="field_office_id"/>
                                     </group>
                                     <group>
                                         <field name="global_id"/>
@@ -55,6 +59,13 @@
                                         <field name="completion_date"/>
                                         <field name="completion_date_change_reason" attrs="{'invisible': [('completion_date_change_reason', '=', False)]}"/>
                                         <field name="exit_reason" attrs="{'invisible': [('state', '!=', 'F')]}"/>
+                                        <!--newly added-->
+                                        <field name="compass_id"/>
+                                        <field name="is_available"/>
+                                        <field name="has_been_sponsored"/>
+                                        <field name="active"/>
+                                        <field name="non_latin_name"/>
+                                        <field name="revised_value_ids" widget="many2many_tags"/>
                                     </group>
                                     <group attrs="{'invisible': [('delegated_to', '=', False)]}">
                                         <field name="delegated_to"/>
