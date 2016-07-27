@@ -33,9 +33,9 @@ class ChildHoldWizard(models.TransientModel):
         ('Reservation Hold', _('Reservation Hold')),
         ('Sponsor Cancel Hold', _('Sponsor Cancel Hold')),
         ('Sponsored', _('Sponsored')),
-        ('Sub Child Hold', _('Sub Child Hold'))])
-    hold_expiration_date = fields.Datetime()
-    primary_owner = fields.Char()
+        ('Sub Child Hold', _('Sub Child Hold'))], required=True)
+    hold_expiration_date = fields.Datetime(required=True)
+    primary_owner = fields.Char(required=True)
     secondary_owner = fields.Char()
     no_money_yield_rate = fields.Float()
     yield_rate = fields.Float()
@@ -98,22 +98,7 @@ class ChildHoldWizard(models.TransientModel):
                 'action_id': action_id,
                 'object_id': hold.id
             })
-        messages.with_context(async_mode=False).process_messages()
-
-        # update compassion children with hold_id received
-        for hold in holds:
-            child_to_update = hold.child_id
-            if hold.hold_id:
-                child_vals = {
-                    'hold_id': hold.id,
-                    'active': True,
-                    'state': 'N',
-                }
-                child_to_update.write(child_vals)
-            else:
-                # delete child if no hold_id received
-                child_to_update.unlink()
-                hold.unlink()
+        messages.process_messages()
 
         return {
             'name': _('Created holds'),
