@@ -106,3 +106,22 @@ class CompassionHold(models.Model):
             'object_id': self.id
         }
         message_obj.create(message_vals)
+
+    @api.multi
+    def hold_sent(self, vals):
+        """ Called when hold is sent to Connect. """
+        self.write(vals)
+        # update compassion children with hold_id received
+        for hold in self:
+            child_to_update = hold.child_id
+            if hold.hold_id:
+                child_vals = {
+                    'hold_id': hold.id,
+                    'active': True,
+                    'state': 'N',
+                }
+                child_to_update.write(child_vals)
+            else:
+                # delete child if no hold_id received
+                child_to_update.unlink()
+                hold.unlink()

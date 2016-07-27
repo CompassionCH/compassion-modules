@@ -49,7 +49,7 @@
                             <page string="Field Office">
                                 <group>
                                     <group>
-                                        <field name="field_office_name">
+                                        <field name="field_office_id">
                                             <tree>
                                                 <field name="name"/>
                                             </tree>

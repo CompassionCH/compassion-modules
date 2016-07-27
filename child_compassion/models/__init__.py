@@ -28,3 +28,4 @@ from . import gmc_message
 from . import project_reservation
 from . import major_revision
 from . import field_office_disaster
+from . import child_note

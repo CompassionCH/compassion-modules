@@ -261,7 +261,7 @@ class CompassionProject(models.Model):
     primary_diet_ids = fields.Many2many(
         'icp.diet', string='Primary diet', readonly=True)
     icp_disaster_impact_ids = fields.One2many(
-        'icp.disaster.impact', 'fo_disaster_alert_id', 'ICP Disaster Impact'
+        'icp.disaster.impact', 'project_id', 'ICP Disaster Impacts'
     )
 
     # Partnership

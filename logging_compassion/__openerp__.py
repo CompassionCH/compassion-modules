@@ -9,8 +9,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    @author: Maxime Beck <mbcompte@gmail.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -27,32 +27,17 @@
 #
 ##############################################################################
 
+
 {
-    'name': 'Compassion CH - Events',
-    'version': '8.0.1',
-    'category': 'CRM',
-    'sequence': 150,
+    'name': "Compassion Logging",
+    'version': '8.0.3.0',
+    'category': 'Audit and Logging',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['mail', 'base_location', 'sponsorship_compassion', 'project',
-                'hr_timesheet', 'hr_expense', 'hr_holidays'],
+    'depends': ['base', 'auditlog', 'sbc_compassion'],
     'data': [
-        'security/ir.model.access.csv',
-        'data/account_analytic_data.xml',
-        'data/calendar_event_type.xml',
-        'view/event_compassion_view.xml',
-        'view/contract_origin_view.xml',
-        'view/crm_lead_view.xml',
-        'view/project_view.xml',
-        'view/hr_timesheet_view.xml',
-        'view/account_view.xml',
-        'view/close_old_projects_view.xml',
-        'view/account_invoice_line.xml',
-        'view/res_partner_view.xml',
-        'view/calendar_event_view.xml',
-        'view/demand_planning.xml',
+        'data/compassion_auditlog_rules.xml',
     ],
-    'demo': [],
     'installable': True,
     'auto_install': False,
 }

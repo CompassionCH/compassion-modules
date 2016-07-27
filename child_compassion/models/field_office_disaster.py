@@ -17,11 +17,11 @@ class ICPDisasterImpact(models.Model):
     _name = 'icp.disaster.impact'
     _description = 'ICP Disaster Impact'
 
-    compassion_project_id = fields.Many2one(
-        'res.country', 'Project'
+    project_id = fields.Many2one(
+        'compassion.project', 'Project', ondelete='cascade'
     )
     fo_disaster_alert_id = fields.Many2one(
-        'fo.disaster.alert', 'Disaster Alert'
+        'fo.disaster.alert', 'Disaster Alert', ondelete='cascade'
     )
 
     impact_on_icp_program = fields.Char()
@@ -35,7 +35,7 @@ class FieldOfficeDisasterUpdate(models.Model):
     _description = 'Field Office Disaster Update'
 
     fo_disaster_alert_id = fields.Many2one(
-        'fo.disaster.alert', 'Disaster Alert'
+        'fo.disaster.alert', 'Disaster Alert', ondelete='cascade'
     )
     fo_id = fields.Many2one(
         'compassion.field.office', 'Field Office'
@@ -51,10 +51,10 @@ class ChildDisasterImpact(models.Model):
     _description = 'Child Disaster Impact'
 
     child_id = fields.Many2one(
-        'compassion.child', 'Child'
+        'compassion.child', 'Child', ondelete='cascade'
     )
     fo_disaster_alert_id = fields.Many2one(
-        'fo.disaster.alert', 'Disaster Alert'
+        'fo.disaster.alert', 'Disaster Alert', ondelete='cascade'
     )
 
     name = fields.Char()
@@ -97,8 +97,8 @@ class FieldOfficeDisasterAlert(models.Model):
     estimated_relief_funds_usd = fields.Integer()
     estimated_serious_injuries = fields.Char()
 
-    field_office_name = fields.Many2many(
-        'compassion.field.office', string="Field Offices"
+    field_office_id = fields.Many2one(
+        'compassion.field.office', string="Field Offices", ondelete='cascade'
     )
     field_office_damage = fields.Char()
     field_office_impact_description = fields.Char()
