@@ -10,6 +10,7 @@
 ##############################################################################
 
 from openerp import models, fields, api
+from openerp.exceptions import Warning
 
 
 class ProjectReservation(models.Model):

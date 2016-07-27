@@ -30,6 +30,9 @@ class Household(models.Model):
         readonly=True
     )
 
+    _sql_constraints = [('household_uniq', 'unique(household_id)',
+                        ('An Household with the same ID already exists.'))]
+
     # Parents
     #########
     parents_together = fields.Selection('_get_yes_no')
@@ -163,12 +166,20 @@ class Household(models.Model):
                 household_ids.append(household.id)
                 household_vals = household_mapping.get_vals_from_connect(
                     household_data)
-                household._major_revision(household_vals)
+                household.write(household_vals)
         return household_ids
 
-    def _major_revision(self, vals):
-        self.ensure_one()
-        self.write(vals)
+    ##########################################################################
+    #                             ORM METHODS                                #
+    ##########################################################################
+    @api.model
+    def create(self, vals):
+        res = self.search([('household_id', '=', vals.get('household_id'))])
+        if res:
+            res.write(vals)
+        else:
+            res = super(Household, self).create(vals)
+        return res
 
 
 class HouseholdMembers(models.Model):

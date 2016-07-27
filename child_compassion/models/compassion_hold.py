@@ -70,8 +70,11 @@ class CompassionHold(models.Model):
             ('expiration_date', '<',
              fields.Datetime.now())
         ])
-        for hold in expired_holds:
-            hold.active = False
+
+        for expired_hold in expired_holds:
+            expired_hold.child_id.active = False
+            expired_hold.active = False
+
         return True
 
     ##########################################################################
