@@ -13,6 +13,64 @@ from openerp import api, models, fields, exceptions, _
 from datetime import datetime
 
 
+class CompassionHold(models.Model):
+    _inherit = 'compassion.hold'
+
+    event_id = fields.Many2one('crm.event.compassion', 'Event', readonly=True)
+
+
+class GlobalChildSearch(models.TransientModel):
+    _inherit = 'compassion.childpool.search'
+
+    take = fields.Integer(
+        default=lambda self: self.default_number_reserve_children(),
+        readonly=lambda self: self[
+            'compassion.childpool.search'].is_from_event()
+    )
+
+    def is_from_event(self):
+        number_allocate_children = \
+            self.env.context.get('number_allocate_children')
+        return type(number_allocate_children) is int
+
+    def default_number_reserve_children(self):
+        number_allocate_children = \
+            self.env.context.get('number_allocate_children')
+        if type(number_allocate_children) is int:
+            return number_allocate_children
+        else:
+            return 80
+
+
+class ChildHoldWizard(models.TransientModel):
+    _inherit = 'child.hold.wizard'
+
+    @api.multi
+    def create_hold_vals(self, child_comp):
+        hold_vals = super(ChildHoldWizard, self).create_hold_vals(child_comp)
+
+        if self.env.context.get('event_id') is None:
+            return hold_vals
+        else:
+            hold_vals.update({'event_id': self.env.context.get('event_id')})
+            return hold_vals
+
+    @api.multi
+    def send(self):
+        action = super(ChildHoldWizard, self).send()
+
+        if self.env.context.get('event_id') is None:
+            return action
+        else:
+            del action['domain']
+            action.update({
+                'view_mode': 'form,tree',
+                'res_model': 'crm.event.compassion',
+                'res_id': self.env.context.get('event_id')
+            })
+            return action
+
+
 class account_move_line(models.Model):
     _inherit = 'account.move.line'
 
@@ -58,9 +116,16 @@ class event_compassion(models.Model):
     country_id = fields.Many2one('res.country', 'Country')
     user_id = fields.Many2one(
         'res.users', 'Ambassador', track_visibility='onchange')
+    hold_ids = fields.One2many('compassion.hold',
+                               'event_id',
+                               readonly=True)
+    allocate_child_ids = fields.One2many(
+        'compassion.child',
+        compute='_compute_allocate_children',
+        string='Allocated children')
     staff_ids = fields.Many2many(
-        'res.partner', 'partners_to_staff_event', 'event_id',
-        'partner_id', 'Staff')
+        'res.partner', 'partners_to_staff_event', 'event_id', 'partner_id',
+        'Staff')
     description = fields.Text()
     analytic_id = fields.Many2one(
         'account.analytic.account', 'Analytic Account')
@@ -78,8 +143,12 @@ class event_compassion(models.Model):
         compute='_set_analytic_lines', readonly=True, store=True)
     balance = fields.Float(
         compute='_set_analytic_lines', readonly=True, store=True)
+    number_allocate_children = fields.Integer(
+        'Number of children to allocate',
+        track_visibility='onchange',
+        required=True)
     planned_sponsorships = fields.Integer(
-        'Expected sponsorships', track_visibility='onchange')
+        'Expected sponsorships', track_visibility='onchange', required=True)
     lead_id = fields.Many2one(
         'crm.lead', 'Opportunity', track_visibility='onchange')
     won_sponsorships = fields.Integer(
@@ -143,6 +212,12 @@ class event_compassion(models.Model):
             ('presentation', _("Presentation")),
             ('meeting', _("Meeting")),
             ('sport', _("Sport event"))]
+
+    @api.multi
+    @api.depends('hold_ids')
+    def _compute_allocate_children(self):
+        for event in self:
+            event.allocate_child_ids = event.hold_ids.mapped('child_id')
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -368,3 +443,19 @@ class event_compassion(models.Model):
             'class': 'confidential',
         }
         return calendar_vals
+
+    @api.multi
+    def allocate_children(self):
+
+        return {
+            'name': _('Global Childpool'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'compassion.childpool.search',
+            'target': 'current',
+            'context': self.with_context({
+                'number_allocate_children': self.number_allocate_children,
+                'event_id': self.id
+            }).env.context
+        }

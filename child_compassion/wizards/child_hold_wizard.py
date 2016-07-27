@@ -46,6 +46,21 @@ class ChildHoldWizard(models.TransientModel):
     ##########################################################################
 
     @api.multi
+    def create_hold_vals(self, child_comp):
+        return {
+            'name': self.name,
+            'child_id': child_comp.id,
+            'type': self.type,
+            'expiration_date': self.hold_expiration_date,
+            'primary_owner': self.primary_owner,
+            'secondary_owner': self.secondary_owner,
+            'no_money_yield_rate': self.no_money_yield_rate,
+            'yield_rate': self.yield_rate,
+            'channel': self.channel,
+            'source_code': '',
+        }
+
+    @api.multi
     def send(self):
 
         holds = self.env['compassion.hold']
@@ -76,18 +91,7 @@ class ChildHoldWizard(models.TransientModel):
             child_comp = self.env['compassion.child'].create(child_vals)
 
             # Create Holds for children to reserve
-            hold_vals = {
-                'name': self.name,
-                'child_id': child_comp.id,
-                'type': self.type,
-                'expiration_date': self.hold_expiration_date,
-                'primary_owner': self.primary_owner,
-                'secondary_owner': self.secondary_owner,
-                'no_money_yield_rate': self.no_money_yield_rate,
-                'yield_rate': self.yield_rate,
-                'channel': self.channel,
-                'source_code': '',
-            }
+            hold_vals = self.create_hold_vals(child_comp)
             hold = holds.create(hold_vals)
             holds += hold
 
