@@ -33,12 +33,14 @@
             <field name="name">crm.event.compassion.form</field>
             <field name="model">crm.event.compassion</field>
             <field name="arch" type="xml">
-                <form string="Event" version="7.0">
+                <form string="Event">
+                    <header>
+                        <button name="allocate_children" type="object" string="Allocate children" colspan="2" context="{'number_allocate_children': number_allocate_children}"/>
+                    </header>
                     <sheet>
                         <div class="oe_title">
                             <h1>
                                 <field name="name" default_focus="1" />
-                                <button name="allocate_children" type="object" string="Allocate children" colspan="2" context="{'number_allocate_children': number_allocate_children}"/>
                             </h1>
                         </div>
                         <div class="oe_right oe_button_box" name="buttons">
@@ -90,20 +92,20 @@
                             </group>
                         </group>
                         <notebook>
-                            <page string="Allocated children">
-                                <field name="allocate_child_ids"/>
+                            <page string="Staff">
+                                <field name="staff_ids"/>
                             </page>
                             <page string="Internal Notes">
                                 <field name="description"/>
-                            </page>
-                            <page string="Staff">
-                                <field name="staff_ids"/>
                             </page>
                             <page string="Incomes">
                                 <field name="income_line_ids"/>
                             </page>
                             <page string="Expenses">
                                 <field name="expense_line_ids"/>
+                            </page>
+                            <page string="Allocated children">
+                                <field name="allocate_child_ids"/>
                             </page>
                             <page string="New sponsorships">
                                 <field name="contract_ids"/>

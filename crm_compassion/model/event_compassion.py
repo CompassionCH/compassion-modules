@@ -121,8 +121,8 @@ class event_compassion(models.Model):
                                readonly=True)
     allocate_child_ids = fields.One2many(
         'compassion.child',
-        related='hold_ids.child_id',
-        string='children allocated'),
+        compute='_compute_allocate_children',
+        string='Allocated children')
     staff_ids = fields.Many2many(
         'res.partner', 'partners_to_staff_event', 'event_id', 'partner_id',
         'Staff')
@@ -212,6 +212,12 @@ class event_compassion(models.Model):
             ('presentation', _("Presentation")),
             ('meeting', _("Meeting")),
             ('sport', _("Sport event"))]
+
+    @api.multi
+    @api.depends('hold_ids')
+    def _compute_allocate_children(self):
+        for event in self:
+            event.allocate_child_ids = event.hold_ids.mapped('child_id')
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -450,6 +456,6 @@ class event_compassion(models.Model):
             'target': 'current',
             'context': self.with_context({
                 'number_allocate_children': self.number_allocate_children,
-                'event_id': self._id
+                'event_id': self.id
             }).env.context
         }
