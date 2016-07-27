@@ -70,6 +70,18 @@
                                     <field name="health_assessment_frequency"/>
                                 </group>
                             </page>
+                            <page string="Disaster Alerts">
+                                <group>
+                                    <field name="disaster_alert_ids">
+                                        <tree>
+                                            <field name="disaster_name"/>
+                                            <field name="disaster_date"/>
+                                            <field name="disaster_status"/>
+                                            <field name="disaster_type"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
                         </notebook>
                     </sheet>
                 </form>
