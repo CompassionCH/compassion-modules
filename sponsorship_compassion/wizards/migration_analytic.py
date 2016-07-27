@@ -46,12 +46,15 @@ class MigrationAnalytic(models.TransientModel):
             logger.info("MIGRATION : Contract {} / {}".format(count, total))
             analytic = contract.origin_id.analytic_id
             invoice_lines = contract.invoice_line_ids.filtered(
-                lambda invl: invl.product_id.name == 'Sponsorship' and
-                invl.account_analytic_id != analytic)
+                lambda invl: invl.account_analytic_id != analytic)
             for invoice_line in invoice_lines:
                 move_line = invoice_line.invoice_id.move_id.line_id.\
-                    filtered(lambda mvl: mvl.account_id.code == '6000' and
-                             mvl.analytic_account_id.name == 'Income')
+                    filtered(
+                        lambda mvl: mvl.account_id == invoice_line.product_id.
+                        property_account_income and
+                        mvl.credit == invoice_line.price_subtotal and
+                        mvl.analytic_account_id.name == 'Income'
+                    )
 
                 # Change analytic of invoice_line, move_line and analytic_line
                 invoice_line.account_analytic_id = analytic
