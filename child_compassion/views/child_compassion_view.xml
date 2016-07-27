@@ -222,13 +222,14 @@
                             <field name="date"/>
                             <field name="type"/>
                             <field name="request_reason"/>
-                            <field name="comments"/>
+                            <!--<field name="comments"/>-->
+                            <field name="status"/>
                         </group>
                         <group/>
                         <group attrs="{'invisible': [('type', '!=', 'Planned Exit')]}">
                             <field name="last_attended_project"/>
                             <field name="primary_school_finished"/>
-                            <field name="confesses_jesus_savior"/>
+                            <!--<field name="confesses_jesus_savior"/>-->
                             <field name="final_letter_sent"/>
                         </group>
                         <group attrs="{'invisible': [('type', '!=', 'Planned Exit')]}">
@@ -239,7 +240,8 @@
                         </group>
                         <group attrs="{'invisible': [('type', '!=', 'Unplanned Exit')]}">
                             <field name="child_death_date"/>
-                            <field name="child_death_circumstances"/>
+                            <!--<field name="child_death_circumstances"/>-->
+                            <field name="death_intervention_information"/>
                         </group>
                         <group attrs="{'invisible': [('type', '!=', 'Unplanned Exit')]}">
                             <field name="child_death_category"/>
@@ -254,7 +256,12 @@
                             <field name="transfer_arrival_date"/>
                             <field name="other_transfer_reason"/>
                         </group>
-                        <group attrs="{'invisible': [('type', '!=', 'Transfer')]}"/>
+                        <group attrs="{'invisible': [('type', '!=', 'Transfer')]}">
+                            <field name="current_project"/>
+                            <field name="new_project"/>
+                            <field name="new_program"/>
+                            <field name="previously_active_program"/>
+                        </group>
                         <group attrs="{'invisible': [('type', '!=', 'Transition')]}">
                             <field name="transition_type"/>
                         </group>

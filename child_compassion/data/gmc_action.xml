@@ -119,8 +119,16 @@
             <field name="description">This handles the reception of a Beneficiary note.</field>
             <field name="auto_process">1</field>
         </record>
+        <!-- Lifecycle Message -->
+        <record id="new_life_cycle" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">ChildLifeCycle</field>
+            <field name="model">compassion.child.ble</field>
+            <field name="description">This will create a new life cycle event.</field>
+            <field name="auto_process">1</field>
+        </record>
 
-        <!-- Action to Connect mappings -->
+        <!-- Actions to Connect mappings -->
         <record id="major_revision_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/MajorRevisionKit</field>
             <field name="action_id" ref="major_revision"/>
@@ -136,6 +144,10 @@
         <record id="major_revision_household_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/HouseholdMajorRevisionKit</field>
             <field name="action_id" ref="major_revision_household"/>
+        </record>
+        <record id="new_life_cycle_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/LifecycleEvent</field>
+            <field name="action_id" ref="new_life_cycle"/>
         </record>
         <record id="beneficiary_note_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/NotesKit</field>
