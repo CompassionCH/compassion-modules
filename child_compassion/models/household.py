@@ -154,7 +154,7 @@ class Household(models.Model):
             ('Domestic Service / Housekeeper', ('is a domestic')),
             ('Agriculture / Farmer', ('is a farmer')),
             ('Church Employee / Project Worker', _('works for the local '
-                                                  'church')),
+                                                   'church')),
             ('Construction / Tradesman', _('works in construction')),
             ('Day Labor / Different Jobs', _('does daily jobs')),
             ('Merchant / Seller', _('is merchant')),
