@@ -8,4 +8,4 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from . import wizards
+from . import subscribe_logs
