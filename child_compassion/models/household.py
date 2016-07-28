@@ -152,6 +152,14 @@ class Household(models.Model):
             ('Food Vendor', _('is a food vendor')),
             ('Guard / Watchman', _('is a guard')),
             ('Domestic Service / Housekeeper', ('is a domestic')),
+            ('Agriculture / Farmer', ('is a farmer')),
+            ('Church Employee / Project Worker', _('works for the local '
+                                                  'church')),
+            ('Construction / Tradesman', _('works in construction')),
+            ('Day Labor / Different Jobs', _('does daily jobs')),
+            ('Merchant / Seller', _('is merchant')),
+            ('Security / Guard', _('is a security guard')),
+            ('Transportation/ Driver', _('is a driver')),
         ]
 
     def process_commkit(self, commkit_data):
