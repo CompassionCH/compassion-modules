@@ -10,7 +10,7 @@
 ##############################################################################
 
 
-from openerp import models, fields
+from openerp import api, models, fields, _
 
 
 class ICPDisasterImpact(models.Model):
@@ -148,3 +148,29 @@ class FieldOfficeDisasterAlert(models.Model):
         'child.disaster.impact', 'fo_disaster_alert_id', 'Child Disaster '
                                                          'Impact'
     )
+
+    @api.multi
+    def view_children(self):
+        return {
+            'name': _('Impacted children'),
+            'domain': [('id', 'in', self.child_disaster_impact_ids.mapped(
+                        'child_id').ids)],
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'compassion.child',
+            'target': 'current',
+        }
+
+    @api.multi
+    def view_icp(self):
+        return {
+            'name': _('Impacted projects'),
+            'domain': [('id', 'in', self.icp_disaster_impact_ids.mapped(
+                'project_id').ids)],
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'compassion.project',
+            'target': 'current',
+        }
