@@ -31,6 +31,14 @@ class ChildNote(models.Model):
     source_code = fields.Char()
 
     @api.model
+    def create(self, vals):
+        note = super(ChildNote, self).create(vals)
+        note.child_id.message_post(
+            note.body, "New beneficiary notes"
+        )
+        return note
+
+    @api.model
     def process_commkit(self, commkit_data):
         child_note_mapping = mapping.new_onramp_mapping(
                                                 self._name,

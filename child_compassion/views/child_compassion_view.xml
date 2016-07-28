@@ -82,23 +82,42 @@
                                 </group>
                             </page>
                             <page string="Lifecycle Events">
-                                <label for="lifecycle_ids"/>
-                                <field name="lifecycle_ids" context="{'default_child_id': active_id}">
-                                    <tree>
-                                        <field name="date"/>
-                                        <field name="type"/>
-                                    </tree>
-                                </field>
-                                <label for="assessment_ids"/>
-                                <field name="assessment_ids" readonly="1">
-                                    <tree>
-                                        <field name="date"/>
-                                        <field name="physical_score"/>
-                                        <field name="cognitive_score"/>
-                                        <field name="spiritual_score"/>
-                                        <field name="sociological_score"/>
-                                    </tree>
-                                </field>
+                                <group>
+                                    <field name="lifecycle_ids" context="{'default_child_id': active_id}">
+                                        <tree>
+                                            <field name="date"/>
+                                            <field name="type"/>
+                                        </tree>
+                                    </field>
+                                    <field name="assessment_ids" readonly="1">
+                                        <tree>
+                                            <field name="date"/>
+                                            <field name="physical_score"/>
+                                            <field name="cognitive_score"/>
+                                            <field name="spiritual_score"/>
+                                            <field name="sociological_score"/>
+                                        </tree>
+                                    </field>
+                                    <field name="child_disaster_impact_ids">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="beneficiary_location"/>
+                                            <field name="beneficiary_physical_condition"/>
+                                            <field name="caregivers_died_number"/>
+                                            <field name="siblings_died_number"/>
+                                            <field name="disaster_status"/>
+                                        </tree>
+                                    </field>
+                                    <field name="note_ids">
+                                        <tree>
+                                            <field name="body"/>
+                                            <field name="record_type"/>
+                                            <field name="type"/>
+                                            <field name="visibility"/>
+                                            <field name="source_code"/>
+                                        </tree>
+                                    </field>
+                                </group>
                             </page>
                             <page string="Descriptions">
                                 <group>
@@ -141,17 +160,6 @@
                                         <field name="height"/>
                                         <field name="chronic_illness_ids" widget="many2many_tags"/>
                                         <field name="physical_disability_ids" widget="many2many_tags"/>
-                                    </group>
-                                    <group string="Notes" colspan="2">
-                                        <field name="note_ids">
-                                            <tree>
-                                                <field name="body"/>
-                                                <field name="record_type"/>
-                                                <field name="type"/>
-                                                <field name="visibility"/>
-                                                <field name="source_code"/>
-                                            </tree>
-                                        </field>
                                     </group>
                                 </group>
                             </page>

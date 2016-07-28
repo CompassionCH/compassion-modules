@@ -74,10 +74,22 @@ class ChildDisasterImpact(models.Model):
     siblings_seriously_injured_number = fields.Integer()
     sponsorship_status = fields.Char()
 
+    @api.model
+    def create(self, vals):
+        """ Log a note in child when new disaster impact is registered. """
+        impact = super(ChildDisasterImpact, self).create(vals)
+        impact.child_id.message_post(
+            "Child was affected by the natural disaster {}".format(
+                impact.fo_disaster_alert_id.disaster_name),
+            "Disaster Alert"
+        )
+        return impact
+
 
 class FieldOfficeDisasterAlert(models.Model):
     _name = 'fo.disaster.alert'
     _description = 'FO disaster alert'
+    _rec_name = 'disaster_name'
 
     disaster_id = fields.Char()
     area_description = fields.Char()
