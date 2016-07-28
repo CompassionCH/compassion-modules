@@ -40,6 +40,7 @@
         'security/ir.model.access.csv',
         'data/account_analytic_data.xml',
         'data/calendar_event_type.xml',
+        'data/gmc_action.xml',
         'view/event_compassion_view.xml',
         'view/contract_origin_view.xml',
         'view/crm_lead_view.xml',
