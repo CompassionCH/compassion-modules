@@ -155,10 +155,12 @@ class contract_group(models.Model):
 
             product_id = contract_line.product_id.id
             partner_id = contract_line.contract_id.partner_id.id
-            analytic = contract_line.contract_id.origin_id.analytic_id or \
-                self.env['account.analytic.default'].account_get(
+            analytic = contract_line.contract_id.origin_id.analytic_id
+            if not analytic:
+                a_default = self.env['account.analytic.default'].account_get(
                     product_id, partner_id, time.strftime(
-                        '%Y-%m-%d')).analytic_id
+                        '%Y-%m-%d'))
+                analytic = a_default and a_default.analytic_id
             if analytic:
                 invl_data.update({
                     'account_analytic_id': analytic.id})
