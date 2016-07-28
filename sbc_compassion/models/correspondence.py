@@ -261,15 +261,18 @@ class Correspondence(models.Model):
 
     @api.depends('page_ids')
     def _compute_original_text(self):
-        self.original_text = self._get_text('original_text')
+        for letter in self:
+            letter.original_text = letter._get_text('original_text')
 
     @api.depends('page_ids')
     def _compute_translated_text(self):
-        self.translated_text = self._get_text('translated_text')
+        for letter in self:
+            letter.translated_text = letter._get_text('translated_text')
 
     @api.depends('page_ids')
     def _compute_english_translated_text(self):
-        self.english_text = self._get_text('english_translated_text')
+        for letter in self:
+            letter.english_text = letter._get_text('english_translated_text')
 
     @api.depends('page_ids')
     def _compute_nbr_pages(self):
