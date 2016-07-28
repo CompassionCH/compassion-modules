@@ -14,6 +14,7 @@ from openerp.addons.message_center_compassion.mappings.base_mapping import \
 
 class BeneficiaryMapping(OnrampMapping):
     ODOO_MODEL = 'compassion.child.ble'
+    MAPPING_NAME = 'new_child_lifecyle'
 
     CONNECT_MAPPING = {
         'DateOfDeath': 'child_death_date',
