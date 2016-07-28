@@ -128,6 +128,7 @@ class OnrampConnector(object):
         """ Retrieves the token from Connect. """
         client = config.get('connect_client')
         secret = config.get('connect_secret')
+        environment = config.get('connect_env', 'core')
         if not client or not secret:
             raise Warning(
                 _('Missing configuration'),
@@ -142,7 +143,8 @@ class OnrampConnector(object):
             "Expect": "100-continue",
             "Connection": "Keep-Alive"}
         conn = httplib.HTTPSConnection('api2.compassion.com')
-        conn.request("POST", "/core/connect/token", params_post, header_post)
+        auth_path = "/{}/connect/token".format(environment)
+        conn.request("POST", auth_path, params_post, header_post)
         response = conn.getresponse()
         try:
             self._token = simplejson.loads(response.read())
