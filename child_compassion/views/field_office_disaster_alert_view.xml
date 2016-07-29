@@ -14,6 +14,10 @@
                                 <field name="disaster_name"/>
                             </h1>
                         </div>
+                        <div class="oe_right oe_button_box" name="buttons">
+                            <button name="view_children" string="Impacted children" type="object" icon="fa-child" class="oe_stat_button"/>
+                            <button name="view_icp" string="Impacted projects" type="object" icon="fa-home" class="oe_stat_button"/>
+                        </div>
                         <group>
                             <group>
                                 <field name="area_description"/>

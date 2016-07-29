@@ -10,7 +10,7 @@
 ##############################################################################
 
 
-from openerp import models, fields
+from openerp import api, models, fields, _
 
 
 class ICPDisasterImpact(models.Model):
@@ -74,10 +74,22 @@ class ChildDisasterImpact(models.Model):
     siblings_seriously_injured_number = fields.Integer()
     sponsorship_status = fields.Char()
 
+    @api.model
+    def create(self, vals):
+        """ Log a note in child when new disaster impact is registered. """
+        impact = super(ChildDisasterImpact, self).create(vals)
+        impact.child_id.message_post(
+            "Child was affected by the natural disaster {}".format(
+                impact.fo_disaster_alert_id.disaster_name),
+            "Disaster Alert"
+        )
+        return impact
+
 
 class FieldOfficeDisasterAlert(models.Model):
     _name = 'fo.disaster.alert'
     _description = 'FO disaster alert'
+    _rec_name = 'disaster_name'
 
     disaster_id = fields.Char()
     area_description = fields.Char()
@@ -136,3 +148,29 @@ class FieldOfficeDisasterAlert(models.Model):
         'child.disaster.impact', 'fo_disaster_alert_id', 'Child Disaster '
                                                          'Impact'
     )
+
+    @api.multi
+    def view_children(self):
+        return {
+            'name': _('Impacted children'),
+            'domain': [('id', 'in', self.child_disaster_impact_ids.mapped(
+                        'child_id').ids)],
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'compassion.child',
+            'target': 'current',
+        }
+
+    @api.multi
+    def view_icp(self):
+        return {
+            'name': _('Impacted projects'),
+            'domain': [('id', 'in', self.icp_disaster_impact_ids.mapped(
+                'project_id').ids)],
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'compassion.project',
+            'target': 'current',
+        }
