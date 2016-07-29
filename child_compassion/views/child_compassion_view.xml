@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data>
-		<!-- Top menu item -->
-		<menuitem name="Sponsorship"
-	              id="menu_sponsorship_root"
-	              groups="group_sponsorship"
-	              sequence="5"/>
-		<menuitem id="menu_sponsorship_section" parent="menu_sponsorship_root" name="Sponsorship" sequence="1"/>
+    <data>
+        <!-- Top menu item -->
+        <menuitem name="Sponsorship" id="menu_sponsorship_root" groups="group_sponsorship" sequence="5"/>
+        <menuitem id="menu_sponsorship_section" parent="menu_sponsorship_root" name="Sponsorship" sequence="1"/>
 
         <!--Compassion child form view -->
         <record id="view_compassion_child_form" model="ir.ui.view">
@@ -15,10 +12,13 @@
             <field name="arch" type="xml">
                 <form string="Child">
                     <header>
-                        <field name="state" widget="statusbar" statusbar_visible="N,P,F" />
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="N,P,F"/>
                     </header>
                     <sheet>
-                        <field name="portrait" widget='image' class="oe_left oe_avatar" options='{"size": [90, 90]}' />
+                        <field name="portrait" widget='image'
+                               class="oe_left oe_avatar"
+                               options='{"size": [90, 90]}'/>
                         <div class="oe_title">
                             <label for="name" class="oe_edit_only"/>
                             <h1>
@@ -32,7 +32,9 @@
                             </div>
                         </div>
                         <div class="oe_right oe_button_box" name="buttons">
-                            <button name="get_infos" string="get info" type="object" icon="fa-refresh" class="oe_stat_button"/>
+                            <button name="get_infos" string="get info"
+                                    type="object" icon="fa-refresh"
+                                    class="oe_stat_button"/>
                         </div>
                         <notebook>
                             <page string="General Information">
@@ -57,15 +59,18 @@
                                         <field name="cdsp_type"/>
                                         <field name="date"/>
                                         <field name="completion_date"/>
-                                        <field name="completion_date_change_reason" attrs="{'invisible': [('completion_date_change_reason', '=', False)]}"/>
-                                        <field name="exit_reason" attrs="{'invisible': [('state', '!=', 'F')]}"/>
+                                        <field name="completion_date_change_reason"
+                                               attrs="{'invisible': [('completion_date_change_reason', '=', False)]}"/>
+                                        <field name="exit_reason"
+                                               attrs="{'invisible': [('state', '!=', 'F')]}"/>
                                         <!--newly added-->
                                         <field name="compass_id"/>
                                         <field name="is_available"/>
                                         <field name="has_been_sponsored"/>
                                         <field name="active"/>
                                         <field name="non_latin_name"/>
-                                        <field name="revised_value_ids" widget="many2many_tags"/>
+                                        <field name="revised_value_ids"
+                                               widget="many2many_tags"/>
                                     </group>
                                     <group attrs="{'invisible': [('delegated_to', '=', False)]}">
                                         <field name="delegated_to"/>
@@ -83,7 +88,8 @@
                             </page>
                             <page string="Lifecycle Events">
                                 <group>
-                                    <field name="lifecycle_ids" context="{'default_child_id': active_id}">
+                                    <field name="lifecycle_ids"
+                                           context="{'default_child_id': active_id}">
                                         <tree>
                                             <field name="date"/>
                                             <field name="type"/>
@@ -121,10 +127,10 @@
                             </page>
                             <page string="Descriptions">
                                 <group>
-                                    <field name="desc_en" />
-                                    <field name="desc_fr" />
-                                    <field name="desc_de" />
-                                    <field name="desc_it" />
+                                    <field name="desc_en"/>
+                                    <field name="desc_fr"/>
+                                    <field name="desc_de"/>
+                                    <field name="desc_it"/>
                                 </group>
                             </page>
                             <page string="Detailed Information">
@@ -134,39 +140,52 @@
                                     </group>
                                     <group/>
                                     <group string="Activities">
-                                        <field name="hobby_ids" widget="many2many_tags"/>
-                                        <field name="christian_activity_ids" widget="many2many_tags"/>
-                                        <field name="activity_ids" widget="many2many_tags"/>
+                                        <field name="hobby_ids"
+                                               widget="many2many_tags"/>
+                                        <field name="christian_activity_ids"
+                                               widget="many2many_tags"/>
+                                        <field name="activity_ids"
+                                               widget="many2many_tags"/>
                                     </group>
                                     <group string="Household">
                                         <field name="is_orphan"/>
                                         <field name="household_id"/>
-                                        <field name="duty_ids" widget="many2many_tags"/>
+                                        <field name="duty_ids"
+                                               widget="many2many_tags"/>
                                     </group>
                                     <group string="Education">
                                         <field name="education_level"/>
-                                        <field name="not_enrolled_reason" attrs="{'invisible': [('education_level', '!=', 'Not Enrolled')]}"/>
+                                        <field name="not_enrolled_reason"
+                                               attrs="{'invisible': [('education_level', '!=', 'Not Enrolled')]}"/>
                                         <field name="local_grade_level"/>
                                         <field name="us_grade_level"/>
                                         <field name="vocational_training_type"/>
-                                        <field name="academic_performance" attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"/>
-                                        <field name="subject_ids" widget="many2many_tags" attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"/>
-                                        <field name="major_course_study" attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"/>
-                                        <field name="university_year" attrs="{'invisible': [('education_level', '!=', 'University Graduate')]}"/>
+                                        <field name="academic_performance"
+                                               attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"/>
+                                        <field name="subject_ids"
+                                               widget="many2many_tags"
+                                               attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"/>
+                                        <field name="major_course_study"
+                                               attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"/>
+                                        <field name="university_year"
+                                               attrs="{'invisible': [('education_level', '!=', 'University Graduate')]}"/>
                                     </group>
                                     <group string="Health">
                                         <field name="cognitive_age_group"/>
                                         <field name="weight"/>
                                         <field name="height"/>
-                                        <field name="chronic_illness_ids" widget="many2many_tags"/>
-                                        <field name="physical_disability_ids" widget="many2many_tags"/>
+                                        <field name="chronic_illness_ids"
+                                               widget="many2many_tags"/>
+                                        <field name="physical_disability_ids"
+                                               widget="many2many_tags"/>
                                     </group>
                                 </group>
                             </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
-                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_follower_ids"
+                               widget="mail_followers"/>
                         <field name="message_ids" widget="mail_thread"/>
                     </div>
                 </form>
@@ -179,10 +198,10 @@
             <field name="model">compassion.child</field>
             <field name="arch" type="xml">
                 <tree string="Children"
-                        colors="blue:state == 'N';
-                    black:state in ('P', 'D', 'I');
-                    red:state == 'R';
-                    gray:state in ('F', 'X')">
+                      colors="blue:state == 'N';
+black:state in ('P', 'D', 'I');
+red:state == 'R';
+gray:state in ('F', 'X')">
                     <field name="name"/>
                     <field name="local_id"/>
                     <field name="date"/>
@@ -203,17 +222,25 @@
             <field name="model">compassion.child</field>
             <field name="arch" type="xml">
                 <search string="Search child">
-                    <field name="name" filter_domain="['|', ('name', 'ilike', self), ('firstname', 'ilike', self)]"/>
+                    <field name="name"
+                           filter_domain="['|', ('name', 'ilike', self), ('firstname', 'ilike', self)]"/>
                     <field name="local_id"/>
                     <field name="sponsor_id"/>
                     <field name="sponsor_ref"/>
                     <field name="state"/>
                     <field name="type"/>
-                    <filter name="available" string="Available" domain="[('state','in',('N','D','I','R','E')), ('project_id.suspension', '=', False)]" context="{'group_by':'state'}"/>
-                    <filter name="sponsored" string="Sponsored" domain="[('state','=','P')]" help="Sponsored children"/>
-                    <filter name="departed" string="Departed" domain="[('state','=','F')]" help="Departed children"/>
+                    <filter name="available" string="Available"
+                            domain="[('state','in',('N','D','I','R','E')), ('project_id.suspension', '=', False)]"
+                            context="{'group_by':'state'}"/>
+                    <filter name="sponsored" string="Sponsored"
+                            domain="[('state','=','P')]"
+                            help="Sponsored children"/>
+                    <filter name="departed" string="Departed"
+                            domain="[('state','=','F')]"
+                            help="Departed children"/>
                     <group expand="0" string="Group By...">
-                        <filter string="Allocation Date" domain="[]" context="{'group_by':'date'}"/>
+                        <filter string="Allocation Date" domain="[]"
+                                context="{'group_by':'date'}"/>
                     </group>
                 </search>
             </field>
@@ -340,17 +367,22 @@
             <field name="name">Update picture</field>
             <field name="model_id" ref="model_compassion_child"/>
             <field name="state">code</field>
-            <field name="code">self.update_child_pictures(cr, uid, context.get('active_ids', []), context=context)</field>
+            <field name="code">self.update_child_pictures(cr, uid,
+                context.get('active_ids', []), context=context)
+            </field>
         </record>
-        
+
         <record id="update_child_pictures" model="ir.values">
             <field eval="'client_action_multi'" name="key2"/>
             <field eval="'compassion.child'" name="model"/>
             <field name="name">Update pictures</field>
-            <field eval="'ir.actions.server,%d'%update_child_picture" name="value"/>
+            <field eval="'ir.actions.server,%d'%update_child_picture"
+                   name="value"/>
         </record>
 
-        <menuitem id="menu_sponsorship_children" parent="menu_sponsorship_section" name="Children" action="open_view_children_tree" sequence="2"/>
+        <menuitem id="menu_sponsorship_children"
+                  parent="menu_sponsorship_section" name="Children"
+                  action="open_view_children_tree" sequence="2"/>
 
     </data>
 </openerp>
