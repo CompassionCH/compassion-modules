@@ -42,3 +42,15 @@ class ProjectCompassion(models.Model):
             ('state', 'in', ('active', 'waiting', 'mandate'))])
         contracts.reactivate_contract()
         return res
+
+    def _hold_gifts(self):
+        contracts = self.env['recurring.contract'].search([
+            ('child_code', 'like', self.icp_id),
+            ('state', 'in', ('active', 'waiting', 'mandate'))])
+        contracts.hold_gifts()
+
+    def _reactivate_gifts(self):
+        contracts = self.env['recurring.contract'].search([
+            ('child_code', 'like', self.icp_id),
+            ('state', 'in', ('active', 'waiting', 'mandate'))])
+        contracts.reactivate_gifts()

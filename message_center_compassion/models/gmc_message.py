@@ -82,6 +82,7 @@ class GmcMessagePool(models.Model):
     state = fields.Selection(
         [('new', _('New')),
          ('pending', _('Pending')),
+         ('postponed', _('Postponed')),
          ('success', _('Success')),
          ('failure', _('Failure'))],
         'State', readonly=True, default='new', track_visibility='always')

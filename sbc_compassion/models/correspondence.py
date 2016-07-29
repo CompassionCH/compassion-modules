@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino, Emmanuel Mathier
 #
@@ -429,10 +429,19 @@ class Correspondence(models.Model):
 
         if not self.env.context.get('no_comm_kit'):
             action_id = self.env.ref('sbc_compassion.create_letter').id
-            self.env['gmc.message.pool'].create({
+            message = self.env['gmc.message.pool'].create({
                 'action_id': action_id,
                 'object_id': letter.id
             })
+            if letter.sponsorship_id.state != \
+                    'active' or letter.child_id.project_id.hold_s2b_letters:
+                message.state = 'postponed'
+                if letter.child_id.project_id.hold_s2b_letters:
+                    letter.state = 'Exception'
+                    letter.message_post(
+                        'Letter was put on hold because the project is '
+                        'suspended',
+                        'Project suspended')
 
         return letter
 
@@ -656,6 +665,38 @@ class Correspondence(models.Model):
             message = _("User requested the child letter image.")
         self.message_post(message, _("Letter downloaded"))
         return data
+
+    def hold_letters(self, message='Project suspended'):
+        """ Prevents to send S2B letters to GMC. """
+        self.write({
+            'state': 'Exception'
+        })
+        for letter in self:
+            letter.message_post(
+                'Letter was put on hold', message)
+        gmc_action = self.env.ref('sbc_compassion.create_letter')
+        gmc_messages = self.env['gmc.message.pool'].search([
+            ('action_id', '=', gmc_action.id),
+            ('object_id', 'in', self.ids),
+            ('state', 'in', ['new', 'failure'])
+        ])
+        gmc_messages.write({'state': 'postponed'})
+
+    def reactivate_letters(self, message='Project reactivated'):
+        """ Release the hold on S2B letters. """
+        self.write({
+            'state': 'Received in the system'
+        })
+        for letter in self:
+            letter.message_post(
+                'The letter can now be sent.', message)
+        gmc_action = self.env.ref('sbc_compassion.create_letter')
+        gmc_messages = self.env['gmc.message.pool'].search([
+            ('action_id', '=', gmc_action.id),
+            ('object_id', 'in', self.ids),
+            ('state', '=', 'postponed')
+        ])
+        gmc_messages.write({'state': 'new'})
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
