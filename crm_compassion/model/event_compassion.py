@@ -13,6 +13,14 @@ from openerp import api, models, fields, exceptions, _
 from datetime import datetime
 
 
+class CompassionChild(models.Model):
+    _inherit = 'compassion.child'
+
+    @api.multi
+    def child_available(self):
+        self.state = 'D'
+
+
 class CompassionHold(models.Model):
     _inherit = 'compassion.hold'
 
@@ -54,6 +62,19 @@ class ChildHoldWizard(models.TransientModel):
         else:
             hold_vals.update({'event_id': self.env.context.get('event_id')})
             return hold_vals
+
+    @api.multi
+    def create_child_vals(self, child):
+        child_vals = super(ChildHoldWizard, self).create_child_vals(child)
+
+        if self.env.context.get('event_id') is not None:
+            child_vals.update({
+                'date_delegation': fields.date.today(),
+                'delegated_comment': self.env.context.get('event_name'),
+                'delegated_to': self.env.context.get('user_id')
+            })
+
+        return child_vals
 
     @api.multi
     def send(self):
@@ -456,6 +477,8 @@ class event_compassion(models.Model):
             'target': 'current',
             'context': self.with_context({
                 'number_allocate_children': self.number_allocate_children,
-                'event_id': self.id
+                'event_id': self.id,
+                'user_id': self.user_id.id,
+                'event_name': self.name
             }).env.context
         }

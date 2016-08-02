@@ -300,7 +300,7 @@ class CompassionChild(models.Model):
 
     # Delegation
     ############
-    delegated_to = fields.Many2one('res.partner', 'Delegated to')
+    delegated_to = fields.Many2one('res.users', 'Delegated to')
     delegated_comment = fields.Text('Delegated comment')
     date_delegation = fields.Date()
     date_end_delegation = fields.Date('Delegated until')

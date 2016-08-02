@@ -61,6 +61,26 @@ class ChildHoldWizard(models.TransientModel):
         }
 
     @api.multi
+    def create_child_vals(self, child):
+        return {
+            'global_id': child.global_id,
+            'local_id': child.local_id,
+            'project_id': child.project_id.id,
+            'field_office_id': child.field_office_id,
+            'name': child.name,
+            'firstname': child.firstname,
+            'lastname': child.lastname,
+            'preferred_name': child.preferred_name,
+            'gender': child.gender,
+            'birthdate': child.birthdate,
+            'age': child.age,
+            'is_orphan': child.is_orphan,
+            'beneficiary_state ': child.beneficiary_state,
+            'sponsorship_status': child.sponsorship_status,
+            'unsponsored_since': child.unsponsored_since,
+        }
+
+    @api.multi
     def send(self):
 
         holds = self.env['compassion.hold']
@@ -71,23 +91,7 @@ class ChildHoldWizard(models.TransientModel):
         for child in child_search:
             # Save children form global children to compassion children
 
-            child_vals = {
-                'global_id': child.global_id,
-                'local_id': child.local_id,
-                'project_id': child.project_id.id,
-                'field_office_id': child.field_office_id,
-                'name': child.name,
-                'firstname': child.firstname,
-                'lastname': child.lastname,
-                'preferred_name': child.preferred_name,
-                'gender': child.gender,
-                'birthdate': child.birthdate,
-                'age': child.age,
-                'is_orphan': child.is_orphan,
-                'beneficiary_state ': child.beneficiary_state,
-                'sponsorship_status': child.sponsorship_status,
-                'unsponsored_since': child.unsponsored_since,
-            }
+            child_vals = self.create_child_vals(child)
             child_comp = self.env['compassion.child'].create(child_vals)
 
             # Create Holds for children to reserve
