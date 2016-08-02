@@ -10,11 +10,12 @@
 ##############################################################################
 
 from openerp import api, models, fields
+from openerp.exceptions import Warning
+
 from datetime import datetime, timedelta
 
 
 class WeeklyDemand(models.Model):
-
     _name = 'demand.weekly.demand'
     _description = 'Weekly Demand'
 
@@ -33,13 +34,13 @@ class WeeklyDemand(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
-        vals = self.update_vals(vals)
+        self.update_vals(vals)
         res = super(WeeklyDemand, self).create(vals)
         return res
 
     @api.multi
     def write(self, vals):
-        vals = self.update_vals(vals)
+        self.update_vals(vals)
         res = super(WeeklyDemand, self).write(vals)
         return res
 
@@ -47,18 +48,20 @@ class WeeklyDemand(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def update_vals(self, vals):
-        starting_date = datetime.strptime(vals.get('week_start_date'),
-                                          "%Y-%m-%d")
-        if self.check_is_date_in_next_8_weeks(starting_date):
-            vals['period_locked'] = True
-        return vals
+        starting_date = vals.get('week_start_date')
+        if starting_date:
+            corrected_date = datetime.strptime(starting_date, "%Y-%m-%d")
+            if self.check_is_date_in_next_8_weeks(corrected_date):
+                vals['period_locked'] = True
+            else:
+                vals['period_locked'] = False
+        # return vals
 
     def check_is_date_in_next_8_weeks(self, date):
         return date <= (datetime.today() + timedelta(weeks=8))
 
 
 class DemandPlanning(models.Model):
-
     _name = 'demand.planning'
     _description = 'Demand Planning'
 
@@ -66,10 +69,49 @@ class DemandPlanning(models.Model):
     date = fields.Date()
     sent_date = fields.Datetime()
     state = fields.Selection([
-        ('new', 'New'),
+        ('draft', 'Draft'),
         ('sent', 'Sent'),
         ('error', 'Error'),
     ])
     weekly_demand_ids = fields.Many2many(
         'demand.weekly.demand', string='Weekly Demands'
     )
+
+    ##########################################################################
+    #                             ORM METHODS                                #
+    ##########################################################################
+    @api.model
+    def create(self, vals):
+        res = super(DemandPlanning, self).create(vals)
+        res.state = 'draft'
+        return res
+
+    @api.multi
+    def write(self, vals):
+        res = super(DemandPlanning, self).write(vals)
+        if not isinstance(res, bool):
+            res.state = 'draft'
+        return res
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    @api.multi
+    def send_planning(self):
+        message_obj = self.env['gmc.message.pool']
+
+        action_id = self.env.ref(
+            'crm_compassion.create_demand_planning').id
+        object_id = self.id
+        message_vals = {
+            'action_id': action_id,
+            'object_id': object_id
+        }
+        pool = message_obj.with_context(async_mode=False,
+                                        creating=True).create(message_vals)
+
+        if pool.failure_reason:
+            self.state = 'error'
+            self.env.cr.commit()
+            raise Warning("Error", pool.failure_reason)
+        self.state = 'sent'

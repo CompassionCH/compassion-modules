@@ -7,6 +7,9 @@
             <field name="model">demand.planning</field>
             <field name="arch" type="xml">
                 <form string="Demand Planning">
+                    <header>
+                        <button name="send_planning" type="object" string="Send Planning" />
+                    </header>
                     <sheet>
                         <div class="oe_title">
                             <label for="name" class="oe_edit_only" />
