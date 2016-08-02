@@ -13,14 +13,6 @@ from openerp import api, models, fields, exceptions, _
 from datetime import datetime
 
 
-class CompassionChild(models.Model):
-    _inherit = 'compassion.child'
-
-    @api.multi
-    def child_available(self):
-        self.state = 'D'
-
-
 class CompassionHold(models.Model):
     _inherit = 'compassion.hold'
 
@@ -36,11 +28,13 @@ class GlobalChildSearch(models.TransientModel):
             'compassion.childpool.search'].is_from_event()
     )
 
+    @api.multi
     def is_from_event(self):
         number_allocate_children = \
             self.env.context.get('number_allocate_children')
         return type(number_allocate_children) is int
 
+    @api.multi
     def default_number_reserve_children(self):
         number_allocate_children = \
             self.env.context.get('number_allocate_children')
@@ -52,6 +46,13 @@ class GlobalChildSearch(models.TransientModel):
 
 class ChildHoldWizard(models.TransientModel):
     _inherit = 'child.hold.wizard'
+
+    channel = fields.Char(default=lambda self: self.default_channel())
+
+    @api.multi
+    def default_channel(self):
+        if self.env.context.get('event_id') is not None:
+            return self.env.context.get('event_name')
 
     @api.multi
     def create_hold_vals(self, child_comp):
@@ -71,7 +72,8 @@ class ChildHoldWizard(models.TransientModel):
             child_vals.update({
                 'date_delegation': fields.date.today(),
                 'delegated_comment': self.env.context.get('event_name'),
-                'delegated_to': self.env.context.get('user_id')
+                'delegated_to': self.env.context.get('user_id'),
+                'state': 'D'
             })
 
         return child_vals
@@ -478,7 +480,7 @@ class event_compassion(models.Model):
             'context': self.with_context({
                 'number_allocate_children': self.number_allocate_children,
                 'event_id': self.id,
-                'user_id': self.user_id.id,
+                'user_id': self.user_id.partner_id.id,
                 'event_name': self.name
             }).env.context
         }

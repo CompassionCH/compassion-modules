@@ -117,11 +117,6 @@
                                     </group>
                                 </group>
                             </page>
-                            <page string="Reports">
-                                <group>
-                                    <field name="reported_loss_of_life_beneficiaries"/>
-                                </group>
-                            </page>
                             <page string="Others">
                                 <group>
                                     <field name="source_kit_name"/>
