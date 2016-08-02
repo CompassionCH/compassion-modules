@@ -7,25 +7,23 @@
             <field name="model">demand.planning</field>
             <field name="arch" type="xml">
                 <form string="Demand Planning">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,sent"/>
+                        <button name="send_planning" type="object" string="Send Planning" class="oe_highlight" states="draft"/>
+                        <button name="reset" type="object" string="Reset" states="error"/>
+                    </header>
                     <sheet>
-                        <div class="oe_title">
-                            <label for="name" class="oe_edit_only" />
-                            <h1>
-                                <field name="name"/>
-                            </h1>
-                        </div>
                         <group>
                             <group>
                                 <field name="date" />
                                 <field name="sent_date"/>
-                                <field name="state"/>
                             </group>
                             <group colspan="2">
                                 <field name="weekly_demand_ids">
                                     <tree>
-                                        <field name="name"/>
                                         <field name="week_start_date"/>
                                         <field name="week_end_date"/>
+                                        <field name="period_locked"/>
                                         <field name="total_demand"/>
                                         <field name="resupply"/>
                                     </tree>
@@ -34,6 +32,49 @@
                         </group>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <!-- Demand Planning Tree View -->
+        <record id="view_demand_planning_tree" model="ir.ui.view">
+            <field name="name">demand.planning.tree</field>
+            <field name="model">demand.planning</field>
+            <field name="arch" type="xml">
+                <tree string="Demand Planning" colors="blue:state == 'draft';grey:state == 'sent';red:state == 'error'">
+                    <field name="date"/>
+                    <field name="sent_date"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Weekly Demand Form View -->
+        <record id="view_demand_weekly_demand_form" model="ir.ui.view">
+            <field name="name">demand.weekly.demand.form</field>
+            <field name="model">demand.weekly.demand</field>
+            <field name="arch" type="xml">
+                <form string="Weekly Demand">
+                    <group>
+                        <field name="week_start_date"/>
+                        <field name="week_end_date"/>
+                        <field name="total_demand"/>
+                        <field name="resupply"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_demand_weekly_demand_tree" model="ir.ui.view">
+            <field name="name">demand.weekly.demand.tree</field>
+            <field name="model">demand.weekly.demand</field>
+            <field name="arch" type="xml">
+                <tree string="Weekly Demand">
+                    <field name="week_start_date"/>
+                    <field name="week_end_date"/>
+                    <field name="total_demand"/>
+                    <field name="resupply"/>
+                    <field name="period_locked"/>
+                </tree>
             </field>
         </record>
 
