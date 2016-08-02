@@ -36,11 +36,13 @@ class GlobalChildSearch(models.TransientModel):
             'compassion.childpool.search'].is_from_event()
     )
 
+    @api.multi
     def is_from_event(self):
         number_allocate_children = \
             self.env.context.get('number_allocate_children')
         return type(number_allocate_children) is int
 
+    @api.multi
     def default_number_reserve_children(self):
         number_allocate_children = \
             self.env.context.get('number_allocate_children')
@@ -52,6 +54,13 @@ class GlobalChildSearch(models.TransientModel):
 
 class ChildHoldWizard(models.TransientModel):
     _inherit = 'child.hold.wizard'
+
+    channel = fields.Char(default=lambda self: self.default_channel())
+
+    @api.multi
+    def default_channel(self):
+        if self.env.context.get('event_id') is not None:
+            return self.env.context.get('event_name')
 
     @api.multi
     def create_hold_vals(self, child_comp):
