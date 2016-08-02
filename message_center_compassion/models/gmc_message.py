@@ -104,7 +104,7 @@ class GmcMessagePool(models.Model):
                 res_object = self.env[message.action_id.model].browse(
                     message.object_id)
                 if res_object:
-                    message.res_name = res_object.name
+                    message.res_name = res_object.display_name
             except KeyError:
                 message.res_name = 'Unknown'
 
