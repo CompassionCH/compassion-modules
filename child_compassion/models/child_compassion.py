@@ -507,24 +507,22 @@ class CompassionChild(models.Model):
         """Called on creation of workflow. Determine the state of
         allocated child.
         """
-        state = 'N'
         if self.has_been_sponsored:
             if self.state == 'F':
                 # Child reinstatement
-                state = 'Z'
+                self.state = 'Z'
                 # TODO The child should be on reinstatement hold
                 # Convert the hold to have time to propose it on the
                 # previous sponsor
         if self.sponsor_id:
             # Child is already sponsored
-            state = 'P'
+            self.state = 'P'
         else:
             # Child has lost his sponsor. We inactivate it to release it
             # to the global child pool.
             if self.has_been_sponsored and not self.hold_id:
-                state = 'F'
+                self.state = 'F'
                 self.active = False
-        self.state = state
         return True
 
     @api.multi

@@ -65,6 +65,20 @@ class ChildHoldWizard(models.TransientModel):
             return hold_vals
 
     @api.multi
+    def create_child_vals(self, child):
+        child_vals = super(ChildHoldWizard, self).create_child_vals(child)
+
+        if self.env.context.get('event_id') is not None:
+            child_vals.update({
+                'date_delegation': fields.date.today(),
+                'delegated_comment': self.env.context.get('event_name'),
+                'delegated_to': self.env.context.get('user_id'),
+                'state': 'D'
+            })
+
+        return child_vals
+
+    @api.multi
     def send(self):
         action = super(ChildHoldWizard, self).send()
 
@@ -465,7 +479,8 @@ class event_compassion(models.Model):
             'target': 'current',
             'context': self.with_context({
                 'number_allocate_children': self.number_allocate_children,
-                'event_name': self.name,
-                'event_id': self.id
+                'event_id': self.id,
+                'user_id': self.user_id.partner_id.id,
+                'event_name': self.name
             }).env.context
         }
