@@ -12,6 +12,8 @@
 from openerp import api, models, fields, _
 from openerp.exceptions import Warning
 
+from ..mappings.childpool_create_hold_mapping import ReservationToHoldMapping
+
 
 class CompassionHold(models.Model):
     _name = 'compassion.hold'
@@ -45,6 +47,7 @@ class CompassionHold(models.Model):
     channel = fields.Char()
     source_code = fields.Char()
     active = fields.Boolean(default=True, readonly=True)
+    reservation_id = fields.Many2one('icp.reservation', 'Reservation')
 
     @api.multi
     def release_hold(self):
@@ -128,3 +131,20 @@ class CompassionHold(models.Model):
                 # delete child if no hold_id received
                 child_to_update.unlink()
                 hold.unlink()
+
+    @api.model
+    def reservation_to_hold(self, commkit_data):
+        """ Called when a reservation gots converted to a hold. """
+        mapping = ReservationToHoldMapping(self.env)
+        hold_data = commkit_data.get(
+            'GlobalPartnerBeneficiaryReservationToHoldNotification')
+        child_global_id = hold_data and hold_data.get('Beneficiary_GlobalID')
+        if child_global_id:
+            child = self.env['compassion.child'].create(
+                {'global_id': child_global_id})
+            hold = self.env['compassion.hold'].create(
+                mapping.get_vals_from_connect(hold_data))
+            child.hold_id = hold
+            return [hold.id]
+
+        return list()
