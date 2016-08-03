@@ -19,6 +19,7 @@ access_project_involvement,Read access on icp involvement,model_icp_involvement,
 access_icp_church_ministry,Read access on icp church ministry,model_icp_church_ministry,group_sponsorship,1,0,1,0
 access_icp_program,Read access on icp program,model_icp_program,group_sponsorship,1,0,1,0
 access_icp_church_facility,Read access on icp church facility,model_icp_church_facility,group_sponsorship,1,0,1,0
+access_icp_lifecycle_reason,Read access on icp lifecycle reason,model_icp_lifecycle_reason,group_sponsorship,1,0,1,0
 access_icp_mobile_device,Read access on icp mobile device,model_icp_mobile_device,group_sponsorship,1,0,1,0
 access_icp_church_utility,Read access on icp church utility,model_icp_church_utility,group_sponsorship,1,0,1,0
 access_icp_spiritual_activity,Read access on icp spiritual activity,model_icp_spiritual_activity,group_sponsorship,1,0,1,0
@@ -46,6 +47,7 @@ access_admin_project_involvement,Full access on icp involvement,model_icp_involv
 access_admin_icp_church_ministry,Full access on icp church ministry,model_icp_church_ministry,base.group_erp_manager,1,1,1,1
 access_admin_icp_program,Full access on icp program,model_icp_program,base.group_erp_manager,1,1,1,1
 access_admin_icp_church_facility,Full access on icp church facility,model_icp_church_facility,base.group_erp_manager,1,1,1,1
+access_admin_icp_lifecycle_reason,Full access on icp lifecycle reason,model_icp_lifecycle_reason,base.group_erp_manager,1,1,1,1
 access_admin_icp_mobile_device,Full access on icp mobile device,model_icp_mobile_device,base.group_erp_manager,1,1,1,1
 access_admin_icp_church_utility,Full access on icp church utility,model_icp_church_utility,base.group_erp_manager,1,1,1,1
 access_admin_icp_spiritual_activity,Full access on icp spiritual activity,model_icp_spiritual_activity,base.group_erp_manager,1,1,1,1

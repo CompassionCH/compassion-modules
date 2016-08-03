@@ -16,6 +16,7 @@ class GmcActionConnect(models.Model):
     Maps an Action with a Connect Message Type
     """
     _name = 'gmc.action.connect'
+    _rec_name = 'connect_schema'
 
     connect_schema = fields.Char(required=True)
     action_id = fields.Many2one('gmc.action', 'GMC Action', required=True)

@@ -56,7 +56,6 @@
                                             <tree>
                                                 <field name="date"/>
                                                 <field name="type"/>
-                                                <field name="reason"/>
                                             </tree>
                                         </field>
                                     </group>
@@ -242,7 +241,6 @@
                         <group>
                             <field name="date"/>
                             <field name="type"/>
-                            <field name="reason"/>
                             <field name="details"/>
                         </group>
                         <group>
@@ -255,6 +253,7 @@
                         <group attrs="{'invisible': [('type', '!=', 'Suspension')]}">
                             <field name="suspension_start_date"/>
                             <field name="suspension_end_date"/>
+                            <field name="suspension_reason_ids" widget="many2many_checkboxes"/>
                             <field name="extension_1"/>
                             <field name="extension_1_reason" attrs="{'invisible': [('extension_1', '=', False)]}"/>
                             <field name="extension_2"/>
@@ -270,8 +269,9 @@
                         </group>
                         <group attrs="{'invisible': [('type', '!=', 'Transition')]}">
                             <field name="transition_date"/>
+                            <field name="transition_reason_ids" widget="many2many_checkboxes"/>
                             <field name="transition_complete"/>
-                            <field name="future_involvement"/>
+                            <field name="future_involvement_ids" widget="many2many_checkboxes"/>
                         </group>
                         <!--<group attrs="{'invisible': [('type', '!=', 'Transition')]}">-->
                             <!--<field name="celebration_details"/>-->

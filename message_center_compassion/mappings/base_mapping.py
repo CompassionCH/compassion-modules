@@ -83,7 +83,7 @@ class OnrampMapping(object):
             else:
                 field_odoo = _mapping.get(field_connect)
                 is_list_dict = False
-                if isinstance(value_connect, list):
+                if field_odoo and isinstance(value_connect, list):
                     # Check if we receive a list of dictionnaries and
                     # recursively call function to get the mapping of each
                     for item in value_connect:

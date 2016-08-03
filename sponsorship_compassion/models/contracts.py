@@ -646,6 +646,14 @@ class SponsorshipContract(models.Model):
             invl.product_id.categ_name != GIFT_CATEGORY)
         return res
 
+    def hold_gifts(self):
+        """ TODO: postpone open gifts, cancel LSV/DD automatic gifts. """
+        pass
+
+    def reactivate_gift(self):
+        """ TODO: open again gifts, reactivate LSV/DD gifts. """
+        pass
+
     ##########################################################################
     #                      CLEAN PAID INVOICES METHODS                       #
     ##########################################################################

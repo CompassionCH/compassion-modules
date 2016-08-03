@@ -29,7 +29,6 @@ class ProjectLifecycle(models.Model):
         ('Reactivation', 'Reactivation'),
         ('Transition', 'Transition'),
     ], readonly=True)
-    # reason = fields.Char(readonly=True)
     action_plan = fields.Text(readonly=True)
 
     # Reactivation
@@ -41,13 +40,8 @@ class ProjectLifecycle(models.Model):
     suspension_start_date = fields.Date(readonly=True)
     suspension_end_date = fields.Date(readonly=True)
     suspension_detail = fields.Char(readonly=True)
-    suspension_reason = fields.Selection([
-        ('Child Protection Issue', 'Child Protection Issue'),
-        ('Disaster event', 'Disaster event'),
-        ('Does not comply with policies', 'Does not comply with policies'),
-        ('Financial Mismanagement', 'Financial Mismanagement'),
-        ('Other', 'Other'),
-    ], readonly=True)
+    suspension_reason_ids = fields.Many2many(
+        'icp.lifecycle.reason', string='Suspension reason', readonly=True)
 
     hold_cdsp_funds = fields.Boolean(readonly=True)
     hold_csp_funds = fields.Boolean(readonly=True)
@@ -71,24 +65,11 @@ class ProjectLifecycle(models.Model):
     transition_date = fields.Date(readonly=True)
     transition_complete = fields.Boolean(readonly=True)
     details = fields.Text(readonly=True)
-    reason = fields.Selection([
-        ('Child Protection Issue', 'Child Protection Issue'),
-        ('Disaster Event', 'Disaster Event'),
-        ('Does not comply with policies', 'Does not comply with policies'),
-        ('Financial Mismanagement', 'Financial Mismanagement'),
-        ('Other', 'Other'),
-        ('Successful Transition', 'Successful Transition'),
-    ], readonly=True)
+    transition_reason_ids = fields.Many2many(
+        'icp.lifecycle.reason', string='Transition reason', readonly=True)
     projected_transition_date = fields.Date(readonly=True)
-    future_involvement = fields.Selection([
-        ('Advocacy', 'Advocacy'),
-        ('Alumni', 'Alumni'),
-        ('Church Mobilization', 'Church Mobilization'),
-        ('Leveraged', 'Leveraged'),
-        ('Mentoring', 'Mentoring'),
-        ('No Future Engagement', 'No Future Engagement'),
-        ('Training', 'Training'),
-    ], readonly=True)
+    future_involvement_ids = fields.Many2many(
+        'icp.involvement', string='Future involvement', readonly=True)
     # celebration_details = fields.Char(readonly=True)
     # relationship_strengths = fields.Char(readonly=True)
 
@@ -126,7 +107,11 @@ class ProjectLifecycle(models.Model):
             self.env,
             'new_project_lifecyle')
 
-        vals = project_mapping.get_vals_from_connect(commkit_data)
-        project = self.with_context(no_comm_kit=True).create(vals)
+        project_ids = list()
+        for single_data in commkit_data.get('ICPLifecycleEventList',
+                                            [commkit_data]):
+            vals = project_mapping.get_vals_from_connect(single_data)
+            project = self.create(vals)
+            project_ids.append(project.id)
 
-        return [project.id]
+        return project_ids

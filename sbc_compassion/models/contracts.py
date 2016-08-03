@@ -77,3 +77,16 @@ class Contracts(models.Model):
                         sponsorship.reading_language = common_langs[0]
                     else:
                         sponsorship.reading_language = english
+
+    ##########################################################################
+    #                            WORKFLOW METHODS                            #
+    ##########################################################################
+    @api.multi
+    def contract_active(self):
+        """ Send letters that were on hold. """
+        super(Contracts, self).contract_active()
+        for contract in self.filtered(
+                lambda c: 'S' in c.type and not
+                c.child_id.project_id.hold_s2b_letters):
+            contract.sponsor_letter_ids.reactivate_letters(
+                'Sponsorship activated')

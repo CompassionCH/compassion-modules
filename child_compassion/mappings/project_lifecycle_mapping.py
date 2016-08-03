@@ -20,7 +20,8 @@ class ICPMapping(OnrampMapping):
         "ActionPlan": "action_plan",
         "ActualSuspensionEndDate": "suspension_end_date",
         "ActualTransitionDate": "date",
-        "FutureInvolvement": "future_involvement",
+        "FutureInvolvement": ("future_involvement_ids.name",
+                              "icp.involvement"),
         "ICPImprovementDescription": "icp_improvement_desc",
         "ICPLifecycleEventType": "type",
         "IsBeneficiaryInformationUpdatesWithheld":
@@ -39,18 +40,21 @@ class ICPMapping(OnrampMapping):
         "ReasonForFirstExtension": "extension_1_reason",
         "ReasonforSecondExtension": "extension_2_reason",
         "SuspensionDetail": "suspension_detail",
-        "SuspensionReason": "suspension_reason",
+        "SuspensionReason": ("suspension_reason_ids.name",
+                             "icp.lifecycle.reason"),
         "SuspensionStartDate": "suspension_start_date",
         "TransitionDetails": "details",
-        "TransitionReason": "reason",
-        "TranslationCompletedFields": "translation_completed_fields",
-        "TranslationRequiredFields": "translation_required_fields",
+        "TransitionReason": ("transition_reason_ids.name",
+                             "icp.lifecycle.reason"),
         "TranslationStatus": "translation_status",
         "ICPStatus": "project_status",
         "ICP_ID": ('project_id.icp_id', 'compassion.project'),
 
         # Not used in Odoo
         'SourceKitName': None,
+        # If used, will be connect.multipicklist fields.
+        "TranslationCompletedFields": None,
+        "TranslationRequiredFields": None,
     }
 
     FIELDS_TO_SUBMIT = {

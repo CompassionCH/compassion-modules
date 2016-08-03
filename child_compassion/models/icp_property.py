@@ -136,3 +136,11 @@ class ICPDiet(models.Model):
     _inherit = 'icp.property'
     _description = 'ICP Diet'
     res_field = 'primary_diet_ids'
+
+
+class ICPLifecycleReason(models.Model):
+    _name = 'icp.lifecycle.reason'
+    _inherit = 'icp.property'
+    _description = 'ICP Diet'
+    res_model = 'compassion.project.ile'
+    res_field = 'suspension_reason_ids'

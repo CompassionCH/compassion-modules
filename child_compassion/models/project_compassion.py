@@ -337,10 +337,18 @@ class CompassionProject(models.Model):
                     last_info.hold_cdsp_funds else 'suspended'
                 if suspension_status != old_value:
                     self.suspend_funds()
+                if last_info.hold_gifts:
+                    self._hold_gifts()
+                if last_info.hold_s2b_letters:
+                    self._hold_letters()
                 self.suspension = suspension_status
             elif last_info.type == 'Reactivation':
                 if old_value == 'fund-suspended':
                     self._reactivate_project()
+                if not last_info.hold_gifts:
+                    self._reactivate_gifts()
+                if not last_info.hold_s2b_letters:
+                    self._reactivate_letters()
                 self.suspension = False
 
     @api.model
@@ -465,3 +473,15 @@ class CompassionProject(models.Model):
             "The project is reactivated.",
             "Project Reactivation", 'comment')
         return True
+
+    def _hold_gifts(self):
+        pass
+
+    def _hold_letters(self):
+        pass
+
+    def _reactivate_gifts(self):
+        pass
+
+    def _reactivate_letters(self):
+        pass

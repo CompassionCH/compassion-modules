@@ -1,0 +1,7 @@
+id,name,value
+icp_lifecycle_reason_protection,Child Protection Issue,child protection issue
+icp_lifecycle_reason_disaster1,Disaster Event,disaster event
+icp_lifecycle_reason_disaster2,Disaster event,disaster event
+icp_lifecycle_reason_policy,Does not comply with policies,does not comply with policies
+icp_lifecycle_reason_financial,Financial Mismanagement,financial mismanagement
+icp_lifecycle_reason_other,Other,other
