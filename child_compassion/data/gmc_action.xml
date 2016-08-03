@@ -137,6 +137,14 @@
             <field name="description">This will create a new project cycle event.</field>
             <field name="auto_process">1</field>
         </record>
+        <!-- Field Office Disaster Message -->
+        <record id="field_office_disaster" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">FieldOfficeDisaster</field>
+            <field name="model">fo.disaster.alert</field>
+            <field name="description">This handles the reception of a Field Office Disaster.</field>
+            <field name="auto_process">1</field>
+        </record>
 
         <!-- Actions to Connect mappings -->
         <record id="major_revision_connect" model="gmc.action.connect">
@@ -166,6 +174,10 @@
         <record id="new_project_cycle_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/churchpartner/2016/03/LifecycleEvents</field>
             <field name="action_id" ref="new_project_cycle"/>
+        </record>
+        <record id="field_office_disaster_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messaging/fieldoffice/2016/03/DisasterDetailsKit</field>
+            <field name="action_id" ref="field_office_disaster"/>
         </record>
     </data>
 </openerp>

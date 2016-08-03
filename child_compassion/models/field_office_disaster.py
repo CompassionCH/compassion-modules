@@ -9,8 +9,9 @@
 #
 ##############################################################################
 
-
 from openerp import api, models, fields, _
+from openerp.addons.message_center_compassion.mappings import base_mapping as \
+    mapping
 
 
 class ICPDisasterImpact(models.Model):
@@ -88,8 +89,7 @@ class ChildDisasterImpact(models.Model):
 
 class FieldOfficeDisasterAlert(models.Model):
     _name = 'fo.disaster.alert'
-    _description = 'FO disaster alert'
-    _rec_name = 'disaster_name'
+    _description = 'Field Office Disaster Alert'
 
     disaster_id = fields.Char()
     area_description = fields.Char()
@@ -130,7 +130,7 @@ class FieldOfficeDisasterAlert(models.Model):
     reported_loss_of_life_siblings = fields.Integer()
     reported_number_beneficiaries_impacted = fields.Integer()
     reported_number_of_icps_impacted = fields.Integer()
-    reported_serious_injuries_beneficaries = fields.Integer()
+    reported_serious_injuries_beneficiaries = fields.Integer()
     reported_serious_injuries_caregivers = fields.Integer()
     reported_serious_injuries_siblings = fields.Integer()
     response_description = fields.Char()
@@ -174,3 +174,13 @@ class FieldOfficeDisasterAlert(models.Model):
             'res_model': 'compassion.project',
             'target': 'current',
         }
+
+    @api.model
+    def process_commkit(self, commkit_data):
+        fo_disaster_mapping = mapping.new_onramp_mapping(
+            self._name,
+            self.env,
+            'field_office_disaster')
+        vals = fo_disaster_mapping.get_vals_from_connect(commkit_data)
+        fo_disaster = self.create(vals)
+        return [fo_disaster.id]

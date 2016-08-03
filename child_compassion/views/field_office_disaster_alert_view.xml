@@ -111,7 +111,7 @@
                                     </group>
                                     <group>
                                         <field name="reported_number_of_icps_impacted"/>
-                                        <field name="reported_serious_injuries_beneficaries"/>
+                                        <field name="reported_serious_injuries_beneficiaries"/>
                                         <field name="reported_serious_injuries_caregivers"/>
                                         <field name="reported_serious_injuries_siblings"/>
                                     </group>
