@@ -9,12 +9,14 @@
 #
 ##############################################################################
 
+from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from openerp import api, models, fields, _
 from openerp.exceptions import Warning
 
 
 class CompassionHold(models.Model):
     _name = 'compassion.hold'
+    _rec_name = 'hold_id'
 
     name = fields.Char('Name')
     hold_id = fields.Char(readonly=True)
@@ -45,6 +47,7 @@ class CompassionHold(models.Model):
     channel = fields.Char()
     source_code = fields.Char()
     active = fields.Boolean(default=True, readonly=True)
+    reinstatement_reason = fields.Char(readonly=True)
 
     @api.multi
     def release_hold(self):
@@ -128,3 +131,26 @@ class CompassionHold(models.Model):
                 # delete child if no hold_id received
                 child_to_update.unlink()
                 hold.unlink()
+
+    @api.model
+    def process_commkit(self, commkit_data):
+        hold_ids = list()
+        reinstatement_mapping = ReinstatementMapping(self.env)
+
+        for reinstatement_data in commkit_data:
+            vals = reinstatement_mapping.\
+                get_vals_from_connect(reinstatement_data)
+            hold = self.create(vals)
+
+            child = hold.child_id
+            child.write({
+                'active': True,
+                'state': 'D',
+                'delegated_to': self.env['recurring.contract'].search(
+                    [('child_id', '=', hold.child_id.id)],
+                    limit=1).partner_id.id,
+                'hold_id': hold.id
+            })
+            hold_ids.append(hold)
+
+        return hold_ids

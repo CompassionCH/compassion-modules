@@ -135,6 +135,15 @@
             <field name="description">This will create a new project cycle event.</field>
             <field name="auto_process">1</field>
         </record>
+        <!-- Reinstatement Message -->
+        <record id="new_reinstatement_notification" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">NewReinstatementNotification</field>
+            <field name="mapping_name">new_reinstatement_notification</field>
+            <field name="model">compassion.hold</field>
+            <field name="description">This will create a new reinstatement notification.</field>
+            <field name="auto_process">1</field>
+        </record>
 
         <!-- Actions to Connect mappings -->
         <record id="major_revision_connect" model="gmc.action.connect">
@@ -164,6 +173,10 @@
         <record id="new_project_cycle_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/churchpartner/2016/03/LifecycleEvents</field>
             <field name="action_id" ref="new_project_cycle"/>
+        </record>
+        <record id="new_reinstatement_notification_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/04/ReinstatementHoldNotification</field>
+            <field name="action_id" ref="new_reinstatement_notification"/>
         </record>
     </data>
 </openerp>
