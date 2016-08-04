@@ -7,6 +7,9 @@
             <field name="model">fo.disaster.alert</field>
             <field name="arch" type="xml">
                 <form string="Field Office Disaster Alert">
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
                     <sheet>
                         <div class="oe_title">
                             <label for="disaster_name"/>
@@ -23,7 +26,6 @@
                                 <field name="area_description"/>
                                 <field name="close_date"/>
                                 <field name="disaster_date"/>
-                                <field name="disaster_status"/>
                                 <field name="disaster_type"/>
                             </group>
                             <group>
@@ -77,7 +79,7 @@
                                         <field name="icp_disaster_impact_ids">
                                             <tree>
                                                 <field name="impact_on_icp_program"/>
-                                                <field name="disaster_status"/>
+                                                <field name="state"/>
                                                 <field name="infrastructure"/>
                                             </tree>
                                         </field>
@@ -86,7 +88,7 @@
                                                 <field name="name"/>
                                                 <field name="beneficiary_location"/>
                                                 <field name="beneficiary_physical_condition"/>
-                                                <field name="disaster_status"/>
+                                                <field name="state"/>
                                             </tree>
                                         </field>
                                     </group>

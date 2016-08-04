@@ -83,6 +83,7 @@
         'data/icp.sociological.activity.csv',
         'data/icp.spiritual.activity.csv',
         'data/fo.high.risk.csv',
+        'data/fo.disaster.loss.csv',
     ],
     'demo': [
         'demo/compassion.child.csv'

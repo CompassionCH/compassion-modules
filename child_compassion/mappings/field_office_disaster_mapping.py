@@ -20,14 +20,14 @@ class ICPDisasterImpactMapping(OnrampMapping):
 
     CONNECT_MAPPING = {
         'Disaster_ImpactOnICPProgram': 'impact_on_icp_program',
-        'Disaster_Name': ('fo_disaster_alert_id.disaster_name',
-                          'fo.disaster.alert'),
         'ICPDisasterImpact_DisasterImpactDescription':
             'disaster_impact_description',
-        'ICPDisasterImpact_ICPDisasterStatus': 'disaster_status',
         'ICPDisasterImpact_ICPInfrastructureDisasterImpact': 'infrastructure',
-        'ICP_ID': 'project_id',
-        # 'ICP_Name': '',
+        'ICP_ID': ('project_id.icp_id', 'compassion.project'),
+        # Not used in Odoo (related fields)
+        'ICP_Name': None,
+        'Disaster_Name': None,
+        'ICPDisasterImpact_ICPDisasterStatus': None,
     }
 
 
@@ -41,9 +41,8 @@ class FieldOfficeDisasterUpdate(OnrampMapping):
         'DisasterCommunicationUpdate_ID': 'fodu_id',
         'DisasterCommunicationUpdate_Name': 'name',
         'DisasterCommunicationUpdate_Summary': 'summary',
-        'Disaster_Name': ('fo_disaster_alert_id.disaster_name',
-                          'fo.disaster.alert'),
         'FieldOffice_Name': ('fo_id.name', 'compassion.field.office'),
+        'Disaster_Name': None,
     }
 
 
@@ -59,17 +58,18 @@ class ChildDisasterImpact(OnrampMapping):
         'CaregiversDiedNumber': 'caregivers_died_number',
         'CaregiversSeriouslyInjuredNumber':
             'caregivers_seriously_injured_number',
-        'DisasterStatus': 'disaster_status',
         'HouseCondition': 'house_condition',
-        'LostPersonalEffects': 'lost_personal_effects',
+        'LostPersonalEffects': ('loss_ids.name', 'fo.disaster.loss'),
         'SiblingsDiedNumber': 'siblings_died_number',
         'SiblingsSeriouslyInjuredNumber': 'siblings_seriously_injured_number',
-        # 'Beneficiary_FullName': '',
         'Beneficiary_GlobalID': ('child_id.global_id', 'compassion.child'),
-        # 'Beneficiary_LocalID': '',
-        'Disaster_Name': ('fo_disaster_alert_id.disaster_name',
-                          'fo.disaster.alert'),
         'SponsorshipStatus': 'sponsorship_status',
+        # Not used in Odoo
+        'DisasterStatus': None,
+        'Beneficiary_FullName': None,
+        'Beneficiary_FullName': None,
+        'Beneficiary_LocalID': None,
+        'Disaster_Name': None,
     }
 
 
@@ -88,7 +88,7 @@ class FieldOfficeDisasterMapping(OnrampMapping):
         'AreaDescription': 'area_description',
         'CloseDate': 'close_date',
         'DisasterDate': 'disaster_date',
-        'DisasterStatus': 'disaster_status',
+        'DisasterStatus': 'state',
         'DisasterType': 'disaster_type',
         'EstimatedBasicSuppliesNeeded': 'estimated_basic_supplies_needed',
         'EstimatedHomesDestroyed': 'estimated_homes_destroyed',
@@ -137,3 +137,26 @@ class FieldOfficeDisasterMapping(OnrampMapping):
                                'icp.disaster.impact'),
         'SourceKitName': 'source_kit_name',
     }
+
+    def _process_odoo_data(self, odoo_data):
+        # Replace dict by a tuple for the ORM update/create
+        disaster = self.env[self.ODOO_MODEL].search(
+            [('disaster_id', '=', odoo_data['disaster_id'])])
+
+        if 'child_disaster_impact_ids' in odoo_data:
+            # Remove all old impacts
+            disaster.child_disaster_impact_ids.unlink()
+            impact_list = [(0, 0, impact) for impact in
+                           odoo_data['child_disaster_impact_ids']]
+            odoo_data['child_disaster_impact_ids'] = impact_list
+
+        if 'icp_disaster_impact_ids' in odoo_data:
+            disaster.icp_disaster_impact_ids.unlink()
+            impact_list = [(0, 0, impact) for impact in
+                           odoo_data['icp_disaster_impact_ids']]
+            odoo_data['icp_disaster_impact_ids'] = impact_list
+
+        if 'fo_disaster_update_ids' in odoo_data:
+            update_list = [(0, 0, impact) for impact in
+                           odoo_data['fo_disaster_update_ids']]
+            odoo_data['fo_disaster_update_ids'] = update_list
