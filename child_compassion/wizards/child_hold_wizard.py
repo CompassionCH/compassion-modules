@@ -35,7 +35,8 @@ class ChildHoldWizard(models.TransientModel):
         ('Sponsored', _('Sponsored')),
         ('Sub Child Hold', _('Sub Child Hold'))], required=True)
     hold_expiration_date = fields.Datetime(required=True)
-    primary_owner = fields.Char(required=True)
+    primary_owner = fields.Char(required=True,
+                                default=lambda self: self.env.user.name)
     secondary_owner = fields.Char()
     no_money_yield_rate = fields.Float()
     yield_rate = fields.Float()
