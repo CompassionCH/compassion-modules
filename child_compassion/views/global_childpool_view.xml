@@ -207,7 +207,7 @@
             <field name="view_mode">form</field>
         </record>
 
-        <menuitem id="menu_global_pool" parent="menu_sponsorship_section"
+        <menuitem id="menu_global_pool" parent="menu_pool_section"
                   name="Global Childpool" action="open_view_childpool"
                   sequence="1"/>
     </data>

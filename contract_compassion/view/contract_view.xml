@@ -13,10 +13,12 @@
                     </tree>
                     <field name="partner_id" position="after">
                         <field name="child_code" />
-                        <field name="child_name" />
                     </field>
                     <field name="partner_id" position="before">
                         <field name="partner_codega" invisible="context.get('partner_contracts_view')" />
+                    </field>
+                    <field name="start_date" position="after">
+                        <field name="activation_date"/>
                     </field>
                     <field name="payment_term_id" position="after">
                         <field name="group_freq" invisible="not context.get('partner_contracts_view')"/>
@@ -127,6 +129,9 @@
                     <xpath expr="//filter[@name='terminated']" position="replace">
                         <filter name="finished" string="Finished" domain="[('state','in', ('cancelled','terminated'))]"/>
                     </xpath>
+                    <xpath expr="//filter[@name='active']" position="attributes">
+                        <attribute name="domain">[('is_active', '=', True), ('state', 'not in', ('cancelled','terminated'))]</attribute>
+                    </xpath>
                     <xpath expr="//filter[@string='Status']" position="after">
                         <separator />
                         <filter string="Origin" domain="[]"  context="{'group_by':'origin_id'}"/>
@@ -158,10 +163,20 @@
             <field name="act_window_id" ref="action_contract"/>
         </record>
 
-        <menuitem id="recurring_contract.menu_recurring_contract_form" parent="recurring_contract.menu_contracts_section"
-                  name="Contracts" sequence="0" action="action_contract"/>
-        <menuitem id="recurring_contract.menu_contracts_section" parent="child_compassion.menu_sponsorship_root" 
-                  name="Invoicing" groups="account.group_account_user" sequence="2"/>
+        <!-- Put Invoicing section in Accounting/Customers Menu -->
+        <menuitem id="recurring_contract.menu_recurring_contract_form" parent="account.menu_finance_receivables"
+                  name="Contracts" sequence="11" action="action_contract"/>
+        <menuitem id="recurring_contract.menu_invoice_automatic_generation" name="Launch invoices generation" parent="account.menu_finance_receivables" sequence="12"/>
+        <menuitem id="recurring_contract.menu_recurring_invoicer_form" name="Generated invoices" parent="account.menu_finance_receivables" sequence="13"/>
 
+        <!-- Delete useless menu entries in the Accounting section -->
+        <delete model="ir.ui.menu" id="recurring_contract.menu_contracts_section"/>
+        <delete model="ir.ui.menu" id="account.menu_action_invoice_tree3"/>
+        <delete model="ir.ui.menu" id="account_voucher.menu_action_vendor_receipt"/>
+        <delete model="ir.ui.menu" id="account_voucher.menu_action_sale_receipt"/>
+
+        <delete model="ir.ui.menu" id="account.menu_action_invoice_tree4"/>
+        <delete model="ir.ui.menu" id="account_voucher.menu_action_vendor_payment"/>
+        <delete model="ir.ui.menu" id="account_voucher.menu_action_purchase_receipt"/>
     </data>
 </openerp>

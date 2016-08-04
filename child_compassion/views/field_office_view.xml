@@ -106,6 +106,6 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem id="menu_sponsorship_field_office" parent="menu_sponsorship_section" name="Field Offices" action="open_view_field_office" sequence="4"/>
+        <menuitem id="menu_sponsorship_field_office" parent="menu_field_section" name="Field Offices" action="open_view_field_office" sequence="5"/>
     </data>
 </openerp>

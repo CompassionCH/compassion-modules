@@ -213,7 +213,7 @@
         <menuitem id="menu_message_letter_create" parent="message_center_compassion.menu_message_outgoing" action="action_gmc_message_create_letter" sequence="9"/>
         
         <menuitem id="menu_correspondence" parent="child_compassion.menu_sponsorship_root"
-                  name="Correspondence" sequence="1"/>
+                  name="Correspondence" sequence="4"/>
 
         <menuitem id="menu_sponsorship_letters" parent="menu_correspondence"
                   name="Letters" action="action_compassion_correspondence_form" sequence="0"/>

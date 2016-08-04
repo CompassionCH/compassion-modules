@@ -206,7 +206,7 @@
         </record>
 
         <!-- Menu Items -->
-        <menuitem id="menu_message_center" name="Message Center" groups="group_gmc" />
+        <menuitem id="menu_message_center" name="Message Center" groups="group_gmc" sequence="4" />
         <menuitem id="menu_message_incoming" parent="menu_message_center" name="Incoming Messages" sequence="1" />
         <menuitem id="menu_message_incoming_all" parent="menu_message_incoming" action="action_gmc_message_incoming_form" sequence="1" />
         <menuitem id="menu_message_outgoing" name="Outgoing Messages" parent="menu_message_center" sequence="2"/>
