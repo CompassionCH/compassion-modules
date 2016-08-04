@@ -21,7 +21,7 @@ class ProjetReservationCreateMapping(OnrampMapping):
     MAPPING_NAME = "create_reservation"
 
     CONNECT_MAPPING = {
-        'Beneficiary_GlobalID': 'beneficiary_global_id',
+        'Beneficiary_GlobalID': None,
         'Channel_Name': 'channel_name',
         'ICP_ID': ('icp_id.icp_id', 'compassion.project'),
         'CampaignEventIdentifier': 'campaign_event_identifier',

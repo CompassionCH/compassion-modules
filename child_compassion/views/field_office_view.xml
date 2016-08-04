@@ -76,7 +76,7 @@
                                         <tree>
                                             <field name="disaster_name"/>
                                             <field name="disaster_date"/>
-                                            <field name="disaster_status"/>
+                                            <field name="state"/>
                                             <field name="disaster_type"/>
                                         </tree>
                                     </field>
