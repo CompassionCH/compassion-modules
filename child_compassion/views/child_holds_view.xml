@@ -72,6 +72,6 @@
             <field name="context">{'search_default_active':1}</field>
         </record>
 
-        <menuitem id="menu_holds" parent="menu_sponsorship_section" name="Holds" action="open_view_holds" sequence="1" />
+        <menuitem id="menu_holds" parent="menu_pool_section" name="Holds" action="open_view_holds" sequence="1" />
     </data>
 </openerp>

@@ -48,7 +48,7 @@
         </record>
 
         <menuitem id="menu_sponsorship_reservation"
-                  parent="menu_sponsorship_section" name="Reservations"
+                  parent="menu_pool_section" name="Reservations"
                   action="child_compassion.open_view_reservation_form"
                   sequence="1"/>
 

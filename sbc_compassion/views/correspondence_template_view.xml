@@ -86,7 +86,7 @@
         />
 
 
-	<menuitem id="menu_correspondence_template" parent="menu_configuration" action="action_compassion_correspondence_template_form"
+	<menuitem id="menu_correspondence_template" parent="child_compassion.menu_configuration" action="action_compassion_correspondence_template_form"
                   name="Correspondence Templates" sequence="1"/>
     </data>
 </openerp>

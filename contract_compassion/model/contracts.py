@@ -52,7 +52,7 @@ class recurring_contract(models.Model):
         ('terminated', _('Terminated')),
         ('cancelled', _('Cancelled'))])
     is_active = fields.Boolean(
-        'Contract Active', compute='_set_active', store=True,
+        'Contract Active', compute='compute_active', store=True,
         help="It indicates that the first invoice has been paid and the "
              "contract was activated.")
     # Field used for identifying gifts from sponsor (because of bad GP)
@@ -99,11 +99,12 @@ class recurring_contract(models.Model):
                 name += ' - ' + self.contract_line_ids[0].product_id.name
             self.name = name
 
-    @api.one
-    @api.depends('activation_date')
-    def _set_active(self):
-        self.is_active = bool(self.activation_date) and \
-            self.state not in ('terminated', 'cancelled')
+    @api.multi
+    @api.depends('activation_date', 'state')
+    def compute_active(self):
+        for contract in self:
+            contract.is_active = bool(contract.activation_date) and \
+                contract.state not in ('terminated', 'cancelled')
 
     def get_ending_reasons(self):
         """Returns all the ending reasons of sponsorships"""

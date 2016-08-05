@@ -137,6 +137,6 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem id="menu_sponsorship_field_office_disaster_alert" parent="menu_sponsorship_section" name="Disaster Alerts" action="open_view_field_office_disaster" sequence="6"/>
+        <menuitem id="menu_sponsorship_field_office_disaster_alert" parent="menu_field_section" name="Disaster Alerts" action="open_view_field_office_disaster" sequence="6"/>
     </data>
 </openerp>
