@@ -13,6 +13,8 @@ from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from openerp import api, models, fields, _
 from openerp.exceptions import Warning
 
+from ..mappings.childpool_create_hold_mapping import ReservationToHoldMapping
+
 
 class CompassionHold(models.Model):
     _name = 'compassion.hold'
@@ -48,6 +50,7 @@ class CompassionHold(models.Model):
     source_code = fields.Char()
     active = fields.Boolean(default=True, readonly=True)
     reinstatement_reason = fields.Char(readonly=True)
+    reservation_id = fields.Many2one('icp.reservation', 'Reservation')
 
     @api.multi
     def release_hold(self):
@@ -137,7 +140,9 @@ class CompassionHold(models.Model):
         hold_ids = list()
         reinstatement_mapping = ReinstatementMapping(self.env)
 
-        for reinstatement_data in commkit_data:
+        for reinstatement_data in \
+                commkit_data.get('BeneficiaryReinstatementNotificationList',
+                                 [commkit_data]):
             vals = reinstatement_mapping.\
                 get_vals_from_connect(reinstatement_data)
             hold = self.create(vals)
@@ -151,6 +156,22 @@ class CompassionHold(models.Model):
                     limit=1).partner_id.id,
                 'hold_id': hold.id
             })
-            hold_ids.append(hold)
+            hold_ids.append(hold.id)
 
         return hold_ids
+
+    def reservation_to_hold(self, commkit_data):
+        """ Called when a reservation gots converted to a hold. """
+        mapping = ReservationToHoldMapping(self.env)
+        hold_data = commkit_data.get(
+            'GlobalPartnerBeneficiaryReservationToHoldNotification')
+        child_global_id = hold_data and hold_data.get('Beneficiary_GlobalID')
+        if child_global_id:
+            child = self.env['compassion.child'].create(
+                {'global_id': child_global_id})
+            hold = self.env['compassion.hold'].create(
+                mapping.get_vals_from_connect(hold_data))
+            child.hold_id = hold
+            return [hold.id]
+
+        return list()

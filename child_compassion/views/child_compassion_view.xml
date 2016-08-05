@@ -111,7 +111,7 @@
                                             <field name="beneficiary_physical_condition"/>
                                             <field name="caregivers_died_number"/>
                                             <field name="siblings_died_number"/>
-                                            <field name="disaster_status"/>
+                                            <field name="state"/>
                                         </tree>
                                     </field>
                                     <field name="note_ids">

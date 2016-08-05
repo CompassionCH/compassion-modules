@@ -73,3 +73,24 @@ class ChilpoolReleaseHoldMapping(ChilpoolCreateHoldMapping):
         "HoldID": None,
         "GlobalPartner_ID": None,
     }
+
+
+class ReservationToHoldMapping(OnrampMapping):
+    ODOO_MODEL = 'compassion.hold'
+    MAPPING_NAME = 'reservation_to_hold'
+
+    CONNECT_MAPPING = {
+        'BeneficiaryOrder_HoldID': 'hold_id',
+        'Beneficiary_GlobalID': ('child_id.global_id', 'compassion.child'),
+        'HoldExpirationDate': 'expiration_date',
+        'PrimaryOwner': 'primary_owner',
+        'ReservationHoldType': 'type',
+        'ReservationID': ('reservation_id.reservation_id', 'icp.reservation'),
+        'SecondaryOwner': 'secondary_owner',
+        # Not used in Odoo
+        'BeneficiaryOrder_ID': None,
+        'GlobalPartner_ID': None,
+        'ICP_ID': None,
+        'ReservationType_Name': None,
+        'CampaignEventID': None,
+    }

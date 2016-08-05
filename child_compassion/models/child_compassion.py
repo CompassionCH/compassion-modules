@@ -35,8 +35,7 @@ class GenericChild(models.AbstractModel):
     correspondence_language_id = fields.Many2one(
         'res.lang.compassion', 'Correspondence language')
     local_id = fields.Char(
-        'Local ID', size=11, required=True, help='Child reference',
-        readonly=True)
+        'Local ID', size=11, help='Child reference', readonly=True)
     project_id = fields.Many2one('compassion.project', 'Project')
     field_office_id = fields.Many2one(
         'compassion.field.office', 'Field office',

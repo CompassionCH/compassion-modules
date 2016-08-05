@@ -96,10 +96,12 @@
             <field name="auto_process">1</field>
         </record>
         <!-- Reservation Messages -->
-        <record id="beneficiary_reservation_to_hold" model="gmc.action">
+        <record id="reservation_to_hold" model="gmc.action">
             <field name="direction">in</field>
-            <field name="name">BeneficiaryRes</field>
-            <field name="model">icp.reservation</field>
+            <field name="name">ReservationToHold</field>
+            <field name="mapping_name">reservation_to_hold</field>
+            <field name="incoming_method">reservation_to_hold</field>
+            <field name="model">compassion.hold</field>
             <field name="description">This handles the reception of a reserved Beneficiary.</field>
             <field name="auto_process">1</field>
         </record>
@@ -142,6 +144,13 @@
             <field name="mapping_name">new_reinstatement_notification</field>
             <field name="model">compassion.hold</field>
             <field name="description">This will create a new reinstatement notification.</field>
+        </record>
+        <!-- Field Office Disaster Message -->
+        <record id="field_office_disaster" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">FieldOfficeDisaster</field>
+            <field name="model">fo.disaster.alert</field>
+            <field name="description">This handles the reception of a Field Office Disaster.</field>
             <field name="auto_process">1</field>
         </record>
 
@@ -154,9 +163,9 @@
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/CDPRAssessmentKit</field>
             <field name="action_id" ref="beneficiary_cdpr"/>
         </record>
-        <record id="beneficiary_reservation_to_hold_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/03/ReservationHoldReminder</field>
-            <field name="action_id" ref="beneficiary_reservation_to_hold"/>
+        <record id="reservation_to_hold_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/04/ReservationConvertedToHoldNotification</field>
+            <field name="action_id" ref="reservation_to_hold"/>
         </record>
         <record id="major_revision_household_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/HouseholdMajorRevisionKit</field>
@@ -177,6 +186,10 @@
         <record id="new_reinstatement_notification_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/04/ReinstatementHoldNotification</field>
             <field name="action_id" ref="new_reinstatement_notification"/>
+        </record>
+        <record id="field_office_disaster_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messaging/fieldoffice/2016/03/DisasterDetailsKit</field>
+            <field name="action_id" ref="field_office_disaster"/>
         </record>
     </data>
 </openerp>

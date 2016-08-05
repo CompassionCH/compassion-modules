@@ -20,3 +20,4 @@ from . import child_lifecycle_mapping
 from . import child_note_mapping
 from . import project_lifecycle_mapping
 from . import child_reinstatement_mapping
+from . import field_office_disaster_mapping
