@@ -9,6 +9,7 @@
 #
 ##############################################################################
 
+from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from openerp import api, models, fields, _
 from openerp.exceptions import Warning
 
@@ -17,6 +18,7 @@ from ..mappings.childpool_create_hold_mapping import ReservationToHoldMapping
 
 class CompassionHold(models.Model):
     _name = 'compassion.hold'
+    _rec_name = 'hold_id'
 
     name = fields.Char('Name')
     hold_id = fields.Char(readonly=True)
@@ -47,6 +49,7 @@ class CompassionHold(models.Model):
     channel = fields.Char()
     source_code = fields.Char()
     active = fields.Boolean(default=True, readonly=True)
+    reinstatement_reason = fields.Char(readonly=True)
     reservation_id = fields.Many2one('icp.reservation', 'Reservation')
 
     @api.multi
@@ -133,6 +136,30 @@ class CompassionHold(models.Model):
                 hold.unlink()
 
     @api.model
+    def process_commkit(self, commkit_data):
+        hold_ids = list()
+        reinstatement_mapping = ReinstatementMapping(self.env)
+
+        for reinstatement_data in \
+                commkit_data.get('BeneficiaryReinstatementNotificationList',
+                                 [commkit_data]):
+            vals = reinstatement_mapping.\
+                get_vals_from_connect(reinstatement_data)
+            hold = self.create(vals)
+
+            child = hold.child_id
+            child.write({
+                'active': True,
+                'state': 'D',
+                'delegated_to': self.env['recurring.contract'].search(
+                    [('child_id', '=', hold.child_id.id)],
+                    limit=1).partner_id.id,
+                'hold_id': hold.id
+            })
+            hold_ids.append(hold.id)
+
+        return hold_ids
+
     def reservation_to_hold(self, commkit_data):
         """ Called when a reservation gots converted to a hold. """
         mapping = ReservationToHoldMapping(self.env)
