@@ -160,6 +160,7 @@ class Household(models.Model):
             ('Merchant / Seller', _('is merchant')),
             ('Security / Guard', _('is a security guard')),
             ('Transportation/ Driver', _('is a driver')),
+            ('Laborer', _('is a laborer')),
         ]
 
     def process_commkit(self, commkit_data):
