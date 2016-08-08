@@ -314,6 +314,7 @@ class CompassionProject(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+
     @api.multi
     @api.depends('icp_id')
     def _compute_field_office(self):

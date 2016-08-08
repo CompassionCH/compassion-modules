@@ -114,4 +114,8 @@ class ProjectLifecycle(models.Model):
             project = self.create(vals)
             project_ids.append(project.id)
 
+            self.env['compassion.project'].search([
+                ('icp_id', '=', single_data.get('ICP_ID'))
+            ]).status_date = fields.date.today()
+
         return project_ids
