@@ -41,6 +41,7 @@
         'data/account_analytic_data.xml',
         'data/calendar_event_type.xml',
         'data/gmc_action.xml',
+        'data/demand_planning_cron.xml',
         'views/event_compassion_view.xml',
         'views/contract_origin_view.xml',
         'views/crm_lead_view.xml',

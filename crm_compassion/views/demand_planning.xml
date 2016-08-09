@@ -19,7 +19,7 @@
                                 <field name="sent_date"/>
                             </group>
                             <group colspan="2">
-                                <field name="weekly_demand_ids"/>
+                                <field name="weekly_demand_ids" context="{'default_demand_id': active_id}"/>
                             </group>
                         </group>
                     </sheet>

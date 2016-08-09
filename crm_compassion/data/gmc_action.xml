@@ -10,7 +10,7 @@
             <field name="connect_service">globalpartners/demandplanning</field>
             <field name="connect_answer_wrapper">GlobalPartnerWeeklyDemandResponseDetails</field>
             <field name="request_type">POST</field>
-            <field name="auto_process">True</field>
+            <field name="auto_process">False</field>
         </record>
     </data>
 </openerp>

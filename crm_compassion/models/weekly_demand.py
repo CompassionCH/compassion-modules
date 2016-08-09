@@ -18,12 +18,14 @@ class WeeklyDemand(models.Model):
     _name = 'demand.weekly.demand'
     _description = 'Weekly Demand'
     _rec_name = 'week_start_date'
+    _order = 'week_start_date asc, id desc'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    demand_ids = fields.Many2many(
-        'demand.planning', string='Demand Planning', readonly=True
+    demand_id = fields.Many2one(
+        'demand.planning', string='Demand Planning', readonly=True,
+        ondelete='cascade'
     )
     week_start_date = fields.Date(required=True)
     week_end_date = fields.Date(required=True)
@@ -89,10 +91,13 @@ class WeeklyDemand(models.Model):
                 ('start_date', '>=', fields.Date.to_string(start_date)),
                 ('start_date', '<=', fields.Date.to_string(end_date)),
             ])
-            week.number_children_events = sum(events.mapped(
-                'number_allocate_children'))
-            week.resupply_events = week.number_children_events - sum(
-                events.mapped('planned_sponsorships'))
+            allocate = sum(events.mapped('number_allocate_children'))
+            resupply = allocate - sum(events.mapped('planned_sponsorships'))
+            if resupply < 0:
+                allocate -= resupply
+                resupply = 0
+            week.number_children_events = allocate
+            week.resupply_events = resupply
 
     @api.depends('number_children_website', 'number_children_ambassador',
                  'number_children_events')
@@ -168,8 +173,22 @@ class WeeklyDemand(models.Model):
                 'average_unsponsored_ambassador']
             vals['average_unsponsored_ambassador'] = 0
 
-        if vals['resupply_events'] < 0:
-            vals['number_children_events'] -= vals['resupply_events']
-            vals['resupply_events'] = 0
-
         return super(WeeklyDemand, self).create(vals)
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    def get_defaults(self):
+        """ Returns the computation defaults in a dictionary. """
+        web = int(self.env['ir.config_parameter'].get_param(
+            'crm_compassion.number_children_web'))
+        ambassador = int(self.env['ir.config_parameter'].get_param(
+            'crm_compassion.number_children_ambassador'))
+        return {
+            'number_children_website': web,
+            'number_children_ambassador': ambassador,
+            'average_unsponsored_web': self._default_unsponsored_web(),
+            'average_unsponsored_ambassador':
+                self._default_unsponsored_ambassador(),
+            'average_cancellation': self._default_cancellation(),
+        }
