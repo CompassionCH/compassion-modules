@@ -19,37 +19,31 @@ class ChildHoldWizard(models.TransientModel):
     #                                 FIELDS                                 #
     ##########################################################################
 
-    name = fields.Char()
-    type = fields.Selection(selection=[
-        ('Available', _('Available')),
-        ('Change Commitment Hold', _('Change Commitment Hold')),
-        ('Consignment Hold', _('Consignment Hold')),
-        ('Delinquent Mass Cancel Hold', _('Delinquent Mass Cancel Hold')),
-        ('E-Commerce Hold', _('E-Commerce Hold')),
-        ('Inactive', _('Inactive')),
-        ('Ineligible', _('Ineligible')),
-        ('No Money Hold', _('No Money Hold')),
-        ('Reinstatement Hold', _('Reinstatement Hold')),
-        ('Reservation Hold', _('Reservation Hold')),
-        ('Sponsor Cancel Hold', _('Sponsor Cancel Hold')),
-        ('Sponsored', _('Sponsored')),
-        ('Sub Child Hold', _('Sub Child Hold'))], required=True)
+    type = fields.Selection(
+        selection='_get_hold_types', required=True, default='Consignment Hold')
     hold_expiration_date = fields.Datetime(required=True)
     primary_owner = fields.Char(required=True,
                                 default=lambda self: self.env.user.name)
     secondary_owner = fields.Char()
     no_money_yield_rate = fields.Float()
     yield_rate = fields.Float()
-    channel = fields.Char()
+    channel = fields.Selection([
+        ('web', _('Website')),
+        ('event', _('Event')),
+        ('ambassador', _('Ambassador')),
+    ])
+    source_code = fields.Char('Source')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.model
+    def _get_hold_types(self):
+        return self.env['compassion.hold'].get_hold_types()
 
     @api.multi
     def create_hold_vals(self, child_comp):
         return {
-            'name': self.name,
             'child_id': child_comp.id,
             'type': self.type,
             'expiration_date': self.hold_expiration_date,
@@ -58,7 +52,7 @@ class ChildHoldWizard(models.TransientModel):
             'no_money_yield_rate': self.no_money_yield_rate,
             'yield_rate': self.yield_rate,
             'channel': self.channel,
-            'source_code': '',
+            'source_code': self.source_code,
         }
 
     @api.multi

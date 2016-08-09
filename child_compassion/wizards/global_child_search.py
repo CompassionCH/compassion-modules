@@ -123,6 +123,7 @@ class GlobalChildSearch(models.TransientModel):
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'child.hold.wizard',
+            'context': self.env.context,
             'target': 'new',
         }
 

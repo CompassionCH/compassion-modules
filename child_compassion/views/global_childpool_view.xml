@@ -135,7 +135,6 @@
                 <form>
                     <sheet>
                         <group>
-                            <field name="name"/>
                             <field name="type"/>
                             <field name="hold_expiration_date"/>
                             <field name="primary_owner"/>

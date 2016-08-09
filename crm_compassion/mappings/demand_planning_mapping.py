@@ -19,7 +19,7 @@ class WeeklyDemandCreateMapping(OnrampMapping):
     ODOO_MODEL = 'demand.weekly.demand'
 
     CONNECT_MAPPING = {
-        'ResupplyQuantity': 'resupply',
+        'ResupplyQuantity': 'total_resupply',
         'TotalDemand': 'total_demand',
         'WeekEndDate': 'week_end_date',
         'WeekStartDate': 'week_start_date',
