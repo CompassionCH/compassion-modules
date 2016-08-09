@@ -436,7 +436,11 @@ class event_compassion(models.Model):
 
     @api.multi
     def allocate_children(self):
-
+        no_money_yield = float(
+            self.planned_sponsorships) / self.number_allocate_children
+        yield_rate = float(
+            self.number_allocate_children - self.planned_sponsorships
+        ) / float(self.number_allocate_children)
         return {
             'name': _('Global Childpool'),
             'type': 'ir.actions.act_window',
@@ -450,5 +454,7 @@ class event_compassion(models.Model):
                 'user_id': self.user_id.partner_id.id,
                 'default_channel': 'event',
                 'default_source_code': self.name,
+                'default_no_money_yield_rate': no_money_yield,
+                'default_yield_rate': yield_rate,
             }).env.context
         }
