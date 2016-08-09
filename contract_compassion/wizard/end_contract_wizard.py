@@ -64,15 +64,11 @@ class EndContractWizard(models.TransientModel):
         self.ensure_one()
         contract = self.contract_id
         child = contract.child_id
-        hold = child.hold_id
 
         if not self.has_new_hold:
             # child will be inactive after this choice
             self.hold_expiration_date = fields.Datetime.now()
             child.write({'active': False})
-
-        # in all case current hold became inactive
-        hold.write({'active': False})
 
         # Terminate contract
         contract.write({
