@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!--Demand Planning Form View -->
+        <record id="view_demand_weekly_revision_form" model="ir.ui.view">
+            <field name="name">demand.weekly.revision.form</field>
+            <field name="model">demand.weekly.revision</field>
+            <field name="arch" type="xml">
+                <form string="Demand Weekly Revision">
+                    <sheet>
+                        <group>
+                            <field name="week_start_date"/>
+                            <field name="week_end_date"/>
+                        </group>
+                        <group>
+                            <group string="Demand Prevision">
+                                <field name="web_demand" string="Web"/>
+                                <field name="ambassador_demand" string="Ambassadors"/>
+                                <field name="events_demand" string="Events"/>
+                                <field name="total_demand"/>
+                            </group>
+                            <group string="Resupply Prevision">
+                                <field name="web_resupply" string="Web"/>
+                                <field name="ambassador_resupply" string="Ambassadors"/>
+                                <field name="cancellation" string="Cancellations"/>
+                                <field name="events_resupply" string="Events"/>
+                                <field name="total_resupply" string="Total"/>
+                            </group>
+                            <group string="Holds Requested">
+                                <field name="web_holds" string="Web"/>
+                                <field name="ambassador_holds" string="Ambassadors"/>
+                                <field name="events_holds" string="Events"/>
+                                <field name="total_holds" string="Total"/>
+                            </group>
+                            <group string="Sponsorship Results">
+                                <field name="web_sponsorships" string="Web"/>
+                                <field name="ambassador_sponsorships" string="Ambassadors"/>
+                                <field name="events_sponsorships" string="Events"/>
+                                <field name="total_sponsorships" string="Total"/>
+                                <separator colspan="2"/>
+                                <field name="cancellation_sponsorships" string="Cancellations"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Demand Weekly Revision Tree View -->
+        <record id="view_demand_weekly_revision_tree" model="ir.ui.view">
+            <field name="name">demand.weekly.revision.tree</field>
+            <field name="model">demand.weekly.revision</field>
+            <field name="arch" type="xml">
+                <tree string="Weekly Revision">
+                    <field name="week_start_date"/>
+                    <field name="week_end_date"/>
+                    <field name="total_demand"/>
+                    <field name="total_resupply"/>
+                    <field name="total_holds"/>
+                    <field name="total_sponsorships"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_demand_weekly_revision_graph" model="ir.ui.view">
+            <field name="name">demand.weekly.revision.graph</field>
+            <field name="model">demand.weekly.revision</field>
+            <field name="arch" type="xml">
+                <graph type="pivot">
+                    <field name="week_start_date"/>
+                    <field name="web_demand" type="measure"/>
+                    <field name="web_resupply" type="measure"/>
+                    <field name="web_holds" type="measure"/>
+                    <field name="web_sponsorships" type="measure"/>
+
+                    <field name="ambassador_demand" type="measure"/>
+                    <field name="ambassador_resupply" type="measure"/>
+                    <field name="ambassador_holds" type="measure"/>
+                    <field name="ambassador_sponsorships" type="measure"/>
+
+                    <field name="events_demand" type="measure"/>
+                    <field name="events_resupply" type="measure"/>
+                    <field name="events_holds" type="measure"/>
+                    <field name="events_sponsorships" type="measure"/>
+
+                    <field name="total_demand" type="measure"/>
+                    <field name="total_resupply" type="measure"/>
+                    <field name="total_holds" type="measure"/>
+                    <field name="total_sponsorships" type="measure"/>
+
+                    <field name="cancellation_sponsorships" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- Action Opening the Tree View -->
+        <record id="open_view_demand_revision" model="ir.actions.act_window">
+            <field name="name">Demand Weekly Revision</field>
+            <field name="res_model">demand.weekly.revision</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">graph,tree,form</field>
+        </record>
+
+        <menuitem id="menu_demand_revision" name="Demand Weekly Revision" parent="base.menu_sales" action="open_view_demand_revision"/>
+    </data>
+</openerp>

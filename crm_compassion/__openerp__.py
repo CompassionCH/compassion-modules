@@ -52,6 +52,7 @@
         'views/res_partner_view.xml',
         'views/calendar_event_view.xml',
         'views/demand_planning.xml',
+        'views/demand_weekly_revision.xml',
     ],
     'demo': [],
     'installable': True,

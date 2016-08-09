@@ -19,59 +19,26 @@ class CompassionHold(models.Model):
     event_id = fields.Many2one('crm.event.compassion', 'Event', readonly=True)
 
 
-class GlobalChildSearch(models.TransientModel):
-    _inherit = 'compassion.childpool.search'
-
-    take = fields.Integer(
-        default=lambda self: self.default_number_reserve_children(),
-        readonly=lambda self: self[
-            'compassion.childpool.search'].is_from_event()
-    )
-
-    @api.multi
-    def is_from_event(self):
-        number_allocate_children = \
-            self.env.context.get('number_allocate_children')
-        return type(number_allocate_children) is int
-
-    @api.multi
-    def default_number_reserve_children(self):
-        number_allocate_children = \
-            self.env.context.get('number_allocate_children')
-        if type(number_allocate_children) is int:
-            return number_allocate_children
-        else:
-            return 80
-
-
 class ChildHoldWizard(models.TransientModel):
     _inherit = 'child.hold.wizard'
-
-    channel = fields.Char(default=lambda self: self.default_channel())
-
-    @api.multi
-    def default_channel(self):
-        if self.env.context.get('event_id') is not None:
-            return self.env.context.get('event_name')
 
     @api.multi
     def create_hold_vals(self, child_comp):
         hold_vals = super(ChildHoldWizard, self).create_hold_vals(child_comp)
 
-        if self.env.context.get('event_id') is None:
-            return hold_vals
-        else:
-            hold_vals.update({'event_id': self.env.context.get('event_id')})
-            return hold_vals
+        event_id = self.env.context.get('event_id')
+        if event_id:
+            hold_vals['event_id'] = event_id
+        return hold_vals
 
     @api.multi
     def create_child_vals(self, child):
         child_vals = super(ChildHoldWizard, self).create_child_vals(child)
 
-        if self.env.context.get('event_id') is not None:
+        if self.env.context.get('event_id'):
             child_vals.update({
                 'date_delegation': fields.date.today(),
-                'delegated_comment': self.env.context.get('event_name'),
+                'delegated_comment': self.source_code,
                 'delegated_to': self.env.context.get('user_id'),
                 'state': 'D'
             })
@@ -478,9 +445,10 @@ class event_compassion(models.Model):
             'res_model': 'compassion.childpool.search',
             'target': 'current',
             'context': self.with_context({
-                'number_allocate_children': self.number_allocate_children,
+                'default_take': self.number_allocate_children,
                 'event_id': self.id,
                 'user_id': self.user_id.partner_id.id,
-                'event_name': self.name
+                'default_channel': 'event',
+                'default_source_code': self.name,
             }).env.context
         }

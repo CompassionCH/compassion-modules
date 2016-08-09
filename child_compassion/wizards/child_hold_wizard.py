@@ -40,7 +40,12 @@ class ChildHoldWizard(models.TransientModel):
     secondary_owner = fields.Char()
     no_money_yield_rate = fields.Float()
     yield_rate = fields.Float()
-    channel = fields.Char()
+    channel = fields.Selection([
+        ('web', _('Website')),
+        ('event', _('Event')),
+        ('ambassador', _('Ambassador')),
+    ])
+    source_code = fields.Char('Source')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -58,7 +63,7 @@ class ChildHoldWizard(models.TransientModel):
             'no_money_yield_rate': self.no_money_yield_rate,
             'yield_rate': self.yield_rate,
             'channel': self.channel,
-            'source_code': '',
+            'source_code': self.source_code,
         }
 
     @api.multi
