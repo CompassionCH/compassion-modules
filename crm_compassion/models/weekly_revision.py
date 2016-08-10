@@ -54,8 +54,12 @@ class WeeklyRevision(models.Model):
     @api.model
     def create(self, vals):
         """ Compute all results. """
+        start_date = vals['week_start_date']
+        revision = self.search([('week_start_date', '=', start_date)])
+        if revision:
+            return revision
+
         revision = super(WeeklyRevision, self).create(vals)
-        start_date = revision.week_start_date
         end_date = revision.week_end_date
 
         # Holds created in the period
