@@ -65,17 +65,17 @@ class EndContractWizard(models.TransientModel):
         contract = self.contract_id
         child = contract.child_id
 
-        if not self.has_new_hold:
-            # child will be inactive after this choice
-            self.hold_expiration_date = fields.Datetime.now()
-            child.write({'active': False})
+        if self.has_new_hold:
+            self.child_id.global_id    # TODO make reservation with global_id
+
+        child.write({'active': False, 'state': 'F'})
 
         # Terminate contract
         contract.write({
             'end_reason': self.end_reason,
             'end_date': self.end_date,
             'transfer_partner_id': self.transfer_country_id.id,
-            'hold_expiration_date': self.hold_expiration_date,
+            # 'hold_expiration_date': self.hold_expiration_date,
         })
         contract.signal_workflow('contract_terminated')
 
