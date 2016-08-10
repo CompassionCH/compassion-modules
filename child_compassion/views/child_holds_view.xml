@@ -11,12 +11,6 @@
                         <button name="release_hold" type="object" string="Release Hold" attrs="{'invisible': [('active', '=', False)]}" />
                     </header>
                     <sheet>
-                        <div class="oe_title">
-                            <label for="name" class="oe_edit_only" />
-                            <h1>
-                                <field name="name" />
-                            </h1>
-                        </div>
                         <group>
                             <group>
                                 <field name="hold_id" />

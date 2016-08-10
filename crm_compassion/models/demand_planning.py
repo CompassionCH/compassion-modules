@@ -12,33 +12,6 @@
 from openerp import api, models, fields
 from openerp.exceptions import Warning
 
-from datetime import datetime, timedelta
-
-
-class WeeklyDemand(models.Model):
-    _name = 'demand.weekly.demand'
-    _description = 'Weekly Demand'
-    _rec_name = 'week_start_date'
-
-    demand_ids = fields.Many2many(
-        'demand.planning', string='Demand Planning', readonly=True
-    )
-    week_start_date = fields.Date(required=True)
-    week_end_date = fields.Date(required=True)
-    total_demand = fields.Float(required=True)
-    resupply = fields.Float(required=True)
-    period_locked = fields.Boolean(compute='_compute_period_locked',
-                                   store=True)
-
-    @api.depends('week_start_date')
-    @api.multi
-    def _compute_period_locked(self):
-        for week in self:
-            date_week = fields.Datetime.from_string(week.week_start_date)
-            if date_week:
-                week.period_locked = date_week <= (datetime.today() +
-                                                   timedelta(weeks=8))
-
 
 class DemandPlanning(models.Model):
     _name = 'demand.planning'

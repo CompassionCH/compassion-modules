@@ -20,27 +20,15 @@ class CompassionHold(models.Model):
     _name = 'compassion.hold'
     _rec_name = 'hold_id'
 
-    name = fields.Char('Name')
+    ##########################################################################
+    #                                 FIELDS                                 #
+    ##########################################################################
     hold_id = fields.Char(readonly=True)
     child_id = fields.Many2one('compassion.child', 'Child on hold',
                                readonly=True)
     child_name = fields.Char(
         'Child on hold', related='child_id.name', readonly=True)
-    type = fields.Selection([
-        ('Available', 'Available'),
-        ('Change Commitment Hold', 'Change Commitment Hold'),
-        ('Consignment Hold', 'Consignment Hold'),
-        ('Delinquent Mass Cancel Hold', 'Delinquent Mass Cancel Hold'),
-        ('E-Commerce Hold', 'E-Commerce Hold'),
-        ('Inactive', 'Inactive'),
-        ('Ineligible', 'Ineligible'),
-        ('No Money Hold', 'No Money Hold'),
-        ('Reinstatement Hold', 'Reinstatement Hold'),
-        ('Reservation Hold', 'Reservation Hold'),
-        ('Sponsor Cancel Hold', 'Sponsor Cancel Hold'),
-        ('Sponsored', 'Sponsored'),
-        ('Sub Child Hold', 'Sub Child Hold')
-    ])
+    type = fields.Selection('get_hold_types')
     expiration_date = fields.Datetime()
     primary_owner = fields.Char()
     secondary_owner = fields.Char()
@@ -52,36 +40,26 @@ class CompassionHold(models.Model):
     reinstatement_reason = fields.Char(readonly=True)
     reservation_id = fields.Many2one('icp.reservation', 'Reservation')
 
-    @api.multi
-    def release_hold(self):
-        message_obj = self.env['gmc.message.pool']
-        action_id = self.env.ref('child_compassion.release_hold').id
-
-        self.active = False
-        message_vals = {
-            'action_id': action_id,
-            'object_id': self.id
-        }
-
-        if self.child_id.sponsor_id:
-            raise Warning(_("Cancel impossible"), _("This hold is on a "
-                                                    "sponsored child!"))
-        else:
-            self.child_id.active = False
-            message_obj.create(message_vals)
-
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
     @api.model
-    def check_hold_validity(self):
-        expired_holds = self.env['compassion.hold'].search([
-            ('expiration_date', '<',
-             fields.Datetime.now())
-        ])
-
-        for expired_hold in expired_holds:
-            expired_hold.child_id.active = False
-            expired_hold.active = False
-
-        return True
+    def get_hold_types(self):
+        return [
+            ('Available', 'Available'),
+            ('Change Commitment Hold', 'Change Commitment Hold'),
+            ('Consignment Hold', 'Consignment Hold'),
+            ('Delinquent Mass Cancel Hold', 'Delinquent Mass Cancel Hold'),
+            ('E-Commerce Hold', 'E-Commerce Hold'),
+            ('Inactive', 'Inactive'),
+            ('Ineligible', 'Ineligible'),
+            ('No Money Hold', 'No Money Hold'),
+            ('Reinstatement Hold', 'Reinstatement Hold'),
+            ('Reservation Hold', 'Reservation Hold'),
+            ('Sponsor Cancel Hold', 'Sponsor Cancel Hold'),
+            ('Sponsored', 'Sponsored'),
+            ('Sub Child Hold', 'Sub Child Hold')
+        ]
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -175,3 +153,34 @@ class CompassionHold(models.Model):
             return [hold.id]
 
         return list()
+
+    @api.multi
+    def release_hold(self):
+        message_obj = self.env['gmc.message.pool']
+        action_id = self.env.ref('child_compassion.release_hold').id
+
+        self.active = False
+        message_vals = {
+            'action_id': action_id,
+            'object_id': self.id
+        }
+
+        if self.child_id.sponsor_id:
+            raise Warning(_("Cancel impossible"), _("This hold is on a "
+                                                    "sponsored child!"))
+        else:
+            self.child_id.active = False
+            message_obj.create(message_vals)
+
+    @api.model
+    def check_hold_validity(self):
+        expired_holds = self.env['compassion.hold'].search([
+            ('expiration_date', '<',
+             fields.Datetime.now())
+        ])
+
+        for expired_hold in expired_holds:
+            expired_hold.child_id.active = False
+            expired_hold.active = False
+
+        return True
