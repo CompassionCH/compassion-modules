@@ -34,10 +34,16 @@
             <field name="code">AA1184</field>
             <field name="parent_id" search="[('name', '=', 'Events')]"/>
         </record>
-        <record id="account_analytic_account_sport" model="account.analytic.account">
+        <record id="account_analytic_account_concert" model="account.analytic.account">
             <field name="name">Concert</field>
             <field name="type">normal</field>
             <field name="code">AA1185</field>
+            <field name="parent_id" search="[('name', '=', 'Events')]"/>
+        </record>
+        <record id="account_analytic_account_sponsor_tour" model="account.analytic.account">
+            <field name="name">Tour</field>
+            <field name="type">normal</field>
+            <field name="code">AA1187</field>
             <field name="parent_id" search="[('name', '=', 'Events')]"/>
         </record>
         <record id="account_analytic_account_ambassadors" model="account.analytic.account">
