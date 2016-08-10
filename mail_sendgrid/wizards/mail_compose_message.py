@@ -23,11 +23,14 @@ class EmailComposeMessage(models.TransientModel):
         for wizard in self:
             template = wizard.template_id
             sendgrid_template = template.sendgrid_localized_template
+            res_id = self.env.context['active_id']
+            render_body = self.render_template_batch(
+                wizard.body, wizard.model, [res_id], post_process=True)[res_id]
             if sendgrid_template and wizard.body:
                 wizard.body_sendgrid = sendgrid_template.html_content.replace(
-                    '<%body%>', wizard.body)
+                    '<%body%>', render_body)
             else:
-                wizard.body_sendgrid = wizard.body
+                wizard.body_sendgrid = render_body
 
     @api.model
     def render_message_batch(self, wizard, res_ids):
