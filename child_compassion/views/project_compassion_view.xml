@@ -241,7 +241,7 @@
                         <group>
                             <field name="date"/>
                             <field name="type"/>
-                            <field name="details"/>
+                            <field string="Lifecycle details" name="details"/>
                         </group>
                         <group>
                             <field name="action_plan"/>

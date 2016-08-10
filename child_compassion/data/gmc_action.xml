@@ -144,6 +144,7 @@
             <field name="mapping_name">new_reinstatement_notification</field>
             <field name="model">compassion.hold</field>
             <field name="description">This will create a new reinstatement notification.</field>
+            <field name="auto_process">1</field>
         </record>
         <!-- Field Office Disaster Message -->
         <record id="field_office_disaster" model="gmc.action">
