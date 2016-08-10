@@ -34,6 +34,7 @@ class FieldOffice(models.Model):
     city = fields.Char()
     province = fields.Char()
     zip_code = fields.Char()
+    currency = fields.Char()
 
     primary_language_id = fields.Many2one('res.lang.compassion', 'Primary '
                                                                  'language')
@@ -52,36 +53,6 @@ class FieldOffice(models.Model):
         'fo.disaster.alert', string='Disaster alerts'
     )
 
-    development_plan_frequency = fields.Integer(
-        help='Frequency in months at which the FO makes a development plan'
-    )
-    cdpr_frequency = fields.Integer(
-        help='Frequency in months at which the FO makes Child Development '
-             'Progress Reports'
-    )
-    baby_health_assessment_frequency = fields.Integer(
-        help='Frequency in months at which the FO makes Health Assessments '
-             'for babies (0-1)'
-    )
-    health_assessment_frequency = fields.Integer(
-        help='Frequency for Health Assessments of children (2+)'
-    )
-    transition_age = fields.Integer(
-        help='Age at which children transition from home-based to '
-             'center-based program'
-    )
-    age_of_majority = fields.Integer()
-    max_age_limit = fields.Integer()
-    max_family_members_enrolled = fields.Integer(
-        help='Maximum number of family members allowed in the program'
-    )
-    new_icp_min_children = fields.Integer(
-        help='Minimum number of children required to start a new ICP'
-    )
-    icp_min_children = fields.Integer(
-        help='Minimum number of children for an ICP'
-    )
-
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -98,14 +69,15 @@ class FieldOffice(models.Model):
     def update_informations(self, context=None, async_mode=False):
         """ Get the most recent informations for selected field offices and
         update them accordingly. """
-        # TODO
-        # message_obj = self.env['gmc.message.pool']
-        # action_id = self.env.ref('child_compassion.icp_details').id
-        # message_vals = {
-        #     'action_id': action_id,
-        #     'object_id': self.id,
-        # }
-        # message_obj.with_context(async_mode=async_mode).create(message_vals)
+        message_obj = self.env['gmc.message.pool']
+        action_id = self.env.ref(
+            'child_compassion.field_office_details').id
+
+        message_vals = {
+            'action_id': action_id,
+            'object_id': self.id,
+        }
+        message_obj.with_context(async_mode=False).create(message_vals)
         return True
 
 

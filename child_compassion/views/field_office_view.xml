@@ -48,26 +48,9 @@
                                         <field name="phone_number"/>
                                         <field name="social_media_site"/>
                                     </group>
-                                </group>
-                            </page>
-                            <page string="Territory Information">
-                                <group>
-                                    <field name="high_risk_ids" widget="many2many_tags"/>
-                                    <field name="transition_age"/>
-                                    <field name="age_of_majority"/>
-                                    <field name="max_age_limit"/>
-                                    <field name="max_family_members_enrolled"/>
-                                    <field name="new_icp_min_children"/>
-                                    <field name="icp_min_children"/>
-                                    <field name="max_family_members_enrolled"/>
-                                </group>
-                            </page>
-                            <page string="Field Office Strategy">
-                                <group>
-                                    <field name="development_plan_frequency"/>
-                                    <field name="cdpr_frequency"/>
-                                    <field name="baby_health_assessment_frequency"/>
-                                    <field name="health_assessment_frequency"/>
+                                    <group>
+                                        <field name="high_risk_ids" widget="many2many_tags"/>
+                                    </group>
                                 </group>
                             </page>
                             <page string="Disaster Alerts">

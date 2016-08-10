@@ -61,6 +61,7 @@
         'data/child.chronic.illness.csv',
         'data/child.physical.disability.csv',
         'data/connect.month.csv',
+        'data/compassion.field.office.csv',
         'data/global_partner.xml',
         'data/lang_data.xml',
         'data/gmc_action.xml',

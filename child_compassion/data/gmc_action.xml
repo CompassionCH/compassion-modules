@@ -52,6 +52,16 @@
             <field name="auto_process">1</field>
             <field name="success_method">details_answer</field>
         </record>
+        <record id="field_office_details" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">FieldOfficeDetails</field>
+            <field name="model">compassion.field.office</field>
+            <field name="connect_answer_wrapper">FieldOfficeResponseList</field>
+            <field name="description">This will update the Field Office</field>
+            <field name="connect_service">fieldoffices/{$object.field_office_id}/kits/fieldofficekit</field>
+            <field name="request_type">GET</field>
+            <field name="auto_process">1</field>
+        </record>
         <!-- Reservation Message Creation -->
         <record id="create_reservation" model="gmc.action">
             <field name="direction">out</field>
