@@ -142,7 +142,9 @@ class event_compassion(models.Model):
             ('concert', _("Concert")),
             ('presentation', _("Presentation")),
             ('meeting', _("Meeting")),
-            ('sport', _("Sport event"))]
+            ('sport', _("Sport event")),
+            ('tour', _("Sponsor tour")),
+        ]
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -197,13 +199,18 @@ class event_compassion(models.Model):
         if not self.env.context.get('no_sync'):
             for event in self:
                 if 'use_tasks' in vals and event.use_tasks:
+                    # Link event to a Project
                     project_id = self.env['project.project'].with_context(
                         from_event=True).create(event._get_project_vals()).id
                     event.write({'project_id': project_id})
                 elif event.project_id:
+                    # Update event
                     event.project_id.with_context(from_event=True).write(
                         event._get_project_vals())
+
+                # Update Analytic Account
                 event.analytic_id.write(event._get_analytic_vals())
+
                 if 'name' in vals:
                     # Only administrator has write access to origins.
                     self.env['recurring.contract.origin'].sudo().browse(
@@ -270,6 +277,13 @@ class event_compassion(models.Model):
             'search_view_id': self.env['ir.model.data'].get_object_reference(
                 'project', 'view_task_search_form')[1]
         }
+
+    @api.onchange('type')
+    def onchange_type(self):
+        """ Update parent analytic account """
+        for event in self:
+            if event.year:
+                event.parent_id = event._find_parent_analytic()
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
