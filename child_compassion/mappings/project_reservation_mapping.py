@@ -21,7 +21,7 @@ class ProjetReservationCreateMapping(OnrampMapping):
     MAPPING_NAME = "create_reservation"
 
     CONNECT_MAPPING = {
-        'Beneficiary_GlobalID': None,
+        'Beneficiary_GlobalID': 'global_id',
         'Channel_Name': 'channel_name',
         'ICP_ID': ('icp_id.icp_id', 'compassion.project'),
         'CampaignEventIdentifier': 'campaign_event_identifier',
@@ -68,6 +68,12 @@ class ProjetReservationCreateMapping(OnrampMapping):
                                                "%Y-%m-%d %H:%M:%S")
             connect_data['HoldExpirationDate'] = expirationDate.strftime(
                 "%Y-%m-%dT%H:%M:%SZ")
+
+        """ Don't send fields not set. """
+        temp_data = connect_data.copy()
+        for key, value in temp_data.iteritems():
+            if not value:
+                del connect_data[key]
 
 
 class ProjetReservationCancelMapping(ProjetReservationCreateMapping):
