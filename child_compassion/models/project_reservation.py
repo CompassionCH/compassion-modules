@@ -33,6 +33,11 @@ class ProjectReservation(models.Model):
     secondary_owner = fields.Char()
     active = fields.Boolean(default=True, readonly=True)
 
+    _sql_constraints = [
+        ('reservation_id', 'unique(reservation_id)',
+         'The Reservation already exists in database.'),
+    ]
+
     @api.model
     def check_reservation_validity(self):
         expired_reservations = self.env['icp.reservation'].search([

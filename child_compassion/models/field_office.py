@@ -53,6 +53,11 @@ class FieldOffice(models.Model):
         'fo.disaster.alert', string='Disaster alerts'
     )
 
+    _sql_constraints = [
+        ('field_office_id', 'unique(field_office_id)',
+         'The field already exists in database.'),
+    ]
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################

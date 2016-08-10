@@ -31,7 +31,7 @@ class Household(models.Model):
     )
 
     _sql_constraints = [('household_uniq', 'unique(household_id)',
-                        ('An Household with the same ID already exists.'))]
+                         'A Household with the same ID already exists.')]
 
     # Parents
     #########
