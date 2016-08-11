@@ -11,8 +11,11 @@
 
 import logging
 import csv
+import os
 
 logger = logging.getLogger()
+
+IMPORT_DIR = os.path.join(os.path.dirname(__file__)) + '/'
 
 
 def migrate(cr, version):
@@ -20,7 +23,7 @@ def migrate(cr, version):
         return
 
     logger.info("MIGRATION : LOADING CHILDREN GLOBAL IDS")
-    with open('child_global_ids.csv', 'rb') as csvfile:
+    with open(IMPORT_DIR + 'child_global_ids.csv', 'rb') as csvfile:
         csvreader = csv.reader(csvfile)
         # Skip header
         csvreader.next()
@@ -32,7 +35,7 @@ def migrate(cr, version):
             """.format(row[1], row[0]))
 
     logger.info("MIGRATION : LOADING SPONSOR GLOBAL IDS")
-    with open('sponsor_global_ids.csv', 'rb') as csvfile:
+    with open(IMPORT_DIR + 'sponsor_global_ids.csv', 'rb') as csvfile:
         csvreader = csv.reader(csvfile)
         # Skip header
         csvreader.next()
