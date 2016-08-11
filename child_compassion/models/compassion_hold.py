@@ -40,6 +40,11 @@ class CompassionHold(models.Model):
     reinstatement_reason = fields.Char(readonly=True)
     reservation_id = fields.Many2one('icp.reservation', 'Reservation')
 
+    _sql_constraints = [
+        ('hold_id', 'unique(hold_id)',
+         'The hold already exists in database.'),
+    ]
+
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################

@@ -1,0 +1,29 @@
+id,name,field_office_id,country_id:id
+field_office_bangladesh,Bangladesh,BD,base.bd
+field_office_bf,Burkina Faso,BF,base.bf
+field_office_bo,Bolivia,BO,base.bo
+field_office_br,Brazil,BR,base.br
+field_office_co,Colombia,CO,base.co
+field_office_dr,Dominican Republic,DR,base.do
+field_office_ec,Ecuador,EC,base.ec
+field_office_ei,India,EI,base.in
+field_office_es,El Salvador,ES,base.es
+field_office_et,Ethiopia,ET,base.et
+field_office_gh,Ghana,GH,base.gh
+field_office_gu,Guatemala,GU,base.gt
+field_office_ha,Haiti,HA,base.ht
+field_office_ho,Honduras,HO,base.hn
+field_office_id,Indonesia,ID,base.id
+field_office_in,India,IN,base.in
+field_office_io,Indonesia,IO,base.id
+field_office_ke,Kenya,KE,base.ke
+field_office_lk,Sri Lanka,LK,base.lk
+field_office_me,Mexico,ME,base.me
+field_office_ni,Nicaragua,NI,base.ni
+field_office_pe,Peru,PE,base.pe
+field_office_ph,Philippines,PH,base.ph
+field_office_rw,Rwanda,RW,base.rw
+field_office_tg,Togo,TG,base.tg
+field_office_th,Thailand,TH,base.th
+field_office_tz,Tanzania,TZ,base.tz
+field_office_ug,Uganda,UG,base.ug
