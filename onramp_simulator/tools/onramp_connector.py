@@ -9,13 +9,40 @@
 #
 ##############################################################################
 import simplejson
+import requests
 from openerp.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
+
+from openerp import _
+from openerp.exceptions import Warning
+from openerp.tools.config import config
 
 
 class TestOnrampConnector(OnrampConnector):
     """ Singleton class to connect to U.S. Onramp in order to send
     messages. """
+
+    # Private instance of the class
+    __instance = None
+
+    def __new__(cls):
+        """ Inherit method to ensure a single instance exists. """
+        if TestOnrampConnector.__instance is None:
+            TestOnrampConnector.__instance = object.__new__(cls)
+            connect_url = config.get('connect_url')
+            api_key = config.get('connect_api_key')
+            if connect_url and api_key:
+                TestOnrampConnector.__instance._connect_url = connect_url
+                TestOnrampConnector.__instance._api_key = api_key
+                session = requests.Session()
+                session.params.update({'api_key': api_key})
+                TestOnrampConnector.__instance._session = session
+            else:
+                raise Warning(
+                    _('Missing configuration'),
+                    _('Please give connect_url and connect_api_key values '
+                      'in your Odoo configuration file.'))
+        return TestOnrampConnector.__instance
 
     def test_message(self, test_message):
         """ Sends a message to any onramp.
