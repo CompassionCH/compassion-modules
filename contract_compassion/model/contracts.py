@@ -334,8 +334,7 @@ class recurring_contract(models.Model):
         if not self.is_active:
             vals.update({'activation_date': datetime.today().strftime(DF)})
         self.write(vals)
-        self.env['compassion.hold'].browse(self.child_id.hold_id.id).active\
-            = False
+        self.child_id.hold_id.active = False
         self.child_id.hold_id = None
         return True
 

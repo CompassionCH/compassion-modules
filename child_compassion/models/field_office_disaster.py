@@ -38,12 +38,17 @@ class FieldOfficeDisasterUpdate(models.Model):
         'fo.disaster.alert', 'Disaster Alert', ondelete='cascade'
     )
     fo_id = fields.Many2one(
-        'compassion.field.office', 'Field Office'
+        'compassion.field.office', 'Field Office', ondelete='cascade'
     )
 
     fodu_id = fields.Char()
     name = fields.Char()
     summary = fields.Char()
+
+    _sql_constraints = [
+        ('fodu_id', 'unique(fodu_id)',
+         'The disaster update already exists in database.'),
+    ]
 
 
 class ChildDisasterImpact(models.Model):
@@ -94,6 +99,9 @@ class FieldOfficeDisasterAlert(models.Model):
     _description = 'Field Office Disaster Alert'
     _rec_name = 'disaster_name'
 
+    ##########################################################################
+    #                                 FIELDS                                 #
+    ##########################################################################
     disaster_id = fields.Char()
     area_description = fields.Char()
     close_date = fields.Date()
@@ -173,6 +181,14 @@ class FieldOfficeDisasterAlert(models.Model):
         'child.disaster.impact', 'disaster_id', 'Child Disaster Impact'
     )
 
+    _sql_constraints = [
+        ('disaster_id', 'unique(disaster_id)',
+         'The disaster alert already exists in database.'),
+    ]
+
+    ##########################################################################
+    #                              ORM METHODS                               #
+    ##########################################################################
     @api.model
     def create(self, vals):
         """ Update if disaster already exists. """
@@ -184,6 +200,9 @@ class FieldOfficeDisasterAlert(models.Model):
             disaster = super(FieldOfficeDisasterAlert, self).create(vals)
         return disaster
 
+    ##########################################################################
+    #                             VIEW CALLBACKS                             #
+    ##########################################################################
     @api.multi
     def view_children(self):
         return {
@@ -210,6 +229,9 @@ class FieldOfficeDisasterAlert(models.Model):
             'target': 'current',
         }
 
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
     @api.model
     def process_commkit(self, commkit_data):
         mapping = FieldOfficeDisasterMapping(self.env)

@@ -1,0 +1,16 @@
+<openerp>
+    <data>
+        <!-- Weekly Planning CRON -->
+        <record id="create_demand_planning_cron" model="ir.cron">
+            <field name="name">Demand Planning CRON</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="function">process_weekly_demand</field>
+            <field name="model">demand.planning</field>
+            <!-- Invoke on Wednesday 8pm -->
+            <field name="nextcall" eval="(__import__('datetime').datetime.today().replace(hour=20, minute=00) + timedelta(days=(2-__import__('datetime').datetime.today().weekday())%7)).strftime('%Y-%m-%d %H:%M:%S')" />
+        </record>
+    </data>
+</openerp>

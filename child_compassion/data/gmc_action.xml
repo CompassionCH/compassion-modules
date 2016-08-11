@@ -52,6 +52,16 @@
             <field name="auto_process">1</field>
             <field name="success_method">details_answer</field>
         </record>
+        <record id="field_office_details" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">FieldOfficeDetails</field>
+            <field name="model">compassion.field.office</field>
+            <field name="connect_answer_wrapper">FieldOfficeResponseList</field>
+            <field name="description">This will update the Field Office</field>
+            <field name="connect_service">fieldoffices/{$object.field_office_id}/kits/fieldofficekit</field>
+            <field name="request_type">GET</field>
+            <field name="auto_process">1</field>
+        </record>
         <!-- Reservation Message Creation -->
         <record id="create_reservation" model="gmc.action">
             <field name="direction">out</field>
@@ -59,6 +69,19 @@
             <field name="mapping_name">create_reservation</field>
             <field name="model">icp.reservation</field>
             <field name="description">This will send a new Reservation to GMC.</field>
+            <field name="connect_service">churchpartners/reservations</field>
+            <field name="connect_outgoing_wrapper">GlobalPartnerReservationRequestList</field>
+            <field name="connect_answer_wrapper">GlobalPartnerReservationResponseList</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">1</field>
+        </record>
+        <!-- Reservation Message Creation for Beneficiary -->
+        <record id="beneficiary_reservation" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">CreateBeneficiaryReservation</field>
+            <field name="mapping_name">beneficiary_reservation</field>
+            <field name="model">icp.reservation</field>
+            <field name="description">This will send a new Beneficiary Reservation to GMC.</field>
             <field name="connect_service">churchpartners/reservations</field>
             <field name="connect_outgoing_wrapper">GlobalPartnerReservationRequestList</field>
             <field name="connect_answer_wrapper">GlobalPartnerReservationResponseList</field>
@@ -144,6 +167,7 @@
             <field name="mapping_name">new_reinstatement_notification</field>
             <field name="model">compassion.hold</field>
             <field name="description">This will create a new reinstatement notification.</field>
+            <field name="auto_process">1</field>
         </record>
         <!-- Field Office Disaster Message -->
         <record id="field_office_disaster" model="gmc.action">

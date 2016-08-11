@@ -107,11 +107,13 @@ class ProjectLifecycle(models.Model):
             self.env,
             'new_project_lifecyle')
 
-        project_ids = list()
+        lifecycle_ids = list()
         for single_data in commkit_data.get('ICPLifecycleEventList',
                                             [commkit_data]):
             vals = project_mapping.get_vals_from_connect(single_data)
-            project = self.create(vals)
-            project_ids.append(project.id)
+            lifecycle = self.create(vals)
+            lifecycle_ids.append(lifecycle.id)
 
-        return project_ids
+            lifecycle.project_id.status_date = fields.Date.today()
+
+        return lifecycle_ids

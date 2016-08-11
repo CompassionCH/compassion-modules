@@ -64,11 +64,26 @@ class EndContractWizard(models.TransientModel):
         self.ensure_one()
         contract = self.contract_id
         child = contract.child_id
+        has_hold = self.has_new_hold
 
-        if self.has_new_hold:
-            self.child_id.global_id    # TODO make reservation with global_id
-
-        child.write({'active': False, 'state': 'F'})
+        # When sponsorship activated
+        if child.hold_id.id is False:
+            if has_hold:
+                self.env['icp.reservation'].create({
+                    'name': 'single beneficiary reservation',
+                    'expiration_date': self.hold_expiration_date,
+                    'hold_expiration_date': self.hold_expiration_date,
+                    'number_of_beneficiaries': '1',
+                    'primary_owner': self.env.user.name,
+                    'icp_id': child.project_id.id,
+                    'child_id': child.id
+                })
+            child.write({'active': False, 'state': 'F'})
+        else:
+            if not has_hold:
+                child.write({'active': False, 'state': 'F'})
+                child.hold_id.active = False
+                child.hold_id = None
 
         # Terminate contract
         contract.write({

@@ -22,8 +22,8 @@ class ProjectReservation(models.Model):
     reservation_id = fields.Char()
     channel_name = fields.Char()
     icp_id = fields.Many2one(
-        'compassion.project', 'Project')
-    global_id = fields.Many2one('compassion.child', 'Beneficiary')
+        'compassion.project', 'Project', required=True)
+    child_id = fields.Many2one('compassion.child', 'Child')
     campaign_event_identifier = fields.Char()
     expiration_date = fields.Date(required=True)
     hold_expiration_date = fields.Datetime(required=True)
@@ -33,6 +33,11 @@ class ProjectReservation(models.Model):
     primary_owner = fields.Char(required=True)
     secondary_owner = fields.Char()
     active = fields.Boolean(default=True, readonly=True)
+
+    _sql_constraints = [
+        ('reservation_id', 'unique(reservation_id)',
+         'The Reservation already exists in database.'),
+    ]
 
     @api.model
     def check_reservation_validity(self):
@@ -50,7 +55,11 @@ class ProjectReservation(models.Model):
     @api.model
     def create(self, vals):
         res = super(ProjectReservation, self).create(vals)
-        self.handle_reservation('child_compassion.create_reservation', res)
+        if vals.get('child_id') is None:
+            action = 'child_compassion.create_reservation'
+        else:
+            action = 'child_compassion.beneficiary_reservation'
+        self.handle_reservation(action, res)
         return res
 
     @api.multi

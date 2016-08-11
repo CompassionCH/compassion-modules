@@ -31,7 +31,7 @@ class Household(models.Model):
     )
 
     _sql_constraints = [('household_uniq', 'unique(household_id)',
-                        ('An Household with the same ID already exists.'))]
+                         'A Household with the same ID already exists.')]
 
     # Parents
     #########
@@ -160,6 +160,7 @@ class Household(models.Model):
             ('Merchant / Seller', _('is merchant')),
             ('Security / Guard', _('is a security guard')),
             ('Transportation/ Driver', _('is a driver')),
+            ('Laborer', _('is a laborer')),
         ]
 
     def process_commkit(self, commkit_data):

@@ -24,7 +24,7 @@ class ChildLifecycleEvent(models.Model):
     child_id = fields.Many2one(
         'compassion.child', 'Child', required=True, ondelete='cascade',
         readonly=True)
-    global_id = fields.Char(readonly=True)
+    global_id = fields.Char(readonly=True, required=True)
     date = fields.Datetime(readonly=True)
     type = fields.Selection([
         ('Planned Exit', 'Planned Exit'),
@@ -210,6 +210,22 @@ class ChildLifecycleEvent(models.Model):
         ('West Nile Virus', 'West Nile Virus'),
         ('Yellow Fever', 'Yellow Fever'),
     ], readonly=True)
+
+    _sql_constraints = [
+        ('global_id', 'unique(global_id)',
+         'The lifecycle already exists in database.')
+    ]
+
+    @api.model
+    def create(self, vals):
+        lifecycle = self.search([
+            ('global_id', '=', vals['global_id'])
+        ])
+        if lifecycle:
+            lifecycle.write(vals)
+        else:
+            lifecycle = super(ChildLifecycleEvent, self).create(vals)
+        return lifecycle
 
     @api.model
     def process_commkit(self, commkit_data):

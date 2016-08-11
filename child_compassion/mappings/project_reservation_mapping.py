@@ -21,7 +21,7 @@ class ProjetReservationCreateMapping(OnrampMapping):
     MAPPING_NAME = "create_reservation"
 
     CONNECT_MAPPING = {
-        'Beneficiary_GlobalID': 'global_id',
+        'Beneficiary_GlobalID': 'child_id.global_id',
         'Channel_Name': 'channel_name',
         'ICP_ID': ('icp_id.icp_id', 'compassion.project'),
         'CampaignEventIdentifier': 'campaign_event_identifier',
@@ -37,7 +37,6 @@ class ProjetReservationCreateMapping(OnrampMapping):
     }
 
     FIELDS_TO_SUBMIT = {
-        'Beneficiary_GlobalID': None,
         'Channel_Name': None,
         'GlobalPartner_ID': None,
         'ICP_ID': None,
@@ -85,4 +84,35 @@ class ProjetReservationCancelMapping(ProjetReservationCreateMapping):
     FIELDS_TO_SUBMIT = {
         'GlobalPartner_ID': 'CH',
         'Reservation_ID': None,
+    }
+
+
+class BeneficiaryReservationMapping(ProjetReservationCreateMapping):
+    """
+        Project reservation mapping for the beneficiary reservation operation
+    """
+    MAPPING_NAME = "beneficiary_reservation"
+
+    FIELDS_TO_SUBMIT = {
+        'Beneficiary_GlobalID': None,
+        'Channel_Name': None,
+        'GlobalPartner_ID': None,
+        'ICP_ID': None,
+        'CampaignEventIdentifier': None,
+        'ExpirationDate': None,
+        'HoldExpirationDate': None,
+        'HoldYieldRate': None,
+        'ID': None,
+        'IsReservationAutoApproved': None,
+        'NumberOfBeneficiaries': None,
+        'PrimaryOwner': None,
+        'ReservationType': None,
+        'SecondaryOwner': None,
+        'SourceCode': None,
+    }
+
+    CONSTANTS = {
+        'GlobalPartner_ID': 'CH',
+        'ReservationType': 'Sponsorship Beneficiary',
+        'SourceCode': '',
     }
