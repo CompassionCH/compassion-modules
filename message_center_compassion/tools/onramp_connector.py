@@ -105,6 +105,8 @@ class OnrampConnector(object):
         try:
             result['content'] = r.json()
         except ValueError:
+            # No valid content returned
+            result['code'] = 204
             result['Error'] = r.text
         return result
 
@@ -148,6 +150,7 @@ class OnrampConnector(object):
         response = conn.getresponse()
         try:
             self._token = simplejson.loads(response.read())
+            self._token_time = datetime.now()
             self._session.headers.update({
                 'Authorization': '{token_type} {access_token}'.format(
                     **self._token)})
