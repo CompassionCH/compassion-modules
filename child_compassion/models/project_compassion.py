@@ -110,8 +110,8 @@ class CompassionProject(models.Model):
     nb_latrines = fields.Char(size=2, readonly=True)
     church_internet_access = fields.Selection([
         ('No', 'No'),
-        ('Yes, onsite through one or more computers ', 'Onsite'),
-        ('Yes, but offsite', 'Offsite'),
+        ('Yes,Onsite Through One Or More Computers', 'Onsite'),
+        ('Yes, But Offsite', 'Offsite'),
 
     ], readonly=True)
     mobile_device_ids = fields.Many2many(
@@ -123,7 +123,7 @@ class CompassionProject(models.Model):
     electrical_power = fields.Selection([
         ('Not Available', 'Not Available'),
         ('Available Sometimes', 'Available Sometimes'),
-        ('Available Most of the Time', 'Available Most of the Time'),
+        ('Available Most Of The Time', 'Available Most of the Time'),
     ], readonly=True)
 
     # ICP Activities
@@ -236,9 +236,9 @@ class CompassionProject(models.Model):
     typical_roof_material = fields.Selection('_get_materials', readonly=True)
     typical_floor_material = fields.Selection('_get_materials', readonly=True)
     typical_wall_material = fields.Selection('_get_materials', readonly=True)
-    average_coolest_temperature = fields.Float(readonly=True)
+    average_coolest_temperature = fields.Char(readonly=True)
     coolest_month = fields.Selection('_get_months', readonly=True)
-    average_warmest_temperature = fields.Float(readonly=True)
+    average_warmest_temperature = fields.Char(readonly=True)
     warmest_month = fields.Selection('_get_months', readonly=True)
     rainy_month_ids = fields.Many2many(
         'connect.month', string='Rainy months', readonly=True
@@ -314,7 +314,6 @@ class CompassionProject(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-
     @api.multi
     @api.depends('icp_id')
     def _compute_field_office(self):

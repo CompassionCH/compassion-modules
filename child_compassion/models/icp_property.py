@@ -116,6 +116,18 @@ class ConnectMonth(models.Model):
     @api.model
     def get_months_selection(self):
         return [
+            ('Jan', _('January')),
+            ('Feb', _('February')),
+            ('Mar', _('March')),
+            ('Apr', _('April')),
+            ('May', _('May')),
+            ('Jun', _('June')),
+            ('Jul', _('July')),
+            ('Aug', _('August')),
+            ('Sep', _('September')),
+            ('Oct', _('October')),
+            ('Nov', _('November')),
+            ('Dec', _('December')),
             ('January', _('January')),
             ('February', _('February')),
             ('March', _('March')),

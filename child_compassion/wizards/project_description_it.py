@@ -149,7 +149,7 @@ class ProjectDescriptionIt:
             project.school_cost_paid_ids.mapped('value'))
         school_paid = \
             u"Grazie al suo sostegno il personale del Project " \
-            u"potrá {school_paid}. ".format(school_costs) if school_costs \
+            u"potrá {}. ".format(school_costs) if school_costs \
             else u""
         need_desc = \
             u"{school_paid}Activities: "\
