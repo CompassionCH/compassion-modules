@@ -75,6 +75,19 @@
             <field name="request_type">POST</field>
             <field name="auto_process">1</field>
         </record>
+        <!-- Reservation Message Creation for Beneficiary -->
+        <record id="beneficiary_reservation" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">CreateBeneficiaryReservation</field>
+            <field name="mapping_name">beneficiary_reservation</field>
+            <field name="model">icp.reservation</field>
+            <field name="description">This will send a new Beneficiary Reservation to GMC.</field>
+            <field name="connect_service">churchpartners/reservations</field>
+            <field name="connect_outgoing_wrapper">GlobalPartnerReservationRequestList</field>
+            <field name="connect_answer_wrapper">GlobalPartnerReservationResponseList</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">1</field>
+        </record>
         <!-- Reservation Message Release -->
         <record id="cancel_reservation" model="gmc.action">
             <field name="direction">out</field>

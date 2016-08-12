@@ -334,6 +334,8 @@ class recurring_contract(models.Model):
         if not self.is_active:
             vals.update({'activation_date': datetime.today().strftime(DF)})
         self.write(vals)
+        self.child_id.hold_id.active = False
+        self.child_id.hold_id = None
         return True
 
     @api.multi
