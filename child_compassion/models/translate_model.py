@@ -20,7 +20,7 @@ class TranslateModel(models.AbstractModel):
     _description = 'Translatable Model'
 
     @api.multi
-    def translate(self, field):
+    def translate(self, field, substitutions=None):
         res = list()
         definition = self.fields_get([field]).get(field)
         if definition:
@@ -32,6 +32,8 @@ class TranslateModel(models.AbstractModel):
                     elif definition['type'] == 'selection':
                         val = _(dict(definition['selection'])[raw_value])
                     if val:
+                        if substitutions is not None:
+                            val = val.format(**substitutions)
                         res.append(val)
         if len(res) == 1:
             res = res[0]
