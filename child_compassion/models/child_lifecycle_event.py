@@ -10,7 +10,7 @@
 ##############################################################################
 
 
-from openerp import models, fields, api
+from openerp import models, fields, api, _
 from openerp.addons.message_center_compassion.mappings \
     import base_mapping as mapping
 
@@ -19,6 +19,7 @@ class ChildLifecycleEvent(models.Model):
     """ A child lifecycle event (BLE) """
     _name = 'compassion.child.ble'
     _description = 'Child Lifecycle Event'
+    _inherit = 'translatable.model'
     _order = 'date desc'
 
     child_id = fields.Many2one(
@@ -38,9 +39,10 @@ class ChildLifecycleEvent(models.Model):
     # All reasons for all request types
     request_reason = fields.Selection([
         # Planned Exit
-        ('Reached Maximum Age', 'Reached Maximum Age'),
+        ('Reached Maximum Age', _('{he} reached maximum age')),
         ('Reached the end of the relevant programs available at the church '
-         'partner', 'Reached the end of the relevant programs available'),
+         'partner', _('{he} reached the end of the relevant programs '
+                      'available')),
         # Reinstatement
         ('Beneficiary Exit was mistake', 'Exit was mistake'),
         ('Beneficiary Moved Back', 'Beneficiary Moved Back'),
@@ -61,26 +63,26 @@ class ChildLifecycleEvent(models.Model):
         ('Special Needs', 'Special Needs'),
         # Unplanned Exit
         ('Child / Caregiver does not comply with policies',
-         'Child / Caregiver does not comply with policies'),
+         _('{he} does not comply with policies')),
         ('Child in system under two numbers (enter other number in the '
-         'Comments box below)', 'Child in system under two numbers'),
-        ('Child places others at risk', 'Child places others at risk'),
+         'Comments box below)', _('{he} is in system under two numbers')),
+        ('Child places others at risk', _('{he} places others at risk')),
         ('Child sponsored by another organization',
-         'Child sponsored by another organization'),
+         _('{he} is sponsored by another organization')),
         ('Death of caregiver creates situation where child cannot continue',
-         'Death of caregiver'),
-        ('Death of child', 'Death of child'),
+         _('{his} caregiver died')),
+        ('Death of child', '{he} passed away'),
         ('Family Circumstances Have Changed Positively So That Child No '
          'Longer Needs Compassion\'s Assistance',
-         'Family Circumstances Have Changed Positively'),
+         _('family circumstances have changed positively')),
         ('Family moved where a Compassion project with relevant programs is '
-         'not available', 'Family moved where a Compassion project with \
-            relevant programs is not available'),
-        ('Project or program closure', 'Project or program closure'),
+         'not available', _('{his} family moved where a Compassion project '
+                            'with relevant programs is not available')),
+        ('Project or program closure', _('of the project closure')),
         ('Taken out of project by parents, or family no longer interested '
-         'in program', 'Taken out of project by parents'),
+         'in program', _('{he} was taken out of project by parents')),
         ('Unjustified absence from program activities for Greater Than 2 '
-         'months', 'Unjustified absence for greater than 2 months'),
+         'months', _('of an unjustified absence for greater than 2 months')),
     ], readonly=True)
 
     # Common fields
@@ -233,8 +235,17 @@ class ChildLifecycleEvent(models.Model):
             self._name,
             self.env,
             'new_child_lifecyle')
+        lifecycle_ids = list()
 
-        vals = lifecycle_mapping.get_vals_from_connect(commkit_data)
-        lifecycle = self.with_context().create(vals)
+        for single_data in commkit_data.get('BeneficiaryLifecycleEventList',
+                                            [commkit_data]):
+            vals = lifecycle_mapping.get_vals_from_connect(single_data)
+            lifecycle = self.search([(
+                'global_id', '=', vals['global_id'])])
+            if lifecycle:
+                lifecycle.write(vals)
+            else:
+                lifecycle = self.create(vals)
+            lifecycle_ids.append(lifecycle.id)
 
-        return [lifecycle.id]
+        return lifecycle_ids

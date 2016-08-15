@@ -78,7 +78,7 @@ class CommunicationJob(models.Model):
                 job.send_mode = job.config_id.get_inform_mode(
                     job.partner_id)[0]
 
-    @api.depends('object_id', 'email_template_id')
+    @api.depends('object_id', 'config_id')
     @api.multi
     def _compute_html(self):
         for job in self:
@@ -162,7 +162,7 @@ class CommunicationJob(models.Model):
 
                 email = self.env['mail.compose.message'].with_context(
                     lang=partner.lang).create_emails(
-                    self.email_template_id, self.object_id, email_vals)
+                    self.email_template_id, [self.object_id], email_vals)
                 email.send_sendgrid()
                 message = email.mail_message_id
                 partner.message_post(message.body, message.subject)
