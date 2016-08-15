@@ -309,6 +309,8 @@ class GmcMessagePool(models.Model):
         else:
             onramp_answer = onramp.send_message(
                 url_endpoint, action.request_type, body=message_data)
+
+        results = False
         if 200 <= onramp_answer['code'] < 300:
             # Success, loop through answer to get individual results
             data_objects = self.env[action.model].with_context(
@@ -340,7 +342,8 @@ class GmcMessagePool(models.Model):
                         'failure_reason': result['Message'],
                     })
                 self[i].write(mess_vals)
-        else:
+
+        if not results:
             # Complete failure (messages were not processed)
             fail = onramp_answer.get('content', {
                 'Error': onramp_answer.get('Error', 'None')})

@@ -21,7 +21,7 @@
                         <group>
                             <group>
                                 <field name="channel_name" />
-                                <field name="icp_id" />
+                                <field name="icp_id"/>
                                 <field name="campaign_event_identifier" />
                                 <field name="expiration_date" />
                                 <field name="hold_expiration_date" />

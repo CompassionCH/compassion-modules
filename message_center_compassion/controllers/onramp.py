@@ -18,7 +18,7 @@ _logger = logging.getLogger(__name__)
 
 # Put any authorized sender here. Its address must be part of the headers
 # in order to handle a request.
-AUTHORIZED_SENDERS = ['CHTest', 'CISalesforce', 'CISFDC']
+AUTHORIZED_SENDERS = ['CHTest', 'CISalesforce', 'CISFDC', 'CINetsuite']
 
 
 class RestController(http.Controller):
@@ -50,16 +50,20 @@ class RestController(http.Controller):
             })
         else:
             result.update({
-                "code": 501,
-                "Message": "Unknown message type"
+                "code": 200,
+                "Message": "Unknown message type - not processed."
             })
         return result
 
     def _validate_headers(self, headers):
-        if headers.get('x-cim-FromAddress') not in AUTHORIZED_SENDERS:
+        from_address = headers.get('x-cim-FromAddress') or headers.get(
+            'X-Cim-Fromaddress')
+        if from_address not in AUTHORIZED_SENDERS:
             raise exceptions.AccessDenied()
         company_obj = request.env['res.company'].sudo(request.uid)
         companies = company_obj.search([])
         country_codes = companies.mapped('partner_id.country_id.code')
-        if headers.get('x-cim-ToAddress') not in country_codes:
+        to_address = headers.get('x-cim-ToAddress') or headers.get(
+            'X-Cim-ToAddress')
+        if to_address not in country_codes:
             raise AttributeError("This message is not for me.")

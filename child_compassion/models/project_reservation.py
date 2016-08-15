@@ -23,6 +23,7 @@ class ProjectReservation(models.Model):
     channel_name = fields.Char()
     icp_id = fields.Many2one(
         'compassion.project', 'Project', required=True)
+    child_id = fields.Many2one('compassion.child', 'Child')
     campaign_event_identifier = fields.Char()
     expiration_date = fields.Date(required=True)
     hold_expiration_date = fields.Datetime(required=True)
@@ -54,7 +55,11 @@ class ProjectReservation(models.Model):
     @api.model
     def create(self, vals):
         res = super(ProjectReservation, self).create(vals)
-        self.handle_reservation('child_compassion.create_reservation', res)
+        if vals.get('child_id') is None:
+            action = 'child_compassion.create_reservation'
+        else:
+            action = 'child_compassion.beneficiary_reservation'
+        self.handle_reservation(action, res)
         return res
 
     @api.multi
