@@ -57,6 +57,31 @@ class Email(models.Model):
     _inherit = 'mail.mail'
 
     ##########################################################################
+    #                                 FIELDS                                 #
+    ##########################################################################
+    sendgrid_id = fields.Char(readonly=True)
+    sendgrid_failure = fields.Char(readonly=True)
+    sendgrid_open = fields.Datetime(
+        string='Last opened',
+        help='Indicates the last time the recipient opened the e-mail',
+        readonly=True)
+    sendgrid_clicks = fields.Integer(compute='_compute_clicks', store=True)
+    sendgrid_click_ids = fields.One2many(
+        'sendgrid.mail.click', 'email_id', string='Registered clicks',
+        readonly=True)
+
+    _sql_constraints = [
+        ('unique_sendgrid_id', 'unique(sendgrid_id)',
+         'This e-mail already exists in sendgrid')
+    ]
+
+    @api.depends('sendgrid_click_ids', 'sendgrid_click_ids.click_count')
+    def _compute_clicks(self):
+        for mail in self:
+            mail.sendgrid_clicks = sum(mail.sendgrid_click_ids.mapped(
+                'click_count'))
+
+    ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
     @api.multi
@@ -89,6 +114,7 @@ class Email(models.Model):
         message = sendgrid.Mail()
         message.set_from(self.email_from)
         message.set_subject(self.subject or ' ')
+        message.set_replyto(self.reply_to)
         html = self.body_html or ' '
         message.set_html(html)
 
@@ -112,6 +138,7 @@ class Email(models.Model):
             _logger.info('Sending email to test address {}'.format(
                          test_address))
             message.add_to(test_address)
+            self.email_to = test_address
 
         if self.sendgrid_template_id:
             message.add_filter('templates', 'enable', '1')
@@ -136,3 +163,37 @@ class Email(models.Model):
             })
         else:
             _logger.error("Failed to send email: {}".format(message))
+
+
+class SengridEmailClicks(models.Model):
+    """
+    Tracks the user clicks on links inside e-mails sent.
+    """
+    _name = 'sendgrid.mail.click'
+    _rec_name = 'url'
+
+    email_id = fields.Many2one('mail.mail', required=True)
+    url = fields.Char(required=True)
+    click_count = fields.Integer(default=1)
+    last_click = fields.Datetime(default=fields.Datetime.now)
+
+    _sql_constraints = [
+        ('unique_clicks', 'unique(email_id, url)',
+         'This click is already registered')
+    ]
+
+    def create(self, vals):
+        """ Update count if click is already registered. """
+        click = self.search([
+            ('email_id', '=', vals['email_id']),
+            ('url', '=', vals['url'])
+        ])
+        if click:
+            click.write({
+                'click_count': click.click_count + 1,
+                'last_click': fields.Datetime.now()
+            })
+        else:
+            click = super(SengridEmailClicks, self).create(vals)
+
+        return click

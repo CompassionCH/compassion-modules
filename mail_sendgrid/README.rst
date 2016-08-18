@@ -47,7 +47,6 @@ Optionally, the following configuration variables can be set as well:
 Known issues / Roadmap
 ======================
 
-* Handle attachments
 * Use SendGrid with massmailing
 * Extends the features from SendGrid
 
