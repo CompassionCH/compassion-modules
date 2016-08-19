@@ -12,6 +12,10 @@ through SendGrid, using templates defined on the
 substitution of placeholder variables in these templates. The list of available
 templates can be fetched automatically.
 
+Installation
+============
+You need to install python-sendgrid v3 in order to use the module.
+
 Configuration
 =============
 

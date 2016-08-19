@@ -18,7 +18,6 @@
                             <field name="sendgrid_template_id"/>
                             <field name="sent_date" readonly="1"/>
                             <field name="body_text"/>
-                            <field name="sendgrid_id"/>
                             <field name="sendgrid_open"/>
                             <field name="sendgrid_failure"/>
                         </group>

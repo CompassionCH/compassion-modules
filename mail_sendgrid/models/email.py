@@ -10,14 +10,16 @@
 ##############################################################################
 import base64
 import logging
-import sendgrid
 import re
 
 from openerp import models, fields, api, exceptions, _
 from openerp.tools.config import config
 
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import *
 
-STATUS_OK = 200
+
+STATUS_OK = 202
 
 _logger = logging.getLogger(__name__)
 
@@ -52,14 +54,13 @@ class MailMessage(models.Model):
             email.send_method = send_method
 
 
-class Email(models.Model):
+class OdooMail(models.Model):
     """ Email message sent through SendGrid """
     _inherit = 'mail.mail'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    sendgrid_id = fields.Char(readonly=True)
     sendgrid_failure = fields.Char(readonly=True)
     sendgrid_open = fields.Datetime(
         string='Last opened',
@@ -69,11 +70,6 @@ class Email(models.Model):
     sendgrid_click_ids = fields.One2many(
         'sendgrid.mail.click', 'email_id', string='Registered clicks',
         readonly=True)
-
-    _sql_constraints = [
-        ('unique_sendgrid_id', 'unique(sendgrid_id)',
-         'This e-mail already exists in sendgrid')
-    ]
 
     @api.depends('sendgrid_click_ids', 'sendgrid_click_ids.click_count')
     def _compute_clicks(self):
@@ -90,7 +86,8 @@ class Email(models.Model):
         for email in self:
             send_method = email.send_method
             if send_method == 'traditional':
-                return super(Email, email).send(auto_commit, raise_exception)
+                return super(OdooMail, email).send(
+                    auto_commit, raise_exception)
             elif send_method == 'sendgrid':
                 return email.send_sendgrid()
             else:
@@ -111,12 +108,11 @@ class Email(models.Model):
                 'ConfigError',
                 _('Missing sendgrid_api_key in conf file'))
 
-        message = sendgrid.Mail()
-        message.set_from(self.email_from)
-        message.set_subject(self.subject or ' ')
-        message.set_replyto(self.reply_to)
+        message = Mail()
+        message.set_from(Email(self.email_from))
+        message.set_reply_to(Email(self.reply_to))
+        message.add_custom_arg(CustomArg('odoo_id', self.message_id))
         html = self.body_html or ' '
-        message.set_html(html)
 
         # Update message body in associated message, which will be shown in
         # message history view for linked odoo object defined through fields
@@ -125,44 +121,61 @@ class Email(models.Model):
 
         p = re.compile(r'<.*?>')  # Remove HTML markers
         text_only = self.body_text or p.sub('', html.replace('<br/>', '\n'))
-        message.set_text(text_only)
+
+        message.add_content(Content("text/plain", text_only))
+        message.add_content(Content("text/html", html))
 
         test_address = config.get('sendgrid_test_address')
+
+        # TODO For now only one personalization (transactional e-mail)
+        personalization = Personalization()
+        personalization.set_subject(self.subject or ' ')
         if not test_address:
-            message.add_to(self.email_to)
+            if self.email_to:
+                personalization.add_to(Email(self.email_to))
             for recipient in self.recipient_ids:
-                message.add_to(recipient.email)
+                personalization.add_to(Email(recipient.email))
             if self.email_cc:
-                message.add_cc(self.email_cc)
+                personalization.add_cc(Email(self.email_cc))
         else:
             _logger.info('Sending email to test address {}'.format(
                          test_address))
-            message.add_to(test_address)
+            personalization.add_to(Email(test_address))
             self.email_to = test_address
 
         if self.sendgrid_template_id:
-            message.add_filter('templates', 'enable', '1')
-            message.add_filter('templates', 'template_id',
-                               self.sendgrid_template_id.remote_id)
+            message.set_template_id(self.sendgrid_template_id.remote_id)
 
         for substitution in self.substitution_ids:
-            message.add_substitution(substitution.key, substitution.value)
+            personalization.add_substitution(Substitution(
+                substitution.key, substitution.value))
+
+        message.add_personalization(personalization)
 
         for attachment in self.attachment_ids:
-            message.add_attachment_stream(attachment.name,
-                                          base64.b64decode(attachment.datas))
+            s_attachment = Attachment()
+            # Datas are not encoded properly for sendgrid
+            s_attachment.set_content(base64.b64encode(base64.b64decode(
+                attachment.datas)))
+            s_attachment.set_filename(attachment.name)
+            message.add_attachment(s_attachment)
 
-        sg = sendgrid.SendGridClient(api_key)
-        status, msg = sg.send(message)
+        sg = SendGridAPIClient(apikey=api_key)
+        try:
+            response = sg.client.mail.send.post(request_body=message.get())
+        except Exception as e:
+            raise exceptions.Warning(e.read())
+        status = response.status_code
+        msg = response.body
 
         if status == STATUS_OK:
-            _logger.info("Email sent!")
+            _logger.info(str(msg))
             self.write({
                 'sent_date': fields.Datetime.now(),
                 'state': 'sent'
             })
         else:
-            _logger.error("Failed to send email: {}".format(message))
+            _logger.error("Failed to send email: {}".format(str(msg)))
 
 
 class SengridEmailClicks(models.Model):
