@@ -9,8 +9,9 @@
 #
 ##############################################################################
 
-from . import email
+from . import mail_mail
 from . import substitution
 from . import sendgrid_template
 from . import email_template
 from . import email_lang_template
+from . import email_tracking

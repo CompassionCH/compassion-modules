@@ -11,12 +11,14 @@
 import base64
 import logging
 import re
-
-from openerp import models, fields, api, exceptions, _
-from openerp.tools.config import config
+import time
 
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import *
+from sendgrid.helpers.mail import Email, Attachment, CustomArg, Content, \
+    Personalization, Substitution, Mail
+
+from openerp import models, fields, api, exceptions, tools, _
+from openerp.tools.config import config
 
 
 STATUS_OK = 202
@@ -61,21 +63,30 @@ class OdooMail(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    sendgrid_failure = fields.Char(readonly=True)
-    sendgrid_open = fields.Datetime(
-        string='Last opened',
-        help='Indicates the last time the recipient opened the e-mail',
+    tracking_email_ids = fields.One2many(
+        'mail.tracking.email', 'mail_id', string='Registered events',
         readonly=True)
-    sendgrid_clicks = fields.Integer(compute='_compute_clicks', store=True)
-    sendgrid_click_ids = fields.One2many(
-        'sendgrid.mail.click', 'email_id', string='Registered clicks',
-        readonly=True)
+    click_count = fields.Integer(
+        compute='_compute_tracking', store=True, readonly=True)
+    opened = fields.Boolean(
+        compute='_compute_tracking', store=True, readonly=True)
+    tracking_event_ids = fields.One2many(
+        'mail.tracking.event', compute='_compute_events')
 
-    @api.depends('sendgrid_click_ids', 'sendgrid_click_ids.click_count')
-    def _compute_clicks(self):
-        for mail in self:
-            mail.sendgrid_clicks = sum(mail.sendgrid_click_ids.mapped(
+    @api.depends('tracking_email_ids', 'tracking_email_ids.click_count',
+                 'tracking_email_ids.state')
+    def _compute_tracking(self):
+        for email in self:
+            email.click_count = sum(email.tracking_email_ids.mapped(
                 'click_count'))
+            opened = len(email.tracking_email_ids.filtered(
+                lambda t: t.state == 'opened'))
+            email.opened = opened > 0
+
+    def _compute_events(self):
+        for email in self:
+            email.tracking_event_ids = email.tracking_email_ids.mapped(
+                'tracking_event_ids')
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -108,22 +119,56 @@ class OdooMail(models.Model):
                 'ConfigError',
                 _('Missing sendgrid_api_key in conf file'))
 
-        message = Mail()
-        message.set_from(Email(self.email_from))
-        message.set_reply_to(Email(self.reply_to))
-        message.add_custom_arg(CustomArg('odoo_id', self.message_id))
-        html = self.body_html or ' '
+        sg = SendGridAPIClient(apikey=api_key)
+        try:
+            response = sg.client.mail.send.post(
+                request_body=self._prepare_sendgrid_data())
+        except Exception as e:
+            raise exceptions.Warning(e.read())
 
-        # Update message body in associated message, which will be shown in
-        # message history view for linked odoo object defined through fields
-        # model and res_id
-        self.mail_message_id.body = html
+        status = response.status_code
+        msg = response.body
+
+        if status == STATUS_OK:
+            _logger.info(str(msg))
+            self._track_sendgrid_emails()
+            self.write({
+                'sent_date': fields.Datetime.now(),
+                'state': 'sent'
+            })
+            # Update message body in associated message, which will be shown in
+            # message history view for linked odoo object defined through
+            # fields model and res_id. This will allow tracking from the
+            # thread.
+            message = self.mail_message_id
+            message_vals = {
+                'body': self.body_html
+            }
+            if not message.subtype_id:
+                message_vals['subtype_id'] = self.env.ref('mail.mt_comment').id
+            if not message.notified_partner_ids:
+                message_vals['notified_partner_ids'] = [
+                    (6, 0, self.recipient_ids.ids)]
+            message.write(message_vals)
+        else:
+            _logger.error("Failed to send email: {}".format(str(msg)))
+
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
+    def _prepare_sendgrid_data(self):
+        self.ensure_one()
+        s_mail = Mail()
+        s_mail.set_from(Email(self.email_from))
+        s_mail.set_reply_to(Email(self.reply_to))
+        s_mail.add_custom_arg(CustomArg('odoo_id', self.message_id))
+        html = self.body_html or ' '
 
         p = re.compile(r'<.*?>')  # Remove HTML markers
         text_only = self.body_text or p.sub('', html.replace('<br/>', '\n'))
 
-        message.add_content(Content("text/plain", text_only))
-        message.add_content(Content("text/html", html))
+        s_mail.add_content(Content("text/plain", text_only))
+        s_mail.add_content(Content("text/html", html))
 
         test_address = config.get('sendgrid_test_address')
 
@@ -139,18 +184,18 @@ class OdooMail(models.Model):
                 personalization.add_cc(Email(self.email_cc))
         else:
             _logger.info('Sending email to test address {}'.format(
-                         test_address))
+                test_address))
             personalization.add_to(Email(test_address))
             self.email_to = test_address
 
         if self.sendgrid_template_id:
-            message.set_template_id(self.sendgrid_template_id.remote_id)
+            s_mail.set_template_id(self.sendgrid_template_id.remote_id)
 
         for substitution in self.substitution_ids:
             personalization.add_substitution(Substitution(
                 substitution.key, substitution.value))
 
-        message.add_personalization(personalization)
+        s_mail.add_personalization(personalization)
 
         for attachment in self.attachment_ids:
             s_attachment = Attachment()
@@ -158,55 +203,29 @@ class OdooMail(models.Model):
             s_attachment.set_content(base64.b64encode(base64.b64decode(
                 attachment.datas)))
             s_attachment.set_filename(attachment.name)
-            message.add_attachment(s_attachment)
+            s_mail.add_attachment(s_attachment)
 
-        sg = SendGridAPIClient(apikey=api_key)
-        try:
-            response = sg.client.mail.send.post(request_body=message.get())
-        except Exception as e:
-            raise exceptions.Warning(e.read())
-        status = response.status_code
-        msg = response.body
+        return s_mail.get()
 
-        if status == STATUS_OK:
-            _logger.info(str(msg))
-            self.write({
-                'sent_date': fields.Datetime.now(),
-                'state': 'sent'
+    def _track_sendgrid_emails(self):
+        """ Create tracking e-mails after successfully sent with Sendgrid. """
+        self.ensure_one()
+        m_tracking = self.env['mail.tracking.email']
+        ts = time.time()
+        track_vals = {
+            'name': self.subject,
+            'timestamp': '%.6f' % ts,
+            'time': fields.Datetime.now(),
+            'mail_id': self.id,
+            'mail_message_id': self.mail_message_id.id,
+            'sender': self.email_from,
+        }
+        for recipient in tools.email_split_and_format(self.email_to):
+            track_vals['recipient'] = recipient
+            m_tracking.create(track_vals)
+        for partner in self.recipient_ids:
+            track_vals.update({
+                'partner_id': partner.id,
+                'recipient': partner.email,
             })
-        else:
-            _logger.error("Failed to send email: {}".format(str(msg)))
-
-
-class SengridEmailClicks(models.Model):
-    """
-    Tracks the user clicks on links inside e-mails sent.
-    """
-    _name = 'sendgrid.mail.click'
-    _rec_name = 'url'
-
-    email_id = fields.Many2one('mail.mail', required=True)
-    url = fields.Char(required=True)
-    click_count = fields.Integer(default=1)
-    last_click = fields.Datetime(default=fields.Datetime.now)
-
-    _sql_constraints = [
-        ('unique_clicks', 'unique(email_id, url)',
-         'This click is already registered')
-    ]
-
-    def create(self, vals):
-        """ Update count if click is already registered. """
-        click = self.search([
-            ('email_id', '=', vals['email_id']),
-            ('url', '=', vals['url'])
-        ])
-        if click:
-            click.write({
-                'click_count': click.click_count + 1,
-                'last_click': fields.Datetime.now()
-            })
-        else:
-            click = super(SengridEmailClicks, self).create(vals)
-
-        return click
+            m_tracking.create(track_vals)

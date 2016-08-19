@@ -23,7 +23,7 @@ class EmailComposeMessage(models.TransientModel):
         for wizard in self:
             template = wizard.template_id
             sendgrid_template = template.sendgrid_localized_template
-            res_id = self.env.context['active_id']
+            res_id = self.env.context.get('active_id')
             render_body = self.render_template_batch(
                 wizard.body, wizard.model, [res_id], post_process=True)[res_id]
             if sendgrid_template and wizard.body:
