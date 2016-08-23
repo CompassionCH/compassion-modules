@@ -30,17 +30,17 @@
 
 {
     'name': 'SendGrid',
-    'version': '8.0.2',
+    'version': '8.0.3',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['base', 'email_template'],
+    'depends': ['base', 'email_template', 'mail_tracking'],
     'data': [
         'security/ir.model.access.csv',
-        'view/sendgrid_email_view.xml',
-        'view/sendgrid_template_view.xml',
-        'view/mail_compose_message_view.xml',
-        'view/email_template_view.xml',
+        'views/sendgrid_email_view.xml',
+        'views/sendgrid_template_view.xml',
+        'views/mail_compose_message_view.xml',
+        'views/email_template_view.xml',
     ],
     'demo': [],
     'installable': True,

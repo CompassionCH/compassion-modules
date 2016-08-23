@@ -105,8 +105,8 @@ class Correspondence(models.Model):
 
     # 4. Additional information
     ###########################
-    status_date = fields.Datetime(default=fields.Date.today())
-    scanned_date = fields.Date(default=fields.Date.today())
+    status_date = fields.Datetime(default=fields.Datetime.now)
+    scanned_date = fields.Date(default=fields.Date.today)
     relationship = fields.Selection([
         ('Sponsor', _('Sponsor')),
         ('Encourager', _('Encourager'))], default='Sponsor')

@@ -17,11 +17,47 @@
                         <group>
                             <field name="sendgrid_template_id"/>
                             <field name="sent_date" readonly="1"/>
+                            <field name="opened" readonly="1"/>
+                            <field name="click_count" readonly="1"/>
                             <field name="body_text"/>
                         </group>
                         <field name="substitution_ids" widget="one2many_list"/>
+                        <field name="tracking_event_ids">
+                            <tree default_order="time desc">
+                                <field name="tracking_email_id"/>
+                                <field name="time"/>
+                                <field name="event_type"/>
+                                <field name="url"/>
+                            </tree>
+                        </field>
                     </page>
                 </page>
+            </field>
+        </record>
+
+        <!-- Extension of mail.mail tree view -->
+        <record model="ir.ui.view" id="sendgrid_email_tree_view">
+            <field name="name">mail.mail.sendgrid.tree</field>
+            <field name="model">mail.mail</field>
+            <field name="inherit_id" ref="mail.view_mail_tree"/>
+            <field name="arch" type="xml">
+                <field name="date" position="after">
+                    <field name="opened"/>
+                    <field name="click_count"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Extension of mail.mail search view -->
+        <record model="ir.ui.view" id="sendgrid_email_search_view">
+            <field name="name">mail.mail.sendgrid.search</field>
+            <field name="model">mail.mail</field>
+            <field name="inherit_id" ref="mail.view_mail_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='received']" position="after">
+                    <filter name="opened" string="Opened" domain="[('opened','=',True)]"/>
+                    <filter name="clicked" string="Clicked" domain="[('click_count','>',0)]"/>
+                </xpath>
             </field>
         </record>
 
