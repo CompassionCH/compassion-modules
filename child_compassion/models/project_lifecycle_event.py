@@ -23,7 +23,7 @@ class ProjectLifecycle(models.Model):
     project_id = fields.Many2one(
         'compassion.project', required=True, ondelete='cascade',
         readonly=True)
-    date = fields.Date(readonly=True, default=fields.Date.today())
+    date = fields.Date(readonly=True, default=fields.Date.today)
     type = fields.Selection([
         ('Suspension', 'Suspension'),
         ('Reactivation', 'Reactivation'),

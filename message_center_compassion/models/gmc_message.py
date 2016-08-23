@@ -74,7 +74,7 @@ class GmcMessagePool(models.Model):
     request_id = fields.Char('Unique request ID', readonly=True)
     date = fields.Datetime(
         'Message Date', required=True,
-        default=fields.Datetime.now())
+        default=fields.Datetime.now)
     action_id = fields.Many2one(
         'gmc.action', 'GMC Message', ondelete='restrict',
         required=True, readonly=True)

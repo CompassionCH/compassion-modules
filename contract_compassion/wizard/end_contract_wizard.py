@@ -19,7 +19,7 @@ class EndContractWizard(models.TransientModel):
     _name = 'end.contract.wizard'
 
     end_date = fields.Datetime(
-        required=True, default=fields.Datetime.now())
+        required=True, default=fields.Datetime.now)
     contract_id = fields.Many2one(
         'recurring.contract', 'Contract',
         default=lambda self: self.env.context.get('active_id'))
@@ -31,7 +31,7 @@ class EndContractWizard(models.TransientModel):
     transfer_country_id = fields.Many2one(
         'compassion.global.partner', 'Country')
     has_new_hold = fields.Boolean('Keep child on hold', default=True)
-    hold_expiration_date = fields.Datetime(default=fields.Datetime.now(),
+    hold_expiration_date = fields.Datetime(default=fields.Datetime.now,
                                            required=True)
 
     @api.model

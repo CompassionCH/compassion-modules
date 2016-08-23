@@ -37,7 +37,7 @@ class CommunicationJob(models.Model):
     partner_id = fields.Many2one('res.partner', 'Send to', required=True)
     object_id = fields.Integer('Resource id', required=True)
 
-    date = fields.Datetime(default=fields.Datetime.now())
+    date = fields.Datetime(default=fields.Datetime.now)
     sent_date = fields.Datetime()
     state = fields.Selection([
         ('pending', _('Pending')),
