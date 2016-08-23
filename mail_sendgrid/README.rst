@@ -12,6 +12,10 @@ through SendGrid, using templates defined on the
 substitution of placeholder variables in these templates. The list of available
 templates can be fetched automatically.
 
+Installation
+============
+You need to install python-sendgrid v3 in order to use the module.
+
 Configuration
 =============
 
@@ -47,7 +51,6 @@ Optionally, the following configuration variables can be set as well:
 Known issues / Roadmap
 ======================
 
-* Handle attachments
 * Use SendGrid with massmailing
 * Extends the features from SendGrid
 

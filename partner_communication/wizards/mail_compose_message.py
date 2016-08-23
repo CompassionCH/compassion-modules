@@ -72,17 +72,20 @@ class EmailComposeMessage(models.TransientModel):
 
     @api.multi
     def send_mail(self):
+        """ Return to e-mails generated. """
         super(EmailComposeMessage, self).send_mail()
         mail_ids = self.env['mail.mail'].search([
-            ('res_id', 'in', self.env.context.get('active_ids')),
+            ('res_id', 'in', self.env.context.get('active_ids', [])),
             ('model', '=', self.env.context.get('active_model'))
         ])
-        return {
-            'name': 'E-mails',
-            'view_mode': 'form,tree',
-            'view_type': 'form',
-            'domain': [('id', 'in', mail_ids.ids)],
-            'res_model': 'mail.mail',
-            'res_id': mail_ids.ids[0],
-            'type': 'ir.actions.act_window',
-        }
+        if mail_ids:
+            return {
+                'name': 'E-mails',
+                'view_mode': 'form,tree',
+                'view_type': 'form',
+                'domain': [('id', 'in', mail_ids.ids)],
+                'res_model': 'mail.mail',
+                'res_id': mail_ids.ids[0],
+                'type': 'ir.actions.act_window',
+            }
+        return True
