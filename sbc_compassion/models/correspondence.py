@@ -55,7 +55,7 @@ class Correspondence(models.Model):
         selection=[
             ('Supporter To Beneficiary', _('Supporter to beneficiary')),
             ('Beneficiary To Supporter', _('Beneficiary to supporter'))],
-        required=True, default='Supporter To Beneficiary', readonly=True)
+        required=True, default='Supporter To Beneficiary')
     communication_type_ids = fields.Many2many(
         'correspondence.type',
         'correspondence_type_relation',
@@ -355,10 +355,6 @@ class Correspondence(models.Model):
                 match = re.search('(.*)\[(.*)\]', letter.translator)
                 if match:
                     letter.translator_id.translator_email = match.group(2)
-                    other_letters = self.search([
-                        ('translator', '=', letter.translator),
-                        ('translator_id', '!=', letter.translator_id.id)])
-                    other_letters._compute_translator()
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -382,6 +378,10 @@ class Correspondence(models.Model):
                 vals['communication_type_ids'] = [(
                     4, self.env.ref(
                         'sbc_compassion.correspondence_type_scheduled').id)]
+            # Allows manually creating a B2S letter
+            if vals.get('state',
+                        'Received in the system') == 'Received in the system':
+                vals['state'] = 'Published to Global Partner'
 
         letter_image = vals.get('letter_image')
         attachment = False
@@ -563,7 +563,8 @@ class Correspondence(models.Model):
         }
         if letter:
             vals.update({
-                'name': letter.kit_identifier + '_' + type_,
+                'name': letter.kit_identifier or
+                letter.child_id.code + '_' + type_,
                 'datas_fname': letter.name,
                 'res_id': letter.id
             })

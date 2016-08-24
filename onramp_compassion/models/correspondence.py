@@ -103,7 +103,13 @@ class SponsorshipCorrespondence(models.Model):
         """
         self.ensure_one()
         letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
-        return self.write(letter_mapping.get_vals_from_connect(data))
+        vals = letter_mapping.get_vals_from_connect(data)
+        if vals.get('kit_identifier', 'null') == 'null':
+            raise Warning(
+                'The letter was not sent',
+                'No valid kit id was returned. This is most probably because '
+                'the sponsorship is not known.')
+        return self.write(vals)
 
     def process_letter(self):
         """ Method called when new B2S letter is Published. """
@@ -127,8 +133,8 @@ class SponsorshipCorrespondence(models.Model):
                     letter_url, 'pdf', dpi=300)
             if image_data is None:
                 raise Warning(
-                    _('Image does not exist'),
-                    _("Image requested was not found remotely."))
+                    _("Image of letter {} was not found remotely.".format(
+                        letter.kit_identifier)))
             name = letter.child_id.code + '_' + letter.kit_identifier + '.pdf'
             letter.letter_image = self.env['ir.attachment'].create({
                 'name': name,

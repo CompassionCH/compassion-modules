@@ -140,6 +140,7 @@ class OnrampConnector(object):
                 result['content'] = r.json()
             except ValueError:
                 result['Error'] = r.text
+        self._log_message('ANSWER', url, r.headers, r.text)
         return result
 
     def _retrieve_token(self):
