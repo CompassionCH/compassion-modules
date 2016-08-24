@@ -42,6 +42,10 @@ class res_partner(models.Model):
         for key, value in vals.iteritems():
             if key.endswith('_id'):
                 vals[key] = int(value)
+            if key == 'birthdate' and vals.get(key):
+                birthdate = vals[key]
+                vals[key] = birthdate[0:4] + '-' + birthdate[4:6] + '-' + \
+                    birthdate[6:8]
         to_update = self.filtered(
             lambda p: (new_firstname and p.firstname != new_firstname) or
             (new_lastname and p.lastname != new_lastname))

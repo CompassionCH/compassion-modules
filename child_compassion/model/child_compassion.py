@@ -195,7 +195,7 @@ class compassion_child(models.Model):
             child.is_available = child.state in self._available_states()
 
     def _available_states(self):
-        return ['N', 'D', 'Z', 'R']
+        return ['N', 'D', 'Z', 'R', 'I']
 
     ##########################################################################
     #                              ORM METHODS                               #
