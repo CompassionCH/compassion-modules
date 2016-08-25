@@ -16,8 +16,6 @@ import re
 from openerp import models, fields, api, exceptions, _
 from openerp.tools.config import config
 
-from ..tools import sendgrid_templates
-
 
 class SendgridTemplate(models.Model):
     """ Reference to a template available on the SendGrid user account. """
@@ -46,20 +44,22 @@ class SendgridTemplate(models.Model):
                 'ConfigError',
                 _('Missing sendgrid_api_key in conf file'))
 
-        client = sendgrid.SendGridAPIClient(api_key)
-        template_client = sendgrid_templates.Templates(client)
-        status, msg = template_client.get()
+        sg = sendgrid.SendGridAPIClient(apikey=api_key)
+        template_client = sg.client.templates
+        msg = template_client.get().body
         result = json.loads(msg)
 
-        # TODO: handle error if dict does not have expected structure?
-        for template in result["templates"]:
+        for template in result.get("templates", list()):
             id = template["id"]
-            status, msg = template_client.get(id)
+            msg = template_client._(id).get().body
             template_versions = json.loads(msg)['versions']
-            template_vals = template_versions[0]
             for version in template_versions:
                 if version['active']:
                     template_vals = version
+                    break
+            else:
+                continue
+
             vals = {
                 "remote_id": id,
                 "name": template["name"],
@@ -71,11 +71,13 @@ class SendgridTemplate(models.Model):
                 record.write(vals)
             else:
                 self.create(vals)
+        return True
 
     def get_keywords(self):
         """ Search in the Sendgrid template for keywords included with the
         following syntax: {keyword_name} and returns the list of keywords.
-        keyword_name shouldn't be longer than 20 characters.
+        keyword_name shouldn't be longer than 20 characters and only contain
+        alphanumeric characters (underscore is allowed).
         You can replace the substitution prefix and suffix by adding values
         in the system parameters
             - mail_sendgrid.substitution_prefix
@@ -89,5 +91,5 @@ class SendgridTemplate(models.Model):
         suffix = params.search([
             ('key', '=', 'mail_sendgrid.substitution_suffix')
         ]) or '}'
-        pattern = prefix + '.{0,20}' + suffix
+        pattern = prefix + '\w{0,20}' + suffix
         return list(set(re.findall(pattern, self.html_content)))
