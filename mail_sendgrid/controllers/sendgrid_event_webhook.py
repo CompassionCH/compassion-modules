@@ -24,6 +24,21 @@ class EventWebhook(http.Controller):
     """ Add SendGrid related fields so that they dispatch in all
     subclasses of mail.message object
     """
+
+    # Map Sendgrid Events to mail_tracking event_type
+    event_mapping = {
+        'processed': 'sent',
+        'dropped': 'reject',
+        'bounce': 'hard_bounce',
+        'deferred': 'deferral',
+        'delivered': 'delivered',
+        'open': 'open',
+        'click': 'click',
+        'spamreport': 'spam',
+        'unsubscribe': 'unsub',
+        'group_unsubscribe': 'unsub',
+    }
+
     @http.route('/sendgrid/events', type='json', auth='public', methods=[
         'POST'])
     def handler_sendgrid(self):
@@ -43,14 +58,14 @@ class EventWebhook(http.Controller):
                     _logger.error("Sendgrid e-mail not found: %s" % message_id)
                     continue
 
-                tracking_event = request.env['mail.tracking.event'].sudo()
-
                 t_vals = {
                     'recipient': recipient,
                     'timestamp': notification.get('timestamp'),
                     'time': fields.Datetime.now(),
                     'tracking_email_id': t_email.id,
                     'ip': notification.get('ip'),
+                    'smtp_server': notification.get('smtp-id'),
+                    'url': notification.get('url')
                 }
                 if notification.get('useragent'):
                     user_agent = UserAgent(notification.get('useragent'))
@@ -62,89 +77,25 @@ class EventWebhook(http.Controller):
                             'android', 'iphone', 'ipad']
                     })
                 m_vals = {}
+                event_type = self.event_mapping[event]
 
-                if event == 'processed':
-                    t_vals.update({
-                        'event_type': 'sent',
-                        'smtp_server': notification.get('smtp-id')
-                    })
+                if event == 'dropped':
                     m_vals.update({
-                        'state': 'sent',
-                    })
-                elif event == 'dropped':
-                    t_vals.update({
-                        'event_type': 'reject',
-                        'smtp_server': notification.get('smtp-id')
-                    })
-                    m_vals.update({
-                        'state': 'rejected',
                         'error_description': notification.get('reason'),
                     })
                 elif event == 'bounce':
-                    t_vals.update({
-                        'event_type': 'hard_bounce',
-                        'smtp_server': notification.get('smtp-id')
-                    })
                     m_vals.update({
-                        'state': 'bounced',
                         'error_type': notification.get('status'),
                         'bounce_type': notification.get('type'),
                         'bounce_description': notification.get('reason'),
                     })
                 elif event == 'deferred':
-                    t_vals.update({
-                        'event_type': 'deferral',
-                        'smtp_server': notification.get('smtp-id')
-                    })
                     m_vals.update({
-                        'state': 'deferred',
                         'error_smtp_server': notification.get('response'),
-                    })
-                elif event == 'delivered':
-                    t_vals.update({
-                        'event_type': 'delivered',
-                        'smtp_server': notification.get('smtp-id')
-                    })
-                    m_vals.update({
-                        'state': 'delivered',
-                    })
-                elif event == 'open':
-                    t_vals.update({
-                        'event_type': 'open',
-
-                    })
-                    m_vals.update({
-                        'state': 'opened',
-                    })
-                elif event == 'click':
-                    t_vals.update({
-                        'event_type': 'click',
-                        'url': notification.get('url')
-                    })
-                elif event == 'spamreport':
-                    t_vals.update({
-                        'event_type': 'spam',
-                    })
-                    m_vals.update({
-                        'state': 'spam',
-                    })
-                elif event == 'unsubscribe':
-                    t_vals.update({
-                        'event_type': 'unsub',
-                    })
-                    m_vals.update({
-                        'state': 'unsub',
-                    })
-                elif event == 'group_unsubscribe':
-                    t_vals.update({
-                        'event_type': 'unsub',
-                    })
-                    m_vals.update({
-                        'state': 'unsub',
                     })
 
                 # Create tracking event
-                tracking_event.create(t_vals)
+                t_email.event_create(event_type, t_vals)
                 # Write email tracking modifications
                 if m_vals:
                     t_email.write(m_vals)
