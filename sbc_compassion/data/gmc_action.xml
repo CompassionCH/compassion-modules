@@ -17,6 +17,7 @@
             <field name="description">This will send a new Sponsorship Correspondence to GMC.</field>
             <field name="connect_service">communications</field>
             <field name="connect_answer_wrapper">Responses</field>
+            <field name="success_method">enrich_letter</field>
             <field name="request_type">POST</field>
         </record>
 

@@ -61,7 +61,7 @@ class Correspondence(models.Model):
         selection=[
             ('Supporter To Beneficiary', _('Supporter to beneficiary')),
             ('Beneficiary To Supporter', _('Beneficiary to supporter'))],
-        required=True, default='Supporter To Beneficiary', readonly=True)
+        required=True, default='Supporter To Beneficiary')
     communication_type_ids = fields.Many2many(
         'correspondence.type',
         'correspondence_type_relation',
@@ -402,6 +402,10 @@ class Correspondence(models.Model):
                 vals['communication_type_ids'] = [(
                     4, self.env.ref(
                         'sbc_compassion.correspondence_type_scheduled').id)]
+            # Allows manually creating a B2S letter
+            if vals.get('state',
+                        'Received in the system') == 'Received in the system':
+                vals['state'] = 'Published to Global Partner'
 
         letter_image = vals.get('letter_image')
         attachment = False
@@ -609,6 +613,18 @@ class Correspondence(models.Model):
             letter.original_letter_url = onramp.send_letter_image(
                 letter.letter_image.datas, letter.letter_format)
 
+    @api.multi
+    def enrich_letter(self, vals):
+        """
+        Enrich correspondence data with GMC data after CommKit Submission.
+        Check that we received a valid kit identifier.
+        """
+        if vals.get('kit_identifier', 'null') == 'null':
+            raise Warning(
+                'No valid kit id was returned. This is most '
+                'probably because the sponsorship is not known.')
+        return self.write(vals)
+
     def process_letter(self):
         """ Method called when new B2S letter is Published. """
         self.download_attach_letter_image(type='original_letter_url')
@@ -631,8 +647,8 @@ class Correspondence(models.Model):
                     letter_url, 'pdf', dpi=300)
             if image_data is None:
                 raise Warning(
-                    _('Image does not exist'),
-                    _("Image requested was not found remotely."))
+                    _("Image of letter {} was not found remotely.").format(
+                        letter.kit_identifier))
             name = letter.child_id.local_id + '_' + letter.kit_identifier + \
                 '.pdf'
             letter.letter_image = self.env['ir.attachment'].create({
@@ -721,7 +737,8 @@ class Correspondence(models.Model):
         }
         if letter:
             vals.update({
-                'name': letter.kit_identifier + '_' + type_,
+                'name': letter.kit_identifier or
+                letter.child_id.code + '_' + type_,
                 'datas_fname': letter.name,
                 'res_id': letter.id
             })

@@ -84,8 +84,6 @@ class OnrampConnector(object):
         """
         headers = {'Content-type': 'application/json'}
         url = self._connect_url + service_name
-        status = 200
-        result = False
         self._log_message(message_type, url, headers, body)
         if params is None:
             params = dict()

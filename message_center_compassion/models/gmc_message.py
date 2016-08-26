@@ -333,9 +333,15 @@ class GmcMessagePool(models.Model):
                     # Individual message was successfully processed
                     answer_vals = [object_mapping.get_vals_from_connect(
                         result)]
-                    getattr(data_objects[i], action.success_method)(
-                        *answer_vals)
-                    mess_vals['state'] = 'success'
+                    try:
+                        getattr(data_objects[i], action.success_method)(
+                            *answer_vals)
+                        mess_vals['state'] = 'success'
+                    except Exception as e:
+                        mess_vals.update({
+                            'state': 'failure',
+                            'failure_reason': e.read(),
+                        })
                 else:
                     mess_vals.update({
                         'state': 'failure',

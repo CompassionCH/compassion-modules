@@ -62,7 +62,7 @@
                                 <field name="sponsorship_id" options="{
                                     'create_edit':false,'field_color': 'state', 'search_more':true,
                                     'colors': {'terminated': 'gray', 'mandate': 'blue', 'waiting': 'blue'}}"/>
-                                <field name="letter_image" widget="binary" required="1" class="oe_edit_only"/>
+                                <field name="letter_image" widget="binary" class="oe_edit_only"/>
                                 <field name="template_id" attrs="{'invisible': [('direction','=','Beneficiary To Supporter')]}"/>
                                 <field name="b2s_layout_id" attrs="{'invisible': [('direction','=','Supporter To Beneficiary')]}"/>
                                 <field name="direction"/>

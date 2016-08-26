@@ -374,7 +374,7 @@ class CompassionChild(models.Model):
             child.is_available = child.state in self._available_states()
 
     def _available_states(self):
-        return ['N', 'D', 'Z']
+        return ['N', 'D', 'Z', 'I']
 
     def _compute_exit_reason(self):
         for child in self:
