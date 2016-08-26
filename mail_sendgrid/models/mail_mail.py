@@ -109,7 +109,7 @@ class OdooMail(models.Model):
                 email.write({'state': 'exception'})
         return True
 
-    @api.one
+    @api.multi
     def send_sendgrid(self):
         """ Use sendgrid transactional e-mails : e-mails are sent one by
         one. """
@@ -120,38 +120,43 @@ class OdooMail(models.Model):
                 _('Missing sendgrid_api_key in conf file'))
 
         sg = SendGridAPIClient(apikey=api_key)
-        try:
-            response = sg.client.mail.send.post(
-                request_body=self._prepare_sendgrid_data())
-        except Exception as e:
-            raise exceptions.Warning(e.read())
+        for email in self:
+            try:
+                response = sg.client.mail.send.post(
+                    request_body=email._prepare_sendgrid_data())
+            except Exception as e:
+                _logger.error(e.read())
+                continue
 
-        status = response.status_code
-        msg = response.body
+            status = response.status_code
+            msg = response.body
 
-        if status == STATUS_OK:
-            _logger.info(str(msg))
-            self._track_sendgrid_emails()
-            self.write({
-                'sent_date': fields.Datetime.now(),
-                'state': 'sent'
-            })
-            # Update message body in associated message, which will be shown in
-            # message history view for linked odoo object defined through
-            # fields model and res_id. This will allow tracking from the
-            # thread.
-            message = self.mail_message_id
-            message_vals = {
-                'body': self.body_html
-            }
-            if not message.subtype_id:
-                message_vals['subtype_id'] = self.env.ref('mail.mt_comment').id
-            if not message.notified_partner_ids:
-                message_vals['notified_partner_ids'] = [
-                    (6, 0, self.recipient_ids.ids)]
-            message.write(message_vals)
-        else:
-            _logger.error("Failed to send email: {}".format(str(msg)))
+            if status == STATUS_OK:
+                _logger.info(str(msg))
+                email._track_sendgrid_emails()
+                email.write({
+                    'sent_date': fields.Datetime.now(),
+                    'state': 'sent'
+                })
+                # Update message body in associated message, which will be
+                # shown in message history view for linked odoo object
+                # defined through fields model and res_id. This will allow
+                # tracking from the thread.
+                message = email.mail_message_id
+                message_vals = {
+                    'body': email.body_html
+                }
+                if not message.subtype_id:
+                    message_vals['subtype_id'] = self.env.ref(
+                        'mail.mt_comment').id
+                if not message.notified_partner_ids:
+                    message_vals['notified_partner_ids'] = [
+                        (6, 0, email.recipient_ids.ids)]
+                message.write(message_vals)
+                # Commit changes since e-mail was sent
+                self.env.cr.commit()
+            else:
+                _logger.error("Failed to send email: {}".format(str(msg)))
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -211,15 +216,7 @@ class OdooMail(models.Model):
         """ Create tracking e-mails after successfully sent with Sendgrid. """
         self.ensure_one()
         m_tracking = self.env['mail.tracking.email']
-        ts = time.time()
-        track_vals = {
-            'name': self.subject,
-            'timestamp': '%.6f' % ts,
-            'time': fields.Datetime.now(),
-            'mail_id': self.id,
-            'mail_message_id': self.mail_message_id.id,
-            'sender': self.email_from,
-        }
+        track_vals = self._prepare_sendgrid_tracking()
         for recipient in tools.email_split_and_format(self.email_to):
             track_vals['recipient'] = recipient
             m_tracking.create(track_vals)
@@ -229,3 +226,14 @@ class OdooMail(models.Model):
                 'recipient': partner.email,
             })
             m_tracking.create(track_vals)
+
+    def _prepare_sendgrid_tracking(self):
+        ts = time.time()
+        return {
+            'name': self.subject,
+            'timestamp': '%.6f' % ts,
+            'time': fields.Datetime.now(),
+            'mail_id': self.id,
+            'mail_message_id': self.mail_message_id.id,
+            'sender': self.email_from,
+        }
