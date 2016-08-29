@@ -43,6 +43,12 @@ class ChildLifecycleEvent(models.Model):
         ('Reached the end of the relevant programs available at the church '
          'partner', _('{he} reached the end of the relevant programs '
                       'available')),
+        ('Reached max age or completion date but did not fulfill '
+         'completion plan',
+         'Reached max age or completion date but did not fulfill '
+         'completion plan'),
+        ('Reached the end of relevant programs available at ICP',
+         'Reached the end of relevant programs available at ICP'),
         # Reinstatement
         ('Beneficiary Exit was mistake', 'Exit was mistake'),
         ('Beneficiary Moved Back', 'Beneficiary Moved Back'),
@@ -50,6 +56,7 @@ class ChildLifecycleEvent(models.Model):
         ('No Longer Sponsored by Another Organization',
          'No Longer Sponsored by Another Organization'),
         ('Other (enter reason below)', 'Other'),
+        ('Other (Enter Reason)', 'Other (Enter Reason)'),
         # Transfer
         ('Relocation: Caregiver\'s Work.', 'Relocation: Caregiver\'s Work.'),
         ('Relocation: Moved To Another Area',
@@ -61,6 +68,8 @@ class ChildLifecycleEvent(models.Model):
         ('Project Closure', 'Project Closure'),
         ('Project Downsizing', 'Project Downsizing'),
         ('Special Needs', 'Special Needs'),
+        ('Beneficiary/Caregiver moving to another location',
+         'Beneficiary/Caregiver moving to another location'),
         # Unplanned Exit
         ('Child / Caregiver does not comply with policies',
          _('{he} does not comply with policies')),
@@ -83,6 +92,16 @@ class ChildLifecycleEvent(models.Model):
          'in program', _('{he} was taken out of project by parents')),
         ('Unjustified absence from program activities for Greater Than 2 '
          'months', _('of an unjustified absence for greater than 2 months')),
+        ('Child ran away', 'Child ran away'),
+        ('Crisis', 'Crisis'),
+        ('Deceased', 'Deceased'),
+        ('Fulfilled completion plan and reached completion date',
+         'Fulfilled completion plan and reached completion date'),
+        ('Gone into military service', 'Gone into military service'),
+        ('No longer interested in the Program', 'No longer interested in '
+                                                'the Program'),
+        ('Project Capacity Issue', 'Project Capacity Issue'),
+
     ], readonly=True)
 
     # Common fields
@@ -105,10 +124,6 @@ class ChildLifecycleEvent(models.Model):
     new_situation = fields.Char(readonly=True)
     future_hopes = fields.Char(readonly=True)
     family_impact = fields.Char(readonly=True)
-
-    # Reinstatement fields
-    ######################
-    other_reinstatement_reason = fields.Char(readonly=True)
 
     # Transfer fields
     #################
