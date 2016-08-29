@@ -287,9 +287,6 @@ gray:state in ('F', 'X')">
                             <field name="child_death_category"/>
                             <field name="child_death_subcategory"/>
                         </group>
-                        <group attrs="{'invisible': [('type', '!=', 'Reinstatement/Return')]}">
-                            <field name="other_reinstatement_reason"/>
-                        </group>
                         <group attrs="{'invisible': [('type', '!=', 'Reinstatement/Return')]}"/>
                         <group attrs="{'invisible': [('type', '!=', 'Transfer')]}">
                             <field name="old_project_id"/>
