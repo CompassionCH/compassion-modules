@@ -330,6 +330,8 @@ class recurring_contract(models.Model):
         if not self.is_active:
             vals.update({'activation_date': datetime.today().strftime(DF)})
         self.write(vals)
+        # Write payment term in partner property
+        self.partner_id.property_payment_term = self.payment_term_id
         return True
 
     @api.multi
