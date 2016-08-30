@@ -25,6 +25,9 @@
                     <field name="read_count" />
                 </field>
                 <header>
+                    <button type="object" name="compose_letter_button"
+                            string="Compose letter"
+                            states="Published to Global Partner"/>
                     <button name="attach_original" type="object"
                             string="Replace by original"
                             states="Published to Global Partner"/>

@@ -62,6 +62,12 @@ class SponsorshipCorrespondence(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.multi
+    def compose_letter_button(self):
+        """ Remove old images, download original and compose translation. """
+        self.attach_original()
+        return self.compose_letter_image()
+
     @api.model
     def process_commkit_notifications(self, commkit_updates, headers,
                                       eta=None):
@@ -145,7 +151,9 @@ class SponsorshipCorrespondence(models.Model):
 
     @api.multi
     def attach_original(self):
+        self.mapped('letter_image').unlink()
         self.download_attach_letter_image(type='original_letter_url')
+        return True
 
     def get_image(self, user=None):
         """ Method for retrieving the image and updating the read status of
