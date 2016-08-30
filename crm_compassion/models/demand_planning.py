@@ -48,7 +48,8 @@ class DemandPlanning(models.Model):
         # Sunday weekday is 6
         diff_to_sunday = 6 - today.weekday()
         if diff_to_sunday:
-            sunday = today + timedelta(days=diff_to_sunday)
+            # Add extra week so we start creating previsions in 2 weeks
+            sunday = today + timedelta(days=(diff_to_sunday + 7))
 
         # Submit 78 weeks
         for i in range(0, 78):
@@ -113,16 +114,17 @@ class DemandPlanning(models.Model):
     @api.model
     def process_weekly_demand(self):
         """ Weekly CRON for Demand Planning.
-        1. Submit previous previsions
-        2. Create Demand Planning for the next week
+        1. Submit previsions
+        2. Create Demand Planning for the next weeks
         3. Create last week revision
         """
-        today = fields.Date.today()
-        previous_previsions = self.search([
+        today = datetime.today()
+        next_week = datetime.today() + timedelta(days=7)
+        previsions = self.search([
             ('state', '=', 'draft'),
-            ('date', '<', today)
+            ('date', '<=', next_week)
         ])
-        previous_previsions.send_planning()
+        previsions.send_planning()
 
         self.create({
             'weekly_demand_ids': self._get_default_weekly_demands()
