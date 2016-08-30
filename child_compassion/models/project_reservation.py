@@ -23,7 +23,7 @@ class ProjectReservation(models.Model):
     channel_name = fields.Char()
     icp_id = fields.Many2one(
         'compassion.project', 'Project', required=True)
-    child_id = fields.Many2one('compassion.child', 'Child')
+    child_id = fields.Many2one('compassion.child', 'Child', readonly=True)
     campaign_event_identifier = fields.Char()
     expiration_date = fields.Date(required=True)
     hold_expiration_date = fields.Datetime(required=True)
