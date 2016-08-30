@@ -72,5 +72,33 @@
                 </xpath>
             </field>
         </record>
+
+        <record model="ir.ui.view" id="res_partner_bvr_search">
+            <field name="name">res.partner.bvr.search</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="email_template.res_partner_opt_out_search"/>
+            <field name="arch" type="xml">
+                    <filter name="not_opt_out" position="after">
+                        <separator />
+                        <filter string="Has e-mail" name="has_email" domain="[('email', '!=', False)]"/>
+                        <separator />
+                        <filter string="BVR"
+                                name='bvr'
+                                domain="[('customer', '=', True),
+                                         ('property_payment_term.name', 'not ilike', 'LSV'),
+                                         ('property_payment_term.name', 'not ilike', 'Postfinance'),
+                                         '|', '&amp;', ('is_company', '=', True), ('child_ids', '=', False), ('is_company', '=', False)]"
+                                help="All customers without LSV or DD"/>
+                        <separator/>
+                        <filter string="LSV/DD"
+                                name='lsv_dd'
+                                domain="[('customer', '=', True),
+                                         '|', ('property_payment_term.name', 'ilike', 'LSV'),
+                                         ('property_payment_term.name', 'ilike', 'Postfinance'),
+                                         '|', '&amp;', ('is_company', '=', True), ('child_ids', '=', False), ('is_company', '=', False)]"
+                                help="All customers with LSV or DD payment terms"/>
+                    </filter>
+            </field>
+        </record>
     </data>
 </openerp>

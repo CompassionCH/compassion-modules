@@ -37,8 +37,13 @@ class MassMailing(models.Model):
                 lang=self.lang.code or self.env.context['lang'])
             sendgrid_template = template.sendgrid_localized_template
             if sendgrid_template and wizard.body_html:
+                res_id = self.env[wizard.mailing_model].search(eval(
+                    wizard.mailing_domain), limit=1).id
+                body = template.render_template_batch(
+                    wizard.body_html, template.model, [res_id],
+                    post_process=True)[res_id]
                 wizard.body_sendgrid = sendgrid_template.html_content.replace(
-                    '<%body%>', wizard.body_html)
+                    '<%body%>', body)
             else:
                 wizard.body_sendgrid = wizard.body_html
             wizard.html_copy = wizard.body_html
