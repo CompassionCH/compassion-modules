@@ -66,8 +66,8 @@ class EndContractWizard(models.TransientModel):
         child = contract.child_id
         has_hold = self.has_new_hold
 
-        # When sponsorship activated
-        if child.hold_id.id is False:
+        # When sponsorship activated, the hold is removed.
+        if not child.hold_id:
             if has_hold:
                 self.env['icp.reservation'].create({
                     'name': 'single beneficiary reservation',
@@ -80,10 +80,10 @@ class EndContractWizard(models.TransientModel):
                 })
             child.write({'active': False, 'state': 'F'})
         else:
+            # The sponsorship was not active
             if not has_hold:
-                child.write({'active': False, 'state': 'F'})
                 child.hold_id.active = False
-                child.hold_id = None
+                child.write({'active': False, 'state': 'F', 'hold_id': False})
 
         # Terminate contract
         contract.write({

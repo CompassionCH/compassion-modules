@@ -30,6 +30,7 @@ class recurring_contract(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
+    global_id = fields.Char(help='Connect global ID')
     child_id = fields.Many2one(
         'compassion.child', 'Sponsored child', readonly=True, copy=False,
         states={'draft': [('readonly', False)],
@@ -83,6 +84,11 @@ class recurring_contract(models.Model):
     transfer_partner_id = fields.Many2one(
         'compassion.global.partner', 'Transferred to')
     hold_expiration_date = fields.Datetime()
+
+    _sql_constraints = [
+        ('unique_global_id', 'unique(global_id)', 'You cannot have same '
+                                                  'global ids for contracts')
+    ]
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -334,8 +340,8 @@ class recurring_contract(models.Model):
         if not self.is_active:
             vals.update({'activation_date': datetime.today().strftime(DF)})
         self.write(vals)
-        self.child_id.hold_id.active = False
-        self.child_id.hold_id = None
+        # self.child_id.hold_id.active = False
+        # self.child_id.hold_id = None
         return True
 
     @api.multi
