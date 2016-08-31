@@ -44,9 +44,6 @@
                                statusbar_visible="Received in the system,Global Partner translation queue,Field Office translation queue,Composition process,Printed and sent to ICP"/>
                         <field name="b2s_state" widget="statusbar" attrs="{'invisible': [('direction', '=', 'Supporter To Beneficiary')]}"
                                statusbar_visible="Field Office translation queue,Global Partner translation queue,Composition process,Published to Global Partner"/>
-                        <button type="object" name="compose_letter_image"
-                                string="Compose letter"
-                                states="Published to Global Partner"/>
                     </header>
                     <sheet>
                         <h1>
@@ -84,34 +81,25 @@
                                 <field name="beneficiary_language_ids" string="Child spoken languages" widget="many2many_tags" options="{'create':False}"/>
                             </group>
                         </group>
-                        <notebook>
-                            <page string="Letter content">
-                                <group>
-                                    <group>
-                                        <field name="nbr_pages" />
-                                        <field name="original_language_id" string="Original language" options="{'create':False}" required="1"/>
-                                        <field name="original_text" readonly="1"/>
-                                        <field name="english_text" readonly="1"/>
-                                    </group>
-                                    <group>
-                                        <field name="translator" attrs="{'invisible': [('translator', '=', False)]}"/>
-                                        <field name="translator_id" attrs="{'invisible': [('translator_id', '=', False)]}"/>
-                                        <field name="translation_language_id" string="Destination language" options="{'create':False}"/>
-                                        <field name="translated_text"/>
-                                    </group>
-                                </group>
-                            </page>
-                            <page string="Pages">
-                                <field name="page_ids"
-                                       context="{'default_correspondence_id': context.active_id}">
-                                    <tree>
-                                        <field name="original_text"/>
-                                        <field name="english_translated_text"/>
-                                        <field name="translated_text"/>
-                                    </tree>
-                                </field>
-                            </page>
-                        </notebook>
+                        <separator string="Letter content"/>
+                        <group>
+                            <group>
+                                <field name="nbr_pages" />
+                                <field name="original_language_id" string="Original language" options="{'create':False}" required="1"/>
+                            </group>
+                            <group>
+                                <field name="translator" attrs="{'invisible': [('translator', '=', False)]}"/>
+                                <field name="translator_id" attrs="{'invisible': [('translator_id', '=', False)]}"/>
+                                <field name="translation_language_id" string="Destination language" options="{'create':False}"/>
+                            </group>
+                        </group>
+                        <field name="page_ids" context="{'default_correspondence_id': context.active_id}">
+                            <tree>
+                                <field name="original_text"/>
+                                <field name="english_translated_text"/>
+                                <field name="translated_text"/>
+                            </tree>
+                        </field>
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids" widget="mail_followers"/>
