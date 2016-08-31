@@ -650,7 +650,7 @@ class SponsorshipContract(models.Model):
         """ TODO: postpone open gifts, cancel LSV/DD automatic gifts. """
         pass
 
-    def reactivate_gift(self):
+    def reactivate_gifts(self):
         """ TODO: open again gifts, reactivate LSV/DD gifts. """
         pass
 
