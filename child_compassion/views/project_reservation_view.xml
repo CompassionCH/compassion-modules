@@ -22,6 +22,7 @@
                             <group>
                                 <field name="channel_name" />
                                 <field name="icp_id"/>
+                                <field name="child_id" attrs="{'invisible': [('child_id', '=', False)]}" />
                                 <field name="campaign_event_identifier" />
                                 <field name="expiration_date" />
                                 <field name="hold_expiration_date" />
