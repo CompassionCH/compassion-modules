@@ -40,10 +40,6 @@ class WeeklyDemand(models.Model):
         'Ambassadors demand',
         default=lambda self: int(self.env['ir.config_parameter'].get_param(
             'crm_compassion.number_children_ambassador')))
-    number_children_sub = fields.Integer(
-        'SUB',
-        default=lambda self: int(self.env['ir.config_parameter'].get_param(
-            'crm_compassion.number_children_sub')))
     number_children_events = fields.Integer(
         'Events demand',
         compute='_compute_demand_events', store=True)
@@ -61,10 +57,6 @@ class WeeklyDemand(models.Model):
     average_cancellation = fields.Float(
         'Sponsorship cancellations',
         default=lambda self: self._default_cancellation()
-    )
-    average_sub_sponsorship = fields.Float(
-        'SUB resupply',
-        default=lambda self: self._default_sub_sponsorship()
     )
     resupply_events = fields.Integer(
         'Events resupply',
@@ -108,13 +100,12 @@ class WeeklyDemand(models.Model):
             week.resupply_events = resupply
 
     @api.depends('number_children_website', 'number_children_ambassador',
-                 'number_children_sub', 'number_children_events')
+                 'number_children_events')
     @api.multi
     def _compute_demand_total(self):
         for week in self:
             week.total_demand = week.number_children_website + \
-                week.number_children_ambassador + week.number_children_sub + \
-                week.number_children_events
+                week.number_children_ambassador + week.number_children_events
 
     @api.model
     def _default_unsponsored_web(self):
@@ -156,25 +147,13 @@ class WeeklyDemand(models.Model):
         ])
         return float(cancellations) / 52.0
 
-    @api.model
-    def _default_sub_sponsorship(self):
-        """ Compute average of SUB since one year. """
-        start_date = datetime.today() - timedelta(weeks=52)
-        sub_sponsorship = self.env['recurring.contract'].search_count([
-            ('origin_id.type', '=', 'sub'),
-            ('start_date', '>=', fields.Date.to_string(start_date))
-        ])
-        allocate_per_week = int(self.env['ir.config_parameter'].get_param(
-            'crm_compassion.number_children_web'))
-        return allocate_per_week - (float(sub_sponsorship) / 52.0)
-
     @api.depends('average_unsponsored_web', 'average_cancellation',
-                 'average_sub_sponsorship', 'resupply_events')
+                 'resupply_events')
     @api.multi
     def _compute_resupply_total(self):
         for week in self:
             week.total_resupply = math.floor(
-                week.average_unsponsored_web + week.average_sub_sponsorship +
+                week.average_unsponsored_web +
                 week.average_cancellation + week.resupply_events)
 
     ##########################################################################
@@ -194,10 +173,6 @@ class WeeklyDemand(models.Model):
                 'average_unsponsored_ambassador']
             vals['average_unsponsored_ambassador'] = 0
 
-        if vals['average_sub_sponsorship'] < 0:
-            vals['number_children_sub'] -= vals['average_sub_sponsorship']
-            vals['average_sub_sponsorship'] = 0
-
         return super(WeeklyDemand, self).create(vals)
 
     ##########################################################################
@@ -209,15 +184,11 @@ class WeeklyDemand(models.Model):
             'crm_compassion.number_children_web'))
         ambassador = int(self.env['ir.config_parameter'].get_param(
             'crm_compassion.number_children_ambassador'))
-        sub = int(self.env['ir.config_parameter'].get_param(
-            'crm_compassion.number_children_sub'))
         return {
             'number_children_website': web,
             'number_children_ambassador': ambassador,
-            'number_children_sub': sub,
             'average_unsponsored_web': self._default_unsponsored_web(),
             'average_unsponsored_ambassador':
                 self._default_unsponsored_ambassador(),
-            'average_sub_sponsorship': self._default_sub_sponsorship(),
             'average_cancellation': self._default_cancellation(),
         }

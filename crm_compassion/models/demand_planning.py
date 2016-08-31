@@ -63,11 +63,9 @@ class DemandPlanning(models.Model):
                 # Locked period: resubmit same values as before
                 vals.update(week_demand.read([
                     'week_start_date', 'week_end_date',
-                    'number_children_website',
-                    'number_children_ambassador', 'number_children_sub',
+                    'number_children_website', 'number_children_ambassador',
                     'number_children_events', 'average_unsponsored_web',
-                    'average_unsponsored_ambassador',
-                    'average_sub_sponsorship', 'average_cancellation',
+                    'average_unsponsored_ambassador', 'average_cancellation',
                     'resupply_events'])[0])
             else:
                 end_date = (sunday + timedelta(days=6)).date()
@@ -144,12 +142,10 @@ class DemandPlanning(models.Model):
                 'ambassador_demand':
                     last_week_prevision.number_children_ambassador,
                 'events_demand': last_week_prevision.number_children_events,
-                'sub_demand': last_week_prevision.number_children_sub,
                 'total_demand': last_week_prevision.total_demand,
                 'web_resupply': last_week_prevision.average_unsponsored_web,
                 'ambassador_resupply':
                     last_week_prevision.average_unsponsored_ambassador,
-                'sub_resupply': last_week_prevision.average_sub_sponsorship,
                 'cancellation': last_week_prevision.average_cancellation,
                 'events_resupply': last_week_prevision.resupply_events,
                 'total_resupply': last_week_prevision.total_resupply,

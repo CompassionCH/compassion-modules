@@ -54,14 +54,12 @@
                         <group string="Demand">
                             <field name="number_children_website"/>
                             <field name="number_children_ambassador"/>
-                            <field name="number_children_sub"/>
                             <field name="number_children_events"/>
                             <field name="total_demand"/>
                         </group>
                         <group string="Resupply">
                             <field name="average_unsponsored_web"/>
                             <field name="average_unsponsored_ambassador"/>
-                            <field name="average_sub_sponsorship"/>
                             <field name="resupply_events"/>
                             <field name="average_cancellation"/>
                             <field name="total_resupply"/>
@@ -81,12 +79,10 @@
                     <field name="week_end_date"/>
                     <field name="number_children_website"/>
                     <field name="number_children_ambassador"/>
-                    <field name="number_children_sub"/>
                     <field name="number_children_events"/>
                     <field name="total_demand"/>
                     <field name="average_unsponsored_web"/>
                     <field name="average_unsponsored_ambassador"/>
-                    <field name="average_sub_sponsorship"/>
                     <field name="resupply_events"/>
                     <field name="average_cancellation"/>
                     <field name="total_resupply"/>
@@ -116,7 +112,6 @@
                     <group string="Allocation per week">
                         <field name="number_children_website" string="Number of children for the website"/>
                         <field name="number_children_ambassador" string="Number of children for the ambassadors"/>
-                        <field name="number_children_sub" string="Number of children for the sub sponsorship"/>
                     </group>
                     <group string="Events Allocation">
                         <field name="days_allocate_before_event" string="Number of days to make child allocations before an event"/>
