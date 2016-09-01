@@ -15,10 +15,8 @@ from openerp.addons.message_center_compassion.mappings.base_mapping import \
 def _find_gender(title):
     if title in ('Madam', 'Miss'):
         return 'Female'
-    elif title in ('Mister', 'Sir', 'Doctor', 'Pastor'):
-        return 'Male'
     else:
-        'Unknown'
+        return 'Male'
 
 
 class ResPartnerMapping(OnrampMapping):
@@ -45,8 +43,7 @@ class ResPartnerMapping(OnrampMapping):
         'MandatoryReviewRequired': None,
         'PreferredName': None,
         'CommunicationDeliveryPreference':
-            lambda original: 'Physical Original Document' if original else
-            "Printed Digital Document",
+            lambda original: 'Physical' if original else 'Digital',
         'GlobalPartner': None,
         'GPID': lambda ref: '65-' + ref,
         'FirstName': None,
@@ -56,7 +53,7 @@ class ResPartnerMapping(OnrampMapping):
     }
 
     CONSTANTS = {
-        "GlobalPartner": "Switzerland",
+        "GlobalPartner": "Compassion Switzerland",
         "Status": "Active",
     }
 

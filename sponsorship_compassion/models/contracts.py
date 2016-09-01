@@ -82,8 +82,6 @@ class SponsorshipContract(models.Model):
     reading_language = fields.Many2one(
         'res.lang.compassion', 'Preferred language', required=False)
 
-    global_id = fields.Char()
-
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
@@ -405,6 +403,41 @@ class SponsorshipContract(models.Model):
     #                            WORKFLOW METHODS                            #
     ##########################################################################
     @api.multi
+    def contract_active(self):
+        """ Hook for doing something when contract is activated.
+        Update child to mark it has been sponsored,
+        and activate gift contracts.
+        Send messages to GMC.
+        """
+        for contract in self.filtered(lambda c: 'S' in c.type):
+            # UpsertConstituent Message
+            partner = contract.correspondant_id
+            partner.upsert_constituent()
+
+            message_obj = self.env['gmc.message.pool']
+            action_id = self.env.ref(
+                'sponsorship_compassion.create_sponsorship').id
+
+            message_vals = {
+                'partner_id': contract.correspondant_id.id,
+                'child_id': contract.child_id.id,
+                'action_id': action_id,
+                'object_id': contract.id
+            }
+            message_obj.create(message_vals)
+
+        super(SponsorshipContract, self).contract_active()
+        con_line_obj = self.env['recurring.contract.line']
+        for contract in self.filtered(lambda c: 'S' in c.type):
+            contract.child_id.write({'has_been_sponsored': True})
+            gift_contract_lines = con_line_obj.search([
+                ('sponsorship_id', '=', contract.id)])
+            gift_contract_lines.mapped('contract_id').signal_workflow(
+                'contract_active')
+
+        return True
+
+    @api.multi
     def contract_cancelled(self):
         res = super(SponsorshipContract, self).contract_cancelled()
 
@@ -476,52 +509,29 @@ class SponsorshipContract(models.Model):
                 else:
                     contract.signal_workflow('contract_terminated')
 
-            # Cancel Sponsorship Message
-            message_obj = self.env['gmc.message.pool']
-            action_id = self.env.ref(
-                'sponsorship_compassion.cancel_sponsorship').id
+            if sponsorship.global_id:
+                # Cancel Sponsorship Message
+                message_obj = self.env['gmc.message.pool']
+                action_id = self.env.ref(
+                    'sponsorship_compassion.cancel_sponsorship').id
 
-            message_vals = {
-                'action_id': action_id,
-                'object_id': sponsorship.id,
-                'partner_id': sponsorship.correspondant_id.id,
-                'child_id': sponsorship.child_id.id
-            }
-            message_obj.create(message_vals)
-
-    @api.multi
-    def contract_active(self):
-        """ Hook for doing something when contract is activated.
-        Update child to mark it has been sponsored,
-        and activate gift contracts.
-        Send messages to GMC.
-        """
-        for contract in self.filtered(
-                lambda c: 'S' in c.type and not c.is_active):
-            # UpsertConstituent Message
-            partner = contract.correspondant_id
-            partner.upsert_constituent()
-
-            message_obj = self.env['gmc.message.pool']
-            action_id = self.env.ref(
-                'sponsorship_compassion.create_sponsorship').id
-
-            message_vals = {
-                'action_id': action_id,
-                'object_id': contract.id
-            }
-            message_obj.create(message_vals)
-
-        super(SponsorshipContract, self).contract_active()
-        con_line_obj = self.env['recurring.contract.line']
-        for contract in self.filtered(lambda c: 'S' in c.type):
-            contract.child_id.write({'has_been_sponsored': True})
-            gift_contract_lines = con_line_obj.search([
-                ('sponsorship_id', '=', contract.id)])
-            gift_contract_lines.mapped('contract_id').signal_workflow(
-                'contract_active')
-
-        return True
+                message_vals = {
+                    'action_id': action_id,
+                    'object_id': sponsorship.id,
+                    'partner_id': sponsorship.correspondant_id.id,
+                    'child_id': sponsorship.child_id.id
+                }
+                message_obj.create(message_vals)
+            else:
+                # Remove CreateSponsorship message.
+                message_obj = self.env['gmc.message.pool']
+                action_id = self.env.ref(
+                    'sponsorship_compassion.create_sponsorship').id
+                message_obj.search([
+                    ('action_id', '=', action_id),
+                    ('state', 'in', ['new', 'failure']),
+                    ('object_id', '=', sponsorship.id),
+                ]).unlink()
 
     @api.multi
     def _on_change_child_id(self, vals):

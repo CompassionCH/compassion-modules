@@ -30,7 +30,7 @@ class recurring_contract(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    global_id = fields.Char(help='Connect global ID')
+    global_id = fields.Char(help='Connect global ID', readonly=True)
     child_id = fields.Many2one(
         'compassion.child', 'Sponsored child', readonly=True, copy=False,
         states={'draft': [('readonly', False)],
@@ -237,14 +237,8 @@ class recurring_contract(models.Model):
     ##########################################################################
     @api.multi
     def invoice_unpaid(self, invoice):
-        """ Check if at least one invoice is paid.
-            Cancel activation otherwise.
-        """
-        for contract in self.filtered(lambda c: c.state == 'active'):
-            paid_invoices = contract.invoice_line_ids.filtered(
-                lambda l: l.state == 'paid')
-            if not paid_invoices:
-                contract.signal_workflow('contract_activation_cancelled')
+        """ Hook when invoice is unpaid """
+        pass
 
     @api.multi
     def invoice_paid(self, invoice):
@@ -334,12 +328,12 @@ class recurring_contract(models.Model):
     ##########################################################################
     #                            WORKFLOW METHODS                            #
     ##########################################################################
-    @api.one
+    @api.multi
     def contract_active(self):
-        vals = {'state': 'active'}
-        if not self.is_active:
-            vals.update({'activation_date': datetime.today().strftime(DF)})
-        self.write(vals)
+        self.filtered(lambda c: not c.is_active).write({
+            'activation_date': fields.Date.today()
+        })
+        self.write({'state': 'active'})
         # self.child_id.hold_id.active = False
         # self.child_id.hold_id = None
         return True
