@@ -25,6 +25,7 @@ class WeeklyRevision(models.Model):
     # Demand fields
     web_demand = fields.Integer()
     ambassador_demand = fields.Integer()
+    sub_demand = fields.Integer()
     events_demand = fields.Integer()
     total_demand = fields.Integer()
 
@@ -32,6 +33,7 @@ class WeeklyRevision(models.Model):
     web_resupply = fields.Float()
     ambassador_resupply = fields.Float()
     cancellation = fields.Float()
+    sub_resupply = fields.Integer()
     events_resupply = fields.Integer()
     total_resupply = fields.Integer()
 
@@ -39,12 +41,14 @@ class WeeklyRevision(models.Model):
     # (how many holds we requested that week)
     web_sponsorships = fields.Integer(readonly=True)
     ambassador_sponsorships = fields.Integer(readonly=True)
+    sub_sponsorships = fields.Integer(readonly=True)
     events_sponsorships = fields.Integer(readonly=True)
     cancellation_sponsorships = fields.Integer(readonly=True)
     total_sponsorships = fields.Integer(readonly=True)
 
     web_holds = fields.Integer(readonly=True)
     ambassador_holds = fields.Integer(readonly=True)
+    sub_holds = fields.Integer(readonly=True)
     events_holds = fields.Integer(readonly=True)
     total_holds = fields.Integer(readonly=True)
 
@@ -71,6 +75,8 @@ class WeeklyRevision(models.Model):
         web_holds = len(holds.filtered(lambda h: h.channel == 'web'))
         ambassador_holds = len(holds.filtered(
             lambda h: h.channel == 'ambassador'))
+        sub_holds = len(holds.filtered(
+            lambda h: h.type == 'Sub Child Hold'))
         event_holds = len(holds.filtered(lambda h: h.channel == 'event'))
 
         # Sponsorships created in the period
@@ -81,10 +87,13 @@ class WeeklyRevision(models.Model):
             ('state', '!=', 'cancelled'),
         ])
         web_sponsorships = len(sponsorships.filtered(
-            lambda s: s.channel == 'website'))
+            lambda s: s.channel == 'website' and
+            s.origin_id.type not in ('partner', 'event', 'sub')))
         ambassador_sponsorships = len(sponsorships.filtered(
             lambda s: s.origin_id.type == 'partner' and
             s.origin_id.partner_id))
+        sub_sponsorships = len(sponsorships.filtered(
+            lambda s: s.origin_id.type == 'sub'))
         event_sponsorships = len(sponsorships.filtered(
             lambda s: s.origin_id.type == 'event'))
         cancel_sponsorships = self.env['recurring.contract'].search_count([
@@ -98,10 +107,12 @@ class WeeklyRevision(models.Model):
         revision.write({
             'web_holds': web_holds,
             'ambassador_holds': ambassador_holds,
+            'sub_holds': sub_holds,
             'events_holds': event_holds,
             'total_holds': len(holds),
             'web_sponsorships': web_sponsorships,
             'ambassador_sponsorships': ambassador_sponsorships,
+            'sub_sponsorships': sub_sponsorships,
             'events_sponsorships': event_sponsorships,
             'cancellation_sponsorships': cancel_sponsorships,
             'total_sponsorships': len(sponsorships),
