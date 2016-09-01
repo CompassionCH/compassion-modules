@@ -30,7 +30,7 @@ class CompassionHold(models.Model):
         'Child on hold', related='child_id.name', readonly=True)
     type = fields.Selection('get_hold_types')
     expiration_date = fields.Datetime()
-    primary_owner = fields.Char()
+    primary_owner = fields.Many2one('res.users')
     secondary_owner = fields.Char()
     no_money_yield_rate = fields.Float()
     yield_rate = fields.Float()

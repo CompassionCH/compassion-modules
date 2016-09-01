@@ -74,7 +74,7 @@ class EndContractWizard(models.TransientModel):
                     'expiration_date': self.hold_expiration_date,
                     'hold_expiration_date': self.hold_expiration_date,
                     'number_of_beneficiaries': '1',
-                    'primary_owner': self.env.user.name,
+                    'primary_owner': self.env.uid,
                     'icp_id': child.project_id.id,
                     'child_id': child.id
                 })

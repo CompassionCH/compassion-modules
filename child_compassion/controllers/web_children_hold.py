@@ -66,11 +66,14 @@ def hold_children_job(session, research_id):
         active_id=research_id).sudo()
     expiration_date = datetime.now() + timedelta(minutes=15)
 
+    user_id = session.env['res.users'].\
+        search([('name', '=', 'Reber Rose-Marie')]).id
+
     holds = child_hold.create({
         'type': 'E-Commerce Hold',
         'hold_expiration_date': expiration_date.strftime(
             "%Y-%m-%dT%H:%M:%SZ"),
-        'primary_owner': 'Roma Reber',
+        'primary_owner': user_id,
         'secondary_owner': 'Carole Rochat',
         'no_money_yield_rate': '1.1',
         'yield_rate': '1.1',
