@@ -20,7 +20,7 @@ class ChildLifecycleEvent(models.Model):
     _name = 'compassion.child.ble'
     _description = 'Child Lifecycle Event'
     _inherit = 'translatable.model'
-    _order = 'date desc'
+    _order = 'date desc, id desc'
 
     child_id = fields.Many2one(
         'compassion.child', 'Child', required=True, ondelete='cascade',
