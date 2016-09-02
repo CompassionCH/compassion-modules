@@ -215,7 +215,7 @@ class OdooMail(models.Model):
     def _track_sendgrid_emails(self):
         """ Create tracking e-mails after successfully sent with Sendgrid. """
         self.ensure_one()
-        m_tracking = self.env['mail.tracking.email']
+        m_tracking = self.env['mail.tracking.email'].sudo()
         track_vals = self._prepare_sendgrid_tracking()
         for recipient in tools.email_split_and_format(self.email_to):
             track_vals['recipient'] = recipient

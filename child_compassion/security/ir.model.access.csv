@@ -6,7 +6,7 @@ access_document_directory,Full access on document_directory,document.model_docum
 access_res_lang_compassion,Read only access on res_lang_compassion,model_res_lang_compassion,group_sponsorship,1,0,0,0
 access_admin_res_lang_compassion,Full access on res_lang_compassion,model_res_lang_compassion,base.group_erp_manager,1,1,1,1
 access_child_assessement,Read access on child_assessement,model_compassion_child_cdpr,group_sponsorship,1,0,1,0
-access_child_lifecycle,Read access on child lifecycle,model_compassion_child_ble,group_sponsorship,1,0,1,0
+access_child_lifecycle,Read access on child lifecycle,model_compassion_child_ble,group_sponsorship,1,1,1,0
 access_child_household,Read access on child household,model_compassion_household,group_sponsorship,1,1,1,0
 access_child_household_duty,Read access on household duty,model_child_household_duty,group_sponsorship,1,0,1,0
 access_child_project_activity,Read access on child project activity,model_child_project_activity,group_sponsorship,1,0,1,0
