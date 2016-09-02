@@ -498,6 +498,16 @@ class CompassionChild(models.Model):
         self.desc_it = ChildDescriptionIt.gen_it_translation(
             self.with_context(lang='it_IT'))
 
+    # Lifecycle methods
+    ###################
+    def depart(self):
+        self.write({'state': 'F'})
+
+    def reinstatement(self):
+        """ Called by Lifecycle Event. Hold and state of Child is
+        handled by the Reinstatement Hold Notification. """
+        self.get_infos()
+
     ##########################################################################
     #                            WORKFLOW METHODS                            #
     ##########################################################################
@@ -534,7 +544,10 @@ class CompassionChild(models.Model):
     @api.multi
     def child_departed(self):
         """ Is called when a child changes his status to 'F'. """
-        self.write({'sponsor_id': False})
+        sponsored_children = self.filtered('has_been_sponsored')
+        other_children = self - sponsored_children
+        other_children.unlink()
+        sponsored_children.write({'sponsor_id': False})
         return True
 
     ##########################################################################
