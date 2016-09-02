@@ -22,8 +22,9 @@ class ChildHoldWizard(models.TransientModel):
     type = fields.Selection(
         selection='_get_hold_types', required=True, default='Consignment Hold')
     hold_expiration_date = fields.Datetime(required=True)
-    primary_owner = fields.Char(required=True,
-                                default=lambda self: self.env.user.name)
+    primary_owner = fields.Many2one('res.users',
+                                    required=True,
+                                    default=lambda self: self.env.uid)
     secondary_owner = fields.Char()
     no_money_yield_rate = fields.Float()
     yield_rate = fields.Float()
@@ -47,7 +48,7 @@ class ChildHoldWizard(models.TransientModel):
             'child_id': child_comp.id,
             'type': self.type,
             'expiration_date': self.hold_expiration_date,
-            'primary_owner': self.primary_owner,
+            'primary_owner': self.primary_owner.id,
             'secondary_owner': self.secondary_owner,
             'no_money_yield_rate': self.no_money_yield_rate,
             'yield_rate': self.yield_rate,

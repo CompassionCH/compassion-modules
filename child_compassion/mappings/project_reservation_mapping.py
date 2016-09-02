@@ -31,7 +31,7 @@ class ProjetReservationCreateMapping(OnrampMapping):
         'ID': 'reservation_id',
         'IsReservationAutoApproved': 'is_reservation_auto_approved',
         'NumberOfBeneficiaries': 'number_of_beneficiaries',
-        'PrimaryOwner': 'primary_owner',
+        'PrimaryOwner': 'primary_owner.name',
         'SecondaryOwner': 'secondary_owner',
         'Reservation_ID': 'reservation_id',
     }
