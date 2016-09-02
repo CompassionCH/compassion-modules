@@ -115,7 +115,8 @@ class WeeklyDemand(models.Model):
         start_date = datetime.today() - timedelta(weeks=52)
         web_sponsored = self.env['recurring.contract'].search_count([
             ('channel', '=', 'internet'),
-            ('start_date', '>=', fields.Date.to_string(start_date))
+            ('start_date', '>=', fields.Date.to_string(start_date)),
+            ('origin_id.type', 'not in', ('partner', 'event', 'sub'))
         ])
         allocate_per_week = int(self.env['ir.config_parameter'].get_param(
             'crm_compassion.number_children_web'))
