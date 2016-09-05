@@ -94,24 +94,38 @@ class WeeklyDemand(models.Model):
     @api.depends('week_start_date', 'week_end_date')
     @api.multi
     def _compute_demand_events(self):
-        days_before_event = int(self.env['ir.config_parameter'].get_param(
-            'crm_compassion.days_allocate_before_event'))
         for week in self.filtered('week_start_date').filtered('week_end_date'):
-            start_date = fields.Date.from_string(week.week_start_date) + \
-                timedelta(days=days_before_event)
-            end_date = fields.Date.from_string(week.week_end_date) + \
-                timedelta(days=days_before_event)
             events = self.env['crm.event.compassion'].search([
-                ('start_date', '>=', fields.Date.to_string(start_date)),
-                ('start_date', '<=', fields.Date.to_string(end_date)),
+                ('hold_start_date', '>=', week.week_start_date),
+                ('hold_start_date', '<=', week.week_end_date)
             ])
-            allocate = sum(events.mapped('number_allocate_children'))
-            resupply = allocate - sum(events.mapped('planned_sponsorships'))
-            if resupply < 0:
-                allocate -= resupply
-                resupply = 0
+            allocate = 0
+            for event in events:
+                weeks_before_event = (
+                     fields.Date.from_string(event.start_date) -
+                     fields.Date.from_string(event.hold_start_date)
+                ).days / 7
+                event_allocate = event.number_allocate_children
+                if weeks_before_event > 0:
+                    event_allocate = event.number_allocate_children / \
+                                 weeks_before_event
+                allocate += event_allocate
+            setting = int(self.env['ir.config_parameter'].get_param(
+                'crm_compassion.days_for_hold'))
+            events = self.env['crm.event.compassion'].search([
+                ('end_date', '>=', week.week_start_date)
+            ]).filtered(
+                lambda s: (
+                    (fields.Datetime.from_string(s.end_date) + timedelta(
+                        days=setting) >= week.week_start_date) and
+                    (fields.Datetime.from_string(s.end_date) + timedelta(
+                        days=setting) <= week.week_end_date)
+                )
+            )
+            for event in events:
+                week.resupply_events += event.planned_sponsorships - \
+                                        event.children_allocate
             week.number_children_events = allocate
-            week.resupply_events = resupply
 
     @api.model
     def _default_demand_sub(self):

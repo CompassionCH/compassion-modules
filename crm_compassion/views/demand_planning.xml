@@ -119,6 +119,7 @@
                     </group>
                     <group string="Events Allocation">
                         <field name="days_allocate_before_event" string="Number of days to make child allocations before an event"/>
+                        <field name="days_for_hold" string="Number of days for the child allocations"/>
                     </group>
                 </form>
             </field>
