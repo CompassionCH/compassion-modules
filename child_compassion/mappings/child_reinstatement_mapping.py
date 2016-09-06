@@ -19,7 +19,7 @@ class ReinstatementMapping(OnrampMapping):
     CONNECT_MAPPING = {
         'BeneficiaryState': 'type',
         'BeneficiaryOrder_ID': 'hold_id',
-        'PrimaryHoldOwner': 'primary_owner',
+        'PrimaryHoldOwner': 'primary_owner.name',
         'BeneficiaryReinstatementReason': 'reinstatement_reason',
         'Beneficiary_GlobalID': ('child_id.global_id', 'compassion.child'),
 

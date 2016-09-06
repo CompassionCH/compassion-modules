@@ -20,7 +20,7 @@ class ChildLifecycleEvent(models.Model):
     _name = 'compassion.child.ble'
     _description = 'Child Lifecycle Event'
     _inherit = 'translatable.model'
-    _order = 'date desc'
+    _order = 'date desc, id desc'
 
     child_id = fields.Many2one(
         'compassion.child', 'Child', required=True, ondelete='cascade',
@@ -242,6 +242,11 @@ class ChildLifecycleEvent(models.Model):
             lifecycle.write(vals)
         else:
             lifecycle = super(ChildLifecycleEvent, self).create(vals)
+            # Process lifecycle event
+            if 'Exit' in lifecycle.type:
+                lifecycle.child_id.depart()
+            elif lifecycle.type == 'Reinstatement':
+                lifecycle.child_id.reinstatement()
         return lifecycle
 
     @api.model
@@ -255,12 +260,7 @@ class ChildLifecycleEvent(models.Model):
         for single_data in commkit_data.get('BeneficiaryLifecycleEventList',
                                             [commkit_data]):
             vals = lifecycle_mapping.get_vals_from_connect(single_data)
-            lifecycle = self.search([(
-                'global_id', '=', vals['global_id'])])
-            if lifecycle:
-                lifecycle.write(vals)
-            else:
-                lifecycle = self.create(vals)
+            lifecycle = self.create(vals)
             lifecycle_ids.append(lifecycle.id)
 
         return lifecycle_ids

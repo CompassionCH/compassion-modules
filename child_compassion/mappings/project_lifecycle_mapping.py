@@ -12,7 +12,7 @@ from openerp.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 
-class ICPMapping(OnrampMapping):
+class ICPLifecycleMapping(OnrampMapping):
     ODOO_MODEL = 'compassion.project.ile'
     MAPPING_NAME = "new_project_lifecyle"
 

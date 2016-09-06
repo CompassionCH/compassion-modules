@@ -30,3 +30,14 @@ class ChildCompassion(models.Model):
             child.sponsorship_ids = con_obj.search([
                 ('child_id', '=', child.id),
                 ('type', '=', 'S')])
+
+    def depart(self):
+        """ End the sponsorship. """
+        for child in self.filtered('sponsor_id'):
+            sponsorship = child.sponsorship_ids[0]
+            sponsorship.with_context(default_type='S').write({
+                'end_reason': '1',  # Child departure
+                'end_date': fields.Date.today(),
+            })
+            sponsorship.signal_workflow('contract_terminated')
+        super(ChildCompassion, self).depart()

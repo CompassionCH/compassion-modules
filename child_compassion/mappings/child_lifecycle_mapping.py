@@ -12,7 +12,7 @@ from openerp.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 
-class BeneficiaryMapping(OnrampMapping):
+class LifecycleMapping(OnrampMapping):
     ODOO_MODEL = 'compassion.child.ble'
     MAPPING_NAME = 'new_child_lifecyle'
 
@@ -57,3 +57,10 @@ class BeneficiaryMapping(OnrampMapping):
     CONSTANTS = {
 
     }
+
+    def _convert_connect_data(self, connect_name, value_mapping, value,
+                              relation_search=None):
+        if connect_name == 'Beneficiary_GlobalID':
+            relation_search = [('active', '=', False)]
+        return super(LifecycleMapping, self)._convert_connect_data(
+            connect_name, value_mapping, value, relation_search)

@@ -30,7 +30,7 @@ class ProjectReservation(models.Model):
     hold_yield_rate = fields.Integer()
     is_reservation_auto_approved = fields.Boolean(default=True)
     number_of_beneficiaries = fields.Integer(required=True)
-    primary_owner = fields.Char(required=True)
+    primary_owner = fields.Many2one('res.users', required=True)
     secondary_owner = fields.Char()
     active = fields.Boolean(default=True, readonly=True)
 

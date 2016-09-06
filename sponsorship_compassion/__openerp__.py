@@ -54,7 +54,6 @@
         'data/gmc_action.xml',
         'data/migrate_r4.xml',
         'data/migrate_analytic.xml',
-        'workflow/contract_workflow.xml',
         'security/ir.model.access.csv',
     ],
     'demo': [

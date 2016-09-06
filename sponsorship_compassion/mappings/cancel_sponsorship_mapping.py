@@ -53,7 +53,7 @@ class CancelSponsorship(BaseSponsorshipMapping):
                 'child_id': child.id,
                 'type': 'Consignment Hold',
                 'expiration_date': end_date,
-                'primary_owner': 'Rose-Marie Reber',
+                'primary_owner': self.env.uid,
                 'secondary_owner': 'Carole Rochat',
                 'no_money_yield_rate': '1.1',
                 'yield_rate': '1.1',

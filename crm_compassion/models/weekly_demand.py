@@ -119,7 +119,8 @@ class WeeklyDemand(models.Model):
         start_date = datetime.today() - timedelta(weeks=STATS_DURATION)
         sub_sponsored = self.env['recurring.contract'].search_count([
             ('origin_id.type', '=', 'sub'),
-            ('start_date', '>=', fields.Date.to_string(start_date))
+            ('start_date', '>=', fields.Date.to_string(start_date)),
+            ('channel', '!=', 'internet')
         ])
         return float(sub_sponsored) / STATS_DURATION
 
@@ -140,9 +141,7 @@ class WeeklyDemand(models.Model):
         start_date = datetime.today() - timedelta(weeks=STATS_DURATION)
         web_sponsored = self.env['recurring.contract'].search_count([
             ('channel', '=', 'internet'),
-            ('start_date', '>=', fields.Date.to_string(start_date)),
-            ('origin_id.type', 'not in', ('partner', 'event', 'sub')),
-            ('partner_id.user_ids', '!=', False)
+            ('start_date', '>=', fields.Date.to_string(start_date))
         ])
         allocate_per_week = int(self.env['ir.config_parameter'].get_param(
             'crm_compassion.number_children_web'))
@@ -158,7 +157,8 @@ class WeeklyDemand(models.Model):
             ('origin_id.type', '=', 'partner'),
             ('origin_id.partner_id', '!=', False),
             ('origin_id.partner_id.user_ids', '!=', False),
-            ('start_date', '>=', fields.Date.to_string(start_date))
+            ('start_date', '>=', fields.Date.to_string(start_date)),
+            ('channel', '!=', 'internet')
         ])
         allocate_per_week = int(self.env['ir.config_parameter'].get_param(
             'crm_compassion.number_children_ambassador'))
@@ -174,7 +174,8 @@ class WeeklyDemand(models.Model):
             ('origin_id.type', '=', 'sub'),
             ('start_date', '>=',
              datetime.today() - timedelta(weeks=STATS_DURATION)),
-            ('end_date', '!=', None)
+            ('end_date', '!=', None),
+            ('channel', '!=', 'internet')
         ]).filtered(
             lambda s: ((
                            fields.Date.from_string(s.end_date) -
@@ -190,7 +191,8 @@ class WeeklyDemand(models.Model):
                     ('origin_id.type', '=', 'sub'),
                     ('start_date', '>=', start_date),
                     ('start_date', '<=', fields.Date.from_string(
-                        week.week_end_date) - timedelta(days=SUB_DURATION))
+                        week.week_end_date) - timedelta(days=SUB_DURATION)),
+                    ('channel', '!=', 'internet')
                 ])
                 week.resupply_sub = sub * (sub_reject_average / sub_average)
             else:
@@ -203,6 +205,7 @@ class WeeklyDemand(models.Model):
         cancellations = self.env['recurring.contract'].search_count([
             ('state', '=', 'terminated'),
             ('origin_id.type', '!=', 'sub'),
+            ('channel', '!=', 'internet'),
             ('end_reason', '!=', '1'),
             ('end_date', '>=', fields.Date.to_string(start_date))
         ])
