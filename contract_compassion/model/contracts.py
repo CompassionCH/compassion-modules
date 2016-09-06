@@ -15,6 +15,8 @@ from openerp import models, fields, api, exceptions, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.addons.connector.queue.job import job, related_action
 from openerp.addons.connector.session import ConnectorSession
+from openerp.addons.child_compassion.models.compassion_hold import \
+    HoldType
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -382,6 +384,15 @@ class recurring_contract(models.Model):
                     months=+1)
             if next_invoice_date > old_invoice_date:
                 vals['next_invoice_date'] = next_invoice_date.strftime(DF)
+
+        if self.type == 'S':
+            # Update the hold of the child to No Money Hold
+            hold = self.child_id.hold_id
+            hold.write({
+                'type': HoldType.NO_MONEY_HOLD.value,
+                'expiration_date': hold.get_default_hold_expiration(
+                    HoldType.NO_MONEY_HOLD)
+            })
 
         self.write(vals)
         return True

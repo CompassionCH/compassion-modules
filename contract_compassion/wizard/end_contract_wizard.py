@@ -12,6 +12,9 @@
 from openerp import models, fields, api
 from openerp.osv import orm
 
+from openerp.addons.child_compassion.models.compassion_hold import \
+    HoldType
+
 from lxml import etree
 
 
@@ -31,8 +34,11 @@ class EndContractWizard(models.TransientModel):
     transfer_country_id = fields.Many2one(
         'compassion.global.partner', 'Country')
     has_new_hold = fields.Boolean('Keep child on hold', default=True)
-    hold_expiration_date = fields.Datetime(default=fields.Datetime.now,
-                                           required=True)
+    hold_expiration_date = fields.Datetime(
+        default=lambda s: s.env[
+            'compassion.hold'].get_default_hold_expiration(
+            HoldType.SPONSOR_CANCEL_HOLD),
+        required=True)
 
     @api.model
     def _get_child_id(self):
@@ -80,6 +86,12 @@ class EndContractWizard(models.TransientModel):
                 })
             child.write({'active': False, 'state': 'F'})
         else:
+            if has_hold:
+                # Update the hold
+                child.hold_id.write({
+                    'type': HoldType.SPONSOR_CANCEL_HOLD.value,
+                    'expiration_date': self.hold_expiration_date
+                })
             # The sponsorship was not active
             if not has_hold:
                 child.hold_id.active = False

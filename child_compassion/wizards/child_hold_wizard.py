@@ -9,6 +9,7 @@
 #
 ##############################################################################
 from openerp import models, api, fields, _
+from ..models.compassion_hold import HoldType
 
 
 class ChildHoldWizard(models.TransientModel):
@@ -20,7 +21,8 @@ class ChildHoldWizard(models.TransientModel):
     ##########################################################################
 
     type = fields.Selection(
-        selection='_get_hold_types', required=True, default='Consignment Hold')
+        selection='_get_hold_types', required=True,
+        default=HoldType.CONSIGNMENT_HOLD.value)
     hold_expiration_date = fields.Datetime(required=True)
     primary_owner = fields.Many2one('res.users',
                                     required=True,
@@ -42,6 +44,9 @@ class ChildHoldWizard(models.TransientModel):
     def _get_hold_types(self):
         return self.env['compassion.hold'].get_hold_types()
 
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
     @api.multi
     def create_hold_vals(self, child_comp):
         return {
@@ -76,6 +81,9 @@ class ChildHoldWizard(models.TransientModel):
             'unsponsored_since': child.unsponsored_since,
         }
 
+    ##########################################################################
+    #                             VIEW CALLBACKS                             #
+    ##########################################################################
     @api.multi
     def send(self):
 
@@ -113,3 +121,9 @@ class ChildHoldWizard(models.TransientModel):
             'res_model': 'compassion.hold',
             'target': 'current',
         }
+
+    @api.onchange('type')
+    def onchange_type(self):
+        self.hold_expiration_date = self.env[
+            'compassion.hold'].get_default_hold_expiration(
+                HoldType.from_string(self.type))

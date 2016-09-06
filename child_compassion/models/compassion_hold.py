@@ -8,12 +8,40 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+from enum import Enum
+
+from datetime import datetime, timedelta
 
 from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from openerp import api, models, fields, _
 from openerp.exceptions import Warning
 
 from ..mappings.childpool_create_hold_mapping import ReservationToHoldMapping
+
+
+class HoldType(Enum):
+    """ Defines available Hold Types. """
+    CHANGE_COMMITMENT_HOLD = 'Change Commitment Hold'
+    CONSIGNMENT_HOLD = 'Consignment Hold'
+    DELINQUENT_HOLD = 'Delinquent Mass Cancel Hold'
+    E_COMMERCE_HOLD = 'E-Commerce Hold'
+    NO_MONEY_HOLD = 'No Money Hold'
+    REINSTATEMENT_HOLD = 'Reinstatement Hold'
+    RESERVATION_HOLD = 'Reservation Hold'
+    SPONSOR_CANCEL_HOLD = 'Sponsor Cancel Hold'
+    SUB_CHILD_HOLD = 'Sub Child Hold'
+
+    @staticmethod
+    def get_hold_types():
+        return [attr.value for attr in HoldType]
+
+    @staticmethod
+    def from_string(hold_type):
+        """ Gets the HoldType given its string representation. """
+        for etype in HoldType:
+            if etype.value == hold_type:
+                return etype
+        return False
 
 
 class CompassionHold(models.Model):
@@ -50,21 +78,21 @@ class CompassionHold(models.Model):
     ##########################################################################
     @api.model
     def get_hold_types(self):
-        return [
-            ('Available', 'Available'),
-            ('Change Commitment Hold', 'Change Commitment Hold'),
-            ('Consignment Hold', 'Consignment Hold'),
-            ('Delinquent Mass Cancel Hold', 'Delinquent Mass Cancel Hold'),
-            ('E-Commerce Hold', 'E-Commerce Hold'),
-            ('Inactive', 'Inactive'),
-            ('Ineligible', 'Ineligible'),
-            ('No Money Hold', 'No Money Hold'),
-            ('Reinstatement Hold', 'Reinstatement Hold'),
-            ('Reservation Hold', 'Reservation Hold'),
-            ('Sponsor Cancel Hold', 'Sponsor Cancel Hold'),
-            ('Sponsored', 'Sponsored'),
-            ('Sub Child Hold', 'Sub Child Hold')
-        ]
+        return [(hold, hold) for hold in HoldType.get_hold_types()]
+
+    @api.model
+    def get_default_hold_expiration(self, hold_type):
+        """
+        Get the default hold expiration date.
+        :param hold_type: HoldType Enum
+        :return:
+        """
+        config_obj = self.env['availability.management.settings']
+        hold_param = hold_type.name.lower() + '_duration'
+        duration = config_obj.get_default_values([hold_param])[hold_param]
+        diff = timedelta(days=duration) if hold_type != \
+            HoldType.E_COMMERCE_HOLD else timedelta(minutes=duration)
+        return fields.Datetime.to_string(datetime.now() + diff)
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -97,7 +125,7 @@ class CompassionHold(models.Model):
             'action_id': action_id,
             'object_id': self.id
         }
-        message_obj.create(message_vals)
+        message_obj.create(message_vals).process_messages()
 
     @api.multi
     def hold_sent(self, vals):
@@ -114,12 +142,14 @@ class CompassionHold(models.Model):
                 }
                 child_to_update.write(child_vals)
             else:
+                # TODO Put hold in failure
                 # delete child if no hold_id received
                 child_to_update.unlink()
                 hold.unlink()
 
     @api.model
-    def process_commkit(self, commkit_data):
+    def reinstatement_notification(self, commkit_data):
+        """ Called when a child was Reinstated. """
         hold_ids = list()
         reinstatement_mapping = ReinstatementMapping(self.env)
 
@@ -138,6 +168,11 @@ class CompassionHold(models.Model):
                     [('child_id', '=', hold.child_id.id)],
                     limit=1).partner_id.id,
                 'hold_id': hold.id
+            })
+            # Update hold duration to what is configured
+            hold.write({
+                'expiration_date': self.get_default_hold_expiration(
+                    HoldType.REINSTATEMENT_HOLD)
             })
             hold_ids.append(hold.id)
 

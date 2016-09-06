@@ -165,6 +165,7 @@
             <field name="direction">in</field>
             <field name="name">NewReinstatementNotification</field>
             <field name="mapping_name">new_reinstatement_notification</field>
+            <field name="incoming_method">reinstatement_notification</field>
             <field name="model">compassion.hold</field>
             <field name="description">This will create a new reinstatement notification.</field>
             <field name="auto_process">1</field>
