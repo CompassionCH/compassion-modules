@@ -206,6 +206,24 @@ class recurring_contract(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    @api.multi
+    def _filter_clean_invoices(self, since_date=None, to_date=None,
+                               gifts=False):
+        invl_search = super(recurring_contract, self)._filter_clean_invoices(
+            since_date, to_date, gifts)
+        if gifts:
+            # Remove invoices already sent to GMC
+            invl = self.env['account.invoice.line'].search(invl_search).ids
+            action_id = self.get_action_id('CreateGift')
+            messages = self.env['gmc.message.pool'].search([
+                ('action_id', '=', action_id),
+                ('invoice_line_id', 'in', invl),
+                ('state', 'not in', ['draft', 'failure'])
+            ])
+            invl_search.append(('id', 'not in', messages.mapped(
+                'invoice_line_id.id')))
+        return invl_search
+
     @api.model
     def _on_invoice_line_removal(self, invoice_lines):
         """ Removes the messages linked to the invoice line.

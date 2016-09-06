@@ -84,6 +84,7 @@ class compassion_child(models.Model):
         args['event'] = 'Allocate'
         return self.update(args)
 
+    @api.multi
     def deallocate(self, args):
         """Deallocate child.
         This happens only for unsponsored children that are no longer
