@@ -336,6 +336,11 @@ class recurring_contract(models.Model):
         self.write({'state': 'active'})
         # self.child_id.hold_id.active = False
         # self.child_id.hold_id = None
+
+        # Write payment term in partner property
+        for contract in self:
+            contract.partner_id.property_payment_term = \
+                contract.payment_term_id
         return True
 
     @api.multi

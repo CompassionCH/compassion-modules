@@ -472,6 +472,12 @@ class Correspondence(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     @api.multi
+    def compose_letter_button(self):
+        """ Remove old images, download original and compose translation. """
+        self.attach_original()
+        return self.compose_letter_image()
+
+    @api.multi
     def compose_letter_image(self):
         """
         Puts the translated text of a letter inside the original image given
@@ -660,7 +666,9 @@ class Correspondence(models.Model):
 
     @api.multi
     def attach_original(self):
+        self.mapped('letter_image').unlink()
         self.download_attach_letter_image(type='original_letter_url')
+        return True
 
     def get_image(self, user=None):
         """ Method for retrieving the image and updating the read status of
