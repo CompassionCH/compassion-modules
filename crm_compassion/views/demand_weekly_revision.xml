@@ -15,6 +15,7 @@
                         <group>
                             <group string="Demand Prevision">
                                 <field name="web_demand" string="Web"/>
+                                <field name="sub_demand" string="SUB"/>
                                 <field name="ambassador_demand" string="Ambassadors"/>
                                 <field name="events_demand" string="Events"/>
                                 <field name="total_demand"/>
@@ -22,6 +23,7 @@
                             <group string="Resupply Prevision">
                                 <field name="web_resupply" string="Web"/>
                                 <field name="ambassador_resupply" string="Ambassadors"/>
+                                <field name="sub_resupply" string="SUB"/>
                                 <field name="cancellation" string="Cancellations"/>
                                 <field name="events_resupply" string="Events"/>
                                 <field name="total_resupply" string="Total"/>
@@ -29,12 +31,14 @@
                             <group string="Holds Requested">
                                 <field name="web_holds" string="Web"/>
                                 <field name="ambassador_holds" string="Ambassadors"/>
+                                <field name="sub_holds" string="SUB"/>
                                 <field name="events_holds" string="Events"/>
                                 <field name="total_holds" string="Total"/>
                             </group>
                             <group string="Sponsorship Results">
                                 <field name="web_sponsorships" string="Web"/>
                                 <field name="ambassador_sponsorships" string="Ambassadors"/>
+                                <field name="sub_sponsorships" string="SUB"/>
                                 <field name="events_sponsorships" string="Events"/>
                                 <field name="total_sponsorships" string="Total"/>
                                 <separator colspan="2"/>
