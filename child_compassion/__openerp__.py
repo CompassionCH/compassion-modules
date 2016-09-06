@@ -36,7 +36,9 @@
     'website': 'http://www.compassion.ch',
     'depends': ['mail', 'web_m2x_options', 'document',
                 'message_center_compassion'],
-    'external_dependencies': {},
+    'external_dependencies': {
+        'python': ['enum']
+    },
     'data': [
         'security/sponsorship_groups.xml',
         'security/ir.model.access.csv',
