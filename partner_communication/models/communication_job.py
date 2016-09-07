@@ -152,7 +152,8 @@ class CommunicationJob(models.Model):
                 email_vals = {
                     'email_from': _from,
                     'recipient_ids': [(4, partner.id)],
-                    'communication_config_id': self.id,
+                    # 'communication_config_id': self.id,
+                    'communication_config_id': self.config_id.id,
                     'body_html': self.body_html
                 }
                 if self.email_to:
