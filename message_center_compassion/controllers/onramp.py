@@ -18,7 +18,8 @@ _logger = logging.getLogger(__name__)
 
 # Put any authorized sender here. Its address must be part of the headers
 # in order to handle a request.
-AUTHORIZED_SENDERS = ['CHTest', 'CISalesforce', 'CISFDC', 'CINetsuite']
+AUTHORIZED_SENDERS = ['CHTest', 'CISalesforce', 'CISFDC', 'CINetsuite',
+                      'SFDC-CI']
 
 
 class RestController(http.Controller):
