@@ -340,7 +340,7 @@ class GmcMessagePool(models.Model):
                     except Exception as e:
                         mess_vals.update({
                             'state': 'failure',
-                            'failure_reason': e.read(),
+                            'failure_reason': e.message,
                         })
                 else:
                     mess_vals.update({
