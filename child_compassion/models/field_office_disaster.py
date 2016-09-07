@@ -79,11 +79,12 @@ class ChildDisasterImpact(models.Model):
     def create(self, vals):
         """ Log a note in child when new disaster impact is registered. """
         impact = super(ChildDisasterImpact, self).create(vals)
-        impact.child_id.message_post(
-            "Child was affected by the natural disaster {}".format(
-                impact.disaster_id.disaster_name),
-            "Disaster Alert"
-        )
+        if impact.child_id:
+            impact.child_id.message_post(
+                "Child was affected by the natural disaster {}".format(
+                    impact.disaster_id.disaster_name),
+                "Disaster Alert"
+            )
         return impact
 
 
