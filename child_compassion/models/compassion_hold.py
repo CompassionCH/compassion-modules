@@ -12,10 +12,9 @@ from enum import Enum
 
 from datetime import datetime, timedelta
 
-from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from openerp import api, models, fields, _
-from openerp.exceptions import Warning
 
+from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from ..mappings.childpool_create_hold_mapping import ReservationToHoldMapping
 
 
@@ -83,7 +82,7 @@ class AbstractHold(models.AbstractModel):
         config_obj = self.env['availability.management.settings']
         hold_param = hold_type.name.lower() + '_duration'
         duration = config_obj.get_default_values([hold_param])[hold_param]
-        diff = timedelta(days=duration) if hold_type !=  \
+        diff = timedelta(days=duration) if hold_type != \
             HoldType.E_COMMERCE_HOLD else timedelta(minutes=duration)
         return fields.Datetime.to_string(datetime.now() + diff)
 
@@ -160,11 +159,6 @@ class CompassionHold(models.Model):
 
         return res
 
-    @api.multi
-    def unlink(self):
-        self.release_hold()
-        return
-
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
@@ -186,18 +180,15 @@ class CompassionHold(models.Model):
         for hold in self:
             child_to_update = hold.child_id
             if hold.hold_id:
-                hold.state = 'active'
-                child_vals = {
+                child_to_update.write({
                     'hold_id': hold.id,
-                    'active': True,
-                    'state': 'N',
-                }
-                child_to_update.write(child_vals)
+                    'date': fields.Date.today(),
+                    # 'state': 'active'
+                })
             else:
-                # TODO Put hold in failure
-                # delete child if no hold_id received
-                child_to_update.unlink()
+                # Release child if no hold_id received
                 hold.unlink()
+                child_to_update.signal_workflow('release')
 
     @api.model
     def reinstatement_notification(self, commkit_data):
@@ -249,28 +240,37 @@ class CompassionHold(models.Model):
         message_obj = self.env['gmc.message.pool']
         action_id = self.env.ref('child_compassion.release_hold').id
 
-        self.state = 'expired'
-        message_vals = {
-            'action_id': action_id,
-            'object_id': self.id
-        }
+        for hold in self:
+            message_obj.create({
+                'action_id': action_id,
+                'object_id': hold.id
+            })
+            hold.state = 'expired'
+            child = hold.child_id
+            if child:
+                child.hold_id = False
+                if not child.sponsor_id:
+                    child.signal_workflow('release')
 
-        if self.child_id.sponsor_id:
-            raise Warning(_("Cancel impossible"), _("This hold is on a "
-                                                    "sponsored child!"))
-        else:
-            self.child_id.active = False
-            message_obj.create(message_vals)
+        return True
 
     @api.model
     def check_hold_validity(self):
-        expired_holds = self.env['compassion.hold'].search([
-            ('expiration_date', '<',
-             fields.Datetime.now())
+        # Mark old holds as expired and release children if necessary
+        holds = self.env['compassion.hold'].search([
+            ('expiration_date', '<', fields.Datetime.now()),
+            ('state', '=', 'active')
         ])
+        holds.write({'state': 'expired'})
+        free_children = holds.mapped('child_id').filtered(
+            lambda c: not c.sponsor_id)
+        free_children.signal_workflow('release')
 
-        for expired_hold in expired_holds:
-            expired_hold.child_id.active = False
-            expired_hold.state = 'expired'
+        # Remove holds that have no child linked anymore
+        holds = self.env['compassion.hold'].search([
+            ('state', '=', 'expired'),
+            ('child_id', '=', False)
+        ])
+        holds.unlink()
 
         return True

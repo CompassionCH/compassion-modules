@@ -22,6 +22,12 @@ class ChildCompassion(models.Model):
     sponsorship_ids = fields.One2many(
         'recurring.contract', compute='_set_related_contracts',
         string="Sponsorships", readonly=True)
+    has_been_sponsored = fields.Boolean(compute='_compute_has_been_sponsored')
+
+    @api.multi
+    def _compute_has_been_sponsored(self):
+        for child in self:
+            child.has_been_sponsored = child.sponsorship_ids
 
     @api.multi
     def _set_related_contracts(self):

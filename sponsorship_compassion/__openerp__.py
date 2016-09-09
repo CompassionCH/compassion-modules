@@ -46,6 +46,7 @@
         'views/account_invoice_split_wizard_view.xml',
         'views/child_view.xml',
         'views/gmc_message_view.xml',
+        'views/end_contract_wizard_view.xml',
         'data/sequence.xml',
         'data/sponsorship_product.xml',
         'data/analytic_accounting.xml',

@@ -12,6 +12,8 @@
 from openerp import api, exceptions, fields, models, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
+from openerp.addons.child_compassion.models.compassion_hold import HoldType
+
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from lxml import etree
@@ -198,7 +200,7 @@ class SponsorshipContract(models.Model):
                 child_sponsor_id = contract.child_id.sponsor_id and \
                     contract.child_id.sponsor_id.id
                 if child_sponsor_id == contract.correspondant_id.id:
-                    contract.child_id.write({'sponsor_id': False})
+                    contract.child_id.signal_workflow('release')
         return super(SponsorshipContract, self).unlink()
 
     ##########################################################################
@@ -427,11 +429,12 @@ class SponsorshipContract(models.Model):
         super(SponsorshipContract, self).contract_active()
         con_line_obj = self.env['recurring.contract.line']
         for contract in self.filtered(lambda c: 'S' in c.type):
-            contract.child_id.write({'has_been_sponsored': True})
             gift_contract_lines = con_line_obj.search([
                 ('sponsorship_id', '=', contract.id)])
             gift_contract_lines.mapped('contract_id').signal_workflow(
                 'contract_active')
+            # Remove the hold on the child.
+            contract.child_id.hold_id.unlink()
 
         return True
 
@@ -505,7 +508,7 @@ class SponsorshipContract(models.Model):
         Remove sponsor from the child and terminate related gift contracts.
         """
         for sponsorship in self:
-            sponsorship.child_id.write({'sponsor_id': False})
+            # sponsorship.child_id.write({'sponsor_id': False})
             gift_contract_lines = self.env['recurring.contract.line'].search([
                 ('sponsorship_id', '=', sponsorship.id)])
             for line in gift_contract_lines:
@@ -548,7 +551,7 @@ class SponsorshipContract(models.Model):
             if 'S' in contract.type and contract.child_id and \
                     contract.child_id.id != child_id:
                 # Free the previously selected child
-                contract.child_id.write({'sponsor_id': False})
+                contract.child_id.signal_workflow('release')
             if 'S' in contract.type:
                 # Mark the selected child as sponsored
                 self.env['compassion.child'].browse(child_id).write(

@@ -16,8 +16,8 @@ def migrate(cr, version):
 
     # Update children that are in invalid states for R4
     cr.execute("""
-UPDATE compassion_child SET state = 'F' WHERE state = 'X';
-UPDATE compassion_child SET state = 'N' WHERE state = 'R';
+UPDATE compassion_child SET state = 'N' WHERE state IN ('D', 'R', 'Z', 'E');
+UPDATE compassion_child SET state = 'R' WHERE state = 'X';
     """)
 
     # Move languages from sbc_compassion module

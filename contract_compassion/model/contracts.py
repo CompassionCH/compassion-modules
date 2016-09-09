@@ -334,8 +334,6 @@ class recurring_contract(models.Model):
             'activation_date': fields.Date.today()
         })
         self.write({'state': 'active'})
-        # self.child_id.hold_id.active = False
-        # self.child_id.hold_id = None
 
         # Write payment term in partner property
         for contract in self:
@@ -345,13 +343,19 @@ class recurring_contract(models.Model):
 
     @api.multi
     def contract_cancelled(self):
-        self.write({'state': 'cancelled'})
+        self.write({
+            'state': 'cancelled',
+            'end_date': fields.Datetime.now()
+        })
         self.clean_invoices()
         return True
 
     @api.multi
     def contract_terminated(self):
-        self.write({'state': 'terminated'})
+        self.write({
+            'state': 'terminated',
+            'end_date': fields.Datetime.now()
+        })
         self.clean_invoices()
         return True
 
@@ -382,15 +386,6 @@ class recurring_contract(models.Model):
                     months=+1)
             if next_invoice_date > old_invoice_date:
                 vals['next_invoice_date'] = next_invoice_date.strftime(DF)
-
-        if self.type == 'S':
-            # Update the hold of the child to No Money Hold
-            hold = self.child_id.hold_id
-            hold.write({
-                'type': HoldType.NO_MONEY_HOLD.value,
-                'expiration_date': hold.get_default_hold_expiration(
-                    HoldType.NO_MONEY_HOLD)
-            })
 
         self.write(vals)
         return True

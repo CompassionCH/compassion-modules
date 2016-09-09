@@ -220,8 +220,8 @@
                     <field name="sponsor_ref"/>
                     <field name="state"/>
                     <field name="type"/>
-                    <filter name="available" string="Available"
-                            domain="[('state','in',('N','D','I','R','E')), ('project_id.suspension', '=', False)]"
+                    <filter name="available" string="Consigned"
+                            domain="[('state','in',('N','I'))]"
                             context="{'group_by':'state'}"/>
                     <filter name="sponsored" string="Sponsored"
                             domain="[('state','=','P')]"
