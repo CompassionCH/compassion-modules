@@ -18,6 +18,9 @@
                                 <field name="name" />
                             </h1>
                         </div>
+                        <div class="oe_right oe_button_box" name="buttons">
+                            <button name="show_reserved_children" string="Reserved children" type="object" icon="fa-child" class="oe_stat_button"/>
+                        </div>
                         <group>
                             <group>
                                 <field name="channel_name" />

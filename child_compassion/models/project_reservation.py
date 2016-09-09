@@ -88,6 +88,24 @@ class ProjectReservation(models.Model):
             'target': 'current'
         }
 
+    @api.multi
+    def show_reserved_children(self):
+        self.ensure_one()
+
+        holds = self.env['compassion.hold'].search([
+            ('reservation_id', '=', self.id)
+        ])
+        children_ids = holds.mapped('child_id.id')
+
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'res_model': 'compassion.child',
+            'domain': [('id', 'in', children_ids)],
+            'view_mode': 'tree, form',
+            'target': 'new',
+        }
+
     @api.model
     def process_commkit(self, commkit_data):
         # TODO Implement
