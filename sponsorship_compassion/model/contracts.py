@@ -154,7 +154,7 @@ class sponsorship_contract(models.Model):
     def _get_last_paid_invoice(self):
         """ Override to exclude gift invoices. """
         self.last_paid_invoice_date = max(
-            self.invoice_line_ids.filtered(
+            self.with_context(lang='en_US').invoice_line_ids.filtered(
                 lambda l: l.state == 'paid' and
                 l.product_id.categ_name != GIFT_CATEGORY).mapped(
                     'invoice_id.date_invoice') or [False])

@@ -82,7 +82,7 @@ class MassMailing(models.Model):
     def send_mail(self):
         self.ensure_one()
         if self.email_template_id:
-            # Send with SendGrid (and use E-mail Template)
+            # use E-mail Template
             res_ids = self.get_recipients(self)
             if not res_ids:
                 raise Warning('Please select recipients.')
@@ -108,12 +108,11 @@ class MassMailing(models.Model):
             composer = self.env['mail.compose.message'].with_context(
                 lang=self.lang.code or self.env.context['lang'])
             emails = composer.mass_mailing_sendgrid(res_ids, composer_values)
-            emails.send_sendgrid()
             self.write({
                 'state': 'done',
                 'sent_date': fields.Datetime.now(),
             })
-            return True
+            return emails
         else:
             # Traditional sending
             return super(MassMailing, self).send_mail()

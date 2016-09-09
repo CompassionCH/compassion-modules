@@ -10,6 +10,9 @@
 ##############################################################################
 from openerp import api, models, fields, exceptions, _
 
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
 
 class sub_sponsorship_wizard(models.TransientModel):
     _name = "sds.subsponsorship.wizard"
@@ -63,13 +66,19 @@ class sub_sponsorship_wizard(models.TransientModel):
             'origin_id': sub_origin_id,
             'channel': self.channel,
         })
-        next_invoice_date = fields.Date.from_string(
-            contract.last_paid_invoice_date)
-        next_invoice_date = next_invoice_date.replace(
-            month=next_invoice_date.month + 1)
+        if contract.last_paid_invoice_date:
+            next_invoice_date = fields.Date.from_string(
+                contract.last_paid_invoice_date) + relativedelta(months=1)
+        else:
+            today = datetime.today()
+            next_invoice_date = fields.Date.from_string(
+                contract.next_invoice_date).replace(month=today.month,
+                                                    year=today.year)
+
         sub_contract.write({'child_id': child.id})
         sub_contract.signal_workflow('contract_validated')
-        sub_contract.next_invoice_date = next_invoice_date
+        sub_contract.next_invoice_date = fields.Date.to_string(
+            next_invoice_date)
 
         return True
 
