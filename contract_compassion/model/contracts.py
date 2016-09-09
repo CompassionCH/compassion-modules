@@ -15,8 +15,6 @@ from openerp import models, fields, api, exceptions, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp.addons.connector.queue.job import job, related_action
 from openerp.addons.connector.session import ConnectorSession
-from openerp.addons.child_compassion.models.compassion_hold import \
-    HoldType
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta

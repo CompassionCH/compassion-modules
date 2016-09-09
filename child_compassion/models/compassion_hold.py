@@ -44,36 +44,27 @@ class HoldType(Enum):
         return False
 
 
-class CompassionHold(models.Model):
-    _name = 'compassion.hold'
-    _rec_name = 'hold_id'
+class AbstractHold(models.AbstractModel):
+    """ Defines the basics of each model that must set up hold values. """
+    _name = 'compassion.abstract.hold'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    hold_id = fields.Char(readonly=True)
-    child_id = fields.Many2one('compassion.child', 'Child on hold',
-                               readonly=True)
-    child_name = fields.Char(
-        'Child on hold', related='child_id.name', readonly=True)
-    type = fields.Selection('get_hold_types')
-    expiration_date = fields.Datetime()
-    primary_owner = fields.Many2one('res.users')
+    type = fields.Selection(
+        'get_hold_types', required=True,
+        default=HoldType.CONSIGNMENT_HOLD.value
+    )
+    expiration_date = fields.Datetime(required=True)
+    primary_owner = fields.Many2one(
+        'res.users', required=True, default=lambda self: self.env.user
+    )
     secondary_owner = fields.Char()
-    no_money_yield_rate = fields.Float()
     yield_rate = fields.Float()
-    channel = fields.Char()
+    no_money_yield_rate = fields.Float()
+    channel = fields.Selection('get_channel')
     source_code = fields.Char()
-    state = fields.Selection(
-        [('draft', "Draft"), ('active', "Active"), ('expired', "Expired")],
-        string=u"State", readonly=True, default='draft')
-    reinstatement_reason = fields.Char(readonly=True)
-    reservation_id = fields.Many2one('icp.reservation', 'Reservation')
-
-    _sql_constraints = [
-        ('hold_id', 'unique(hold_id)',
-         'The hold already exists in database.'),
-    ]
+    comments = fields.Char()
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -92,9 +83,67 @@ class CompassionHold(models.Model):
         config_obj = self.env['availability.management.settings']
         hold_param = hold_type.name.lower() + '_duration'
         duration = config_obj.get_default_values([hold_param])[hold_param]
-        diff = timedelta(days=duration) if hold_type != \
+        diff = timedelta(days=duration) if hold_type !=  \
             HoldType.E_COMMERCE_HOLD else timedelta(minutes=duration)
         return fields.Datetime.to_string(datetime.now() + diff)
+
+    @api.model
+    def get_channel(self):
+        return [
+            ('web', _('Website')),
+            ('event', _('Event')),
+            ('ambassador', _('Ambassador')),
+        ]
+
+    @api.onchange('type')
+    def onchange_type(self):
+        self.expiration_date = self.get_default_hold_expiration(
+            HoldType.from_string(self.type))
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    def get_fields(self):
+        """ Returns the fields for which we want to know the value. """
+        return ['type', 'expiration_date', 'primary_owner',
+                'secondary_owner', 'yield_rate', 'no_money_yield_rate',
+                'channel', 'source_code', 'comments']
+
+    def get_hold_values(self):
+        """ Get the field values of one record.
+            :return: Dictionary of values for the fields
+        """
+        self.ensure_one()
+        vals = self.read(self.get_fields())[0]
+        vals['primary_owner'] = vals['primary_owner'][0]
+        del vals['id']
+        return vals
+
+
+class CompassionHold(models.Model):
+    _name = 'compassion.hold'
+    _rec_name = 'hold_id'
+    _inherit = 'compassion.abstract.hold'
+
+    hold_id = fields.Char(readonly=True)
+    child_id = fields.Many2one(
+        'compassion.child', 'Child on hold', readonly=True
+    )
+    child_name = fields.Char(
+        'Child on hold', related='child_id.name', readonly=True
+    )
+    state = fields.Selection([
+        ('draft', _("Draft")),
+        ('active', _("Active")),
+        ('expired', _("Expired"))],
+        readonly=True, default='draft')
+    reinstatement_reason = fields.Char(readonly=True)
+    reservation_id = fields.Many2one('icp.reservation', 'Reservation')
+
+    _sql_constraints = [
+        ('hold_id', 'unique(hold_id)',
+         'The hold already exists in database.'),
+    ]
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -183,6 +232,13 @@ class CompassionHold(models.Model):
                 {'global_id': child_global_id})
             hold = self.env['compassion.hold'].create(
                 mapping.get_vals_from_connect(hold_data))
+            if hold.reservation_id.source_code == 'sponsor_cancel':
+                # Update the hold to sponsor cancel hold.
+                hold.write({
+                    'type': HoldType.SPONSOR_CANCEL_HOLD.value,
+                    'expiration_date': self.get_default_hold_expiration(
+                        HoldType.SPONSOR_CANCEL_HOLD)
+                })
             child.hold_id = hold
             return [hold.id]
 

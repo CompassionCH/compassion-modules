@@ -172,9 +172,7 @@ class SponsorshipContract(models.Model):
         child = self.env['compassion.child'].browse(vals.get('child_id'))
         if 'S' in vals.get('type', '') and child:
             child.write(
-                {'sponsor_id': vals['partner_id'],
-                 'delegated_to': False, 'delegated_comment': False,
-                 'date_delegation': False, 'date_end_delegation': False}
+                {'sponsor_id': vals['partner_id']}
             )
 
         return super(SponsorshipContract, self).create(vals)
@@ -473,6 +471,14 @@ class SponsorshipContract(models.Model):
                     "activation_date = current_date,is_active = True "
                     "where id = %s", [contract.id])
                 self.env.invalidate_all()
+            if 'S' in contract.type:
+                # Update the hold of the child to No Money Hold
+                hold = contract.child_id.hold_id
+                hold.write({
+                    'type': HoldType.NO_MONEY_HOLD.value,
+                    'expiration_date': hold.get_default_hold_expiration(
+                        HoldType.NO_MONEY_HOLD)
+                })
 
         return super(SponsorshipContract, self).contract_waiting()
 

@@ -32,20 +32,6 @@ class ChildHoldWizard(models.TransientModel):
         return hold_vals
 
     @api.multi
-    def create_child_vals(self, child):
-        child_vals = super(ChildHoldWizard, self).create_child_vals(child)
-
-        if self.env.context.get('event_id'):
-            child_vals.update({
-                'date_delegation': fields.date.today(),
-                'delegated_comment': self.source_code,
-                'delegated_to': self.env.context.get('user_id'),
-                'state': 'D'
-            })
-
-        return child_vals
-
-    @api.multi
     def send(self):
         action = super(ChildHoldWizard, self).send()
 
