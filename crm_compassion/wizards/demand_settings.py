@@ -20,6 +20,7 @@ class DemandPlanningSettings(models.TransientModel):
     number_children_website = fields.Integer()
     number_children_ambassador = fields.Integer()
     days_allocate_before_event = fields.Integer()
+    days_for_hold = fields.Integer(default=10)
 
     @api.multi
     def set_number_children_website(self):
@@ -39,6 +40,12 @@ class DemandPlanningSettings(models.TransientModel):
             'crm_compassion.days_allocate_before_event',
             str(self.days_allocate_before_event))
 
+    @api.multi
+    def set_days_for_hold(self):
+        self.env['ir.config_parameter'].set_param(
+            'crm_compassion.days_for_hold',
+            str(self.days_for_hold))
+
     @api.model
     def get_default_values(self, _fields):
         param_obj = self.env['ir.config_parameter']
@@ -47,9 +54,11 @@ class DemandPlanningSettings(models.TransientModel):
             'crm_compassion.number_children_ambassador'))
         days_event = int(param_obj.get_param(
             'crm_compassion.days_allocate_before_event'))
-
+        days_for_hold = int(param_obj.get_param(
+            'crm_compassion.days_for_hold'))
         return {
             'number_children_website': web,
             'number_children_ambassador': ambassador,
             'days_allocate_before_event': days_event,
+            'days_for_hold': days_for_hold
         }
