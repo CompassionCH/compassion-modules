@@ -213,13 +213,6 @@ class CompassionChild(models.Model):
         'child.chronic.illness', string='Chronic illnesses', readonly=True
     )
 
-    # Delegation
-    ############
-    delegated_to = fields.Many2one('res.partner', 'Delegated to')
-    delegated_comment = fields.Text('Delegated comment')
-    date_delegation = fields.Date()
-    date_end_delegation = fields.Date('Delegated until')
-
     # Case Studies
     ##############
     lifecycle_ids = fields.One2many(
@@ -310,50 +303,16 @@ class CompassionChild(models.Model):
         a new one.
         """
         global_id = vals.get('global_id')
-        child = False
-        if global_id:
-            child = self.search([
-                ('global_id', '=', global_id),
-                ('active', '=', False)
-            ])
-            if child:
-                vals['active'] = True
-                child.write(vals)
-        if not child:
+        child = self.search([('global_id', '=', global_id)])
+        if child:
+            child.write(vals)
+        else:
             child = super(CompassionChild, self).create(vals)
-        child.with_context(async_mode=True).get_infos()
         return child
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.model
-    def update_delegate(self):
-        """Called by CRON to update delegated children.
-        :param Recordset self: empty Recordset
-        """
-        children = self.search([('state', 'not in', ['F', 'P'])])
-        children_to_delegate = self.copy()
-        children_to_undelegate = list()
-
-        for child in children:
-            if child.date_delegation:
-                if datetime.strptime(child.date_delegation, DF) \
-                   <= datetime.today() and child.is_available:
-                    children_to_delegate |= child
-
-                if child.date_end_delegation and \
-                   datetime.strptime(child.date_end_delegation, DF) <= \
-                   datetime.today():
-                    children_to_undelegate.append(child.id)
-
-        children_to_delegate.write({'state': 'D'})
-
-        self.env['undelegate.child.wizard'].with_context(
-            active_ids=children_to_undelegate).undelegate()
-
-        return True
-
     def details_answer(self, vals):
         """ Called when receiving the answer of GetDetails message. """
         self.ensure_one()

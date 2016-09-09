@@ -9,8 +9,6 @@
 #
 ##############################################################################
 
-from . import delegate_child_wizard
-from . import undelegate_child_wizard
 from . import migration_r4
 from . import global_child_search
 from . import child_hold_wizard

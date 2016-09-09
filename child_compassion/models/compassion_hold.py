@@ -163,15 +163,6 @@ class CompassionHold(models.Model):
                 get_vals_from_connect(reinstatement_data)
             hold = self.create(vals)
 
-            child = hold.child_id
-            child.write({
-                'active': True,
-                'state': 'D',
-                'delegated_to': self.env['recurring.contract'].search(
-                    [('child_id', '=', hold.child_id.id)],
-                    limit=1).partner_id.id,
-                'hold_id': hold.id
-            })
             # Update hold duration to what is configured
             hold.write({
                 'expiration_date': self.get_default_hold_expiration(
