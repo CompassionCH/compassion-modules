@@ -64,7 +64,9 @@ class CompassionHold(models.Model):
     yield_rate = fields.Float()
     channel = fields.Char()
     source_code = fields.Char()
-    active = fields.Boolean(default=True, readonly=True)
+    state = fields.Selection(
+        [('draft', "Draft"), ('active', "Active"), ('expired', "Expired")],
+        string=u"State", readonly=True, default='draft')
     reinstatement_reason = fields.Char(readonly=True)
     reservation_id = fields.Many2one('icp.reservation', 'Reservation')
 
@@ -135,6 +137,7 @@ class CompassionHold(models.Model):
         for hold in self:
             child_to_update = hold.child_id
             if hold.hold_id:
+                hold.state = 'active'
                 child_vals = {
                     'hold_id': hold.id,
                     'active': True,
@@ -199,7 +202,7 @@ class CompassionHold(models.Model):
         message_obj = self.env['gmc.message.pool']
         action_id = self.env.ref('child_compassion.release_hold').id
 
-        self.active = False
+        self.state = 'expired'
         message_vals = {
             'action_id': action_id,
             'object_id': self.id
@@ -221,6 +224,6 @@ class CompassionHold(models.Model):
 
         for expired_hold in expired_holds:
             expired_hold.child_id.active = False
-            expired_hold.active = False
+            expired_hold.state = 'expired'
 
         return True
