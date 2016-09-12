@@ -81,7 +81,7 @@ class AbstractHold(models.AbstractModel):
         """
         config_obj = self.env['availability.management.settings']
         hold_param = hold_type.name.lower() + '_duration'
-        duration = config_obj.get_default_values([hold_param])[hold_param]
+        duration = config_obj.get_param(hold_param)
         diff = timedelta(days=duration) if hold_type != \
             HoldType.E_COMMERCE_HOLD else timedelta(minutes=duration)
         return fields.Datetime.to_string(datetime.now() + diff)
@@ -150,8 +150,7 @@ class CompassionHold(models.Model):
     @api.multi
     def write(self, vals):
         res = super(CompassionHold, self).write(vals)
-        notify_vals = ['name', 'primary_owner', 'type', 'mandatory_review',
-                       'expiration_date']
+        notify_vals = ['primary_owner', 'type', 'expiration_date']
         notify = reduce(lambda prev, val: prev or val in vals, notify_vals,
                         False)
         if notify and not self.env.context.get('no_upsert'):
@@ -180,10 +179,10 @@ class CompassionHold(models.Model):
         for hold in self:
             child_to_update = hold.child_id
             if hold.hold_id:
+                hold.state = 'active'
                 child_to_update.write({
                     'hold_id': hold.id,
                     'date': fields.Date.today(),
-                    # 'state': 'active'
                 })
             else:
                 # Release child if no hold_id received
@@ -262,6 +261,7 @@ class CompassionHold(models.Model):
             ('state', '=', 'active')
         ])
         holds.write({'state': 'expired'})
+        holds.mapped('child_id').write({'hold_id': False})
         free_children = holds.mapped('child_id').filtered(
             lambda c: not c.sponsor_id)
         free_children.signal_workflow('release')

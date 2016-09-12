@@ -19,33 +19,33 @@ class CompassionHold(models.Model):
     event_id = fields.Many2one('crm.event.compassion', 'Event', readonly=True)
 
 
-class ChildHoldWizard(models.TransientModel):
-    _inherit = 'child.hold.wizard'
-
-    @api.multi
-    def create_hold_vals(self, child_comp):
-        hold_vals = super(ChildHoldWizard, self).create_hold_vals(child_comp)
-
-        event_id = self.env.context.get('event_id')
-        if event_id:
-            hold_vals['event_id'] = event_id
-        return hold_vals
-
-    @api.multi
-    def send(self):
-        action = super(ChildHoldWizard, self).send()
-
-        if self.env.context.get('event_id') is None:
-            return action
-        else:
-            del action['domain']
-            action.update({
-                'view_mode': 'form,tree',
-                'res_model': 'crm.event.compassion',
-                'res_id': self.env.context.get('event_id')
-            })
-            return action
-
+# class ChildHoldWizard(models.TransientModel):
+#     _inherit = 'child.hold.wizard'
+#
+#     @api.multi
+#     def get_hold_values(self):
+#         hold_vals = super(ChildHoldWizard, self).get_hold_values()
+#
+#         event_id = self.env.context.get('event_id')
+#         if event_id:
+#             hold_vals['event_id'] = event_id
+#         return hold_vals
+#
+#     @api.multi
+#     def send(self):
+#         action = super(ChildHoldWizard, self).send()
+#
+#         if self.env.context.get('event_id') is None:
+#             return action
+#         else:
+#             del action['domain']
+#             action.update({
+#                 'view_mode': 'form,tree',
+#                 'res_model': 'crm.event.compassion',
+#                 'res_id': self.env.context.get('event_id')
+#             })
+#             return action
+#
 
 class account_move_line(models.Model):
     _inherit = 'account.move.line'
@@ -139,21 +139,19 @@ class event_compassion(models.Model):
         'account.analytic.account', related='parent_id')
     calendar_event_id = fields.Many2one('calendar.event')
     hold_start_date = fields.Date(
-        'Hold Start Date',
         default=lambda self: self._default_hold_start_date(),
         required=True
     )
+    hold_end_date = fields.Date(
+        compute='_compute_hold_end_date', store=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.model
     def _default_hold_start_date(self):
-        days_allocate_before_event = int(
-            self.env['ir.config_parameter'].get_param(
-                'crm_compassion.days_allocate_before_event'
-            )
-        )
+        days_allocate_before_event = self.env[
+            'demand.planning.settings'].get_param('days_allocate_before_event')
         return fields.Date.to_string(datetime.today() - timedelta(
             days=days_allocate_before_event))
 
@@ -220,6 +218,26 @@ class event_compassion(models.Model):
             raise Warning("Invalid Date", "The hold start date must "
                                           "be before the event "
                                           "starting date !")
+
+    @api.multi
+    def compute_hold_start_date(self):
+        days_before = self.env['demand.planning.settings'].get_param(
+            'days_allocate_before_event')
+        for event in self.filtered(lambda e: not e.hold_start_date):
+            hold_start_date = fields.Datetime.from_string(
+                event.start_date) - timedelta(days=days_before)
+            event.hold_start_date = fields.Date.to_string(hold_start_date)
+
+    @api.depends('end_date')
+    @api.multi
+    def _compute_hold_end_date(self):
+        days_after = self.env['demand.planning.settings'].get_param(
+            'days_hold_after_event')
+        for event in self:
+            if self.end_date:
+                hold_end_date = fields.Datetime.from_string(
+                    event.end_date) + timedelta(days=days_after)
+                event.hold_end_date = fields.Date.to_string(hold_end_date)
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -359,6 +377,12 @@ class event_compassion(models.Model):
             if event.year:
                 event.parent_id = event._find_parent_analytic()
 
+    @api.onchange('start_date')
+    def onchange_start_date(self):
+        for event in self.filtered(lambda e: e.start_date and not e.end_date):
+            event.end_date = event.start_date
+
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
@@ -466,11 +490,9 @@ class event_compassion(models.Model):
         if self.number_allocate_children > 1:
             no_money_yield /= (self.number_allocate_children * 100)
             yield_rate /= float(self.number_allocate_children * 100)
-        expiration_date = fields.Date.from_string(self.end_date) + timedelta(
-            days=int(
-                self.env['ir.config_parameter'].get_param(
-                    'crm_compassion.days_for_hold')
-            ))
+        expiration_date = fields.Datetime.from_string(self.end_date) + \
+            timedelta(days=self.env['demand.planning.settings'].
+                      get_param('days_hold_after_event'))
         return {
             'name': _('Global Childpool'),
             'type': 'ir.actions.act_window',
@@ -486,7 +508,7 @@ class event_compassion(models.Model):
                 'default_source_code': self.name,
                 'default_no_money_yield_rate': no_money_yield,
                 'default_yield_rate': yield_rate,
-                'default_hold_expiration_date':
-                    fields.Date.to_string(expiration_date)
+                'default_expiration_date':
+                    fields.Datetime.to_string(expiration_date)
             }).env.context
         }

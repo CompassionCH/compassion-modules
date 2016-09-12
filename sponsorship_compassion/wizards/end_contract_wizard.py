@@ -48,6 +48,7 @@ class EndContractWizard(models.TransientModel):
                 self.env['icp.reservation'].create({
                     'name': 'Sponsor Cancel Reservation',
                     'reservation_expiration_date': self.hold_expiration_date,
+                    'expiration_date': self.hold_expiration_date,
                     'hold_expiration_date': self.hold_expiration_date,
                     'number_of_beneficiaries': '1',
                     'icp_id': child.project_id.id,

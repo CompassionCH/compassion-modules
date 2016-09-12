@@ -8,6 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+from ..models.compassion_hold import AbstractHold   # nopep8
 from openerp import models, api, _
 
 

@@ -23,7 +23,7 @@ class GenericChildMapping(OnrampMapping):
         'Age': 'age',
         'BeneficiaryHousehold': ('household_id', 'compassion.household'),
         'BeneficiaryHouseholdList': ('household_id', 'compassion.household'),
-        'BeneficiaryState': 'beneficiary_state',
+        'BeneficiaryStatus': 'beneficiary_state',
         'Beneficiary_Gender': 'gender',
         'Beneficiary_GlobalID': 'global_id',
         'Beneficiary_LocalID': 'local_id',
@@ -98,7 +98,6 @@ class GenericChildMapping(OnrampMapping):
         # Not define
         'AgeInYearsAndMonths': None,
         'Beneficiary_FundType': None,
-        'BeneficiaryStatus': None,
         'Cluster_Name': None,
         'Community_Name': None,
         'Country': None,

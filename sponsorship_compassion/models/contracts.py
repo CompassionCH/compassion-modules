@@ -434,7 +434,7 @@ class SponsorshipContract(models.Model):
             gift_contract_lines.mapped('contract_id').signal_workflow(
                 'contract_active')
             # Remove the hold on the child.
-            contract.child_id.hold_id.unlink()
+            contract.child_id.hold_id = False
 
         return True
 

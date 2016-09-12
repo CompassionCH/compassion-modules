@@ -10,6 +10,6 @@
 ##############################################################################
 
 from . import models
-from . import wizards
 from . import mappings
 from . import controllers
+from . import wizards
