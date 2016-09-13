@@ -276,3 +276,21 @@ class CompassionHold(models.Model):
         holds.unlink()
 
         return True
+
+    @api.model
+    def beneficiary_hold_removal(self, commkit_data):
+        data = commkit_data.get('BeneficiaryHoldRemovalNotification')
+
+        hold = self.env['compassion.hold'].search([
+            ('hold_id', '=', data.get('HoldID'))
+        ])
+
+        child = hold.child_id
+
+        if child.has_been_sponsored is False and \
+                child.is_available:
+            child.hold_id = False
+            hold.active = False
+
+        if child.state is 'P':
+            a=2
