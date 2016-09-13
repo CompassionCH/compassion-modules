@@ -64,7 +64,6 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-
     correspondant_id = fields.Many2one(
         'res.partner', string='Correspondant', readonly=True,
         states={'draft': [('readonly', False)],
@@ -83,6 +82,18 @@ class SponsorshipContract(models.Model):
                                         self._get_standard_lines())
     reading_language = fields.Many2one(
         'res.lang.compassion', 'Preferred language', required=False)
+    transfer_partner_id = fields.Many2one(
+        'compassion.global.partner', 'Transferred to')
+    global_id = fields.Char(help='Connect global ID', readonly=True,
+                            copy=False)
+    hold_expiration_date = fields.Datetime(
+        help='Used for setting a hold after sponsorship cancellation')
+
+
+    _sql_constraints = [
+        ('unique_global_id', 'unique(global_id)', 'You cannot have same '
+                                                  'global ids for contracts')
+    ]
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -369,6 +380,34 @@ class SponsorshipContract(models.Model):
                 "are automatically reverted.",
                 "Project Reactivated", 'comment')
 
+    def commitment_sent(self, vals):
+        """ Called when GMC received the commitment. """
+        self.ensure_one()
+        self.write(vals)
+        # Remove the hold on the child.
+        self.child_id.hold_id.state = 'expired'
+        self.child_id.hold_id = False
+        return True
+
+    def cancel_sent(self, vals):
+        """ Called when GMC received the commitment cancel request. """
+        self.ensure_one()
+        hold_expiration = fields.Datetime.from_string(
+            self.hold_expiration_date)
+        if 'hold_id' in vals and hold_expiration >= datetime.now():
+            child = self.child_id
+            hold_vals = {
+                'hold_id': vals['hold_id'],
+                'child_id': child.id,
+                'type': HoldType.SPONSOR_CANCEL_HOLD.value,
+                'expiration_date': self.hold_expiration_date,
+                'primary_owner': self.write_uid.id,
+                'state': 'active',
+            }
+            hold = self.env['compassion.hold'].create(hold_vals)
+            child.write({'hold_id': hold.id})
+        return True
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
@@ -433,8 +472,6 @@ class SponsorshipContract(models.Model):
                 ('sponsorship_id', '=', contract.id)])
             gift_contract_lines.mapped('contract_id').signal_workflow(
                 'contract_active')
-            # Remove the hold on the child.
-            contract.child_id.hold_id = False
 
         return True
 

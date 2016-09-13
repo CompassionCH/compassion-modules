@@ -35,27 +35,19 @@ class EndContractWizard(models.TransientModel):
         child = self.child_id
 
         if self.keep_child_on_hold:
-            if child.hold_id and not self.contract_id.global_id:
+            if child.hold_id:
                 # Update the hold
                 child.hold_id.write({
                     'type': HoldType.SPONSOR_CANCEL_HOLD.value,
                     'expiration_date': self.hold_expiration_date
                 })
             else:
-                # Since the child is sponsored, create a reservation
-                # for when we send the CancelCommitment, the child will
-                # be put back on hold for us.
-                self.env['icp.reservation'].create({
-                    'name': 'Sponsor Cancel Reservation',
-                    'reservation_expiration_date': self.hold_expiration_date,
-                    'expiration_date': self.hold_expiration_date,
-                    'hold_expiration_date': self.hold_expiration_date,
-                    'number_of_beneficiaries': '1',
-                    'icp_id': child.project_id.id,
-                    'child_id': child.id,
-                    'source_code': 'sponsor_cancel',
-                })
+                # Setup a hold expiration in the sponsorship
+                self.contract_id.hold_expiration_date = \
+                    self.hold_expiration_date
         else:
+            # Setup the hold expiration now
+            self.contract_id.hold_expiration_date = fields.Datetime.now()
             # Remove the hold on the child
             if child.hold_id:
                 child.hold_id.release_hold()

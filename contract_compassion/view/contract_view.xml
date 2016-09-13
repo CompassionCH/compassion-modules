@@ -86,9 +86,7 @@
                             <field name="type" />
                             <field name="child_id" domain="[('state', 'in', ('N', 'I'))]"
                                    options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
-                            <field name="global_id"/>
                             <field name="end_reason" states="terminated,cancelled"/>
-                            <field name="transfer_partner_id" attrs="{'invisible': [('transfer_partner_id', '=', False)]}"/>
                             <field name="num_pol_ga" invisible="1"/>
                         </group>
                         <group>

@@ -55,8 +55,8 @@ class ChilpoolCreateHoldMapping(OnrampMapping):
 
     def _process_connect_data(self, connect_data):
         # Set end date to correct format for Connect
-        if 'HoldEndDate' in connect_data:
-            endDateStr = connect_data.get('HoldEndDate')
+        endDateStr = connect_data.get('HoldEndDate')
+        if endDateStr:
             endDate = datetime.strptime(endDateStr, "%Y-%m-%d %H:%M:%S")
             connect_data['HoldEndDate'] = endDate.strftime(
                 "%Y-%m-%dT%H:%M:%SZ")

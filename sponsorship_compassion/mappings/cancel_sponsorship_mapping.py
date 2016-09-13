@@ -41,35 +41,3 @@ class CancelSponsorship(BaseSponsorshipMapping):
         end_date = datetime.strptime(end_date_str, "%Y-%m-%d %H:%M:%S")
         connect_data['HoldExpirationDate'] = end_date.strftime(
             "%Y-%m-%dT%H:%M:%SZ")
-
-        child_global_id = connect_data['Beneficiary_GlobalID']
-        child = self.env['compassion.child'].search(
-            [('global_id', '=', child_global_id)], limit=1)
-
-        # save future hold with expiration date
-        if child.active:
-            hold_vals = {
-                'name': "",
-                'child_id': child.id,
-                'type': 'Consignment Hold',
-                'expiration_date': end_date,
-                'primary_owner': self.env.uid,
-                'secondary_owner': 'Carole Rochat',
-                'no_money_yield_rate': '1.1',
-                'yield_rate': '1.1',
-                'channel': '',
-                'source_code': '',
-            }
-            hold = self.env['compassion.hold'].create(hold_vals)
-            child.write({'hold_id': hold.id})
-
-    def _process_odoo_data(self, connect_data):
-        if 'child_id' in connect_data:
-            child = self.env['compassion.child'].browse(
-                connect_data['child_id'])
-            if child.active:
-                # Update new hold
-                child.hold_id.write({'hold_id': connect_data['hold_id']})
-
-            # Don't write hold_id in contract
-            del connect_data['hold_id']

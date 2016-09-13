@@ -30,7 +30,6 @@ class recurring_contract(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    global_id = fields.Char(help='Connect global ID', readonly=True)
     child_id = fields.Many2one(
         'compassion.child', 'Sponsored child', readonly=True, copy=False,
         states={'draft': [('readonly', False)],
@@ -60,7 +59,6 @@ class recurring_contract(models.Model):
     num_pol_ga = fields.Integer(
         'Partner Contract Number', required=True, copy=False)
     end_reason = fields.Selection('get_ending_reasons')
-    end_date = fields.Datetime(readonly=True, track_visibility='onchange')
     months_paid = fields.Integer(
         compute='_set_months_paid',
         string='Months paid')
@@ -81,14 +79,6 @@ class recurring_contract(models.Model):
     group_freq = fields.Char(
         string='Payment frequency',
         compute='_set_frequency', store=True, readonly=True)
-    transfer_partner_id = fields.Many2one(
-        'compassion.global.partner', 'Transferred to')
-    hold_expiration_date = fields.Datetime()
-
-    _sql_constraints = [
-        ('unique_global_id', 'unique(global_id)', 'You cannot have same '
-                                                  'global ids for contracts')
-    ]
 
     ##########################################################################
     #                             FIELDS METHODS                             #
