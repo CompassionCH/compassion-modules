@@ -89,7 +89,6 @@ class SponsorshipContract(models.Model):
     hold_expiration_date = fields.Datetime(
         help='Used for setting a hold after sponsorship cancellation')
 
-
     _sql_constraints = [
         ('unique_global_id', 'unique(global_id)', 'You cannot have same '
                                                   'global ids for contracts')
@@ -545,7 +544,6 @@ class SponsorshipContract(models.Model):
         Remove sponsor from the child and terminate related gift contracts.
         """
         for sponsorship in self:
-            # sponsorship.child_id.write({'sponsor_id': False})
             gift_contract_lines = self.env['recurring.contract.line'].search([
                 ('sponsorship_id', '=', sponsorship.id)])
             for line in gift_contract_lines:

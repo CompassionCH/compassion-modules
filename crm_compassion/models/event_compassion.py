@@ -19,33 +19,33 @@ class CompassionHold(models.Model):
     event_id = fields.Many2one('crm.event.compassion', 'Event', readonly=True)
 
 
-# class ChildHoldWizard(models.TransientModel):
-#     _inherit = 'child.hold.wizard'
-#
-#     @api.multi
-#     def get_hold_values(self):
-#         hold_vals = super(ChildHoldWizard, self).get_hold_values()
-#
-#         event_id = self.env.context.get('event_id')
-#         if event_id:
-#             hold_vals['event_id'] = event_id
-#         return hold_vals
-#
-#     @api.multi
-#     def send(self):
-#         action = super(ChildHoldWizard, self).send()
-#
-#         if self.env.context.get('event_id') is None:
-#             return action
-#         else:
-#             del action['domain']
-#             action.update({
-#                 'view_mode': 'form,tree',
-#                 'res_model': 'crm.event.compassion',
-#                 'res_id': self.env.context.get('event_id')
-#             })
-#             return action
-#
+class ChildHoldWizard(models.TransientModel):
+    _inherit = 'child.hold.wizard'
+
+    @api.multi
+    def get_hold_values(self):
+        hold_vals = super(ChildHoldWizard, self).get_hold_values()
+
+        event_id = self.env.context.get('event_id')
+        if event_id:
+            hold_vals['event_id'] = event_id
+        return hold_vals
+
+    @api.multi
+    def send(self):
+        action = super(ChildHoldWizard, self).send()
+
+        if self.env.context.get('event_id') is None:
+            return action
+        else:
+            del action['domain']
+            action.update({
+                'view_mode': 'form,tree',
+                'res_model': 'crm.event.compassion',
+                'res_id': self.env.context.get('event_id')
+            })
+            return action
+
 
 class account_move_line(models.Model):
     _inherit = 'account.move.line'
@@ -381,7 +381,6 @@ class event_compassion(models.Model):
     def onchange_start_date(self):
         for event in self.filtered(lambda e: e.start_date and not e.end_date):
             event.end_date = event.start_date
-
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

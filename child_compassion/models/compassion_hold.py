@@ -161,6 +161,7 @@ class CompassionHold(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.multi
     def update_hold(self):
         message_obj = self.env['gmc.message.pool']
         action_id = self.env.ref('child_compassion.create_hold').id
@@ -236,7 +237,8 @@ class CompassionHold(models.Model):
 
     @api.multi
     def release_hold(self):
-        message_obj = self.env['gmc.message.pool']
+        message_obj = self.env['gmc.message.pool'].with_context(
+            async_mode=False)
         action_id = self.env.ref('child_compassion.release_hold').id
 
         for hold in self:
