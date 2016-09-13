@@ -17,21 +17,18 @@ class ProjectReservation(models.Model):
 
     _name = 'icp.reservation'
     _description = 'Project Reservation'
+    _inherit = 'compassion.abstract.hold'
 
     name = fields.Char(required=True)
     reservation_id = fields.Char()
-    channel_name = fields.Char()
     icp_id = fields.Many2one(
         'compassion.project', 'Project', required=True)
     child_id = fields.Many2one('compassion.child', 'Child', readonly=True)
     campaign_event_identifier = fields.Char()
-    expiration_date = fields.Date(required=True)
-    hold_expiration_date = fields.Datetime(required=True)
-    hold_yield_rate = fields.Integer()
+    reservation_expiration_date = fields.Date(required=True)
+    hold_expiration_date = fields.Datetime(related='expiration_date')
     is_reservation_auto_approved = fields.Boolean(default=True)
     number_of_beneficiaries = fields.Integer(required=True)
-    primary_owner = fields.Many2one('res.users', required=True)
-    secondary_owner = fields.Char()
     active = fields.Boolean(default=True, readonly=True)
 
     _sql_constraints = [
@@ -105,11 +102,6 @@ class ProjectReservation(models.Model):
             'view_mode': 'tree, form',
             'target': 'new',
         }
-
-    @api.model
-    def process_commkit(self, commkit_data):
-        # TODO Implement
-        return False
 
     ##########################################################################
     #                             PUBLIC METHODS                             #

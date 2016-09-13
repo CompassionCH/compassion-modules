@@ -106,4 +106,9 @@ class AvailabilitySettings(models.TransientModel):
             'sub_child_hold_duration': sub_child,
         }
 
-        return {key: all_values[key] for key in _fields}
+        return {key: all_values.get(key, 7) for key in _fields}
+
+    @api.model
+    def get_param(self, param):
+        """ Retrieve a single parameter. """
+        return self.get_default_values([param])[param]

@@ -22,12 +22,12 @@ class ProjetReservationCreateMapping(OnrampMapping):
 
     CONNECT_MAPPING = {
         'Beneficiary_GlobalID': 'child_id.global_id',
-        'Channel_Name': 'channel_name',
+        'Channel_Name': 'channel',
         'ICP_ID': ('icp_id.icp_id', 'compassion.project'),
         'CampaignEventIdentifier': 'campaign_event_identifier',
-        'ExpirationDate': 'expiration_date',
+        'ExpirationDate': 'reservation_expiration_date',
         'HoldExpirationDate': 'hold_expiration_date',
-        'HoldYieldRate': 'hold_yield_rate',
+        'HoldYieldRate': 'yield_rate',
         'ID': 'reservation_id',
         'IsReservationAutoApproved': 'is_reservation_auto_approved',
         'NumberOfBeneficiaries': 'number_of_beneficiaries',

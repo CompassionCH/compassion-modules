@@ -12,6 +12,8 @@
 from openerp import api, exceptions, fields, models, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
+from openerp.addons.child_compassion.models.compassion_hold import HoldType
+
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from lxml import etree
@@ -62,7 +64,6 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-
     correspondant_id = fields.Many2one(
         'res.partner', string='Correspondant', readonly=True,
         states={'draft': [('readonly', False)],
@@ -81,6 +82,17 @@ class SponsorshipContract(models.Model):
                                         self._get_standard_lines())
     reading_language = fields.Many2one(
         'res.lang.compassion', 'Preferred language', required=False)
+    transfer_partner_id = fields.Many2one(
+        'compassion.global.partner', 'Transferred to')
+    global_id = fields.Char(help='Connect global ID', readonly=True,
+                            copy=False)
+    hold_expiration_date = fields.Datetime(
+        help='Used for setting a hold after sponsorship cancellation')
+
+    _sql_constraints = [
+        ('unique_global_id', 'unique(global_id)', 'You cannot have same '
+                                                  'global ids for contracts')
+    ]
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -172,9 +184,7 @@ class SponsorshipContract(models.Model):
         child = self.env['compassion.child'].browse(vals.get('child_id'))
         if 'S' in vals.get('type', '') and child:
             child.write(
-                {'sponsor_id': vals['partner_id'],
-                 'delegated_to': False, 'delegated_comment': False,
-                 'date_delegation': False, 'date_end_delegation': False}
+                {'sponsor_id': vals['partner_id']}
             )
 
         return super(SponsorshipContract, self).create(vals)
@@ -200,7 +210,7 @@ class SponsorshipContract(models.Model):
                 child_sponsor_id = contract.child_id.sponsor_id and \
                     contract.child_id.sponsor_id.id
                 if child_sponsor_id == contract.correspondant_id.id:
-                    contract.child_id.write({'sponsor_id': False})
+                    contract.child_id.signal_workflow('release')
         return super(SponsorshipContract, self).unlink()
 
     ##########################################################################
@@ -369,6 +379,34 @@ class SponsorshipContract(models.Model):
                 "are automatically reverted.",
                 "Project Reactivated", 'comment')
 
+    def commitment_sent(self, vals):
+        """ Called when GMC received the commitment. """
+        self.ensure_one()
+        self.write(vals)
+        # Remove the hold on the child.
+        self.child_id.hold_id.state = 'expired'
+        self.child_id.hold_id = False
+        return True
+
+    def cancel_sent(self, vals):
+        """ Called when GMC received the commitment cancel request. """
+        self.ensure_one()
+        hold_expiration = fields.Datetime.from_string(
+            self.hold_expiration_date)
+        if 'hold_id' in vals and hold_expiration >= datetime.now():
+            child = self.child_id
+            hold_vals = {
+                'hold_id': vals['hold_id'],
+                'child_id': child.id,
+                'type': HoldType.SPONSOR_CANCEL_HOLD.value,
+                'expiration_date': self.hold_expiration_date,
+                'primary_owner': self.write_uid.id,
+                'state': 'active',
+            }
+            hold = self.env['compassion.hold'].create(hold_vals)
+            child.write({'hold_id': hold.id})
+        return True
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
@@ -429,7 +467,6 @@ class SponsorshipContract(models.Model):
         super(SponsorshipContract, self).contract_active()
         con_line_obj = self.env['recurring.contract.line']
         for contract in self.filtered(lambda c: 'S' in c.type):
-            contract.child_id.write({'has_been_sponsored': True})
             gift_contract_lines = con_line_obj.search([
                 ('sponsorship_id', '=', contract.id)])
             gift_contract_lines.mapped('contract_id').signal_workflow(
@@ -473,6 +510,14 @@ class SponsorshipContract(models.Model):
                     "activation_date = current_date,is_active = True "
                     "where id = %s", [contract.id])
                 self.env.invalidate_all()
+            if 'S' in contract.type:
+                # Update the hold of the child to No Money Hold
+                hold = contract.child_id.hold_id
+                hold.write({
+                    'type': HoldType.NO_MONEY_HOLD.value,
+                    'expiration_date': hold.get_default_hold_expiration(
+                        HoldType.NO_MONEY_HOLD)
+                })
 
         return super(SponsorshipContract, self).contract_waiting()
 
@@ -499,7 +544,6 @@ class SponsorshipContract(models.Model):
         Remove sponsor from the child and terminate related gift contracts.
         """
         for sponsorship in self:
-            sponsorship.child_id.write({'sponsor_id': False})
             gift_contract_lines = self.env['recurring.contract.line'].search([
                 ('sponsorship_id', '=', sponsorship.id)])
             for line in gift_contract_lines:
@@ -542,7 +586,7 @@ class SponsorshipContract(models.Model):
             if 'S' in contract.type and contract.child_id and \
                     contract.child_id.id != child_id:
                 # Free the previously selected child
-                contract.child_id.write({'sponsor_id': False})
+                contract.child_id.signal_workflow('release')
             if 'S' in contract.type:
                 # Mark the selected child as sponsored
                 self.env['compassion.child'].browse(child_id).write(

@@ -10,6 +10,8 @@
 ##############################################################################
 from openerp.addons.message_center_compassion.mappings.base_mapping \
     import OnrampMapping
+from openerp.addons.child_compassion.models.compassion_hold import \
+    HoldType
 
 
 class BaseSponsorshipMapping(OnrampMapping):
@@ -34,14 +36,14 @@ class BaseSponsorshipMapping(OnrampMapping):
         "FinalCommitmentOfLine": None,
         "HoldID": None,
         "HoldType": None,
-        "PrimaryHoldOwner": ('partner_id.name', 'res.partner'),
-        "SecondaryHoldOwner": None,
+        "PrimaryHoldOwner": ('write_uid.name', 'res.users'),
+        "SecondaryHoldOwner": ('create_uid.name', 'res.users'),
         "SponsorCorrespondenceLanguage": ('reading_language.id',
                                           'res.lang.compassion'),
         "SponsorSupporterGlobalID": ('partner_id.global_id', 'res.partner'),
         "Beneficiary_GlobalID": ('child_id.global_id', 'compassion.child'),
         "HoldExpirationDate": "hold_expiration_date",
-        "Channel_Name": "channel",
+        "Channel_Name": None,
         "LinkType": None,
         "DelinkType": None,
         "ParentCommitmentID": None
@@ -53,6 +55,6 @@ class BaseSponsorshipMapping(OnrampMapping):
         "SponsorGlobalPartnerID": "CH",
         "FinalCommitmentOfLine": "",
         "GlobalPartner_ID": "CH",
-        "HoldType": "Sponsor Cancel Hold",
+        "HoldType": HoldType.SPONSOR_CANCEL_HOLD.value,
         "DelinkType": "Sponsor-requested Cancellation",
     }

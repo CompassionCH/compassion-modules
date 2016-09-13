@@ -41,16 +41,16 @@ class WeeklyDemand(models.Model):
     # Demand fields
     number_children_website = fields.Integer(
         'Web demand',
-        default=lambda self: int(self.env['ir.config_parameter'].get_param(
-            'crm_compassion.number_children_web')))
+        default=lambda self: self.env['demand.planning.settings'].get_param(
+            'number_children_website'))
     number_children_ambassador = fields.Integer(
         'Ambassadors demand',
-        default=lambda self: int(self.env['ir.config_parameter'].get_param(
-            'crm_compassion.number_children_ambassador')))
+        default=lambda self: self.env['demand.planning.settings'].get_param(
+            'number_children_ambassador'))
     number_sub_sponsorship = fields.Float(
         'SUB demand',
         default=lambda self: self._default_demand_sub())
-    number_children_events = fields.Integer(
+    number_children_events = fields.Float(
         'Events demand',
         compute='_compute_demand_events', store=True)
     total_demand = fields.Integer(compute='_compute_demand_total', store=True)
@@ -94,22 +94,37 @@ class WeeklyDemand(models.Model):
     @api.depends('week_start_date', 'week_end_date')
     @api.multi
     def _compute_demand_events(self):
-        days_before_event = int(self.env['ir.config_parameter'].get_param(
-            'crm_compassion.days_allocate_before_event'))
         for week in self.filtered('week_start_date').filtered('week_end_date'):
-            start_date = fields.Date.from_string(week.week_start_date) + \
-                timedelta(days=days_before_event)
-            end_date = fields.Date.from_string(week.week_end_date) + \
-                timedelta(days=days_before_event)
+            # Compute demand
             events = self.env['crm.event.compassion'].search([
-                ('start_date', '>=', fields.Date.to_string(start_date)),
-                ('start_date', '<=', fields.Date.to_string(end_date)),
+                ('hold_start_date', '<', week.week_end_date),
+                ('start_date', '>', week.week_start_date)
             ])
-            allocate = sum(events.mapped('number_allocate_children'))
-            resupply = allocate - sum(events.mapped('planned_sponsorships'))
-            if resupply < 0:
-                allocate -= resupply
-                resupply = 0
+            week_start = fields.Date.from_string(week.week_start_date)
+            week_end = fields.Date.from_string(week.week_end_date)
+            allocate = 0
+            for event in events:
+                hold_start = fields.Date.from_string(event.hold_start_date)
+                event_start = fields.Date.from_string(event.start_date)
+                days_for_allocation = (event_start - hold_start).days + 1
+                days_in_week = 7
+                if week_start < hold_start:
+                    days_in_week = (hold_start - week_start).days + 1
+                elif week_end > event_start:
+                    days_in_week = (week_end - event_start).days + 1
+                allocate += float(event.number_allocate_children *
+                                  days_in_week) / days_for_allocation
+
+            # Compute resupply
+            events = self.env['crm.event.compassion'].search([
+                ('hold_end_date', '>=', week.week_start_date),
+                ('hold_end_date', '<=', week.week_end_date),
+            ])
+            resupply = 0
+            for event in events:
+                resupply += event.number_allocate_children - \
+                            event.planned_sponsorships
+
             week.number_children_events = allocate
             week.resupply_events = resupply
 
@@ -143,8 +158,8 @@ class WeeklyDemand(models.Model):
             ('channel', '=', 'internet'),
             ('start_date', '>=', fields.Date.to_string(start_date))
         ])
-        allocate_per_week = int(self.env['ir.config_parameter'].get_param(
-            'crm_compassion.number_children_web'))
+        allocate_per_week = self.env['demand.planning.settings'].get_param(
+            'number_children_website')
         return allocate_per_week - (float(web_sponsored) / STATS_DURATION)
 
     @api.model
@@ -160,8 +175,8 @@ class WeeklyDemand(models.Model):
             ('start_date', '>=', fields.Date.to_string(start_date)),
             ('channel', '!=', 'internet')
         ])
-        allocate_per_week = int(self.env['ir.config_parameter'].get_param(
-            'crm_compassion.number_children_ambassador'))
+        allocate_per_week = self.env['demand.planning.settings'].get_param(
+            'number_children_ambassador')
         return allocate_per_week - (float(ambass_sponsored) / STATS_DURATION)
 
     @api.depends('week_start_date')
@@ -244,10 +259,10 @@ class WeeklyDemand(models.Model):
     ##########################################################################
     def get_defaults(self):
         """ Returns the computation defaults in a dictionary. """
-        web = int(self.env['ir.config_parameter'].get_param(
-            'crm_compassion.number_children_web'))
-        ambassador = int(self.env['ir.config_parameter'].get_param(
-            'crm_compassion.number_children_ambassador'))
+        web = self.env['demand.planning.settings'].get_param(
+            'number_children_website')
+        ambassador = self.env['demand.planning.settings'].get_param(
+            'number_children_ambassador')
         return {
             'number_children_website': web,
             'number_children_ambassador': ambassador,

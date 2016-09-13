@@ -44,6 +44,7 @@ class GenericChild(models.AbstractModel):
     is_orphan = fields.Boolean(readonly=True)
     beneficiary_state = fields.Selection([
         ("Available", "Available"),
+        ("Active", "Active"),
         ("Change Commitment Hold", "Change Commitment Hold"),
         ("Consignment Hold", "Consignment Hold"),
         ("Delinquent Mass Cancel Hold", "Delinquent Mass Cancel Hold"),
@@ -62,6 +63,29 @@ class GenericChild(models.AbstractModel):
         ('Unsponsored', 'Unsponsored'),
     ], readonly=True)
     unsponsored_since = fields.Date(readonly=True)
+
+    @api.model
+    def get_fields(self):
+        return ['global_id', 'local_id', 'project_id', 'name', 'firstname',
+                'lastname', 'preferred_name', 'gender', 'birthdate', 'age',
+                'is_orphan', 'beneficiary_state', 'sponsorship_status',
+                'unsponsored_since', 'correspondence_language_id']
+
+    def get_child_vals(self):
+        """ Get the required field values of one record for other record
+            creation.
+            :return: Dictionary of values for the fields
+        """
+        self.ensure_one()
+        vals = self.read(self.get_fields())[0]
+        if vals.get('correspondence_language_id'):
+            vals['correspondence_language_id'] = vals[
+                'correspondence_language_id'][0]
+        if vals.get('project_id'):
+            vals['project_id'] = vals['project_id'][0]
+
+        del vals['id']
+        return vals
 
 
 class GlobalChild(models.TransientModel):

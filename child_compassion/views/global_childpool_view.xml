@@ -136,7 +136,7 @@
                     <sheet>
                         <group>
                             <field name="type"/>
-                            <field name="hold_expiration_date"/>
+                            <field name="expiration_date"/>
                             <field name="primary_owner"/>
                             <field name="secondary_owner"/>
                             <field name="no_money_yield_rate"/>

@@ -8,7 +8,9 @@
             <field name="arch" type="xml">
                 <form string="Holds">
                     <header>
-                        <button name="release_hold" type="object" string="Release Hold" attrs="{'invisible': [('active', '=', False)]}" />
+                        <field name="state" widget="statusbar"/>
+                        <button name="update_hold" type="object" string="Send Hold" states="draft" class="oe_highlight" />
+                        <button name="release_hold" type="object" string="Release Hold" states="active" />
                     </header>
                     <sheet>
                         <group>
@@ -22,7 +24,6 @@
                                 <field name="type" />
                                 <field name="expiration_date" />
                                 <field name="reservation_id"/>
-                                <field name="active" attrs="{'invisible': [('active', '=', True)]}" />
                             </group>
                         </group>
                     </sheet>
@@ -33,12 +34,13 @@
             <field name="name">compassion.hold.tree</field>
             <field name="model">compassion.hold</field>
             <field name="arch" type="xml">
-                <tree colors="grey:active == False; black:active == True" string="Holds">
+                <tree string="Holds"
+                      colors="blue:state == 'draft';black:state == 'active';grey:state == 'expired'">
                     <field name="hold_id" />
                     <field name="child_name" />
                     <field name="expiration_date" />
                     <field name="primary_owner" />
-                    <field name="active"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
@@ -52,8 +54,10 @@
                     <field name="child_name" filter_domain="[('child_name', 'ilike', self)]"/>
                     <field name="hold_id"/>
                     <field name="primary_owner"/>
-                    <filter name="active" string="Active" domain="[('active','=',True)]"/>
-                    <filter name="inactive" string="Inactive" domain="[('active','=',False)]"/>
+                    <filter name="not_expired" string="Not Expired" domain="[('state','!=','expired')]"/>
+                    <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                    <filter name="active" string="Active" domain="[('state','=','active')]"/>
+                    <filter name="expired" string="Expired" domain="[('state','=','expired')]"/>
                 </search>
             </field>
         </record>
@@ -63,7 +67,7 @@
             <field name="res_model">compassion.hold</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_active':1}</field>
+            <field name="context">{'search_default_not_expired':1}</field>
         </record>
 
         <menuitem id="menu_holds" parent="menu_pool_section" name="Holds" action="open_view_holds" sequence="1" />

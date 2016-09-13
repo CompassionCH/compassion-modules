@@ -39,6 +39,16 @@
                 <field name="group_id" position="attributes">
                     <attribute name="context">{'default_type': context.get('default_type'), 'default_partner_id': partner_id}</attribute>
                 </field>
+
+                <!-- Add global_id field -->
+                <field name="end_reason" position="before">
+                    <field name="global_id"/>
+                </field>
+
+                <!-- Add transfer field -->
+                <field name="end_reason" position="after">
+                    <field name="transfer_partner_id" attrs="{'invisible': [('transfer_partner_id', '=', False)]}"/>
+                </field>
                 
                 <!-- Replace filter domain of parent_id field to take correspondant -->
                 <field name="parent_id" position="attributes">

@@ -31,10 +31,3 @@ class ReinstatementMapping(OnrampMapping):
     CONSTANTS = {
 
     }
-
-    def _convert_connect_data(self, connect_name, value_mapping, value,
-                              relation_search=None):
-        if connect_name == 'Beneficiary_GlobalID':
-            relation_search = [('active', '=', False)]
-        return super(ReinstatementMapping, self)._convert_connect_data(
-            connect_name, value_mapping, value, relation_search)

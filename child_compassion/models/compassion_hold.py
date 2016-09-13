@@ -12,10 +12,9 @@ from enum import Enum
 
 from datetime import datetime, timedelta
 
-from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from openerp import api, models, fields, _
-from openerp.exceptions import Warning
 
+from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from ..mappings.childpool_create_hold_mapping import ReservationToHoldMapping
 
 
@@ -44,34 +43,27 @@ class HoldType(Enum):
         return False
 
 
-class CompassionHold(models.Model):
-    _name = 'compassion.hold'
-    _rec_name = 'hold_id'
+class AbstractHold(models.AbstractModel):
+    """ Defines the basics of each model that must set up hold values. """
+    _name = 'compassion.abstract.hold'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    hold_id = fields.Char(readonly=True)
-    child_id = fields.Many2one('compassion.child', 'Child on hold',
-                               readonly=True)
-    child_name = fields.Char(
-        'Child on hold', related='child_id.name', readonly=True)
-    type = fields.Selection('get_hold_types')
-    expiration_date = fields.Datetime()
-    primary_owner = fields.Many2one('res.users')
+    type = fields.Selection(
+        'get_hold_types', required=True,
+        default=HoldType.CONSIGNMENT_HOLD.value
+    )
+    expiration_date = fields.Datetime(required=True)
+    primary_owner = fields.Many2one(
+        'res.users', required=True, default=lambda self: self.env.user
+    )
     secondary_owner = fields.Char()
-    no_money_yield_rate = fields.Float()
     yield_rate = fields.Float()
-    channel = fields.Char()
+    no_money_yield_rate = fields.Float()
+    channel = fields.Selection('get_channel')
     source_code = fields.Char()
-    active = fields.Boolean(default=True, readonly=True)
-    reinstatement_reason = fields.Char(readonly=True)
-    reservation_id = fields.Many2one('icp.reservation', 'Reservation')
-
-    _sql_constraints = [
-        ('hold_id', 'unique(hold_id)',
-         'The hold already exists in database.'),
-    ]
+    comments = fields.Char()
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -89,10 +81,68 @@ class CompassionHold(models.Model):
         """
         config_obj = self.env['availability.management.settings']
         hold_param = hold_type.name.lower() + '_duration'
-        duration = config_obj.get_default_values([hold_param])[hold_param]
+        duration = config_obj.get_param(hold_param)
         diff = timedelta(days=duration) if hold_type != \
             HoldType.E_COMMERCE_HOLD else timedelta(minutes=duration)
         return fields.Datetime.to_string(datetime.now() + diff)
+
+    @api.model
+    def get_channel(self):
+        return [
+            ('web', _('Website')),
+            ('event', _('Event')),
+            ('ambassador', _('Ambassador')),
+        ]
+
+    @api.onchange('type')
+    def onchange_type(self):
+        self.expiration_date = self.get_default_hold_expiration(
+            HoldType.from_string(self.type))
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    def get_fields(self):
+        """ Returns the fields for which we want to know the value. """
+        return ['type', 'expiration_date', 'primary_owner',
+                'secondary_owner', 'yield_rate', 'no_money_yield_rate',
+                'channel', 'source_code', 'comments']
+
+    def get_hold_values(self):
+        """ Get the field values of one record.
+            :return: Dictionary of values for the fields
+        """
+        self.ensure_one()
+        vals = self.read(self.get_fields())[0]
+        vals['primary_owner'] = vals['primary_owner'][0]
+        del vals['id']
+        return vals
+
+
+class CompassionHold(models.Model):
+    _name = 'compassion.hold'
+    _rec_name = 'hold_id'
+    _inherit = 'compassion.abstract.hold'
+
+    hold_id = fields.Char(readonly=True)
+    child_id = fields.Many2one(
+        'compassion.child', 'Child on hold', readonly=True
+    )
+    child_name = fields.Char(
+        'Child on hold', related='child_id.name', readonly=True
+    )
+    state = fields.Selection([
+        ('draft', _("Draft")),
+        ('active', _("Active")),
+        ('expired', _("Expired"))],
+        readonly=True, default='draft')
+    reinstatement_reason = fields.Char(readonly=True)
+    reservation_id = fields.Many2one('icp.reservation', 'Reservation')
+
+    _sql_constraints = [
+        ('hold_id', 'unique(hold_id)',
+         'The hold already exists in database.'),
+    ]
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -100,8 +150,7 @@ class CompassionHold(models.Model):
     @api.multi
     def write(self, vals):
         res = super(CompassionHold, self).write(vals)
-        notify_vals = ['name', 'primary_owner', 'type', 'mandatory_review',
-                       'expiration_date']
+        notify_vals = ['primary_owner', 'type', 'expiration_date']
         notify = reduce(lambda prev, val: prev or val in vals, notify_vals,
                         False)
         if notify and not self.env.context.get('no_upsert'):
@@ -109,14 +158,10 @@ class CompassionHold(models.Model):
 
         return res
 
-    @api.multi
-    def unlink(self):
-        self.release_hold()
-        return
-
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.multi
     def update_hold(self):
         message_obj = self.env['gmc.message.pool']
         action_id = self.env.ref('child_compassion.create_hold').id
@@ -135,17 +180,15 @@ class CompassionHold(models.Model):
         for hold in self:
             child_to_update = hold.child_id
             if hold.hold_id:
-                child_vals = {
+                hold.state = 'active'
+                child_to_update.write({
                     'hold_id': hold.id,
-                    'active': True,
-                    'state': 'N',
-                }
-                child_to_update.write(child_vals)
+                    'date': fields.Date.today(),
+                })
             else:
-                # TODO Put hold in failure
-                # delete child if no hold_id received
-                child_to_update.unlink()
+                # Release child if no hold_id received
                 hold.unlink()
+                child_to_update.signal_workflow('release')
 
     @api.model
     def reinstatement_notification(self, commkit_data):
@@ -160,15 +203,6 @@ class CompassionHold(models.Model):
                 get_vals_from_connect(reinstatement_data)
             hold = self.create(vals)
 
-            child = hold.child_id
-            child.write({
-                'active': True,
-                'state': 'D',
-                'delegated_to': self.env['recurring.contract'].search(
-                    [('child_id', '=', hold.child_id.id)],
-                    limit=1).partner_id.id,
-                'hold_id': hold.id
-            })
             # Update hold duration to what is configured
             hold.write({
                 'expiration_date': self.get_default_hold_expiration(
@@ -189,6 +223,13 @@ class CompassionHold(models.Model):
                 {'global_id': child_global_id})
             hold = self.env['compassion.hold'].create(
                 mapping.get_vals_from_connect(hold_data))
+            if hold.reservation_id.source_code == 'sponsor_cancel':
+                # Update the hold to sponsor cancel hold.
+                hold.write({
+                    'type': HoldType.SPONSOR_CANCEL_HOLD.value,
+                    'expiration_date': self.get_default_hold_expiration(
+                        HoldType.SPONSOR_CANCEL_HOLD)
+                })
             child.hold_id = hold
             return [hold.id]
 
@@ -196,31 +237,42 @@ class CompassionHold(models.Model):
 
     @api.multi
     def release_hold(self):
-        message_obj = self.env['gmc.message.pool']
+        message_obj = self.env['gmc.message.pool'].with_context(
+            async_mode=False)
         action_id = self.env.ref('child_compassion.release_hold').id
 
-        self.active = False
-        message_vals = {
-            'action_id': action_id,
-            'object_id': self.id
-        }
+        for hold in self:
+            message_obj.create({
+                'action_id': action_id,
+                'object_id': hold.id
+            })
+            hold.state = 'expired'
+            child = hold.child_id
+            if child:
+                child.hold_id = False
+                if not child.sponsor_id:
+                    child.signal_workflow('release')
 
-        if self.child_id.sponsor_id:
-            raise Warning(_("Cancel impossible"), _("This hold is on a "
-                                                    "sponsored child!"))
-        else:
-            self.child_id.active = False
-            message_obj.create(message_vals)
+        return True
 
     @api.model
     def check_hold_validity(self):
-        expired_holds = self.env['compassion.hold'].search([
-            ('expiration_date', '<',
-             fields.Datetime.now())
+        # Mark old holds as expired and release children if necessary
+        holds = self.env['compassion.hold'].search([
+            ('expiration_date', '<', fields.Datetime.now()),
+            ('state', '=', 'active')
         ])
+        holds.write({'state': 'expired'})
+        holds.mapped('child_id').write({'hold_id': False})
+        free_children = holds.mapped('child_id').filtered(
+            lambda c: not c.sponsor_id)
+        free_children.signal_workflow('release')
 
-        for expired_hold in expired_holds:
-            expired_hold.child_id.active = False
-            expired_hold.active = False
+        # Remove holds that have no child linked anymore
+        holds = self.env['compassion.hold'].search([
+            ('state', '=', 'expired'),
+            ('child_id', '=', False)
+        ])
+        holds.unlink()
 
         return True

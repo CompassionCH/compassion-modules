@@ -8,9 +8,9 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-
 from openerp import api, models, fields, exceptions, _
-from datetime import datetime
+from datetime import datetime, timedelta
+from openerp.exceptions import Warning
 
 
 class CompassionHold(models.Model):
@@ -23,27 +23,13 @@ class ChildHoldWizard(models.TransientModel):
     _inherit = 'child.hold.wizard'
 
     @api.multi
-    def create_hold_vals(self, child_comp):
-        hold_vals = super(ChildHoldWizard, self).create_hold_vals(child_comp)
+    def get_hold_values(self):
+        hold_vals = super(ChildHoldWizard, self).get_hold_values()
 
         event_id = self.env.context.get('event_id')
         if event_id:
             hold_vals['event_id'] = event_id
         return hold_vals
-
-    @api.multi
-    def create_child_vals(self, child):
-        child_vals = super(ChildHoldWizard, self).create_child_vals(child)
-
-        if self.env.context.get('event_id'):
-            child_vals.update({
-                'date_delegation': fields.date.today(),
-                'delegated_comment': self.source_code,
-                'delegated_to': self.env.context.get('user_id'),
-                'state': 'D'
-            })
-
-        return child_vals
 
     @api.multi
     def send(self):
@@ -94,7 +80,7 @@ class event_compassion(models.Model):
         'get_event_types', required=True, track_visibility='onchange')
     start_date = fields.Datetime(required=True)
     year = fields.Char(compute='_set_year', store=True)
-    end_date = fields.Datetime()
+    end_date = fields.Datetime(required=True)
     partner_id = fields.Many2one(
         'res.partner', 'Customer', track_visibility='onchange')
     zip_id = fields.Many2one('res.better.zip', 'Address')
@@ -138,7 +124,8 @@ class event_compassion(models.Model):
         track_visibility='onchange',
         required=True)
     planned_sponsorships = fields.Integer(
-        'Expected sponsorships', track_visibility='onchange', required=True)
+        'Expected sponsorships',
+        track_visibility='onchange', required=True)
     lead_id = fields.Many2one(
         'crm.lead', 'Opportunity', track_visibility='onchange')
     won_sponsorships = fields.Integer(
@@ -151,10 +138,23 @@ class event_compassion(models.Model):
     parent_copy = fields.Many2one(
         'account.analytic.account', related='parent_id')
     calendar_event_id = fields.Many2one('calendar.event')
+    hold_start_date = fields.Date(
+        default=lambda self: self._default_hold_start_date(),
+        required=True
+    )
+    hold_end_date = fields.Date(
+        compute='_compute_hold_end_date', store=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.model
+    def _default_hold_start_date(self):
+        days_allocate_before_event = self.env[
+            'demand.planning.settings'].get_param('days_allocate_before_event')
+        return fields.Date.to_string(datetime.today() - timedelta(
+            days=days_allocate_before_event))
+
     @api.multi
     def update_analytics(self):
         self._set_analytic_lines()
@@ -211,6 +211,34 @@ class event_compassion(models.Model):
         for event in self:
             event.allocate_child_ids = event.hold_ids.mapped('child_id')
 
+    @api.one
+    @api.constrains('hold_start_date', 'start_date')
+    def _check_hold_start_date(self):
+        if self.hold_start_date > self.start_date:
+            raise Warning("Invalid Date", "The hold start date must "
+                                          "be before the event "
+                                          "starting date !")
+
+    @api.multi
+    def compute_hold_start_date(self):
+        days_before = self.env['demand.planning.settings'].get_param(
+            'days_allocate_before_event')
+        for event in self.filtered(lambda e: not e.hold_start_date):
+            hold_start_date = fields.Datetime.from_string(
+                event.start_date) - timedelta(days=days_before)
+            event.hold_start_date = fields.Date.to_string(hold_start_date)
+
+    @api.depends('end_date')
+    @api.multi
+    def _compute_hold_end_date(self):
+        days_after = self.env['demand.planning.settings'].get_param(
+            'days_hold_after_event')
+        for event in self:
+            if self.end_date:
+                hold_end_date = fields.Datetime.from_string(
+                    event.end_date) + timedelta(days=days_after)
+                event.hold_end_date = fields.Date.to_string(hold_end_date)
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -260,7 +288,6 @@ class event_compassion(models.Model):
     def write(self, vals):
         """ Push values to linked objects. """
         super(event_compassion, self).write(vals)
-
         if not self.env.context.get('no_sync'):
             for event in self:
                 if 'use_tasks' in vals and event.use_tasks:
@@ -349,6 +376,11 @@ class event_compassion(models.Model):
         for event in self:
             if event.year:
                 event.parent_id = event._find_parent_analytic()
+
+    @api.onchange('start_date')
+    def onchange_start_date(self):
+        for event in self.filtered(lambda e: e.start_date and not e.end_date):
+            event.end_date = event.start_date
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -450,11 +482,16 @@ class event_compassion(models.Model):
 
     @api.multi
     def allocate_children(self):
-        no_money_yield = float(
-            self.planned_sponsorships) / self.number_allocate_children
+        no_money_yield = float(self.planned_sponsorships)
         yield_rate = float(
             self.number_allocate_children - self.planned_sponsorships
-        ) / float(self.number_allocate_children)
+        )
+        if self.number_allocate_children > 1:
+            no_money_yield /= (self.number_allocate_children * 100)
+            yield_rate /= float(self.number_allocate_children * 100)
+        expiration_date = fields.Datetime.from_string(self.end_date) + \
+            timedelta(days=self.env['demand.planning.settings'].
+                      get_param('days_hold_after_event'))
         return {
             'name': _('Global Childpool'),
             'type': 'ir.actions.act_window',
@@ -470,5 +507,7 @@ class event_compassion(models.Model):
                 'default_source_code': self.name,
                 'default_no_money_yield_rate': no_money_yield,
                 'default_yield_rate': yield_rate,
+                'default_expiration_date':
+                    fields.Datetime.to_string(expiration_date)
             }).env.context
         }

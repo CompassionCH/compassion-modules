@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2016 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+    <data>
+        <record id="end_sponsorship_view" model="ir.ui.view">
+            <field name="name">end.sponsorship.wizard.view</field>
+            <field name="model">end.contract.wizard</field>
+            <field name="inherit_id" ref="contract_compassion.end_contract_view"/>
+            <field name="arch" type="xml">
+                <!-- End sponsorship form -->
+                <field name="end_reason" position="after">
+                    <field name="keep_child_on_hold"/>
+                    <field name="hold_expiration_date"
+                           attrs="{'invisible': [('keep_child_on_hold', '=', False)]}"/>
+                </field>
+                <xpath expr="//group[@name='settings']">
+                    <group attrs="{'invisible': [('end_reason', '!=', '4')]}">
+                        <!-- Transfer child form -->
+                        <field name="do_transfer"/>
+                        <field name="transfer_country_id"
+                               attrs="{'invisible': [('do_transfer', '=', False)],
+                                           'required': [('do_transfer', '=', True)]}"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

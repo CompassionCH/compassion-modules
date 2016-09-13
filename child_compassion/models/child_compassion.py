@@ -10,14 +10,18 @@
 ##############################################################################
 
 import logging
-from datetime import datetime
 
 from openerp import models, fields, api, _
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+
+from datetime import datetime, timedelta
+
 from ..wizards.child_description_fr import ChildDescriptionFr
 from ..wizards.child_description_de import ChildDescriptionDe
 from ..wizards.child_description_it import ChildDescriptionIt
 from ..mappings.compassion_child_mapping import CompassionChildMapping
+
+from openerp.addons.connector.queue.job import job
+from openerp.addons.connector.session import ConnectorSession
 
 logger = logging.getLogger(__name__)
 
@@ -213,13 +217,6 @@ class CompassionChild(models.Model):
         'child.chronic.illness', string='Chronic illnesses', readonly=True
     )
 
-    # Delegation
-    ############
-    delegated_to = fields.Many2one('res.partner', 'Delegated to')
-    delegated_comment = fields.Text('Delegated comment')
-    date_delegation = fields.Date()
-    date_end_delegation = fields.Date('Delegated until')
-
     # Case Studies
     ##############
     lifecycle_ids = fields.One2many(
@@ -277,12 +274,11 @@ class CompassionChild(models.Model):
 
     def _get_child_states(self):
         return [
-            ('N', _('Available')),
-            ('D', _('Delegated')),
+            ('N', _('Consigned')),
             ('I', _('On Internet')),
-            ('Z', _('Reinstated')),
             ('P', _('Sponsored')),
             ('F', _('Departed')),
+            ('R', _('Released')),
         ]
 
     def _set_available(self):
@@ -290,7 +286,7 @@ class CompassionChild(models.Model):
             child.is_available = child.state in self._available_states()
 
     def _available_states(self):
-        return ['N', 'D', 'Z', 'I']
+        return ['N', 'I']
 
     def _compute_exit_reason(self):
         for child in self:
@@ -310,50 +306,16 @@ class CompassionChild(models.Model):
         a new one.
         """
         global_id = vals.get('global_id')
-        child = False
-        if global_id:
-            child = self.search([
-                ('global_id', '=', global_id),
-                ('active', '=', False)
-            ])
-            if child:
-                vals['active'] = True
-                child.write(vals)
-        if not child:
+        child = self.search([('global_id', '=', global_id)])
+        if child:
+            child.write(vals)
+        else:
             child = super(CompassionChild, self).create(vals)
-        child.with_context(async_mode=True).get_infos()
         return child
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.model
-    def update_delegate(self):
-        """Called by CRON to update delegated children.
-        :param Recordset self: empty Recordset
-        """
-        children = self.search([('state', 'not in', ['F', 'P'])])
-        children_to_delegate = self.copy()
-        children_to_undelegate = list()
-
-        for child in children:
-            if child.date_delegation:
-                if datetime.strptime(child.date_delegation, DF) \
-                   <= datetime.today() and child.is_available:
-                    children_to_delegate |= child
-
-                if child.date_end_delegation and \
-                   datetime.strptime(child.date_end_delegation, DF) <= \
-                   datetime.today():
-                    children_to_undelegate.append(child.id)
-
-        children_to_delegate.write({'state': 'D'})
-
-        self.env['undelegate.child.wizard'].with_context(
-            active_ids=children_to_undelegate).undelegate()
-
-        return True
-
     def details_answer(self, vals):
         """ Called when receiving the answer of GetDetails message. """
         self.ensure_one()
@@ -417,62 +379,62 @@ class CompassionChild(models.Model):
     # Lifecycle methods
     ###################
     def depart(self):
-        self.write({'state': 'F'})
+        self.signal_workflow('release')
 
     def reinstatement(self):
         """ Called by Lifecycle Event. Hold and state of Child is
         handled by the Reinstatement Hold Notification. """
-        self.get_infos()
+        self.delete_workflow()
+        self.create_workflow()
 
     ##########################################################################
     #                            WORKFLOW METHODS                            #
     ##########################################################################
-    @api.one
-    def child_available(self):
-        """Called on creation of workflow. Determine the state of
-        allocated child.
-        """
-        if self.has_been_sponsored:
-            if self.state == 'F':
-                # Child reinstatement
-                self.state = 'Z'
-                # TODO The child should be on reinstatement hold
-                # Convert the hold to have time to propose it on the
-                # previous sponsor
-        if self.sponsor_id:
-            # Child is already sponsored
-            self.state = 'P'
-        else:
-            # Child has lost his sponsor. We inactivate it to release it
-            # to the global child pool.
-            if self.has_been_sponsored and not self.hold_id:
-                self.state = 'F'
-                self.active = False
+    @api.multi
+    def child_consigned(self):
+        """Called on child allocation."""
+        self.write({'state': 'N', 'sponsor_id': False})
+        self.with_context(async_mode=True).get_infos()
         return True
 
     @api.multi
     def child_sponsored(self):
-        self.write({
+        return self.write({
             'state': 'P',
-            'has_been_sponsored': True})
+            'has_been_sponsored': True
+        })
+
+    @api.multi
+    def child_released(self):
+        """ Is called when a child is released to the global childpool. """
+        sponsored_children = self.filtered('has_been_sponsored')
+        sponsored_children.write({
+            'sponsor_id': False,
+            'state': 'R'
+        })
+        other_children = self - sponsored_children
+        other_children._postpone_deletion()
         return True
 
     @api.multi
     def child_departed(self):
-        """ Is called when a child changes his status to 'F'. """
+        """ Is called when a child is departed. """
         sponsored_children = self.filtered('has_been_sponsored')
+        sponsored_children.write({
+            'sponsor_id': False,
+            'state': 'F'
+        })
         other_children = self - sponsored_children
-        other_children.unlink()
-        sponsored_children.write({'sponsor_id': False})
+        other_children._postpone_deletion()
         return True
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    def _get_basic_informations(self):
-        """ Retrieves basic information from Get Child Information service.
-        """
-        return True
+    def _postpone_deletion(self):
+        postpone = datetime.now() + timedelta(seconds=10)
+        session = ConnectorSession.from_env(self.env)
+        unlink_children_job.delay(session, self._name, self.ids, eta=postpone)
 
     def _get_last_pictures(self):
         self.ensure_one()
@@ -492,3 +454,13 @@ class CompassionChild(models.Model):
         """
         self.ensure_one()
         self.write(vals)
+
+
+##############################################################################
+#                            CONNECTOR METHODS                               #
+##############################################################################
+@job(default_channel='root.child_compassion')
+def unlink_children_job(session, model_name, message_ids):
+    """Job for deleting released children."""
+    children = session.env[model_name].browse(message_ids)
+    children.unlink()
