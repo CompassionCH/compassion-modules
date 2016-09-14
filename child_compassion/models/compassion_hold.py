@@ -122,7 +122,7 @@ class AbstractHold(models.AbstractModel):
 class CompassionHold(models.Model):
     _name = 'compassion.hold'
     _rec_name = 'hold_id'
-    _inherit = 'compassion.abstract.hold'
+    _inherit = ['compassion.abstract.hold', 'mail.thread']
 
     hold_id = fields.Char(readonly=True)
     child_id = fields.Many2one(
@@ -135,7 +135,7 @@ class CompassionHold(models.Model):
         ('draft', _("Draft")),
         ('active', _("Active")),
         ('expired', _("Expired"))],
-        readonly=True, default='draft')
+        readonly=True, default='draft', track_visibility='onchange')
     reinstatement_reason = fields.Char(readonly=True)
     reservation_id = fields.Many2one('icp.reservation', 'Reservation')
 
@@ -246,13 +246,17 @@ class CompassionHold(models.Model):
                 'action_id': action_id,
                 'object_id': hold.id
             })
-            hold.state = 'expired'
-            child = hold.child_id
-            if child:
-                child.hold_id = False
-                if not child.sponsor_id:
-                    child.signal_workflow('release')
 
+        return True
+
+    @api.multi
+    def hold_released(self, vals=None):
+        """ Called when release message was successfully sent to GMC. """
+        self.write({'state': 'expired'})
+        for child in self.mapped('child_id'):
+            child.hold_id = False
+            if not child.sponsor_id:
+                child.signal_workflow('release')
         return True
 
     @api.model
@@ -285,12 +289,5 @@ class CompassionHold(models.Model):
             ('hold_id', '=', data.get('HoldID'))
         ])
 
-        child = hold.child_id
-
-        if child.has_been_sponsored is False and \
-                child.is_available:
-            child.hold_id = False
-            hold.active = False
-
-        if child.state is 'P':
-            a=2
+        hold.hold_released()
+        return [hold.id]
