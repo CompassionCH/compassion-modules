@@ -209,7 +209,10 @@ class OnrampMapping(object):
             # Regular field
             mapped_value = value
             if value_mapping.endswith('_id') or value_mapping == 'id':
-                mapped_value = int(value)
+                try:
+                    mapped_value = int(value)
+                except ValueError:
+                    return result
             result[value_mapping] = mapped_value
 
         return result

@@ -193,6 +193,8 @@ class SponsorshipCorrespondence(models.Model):
             is_published = is_published and commkit.state != published_state
             commkit.write(commkit_vals)
         else:
+            if 'id' in commkit_vals:
+                del commkit_vals['id']
             commkit = self.with_context(no_comm_kit=True).create(commkit_vals)
 
         if is_published:

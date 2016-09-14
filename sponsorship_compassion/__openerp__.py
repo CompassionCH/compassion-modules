@@ -45,6 +45,7 @@
         'view/generate_gift_view.xml',
         'view/account_invoice_split_wizard_view.xml',
         'view/child_view.xml',
+        'view/download_child_pictures_view.xml',
         'data/sequence.xml',
         'data/sponsorship_product.xml',
         'data/analytic_accounting.xml',
