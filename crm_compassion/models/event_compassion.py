@@ -13,41 +13,7 @@ from datetime import datetime, timedelta
 from openerp.exceptions import Warning
 
 
-class CompassionHold(models.Model):
-    _inherit = 'compassion.hold'
-
-    event_id = fields.Many2one('crm.event.compassion', 'Event', readonly=True)
-
-
-class ChildHoldWizard(models.TransientModel):
-    _inherit = 'child.hold.wizard'
-
-    @api.multi
-    def get_hold_values(self):
-        hold_vals = super(ChildHoldWizard, self).get_hold_values()
-
-        event_id = self.env.context.get('event_id')
-        if event_id:
-            hold_vals['event_id'] = event_id
-        return hold_vals
-
-    @api.multi
-    def send(self):
-        action = super(ChildHoldWizard, self).send()
-
-        if self.env.context.get('event_id') is None:
-            return action
-        else:
-            del action['domain']
-            action.update({
-                'view_mode': 'form,tree',
-                'res_model': 'crm.event.compassion',
-                'res_id': self.env.context.get('event_id')
-            })
-            return action
-
-
-class account_move_line(models.Model):
+class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
     @api.multi
@@ -58,7 +24,7 @@ class account_move_line(models.Model):
         account_ids = analytic_lines.mapped('account_id.id')
         events = self.env['crm.event.compassion'].search([
             ('analytic_id', 'in', account_ids)])
-        res = super(account_move_line, self).unlink()
+        res = super(AccountMoveLine, self).unlink()
         events._set_analytic_lines()
         return res
 
@@ -502,8 +468,8 @@ class event_compassion(models.Model):
             'context': self.with_context({
                 'default_take': self.number_allocate_children,
                 'event_id': self.id,
-                'user_id': self.user_id.partner_id.id,
                 'default_channel': 'event',
+                'default_ambassador': self.user_id.id,
                 'default_source_code': self.name,
                 'default_no_money_yield_rate': no_money_yield,
                 'default_yield_rate': yield_rate,

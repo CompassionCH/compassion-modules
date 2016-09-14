@@ -56,9 +56,11 @@ class AbstractHold(models.AbstractModel):
     )
     expiration_date = fields.Datetime(required=True)
     primary_owner = fields.Many2one(
-        'res.users', required=True, default=lambda self: self.env.user
+        'res.users', required=True, default=lambda self: self.env.user,
+        domain=[('share', '=', False)]
     )
     secondary_owner = fields.Char()
+    ambassador = fields.Many2one('res.users')
     yield_rate = fields.Float()
     no_money_yield_rate = fields.Float()
     channel = fields.Selection('get_channel')
@@ -106,7 +108,7 @@ class AbstractHold(models.AbstractModel):
         """ Returns the fields for which we want to know the value. """
         return ['type', 'expiration_date', 'primary_owner',
                 'secondary_owner', 'yield_rate', 'no_money_yield_rate',
-                'channel', 'source_code', 'comments']
+                'channel', 'source_code', 'comments', 'ambassador']
 
     def get_hold_values(self):
         """ Get the field values of one record.
@@ -115,6 +117,9 @@ class AbstractHold(models.AbstractModel):
         self.ensure_one()
         vals = self.read(self.get_fields())[0]
         vals['primary_owner'] = vals['primary_owner'][0]
+        ambassador = vals.get('ambassador')
+        if ambassador:
+            vals['ambassador'] = ambassador[0]
         del vals['id']
         return vals
 
