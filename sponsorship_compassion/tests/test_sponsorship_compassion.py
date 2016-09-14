@@ -96,7 +96,7 @@ class test_sponsorship_compassion(test_base_module):
 
         # Reactivation of the sponsorship contract
         child.project_id.write({'disburse_funds': True})
-        self.assertEqual(invoice.state, 'open')
+        self.assertEqual(invoice.state, 'paid')
         self.assertEqual(invoice1.state, 'open')
         date_finish = fields.Datetime.now()
         sponsorship.signal_workflow('contract_terminated')
