@@ -292,6 +292,8 @@ class gmc_message_pool(models.Model):
                     try:
                         message_update.update(self._perform_incoming_action())
                     except Exception:
+                        self.env.cr.rollback()
+                        self.env.invalidate_all()
                         self.write({
                             'state': 'failure',
                             'failure_reason': traceback.format_exc()})
