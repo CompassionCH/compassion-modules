@@ -145,6 +145,9 @@
                             <field name="channel"/>
                             <field name="comments" help="Will display the comments when child is selected for sponsorship"/>
                         </group>
+                        <group string="What to do next?">
+                            <field name="return_action"/>
+                        </group>
                         <footer>
                             <button name="send" string="Validate" type="object" class="oe_highlight"/>
                         </footer>

@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, fields
+from openerp import api, models, fields, _
 
 from openerp.addons.child_compassion.models.compassion_hold import HoldType
 
@@ -48,6 +48,12 @@ class ChildCompassion(models.Model):
 class ChildHoldWizard(models.TransientModel):
     _inherit = 'child.hold.wizard'
 
+    @api.model
+    def get_action_selection(self):
+        selection = super(ChildHoldWizard, self).get_action_selection()
+        selection.append(('event', _('Go back to event')))
+        return selection
+
     @api.multi
     def get_hold_values(self):
         hold_vals = super(ChildHoldWizard, self).get_hold_values()
@@ -57,17 +63,12 @@ class ChildHoldWizard(models.TransientModel):
             hold_vals['event_id'] = event_id
         return hold_vals
 
-    @api.multi
-    def send(self):
-        action = super(ChildHoldWizard, self).send()
-
-        if self.env.context.get('event_id') is None:
-            return action
-        else:
-            del action['domain']
+    def _get_action(self, holds):
+        action = super(ChildHoldWizard, self)._get_action(holds)
+        if self.return_action == 'event':
             action.update({
-                'view_mode': 'form,tree',
                 'res_model': 'crm.event.compassion',
-                'res_id': self.env.context.get('event_id')
+                'res_id': self.env.context.get('event_id'),
+                'view_mode': 'form,tree',
             })
-            return action
+        return action
