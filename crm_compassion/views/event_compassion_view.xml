@@ -172,17 +172,6 @@
             </field>
         </record>
 
-        <record id="view_compassion_holds_form_add_event_id" model="ir.ui.view">
-            <field name="name">compassion.hold.form</field>
-            <field name="model">compassion.hold</field>
-            <field name="inherit_id" ref="child_compassion.view_compassion_holds_form"/>
-            <field name="arch" type="xml">
-                <field name="expiration_date" position="after">
-                    <field name="event_id" />
-                </field>
-            </field>
-        </record>
-
         <menuitem id="menu_events_compassion" name="Events" parent="base.menu_sales" sequence="3" action="action_events_compassion"/>
     </data>
 </openerp>

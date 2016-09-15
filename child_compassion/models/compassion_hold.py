@@ -56,9 +56,11 @@ class AbstractHold(models.AbstractModel):
     )
     expiration_date = fields.Datetime(required=True)
     primary_owner = fields.Many2one(
-        'res.users', required=True, default=lambda self: self.env.user
+        'res.users', required=True, default=lambda self: self.env.user,
+        domain=[('share', '=', False)]
     )
     secondary_owner = fields.Char()
+    ambassador = fields.Many2one('res.users')
     yield_rate = fields.Float()
     no_money_yield_rate = fields.Float()
     channel = fields.Selection('get_channel')
@@ -106,7 +108,7 @@ class AbstractHold(models.AbstractModel):
         """ Returns the fields for which we want to know the value. """
         return ['type', 'expiration_date', 'primary_owner',
                 'secondary_owner', 'yield_rate', 'no_money_yield_rate',
-                'channel', 'source_code', 'comments']
+                'channel', 'source_code', 'comments', 'ambassador']
 
     def get_hold_values(self):
         """ Get the field values of one record.
@@ -115,6 +117,9 @@ class AbstractHold(models.AbstractModel):
         self.ensure_one()
         vals = self.read(self.get_fields())[0]
         vals['primary_owner'] = vals['primary_owner'][0]
+        ambassador = vals.get('ambassador')
+        if ambassador:
+            vals['ambassador'] = ambassador[0]
         del vals['id']
         return vals
 
@@ -122,22 +127,25 @@ class AbstractHold(models.AbstractModel):
 class CompassionHold(models.Model):
     _name = 'compassion.hold'
     _rec_name = 'hold_id'
-    _inherit = 'compassion.abstract.hold'
+    _inherit = ['compassion.abstract.hold', 'mail.thread']
 
     hold_id = fields.Char(readonly=True)
     child_id = fields.Many2one(
         'compassion.child', 'Child on hold', readonly=True
     )
-    child_name = fields.Char(
-        'Child on hold', related='child_id.name', readonly=True
-    )
     state = fields.Selection([
         ('draft', _("Draft")),
         ('active', _("Active")),
         ('expired', _("Expired"))],
-        readonly=True, default='draft')
+        readonly=True, default='draft', track_visibility='onchange')
     reinstatement_reason = fields.Char(readonly=True)
     reservation_id = fields.Many2one('icp.reservation', 'Reservation')
+
+    # Track field changes
+    ambassador = fields.Many2one(track_visibility='onchange')
+    primary_owner = fields.Many2one(track_visibility='onchange')
+    type = fields.Selection(track_visibility='onchange')
+    channel = fields.Selection(track_visibility='onchange')
 
     _sql_constraints = [
         ('hold_id', 'unique(hold_id)',
@@ -246,13 +254,17 @@ class CompassionHold(models.Model):
                 'action_id': action_id,
                 'object_id': hold.id
             })
-            hold.state = 'expired'
-            child = hold.child_id
-            if child:
-                child.hold_id = False
-                if not child.sponsor_id:
-                    child.signal_workflow('release')
 
+        return True
+
+    @api.multi
+    def hold_released(self, vals=None):
+        """ Called when release message was successfully sent to GMC. """
+        self.write({'state': 'expired'})
+        for child in self.mapped('child_id'):
+            child.hold_id = False
+            if not child.sponsor_id:
+                child.signal_workflow('release')
         return True
 
     @api.model
@@ -276,3 +288,14 @@ class CompassionHold(models.Model):
         holds.unlink()
 
         return True
+
+    @api.model
+    def beneficiary_hold_removal(self, commkit_data):
+        data = commkit_data.get('BeneficiaryHoldRemovalNotification')
+
+        hold = self.env['compassion.hold'].search([
+            ('hold_id', '=', data.get('HoldID'))
+        ])
+
+        hold.hold_released()
+        return [hold.id]

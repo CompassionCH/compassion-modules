@@ -54,6 +54,7 @@
         'views/calendar_event_view.xml',
         'views/demand_planning.xml',
         'views/demand_weekly_revision.xml',
+        'views/hold_view.xml',
     ],
     'demo': [],
     'installable': True,

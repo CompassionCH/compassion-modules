@@ -24,6 +24,7 @@
             <field name="connect_service">beneficiaries/holds/release</field>
             <field name="connect_outgoing_wrapper">BeneficiaryHoldReleaseRequestList</field>
             <field name="connect_answer_wrapper">BeneficiaryHoldReleaseResponseList</field>
+            <field name="success_method">hold_released</field>
             <field name="request_type">POST</field>
             <field name="auto_process">1</field>
             <field name="batch_send">1</field>
@@ -179,6 +180,15 @@
             <field name="description">This handles the reception of a Field Office Disaster.</field>
             <field name="auto_process">1</field>
         </record>
+        <!--Beneficiary Hold Removal-->
+        <record id="beneficiary_hold_removal" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">BeneficiaryHoldRemoval</field>
+            <field name="model">compassion.hold</field>
+            <field name="incoming_method">beneficiary_hold_removal</field>
+            <field name="description">This handles the reception of a Beneficiary Hold Removal.</field>
+            <field name="auto_process">1</field>
+        </record>
 
         <!-- Actions to Connect mappings -->
         <record id="major_revision_connect" model="gmc.action.connect">
@@ -216,6 +226,10 @@
         <record id="field_office_disaster_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/fieldoffice/2016/03/DisasterDetailsKit</field>
             <field name="action_id" ref="field_office_disaster"/>
+        </record>
+        <record id="beneficiary_hold_removal_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/04/BeneficiaryHoldRemovalNotification</field>
+            <field name="action_id" ref="beneficiary_hold_removal"/>
         </record>
     </data>
 </openerp>

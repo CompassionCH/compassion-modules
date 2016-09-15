@@ -17,6 +17,13 @@ class ChildHoldWizard(models.TransientModel):
     _name = 'child.hold.wizard'
     _inherit = 'compassion.abstract.hold'
 
+    @api.multi
+    def get_hold_values(self):
+        hold_vals = super(ChildHoldWizard, self).get_hold_values()
+        if self.channel in ('ambassador', 'event'):
+            hold_vals['secondary_owner'] = self.ambassador.name
+        return hold_vals
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################

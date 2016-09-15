@@ -9,10 +9,10 @@
 #
 ##############################################################################
 
-from openerp import api, models, fields
+from openerp import api, models, fields, _
 
 
-class contract_origin(models.Model):
+class ContractOrigin(models.Model):
     """ Add event to origin of a contract """
     _inherit = 'recurring.contract.origin'
 
@@ -24,10 +24,10 @@ class contract_origin(models.Model):
         if self.type == 'event':
             self.name = self.event_id.full_name
         else:
-            super(contract_origin, self)._set_name()
+            super(ContractOrigin, self)._set_name()
 
 
-class contracts(models.Model):
+class Contracts(models.Model):
     """ Adds the Salesperson to the contract. """
 
     _inherit = 'recurring.contract'
@@ -40,6 +40,17 @@ class contracts(models.Model):
         if origin:
             self.user_id = self._get_user_from_origin(origin)
 
+    @api.onchange('child_id')
+    def onchange_child_id(self):
+        origin = self.child_id.hold_id.origin_id
+        if origin:
+            self.origin_id = origin
+        if self.child_id.hold_id.comments:
+            return {
+                'warning': {'title': _('The child has some comments'),
+                            'message': self.child_id.hold_id.comments}
+            }
+
     def _get_user_from_origin(self, origin):
         user_id = False
         if origin.partner_id:
@@ -51,12 +62,12 @@ class contracts(models.Model):
         return user_id
 
 
-class contract_group(models.Model):
+class ContractGroup(models.Model):
     """ Push salesperson to invoice on invoice generation """
     _inherit = 'recurring.contract.group'
 
     def _setup_inv_line_data(self, contract_line, invoice_id):
-        invl_data = super(contract_group, self)._setup_inv_line_data(
+        invl_data = super(ContractGroup, self)._setup_inv_line_data(
             contract_line, invoice_id)
         if contract_line.contract_id.user_id:
             invl_data['user_id'] = contract_line.contract_id.user_id.id
