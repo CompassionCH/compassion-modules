@@ -21,3 +21,4 @@ from . import hr_holidays
 from . import demand_planning
 from . import weekly_demand
 from . import weekly_revision
+from . import compassion_hold

@@ -143,6 +143,7 @@
                             <field name="no_money_yield_rate"/>
                             <field name="yield_rate"/>
                             <field name="channel"/>
+                            <field name="comments" help="Will display the comments when child is selected for sponsorship"/>
                         </group>
                         <footer>
                             <button name="send" string="Validate" type="object" class="oe_highlight"/>

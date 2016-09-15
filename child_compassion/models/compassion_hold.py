@@ -133,9 +133,6 @@ class CompassionHold(models.Model):
     child_id = fields.Many2one(
         'compassion.child', 'Child on hold', readonly=True
     )
-    child_name = fields.Char(
-        'Child on hold', related='child_id.name', readonly=True
-    )
     state = fields.Selection([
         ('draft', _("Draft")),
         ('active', _("Active")),
@@ -143,6 +140,12 @@ class CompassionHold(models.Model):
         readonly=True, default='draft', track_visibility='onchange')
     reinstatement_reason = fields.Char(readonly=True)
     reservation_id = fields.Many2one('icp.reservation', 'Reservation')
+
+    # Track field changes
+    ambassador = fields.Many2one(track_visibility='onchange')
+    primary_owner = fields.Many2one(track_visibility='onchange')
+    type = fields.Selection(track_visibility='onchange')
+    channel = fields.Selection(track_visibility='onchange')
 
     _sql_constraints = [
         ('hold_id', 'unique(hold_id)',

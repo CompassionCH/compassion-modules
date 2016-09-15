@@ -201,7 +201,11 @@
                     <field name="local_id"/>
                     <field name="date"/>
                     <field name="sponsor_id"/>
-                    <field name="hold_id"/>
+                    <field name="hold_channel"/>
+                    <field name="hold_type"/>
+                    <field name="hold_owner"/>
+                    <field name="hold_ambassador"/>
+                    <field name="hold_expiration"/>
                     <field name="state"/>
                 </tree>
             </field>
@@ -213,25 +217,27 @@
             <field name="model">compassion.child</field>
             <field name="arch" type="xml">
                 <search string="Search child">
-                    <field name="name"
-                           filter_domain="['|', ('name', 'ilike', self), ('firstname', 'ilike', self)]"/>
+                    <field name="name" filter_domain="['|', ('name', 'ilike', self), ('firstname', 'ilike', self)]"/>
                     <field name="local_id"/>
                     <field name="sponsor_id"/>
                     <field name="sponsor_ref"/>
                     <field name="state"/>
-                    <field name="type"/>
-                    <filter name="available" string="Consigned"
-                            domain="[('state','in',('N','I'))]"
-                            context="{'group_by':'state'}"/>
-                    <filter name="sponsored" string="Sponsored"
-                            domain="[('state','=','P')]"
-                            help="Sponsored children"/>
-                    <filter name="departed" string="Departed"
-                            domain="[('state','=','F')]"
-                            help="Departed children"/>
+                    <field name="hold_type"/>
+                    <field name="hold_channel"/>
+                    <field name="hold_owner"/>
+                    <field name="hold_ambassador"/>
+                    <filter name="available" string="Consigned" domain="[('state','in',('N','I'))]"/>
+                    <filter name="sponsored" string="Sponsored" domain="[('state','=','P')]"/>
+                    <filter name="departed" string="Departed" domain="[('state','=','F')]" help="Departed children"/>
+                    <separator/>
+                    <filter name="my_children" string="My Allocations" domain="[('hold_owner','=',uid)]"/>
                     <group expand="0" string="Group By...">
-                        <filter string="Allocation Date" domain="[]"
-                                context="{'group_by':'date'}"/>
+                        <filter string="State" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Hold Type" domain="[]" context="{'group_by':'hold_type'}"/>
+                        <filter string="Channel" domain="[]" context="{'group_by':'hold_channel'}"/>
+                        <filter string="Owner" domain="[]" context="{'group_by':'hold_owner'}"/>
+                        <filter name="ambassador" string="Ambassador" domain="[]" context="{'group_by':'hold_ambassador'}"/>
+                        <filter string="Allocation Date" domain="[]" context="{'group_by':'date'}"/>
                     </group>
                 </search>
             </field>

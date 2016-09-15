@@ -72,10 +72,19 @@ class CompassionChild(models.Model):
     sponsor_ref = fields.Char(
         'Sponsor reference', related='sponsor_id.ref')
     has_been_sponsored = fields.Boolean()
-    hold_id = fields.Many2one('compassion.hold', 'Hold', readonly=True)
-    active = fields.Boolean(default=True)
     exit_reason = fields.Char(compute='_compute_exit_reason')
     non_latin_name = fields.Char()
+
+    # Hold Information
+    ##################
+    hold_id = fields.Many2one('compassion.hold', 'Hold', readonly=True)
+    hold_type = fields.Selection(related='hold_id.type', store=True)
+    hold_channel = fields.Selection(related='hold_id.channel', store=True)
+    hold_owner = fields.Many2one(related='hold_id.primary_owner', store=True)
+    hold_ambassador = fields.Many2one(related='hold_id.ambassador', store=True)
+    hold_expiration = fields.Datetime(related='hold_id.expiration_date',
+                                      string='Hold expiration')
+
     # Beneficiary Favorites
     #######################
     hobby_ids = fields.Many2many('child.hobby', string='Hobbies',
