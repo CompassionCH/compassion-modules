@@ -296,6 +296,7 @@ class CompassionHold(models.Model):
         hold = self.env['compassion.hold'].search([
             ('hold_id', '=', data.get('HoldID'))
         ])
+        hold.comments = data.get('NotificationReason')
 
         hold.hold_released()
         return [hold.id]
