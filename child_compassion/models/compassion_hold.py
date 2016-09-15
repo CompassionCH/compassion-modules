@@ -231,14 +231,8 @@ class CompassionHold(models.Model):
                 {'global_id': child_global_id})
             hold = self.env['compassion.hold'].create(
                 mapping.get_vals_from_connect(hold_data))
-            if hold.reservation_id.source_code == 'sponsor_cancel':
-                # Update the hold to sponsor cancel hold.
-                hold.write({
-                    'type': HoldType.SPONSOR_CANCEL_HOLD.value,
-                    'expiration_date': self.get_default_hold_expiration(
-                        HoldType.SPONSOR_CANCEL_HOLD)
-                })
             child.hold_id = hold
+
             return [hold.id]
 
         return list()

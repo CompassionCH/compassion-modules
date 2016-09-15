@@ -10,6 +10,8 @@
 ##############################################################################
 from openerp import api, models, fields
 
+from openerp.addons.child_compassion.models.compassion_hold import HoldType
+
 
 class WeeklyRevision(models.Model):
     _name = 'demand.weekly.revision'
@@ -70,13 +72,16 @@ class WeeklyRevision(models.Model):
         holds = self.env['compassion.hold'].search([
             ('create_date', '>=', start_date),
             ('create_date', '<=', end_date),
-            ('type', '=', 'Consignment Hold')
+            ('type', '=', HoldType.CONSIGNMENT_HOLD.value)
         ])
         web_holds = len(holds.filtered(lambda h: h.channel == 'web'))
         ambassador_holds = len(holds.filtered(
             lambda h: h.channel == 'ambassador'))
-        sub_holds = len(holds.filtered(
-            lambda h: h.type == 'Sub Child Hold'))
+        sub_holds = self.env['compassion.hold'].search_count([
+            ('create_date', '>=', start_date),
+            ('create_date', '<=', end_date),
+            ('type', '=', HoldType.SUB_CHILD_HOLD.value)
+        ])
         event_holds = len(holds.filtered(lambda h: h.channel == 'event'))
 
         # Sponsorships created in the period

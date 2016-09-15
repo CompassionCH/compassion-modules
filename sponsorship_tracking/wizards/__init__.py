@@ -11,3 +11,4 @@
 
 from . import install_sds_tracking
 from . import sub_sponsorship_wizard
+from . import child_hold_wizard
