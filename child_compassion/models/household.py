@@ -164,6 +164,7 @@ class Household(models.Model):
             ('Farmer', _('is a farmer')),
             ('Housewife', _('is a housewife')),
             ('Domestic Service/ Housekeeper', _('is a domestic housekeeper')),
+            ('Project Worker', _('works at the project')),
         ]
 
     def process_commkit(self, commkit_data):

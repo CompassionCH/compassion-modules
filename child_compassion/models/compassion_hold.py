@@ -258,7 +258,10 @@ class CompassionHold(models.Model):
         self.write({'state': 'expired'})
         for child in self.mapped('child_id'):
             child.hold_id = False
-            if not child.sponsor_id:
+            if child.sponsor_id:
+                # Check if it was a depart and retrieve lifecycle event
+                child.get_lifecycle_event()
+            else:
                 child.signal_workflow('release')
         return True
 

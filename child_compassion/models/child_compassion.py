@@ -22,6 +22,8 @@ from ..mappings.compassion_child_mapping import CompassionChildMapping
 
 from openerp.addons.connector.queue.job import job
 from openerp.addons.connector.session import ConnectorSession
+from openerp.addons.message_center_compassion.tools.onramp_connector import \
+    OnrampConnector
 
 logger = logging.getLogger(__name__)
 
@@ -395,6 +397,19 @@ class CompassionChild(models.Model):
         handled by the Reinstatement Hold Notification. """
         self.delete_workflow()
         self.create_workflow()
+
+    @api.multi
+    def get_lifecycle_event(self):
+        onramp = OnrampConnector()
+        endpoint = 'beneficiaries/{}/kits/beneficiarylifecycleeventkit'
+        lifecylcle_ids = list()
+        for child in self:
+            result = onramp.send_message(
+                endpoint.format(child.global_id), 'GET')
+            if 'BeneficiaryLifecycleEventList' in result.get('content', {}):
+                lifecylcle_ids.extend(self.env[
+                    'compassion.child.ble'].process_commkit(result['content']))
+        return lifecylcle_ids
 
     ##########################################################################
     #                            WORKFLOW METHODS                            #

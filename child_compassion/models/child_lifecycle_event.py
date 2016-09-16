@@ -38,6 +38,8 @@ class ChildLifecycleEvent(models.Model):
 
     # All reasons for all request types
     request_reason = fields.Selection([
+        # Child Registration
+        ('Registration with Compassion', _('Child registration')),
         # Planned Exit
         ('Reached Maximum Age', _('{he} reached maximum age')),
         ('Reached the end of the relevant programs available at the church '
