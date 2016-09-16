@@ -200,7 +200,7 @@ class event_compassion(models.Model):
         days_after = self.env['demand.planning.settings'].get_param(
             'days_hold_after_event')
         for event in self:
-            if self.end_date:
+            if event.end_date:
                 hold_end_date = fields.Datetime.from_string(
                     event.end_date) + timedelta(days=days_after)
                 event.hold_end_date = fields.Date.to_string(hold_end_date)
@@ -471,6 +471,7 @@ class event_compassion(models.Model):
                 'default_channel': 'event',
                 'default_ambassador': self.user_id.id,
                 'default_source_code': self.name,
+                'default_return_action': 'event',
                 'default_no_money_yield_rate': no_money_yield,
                 'default_yield_rate': yield_rate,
                 'default_expiration_date':

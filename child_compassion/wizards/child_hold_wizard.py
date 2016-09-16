@@ -9,7 +9,7 @@
 #
 ##############################################################################
 from ..models.compassion_hold import AbstractHold  # NOQA
-from openerp import models, api, _
+from openerp import models, api, fields, _
 
 
 class ChildHoldWizard(models.TransientModel):
@@ -17,6 +17,23 @@ class ChildHoldWizard(models.TransientModel):
     _name = 'child.hold.wizard'
     _inherit = 'compassion.abstract.hold'
 
+    return_action = fields.Selection(
+        'get_action_selection', required=True, default='view_children')
+
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+    @api.model
+    def get_action_selection(self):
+        return [
+            ('view_children', _('View Children')),
+            ('view_holds', _('View Holds')),
+            ('search', _('Search for other children')),
+        ]
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
     @api.multi
     def get_hold_values(self):
         hold_vals = super(ChildHoldWizard, self).get_hold_values()
@@ -55,12 +72,33 @@ class ChildHoldWizard(models.TransientModel):
             })
         messages.process_messages()
 
-        return {
-            'name': _('Created holds'),
-            'domain': [('id', 'in', holds.ids)],
+        return self._get_action(holds)
+
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
+    def _get_action(self, holds):
+        """ Returns the action after closing the wizard. """
+        action = {
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree,form',
-            'res_model': 'compassion.hold',
+            'context': self.env.context,
             'target': 'current',
         }
+        if self.return_action == 'view_children':
+            action.update({
+                'name': _('Children on hold'),
+                'domain': [('id', 'in', holds.mapped('child_id').ids)],
+                'res_model': 'compassion.child',
+            })
+        elif self.return_action == 'view_holds':
+            action.update({
+                'name': _('Created holds'),
+                'domain': [('id', 'in', holds.ids)],
+                'res_model': 'compassion.hold',
+            })
+        elif self.return_action == 'search':
+            action = True
+
+        return action

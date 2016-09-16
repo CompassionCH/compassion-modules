@@ -8,7 +8,9 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, fields, exceptions, _
+from openerp import api, models, fields, _
+
+from openerp.addons.child_compassion.models.compassion_hold import HoldType
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -20,8 +22,6 @@ class sub_sponsorship_wizard(models.TransientModel):
     state = fields.Selection([
         ('sub', 'sub'),
         ('no_sub', 'no_sub')])
-    child_id = fields.Many2one(
-        'compassion.child', 'Child')
     channel = fields.Selection('_get_channels')
     no_sub_default_reasons = fields.Selection(
         '_get_no_sub_reasons', 'No sub reason')
@@ -49,11 +49,6 @@ class sub_sponsorship_wizard(models.TransientModel):
     def create_subsponsorship(self):
         """ Creates a subsponsorship. """
         self.ensure_one()
-        child = self.child_id
-        if not child:
-            raise exceptions.Warning(
-                _("No child selected"),
-                _("Please select a child"))
 
         sponsorship_id = self.env.context.get('active_id')
         contract_obj = self.env['recurring.contract'].with_context(
@@ -75,12 +70,21 @@ class sub_sponsorship_wizard(models.TransientModel):
                 contract.next_invoice_date).replace(month=today.month,
                                                     year=today.year)
 
-        sub_contract.write({'child_id': child.id})
-        sub_contract.signal_workflow('contract_validated')
-        sub_contract.next_invoice_date = fields.Date.to_string(
-            next_invoice_date)
-
-        return True
+        return {
+            'name': _('Global Childpool'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'compassion.childpool.search',
+            'target': 'current',
+            'context': self.with_context({
+                'default_take': 1,
+                'contract_id': sub_contract.id,
+                'next_invoice_date': fields.Date.to_string(next_invoice_date),
+                'default_type': HoldType.SUB_CHILD_HOLD.value,
+                'default_return_action': 'sub',
+            }).env.context
+        }
 
     @api.multi
     def no_sub(self):
