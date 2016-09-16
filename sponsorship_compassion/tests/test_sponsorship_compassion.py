@@ -91,12 +91,12 @@ class test_sponsorship_compassion(test_base_module):
         child.project_id.with_context(
             async_mode=False).write({'disburse_funds': False})
         invoice1 = self.env['account.invoice'].browse(invoices[1].id)
-        self.assertEqual(invoice.state, 'cancel')
+        self.assertEqual(invoice.state, 'paid')
         self.assertEqual(invoice1.state, 'cancel')
 
         # Reactivation of the sponsorship contract
         child.project_id.write({'disburse_funds': True})
-        self.assertEqual(invoice.state, 'open')
+        self.assertEqual(invoice.state, 'paid')
         self.assertEqual(invoice1.state, 'open')
         date_finish = fields.Datetime.now()
         sponsorship.signal_workflow('contract_terminated')
@@ -107,7 +107,7 @@ class test_sponsorship_compassion(test_base_module):
         # Force cleaning invoices immediatley
         sponsorship._clean_invoices()
         self.assertTrue(sponsorship.state, 'terminated')
-        self.assertEqual(invoice.state, 'cancel')
+        self.assertEqual(invoice.state, 'paid')
         self.assertEqual(invoice1.state, 'cancel')
 
     def test_sponsorship_compassion_second_scenario(self):

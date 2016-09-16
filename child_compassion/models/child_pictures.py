@@ -135,6 +135,9 @@ class child_pictures(models.Model):
         _store_fname = type + '.' + format
         _image_date = json_data['imageDate'] or datetime.today().strftime(DF)
 
+        if not attach_id:
+            return json_data['image']['imageData']
+
         self.env['ir.attachment'].create({
             'datas_fname': _store_fname,
             'res_model': self._name,

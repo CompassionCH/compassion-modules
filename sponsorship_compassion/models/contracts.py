@@ -168,7 +168,7 @@ class SponsorshipContract(models.Model):
     def _get_last_paid_invoice(self):
         """ Override to exclude gift invoices. """
         self.last_paid_invoice_date = max(
-            self.with_context(lang='en_US').invoice_line_ids.filtered(
+            self.invoice_line_ids.with_context(lang='en_US').filtered(
                 lambda l: l.state == 'paid' and
                 l.product_id.categ_name != GIFT_CATEGORY).mapped(
                     'invoice_id.date_invoice') or [False])
@@ -228,7 +228,6 @@ class SponsorshipContract(models.Model):
 
         # Unreconcile paid invoices
         reconciles.mapped('line_id')._remove_move_reconcile()
-        reconciles.unlink()
 
         return True
 

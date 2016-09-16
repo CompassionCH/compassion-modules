@@ -601,6 +601,8 @@ class Correspondence(models.Model):
                 is_published = is_published and letter.state != published_state
                 letter.write(vals)
             else:
+                if 'id' in vals:
+                    del vals['id']
                 letter = self.with_context(no_comm_kit=True).create(vals)
 
             if is_published:

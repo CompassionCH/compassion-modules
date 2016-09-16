@@ -131,8 +131,15 @@ class CorrespondenceMapping(OnrampMapping):
             # Value is FO-X-YYYY-Z and we are only interested in YYYY
             # which holds the template code (like 1S11 for layout 1)
             value = value[5:9]
-        return super(CorrespondenceMapping, self)._convert_connect_data(
+
+        result = super(CorrespondenceMapping, self)._convert_connect_data(
             connect_name, value_mapping, value, relation_search)
+
+        if connect_name == 'GlobalPartnerSBCId':
+            # Cast to int
+            result[value_mapping] = int(value)
+
+        return result
 
     def _process_odoo_data(self, odoo_data):
         # Replace child and correspondant values with sponsorship
