@@ -403,7 +403,6 @@ class CompassionChild(models.Model):
     def child_consigned(self):
         """Called on child allocation."""
         self.write({'state': 'N', 'sponsor_id': False})
-        self.with_context(async_mode=True).get_infos()
         return True
 
     @api.multi
