@@ -136,12 +136,6 @@ class generate_gift_wizard(models.TransientModel):
         if analytic and analytic.analytic_id:
             inv_line_data['account_analytic_id'] = analytic.analytic_id.id
 
-        # Give a better name to invoice_line
-        if not self.description:
-            inv_line_data['name'] = contract.child_code
-            inv_line_data['name'] += " - " + contract.child_id.birthdate \
-                if product.name == GIFT_NAMES[0] else ""
-
         return inv_line_data
 
     @api.multi

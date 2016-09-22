@@ -10,3 +10,4 @@
 ##############################################################################
 
 from . import sponsorship_gift
+from . import contracts

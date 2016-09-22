@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2016 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __openerp__.py
+-->
+<openerp>
+    <data>
+        <record id="view_gift_tree" model="ir.ui.view">
+            <field name="name">sponsorship.gift.tree</field>
+            <field name="model">sponsorship.gift</field>
+            <field name="arch" type="xml">
+                <tree string="Gifts" colors="blue:state == 'draft';
+                                             black:state in ['open','fund_due'];
+                                             green:state == 'verify';
+                                             red:state == 'error';
+                                             grey:state == 'fund_delivered'">
+                    <field name="create_date"/>
+                    <field name="date_partner_paid"/>
+                    <field name="partner_id"/>
+                    <field name="child_id"/>
+                    <field name="gift_type"/>
+                    <field name="sponsorship_gift_type"/>
+                    <field name="amount"/>
+                    <field name="instructions"/>
+                    <field name="date_sent" />
+                    <field name="date_money_sent" />
+                    <field name="state"/>
+                    <field name="gmc_state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_gift_form" model="ir.ui.view">
+            <field name="name">sponsorship.gift.form</field>
+            <field name="model">sponsorship.gift</field>
+            <field name="arch" type="xml">
+                <form string="Gift">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,open,fund_due,fund_delivered"/>
+                        <button name="action_verify" type="object" string="To Verify" states="draft,error"/>
+                        <button name="action_ok" type="object" string="Gift OK" class="oe_highlight" states="verify"/>
+                        <button name="action_cancel" type="object" string="Cancel Gift" help="Will unreconcile the payment" states="draft,verify"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_right oe_button_box" name="buttons">
+                            <button name="view_invoices" string="Invoiced" type="object" icon="fa-pencil-square-o" class="oe_stat_button"/>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="sponsorship_id"/>
+                                <field name="partner_id"/>
+                                <field name="child_id"/>
+                            </group>
+                            <group>
+                                <field name="gift_type"/>
+                                <field name="attribution"/>
+                                <field name="sponsorship_gift_type" attrs="{'invisible': [('gift_type', '!=', 'Beneficiary Gift')],
+                                                                            'required': [('gift_type', '=', 'Beneficiary Gift')]}"/>
+                                <field name="instructions"/>
+                            </group>
+                            <group>
+                                <field name="create_date"/>
+                                <field name="date_partner_paid"/>
+                                <field name="date_sent"/>
+                                <field name="message_id"/>
+                            </group>
+                            <group attrs="{'invisible': [('gmc_state', '=', 'draft')]}">
+                                <field name="gmc_gift_id"/>
+                                <field name="gmc_state"/>
+                                <field name="undeliverable_reason"/>
+                                <field name="threshold_alert"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Sponsor payments">
+                                <field name="invoice_line_ids"/>
+                                <group class="oe_subtotal_footer oe_right">
+                                    <field name="amount" widget="monetary" class="oe_subtotal_footer_separator"/>
+                                </group>
+                            </page>
+                            <page string="Payment to GMC">
+                                <group>
+                                    <field name="date_money_sent"/>
+                                    <field name="payment_id"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_gift_filter" model="ir.ui.view">
+            <field name="name">sponsorship.gift.filter</field>
+            <field name="model">sponsorship.gift</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="partner_id"/>
+                    <field name="child_id"/>
+                    <field name="state"/>
+                    <field name="gmc_state"/>
+
+                    <filter string="Not sent" domain="[('state', 'not in', ('fund_due','fund_delivered'))]"/>
+                    <filter string="Sent" domain="[('state', 'in', ('fund_due','fund_delivered'))]"/>
+                    <filter string="Delivered" domain="[('gmc_state', '=', 'Delivered')]"/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Status" domain="[]" context="{'group_by': 'state'}"/>
+                        <filter string="Gift Type" domain="[]" context="{'group_by': ['gift_type','sponsorship_gift_type']}"/>
+                        <filter string="Gift Date" domain="[]" context="{'group_by': 'date_partner_paid'}"/>
+                        <filter string="Sent Date" domain="[]" context="{'group_by': 'date_sent'}"/>
+                        <filter string="Money Sent Date" domain="[]" context="{'group_by': 'date_money_sent'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_sponsorship_gift" model="ir.actions.act_window">
+            <field name="name">Sponsorship Gifts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sponsorship.gift</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                No gifts.
+              </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_sponsorship_gift" parent="account.menu_finance_receivables" action="action_sponsorship_gift"/>
+    </data>
+</openerp>

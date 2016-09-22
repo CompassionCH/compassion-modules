@@ -65,14 +65,20 @@ class MigrationR4(models.TransientModel):
                 gift_type = 'Project Gift'
                 attribution = 'Center Based Programming'
 
+            state = 'draft'
+            if message.state == 'fondue':
+                state = 'fund_due'
+            if message.state == 'pending':
+                state = 'open'
             gift_vals = {
                 'sponsorship_id': sponsorship.id,
                 'invoice_line_ids': [(4, invl.id)],
+                'message_id': message.id,
                 'instructions': invl.name,
                 'gift_type': gift_type,
                 'attribution': attribution,
                 'sponsorship_gift_type': sponsorship_gift_type,
-                'state': 'fund_due' if message.state == 'fondue' else 'open'
+                'state': state,
             }
             gift = gift_obj.create(gift_vals)
             message_vals = {
