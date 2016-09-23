@@ -220,13 +220,14 @@ class OdooMail(models.Model):
         track_vals = self._prepare_sendgrid_tracking()
         for recipient in tools.email_split_and_format(self.email_to):
             track_vals['recipient'] = recipient
-            m_tracking.create(track_vals)
+            m_tracking += m_tracking.create(track_vals)
         for partner in self.recipient_ids:
             track_vals.update({
                 'partner_id': partner.id,
                 'recipient': partner.email,
             })
-            m_tracking.create(track_vals)
+            m_tracking += m_tracking.create(track_vals)
+        return m_tracking
 
     def _prepare_sendgrid_tracking(self):
         ts = time.time()
