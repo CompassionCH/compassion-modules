@@ -39,11 +39,13 @@ class MassMailing(models.Model):
             if sendgrid_template and wizard.body_html:
                 res_id = self.env[wizard.mailing_model].search(eval(
                     wizard.mailing_domain), limit=1).id
-                body = template.render_template_batch(
-                    wizard.body_html, template.model, [res_id],
-                    post_process=True)[res_id]
-                wizard.body_sendgrid = sendgrid_template.html_content.replace(
-                    '<%body%>', body)
+                if res_id:
+                    body = template.render_template_batch(
+                        wizard.body_html, template.model, [res_id],
+                        post_process=True)[res_id]
+                    wizard.body_sendgrid = \
+                        sendgrid_template.html_content.replace('<%body%>',
+                                                               body)
             else:
                 wizard.body_sendgrid = wizard.body_html
             wizard.html_copy = wizard.body_html
@@ -65,9 +67,16 @@ class MassMailing(models.Model):
     @api.onchange('lang')
     def onchange_lang(self):
         if self.lang and self.mailing_model == 'res.partner':
-            domain = "[('opt_out', '=', False), "
-            domain += "('lang', '=', '{}')]".format(self.lang.code)
-            self.mailing_domain = domain
+            domain = eval(self.mailing_domain)
+            lang_tuple = False
+            for tuple in domain:
+                if tuple[0] == 'lang':
+                    lang_tuple = tuple
+                    break
+            if lang_tuple:
+                domain.remove(lang_tuple)
+            domain.append(('lang', '=', self.lang.code))
+            self.mailing_domain = str(domain)
             self.onchange_email_template_id()
 
     @api.multi
