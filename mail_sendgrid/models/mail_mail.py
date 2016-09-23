@@ -120,7 +120,7 @@ class OdooMail(models.Model):
                 _('Missing sendgrid_api_key in conf file'))
 
         sg = SendGridAPIClient(apikey=api_key)
-        for email in self:
+        for email in self.filtered(lambda em: em.state == 'outgoing'):
             try:
                 response = sg.client.mail.send.post(
                     request_body=email._prepare_sendgrid_data())
@@ -138,6 +138,9 @@ class OdooMail(models.Model):
                     'sent_date': fields.Datetime.now(),
                     'state': 'sent'
                 })
+                # Commit changes since e-mail was sent
+                self.env.cr.commit()
+
                 # Update message body in associated message, which will be
                 # shown in message history view for linked odoo object
                 # defined through fields model and res_id. This will allow
@@ -153,8 +156,6 @@ class OdooMail(models.Model):
                     message_vals['notified_partner_ids'] = [
                         (6, 0, email.recipient_ids.ids)]
                 message.write(message_vals)
-                # Commit changes since e-mail was sent
-                self.env.cr.commit()
             else:
                 _logger.error("Failed to send email: {}".format(str(msg)))
 
