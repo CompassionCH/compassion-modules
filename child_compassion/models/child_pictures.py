@@ -13,9 +13,9 @@ from openerp import models, fields, api, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import datetime
 
+import logging
 import base64
 import urllib2
-import logging
 
 logger = logging.getLogger(__name__)
 
