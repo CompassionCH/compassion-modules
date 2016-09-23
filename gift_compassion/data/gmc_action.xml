@@ -1,0 +1,15 @@
+<openerp>
+    <data>
+        <!-- Create Gift Message -->
+        <record id="create_gift" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">CreateGift</field>
+            <field name="model">sponsorship.gift</field>
+            <field name="description">This will trigger a Gift Creation at the Field.</field>
+            <field name="connect_service">supporters/{$object.partner_id.global_id}/gifts</field>
+            <field name="connect_outgoing_wrapper">GiftCreateRequestList</field>
+            <field name="connect_answer_wrapper">GiftCreateResponses</field>
+            <field name="request_type">POST</field>
+        </record>
+    </data>
+</openerp>

@@ -17,4 +17,3 @@ from . import project_compassion
 from . import child_compassion
 from . import product
 from . import account_banking_mandate
-from . import sponsorship_gift
