@@ -27,6 +27,6 @@ class MailMail(models.Model):
     def _track_sendgrid_emails(self):
         """ Push tracking_email in mass_mail_statistic """
         tracking_emails = super(MailMail, self)._track_sendgrid_emails()
-        for tracking in tracking_emails:
+        for tracking in tracking_emails.filtered('mail_stats_id'):
             tracking.mail_stats_id.mail_tracking_id = tracking.id
         return tracking_emails
