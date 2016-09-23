@@ -422,6 +422,11 @@ class CompassionChild(models.Model):
 
     @api.multi
     def child_sponsored(self):
+        for child in self:
+            self.env['compassion.child.pictures'].create({
+                'child_id': child.id,
+                'image_url': child.image_url
+            })
         return self.write({
             'state': 'P',
             'has_been_sponsored': True

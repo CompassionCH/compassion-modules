@@ -15,6 +15,8 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import datetime
 import requests
 
+import base64
+import urllib2
 
 class child_pictures(models.Model):
     """ Holds two pictures of a given child
@@ -32,7 +34,8 @@ class child_pictures(models.Model):
         'compassion.child', 'Child', required=True, ondelete='cascade')
     fullshot = fields.Binary(compute='set_pictures')
     headshot = fields.Binary(compute='set_pictures')
-    date = fields.Date('Date of pictures')
+    image_url = fields.Char()
+    date = fields.Date('Date of pictures', default=fields.Date.today)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -44,10 +47,14 @@ class child_pictures(models.Model):
         attachments = attachment_obj.search([
             ('res_model', '=', self._name),
             ('res_id', '=', self.id)])
+
         for data in attachments:
-            if data.datas_fname == 'Fullshot.jpeg':
+            picturename = data.datas_fname
+            picturename = picturename.split('.')
+            picturename = picturename[0]
+            if picturename == 'Fullshot':
                 self.fullshot = data.datas
-            elif data.datas_fname == 'Headshot.jpeg':
+            elif picturename == 'Headshot':
                 self.headshot = data.datas
 
     ##########################################################################
@@ -63,12 +70,14 @@ class child_pictures(models.Model):
         child = pictures.child_id
 
         # Retrieve Fullshot
-        image_date = self._get_picture(
-            child.id, child.local_id, pictures.id, 'Fullshot', dpi=300,
-            width=1500, height=1200)
+        #image_date = pictures._get_picture(
+        #    child.id, child.local_id, pictures.id, 'Fullshot', dpi=300,
+        #    width=1500, height=1200)
+        image_date = pictures._get_picture('Fullshot', width=800,
+                                           height=1200)
         # Retrieve Headshot
-        image_date = image_date and self._get_picture(
-            child.id, child.local_id, pictures.id)
+        image_date = image_date and pictures._get_picture('Headshot',
+                                                      width=300, height=400)
 
         if not image_date:
             # We could not retrieve a picture, we cancel the creation
@@ -108,41 +117,41 @@ class child_pictures(models.Model):
             record.headshot == self.headshot and record.id != self.id)
         return same_pics
 
-    @api.model
-    def _get_picture(self, child_id, child_code, attach_id, type='Headshot',
-                     dpi=72, width=400, height=400, format='jpeg'):
+
+    @api.multi
+    def _get_picture(self, type='Headshot', width=300, height=400):
         """ Gets a picture from Compassion webservice """
-        url = self.env['compassion.child'].get_url(
-            child_code, 'image/2015/03')
-        url += '&Height=%s&Width=%s&DPI=%s&ImageFormat=%s&ImageType=%s' \
-            % (height, width, dpi, format, type)
-        r = requests.get(url)
-        error = r.status_code != 200
-        html_res = r.text
-        json_data = dict()
+        attach_id = self.id
+        if (type == 'Headshot'):
+            cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(
+            width)
+        elif (type == 'Fullshot'):
+            cloudinary = "w_" + str(width) + ",h_" + str(height) + ",c_fit"
 
-        try:
-            json_data = r.json()
-        except:
-            error = True
-        if error:
-            error_message = json_data.get('error', {'message': html_res})
-            self.env['compassion.child'].browse(child_id).message_post(
-                error_message.get('message', 'Bad response'),
-                _('Picture update error'), 'comment')
-            return False
+        _image_date = False
+        for picture in self.filtered('image_url'):
+            image_split = (picture.image_url).split('/')
+            ind = image_split.index('upload')
+            image_split[ind + 1] = cloudinary
+            url = "/".join(image_split)
+            try:
+                data = base64.encodestring(urllib2.urlopen(url).read())
+            except:
+                logger.error('Image cannot be fetched : ' + url)
 
-        _store_fname = type + '.' + format
-        _image_date = json_data['imageDate'] or datetime.today().strftime(DF)
+            format = url.split('.')
+            format = format[-1]
+            _store_fname = type + '.' + format
+            _image_date = datetime.today().strftime(DF)
 
-        if not attach_id:
-            return json_data['image']['imageData']
+            if not attach_id:
+                return data
 
-        self.env['ir.attachment'].create({
-            'datas_fname': _store_fname,
-            'res_model': self._name,
-            'res_id': attach_id,
-            'datas': json_data['image']['imageData'],
-            'name': _store_fname})
-
+            picture.env['ir.attachment'].create({
+                'datas_fname': _store_fname,
+                'res_model': picture._name,
+                'res_id': attach_id,
+                'datas': data,
+                'name': _store_fname})
         return _image_date
+
