@@ -53,7 +53,7 @@ class EventWebhook(http.Controller):
                 t_email = request.env['mail.tracking.email'].sudo().search([
                     ('mail_id.message_id', '=', message_id),
                     ('recipient', '=', recipient)
-                ])
+                ], limit=1)
                 if not t_email:
                     _logger.error("Sendgrid e-mail not found: %s" % message_id)
                     continue
