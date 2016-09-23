@@ -12,6 +12,9 @@
 import logging
 
 from openerp import models, fields, api
+import base64
+import urllib2
+import timeit
 
 logger = logging.getLogger(__name__)
 
@@ -63,13 +66,15 @@ class GenericChild(models.AbstractModel):
         ('Unsponsored', 'Unsponsored'),
     ], readonly=True)
     unsponsored_since = fields.Date(readonly=True)
+    image_url = fields.Char()
 
     @api.model
     def get_fields(self):
         return ['global_id', 'local_id', 'project_id', 'name', 'firstname',
                 'lastname', 'preferred_name', 'gender', 'birthdate', 'age',
                 'is_orphan', 'beneficiary_state', 'sponsorship_status',
-                'unsponsored_since', 'correspondence_language_id']
+                'unsponsored_since', 'correspondence_language_id',
+                'image_url']
 
     def get_child_vals(self):
         """ Get the required field values of one record for other record
@@ -88,6 +93,7 @@ class GenericChild(models.AbstractModel):
         return vals
 
 
+
 class GlobalChild(models.TransientModel):
     """ Available child in the global childpool
     """
@@ -95,9 +101,10 @@ class GlobalChild(models.TransientModel):
     _inherit = 'compassion.generic.child'
     _description = 'Global Child'
 
-    portrait = fields.Binary()
-    fullshot = fields.Binary()
-    image_url = fields.Char()
+    portrait = fields.Binary(compute='_load_image_portrait')
+    fullshot = fields.Binary(compute='_load_image_fullshot')
+    thumbnail_url = fields.Char(compute='_load_image_thumb')
+
     color = fields.Integer(compute='_compute_color')
     is_area_hiv_affected = fields.Boolean()
     is_special_needs = fields.Boolean()
@@ -122,3 +129,50 @@ class GlobalChild(models.TransientModel):
     def _compute_color(self):
         for child in self:
             child.color = 6 if child.gender == 'M' else 9
+
+    @api.multi
+    def _load_image(self, thumb=False, binar=False):
+        if thumb:
+            height = 180
+            width = 180
+            cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(
+                width)
+            for child in self.filtered('image_url'):
+                # url are typically under this format:
+                #   https://media.ci.org/image/upload/w_150/ChildPhotos/Published/06182814_539e18.jpg
+                #   https://media.ci.org/image/upload/w_150/ChildPhotos/Published/05989033_93e6af.jpg
+
+                image_split = (child.image_url).split('/')
+                ind = image_split.index("upload")
+                image_split[ind + 1] = cloudinary
+                url = "/".join(image_split)
+                child.thumbnail_url = url
+
+        if binar:
+            for child in self.filtered('image_url'):
+                url = child.image_url if not thumb else child.thumbnail_url
+                try:
+                    child.portrait = base64.encodestring(
+                        urllib2.urlopen(url).read())
+                except:
+                    logger.error('Image cannot be fetched : ' + url)
+
+    @api.multi
+    def _load_image_portrait(self):
+        tic = timeit.default_timer()
+        self._load_image(True, True)
+        print "load portrait: " + str(timeit.default_timer()-tic) + " sec"
+
+    @api.multi
+    def _load_image_fullshot(self):
+        tic = timeit.default_timer()
+        self._load_image(False, True)
+        print "load fullshot: " + str(timeit.default_timer()-tic) + " sec"
+
+    @api.multi
+    def _load_image_thumb(self):
+        tic = timeit.default_timer()
+        self._load_image(True, False)
+        print "load thumbnail: " + str(timeit.default_timer()-tic) + " sec"
+
+

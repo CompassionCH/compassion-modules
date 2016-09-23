@@ -75,22 +75,28 @@
                         <field name="global_child_ids" widget="many2many_kanban" domain="[('search_view_id', '=', active_id)]">
                             <kanban default_order="priority_score desc" default_group_by="field_office_id">
                                 <field name="color"/>
-                                <field name="portrait"/>
+                                <field name="thumbnail_url"/>
                                 <templates>
                                     <t t-name="kanban-box">
                                         <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card" style="position: relative">
                                             <a name="unlink" type="object" style="position: absolute; right: 0; padding: 4px; diplay: inline-block">X</a>
                                             <div class="oe_module_vignette">
-                                                <a type="open">
+                                                <!--<a type="open">
                                                     <t t-if="record.portrait and record.portrait.raw_value !== false">
                                                         <img t-att-src="'data:image/png;base64,'+record.portrait.raw_value" class="oe_avatar oe_kanban_avatar_smallbox"/>
                                                     </t>
+                                                </a>-->
+                                                <a type="open">
+                                                    <img t-att-src="record.thumbnail_url.raw_value" class="oe_avatar oe_kanban_avatar_smallbox"/>
                                                 </a>
+
+
                                                 <div class="oe_module_desc">
                                                     <div class="oe_kanban_box_content oe_kanban_color_bglight oe_kanban_color_border">
                                                         <table class="oe_kanban_table">
                                                             <tr>
                                                                 <td class="oe_kanban_title1" align="left" valign="middle">
+
                                                                     <h4><a type="open"><field name="name"/></a></h4>
                                                                     <div>Code: <field name="local_id"/></div>
                                                                     <div>Gender: <field name="gender"/></div>
@@ -160,9 +166,15 @@
         <record id="view_compassion_global_child_form" model="ir.ui.view">
             <field name="name">compassion.global.child.form</field>
             <field name="model">compassion.global.child</field>
+            <field name="portrait"/>
             <field name="arch" type="xml">
                 <form>
-                    <field name="portrait" widget='image' class="oe_left oe_avatar" options='{"size": [90, 90]}' />
+                    <!--
+                    <img src="https://media.ci.org/image/upload/g_face,c_thumb,h_100,w_100/ChildPhotos/Published/06136850_a90c56.jpg" class="oe_left"/>
+                    <img t-att-src="record.thumbnail_url.raw_value" class="oe_left"/>
+                    -->
+                    <field name="portrait" widget='image' class="oe_left oe_avatar" options='{"size": [90, 90]}'/>
+
                     <div class="oe_title">
                         <h1>
                             <field name="name"/>
@@ -209,6 +221,7 @@
             <field name="res_model">compassion.childpool.search</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
+            <field name="context">{'ma_valeur': 'test'}</field>
         </record>
 
         <menuitem id="menu_global_pool" parent="menu_pool_section"
