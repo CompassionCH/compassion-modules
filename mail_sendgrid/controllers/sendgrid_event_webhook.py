@@ -27,7 +27,7 @@ class EventWebhook(http.Controller):
 
     # Map Sendgrid Events to mail_tracking event_type
     event_mapping = {
-        'processed': 'sent',
+        # 'processed': 'sent', - not used
         'dropped': 'reject',
         'bounce': 'hard_bounce',
         'deferred': 'deferral',
@@ -77,7 +77,10 @@ class EventWebhook(http.Controller):
                             'android', 'iphone', 'ipad']
                     })
                 m_vals = {}
-                event_type = self.event_mapping[event]
+                event_type = self.event_mapping.get(event)
+                if not event_type:
+                    # Skip unmapped events
+                    continue
 
                 if event == 'dropped':
                     m_vals.update({
