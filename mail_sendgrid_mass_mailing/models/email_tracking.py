@@ -17,8 +17,8 @@ class MailTrackingEvent(models.Model):
     _inherit = 'mail.tracking.event'
 
     @api.model
-    def process_sent(self, tracking_email, metadata):
-        res = super(MailTrackingEvent, self).process_sent(
+    def process_delivered(self, tracking_email, metadata):
+        res = super(MailTrackingEvent, self).process_delivered(
             tracking_email, metadata)
         mail_mail_stats = self.sudo().env['mail.mail.statistics'].search([
             ('mail_mail_id_int', '=', tracking_email.mail_id_int)])
@@ -36,13 +36,4 @@ class MailTrackingEvent(models.Model):
         mail_mail_stats.write({
             'exception': fields.Datetime.now()
         })
-        return res
-
-    @api.model
-    def process_hard_bounce(self, tracking_email, metadata):
-        res = super(MailTrackingEvent, self).process_hard_bounce(
-            tracking_email, metadata)
-        mail_mail_stats = self.sudo().env['mail.mail.statistics']
-        mail_mail_stats.set_bounced(
-            mail_mail_ids=[tracking_email.mail_id_int])
         return res
