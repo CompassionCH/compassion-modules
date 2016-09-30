@@ -12,8 +12,8 @@
 from openerp import fields, models, api, _
 from openerp.exceptions import Warning
 
-from openerp.addons.sponsorship_compassion.models.product import GIFT_NAMES,\
-    GIFT_CATEGORY
+from openerp.addons.sponsorship_compassion.models.product import \
+    GIFT_NAMES, GIFT_CATEGORY
 
 
 class SponsorshipGift(models.Model):
@@ -34,6 +34,7 @@ class SponsorshipGift(models.Model):
         store=True
     )
     project_id = fields.Many2one(
+        'compassion.project', 'Project',
         'compassion.project', 'Project',
         related='sponsorship_id.child_id.project_id', store=True
     )
@@ -312,5 +313,16 @@ class SponsorshipGift(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    @api.multi
     def _create_gift_message(self):
-        pass
+        for gift in self:
+            message_obj = self.env['gmc.message.pool']
+            message_vals = {
+                'sponsorship_id': gift.sponsorship_id,
+                'gift_type': gift.gift_type,
+                'attribution': gift.attribution,
+                'sponsorship_gift_type': gift.sponsorship_gift_type,
+                'invoice_line_ids': gift.invoice_line_ids,
+                'state': gift.state,
+            }
+            message_obj.create(message_vals)

@@ -1,5 +1,7 @@
+
 <openerp>
     <data noupdate="1">
-        <function model="migration.r4" name="install_gifts"/>
+        <!--<function model="migration.r4" name="install_gifts"/>-->
     </data>
 </openerp>
+

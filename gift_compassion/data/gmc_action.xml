@@ -11,5 +11,16 @@
             <field name="connect_answer_wrapper">GiftCreateResponses</field>
             <field name="request_type">POST</field>
         </record>
+        <!-- Update Gift Message -->
+        <record id="update_gift" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">CreateGift</field>
+            <field name="model">sponsorship.gift</field>
+            <field name="description">This will trigger a Gift Update at the Field.</field>
+            <field name="connect_service">supporters/{$object.partner_id.global_id}/gifts</field>
+            <field name="connect_outgoing_wrapper">GiftUpdateRequestList</field>
+            <field name="connect_answer_wrapper">GiftUpdateResponses</field>
+            <field name="request_type">POST</field>
+        </record>
     </data>
 </openerp>
