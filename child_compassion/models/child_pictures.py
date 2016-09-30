@@ -11,12 +11,14 @@
 
 from openerp import models, fields, api, _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-
 from datetime import datetime
-import requests
 
 import base64
 import urllib2
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class child_pictures(models.Model):
     """ Holds two pictures of a given child
@@ -70,14 +72,15 @@ class child_pictures(models.Model):
         child = pictures.child_id
 
         # Retrieve Fullshot
-        #image_date = pictures._get_picture(
+        # image_date = pictures._get_picture(
         #    child.id, child.local_id, pictures.id, 'Fullshot', dpi=300,
         #    width=1500, height=1200)
         image_date = pictures._get_picture('Fullshot', width=800,
                                            height=1200)
         # Retrieve Headshot
         image_date = image_date and pictures._get_picture('Headshot',
-                                                      width=300, height=400)
+                                                          width=300,
+                                                          height=400)
 
         if not image_date:
             # We could not retrieve a picture, we cancel the creation
@@ -115,17 +118,17 @@ class child_pictures(models.Model):
         same_pics = pics.filtered(
             lambda record: record.fullshot == self.fullshot and
             record.headshot == self.headshot and record.id != self.id)
-        return same_pics
 
+        return same_pics
 
     @api.multi
     def _get_picture(self, type='Headshot', width=300, height=400):
         """ Gets a picture from Compassion webservice """
         attach_id = self.id
-        if (type == 'Headshot'):
+        if (type.lower() == 'headshot'):
             cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(
-            width)
-        elif (type == 'Fullshot'):
+                width)
+        elif (type.lower() == 'fullshot'):
             cloudinary = "w_" + str(width) + ",h_" + str(height) + ",c_fit"
 
         _image_date = False
@@ -138,6 +141,7 @@ class child_pictures(models.Model):
                 data = base64.encodestring(urllib2.urlopen(url).read())
             except:
                 logger.error('Image cannot be fetched : ' + url)
+                return
 
             format = url.split('.')
             format = format[-1]
@@ -154,4 +158,3 @@ class child_pictures(models.Model):
                 'datas': data,
                 'name': _store_fname})
         return _image_date
-

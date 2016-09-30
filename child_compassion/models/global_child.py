@@ -93,7 +93,6 @@ class GenericChild(models.AbstractModel):
         return vals
 
 
-
 class GlobalChild(models.TransientModel):
     """ Available child in the global childpool
     """
@@ -140,7 +139,6 @@ class GlobalChild(models.TransientModel):
             for child in self.filtered('image_url'):
                 # url are typically under this format:
                 #   https://media.ci.org/image/upload/w_150/ChildPhotos/Published/06182814_539e18.jpg
-                #   https://media.ci.org/image/upload/w_150/ChildPhotos/Published/05989033_93e6af.jpg
 
                 image_split = (child.image_url).split('/')
                 ind = image_split.index("upload")
@@ -174,5 +172,3 @@ class GlobalChild(models.TransientModel):
         tic = timeit.default_timer()
         self._load_image(True, False)
         print "load thumbnail: " + str(timeit.default_timer()-tic) + " sec"
-
-
