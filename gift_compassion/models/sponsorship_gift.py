@@ -35,7 +35,6 @@ class SponsorshipGift(models.Model):
     )
     project_id = fields.Many2one(
         'compassion.project', 'Project',
-        'compassion.project', 'Project',
         related='sponsorship_id.child_id.project_id', store=True
     )
     child_id = fields.Many2one(
@@ -92,6 +91,7 @@ class SponsorshipGift(models.Model):
     ], default='draft', readonly=True)
     gmc_state = fields.Selection([
         ('draft', _('Not in the system')),
+        ('sent', _('Sent to GMC')),
         ('In Progress (Active)', _('In Progress')),
         ('Delivered', _('Delivered')),
         ('Undeliverable', _('Undeliverable')),
@@ -103,7 +103,9 @@ class SponsorshipGift(models.Model):
          'Beneficiary Exited More Than 90 Days Ago'),
     ], readonly=True)
     threshold_alert = fields.Boolean(
-        help='Partner exceeded the maximum gift amount allowed', readonly=True)
+        help='Partner exceeded the maximum gift amount allowed',
+        readonly=True)
+    field_office_notes = fields.Char()
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -126,7 +128,7 @@ class SponsorshipGift(models.Model):
                     'Gift')
             name += ' [' + gift.sponsorship_id.name + ']'
             gift.name = name
-            
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -187,10 +189,15 @@ class SponsorshipGift(models.Model):
         :param invoice_line: account.invoice.line record
         :return: sponsorship.gift record
         """
+
         gift_vals = self.get_gift_values_from_product(invoice_line)
         if not gift_vals:
             return False
-        return self.create(gift_vals)
+
+        gift = self.create(gift_vals)
+        if not gift.is_eligible():
+            gift.state = 'verify'
+        return gift
 
     @api.model
     def get_gift_values_from_product(self, invoice_line):
@@ -206,7 +213,7 @@ class SponsorshipGift(models.Model):
             return False
 
         if _(product.with_context(lang=invoice_line.create_uid.lang)
-                    .name).lower() not in invoice_line.name.lower():
+                .name).lower() not in invoice_line.name.lower():
             instructions = invoice_line.name
 
         gift_vals = self.get_gift_types(product)
@@ -218,6 +225,33 @@ class SponsorshipGift(models.Model):
             })
 
         return gift_vals
+
+    @api.multi
+    def is_eligible(self):
+        self.ensure_one()
+        minimum_amount = 1.0
+        maximum_amount = 1000.0
+
+        this_amount = self.amount
+        if this_amount < minimum_amount:
+            return False
+
+        sponsorship = self.sponsorship_id
+
+        # search other gifts for the same sponsorship.
+        # we will compare the date with the first january of the current year
+        firstJanuaryOfThisYear = fields.Date().today()[0:4] + '-01-01'
+
+        other_gifts = self.search([
+            ('sponsorship_id', '=', sponsorship.id),
+            ('date_partner_paid', '>=', firstJanuaryOfThisYear),
+        ])
+
+        total_amount = this_amount
+        if other_gifts:
+            total_amount += sum(other_gifts.mapped('amount'))
+
+        return total_amount < maximum_amount
 
     @api.model
     def get_gift_types(self, product):
@@ -260,7 +294,18 @@ class SponsorshipGift(models.Model):
         return gift_type_vals
 
     def on_send_to_connect(self):
-        self.write({'state': 'pending'})
+        self.write({'state': 'open'})
+
+    @api.multi
+    def on_gift_sent(self, data):
+        data.update({
+            'state': 'fund_due',
+            'gmc_state': 'sent'
+        })
+        self.write(data)
+
+    def process_commkit(self, vals):
+        pass
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -316,13 +361,16 @@ class SponsorshipGift(models.Model):
     @api.multi
     def _create_gift_message(self):
         for gift in self:
+            # message_center_compassion/models/gmc_messages
             message_obj = self.env['gmc.message.pool']
+
+            action_id = self.env.ref(
+                'gift_compassion.create_gift').id
+
             message_vals = {
-                'sponsorship_id': gift.sponsorship_id,
-                'gift_type': gift.gift_type,
-                'attribution': gift.attribution,
-                'sponsorship_gift_type': gift.sponsorship_gift_type,
-                'invoice_line_ids': gift.invoice_line_ids,
-                'state': gift.state,
+                'action_id': action_id,
+                'object_id': gift.id,
+                'partner_id': gift.partner_id.id,
+                'child_id': gift.child_id.id,
             }
-            message_obj.create(message_vals)
+            gift.message_id = message_obj.create(message_vals)

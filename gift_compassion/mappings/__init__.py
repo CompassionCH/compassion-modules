@@ -8,5 +8,4 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from . import create_gift_mapping
-from . import update_gift_mapping
+from . import gift_mapping

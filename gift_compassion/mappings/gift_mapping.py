@@ -9,7 +9,8 @@
 #
 ##############################################################################
 
-from openerp.addons.message_center_compassion.mappings.base_mapping import OnrampMapping
+from openerp.addons.message_center_compassion.mappings.base_mapping \
+    import OnrampMapping
 
 
 class CreateGiftMapping(OnrampMapping):
@@ -18,22 +19,26 @@ class CreateGiftMapping(OnrampMapping):
     """
 
     ODOO_MODEL = 'sponsorship.gift'
-    MAPPING_NAME = 'CreateGift'
 
     CONNECT_MAPPING = {
         'Beneficiary_GlobalID': ('child_id.global_id', 'compassion.child'),
         'AmountInOriginatingCurrency': 'amount',
         'GiftSubType': 'sponsorship_gift_type',
         'GiftType': 'attribution',
-        'GlobalPartnerNote': 'instructions',     # ???
-        'PartnerGiftDate': 'date_partner_paid',     # ???
-        'PartnerGiftID': 'gmc_gift_id',     # ???
-        'RecipientID': ('child_id.global_id', 'compassion.child'),     # ???
+        'GlobalPartnerNote': 'instructions',
+        'PartnerGiftDate': 'date_partner_paid',
+        'PartnerGiftID': 'id',
+        'RecipientID': ('child_id.local_id', 'compassion.child'),
         'RecipientType': 'gift_type',
-        'Supporter_GlobalID': ('partner_id.global_id', 'res.partner'),  # ???
-        'Supporter_GlobalPartnerSupporterID':
-            ('partner_id.global_id', 'res.partner'),     # ???
-
+        'Supporter_GlobalID': ('partner_id.global_id', 'res.partner'),
+        'ExchangeRatePartnerToGMC': None,
+        'Id': 'gmc_gift_id',
+        'ThresholdViolatedType': None,
+        'IsThresholdViolated': 'threshold_alert',
+        'GiftDeliveryStatus': 'gmc_state',
+        'ID': 'gmc_gift_id',
+        'StatusChangeDate': None,
+        'UndeliverableReason': 'undeliverable_reason',
     }
 
     FIELDS_TO_SUBMIT = {
@@ -42,8 +47,8 @@ class CreateGiftMapping(OnrampMapping):
         'GiftSubType': None,
         'GiftType': None,
         'GlobalPartnerNote': None,
-        'PartnerGiftDate': None,     # ???
-        'PartnerGiftID': None,
+        'PartnerGiftDate': None,
+        'PartnerGiftID': str,
         'RecipientID': None,
         'RecipientType': None,
         'Supporter_GlobalID': None,
@@ -53,4 +58,9 @@ class CreateGiftMapping(OnrampMapping):
 
     CONSTANTS = {
         'CurrencyCode': 'CHF',
+        'Supporter_GlobalPartnerSupporterID': 'CH',
     }
+
+    def _process_odoo_data(self, odoo_data):
+        if 'id' in odoo_data:
+            odoo_data['id'] = int(odoo_data['id'])
