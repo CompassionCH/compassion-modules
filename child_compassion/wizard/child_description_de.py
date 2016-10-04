@@ -406,7 +406,7 @@ class Child_description_de:
             prefix_f = u'Ihre {0}'.format(f_g[1] if f_g else u'Mutter')
             prefix_m = u'Ihr {0}'.format(m_g[1]if m_g else u'Vater')
 
-        prefix_mf = cls._get_mf_g(child, m_g, f_g) if f_g and m_g else None
+        prefix_mf = cls._get_mf_g(child, m_g, f_g) if f_g and m_g else u''
 
         prefix = [prefix_m, prefix_f, prefix_mf]
 

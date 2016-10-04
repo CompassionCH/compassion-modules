@@ -398,7 +398,7 @@ class Child_description_it:
         prefix_m = u'Suo {0}'.format(m_g[1]if m_g else u'padre')
 
         prefix_mf = cls._get_mf_g(
-            child, m_g, f_g) if f_g and m_g else None
+            child, m_g, f_g) if f_g and m_g else u''
 
         prefix = [prefix_m, prefix_f, prefix_mf]
         prefix = [prefix_m, prefix_f, prefix_mf]
@@ -466,7 +466,7 @@ class Child_description_it:
                         res += prefix[parent]
                         multiple_job = True
                     else:
-                        res += u' und'
+                        res += u' e'
 
                     prop_it = props_it[parent][props_en[parent].index(prop)]
                     color = 'red' if not prop_it else 'blue'

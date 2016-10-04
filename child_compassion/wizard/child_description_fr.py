@@ -413,7 +413,7 @@ class Child_description_fr:
         prefix_f = u'Sa {0}'.format(f_g[1] if f_g else u'mère')
         prefix_m = u'Son {0}'.format(m_g[1] if m_g else u'père')
         prefix_mf = cls._get_mf_g(
-            m_g, f_g) if f_g and m_g else None
+            m_g, f_g) if f_g and m_g else u''
 
         prefix = [prefix_m, prefix_f, prefix_mf]
 
