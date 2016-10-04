@@ -315,8 +315,11 @@ class GmcMessagePool(models.Model):
             # Success, loop through answer to get individual results
             data_objects = self.env[action.model].with_context(
                 lang='en_US').browse(self.mapped('object_id'))
-            results = onramp_answer.get('content', {}).get(
-                action.connect_answer_wrapper, [])
+            results = onramp_answer.get('content', {})
+            for wrapper in action.connect_answer_wrapper.split('.'):
+                results = results.get(wrapper, results)
+            if not results:
+                results = []
             object_mapping = mapping.new_onramp_mapping(action.model,
                                                         self.env,
                                                         action.mapping_name)

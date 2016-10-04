@@ -93,6 +93,7 @@ class GenericChild(models.AbstractModel):
         return vals
 
 
+
 class GlobalChild(models.TransientModel):
     """ Available child in the global childpool
     """
