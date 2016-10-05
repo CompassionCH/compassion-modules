@@ -12,8 +12,10 @@
 from openerp import fields, models, api, _
 from openerp.exceptions import Warning
 
-from openerp.addons.sponsorship_compassion.models.product import GIFT_NAMES,\
-    GIFT_CATEGORY
+from openerp.addons.sponsorship_compassion.models.product import \
+    GIFT_NAMES, GIFT_CATEGORY
+from openerp.addons.message_center_compassion.mappings import base_mapping \
+     as mapping
 
 
 class SponsorshipGift(models.Model):
@@ -91,6 +93,7 @@ class SponsorshipGift(models.Model):
     ], default='draft', readonly=True)
     gmc_state = fields.Selection([
         ('draft', _('Not in the system')),
+        ('sent', _('Sent to GMC')),
         ('In Progress (Active)', _('In Progress')),
         ('Delivered', _('Delivered')),
         ('Undeliverable', _('Undeliverable')),
@@ -102,7 +105,9 @@ class SponsorshipGift(models.Model):
          'Beneficiary Exited More Than 90 Days Ago'),
     ], readonly=True)
     threshold_alert = fields.Boolean(
-        help='Partner exceeded the maximum gift amount allowed', readonly=True)
+        help='Partner exceeded the maximum gift amount allowed',
+        readonly=True)
+    field_office_notes = fields.Char()
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -125,7 +130,7 @@ class SponsorshipGift(models.Model):
                     'Gift')
             name += ' [' + gift.sponsorship_id.name + ']'
             gift.name = name
-            
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -186,10 +191,15 @@ class SponsorshipGift(models.Model):
         :param invoice_line: account.invoice.line record
         :return: sponsorship.gift record
         """
+
         gift_vals = self.get_gift_values_from_product(invoice_line)
         if not gift_vals:
             return False
-        return self.create(gift_vals)
+
+        gift = self.create(gift_vals)
+        if not gift.is_eligible():
+            gift.state = 'verify'
+        return gift
 
     @api.model
     def get_gift_values_from_product(self, invoice_line):
@@ -205,7 +215,7 @@ class SponsorshipGift(models.Model):
             return False
 
         if _(product.with_context(lang=invoice_line.create_uid.lang)
-                    .name).lower() not in invoice_line.name.lower():
+                .name).lower() not in invoice_line.name.lower():
             instructions = invoice_line.name
 
         gift_vals = self.get_gift_types(product)
@@ -217,6 +227,33 @@ class SponsorshipGift(models.Model):
             })
 
         return gift_vals
+
+    @api.multi
+    def is_eligible(self):
+        self.ensure_one()
+        minimum_amount = 1.0
+        maximum_amount = 1000.0
+
+        this_amount = self.amount
+        if this_amount < minimum_amount:
+            return False
+
+        sponsorship = self.sponsorship_id
+
+        # search other gifts for the same sponsorship.
+        # we will compare the date with the first january of the current year
+        firstJanuaryOfThisYear = fields.Date().today()[0:4] + '-01-01'
+
+        other_gifts = self.search([
+            ('sponsorship_id', '=', sponsorship.id),
+            ('date_partner_paid', '>=', firstJanuaryOfThisYear),
+        ])
+
+        total_amount = this_amount
+        if other_gifts:
+            total_amount += sum(other_gifts.mapped('amount'))
+
+        return total_amount < maximum_amount
 
     @api.model
     def get_gift_types(self, product):
@@ -259,7 +296,43 @@ class SponsorshipGift(models.Model):
         return gift_type_vals
 
     def on_send_to_connect(self):
-        self.write({'state': 'pending'})
+        self.write({'state': 'open'})
+
+    @api.multi
+    def on_gift_sent(self, data):
+        data.update({
+            'state': 'fund_due',
+            'gmc_state': 'sent'
+        })
+        self.write(data)
+
+    @api.model
+    def process_commkit(self, commkit_data):
+        ''' This function is automatically executed when an Update Gift
+        Message is received. It will convert the message from json to odoo
+        format and then update the concerned records
+        :param commkit_data contains the data of the message (json)
+        :return list of gift ids which are concerned by the message '''
+
+        gift_update_mapping = mapping.new_onramp_mapping(
+                                                self._name,
+                                                self.env,
+                                                'create_update_gifts')
+
+        # actually commkit_data is a dictionary with a single entry which
+        # value is a list of dictionary (for each record)
+        GiftUpdateRequestList = commkit_data['GiftUpdateRequestList']
+        gift_ids = []
+        # For each dictionary, we update the corresponding record
+        for GiftUpdateRequest in GiftUpdateRequestList:
+            vals = gift_update_mapping.\
+                get_vals_from_connect(GiftUpdateRequest)
+            gift_id = vals['id']
+            gift_ids.append(gift_id)
+            gift_record = self.env['sponsorship.gift'].browse([gift_id])
+            gift_record.write(vals)
+
+        return gift_ids
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -312,5 +385,19 @@ class SponsorshipGift(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    @api.multi
     def _create_gift_message(self):
-        pass
+        for gift in self:
+            # message_center_compassion/models/gmc_messages
+            message_obj = self.env['gmc.message.pool']
+
+            action_id = self.env.ref(
+                'gift_compassion.create_gift').id
+
+            message_vals = {
+                'action_id': action_id,
+                'object_id': gift.id,
+                'partner_id': gift.partner_id.id,
+                'child_id': gift.child_id.id,
+            }
+            gift.message_id = message_obj.create(message_vals)
