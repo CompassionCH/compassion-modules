@@ -120,7 +120,7 @@ class OdooMail(models.Model):
                 _('Missing sendgrid_api_key in conf file'))
 
         sg = SendGridAPIClient(apikey=api_key)
-        for email in self:
+        for email in self.filtered(lambda em: em.state == 'outgoing'):
             try:
                 response = sg.client.mail.send.post(
                     request_body=email._prepare_sendgrid_data())
@@ -138,6 +138,9 @@ class OdooMail(models.Model):
                     'sent_date': fields.Datetime.now(),
                     'state': 'sent'
                 })
+                # Commit changes since e-mail was sent
+                self.env.cr.commit()
+
                 # Update message body in associated message, which will be
                 # shown in message history view for linked odoo object
                 # defined through fields model and res_id. This will allow
@@ -153,8 +156,6 @@ class OdooMail(models.Model):
                     message_vals['notified_partner_ids'] = [
                         (6, 0, email.recipient_ids.ids)]
                 message.write(message_vals)
-                # Commit changes since e-mail was sent
-                self.env.cr.commit()
             else:
                 _logger.error("Failed to send email: {}".format(str(msg)))
 
@@ -219,13 +220,14 @@ class OdooMail(models.Model):
         track_vals = self._prepare_sendgrid_tracking()
         for recipient in tools.email_split_and_format(self.email_to):
             track_vals['recipient'] = recipient
-            m_tracking.create(track_vals)
+            m_tracking += m_tracking.create(track_vals)
         for partner in self.recipient_ids:
             track_vals.update({
                 'partner_id': partner.id,
                 'recipient': partner.email,
             })
-            m_tracking.create(track_vals)
+            m_tracking += m_tracking.create(track_vals)
+        return m_tracking
 
     def _prepare_sendgrid_tracking(self):
         ts = time.time()

@@ -27,7 +27,7 @@ class EventWebhook(http.Controller):
 
     # Map Sendgrid Events to mail_tracking event_type
     event_mapping = {
-        'processed': 'sent',
+        # 'processed': 'sent', - not used
         'dropped': 'reject',
         'bounce': 'hard_bounce',
         'deferred': 'deferral',
@@ -53,7 +53,7 @@ class EventWebhook(http.Controller):
                 t_email = request.env['mail.tracking.email'].sudo().search([
                     ('mail_id.message_id', '=', message_id),
                     ('recipient', '=', recipient)
-                ])
+                ], limit=1)
                 if not t_email:
                     _logger.error("Sendgrid e-mail not found: %s" % message_id)
                     continue
@@ -77,7 +77,10 @@ class EventWebhook(http.Controller):
                             'android', 'iphone', 'ipad']
                     })
                 m_vals = {}
-                event_type = self.event_mapping[event]
+                event_type = self.event_mapping.get(event)
+                if not event_type:
+                    # Skip unmapped events
+                    continue
 
                 if event == 'dropped':
                     m_vals.update({
