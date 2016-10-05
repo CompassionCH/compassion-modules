@@ -14,6 +14,8 @@ from openerp.exceptions import Warning
 
 from openerp.addons.sponsorship_compassion.models.product import \
     GIFT_NAMES, GIFT_CATEGORY
+from openerp.addons.message_center_compassion.mappings import base_mapping \
+     as mapping
 
 
 class SponsorshipGift(models.Model):
@@ -304,8 +306,33 @@ class SponsorshipGift(models.Model):
         })
         self.write(data)
 
-    def process_commkit(self, vals):
-        pass
+    @api.model
+    def process_commkit(self, commkit_data):
+        ''' This function is automatically executed when an Update Gift
+        Message is received. It will convert the message from json to odoo
+        format and then update the concerned records
+        :param commkit_data contains the data of the message (json)
+        :return list of gift ids which are concerned by the message '''
+
+        gift_update_mapping = mapping.new_onramp_mapping(
+                                                self._name,
+                                                self.env,
+                                                'create_update_gifts')
+
+        # actually commkit_data is a dictionary with a single entry which
+        # value is a list of dictionary (for each record)
+        GiftUpdateRequestList = commkit_data['GiftUpdateRequestList']
+        gift_ids = []
+        # For each dictionary, we update the corresponding record
+        for GiftUpdateRequest in GiftUpdateRequestList:
+            vals = gift_update_mapping.\
+                get_vals_from_connect(GiftUpdateRequest)
+            gift_id = vals['id']
+            gift_ids.append(gift_id)
+            gift_record = self.env['sponsorship.gift'].browse([gift_id])
+            gift_record.write(vals)
+
+        return gift_ids
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

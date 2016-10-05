@@ -4,6 +4,7 @@
         <record id="create_gift" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">CreateGift</field>
+            <field name="mapping_name">create_update_gifts</field>
             <field name="model">sponsorship.gift</field>
             <field name="success_method">on_gift_sent</field> <!-- par défaut : write-->
             <field name="description">This will trigger a Gift Creation at the Field.</field>
@@ -16,6 +17,7 @@
         <record id="update_gift" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">UpdateGift</field>
+            <field name="mapping_name">create_update_gifts</field>
             <field name="model">sponsorship.gift</field>
             <!--<field name="incoming_method">major_revision</field> par défaut : write -->
             <field name="description">This will trigger a Gift Update at the Field.</field>

@@ -19,6 +19,7 @@ class CreateGiftMapping(OnrampMapping):
     """
 
     ODOO_MODEL = 'sponsorship.gift'
+    MAPPING_NAME = 'create_update_gifts'
 
     CONNECT_MAPPING = {
         'Beneficiary_GlobalID': ('child_id.global_id', 'compassion.child'),
@@ -32,7 +33,6 @@ class CreateGiftMapping(OnrampMapping):
         'RecipientType': 'gift_type',
         'Supporter_GlobalID': ('partner_id.global_id', 'res.partner'),
         'ExchangeRatePartnerToGMC': None,
-        'Id': 'gmc_gift_id',
         'ThresholdViolatedType': None,
         'IsThresholdViolated': 'threshold_alert',
         'GiftDeliveryStatus': 'gmc_state',
