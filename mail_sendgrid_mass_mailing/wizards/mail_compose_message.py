@@ -25,10 +25,8 @@ class EmailComposeMessage(models.TransientModel):
         """
         if not isinstance(res_ids, list):
             res_ids = [res_ids]
-        wizard = self.sudo().with_context(active_ids=res_ids).create(
-            composer_values)
-
-        all_mail_values = self.get_mail_values(wizard, res_ids)
+        wizard = self.create(composer_values)
+        all_mail_values = wizard.get_mail_values(wizard, res_ids)
         email_obj = self.env['mail.mail']
         emails = email_obj
         for res_id in res_ids:

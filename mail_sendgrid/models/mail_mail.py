@@ -179,15 +179,19 @@ class OdooMail(models.Model):
 
         test_address = config.get('sendgrid_test_address')
 
-        # TODO For now only one personalization (transactional e-mail)
+        # We use only one personalization for transactional e-mail
         personalization = Personalization()
         personalization.set_subject(self.subject or ' ')
+        addresses = list()
         if not test_address:
-            if self.email_to:
+            if self.email_to and self.email_to not in addresses:
                 personalization.add_to(Email(self.email_to))
+                addresses.append(self.email_to)
             for recipient in self.recipient_ids:
-                personalization.add_to(Email(recipient.email))
-            if self.email_cc:
+                if recipient.email not in addresses:
+                    personalization.add_to(Email(recipient.email))
+                    addresses.append(recipient.email)
+            if self.email_cc and self.email_cc not in addresses:
                 personalization.add_cc(Email(self.email_cc))
         else:
             _logger.info('Sending email to test address {}'.format(
