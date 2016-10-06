@@ -62,7 +62,9 @@ class EmailComposeMessage(models.TransientModel):
             'template_id': template.id,
             'composition_mode': 'mass_mail',
             'model': template.model,
-            'author_id': 111,  # Sent with user Emanuel Cino
+            'author_id': self.env.user.partner_id.id,
+            'notification': True,
+            'auto_delete': True,
         })
         # Fetch template values.
         wizard.write(

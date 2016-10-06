@@ -115,7 +115,8 @@ class MassMailing(models.Model):
             if self.reply_to_mode == 'email':
                 composer_values['reply_to'] = self.reply_to
             composer = self.env['mail.compose.message'].with_context(
-                lang=self.lang.code or self.env.context['lang'])
+                lang=self.lang.code or self.env.context['lang'],
+                active_ids=res_ids)
             emails = composer.mass_mailing_sendgrid(res_ids, composer_values)
             self.write({
                 'state': 'done',
