@@ -166,7 +166,8 @@ class OdooMail(models.Model):
         self.ensure_one()
         s_mail = Mail()
         s_mail.set_from(Email(self.email_from))
-        s_mail.set_reply_to(Email(self.reply_to))
+        if self.reply_to:
+            s_mail.set_reply_to(Email(self.reply_to))
         s_mail.add_custom_arg(CustomArg('odoo_id', self.message_id))
         html = self.body_html or ' '
 
