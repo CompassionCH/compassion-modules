@@ -70,6 +70,7 @@ class GmcMessagePool(models.Model):
                                 'several records. (ids separated by commas)')
     res_name = fields.Char(compute='_compute_res_name', store=True)
     partner_id = fields.Many2one('res.partner', 'Partner')
+    child_id = fields.Many2one('compassion.child', 'Child_Code')
 
     request_id = fields.Char('Unique request ID', readonly=True)
     date = fields.Datetime(
