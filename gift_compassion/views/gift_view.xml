@@ -79,6 +79,8 @@
                                 <field name="exchange_rate"/>
                                 <field name="amount_us_dollars"/>
                                 <field name="threshold_alert"/>
+                                <field name="field_office_notes"/>
+                                <field name="status_change_date"/>
                             </group>
                         </group>
                         <notebook>

@@ -95,6 +95,7 @@ class SponsorshipGift(models.Model):
         help='Partner exceeded the maximum gift amount allowed',
         readonly=True)
     field_office_notes = fields.Char()
+    status_change_date = fields.Datetime()  # date of update message
 
     ##########################################################################
     #                             FIELDS METHODS                             #
