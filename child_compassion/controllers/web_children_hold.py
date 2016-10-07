@@ -45,6 +45,8 @@ class RestController(http.Controller):
         data = ""
         # return principal children info
         for child in research.global_child_ids:
+            if child.image_url:
+                data += '<img src="' + child.image_url + '"/> <br>'
             data += child.name + ' ' + child.birthdate + '<br>'
 
         headers = Headers()
