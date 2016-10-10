@@ -32,7 +32,7 @@ class CreateGiftMapping(OnrampMapping):
         'RecipientID': ('child_id.local_id', 'compassion.child'),
         'RecipientType': 'gift_type',
         'Supporter_GlobalID': ('partner_id.global_id', 'res.partner'),
-        'ExchangeRatePartnerToGMC': None,
+        'ExchangeRatePartnerToGMC': 'exchange_rate',
         'ThresholdViolatedType': None,
         'IsThresholdViolated': 'threshold_alert',
         'GiftDeliveryStatus': 'gmc_state',

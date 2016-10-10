@@ -63,6 +63,8 @@ class SponsorshipGift(models.Model):
     date_sent = fields.Datetime(related='message_id.process_date')
     date_money_sent = fields.Datetime()
     amount = fields.Float(compute='_compute_invoice_fields', store=True)
+    exchange_rate = fields.Float(readonly=True)
+    amount_us_dollars = fields.Float(readonly=True)
     instructions = fields.Char()
     gift_type = fields.Selection([
         ('Project Gift', _('Project Gift')),
@@ -300,9 +302,15 @@ class SponsorshipGift(models.Model):
 
     @api.multi
     def on_gift_sent(self, data):
+        self.ensure_one()
+        try:
+            exchange_rate = float(data.get('exchange_rate'))
+        except ValueError:
+            exchange_rate = self.env.ref('base.USD').rate_silent or 1.0
         data.update({
             'state': 'fund_due',
-            'gmc_state': 'sent'
+            'gmc_state': 'sent',
+            'amount_us_dollars': exchange_rate * self.amount
         })
         self.write(data)
 

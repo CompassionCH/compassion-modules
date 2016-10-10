@@ -22,6 +22,7 @@
                     <field name="gift_type"/>
                     <field name="sponsorship_gift_type"/>
                     <field name="amount"/>
+                    <field name="amount_us_dollars"/>
                     <field name="instructions"/>
                     <field name="date_sent" />
                     <field name="date_money_sent" />
@@ -74,7 +75,9 @@
                             <group attrs="{'invisible': [('gmc_state', '=', 'draft')]}">
                                 <field name="gmc_gift_id"/>
                                 <field name="gmc_state"/>
-                                <field name="undeliverable_reason"/>
+                                <field name="undeliverable_reason" attrs="{'invisible': [('gmc_state', '!=', 'Undeliverable')]}"/>
+                                <field name="exchange_rate"/>
+                                <field name="amount_us_dollars"/>
                                 <field name="threshold_alert"/>
                             </group>
                         </group>
