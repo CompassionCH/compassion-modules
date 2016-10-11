@@ -193,8 +193,11 @@ class SponsorshipGift(models.Model):
     @api.multi
     def unlink(self):
         for gift in self:
-            if gift.state not in ('verify', 'draft'):
-                raise Warning(_("You cannot delete a processed gift."))
+            if gift.gmc_gift_id:
+                raise Warning(
+                    _("You cannot delete the %s. It is already sent to GMC.")
+                    % gift.name
+                )
             if gift.message_id:
                 gift.message_id.unlink()
         return super(SponsorshipGift, self).unlink()

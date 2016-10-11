@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import api, models
+from openerp import api, models, _
 
 from openerp.addons.sponsorship_compassion.models.product import GIFT_CATEGORY
 
@@ -28,3 +28,11 @@ class SponsorshipContract(models.Model):
                 self.env['sponsorship.gift'].create_from_invoice_line(invl)
 
         super(SponsorshipContract, self).invoice_paid(invoice)
+
+    @api.multi
+    def invoice_unpaid(self, invoice):
+        """ Remove pending gifts or prevent unreconcile if gift are already
+            sent.
+        """
+        invoice.invoice_line.mapped('gift_id').unlink()
+        super(SponsorshipContract, self).invoice_unpaid(invoice)
