@@ -42,9 +42,9 @@ class CreateGiftMapping(OnrampMapping):
     }
 
     FIELDS_TO_SUBMIT = {
-        'Beneficiary_GlobalID': None,
+        'Beneficiary_GlobalID': lambda child: child or None,
         'AmountInOriginatingCurrency': None,
-        'GiftSubType': None,
+        'GiftSubType': lambda type: type or None,
         'GiftType': None,
         'GlobalPartnerNote': None,
         'PartnerGiftDate': None,

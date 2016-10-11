@@ -38,6 +38,7 @@
         'security/ir.model.access.csv',
         'data/gmc_action.xml',
         'data/migrate_r4.xml',
+        'data/gift_thresholds.xml',
         'views/gift_view.xml',
         'views/gmc_message_view.xml',
     ],
