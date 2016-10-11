@@ -66,20 +66,16 @@ class DownloadChildPictures(models.TransientModel):
         """ Create the zip archive from the selected letters. """
         partners, contracts, children = \
             self._get_partners_contracts_children()
-        pictures = self.env['compassion.child.pictures'].search([(
-            'child_id', 'in', children.ids)])
+        '''pictures = self.env['compassion.child.pictures'].search([(
+            'child_id', 'in', children.ids)])'''
 
         zip_buffer = BytesIO()
         with ZipFile(zip_buffer, 'w') as zip_data:
             found = 0
 
-            for picture in pictures:
-                child_code = picture.child_id.local_id
-                '''child = contracts.search([('child_id.id',
-                                           '=', picture.child_id.id),
-                                          ('is_active', '=', True)])'''
-
-                url = self._get_picture_url(raw_url=picture.image_url,
+            for child in children.filtered('image_url'):
+                child_code = child.local_id
+                url = self._get_picture_url(raw_url=child.image_url,
                                             type=self.type,
                                             height=self.height,
                                             width=self.width)
@@ -89,14 +85,13 @@ class DownloadChildPictures(models.TransientModel):
                         urllib2.urlopen(url).read())
                 except:
                     # Not good, the url doesn't lead to an image
-                    self.information += '\nInvalid image url for ' + \
-                                        child_code
-                    logger.error('Image cannot be fetched anymore:' + str(
+                    logger.error('Image cannot be fetched: ' + str(
                         url))
                     continue
 
                 format = url.split('.')[-1]
-                sponsor_ref = picture.child_id.sponsor_ref
+                '''sponsor_ref = picture.child_id.sponsor_ref'''
+                sponsor_ref = child.sponsor_ref
                 fname = sponsor_ref + '_' + child_code + '.' + format
 
                 zip_data.writestr(fname, base64.b64decode(data))
@@ -216,7 +211,7 @@ class DownloadChildPictures(models.TransientModel):
             ('correspondant_id', 'in', partners.ids),
             ('partner_id', 'in', partners.ids),
             ('type', 'in', ['S', 'SC']),
-            ('state', '=', 'active')
+            ('state', '!=', 'cancelled')
         ])
         children = contracts.mapped('child_id')
         return partners, contracts, children
