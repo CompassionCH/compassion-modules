@@ -27,7 +27,7 @@ class child_pictures(models.Model):
     """
 
     _name = 'compassion.child.pictures'
-    _order = 'date desc'
+    _order = 'date desc, id desc'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -43,21 +43,27 @@ class child_pictures(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.one
-    def set_pictures(self):
+    def set_pictures(self, typeshot='Headshot'):
         """Get the picture given field_name (headshot or fullshot)"""
         attachment_obj = self.env['ir.attachment']
+
+        # We search related images, and sort them by date of creation
+        # from newest to oldest
         attachments = attachment_obj.search([
             ('res_model', '=', self._name),
-            ('res_id', '=', self.id)])
+            ('res_id', '=', self.id)],
+            order='create_date desc')
 
-        for data in attachments:
-            picturename = data.datas_fname
-            picturename = picturename.split('.')
-            picturename = picturename[0]
-            if picturename == 'Fullshot':
-                self.fullshot = data.datas
-            elif picturename == 'Headshot':
-                self.headshot = data.datas
+        # We recover the newest Fullshot and Headshots
+        for rec in attachments:
+            if rec.datas_fname.split('.')[0] == 'Headshot':
+                self.headshot = rec.datas
+                break
+
+        for rec in attachments:
+            if rec.datas_fname.split('.')[0] == 'Fullshot':
+                self.fullshot = rec.datas
+                break
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -69,18 +75,14 @@ class child_pictures(models.Model):
         and attach the pictures to the last case study.
         """
         pictures = super(child_pictures, self).create(vals)
-        child = pictures.child_id
+
+        # Retrieve Headshot
+        image_date = pictures._get_picture('Headshot', width=300, height=400)
 
         # Retrieve Fullshot
-        # image_date = pictures._get_picture(
-        #    child.id, child.local_id, pictures.id, 'Fullshot', dpi=300,
-        #    width=1500, height=1200)
-        image_date = pictures._get_picture('Fullshot', width=800,
-                                           height=1200)
-        # Retrieve Headshot
-        image_date = image_date and pictures._get_picture('Headshot',
-                                                          width=300,
-                                                          height=400)
+        image_date = image_date and pictures._get_picture('Fullshot',
+                                                          width=800,
+                                                          height=1200)
 
         if not image_date:
             # We could not retrieve a picture, we cancel the creation
@@ -90,13 +92,14 @@ class child_pictures(models.Model):
 
         # Find if same pictures already exist
         same_pictures = pictures._find_same_picture()
-        if same_pictures:
+        same_url = pictures._find_same_picture_by_url()
+        if same_pictures or same_url:
             # Don't keep the new picture and return the previous one.
+            pictures.child_id.message_post(
+                _('The picture was the same'), 'Picture update')
             pictures._unlink_related_attachment()
             pictures.unlink()
             same_pictures.write({'date': image_date})
-            child.message_post(
-                _('The picture was the same'), 'Picture update')
             pictures = same_pictures[0]
         else:
             pictures.write({'date': image_date})
@@ -106,18 +109,32 @@ class child_pictures(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+
     def _unlink_related_attachment(self):
         self.ensure_one()
         self.env['ir.attachment'].search([
             ('res_model', '=', self._name),
             ('res_id', '=', self.id)]).unlink()
 
+    @api.multi
+    def _find_same_picture_by_url(self):
+        self.ensure_one()
+        same_url = self.search([
+            ('child_id', '=', self.child_id.id),
+            ('image_url', '=', self.image_url),
+            ('id', '!=', self.id)
+        ])
+        return same_url
+
+    @api.multi
     def _find_same_picture(self):
         self.ensure_one()
         pics = self.search([('child_id', '=', self.child_id.id)])
         same_pics = pics.filtered(
-            lambda record: record.fullshot == self.fullshot and
-            record.headshot == self.headshot and record.id != self.id)
+            lambda record:
+            record.fullshot == self.fullshot and
+            record.headshot == self.headshot and
+            record.id != self.id)
 
         return same_pics
 
@@ -133,7 +150,7 @@ class child_pictures(models.Model):
 
         _image_date = False
         for picture in self.filtered('image_url'):
-            image_split = (picture.image_url).split('/')
+            image_split = picture.image_url.split('/')
             ind = image_split.index('upload')
             image_split[ind + 1] = cloudinary
             url = "/".join(image_split)
@@ -141,12 +158,14 @@ class child_pictures(models.Model):
                 data = base64.encodestring(urllib2.urlopen(url).read())
             except:
                 logger.error('Image cannot be fetched : ' + url)
-                return
+                continue
 
-            format = url.split('.')
-            format = format[-1]
-            _store_fname = type + '.' + format
-            _image_date = datetime.today().strftime(DF)
+            # recover the extension of the file (should be 'jpg')
+            extension = url.split('.')[-1]
+            # name of the file (typically 'Fullshot.jpg' or 'Headshot.jpg'
+            _store_fname = type + '.' + extension
+
+            _image_date = datetime.now().strftime(DF)
 
             if not attach_id:
                 return data
