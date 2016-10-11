@@ -45,7 +45,7 @@ class SponsorshipGift(models.Model):
         store=True
     )
     invoice_line_ids = fields.Many2many(
-        'account.invoice.line', string='Invoice lines',
+        'account.invoice.line', string='Invoice lines', readonly=True
     )
     payment_id = fields.Many2one(
         'account.move', 'Payment'
@@ -185,6 +185,7 @@ class SponsorshipGift(models.Model):
             if gift_to_verify:
                 vals['state'] = 'verify'
             gift = super(SponsorshipGift, self).create(vals)
+            gift.invoice_line_ids.write({'gift_id': gift.id})
             gift._create_gift_message()
 
         return gift
