@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-
+from datetime import date, timedelta
 from openerp import fields, models, api, _
 from openerp.exceptions import Warning
 
@@ -21,6 +21,7 @@ from openerp.addons.message_center_compassion.mappings import base_mapping \
 class SponsorshipGift(models.Model):
     _name = 'sponsorship.gift'
     _inherit = 'translatable.model'
+    _description = 'Sponsorship Gift'
     _order = 'date_partner_paid desc,id desc'
 
     ##########################################################################
@@ -63,26 +64,12 @@ class SponsorshipGift(models.Model):
     date_sent = fields.Datetime(related='message_id.process_date')
     date_money_sent = fields.Datetime()
     amount = fields.Float(compute='_compute_invoice_fields', store=True)
+    exchange_rate = fields.Float(readonly=True)
+    amount_us_dollars = fields.Float(readonly=True)
     instructions = fields.Char()
-    gift_type = fields.Selection([
-        ('Project Gift', _('Project Gift')),
-        ('Family Gift', _('Family Gift')),
-        ('Beneficiary Gift', _('Beneficiary Gift')),
-    ], required=True)
-    attribution = fields.Selection([
-        ('Center Based Programming', 'CDSP'),
-        ('Home Based Programming (Survival & Early Childhood)', 'CSP'),
-        ('Sponsored Child Family', _('Sponsored Child Family')),
-        ('Sponsorship', _('Sponsorship')),
-        ('Survival', _('Survival')),
-        ('Survival Neediest Families', _('Neediest Families')),
-        ('Survival Neediest Families - Split', _('Neediest Families Split')),
-    ], required=True)
-    sponsorship_gift_type = fields.Selection([
-        ('Birthday', _('Birthday')),
-        ('General', _('General')),
-        ('Graduation/Final', _('Graduation/Final')),
-    ])
+    gift_type = fields.Selection('get_gift_type_selection', required=True)
+    attribution = fields.Selection('get_gift_attributions', required=True)
+    sponsorship_gift_type = fields.Selection('get_sponsorship_gifts')
     state = fields.Selection([
         ('draft', _('Draft')),
         ('verify', _('Verify')),
@@ -112,10 +99,40 @@ class SponsorshipGift(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.model
+    def get_gift_type_selection(self):
+        return [
+            ('Project Gift', _('Project Gift')),
+            ('Family Gift', _('Family Gift')),
+            ('Beneficiary Gift', _('Beneficiary Gift')),
+        ]
+
+    @api.model
+    def get_gift_attributions(self):
+        return [
+            ('Center Based Programming', 'CDSP'),
+            ('Home Based Programming (Survival & Early Childhood)', 'CSP'),
+            ('Sponsored Child Family', _('Sponsored Child Family')),
+            ('Sponsorship', _('Sponsorship')),
+            ('Survival', _('Survival')),
+            ('Survival Neediest Families', _('Neediest Families')),
+            ('Survival Neediest Families - Split', _(
+                'Neediest Families Split')),
+        ]
+
+    @api.model
+    def get_sponsorship_gifts(self):
+        return [
+            ('Birthday', _('Birthday')),
+            ('General', _('General')),
+            ('Graduation/Final', _('Graduation/Final')),
+        ]
+
     @api.depends('invoice_line_ids')
     def _compute_invoice_fields(self):
         for gift in self.filtered('invoice_line_ids'):
-            pay_dates = gift.mapped('invoice_line_ids.last_payment')
+            pay_dates = gift.invoice_line_ids.filtered('last_payment').mapped(
+                'last_payment')
             amounts = gift.mapped('invoice_line_ids.price_subtotal')
             gift.date_partner_paid = fields.Date.to_string(max(
                 map(lambda d: fields.Date.from_string(d), pay_dates)))
@@ -141,7 +158,7 @@ class SponsorshipGift(models.Model):
             ('sponsorship_id', '=', vals['sponsorship_id']),
             ('gift_type', '=', vals['gift_type']),
             ('attribution', '=', vals['attribution']),
-            ('sponsorship_gift_type', '=', vals['sponsorship_gift_type']),
+            ('sponsorship_gift_type', '=', vals.get('sponsorship_gift_type')),
             ('state', 'in', ['draft', 'verify', 'error'])
         ], limit=1)
         if gift:
@@ -199,6 +216,7 @@ class SponsorshipGift(models.Model):
         gift = self.create(gift_vals)
         if not gift.is_eligible():
             gift.state = 'verify'
+            gift.message_id.state = 'postponed'
         return gift
 
     @api.model
@@ -231,29 +249,50 @@ class SponsorshipGift(models.Model):
     @api.multi
     def is_eligible(self):
         self.ensure_one()
-        minimum_amount = 1.0
-        maximum_amount = 1000.0
+        threshold_rule = self.env['gift.threshold.settings'].search([
+            ('gift_type', '=', self.gift_type),
+            ('gift_attribution', '=', self.attribution),
+            ('sponsorship_gift_type', '=', self.sponsorship_gift_type),
+        ], limit=1)
+        if threshold_rule:
+            current_rate = self.env.ref('base.USD').rate_silent or 1.0
+            minimum_amount = threshold_rule.min_amount
+            maximum_amount = threshold_rule.max_amount
 
-        this_amount = self.amount
-        if this_amount < minimum_amount:
-            return False
+            this_amount = self.amount * current_rate
+            if this_amount < minimum_amount or this_amount > maximum_amount:
+                return False
 
-        sponsorship = self.sponsorship_id
+            if threshold_rule.yearly_threshold:
+                sponsorship = self.sponsorship_id
 
-        # search other gifts for the same sponsorship.
-        # we will compare the date with the first january of the current year
-        firstJanuaryOfThisYear = fields.Date().today()[0:4] + '-01-01'
+                # search other gifts for the same sponsorship.
+                # we will compare the date with the first january of the
+                # current year
+                next_year = fields.Date.to_string(
+                    (date.today() + timedelta(days=365)).replace(month=1,
+                                                                 day=1))
+                firstJanuaryOfThisYear = fields.Date.today()[0:4] + '-01-01'
 
-        other_gifts = self.search([
-            ('sponsorship_id', '=', sponsorship.id),
-            ('date_partner_paid', '>=', firstJanuaryOfThisYear),
-        ])
+                other_gifts = self.search([
+                    ('sponsorship_id', '=', sponsorship.id),
+                    ('gift_type', '=', self.gift_type),
+                    ('attribution', '=', self.attribution),
+                    ('sponsorship_gift_type', '=', self.sponsorship_gift_type),
+                    ('date_partner_paid', '>=', firstJanuaryOfThisYear),
+                    ('date_partner_paid', '<', next_year),
+                ])
 
-        total_amount = this_amount
-        if other_gifts:
-            total_amount += sum(other_gifts.mapped('amount'))
+                total_amount = this_amount
+                if other_gifts:
+                    total_amount += sum(other_gifts.mapped(
+                        lambda gift: gift.amount_us_dollars or
+                        gift.amount * current_rate))
 
-        return total_amount < maximum_amount
+                return total_amount < (maximum_amount *
+                                       threshold_rule.gift_frequency)
+
+        return True
 
     @api.model
     def get_gift_types(self, product):
@@ -300,9 +339,15 @@ class SponsorshipGift(models.Model):
 
     @api.multi
     def on_gift_sent(self, data):
+        self.ensure_one()
+        try:
+            exchange_rate = float(data.get('exchange_rate'))
+        except ValueError:
+            exchange_rate = self.env.ref('base.USD').rate_silent or 1.0
         data.update({
             'state': 'fund_due',
-            'gmc_state': 'sent'
+            'gmc_state': 'sent',
+            'amount_us_dollars': exchange_rate * self.amount
         })
         self.write(data)
 
@@ -399,5 +444,6 @@ class SponsorshipGift(models.Model):
                 'object_id': gift.id,
                 'partner_id': gift.partner_id.id,
                 'child_id': gift.child_id.id,
+                'state': 'new' if gift.state != 'verify' else 'postponed',
             }
             gift.message_id = message_obj.create(message_vals)
