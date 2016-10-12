@@ -166,6 +166,22 @@ class CompassionHold(models.Model):
 
         return res
 
+    @api.multi
+    def unlink(self):
+        """
+        Don't unlink active holds, but only those that don't relate to
+        a child anymore (child released).
+        :return: True
+        """
+        active_holds = self.filtered(lambda h: h.state == 'active')
+        active_holds.release_hold()
+        inactive_holds = self - active_holds
+        inactive_children = inactive_holds.mapped('child_id')
+        inactive_children.signal_workflow('release')
+        invalid_holds = self.filtered(lambda h: not h.child_id)
+        super(CompassionHold, invalid_holds).unlink()
+        return True
+
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
@@ -240,15 +256,16 @@ class CompassionHold(models.Model):
 
     @api.multi
     def release_hold(self):
-        message_obj = self.env['gmc.message.pool'].with_context(
+        messages = self.env['gmc.message.pool'].with_context(
             async_mode=False)
         action_id = self.env.ref('child_compassion.release_hold').id
 
         for hold in self:
-            message_obj.create({
+            messages += messages.create({
                 'action_id': action_id,
                 'object_id': hold.id
             })
+        messages.process_messages()
 
         return True
 
