@@ -46,7 +46,7 @@ class CreateGiftMapping(OnrampMapping):
         'AmountInOriginatingCurrency': None,
         'GiftSubType': lambda type: type or None,
         'GiftType': None,
-        'GlobalPartnerNote': None,
+        'GlobalPartnerNote': lambda note: note or None,
         'PartnerGiftDate': None,
         'PartnerGiftID': str,
         'RecipientID': None,

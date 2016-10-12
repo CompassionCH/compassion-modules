@@ -9,13 +9,19 @@
 #
 ##############################################################################
 
-from openerp import api, models, _
+from openerp import api, models, fields, _
 
 from openerp.addons.sponsorship_compassion.models.product import GIFT_CATEGORY
 
 
 class SponsorshipContract(models.Model):
     _inherit = 'recurring.contract'
+
+    no_birthday_invoice = fields.Boolean(help=_(
+        "The automatic birthday gift will not generate an invoice."
+        "This means a birthday gift will always be sent to GMC "
+        "even if we didn't register a payment."
+    ))
 
     @api.multi
     def invoice_paid(self, invoice):

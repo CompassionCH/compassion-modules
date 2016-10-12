@@ -103,16 +103,20 @@ class contract_group(models.Model):
             for contract in contract_obj.browse(contract_ids):
                 logger.info("Birthday Gift Generation: {0}/{1} ".format(
                     str(count), total))
-                gift_wizard.write({
-                    'amount': contract.birthday_invoice})
-                gift_wizard.with_context(
-                    active_ids=contract.id).generate_invoice()
+                self._generate_birthday_gift(gift_wizard, contract)
+                self.env.cr.commit()
                 count += 1
 
             gift_wizard.unlink()
 
         logger.info("Automatic Birthday Gift Generation Finished !!")
         return invoicer
+
+    def _generate_birthday_gift(self, gift_wizard, contract):
+        gift_wizard.write({
+            'amount': contract.birthday_invoice})
+        gift_wizard.with_context(
+            active_ids=contract.id).generate_invoice()
 
     @api.multi
     def _setup_inv_line_data(self, contract_line, invoice):

@@ -79,16 +79,19 @@
                                 <field name="gmc_state"/>
                                 <field name="undeliverable_reason" attrs="{'invisible': [('gmc_state', '!=', 'Undeliverable')]}"/>
                                 <field name="exchange_rate"/>
-                                <field name="amount_us_dollars"/>
                                 <field name="threshold_alert"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Sponsor payments">
+                                <field name="currency_id" invisible="1"/>
+                                <field name="currency_usd" invisible="1"/>
                                 <field name="invoice_line_ids"/>
                                 <group class="oe_subtotal_footer oe_right">
-                                    <field name="amount" widget="monetary" class="oe_subtotal_footer_separator"/>
+                                    <field name="amount_us_dollars" widget="monetary" options="{'currency_field': 'currency_usd'}" />
+                                    <field name="amount" widget="monetary" class="oe_subtotal_footer_separator" options="{'currency_field': 'currency_id'}" readonly="1"/>
                                 </group>
+                                <separator/>
                             </page>
                             <page string="Payment to GMC">
                                 <group>

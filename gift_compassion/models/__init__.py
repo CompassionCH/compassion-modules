@@ -13,3 +13,4 @@ from . import sponsorship_gift
 from . import contracts
 from . import gift_threshold_settings
 from . import account_invoice_line
+from . import contract_group
