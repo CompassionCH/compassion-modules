@@ -332,6 +332,7 @@ class CompassionChild(models.Model):
         self.ensure_one()
         self.write(vals)
         self.generate_descriptions()
+        self.update_child_pictures()
         return True
 
     @api.model
@@ -464,10 +465,13 @@ class CompassionChild(models.Model):
         session = ConnectorSession.from_env(self.env)
         unlink_children_job.delay(session, self._name, self.ids, eta=postpone)
 
+    @api.multi
     def _get_last_pictures(self):
         self.ensure_one()
         pictures_obj = self.env['compassion.child.pictures']
-        pictures = pictures_obj.create({'child_id': self.id})
+        pictures = pictures_obj.create({
+            'child_id': self.id,
+            'image_url': self.image_url})
         if pictures:
             # Add a note in child
             self.message_post(

@@ -29,6 +29,7 @@
             <field name="arch" type="xml">
                 <tree string="Message Pool" colors="blue:state == 'new';black:state == 'pending';gray:state == 'success';red:state == 'failure'" create="false">
                     <field name="action_id" />
+                    <field name="partner_id" />
                     <field name="res_name"/>
                     <field name="date" />
                     <field name="process_date" />

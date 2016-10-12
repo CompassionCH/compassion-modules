@@ -12,14 +12,14 @@
                             <field name="fname" invisible="1"/>
                             <field name="type"/>
                         </group>
-                        <button name="enable_custom" string="Customize Dimensions" type="object" invisible="1"/>
                         <group>
-                            <field name="height" invisible="0"/>
-                            <field name="width" invisible="0"/>
-                            <field name="preview" widget='image' invisible="0"/>
+                            <field name="height" />
+                            <field name="width" />
+                            <field name="preview" widget='image' />
                         </group>
                         <group>
                             <field name="download_data" filename="fname"/>
+                            <field name="information" />
                         </group>
                     </sheet>
                     <footer>

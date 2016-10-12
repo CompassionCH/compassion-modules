@@ -38,6 +38,7 @@ class DownloadChildPictures(models.TransientModel):
     width = fields.Integer()
     download_data = fields.Binary(readonly=True)
     preview = fields.Binary(compute='_load_preview')
+    information = fields.Text(readonly=True)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -63,55 +64,46 @@ class DownloadChildPictures(models.TransientModel):
     @api.multi
     def get_pictures(self):
         """ Create the zip archive from the selected letters. """
-        partners = self.env[self.env.context['active_model']].browse(
-            self.env.context['active_ids'])
-        contracts = self.env['recurring.contract'].search([
-            '|',
-            ('correspondant_id', 'in', partners.ids),
-            ('partner_id', 'in', partners.ids),
-            ('type', 'in', ['S', 'SC']),
-            ('state', '=', 'active')
-        ])
-        children = contracts.mapped('child_id')
-
-        pictures = self.env['compassion.child.pictures'].search([(
-            'child_id', 'in', children.ids)])
+        partners, contracts, children = \
+            self._get_partners_contracts_children()
+        '''pictures = self.env['compassion.child.pictures'].search([(
+            'child_id', 'in', children.ids)])'''
 
         zip_buffer = BytesIO()
         with ZipFile(zip_buffer, 'w') as zip_data:
-            found = False
-            # for child in children.filtered('image_url'):
-            for picture in pictures:
-                '''the "or True" have to be removed once we find a way to get
-                 the pictures back from compassion.child.picture directly in
-                  binary'''
-                if self._customized() or True:
-                    url = self._get_picture_url(raw_url=picture.image_url,
-                                                type=self.type,
-                                                height=self.height,
-                                                width=self.width)
-                    url = url[0]
-                    try:
-                        data = base64.encodestring(
-                            urllib2.urlopen(url).read())
-                    except:
-                        logger.error('Image cannot be fetched :' + str(url))
-                        continue
+            found = 0
+
+            for child in children.filtered('image_url'):
+                child_code = child.local_id
+                url = self._get_picture_url(raw_url=child.image_url,
+                                            type=self.type,
+                                            height=self.height,
+                                            width=self.width)
+                url = url[0]
+                try:
+                    data = base64.encodestring(
+                        urllib2.urlopen(url).read())
+                except:
+                    # Not good, the url doesn't lead to an image
+                    logger.error('Image cannot be fetched: ' + str(
+                        url))
+                    continue
 
                 format = url.split('.')[-1]
-
-                child = contracts.search([('child_id.id',
-                                           '=', picture.child_id.id),
-                                          ('is_active', '=', True)])
-                childCode = child.child_code
-                childSponsor_idRef = child.partner_id.ref
-
-                fname = childSponsor_idRef + '_' + childCode + '.' + format
+                '''sponsor_ref = picture.child_id.sponsor_ref'''
+                sponsor_ref = child.sponsor_ref
+                fname = sponsor_ref + '_' + child_code + '.' + format
 
                 zip_data.writestr(fname, base64.b64decode(data))
-                found = True
+                found += 1
+
         zip_buffer.seek(0)
-        self.download_data = found and base64.b64encode(zip_buffer.read())
+        if found:
+            self.download_data = base64.b64encode(zip_buffer.read())
+
+        self.information = 'Zip file contains ' + str(found) + ' ' \
+                           'pictures.\n\n'
+        self._check_picture_availability()
         return {
             'type': 'ir.actions.act_window',
             'view_type': 'form',
@@ -162,16 +154,8 @@ class DownloadChildPictures(models.TransientModel):
 
     @api.multi
     def _load_preview(self):
-        partners = self.env[self.env.context['active_model']].browse(
-            self.env.context['active_ids'])
-
-        children = self.env['recurring.contract'].search([
-            '|',
-            ('correspondant_id', 'in', partners.ids),
-            ('partner_id', 'in', partners.ids),
-            ('type', 'in', ['S', 'SC']),
-            ('state', '=', 'active')
-        ]).mapped('child_id')
+        partners, contracts, children = \
+            self._get_partners_contracts_children()
 
         for child in children.filtered('image_url'):
             url = child.image_url
@@ -184,8 +168,50 @@ class DownloadChildPictures(models.TransientModel):
             except:
                 logger.error('Image cannot be fetched : ' + url)
 
-    def _customized(self):
-        if self.type == 'fullshot':
-            return not (self.width == 800 and self.height == 1200)
-        else:
-            return not (self.width == 300 and self.height == 400)
+    @api.multi
+    def _check_picture_availability(self):
+        # get the partners which have been selected and the relative
+        # contracts and children
+        partners, contracts, children = \
+            self._get_partners_contracts_children()
+
+        # Search children having a 'image_url' returning False
+        children_with_no_url = children.filtered(
+            lambda c: not c.image_url
+        )
+        # If there is some, we will print their corresponding childe_code
+        if children_with_no_url:
+            child_codes = children_with_no_url.mapped('local_id')
+            self.information += 'No image url for child(ren):\n\t' + \
+                                '\n\t'.join(child_codes) + '\n\n'
+
+        # Now we want children having an invalid 'image_url'.
+        # To find them, we have to try to open their url and catch exceptions.
+        children_with_invalid_url = []
+        for child in children.filtered('image_url'):
+            url = self._get_picture_url(
+                raw_url=child.image_url,
+                type='fullshot', height=1, width=1
+            )[0]
+            try:
+                urllib2.urlopen(url)
+            except:
+                # Not good, the url doesn't lead to an image
+                children_with_invalid_url += [child.local_id]
+        if children_with_invalid_url:
+            self.information += 'Invalid image url for child(ren):\n\t' + \
+                                '\n\t'.join(children_with_invalid_url)
+
+    @api.multi
+    def _get_partners_contracts_children(self):
+        partners = self.env[self.env.context['active_model']].browse(
+            self.env.context['active_ids'])
+        contracts = self.env['recurring.contract'].search([
+            '|',
+            ('correspondant_id', 'in', partners.ids),
+            ('partner_id', 'in', partners.ids),
+            ('type', 'in', ['S', 'SC']),
+            ('state', '!=', 'cancelled')
+        ])
+        children = contracts.mapped('child_id')
+        return partners, contracts, children

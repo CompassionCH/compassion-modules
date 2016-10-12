@@ -22,6 +22,7 @@ class CreateGiftMapping(OnrampMapping):
     MAPPING_NAME = 'create_update_gifts'
 
     CONNECT_MAPPING = {
+        'FieldOfficeNoteFieldForGlobalPartner': 'field_office_notes',
         'Beneficiary_GlobalID': ('child_id.global_id', 'compassion.child'),
         'AmountInOriginatingCurrency': 'amount',
         'GiftSubType': 'sponsorship_gift_type',
@@ -37,7 +38,8 @@ class CreateGiftMapping(OnrampMapping):
         'IsThresholdViolated': 'threshold_alert',
         'GiftDeliveryStatus': 'gmc_state',
         'ID': 'gmc_gift_id',
-        'StatusChangeDate': None,
+        'Id': 'gmc_gift_id',
+        'StatusChangeDate': 'status_change_date',
         'UndeliverableReason': 'undeliverable_reason',
     }
 
