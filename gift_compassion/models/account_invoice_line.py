@@ -9,5 +9,12 @@
 #
 ##############################################################################
 
-from . import migration_r4
-from . import collect_gifts_wizard
+from openerp import models, fields
+
+
+class InvoiceLine(models.Model):
+    _inherit = 'account.invoice.line'
+
+    gift_id = fields.Many2one(
+        'sponsorship.gift', 'GMC Gift'
+    )

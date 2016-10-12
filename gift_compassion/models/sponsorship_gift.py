@@ -45,7 +45,7 @@ class SponsorshipGift(models.Model):
         store=True
     )
     invoice_line_ids = fields.Many2many(
-        'account.invoice.line', string='Invoice lines',
+        'account.invoice.line', string='Invoice lines', readonly=True
     )
     payment_id = fields.Many2one(
         'account.move', 'Payment'
@@ -56,16 +56,22 @@ class SponsorshipGift(models.Model):
 
     # Gift information
     ##################
-    name = fields.Char(compute='_compute_name')
+    name = fields.Char(compute='_compute_name', translate=False)
     gmc_gift_id = fields.Char(readonly=True)
     date_partner_paid = fields.Date(
-        compute='_compute_invoice_fields', store=True
+        compute='_compute_invoice_fields',
+        inverse=lambda g: True, store=True
     )
     date_sent = fields.Datetime(related='message_id.process_date')
     date_money_sent = fields.Datetime()
-    amount = fields.Float(compute='_compute_invoice_fields', store=True)
+    amount = fields.Float(
+        compute='_compute_invoice_fields',
+        inverse=lambda g: True, store=True)
+    currency_id = fields.Many2one('res.currency', default=lambda s:
+                                  s.env.user.company_id.currency_id)
+    currency_usd = fields.Many2one('res.currency', compute='_compute_usd')
     exchange_rate = fields.Float(readonly=True)
-    amount_us_dollars = fields.Float(readonly=True)
+    amount_us_dollars = fields.Float('Amount due', readonly=True)
     instructions = fields.Char()
     gift_type = fields.Selection('get_gift_type_selection', required=True)
     attribution = fields.Selection('get_gift_attributions', required=True)
@@ -149,6 +155,10 @@ class SponsorshipGift(models.Model):
             name += ' [' + gift.sponsorship_id.name + ']'
             gift.name = name
 
+    def _compute_usd(self):
+        for gift in self:
+            gift.currency_usd = self.env.ref('base.USD')
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -186,6 +196,7 @@ class SponsorshipGift(models.Model):
             if gift_to_verify:
                 vals['state'] = 'verify'
             gift = super(SponsorshipGift, self).create(vals)
+            gift.invoice_line_ids.write({'gift_id': gift.id})
             gift._create_gift_message()
 
         return gift
@@ -193,8 +204,11 @@ class SponsorshipGift(models.Model):
     @api.multi
     def unlink(self):
         for gift in self:
-            if gift.state not in ('verify', 'draft'):
-                raise Warning(_("You cannot delete a processed gift."))
+            if gift.gmc_gift_id:
+                raise Warning(
+                    _("You cannot delete the %s. It is already sent to GMC.")
+                    % gift.name
+                )
             if gift.message_id:
                 gift.message_id.unlink()
         return super(SponsorshipGift, self).unlink()
