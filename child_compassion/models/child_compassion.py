@@ -332,6 +332,7 @@ class CompassionChild(models.Model):
         self.ensure_one()
         self.write(vals)
         self.generate_descriptions()
+        self.update_child_pictures()
         return True
 
     @api.model
