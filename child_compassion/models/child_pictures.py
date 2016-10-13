@@ -38,6 +38,7 @@ class child_pictures(models.Model):
     headshot = fields.Binary(compute='set_pictures')
     image_url = fields.Char()
     date = fields.Date('Date of pictures', default=fields.Date.today)
+    _error_msg = 'Image cannot be fetched: No image url available'
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -74,11 +75,20 @@ class child_pictures(models.Model):
         a new Pictures object. Check if picture is the same as the previous
         and attach the pictures to the last case study.
         """
+
         pictures = super(child_pictures, self).create(vals)
+
+        same_url = pictures._find_same_picture_by_url()
+        if same_url:
+            pictures.child_id.message_post(
+                _('The picture was the same'), 'Picture update')
+            pictures._unlink_related_attachment()
+            pictures.unlink()
+            same_url.write({'date': datetime.now().strftime(DF)})
+            return False
 
         # Retrieve Headshot
         image_date = pictures._get_picture('Headshot', width=300, height=400)
-
         # Retrieve Fullshot
         image_date = image_date and pictures._get_picture('Fullshot',
                                                           width=800,
@@ -86,24 +96,25 @@ class child_pictures(models.Model):
 
         if not image_date:
             # We could not retrieve a picture, we cancel the creation
+            pictures.child_id.message_post(
+                _(pictures._error_msg), 'Picture update')
             pictures._unlink_related_attachment()
             pictures.unlink()
             return False
 
         # Find if same pictures already exist
         same_pictures = pictures._find_same_picture()
-        same_url = pictures._find_same_picture_by_url()
-        if same_pictures or same_url:
-            # Don't keep the new picture and return the previous one.
+        if same_pictures:
+            # That case is not likely to happens, it means that the url has
+            #  changed, while the picture stay unchanged.
             pictures.child_id.message_post(
                 _('The picture was the same'), 'Picture update')
             pictures._unlink_related_attachment()
             pictures.unlink()
             same_pictures.write({'date': image_date})
-            pictures = same_pictures[0]
-        else:
-            pictures.write({'date': image_date})
+            return False
 
+        pictures.write({'date': image_date})
         return pictures
 
     ##########################################################################
@@ -135,11 +146,11 @@ class child_pictures(models.Model):
             record.fullshot == self.fullshot and
             record.headshot == self.headshot and
             record.id != self.id)
-
         return same_pics
 
     @api.multi
     def _get_picture(self, type='Headshot', width=300, height=400):
+        self.ensure_one()
         """ Gets a picture from Compassion webservice """
         attach_id = self.id
         if (type.lower() == 'headshot'):
@@ -157,7 +168,9 @@ class child_pictures(models.Model):
             try:
                 data = base64.encodestring(urllib2.urlopen(url).read())
             except:
-                logger.error('Image cannot be fetched : ' + url)
+                self._error_msg = 'Image cannot be fetched, invalid image ' \
+                                  'url : ' + picture.image_url
+                logger.error('Image cannot be fetched : ' + picture.image_url)
                 continue
 
             # recover the extension of the file (should be 'jpg')
