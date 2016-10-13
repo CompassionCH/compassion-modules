@@ -34,5 +34,10 @@
             name="Download child pictures"
             res_model="child.pictures.download.wizard" src_model="res.partner"
             view_mode="form" target="new" view_type="form" key2="client_action_multi"/>
+
+        <act_window id="action_download_child_pictures_2"
+            name="Download child pictures"
+            res_model="child.pictures.download.wizard" src_model="recurring.contract"
+            view_mode="form" target="new" view_type="form" key2="client_action_multi"/>
     </data>
 </openerp>

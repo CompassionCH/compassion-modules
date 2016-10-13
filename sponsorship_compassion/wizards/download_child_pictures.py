@@ -64,10 +64,7 @@ class DownloadChildPictures(models.TransientModel):
     @api.multi
     def get_pictures(self):
         """ Create the zip archive from the selected letters. """
-        partners, contracts, children = \
-            self._get_partners_contracts_children()
-        '''pictures = self.env['compassion.child.pictures'].search([(
-            'child_id', 'in', children.ids)])'''
+        children = self._get_children()
 
         zip_buffer = BytesIO()
         with ZipFile(zip_buffer, 'w') as zip_data:
@@ -90,7 +87,6 @@ class DownloadChildPictures(models.TransientModel):
                     continue
 
                 format = url.split('.')[-1]
-                '''sponsor_ref = picture.child_id.sponsor_ref'''
                 sponsor_ref = child.sponsor_ref
                 fname = sponsor_ref + '_' + child_code + '.' + format
 
@@ -154,8 +150,7 @@ class DownloadChildPictures(models.TransientModel):
 
     @api.multi
     def _load_preview(self):
-        partners, contracts, children = \
-            self._get_partners_contracts_children()
+        children = self._get_children()
 
         for child in children.filtered('image_url'):
             url = child.image_url
@@ -170,10 +165,7 @@ class DownloadChildPictures(models.TransientModel):
 
     @api.multi
     def _check_picture_availability(self):
-        # get the partners which have been selected and the relative
-        # contracts and children
-        partners, contracts, children = \
-            self._get_partners_contracts_children()
+        children = self._get_children()
 
         # Search children having a 'image_url' returning False
         children_with_no_url = children.filtered(
@@ -203,15 +195,21 @@ class DownloadChildPictures(models.TransientModel):
                                 '\n\t'.join(children_with_invalid_url)
 
     @api.multi
-    def _get_partners_contracts_children(self):
-        partners = self.env[self.env.context['active_model']].browse(
-            self.env.context['active_ids'])
-        contracts = self.env['recurring.contract'].search([
-            '|',
-            ('correspondant_id', 'in', partners.ids),
-            ('partner_id', 'in', partners.ids),
-            ('type', 'in', ['S', 'SC']),
-            ('state', '!=', 'cancelled')
-        ])
+    def _get_children(self):
+        context = self.env.context['active_model']
+        if context == 'res.partner':
+            partners = self.env[context].browse(
+                self.env.context['active_ids'])
+            contracts = self.env['recurring.contract'].search([
+                '|',
+                ('correspondant_id', 'in', partners.ids),
+                ('partner_id', 'in', partners.ids),
+                ('type', 'in', ['S', 'SC']),
+                ('state', '!=', 'cancelled')
+            ])
+        elif context == 'recurring.contract':
+            contracts = self.env[context].browse(
+                self.env.context['active_ids'])
+
         children = contracts.mapped('child_id')
-        return partners, contracts, children
+        return children
