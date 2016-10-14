@@ -107,26 +107,7 @@ class CompassionChild(models.Model):
         ('Secondary', 'Secondary'),
         ('University Graduate', 'University Graduate'),
     ], readonly=True)
-    local_grade_level = fields.Selection([
-        ('Preschool 1', 'Preschool 1'),
-        ('Preschool 2', 'Preschool 2'),
-        ('Kinder 1', 'Kinder 1'),
-        ('Kinder 2', 'Kinder 2'),
-        ('Kinder 3', 'Kinder 3'),
-        ('Primary 1', 'Primary 1'),
-        ('Primary 2', 'Primary 2'),
-        ('Primary 3', 'Primary 3'),
-        ('Primary 4', 'Primary 4'),
-        ('Primary 5', 'Primary 5'),
-        ('Primary 6', 'Primary 6'),
-        ('Middle 1', 'Middle 1'),
-        ('Middle 2', 'Middle 2'),
-        ('Middle 3', 'Middle 3'),
-        ('High school 1', 'High school 1'),
-        ('High school 2', 'High school 2'),
-        ('High school 3', 'High school 3'),
-        ('Not Enrolled', 'Not Enrolled'),
-    ], readonly=True)
+    local_grade_level = fields.Char(readonly=True)
     us_grade_level = fields.Selection([
         ('P', 'P'),
         ('K', 'K'),
@@ -167,7 +148,6 @@ class CompassionChild(models.Model):
         ('Manufacturing/ Fabrication', 'Manufacturing/ Fabrication'),
         ('Medical/ Health Services', 'Medical/ Health Services'),
         ('Not Enrolled', 'Not Enrolled'),
-        ('Other', 'Other'),
         ('Telecommunication', _('telecommunication')),
         ('Transportation', _('transportation')),
         ('Transportation/ Driver', _('driver')),
@@ -200,7 +180,6 @@ class CompassionChild(models.Model):
         ('Law', _('law')),
         ('Mathematics', _('mathematics')),
         ('Nursing', _('nursing')),
-        ('Other', 'Other'),
         ('Psychology', _('Psychology')),
         ('Sales and Marketing', _('sales and marketing')),
         ('Science', _('science')),

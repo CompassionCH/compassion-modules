@@ -229,7 +229,6 @@ class CompassionProject(models.Model):
         ('Jungle', _('jungle')),
         ('Lake', _('lake')),
         ('Mountainous', _('mountainous')),
-        ('Other', 'Other'),
         ('Plains/Flat Land', _('plains')),
         ('Valley', _('valley')),
     ], readonly=True)
@@ -252,10 +251,10 @@ class CompassionProject(models.Model):
     hunger_month_ids = fields.Many2many(
         'connect.month', string='Hunger months', readonly=True
     )
-    cultural_rituals = fields.Char(readonly=True)
-    economic_needs = fields.Char(readonly=True)
-    health_needs = fields.Char(readonly=True)
-    education_needs = fields.Char(readonly=True)
+    cultural_rituals = fields.Text(readonly=True)
+    economic_needs = fields.Text(readonly=True)
+    health_needs = fields.Text(readonly=True)
+    education_needs = fields.Text(readonly=True)
     social_needs = fields.Text(readonly=True)
     spiritual_needs = fields.Text(readonly=True)
     primary_diet_ids = fields.Many2many(
@@ -372,11 +371,12 @@ class CompassionProject(models.Model):
             ('Leaves/Grass/Thatch', _('leaves, grass and thatch')),
             ('Leaves/Grass', _('leaves and grass')),
             ('Mud/Earth/Clay/Adobe', _('mud, earth, clay and adobe')),
-            ('Other', 'Other'),
             ('Plastic Sheets', _('plastic sheets')),
             ('Tile', _('tile')),
             ('Tin/Corrugated Iron', _('tin')),
             ('Wood', _('wood')),
+            # TODO: Verify if we receive this in PROD
+            ('Tin', _('tin')),
         ]
 
     ##########################################################################

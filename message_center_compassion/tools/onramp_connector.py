@@ -104,7 +104,9 @@ class OnrampConnector(object):
         }
         self._log_message(status, 'RESULT', message=r.text)
         try:
-            result['content'] = r.json()
+            # Receiving some weird encoded strings
+            result['content'] = simplejson.JSONDecoder(strict=False).decode(
+                r.text.replace('\\\\n', '\n'))
         except ValueError:
             # No valid content returned
             result['code'] = 204

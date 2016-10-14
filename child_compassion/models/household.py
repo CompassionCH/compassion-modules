@@ -137,7 +137,6 @@ class Household(models.Model):
             ('Janitor', _('is janitor')),
             ('Mechanic', _('is mechanic')),
             ('Merchant/ Seller', _('is merchant')),
-            ('Other', 'other'),
             ('Security/ Guard', _('is a security guard')),
             ('Teacher', _('is a teacher')),
             ('Transportation/ Driver', _('is a driver')),
@@ -165,6 +164,9 @@ class Household(models.Model):
             ('Housewife', _('is a housewife')),
             ('Domestic Service/ Housekeeper', _('is a domestic housekeeper')),
             ('Project Worker', _('works at the project')),
+            ('Sells In Market', _('sells in market')),
+            ('Health Care/ Nurse', _('is a nurse')),
+            ('Clothing Trades', _('works in clothing trade')),
         ]
 
     def process_commkit(self, commkit_data):
