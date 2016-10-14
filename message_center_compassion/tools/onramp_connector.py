@@ -97,6 +97,14 @@ class OnrampConnector(object):
         elif message_type == 'POST':
             r = self._session.post(
                 url, headers=headers, json=body, params=param_string)
+        elif message_type == 'PUT':
+            r = self._session.put(
+                url, headers=headers, json=body, params=param_string)
+        else:
+            return {
+                'code': 404,
+                'Error': 'No valid HTTP verb used'
+            }
         status = r.status_code
         result = {
             'code': status,

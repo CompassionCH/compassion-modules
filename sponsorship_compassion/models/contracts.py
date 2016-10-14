@@ -65,11 +65,7 @@ class SponsorshipContract(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     correspondant_id = fields.Many2one(
-        'res.partner', string='Correspondant', readonly=True,
-        states={'draft': [('readonly', False)],
-                'waiting': [('readonly', False)],
-                'mandate': [('readonly', False)]},
-        track_visibility='onchange')
+        'res.partner', string='Correspondant', track_visibility='onchange')
     partner_codega = fields.Char(
         'Partner ref', related='correspondant_id.ref', readonly=True)
     fully_managed = fields.Boolean(
@@ -195,7 +191,36 @@ class SponsorshipContract(models.Model):
         if 'child_id' in vals:
             self._on_change_child_id(vals)
 
-        return super(SponsorshipContract, self).write(vals)
+        super(SponsorshipContract, self).write(vals)
+
+        if 'correspondant_id' in vals or 'reading_language' in vals:
+            # Send update to GMC
+            action = self.env.ref('sponsorship_compassion.create_sponsorship')
+            message_obj = self.env['gmc.message.pool'].with_context(
+                async_mode=False)
+            for sponsorship in self.filtered(
+                    lambda s: s.global_id and s.state not in ('cancelled',
+                                                              'terminated')):
+                message = message_obj.create({
+                    'action_id': action.id,
+                    'child_id': sponsorship.child_id.id,
+                    'partner_id': sponsorship.correspondant_id.id,
+                    'object_id': sponsorship.id
+                })
+                message.process_messages()
+                if message.state == 'failure':
+                    self.env.cr.rollback()
+                    failure = message.failure_reason
+                    message.unlink()
+                    self.env.cr.commit()
+                    raise exceptions.Warning(
+                        _("Commitment %s not updated :") % sponsorship.name,
+                        failure
+                    )
+                else:
+                    self.env.cr.commit()
+
+        return True
 
     @api.multi
     def unlink(self):
@@ -381,10 +406,14 @@ class SponsorshipContract(models.Model):
     def commitment_sent(self, vals):
         """ Called when GMC received the commitment. """
         self.ensure_one()
+        # We don't need to write back partner and child
+        del vals['child_id']
+        del vals['correspondant_id']
         self.write(vals)
         # Remove the hold on the child.
-        self.child_id.hold_id.state = 'expired'
-        self.child_id.hold_id = False
+        if self.child_id.hold_id:
+            self.child_id.hold_id.state = 'expired'
+            self.child_id.hold_id = False
         return True
 
     def cancel_sent(self, vals):

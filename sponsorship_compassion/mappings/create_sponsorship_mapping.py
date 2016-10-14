@@ -27,8 +27,10 @@ class CreateSponsorship(BaseSponsorshipMapping):
         "PrimaryHoldOwner": None,
         "SponsorGlobalPartnerID": None,
         "SponsorSupporterGlobalID": None,
+        "SponsorCorrespondenceLanguage": None,
         "Beneficiary_GlobalID": None,
-        "CommitmentID": None
+        "CommitmentID": None,
+        "ParentCommitmentID": lambda parent: parent or None,
     }
 
     def __init__(self, env):
@@ -36,7 +38,7 @@ class CreateSponsorship(BaseSponsorshipMapping):
         self.CONNECT_MAPPING['HoldID'] = ('child_id.hold_id.hold_id',
                                           'compassion.child')
 
-    def _process_connect_data(self, odoo_data):
+    def _process_connect_data(self, connect_data):
         # Don't send global id if not set.
-        if not odoo_data.get('GlobalId') and 'GlobalId' in odoo_data:
-            del odoo_data['GlobalId']
+        if not connect_data.get('GlobalId') and 'GlobalId' in connect_data:
+            del connect_data['GlobalId']

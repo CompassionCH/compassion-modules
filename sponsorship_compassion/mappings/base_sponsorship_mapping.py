@@ -38,20 +38,21 @@ class BaseSponsorshipMapping(OnrampMapping):
         "HoldType": None,
         "PrimaryHoldOwner": ('write_uid.name', 'res.users'),
         "SecondaryHoldOwner": ('create_uid.name', 'res.users'),
-        "SponsorCorrespondenceLanguage": ('reading_language.id',
+        "SponsorCorrespondenceLanguage": ('reading_language.name',
                                           'res.lang.compassion'),
-        "SponsorSupporterGlobalID": ('partner_id.global_id', 'res.partner'),
+        "SponsorSupporterGlobalID": ('correspondant_id.global_id',
+                                     'res.partner'),
         "Beneficiary_GlobalID": ('child_id.global_id', 'compassion.child'),
         "HoldExpirationDate": "hold_expiration_date",
         "Channel_Name": None,
         "LinkType": None,
         "DelinkType": None,
-        "ParentCommitmentID": None
+        "ParentCommitmentID": ('parent_id.global_id', 'recurring.contract'),
     }
 
     CONSTANTS = {
         "CorrespondentGlobalPartnerID": "CH",
-        "IsSponsorCorrespondent": False,
+        "IsSponsorCorrespondent": True,
         "SponsorGlobalPartnerID": "CH",
         "FinalCommitmentOfLine": "",
         "GlobalPartner_ID": "CH",

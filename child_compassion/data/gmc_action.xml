@@ -36,7 +36,7 @@
             <field name="model">compassion.child</field>
             <field name="connect_answer_wrapper">BeneficiaryResponseList</field>
             <field name="description">This will update child</field>
-            <field name="connect_service">beneficiaries/{$object.global_id}/details</field>
+            <field name="connect_service">beneficiaries/${object.global_id}/details</field>
             <field name="request_type">GET</field>
             <field name="auto_process">1</field>
             <field name="success_method">details_answer</field>
@@ -48,7 +48,7 @@
             <field name="model">compassion.project</field>
             <field name="connect_answer_wrapper">ICPResponseList</field>
             <field name="description">This will update the project</field>
-            <field name="connect_service">churchpartners/{$object.icp_id}/kits/icpkit</field>
+            <field name="connect_service">churchpartners/${object.icp_id}/kits/icpkit</field>
             <field name="request_type">GET</field>
             <field name="auto_process">1</field>
             <field name="success_method">details_answer</field>
@@ -59,7 +59,7 @@
             <field name="model">compassion.field.office</field>
             <field name="connect_answer_wrapper">FieldOfficeResponseList</field>
             <field name="description">This will update the Field Office</field>
-            <field name="connect_service">fieldoffices/{$object.field_office_id}/kits/fieldofficekit</field>
+            <field name="connect_service">fieldoffices/${object.field_office_id}/kits/fieldofficekit</field>
             <field name="request_type">GET</field>
             <field name="auto_process">1</field>
         </record>
