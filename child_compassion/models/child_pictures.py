@@ -88,7 +88,7 @@ class child_pictures(models.Model):
             return False
 
         # Retrieve Headshot
-        image_date = pictures._get_picture('Headshot', width=300, height=400)
+        image_date = pictures._get_picture('Headshot', width=180, height=180)
         # Retrieve Fullshot
         image_date = image_date and pictures._get_picture('Fullshot',
                                                           width=800,
@@ -153,10 +153,10 @@ class child_pictures(models.Model):
         self.ensure_one()
         """ Gets a picture from Compassion webservice """
         attach_id = self.id
-        if (type.lower() == 'headshot'):
+        if type.lower() == 'headshot':
             cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(
-                width)
-        elif (type.lower() == 'fullshot'):
+                width) + ",z_1.2"
+        elif type.lower() == 'fullshot':
             cloudinary = "w_" + str(width) + ",h_" + str(height) + ",c_fit"
 
         _image_date = False
