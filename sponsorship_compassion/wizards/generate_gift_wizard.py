@@ -38,6 +38,8 @@ class generate_gift_wizard(models.TransientModel):
         # Read data in english
         self.ensure_one()
         self = self.with_context(lang='en_US')
+        if not self.description:
+            self.description = self.product_id.display_name
         invoice_ids = list()
         gen_states = self.env['recurring.contract.group']._get_gen_states()
         # Ids of contracts are stored in context
