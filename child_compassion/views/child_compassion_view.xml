@@ -40,6 +40,7 @@
                         <div class="oe_right oe_button_box" name="buttons">
                             <button name="get_infos" string="get info" type="object" icon="fa-refresh" class="oe_stat_button"
                                     context="{'async_mode': False}"/>
+                            <button name="get_lifecycle_event" string="get lifecycle" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
                         </div>
                         <notebook>
                             <page string="General Information">
