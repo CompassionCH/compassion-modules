@@ -31,9 +31,6 @@ class RecurringContract(models.Model):
         'SDS state date', readonly=True, copy=False)
     cancel_gifts_on_termination = fields.Boolean(
         'Cancel pending gifts if sponsorship is terminated')
-    project_id = fields.Many2one(
-        'compassion.project', 'Project', related='child_id.project_id',
-        readonly=True)
     project_state = fields.Selection(
         '_get_project_states', 'Project Status', select=True,
         readonly=True, track_visibility='onchange')

@@ -71,7 +71,7 @@ class contract_group(models.Model):
         if self.ids:
             contract_search.append(('group_id', 'in', self.ids))
         contract_obj = self.env['recurring.contract']
-        contract_ids = contract_obj.search(contract_search).ids
+        contracts = contract_obj.search(contract_search)
 
         # Exclude sponsorship if a gift is already open
         invl_obj = self.env['account.invoice.line']
@@ -79,16 +79,16 @@ class contract_group(models.Model):
             lang='en_US').search(
             [('name', '=', GIFT_NAMES[0])])[0].id
 
-        for con_id in contract_ids:
+        for contract in contracts:
             invl_ids = invl_obj.search([
                 ('state', '=', 'open'),
-                ('contract_id', '=', con_id),
+                ('contract_id', '=', contract.id),
                 ('product_id', '=', product_id)])
-            if invl_ids:
-                contract_ids.remove(con_id)
+            if contract.project_id.hold_gifts or invl_ids:
+                contracts -= contract
 
-        if contract_ids:
-            total = str(len(contract_ids))
+        if contracts:
+            total = str(len(contracts))
             count = 1
             logger.info("Found {0} Birthday Gifts to generate.".format(total))
 
@@ -100,7 +100,7 @@ class contract_group(models.Model):
                     'amount': 0.0})
 
             # Generate invoices
-            for contract in contract_obj.browse(contract_ids):
+            for contract in contracts:
                 logger.info("Birthday Gift Generation: {0}/{1} ".format(
                     str(count), total))
                 self._generate_birthday_gift(gift_wizard, contract)
@@ -132,7 +132,7 @@ class contract_group(models.Model):
 
             # If project is suspended, either skip invoice or replace product
             if contract.type == 'S' and \
-                    contract.child_id.project_id.hold_cdsp_funds:
+                    contract.project_id.hold_cdsp_funds:
                 config_obj = self.env['ir.config_parameter']
                 suspend_config = config_obj.search([(
                     'key', '=',
@@ -148,6 +148,9 @@ class contract_group(models.Model):
 
             if contract.type == 'G':
                 sponsorship = contract_line.sponsorship_id
+                if sponsorship.project_id.hold_gifts:
+                    # no gift allowed for project
+                    return False
                 if sponsorship.state in self._get_gen_states():
                     invl_data['contract_id'] = sponsorship.id
                 else:

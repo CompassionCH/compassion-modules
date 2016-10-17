@@ -38,7 +38,10 @@ class SponsorshipGift(models.Model):
     )
     project_id = fields.Many2one(
         'compassion.project', 'Project',
-        related='sponsorship_id.child_id.project_id', store=True
+        related='sponsorship_id.project_id', store=True
+    )
+    project_suspended = fields.Boolean(
+        related='project_id.hold_gifts'
     )
     child_id = fields.Many2one(
         'compassion.child', 'Child', related='sponsorship_id.child_id',
@@ -139,7 +142,7 @@ class SponsorshipGift(models.Model):
     def _compute_invoice_fields(self):
         for gift in self.filtered('invoice_line_ids'):
             pay_dates = gift.invoice_line_ids.filtered('last_payment').mapped(
-                'last_payment')
+                'last_payment') or [gift.invoice_line_ids[0].last_payment]
             amounts = gift.mapped('invoice_line_ids.price_subtotal')
             gift.date_partner_paid = fields.Date.to_string(max(
                 map(lambda d: fields.Date.from_string(d), pay_dates)))
@@ -263,7 +266,14 @@ class SponsorshipGift(models.Model):
 
     @api.multi
     def is_eligible(self):
+        """ Verifies the amount is within the thresholds and that the ICP
+        is currently accepting gifts.
+        """
         self.ensure_one()
+        sponsorship = self.sponsorship_id
+        if sponsorship.project_id.hold_gifts:
+            return False
+
         threshold_rule = self.env['gift.threshold.settings'].search([
             ('gift_type', '=', self.gift_type),
             ('gift_attribution', '=', self.attribution),
@@ -279,8 +289,6 @@ class SponsorshipGift(models.Model):
                 return False
 
             if threshold_rule.yearly_threshold:
-                sponsorship = self.sponsorship_id
-
                 # search other gifts for the same sponsorship.
                 # we will compare the date with the first january of the
                 # current year

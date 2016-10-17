@@ -36,6 +36,8 @@ class recurring_contract(models.Model):
                 'waiting': [('readonly', False)],
                 'mandate': [('readonly', False)]}, ondelete='restrict',
         track_visibility='onchange')
+    project_id = fields.Many2one('compassion.project', 'Project',
+                                 related='child_id.project_id')
     child_name = fields.Char(
         'Sponsored child name', related='child_id.name', readonly=True)
     child_code = fields.Char(

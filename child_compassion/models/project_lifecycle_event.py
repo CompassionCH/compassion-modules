@@ -18,7 +18,7 @@ from openerp.addons.message_center_compassion.mappings \
 class ProjectLifecycle(models.Model):
     _name = 'compassion.project.ile'
     _description = 'Project lifecycle event'
-    _order = 'date desc'
+    _order = 'date desc, id desc'
 
     project_id = fields.Many2one(
         'compassion.project', required=True, ondelete='cascade',

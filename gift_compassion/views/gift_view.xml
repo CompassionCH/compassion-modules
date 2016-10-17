@@ -27,6 +27,7 @@
                     <field name="date_sent" />
                     <field name="date_money_sent" />
                     <field name="state"/>
+                    <field name="project_suspended"/>
                     <field name="gmc_state"/>
                 </tree>
             </field>

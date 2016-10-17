@@ -216,13 +216,13 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    def clean_invoices_paid(self, since_date=None, to_date=None, gifts=False):
+    def clean_invoices_paid(self, since_date, to_date):
         """ Unreconcile paid invoices in the given period, so that they
             can be cleaned with the clean_invoices process.
         """
         # Find all paid invoice lines after the given date
         inv_line_obj = self.env['account.invoice.line']
-        invl_search = self._filter_clean_invoices(since_date, to_date, gifts)
+        invl_search = self._filter_clean_invoices(since_date, to_date)
         inv_lines = inv_line_obj.search(invl_search)
         reconciles = inv_lines.mapped('invoice_id.payment_ids.reconcile_id')
 
@@ -254,7 +254,7 @@ class SponsorshipContract(models.Model):
 
         for contract in self:
             # Add a note in the contract and in the partner.
-            project_code = contract.child_id.project_id.icp_id
+            project_code = contract.project_id.icp_id
             contract.message_post(
                 "The project {0} was suspended and funds are retained."
                 "<br/>Invoices due in the suspension period "
@@ -616,12 +616,8 @@ class SponsorshipContract(models.Model):
 
                 # Check if project allows this kind of payment.
                 payment_allowed = True
-                project = contract.child_id.project_id
-                if invl.product_id.categ_name == GIFT_CATEGORY:
-                    payment_allowed = \
-                        (not project.hold_gifts or
-                         invl.due_date < project.status_date)
-                elif invl.product_id.categ_name == SPONSORSHIP_CATEGORY:
+                project = contract.project_id
+                if invl.product_id.categ_name == SPONSORSHIP_CATEGORY:
                     payment_allowed = not project.hold_cdsp_funds or \
                         invl.due_date < project.status_date
                 if not payment_allowed:
@@ -700,19 +696,18 @@ class SponsorshipContract(models.Model):
         return res
 
     def hold_gifts(self):
-        """ TODO: postpone open gifts, cancel LSV/DD automatic gifts. """
+        """ Hook for holding gifts. """
         pass
 
     def reactivate_gifts(self):
-        """ TODO: open again gifts, reactivate LSV/DD gifts. """
+        """ Hook for reactivating gifts. """
         pass
 
     ##########################################################################
     #                      CLEAN PAID INVOICES METHODS                       #
     ##########################################################################
     @api.multi
-    def _filter_clean_invoices(self, since_date=None, to_date=None,
-                               gifts=False):
+    def _filter_clean_invoices(self, since_date, to_date):
         """ Construct filter domain to be passed on method
         clean_invoices_paid, which will determine which invoice lines will
         be removed from invoices. """
@@ -721,8 +716,6 @@ class SponsorshipContract(models.Model):
         invl_search = [('contract_id', 'in', self.ids), ('state', '=', 'paid'),
                        ('due_date', '>=', since_date),
                        ('product_id.categ_name', '!=', GIFT_CATEGORY)]
-        if gifts:
-            invl_search.pop()
         if to_date:
             invl_search.append(('due_date', '<=', to_date))
 
