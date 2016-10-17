@@ -43,6 +43,10 @@ class ChilpoolSearchMapping(OnrampMapping):
 
     FIELDS_TO_SUBMIT = {k: None for k in CONNECT_MAPPING.iterkeys()}
 
+    def __init__(self, env):
+        super(ChilpoolSearchMapping, self).__init__(env)
+        self.FIELDS_TO_SUBMIT['gender'] = lambda g: g and g[0]
+
     def _process_connect_data(self, connect_data):
         """ Don't send fields not set. """
         temp_data = connect_data.copy()
