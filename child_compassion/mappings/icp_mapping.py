@@ -169,3 +169,9 @@ class ICPMapping(OnrampMapping):
                 'Transitioned': 'TR',
             }
             odoo_data['status'] = status_mapping[status]
+
+        for key in odoo_data.iterkeys():
+            val = odoo_data[key]
+            if isinstance(val, basestring) and val.lower() in (
+                    'null', 'false', 'none', 'other', 'unknown'):
+                odoo_data[key] = False

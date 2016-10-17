@@ -125,6 +125,11 @@ class GenericChildMapping(OnrampMapping):
         gender = odoo_data.get('gender')
         if gender:
             odoo_data['gender'] = gender[0]
+        for key in odoo_data.iterkeys():
+            val = odoo_data[key]
+            if isinstance(val, basestring) and val.lower() in (
+                    'null', 'false', 'none', 'other', 'unknown'):
+                odoo_data[key] = False
 
     def _convert_connect_data(self, connect_name, value_mapping, value,
                               relation_search=None):

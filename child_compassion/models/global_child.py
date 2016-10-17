@@ -45,6 +45,7 @@ class GenericChild(models.AbstractModel):
     birthdate = fields.Date(readonly=True)
     age = fields.Integer(readonly=True)
     is_orphan = fields.Boolean(readonly=True)
+    is_area_hiv_affected = fields.Boolean()
     beneficiary_state = fields.Selection([
         ("Available", "Available"),
         ("Active", "Active"),
@@ -105,7 +106,6 @@ class GlobalChild(models.TransientModel):
     thumbnail_url = fields.Char(compute='_load_image_thumb')
 
     color = fields.Integer(compute='_compute_color')
-    is_area_hiv_affected = fields.Boolean()
     is_special_needs = fields.Boolean()
     field_office_id = fields.Many2one(store=True)
     search_view_id = fields.Many2one(

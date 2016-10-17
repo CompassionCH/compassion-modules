@@ -53,7 +53,9 @@ class GlobalChildSearch(models.TransientModel):
     source_code = fields.Char()
 
     # Pagination
-    skip = fields.Integer(size=4)
+    # By default : skip 1000 children to take less priority
+    # Leave high priority children for bigger countries
+    skip = fields.Integer(size=4, default=1000)
     take = fields.Integer(default=80, size=4)
 
     # Returned children
@@ -86,6 +88,8 @@ class GlobalChildSearch(models.TransientModel):
         self.ensure_one()
         # Remove previous search results
         self.global_child_ids.unlink()
+        # When searching for specifics, we don't want to skip children
+        self.skip = 0
         self._call_search_service(
             'profile_search', 'beneficiaries/availabilitysearch',
             'BeneficiarySearchResponseList')

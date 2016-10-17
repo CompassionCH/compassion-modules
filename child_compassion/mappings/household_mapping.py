@@ -65,6 +65,12 @@ class HouseHoldMapping(OnrampMapping):
                 })
             del odoo_data['revised_value_ids']
 
+        for key in odoo_data.iterkeys():
+            val = odoo_data[key]
+            if isinstance(val, basestring) and val.lower() in (
+                    'null', 'false', 'none', 'other', 'unknown'):
+                odoo_data[key] = False
+
 
 class HouseholdMemberMapping(OnrampMapping):
     ODOO_MODEL = 'compassion.household.member'
