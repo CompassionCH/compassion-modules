@@ -85,7 +85,7 @@ class SponsorshipGift(models.Model):
         ('fund_delivered', _('Fund Delivered')),
     ], default='draft', readonly=True)
     gmc_state = fields.Selection([
-        ('draft', _('Not in the system')),
+        ('draft', _('Not sent')),
         ('sent', _('Sent to GMC')),
         ('In Progress (Active)', _('In Progress')),
         ('Delivered', _('Delivered')),
