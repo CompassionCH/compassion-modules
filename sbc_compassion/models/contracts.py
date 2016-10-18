@@ -87,6 +87,6 @@ class Contracts(models.Model):
         super(Contracts, self).contract_active()
         for contract in self.filtered(
                 lambda c: 'S' in c.type and not
-                c.child_id.project_id.hold_s2b_letters):
+                c.project_id.hold_s2b_letters):
             contract.sponsor_letter_ids.reactivate_letters(
                 'Sponsorship activated')

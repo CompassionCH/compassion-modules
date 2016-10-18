@@ -42,3 +42,15 @@ class SponsorshipContract(models.Model):
         """
         invoice.invoice_line.mapped('gift_id').unlink()
         super(SponsorshipContract, self).invoice_unpaid(invoice)
+
+    def hold_gifts(self):
+        """ Postpone open gifts. """
+        pending_gifts = self.mapped('invoice_line_ids.gift_id').filtered(
+            lambda g: not g.gmc_gift_id)
+        pending_gifts.action_verify()
+
+    def reactivate_gifts(self):
+        """ Put again gifts in OK state. """
+        pending_gifts = self.mapped('invoice_line_ids.gift_id').filtered(
+            lambda g: g.state == 'verify' and g.is_eligible())
+        pending_gifts.action_ok()
