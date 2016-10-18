@@ -98,8 +98,9 @@ class AbstractHold(models.AbstractModel):
 
     @api.onchange('type')
     def onchange_type(self):
-        self.expiration_date = self.get_default_hold_expiration(
-            HoldType.from_string(self.type))
+        default_hold = self.env.context.get('default_expiration_date')
+        self.expiration_date = default_hold or \
+            self.get_default_hold_expiration(HoldType.from_string(self.type))
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
