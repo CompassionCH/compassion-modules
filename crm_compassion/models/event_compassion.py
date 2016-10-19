@@ -109,7 +109,9 @@ class event_compassion(models.Model):
         required=True
     )
     hold_end_date = fields.Date(
-        compute='_compute_hold_end_date', store=True)
+        compute='_compute_hold_end_date', store=True,
+        inverse='_set_hold_date'
+    )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -204,6 +206,9 @@ class event_compassion(models.Model):
                 hold_end_date = fields.Datetime.from_string(
                     event.end_date) + timedelta(days=days_after)
                 event.hold_end_date = fields.Date.to_string(hold_end_date)
+
+    def _set_hold_date(self):
+        pass
 
     ##########################################################################
     #                              ORM METHODS                               #

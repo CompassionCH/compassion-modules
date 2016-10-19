@@ -68,6 +68,7 @@
                                 <field name="start_date"/>
                                 <field name="end_date" />
                                 <field name="hold_start_date" />
+                                <field name="hold_end_date" />
                             </group>
                             <group>
                                 <field name="partner_id" options="{'create': false, 'm2o_dialog': false}"/>
