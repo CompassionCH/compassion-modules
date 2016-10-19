@@ -70,7 +70,6 @@
             <field name="act_from" ref="act_consigned"/>
             <field name="act_to" ref="act_released"/>
             <field name="signal">release</field>
-            <field name="condition">not lifecycle_ids or 'Exit' not in lifecycle_ids[0].type</field>
         </record>
 
         <record model="workflow.transition" id="pull_back">
@@ -84,13 +83,6 @@
             <field name="act_to" ref="act_departed"/>
             <field name="signal">release</field>
             <field name="condition">not hold_id and lifecycle_ids and 'Exit' in lifecycle_ids[0].type</field>
-        </record>
-
-        <record model="workflow.transition" id="prematurate_depart">
-            <field name="act_from" ref="act_consigned"/>
-            <field name="act_to" ref="act_departed"/>
-            <field name="signal">release</field>
-            <field name="condition">lifecycle_ids and 'Exit' in lifecycle_ids[0].type</field>
         </record>
 
         <record model="workflow.transition" id="depart_after_release">

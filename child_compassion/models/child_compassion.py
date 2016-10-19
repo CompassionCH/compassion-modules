@@ -13,8 +13,6 @@ import logging
 
 from openerp import models, fields, api, _
 
-from datetime import datetime, timedelta
-
 from ..wizards.child_description_fr import ChildDescriptionFr
 from ..wizards.child_description_de import ChildDescriptionDe
 from ..wizards.child_description_it import ChildDescriptionIt
@@ -420,8 +418,19 @@ class CompassionChild(models.Model):
             'sponsor_id': False,
             'state': 'R'
         })
+
         other_children = self - sponsored_children
-        other_children._postpone_deletion()
+        other_children.get_lifecycle_event()
+
+        # the children will be deleted when we reach their expiration date
+        for child in other_children:
+            hold = self.env['compassion.hold'].search(
+                [('child_id', '=', child.id)])
+            postpone = fields.Datetime.from_string(hold.expiration_date)
+            session = ConnectorSession.from_env(other_children.env)
+            unlink_children_job.delay(session, self._name, child.ids,
+                                      eta=postpone)
+
         return True
 
     @api.multi
@@ -432,17 +441,11 @@ class CompassionChild(models.Model):
             'sponsor_id': False,
             'state': 'F'
         })
-        other_children = self - sponsored_children
-        other_children._postpone_deletion()
         return True
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    def _postpone_deletion(self):
-        postpone = datetime.now() + timedelta(seconds=10)
-        session = ConnectorSession.from_env(self.env)
-        unlink_children_job.delay(session, self._name, self.ids, eta=postpone)
 
     @api.multi
     def _get_last_pictures(self):
