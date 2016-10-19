@@ -62,6 +62,7 @@ class SponsorshipGift(models.Model):
     name = fields.Char(compute='_compute_name', translate=False)
     gmc_gift_id = fields.Char(readonly=True)
     date_partner_paid = fields.Date(
+        'Gift date',
         compute='_compute_invoice_fields',
         inverse=lambda g: True, store=True
     )
