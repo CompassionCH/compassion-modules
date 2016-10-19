@@ -55,6 +55,10 @@
         'views/demand_planning.xml',
         'views/demand_weekly_revision.xml',
         'views/hold_view.xml',
+        'views/web_calendar_js_loader.xml'
+    ],
+    'qweb': [
+        'static/src/xml/web_fullcalendar_event.xml',
     ],
     'demo': [],
     'installable': True,
