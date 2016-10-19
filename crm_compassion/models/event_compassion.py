@@ -352,7 +352,6 @@ class event_compassion(models.Model):
             if not event.end_date:
                 event.end_date = event.start_date
 
-
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
