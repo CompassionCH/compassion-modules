@@ -52,7 +52,9 @@ class WeeklyDemand(models.Model):
         default=lambda self: self._default_demand_sub())
     number_children_events = fields.Float(
         'Events demand',
-        compute='_compute_demand_events', store=True)
+        compute='_compute_demand_events',
+        inverse='_set_manually',
+        store=True)
     total_demand = fields.Integer(compute='_compute_demand_total', store=True)
 
     # Resupply fields
@@ -66,7 +68,8 @@ class WeeklyDemand(models.Model):
     )
     resupply_sub = fields.Float(
         'SUB resupply',
-        compute='_compute_resupply_sub', store=True
+        compute='_compute_resupply_sub', store=True,
+        inverse='_set_manually'
     )
     average_cancellation = fields.Float(
         'Sponsorship cancellations',
@@ -74,7 +77,8 @@ class WeeklyDemand(models.Model):
     )
     resupply_events = fields.Integer(
         'Events resupply',
-        compute='_compute_demand_events', store=True
+        compute='_compute_demand_events', store=True,
+        inverse='_set_manually',
     )
     total_resupply = fields.Integer(
         compute='_compute_resupply_total', store=True)
@@ -127,6 +131,11 @@ class WeeklyDemand(models.Model):
 
             week.number_children_events = allocate
             week.resupply_events = resupply
+
+    @api.multi
+    def _set_manually(self):
+        """ Allow to manually set demand and resupply computed numbers. """
+        pass
 
     @api.model
     def _default_demand_sub(self):

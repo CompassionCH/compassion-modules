@@ -118,14 +118,13 @@
                     <field name="state"/>
                     <field name="gmc_state"/>
 
-                    <filter string="Not sent" domain="[('state', 'not in', ('fund_due','fund_delivered'))]"/>
+                    <filter name="not_sent" string="Not sent" domain="[('state', '=', 'draft')]"/>
                     <filter string="Sent" domain="[('state', 'in', ('fund_due','fund_delivered'))]"/>
                     <filter string="Delivered" domain="[('gmc_state', '=', 'Delivered')]"/>
                     <group expand="0" string="Group By...">
                         <filter string="Status" domain="[]" context="{'group_by': 'state'}"/>
                         <filter string="Gift Type" domain="[]" context="{'group_by': ['gift_type','sponsorship_gift_type']}"/>
-                        <filter string="Gift Date" domain="[]" context="{'group_by': 'date_partner_paid'}"/>
-                        <filter string="Sent Date" domain="[]" context="{'group_by': 'date_sent'}"/>
+                        <filter name='group_by_date' string="Gift Date" domain="[]" context="{'group_by': 'date_partner_paid'}"/>
                         <filter string="Money Sent Date" domain="[]" context="{'group_by': 'date_money_sent'}"/>
                     </group>
                 </search>
@@ -145,8 +144,9 @@
                             <field name="sponsorship_gift_type"/>
                         </group>
                         <group>
-                            <field name="min_amount"/>
-                            <field name="max_amount"/>
+                            <field name="currency_id"/>
+                            <field name="min_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="max_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                             <field name="gift_frequency"/>
                             <field name="yearly_threshold"/>
                         </group>
@@ -165,6 +165,7 @@
                     <field name="sponsorship_gift_type"/>
                     <field name="min_amount"/>
                     <field name="max_amount"/>
+                    <field name="currency_id"/>
                     <field name="gift_frequency"/>
                     <field name="yearly_threshold"/>
                 </tree>
@@ -182,6 +183,7 @@
                 No gifts.
               </p>
             </field>
+            <field name="context">{'search_default_not_sent': 1, 'search_default_group_by_date': 1}</field>
         </record>
 
         <record id="open_view_gift_threshold_settings" model="ir.actions.act_window">

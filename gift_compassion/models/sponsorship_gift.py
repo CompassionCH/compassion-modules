@@ -62,6 +62,7 @@ class SponsorshipGift(models.Model):
     name = fields.Char(compute='_compute_name', translate=False)
     gmc_gift_id = fields.Char(readonly=True)
     date_partner_paid = fields.Date(
+        'Gift date',
         compute='_compute_invoice_fields',
         inverse=lambda g: True, store=True
     )
@@ -280,7 +281,7 @@ class SponsorshipGift(models.Model):
             ('sponsorship_gift_type', '=', self.sponsorship_gift_type),
         ], limit=1)
         if threshold_rule:
-            current_rate = self.env.ref('base.USD').rate_silent or 1.0
+            current_rate = threshold_rule.currency_id.rate_silent or 1.0
             minimum_amount = threshold_rule.min_amount
             maximum_amount = threshold_rule.max_amount
 

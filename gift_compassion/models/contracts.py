@@ -10,6 +10,7 @@
 ##############################################################################
 
 from openerp import api, models, fields, _
+from openerp.exceptions import Warning
 
 from openerp.addons.sponsorship_compassion.models.product import GIFT_CATEGORY
 
@@ -40,7 +41,17 @@ class SponsorshipContract(models.Model):
         """ Remove pending gifts or prevent unreconcile if gift are already
             sent.
         """
-        invoice.invoice_line.mapped('gift_id').unlink()
+        for invl in invoice.invoice_line.filtered('gift_id'):
+            gift = invl.gift_id
+            if gift.gmc_gift_id:
+                raise Warning(
+                    _("You cannot delete the %s. It is already sent to GMC.")
+                    % gift.name
+                )
+            # Remove the invoice line from the gift
+            gift.write({'invoice_line_ids': [(3, invl.id)]})
+            if not gift.invoice_line_ids:
+                gift.unlink()
         super(SponsorshipContract, self).invoice_unpaid(invoice)
 
     def hold_gifts(self):
