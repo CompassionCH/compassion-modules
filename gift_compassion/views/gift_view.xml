@@ -144,8 +144,9 @@
                             <field name="sponsorship_gift_type"/>
                         </group>
                         <group>
-                            <field name="min_amount"/>
-                            <field name="max_amount"/>
+                            <field name="currency_id"/>
+                            <field name="min_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="max_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                             <field name="gift_frequency"/>
                             <field name="yearly_threshold"/>
                         </group>
@@ -164,6 +165,7 @@
                     <field name="sponsorship_gift_type"/>
                     <field name="min_amount"/>
                     <field name="max_amount"/>
+                    <field name="currency_id"/>
                     <field name="gift_frequency"/>
                     <field name="yearly_threshold"/>
                 </tree>
