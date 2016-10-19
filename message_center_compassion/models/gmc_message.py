@@ -371,16 +371,16 @@ class GmcMessagePool(models.Model):
     def _get_url_endpoint(self):
         """ Gets the endpoint of GMC based on the action. """
         url_endpoint = self.mapped('action_id').connect_service
-        if '{$object' in url_endpoint:
+        if '${object' in url_endpoint:
             url_endpoint = re.sub(
-                '\{(\$object\.)(.+?)\}',
+                '\$\{(object\.)(.+?)\}',
                 lambda match: self._replace_object_string(match),
                 url_endpoint
             )
         return url_endpoint
 
     def _replace_object_string(self, object_match):
-        """ Takes a string like {$object.field} and returns the field. """
+        """ Takes a string like ${object.field} and returns the field. """
         self.ensure_one()
         object = self.env[self.action_id.model].browse(self.object_id)
         field_name = object_match.groups()[1]

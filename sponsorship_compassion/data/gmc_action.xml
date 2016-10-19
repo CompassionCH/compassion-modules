@@ -14,15 +14,28 @@
         <!-- Sponsorship Message Creation -->
         <record id="create_sponsorship" model="gmc.action">
             <field name="direction">out</field>
-            <field name="name">CreateSponsorship</field>
+            <field name="name">UpsertSponsorship</field>
             <field name="mapping_name">CreateSponsorship</field>
             <field name="model">recurring.contract</field>
-            <field name="description">This will send a new Sponsorship to GMC.</field>
+            <field name="description">This will send a Sponsorship to GMC.</field>
             <field name="connect_service">supporters/sponsorships</field>
             <field name="connect_outgoing_wrapper">BeneficiaryCommitmentList</field>
             <field name="connect_answer_wrapper">BeneficiaryCommitmentResponseList</field>
             <field name="success_method">commitment_sent</field>
             <field name="request_type">POST</field>
+        </record>
+        <!-- UpdateSponsorship is not yet used. It could be useful for merging Supporters -->
+        <record id="update_sponsorship" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">UpdateSponsorship</field>
+            <field name="mapping_name">CreateSponsorship</field>
+            <field name="model">recurring.contract</field>
+            <field name="description">This will change the supporter of a Sponsorship to GMC. The supporter accounts will be merged.</field>
+            <field name="connect_service">supporters/${object.correspondant_id.global_id}/sponsorships/${object.global_id}</field>
+            <field name="connect_outgoing_wrapper">CommitmentUpdates</field>
+            <field name="connect_answer_wrapper">BeneficiaryCommitmentResponseList</field>
+            <field name="auto_process">true</field>
+            <field name="request_type">PUT</field>
         </record>
         <!-- Sponsorship Message Cancel -->
         <record id="cancel_sponsorship" model="gmc.action">
