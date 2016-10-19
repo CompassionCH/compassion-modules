@@ -581,7 +581,7 @@ class SponsorshipContract(models.Model):
                 else:
                     contract.signal_workflow('contract_terminated')
 
-            if sponsorship.global_id:
+            if sponsorship.global_id and sponsorship.end_reason != '1':
                 # Cancel Sponsorship Message
                 message_obj = self.env['gmc.message.pool']
                 action_id = self.env.ref(
@@ -594,7 +594,7 @@ class SponsorshipContract(models.Model):
                     'child_id': sponsorship.child_id.id
                 }
                 message_obj.create(message_vals)
-            else:
+            elif not sponsorship.global_id:
                 # Remove CreateSponsorship message.
                 message_obj = self.env['gmc.message.pool']
                 action_id = self.env.ref(
