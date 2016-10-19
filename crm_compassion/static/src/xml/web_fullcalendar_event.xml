@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <tr t-extend="CalendarView.quick_create">
+        <t t-jquery=".form-group" t-operation="after">
+            <div class="form-group">
+                <input name='type' id='type_id' class="form-control" type="hidden"/><!-- That field is invisible and cannot be filled by the user -->
+                <label for='type0' class='control-label'>Type:</label>
+                <select name='type0' class="form-control" onchange="showOptions(this)">
+                    <option value=""></option>
+                    <option value="stand">Stand</option>
+                    <option value="concert">Concert</option>
+                    <option value="presentation">Presentation</option>
+                    <option value="meeting">Meeting</option>
+                    <option value="sport">Sport event</option>
+                    <option value="tour">Sponsor tour</option>
+                </select>
+                <!--this script is called when the select field "type0" is onchange, it will fill the invisible input field "type" -->
+                <script type="text/javascript">
+                    function showOptions(s) {
+                        document.getElementById("type_id").value = s[s.selectedIndex].value;
+                    }
+                </script>
+
+                <label for='number_allocate_children' class='control-label'>Number of children to allocate:</label>
+                <input name='number_allocate_children' class="form-control"/>
+
+                <label for='planned_sponsorships' class='control-label'>Expected sponsorships:</label>
+                <input name='planned_sponsorships' class="form-control"/>
+            </div>
+        </t>
+    </tr>
+</templates>
