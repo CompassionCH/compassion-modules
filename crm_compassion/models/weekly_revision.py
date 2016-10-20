@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, fields
+from openerp import api, models, fields, _
 
 from openerp.addons.child_compassion.models.compassion_hold import HoldType
 
@@ -23,36 +23,40 @@ class WeeklyRevision(models.Model):
     ##########################################################################
     week_start_date = fields.Date(required=True)
     week_end_date = fields.Date(required=True)
+    type = fields.Selection('get_revision_types', required=True)
 
-    # Demand fields
-    web_demand = fields.Integer()
-    ambassador_demand = fields.Integer()
-    sub_demand = fields.Integer()
-    events_demand = fields.Integer()
-    total_demand = fields.Integer()
+    demand = fields.Float('Demand prevision')
+    resupply = fields.Float('Resupply prevision')
+    holds = fields.Integer('Holds requested', readonly=True)
+    sponsorships = fields.Integer('Registered sponsorships', readonly=True)
+    effective_resupply = fields.Integer(
+        compute='_compute_effective_resupply', store=True
+    )
 
-    # Resupply fields
-    web_resupply = fields.Float()
-    ambassador_resupply = fields.Float()
-    cancellation = fields.Float()
-    sub_resupply = fields.Integer()
-    events_resupply = fields.Integer()
-    total_resupply = fields.Integer()
+    _sql_constraints = [
+        ('unique_week_type', "unique(week_start_date,type)",
+         "Weekly revision already exist!")
+    ]
 
-    # Results (how many sponsorships we made that week) vs
-    # (how many holds we requested that week)
-    web_sponsorships = fields.Integer(readonly=True)
-    ambassador_sponsorships = fields.Integer(readonly=True)
-    sub_sponsorships = fields.Integer(readonly=True)
-    events_sponsorships = fields.Integer(readonly=True)
-    cancellation_sponsorships = fields.Integer(readonly=True)
-    total_sponsorships = fields.Integer(readonly=True)
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+    @api.model
+    def get_revision_types(self):
+        return [
+            ('web', _('Web')),
+            ('ambassador', _('Ambassador')),
+            ('events', _('Events')),
+            ('sub', _('Sub')),
+            ('cancel', _('Cancellation')),
+        ]
 
-    web_holds = fields.Integer(readonly=True)
-    ambassador_holds = fields.Integer(readonly=True)
-    sub_holds = fields.Integer(readonly=True)
-    events_holds = fields.Integer(readonly=True)
-    total_holds = fields.Integer(readonly=True)
+    @api.depends('sponsorships', 'holds')
+    @api.multi
+    def _compute_effective_resupply(self):
+        for revision in self:
+            revision.effective_resupply = revision.holds - \
+                                          revision.sponsorships
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -61,7 +65,10 @@ class WeeklyRevision(models.Model):
     def create(self, vals):
         """ Compute all results. """
         start_date = vals['week_start_date']
-        revision = self.search([('week_start_date', '=', start_date)])
+        revision = self.search([
+            ('week_start_date', '=', start_date),
+            ('type', '=', vals['type'])
+        ], limit=1)
         if revision:
             return revision
 
@@ -74,16 +81,6 @@ class WeeklyRevision(models.Model):
             ('create_date', '<=', end_date),
             ('type', '=', HoldType.CONSIGNMENT_HOLD.value)
         ])
-        web_holds = len(holds.filtered(lambda h: h.channel == 'web'))
-        ambassador_holds = len(holds.filtered(
-            lambda h: h.channel == 'ambassador'))
-        sub_holds = self.env['compassion.hold'].search_count([
-            ('create_date', '>=', start_date),
-            ('create_date', '<=', end_date),
-            ('type', '=', HoldType.SUB_CHILD_HOLD.value)
-        ])
-        event_holds = len(holds.filtered(lambda h: h.channel == 'event'))
-
         # Sponsorships created in the period
         sponsorships = self.env['recurring.contract'].search([
             ('type', '=', 'S'),
@@ -91,35 +88,41 @@ class WeeklyRevision(models.Model):
             ('start_date', '<=', end_date),
             ('state', '!=', 'cancelled'),
         ])
-        web_sponsorships = len(sponsorships.filtered(
-            lambda s: s.channel == 'website' and
-            s.origin_id.type not in ('partner', 'event', 'sub')))
-        ambassador_sponsorships = len(sponsorships.filtered(
-            lambda s: s.origin_id.type == 'partner' and
-            s.origin_id.partner_id))
-        sub_sponsorships = len(sponsorships.filtered(
-            lambda s: s.origin_id.type == 'sub'))
-        event_sponsorships = len(sponsorships.filtered(
-            lambda s: s.origin_id.type == 'event'))
-        cancel_sponsorships = self.env['recurring.contract'].search_count([
-            ('type', '=', 'S'),
-            ('end_date', '>=', start_date),
-            ('end_date', '<=', end_date),
-            ('state', '=', 'terminated'),
-            ('end_reason', '!=', '1'),
-        ])
+        if revision.type == 'web':
+            nb_holds = len(holds.filtered(lambda h: h.channel == 'web'))
+            nb_sponsorships = len(sponsorships.filtered(
+                lambda s: s.channel == 'website' and
+                          s.origin_id.type not in ('partner', 'event', 'sub')))
+        elif revision.type == 'ambassador':
+            nb_holds = len(holds.filtered(
+                lambda h: h.channel == 'ambassador'))
+            nb_sponsorships = len(sponsorships.filtered(
+                lambda s: s.origin_id.type == 'partner' and
+                          s.origin_id.partner_id))
+        elif revision.type == 'events':
+            nb_holds = len(holds.filtered(lambda h: h.channel == 'event'))
+            nb_sponsorships = len(sponsorships.filtered(
+                lambda s: s.origin_id.type == 'event'))
+        elif revision.type == 'sub':
+            nb_holds = self.env['compassion.hold'].search_count([
+                ('create_date', '>=', start_date),
+                ('create_date', '<=', end_date),
+                ('type', '=', HoldType.SUB_CHILD_HOLD.value)
+            ])
+            nb_sponsorships = len(sponsorships.filtered(
+                lambda s: s.origin_id.type == 'sub'))
+        elif revision.type == 'cancel':
+            nb_holds = 0
+            nb_sponsorships = self.env['recurring.contract'].search_count([
+                ('type', '=', 'S'),
+                ('end_date', '>=', start_date),
+                ('end_date', '<=', end_date),
+                ('state', '=', 'terminated'),
+                ('end_reason', '!=', '1'),
+            ])
 
         revision.write({
-            'web_holds': web_holds,
-            'ambassador_holds': ambassador_holds,
-            'sub_holds': sub_holds,
-            'events_holds': event_holds,
-            'total_holds': len(holds),
-            'web_sponsorships': web_sponsorships,
-            'ambassador_sponsorships': ambassador_sponsorships,
-            'sub_sponsorships': sub_sponsorships,
-            'events_sponsorships': event_sponsorships,
-            'cancellation_sponsorships': cancel_sponsorships,
-            'total_sponsorships': len(sponsorships),
+            'holds': nb_holds,
+            'sponsorships': nb_sponsorships,
         })
         return revision

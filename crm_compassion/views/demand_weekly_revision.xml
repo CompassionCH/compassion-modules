@@ -9,40 +9,19 @@
                 <form string="Demand Weekly Revision">
                     <sheet>
                         <group>
+                            <field name="type"/>
                             <field name="week_start_date"/>
                             <field name="week_end_date"/>
                         </group>
                         <group>
-                            <group string="Demand Prevision">
-                                <field name="web_demand" string="Web"/>
-                                <field name="sub_demand" string="SUB"/>
-                                <field name="ambassador_demand" string="Ambassadors"/>
-                                <field name="events_demand" string="Events"/>
-                                <field name="total_demand"/>
+                            <group string="Previsions">
+                                <field name="demand"/>
+                                <field name="resupply"/>
                             </group>
-                            <group string="Resupply Prevision">
-                                <field name="web_resupply" string="Web"/>
-                                <field name="ambassador_resupply" string="Ambassadors"/>
-                                <field name="sub_resupply" string="SUB"/>
-                                <field name="cancellation" string="Cancellations"/>
-                                <field name="events_resupply" string="Events"/>
-                                <field name="total_resupply" string="Total"/>
-                            </group>
-                            <group string="Holds Requested">
-                                <field name="web_holds" string="Web"/>
-                                <field name="ambassador_holds" string="Ambassadors"/>
-                                <field name="sub_holds" string="SUB"/>
-                                <field name="events_holds" string="Events"/>
-                                <field name="total_holds" string="Total"/>
-                            </group>
-                            <group string="Sponsorship Results">
-                                <field name="web_sponsorships" string="Web"/>
-                                <field name="ambassador_sponsorships" string="Ambassadors"/>
-                                <field name="sub_sponsorships" string="SUB"/>
-                                <field name="events_sponsorships" string="Events"/>
-                                <field name="total_sponsorships" string="Total"/>
-                                <separator colspan="2"/>
-                                <field name="cancellation_sponsorships" string="Cancellations"/>
+                            <group string="Results">
+                                <field name="holds"/>
+                                <field name="sponsorships"/>
+                                <field name="effective_resupply"/>
                             </group>
                         </group>
                     </sheet>
@@ -58,11 +37,26 @@
                 <tree string="Weekly Revision">
                     <field name="week_start_date"/>
                     <field name="week_end_date"/>
-                    <field name="total_demand"/>
-                    <field name="total_resupply"/>
-                    <field name="total_holds"/>
-                    <field name="total_sponsorships"/>
+                    <field name="type"/>
+                    <field name="demand" sum="Total demand"/>
+                    <field name="resupply" sum="Total resupply"/>
+                    <field name="holds" sum="Total holds"/>
+                    <field name="effective_resupply" sum="Total eff. resupply"/>
                 </tree>
+            </field>
+        </record>
+
+        <record id="view_revision_filter" model="ir.ui.view">
+            <field name="name">demand.weekly.revision.select</field>
+            <field name="model">demand.weekly.revision</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="type"/>
+                    <group expand="0" string="Group By...">
+                        <filter name="date" string="Date" domain="[]" context="{'group_by':'week_start_date'}"/>
+                        <filter name="type" string="Type" domain="[]" context="{'group_by':'type'}"/>
+                    </group>
+                </search>
             </field>
         </record>
 
@@ -71,28 +65,13 @@
             <field name="model">demand.weekly.revision</field>
             <field name="arch" type="xml">
                 <graph type="pivot">
-                    <field name="week_start_date"/>
-                    <field name="web_demand" type="measure"/>
-                    <field name="web_resupply" type="measure"/>
-                    <field name="web_holds" type="measure"/>
-                    <field name="web_sponsorships" type="measure"/>
-
-                    <field name="ambassador_demand" type="measure"/>
-                    <field name="ambassador_resupply" type="measure"/>
-                    <field name="ambassador_holds" type="measure"/>
-                    <field name="ambassador_sponsorships" type="measure"/>
-
-                    <field name="events_demand" type="measure"/>
-                    <field name="events_resupply" type="measure"/>
-                    <field name="events_holds" type="measure"/>
-                    <field name="events_sponsorships" type="measure"/>
-
-                    <field name="total_demand" type="measure"/>
-                    <field name="total_resupply" type="measure"/>
-                    <field name="total_holds" type="measure"/>
-                    <field name="total_sponsorships" type="measure"/>
-
-                    <field name="cancellation_sponsorships" type="measure"/>
+                    <field name="type"/>
+                    <field name="week_start_date" type="col"/>
+                    <field name="demand" type="measure"/>
+                    <field name="resupply" type="measure"/>
+                    <field name="holds" type="measure"/>
+                    <field name="sponsorships" type="measure"/>
+                    <field name="effective_resupply" type="measure"/>
                 </graph>
             </field>
         </record>
@@ -103,6 +82,7 @@
             <field name="res_model">demand.weekly.revision</field>
             <field name="view_type">form</field>
             <field name="view_mode">graph,tree,form</field>
+            <field name="context">{'search_default_date': 1, 'search_default_type': 1}</field>
         </record>
 
         <menuitem id="menu_demand_revision" name="Demand Weekly Revision" parent="base.menu_sales" action="open_view_demand_revision"/>

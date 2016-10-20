@@ -132,27 +132,35 @@ class DemandPlanning(models.Model):
             'weekly_demand_ids': self._get_default_weekly_demands()
         })
 
-        last_week_prevision = self.env['demand.weekly.demand'].search([
+        last_week_demand = self.env['demand.weekly.demand'].search([
             ('week_end_date', '<', today),
             ('demand_id.state', '=', 'sent')
         ], order='week_end_date desc, id desc', limit=1)
-        if last_week_prevision:
-            self.env['demand.weekly.revision'].create({
-                'week_start_date': last_week_prevision.week_start_date,
-                'week_end_date': last_week_prevision.week_end_date,
-                'web_demand': last_week_prevision.number_children_website,
-                'ambassador_demand':
-                    last_week_prevision.number_children_ambassador,
-                'sub_demand': last_week_prevision.number_sub_sponsorship,
-                'events_demand': last_week_prevision.number_children_events,
-                'total_demand': last_week_prevision.total_demand,
-                'web_resupply': last_week_prevision.average_unsponsored_web,
-                'ambassador_resupply':
-                    last_week_prevision.average_unsponsored_ambassador,
-                'sub_resupply': last_week_prevision.resupply_sub,
-                'cancellation': last_week_prevision.average_cancellation,
-                'events_resupply': last_week_prevision.resupply_events,
-                'total_resupply': last_week_prevision.total_resupply,
-            })
+        if last_week_demand:
+            revision_obj = self.env['demand.weekly.revision']
+            for type_tuple in revision_obj.get_revision_types():
+                type = type_tuple[0]
+                if type == 'web':
+                    demand = last_week_demand.number_children_website
+                    resupply = last_week_demand.average_unsponsored_web
+                elif type == 'ambassador':
+                    demand = last_week_demand.number_children_ambassador
+                    resupply = last_week_demand.average_unsponsored_ambassador
+                elif type == 'events':
+                    demand = last_week_demand.number_children_events
+                    resupply = last_week_demand.resupply_events
+                elif type == 'sub':
+                    demand = last_week_demand.number_sub_sponsorship
+                    resupply = last_week_demand.resupply_sub
+                elif type == 'cancel':
+                    demand = 0
+                    resupply = last_week_demand.average_cancellation
+                revision_obj.create({
+                    'week_start_date': last_week_demand.week_start_date,
+                    'week_end_date': last_week_demand.week_end_date,
+                    'type': type,
+                    'demand': demand,
+                    'resupply': resupply,
+                })
 
         return True
