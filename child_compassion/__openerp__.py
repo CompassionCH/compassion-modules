@@ -48,7 +48,7 @@
         'views/global_childpool_view.xml',
         'views/project_compassion_view.xml',
         'views/gmc_message_view.xml',
-        'views/project_reservation_view.xml',
+        'views/compassion_reservation_view.xml',
         'views/field_office_disaster_alert_view.xml',
         'views/res_config_view.xml',
         'workflow/child_workflow.xml',

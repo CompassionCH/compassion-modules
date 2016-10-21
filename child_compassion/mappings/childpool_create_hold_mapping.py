@@ -85,7 +85,7 @@ class ReservationToHoldMapping(OnrampMapping):
         'HoldExpirationDate': 'expiration_date',
         'PrimaryOwner': 'primary_owner.name',
         'ReservationHoldType': 'type',
-        'ReservationID': ('reservation_id.reservation_id', 'icp.reservation'),
+        'ReservationID': ('reservation_id.reservation_id', 'compassion.reservation'),
         'SecondaryOwner': 'secondary_owner',
         # Not used in Odoo
         'BeneficiaryOrder_ID': None,

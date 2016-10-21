@@ -68,39 +68,51 @@
             <field name="direction">out</field>
             <field name="name">CreateReservation</field>
             <field name="mapping_name">create_reservation</field>
-            <field name="model">icp.reservation</field>
+            <field name="model">compassion.reservation</field>
             <field name="description">This will send a new Reservation to GMC.</field>
             <field name="connect_service">churchpartners/reservations</field>
             <field name="connect_outgoing_wrapper">GlobalPartnerReservationRequestList</field>
             <field name="connect_answer_wrapper">GlobalPartnerReservationResponseList</field>
             <field name="request_type">POST</field>
-            <field name="auto_process">1</field>
+            <field name="batch_send">1</field>
         </record>
         <!-- Reservation Message Creation for Beneficiary -->
         <record id="beneficiary_reservation" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">CreateBeneficiaryReservation</field>
             <field name="mapping_name">beneficiary_reservation</field>
-            <field name="model">icp.reservation</field>
+            <field name="model">compassion.reservation</field>
             <field name="description">This will send a new Beneficiary Reservation to GMC.</field>
-            <field name="connect_service">churchpartners/reservations</field>
+            <field name="connect_service">beneficiaries/reservations</field>
             <field name="connect_outgoing_wrapper">GlobalPartnerReservationRequestList</field>
             <field name="connect_answer_wrapper">GlobalPartnerReservationResponseList</field>
             <field name="request_type">POST</field>
-            <field name="auto_process">1</field>
+            <field name="batch_send">1</field>
         </record>
         <!-- Reservation Message Release -->
         <record id="cancel_reservation" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">CancelReservation</field>
             <field name="mapping_name">cancel_reservation</field>
-            <field name="model">icp.reservation</field>
+            <field name="model">compassion.reservation</field>
             <field name="description">This will send a reservation cancelling request to GMC.</field>
             <field name="connect_service">churchpartners/reservations/cancellations</field>
             <field name="connect_outgoing_wrapper">ReservationCancelRequestList</field>
             <field name="connect_answer_wrapper">ReservationCancelResponseList</field>
             <field name="request_type">POST</field>
-            <field name="auto_process">1</field>
+            <field name="batch_send">1</field>
+        </record>
+        <record id="cancel_reservation_child" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">CancelBeneficiaryReservation</field>
+            <field name="mapping_name">cancel_reservation</field>
+            <field name="model">compassion.reservation</field>
+            <field name="description">This will send a Beneficiary reservation cancelling request to GMC.</field>
+            <field name="connect_service">beneficiaries/reservations/cancellations</field>
+            <field name="connect_outgoing_wrapper">ReservationCancelRequestList</field>
+            <field name="connect_answer_wrapper">ReservationCancelResponseList</field>
+            <field name="request_type">POST</field>
+            <field name="batch_send">1</field>
         </record>
         <!-- Beneficiary Major Revision -->
         <record id="major_revision" model="gmc.action">

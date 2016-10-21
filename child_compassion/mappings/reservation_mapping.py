@@ -13,20 +13,20 @@ from openerp.addons.message_center_compassion.mappings.base_mapping import \
 from datetime import datetime
 
 
-class ProjetReservationCreateMapping(OnrampMapping):
+class ReservationCreateMapping(OnrampMapping):
     """
     Project reservation mapping for the create operation
     """
-    ODOO_MODEL = 'icp.reservation'
+    ODOO_MODEL = 'compassion.reservation'
     MAPPING_NAME = "create_reservation"
 
     CONNECT_MAPPING = {
-        'Beneficiary_GlobalID': 'child_id.global_id',
+        'Beneficiary_GlobalID': 'child_global_id',
         'Channel_Name': 'channel',
         'ICP_ID': ('icp_id.icp_id', 'compassion.project'),
         'CampaignEventIdentifier': 'campaign_event_identifier',
         'ExpirationDate': 'reservation_expiration_date',
-        'HoldExpirationDate': 'hold_expiration_date',
+        'HoldExpirationDate': 'expiration_date',
         'HoldYieldRate': 'yield_rate',
         'ID': 'reservation_id',
         'IsReservationAutoApproved': 'is_reservation_auto_approved',
@@ -68,14 +68,8 @@ class ProjetReservationCreateMapping(OnrampMapping):
             connect_data['HoldExpirationDate'] = expirationDate.strftime(
                 "%Y-%m-%dT%H:%M:%SZ")
 
-        """ Don't send fields not set. """
-        temp_data = connect_data.copy()
-        for key, value in temp_data.iteritems():
-            if not value:
-                del connect_data[key]
 
-
-class ProjetReservationCancelMapping(ProjetReservationCreateMapping):
+class ProjetReservationCancelMapping(ReservationCreateMapping):
     """
         Project reservation mapping for the cancel operation
     """
@@ -87,7 +81,7 @@ class ProjetReservationCancelMapping(ProjetReservationCreateMapping):
     }
 
 
-class BeneficiaryReservationMapping(ProjetReservationCreateMapping):
+class BeneficiaryReservationMapping(ReservationCreateMapping):
     """
         Project reservation mapping for the beneficiary reservation operation
     """

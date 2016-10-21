@@ -413,12 +413,12 @@ class CompassionChild(models.Model):
     @api.multi
     def child_released(self):
         """ Is called when a child is released to the global childpool. """
-        sponsored_children = self.filtered('has_been_sponsored')
-        sponsored_children.write({
+        self.write({
             'sponsor_id': False,
             'state': 'R'
         })
 
+        sponsored_children = self.filtered('has_been_sponsored')
         other_children = self - sponsored_children
         other_children.get_lifecycle_event()
 

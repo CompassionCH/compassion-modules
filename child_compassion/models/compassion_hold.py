@@ -139,7 +139,7 @@ class CompassionHold(models.Model):
         ('expired', _("Expired"))],
         readonly=True, default='draft', track_visibility='onchange')
     reinstatement_reason = fields.Char(readonly=True)
-    reservation_id = fields.Many2one('icp.reservation', 'Reservation')
+    reservation_id = fields.Many2one('compassion.reservation', 'Reservation')
 
     # Track field changes
     ambassador = fields.Many2one(track_visibility='onchange')
