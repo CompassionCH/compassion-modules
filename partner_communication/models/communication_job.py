@@ -165,8 +165,6 @@ class CommunicationJob(models.Model):
                     lang=partner.lang).create_emails(
                     self.email_template_id, [self.object_id], email_vals)
                 email.send_sendgrid()
-                message = email.mail_message_id
-                partner.message_post(message.body, message.subject)
                 self.email_id = email
                 return True
 
