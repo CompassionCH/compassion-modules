@@ -26,9 +26,9 @@
                                 <field name="channel"/>
                                 <field name="source_code"/>
                                 <field name="comments"/>
-                                <field name="expiration_date"/>
                             </group>
                             <group>
+                                <field name="expiration_date"/>
                                 <field name="ambassador"/>
                                 <field name="yield_rate"/>
                                 <field name="no_money_yield_rate"/>

@@ -26,7 +26,7 @@ from . import project_need
 from . import global_partner
 from . import compassion_hold
 from . import gmc_message
-from . import project_reservation
+from . import compassion_reservation
 from . import major_revision
 from . import field_office_disaster
 from . import child_note
