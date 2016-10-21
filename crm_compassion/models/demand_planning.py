@@ -21,9 +21,9 @@ class DemandPlanning(models.Model):
 
     date = fields.Date(
         default=lambda self: fields.Date.today(), readonly=True,
-        states={'draft': [('readonly', False)]}
+        states={'draft': [('readonly', False)]}, copy=False
     )
-    sent_date = fields.Datetime(readonly=True)
+    sent_date = fields.Datetime(readonly=True, copy=False)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('sent', 'Sent'),
@@ -32,7 +32,8 @@ class DemandPlanning(models.Model):
     weekly_demand_ids = fields.One2many(
         'demand.weekly.demand', 'demand_id', string='Weekly Demands',
         default=lambda self: self._get_default_weekly_demands(),
-        readonly=True, states={'draft': [('readonly', False)]}
+        readonly=True, states={'draft': [('readonly', False)]},
+        copy=True
     )
 
     ##########################################################################
