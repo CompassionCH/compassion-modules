@@ -10,6 +10,7 @@
             <field name="connect_outgoing_wrapper">SupporterProfile</field>
             <field name="connect_answer_wrapper">SupporterProfileResponse</field>
             <field name="request_type">POST</field>
+            <field name="batch_send">1</field>
         </record>
         <!-- Sponsorship Message Creation -->
         <record id="create_sponsorship" model="gmc.action">
@@ -23,6 +24,7 @@
             <field name="connect_answer_wrapper">BeneficiaryCommitmentResponseList</field>
             <field name="success_method">commitment_sent</field>
             <field name="request_type">POST</field>
+            <field name="batch_send">1</field>
         </record>
         <!-- UpdateSponsorship is not yet used. It could be useful for merging Supporters -->
         <record id="update_sponsorship" model="gmc.action">
@@ -49,6 +51,7 @@
             <field name="connect_answer_wrapper">BeneficiaryCommitmentCancellationListResponse</field>
             <field name="success_method">cancel_sent</field>
             <field name="request_type">POST</field>
+            <field name="batch_send">1</field>
         </record>
     </data>
 </openerp>
