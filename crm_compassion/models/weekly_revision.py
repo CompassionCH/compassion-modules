@@ -92,13 +92,13 @@ class WeeklyRevision(models.Model):
             nb_holds = len(holds.filtered(lambda h: h.channel == 'web'))
             nb_sponsorships = len(sponsorships.filtered(
                 lambda s: s.channel == 'website' and
-                          s.origin_id.type not in ('partner', 'event', 'sub')))
+                s.origin_id.type not in ('partner', 'event', 'sub')))
         elif revision.type == 'ambassador':
             nb_holds = len(holds.filtered(
                 lambda h: h.channel == 'ambassador'))
             nb_sponsorships = len(sponsorships.filtered(
                 lambda s: s.origin_id.type == 'partner' and
-                          s.origin_id.partner_id))
+                s.origin_id.partner_id))
         elif revision.type == 'events':
             nb_holds = len(holds.filtered(lambda h: h.channel == 'event'))
             nb_sponsorships = len(sponsorships.filtered(
