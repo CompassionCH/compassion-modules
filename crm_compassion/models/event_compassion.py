@@ -104,10 +104,7 @@ class event_compassion(models.Model):
     parent_copy = fields.Many2one(
         'account.analytic.account', related='parent_id')
     calendar_event_id = fields.Many2one('calendar.event')
-    hold_start_date = fields.Date(
-        default=lambda self: self._default_hold_start_date(),
-        required=True
-    )
+    hold_start_date = fields.Date(required=True)
     hold_end_date = fields.Date(
         compute='_compute_hold_end_date', store=True,
         inverse='_set_hold_date'
@@ -116,13 +113,6 @@ class event_compassion(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.model
-    def _default_hold_start_date(self):
-        days_allocate_before_event = self.env[
-            'demand.planning.settings'].get_param('days_allocate_before_event')
-        return fields.Date.to_string(datetime.today() - timedelta(
-            days=days_allocate_before_event))
-
     @api.multi
     def update_analytics(self):
         self._set_analytic_lines()
@@ -350,8 +340,17 @@ class event_compassion(models.Model):
 
     @api.onchange('start_date')
     def onchange_start_date(self):
-        for event in self.filtered(lambda e: e.start_date and not e.end_date):
-            event.end_date = event.start_date
+        """ Update end_date and hold_start_date as soon as start_date is
+        changed """
+        days_allocate_before_event = self.env[
+            'demand.planning.settings'].get_param(
+            'days_allocate_before_event')
+        dt = timedelta(days=days_allocate_before_event)
+        for event in self.filtered('start_date'):
+            event.hold_start_date = fields.Date.to_string(
+                fields.Datetime.from_string(event.start_date) - dt)
+            if not event.end_date:
+                event.end_date = event.start_date
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

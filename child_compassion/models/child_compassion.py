@@ -12,6 +12,7 @@
 import logging
 
 from openerp import models, fields, api, _
+from datetime import datetime, timedelta
 
 from ..wizards.child_description_fr import ChildDescriptionFr
 from ..wizards.child_description_de import ChildDescriptionDe
@@ -425,8 +426,12 @@ class CompassionChild(models.Model):
         # the children will be deleted when we reach their expiration date
         for child in other_children:
             hold = self.env['compassion.hold'].search(
-                [('child_id', '=', child.id)])
-            postpone = fields.Datetime.from_string(hold.expiration_date)
+                [('child_id', '=', child.id)],
+                order='expiration_date desc', limit=1)
+            if hold:
+                postpone = fields.Datetime.from_string(hold.expiration_date)
+            else:
+                postpone = datetime.now() + timedelta(weeks=1)
             session = ConnectorSession.from_env(other_children.env)
             unlink_children_job.delay(session, self._name, child.ids,
                                       eta=postpone)
