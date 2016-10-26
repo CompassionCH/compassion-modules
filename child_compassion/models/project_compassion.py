@@ -352,8 +352,7 @@ class CompassionProject(models.Model):
 
     @api.model
     def _get_state(self):
-        return [
-            ('A', _('Active')),
+        return [('A', _('Active')),
             ('P', _('Phase-out')),
             ('T', _('Terminated')),
             ('TR', _('Transitioned')),
