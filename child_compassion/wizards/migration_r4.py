@@ -23,11 +23,11 @@ class MigrationR4(models.TransientModel):
 
     @api.model
     def perform_migration(self):
-        # Only execute migration for 8.0.1.4.1 -> 8.0.3.0
+        # Only execute migration for 8.0.1 -> 8.0.3.0
         child_compassion_module = self.env['ir.module.module'].search([
             ('name', '=', 'child_compassion')
         ])
-        if child_compassion_module.latest_version == '8.0.1.4.1':
+        if child_compassion_module.latest_version == '8.0.1':
             self._perform_migration()
         return True
 
@@ -36,13 +36,18 @@ class MigrationR4(models.TransientModel):
         Finds available children and try to put them on hold
         """
         logger.info("MIGRATION : Putting hold on available children")
-        hold = self.env['compassion.hold'].create({
-            'name': 'Pre-R4 Allocated children hold',
+        hold_vals = {
             'type': 'Consignment Hold',
-            'channel': 'Hold for allocated children',
-            'source_code': 'Please update hold_id once known'
-        })
-        available_children = self.env['compassion.child'].search([(
-            'state', 'in', ['N', 'D', 'I']
-        )])
-        available_children.write({'hold_id': hold.id})
+            'comments': 'Pre-R4 Allocated children hold',
+            'source_code': 'Please update hold_id once known',
+            'expiration_date': '2017-03-01',
+        }
+        available_children = self.env['compassion.child'].search([
+            ('state', 'in', ['N', 'I']),
+            ('global_id', '!=', False)
+        ])
+        for child in available_children:
+            hold_vals['child_id'] = child.id
+            hold_vals['hold_id'] = child.local_id
+            hold_id = self.env['compassion.hold'].create(hold_vals).id
+            available_children.write({'hold_id': hold_id})

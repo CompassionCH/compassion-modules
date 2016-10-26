@@ -31,3 +31,9 @@ UPDATE compassion_child SET state = 'R' WHERE state = 'X';
 ALTER TABLE compassion_child ADD COLUMN transfer_country_backup INTEGER;
 UPDATE compassion_child SET transfer_country_backup = transfer_country_id;
     """)
+
+    # Update invalid workflow activity
+    cr.execute("""
+    UPDATE wkf_activity set action = 'child_consigned()'
+      WHERE action = 'child_available()'
+    """)
