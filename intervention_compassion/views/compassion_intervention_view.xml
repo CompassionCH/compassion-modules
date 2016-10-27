@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Intervention Form View -->
+        <record id="view_compassion_intervention_form" model="ir.ui.view">
+            <field name="name">compassion.intervention.form</field>
+            <field name="model">compassion.intervention</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <div class="oe_right oe_button_box" name="buttons">
+                            <!--<button name="get_infos" string="get infos" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>-->
+                        </div>
+                        <group>
+                            <group>
+                                <field name="intervention_id"/>
+                                <field name="field_office_id"/>
+                                <field name="icp_id" domain="[('field_office_id', '=', field_office_id)]"/>
+                                <field name="category_id"/>
+                                <field name="subcategory_id" domain="[('category_ids', '=', category_id)]"/>
+                                <field name="type"/>
+                            </group>
+                            <group>
+                                <field name="funding_status"/>
+                                <field name="intervention_status"/>
+                                <field name="funding_global_partner_ids" widget="many2many_tags"/>
+                                <field name="service_level"/>
+                                <field name="cancel_reason"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Schedule">
+                                <group>
+                                    <group string="Start">
+                                        <field name="is_fo_priority"/>
+                                        <field name="proposed_start_date"/>
+                                        <field name="start_no_later_than"/>
+                                        <field name="start_date"/>
+                                        <field name="expected_duration"/>
+                                    </group>
+                                    <group string="End">
+                                        <field name="initial_planned_end_date"/>
+                                        <field name="planned_end_date"/>
+                                        <field name="end_date"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Budget">
+                                <group>
+                                    <group string="Previsions">
+                                        <field name="currency_usd" invisible="1"/>
+                                        <field name="estimated_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                        <field name="estimated_impacted_beneficiaries"/>
+                                        <field name="estimated_local_contribution" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    </group>
+                                    <group string="Actual numbers">
+                                        <field name="total_cost" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                        <field name="local_contribution" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                        <field name="impacted_beneficiaries"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="SLA 3 Negociation">
+                                <group>
+                                    <field name="sla_negotiation_status"/>
+                                    <field name="fo_proposed_sla_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="approved_sla_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="gp_interim_report_request"/>
+                                    <field name="gp_final_report_request"/>
+                                </group>
+                                <group>
+                                    <field name="deliverable_ids"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Actions -->
+        <record id="open_view_intervention_tree" model="ir.actions.act_window">
+            <field name="name">Interventions</field>
+            <field name="res_model">compassion.intervention</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_interventions"
+                  parent="child_compassion.menu_field_section" name="Interventions"
+                  action="open_view_intervention_tree" sequence="6"/>
+    </data>
+</openerp>

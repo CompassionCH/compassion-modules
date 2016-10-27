@@ -177,7 +177,8 @@ class CompassionProject(models.Model):
         string='Sociological activities (12+)', readonly=True
     )
     reservation_id = fields.Many2one(
-        'compassion.reservation', string='Project Reservation', ondelete='cascade'
+        'compassion.reservation', string='Project Reservation',
+        ondelete='cascade'
     )
     activities_for_parents = fields.Char(readonly=True)
 
@@ -352,7 +353,8 @@ class CompassionProject(models.Model):
 
     @api.model
     def _get_state(self):
-        return [('A', _('Active')),
+        return [
+            ('A', _('Active')),
             ('P', _('Phase-out')),
             ('T', _('Terminated')),
             ('TR', _('Transitioned')),

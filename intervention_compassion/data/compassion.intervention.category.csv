@@ -1,0 +1,20 @@
+id,name,type
+category_church_plant_initiatives,Church plant initiatives,Individual CIV
+category_disaster_response,Disaster response,Individual CIV
+category_education,Education,Individual CIV
+category_education_ongoing,Education,Ongoing CIV FY Details
+category_formal_education,Formal education,Individual CIV
+category_hiv_aids,Hiv-aids,Ongoing CIV FY Details
+category_hiv_education,Hiv-education,Individual CIV
+category_hvc,Hvc,Ongoing CIV FY Details
+category_health,Health,Individual CIV
+category_income_generation,Income generation/household security,Individual CIV
+category_infrastructure,Infrastructure,Individual CIV
+category_learning_materials,Learning materials,Individual CIV
+category_medical,Medical,Ongoing CIV FY Details
+category_non_formal_education,Non-formal education,Individual CIV
+category_parent_education,Parent education,Individual CIV
+category_sponsorship_launch,Sponsorship launch,Sponsorship Launch
+category_survival,Survival,Survival FY Details
+category_vector_borne_interventions,Vector borne interventions,Individual CIV
+category_wash,Wash,Individual CIV
