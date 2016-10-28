@@ -25,10 +25,8 @@
                     <field name="amount_us_dollars"/>
                     <field name="instructions"/>
                     <field name="date_sent" />
-                    <field name="date_money_sent" />
                     <field name="state"/>
                     <field name="project_suspended"/>
-                    <field name="gmc_state"/>
                 </tree>
             </field>
         </record>
@@ -39,7 +37,7 @@
             <field name="arch" type="xml">
                 <form string="Gift">
                     <header>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,open,fund_due,fund_delivered"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,In Progress,Delivered"/>
                         <button name="action_verify" type="object" string="To Verify" states="draft,error"/>
                         <button name="action_ok" type="object" string="Gift OK" class="oe_highlight" states="verify"/>
                         <button name="action_cancel" type="object" string="Cancel Gift" help="Will unreconcile the payment" states="draft,verify"/>
@@ -74,11 +72,11 @@
                                 <field name="date_partner_paid"/>
                                 <field name="date_sent"/>
                                 <field name="message_id"/>
+                                <field name="payment_id"/>
                             </group>
-                            <group attrs="{'invisible': [('gmc_state', '=', 'draft')]}">
+                            <group>
                                 <field name="gmc_gift_id"/>
-                                <field name="gmc_state"/>
-                                <field name="undeliverable_reason" attrs="{'invisible': [('gmc_state', '!=', 'Undeliverable')]}"/>
+                                <field name="undeliverable_reason" attrs="{'invisible': [('state', '!=', 'Undeliverable')]}"/>
                                 <field name="exchange_rate"/>
                                 <field name="threshold_alert"/>
                                 <field name="threshold_alert_type" attrs="{'invisible': [('threshold_alert', '=', False)]}"/>
@@ -97,13 +95,13 @@
                                 </group>
                                 <separator/>
                             </page>
-                            <page string="Payment to GMC">
-                                <group>
-                                    <field name="payment_id"/>
-                                </group>
-                            </page>
                         </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"
+                               widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -116,16 +114,15 @@
                     <field name="partner_id"/>
                     <field name="child_id"/>
                     <field name="state"/>
-                    <field name="gmc_state"/>
+                    <field name="state"/>
 
-                    <filter name="not_sent" string="Not sent" domain="[('state', '=', 'draft')]"/>
-                    <filter string="Sent" domain="[('state', 'in', ('fund_due','fund_delivered'))]"/>
-                    <filter string="Delivered" domain="[('gmc_state', '=', 'Delivered')]"/>
+                    <filter name="not_sent" string="Not sent" domain="[('gmc_gift_id', '=', False)]"/>
+                    <filter string="Sent" domain="[('gmc_gift_id', '!=', False)]"/>
+                    <filter string="Delivered" domain="[('state', '=', 'Delivered')]"/>
                     <group expand="0" string="Group By...">
                         <filter string="Status" domain="[]" context="{'group_by': 'state'}"/>
                         <filter string="Gift Type" domain="[]" context="{'group_by': ['gift_type','sponsorship_gift_type']}"/>
                         <filter name='group_by_date' string="Gift Date" domain="[]" context="{'group_by': 'gift_date'}"/>
-                        <filter string="Money Sent Date" domain="[]" context="{'group_by': 'date_money_sent'}"/>
                     </group>
                 </search>
             </field>

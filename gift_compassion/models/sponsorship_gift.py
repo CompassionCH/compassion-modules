@@ -20,7 +20,7 @@ from openerp.addons.message_center_compassion.mappings import base_mapping \
 
 class SponsorshipGift(models.Model):
     _name = 'sponsorship.gift'
-    _inherit = 'translatable.model'
+    _inherit = ['translatable.model', 'mail.thread']
     _description = 'Sponsorship Gift'
     _order = 'gift_date desc,id desc'
 
@@ -41,26 +41,27 @@ class SponsorshipGift(models.Model):
         related='sponsorship_id.project_id', store=True
     )
     project_suspended = fields.Boolean(
-        related='project_id.hold_gifts'
+        related='project_id.hold_gifts', track_visibility='onchange'
     )
     child_id = fields.Many2one(
         'compassion.child', 'Child', related='sponsorship_id.child_id',
         store=True
     )
-    invoice_line_ids = fields.Many2many(
-        'account.invoice.line', string='Invoice lines', readonly=True
+    invoice_line_ids = fields.One2many(
+        'account.invoice.line', 'gift_id', string='Invoice lines',
+        readonly=True
     )
     payment_id = fields.Many2one(
-        'account.move', 'Payment'
+        'account.move', 'GMC Payment', copy=False
     )
     message_id = fields.Many2one(
-        'gmc.message.pool', 'GMC message'
+        'gmc.message.pool', 'GMC message', copy=False
     )
 
     # Gift information
     ##################
     name = fields.Char(compute='_compute_name', translate=False)
-    gmc_gift_id = fields.Char(readonly=True)
+    gmc_gift_id = fields.Char(readonly=True, copy=False)
     gift_date = fields.Date(
         compute='_compute_invoice_fields',
         inverse=lambda g: True, store=True
@@ -72,12 +73,12 @@ class SponsorshipGift(models.Model):
     date_sent = fields.Datetime(related='message_id.process_date')
     amount = fields.Float(
         compute='_compute_invoice_fields',
-        inverse=lambda g: True, store=True)
+        inverse=lambda g: True, store=True, track_visibility='onchange')
     currency_id = fields.Many2one('res.currency', default=lambda s:
                                   s.env.user.company_id.currency_id)
     currency_usd = fields.Many2one('res.currency', compute='_compute_usd')
-    exchange_rate = fields.Float(readonly=True)
-    amount_us_dollars = fields.Float('Amount due', readonly=True)
+    exchange_rate = fields.Float(readonly=True, copy=False)
+    amount_us_dollars = fields.Float('Amount due', readonly=True, copy=False)
     instructions = fields.Char()
     gift_type = fields.Selection('get_gift_type_selection', required=True)
     attribution = fields.Selection('get_gift_attributions', required=True)
@@ -86,40 +87,22 @@ class SponsorshipGift(models.Model):
         ('draft', _('Draft')),
         ('verify', _('Verify')),
         ('open', _('Pending')),
-        ('error', _('Error')),
-        ('fund_due', _('Fund Due')),
-        ('fund_delivered', _('Fund Delivered')),
-    ], default='draft', readonly=True)
-    gmc_state = fields.Selection([
-        ('draft', _('Not sent')),
-        ('sent', _('Sent to GMC')),
-        ('In Progress (Active)', _('In Progress')),
+        ('In Progress', _('In Progress')),
         ('Delivered', _('Delivered')),
         ('Undeliverable', _('Undeliverable')),
-    ], default='draft', readonly=True)
+    ], default='draft', readonly=True, track_visibility='onchange')
     undeliverable_reason = fields.Selection([
         ('Project Transitioned', 'Project Transitioned'),
         ('Beneficiary Exited', 'Beneficiary Exited'),
         ('Beneficiary Exited More Than 90 Days Ago',
          'Beneficiary Exited More Than 90 Days Ago'),
-    ], readonly=True)
+    ], readonly=True, copy=False)
     threshold_alert = fields.Boolean(
         help='Partner exceeded the maximum gift amount allowed',
-        readonly=True)
-    threshold_alert_type = fields.Selection([
-        ("Gift Amount Exceeded Allowed Limit For An Year", _(
-            "Gift Amount Exceeded Allowed Limit For An Year")),
-        ("Gift Amount Greater Than Maximum Limit", _(
-            "Gift Amount Greater Than Maximum Limit")),
-        ("Gift Amount Less Than Minimum Limit", _(
-            "Gift Amount Less Than Minimum Limit")),
-        ("Gift Frequency Exceeded Allowed Limit", _(
-            "Gift Frequency Exceeded Allowed Limit")),
-        ("Gift Not Within 1 Year of Completion Date", _(
-            "Gift Not Within 1 Year of Completion Date")),
-    ])
-    field_office_notes = fields.Char()
-    status_change_date = fields.Datetime()  # date of update message
+        readonly=True, copy=False)
+    threshold_alert_type = fields.Char(readonly=True, copy=False)
+    field_office_notes = fields.Char(readonly=True, copy=False)
+    status_change_date = fields.Datetime(readonly=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -158,7 +141,7 @@ class SponsorshipGift(models.Model):
         for gift in self.filtered('invoice_line_ids'):
             pay_dates = gift.invoice_line_ids.filtered('last_payment').mapped(
                 'last_payment') or [gift.invoice_line_ids[0].last_payment]
-            inv_dates = gift.invoice_line_ids.mapped('invoice_date')
+            inv_dates = gift.invoice_line_ids.mapped('due_date')
             amounts = gift.mapped('invoice_line_ids.price_subtotal')
             gift.date_partner_paid = fields.Date.to_string(max(
                 map(lambda d: fields.Date.from_string(d), pay_dates)))
@@ -196,14 +179,15 @@ class SponsorshipGift(models.Model):
         if gift:
             # Update gift invoice lines
             invl_write = list()
-            for line_write in vals['invoice_line_ids']:
+            for line_write in vals.get('invoice_line_ids', []):
                 if line_write[0] == 6:
                     # Avoid replacing all line_ids => change (6, 0, ids) to
                     # [(4, id), (4, id), ...]
                     invl_write.extend([(4, id) for id in line_write[2]])
                 else:
                     invl_write.append(line_write)
-            gift.write({'invoice_line_ids': invl_write})
+            if invl_write:
+                gift.write({'invoice_line_ids': invl_write})
 
         else:
             # If a gift for the same partner is to verify, put as well
@@ -386,8 +370,7 @@ class SponsorshipGift(models.Model):
         except ValueError:
             exchange_rate = self.env.ref('base.USD').rate_silent or 1.0
         data.update({
-            'state': 'fund_due',
-            'gmc_state': 'sent',
+            'state': 'In Progress',
             'amount_us_dollars': exchange_rate * self.amount
         })
         self.write(data)
@@ -409,14 +392,22 @@ class SponsorshipGift(models.Model):
         # value is a list of dictionary (for each record)
         GiftUpdateRequestList = commkit_data['GiftUpdateRequestList']
         gift_ids = []
+        changed_gifts = self
         # For each dictionary, we update the corresponding record
         for GiftUpdateRequest in GiftUpdateRequestList:
             vals = gift_update_mapping.\
                 get_vals_from_connect(GiftUpdateRequest)
             gift_id = vals['id']
             gift_ids.append(gift_id)
-            gift_record = self.env['sponsorship.gift'].browse([gift_id])
-            gift_record.write(vals)
+            gift = self.env['sponsorship.gift'].browse([gift_id])
+            if vals.get('state', gift.state) != gift.state:
+                changed_gifts += gift
+            gift.write(vals)
+
+        changed_gifts.filtered(lambda g: g.state == 'Delivered').\
+            _gift_delivered()
+        changed_gifts.filtered(lambda g: g.state == 'Undeliverable').\
+            _gift_undeliverable()
 
         return gift_ids
 
@@ -465,8 +456,10 @@ class SponsorshipGift(models.Model):
             self.attribution = 'Sponsorship'
         elif self.gift_type == 'Family Gift':
             self.attribution = 'Sponsored Child Family'
+            self.sponsorship_gift_type = False
         elif self.gift_type == 'Project Gift':
             self.attribution = 'Center Based Programming'
+            self.sponsorship_gift_type = False
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -488,3 +481,72 @@ class SponsorshipGift(models.Model):
                 'state': 'new' if gift.state != 'verify' else 'postponed',
             }
             gift.message_id = message_obj.create(message_vals)
+
+    @api.multi
+    def _gift_delivered(self):
+        """
+        Called when gifts delivered notification is received from GMC.
+        Create a move record in the GMC Gift Due Account.
+        :return:
+        """
+        account_credit = self.env.ref('gift_compassion.comp_2002_2')
+        account_debit = self.env['account.account'].search([
+            ('code', '=', '5003')])
+        journal = self.env['account.journal'].search([
+            ('code', '=', 'OD')])
+        move = self.env['account.move'].create({
+            'journal_id': journal.id,
+            'ref': 'Gift payment to GMC'
+        })
+        today = fields.Date.today()
+        analytic = self.env.ref(
+            'account_analytic_attribution.account_attribution_CD')
+        mvl_obj = self.env['account.move.line']
+        for gift in self:
+            # Create the debit lines from the Gift Account
+            if gift.invoice_line_ids:
+                for invl in gift.invoice_line_ids:
+                    mvl_obj.create({
+                        'move_id': move.id,
+                        'partner_id': invl.partner_id.id,
+                        'account_id': account_debit.id,
+                        'name': invl.name,
+                        'debit': invl.price_subtotal,
+                        'credit': 0.0,
+                        'analytic_account_id': analytic.id,
+                        'date_maturity': today,
+                        'currency_id': gift.currency_usd.id,
+                        'amount_currency': invl.price_subtotal *
+                        gift.exchange_rate
+                    })
+            else:
+                mvl_obj.create({
+                    'move_id': move.id,
+                    'partner_id': gift.partner_id.id,
+                    'account_id': account_debit.id,
+                    'name': gift.name,
+                    'debit': gift.amount,
+                    'analytic_account_id': analytic.id,
+                    'date_maturity': today,
+                    'currency_id': gift.currency_usd.id,
+                    'amount_currency': gift.amount_us_dollars
+                })
+
+            # Create the credit line in the GMC Gift Due Account
+            mvl_obj.create({
+                'move_id': move.id,
+                'partner_id': gift.partner_id.id,
+                'account_id': account_credit.id,
+                'name': gift.name,
+                'date_maturity': today,
+                'currency_id': gift.currency_usd.id,
+                'amount_currency': gift.amount * gift.exchange_rate * -1
+            })
+
+        move.button_validate()
+        self.write({'payment_id': move.id})
+
+    @api.multi
+    def _gift_undeliverable(self):
+        # TODO Implement this
+        pass

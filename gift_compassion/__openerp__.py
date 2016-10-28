@@ -39,6 +39,7 @@
         'data/gmc_action.xml',
         'data/migrate_r4.xml',
         'data/gift_thresholds.xml',
+        'data/account.xml',
         'views/collect_gifts_wizard_view.xml',
         'views/gift_view.xml',
         'views/gmc_message_view.xml',
