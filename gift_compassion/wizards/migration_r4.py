@@ -66,8 +66,6 @@ class MigrationR4(models.TransientModel):
                 attribution = 'Center Based Programming'
 
             state = 'draft'
-            if message.state == 'fondue':
-                state = 'fund_due'
             if message.state == 'pending':
                 state = 'open'
             gift_vals = {
@@ -85,11 +83,11 @@ class MigrationR4(models.TransientModel):
                 'object_id': gift.id,
                 'action_id': action.id
             }
-            if message.state == 'fondue':
-                # Message was sent to GMC, only money has to be sent.
-                self.env.cr.execute(
-                    "UPDATE gmc_message_pool SET state='success'"
-                    "WHERE id = " + str(message.id)
-                )
             message.write(message_vals)
+
+        # Messages were sent to GMC, only money has to be sent.
+        self.env.cr.execute(
+            "UPDATE gmc_message_pool SET state='success'"
+            "WHERE state = 'fondue'"
+        )
         self.env.invalidate_all()

@@ -28,15 +28,15 @@ class CreateGiftMapping(OnrampMapping):
         'GiftSubType': 'sponsorship_gift_type',
         'GiftType': 'attribution',
         'GlobalPartnerNote': 'instructions',
-        'PartnerGiftDate': 'date_partner_paid',
+        'PartnerGiftDate': 'gift_date',
         'PartnerGiftID': 'id',
         'RecipientID': ('child_id.local_id', 'compassion.child'),
         'RecipientType': 'gift_type',
         'Supporter_GlobalID': ('partner_id.global_id', 'res.partner'),
         'ExchangeRatePartnerToGMC': 'exchange_rate',
-        'ThresholdViolatedType': None,
+        'ThresholdViolatedType': 'threshold_alert_type',
         'IsThresholdViolated': 'threshold_alert',
-        'GiftDeliveryStatus': 'gmc_state',
+        'GiftDeliveryStatus': 'state',
         'ID': 'gmc_gift_id',
         'Id': 'gmc_gift_id',
         'StatusChangeDate': 'status_change_date',
@@ -66,3 +66,9 @@ class CreateGiftMapping(OnrampMapping):
     def _process_odoo_data(self, odoo_data):
         if 'id' in odoo_data:
             odoo_data['id'] = int(odoo_data['id'])
+
+    def _process_connect_data(self, connect_data):
+        if connect_data.get('RecipientType') == 'Project Gift':
+            del connect_data['Beneficiary_GlobalID']
+            connect_data['RecipientId'] = connect_data['RecipientID'][:6]
+            del connect_data['RecipientID']

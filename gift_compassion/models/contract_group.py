@@ -52,6 +52,7 @@ class ContractGroup(models.Model):
                 gift = gift_obj.create(gift_vals)
                 gift.write({
                     'date_partner_paid': gift_date,
+                    'gift_date': gift_date,
                     'amount': contract.birthday_invoice
                 })
         else:
