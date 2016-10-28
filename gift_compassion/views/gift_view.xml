@@ -16,7 +16,7 @@
                                              red:state == 'error';
                                              grey:state == 'fund_delivered'">
                     <field name="create_date"/>
-                    <field name="date_partner_paid"/>
+                    <field name="gift_date"/>
                     <field name="partner_id"/>
                     <field name="child_id"/>
                     <field name="gift_type"/>
@@ -70,7 +70,7 @@
                                 <field name="instructions"/>
                             </group>
                             <group>
-                                <field name="create_date"/>
+                                <field name="gift_date"/>
                                 <field name="date_partner_paid"/>
                                 <field name="date_sent"/>
                                 <field name="message_id"/>
@@ -99,7 +99,6 @@
                             </page>
                             <page string="Payment to GMC">
                                 <group>
-                                    <field name="date_money_sent"/>
                                     <field name="payment_id"/>
                                 </group>
                             </page>
@@ -125,7 +124,7 @@
                     <group expand="0" string="Group By...">
                         <filter string="Status" domain="[]" context="{'group_by': 'state'}"/>
                         <filter string="Gift Type" domain="[]" context="{'group_by': ['gift_type','sponsorship_gift_type']}"/>
-                        <filter name='group_by_date' string="Gift Date" domain="[]" context="{'group_by': 'date_partner_paid'}"/>
+                        <filter name='group_by_date' string="Gift Date" domain="[]" context="{'group_by': 'gift_date'}"/>
                         <filter string="Money Sent Date" domain="[]" context="{'group_by': 'date_money_sent'}"/>
                     </group>
                 </search>

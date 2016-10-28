@@ -28,7 +28,7 @@ class CreateGiftMapping(OnrampMapping):
         'GiftSubType': 'sponsorship_gift_type',
         'GiftType': 'attribution',
         'GlobalPartnerNote': 'instructions',
-        'PartnerGiftDate': 'date_partner_paid',
+        'PartnerGiftDate': 'gift_date',
         'PartnerGiftID': 'id',
         'RecipientID': ('child_id.local_id', 'compassion.child'),
         'RecipientType': 'gift_type',

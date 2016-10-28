@@ -22,7 +22,7 @@ class SponsorshipGift(models.Model):
     _name = 'sponsorship.gift'
     _inherit = 'translatable.model'
     _description = 'Sponsorship Gift'
-    _order = 'date_partner_paid desc,id desc'
+    _order = 'gift_date desc,id desc'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -61,13 +61,15 @@ class SponsorshipGift(models.Model):
     ##################
     name = fields.Char(compute='_compute_name', translate=False)
     gmc_gift_id = fields.Char(readonly=True)
+    gift_date = fields.Date(
+        compute='_compute_invoice_fields',
+        inverse=lambda g: True, store=True
+    )
     date_partner_paid = fields.Date(
-        'Gift date',
         compute='_compute_invoice_fields',
         inverse=lambda g: True, store=True
     )
     date_sent = fields.Datetime(related='message_id.process_date')
-    date_money_sent = fields.Datetime()
     amount = fields.Float(
         compute='_compute_invoice_fields',
         inverse=lambda g: True, store=True)
@@ -156,9 +158,12 @@ class SponsorshipGift(models.Model):
         for gift in self.filtered('invoice_line_ids'):
             pay_dates = gift.invoice_line_ids.filtered('last_payment').mapped(
                 'last_payment') or [gift.invoice_line_ids[0].last_payment]
+            inv_dates = gift.invoice_line_ids.mapped('invoice_date')
             amounts = gift.mapped('invoice_line_ids.price_subtotal')
             gift.date_partner_paid = fields.Date.to_string(max(
                 map(lambda d: fields.Date.from_string(d), pay_dates)))
+            gift.gift_date = fields.Date.to_string(max(
+                map(lambda d: fields.Date.from_string(d), inv_dates)))
             gift.amount = sum(amounts)
 
     def _compute_name(self):
@@ -315,8 +320,8 @@ class SponsorshipGift(models.Model):
                     ('gift_type', '=', self.gift_type),
                     ('attribution', '=', self.attribution),
                     ('sponsorship_gift_type', '=', self.sponsorship_gift_type),
-                    ('date_partner_paid', '>=', firstJanuaryOfThisYear),
-                    ('date_partner_paid', '<', next_year),
+                    ('gift_date', '>=', firstJanuaryOfThisYear),
+                    ('gift_date', '<', next_year),
                 ])
 
                 total_amount = this_amount
