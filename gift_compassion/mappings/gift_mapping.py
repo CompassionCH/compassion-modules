@@ -34,7 +34,7 @@ class CreateGiftMapping(OnrampMapping):
         'RecipientType': 'gift_type',
         'Supporter_GlobalID': ('partner_id.global_id', 'res.partner'),
         'ExchangeRatePartnerToGMC': 'exchange_rate',
-        'ThresholdViolatedType': None,
+        'ThresholdViolatedType': 'threshold_alert_type',
         'IsThresholdViolated': 'threshold_alert',
         'GiftDeliveryStatus': 'gmc_state',
         'ID': 'gmc_gift_id',

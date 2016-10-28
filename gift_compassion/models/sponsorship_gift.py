@@ -104,6 +104,18 @@ class SponsorshipGift(models.Model):
     threshold_alert = fields.Boolean(
         help='Partner exceeded the maximum gift amount allowed',
         readonly=True)
+    threshold_alert_type = fields.Selection([
+        ("Gift Amount Exceeded Allowed Limit For An Year", _(
+            "Gift Amount Exceeded Allowed Limit For An Year")),
+        ("Gift Amount Greater Than Maximum Limit", _(
+            "Gift Amount Greater Than Maximum Limit")),
+        ("Gift Amount Less Than Minimum Limit", _(
+            "Gift Amount Less Than Minimum Limit")),
+        ("Gift Frequency Exceeded Allowed Limit", _(
+            "Gift Frequency Exceeded Allowed Limit")),
+        ("Gift Not Within 1 Year of Completion Date", _(
+            "Gift Not Within 1 Year of Completion Date")),
+    ])
     field_office_notes = fields.Char()
     status_change_date = fields.Datetime()  # date of update message
 
