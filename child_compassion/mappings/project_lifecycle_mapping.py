@@ -17,7 +17,7 @@ class ICPLifecycleMapping(OnrampMapping):
     MAPPING_NAME = "new_project_lifecyle"
 
     CONNECT_MAPPING = {
-        "ActionPlan": "action_plan",
+        "ActionPlanGPAUse": "action_plan",
         "ActualSuspensionEndDate": "suspension_end_date",
         "ActualTransitionDate": "date",
         "FutureInvolvement": ("future_involvement_ids.name",
@@ -39,11 +39,11 @@ class ICPLifecycleMapping(OnrampMapping):
         "ReactivationDate": "reactivation_date",
         "ReasonForFirstExtension": "extension_1_reason",
         "ReasonforSecondExtension": "extension_2_reason",
-        "SuspensionDetail": "suspension_detail",
+        "SuspensionDetailsGPAUse": "suspension_detail",
         "SuspensionReason": ("suspension_reason_ids.name",
                              "icp.lifecycle.reason"),
         "SuspensionStartDate": "suspension_start_date",
-        "TransitionDetails": "details",
+        "TransitionDetailsGPAUse": "details",
         "TransitionReason": ("transition_reason_ids.name",
                              "icp.lifecycle.reason"),
         "TranslationStatus": "translation_status",
@@ -52,7 +52,6 @@ class ICPLifecycleMapping(OnrampMapping):
 
         # Not used in Odoo
         'SourceKitName': None,
-        # If used, will be connect.multipicklist fields.
         "TranslationCompletedFields": None,
         "TranslationRequiredFields": None,
     }
