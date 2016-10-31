@@ -101,8 +101,8 @@ class WeeklyDemand(models.Model):
         for week in self.filtered('week_start_date').filtered('week_end_date'):
             # Compute demand
             events = self.env['crm.event.compassion'].search([
-                ('hold_start_date', '<', week.week_end_date),
-                ('start_date', '>', week.week_start_date)
+                ('hold_start_date', '<=', week.week_end_date),
+                ('start_date', '>=', week.week_start_date)
             ])
             week_start = fields.Date.from_string(week.week_start_date)
             week_end = fields.Date.from_string(week.week_end_date)
@@ -113,9 +113,9 @@ class WeeklyDemand(models.Model):
                 days_for_allocation = (event_start - hold_start).days + 1
                 days_in_week = 7
                 if week_start < hold_start:
-                    days_in_week = (hold_start - week_start).days + 1
+                    days_in_week = (week_end - hold_start).days + 1
                 elif week_end > event_start:
-                    days_in_week = (week_end - event_start).days + 1
+                    days_in_week = (event_start - week_start).days + 1
                 allocate += float(event.number_allocate_children *
                                   days_in_week) / days_for_allocation
 
