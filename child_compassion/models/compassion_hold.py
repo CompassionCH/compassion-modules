@@ -242,13 +242,14 @@ class CompassionHold(models.Model):
         """ Called when a reservation gots converted to a hold. """
         mapping = ReservationToHoldMapping(self.env)
         hold_data = commkit_data.get(
-            'GlobalPartnerBeneficiaryReservationToHoldNotification')
+            'ReservationConvertedToHoldNotification')
         child_global_id = hold_data and hold_data.get('Beneficiary_GlobalID')
         if child_global_id:
-            child = self.env['compassion.child'].create(
-                {'global_id': child_global_id})
+            child = self.env['compassion.child'].create({
+                'global_id': child_global_id})
             hold = self.env['compassion.hold'].create(
                 mapping.get_vals_from_connect(hold_data))
+            hold.state = 'active'
             child.hold_id = hold
 
             return [hold.id]

@@ -34,6 +34,7 @@ class CompassionChild(models.Model):
     _inherit = ['compassion.generic.child', 'mail.thread',
                 'translatable.model']
     _description = "Sponsored Child"
+    _order = 'local_id asc,allocation_date desc'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -41,7 +42,7 @@ class CompassionChild(models.Model):
 
     # General Information
     #####################
-    local_id = fields.Char(track_visibility=True)
+    local_id = fields.Char(track_visibility='onchange')
     code = fields.Char(help='Old child reference')
     compass_id = fields.Char('Compass ID', oldname='unique_id')
     estimated_birthdate = fields.Boolean(readonly=True)
@@ -84,7 +85,7 @@ class CompassionChild(models.Model):
     hold_owner = fields.Many2one(related='hold_id.primary_owner', store=True)
     hold_ambassador = fields.Many2one(related='hold_id.ambassador', store=True)
     hold_expiration = fields.Datetime(related='hold_id.expiration_date',
-                                      string='Hold expiration')
+                                      string='Hold expiration', store=True)
 
     # Beneficiary Favorites
     #######################
@@ -397,6 +398,14 @@ class CompassionChild(models.Model):
     def child_consigned(self):
         """Called on child allocation."""
         self.write({'state': 'N', 'sponsor_id': False})
+        # Cancel planned deletion
+        jobs = self.env['queue.job'].search([
+            ('name', '=', 'Job for deleting released children.'),
+            ('func_string', 'like', self.ids),
+            ('state', '=', 'enqueued')
+        ])
+        jobs.button_done()
+        jobs.unlink()
         return True
 
     @api.multi
@@ -424,14 +433,10 @@ class CompassionChild(models.Model):
         other_children.get_lifecycle_event()
 
         # the children will be deleted when we reach their expiration date
+        default_expiration = datetime.now() + timedelta(weeks=1)
         for child in other_children:
-            hold = self.env['compassion.hold'].search(
-                [('child_id', '=', child.id)],
-                order='expiration_date desc', limit=1)
-            if hold:
-                postpone = fields.Datetime.from_string(hold.expiration_date)
-            else:
-                postpone = datetime.now() + timedelta(weeks=1)
+            postpone = fields.Datetime.from_string(child.hold_expiration) or \
+                default_expiration
             session = ConnectorSession.from_env(other_children.env)
             unlink_children_job.delay(session, self._name, child.ids,
                                       eta=postpone)

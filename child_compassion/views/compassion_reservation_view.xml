@@ -20,7 +20,7 @@
                             </h1>
                         </div>
                         <div class="oe_right oe_button_box" name="buttons">
-                            <button name="show_reserved_children" string="Reserved children" type="object" icon="fa-child" class="oe_stat_button"/>
+                            <button name="show_reserved_children" string="Allocated children" type="object" icon="fa-child" class="oe_stat_button"/>
                         </div>
                         <group>
                             <group>

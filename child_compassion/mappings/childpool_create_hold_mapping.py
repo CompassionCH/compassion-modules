@@ -80,10 +80,10 @@ class ReservationToHoldMapping(OnrampMapping):
     MAPPING_NAME = 'reservation_to_hold'
 
     CONNECT_MAPPING = {
-        'BeneficiaryOrder_HoldID': 'hold_id',
+        'HoldID': 'hold_id',
         'Beneficiary_GlobalID': ('child_id.global_id', 'compassion.child'),
         'HoldExpirationDate': 'expiration_date',
-        'PrimaryOwner': 'primary_owner.name',
+        'PrimaryOwner': ('primary_owner.name', 'res.users'),
         'ReservationHoldType': 'type',
         'ReservationID': ('reservation_id.reservation_id',
                           'compassion.reservation'),
