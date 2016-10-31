@@ -34,7 +34,7 @@ class CompassionChild(models.Model):
     _inherit = ['compassion.generic.child', 'mail.thread',
                 'translatable.model']
     _description = "Sponsored Child"
-    _order = 'local_id asc,allocation_date desc'
+    _order = 'local_id asc,date desc'
 
     ##########################################################################
     #                                 FIELDS                                 #

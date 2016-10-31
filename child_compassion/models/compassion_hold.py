@@ -13,6 +13,7 @@ from enum import Enum
 from datetime import datetime, timedelta
 
 from openerp import api, models, fields, _
+from openerp.exceptions import Warning
 
 from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from ..mappings.childpool_create_hold_mapping import ReservationToHoldMapping
@@ -268,6 +269,12 @@ class CompassionHold(models.Model):
                 'object_id': hold.id
             })
         messages.process_messages()
+        self.env.cr.commit()
+        fail = messages.filtered('failure_reason').mapped('failure_reason')
+        if fail:
+            raise Warning(
+                "\n".join(fail)
+            )
 
         return True
 
