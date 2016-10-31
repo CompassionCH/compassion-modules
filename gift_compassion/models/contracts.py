@@ -56,12 +56,18 @@ class SponsorshipContract(models.Model):
 
     def hold_gifts(self):
         """ Postpone open gifts. """
-        pending_gifts = self.mapped('invoice_line_ids.gift_id').filtered(
-            lambda g: not g.gmc_gift_id)
+        pending_gifts = self.env['sponsorship.gift'].search([
+            ('sponsorship_id', 'in', self.ids),
+            ('gmc_gift_id', '=', False)
+        ])
         pending_gifts.action_verify()
 
     def reactivate_gifts(self):
         """ Put again gifts in OK state. """
-        pending_gifts = self.mapped('invoice_line_ids.gift_id').filtered(
-            lambda g: g.state == 'verify' and g.is_eligible())
+        pending_gifts = self.env['sponsorship.gift'].search([
+            ('sponsorship_id', 'in', self.ids),
+            ('state', '=', 'verify')
+        ])
+        pending_gifts = pending_gifts.filtered(
+            lambda g: g.is_eligible())
         pending_gifts.action_ok()

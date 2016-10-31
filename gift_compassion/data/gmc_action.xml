@@ -20,7 +20,6 @@
             <field name="name">UpdateGift</field>
             <field name="mapping_name">create_update_gifts</field>
             <field name="model">sponsorship.gift</field>
-            <!--<field name="incoming_method">major_revision</field> par défaut : write -->
             <field name="description">This will trigger a Gift Update at the Field.</field>
             <field name="auto_process">1</field>
         </record>

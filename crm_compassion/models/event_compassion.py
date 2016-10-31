@@ -105,10 +105,7 @@ class event_compassion(models.Model):
         'account.analytic.account', related='parent_id')
     calendar_event_id = fields.Many2one('calendar.event')
     hold_start_date = fields.Date(required=True)
-    hold_end_date = fields.Date(
-        compute='_compute_hold_end_date', store=True,
-        inverse='_set_hold_date'
-    )
+    hold_end_date = fields.Date()
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -176,29 +173,6 @@ class event_compassion(models.Model):
             raise Warning("Invalid Date", "The hold start date must "
                                           "be before the event "
                                           "starting date !")
-
-    @api.multi
-    def compute_hold_start_date(self):
-        days_before = self.env['demand.planning.settings'].get_param(
-            'days_allocate_before_event')
-        for event in self.filtered(lambda e: not e.hold_start_date):
-            hold_start_date = fields.Datetime.from_string(
-                event.start_date) - timedelta(days=days_before)
-            event.hold_start_date = fields.Date.to_string(hold_start_date)
-
-    @api.depends('end_date')
-    @api.multi
-    def _compute_hold_end_date(self):
-        days_after = self.env['demand.planning.settings'].get_param(
-            'days_hold_after_event')
-        for event in self:
-            if event.end_date:
-                hold_end_date = fields.Datetime.from_string(
-                    event.end_date) + timedelta(days=days_after)
-                event.hold_end_date = fields.Date.to_string(hold_end_date)
-
-    def _set_hold_date(self):
-        pass
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -339,6 +313,7 @@ class event_compassion(models.Model):
                 event.parent_id = event._find_parent_analytic()
 
     @api.onchange('start_date')
+    @api.multi
     def onchange_start_date(self):
         """ Update end_date and hold_start_date as soon as start_date is
         changed """
@@ -351,6 +326,16 @@ class event_compassion(models.Model):
                 fields.Datetime.from_string(event.start_date) - dt)
             if not event.end_date:
                 event.end_date = event.start_date
+
+    @api.onchange('end_date')
+    @api.multi
+    def onchange_end_date(self):
+        days_after = self.env['demand.planning.settings'].get_param(
+            'days_hold_after_event')
+        for event in self.filtered('end_date'):
+                hold_end_date = fields.Datetime.from_string(
+                    event.end_date) + timedelta(days=days_after)
+                event.hold_end_date = fields.Date.to_string(hold_end_date)
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

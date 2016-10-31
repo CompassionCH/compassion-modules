@@ -8,6 +8,9 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+from datetime import timedelta
+
+import datetime
 
 from openerp import models, fields, api, _
 from openerp.exceptions import Warning
@@ -45,7 +48,8 @@ class CompassionReservation(models.Model):
     expiration_date = fields.Datetime(
         'Hold expiration date', track_visibility='onchange')
     reservation_expiration_date = fields.Date(
-        required=True, track_visibility='onchange')
+        required=True, track_visibility='onchange',
+        default=lambda s: s._default_expiration_date())
     is_reservation_auto_approved = fields.Boolean(default=True)
     number_of_beneficiaries = fields.Integer(track_visibility='onchange')
 
@@ -68,7 +72,23 @@ class CompassionReservation(models.Model):
         for reservation in self.filtered('child_global_id'):
             child = self.env['compassion.child'].search([
                 ('global_id', '=', reservation.child_global_id)])
+            if not child:
+                # Create child in "Released" state (not available yet to us)
+                child = self.env['compassion.child'].create({
+                    'global_id': reservation.child_global_id,
+                })
+                child.hold_expiration = reservation.expiration_date
+                child.signal_workflow('release')
+                child.get_infos()
             reservation.child_id = child
+
+    def _default_expiration_date(self):
+        days_reservation = self.env[
+            'availability.management.settings'].get_param(
+            'reservation_duration')
+        dt = timedelta(days=days_reservation)
+        expiration = datetime.date.today() + dt
+        return fields.Date.to_string(expiration)
 
     ##########################################################################
     #                             ORM METHODS                                #
@@ -159,9 +179,19 @@ class CompassionReservation(models.Model):
             'view_type': 'form',
             'res_model': 'compassion.child',
             'domain': [('id', 'in', children_ids)],
-            'view_mode': 'tree, form',
-            'target': 'new',
+            'view_mode': 'tree,form',
+            'target': 'current',
         }
+
+    @api.onchange('reservation_expiration_date')
+    def onchange_expiration_date(self):
+        if not self.reservation_expiration_date:
+            return
+        expiration = fields.Date.from_string(self.reservation_expiration_date)
+        days_on_hold = self.env['availability.management.settings'].get_param(
+            'reservation_hold_duration')
+        dt = timedelta(days=days_on_hold)
+        self.expiration_date = fields.Date.to_string(expiration + dt)
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
