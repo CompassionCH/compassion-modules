@@ -9,12 +9,10 @@
 #
 ##############################################################################
 import simplejson as json
-import logging
 
 from openerp import http, exceptions
 from openerp.http import request
-
-_logger = logging.getLogger(__name__)
+from ..tools.onramp_logging import ONRAMP_LOGGER, log_message
 
 # Put any authorized sender here. Its address must be part of the headers
 # in order to handle a request.
@@ -37,6 +35,7 @@ class RestController(http.Controller):
         }
         action_connect = request.env['gmc.action.connect'].sudo(
             request.uid).search([('connect_schema', '=', message_type)])
+        log_message("INCOMING", message_type, headers, request.jsonrequest)
         if action_connect:
             action = action_connect.action_id
             request.env['gmc.message.pool'].sudo(request.uid).create({
@@ -50,6 +49,7 @@ class RestController(http.Controller):
                 "Message": "Your message was successfully received."
             })
         else:
+            ONRAMP_LOGGER.error("Unknown message type received.")
             result.update({
                 "code": 200,
                 "Message": "Unknown message type - not processed."

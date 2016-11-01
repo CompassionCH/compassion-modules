@@ -20,7 +20,7 @@ class MajorRevision(models.Model):
     name = fields.Selection([
         # Child major revision
         ('Birthdate', 'Birthdate'),
-        ('Chronic Disabilities', 'Chronic Disabilities'),
+        ('Physical Disabilities', 'Physical Disabilities'),
         ('Chronic Illness', 'Chronic Illness'),
         ('First Name', 'First Name'),
         ('Formal Education Level', 'Formal Education Level'),
@@ -28,9 +28,9 @@ class MajorRevision(models.Model):
         ('Last Name', 'Last Name'),
         ('Planned Completion Date', 'Planned Completion Date'),
         ('Preferred Name', 'Preferred Name'),
-        # Household major revision TODO Verify values
-        ('Natural Father Alive', 'Natural Father Alive'),
-        ('Natural Mother Alive', 'Natural Mother Alive'),
+        # Household major revision
+        ('Is Natural Father Alive?', 'Natural Father Alive'),
+        ('Is Natural Mother Alive?', 'Natural Mother Alive'),
         ('Primary Caregiver', 'Primary Caregiver'),
     ], required=True)
     old_value = fields.Char()
@@ -47,7 +47,7 @@ class MajorRevision(models.Model):
     def get_field_mapping(self):
         return {
             'Birthdate': 'birthdate',
-            'Chronic Disabilities': 'physical_disability_ids.value',
+            'Physical Disabilities': 'physical_disability_ids.value',
             'Chronic Illness': 'chronic_illness_ids.value',
             'First Name': 'firstname',
             'Formal Education Level': 'formal_education',
@@ -55,8 +55,8 @@ class MajorRevision(models.Model):
             'Last Name': 'lastname',
             'Planned Completion Date': 'completion_date',
             'Preferred Name': 'preferred_name',
-            'Natural Father Alive': 'father_alive',
-            'Natural Mother Alive': 'mother_alive',
+            'Is Natural Father Alive?': 'father_alive',
+            'Is Natural Mother Alive?': 'mother_alive',
             'Primary Caregiver': 'primary_caregiver',
         }
 

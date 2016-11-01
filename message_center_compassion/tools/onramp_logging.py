@@ -9,6 +9,7 @@
 #
 ##############################################################################
 import logging
+import simplejson
 import os
 import sys
 
@@ -52,3 +53,21 @@ def init_logger():
     ONRAMP_LOGGER.addHandler(handler)
 
 init_logger()
+
+
+def log_message(type, url, headers=None, message=None, session=None):
+    if headers is None:
+        headers = dict()
+    if message is None:
+        message = '{empty}'
+    if session is not None:
+        complete_headers = headers.copy()
+        complete_headers.update(session.headers)
+    else:
+        complete_headers = headers
+    ONRAMP_LOGGER.info(
+        "[%s] %s %s %s",
+        type,
+        url,
+        [(k, v) for k, v in complete_headers.iteritems()],
+        simplejson.dumps(message))

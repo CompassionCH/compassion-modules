@@ -12,6 +12,8 @@ import simplejson
 import requests
 from openerp.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
+from openerp.addons.message_center_compassion.tools.onramp_logging import \
+    log_message
 
 from openerp import _
 from openerp.exceptions import Warning
@@ -57,11 +59,11 @@ class TestOnrampConnector(OnrampConnector):
         url = test_message.server_url
         body = test_message.body_json
 
-        self._log_message('POST', url, headers, body)
+        log_message('POST', url, headers, body)
         r = self._session.post(url, headers=headers,
                                json=simplejson.loads(body))
         status = r.status_code
-        self._log_message(status, 'RESULT', message=r.text)
+        log_message(status, 'RESULT', message=r.text)
         test_message.write({
             'result': r.text,
             'result_code': r.status_code

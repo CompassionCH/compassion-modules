@@ -43,7 +43,7 @@ class ChilpoolCreateHoldMapping(OnrampMapping):
         "IsSpecialHandling": None,
         'PrimaryHoldOwner': None,
         'SecondaryHoldOwner': None,
-        "SourceCode": None,
+        "SourceCode": lambda s: '65-' + s if s else '',
         'Channel_Name': None,
         "GlobalPartner_ID": None,
     }

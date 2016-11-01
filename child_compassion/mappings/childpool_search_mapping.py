@@ -21,7 +21,7 @@ class ChilpoolSearchMapping(OnrampMapping):
 
     CONNECT_MAPPING = {
         'gender': 'gender',
-        'countries': ('field_office_ids.field_office_id',
+        'countries': ('field_office_ids.country_code',
                       'compassion.field.office'),
         'minAge': 'min_age',
         'maxAge': 'max_age',
@@ -33,7 +33,6 @@ class ChilpoolSearchMapping(OnrampMapping):
         'churchPartnerName': 'icp_name',
         'hivAffectedArea': 'hiv_affected_area',
         'isOrphan': 'is_orphan',
-        'hasSiblings': 'has_siblings',
         'hasSpecialNeeds': 'has_special_needs',
         'minDaysWaiting': 'min_days_waiting',
         'sourceCode': 'source_code',

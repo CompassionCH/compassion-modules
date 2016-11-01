@@ -153,6 +153,6 @@ class ICPDiet(models.Model):
 class ICPLifecycleReason(models.Model):
     _name = 'icp.lifecycle.reason'
     _inherit = 'icp.property'
-    _description = 'ICP Diet'
+    _description = 'ICP Lifecycle Reason'
     res_model = 'compassion.project.ile'
     res_field = 'suspension_reason_ids'

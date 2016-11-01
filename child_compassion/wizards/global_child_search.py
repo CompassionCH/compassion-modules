@@ -47,7 +47,6 @@ class GlobalChildSearch(models.TransientModel):
     icp_name = fields.Char()
     hiv_affected_area = fields.Boolean()
     is_orphan = fields.Boolean()
-    has_siblings = fields.Boolean()
     has_special_needs = fields.Boolean()
     min_days_waiting = fields.Integer(size=4)
     source_code = fields.Char()

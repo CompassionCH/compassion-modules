@@ -203,11 +203,11 @@
 
         <!-- Actions to Connect mappings -->
         <record id="major_revision_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/MajorRevisionKit</field>
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/beneficiaries/2016/04/BenMajorRevisionKit</field>
             <field name="action_id" ref="major_revision"/>
         </record>
         <record id="beneficiary_cdpr_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/CDPRAssessmentKit</field>
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/beneficiaries/2016/04/CDPRAssessmentKit</field>
             <field name="action_id" ref="beneficiary_cdpr"/>
         </record>
         <record id="reservation_to_hold_connect" model="gmc.action.connect">
@@ -215,19 +215,19 @@
             <field name="action_id" ref="reservation_to_hold"/>
         </record>
         <record id="major_revision_household_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/HouseholdMajorRevisionKit</field>
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/beneficiaries/2016/04/HouseholdKit</field>
             <field name="action_id" ref="major_revision_household"/>
         </record>
         <record id="new_life_cycle_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/LifecycleEvent</field>
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/beneficiaries/2016/04/BeneficiaryLifecycleEventKit</field>
             <field name="action_id" ref="new_life_cycle"/>
         </record>
         <record id="beneficiary_note_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messaging/beneficiary/2016/03/NotesKit</field>
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/beneficiaries/2016/04/NotesKit</field>
             <field name="action_id" ref="beneficiary_note"/>
         </record>
         <record id="new_project_cycle_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messaging/churchpartner/2016/03/LifecycleEvents</field>
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/churchpartners/2016/04/ICPLifecycleEventKit</field>
             <field name="action_id" ref="new_project_cycle"/>
         </record>
         <record id="new_reinstatement_notification_connect" model="gmc.action.connect">
@@ -235,7 +235,7 @@
             <field name="action_id" ref="new_reinstatement_notification"/>
         </record>
         <record id="field_office_disaster_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messaging/fieldoffice/2016/03/DisasterDetailsKit</field>
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/beneficiaries/2016/04/Disasterkit</field>
             <field name="action_id" ref="field_office_disaster"/>
         </record>
         <record id="beneficiary_hold_removal_connect" model="gmc.action.connect">

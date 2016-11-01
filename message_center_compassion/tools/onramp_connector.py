@@ -15,7 +15,7 @@ import requests
 import base64
 from datetime import datetime, timedelta
 
-from onramp_logging import ONRAMP_LOGGER
+from onramp_logging import log_message
 
 from openerp import _
 from openerp.exceptions import Warning
@@ -87,7 +87,7 @@ class OnrampConnector(object):
         """
         headers = {'Content-type': 'application/json'}
         url = self._connect_url + service_name
-        self._log_message(message_type, url, headers, body)
+        log_message(message_type, url, headers, body, self._session)
         if params is None:
             params = dict()
         param_string = self._encode_params(params)
@@ -110,7 +110,7 @@ class OnrampConnector(object):
             'code': status,
             'request_id': r.headers.get('x-cim-RequestId'),
         }
-        self._log_message(status, 'RESULT', message=r.text)
+        log_message(status, 'RESULT', message=r.text)
         try:
             # Receiving some weird encoded strings
             result['content'] = simplejson.JSONDecoder(strict=False).decode(
@@ -169,17 +169,3 @@ class OnrampConnector(object):
             raise Warning(
                 _('Authentication Error'),
                 _('Token validation failed.'))
-
-    def _log_message(self, type, url, headers=None, message=None):
-        if headers is None:
-            headers = dict()
-        if message is None:
-            message = '{empty}'
-        complete_headers = headers.copy()
-        complete_headers.update(self._session.headers)
-        ONRAMP_LOGGER.info(
-            "[%s] %s %s %s",
-            type,
-            url,
-            [(k, v) for k, v in complete_headers.iteritems()],
-            simplejson.dumps(message))
