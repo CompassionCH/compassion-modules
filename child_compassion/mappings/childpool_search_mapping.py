@@ -21,7 +21,7 @@ class ChilpoolSearchMapping(OnrampMapping):
 
     CONNECT_MAPPING = {
         'gender': 'gender',
-        'countries': ('field_office_ids.field_office_id',
+        'countries': ('field_office_ids.country_code',
                       'compassion.field.office'),
         'minAge': 'min_age',
         'maxAge': 'max_age',
