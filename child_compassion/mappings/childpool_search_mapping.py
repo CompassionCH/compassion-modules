@@ -33,7 +33,6 @@ class ChilpoolSearchMapping(OnrampMapping):
         'churchPartnerName': 'icp_name',
         'hivAffectedArea': 'hiv_affected_area',
         'isOrphan': 'is_orphan',
-        'hasSiblings': 'has_siblings',
         'hasSpecialNeeds': 'has_special_needs',
         'minDaysWaiting': 'min_days_waiting',
         'sourceCode': 'source_code',

@@ -42,7 +42,6 @@
                                     <group>
                                         <field name="hiv_affected_area"/>
                                         <field name="is_orphan"/>
-                                        <field name="has_siblings"/>
                                         <field name="has_special_needs"/>
                                     </group>
                                     <group>
