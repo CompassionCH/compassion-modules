@@ -41,69 +41,105 @@ class ChildLifecycleEvent(models.Model):
         # Child Registration
         ('Registration with Compassion', _('Child registration')),
         # Planned Exit
+        ('Fulfilled Completion Plan And Reached Completion Date',
+         _('{he} fulfilled completion plan and reached completion date')),
         ('Reached Maximum Age', _('{he} reached maximum age')),
-        ('Reached the end of the relevant programs available at the church '
-         'partner', _('{he} reached the end of the relevant programs '
-                      'available')),
-        ('Reached max age or completion date but did not fulfill '
-         'completion plan',
-         'Reached max age or completion date but did not fulfill '
-         'completion plan'),
-        ('Reached the end of relevant programs available at ICP',
-         'Reached the end of relevant programs available at ICP'),
+        ('Reached Max Age Or Completion Date But Did Not Fulfill '
+         'Completion Plan',
+         _('{he} reached maximum age or completion date.')),
+        ('Reached The End Of Relevant Programs Available At ICP',
+         _('{he} reached the end of relevant programs available at the '
+           'project')),
+        ('Reached The End Of The Relevant Programs Available At The Church '
+         'Partner',
+         _('{he} reached the end of relevant programs available at the '
+           'project')),
         # Reinstatement
-        ('Beneficiary Exit was mistake', 'Exit was mistake'),
-        ('Beneficiary Moved Back', 'Beneficiary Moved Back'),
-        ('Family Needs Help Again', 'Family Needs Help Again'),
-        ('No Longer Sponsored by Another Organization',
-         'No Longer Sponsored by Another Organization'),
-        ('Other (enter reason below)', 'Other'),
-        ('Other (Enter Reason)', 'Other (Enter Reason)'),
+        ('Beneficiary Exit Was A Mistake', _('the exit was a mistake')),
+        ('Beneficiary Moved Back', _('{he} moved back')),
+        ('Family Needs Help Again', _('{his} family needs help again')),
+        ('No Longer Sponsored By Another Organization',
+         _('{he} is no longer sponsored by another organization')),
+        ('Now Interested And Agrees To Policies',
+         _('{he} is now interested and agrees to policies')),
         # Transfer
-        ('Relocation: Caregiver\'s Work.', 'Relocation: Caregiver\'s Work.'),
+        ('Recently Exited And Attending New ICP',
+         _('{he} recently exited and attends a new ICP')),
+        ('Relocation: Caregiver\'s Work.',
+         _('of a relocation of {his} caregiver\'s work.')),
+        ('Relocation: Change Of Caregiver',
+         _('of a change of caregiver')),
         ('Relocation: Moved To Another Area',
-         'Relocation: Moved To Another Area'),
+         _('{he} moved to another area')),
+        ('Relocation: Voc / Tech Or Higher Educ',
+         _('of a relocation for his higher education')),
         ('Relocation: Vocational/Technical Or Higher Education.',
-         'Relocation: Vocational/Technical Or Higher Education.'),
+         _('of a relocation for his higher education')),
         ('Programming Availability Is A Better Fit For Beneficiary',
-         'Programming Availability Is A Better Fit For Beneficiary'),
-        ('Project Closure', 'Project Closure'),
-        ('Project Downsizing', 'Project Downsizing'),
-        ('Special Needs', 'Special Needs'),
-        ('Beneficiary/Caregiver moving to another location',
-         'Beneficiary/Caregiver moving to another location'),
+         _('programming availability is a better fit for {him}')),
+        ('Programming Is A Better Fit', _('programming is a better fit')),
+        ('Project Closure', _('of the project closure')),
+        ('Project Downsizing', _('of the project downsizing')),
+        ('Project Opened Closer To Home',
+         _('another project opened closer to {his} home')),
+        ('Special Needs', _('of special needs')),
+        ('Beneficiary / Caregiver Moving To Another Location',
+         _('{he} moved to another location')),
         # Unplanned Exit
-        ('Child / Caregiver does not comply with policies',
+        ('Beneficiary / Caregiver Not Comply With Policies',
          _('{he} does not comply with policies')),
-        ('Child in system under two numbers (enter other number in the '
-         'Comments box below)', _('{he} is in system under two numbers')),
-        ('Child places others at risk', _('{he} places others at risk')),
-        ('Child sponsored by another organization',
+        ('Child / Caregiver Does Not Comply With Policies',
+         _('{he} does not comply with policies')),
+        ('Beneficiary In System Under Two Numbers',
+         _('{he} is in the system under two numbers')),
+        ('Child In System Under Two Numbers (Enter Other Number In The '
+         'Comments Box Below)', _('{he} is the in system under two numbers')),
+        ('Beneficiary Pursuing Career Opportunity',
+         _('{he} pursues career opportunity')),
+        ('Child Places Others At Risk', _('{he} places others at risk')),
+        ('Child Sponsored By Another Organization',
          _('{he} is sponsored by another organization')),
-        ('Death of caregiver creates situation where child cannot continue',
+        ('Community Safety Issues', _('of community safety issues')),
+        ('Conflicts With School Or Work Schedule',
+         _('of conflicts with school or work schedule')),
+        ('Death Of Caregiver Creates Situation Where Child Cannot Continue',
          _('{his} caregiver died')),
-        ('Death of child', '{he} passed away'),
+        ('Death Of Beneficiary', _('{he} passed away')),
+        ('Death Of Caregiver', _('{his} caregiver died')),
+        ('Death Of Child', _('{he} passed away')),
         ('Family Circumstances Have Changed Positively So That Child No '
          'Longer Needs Compassion\'s Assistance',
          _('family circumstances have changed positively')),
-        ('Family moved where a Compassion project with relevant programs is '
-         'not available', _('{his} family moved where a Compassion project '
+        ('Family Moved And Transfer Not Available',
+         _('{his} family moved where a Compassion project '
+           'with relevant programs is not available')),
+        ('Family Moved Where A Compassion Project With Relevant Programs Is '
+         'Not Available', _('{his} family moved where a Compassion project '
                             'with relevant programs is not available')),
-        ('Project or program closure', _('of the project closure')),
-        ('Taken out of project by parents, or family no longer interested '
-         'in program', _('{he} was taken out of project by parents')),
-        ('Unjustified absence from program activities for Greater Than 2 '
-         'months', _('of an unjustified absence for greater than 2 months')),
-        ('Child ran away', 'Child ran away'),
-        ('Crisis', 'Crisis'),
-        ('Deceased', 'Deceased'),
-        ('Fulfilled completion plan and reached completion date',
-         'Fulfilled completion plan and reached completion date'),
-        ('Gone into military service', 'Gone into military service'),
-        ('No longer interested in the Program', 'No longer interested in '
-                                                'the Program'),
-        ('Project Capacity Issue', 'Project Capacity Issue'),
-
+        ('Family No Longer Interested in Program',
+         _('{his} family is no longer interested in the program')),
+        ('Project Closed - No Transfer Available',
+         _('of the project closure')),
+        ('Project Or Program Closure', _('of the project closure')),
+        ('Taken Out Of Project By Parents, Or Family No Longer Interested '
+         'In Program', _('{he} was taken out of project by parents')),
+        ('Unjustified Absence From Program Activities For Greater Than 2 '
+         'Months', _('of an unjustified absence for greater than 2 months')),
+        ('Unjustified Absence More Than 2 Months',
+         _('of an unjustified absence for greater than 2 months')),
+        ('Child Ran Away', _('{he} ran away')),
+        ('Crisis', _('of a crisis')),
+        ('Deceased', _('{he} passed away')),
+        ('Gone Into Military Service', _('{he} went into military service')),
+        ('No Longer Interested In The Program',
+         _('{he} is no longer interested in the Program')),
+        ('No Longer Needs Our Assistance',
+         _('{he} no longer needs our assistance')),
+        ('Project Capacity Issue', _('of project capacity issue')),
+        ('Registered / Transferred Incorrectly',
+         _('{he} registered incorrectly')),
+        ('Sponsored By Another Organization',
+         _('{he} is sponsored by another organization'))
     ], readonly=True)
 
     # Common fields

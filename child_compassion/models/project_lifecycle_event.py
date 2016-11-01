@@ -70,26 +70,6 @@ class ProjectLifecycle(models.Model):
     projected_transition_date = fields.Date(readonly=True)
     future_involvement_ids = fields.Many2many(
         'icp.involvement', string='Future involvement', readonly=True)
-    # celebration_details = fields.Char(readonly=True)
-    # relationship_strengths = fields.Char(readonly=True)
-
-    # Translation
-    ############
-    translation_completed_fields = fields.Selection([
-        ('Action Plan', 'Action Plan'),
-        ('Suspension Details', 'Suspension Details'),
-        ('Transition Details', 'Transition Details'),
-    ], readonly=True)
-    translation_required_fields = fields.Selection([
-        ('Action Plan', 'Action Plan'),
-        ('Suspension Details', 'Suspension Details'),
-        ('Transition Details', 'Transition Details'),
-    ], readonly=True)
-    translation_status = fields.Selection([
-        ('Draft', 'Draft'),
-        ('Ready For Translation', 'Ready For Translation'),
-        ('Translation Complete', 'Translation Complete'),
-    ], readonly=True)
 
     name = fields.Char(readonly=True)
     reactivation_date = fields.Date(readonly=True)
