@@ -29,3 +29,18 @@ class res_partner(models.Model):
             'target': 'current',
             'domain': [('id', 'in', event_ids)],
         }
+
+    @api.multi
+    def make_ambassador(self):
+        portal = self.env['portal.wizard'].create({})
+        portal.write(portal.onchange_portal_id(portal.portal_id.id)['value'])
+        users = portal.mapped('user_ids')
+        users.write({'in_portal': True})
+        no_mail = users.filtered(lambda u: not u.email)
+        for user in no_mail:
+            partner = user.partner_id
+            user.email = partner.firstname[0].lower() + \
+                partner.lastname.lower() + '@cs.local'
+        portal.action_apply()
+        no_mail.mapped('partner_id').write({'email': False})
+        return True

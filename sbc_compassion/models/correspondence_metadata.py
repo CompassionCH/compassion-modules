@@ -38,7 +38,7 @@ class CorrespondenceMetadata(models.AbstractModel):
     @api.model
     def get_fields(self):
         return ['physical_attachments', 'attachments_description',
-                'template_id', 'mandatory_review']
+                'template_id', 'mandatory_review', 'source']
 
     @api.multi
     def get_correspondence_metadata(self):
