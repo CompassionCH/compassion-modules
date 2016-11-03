@@ -4,8 +4,8 @@
     <record id="test_template1" model="correspondence.template">
       <field name="name">Test Template 1</field>
       <field name="layout">CH-A-1S11-1</field>
-      <field name="pattern_image" type="base64" file="sbc_compassion/static/src/img/mario.png"/>
-      <field name="template_image" type="base64" file="sbc_compassion/static/src/img/template_test1.png"/>
+      <field name="pattern_image" type="base64" file="sbc_compassion/static/src/img/Test-L1-Mario_Pattern.png"/>
+      <field name="template_image" type="base64" file="sbc_compassion/static/src/img/Test-L1-Mario.png"/>
       <!-- Just need to be larger than all the others values.
        They will be computed during the initialization. -->
       <field name="page_width">2480</field>
@@ -75,8 +75,8 @@
     <record id="test_template2" model="correspondence.template">
       <field name="name">Test Template 2</field>
       <field name="layout">CH-A-5S01-1</field>
-      <field name="pattern_image" type="base64" file="sbc_compassion/static/src/img/batman.png"/>
-      <field name="template_image" type="base64" file="sbc_compassion/static/src/img/template_test2.png"/>
+      <field name="pattern_image" type="base64" file="sbc_compassion/static/src/img/Test-L5-Batman_Pattern.png"/>
+      <field name="template_image" type="base64" file="sbc_compassion/static/src/img/Test-L5-Batman.png"/>
       <field name="page_width">2481</field>
       <field name="page_height">3508</field>
       <field name="pattern_x_min">1100</field>

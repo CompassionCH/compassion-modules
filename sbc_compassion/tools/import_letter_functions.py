@@ -23,6 +23,7 @@ import patternrecognition as pr
 import checkboxreader as cbr
 import numpy as np
 import sys
+from time import time
 from math import ceil
 from wand.image import Image
 from collections import namedtuple
@@ -162,15 +163,21 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
     :returns: Import Line values, IR Attachment values
     :rtype: list(dict), list(dict)
     """
+    new_dpi = 100.0
+    resize_ratio = new_dpi/300.0
+
     line_vals = list()
     document_vals = list()
     letter_datas = list()
     logger.info("Import letter : {}".format(file_name))
 
     inputpdf = PdfFileReader(BytesIO(file_data))
+    tic = time()  # ---------------------------------------
     letter_indexes, imgs = _find_qrcodes(
-        env, line_vals, inputpdf, test)
+        env, line_vals, inputpdf, new_dpi, test)
+    print('import_letter_function: _find_qrcodes: ' + str(time() - tic))
 
+    tic = time()  # ---------------------------------------
     # Construct the datas for each detected letter: store as PDF
     logger.info("... found {} letters!".format(len(letter_indexes)-1 or 1))
     if len(letter_indexes) > 1:
@@ -187,6 +194,10 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
     else:
         letter_datas.append(file_data)
 
+    tic = str(time() - tic)  # ---------------------------------------
+    print('import_letter_function:  Construct the datas for each detected ' +
+          'letter: store as PDF: ' + tic)
+
     # now try to find the layout for all splitted letters
     file_split = file_name.split('.')
     for i in range(0, len(letter_datas)):
@@ -200,11 +211,20 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
         if force_template:
             letter_vals['template_id'] = force_template.id
         else:
-            _find_template(env, imgs[i], letter_vals, test)
-        if letter_vals['template_id'] != env.ref(
-                'sbc_compassion.default_template').id:
+
+            tic = time()  # --------------------------------------------------
+            # use pattern recognition to find the template
+            _find_template(env, imgs[i], letter_vals, test, resize_ratio)
+            tic = str(time() - tic)  # ---------------------------------------
+            print('import_letter_function: _find_template\t' + tic)
+        if letter_vals['template_id'] != \
+                env.ref('sbc_compassion.default_template').id:
             logger.info("...Letter {} : template found!".format(i))
-            _find_languages(env, imgs[i], letter_vals, test)
+
+            tic = time()  # --------------------------------------------------
+            _find_languages(env, imgs[i], letter_vals, test, resize_ratio)
+            tic = str(time() - tic)  # ---------------------------------------
+            print('import_letter_function: _find_languages\t' + tic)
             logger.info("...Letter {} : language analysis done.".format(i))
         else:
             logger.info("...Letter {} : default template".format(i))
@@ -218,7 +238,7 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
     return line_vals, document_vals
 
 
-def _find_qrcodes(env, line_vals, inputpdf, test):
+def _find_qrcodes(env, line_vals, inputpdf, new_dpi, test):
     """
     Read the image and try to find the QR codes.
     The image should be currently saved as a png with the same name
@@ -246,7 +266,11 @@ def _find_qrcodes(env, line_vals, inputpdf, test):
         page_buffer = BytesIO()
         output.write(page_buffer)
         page_buffer.seek(0)
-        qrcode, img, test_data = _decode_page(env, page_buffer.read())
+
+        # read the qrcode on the current page
+        qrcode, img, test_data = _decode_page(
+            env, page_buffer.read(), new_dpi)
+
         if (qrcode and qrcode.data != previous_qrcode) or i == 0:
             previous_qrcode = qrcode and qrcode.data
             letter_indexes.append(i)
@@ -272,7 +296,7 @@ def _find_qrcodes(env, line_vals, inputpdf, test):
     return letter_indexes, page_imgs
 
 
-def _decode_page(env, page_data):
+def _decode_page(env, page_data, new_dpi):
     """
     Read the image and try to find the QR codes.
     The image should be currently saved as a png with the same name
@@ -289,21 +313,34 @@ def _decode_page(env, page_data):
     :rtype: str, binary
     """
     # decoder
+    tic = time()
     zx = zxing.BarCodeTool()
-    with Image(blob=page_data, resolution=300) as page_image:
+    with Image(blob=page_data, resolution=int(new_dpi)) as page_image:  #
+        # resolution
+        print('Image(blob=page_data, resolution=100) ' + str(tic - time()))
+
+        tic = time()
         page_data = np.asarray(bytearray(page_image.make_blob('png')))
+        print('page_data ' + str(tic - time()))
+
+        tic = time()
         img = cv2.imdecode(page_data, 1)    # Read in color
+        print('img ' + str(tic - time()))
+
         if img is None:
             return None, None, None
         # Save cropped file on disk for qrcode detection
-        left, right, top, bottom = _get_qr_crop(
-            env, page_image.width, page_image.height)
+        left, right, top, bottom = _get_qr_crop(env, page_image.width,
+                                                page_image.height)
         with page_image[left:right, top:bottom] as cropped:
             filename = os.getcwd() + '/page.png'
             test_data = cropped.make_blob('png')
             cropped.save(filename=filename)
-            qrcode = zx.decode(filename, try_harder=True)
 
+            tic = time()
+            qrcode = zx.decode(filename, try_harder=True)
+            print('qrcode ' + str(tic - time()))
+    print("")
     os.remove(filename)
     return qrcode, img, test_data
 
@@ -389,7 +426,7 @@ def readEncode(img, format_img='png'):
     return base64.b64encode(cv2.imencode('.png', img)[1])
 
 
-def _find_template(env, img, line_vals, test):
+def _find_template(env, img, line_vals, test, resize_ratio):
     """
     Use pattern recognition to detect which template corresponds to img.
 
@@ -405,7 +442,8 @@ def _find_template(env, img, line_vals, test):
     threshold = float(
         env.ref('sbc_compassion.threshold_keypoints_template').value)
     template, pattern_center, result_img = pr.find_template(
-        img, templates, threshold=threshold, test=test)
+        img, templates,  threshold=threshold, test=test,
+        resize_ratio=resize_ratio)
     if test:
         result_preview = manyImages2OneImage(result_img, 1)
         line_vals['template_preview'] = result_preview
@@ -418,7 +456,7 @@ def _find_template(env, img, line_vals, test):
     return pattern_center
 
 
-def _find_languages(env, img, line_vals, test):
+def _find_languages(env, img, line_vals, test, resize_ratio=1.0):
     r"""
     Crop a small part
     of the original picture around the position of each language
@@ -467,10 +505,10 @@ def _find_languages(env, img, line_vals, test):
     minDark = (sys.maxint, sys.maxint)
 
     for checkbox in template.checkbox_ids:
-        a = checkbox.y_min
-        b = checkbox.y_max
-        c = checkbox.x_min
-        d = checkbox.x_max
+        a = int(checkbox.y_min * resize_ratio)
+        b = int(checkbox.y_max * resize_ratio)
+        c = int(checkbox.x_min * resize_ratio)
+        d = int(checkbox.x_max * resize_ratio)
         if not (0 < a < b < h and 0 < c < d < w):
             continue
         checkbox_image = cbr.CheckboxReader(img[a:b+1, c:d+1])
