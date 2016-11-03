@@ -241,7 +241,7 @@ class CorrespondenceTemplate(models.Model):
                     # pattern detection
                     pattern_keypoints = pr.patternRecognition(
                         img, template.pattern_image,
-                        template.get_pattern_area(), dpi=100)[0]
+                        template.get_pattern_area())[0]
                     if pattern_keypoints is None:
                         raise Warning(
                             _("Pattern not found"),
