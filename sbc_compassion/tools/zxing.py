@@ -84,9 +84,9 @@ class BarCodeTool():
         if try_harder:
             cmd.append("--try_harder")
         if qr_only:
-            # cmd.append("--possible_formats")
-            # cmd.append("QR_CODE")
-            cmd.append("--possibleFormats=QR_CODE")
+            cmd.append("--possible_formats")
+            cmd.append("QR_CODE")
+            # cmd.append("--possibleFormats=QR_CODE")
         if crop is not None:
             cmd.append("--crop")
             for i in range(4):

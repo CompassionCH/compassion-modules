@@ -388,6 +388,9 @@ def find_template(img, templates, test=False,
             key_img = tmp_key
             matching_template = template
 
-    print("\nDetected template: " + matching_template.name + ' (' +
-          matching_template.layout + ')')
+    if matching_template:
+        print("\nDetected template: " + matching_template.name + ' (' +
+              matching_template.layout + ')')
+    else:
+        print "no template found"
     return matching_template, keyPointCenter(key_img), test_img
