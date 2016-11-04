@@ -100,6 +100,9 @@
                             <page string="Expenses">
                                 <field name="expense_line_ids"/>
                             </page>
+                            <page string="Leads">
+                                <field name="lead_ids"/>
+                            </page>
                             <page string="New sponsorships">
                                 <field name="contract_ids"/>
                             </page>
