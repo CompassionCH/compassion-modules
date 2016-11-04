@@ -230,7 +230,7 @@ class ImportLettersHistory(models.Model):
         self.ensure_one()
         # keep track of file names to detect duplicates
         file_name_history = []
-        logger.info("Imported letters analysis started...")
+        logger.info("Imported files analysis started...")
         progress = 1
         for attachment in self.data:
             if attachment.name not in file_name_history:
@@ -243,13 +243,13 @@ class ImportLettersHistory(models.Model):
                     zip_ = zipfile.ZipFile(zip_file, 'r')
                     for f in zip_.namelist():
                         logger.info(
-                            "Analyzing letter {}/{}".format(
+                            "Analyzing file {}/{}".format(
                                 progress, self.nber_letters))
                         self._analyze_attachment(zip_.read(f), f)
                         progress += 1
                 # case with normal format (PDF,TIFF)
                 elif func.check_file(attachment.name) == 1:
-                    logger.info("Analyzing letter {}/{}".format(
+                    logger.info("Analyzing file {}/{}".format(
                         progress, self.nber_letters))
                     self._analyze_attachment(file_data, attachment.name)
                     progress += 1
@@ -262,7 +262,7 @@ class ImportLettersHistory(models.Model):
         # remove all the files (now they are inside import_line_ids)
         self.data.unlink()
         self.import_completed = True
-        logger.info("Imported letters analysis completed.")
+        logger.info("Imported files analysis completed.")
 
     def _analyze_attachment(self, file_data, file_name):
         line_vals, document_vals = func.analyze_attachment(
