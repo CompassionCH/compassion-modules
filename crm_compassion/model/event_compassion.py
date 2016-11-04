@@ -82,6 +82,7 @@ class event_compassion(models.Model):
         'Expected sponsorships', track_visibility='onchange')
     lead_id = fields.Many2one(
         'crm.lead', 'Opportunity', track_visibility='onchange')
+    lead_ids = fields.One2many('crm.lead', 'event_id', 'Leads')
     won_sponsorships = fields.Integer(
         related='origin_id.won_sponsorships', store=True)
     project_id = fields.Many2one('project.project', 'Project')
