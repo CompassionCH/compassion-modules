@@ -239,14 +239,17 @@ class CorrespondenceTemplate(models.Model):
                 img = template._compute_img_constant()
                 if img is not None:
                     # pattern detection
-                    pattern_keypoints = pr.patternRecognition(
+                    res = pr.patternRecognition(
                         img, template.pattern_image,
-                        template.get_pattern_area())[0]
-                    if pattern_keypoints is None:
+                        template.get_pattern_area())
+                    if res is None:
                         raise Warning(
                             _("Pattern not found"),
                             _("The pattern could not be detected in given "
                               "template image."))
+                    else:
+                        pattern_keypoints = res[0]
+
                     template.nber_keypoints = pattern_keypoints.shape[0]
                     # find center of the pattern
                     pattern_center = pr.keyPointCenter(pattern_keypoints)
@@ -268,9 +271,12 @@ class CorrespondenceTemplate(models.Model):
                     pass
 
                 # computation before any modifications
-                pattern_keypoints = pr.patternRecognition(
+                res = pr.patternRecognition(
                     img, template.with_context(bin_size=False).pattern_image,
-                    template.get_pattern_area())[0]
+                    template.get_pattern_area())
+                if res is not None:
+                    pattern_keypoints = res[0]
+
                 # no reason behind it, just need a scaling
                 radius = template.page_width/Style.radius_scale
                 # blue square

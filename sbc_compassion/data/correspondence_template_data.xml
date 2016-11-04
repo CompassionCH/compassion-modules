@@ -1,6 +1,5 @@
 <openerp>
-    <data>
-    <!--<data noupdate="1">-->
+    <data noupdate="1">
     <!-- Templates -->
         <record id="default_template" model="correspondence.template">
             <field name="name">Default Template</field>
