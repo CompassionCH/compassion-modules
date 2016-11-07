@@ -3,12 +3,10 @@
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Emmanuel Girardin <emmanuel.girardin@outlook.com>
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
 
-from . import intervention_mapping
-from . import intervention_search_mapping
-from . import global_intervention_mapping
+from . import intervention_search

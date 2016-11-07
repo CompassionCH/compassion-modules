@@ -26,29 +26,21 @@ class GenericIntervention(models.AbstractModel):
 
     # General Information
     #####################
-    name = fields.Char(required=True)
+    name = fields.Char()
     intervention_id = fields.Char(required=True)
-    field_office_id = fields.Many2one(
-        'compassion.field.office', required=True)
+    field_office_id = fields.Many2one('compassion.field.office')
     icp_id = fields.Many2one('compassion.project')
     description = fields.Text()
     additional_marketing_information = fields.Text()
     category_id = fields.Many2one(
-        'compassion.intervention.category', 'Category', required=True
+        'compassion.intervention.category', 'Category',
     )
 
     type = fields.Selection(related='category_id.type')
     subcategory_id = fields.Many2one(
         'compassion.intervention.subcategory', 'Subcategory',
     )
-
-    funding_status = fields.Selection([
-        ("Fully Committed", _("Fully committed")),
-        ("Inactive", _("Inactive")),
-        ("Ineligible", _("Ineligible")),
-        ("Partially Committed", _("Partially committed")),
-        ("Partially HeldFully Held", _("Partially held")),
-    ])
+    funding_status = fields.Selection('get_funding_statuses')
 
     # Schedule Information
     ######################
@@ -61,7 +53,22 @@ class GenericIntervention(models.AbstractModel):
     ####################
     currency_usd = fields.Many2one('res.currency', compute='_compute_usd')
     estimated_costs = fields.Float()
+    remaining_amount_to_raise = fields.Float()
+    pdc_costs = fields.Float(help='Program development costs')
+    total_cost = fields.Float()
     estimated_impacted_beneficiaries = fields.Integer()
+
+    @api.model
+    def get_funding_statuses(self):
+        return [
+            ("Available", _("Available")),
+            ("Partially Held", _("Partially held")),
+            ("Fully Held", _("Fully held")),
+            ("Partially Committed", _("Partially committed")),
+            ("Fully Committed", _("Fully committed")),
+            ("Inactive", _("Inactive")),
+            ("Ineligible", _("Ineligible")),
+        ]
 
     @api.model
     def get_fields(self):
@@ -70,7 +77,8 @@ class GenericIntervention(models.AbstractModel):
             'description', 'additional_marketing_information', 'category_id',
             'subcategory_id', 'funding_status', 'is_fo_priority',
             'proposed_start_date', 'start_no_later_than', 'estimated_costs',
-            'estimated_impacted_beneficiaries'
+            'estimated_impacted_beneficiaries', 'remaining_amount_to_raise',
+            'pdc_costs', 'total_cost'
         ]
 
     def get_vals(self):
@@ -101,4 +109,6 @@ class GlobalIntervention(models.TransientModel):
     _name = 'compassion.global.intervention'
     _description = 'Global Intervention'
 
-    remaining_amount_to_raise = fields.Float()
+    parent_intervention = fields.Char()
+    holding_partner_id = fields.Many2one(
+        'compassion.global.partner', 'Major holding partner')

@@ -28,6 +28,9 @@ class CompassionIntervention(models.Model):
     # General Information
     #####################
     type = fields.Selection(store=True, readonly=True)
+    parent_id = fields.Many2one(
+        'compassion.intervention', help='Parent Intervention'
+    )
     intervention_status = fields.Selection([
         ("Committed", _("Committed")),
         ("Fully Funded", _("Fully funded")),
@@ -56,7 +59,6 @@ class CompassionIntervention(models.Model):
     # Budget Information (all monetary fields are in US dollars)
     ####################
     estimated_local_contribution = fields.Float()
-    total_cost = fields.Float(help='Actual costs')
     impacted_beneficiaries = fields.Integer(
         help='Actual number of impacted beneficiaries')
     local_contribution = fields.Float(help='Actual local contribution')

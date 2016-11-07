@@ -41,7 +41,9 @@
     'data': [
         'security/gmc_groups.xml',
         'security/ir.model.access.csv',
-        'view/gmc_message_view.xml',
+        'views/gmc_message_view.xml',
+        'views/advanced_query_view.xml',
+        'data/query_operators.xml',
     ],
     'demo': [
         'demo/res_users.xml'

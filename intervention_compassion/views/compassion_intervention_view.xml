@@ -87,6 +87,38 @@
             </field>
         </record>
 
+        <record id="view_compassion_global_intervention_tree" model="ir.ui.view">
+            <field name="name">compassion.global.intervention.tree</field>
+            <field name="model">compassion.global.intervention</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="category_id"/>
+                    <field name="intervention_id"/>
+                    <field name="field_office_id"/>
+                    <field name="icp_id"/>
+                    <field name="description"/>
+                    <field name="funding_status"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_compassion_intervention_tree" model="ir.ui.view">
+            <field name="name">compassion.intervention.tree</field>
+            <field name="model">compassion.intervention</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="category_id"/>
+                    <field name="intervention_id"/>
+                    <field name="field_office_id"/>
+                    <field name="icp_id"/>
+                    <field name="description"/>
+                    <field name="funding_status"/>
+                </tree>
+            </field>
+        </record>
+
         <!-- Actions -->
         <record id="open_view_intervention_tree" model="ir.actions.act_window">
             <field name="name">Interventions</field>
