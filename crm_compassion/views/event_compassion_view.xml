@@ -109,6 +109,9 @@
                             <page string="Allocated children">
                                 <field name="allocate_child_ids"/>
                             </page>
+                            <page string="Leads">
+                                <field name="lead_ids"/>
+                            </page>
                             <page string="New sponsorships">
                                 <field name="contract_ids"/>
                             </page>

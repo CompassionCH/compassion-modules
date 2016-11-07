@@ -17,8 +17,9 @@ class crm_lead(models.Model):
 
     planned_sponsorships = fields.Integer(
         'Expected new sponsorships', track_visibility='onchange')
+    event_id = fields.Many2one('crm.event.compassion', 'Event')
     event_ids = fields.One2many(
-        'crm.event.compassion', 'lead_id', 'Event',
+        'crm.event.compassion', 'lead_id', 'Events',
         readonly=True)
 
     @api.multi

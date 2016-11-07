@@ -1,0 +1,23 @@
+.jumbotron{padding-top: 102px;}
+
+.navbar-header{padding: 1em 0; }
+
+.navbar{background:#0054a6;}
+
+.jumbotron{min-height: 550px; background: url('/website_crm_compassion/static/img/back_ke.jpg');background-position: center top; background-size: cover;}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background:#0054a6;
+}
