@@ -652,7 +652,7 @@ class Correspondence(models.Model):
             image_data = None
             if letter_url:
                 image_data = SBCConnector().get_letter_image(
-                    letter_url, 'pdf', dpi=300)
+                    letter_url, 'pdf', dpi=300)  # resolution
             if image_data is None:
                 raise Warning(
                     _("Image of letter {} was not found remotely.").format(
