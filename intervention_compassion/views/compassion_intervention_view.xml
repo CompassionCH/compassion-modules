@@ -14,7 +14,7 @@
                             </h1>
                         </div>
                         <div class="oe_right oe_button_box" name="buttons">
-                            <!--<button name="get_infos" string="get infos" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>-->
+                            <button name="get_infos" string="get infos" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
                         </div>
                         <group>
                             <group>

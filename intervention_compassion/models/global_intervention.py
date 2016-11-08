@@ -28,13 +28,15 @@ class GenericIntervention(models.AbstractModel):
     #####################
     name = fields.Char(required=True)
     intervention_id = fields.Char(required=True)
-    field_office_id = fields.Many2one('compassion.field.office', required=True)
+    field_office_id = fields.Many2one(
+        'compassion.field.office', required=True)
     icp_id = fields.Many2one('compassion.project')
     description = fields.Text()
     additional_marketing_information = fields.Text()
     category_id = fields.Many2one(
         'compassion.intervention.category', 'Category', required=True
     )
+
     type = fields.Selection(related='category_id.type')
     subcategory_id = fields.Many2one(
         'compassion.intervention.subcategory', 'Subcategory',
@@ -55,6 +57,7 @@ class GenericIntervention(models.AbstractModel):
 
     # Budget Information (all monetary fields are in US dollars)
     ####################
+    # TODO not sure about the mapping
     currency_usd = fields.Many2one('res.currency', compute='_compute_usd')
     estimated_costs = fields.Float()
     estimated_impacted_beneficiaries = fields.Integer()

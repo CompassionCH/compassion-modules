@@ -11,7 +11,9 @@
 
 import logging
 
-from openerp import models, fields, _
+from openerp import models, fields, _, api
+from openerp.addons.message_center_compassion.mappings import base_mapping \
+     as mapping
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +27,7 @@ class CompassionIntervention(models.Model):
 
     # General Information
     #####################
-    type = fields.Selection(store=True, readonly=True)
+    type = fields.Selection(store=True, readonly=True)  # TODO
     intervention_status = fields.Selection([
         ("Committed", _("Committed")),
         ("Fully Funded", _("Fully funded")),
@@ -80,19 +82,68 @@ class CompassionIntervention(models.Model):
         ("GP Preferences Submitted", _("GP Preferences Submitted")),
         ("GP Rejected Costs", _("GP Rejected Costs")),
     ])
+    # TODO USD or not USD?
     fo_proposed_sla_costs = fields.Float(
         help='The costs proposed by the Field Office for the SLA')
     approved_sla_costs = fields.Float(
         help='The final approved Service Level Agreement Cost'
     )
-    gp_interim_report_request = fields.Boolean()
-    gp_final_report_request = fields.Boolean()
+    gp_interim_report_request = fields.Boolean()    # TODO: mapping not found
+    gp_final_report_request = fields.Boolean()      # TODO: mapping not found
+    # TODO: mapping not found. Is it "GlobalPartnerRequestedDeliverables" ??
     deliverable_ids = fields.Many2many(
         'compassion.intervention.deliverable',
         'compassion_intervention_deliverable_rel',
         'intervention_id', 'deliverable_id',
         string='Selected Deliverables'
     )
+
+    @api.multi
+    def get_infos(self):
+        """Get the most recent case study, basic informations, updates
+           portrait picture and creates the project if it doesn't exist.
+        """
+        message_obj = self.env['gmc.message.pool'].with_context(
+            async_mode=False)
+        action_id = self.env.ref(
+            'intervention_compassion.intervention_details_request').id
+
+        message_vals = {
+            'action_id': action_id,
+            'object_id': self.id,
+        }
+        message_obj.create(message_vals)
+        return True
+
+    # TODO: for incoming messages
+    @api.model
+    def process_commkit(self, commkit_data):
+        """This function is automatically executed when a
+        Message is received. It will convert the message from json to odoo
+        format and then update the concerned records
+        :param commkit_data contains the data of the message (json)
+        :return list of intervention ids which are concerned by the
+        message """
+
+        intervention_mapping = mapping.new_onramp_mapping(
+            self._name,
+            self.env,
+            'intervention_mapping')
+        # actually commkit_data is a dictionary with a single entry which
+        # value is a list of dictionary (for each record)
+        interventionDetailsRequest = commkit_data[
+            'InterventionDetailsRequest']
+        intervention_ids = []
+        # For each dictionary, we update the corresponding record
+        for idr in interventionDetailsRequest:
+            vals = intervention_mapping.get_vals_from_connect(idr)
+            intervention_id = vals['intervention_id']
+            intervention_ids.append(intervention_id)
+            intervention = self.env[
+                'compassion.intervention'].browse([intervention_id])
+            intervention.write(vals)
+
+        return intervention_ids
 
 
 class InterventionDeliverable(models.Model):
