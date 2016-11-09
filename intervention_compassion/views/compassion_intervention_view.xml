@@ -28,7 +28,7 @@
                             <group>
                                 <field name="funding_status"/>
                                 <field name="intervention_status"/>
-                                <field name="funding_global_partner_ids" widget="many2many_tags"/>
+                                <field name="funding_global_partners"/>
                                 <field name="service_level"/>
                                 <field name="cancel_reason"/>
                             </group>
@@ -42,6 +42,7 @@
                                         <field name="start_no_later_than"/>
                                         <field name="start_date"/>
                                         <field name="expected_duration"/>
+                                        <field name="actual_duration"/>
                                     </group>
                                     <group string="End">
                                         <field name="initial_planned_end_date"/>
@@ -70,8 +71,7 @@
                                     <field name="sla_negotiation_status"/>
                                     <field name="fo_proposed_sla_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                                     <field name="approved_sla_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                    <field name="gp_interim_report_request"/>
-                                    <field name="gp_final_report_request"/>
+                                    <field name="sla_comments"/>
                                 </group>
                                 <group>
                                     <field name="deliverable_ids"/>

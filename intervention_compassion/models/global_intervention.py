@@ -41,6 +41,7 @@ class GenericIntervention(models.AbstractModel):
     subcategory_id = fields.Many2one(
         'compassion.intervention.subcategory', 'Subcategory',
     )
+
     funding_status = fields.Selection([
         ("Fully Committed", _("Fully committed")),
         ("Inactive", _("Inactive")),
@@ -54,10 +55,10 @@ class GenericIntervention(models.AbstractModel):
     is_fo_priority = fields.Boolean('Is Field Office priority')
     proposed_start_date = fields.Date()
     start_no_later_than = fields.Date()
+    expected_duration = fields.Integer(help='Expected duration in months')
 
     # Budget Information (all monetary fields are in US dollars)
     ####################
-    # TODO not sure about the mapping
     currency_usd = fields.Many2one('res.currency', compute='_compute_usd')
     estimated_costs = fields.Float()
     estimated_impacted_beneficiaries = fields.Integer()
