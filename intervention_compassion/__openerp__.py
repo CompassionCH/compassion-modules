@@ -45,6 +45,7 @@
         'security/intervention_groups.xml',
         'security/ir.model.access.csv',
         'views/compassion_intervention_view.xml',
+        'views/global_intervention_view.xml',
         'views/intervention_search_view.xml',
     ],
     'demo': [],

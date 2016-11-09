@@ -28,8 +28,9 @@ class GenericIntervention(models.AbstractModel):
     #####################
     name = fields.Char()
     intervention_id = fields.Char(required=True)
-    field_office_id = fields.Many2one('compassion.field.office')
-    icp_id = fields.Many2one('compassion.project')
+    field_office_id = fields.Many2one('compassion.field.office',
+                                      'Field Office')
+    icp_id = fields.Many2one('compassion.project', 'ICP')
     description = fields.Text()
     additional_marketing_information = fields.Text()
     category_id = fields.Many2one(
@@ -110,5 +111,18 @@ class GlobalIntervention(models.TransientModel):
     _description = 'Global Intervention'
 
     parent_intervention = fields.Char()
+    amount_on_hold = fields.Float(compute='_compute_amount_on_hold')
     holding_partner_id = fields.Many2one(
         'compassion.global.partner', 'Major holding partner')
+
+    @api.multi
+    def _compute_amount_on_hold(self):
+        for intervention in self:
+            intervention.amount_on_hold = \
+                intervention.total_cost - \
+                intervention.remaining_amount_to_raise
+
+    @api.multi
+    def make_hold(self):
+        # TODO
+        return True
