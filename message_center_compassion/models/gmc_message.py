@@ -310,19 +310,24 @@ class GmcMessagePool(models.Model):
             onramp_answer = onramp.send_message(
                 url_endpoint, action.request_type, body=message_data)
 
-        results = False
         if 200 <= onramp_answer['code'] < 300:
             # Success, loop through answer to get individual results
             data_objects = self.env[action.model].with_context(
                 lang='en_US').browse(self.mapped('object_id'))
             results = onramp_answer.get('content', {})
-            for wrapper in action.connect_answer_wrapper.split('.'):
-                results = results.get(wrapper, results)
+            answer_wrapper = action.connect_answer_wrapper
+            if answer_wrapper:
+                for wrapper in answer_wrapper.split('.'):
+                    results = results.get(wrapper, results)
             if not results:
-                results = []
-            object_mapping = mapping.new_onramp_mapping(action.model,
-                                                        self.env,
-                                                        action.mapping_name)
+                self._answer_failure(onramp_answer)
+                return
+
+            object_mapping = mapping.new_onramp_mapping(
+                action.model, self.env, action.mapping_name)
+
+            if not isinstance(results, list):
+                results = [results]
             for i in range(0, len(results)):
                 result = results[i]
                 content_sent = message_data.get(
@@ -351,22 +356,24 @@ class GmcMessagePool(models.Model):
                         'failure_reason': result['Message'],
                     })
                 self[i].write(mess_vals)
+        else:
+            self._answer_failure(onramp_answer)
 
-        if not results:
-            # Complete failure (messages were not processed)
-            fail = onramp_answer.get('content', {
-                'Error': onramp_answer.get('Error', 'None')})
-            results = onramp_answer.get('content', {}).get(
-                action.connect_answer_wrapper, [])
-            error_message = str(fail.get('Error', 'None'))
-            self.write({
-                'state': 'failure',
-                'failure_reason':
-                    '[%s] %s' % (onramp_answer['code'],
-                                 error_message if
-                                 error_message != 'None' else
-                                 (results if results else error_message))
-            })
+    def _answer_failure(self, onramp_answer, results=None):
+        """ Write error message when onramp answer is not a success.
+            :onramp_answer: complete message received back
+            :results: extracted content from the answer
+        """
+        fail = onramp_answer.get('content', {
+            'Error': onramp_answer.get('Error', 'None')})
+        error_message = str(fail.get('Error', 'None'))
+        self.write({
+            'state': 'failure',
+            'failure_reason':
+                '[%s] %s' % (onramp_answer['code'],
+                             error_message if error_message != 'None' else
+                             (results if results else error_message))
+        })
 
     def _get_url_endpoint(self):
         """ Gets the endpoint of GMC based on the action. """

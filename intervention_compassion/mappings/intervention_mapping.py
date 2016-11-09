@@ -15,6 +15,7 @@ from openerp.addons.message_center_compassion.mappings.base_mapping \
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import datetime
 
+
 class InterventionMapping(OnrampMapping):
     """ This class contains the mapping between Odoo fields and GMC field
     names for the model .

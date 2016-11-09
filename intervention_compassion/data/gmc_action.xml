@@ -22,5 +22,16 @@
             <field name="description">Update Intervention Kit</field>
             <field name="auto_process">1</field>
         </record>
+
+        <!-- Search Intervention -->
+        <record id="intervention_search_action" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionSearch</field>
+            <field name="model">compassion.intervention.search</field>
+            <field name="description">This will send a search query for Interventions.</field>
+            <field name="connect_service">interventions/availabilityquery</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">1</field>
+        </record>
     </data>
 </openerp>

@@ -1,0 +1,185 @@
+# -*- encoding: utf-8 -*-
+##############################################################################
+#
+#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Emanuel Cino <ecino@compassion.ch>
+#
+#    The licence is in the file __openerp__.py
+#
+##############################################################################
+import sys
+
+from openerp import models, fields, api, _
+from openerp.exceptions import Warning
+
+
+class InterventionSearch(models.TransientModel):
+    """
+    Class used for searching interventions in the Mi3 Portal.
+    """
+    _name = 'compassion.intervention.search'
+
+    ##########################################################################
+    #                                 FIELDS                                 #
+    ##########################################################################
+    search_filter_ids = fields.Many2many(
+        'compassion.query.filter', 'compassion_intervention_search_filters',
+        'search_id', 'query_id', 'Filters'
+    )
+    intervention_ids = fields.Many2many(
+        'compassion.global.intervention',
+        'compassion_intervention_search_to_results',
+        'search_id', 'global_intervention_id', 'Interventions'
+    )
+    use_advanced_search = fields.Boolean()
+
+    # Search helpers
+    ################
+    type_chooser = fields.Selection('get_types')
+    type_selected = fields.Char(readonly=True)
+    category_id = fields.Many2one(
+        'compassion.intervention.category', 'Category')
+    status_chooser = fields.Selection('get_statuses')
+    status_selected = fields.Char(readonly=True)
+    intervention_id = fields.Char()
+    icp_ids = fields.Many2many(
+        'compassion.project', 'compassion_intervention_search_icp',
+        'search_id', 'icp_id', 'ICPs'
+    )
+    field_office_ids = fields.Many2many(
+        'compassion.field.office', 'compassion_intervention_search_fo',
+        'search_id', 'fo_id', 'Field offices'
+    )
+    remaining_amount_equal = fields.Float()
+    remaining_amount_greater = fields.Float('Remaining amount greater than')
+    remaining_amount_lower = fields.Float('Remaining amount lower than')
+
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+    def get_types(self):
+        return self.env['compassion.intervention.category'].get_types()
+
+    def get_statuses(self):
+        return self.env[
+            'compassion.generic.intervention'].get_funding_statuses()
+
+    ##########################################################################
+    #                             VIEW CALLBACKS                             #
+    ##########################################################################
+    @api.multi
+    def add_type(self):
+        self.ensure_one()
+        if self.type_selected:
+            self.type_selected += ';' + self.type_chooser
+        else:
+            self.type_selected = self.type_chooser
+        self.type_chooser = False
+        return True
+
+    @api.multi
+    def reset_type(self):
+        self.ensure_one()
+        self.type_selected = False
+        return True
+
+    @api.multi
+    def add_status(self):
+        self.ensure_one()
+        if self.status_selected:
+            self.status_selected += ';' + self.status_chooser
+        else:
+            self.status_selected = self.status_chooser
+        self.status_chooser = False
+        return True
+
+    @api.multi
+    def reset_status(self):
+        self.ensure_one()
+        self.status_selected = False
+        return True
+
+    @api.multi
+    def compute_search(self):
+        self.ensure_one()
+        # Remove all search filters
+        self.write({'search_filter_ids': [(5, False, False)]})
+
+        # Utility to get write values for a selected filter
+        def _get_filter(field_name, operator_id, value):
+            field_id = self.env['ir.model.fields'].search([
+                ('model', '=', 'compassion.global.intervention'),
+                ('name', '=', field_name)
+            ]).id
+            return (0, 0, {
+                'field_id': field_id,
+                'operator_id': operator_id,
+                'value': value
+            })
+
+        # Construct filter values
+        anyof_id = self.env.ref('message_center_compassion.anyof').id
+        is_id = self.env.ref('message_center_compassion.is').id
+        new_filters = list()
+        if self.type_selected:
+            new_filters.append(_get_filter(
+                'type', anyof_id, self.type_selected))
+        if self.category_id:
+            new_filters.append(_get_filter(
+                'category_id', is_id, self.category_id.name))
+        if self.status_selected:
+            new_filters.append(_get_filter(
+                'funding_status', anyof_id, self.status_selected))
+        if self.intervention_id:
+            new_filters.append(_get_filter(
+                'intervention_id', is_id, self.intervention_id))
+        if self.icp_ids:
+            icp_codes = ';'.join(self.icp_ids.mapped('icp_id'))
+            new_filters.append(_get_filter(
+                'icp_id', anyof_id, icp_codes))
+        if self.field_office_ids:
+            fo_codes = ';'.join(self.field_office_ids.mapped('country_code'))
+            new_filters.append(_get_filter(
+                'field_office_id', anyof_id, fo_codes))
+        if self.remaining_amount_equal:
+            equalto_id = self.env.ref('message_center_compassion.equalto').id
+            new_filters.append(_get_filter(
+                'remaining_amount_to_raise', equalto_id,
+                self.remaining_amount_equal))
+        elif self.remaining_amount_greater or self.remaining_amount_lower:
+            between_id = self.env.ref('message_center_compassion.between').id
+            min_cost = str(self.remaining_amount_greater) or '0'
+            max_cost = str(self.remaining_amount_lower) or str(sys.maxint)
+            new_filters.append(_get_filter(
+                'remaining_amount_to_raise', between_id,
+                min_cost + ';' + max_cost))
+
+        return self.write({'search_filter_ids': new_filters})
+
+    @api.multi
+    def do_search(self):
+        self.ensure_one()
+        if not self.use_advanced_search:
+            self.compute_search()
+        self.intervention_ids = False
+        action = self.env.ref(
+            'intervention_compassion.intervention_search_action')
+        message = self.env['gmc.message.pool'].with_context(
+            async_mode=False).create({
+                'action_id': action.id,
+                'object_id': self.id
+            })
+        if not self.intervention_ids:
+            raise Warning(_("No intervention found"),
+                          message.failure_reason or '')
+        return {
+            'name': _('Interventions'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'compassion.global.intervention',
+            'context': self.env.context,
+            'domain': [('id', 'in', self.intervention_ids.ids)],
+            'target': 'current',
+        }

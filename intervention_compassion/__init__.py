@@ -11,4 +11,4 @@
 
 from . import models
 from . import mappings
-# from . import wizards
+from . import wizards

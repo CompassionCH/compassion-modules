@@ -9,3 +9,4 @@
 #
 ##############################################################################
 from . import base_mapping
+from . import advanced_query_mapping
