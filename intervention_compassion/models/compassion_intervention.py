@@ -11,7 +11,9 @@
 
 import logging
 
-from openerp import models, fields, _
+from openerp import models, fields, _, api
+from openerp.addons.message_center_compassion.mappings import base_mapping \
+     as mapping
 
 logger = logging.getLogger(__name__)
 
@@ -34,11 +36,7 @@ class CompassionIntervention(models.Model):
         ("Partially Committed", _("Partially committed")),
         ("Partially Funded", _("Partially funded")),
     ])
-    funding_global_partner_ids = fields.Many2many(
-        'compassion.global.partner', 'compassion_gp_intervention_rel',
-        'intervention_id', 'global_partner_id',
-        'Funding Global Partners'
-    )
+    funding_global_partners = fields.Char()
     service_level = fields.Selection([
         ("Level 1", _("Level 1")),
         ("Level 2", _("Level 2")),
@@ -49,7 +47,8 @@ class CompassionIntervention(models.Model):
     # Schedule Information
     ######################
     start_date = fields.Date(help='Actual start date')
-    expected_duration = fields.Integer(help='Expected duration in months')
+    actual_duration = fields.Integer(
+        help='Actual duration in months')
     initial_planned_end_date = fields.Date()
     planned_end_date = fields.Date()
     end_date = fields.Date(help='Actual end date')
@@ -80,19 +79,65 @@ class CompassionIntervention(models.Model):
         ("GP Preferences Submitted", _("GP Preferences Submitted")),
         ("GP Rejected Costs", _("GP Rejected Costs")),
     ])
+    sla_comments = fields.Char()
     fo_proposed_sla_costs = fields.Float(
         help='The costs proposed by the Field Office for the SLA')
     approved_sla_costs = fields.Float(
         help='The final approved Service Level Agreement Cost'
     )
-    gp_interim_report_request = fields.Boolean()
-    gp_final_report_request = fields.Boolean()
     deliverable_ids = fields.Many2many(
         'compassion.intervention.deliverable',
         'compassion_intervention_deliverable_rel',
         'intervention_id', 'deliverable_id',
         string='Selected Deliverables'
     )
+
+    @api.multi
+    def get_infos(self):
+        """ Get the most recent information about the intervention """
+        message_obj = self.env['gmc.message.pool'].with_context(
+            async_mode=False)
+        action_id = self.env.ref(
+            'intervention_compassion.intervention_details_request').id
+
+        message_vals = {
+            'action_id': action_id,
+            'object_id': self.id,
+        }
+        message_obj.create(message_vals)
+        return True
+
+    # TODO: for incoming messages
+    @api.model
+    def process_commkit(self, commkit_data):
+        """This function is automatically executed when a
+        Message is received. It will convert the message from json to odoo
+        format and then update the concerned records
+        :param commkit_data contains the data of the message (json)
+        :return list of intervention ids which are concerned by the
+        message """
+        intervention_mapping = mapping.new_onramp_mapping(
+            self._name,
+            self.env,
+            'intervention_mapping')
+        # actually commkit_data is a dictionary with a single entry which
+        # value is a list of dictionary (for each record)
+        interventionDetailsRequest = commkit_data[
+            'InterventionDetailsRequest']
+        intervention_local_ids = []
+        # For each dictionary, we update the corresponding record
+        for idr in interventionDetailsRequest:
+            vals = intervention_mapping.get_vals_from_connect(idr)
+            intervention_id = vals['intervention_id']
+
+            intervention = self.env['compassion.intervention'].search([
+                ('intervention_id', '=like', intervention_id)
+            ])
+
+            intervention_local_ids.append(intervention.id)
+            intervention.write(vals)
+
+        return intervention_local_ids
 
 
 class InterventionDeliverable(models.Model):

@@ -1,0 +1,26 @@
+<openerp>
+    <data>
+        <!-- Get Intervention Kit -->
+        <record id="intervention_details_request" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionDetailsRequest</field>
+            <field name="mapping_name">intervention_mapping</field>
+            <field name="model">compassion.intervention</field>
+            <field name="description">GET Intervention Kit</field>
+            <field name="connect_service">interventions/${object.intervention_id}/kits/InterventionKit</field>
+            <field name="connect_answer_wrapper">InterventionDetailsRequest</field>
+            <field name="request_type">GET</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- update Intervention Kit -->
+        <record id="update_intervention_details" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">UpdateInterventionDetailsRequest</field>
+            <field name="mapping_name">intervention_mapping</field>
+            <field name="model">compassion.intervention</field>
+            <field name="description">Update Intervention Kit</field>
+            <field name="auto_process">1</field>
+        </record>
+    </data>
+</openerp>

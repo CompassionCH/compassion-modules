@@ -41,6 +41,7 @@
         'data/compassion.intervention.subcategory.csv',
         'data/compassion.intervention.deliverable.csv',
         'data/install_category_rel.xml',
+        'data/gmc_action.xml',
         'security/intervention_groups.xml',
         'security/ir.model.access.csv',
         'views/compassion_intervention_view.xml',
