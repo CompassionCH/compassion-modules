@@ -57,7 +57,7 @@ class CorrespondenceTemplate(models.Model):
     pattern_image = fields.Binary()
     template_image = fields.Binary(
         compute='_compute_image', inverse='_set_image',
-        help='Use 300 DPI images')
+        help='Use 300 DPI images')  # resolution
     detection_result = fields.Binary(
         compute='_compute_detection')
     page_width = fields.Integer(
@@ -121,6 +121,7 @@ class CorrespondenceTemplate(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+
     def get_gmc_layouts(self):
         """ Returns the layouts available to use with GMC. """
         return [
@@ -173,7 +174,7 @@ class CorrespondenceTemplate(models.Model):
                     _("Unsupported format"),
                     _("Please only use jpg or png files."))
             # Be sure image is in 300 DPI
-            with Image(blob=datas, resolution=300) as img:
+            with Image(blob=datas, resolution=300) as img:  # resolution
                 datas = base64.b64encode(img.make_blob())
             attachment_obj = self.env['ir.attachment']
             attachment = attachment_obj.search([
@@ -233,14 +234,14 @@ class CorrespondenceTemplate(models.Model):
         detected (blue square and pattern_center)
         """
         for template in self:
-            if (template.template_image and template.pattern_image):
+            if template.template_image and template.pattern_image:
                 # compute image size and QR code position
                 img = template._compute_img_constant()
                 if img is not None:
                     # pattern detection
                     pattern_keypoints = pr.patternRecognition(
                         img, template.pattern_image,
-                        template.get_pattern_area())
+                        template.get_pattern_area())[0]
                     if pattern_keypoints is None:
                         raise Warning(
                             _("Pattern not found"),
@@ -269,7 +270,7 @@ class CorrespondenceTemplate(models.Model):
                 # computation before any modifications
                 pattern_keypoints = pr.patternRecognition(
                     img, template.with_context(bin_size=False).pattern_image,
-                    template.get_pattern_area())
+                    template.get_pattern_area())[0]
                 # no reason behind it, just need a scaling
                 radius = template.page_width/Style.radius_scale
                 # blue square
@@ -363,15 +364,19 @@ class CorrespondenceTemplate(models.Model):
         area[2:] = area[2:]/float(self.page_height)
         return area
 
-    def get_bluesquare_area(self):
+    def get_bluesquare_area(self, resize_factor=1.0):
         """ Returns the coordinates of the blue square upper-right corner
             [x, y]
         """
-        return numpy.array([self.bluesquare_x, self.bluesquare_y])
+        upper_right = numpy.array([self.bluesquare_x, self.bluesquare_y])
+        upper_right *= resize_factor
+        return upper_right
 
-    def get_template_size(self):
+    def get_template_size(self, resize_factor=1.0):
         """ Returns the width and height of the template in a numpy array. """
-        return numpy.array([self.page_width, self.page_height])
+        wh = numpy.array([self.page_width, self.page_height])
+        wh *= resize_factor
+        return wh
 
     def get_pattern_center(self):
         """ Returns the coordinates of the pattern center. """
