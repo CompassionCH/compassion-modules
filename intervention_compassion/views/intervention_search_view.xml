@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <!-- Intervention Form View -->
+        <!-- Intervention Search Wizard Form View -->
         <record id="view_compassion_intervention_search_form" model="ir.ui.view">
             <field name="name">compassion.intervention.search.form</field>
             <field name="model">compassion.intervention.search</field>
@@ -55,6 +55,27 @@
                             </page>
                         </notebook>
                     </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_intervention_hold_wizard_form" model="ir.ui.view">
+            <field name="name">compassion.intervention.hold.form</field>
+            <field name="model">compassion.intervention.hold.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="intervention_id" invisible="1"/>
+                        <field name="hold_amount"/>
+                        <field name="expiration_date"/>
+                        <field name="primary_owner"/>
+                        <field name="secondary_owner"/>
+                        <field name="service_level"/>
+                        <field name="next_year_opt_in"/>
+                    </group>
+                    <footer>
+                        <button name="make_hold" string="Create Hold" type="object" class="oe_highlight"/>
+                    </footer>
                 </form>
             </field>
         </record>

@@ -310,18 +310,20 @@ class GmcMessagePool(models.Model):
             onramp_answer = onramp.send_message(
                 url_endpoint, action.request_type, body=message_data)
 
+        # Extract the Answer
+        results = onramp_answer.get('content', {})
+        answer_wrapper = action.connect_answer_wrapper
+        if answer_wrapper:
+            for wrapper in answer_wrapper.split('.'):
+                results = results.get(wrapper, results)
+        if not results:
+            self._answer_failure(onramp_answer)
+            return
+
         if 200 <= onramp_answer['code'] < 300:
             # Success, loop through answer to get individual results
             data_objects = self.env[action.model].with_context(
                 lang='en_US').browse(self.mapped('object_id'))
-            results = onramp_answer.get('content', {})
-            answer_wrapper = action.connect_answer_wrapper
-            if answer_wrapper:
-                for wrapper in answer_wrapper.split('.'):
-                    results = results.get(wrapper, results)
-            if not results:
-                self._answer_failure(onramp_answer)
-                return
 
             object_mapping = mapping.new_onramp_mapping(
                 action.model, self.env, action.mapping_name)
@@ -357,22 +359,25 @@ class GmcMessagePool(models.Model):
                     })
                 self[i].write(mess_vals)
         else:
-            self._answer_failure(onramp_answer)
+            self._answer_failure(onramp_answer, results)
 
     def _answer_failure(self, onramp_answer, results=None):
         """ Write error message when onramp answer is not a success.
             :onramp_answer: complete message received back
             :results: extracted content from the answer
         """
-        fail = onramp_answer.get('content', {
-            'Error': onramp_answer.get('Error', 'None')})
-        error_message = str(fail.get('Error', 'None'))
+        error_code = onramp_answer.get('code', onramp_answer.get('Code'))
+        if results and isinstance(results, list):
+            error_message = '\n'.join(
+                map(lambda m: m.get('Message', ''), results))
+        else:
+            fail = onramp_answer.get('content', {
+                'Error': onramp_answer.get('Error', 'None')})
+            error_message = str(fail.get('Error', 'None'))
         self.write({
             'state': 'failure',
             'failure_reason':
-                '[%s] %s' % (onramp_answer['code'],
-                             error_message if error_message != 'None' else
-                             (results if results else error_message))
+                '[%s] %s' % (error_code, error_message or 'None')
         })
 
     def _get_url_endpoint(self):

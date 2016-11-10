@@ -27,7 +27,8 @@
             <field name="arch" type="xml">
                 <form readonly="1">
                     <header>
-                        <button name="make_hold" type="object" string="Put a hold" class="oe_highlight"/>
+                        <field name="can_be_funded" invisible="1"/>
+                        <button name="make_hold" type="object" string="Put a hold" class="oe_highlight" attrs="{'invisible': [('can_be_funded', '=', False)]}"/>
                     </header>
                     <sheet>
                         <div class="oe_title">

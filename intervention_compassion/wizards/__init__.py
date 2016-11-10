@@ -10,3 +10,4 @@
 ##############################################################################
 
 from . import intervention_search
+from . import hold_wizard
