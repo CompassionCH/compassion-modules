@@ -135,15 +135,15 @@ class CorrespondenceTemplate(models.Model):
     def _get_default_checkboxes(self):
         return [
             (0, False, {'language_id': self.env.ref(
-                'child_compassion.lang_compassion_french').id}),
+                'sbc_compassion.lang_compassion_french').id}),
             (0, False, {'language_id': self.env.ref(
-                'child_compassion.lang_compassion_german').id}),
+                'sbc_compassion.lang_compassion_german').id}),
             (0, False, {'language_id': self.env.ref(
-                'child_compassion.lang_compassion_italian').id}),
+                'sbc_compassion.lang_compassion_italian').id}),
             (0, False, {'language_id': self.env.ref(
-                'child_compassion.lang_compassion_english').id}),
+                'sbc_compassion.lang_compassion_english').id}),
             (0, False, {'language_id': self.env.ref(
-                'child_compassion.lang_compassion_spanish').id}),
+                'sbc_compassion.lang_compassion_spanish').id}),
             (0, False, {'language_id': False}),
         ]
 
