@@ -75,6 +75,7 @@ class CompassionIntervention(models.Model):
         help='Actual number of impacted beneficiaries', readonly=True)
     local_contribution = fields.Float(
         readonly=True, help='Actual local contribution')
+    commitment_amount = fields.Float(readonly=True)
 
     # Intervention Details Information
     ##################################
@@ -273,6 +274,22 @@ class CompassionIntervention(models.Model):
         if message.state == 'failure':
             raise Warning(_('Hold not cancelled'), message.failure_reason)
         return True
+
+    @api.multi
+    def create_commitment(self):
+        self.ensure_one()
+        return {
+            'name': _('Intervention Commitment Request'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'compassion.intervention.commitment.wizard',
+            'context': self.with_context({
+                'default_intervention_id': self.id,
+                'default_commitment_amount': self.hold_amount,
+            }).env.context,
+            'target': 'new',
+        }
 
 
 class InterventionDeliverable(models.Model):

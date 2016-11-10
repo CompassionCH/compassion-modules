@@ -77,5 +77,19 @@
             <field name="request_type">POST</field>
             <field name="auto_process">1</field>
         </record>
+
+        <!-- Create Commitment -->
+        <record id="intervention_create_commitment_action" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionCreateCommitment</field>
+            <field name="model">compassion.intervention.commitment.wizard</field>
+            <field name="description">This will create a commitment for an Intervention</field>
+            <field name="connect_service">interventions/commitments</field>
+            <field name="connect_outgoing_wrapper">InterventionCommitmentList</field>
+            <field name="connect_answer_wrapper">InterventionCommitmentResponseList</field>
+            <field name="success_method">commitment_created</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">1</field>
+        </record>
     </data>
 </openerp>

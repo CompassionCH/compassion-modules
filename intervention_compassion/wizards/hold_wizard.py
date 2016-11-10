@@ -26,6 +26,7 @@ class HoldWizard(models.TransientModel):
     )
     created_intervention_id = fields.Many2one('compassion.intervention')
     hold_amount = fields.Float(required=True)
+    usd = fields.Many2one(related='intervention_id.currency_usd')
     expiration_date = fields.Date(required=True)
     next_year_opt_in = fields.Boolean()
     primary_owner = fields.Many2one(

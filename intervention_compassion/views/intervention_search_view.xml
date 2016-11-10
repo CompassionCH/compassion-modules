@@ -65,8 +65,9 @@
             <field name="arch" type="xml">
                 <form>
                     <group>
+                        <field name="usd" invisible="1"/>
                         <field name="intervention_id" invisible="1"/>
-                        <field name="hold_amount"/>
+                        <field name="hold_amount" widget="monetary" options="{'currency_field': 'usd'}"/>
                         <field name="expiration_date"/>
                         <field name="primary_owner"/>
                         <field name="secondary_owner"/>

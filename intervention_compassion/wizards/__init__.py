@@ -11,3 +11,4 @@
 
 from . import intervention_search
 from . import hold_wizard
+from . import commitment_wizard

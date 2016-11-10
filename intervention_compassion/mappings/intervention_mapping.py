@@ -117,7 +117,7 @@ class InterventionMapping(OnrampMapping):
         "ProgramType": None,
         "ProposedSLACost": None,
         "ReasonsForLaunch": None,
-        "RequestedAdditionalFundingUSD": None,
+        "RequestedAdditionalFundingUSD": 'requested_additional_funding',
         "SLAPreferenceSubmittedByUser": None,
         "SocioEmotionalActivities": None,
         "SpiritualActivities": None,
