@@ -31,18 +31,25 @@ class CompassionIntervention(models.Model):
     ##########################################################################
     # General Information
     #####################
+    state = fields.Selection([
+        ('on_hold', _('On Hold')),
+        ('sla', _('SLA Negotiation')),
+        ('committed', _('Committed')),
+        ('active', _('Active')),
+        ('close', _('Closed')),
+        ('cancel', _('Cancelled')),
+    ], default='on_hold')
     type = fields.Selection(store=True, readonly=True)
     parent_id = fields.Many2one(
         'compassion.intervention', help='Parent Intervention', readonly=True
     )
     intervention_status = fields.Selection([
-        ("Committed", _("Committed")),
-        ("Fully Funded", _("Fully funded")),
-        ("Inactive", _("Inactive")),
-        ("On Hold", _("On hold")),
-        ("Partially Committed", _("Partially committed")),
-        ("Partially Funded", _("Partially funded")),
         ("Approved", _("Approved")),
+        ("Cancelled", _("Cancelled")),
+        ("Closed", _("Closed")),
+        ("Draft", _("Draft")),
+        ("Rejected", _("Rejected")),
+        ("Submitted", _("Submitted")),
     ], readonly=True)
     funding_global_partners = fields.Char(readonly=True)
     service_level = fields.Selection([
@@ -118,13 +125,22 @@ class CompassionIntervention(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
+        if vals.get('service_level') == 'Level 3':
+            vals['state'] = 'sla'
         intervention = super(CompassionIntervention, self).create(vals)
         intervention.get_infos()
         return intervention
 
     @api.multi
     def write(self, vals):
-        """ Update hold if values are changed. """
+        """
+        When record is updated :
+
+        - Update hold if values are changed.
+        - Check SLA Negotiation modifications
+        - Check start of intervention
+        - Check end of intervention
+        """
         hold_fields = [
             'hold_amount', 'expiration_date', 'next_year_opt_in',
             'primary_owner', 'secondary_owner']
@@ -134,9 +150,38 @@ class CompassionIntervention(models.Model):
                 update_hold = True
                 break
         res = super(CompassionIntervention, self).write(vals)
+
         if update_hold:
             self.update_hold()
+
+        # Check SLA Negotiation Status
+        if vals.get('sla_negotiation_status') == 'GP Accepted Costs':
+            self.filtered(lambda i: i.state == 'sla').write({
+                'state': 'on_hold'
+            })
+
+        # Check start of Intervention
+        today = fields.Date.today()
+        start = vals.get('start_date')
+        if start and start < today:
+            self.filtered(lambda i: i.state == 'committed').write({
+                'state': 'active'
+            })
+
+        # Check closure of Intervention
+        intervention_status = vals.get('intervention_status')
+        if intervention_status in ('Cancelled', 'Closed'):
+            state = 'close' if intervention_status == 'Closed' else 'cancel'
+            self.write({'state': state})
+
         return res
+
+    @api.multi
+    def unlink(self):
+        """ Only allow to delete cancelled Interventions. """
+        if self.filtered(lambda i: i.state != 'cancel'):
+            raise Warning(_("You can only delete cancelled Interventions."))
+        return super(CompassionIntervention, self).unlink()
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -192,8 +237,11 @@ class CompassionIntervention(models.Model):
 
     @api.multi
     def hold_cancelled(self, intervention_vals):
-        """ Remove the intervention. """
-        return self.sudo().unlink()
+        """ Remove the hold and put intervention in Cancel state. """
+        return self.write({
+            'hold_id': False,
+            'state': 'cancel',
+        })
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

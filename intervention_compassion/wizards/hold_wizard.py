@@ -51,13 +51,19 @@ class HoldWizard(models.TransientModel):
             'secondary_owner': self.secondary_owner,
             'service_level': self.service_level,
         })
-        # Grant create access rights to create intervention
-        self.created_intervention_id = self.env[
-            'compassion.intervention'].with_context(
-            async_mode=True).sudo().create(intervention_vals)
-        # Replace author of record to avoid having admin
-        self.created_intervention_id.message_ids.sudo().write({
-            'author_id': self.env.user.partner_id.id})
+        intervention = self.env['compassion.intervention'].search([
+            ('intervention_id', '=', self.intervention_id.intervention_id)])
+        if intervention:
+            intervention.write(intervention_vals)
+        else:
+            # Grant create access rights to create intervention
+            intervention = self.env[
+                'compassion.intervention'].with_context(
+                async_mode=True).sudo().create(intervention_vals)
+            # Replace author of record to avoid having admin
+            intervention.message_ids.sudo().write({
+                'author_id': self.env.user.partner_id.id})
+        self.created_intervention_id = intervention
 
     @api.multi
     def make_hold(self):

@@ -70,7 +70,7 @@ class InterventionMapping(OnrampMapping):
         "Solutions": 'solutions',
         "StartDate": 'start_date',
         "StartNoLaterThanDate": 'start_no_later_than',
-        "Status": 'intervention_status',  # was "Submitted", not in list
+        "Status": 'intervention_status',
         "SuccessFactors": 'success_factors',
 
         # Not used in odoo:
