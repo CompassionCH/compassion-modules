@@ -163,23 +163,21 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
     :returns: Import Line values, IR Attachment values
     :rtype: list(dict), list(dict)
     """
+    # TODO: add new_dpi and default dpi to the settings of sbc_compassion
     new_dpi = 100.0
     resize_ratio = new_dpi/300.0
 
     line_vals = list()
     document_vals = list()
     letter_datas = list()
-    logger.info("Import letter : {}".format(file_name))
+    logger.info("\tImport file : {}".format(file_name))
 
     inputpdf = PdfFileReader(BytesIO(file_data))
-    tic = time()  # ---------------------------------------
     letter_indexes, imgs = _find_qrcodes(
         env, line_vals, inputpdf, new_dpi, test)
-    print('import_letter_function: _find_qrcodes: ' + str(time() - tic))
+    logger.info("\t{} letters found!".format(len(letter_indexes)-1 or 1))
 
-    tic = time()  # ---------------------------------------
     # Construct the datas for each detected letter: store as PDF
-    logger.info("... found {} letters!".format(len(letter_indexes)-1 or 1))
     if len(letter_indexes) > 1:
         last_index = 0
         for index in letter_indexes[1:]:
@@ -194,13 +192,13 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
     else:
         letter_datas.append(file_data)
 
-    tic = str(time() - tic)  # ---------------------------------------
-    print('import_letter_function:  Construct the datas for each detected ' +
-          'letter: store as PDF: ' + tic)
-
     # now try to find the layout for all splitted letters
     file_split = file_name.split('.')
-    for i in range(0, len(letter_datas)):
+    for i in range(len(letter_datas)):
+        logger.info(
+            "\tAnalyzing template and language of letter {}/{}".format(
+                i+1, len(letter_datas)))
+
         attach_name = file_split[0] + '-' + str(i) + '.pdf'
         document_vals.append({
             'name': attach_name,
@@ -211,23 +209,17 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
         if force_template:
             letter_vals['template_id'] = force_template.id
         else:
-
-            tic = time()  # --------------------------------------------------
             # use pattern recognition to find the template
             _find_template(env, imgs[i], letter_vals, test, resize_ratio)
-            tic = str(time() - tic)  # ---------------------------------------
-            print('import_letter_function: _find_template\t' + tic)
         if letter_vals['template_id'] != \
                 env.ref('sbc_compassion.default_template').id:
-            logger.info("...Letter {} : template found!".format(i))
-
-            tic = time()  # --------------------------------------------------
+            tic = time()
             _find_languages(env, imgs[i], letter_vals, test, resize_ratio)
-            tic = str(time() - tic)  # ---------------------------------------
-            print('import_letter_function: _find_languages\t' + tic)
-            logger.info("...Letter {} : language analysis done.".format(i))
+            logger.info(
+                "\t\tLanguage analysis done in {:.3} sec.".format(time()-tic))
+
         else:
-            logger.info("...Letter {} : default template".format(i))
+            logger.info("\t\tAnalysis failed")
             letter_vals['letter_language_id'] = False
             if test:
                 letter_vals.update({
@@ -260,7 +252,10 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi, test):
     page_imgs = list()
 
     previous_qrcode = ''
+    logger.info("\tThe imported PDF is made of {} pages.".format(
+        inputpdf.numPages))
     for i in xrange(inputpdf.numPages):
+        tic = time()
         output = PdfFileWriter()
         output.addPage(inputpdf.getPage(i))
         page_buffer = BytesIO()
@@ -291,6 +286,12 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi, test):
             if test:
                 values['qr_preview'] = base64.b64encode(test_data)
             line_vals.append(values)
+
+        logger.info(
+            "\t\tPage {}/{} opened and QRCode analyzed in {:.2} "
+            "sec".format(
+                i+1, inputpdf.numPages, time()-tic))
+
     letter_indexes.append(i+1)
 
     return letter_indexes, page_imgs
@@ -316,19 +317,16 @@ def _decode_page(env, page_data, new_dpi):
     tic = time()
     zx = zxing.BarCodeTool()
     with Image(blob=page_data, resolution=int(new_dpi)) as page_image:  #
-        # resolution
-        print('Image(blob=page_data, resolution=100) ' + str(tic - time()))
-
-        tic = time()
         page_data = np.asarray(bytearray(page_image.make_blob('png')))
-        print('page_data ' + str(tic - time()))
 
         tic = time()
         img = cv2.imdecode(page_data, 1)    # Read in color
-        print('img ' + str(tic - time()))
 
         if img is None:
             return None, None, None
+        tic = time()-tic
+        logger.debug("\tPDF opened in {:.3} sec".format(time()-tic))
+
         # Save cropped file on disk for qrcode detection
         left, right, top, bottom = _get_qr_crop(env, page_image.width,
                                                 page_image.height)
@@ -339,8 +337,7 @@ def _decode_page(env, page_data, new_dpi):
 
             tic = time()
             qrcode = zx.decode(filename, try_harder=True)
-            print('qrcode ' + str(tic - time()))
-    print("")
+            logger.debug("\tQRCode decoded in {:.3} sec".format(time()-tic))
     os.remove(filename)
     return qrcode, img, test_data
 
