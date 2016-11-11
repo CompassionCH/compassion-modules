@@ -220,12 +220,15 @@ class CompassionIntervention(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+
     @api.model
-    def process_commkit(self, commkit_data):
+    def update_intervention_details_request(self, commkit_data):
         """This function is automatically executed when a
-        Message is received. It will convert the message from json to odoo
-        format and then update the concerned records
-        :param commkit_data contains the data of the message (json)
+        UpdateInterventionDetailsRequest Message is received. It will
+        convert the message from json to odoo format and then update the
+        concerned records
+        :param commkit_data contains the data of the
+        message (json)
         :return list of intervention ids which are concerned by the
         message """
         intervention_mapping = mapping.new_onramp_mapping(
@@ -243,7 +246,7 @@ class CompassionIntervention(models.Model):
             intervention_id = vals['intervention_id']
 
             intervention = self.env['compassion.intervention'].search([
-                ('intervention_id', '=like', intervention_id)
+                ('intervention_id', '=', intervention_id)
             ])
 
             intervention_local_ids.append(intervention.id)
@@ -265,12 +268,12 @@ class CompassionIntervention(models.Model):
         return True
 
     @api.multi
-    def hold_sent(self, intervention_vals):
+    def hold_sent(self, intervention_vals=None):
         """ Do nothing when hold is sent. """
         return True
 
     @api.multi
-    def hold_cancelled(self, intervention_vals):
+    def hold_cancelled(self, intervention_vals=None):
         """ Remove the hold and put intervention in Cancel state. """
         return self.write({
             'hold_id': False,
@@ -324,6 +327,37 @@ class CompassionIntervention(models.Model):
             }).env.context,
             'target': 'new',
         }
+
+    def intervention_hold_removal_notification(self, commkit_data):
+        """
+        This function is automatically executed when a
+        InterventionHoldRemovalNotification Message is received. It will
+        convert the message from json to odoo format and then update the
+        concerned records
+        :param commkit_data contains the data of the message (json)
+        :return list of intervention ids which are concerned by the message
+        """
+        intervention_mapping = mapping.new_onramp_mapping(
+            self._name,
+            self.env,
+            'intervention_mapping')
+
+        # Apparently this message contains a single dictionary, and not a
+        # list of dictionaries,
+        ihrn = commkit_data['InterventionHoldRemovalNotification']
+
+        vals = intervention_mapping.get_vals_from_connect(ihrn)
+        intervention_id = vals['intervention_id']
+
+        intervention = self.env['compassion.intervention'].search([
+            ('intervention_id', '=', intervention_id),
+            ('hold_id', '=', vals['hold_id'])
+        ])
+        if intervention:
+            intervention.with_context(hold_update=False).write(vals)
+            intervention.hold_cancelled()
+
+        return [intervention.id]
 
 
 class InterventionDeliverable(models.Model):

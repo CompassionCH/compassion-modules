@@ -22,7 +22,6 @@ class InterventionMapping(OnrampMapping):
     MAPPING_NAME = 'intervention_mapping'
 
     CONNECT_MAPPING = {
-
         "FieldOffice_Name":
             ('field_office_id.name', 'compassion.field.office'),
         "ActualLocalContribution": 'local_contribution',
@@ -72,6 +71,15 @@ class InterventionMapping(OnrampMapping):
         "StartNoLaterThanDate": 'start_no_later_than',
         "Status": 'intervention_status',
         "SuccessFactors": 'success_factors',
+
+        # Additional field used by InterventionHoldRemovalNotification
+        "InterventionType_Name": 'type',
+        "ExpirationDate": 'expiration_date',
+        "NotificationReason": 'cancel_reason',
+        "HoldAmount": 'hold_amount',
+        "PrimaryOwner": 'primary_owner',
+        "SecondaryOwner": 'secondary_owner',
+        "InterventionHold_ID": 'hold_id',
 
         # Not used in odoo:
         "Beneficiary_ProgramFieldManualExemption": None,
@@ -126,6 +134,10 @@ class InterventionMapping(OnrampMapping):
         "TopThreeAnticipatedExpenses": None,
         "SourceKitName": None,
         "Supporter_GlobalID": None,
+    }
+
+    CONSTANTS = {
+        "GlobalPartner_ID": 'CH',
     }
 
     def _process_odoo_data(self, odoo_data):
