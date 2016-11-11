@@ -81,7 +81,7 @@
                                     </group>
                                 </group>
                             </page>
-                            <page string="SLA 3 Negociation">
+                            <page string="SLA Negotiation">
                                 <group>
                                     <field name="sla_negotiation_status"/>
                                     <field name="fo_proposed_sla_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>

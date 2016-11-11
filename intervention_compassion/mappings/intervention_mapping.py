@@ -12,9 +12,6 @@
 from openerp.addons.message_center_compassion.mappings.base_mapping \
     import OnrampMapping
 
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from datetime import datetime
-
 
 class InterventionMapping(OnrampMapping):
     """ This class contains the mapping between Odoo fields and GMC field
@@ -50,6 +47,9 @@ class InterventionMapping(OnrampMapping):
         "ExpectedDurationMonths": 'expected_duration',
         "FundingGlobalPartners": 'funding_global_partners',
         "FundingStatus": 'funding_status',
+        "GlobalPartnerSelectedDeliverables": (
+            'deliverable_ids.name', 'compassion.intervention.deliverable'),
+        "GlobalPartnerLevel2Selection": "sla_selection_complete",
         "ICP": ('icp_id.icp_id', 'compassion.project'),
         "Intervention_ID": 'intervention_id',
         "ImpactedBeneficiaryQuantity": 'impacted_beneficiaries',
@@ -129,22 +129,8 @@ class InterventionMapping(OnrampMapping):
     }
 
     def _process_odoo_data(self, odoo_data):
-        """
-        Converting unicode to datetime format.
-        :param odoo_data:
-        :return:
-        """
-        datefields = [
-            'start_date',
-            'expected_duration',
-            'initial_planned_end_date',
-            'planned_end_date',
-            'end_date',
-            'proposed_start_date',
-            'start_no_later_than'
-        ]
-        for field in datefields:
-            if field in odoo_data:
-                value = odoo_data[field]
-                if isinstance(value, (str, unicode)):
-                    odoo_data[field] = datetime.strptime(value, DF)
+        """ Prepend deliverables to replace current selection. """
+        if 'deliverable_ids' in odoo_data:
+            odoo_data['deliverable_ids'].insert(0, [(5, 0, 0)])
+        else:
+            odoo_data['deliverable_ids'] = [(5, 0, 0)]

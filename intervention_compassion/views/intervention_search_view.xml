@@ -72,7 +72,7 @@
                         <field name="primary_owner"/>
                         <field name="secondary_owner"/>
                         <field name="service_level"/>
-                        <field name="next_year_opt_in"/>
+                        <!--<field name="next_year_opt_in"/>-->
                     </group>
                     <footer>
                         <button name="make_hold" string="Create Hold" type="object" class="oe_highlight"/>

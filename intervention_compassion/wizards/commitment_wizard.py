@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import models, fields, api, _
+from openerp import models, fields, api
 from openerp.exceptions import Warning
 
 
@@ -49,9 +49,9 @@ class HoldWizard(models.TransientModel):
             'intervention_compassion.intervention_create_commitment_action')
         message = self.env['gmc.message.pool'].with_context(
             async_mode=False).create({
-            'action_id': create_commitment.id,
-            'object_id': self.id,
-        })
+                'action_id': create_commitment.id,
+                'object_id': self.id,
+            })
         if message.state == 'failure':
             raise Warning(message.failure_reason)
         return True

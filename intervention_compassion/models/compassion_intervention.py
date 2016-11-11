@@ -38,7 +38,7 @@ class CompassionIntervention(models.Model):
         ('active', _('Active')),
         ('close', _('Closed')),
         ('cancel', _('Cancelled')),
-    ], default='on_hold')
+    ], default='on_hold', track_visibility='onchange')
     type = fields.Selection(store=True, readonly=True)
     parent_id = fields.Many2one(
         'compassion.intervention', help='Parent Intervention', readonly=True
@@ -52,11 +52,6 @@ class CompassionIntervention(models.Model):
         ("Submitted", _("Submitted")),
     ], readonly=True)
     funding_global_partners = fields.Char(readonly=True)
-    service_level = fields.Selection([
-        ("Level 1", _("Level 1")),
-        ("Level 2", _("Level 2")),
-        ("Level 3", _("Level 3")),
-    ])
     cancel_reason = fields.Char(readonly=True)
 
     # Schedule Information
@@ -90,11 +85,12 @@ class CompassionIntervention(models.Model):
     # Service Level 3 Details
     #########################
     sla_negotiation_status = fields.Selection([
+        ("--None--", _("None")),
         ("FO Costs Proposed", _("FO Costs Proposed")),
         ("GP Accepted Costs", _("GP Accepted Costs")),
         ("GP Preferences Submitted", _("GP Preferences Submitted")),
         ("GP Rejected Costs", _("GP Rejected Costs")),
-    ], readonly=True)
+    ], readonly=True, track_visibility='onchange')
     sla_comments = fields.Char(readonly=True)
     fo_proposed_sla_costs = fields.Float(
         readonly=True,
@@ -107,26 +103,49 @@ class CompassionIntervention(models.Model):
         'compassion.intervention.deliverable',
         'compassion_intervention_deliverable_rel',
         'intervention_id', 'deliverable_id',
-        string='Selected Deliverables'
+        string='Selected Deliverables', readonly=True
     )
+    sla_selection_complete = fields.Boolean()
 
     # Hold information
     ##################
     hold_id = fields.Char(readonly=True)
-    hold_amount = fields.Float()
-    expiration_date = fields.Date()
-    next_year_opt_in = fields.Boolean()
+    service_level = fields.Selection([
+        ("Level 1", _("Level 1")),
+        ("Level 2", _("Level 2")),
+        ("Level 3", _("Level 3")),
+    ], required=True, readonly=True, states={
+        'on_hold': [('readonly', False)],
+        'sla': [('readonly', False)],
+    })
+    hold_amount = fields.Float(readonly=True, states={
+        'on_hold': [('readonly', False)],
+        'sla': [('readonly', False)],
+    })
+    expiration_date = fields.Date(readonly=True, states={
+        'on_hold': [('readonly', False)],
+        'sla': [('readonly', False)],
+    })
+    next_year_opt_in = fields.Boolean(readonly=True, states={
+        'on_hold': [('readonly', False)],
+        'sla': [('readonly', False)],
+    })
     primary_owner = fields.Many2one(
-        'res.users', domain=[('share', '=', False)]
-    )
-    secondary_owner = fields.Char()
+        'res.users', domain=[('share', '=', False)], readonly=True, states={
+            'on_hold': [('readonly', False)],
+            'sla': [('readonly', False)],
+        })
+    secondary_owner = fields.Char(readonly=True, states={
+        'on_hold': [('readonly', False)],
+        'sla': [('readonly', False)],
+    })
 
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
     @api.model
     def create(self, vals):
-        if vals.get('service_level') == 'Level 3':
+        if vals.get('service_level') != 'Level 1':
             vals['state'] = 'sla'
         intervention = super(CompassionIntervention, self).create(vals)
         intervention.get_infos()
@@ -144,36 +163,50 @@ class CompassionIntervention(models.Model):
         """
         hold_fields = [
             'hold_amount', 'expiration_date', 'next_year_opt_in',
-            'primary_owner', 'secondary_owner']
+            'primary_owner', 'secondary_owner', 'service_level']
         update_hold = False
         for field in hold_fields:
             if field in vals:
-                update_hold = True
+                update_hold = self.env.context.get('hold_update', True)
                 break
+
+        # Check SLA change
+        service_level = vals.get('service_level')
+        if service_level == 'Level 1':
+            vals['state'] = 'on_hold'
+
         res = super(CompassionIntervention, self).write(vals)
 
         if update_hold:
             self.update_hold()
 
         # Check SLA Negotiation Status
-        if vals.get('sla_negotiation_status') == 'GP Accepted Costs':
-            self.filtered(lambda i: i.state == 'sla').write({
-                'state': 'on_hold'
-            })
+        check_sla = self.filtered(lambda i: i.state in ('on_hold', 'sla'))
+        sla_done = check_sla.filtered(
+            lambda i: i.sla_selection_complete and (
+                i.service_level == 'Level 2' or
+                i.sla_negotiation_status == 'GP Accepted Costs')
+        )
+        super(CompassionIntervention, sla_done).write({'state': 'on_hold'})
+        if service_level != 'Level 1':
+            sla_wait = check_sla - sla_done
+            super(CompassionIntervention, sla_wait).write({'state': 'sla'})
 
         # Check start of Intervention
         today = fields.Date.today()
         start = vals.get('start_date')
         if start and start < today:
-            self.filtered(lambda i: i.state == 'committed').write({
-                'state': 'active'
-            })
+            super(
+                CompassionIntervention,
+                self.filtered(lambda i: i.state == 'committed')).write({
+                    'state': 'active'
+                })
 
         # Check closure of Intervention
         intervention_status = vals.get('intervention_status')
         if intervention_status in ('Cancelled', 'Closed'):
             state = 'close' if intervention_status == 'Closed' else 'cancel'
-            self.write({'state': state})
+            super(CompassionIntervention, self).write({'state': state})
 
         return res
 
@@ -257,7 +290,8 @@ class CompassionIntervention(models.Model):
             'action_id': action_id,
             'object_id': self.id,
         }
-        message = self.env['gmc.message.pool'].create(message_vals)
+        message = self.env['gmc.message.pool'].with_context(
+            hold_update=False).create(message_vals)
         if message.state == 'failure':
             raise Warning(message.failure_reason)
         return True

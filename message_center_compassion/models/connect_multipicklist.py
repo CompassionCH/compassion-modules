@@ -16,7 +16,7 @@ from openerp import api, models, fields, _
 class ConnectMultipicklist(models.AbstractModel):
     _name = 'connect.multipicklist'
 
-    name = fields.Char(required=True)
+    name = fields.Char(required=True, translate=False)
     res_model = 'connect.multipicklist'
     res_field = 'id'
 
