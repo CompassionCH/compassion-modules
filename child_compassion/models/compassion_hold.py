@@ -316,10 +316,11 @@ class CompassionHold(models.Model):
     @api.model
     def beneficiary_hold_removal(self, commkit_data):
         data = commkit_data.get('BeneficiaryHoldRemovalNotification')
-
         hold = self.env['compassion.hold'].search([
             ('hold_id', '=', data.get('HoldID'))
         ])
+        if not hold:
+            return []
         hold.comments = data.get('NotificationReason')
 
         hold.hold_released()
