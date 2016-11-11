@@ -4,5 +4,5 @@ access_gmc_action,Read access on gmc.action,model_gmc_action,group_gmc,1,0,0,0
 access_gmc_action_connect,Read access on gmc.action.connect,model_gmc_action_connect,group_gmc,1,0,0,0
 access_admin_gmc_action,Full access on gmc.action,model_gmc_action,base.group_erp_manager,1,1,1,1
 access_admin_gmc_action_connect,Full access on gmc.action.connect,model_gmc_action_connect,base.group_erp_manager,1,1,1,1
-access_query_operator,Acces on query operators,model_compassion_query_operator,group_sponsorship,1,0,0,0
+access_query_operator,Acces on query operators,model_compassion_query_operator,base.group_user,1,0,0,0
 access_admin_query_operator,Full access on query operators,model_compassion_query_operator,base.group_erp_manager,1,1,1,1
