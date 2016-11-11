@@ -58,6 +58,7 @@ class GenericIntervention(models.AbstractModel):
     remaining_amount_to_raise = fields.Float(readonly=True)
     pdc_costs = fields.Float(help='Program development costs', readonly=True)
     total_cost = fields.Float(readonly=True)
+    requested_additional_funding = fields.Float(readonly=True)
     estimated_impacted_beneficiaries = fields.Integer(readonly=True)
 
     @api.model

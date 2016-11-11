@@ -8,6 +8,8 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
+                        <field name="state" widget="statusbar" statusbar_visible="on_hold,committed,active,close"/>
+                        <button name="create_commitment" string="Commit Funds" type="object" states="on_hold" class="oe_highlight"/>
                         <button name="cancel_hold" string="Cancel Hold" type="object" attrs="{'invisible': [('hold_id', '=', False)]}"/>
                     </header>
                     <sheet>
@@ -55,6 +57,8 @@
                                     </group>
                                     <group string="Actual numbers">
                                         <field name="total_cost" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                        <field name="requested_additional_funding" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                        <field name="commitment_amount" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                                         <field name="local_contribution" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                                         <field name="impacted_beneficiaries"/>
                                     </group>
@@ -77,7 +81,7 @@
                                     </group>
                                 </group>
                             </page>
-                            <page string="SLA 3 Negociation">
+                            <page string="SLA Negotiation">
                                 <group>
                                     <field name="sla_negotiation_status"/>
                                     <field name="fo_proposed_sla_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
@@ -117,7 +121,7 @@
             <field name="name">compassion.intervention.tree</field>
             <field name="model">compassion.intervention</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree colors="blue:state == 'on_hold';grey:state in ('close','cancel');green:state == 'committed';red:state == 'sla'">
                     <field name="name"/>
                     <field name="category_id"/>
                     <field name="intervention_id"/>
@@ -125,7 +129,58 @@
                     <field name="icp_id"/>
                     <field name="description"/>
                     <field name="funding_status"/>
+                    <field name="state"/>
                 </tree>
+            </field>
+        </record>
+
+        <record id="view_compassion_intervention_filter" model="ir.ui.view">
+            <field name="name">compassion.intervention.select</field>
+            <field name="model">compassion.intervention</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="category_id"/>
+                    <field name="subcategory_id"/>
+                    <field name="icp_id"/>
+                    <field name="field_office_id"/>
+                    <field name="funding_status"/>
+                    <field name="type"/>
+                    <field name="state"/>
+                    <filter name="active" string="Active" domain="[('state', 'not in', ['close', 'cancel'])]"/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Category" domain="[]" context="{'group_by':'category_id'}"/>
+                        <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+                        <filter string="Funding Status" domain="[]" context="{'group_by':'funding_status'}"/>
+                        <filter string="State" domain="[]" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Commitment Wizard -->
+        <record id="view_intervention_commitment_wizard_form" model="ir.ui.view">
+            <field name="name">compassion.intervention.commitment.form</field>
+            <field name="model">compassion.intervention.commitment.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="usd" invisible="1"/>
+                        <field name="intervention_id" invisible="1"/>
+                        <field name="commitment_amount" widget="monetary" options="{'currency_field': 'usd'}"/>
+                    </group>
+                    <div attrs="{'invisible': [('additional_fund_amount', '=', 0)]}">
+                        <p>Additional fundings were requested by the Field Office for this Intervention:</p>
+                        <group>
+                            <field name="additional_fund_amount" widget="monetary" options="{'currency_field': 'usd'}"/>
+                            <field name="additional_info"/>
+                            <field name="commit_to_additional_fund"/>
+                        </group>
+                    </div>
+                    <footer>
+                        <button name="send_commitment" string="Send Commitment" type="object" class="oe_highlight"/>
+                    </footer>
+                </form>
             </field>
         </record>
 
@@ -135,6 +190,7 @@
             <field name="res_model">compassion.intervention</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_active': 1}</field>
         </record>
 
         <menuitem id="menu_interventions"
