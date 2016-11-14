@@ -89,7 +89,9 @@
                                     <field name="sla_comments"/>
                                 </group>
                                 <group>
-                                    <field name="deliverable_ids"/>
+                                    <field name="deliverable_level_1_ids" widget="many2many_tags"/>
+                                    <field name="deliverable_level_2_ids" widget="many2many_tags" attrs="{'invisible': [('service_level', '!=', 'Level 2')]}"/>
+                                    <field name="deliverable_level_3_ids" widget="many2many_tags" attrs="{'invisible': [('service_level', '!=', 'Level 3')]}"/>
                                 </group>
                             </page>
                             <page string="Details">
