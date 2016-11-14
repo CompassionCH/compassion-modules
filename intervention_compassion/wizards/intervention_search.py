@@ -149,11 +149,11 @@ class InterventionSearch(models.TransientModel):
                 self.remaining_amount_equal))
         elif self.remaining_amount_greater or self.remaining_amount_lower:
             between_id = self.env.ref('message_center_compassion.between').id
-            min_cost = str(self.remaining_amount_greater) or '0'
-            max_cost = str(self.remaining_amount_lower) or str(sys.maxint)
+            min_cost = self.remaining_amount_greater or 0
+            max_cost = self.remaining_amount_lower or sys.maxint
             new_filters.append(_get_filter(
                 'remaining_amount_to_raise', between_id,
-                min_cost + ';' + max_cost))
+                str(min_cost) + ';' + str(max_cost)))
 
         return self.write({'search_filter_ids': new_filters})
 
