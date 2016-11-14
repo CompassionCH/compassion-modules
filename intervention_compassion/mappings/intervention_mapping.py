@@ -141,13 +141,11 @@ class InterventionMapping(OnrampMapping):
         elif service_level == 'Level 3':
             deliverable_field = 'deliverable_level_3_ids'
 
-        if deliverable_field in odoo_data:
-            odoo_data[deliverable_field].insert(0, [(5, 0, 0)])
-        elif level2_deliverable_field in odoo_data:
+        if service_level == 'Level 3' and level2_deliverable_field in \
+                odoo_data:
             # Level 3 is set but we receive deliverables in Level 2 field
             odoo_data[deliverable_field] = odoo_data[level2_deliverable_field]
-            odoo_data[deliverable_field].insert(0, [(5, 0, 0)])
             del odoo_data[level2_deliverable_field]
-        else:
+        elif deliverable_field:
             # No deliverables received
             odoo_data[deliverable_field] = [(5, 0, 0)]

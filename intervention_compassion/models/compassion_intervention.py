@@ -229,9 +229,10 @@ class CompassionIntervention(models.Model):
         # Check SLA Negotiation Status
         check_sla = self.filtered(lambda i: i.state in ('on_hold', 'sla'))
         sla_done = check_sla.filtered(
-            lambda i: i.sla_selection_complete and (
-                i.service_level == 'Level 2' or
-                i.sla_negotiation_status == 'GP Accepted Costs')
+            lambda i:
+                i.service_level == 'Level 1' or
+                (i.service_level == 'Level 2' and i.sla_selection_complete) or
+                i.sla_negotiation_status == 'GP Accepted Costs'
         )
         super(CompassionIntervention, sla_done).write({'state': 'on_hold'})
         if service_level != 'Level 1':
