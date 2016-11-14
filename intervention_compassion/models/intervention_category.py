@@ -39,11 +39,11 @@ class InterventionCategory(models.Model):
 
     def get_types(self):
         return [
-            ("Ongoing CIV FY Details", _("Ongoing CIV")),
             ("Ongoing CIV", _("Ongoing CIV")),
+            ("Ongoing CIV FY Details", _("Ongoing CIV FY Details")),
             ("Individual CIV", _("Individual CIV")),
-            ("Survival FY Details", _("Survival (CSP)")),
             ("Survival", _("Survival (CSP)")),
+            ("Survival FY Details", _("Survival FY Details")),
             ("Sponsorship Launch", _("Sponsorship Launch")),
         ]
 

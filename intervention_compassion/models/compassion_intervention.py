@@ -82,8 +82,8 @@ class CompassionIntervention(models.Model):
     not_funded_implications = fields.Text(readonly=True)
     implementation_risks = fields.Text(readonly=True)
 
-    # Service Level 3 Details
-    #########################
+    # Service Level Negotiation
+    ###########################
     sla_negotiation_status = fields.Selection([
         ("--None--", _("None")),
         ("FO Costs Proposed", _("FO Costs Proposed")),
@@ -99,11 +99,24 @@ class CompassionIntervention(models.Model):
         readonly=True,
         help='The final approved Service Level Agreement Cost'
     )
-    deliverable_ids = fields.Many2many(
+    deliverable_level_1_ids = fields.Many2many(
         'compassion.intervention.deliverable',
-        'compassion_intervention_deliverable_rel',
+        'compassion_intervention_deliverable1_rel',
         'intervention_id', 'deliverable_id',
-        string='Selected Deliverables', readonly=True
+        string='Level 1 Deliverables',
+        compute='_compute_level1_deliverables'
+    )
+    deliverable_level_2_ids = fields.Many2many(
+        'compassion.intervention.deliverable',
+        'compassion_intervention_deliverable2_rel',
+        'intervention_id', 'deliverable_id',
+        string='Level 2 Deliverables', readonly=True
+    )
+    deliverable_level_3_ids = fields.Many2many(
+        'compassion.intervention.deliverable',
+        'compassion_intervention_deliverable3_rel',
+        'intervention_id', 'deliverable_id',
+        string='Level 3 Deliverables', readonly=True
     )
     sla_selection_complete = fields.Boolean()
 
@@ -139,6 +152,39 @@ class CompassionIntervention(models.Model):
         'on_hold': [('readonly', False)],
         'sla': [('readonly', False)],
     })
+
+    @api.multi
+    def _compute_level1_deliverables(self):
+        for intervention in self:
+            if 'CIV' in intervention.type:
+                intervention.deliverable_level_1_ids = self.env.ref(
+                    'intervention_compassion.deliverable_final_program_report')
+            elif 'Survival' in intervention.type:
+                intervention.deliverable_level_1_ids = self.env.ref(
+                    'intervention_compassion.deliverable_icp_profile'
+                ) + self.env.ref(
+                    'intervention_compassion.'
+                    'deliverable_survival_quarterly_report_data'
+                ) + self.env.ref(
+                    'intervention_compassion.'
+                    'deliverable_survival_activity_report_lite'
+                ) + self.env.ref(
+                    'intervention_compassion.'
+                    'deliverable_survival_launch_budget'
+                ) + self.env.ref(
+                    'intervention_compassion.'
+                    'deliverable_survival_community_information'
+                )
+            elif 'Sponsorship' in intervention.type:
+                intervention.deliverable_level_1_ids = self.env.ref(
+                    'intervention_compassion.deliverable_icp_profile'
+                ) + self.env.ref(
+                    'intervention_compassion.'
+                    'deliverable_icp_community_information'
+                ) + self.env.ref(
+                    'intervention_compassion.'
+                    'deliverable_sponsorship_launch_budget'
+                )
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -183,9 +229,10 @@ class CompassionIntervention(models.Model):
         # Check SLA Negotiation Status
         check_sla = self.filtered(lambda i: i.state in ('on_hold', 'sla'))
         sla_done = check_sla.filtered(
-            lambda i: i.sla_selection_complete and (
-                i.service_level == 'Level 2' or
-                i.sla_negotiation_status == 'GP Accepted Costs')
+            lambda i:
+                i.service_level == 'Level 1' or
+                (i.service_level == 'Level 2' and i.sla_selection_complete) or
+                i.sla_negotiation_status == 'GP Accepted Costs'
         )
         super(CompassionIntervention, sla_done).write({'state': 'on_hold'})
         if service_level != 'Level 1':
@@ -365,4 +412,4 @@ class InterventionDeliverable(models.Model):
     _inherit = 'connect.multipicklist'
 
     res_model = 'compassion.intervention'
-    res_field = 'deliverable_ids'
+    res_field = 'deliverable_level_2_ids'

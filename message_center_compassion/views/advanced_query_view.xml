@@ -17,8 +17,8 @@
                             <field name="operator_id" domain="[('field_types_supported', 'ilike', field_type)]"/>
                         </group>
                         <group>
-                            <field name="start_date" attrs="{'invisible': [('field_type', 'like', 'date')]}"/>
-                            <field name="end_date" attrs="{'invisible': [('operator', '=', 'within')]}"/>
+                            <field name="start_date" attrs="{'invisible': [('operator', 'not in', ['on', 'within'])]}"/>
+                            <field name="end_date" attrs="{'invisible': [('operator', '!=', 'within')]}"/>
                             <field name="value"/>
                         </group>
                     </group>

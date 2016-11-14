@@ -46,8 +46,12 @@ class InterventionMapping(OnrampMapping):
         "ExpectedDurationMonths": 'expected_duration',
         "FundingGlobalPartners": 'funding_global_partners',
         "FundingStatus": 'funding_status',
+        "GlobalPartnerRequestedDeliverables": (
+            'deliverable_level_3_ids.name',
+            'compassion.intervention.deliverable'),
         "GlobalPartnerSelectedDeliverables": (
-            'deliverable_ids.name', 'compassion.intervention.deliverable'),
+            'deliverable_level_2_ids.name',
+            'compassion.intervention.deliverable'),
         "GlobalPartnerLevel2Selection": "sla_selection_complete",
         "ICP": ('icp_id.icp_id', 'compassion.project'),
         "Intervention_ID": 'intervention_id',
@@ -107,7 +111,6 @@ class InterventionMapping(OnrampMapping):
         "FocusAreaNumber": None,
         "FundCode": None,
         "FundingStatusCommittedDate": None,
-        "GlobalPartnerRequestedDeliverables": None,
         "HouseholdChildrenAverageQuantity": None,
         "InitiationType": None,
         "IsIncludedInInterventionStrategy": None,
@@ -142,7 +145,19 @@ class InterventionMapping(OnrampMapping):
 
     def _process_odoo_data(self, odoo_data):
         """ Prepend deliverables to replace current selection. """
-        if 'deliverable_ids' in odoo_data:
-            odoo_data['deliverable_ids'].insert(0, [(5, 0, 0)])
-        else:
-            odoo_data['deliverable_ids'] = [(5, 0, 0)]
+        deliverable_field = False
+        level2_deliverable_field = 'deliverable_level_2_ids'
+        service_level = odoo_data.get('service_level')
+        if service_level == 'Level 2':
+            deliverable_field = level2_deliverable_field
+        elif service_level == 'Level 3':
+            deliverable_field = 'deliverable_level_3_ids'
+
+        if service_level == 'Level 3' and level2_deliverable_field in \
+                odoo_data:
+            # Level 3 is set but we receive deliverables in Level 2 field
+            odoo_data[deliverable_field] = odoo_data[level2_deliverable_field]
+            del odoo_data[level2_deliverable_field]
+        elif deliverable_field:
+            # No deliverables received
+            odoo_data[deliverable_field] = [(5, 0, 0)]

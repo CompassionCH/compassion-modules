@@ -45,7 +45,7 @@
                                         <field name="hold_id"/>
                                         <field name="hold_amount" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                                         <field name="expiration_date"/>
-                                        <field name="next_year_opt_in"/>
+                                        <!--<field name="next_year_opt_in"/>-->
                                         <field name="primary_owner"/>
                                         <field name="secondary_owner"/>
                                     </group>
@@ -89,7 +89,9 @@
                                     <field name="sla_comments"/>
                                 </group>
                                 <group>
-                                    <field name="deliverable_ids"/>
+                                    <field name="deliverable_level_1_ids" widget="many2many_tags"/>
+                                    <field name="deliverable_level_2_ids" widget="many2many_tags" attrs="{'invisible': [('service_level', '!=', 'Level 2')]}"/>
+                                    <field name="deliverable_level_3_ids" widget="many2many_tags" attrs="{'invisible': [('service_level', '!=', 'Level 3')]}"/>
                                 </group>
                             </page>
                             <page string="Details">

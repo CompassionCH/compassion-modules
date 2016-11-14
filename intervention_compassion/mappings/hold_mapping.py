@@ -16,7 +16,6 @@ from openerp.addons.message_center_compassion.mappings.base_mapping \
 class HoldCreateMapping(OnrampMapping):
     """ Hold Creation Mapping
     """
-
     ODOO_MODEL = 'compassion.intervention.hold.wizard'
 
     CONNECT_MAPPING = {
@@ -47,13 +46,16 @@ class HoldCreateMapping(OnrampMapping):
     }
 
 
-class HoldUpdateMapping(HoldCreateMapping):
+class HoldUpdateMapping(OnrampMapping):
     ODOO_MODEL = 'compassion.intervention'
 
     MAPPING_NAME = 'update_hold'
 
     def __init__(self, env):
         super(HoldUpdateMapping, self).__init__(env)
+        self.CONNECT_MAPPING = HoldCreateMapping.CONNECT_MAPPING
+        self.FIELDS_TO_SUBMIT = HoldCreateMapping.FIELDS_TO_SUBMIT
+        self.CONSTANTS = HoldCreateMapping.CONSTANTS
         self.CONNECT_MAPPING['Intervention_ID'] = 'intervention_id'
         self.FIELDS_TO_SUBMIT['HoldID'] = None
 
