@@ -399,7 +399,7 @@ def find_template(img, templates, test=False,
             continue
 
         # check if it is a better result than before
-        if (len(tmp_key) > nb_keypoints):
+        if (len(tmp_key) > nb_keypoints and len(tmp_key) > 5):
             # save all the data if it is better
             nb_keypoints = len(tmp_key)
             key_img = tmp_key
