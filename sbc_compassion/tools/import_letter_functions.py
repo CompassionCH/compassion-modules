@@ -18,11 +18,13 @@ from io import BytesIO
 
 import cv2
 import base64
-import zxing
+import zxing_wrapper
+import zbar_wrapper
 import patternrecognition as pr
 import checkboxreader as cbr
 import numpy as np
 import sys
+import shutil
 from time import time
 from math import ceil
 from wand.image import Image
@@ -163,7 +165,7 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
     :returns: Import Line values, IR Attachment values
     :rtype: list(dict), list(dict)
     """
-    # TODO: add new_dpi and default dpi to the settings of sbc_compassion
+    # TODO: add new_dpi and resiye_ratio to the settings of sbc_compassion
     new_dpi = 100.0
     resize_ratio = new_dpi/300.0
 
@@ -266,8 +268,8 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi, test):
         qrcode, img, test_data = _decode_page(
             env, page_buffer.read(), new_dpi)
 
-        if (qrcode and qrcode.data != previous_qrcode) or i == 0:
-            previous_qrcode = qrcode and qrcode.data
+        if (qrcode and qrcode['data'] != previous_qrcode) or i == 0:
+            previous_qrcode = qrcode and qrcode['data']
             letter_indexes.append(i)
             page_imgs.append(img)
 
@@ -313,14 +315,16 @@ def _decode_page(env, page_data, new_dpi):
               the detection
     :rtype: str, binary
     """
-    # decoder
     tic = time()
-    zx = zxing.BarCodeTool()
-    with Image(blob=page_data, resolution=int(new_dpi)) as page_image:  #
+    with Image(blob=page_data, resolution=int(new_dpi)) as page_image:
+        print time()-tic;
+        tic = time()
         page_data = np.asarray(bytearray(page_image.make_blob('png')))
-
+        print time() - tic;
         tic = time()
         img = cv2.imdecode(page_data, 1)    # Read in color
+        print time() - tic;
+        tic = time()
 
         if img is None:
             return None, None, None
@@ -332,14 +336,45 @@ def _decode_page(env, page_data, new_dpi):
                                                 page_image.height)
         with page_image[left:right, top:bottom] as cropped:
             filename = os.getcwd() + '/page.png'
+            cropped.type = 'grayscale'
+            cropped.depth = 8
             test_data = cropped.make_blob('png')
             cropped.save(filename=filename)
 
             tic = time()
-            qrcode = zx.decode(filename, try_harder=True)
+
+            decoder_lib = 'zbar'
+            code = None
+            if decoder_lib == 'zxing':
+                decoder = zxing_wrapper.BarCodeTool()
+                qrcode = decoder.decode(filename)
+
+                # the following works only if we passed a single filename
+                # to the decoder
+                if qrcode:
+                    code = {}
+                    code["data"] = qrcode.data
+                    code["format"] = qrcode.format
+                    code["points"] = qrcode.points
+                    code["raw"] = qrcode.raw
+            elif decoder_lib == 'zbar':
+                qrcode = zbar_wrapper.decode(filename)
+                if qrcode:
+                    code = {}
+                    code["data"] = qrcode.data + '\n'
+                    code["format"] = qrcode.type
+                    code["points"] = qrcode.location
+                    code["raw"] = qrcode.data + '\n'
+
             logger.debug("\tQRCode decoded in {:.3} sec".format(time()-tic))
+
+    # qrfolder = '/home/openerp/dev/addons/compassion-modules
+            # /sbc_compassion/tests/testdata/qrcodes_grayscale_300dpi'
+    # n = str(len(os.listdir(qrfolder)))
+    # n = '0' * (3 - len(n)) + n
+    # shutil.move(filename, qrfolder + '/qrcode' + n + '.png')
     os.remove(filename)
-    return qrcode, img, test_data
+    return code, img, test_data
 
 
 def _get_qr_crop(env, img_width, img_height):
@@ -393,8 +428,8 @@ def decodeBarcode(env, barcode):
     """
     partner_id = None
     child_id = None
-    if barcode is not None and 'XX' in barcode.data:
-        barcode_split = barcode.data.split('XX')
+    if barcode is not None and 'XX' in barcode['data']:
+        barcode_split = barcode['data'].split('XX')
         if len(barcode_split) == 2:
             partner_ref, child_code = barcode_split
             child_ref_field = 'local_id'
