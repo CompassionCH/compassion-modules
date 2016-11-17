@@ -41,10 +41,6 @@ class CommunicationConfig(models.Model):
         'email.template', 'Email template')
     report_id = fields.Many2one(
         'ir.actions.report.xml', 'Letter template')
-    from_employee_id = fields.Many2one(
-        'hr.employee', 'Communication From',
-        help='The sponsor will receive the communication from this employee'
-    )
 
     ##########################################################################
     #                             FIELDS METHODS                             #

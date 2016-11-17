@@ -54,10 +54,6 @@ class CommunicationJob(models.Model):
     email_template_id = fields.Many2one(
         related='config_id.email_template_id', store=True)
     report_id = fields.Many2one(related='config_id.report_id', store=True)
-    from_employee_id = fields.Many2one(
-        'hr.employee', 'Communication From',
-        help='The sponsor will receive the communication from this employee'
-    )
     email_to = fields.Char(
         help='optional e-mail address to override recipient')
     email_id = fields.Many2one('mail.mail', 'Generated e-mail')
@@ -100,8 +96,6 @@ class CommunicationJob(models.Model):
         job = super(CommunicationJob, self).create(vals)
         if 'auto_send' not in vals:
             job.auto_send = job.config_id.get_inform_mode(job.partner_id)[1]
-        if 'from_employee_id' not in vals:
-            job.from_employee_id = job.config_id.from_employee_id
         if job.auto_send:
             job.send()
         return job
@@ -113,11 +107,11 @@ class CommunicationJob(models.Model):
     def send(self):
         """ Executes the job. """
         for job in self:
-            if job._inform_sponsor():
-                job.write({
-                    'state': 'done',
-                    'sent_date': fields.Datetime.now()
-                })
+            state = job._inform_sponsor()
+            job.write({
+                'state': state,
+                'sent_date': fields.Datetime.now()
+            })
         return True
 
     @api.multi
@@ -137,40 +131,55 @@ class CommunicationJob(models.Model):
     def refresh_text(self):
         self._compute_generation()
 
+    @api.multi
+    def open_related(self):
+        return {
+            'name': _('Related object'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form,tree',
+            'view_mode': 'form',
+            'res_model': self.email_template_id.model_id.model,
+            'context': self.env.context,
+            'res_id': self.object_id,
+            'target': 'current',
+        }
+
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
     def _inform_sponsor(self):
         """ Sends a communication to the sponsor based on the configuration.
+        Returns the state of the job.
         """
         self.ensure_one()
         partner = self.partner_id
 
         if self.send_mode == 'digital':
-            _from = self.from_employee_id.work_email or self.env[
-                'ir.config_parameter'].get_param(
-                'partner_communication.default_from_address')
             if self.email_to or partner.email:
                 # Send by e-mail
-                email_vals = {
-                    'email_from': _from,
-                    'recipient_ids': [(4, partner.id)],
-                    # 'communication_config_id': self.id,
-                    'communication_config_id': self.config_id.id,
-                    'body_html': self.body_html
-                }
-                if self.email_to:
-                    # Replace partner e-mail by specified address
-                    email_vals['email_to'] = self.email_to
-                    del email_vals['recipient_ids']
+                email = self.email_id
+                if not email:
+                    email_vals = {
+                        'recipient_ids': [(4, partner.id)],
+                        'communication_config_id': self.config_id.id,
+                        'body_html': self.body_html
+                    }
+                    if self.email_to:
+                        # Replace partner e-mail by specified address
+                        email_vals['email_to'] = self.email_to
+                        del email_vals['recipient_ids']
 
-                email = self.env['mail.compose.message'].with_context(
-                    lang=partner.lang).create_emails(
-                    self.email_template_id, [self.object_id], email_vals)
+                    email = self.env['mail.compose.message'].with_context(
+                        lang=partner.lang).create_emails(
+                        self.email_template_id, [self.object_id], email_vals)
+                    self.email_id = email
+
                 email.send_sendgrid()
-                self.email_id = email
-                return True
+                return 'done' if email.state == 'sent' else 'pending'
 
         elif self.send_mode == 'physical':
             # TODO Print letter
-            return False
+            return 'pending'
 
         # A valid path was not found
-        return False
+        return 'pending'
