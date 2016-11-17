@@ -28,6 +28,7 @@ class CommunicationJob(models.Model):
     _name = 'partner.communication.job'
     _description = 'Communication Job'
     _order = 'date desc,sent_date desc'
+    _inherit = 'ir.needaction_mixin'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -183,3 +184,11 @@ class CommunicationJob(models.Model):
 
         # A valid path was not found
         return 'pending'
+
+    @api.model
+    def _needaction_domain_get(self):
+        """
+        Used to display a count icon in the menu
+        :return: domain of jobs counted
+        """
+        return [('state', '=', 'pending')]
