@@ -29,6 +29,8 @@ install:
     - python -c 'import cv2; print("OpenCV version is {}".format(cv2.__version__))'
     - pip install flake8
     - pip install pysftp
+    - sudo apt-get purge python-openssl
+    - pip install pyopenssl
     - pip install MySQL-python
     - pip install unidecode
     - pip install pysmb

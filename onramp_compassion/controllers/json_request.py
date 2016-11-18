@@ -33,6 +33,7 @@ def get_request(self, httprequest):
         return RESTJsonRequest(httprequest)
     return old_get_request(self, httprequest)
 
+
 Root.get_request = get_request
 
 
