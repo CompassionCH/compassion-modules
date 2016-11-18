@@ -8,8 +8,10 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, fields, _
 import logging
+
+from openerp import api, models, fields, _, http
+from openerp.addons.base_phone.controller import BasePhoneController
 
 
 logger = logging.getLogger(__name__)
@@ -28,7 +30,7 @@ class CommunicationJob(models.Model):
     _name = 'partner.communication.job'
     _description = 'Communication Job'
     _order = 'date desc,sent_date desc'
-    _inherit = 'ir.needaction_mixin'
+    _inherit = ['ir.needaction_mixin', 'mail.thread']
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -36,6 +38,8 @@ class CommunicationJob(models.Model):
     config_id = fields.Many2one('partner.communication.config',
                                 'Type', required=True)
     partner_id = fields.Many2one('res.partner', 'Send to', required=True)
+    partner_phone = fields.Char(related='partner_id.phone')
+    partner_mobile = fields.Char(related='partner_id.mobile')
     object_id = fields.Integer('Resource id', required=True)
 
     date = fields.Datetime(default=fields.Datetime.now)
@@ -44,7 +48,7 @@ class CommunicationJob(models.Model):
         ('pending', _('Pending')),
         ('done', _('Done')),
         ('cancel', _('Cancelled')),
-    ], default='pending', readonly=True)
+    ], default='pending', readonly=True, track_visibility='onchange')
 
     auto_send = fields.Boolean(
         help='Job is processed at creation if set to true')
@@ -59,6 +63,7 @@ class CommunicationJob(models.Model):
         help='optional e-mail address to override recipient')
     email_id = fields.Many2one('mail.mail', 'Generated e-mail')
     generated_document = fields.Many2one('ir.attachment')
+    phonecall_id = fields.Many2one('crm.phonecall', 'Phonecall log')
 
     body_html = fields.Html(
         compute='_compute_html', inverse='_inverse_generation',
@@ -88,6 +93,11 @@ class CommunicationJob(models.Model):
     def _inverse_generation(self):
         # Allow to write on computed field
         return True
+
+    @api.multi
+    def _compute_partner_phone(self):
+        for job in self:
+            job.partner_phone = job.partner_id.phone or job.partner_id.mobile
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -144,6 +154,38 @@ class CommunicationJob(models.Model):
             'res_id': self.object_id,
             'target': 'current',
         }
+
+    @api.multi
+    def log_call(self):
+        return {
+            'name': _("Log your call"),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'partner.communication.call.wizard',
+            'context': self.with_context({
+                'click2dial_id': self.partner_id.id,
+                'phone_number': self.partner_phone or self.partner_mobile,
+                'call_name': self.config_id.name,
+                'timestamp': fields.Datetime.now(),
+                'communication_id': self.id,
+            }).env.context,
+            'target': 'new',
+        }
+
+    @api.multi
+    def call(self):
+        """ Call partner from tree view button. """
+        self.ensure_one()
+        phone_controller = BasePhoneController()
+        request = http.request
+        phone_controller.click2dial(
+            request,
+            self.partner_phone or self.partner_mobile,
+            self._name,
+            self.id
+        )
+        return self.log_call()
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
