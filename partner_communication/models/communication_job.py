@@ -94,11 +94,6 @@ class CommunicationJob(models.Model):
         # Allow to write on computed field
         return True
 
-    @api.multi
-    def _compute_partner_phone(self):
-        for job in self:
-            job.partner_phone = job.partner_id.phone or job.partner_id.mobile
-
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
