@@ -8,8 +8,10 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, fields, _
 import logging
+
+from openerp import api, models, fields, _, http
+from openerp.addons.base_phone.controller import BasePhoneController
 
 
 logger = logging.getLogger(__name__)
@@ -28,6 +30,7 @@ class CommunicationJob(models.Model):
     _name = 'partner.communication.job'
     _description = 'Communication Job'
     _order = 'date desc,sent_date desc'
+    _inherit = ['ir.needaction_mixin', 'mail.thread']
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -35,6 +38,8 @@ class CommunicationJob(models.Model):
     config_id = fields.Many2one('partner.communication.config',
                                 'Type', required=True)
     partner_id = fields.Many2one('res.partner', 'Send to', required=True)
+    partner_phone = fields.Char(related='partner_id.phone')
+    partner_mobile = fields.Char(related='partner_id.mobile')
     object_id = fields.Integer('Resource id', required=True)
 
     date = fields.Datetime(default=fields.Datetime.now)
@@ -43,7 +48,7 @@ class CommunicationJob(models.Model):
         ('pending', _('Pending')),
         ('done', _('Done')),
         ('cancel', _('Cancelled')),
-    ], default='pending', readonly=True)
+    ], default='pending', readonly=True, track_visibility='onchange')
 
     auto_send = fields.Boolean(
         help='Job is processed at creation if set to true')
@@ -54,14 +59,11 @@ class CommunicationJob(models.Model):
     email_template_id = fields.Many2one(
         related='config_id.email_template_id', store=True)
     report_id = fields.Many2one(related='config_id.report_id', store=True)
-    from_employee_id = fields.Many2one(
-        'hr.employee', 'Communication From',
-        help='The sponsor will receive the communication from this employee'
-    )
     email_to = fields.Char(
         help='optional e-mail address to override recipient')
     email_id = fields.Many2one('mail.mail', 'Generated e-mail')
     generated_document = fields.Many2one('ir.attachment')
+    phonecall_id = fields.Many2one('crm.phonecall', 'Phonecall log')
 
     body_html = fields.Html(
         compute='_compute_html', inverse='_inverse_generation',
@@ -100,8 +102,6 @@ class CommunicationJob(models.Model):
         job = super(CommunicationJob, self).create(vals)
         if 'auto_send' not in vals:
             job.auto_send = job.config_id.get_inform_mode(job.partner_id)[1]
-        if 'from_employee_id' not in vals:
-            job.from_employee_id = job.config_id.from_employee_id
         if job.auto_send:
             job.send()
         return job
@@ -113,11 +113,11 @@ class CommunicationJob(models.Model):
     def send(self):
         """ Executes the job. """
         for job in self:
-            if job._inform_sponsor():
-                job.write({
-                    'state': 'done',
-                    'sent_date': fields.Datetime.now()
-                })
+            state = job._inform_sponsor()
+            job.write({
+                'state': state,
+                'sent_date': fields.Datetime.now()
+            })
         return True
 
     @api.multi
@@ -137,40 +137,95 @@ class CommunicationJob(models.Model):
     def refresh_text(self):
         self._compute_generation()
 
+    @api.multi
+    def open_related(self):
+        return {
+            'name': _('Related object'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form,tree',
+            'view_mode': 'form',
+            'res_model': self.email_template_id.model_id.model,
+            'context': self.env.context,
+            'res_id': self.object_id,
+            'target': 'current',
+        }
+
+    @api.multi
+    def log_call(self):
+        return {
+            'name': _("Log your call"),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'partner.communication.call.wizard',
+            'context': self.with_context({
+                'click2dial_id': self.partner_id.id,
+                'phone_number': self.partner_phone or self.partner_mobile,
+                'call_name': self.config_id.name,
+                'timestamp': fields.Datetime.now(),
+                'communication_id': self.id,
+            }).env.context,
+            'target': 'new',
+        }
+
+    @api.multi
+    def call(self):
+        """ Call partner from tree view button. """
+        self.ensure_one()
+        phone_controller = BasePhoneController()
+        request = http.request
+        phone_controller.click2dial(
+            request,
+            self.partner_phone or self.partner_mobile,
+            self._name,
+            self.id
+        )
+        return self.log_call()
+
+    ##########################################################################
+    #                             PRIVATE METHODS                            #
+    ##########################################################################
     def _inform_sponsor(self):
         """ Sends a communication to the sponsor based on the configuration.
+        Returns the state of the job.
         """
         self.ensure_one()
         partner = self.partner_id
 
         if self.send_mode == 'digital':
-            _from = self.from_employee_id.work_email or self.env[
-                'ir.config_parameter'].get_param(
-                'partner_communication.default_from_address')
             if self.email_to or partner.email:
                 # Send by e-mail
-                email_vals = {
-                    'email_from': _from,
-                    'recipient_ids': [(4, partner.id)],
-                    # 'communication_config_id': self.id,
-                    'communication_config_id': self.config_id.id,
-                    'body_html': self.body_html
-                }
-                if self.email_to:
-                    # Replace partner e-mail by specified address
-                    email_vals['email_to'] = self.email_to
-                    del email_vals['recipient_ids']
+                email = self.email_id
+                if not email:
+                    email_vals = {
+                        'recipient_ids': [(4, partner.id)],
+                        'communication_config_id': self.config_id.id,
+                        'body_html': self.body_html
+                    }
+                    if self.email_to:
+                        # Replace partner e-mail by specified address
+                        email_vals['email_to'] = self.email_to
+                        del email_vals['recipient_ids']
 
-                email = self.env['mail.compose.message'].with_context(
-                    lang=partner.lang).create_emails(
-                    self.email_template_id, [self.object_id], email_vals)
+                    email = self.env['mail.compose.message'].with_context(
+                        lang=partner.lang).create_emails(
+                        self.email_template_id, [self.object_id], email_vals)
+                    self.email_id = email
+
                 email.send_sendgrid()
-                self.email_id = email
-                return True
+                return 'done' if email.state == 'sent' else 'pending'
 
         elif self.send_mode == 'physical':
             # TODO Print letter
-            return False
+            return 'pending'
 
         # A valid path was not found
-        return False
+        return 'pending'
+
+    @api.model
+    def _needaction_domain_get(self):
+        """
+        Used to display a count icon in the menu
+        :return: domain of jobs counted
+        """
+        return [('state', '=', 'pending')]

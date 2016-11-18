@@ -6,21 +6,26 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <field name="state" widget="statusbar"/>
-                        <button name="send" string="Send Now" type="object" class="oe_highlight" states='pending'/>
+                        <field name="state" widget="statusbar" statusbar_visible="pending,done"/>
+                        <button name="send" string="Send Now" icon="terp-mail-" type="object" class="oe_highlight" states='pending'/>
+                        <button name="log_call" string="Log call" icon="terp-call-start" type="object" states='pending'/>
                         <button name="reset" string="Retry" type="object" states='done,cancel'/>
                         <button name="cancel" string="Cancel" type="object" states='pending'/>
                     </header>
                     <sheet>
+                        <div class="oe_right oe_button_box" name="buttons">
+                            <button name="open_related" string="Go to record" type="object" icon="fa-folder-open-o" class="oe_stat_button"/>
+                        </div>
                         <group>
                             <group>
                                 <field name="config_id"/>
                                 <field name="partner_id"/>
+                                <field name="partner_phone" widget="phone_communication"/>
+                                <field name="partner_mobile" widget="phone_communication"/>
                                 <field name="send_mode"/>
                                 <field name="auto_send"/>
                             </group>
                             <group>
-                                <field name="from_employee_id"/>
                                 <field name="email_template_id"/>
                                 <field name="report_id"/>
                                 <field name="email_to"/>
@@ -33,8 +38,14 @@
                             <field name="sent_date"/>
                             <field name="email_id"/>
                             <field name="generated_document"/>
+                            <field name="phonecall_id"/>
                         </group>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"
+                               widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -52,7 +63,8 @@
                     <field name="body_html"/>
                     <field name="state"/>
                     <field name="sent_date"/>
-                    <button name="send" string="Send Now" type="object" icon="gtk-media-play" states='pending'/>
+                    <button name="send" string="Send Now" type="object" icon="terp-mail-" states='pending'/>
+                    <button name="call" string="Call" type="object" icon="terp-call-start" states='pending'/>
                     <button name="reset" string="Retry" type="object" icon="gtk-redo" states='done,cancel'/>
                     <button name="cancel" string="Cancel" type="object" icon="terp-gtk-stop" states='pending'/>
                 </tree>

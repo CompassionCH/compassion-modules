@@ -111,5 +111,6 @@ class MigrationR4(models.TransientModel):
                 )
                 sponsorship.transfer_partner_id = global_partner
         self.env.cr.execute(
-            "ALTER TABLE compassion_child DROP COLUMN transfer_country_backup;"
+            "ALTER TABLE compassion_child DROP COLUMN transfer_country_backup"
+            " IF EXISTS;"
         )

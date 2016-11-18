@@ -16,7 +16,6 @@
                             <group>
                                 <field name="email_template_id"/>
                                 <field name="report_id"/>
-                                <field name="from_employee_id"/>
                             </group>
                         </group>
                     </sheet>
@@ -32,7 +31,6 @@
                     <field name="name"/>
                     <field name="send_mode"/>
                     <field name="print_if_not_email"/>
-                    <field name="from_employee_id"/>
                     <field name="email_template_id"/>
                     <field name="report_id"/>
                 </tree>

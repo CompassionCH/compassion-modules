@@ -8,15 +8,6 @@ Module to configure the communication with sponsors / partners.
 It adds a model in order to define some communications and how to
 send them to the partner (by e-mail or by printed letter)
 
-Configuration
-=============
-
-You can add a system parameter to use a default e-mail address to be the
-sender of your communications :
-
-* ``partner_communication.default_from_address``
-  email address which sends the letters to sponsors.
-
 Usage
 =====
 

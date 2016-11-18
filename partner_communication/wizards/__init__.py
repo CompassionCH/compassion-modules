@@ -10,3 +10,4 @@
 ##############################################################################
 
 from . import mail_compose_message
+from . import call_wizard
