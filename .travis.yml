@@ -28,6 +28,8 @@ install:
     - export PYTHONPATH=${PYTHONPATH}:${OPENCV_ROOT}/install/lib/python2.7/site-packages
     - pip install flake8
     - pip install pysftp
+    - sudo apt-get purge python-openssl
+    - pip install pyopenssl
     - pip install MySQL-python
     - pip install unidecode
     - pip install pysmb

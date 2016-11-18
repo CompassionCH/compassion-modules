@@ -180,9 +180,9 @@ class SponsorshipContract(models.Model):
         """
         child = self.env['compassion.child'].browse(vals.get('child_id'))
         if 'S' in vals.get('type', '') and child:
-            child.write(
-                {'sponsor_id': vals['partner_id']}
-            )
+            child.write({
+                'sponsor_id': vals.get('correspondant_id', vals['partner_id'])
+            })
 
         return super(SponsorshipContract, self).create(vals)
 

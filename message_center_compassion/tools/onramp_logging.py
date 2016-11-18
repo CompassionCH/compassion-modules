@@ -52,6 +52,7 @@ def init_logger():
     ONRAMP_LOGGER.setLevel(logging.INFO)
     ONRAMP_LOGGER.addHandler(handler)
 
+
 init_logger()
 
 
