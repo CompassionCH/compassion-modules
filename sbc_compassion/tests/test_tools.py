@@ -129,7 +129,7 @@ class TestTools(common.TransactionCase):
     @staticmethod
     def _qr_decode(path):
         path = os.path.abspath(path)
-        bar_code_tool = tools.zxing.BarCodeTool()
+        bar_code_tool = tools.zxing_wrapper.BarCodeTool()
         qr_code = bar_code_tool.decode(path, try_harder=True)
         return qr_code
 

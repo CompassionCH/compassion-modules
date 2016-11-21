@@ -57,6 +57,20 @@ class BarCodeTool():
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    def scan_qrcode(self, file):
+        qrdata = None
+
+        decoder = BarCodeTool()
+        result = decoder.decode(file)
+        # map the resulting object to a dictionary compatible to our software
+        if result:
+            qrdata = {}
+            qrdata["data"] = result.data.strip()
+            qrdata["format"] = result.format
+            qrdata["points"] = result.points
+            qrdata["raw"] = result.raw.strip()
+        return qrdata
+
     def decode(self, files, try_harder=True, qr_only=True, crop=None):
         """
         Decodes a/some file/s

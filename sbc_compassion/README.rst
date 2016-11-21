@@ -12,13 +12,25 @@ Installation
 =============
 To install this module, you need to install dependencies:
     * requires the following libraries (names from apt-get):
-      openexr libgstreamer0.10-0 libgstreamer-plugins-base0.10-0
-      libdc1394-22 libavcodec54 libavformat54 libswscale2
-      libgtk2.0-0 python-numpy libv4l-dev
-    * requires opencv3 and zxing (can be installed with the setup.sh
-      in sbc_compassion)
+        - openexr 
+        - libgstreamer0.10-0 
+        - libgstreamer-plugins-base0.10-0
+        - libdc1394-22 
+        - libavcodec54 
+        - libavformat54 
+        - libswscale2
+        - libgtk2.0-0 
+        - python-numpy 
+        - libv4l-dev
+        - zbar-tools
+        - python-zbar
+        - python-pdfminer
+        - python-magic
+    * requires opencv3
+    * Notice that zxing is no longer used. We're using zbar instead
     * requires a java environment
-    * requires python-magic (sudo pip install python-magic)
+
+
 
 Contributors
 ------------
@@ -26,6 +38,7 @@ Contributors
 * Emanuel Cino <ecino@compassion.ch>
 * Emmanuel Mathier <emmanuel.mathier@gmail.com>
 * Loic Hausammann <loic_hausammann@hotmail.com>
+* Emmanuel Girardin <emmanuel.girardin@outlook.com>
 
 Maintainer
 ----------
