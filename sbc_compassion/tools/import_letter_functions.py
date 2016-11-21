@@ -22,12 +22,12 @@ import zxing_wrapper
 import zbar_wrapper
 import patternrecognition as pr
 import checkboxreader as cbr
+import sniffpdf
 import numpy as np
 import sys
-import shutil
 from time import time
 from math import ceil
-from wand.image import Image
+from wand.image import Image as WandImage
 from collections import namedtuple
 from pyPdf import PdfFileWriter, PdfFileReader
 
@@ -165,7 +165,6 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
     :returns: Import Line values, IR Attachment values
     :rtype: list(dict), list(dict)
     """
-    # TODO: add new_dpi and resiye_ratio to the settings of sbc_compassion
     new_dpi = 100.0
     resize_ratio = new_dpi/300.0
 
@@ -175,6 +174,7 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
     logger.info("\tImport file : {}".format(file_name))
 
     inputpdf = PdfFileReader(BytesIO(file_data))
+    tic = time()
     letter_indexes, imgs = _find_qrcodes(
         env, line_vals, inputpdf, new_dpi, test)
     logger.info("\t{} letters found!".format(len(letter_indexes)-1 or 1))
@@ -265,50 +265,54 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi, test):
         page_buffer.seek(0)
 
         # read the qrcode on the current page
-        qrcode, img, test_data = _decode_page(
-            env, page_buffer.read(), new_dpi)
+        qrcode, img_path, cropped_img_path = _decode_page(
+            env, page_buffer.read())
 
         if (qrcode and qrcode['data'] != previous_qrcode) or i == 0:
             previous_qrcode = qrcode and qrcode['data']
             letter_indexes.append(i)
+            # we finally resize the image before returning it
+            img = cv2.imread(img_path)
+            f = new_dpi / 300.0
+            img = cv2.resize(
+                img, (0, 0), fx=f, fy=f, interpolation=cv2.INTER_CUBIC)
             page_imgs.append(img)
 
             partner_id, child_id = decodeBarcode(env, qrcode)
-            # Downsize png image for saving it in a preview field
-            page_buffer.seek(0)
-            with Image(blob=page_buffer.read(),
-                       resolution=150) as page_preview:
-                page_preview.transform(resize='50%')
-                preview_data = base64.b64encode(page_preview.make_blob('png'))
+            page_preview = cv2.imencode('.jpg', img)
+            preview_data = base64.b64encode(page_preview[1])
+
             values = {
                 'partner_id': partner_id,
                 'child_id': child_id,
                 'letter_image_preview': preview_data
             }
+
+            logger.info(
+                "\t\tPage {}/{} opened and QRCode analyzed in {:.2} "
+                "sec".format(i + 1, inputpdf.numPages, time() - tic))
+
             if test:
-                values['qr_preview'] = base64.b64encode(test_data)
+                cropped = cv2.imread(cropped_img_path)
+                cropped_preview = cv2.imencode('.jpg', cropped)
+                cropped_data = base64.b64encode(cropped_preview[1])
+                values['qr_preview'] = cropped_data
             line_vals.append(values)
+        else:
+            logger.info(
+                "\t\tPage {}/{} opened, no QRCode on this page. {:.2} "
+                "sec".format(i + 1, inputpdf.numPages, time() - tic))
 
-        logger.info(
-            "\t\tPage {}/{} opened and QRCode analyzed in {:.2} "
-            "sec".format(
-                i+1, inputpdf.numPages, time()-tic))
-
+        os.remove(img_path)
+        os.remove(cropped_img_path)
     letter_indexes.append(i+1)
 
     return letter_indexes, page_imgs
 
 
-def _decode_page(env, page_data, new_dpi):
+def _decode_page(env, page_data):
     """
     Read the image and try to find the QR codes.
-    The image should be currently saved as a png with the same name
-    than :py:attr:`file_` (except for the extension).
-    If QR Code is in wrong orientation, this method will return the given
-    file.
-    In case of test, the output dictonnary contains the image of the QR code
-    too.
-    The page must be saved in the file page.png !
 
     :param string page_data: Data of the PDF single page
     :returns: decoded qrcode, numpy array of page and test image data to show
@@ -316,65 +320,69 @@ def _decode_page(env, page_data, new_dpi):
     :rtype: str, binary
     """
     tic = time()
-    with Image(blob=page_data, resolution=int(new_dpi)) as page_image:
-        print time()-tic;
-        tic = time()
-        page_data = np.asarray(bytearray(page_image.make_blob('png')))
-        print time() - tic;
-        tic = time()
-        img = cv2.imdecode(page_data, 1)    # Read in color
-        print time() - tic;
-        tic = time()
+    #  write a pdf file of the pdf data (which allows to perfom some
+    # operations on it)
+    tmp_url = sniffpdf.data2pdf(page_data)
+    # Get the tree layout structure of the temporary PDF
+    layouts = sniffpdf.get_layout(tmp_url)
 
+    # The temporary PDF should only contain a single image
+    if len(layouts) == 1 and sniffpdf.contains_a_single_image(layouts[0]):
+        # extract jpg images from page_data en save them.
+        img_url = sniffpdf.get_images(
+            page_data, dst_folder=os.getcwd(), dst_name='page')
+        img_url = img_url[0]
+        img = cv2.imread(img_url)
+        logger.info("\t\tPDF opened with sniffpdf in {:.3} sec".format(
+            time() - tic))
+        # its time to remove the temporary PDF file
+        os.remove(tmp_url)
+    else:
+        # It occurs that the page is not suitable to be simply opened as a
+        # jpg image. This is why we have to convert it using a slower but
+        # safer method
+
+        # Slowly convert from vectorial to image data
+        with WandImage(blob=page_data, resolution=300) as page_image:
+            # Convert from image data to an array
+            page_data = np.asarray(bytearray(page_image.make_blob('jpg')))
+            # And we finally obtain our cv image
+        img = cv2.imdecode(page_data, 1)  # Read in color
         if img is None:
             return None, None, None
-        tic = time()-tic
-        logger.debug("\tPDF opened in {:.3} sec".format(time()-tic))
+        img_url = os.getcwd() + '/page.jpg'
+        cv2.imwrite(img_url, img)
 
-        # Save cropped file on disk for qrcode detection
-        left, right, top, bottom = _get_qr_crop(env, page_image.width,
-                                                page_image.height)
-        with page_image[left:right, top:bottom] as cropped:
-            filename = os.getcwd() + '/page.png'
-            cropped.type = 'grayscale'
-            cropped.depth = 8
-            test_data = cropped.make_blob('png')
-            cropped.save(filename=filename)
+        logger.info("\t\tPDF opened with wand.image in {:.3} sec".format(
+            time() - tic))
 
-            tic = time()
+    # We are now about to crop the img around the QRCode and save it on disk
+    height = img.shape[0]
+    width = img.shape[1]
+    # get the crop coordinates
+    left, right, top, bottom = _get_qr_crop(env, width, height)
 
-            decoder_lib = 'zbar'
-            code = None
-            if decoder_lib == 'zxing':
-                decoder = zxing_wrapper.BarCodeTool()
-                qrcode = decoder.decode(filename)
+    # Convert it to grayscale
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    # And crop it around the qrcode
+    cropped = img[top:bottom, left:right]
+    cropped_url = os.getcwd() + '/page_cropped.jpg'
+    cv2.imwrite(cropped_url, cropped)
 
-                # the following works only if we passed a single filename
-                # to the decoder
-                if qrcode:
-                    code = {}
-                    code["data"] = qrcode.data
-                    code["format"] = qrcode.format
-                    code["points"] = qrcode.points
-                    code["raw"] = qrcode.raw
-            elif decoder_lib == 'zbar':
-                qrcode = zbar_wrapper.decode(filename)
-                if qrcode:
-                    code = {}
-                    code["data"] = qrcode.data + '\n'
-                    code["format"] = qrcode.type
-                    code["points"] = qrcode.location
-                    code["raw"] = qrcode.data + '\n'
+    tic = time()
 
-            logger.debug("\tQRCode decoded in {:.3} sec".format(time()-tic))
+    decoder_lib = 'zbar'
+    if decoder_lib == 'zxing':
+        qrdata = zxing_wrapper.scan_qrcode(cropped_url)
+        logger.debug(
+            "\t\tQRCode decoded using ZXing in {:.3} sec".format(time() -
+                                                                 tic))
+    elif decoder_lib == 'zbar':
+        qrdata = zbar_wrapper.scan_qrcode(cropped_url)
+        logger.debug("\t\tQRCode decoded using ZBar in {:.3} sec".format(
+            time()-tic))
 
-    # qrfolder = '/home/openerp/dev/addons/compassion-modules
-            # /sbc_compassion/tests/testdata/qrcodes_grayscale_300dpi'
-    # n = str(len(os.listdir(qrfolder)))
-    # n = '0' * (3 - len(n)) + n
-    # shutil.move(filename, qrfolder + '/qrcode' + n + '.png')
-    os.remove(filename)
-    return code, img, test_data
+    return qrdata, img_url, cropped_url
 
 
 def _get_qr_crop(env, img_width, img_height):
@@ -433,7 +441,7 @@ def decodeBarcode(env, barcode):
         if len(barcode_split) == 2:
             partner_ref, child_code = barcode_split
             child_ref_field = 'local_id'
-            if len(child_code.strip()) == 9:
+            if len(child_code) == 9:
                 # Old reference
                 child_ref_field = 'code'
             child_id = env['compassion.child'].search(
