@@ -23,7 +23,6 @@ virtualenv:
   system_site_packages: true
 
 install:
-    - travis/install_zxing.sh
     - travis/install_opencv.sh
     - export PYTHONPATH=${PYTHONPATH}:${OPENCV_ROOT}/install/lib/python2.7/site-packages
     - python -c 'import cv2; print("OpenCV version is {}".format(cv2.__version__))'
@@ -40,6 +39,7 @@ install:
     - pip install python-magic
     - pip install wand
     - pip install sendgrid
+    - sudo apt-get install zbar-tools python-zbar python-pdfminer
     - git clone https://github.com/CompassionCH/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools -b r2
     - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
     - git clone https://github.com/OCA/l10n-switzerland.git ${HOME}/build/CompassionCH/l10n-switzerland -b 8.0
