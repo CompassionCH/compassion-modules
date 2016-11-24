@@ -496,7 +496,7 @@ def _find_template(env, img, line_vals, test, resize_ratio):
 
 
 def _find_languages(env, img, line_vals, test, resize_ratio=1.0):
-    r"""
+    """
     Crop a small part
     of the original picture around the position of each language
     check box.
@@ -509,14 +509,11 @@ def _find_languages(env, img, line_vals, test, resize_ratio=1.0):
     pictures to analyze (should be a square of about 20-30 pixels large).
 
     Algorithm for finding the checked language is the following:
-    1. Get the histogram of the cropped picture of the checkbox
-    2. Consider only the dark pixels (brightness value between 0-120)
-       (Max brightness is 256)
-    3. Look for the checkbox which has the most dark pixels count, as the
-       checked checkbox must be darker than the empty ones.
-    4. Returns true (checked) only if the pixels count is 25% more than the
-       second candidate checkbox, and only if the second candidate has less
-       than 25% more of dark pixels.
+    1. Detect the box coordinates
+    2. Compute Canny edges with two different approach and merge them
+    3. Depending on the number of detected edges and a decision threshold
+    we classe each box to True or False
+    4. If 0 or more tha 1 box is checked, we don't return any result
 
     :param env env: Odoo variable env
     :param img: Image to analyze
@@ -553,20 +550,15 @@ def _find_languages(env, img, line_vals, test, resize_ratio=1.0):
 
         if test:
             # Produce image of checkboxes to see the result of the crop
-            if False:
-                pos = (int(checkbox.x_max-checkbox.x_min)/2,
-                       int(checkbox.y_max-checkbox.y_min)/2)
-                img_lang = np.copy(img[a:b+1, c:d+1])
-                code_iso = checkbox.language_id.code_iso
-                if code_iso and False:
-                    cv2.putText(img_lang, code_iso, pos,
-                                cv2.FONT_HERSHEY_SIMPLEX, 1,
-                                lang_color)
-                test_img.append(img_lang)
-            else:
-                canny = checkbox_image.canny
-                canny = cv2.cvtColor(canny, cv2.COLOR_GRAY2BGR)
-                test_img.append(canny)
+            pos = (int(checkbox.x_max-checkbox.x_min)/2,
+                   int(checkbox.y_max-checkbox.y_min)/2)
+            img_lang = np.copy(img[a:b+1, c:d+1])
+            code_iso = checkbox.language_id.code_iso
+            if code_iso and False:
+                cv2.putText(img_lang, code_iso, pos,
+                            cv2.FONT_HERSHEY_SIMPLEX, 1,
+                            lang_color)
+            test_img.append(img_lang)
 
     found = False
     checked_ind = [i for i, val in enumerate(checked) if val]
