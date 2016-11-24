@@ -24,7 +24,6 @@ import patternrecognition as pr
 import checkboxreader as cbr
 import sniffpdf
 import numpy as np
-import sys
 from time import time
 from math import ceil
 from wand.image import Image as WandImage
@@ -531,15 +530,10 @@ def _find_languages(env, img, line_vals, test, resize_ratio=1.0):
     # Color for writing lang in test result image. The color order is BGR
     lang_color = (0, 97, 232)
     test_img = []
-
     h, w = img.shape[:2]
-    # Candidate for checked language (checkbox, pixels count)
-    maxDark = (0, 0)
-    # Second candidate
-    secondDark = (0, 0)
-    # Checkbox which has the less dark pixels count
-    minDark = (sys.maxint, sys.maxint)
 
+    checked = []
+    checkbox_list = []
     for checkbox in template.checkbox_ids:
         a = int(checkbox.y_min * resize_ratio)
         b = int(checkbox.y_max * resize_ratio)
@@ -548,40 +542,45 @@ def _find_languages(env, img, line_vals, test, resize_ratio=1.0):
         if not (0 < a < b < h and 0 < c < d < w):
             continue
         checkbox_image = cbr.CheckboxReader(img[a:b+1, c:d+1])
-        sumLows = checkbox_image.get_pixels_count(max_brightness=120)
-        if sumLows > maxDark[1]:
-            secondDark = maxDark
-            maxDark = (checkbox, sumLows)
-        elif sumLows > secondDark[1]:
-            secondDark = (checkbox, sumLows)
-        if sumLows < minDark[1]:
-            minDark = (checkbox, sumLows)
+
+        score = checkbox_image.compute_boxscore(boxsize=17)
+        checkbox_list.append(checkbox)
+        checked.append(checkbox_image.decision_threshold < score)
 
         if test:
             # Produce image of checkboxes to see the result of the crop
-            pos = (int(checkbox.x_max-checkbox.x_min)/2,
-                   int(checkbox.y_max-checkbox.y_min)/2)
-            img_lang = np.copy(img[a:b+1, c:d+1])
-            code_iso = checkbox.language_id.code_iso
-            if code_iso:
-                cv2.putText(img_lang, code_iso, pos,
-                            cv2.FONT_HERSHEY_SIMPLEX, 1,
-                            lang_color)
-            test_img.append(img_lang)
+            if False:
+                pos = (int(checkbox.x_max-checkbox.x_min)/2,
+                       int(checkbox.y_max-checkbox.y_min)/2)
+                img_lang = np.copy(img[a:b+1, c:d+1])
+                code_iso = checkbox.language_id.code_iso
+                if code_iso and False:
+                    cv2.putText(img_lang, code_iso, pos,
+                                cv2.FONT_HERSHEY_SIMPLEX, 1,
+                                lang_color)
+                test_img.append(img_lang)
+            else:
+                canny = checkbox_image.canny
+                canny = cv2.cvtColor(canny, cv2.COLOR_GRAY2BGR)
+                test_img.append(canny)
 
-    # A checked box represents 20% of pixels
-    # We test the difference between second checkbox with most dark
-    # pixels and checkbox with the least dark pixels is less than 25%
-    maxDiff = maxDark[1] - secondDark[1]
-    minDiff = secondDark[1] - minDark[1]
-    found = minDiff <= 0.25 * minDark[1] < maxDiff
-    if found:
-        lang = maxDark[0].language_id
+    found = False
+    checked_ind = [i for i, val in enumerate(checked) if val]
+    langs = map(lambda ind: checkbox_list[ind], checked_ind)
+    if len(langs) == 1:
+        found = True
+        lang = langs[0].language_id
         line_vals['letter_language_id'] = lang.id
+
     if test:
         test_data = manyImages2OneImage(test_img, 2)
         line_vals['lang_preview'] = test_data
-        line_vals['test_letter_language'] = lang.code_iso if found else 'nope'
+        if found:
+            vals = lang.code_iso
+        else:
+            vals = 'nope: ' + ', '.join(map(
+                lambda l: l.language_id.code_iso, langs))
+        line_vals['test_letter_language'] = vals
 
 
 def manyImages2OneImage(test_img, col):
