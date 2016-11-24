@@ -3,9 +3,7 @@
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author:   Loic Hausammann <loic_hausammann@hotmail.com>,
-#               Emanuel Cino,
-#               Emmanuel Girardin <emmanuel.girardin@outlook.com>
+#    @author: Loic Hausammann <loic_hausammann@hotmail.com>, Emanuel Cino
 #
 #    The licence is in the file __openerp__.py
 #
@@ -26,12 +24,8 @@ import os
 class CheckboxReader:
     """
     Construct an object for reading an image of a checkbox.
-    This class contains only one method for reading the brightness of
-    the image in order to guess if the checkbox is checked or not.
-
     :param img: Image (array or str)
-    :param float ratiomin: Ratio of black pixel required for being \
-        considered as checked.
+
     """
     histogram = []
 
@@ -52,15 +46,33 @@ class CheckboxReader:
     ##########################################################################
 
     def compute_boxscore(self, boxsize=17):
+        """
+        Basically, if we count the number of dark pixels on the image should
+        give us a clue if the box is checked or not. But sometimes the
+        sponsor write around the box, which increase the number of dark
+        pixels. This is why we start by cropping precisely around the box.
+        Then we compute the Canny Edge and Canny Curve and merge them.
+        :param boxsize:
+        :return:
+        """
+        # Negative image
         img = 255 - np.copy(self.img)
+
+        # detect the box
         left, right, top, bottom = self._box_coordinates(
             img, squarsize=boxsize)
+
+        # Detect the line borders withe Canny Edge
         canny1 = cv2.Canny(img, 20, 20)
+        # Detect line itself with Canny Curve
         canny2 = self._canny_curve_detector(
             img, low_thresh=20, high_thresh=20)
+        # Merge the two Canny by keeping the maximum for each pixels
         canny = cv2.max(canny1, canny2)
+        # Crop around the box
         canny = canny[top:bottom, left:right]
         self.canny = canny
+        # Comupte the integral of the image.
         count = cv2.sumElems(canny)[0] / 255
         return count
 
