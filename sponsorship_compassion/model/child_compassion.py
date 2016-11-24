@@ -53,7 +53,7 @@ class child_compassion(models.Model):
                 json_data = r.json()
                 if r.status_code == 200:
                     child.unsponsored_since = json_data[
-                        'beginWaitTime'] or False
+                        'beginWaitTime'] or child.date
                 else:
                     logger.error(
                         'An error occured while fetching the unsponsored '
