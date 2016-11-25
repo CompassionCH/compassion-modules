@@ -39,7 +39,8 @@ install:
     - pip install python-magic
     - pip install wand
     - pip install sendgrid
-    - sudo apt-get install zbar-tools python-zbar python-pdfminer
+    - sudo apt-get install zbar-tools python-zbar
+    - pip install pdfminer
     - git clone https://github.com/CompassionCH/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools -b r2
     - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
     - git clone https://github.com/OCA/l10n-switzerland.git ${HOME}/build/CompassionCH/l10n-switzerland -b 8.0
