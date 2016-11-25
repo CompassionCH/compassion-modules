@@ -249,19 +249,6 @@ class CompassionChild(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.one
-    @api.depends('local_id')
-    def _set_project(self):
-        if self.local_id:
-            project = self.env['compassion.project'].search(
-                [('icp_id', '=', self.local_id[:5])], limit=1)
-            if not project:
-                project = self.env['compassion.project'].create({
-                    'icp_id': self.local_id[:5],
-                    'name': self.local_id[:5],
-                })
-            self.project_id = project.id
-
     def _get_child_states(self):
         return [
             ('N', _('Consigned')),
