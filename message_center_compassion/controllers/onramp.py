@@ -27,15 +27,16 @@ class RestController(http.Controller):
         """ Handler for `/onramp` url for json data.
         """
         headers = request.httprequest.headers
+        message_type = headers['x-cim-MessageType']
+        log_message("INCOMING", message_type, headers, request.jsonrequest)
         self._validate_headers(headers)
-        message_type = request.httprequest.headers['x-cim-MessageType']
         result = {
             "ConfirmationId": request.uuid,
             "Timestamp": request.timestamp,
+            "code": 200,
         }
         action_connect = request.env['gmc.action.connect'].sudo(
             request.uid).search([('connect_schema', '=', message_type)])
-        log_message("INCOMING", message_type, headers, request.jsonrequest)
         if action_connect:
             action = action_connect.action_id
             request.env['gmc.message.pool'].sudo(request.uid).create({
@@ -44,16 +45,10 @@ class RestController(http.Controller):
                 'headers': json.dumps(dict(headers.items())),
                 'content': json.dumps(request.jsonrequest)
             })
-            result.update({
-                "code": 200,
-                "Message": "Your message was successfully received."
-            })
+            result["Message"] = "Your message was successfully received."
         else:
             ONRAMP_LOGGER.error("Unknown message type received.")
-            result.update({
-                "code": 200,
-                "Message": "Unknown message type - not processed."
-            })
+            result["Message"] = "Unknown message type - not processed."
         return result
 
     def _validate_headers(self, headers):

@@ -218,8 +218,8 @@
             <field name="model">compassion.child</field>
             <field name="arch" type="xml">
                 <search string="Search child">
-                    <field name="name" filter_domain="['|', ('name', 'ilike', self), ('firstname', 'ilike', self)]"/>
                     <field name="local_id"/>
+                    <field name="global_id"/>
                     <field name="sponsor_id"/>
                     <field name="sponsor_ref"/>
                     <field name="state"/>
