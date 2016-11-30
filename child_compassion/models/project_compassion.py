@@ -15,9 +15,6 @@ from openerp import models, fields, api, _
 import sys
 
 from openerp.exceptions import Warning
-from ..wizards.project_description_fr import ProjectDescriptionFr
-from ..wizards.project_description_de import ProjectDescriptionDe
-from ..wizards.project_description_it import ProjectDescriptionIt
 
 logger = logging.getLogger(__name__)
 
@@ -194,8 +191,12 @@ class CompassionProject(models.Model):
         'icp.community.occupation', string='Primary adults occupation',
         readonly=True
     )
+    local_currency = fields.Many2one('res.currency',
+                                     related='country_id.currency_id')
     monthly_income = fields.Float(
         help='Average family income in local currency', readonly=True)
+    usd = fields.Many2one('res.currency', compute='_compute_usd')
+    chf_income = fields.Float(compute='_compute_chf_income')
     unemployment_rate = fields.Float(readonly=True)
     annual_primary_school_cost = fields.Float(
         readonly=True, help='In local currency')
@@ -223,16 +224,16 @@ class CompassionProject(models.Model):
         ('Moderate', 'Moderate'),
     ], readonly=True)
     community_terrain = fields.Selection([
-        ('Coastal', _('coastal')),
-        ('Desert', _('desert')),
-        ('Forested', _('forested')),
-        ('Hilly', _('hilly')),
-        ('Island', _('island')),
-        ('Jungle', _('jungle')),
-        ('Lake', _('lake')),
-        ('Mountainous', _('mountainous')),
-        ('Plains/Flat Land', _('plains')),
-        ('Valley', _('valley')),
+        ('Coastal', 'Coastal'),
+        ('Desert', 'Desert'),
+        ('Forested', 'Forested'),
+        ('Hilly', 'Hilly'),
+        ('Island', 'Island'),
+        ('Jungle', 'Jungle'),
+        ('Lake', 'Lake'),
+        ('Mountainous', 'Mountainous'),
+        ('Plains/Flat Land', 'Plains'),
+        ('Valley', 'Valley'),
     ], readonly=True)
     typical_roof_material = fields.Selection('_get_materials', readonly=True)
     typical_floor_material = fields.Selection('_get_materials', readonly=True)
@@ -381,6 +382,18 @@ class CompassionProject(models.Model):
             ('Tin', _('tin')),
         ]
 
+    @api.multi
+    def _compute_usd(self):
+        usd = self.env.ref('base.USD')
+        for project in self:
+            project.usd = usd
+
+    @api.multi
+    def _compute_chf_income(self):
+        for project in self:
+            project.chf_income = \
+                project.monthly_income / project.usd.rate_silent
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -409,32 +422,19 @@ class CompassionProject(models.Model):
         return True
 
     @api.multi
-    def get_activities(self, max_per_type=sys.maxint):
-        icp_activities = list()
-        all_activities = [
-            (self.mapped('spiritual_activity_babies_ids') +
-             self.mapped('spiritual_activity_kids_ids') +
-             self.mapped('spiritual_activity_ados_ids')).sorted(),
-            (self.mapped('cognitive_activity_babies_ids') +
-             self.mapped('cognitive_activity_kids_ids') +
-             self.mapped('cognitive_activity_ados_ids')).sorted(),
-            (self.mapped('physical_activity_babies_ids') +
-             self.mapped('physical_activity_kids_ids') +
-             self.mapped('physical_activity_ados_ids')).sorted(),
-            (self.mapped('socio_activity_babies_ids') +
-             self.mapped('socio_activity_kids_ids') +
-             self.mapped('socio_activity_ados_ids')).sorted()
-        ]
-        for activities in all_activities:
-            max_number_act = min(len(activities), max_per_type)
-            icp_activities.extend(activities[:max_number_act].mapped('value'))
-        return icp_activities
+    def get_activities(self, field, max=sys.maxint):
+        all_activities = (
+            self.mapped(field + '_babies_ids') +
+            self.mapped(field + '_kids_ids') +
+            self.mapped(field + '_ados_ids')).sorted()
+        return all_activities[:max].mapped('value')
 
     def details_answer(self, vals):
         """ Called when receiving the answer of GetDetails message. """
         self.ensure_one()
         self.write(vals)
-        self.generate_descriptions()
+        self.env['compassion.project.description'].create({
+            'project_id': self.id})
         return True
 
     ##########################################################################
@@ -454,18 +454,6 @@ class CompassionProject(models.Model):
             message_vals)
         if message.state == 'failure' and not async_mode:
             raise Warning(message.failure_reason)
-
-        return True
-
-    @api.multi
-    def generate_descriptions(self):
-        for project in self:
-            project.description_fr = ProjectDescriptionFr.gen_fr_translation(
-                project.with_context(lang='fr_CH'))
-            project.description_de = ProjectDescriptionDe.gen_de_translation(
-                project.with_context(lang='de_DE'))
-            project.description_it = ProjectDescriptionIt.gen_it_translation(
-                project.with_context(lang='it_IT'))
 
         return True
 

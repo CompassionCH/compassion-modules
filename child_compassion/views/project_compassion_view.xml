@@ -79,16 +79,16 @@
                             </page>
                             <page string="Descriptions">
                                 <group>
-                                    <field name="description_en" />
+                                    <field name="description_en" widget="html"/>
                                 </group>
                                 <group>
-                                    <field name="description_fr" />
+                                    <field name="description_fr" widget="html"/>
                                 </group>
                                 <group>
-                                    <field name="description_de" />
+                                    <field name="description_de" widget="html"/>
                                 </group>
                                 <group>
-                                    <field name="description_it" />
+                                    <field name="description_it" widget="html"/>
                                 </group>
                             </page>
                             <page string="Detailed Information">
@@ -149,12 +149,14 @@
                                         <field name="activities_for_parents"/>
                                     </group>
                                     <group string="Community">
+                                        <field name="local_currency" invisible="1"/>
+                                        <field name="usd" invisible="1"/>
                                         <field name="community_name"/>
                                         <field name="community_population"/>
                                         <field name="primary_ethnic_group_name"/>
                                         <field name="primary_language_id"/>
                                         <field name="primary_adults_occupation_ids" widget="many2many_tags"/>
-                                        <field name="monthly_income"/>
+                                        <field name="monthly_income" widget="monetary" options="{'currency_field': 'usd'}"/>
                                         <field name="unemployment_rate"/>
                                         <field name="typical_roof_material"/>
                                         <field name="typical_floor_material"/>
@@ -163,8 +165,8 @@
                                         <field name="primary_diet_ids" widget="many2many_tags"/>
                                     </group>
                                     <group string="School">
-                                        <field name="annual_primary_school_cost"/>
-                                        <field name="annual_secondary_school_cost"/>
+                                        <field name="annual_primary_school_cost" widget="monetary" options="{'currency_field': 'local_currency'}"/>
+                                        <field name="annual_secondary_school_cost" widget="monetary" options="{'currency_field': 'local_currency'}"/>
                                         <field name="school_cost_paid_ids" widget="many2many_tags"/>
                                         <field name="school_year_begins"/>
                                     </group>

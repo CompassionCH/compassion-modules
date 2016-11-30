@@ -1,14 +1,14 @@
 id,name,value
-household_duty _animal,Animal Care,animal care
-household_duty _market,Buying Or Selling In Market,buying or selling in market
-household_duty _water,Carries Water,carrying water
-household_duty _childcare,Child Care,child care
-household_duty _cleaning,Cleaning,cleaning
-household_duty _gardening,Gardening Or Farming,gardening or farming
-household_duty _firewood,Gathers Firewood,gathering firewood
-household_duty _kitchen,Kitchen Help,kitchen help
-household_duty _makingbed,Making Beds,making beds
-household_duty _errands,Running Errands,running errands
-household_duty _sewing,Sewing,sewing
-household_duty _teaching,Teaching Others,teaching others
-household_duty _clothes,Washing Clothes,washing clothes
+household_duty _animal,Animal Care,Animal care
+household_duty _market,Buying Or Selling In Market,Buying or selling in market
+household_duty _water,Carries Water,Carrying water
+household_duty _childcare,Child Care,Child care
+household_duty _cleaning,Cleaning,Cleaning
+household_duty _gardening,Gardening Or Farming,Gardening or farming
+household_duty _firewood,Gathers Firewood,Gathering firewood
+household_duty _kitchen,Kitchen Help,Kitchen help
+household_duty _makingbed,Making Beds,Making beds
+household_duty _errands,Running Errands,Running errands
+household_duty _sewing,Sewing,Sewing
+household_duty _teaching,Teaching Others,Teaching others
+household_duty _clothes,Washing Clothes,Washing clothes
