@@ -13,3 +13,4 @@ from . import migration_r4
 from . import availability_settings
 from . import global_child_search
 from . import child_hold_wizard
+from . import child_description

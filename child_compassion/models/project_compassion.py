@@ -14,6 +14,7 @@ from openerp import models, fields, api, _
 
 import sys
 
+from openerp.exceptions import Warning
 from ..wizards.project_description_fr import ProjectDescriptionFr
 from ..wizards.project_description_de import ProjectDescriptionDe
 from ..wizards.project_description_it import ProjectDescriptionIt
@@ -449,7 +450,11 @@ class CompassionProject(models.Model):
             'action_id': action_id,
             'object_id': self.id,
         }
-        message_obj.with_context(async_mode=async_mode).create(message_vals)
+        message = message_obj.with_context(async_mode=async_mode).create(
+            message_vals)
+        if message.state == 'failure' and not async_mode:
+            raise Warning(message.failure_reason)
+
         return True
 
     @api.multi

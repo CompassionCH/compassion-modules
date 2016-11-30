@@ -54,14 +54,14 @@ class Household(models.Model):
     # Employment
     ############
     male_guardian_job_type = fields.Selection([
-        ('Regularly Employed', 'Regular'),
-        ('Sometimes Employed', 'Sometimes employed'),
+        ('Regularly Employed', _('Regular')),
+        ('Sometimes Employed', _('Sometimes employed')),
         ('Not Employed', 'Not employed'),
     ])
     male_guardian_job = fields.Selection('_get_jobs')
     female_guardian_job_type = fields.Selection([
-        ('Regularly Employed', 'Regular'),
-        ('Sometimes Employed', 'Sometimes employed'),
+        ('Regularly Employed', _('Regular')),
+        ('Sometimes Employed', _('Sometimes employed')),
         ('Not Employed', 'Not employed'),
     ])
     female_guardian_job = fields.Selection('_get_jobs')
@@ -79,8 +79,10 @@ class Household(models.Model):
             sisters = household.member_ids.filtered(
                 lambda member: member.role in (
                     'Sister', 'Beneficiary - Female'))
-            household.nb_brothers = len(brothers) - 1
-            household.nb_sisters = len(sisters) - 1
+            household.nb_brothers = len(brothers) - 1 if self.env.context.get(
+                'active_gender') == 'M' else len(brothers)
+            household.nb_sisters = len(sisters) - 1 if self.env.context.get(
+                'active_gender') == 'F' else len(sisters)
 
     @api.multi
     def _compute_primary_caregiver(self):
@@ -123,50 +125,48 @@ class Household(models.Model):
 
     def _get_jobs(self):
         return [
-            ('Agriculture/ Farmer', _('is a farmer')),
+            ('Agriculture/ Farmer', _('Farmer')),
             ('Baker', _('is a baker')),
-            ('Church Employee/ Project Worker', _('works for the local '
-                                                  'church')),
-            ('Clothing Trade', _('works in clothing trade')),
-            ('Construction/ Tradesman', _('works in construction')),
-            ('Day Labor/ Different Jobs', _('does daily jobs')),
+            ('Church Employee/ Project Worker', _('Project Worker')),
+            ('Clothing Trade', _('Works in clothing trade')),
+            ('Construction/ Tradesman', _('Works in construction')),
+            ('Day Labor/ Different Jobs', _('Daily jobs')),
             ('Health Care Worker', _('Health care worker')),
-            ('Factory Worker', _('works in a factory')),
-            ('Fisherman', _('is a fisherman')),
-            ('Food Services', _('works in food services')),
-            ('Janitor', _('is janitor')),
-            ('Mechanic', _('is mechanic')),
-            ('Merchant/ Seller', _('is merchant')),
-            ('Security/ Guard', _('is a security guard')),
-            ('Teacher', _('is a teacher')),
-            ('Transportation/ Driver', _('is a driver')),
-            ('Unknown', 'unknown'),
-            ('Welder', _('is a welder')),
+            ('Factory Worker', _('Factory worker')),
+            ('Fisherman', _('Fisherman')),
+            ('Food Services', _('Works in food services')),
+            ('Janitor', _('Janitor')),
+            ('Mechanic', _('Mechanic')),
+            ('Merchant/ Seller', _('Merchant')),
+            ('Security/ Guard', _('Security guard')),
+            ('Teacher', _('Teacher')),
+            ('Transportation/ Driver', _('Driver')),
+            ('Unknown', _('Unknown')),
+            ('Welder', _('Welder')),
             # TODO see if these values are only in test
-            ('Carpenter', _('is a carpenter')),
-            ('Electrician', _('is an electrician')),
-            ('Fish Seller', _('is a fish seller')),
-            ('Gardener', _('is a gardener')),
-            ('Construction Worker', _('is a construction worker')),
-            ('Food Vendor', _('is a food vendor')),
-            ('Guard / Watchman', _('is a guard')),
-            ('Domestic Service / Housekeeper', ('is a domestic')),
-            ('Agriculture / Farmer', ('is a farmer')),
-            ('Church Employee / Project Worker', _('works for the local '
-                                                   'church')),
-            ('Construction / Tradesman', _('works in construction')),
-            ('Day Labor / Different Jobs', _('does daily jobs')),
-            ('Merchant / Seller', _('is merchant')),
-            ('Security / Guard', _('is a security guard')),
-            ('Transportation/ Driver', _('is a driver')),
-            ('Laborer', _('is a laborer')),
-            ('Farmer', _('is a farmer')),
-            ('Housewife', _('is a housewife')),
-            ('Domestic Service/ Housekeeper', _('is a domestic housekeeper')),
-            ('Project Worker', _('works at the project')),
-            ('Sells In Market', _('sells in market')),
-            ('Health Care/ Nurse', _('is a nurse')),
-            ('Clothing Trades', _('works in clothing trade')),
+            ('Carpenter', _('Carpenter')),
+            ('Electrician', _('Electrician')),
+            ('Fish Seller', _('Fish seller')),
+            ('Gardener', _('Gardener')),
+            ('Construction Worker', _('Construction worker')),
+            ('Food Vendor', _('Food vendor')),
+            ('Guard / Watchman', _('Guard')),
+            ('Domestic Service / Housekeeper', _('Housekeeper')),
+            ('Agriculture / Farmer', _('Farmer')),
+            ('Church Employee / Project Worker', _('Project Worker')),
+            ('Construction / Tradesman', _('Works in construction')),
+            ('Day Labor / Different Jobs', _('Daily jobs')),
+            ('Merchant / Seller', _('Merchant')),
+            ('Security / Guard', _('Security guard')),
+            ('Transportation/ Driver', _('Driver')),
+            ('Laborer', _('Laborer')),
+            ('Farmer', _('Farmer')),
+            ('Housewife', _('Housewife')),
+            ('Domestic Service/ Housekeeper', _('Housekeeper')),
+            ('Project Worker', _('Project Worker')),
+            ('Sells In Market', _('Merchant')),
+            ('Health Care/ Nurse', _('Nurse')),
+            ('Clothing Trades', _('Works in clothing trade')),
         ]
 
     def process_commkit(self, commkit_data):
