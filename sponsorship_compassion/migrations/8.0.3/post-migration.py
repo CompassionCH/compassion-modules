@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -45,3 +45,30 @@ def migrate(cr, version):
                 SET global_id = '{}'
                 WHERE ref = '{}'
             """.format(row[1], row[0]))
+
+    logger.info("MIGRATION : LOADING SPONSORSHIP GLOBAL IDS")
+    with open(IMPORT_DIR + 'sponsorship_ids.csv', 'rb') as csvfile:
+        csvreader = csv.reader(csvfile)
+        # Skip header
+        csvreader.next()
+        for row in csvreader:
+            cr.execute("""
+                SELECT id FROM compassion_child
+                WHERE compass_id = '{}';
+            """.format(row[0]))
+            child_id = cr.fetchone()
+            child_id = child_id and child_id[0]
+            cr.execute("""
+                SELECT id FROM res_partner
+                WHERE ref = '{}' AND parent_id is NULL AND has_sponsorships
+                = TRUE;
+            """.format(row[1]))
+            sponsor_id = cr.fetchone()
+            sponsor_id = sponsor_id and sponsor_id[0]
+            if child_id and sponsor_id:
+                cr.execute("""
+                    UPDATE recurring_contract
+                    SET global_id = %s
+                    WHERE child_id = %s AND correspondant_id = %s
+                    AND state NOT IN ('cancelled', 'terminated')
+                """, (row[2], child_id, sponsor_id))
