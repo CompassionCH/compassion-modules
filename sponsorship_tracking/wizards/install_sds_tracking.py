@@ -8,8 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from openerp import api, models, fields
 
 from datetime import timedelta, datetime
 
@@ -127,13 +126,14 @@ class recurring_contract(models.TransientModel):
                        date_delta=0):
         if contract_ids:
             con_ids = ','.join([str(c) for c in contract_ids])
-            self.env.cr.execute(
-                "UPDATE recurring_contract "
-                "SET sds_state = '{0}', sds_state_date = {1}+{2},"
-                "    color = {3} "
-                "WHERE id in ({4}) ".format(
-                    sds_state, sds_change_date,
-                    date_delta, SDS_COLORS[sds_state], con_ids))
+            self.env.cr.execute("""
+                UPDATE recurring_contract
+                SET sds_state = '{0}',
+                    sds_state_date = {1} + interval '{2} days',
+                    color = {3}
+                WHERE id in ({4})
+            """.format(sds_state, sds_change_date,
+                       date_delta, SDS_COLORS[sds_state], con_ids))
 
     def _get_contract_sub(self):
         """ Rules for setting SUB Status of a contract with child departed:
@@ -147,7 +147,8 @@ class recurring_contract(models.TransientModel):
         contract_obj = self.env['recurring.contract']
         max_sub_waiting = datetime.today() + timedelta(days=-50)
         child_departed_contracts = contract_obj.search(
-            [('state', '=', 'terminated'), ('end_reason', '=', '1')])
+            [('state', '=', 'terminated'), ('end_reason', '=', '1'),
+             ('end_date', '!=', False)])
 
         no_sub_ids = list()
         sub_ids = list()
@@ -158,7 +159,7 @@ class recurring_contract(models.TransientModel):
         for contract in child_departed_contracts:
             sub_contracts = contract_obj.search(
                 [('parent_id', '=', contract.id)])
-            contract_end_date = datetime.strptime(contract.end_date, DF)
+            contract_end_date = fields.Datetime.from_string(contract.end_date)
 
             if not sub_contracts:
                 if contract_end_date < max_sub_waiting:
@@ -171,10 +172,10 @@ class recurring_contract(models.TransientModel):
                         sub_accept_ids.append(contract.id)
                         break
                     elif sub_contract.end_date:
-                        sub_end_date = datetime.strptime(
-                            sub_contract.end_date, DF)
-                        sub_start_date = datetime.strptime(
-                            sub_contract.start_date, DF)
+                        sub_end_date = fields.Datetime.from_string(
+                            sub_contract.end_date)
+                        sub_start_date = fields.Datetime.from_string(
+                            sub_contract.start_date)
                         if (sub_contract.end_reason == '1' or
                             sub_end_date >
                                 sub_start_date + timedelta(days=50)):

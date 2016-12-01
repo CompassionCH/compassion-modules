@@ -192,7 +192,7 @@ class SponsorshipContract(models.Model):
         if 'child_id' in vals:
             self._on_change_child_id(vals)
 
-        updated_correspondents = False
+        updated_correspondents = self.env[self._name]
         if 'correspondant_id' in vals:
             updated_correspondents = self._on_change_correspondant()
 

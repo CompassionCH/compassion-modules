@@ -61,8 +61,8 @@
         'data/gmc_action.xml',
     ],
     'demo': [
-        'demo/correspondence_template_demo.xml',
-        'demo/update_demo_partner_compassion.xml',
+        # 'demo/correspondence_template_demo.xml',
+        # 'demo/update_demo_partner_compassion.xml',
         # 'demo/update_demo_child_compassion.xml',
     ],
     'installable': True,
