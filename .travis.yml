@@ -23,7 +23,6 @@ virtualenv:
   system_site_packages: true
 
 install:
-    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis/install_zxing.sh || echo "Not installing zxing in Pull requests"'
     - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis/install_opencv.sh || echo "Not installing OpenCV in Pull requests"'
     - export PYTHONPATH=${PYTHONPATH}:${OPENCV_ROOT}/install/lib/python2.7/site-packages
     - pip install flake8
@@ -40,6 +39,8 @@ install:
     - pip install wand
     - pip install sendgrid
     - pip install jwt
+    - sudo apt-get install zbar-tools python-zbar
+    - pip install pdfminer
     - git clone https://github.com/CompassionCH/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools -b r2
     - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
     - git clone https://github.com/OCA/l10n-switzerland.git ${HOME}/build/CompassionCH/l10n-switzerland -b 8.0

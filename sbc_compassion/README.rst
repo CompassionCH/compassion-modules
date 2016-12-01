@@ -9,7 +9,7 @@ The sbc.compassion module can handle the different interactions of
 correspondence between sponsors and their children sponsorships
 
 Installation
-=============
+============
 To install this module, you need to install dependencies:
     * requires the following libraries (names from apt-get):
         - openexr 
@@ -29,8 +29,6 @@ To install this module, you need to install dependencies:
     * requires opencv3
     * Notice that zxing is no longer used. We're using zbar instead
     * requires a java environment
-
-
 
 Contributors
 ------------
