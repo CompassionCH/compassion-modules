@@ -175,3 +175,7 @@ class ICPMapping(OnrampMapping):
             if isinstance(val, basestring) and val.lower() in (
                     'null', 'false', 'none', 'other', 'unknown'):
                 odoo_data[key] = False
+
+        monthly_income = odoo_data.get('monthly_income')
+        if monthly_income:
+            odoo_data['monthly_income'] = monthly_income.replace(',', '.')

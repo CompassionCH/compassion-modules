@@ -31,6 +31,7 @@ class GenericChildMapping(OnrampMapping):
         'BirthDate': 'birthdate',
         'Birthdate': 'birthdate',
         'CDSPType': 'cdsp_type',
+        'ProgramDeliveryType': 'cdsp_type',
         'ChristianActivity_Name': (
             'christian_activity_ids.name', 'child.christian.activity'),
         'ChronicIllness': (
@@ -112,7 +113,6 @@ class GenericChildMapping(OnrampMapping):
         'LocalBeneficiaryNumber': None,
         'MentalDevelopmentConditions': None,
         'PrimaryCaregiverName': None,
-        'ProgramDeliveryType': None,
         'RecordType_Name': None,
         'ReligiousAffiliation': None,
         'ReviewStatus': None,

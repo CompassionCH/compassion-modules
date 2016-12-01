@@ -15,7 +15,9 @@ Installation
 ============
 
 This module depends on message_center_compassion to manage
-messages with GMC Connect.
+messages with GMC Connect. You need to add pyquery library
+
+- sudo pip install pyquery
 
 Configuration
 =============

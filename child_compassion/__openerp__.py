@@ -37,7 +37,7 @@
     'depends': ['mail', 'web_m2x_options', 'document',
                 'message_center_compassion'],
     'external_dependencies': {
-        'python': ['enum']
+        'python': ['enum', 'pyquery']
     },
     'data': [
         'security/sponsorship_groups.xml',

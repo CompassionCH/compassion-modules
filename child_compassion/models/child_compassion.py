@@ -14,11 +14,9 @@ import logging
 from openerp import models, fields, api, _
 from datetime import datetime, timedelta
 
-from ..wizards.child_description_fr import ChildDescriptionFr
-from ..wizards.child_description_de import ChildDescriptionDe
-from ..wizards.child_description_it import ChildDescriptionIt
 from ..mappings.compassion_child_mapping import CompassionChildMapping
 
+from openerp.exceptions import Warning
 from openerp.addons.connector.queue.job import job
 from openerp.addons.connector.session import ConnectorSession
 from openerp.addons.message_center_compassion.tools.onramp_connector import \
@@ -56,8 +54,8 @@ class CompassionChild(models.Model):
         ('19+', '19+'),
     ], readonly=True)
     cdsp_type = fields.Selection([
-        ('Home based', 'Home based'),
-        ('Center based', 'Center based'),
+        ('Home Based', 'Home based'),
+        ('Center Based', 'Center based'),
     ], track_visibility='onchange', readonly=True)
     last_review_date = fields.Date(track_visibility='onchange', readonly=True)
     type = fields.Selection(
@@ -101,11 +99,11 @@ class CompassionChild(models.Model):
     # Education information
     #######################
     education_level = fields.Selection([
-        ('Not Enrolled', 'Not Enrolled'),
-        ('Preschool', 'Preschool'),
-        ('Primary', 'Primary'),
-        ('Secondary', 'Secondary'),
-        ('University Graduate', 'University Graduate'),
+        ('Not Enrolled', _('Not Enrolled')),
+        ('Preschool', _('preschool')),
+        ('Primary', _('primary school')),
+        ('Secondary', _('secondary school')),
+        ('University Graduate', _('university')),
     ], readonly=True)
     local_grade_level = fields.Char(readonly=True)
     us_grade_level = fields.Selection([
@@ -128,29 +126,29 @@ class CompassionChild(models.Model):
         ('PK', 'PK'),
     ], readonly=True)
     academic_performance = fields.Selection([
-        ('Above Average', _('above average')),
-        ('Average', _('average')),
-        ('Below Average', _('below average')),
+        ('Above Average', _('Above average')),
+        ('Average', _('Average')),
+        ('Below Average', _('Below average')),
     ], readonly=True)
     vocational_training_type = fields.Selection([
-        ('Agriculture', _('agriculture')),
-        ('Automotive', _('automotive')),
-        ('Business/Administrative', _('business administration')),
-        ('Clothing Trades', _('clothing trades')),
-        ('Computer Technology', _('computer technology')),
-        ('Construction/ Tradesman', _('construction')),
-        ('Cooking / Food Service', _('cooking and food service')),
-        ('Cosmetology', _('cosmetology')),
-        ('Electrical/ Electronics', _('electronics')),
-        ('Graphic Arts', _('graphic arts')),
+        ('Agriculture', _('Agriculture')),
+        ('Automotive', _('Automotive')),
+        ('Business/Administrative', _('Business administration')),
+        ('Clothing Trades', _('Clothing trades')),
+        ('Computer Technology', _('Computer technology')),
+        ('Construction/ Tradesman', _('Construction')),
+        ('Cooking / Food Service', _('Cooking and food service')),
+        ('Cosmetology', _('Cosmetology')),
+        ('Electrical/ Electronics', _('Electronics')),
+        ('Graphic Arts', _('Graphic arts')),
         ('Income-Generating Program at Project',
-         'Income-Generating Program at Project'),
-        ('Manufacturing/ Fabrication', 'Manufacturing/ Fabrication'),
-        ('Medical/ Health Services', 'Medical/ Health Services'),
-        ('Not Enrolled', 'Not Enrolled'),
-        ('Telecommunication', _('telecommunication')),
-        ('Transportation', _('transportation')),
-        ('Transportation/ Driver', _('driver')),
+         _('Income-generating program at project')),
+        ('Manufacturing/ Fabrication', _('Manufacturing / Fabrication')),
+        ('Medical/ Health Services', _('Medical / Health services')),
+        ('Not Enrolled', _('Not enrolled')),
+        ('Telecommunication', _('Telecommunication')),
+        ('Transportation', _('Transportation')),
+        ('Transportation/ Driver', _('Driver')),
     ], readonly=True)
     university_year = fields.Selection([
         ('1', '1'),
@@ -162,30 +160,30 @@ class CompassionChild(models.Model):
         ('7', '7'),
     ], readonly=True)
     major_course_study = fields.Selection([
-        ('Accounting', _('accounting')),
-        ('Agriculture', _('agriculture')),
-        ('Biology / Medicine', _('biology/medicine')),
-        ('Business / Management / Commerce', _('business management')),
-        ('Community Development', _('community development')),
-        ('Computer Science / Information Technology', _('computer science')),
-        ('Criminology / Law Enforcement', _('criminology')),
-        ('Economics', _('economics')),
-        ('Education', _('education')),
-        ('Engineering', _('engineering')),
-        ('English', _('english')),
-        ('Graphic Arts / Fine Arts', _('graphic arts')),
-        ('History', _('history')),
-        ('Hospitality / Hotel Management', _('hospitality / hotel '
+        ('Accounting', _('Accounting')),
+        ('Agriculture', _('Agriculture')),
+        ('Biology / Medicine', _('Biology / Medicine')),
+        ('Business / Management / Commerce', _('Business management')),
+        ('Community Development', _('Community development')),
+        ('Computer Science / Information Technology', _('Computer science')),
+        ('Criminology / Law Enforcement', _('Criminology')),
+        ('Economics', _('Economics')),
+        ('Education', _('Education')),
+        ('Engineering', _('Engineering')),
+        ('English', _('English')),
+        ('Graphic Arts / Fine Arts', _('Graphic arts')),
+        ('History', _('History')),
+        ('Hospitality / Hotel Management', _('Hospitality / Hotel '
                                              'management')),
-        ('Law', _('law')),
-        ('Mathematics', _('mathematics')),
-        ('Nursing', _('nursing')),
+        ('Law', _('Law')),
+        ('Mathematics', _('Mathematics')),
+        ('Nursing', _('Nursing')),
         ('Psychology', _('Psychology')),
-        ('Sales and Marketing', _('sales and marketing')),
-        ('Science', _('science')),
-        ('Sociology / Social Science', _('sociology')),
-        ('Theology', _('theology')),
-        ('Tourism', _('tourism')),
+        ('Sales and Marketing', _('Sales and marketing')),
+        ('Science', _('Science')),
+        ('Sociology / Social Science', _('Sociology')),
+        ('Theology', _('Theology')),
+        ('Tourism', _('Tourism')),
     ], readonly=True)
     not_enrolled_reason = fields.Char(readonly=True)
 
@@ -249,19 +247,6 @@ class CompassionChild(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.one
-    @api.depends('local_id')
-    def _set_project(self):
-        if self.local_id:
-            project = self.env['compassion.project'].search(
-                [('icp_id', '=', self.local_id[:5])], limit=1)
-            if not project:
-                project = self.env['compassion.project'].create({
-                    'icp_id': self.local_id[:5],
-                    'name': self.local_id[:5],
-                })
-            self.project_id = project.id
-
     def _get_child_states(self):
         return [
             ('N', _('Consigned')),
@@ -310,7 +295,7 @@ class CompassionChild(models.Model):
         """ Called when receiving the answer of GetDetails message. """
         self.ensure_one()
         self.write(vals)
-        self.generate_descriptions()
+        self.env['compassion.child.description'].create({'child_id': self.id})
         self.update_child_pictures()
         return True
 
@@ -346,7 +331,10 @@ class CompassionChild(models.Model):
             'object_id': self.id,
             'child_id': self.id,
         }
-        message_obj.create(message_vals)
+        message = message_obj.create(message_vals)
+        if message.state == 'failure' and not self.env.context.get(
+                'async_mode'):
+            raise Warning(message.failure_reason)
         return True
 
     @api.multi
@@ -356,16 +344,6 @@ class CompassionChild(models.Model):
         for child in self:
             res = child._get_last_pictures() and res
         return res
-
-    @api.multi
-    def generate_descriptions(self):
-        self.ensure_one()
-        self.desc_fr = ChildDescriptionFr.gen_fr_translation(
-            self.with_context(lang='fr_CH'))
-        self.desc_de = ChildDescriptionDe.gen_de_translation(
-            self.with_context(lang='de_DE'))
-        self.desc_it = ChildDescriptionIt.gen_it_translation(
-            self.with_context(lang='it_IT'))
 
     # Lifecycle methods
     ###################

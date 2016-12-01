@@ -127,10 +127,10 @@
                             </page>
                             <page string="Descriptions">
                                 <group>
-                                    <field name="desc_en"/>
-                                    <field name="desc_fr"/>
-                                    <field name="desc_de"/>
-                                    <field name="desc_it"/>
+                                    <field name="desc_en" widget="html"/>
+                                    <field name="desc_fr" widget="html"/>
+                                    <field name="desc_de" widget="html"/>
+                                    <field name="desc_it" widget="html"/>
                                 </group>
                             </page>
                             <page string="Detailed Information">
@@ -149,7 +149,7 @@
                                     </group>
                                     <group string="Household">
                                         <field name="is_orphan"/>
-                                        <field name="household_id"/>
+                                        <field name="household_id" context="{'active_gender': gender}"/>
                                         <field name="duty_ids"
                                                widget="many2many_tags"/>
                                     </group>
@@ -218,8 +218,8 @@
             <field name="model">compassion.child</field>
             <field name="arch" type="xml">
                 <search string="Search child">
-                    <field name="name" filter_domain="['|', ('name', 'ilike', self), ('firstname', 'ilike', self)]"/>
                     <field name="local_id"/>
+                    <field name="global_id"/>
                     <field name="sponsor_id"/>
                     <field name="sponsor_ref"/>
                     <field name="state"/>

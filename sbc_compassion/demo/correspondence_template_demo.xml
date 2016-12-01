@@ -74,7 +74,7 @@
     <!-- Second Template -->
     <record id="test_template2" model="correspondence.template">
       <field name="name">Test Template 2</field>
-      <field name="layout">CH-A-1S01-1</field>
+      <field name="layout">CH-A-1S11-1</field>
       <field name="pattern_image" type="base64" file="sbc_compassion/static/src/img/Test-L1-Batman_Pattern.png"/>
       <field name="template_image" type="base64" file="sbc_compassion/static/src/img/Test-L1-Batman.png"/>
       <field name="page_width">2481</field>

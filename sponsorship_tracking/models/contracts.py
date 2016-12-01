@@ -79,7 +79,7 @@ class RecurringContract(models.Model):
     @api.multi
     def write(self, vals):
         if 'sds_state' in vals:
-            vals['sds_state_date'] = date.today().strftime(DF)
+            vals['sds_state_date'] = fields.Datetime.now()
         if 'parent_id' in vals:
             self._parent_id_changed(vals['parent_id'])
 
