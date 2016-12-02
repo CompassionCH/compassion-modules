@@ -112,27 +112,7 @@ class FieldOfficeDisasterAlert(models.Model):
     state = fields.Selection([
         ('Active', 'Active'),
         ('Closed', 'Closed')])
-    disaster_type = fields.Selection([
-        ("Animal / Insect Infestation", "Animal / Insect Infestation"),
-        ("Civil Or Political Unrest / Rioting", "Civil Or Political Unrest "
-         "/ Rioting"),
-        ("Disease / Epidemic", "Disease / Epidemic"),
-        ("Earthquake", "Earthquake"),
-        ("Extreme Temperatures", "Extreme Temperatures"),
-        ("Fire", "Fire"),
-        ("Hail Storm", "Hail Storm"),
-        ("Heavy Rains / Flooding", "Heavy Rains / Flooding"),
-        ("Hurricanes / Tropical Storms / Cyclones / Typhoons",
-         "Hurricanes / Tropical Storms / Cyclones / Typhoons"),
-        ("Industrial Accident", "Industrial Accident"),
-        ("Landslide", "Landslide"),
-        ("Strong Winds", "Strong Winds"),
-        ("Tornado", "Tornado"),
-        ("Transport Accident", "Transport Accident"),
-        ("Tsunami", "Tsunami"),
-        ("Volcanic Activity", "Volcanic Activity"),
-        ("Water Contamination Crisis", "Water Contamination "
-                                       "Crisis")])
+    disaster_type = fields.Selection('_get_type')
 
     estimated_basic_supplies_needed = fields.Char()
     estimated_homes_destroyed = fields.Char()
@@ -186,6 +166,30 @@ class FieldOfficeDisasterAlert(models.Model):
         ('disaster_id', 'unique(disaster_id)',
          'The disaster alert already exists in database.'),
     ]
+
+    @api.model
+    def _get_type(self):
+        return [
+            ("Animal / Insect Infestation", "Animal / Insect Infestation"),
+            ("Civil Or Political Unrest / Rioting",
+             "Civil Or Political Unrest / Rioting"),
+            ("Disease / Epidemic", "Disease / Epidemic"),
+            ("Earthquake", "Earthquake"),
+            ("Extreme Temperatures", "Extreme Temperatures"),
+            ("Fire", "Fire"),
+            ("Hail Storm", "Hail Storm"),
+            ("Heavy Rains / Flooding", "Heavy Rains / Flooding"),
+            ("Hurricanes / Tropical Storms / Cyclones / Typhoons",
+             "Hurricanes / Tropical Storms / Cyclones / Typhoons"),
+            ("Industrial Accident", "Industrial Accident"),
+            ("Landslide", "Landslide"),
+            ("Strong Winds", "Strong Winds"),
+            ("Tornado", "Tornado"),
+            ("Transport Accident", "Transport Accident"),
+            ("Tsunami", "Tsunami"),
+            ("Volcanic Activity", "Volcanic Activity"),
+            ("Water Contamination Crisis", "Water Contamination Crisis")
+        ]
 
     ##########################################################################
     #                              ORM METHODS                               #

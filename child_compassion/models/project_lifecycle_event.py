@@ -24,11 +24,7 @@ class ProjectLifecycle(models.Model):
         'compassion.project', required=True, ondelete='cascade',
         readonly=True)
     date = fields.Date(readonly=True, default=fields.Date.today)
-    type = fields.Selection([
-        ('Suspension', 'Suspension'),
-        ('Reactivation', 'Reactivation'),
-        ('Transition', 'Transition'),
-    ], readonly=True)
+    type = fields.Selection('_get_type', readonly=True)
     action_plan = fields.Text(readonly=True)
 
     # Reactivation
@@ -73,12 +69,24 @@ class ProjectLifecycle(models.Model):
 
     name = fields.Char(readonly=True)
     reactivation_date = fields.Date(readonly=True)
-    project_status = fields.Selection([
-        ('Active', 'Active'),
-        ('Phase Out', 'Phase Out'),
-        ('Suspended', 'Suspended'),
-        ('Transitioned', 'Transitioned'),
-    ], readonly=True)
+    project_status = fields.Selection('_get_project_status', readonly=True)
+
+    @api.model
+    def _get_type(self):
+        return [
+            ('Suspension', 'Suspension'),
+            ('Reactivation', 'Reactivation'),
+            ('Transition', 'Transition'),
+        ]
+
+    @api.model
+    def _get_project_status(self):
+        return [
+            ('Active', 'Active'),
+            ('Phase Out', 'Phase Out'),
+            ('Suspended', 'Suspended'),
+            ('Transitioned', 'Transitioned'),
+        ]
 
     @api.model
     def process_commkit(self, commkit_data):

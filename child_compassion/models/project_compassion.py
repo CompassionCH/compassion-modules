@@ -106,23 +106,14 @@ class CompassionProject(models.Model):
     nb_child_computers = fields.Char(size=2, readonly=True)
     nb_classrooms = fields.Char(size=2, readonly=True)
     nb_latrines = fields.Char(size=2, readonly=True)
-    church_internet_access = fields.Selection([
-        ('No', 'No'),
-        ('Yes,Onsite Through One Or More Computers', 'Onsite'),
-        ('Yes, But Offsite', 'Offsite'),
-
-    ], readonly=True)
+    church_internet_access = fields.Char(readonly=True)
     mobile_device_ids = fields.Many2many(
         'icp.mobile.device', string='Mobile devices', readonly=True
     )
     utility_ids = fields.Many2many(
         'icp.church.utility', string='Church utilities', readonly=True
     )
-    electrical_power = fields.Selection([
-        ('Not Available', 'Not Available'),
-        ('Available Sometimes', 'Available Sometimes'),
-        ('Available Most Of The Time', 'Available Most of the Time'),
-    ], readonly=True)
+    electrical_power = fields.Selection('_get_electrical_power', readonly=True)
 
     # ICP Activities
     ################
@@ -212,29 +203,9 @@ class CompassionProject(models.Model):
     time_to_airport = fields.Float(help='Time in minutes', readonly=True)
     transport_mode_to_airport = fields.Char(readonly=True)
     time_to_medical_facility = fields.Char(readonly=True)
-    community_locale = fields.Selection([
-        ('City', 'City'),
-        ('Rural', 'Rural'),
-        ('Town', 'Town'),
-        ('Village', 'Village'),
-    ], readonly=True)
-    community_climate = fields.Selection([
-        ('Dry', 'Dry'),
-        ('Humid', 'Humid'),
-        ('Moderate', 'Moderate'),
-    ], readonly=True)
-    community_terrain = fields.Selection([
-        ('Coastal', 'Coastal'),
-        ('Desert', 'Desert'),
-        ('Forested', 'Forested'),
-        ('Hilly', 'Hilly'),
-        ('Island', 'Island'),
-        ('Jungle', 'Jungle'),
-        ('Lake', 'Lake'),
-        ('Mountainous', 'Mountainous'),
-        ('Plains/Flat Land', 'Plains'),
-        ('Valley', 'Valley'),
-    ], readonly=True)
+    community_locale = fields.Char(readonly=True)
+    community_climate = fields.Char(readonly=True)
+    community_terrain = fields.Char(readonly=True)
     typical_roof_material = fields.Selection('_get_materials', readonly=True)
     typical_floor_material = fields.Selection('_get_materials', readonly=True)
     typical_wall_material = fields.Selection('_get_materials', readonly=True)
@@ -290,8 +261,8 @@ class CompassionProject(models.Model):
         readonly=True
     )
     suspension = fields.Selection([
-        ('suspended', _('Suspended')),
-        ('fund-suspended', _('Suspended & fund retained'))], 'Suspension',
+        ('suspended', 'Suspended'),
+        ('fund-suspended', 'Suspended & fund retained')], 'Suspension',
         compute='_set_suspension_state', store=True,
         track_visibility='onchange')
     status = fields.Selection(
@@ -363,23 +334,24 @@ class CompassionProject(models.Model):
             ('S', _('Suspended')),
         ]
 
+    @api.model
     def _get_materials(self):
         return [
-            ('Bamboo', _('bamboo')),
-            ('Brick/Block/Cement', _('brick, block and cement')),
-            ('Cardboard', _('cardboard')),
-            ('Cement', _('cement')),
-            ('Cloth/Carpet', _('cloth and carpet')),
-            ('Dirt', _('dirt')),
-            ('Leaves/Grass/Thatch', _('leaves, grass and thatch')),
-            ('Leaves/Grass', _('leaves and grass')),
-            ('Mud/Earth/Clay/Adobe', _('mud, earth, clay and adobe')),
-            ('Plastic Sheets', _('plastic sheets')),
-            ('Tile', _('tile')),
-            ('Tin/Corrugated Iron', _('tin')),
-            ('Wood', _('wood')),
+            ('Bamboo', 'Bamboo'),
+            ('Brick/Block/Cement', 'Brick, block and cement'),
+            ('Cardboard', 'Cardboard'),
+            ('Cement', 'Cement'),
+            ('Cloth/Carpet', 'Cloth and carpet'),
+            ('Dirt', 'Dirt'),
+            ('Leaves/Grass/Thatch', 'Leaves, grass and thatch'),
+            ('Leaves/Grass', 'Leaves and grass'),
+            ('Mud/Earth/Clay/Adobe', 'Mud, earth, clay and adobe'),
+            ('Plastic Sheets', 'Plastic sheets'),
+            ('Tile', 'Tile'),
+            ('Tin/Corrugated Iron', 'Tin'),
+            ('Wood', 'Wood'),
             # TODO: Verify if we receive this in PROD
-            ('Tin', _('tin')),
+            ('Tin', 'Tin'),
         ]
 
     @api.multi
@@ -393,6 +365,14 @@ class CompassionProject(models.Model):
         for project in self:
             project.chf_income = \
                 project.monthly_income / project.usd.rate_silent
+
+    @api.model
+    def _get_electrical_power(self):
+        return [
+            ('Not Available', 'Not Available'),
+            ('Available Sometimes', 'Available Sometimes'),
+            ('Available Most Of The Time', 'Available Most of the Time'),
+        ]
 
     ##########################################################################
     #                              ORM METHODS                               #

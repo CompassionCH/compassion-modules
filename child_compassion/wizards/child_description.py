@@ -415,18 +415,20 @@ class ChildDescription(models.TransientModel):
 
     def _job(self, desc, guardian):
         """ Generates the job part of the guardians. """
+        at = self.env['ir.advanced.translation']
         household = self.child_id.household_id
+        en = household.with_context(lang='en_US')
         if guardian == 'father':
             job_type = household.male_guardian_job_type
             job_type_field = 'male_guardian_job_type'
             job_type_label = _('Father occupation')
-            job = household.translate('male_guardian_job')
+            job = at.get(en.translate('male_guardian_job'))
             job_label = _('Father job')
         elif guardian == 'mother':
             job_type = household.female_guardian_job_type
             job_type_field = 'female_guardian_job_type'
             job_type_label = _('Mother occupation')
-            job = household.translate('female_guardian_job')
+            job = at.get(en.translate('female_guardian_job'), female=True)
             job_label = _('Mother job')
 
         f_job_type = desc.children('.job_type')

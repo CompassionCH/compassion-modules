@@ -28,13 +28,13 @@ class CompassionReservation(models.Model):
     ##########################################################################
     reservation_id = fields.Char(readonly=True)
     reservation_type = fields.Selection([
-        ('project', _('Project reservation')),
-        ('child', _('Child reservation'))
+        ('project', 'Project reservation'),
+        ('child', 'Child reservation')
     ], required=True)
     state = fields.Selection([
-        ('draft', _("Draft")),
-        ('active', _("Active")),
-        ('expired', _("Expired"))],
+        ('draft', "Draft"),
+        ('active', "Active"),
+        ('expired', "Expired")],
         readonly=True, default='draft', track_visibility='onchange')
     icp_id = fields.Many2one('compassion.project', 'Project')
     child_id = fields.Many2one('compassion.child', 'Child', domain=[

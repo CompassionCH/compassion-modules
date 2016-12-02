@@ -46,28 +46,33 @@ class GenericChild(models.AbstractModel):
     age = fields.Integer(readonly=True)
     is_orphan = fields.Boolean(readonly=True)
     is_area_hiv_affected = fields.Boolean()
-    beneficiary_state = fields.Selection([
-        ("Available", "Available"),
-        ("Active", "Active"),
-        ("Change Commitment Hold", "Change Commitment Hold"),
-        ("Consignment Hold", "Consignment Hold"),
-        ("Delinquent Mass Cancel Hold", "Delinquent Mass Cancel Hold"),
-        ("E-Commerce Hold", "E-Commerce Hold"),
-        ("Inactive", "Inactive"),
-        ("Ineligible", "Ineligible"),
-        ("No Money Hold", "No Money Hold"),
-        ("Reinstatement Hold", "Reinstatement Hold"),
-        ("Reservation Hold", "Reservation Hold"),
-        ("Sponsor Cancel Hold", "Sponsor Cancel Hold"),
-        ("Sponsored", "Sponsored"),
-        ("Sub Child Hold", "Sub Child Hold"),
-    ], readonly=True)
+    beneficiary_state = fields.Selection('_get_availability_state',
+                                         readonly=True)
     sponsorship_status = fields.Selection([
         ('Sponsored', 'Sponsored'),
         ('Unsponsored', 'Unsponsored'),
     ], readonly=True)
     unsponsored_since = fields.Date(readonly=True)
     image_url = fields.Char()
+
+    @api.model
+    def _get_availability_state(self):
+        return [
+            ("Available", "Available"),
+            ("Active", "Active"),
+            ("Change Commitment Hold", "Change Commitment Hold"),
+            ("Consignment Hold", "Consignment Hold"),
+            ("Delinquent Mass Cancel Hold", "Delinquent Mass Cancel Hold"),
+            ("E-Commerce Hold", "E-Commerce Hold"),
+            ("Inactive", "Inactive"),
+            ("Ineligible", "Ineligible"),
+            ("No Money Hold", "No Money Hold"),
+            ("Reinstatement Hold", "Reinstatement Hold"),
+            ("Reservation Hold", "Reservation Hold"),
+            ("Sponsor Cancel Hold", "Sponsor Cancel Hold"),
+            ("Sponsored", "Sponsored"),
+            ("Sub Child Hold", "Sub Child Hold"),
+        ]
 
     @api.model
     def get_fields(self):
