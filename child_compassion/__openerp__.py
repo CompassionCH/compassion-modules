@@ -35,7 +35,7 @@
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['mail', 'web_m2x_options', 'document',
-                'message_center_compassion'],
+                'message_center_compassion', 'advanced_translation'],
     'external_dependencies': {
         'python': ['enum', 'pyquery']
     },
@@ -71,7 +71,6 @@
         'data/icp.program.csv',
         'data/global_partner.xml',
         'data/gmc_action.xml',
-        'data/lang_data.xml',
         'data/connect.month.csv',
         'data/icp.church.facility.csv',
         'data/icp.church.utility.csv',
@@ -86,6 +85,7 @@
         'data/icp.spiritual.activity.csv',
         'data/fo.high.risk.csv',
         'data/fo.disaster.loss.csv',
+        'data/ir.advanced.translation.csv',
     ],
     'demo': [
         'demo/compassion.child.csv'

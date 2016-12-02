@@ -24,10 +24,5 @@ class ProjectNeed(models.Model):
     need = fields.Char()
     need_category = fields.Char()
     fulfillment_date = fields.Date()
-    severity = fields.Selection([
-        ('Very High', 'Very High'),
-        ('High', 'High'),
-        ('Medium', 'Medium'),
-        ('Low', 'Low'),
-    ])
+    severity = fields.Char()
     comments = fields.Char()

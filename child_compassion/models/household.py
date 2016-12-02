@@ -38,14 +38,7 @@ class Household(models.Model):
     parents_together = fields.Selection('_get_yes_no')
     father_alive = fields.Selection('_get_yes_no')
     father_living_with_child = fields.Boolean()
-    marital_status = fields.Selection([
-        ('Married', _('are married')),
-        ('Never Married', _('were never married')),
-        ('Unknown', 'unknown'),
-        ('Were Married, Now Divorced Or Permanently Separated',
-         _('are divorced')),
-        ('Were Married, Now Separated By Death', _('are separated by death')),
-    ])
+    marital_status = fields.Char()
     mother_alive = fields.Selection('_get_yes_no')
     mother_living_with_child = fields.Boolean()
     youth_headed_household = fields.Boolean()
@@ -54,14 +47,14 @@ class Household(models.Model):
     # Employment
     ############
     male_guardian_job_type = fields.Selection([
-        ('Regularly Employed', _('Regular')),
-        ('Sometimes Employed', _('Sometimes employed')),
+        ('Regularly Employed', 'Regular'),
+        ('Sometimes Employed', 'Sometimes employed'),
         ('Not Employed', 'Not employed'),
     ])
     male_guardian_job = fields.Selection('_get_jobs')
     female_guardian_job_type = fields.Selection([
-        ('Regularly Employed', _('Regular')),
-        ('Sometimes Employed', _('Sometimes employed')),
+        ('Regularly Employed', 'Regular'),
+        ('Sometimes Employed', 'Sometimes employed'),
         ('Not Employed', 'Not employed'),
     ])
     female_guardian_job = fields.Selection('_get_jobs')
@@ -116,6 +109,7 @@ class Household(models.Model):
             ))
         return caregivers
 
+    @api.model
     def _get_yes_no(self):
         return [
             ('Yes', _('Yes')),
@@ -123,50 +117,51 @@ class Household(models.Model):
             ('Unknown', _('Unknown')),
         ]
 
+    @api.model
     def _get_jobs(self):
         return [
-            ('Agriculture/ Farmer', _('Farmer')),
-            ('Baker', _('is a baker')),
-            ('Church Employee/ Project Worker', _('Project Worker')),
-            ('Clothing Trade', _('Works in clothing trade')),
-            ('Construction/ Tradesman', _('Works in construction')),
-            ('Day Labor/ Different Jobs', _('Daily jobs')),
-            ('Health Care Worker', _('Health care worker')),
-            ('Factory Worker', _('Factory worker')),
-            ('Fisherman', _('Fisherman')),
-            ('Food Services', _('Works in food services')),
-            ('Janitor', _('Janitor')),
-            ('Mechanic', _('Mechanic')),
-            ('Merchant/ Seller', _('Merchant')),
-            ('Security/ Guard', _('Security guard')),
-            ('Teacher', _('Teacher')),
-            ('Transportation/ Driver', _('Driver')),
-            ('Unknown', _('Unknown')),
-            ('Welder', _('Welder')),
+            ('Agriculture/ Farmer', 'Farmer'),
+            ('Baker', 'Baker'),
+            ('Church Employee/ Project Worker', 'Project worker'),
+            ('Clothing Trade', 'Works in clothing trade'),
+            ('Construction/ Tradesman', 'Construction worker'),
+            ('Day Labor/ Different Jobs', 'Daily jobs'),
+            ('Health Care Worker', 'Health care worker'),
+            ('Factory Worker', 'Factory worker'),
+            ('Fisherman', 'Fisherman'),
+            ('Food Services', 'Works in food services'),
+            ('Janitor', 'Janitor'),
+            ('Mechanic', 'Mechanic'),
+            ('Merchant/ Seller', 'Merchant'),
+            ('Security/ Guard', 'Security guard'),
+            ('Teacher', 'Teacher'),
+            ('Transportation/ Driver', 'Driver'),
+            ('Unknown', 'Unknown'),
+            ('Welder', 'Welder'),
             # TODO see if these values are only in test
-            ('Carpenter', _('Carpenter')),
-            ('Electrician', _('Electrician')),
-            ('Fish Seller', _('Fish seller')),
-            ('Gardener', _('Gardener')),
-            ('Construction Worker', _('Construction worker')),
-            ('Food Vendor', _('Food vendor')),
-            ('Guard / Watchman', _('Guard')),
-            ('Domestic Service / Housekeeper', _('Housekeeper')),
-            ('Agriculture / Farmer', _('Farmer')),
-            ('Church Employee / Project Worker', _('Project Worker')),
-            ('Construction / Tradesman', _('Works in construction')),
+            ('Carpenter', 'Carpenter'),
+            ('Electrician', 'Electrician'),
+            ('Fish Seller', 'Fish seller'),
+            ('Gardener', 'Gardener'),
+            ('Construction Worker', 'Construction worker'),
+            ('Food Vendor', 'Food vendor'),
+            ('Guard / Watchman', 'Guard'),
+            ('Domestic Service / Housekeeper', 'Housekeeper'),
+            ('Agriculture / Farmer', 'Farmer'),
+            ('Church Employee / Project Worker', 'Project Worker'),
+            ('Construction / Tradesman', 'Construction worker'),
             ('Day Labor / Different Jobs', _('Daily jobs')),
-            ('Merchant / Seller', _('Merchant')),
-            ('Security / Guard', _('Security guard')),
-            ('Transportation/ Driver', _('Driver')),
-            ('Laborer', _('Laborer')),
-            ('Farmer', _('Farmer')),
-            ('Housewife', _('Housewife')),
-            ('Domestic Service/ Housekeeper', _('Housekeeper')),
-            ('Project Worker', _('Project Worker')),
-            ('Sells In Market', _('Merchant')),
-            ('Health Care/ Nurse', _('Nurse')),
-            ('Clothing Trades', _('Works in clothing trade')),
+            ('Merchant / Seller', 'Merchant'),
+            ('Security / Guard', 'Security guard'),
+            ('Transportation/ Driver', 'Driver'),
+            ('Laborer', 'Laborer'),
+            ('Farmer', 'Farmer'),
+            ('Housewife', 'Housewife'),
+            ('Domestic Service/ Housekeeper', 'Housekeeper'),
+            ('Project Worker', 'Project worker'),
+            ('Sells In Market', 'Merchant'),
+            ('Health Care/ Nurse', 'Nurse'),
+            ('Clothing Trades', 'Works in clothing trade'),
         ]
 
     def process_commkit(self, commkit_data):
@@ -213,6 +208,7 @@ class HouseholdMembers(models.Model):
     is_primary_caregiver = fields.Boolean()
     name = fields.Char()
     role = fields.Selection('_get_roles')
+    gender = fields.Char(size=1, compute='_compute_gender', store=True)
     male_role = fields.Boolean(compute='_compute_gender', store=True)
     female_role = fields.Boolean(compute='_compute_gender', store=True)
     other_role = fields.Boolean(compute='_compute_gender', store=True)
@@ -221,34 +217,37 @@ class HouseholdMembers(models.Model):
         return self._get_male_roles() + self._get_female_roles() + \
                self._get_other_roles()
 
+    @api.model
     def _get_male_roles(self):
         return [
-            ('Father', _('father')),
-            ('Grandfather', _('grandfather')),
-            ('Uncle', _('uncle')),
-            ('Step Father', _('step father')),
-            ('Godfather', _('godfather')),
-            ('Brother', _('brother')),
+            ('Father', 'Father'),
+            ('Grandfather', 'Grandfather'),
+            ('Uncle', 'Uncle'),
+            ('Step Father', 'Step father'),
+            ('Godfather', 'Godfather'),
+            ('Brother', 'Brother'),
             ('Beneficiary - Male', 'Beneficiary - Male'),
         ]
 
+    @api.model
     def _get_female_roles(self):
         return [
-            ('Mother', _('mother')),
-            ('Grandmother', _('grandmother')),
-            ('Aunt', _('aunt')),
-            ('Step Mother', _('step mother')),
-            ('Godmother', _('godmother')),
-            ('Sister', _('sister')),
+            ('Mother', 'Mother'),
+            ('Grandmother', 'Grandmother'),
+            ('Aunt', 'Aunt'),
+            ('Step Mother', 'Step mother'),
+            ('Godmother', 'Godmother'),
+            ('Sister', 'Sister'),
             ('Beneficiary - Female', 'Beneficiary - Female'),
         ]
 
+    @api.model
     def _get_other_roles(self):
         return [
-            ('Foster parent', _('foster parent')),
-            ('Friend', _('friend')),
-            ('Other non-relative', _('other non-relative')),
-            ('Other relative', _('other relative')),
+            ('Foster parent', 'Foster parent'),
+            ('Friend', 'Friend'),
+            ('Other non-relative', 'Other non-relative'),
+            ('Other relative', 'Other relative'),
         ]
 
     @api.depends('role')
@@ -257,18 +256,10 @@ class HouseholdMembers(models.Model):
         for caregiver in self:
             if caregiver.role in dict(self._get_male_roles()).keys():
                 caregiver.male_role = True
+                caregiver.gender = 'M'
             elif caregiver.role in dict(self._get_female_roles()).keys():
                 caregiver.female_role = True
+                caregiver.gender = 'F'
             else:
                 caregiver.other_role = True
-
-    @api.multi
-    def contains(self, roles):
-        """ True if the recordset contains given roles. """
-        members = self.filtered(lambda member: member.role in roles)
-        return len(members) == len(roles)
-
-    @api.multi
-    def remove(self, role):
-        """ Returns the recordset without given role. """
-        return self.filtered(lambda member: member.role != role)
+                caregiver.gender = 'M'

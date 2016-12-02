@@ -38,9 +38,8 @@ class ChildAssessment(models.Model):
     @api.model
     def process_commkit(self, commkit_data):
         child_assessment_mapping = mapping.new_onramp_mapping(
-                                                self._name,
-                                                self.env,
-                                                'beneficiary_cdpr')
+            self._name, self.env, 'beneficiary_cdpr'
+        )
         vals = child_assessment_mapping.get_vals_from_connect(commkit_data)
         child_assessment = self.create(vals)
         return [child_assessment.id]

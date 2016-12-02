@@ -136,9 +136,9 @@ class CompassionHold(models.Model):
         'compassion.child', 'Child on hold', readonly=True
     )
     state = fields.Selection([
-        ('draft', _("Draft")),
-        ('active', _("Active")),
-        ('expired', _("Expired"))],
+        ('draft', "Draft"),
+        ('active', "Active"),
+        ('expired', "Expired")],
         readonly=True, default='draft', track_visibility='onchange')
     reinstatement_reason = fields.Char(readonly=True)
     reservation_id = fields.Many2one('compassion.reservation', 'Reservation')

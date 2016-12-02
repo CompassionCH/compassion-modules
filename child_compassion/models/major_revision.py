@@ -17,25 +17,29 @@ class MajorRevision(models.Model):
     _inherit = 'translatable.model'
     _name = 'compassion.major.revision'
 
-    name = fields.Selection([
-        # Child major revision
-        ('Birthdate', 'Birthdate'),
-        ('Physical Disabilities', 'Physical Disabilities'),
-        ('Chronic Illness', 'Chronic Illness'),
-        ('First Name', 'First Name'),
-        ('Formal Education Level', 'Formal Education Level'),
-        ('Gender', 'Gender'),
-        ('Last Name', 'Last Name'),
-        ('Planned Completion Date', 'Planned Completion Date'),
-        ('Preferred Name', 'Preferred Name'),
-        # Household major revision
-        ('Is Natural Father Alive?', 'Natural Father Alive'),
-        ('Is Natural Mother Alive?', 'Natural Mother Alive'),
-        ('Primary Caregiver', 'Primary Caregiver'),
-    ], required=True)
+    name = fields.Selection('_get_revision_name', required=True)
     old_value = fields.Char()
     child_id = fields.Many2one('compassion.child', ondelete='cascade')
     household_id = fields.Many2one('compassion.household', ondelete='cascade')
+
+    @api.model
+    def _get_revision_name(self):
+        return [
+            # Child major revision
+            ('Birthdate', 'Birthdate'),
+            ('Physical Disabilities', 'Physical Disabilities'),
+            ('Chronic Illness', 'Chronic Illness'),
+            ('First Name', 'First Name'),
+            ('Formal Education Level', 'Formal Education Level'),
+            ('Gender', 'Gender'),
+            ('Last Name', 'Last Name'),
+            ('Planned Completion Date', 'Planned Completion Date'),
+            ('Preferred Name', 'Preferred Name'),
+            # Household major revision
+            ('Is Natural Father Alive?', 'Natural Father Alive'),
+            ('Is Natural Mother Alive?', 'Natural Mother Alive'),
+            ('Primary Caregiver', 'Primary Caregiver'),
+        ]
 
     @api.model
     def create(self, vals):

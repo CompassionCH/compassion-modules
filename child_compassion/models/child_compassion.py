@@ -44,28 +44,19 @@ class CompassionChild(models.Model):
     code = fields.Char(help='Old child reference')
     compass_id = fields.Char('Compass ID', oldname='unique_id')
     estimated_birthdate = fields.Boolean(readonly=True)
-    cognitive_age_group = fields.Selection([
-        ('0-2', '0-2'),
-        ('3-5', '3-5'),
-        ('6-8', '6-8'),
-        ('9-11', '9-11'),
-        ('12-14', '12-14'),
-        ('15-18', '15-18'),
-        ('19+', '19+'),
-    ], readonly=True)
+    cognitive_age_group = fields.Char(readonly=True)
     cdsp_type = fields.Selection([
         ('Home Based', 'Home based'),
         ('Center Based', 'Center based'),
     ], track_visibility='onchange', readonly=True)
     last_review_date = fields.Date(track_visibility='onchange', readonly=True)
-    type = fields.Selection(
-        [('CDSP', 'CDSP'), ('LDP', 'LDP')], required=True, default='CDSP')
+    type = fields.Selection('_get_ctype', required=True, default='CDSP')
     date = fields.Date('Allocation date')
     completion_date = fields.Date(readonly=True)
     completion_date_change_reason = fields.Char(readonly=True)
     state = fields.Selection(
         '_get_child_states', readonly=True, required=True,
-        track_visibility='onchange', default='N')
+        track_visibility='onchange', default='N',)
     is_available = fields.Boolean(compute='_set_available')
     sponsor_id = fields.Many2one(
         'res.partner', 'Sponsor', track_visibility='onchange', readonly=True)
@@ -99,91 +90,65 @@ class CompassionChild(models.Model):
     # Education information
     #######################
     education_level = fields.Selection([
-        ('Not Enrolled', _('Not Enrolled')),
-        ('Preschool', _('preschool')),
-        ('Primary', _('primary school')),
-        ('Secondary', _('secondary school')),
-        ('University Graduate', _('university')),
+        ('Not Enrolled', 'Not Enrolled'),
+        ('Preschool', 'preschool'),
+        ('Primary', 'primary school'),
+        ('Secondary', 'secondary school'),
+        ('University Graduate', 'university'),
     ], readonly=True)
     local_grade_level = fields.Char(readonly=True)
-    us_grade_level = fields.Selection([
-        ('P', 'P'),
-        ('K', 'K'),
-        ('1', '1'),
-        ('2', '2'),
-        ('3', '3'),
-        ('4', '4'),
-        ('5', '5'),
-        ('6', '6'),
-        ('7', '7'),
-        ('8', '8'),
-        ('9', '9'),
-        ('10', '10'),
-        ('11', '11'),
-        ('12', '12'),
-        ('13', '13'),
-        ('14', '14'),
-        ('PK', 'PK'),
-    ], readonly=True)
+    us_grade_level = fields.Char(readonly=True)
     academic_performance = fields.Selection([
-        ('Above Average', _('Above average')),
-        ('Average', _('Average')),
-        ('Below Average', _('Below average')),
+        ('Above Average', 'Above average'),
+        ('Average', 'Average'),
+        ('Below Average', 'Below average'),
     ], readonly=True)
     vocational_training_type = fields.Selection([
-        ('Agriculture', _('Agriculture')),
-        ('Automotive', _('Automotive')),
-        ('Business/Administrative', _('Business administration')),
-        ('Clothing Trades', _('Clothing trades')),
-        ('Computer Technology', _('Computer technology')),
-        ('Construction/ Tradesman', _('Construction')),
-        ('Cooking / Food Service', _('Cooking and food service')),
-        ('Cosmetology', _('Cosmetology')),
-        ('Electrical/ Electronics', _('Electronics')),
-        ('Graphic Arts', _('Graphic arts')),
+        ('Agriculture', 'Agriculture'),
+        ('Automotive', 'Automotive'),
+        ('Business/Administrative', 'Business administration'),
+        ('Clothing Trades', 'Clothing trades'),
+        ('Computer Technology', 'Computer technology'),
+        ('Construction/ Tradesman', 'Construction'),
+        ('Cooking / Food Service', 'Cooking and food service'),
+        ('Cosmetology', 'Cosmetology'),
+        ('Electrical/ Electronics', 'Electronics'),
+        ('Graphic Arts', 'Graphic arts'),
         ('Income-Generating Program at Project',
-         _('Income-generating program at project')),
-        ('Manufacturing/ Fabrication', _('Manufacturing / Fabrication')),
-        ('Medical/ Health Services', _('Medical / Health services')),
-        ('Not Enrolled', _('Not enrolled')),
-        ('Telecommunication', _('Telecommunication')),
-        ('Transportation', _('Transportation')),
-        ('Transportation/ Driver', _('Driver')),
+         'Income-generating program at project'),
+        ('Manufacturing/ Fabrication', 'Manufacturing / Fabrication'),
+        ('Medical/ Health Services', 'Medical / Health services'),
+        ('Not Enrolled', 'Not enrolled'),
+        ('Telecommunication', 'Telecommunication'),
+        ('Transportation', 'Transportation'),
+        ('Transportation/ Driver', 'Driver'),
     ], readonly=True)
-    university_year = fields.Selection([
-        ('1', '1'),
-        ('2', '2'),
-        ('3', '3'),
-        ('4', '4'),
-        ('5', '5'),
-        ('6', '6'),
-        ('7', '7'),
-    ], readonly=True)
+    university_year = fields.Integer(readonly=True)
     major_course_study = fields.Selection([
-        ('Accounting', _('Accounting')),
-        ('Agriculture', _('Agriculture')),
-        ('Biology / Medicine', _('Biology / Medicine')),
-        ('Business / Management / Commerce', _('Business management')),
-        ('Community Development', _('Community development')),
-        ('Computer Science / Information Technology', _('Computer science')),
-        ('Criminology / Law Enforcement', _('Criminology')),
-        ('Economics', _('Economics')),
-        ('Education', _('Education')),
-        ('Engineering', _('Engineering')),
-        ('English', _('English')),
-        ('Graphic Arts / Fine Arts', _('Graphic arts')),
-        ('History', _('History')),
-        ('Hospitality / Hotel Management', _('Hospitality / Hotel '
-                                             'management')),
-        ('Law', _('Law')),
-        ('Mathematics', _('Mathematics')),
-        ('Nursing', _('Nursing')),
-        ('Psychology', _('Psychology')),
-        ('Sales and Marketing', _('Sales and marketing')),
-        ('Science', _('Science')),
-        ('Sociology / Social Science', _('Sociology')),
-        ('Theology', _('Theology')),
-        ('Tourism', _('Tourism')),
+        ('Accounting', 'Accounting'),
+        ('Agriculture', 'Agriculture'),
+        ('Biology / Medicine', 'Biology / Medicine'),
+        ('Business / Management / Commerce', 'Business management'),
+        ('Community Development', 'Community development'),
+        ('Computer Science / Information Technology', 'Computer science'),
+        ('Criminology / Law Enforcement', 'Criminology'),
+        ('Economics', 'Economics'),
+        ('Education', 'Education'),
+        ('Engineering', 'Engineering'),
+        ('English', 'English'),
+        ('Graphic Arts / Fine Arts', 'Graphic arts'),
+        ('History', 'History'),
+        ('Hospitality / Hotel Management', 'Hospitality / Hotel '
+                                           'management'),
+        ('Law', 'Law'),
+        ('Mathematics', 'Mathematics'),
+        ('Nursing', 'Nursing'),
+        ('Psychology', 'Psychology'),
+        ('Sales and Marketing', 'Sales and marketing'),
+        ('Science', 'Science'),
+        ('Sociology / Social Science', 'Sociology'),
+        ('Theology', 'Theology'),
+        ('Tourism', 'Tourism'),
     ], readonly=True)
     not_enrolled_reason = fields.Char(readonly=True)
 
@@ -239,14 +204,15 @@ class CompassionChild(models.Model):
 
     _sql_constraints = [
         ('compass_id', 'unique(compass_id)',
-         _('The child already exists in database.')),
+         'The child already exists in database.'),
         ('global_id', 'unique(global_id)',
-         _('The child already exists in database.'))
+         'The child already exists in database.')
     ]
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.model
     def _get_child_states(self):
         return [
             ('N', _('Consigned')),
@@ -260,6 +226,7 @@ class CompassionChild(models.Model):
         for child in self:
             child.is_available = child.state in self._available_states()
 
+    @api.model
     def _available_states(self):
         return ['N', 'I']
 
@@ -270,6 +237,10 @@ class CompassionChild(models.Model):
                 lambda l: l.type in ('Planned Exit', 'Unplanned Exit'))
             if exit_details:
                 child.exit_reason = exit_details[0].request_reason
+
+    @api.model
+    def _get_ctype(self):
+        return [('CDSP', 'CDSP'), ('LDP', 'LDP')]
 
     ##########################################################################
     #                              ORM METHODS                               #
