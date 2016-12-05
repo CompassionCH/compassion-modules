@@ -158,6 +158,17 @@ class ICPMapping(OnrampMapping):
         'gpid': 'CH',
     }
 
+    def _convert_connect_data(self, connect_name, value_mapping, value,
+                              relation_search=None):
+        """
+        Converts primary language to avoid lowercase / uppercase problems
+        """
+        if connect_name == 'PrimaryLanguage':
+            value = value.lower().title()
+        return super(ICPMapping, self)._convert_connect_data(
+            connect_name, value_mapping, value, relation_search
+        )
+
     def _process_odoo_data(self, odoo_data):
         # Convert Project Status
         status = odoo_data.get('status')

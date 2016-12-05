@@ -61,7 +61,7 @@ class ProjectDescription(models.TransientModel):
         return generator
 
     def _generate_translation(self):
-        """ Generate child description. """
+        """ Generate project description. """
         desc = PyQuery(HTML_TEMPLATE)
 
         # 1. Basic Information
@@ -70,9 +70,15 @@ class ProjectDescription(models.TransientModel):
         desc('.project_name')[0].text = _("Project name")
         desc('.project_name')[1].text = project.name
         desc('.project_closest_city')[0].text = _("Closest city")
-        desc('.project_closest_city')[1].text = project.closest_city
+        self._show_field(
+            desc('.project_closest_city')[1], desc('#project_closest_city'),
+            project.closest_city
+        )
         desc('.project_cdsp_number')[0].text = _("Number of children")
-        desc('.project_cdsp_number')[1].text = str(project.nb_cdsp_kids)
+        self._show_field(
+            desc('.project_cdsp_number')[1], desc('#project_cdsp_number'),
+            project.nb_cdsp_kids
+        )
         if project.electrical_power == 'Not Available':
             desc('.project_electricity').html(
                 _("The project has no electricity."))
@@ -83,21 +89,37 @@ class ProjectDescription(models.TransientModel):
         ##############
         desc('#community_label').html(_("Local community"))
         desc('.community_population')[0].text = _("Population")
-        desc('.community_population')[1].text = str(
-            project.community_population)
+        self._show_field(
+            desc('.community_population')[1], desc('#community_population'),
+            project.community_population
+        )
         desc('.community_language')[0].text = _("Language")
-        desc('.community_language')[1].text = project.primary_language_id.name
+        self._show_field(
+            desc('.community_language')[1], desc('#community_language'),
+            project.primary_language_id.name
+        )
         desc('.community_job')[0].text = _("Typical job")
-        desc('.community_job')[1].text = \
+        self._show_field(
+            desc('.community_job')[1], desc('#community_job'),
             project.primary_adults_occupation_ids[0].value
-        desc('.community_income')[0].text = _("Family    monthly income")
-        desc('.community_income')[1].text = 'CHF {:10.0f}.-'.format(
-            project.chf_income)
+        )
+        if project.chf_income:
+            desc('.community_income')[0].text = _("Family monthly income")
+            desc('.community_income')[1].text = 'CHF {:10.0f}.-'.format(
+                project.chf_income)
+        else:
+            desc('#community_income').remove()
         desc('.community_food')[0].text = _("Typical food")
-        desc('.community_food')[1].text = project.primary_diet_ids[0].value
+        self._show_field(
+            desc('.community_food')[1], desc('#community_food'),
+            project.primary_diet_ids[0].value
+        )
         desc('.community_school_begins')[0].text = _("School begins in")
-        desc('.community_school_begins')[1].text = project.translate(
-            'school_year_begins')
+        self._show_field(
+            desc('.community_school_begins')[1],
+            desc('#community_school_begins'),
+            project.translate('school_year_begins')
+        )
 
         # 3. Activities
         ###############
@@ -131,3 +153,12 @@ class ProjectDescription(models.TransientModel):
             desc('#parent_activities').remove()
 
         return desc.html()
+
+    def _show_field(self, field, container, value):
+        """ Used to display a field in the description, or hide it
+        if the value is not set.
+        """
+        if value:
+            field.text = str(value)
+        else:
+            container.remove()

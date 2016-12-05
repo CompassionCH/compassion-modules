@@ -336,26 +336,37 @@ class ChildDescription(models.TransientModel):
 
         # 4. House duties
         #################
-        desc('#house_duties_intro').html(
-            self.duties_intro_lang[self.env.lang][child.gender])
-        desc('#house_duties_list').html(''.join(
-            ['<li>' + duty.value + '</li>' for duty in child.duty_ids[:3]]))
+        if child.duty_ids:
+            desc('#house_duties_intro').html(
+                self.duties_intro_lang[self.env.lang][child.gender])
+            desc('#house_duties_list').html(''.join(
+                ['<li>' + duty.value + '</li>' for duty in child.duty_ids[:3]]
+            ))
+        else:
+            desc('.house_duties').remove()
 
         # 5. Church activities
         ######################
-        desc('#church_activities_intro').html(
-            self.church_intro_lang[self.env.lang][child.gender])
-        desc('#church_activities_list').html(''.join(
-            ['<li>' + activity.value + '</li>' for activity in
-             child.christian_activity_ids[:3]]))
+        if child.christian_activity_ids:
+            desc('#church_activities_intro').html(
+                self.church_intro_lang[self.env.lang][child.gender])
+            desc('#church_activities_list').html(''.join(
+                ['<li>' + activity.value + '</li>' for activity in
+                 child.christian_activity_ids[:3]]))
+        else:
+            desc('.church_activities').remove()
 
         # 6. Hobbies
         ############
-        desc('#hobbies_intro').html(
-            self.hobbies_intro_lang[self.env.lang][child.gender].format(
-                firstname=child.firstname))
-        desc('#hobbies_list').html(''.join(
-            ['<li>' + hobby.value + '</li>' for hobby in child.hobby_ids[:3]]))
+        if child.hobby_ids:
+            desc('#hobbies_intro').html(
+                self.hobbies_intro_lang[self.env.lang][child.gender].format(
+                    firstname=child.firstname))
+            desc('#hobbies_list').html(''.join(
+                ['<li>' + hobby.value + '</li>'
+                 for hobby in child.hobby_ids[:3]]))
+        else:
+            desc('.hobbies').remove()
 
         # 7. Health
         ###########
@@ -435,7 +446,7 @@ class ChildDescription(models.TransientModel):
         f_job_type[0].text = job_type_label
         f_job_type[1].text = household.translate(job_type_field)
 
-        if job_type == 'Not Employed':
+        if job_type == 'Not Employed' or not job:
             desc[0].clear()
         else:
             f_job = desc.children('.job')
