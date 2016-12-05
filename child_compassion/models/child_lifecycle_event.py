@@ -132,7 +132,8 @@ class ChildLifecycleEvent(models.Model):
         ('Registered / Transferred Incorrectly',
          '{he} registered incorrectly'),
         ('Sponsored By Another Organization',
-         '{he} is sponsored by another organization')
+         '{he} is sponsored by another organization'),
+        ('Other', '{he} left the project')
     ], readonly=True)
 
     # Common fields
