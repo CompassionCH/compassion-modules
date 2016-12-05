@@ -53,6 +53,7 @@ install:
     - git clone https://github.com/OCA/account-financial-tools.git ${HOME}/build/CompassionCH/account-financial-tools -b 8.0
     - git clone https://github.com/OCA/partner-contact.git ${HOME}/build/CompassionCH/partner-contact -b 8.0
     - git clone https://github.com/OCA/connector.git ${HOME}/build/CompassionCH/connector -b 8.0
+    - git clone https://github.com/OCA/connector-telephony.git ${HOME}/build/CompassionCH/connector-telephony -b 8.0
     - git clone https://github.com/OCA/social.git ${HOME}/build/CompassionCH/social -b 8.0
     - git clone https://github.com/OCA/server-tools.git ${HOME}/build/CompassionCH/server-tools -b 8.0
     - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis_install_nightly || echo "Not installing odoo in Pull requests"'
