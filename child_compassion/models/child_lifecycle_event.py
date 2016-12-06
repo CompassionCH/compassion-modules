@@ -78,6 +78,8 @@ class ChildLifecycleEvent(models.Model):
         ('Special Needs', 'of special needs'),
         ('Beneficiary / Caregiver Moving To Another Location',
          '{he} moved to another location'),
+        ('Other (enter reason below)', 'of : {other_transfer_reason}'),
+        ('Child Transfer', 'Child Transfer'),
         # Unplanned Exit
         ('Beneficiary / Caregiver Not Comply With Policies',
          '{he} does not comply with policies'),
