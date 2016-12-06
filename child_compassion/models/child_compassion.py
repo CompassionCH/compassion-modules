@@ -285,6 +285,20 @@ class CompassionChild(models.Model):
                     child_data))
         return child_ids
 
+    @api.model
+    def new_kit(self, commkit_data):
+        """ New child kit is received. """
+        child_ids = list()
+        child_mapping = CompassionChildMapping(self.env)
+        for child_data in commkit_data.get('BeneficiaryResponseList',
+                                           [commkit_data]):
+            global_id = child_data.get('Beneficiary_GlobalID')
+            child = self.search([('global_id', '=', global_id)])
+            if child:
+                child_ids.append(child.id)
+                child.write(child_mapping.get_vals_from_connect(child_data))
+        return child_ids
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
@@ -355,6 +369,7 @@ class CompassionChild(models.Model):
         ])
         jobs.button_done()
         jobs.unlink()
+        self.get_infos()
         return True
 
     @api.multi
@@ -427,6 +442,7 @@ class CompassionChild(models.Model):
         """
         self.ensure_one()
         self.write(vals)
+        self.get_infos()
 
 
 ##############################################################################
