@@ -32,7 +32,7 @@ class ResPartnerMapping(OnrampMapping):
         'GPID': 'ref',
         'Gender': ('title.name', 'res.partner.title'),
         'MandatoryReviewRequired': 'mandatory_review',
-        'PreferredName': 'name',
+        'PreferredName': 'preferred_name',
         'CommunicationDeliveryPreference': 'send_original',
         'FirstName': 'firstname',
         'LastName': 'lastname',
