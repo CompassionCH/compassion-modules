@@ -54,3 +54,31 @@ class IrAdvancedTranslation(models.Model):
         if plural:
             return term.male_plural
         return term.male_singular
+
+
+class AdvancedTranslatable(models.AbstractModel):
+    """ Inherit this classe in order to let your model fetch keywords
+    based on the source recordset and a gender field in the model.
+    """
+
+    _name = 'advanced.translatable'
+
+    gender = fields.Selection([
+        ('M', 'Male'),
+        ('F', 'Female'),
+    ])
+
+    @api.multi
+    def get(self, keyword):
+        plural = len(self) > 1
+        male = self.filtered(lambda c: c.gender == 'M')
+        female = self.filtered(lambda c: c.gender == 'F')
+        advanced_translation = self.env['ir.advanced.translation']
+        if plural and female and not male:
+            return advanced_translation.get(keyword, True, True)
+        elif plural:
+            return advanced_translation.get(keyword, plural=True)
+        elif female and not male:
+            return advanced_translation.get(keyword, female=True)
+        else:
+            return advanced_translation.get(keyword)
