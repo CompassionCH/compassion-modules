@@ -72,3 +72,8 @@ def migrate(cr, version):
                     WHERE child_id = %s AND correspondant_id = %s
                     AND state NOT IN ('cancelled', 'terminated')
                 """, (row[2], child_id, sponsor_id))
+
+    # Update partner preferred names
+    cr.execute("""
+    UPDATE res_partner SET preferred_name = COALESCE(firstname, name)
+    """)

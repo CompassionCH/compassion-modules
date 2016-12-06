@@ -211,7 +211,6 @@ class CompassionHold(models.Model):
                     'hold_id': hold.id,
                     'date': fields.Date.today(),
                 })
-                child_to_update.get_infos()
             else:
                 # Release child if no hold_id received
                 hold.unlink()

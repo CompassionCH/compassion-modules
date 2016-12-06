@@ -123,6 +123,14 @@
             <field name="description">This will update the child with the major changes that happened.</field>
             <field name="auto_process">1</field>
         </record>
+        <record id="beneficiary_kit" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">BeneficiaryKit</field>
+            <field name="model">compassion.child</field>
+            <field name="incoming_method">new_kit</field>
+            <field name="description">This will update the child with the fresh information.</field>
+            <field name="auto_process">1</field>
+        </record>
         <!-- Beneficiary CDPR Messages -->
         <record id="beneficiary_cdpr" model="gmc.action">
             <field name="direction">in</field>
@@ -205,6 +213,10 @@
         <record id="major_revision_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messages/beneficiaries/2016/04/BenMajorRevisionKit</field>
             <field name="action_id" ref="major_revision"/>
+        </record>
+        <record id="beneficiary_kit_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/beneficiaries/2016/04/BeneficiaryKit</field>
+            <field name="action_id" ref="beneficiary_kit"/>
         </record>
         <record id="beneficiary_cdpr_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messages/beneficiaries/2016/04/CDPRAssessmentKit</field>

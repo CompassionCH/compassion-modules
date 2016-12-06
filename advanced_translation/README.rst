@@ -16,6 +16,7 @@ Known issues / Roadmap
 * add support for objects to define itself male/female based on field gender
 * add support for objects to define itself singular/plural based on recordset
 * add support of ${keyword.src} to fetch advanced translations from templates
+* make a view on the terms to be able to edit translations
 
 Credits
 =======
