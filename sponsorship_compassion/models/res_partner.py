@@ -47,9 +47,7 @@ class ResPartner(models.Model):
     send_original = fields.Boolean(
         help='Indicates that we request the original letters for this sponsor'
     )
-    preferred_name = fields.Char(
-        compute='_compute_preferred_name',
-        inverse='_inverse_preferred_name', store=True)
+    preferred_name = fields.Char()
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -109,13 +107,6 @@ class ResPartner(models.Model):
             partner.receivable_items = move_line_obj.search_count([
                 ('partner_id', '=', partner.id),
                 ('account_id.code', '=', '1050')])
-
-    def _compute_preferred_name(self):
-        for partner in self:
-            partner.preferred_name = partner.firstname or partner.name
-
-    def _inverse_preferred_name(self):
-        return True
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -227,6 +218,10 @@ class ResPartner(models.Model):
             'context': self.with_context({
                 'default_type': 'S'}).env.context,
         }
+
+    @api.onchange('lastname', 'firstname')
+    def onchange_preferred_name(self):
+        self.preferred_name = self.firstname or self.name
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
