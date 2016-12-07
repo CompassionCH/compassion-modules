@@ -160,13 +160,19 @@ class Household(models.Model):
             ('Waiter / Food Server', 'Food server'),
             ('Welder', 'Welder'),
             # TODO see if these values are only in test
+            ('Agriculture/ Farmer', 'Farmer'),
+            ('Church Worker', 'Project worker'),
+            ('Clothing Trades', 'Works in clothing trade'),
             ('Construction/ Tradesman', 'Construction worker'),
             ('Day Labor/ Different Jobs', 'Daily jobs'),
             ('Domestic Service / Housekeeper', 'Housekeeper'),
+            ('Food Services', 'Food vendor'),
             ('Laborer', 'Laborer'),
             ('Housewife', 'Housewife'),
+            ('Merchant/ Seller', 'Merchant'),
+            ('Security/ Guard', 'Security guard'),
             ('Sells In Market', 'Merchant'),
-            ('Clothing Trades', 'Works in clothing trade'),
+            ('Transportation/ Driver', 'Driver'),
         ]
 
     def process_commkit(self, commkit_data):
