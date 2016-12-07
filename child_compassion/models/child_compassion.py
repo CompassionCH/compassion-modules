@@ -215,6 +215,7 @@ class CompassionChild(models.Model):
     @api.model
     def _get_child_states(self):
         return [
+            ('W', _('Waiting Hold')),
             ('N', _('Consigned')),
             ('I', _('On Internet')),
             ('P', _('Sponsored')),
@@ -358,9 +359,14 @@ class CompassionChild(models.Model):
     #                            WORKFLOW METHODS                            #
     ##########################################################################
     @api.multi
+    def child_waiting_hold(self):
+        """ Called on child creation. """
+        self.write({'state': 'W', 'sponsor_id': False})
+
+    @api.multi
     def child_consigned(self):
         """Called on child allocation."""
-        self.write({'state': 'N', 'sponsor_id': False})
+        self.write({'state': 'N'})
         # Cancel planned deletion
         jobs = self.env['queue.job'].search([
             ('name', '=', 'Job for deleting released children.'),

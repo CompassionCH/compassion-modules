@@ -31,7 +31,8 @@ class ChildDescription(models.TransientModel):
     _name = 'compassion.child.description'
     _description = 'Child Description Generator'
 
-    child_id = fields.Many2one('compassion.child', required=True)
+    child_id = fields.Many2one(
+        'compassion.child', required=True, ondelete='cascade')
     desc_fr = fields.Html()
     desc_de = fields.Html()
     desc_it = fields.Html()

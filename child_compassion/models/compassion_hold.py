@@ -325,12 +325,23 @@ class CompassionHold(models.Model):
     @api.model
     def beneficiary_hold_removal(self, commkit_data):
         data = commkit_data.get('BeneficiaryHoldRemovalNotification')
-        hold = self.env['compassion.hold'].search([
+        hold = self.search([
             ('hold_id', '=', data.get('HoldID'))
         ])
         if not hold:
-            return []
-        hold.comments = data.get('NotificationReason')
+            child = self.env['compassion.child'].search([
+                ('global_id', '=', data.get('Beneficiary_GlobalID'))
+            ])
+            if not child:
+                return []
+            hold = child.hold_id
+            if not hold:
+                hold = self.create({
+                    'hold_id': data.get('HoldID'),
+                    'expiration_date': fields.Datetime.now(),
+                    'child_id': child.id,
+                })
 
+        hold.comments = data.get('NotificationReason')
         hold.hold_released()
         return [hold.id]

@@ -131,6 +131,7 @@ class Household(models.Model):
             ('Day Labor / Different Jobs', 'Daily jobs'),
             ('Electrician', 'Electrician'),
             ('Factory Worker', 'Factory worker'),
+            ('Farmer', 'Farmer'),
             ('Fish Seller', 'Fish seller'),
             ('Fisher', 'Fisher'),
             ('Food Vendor', 'Food vendor'),
@@ -159,6 +160,8 @@ class Household(models.Model):
             ('Waiter / Food Server', 'Food server'),
             ('Welder', 'Welder'),
             # TODO see if these values are only in test
+            ('Construction/ Tradesman', 'Construction worker'),
+            ('Day Labor/ Different Jobs', 'Daily jobs'),
             ('Domestic Service / Housekeeper', 'Housekeeper'),
             ('Laborer', 'Laborer'),
             ('Housewife', 'Housewife'),
