@@ -32,6 +32,8 @@ class ResPartner(models.Model):
     contracts_correspondant = fields.One2many(
         "recurring.contract", compute='_get_related_contracts',
         string='Sponsorships as correspondant only')
+    sponsorship_ids = fields.One2many(
+        "recurring.contract", compute='_get_related_contracts')
     mandatory_review = fields.Boolean(
         help='Indicates that we should review the letters of this sponsor '
              'before sending them to GMC.')
@@ -89,6 +91,9 @@ class ResPartner(models.Model):
                  ('type', 'in', ['S', 'SC']),
                  ('fully_managed', '=', True)],
                 order='start_date desc').ids
+            partner.sponsorship_ids = partner.contracts_correspondant + \
+                partner.contracts_paid + \
+                partner.contracts_fully_managed
             partner.other_contract_ids = contract_obj.search(
                 [('partner_id', '=', partner.id),
                  ('type', 'not in', ['S', 'SC'])],
