@@ -40,6 +40,7 @@ install:
     - pip install sendgrid
     - pip install jwt
     - pip install pyquery
+    - pip install phonenumbers
     - sudo apt-get install zbar-tools python-zbar
     - pip install pdfminer
     - git clone https://github.com/CompassionCH/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools -b r2
