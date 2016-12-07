@@ -31,7 +31,8 @@ class ProjectDescription(models.TransientModel):
     _name = 'compassion.project.description'
     _description = 'Project Description Generator'
 
-    project_id = fields.Many2one('compassion.project', required=True)
+    project_id = fields.Many2one(
+        'compassion.project', required=True, ondelete='cascade')
     desc_fr = fields.Html()
     desc_de = fields.Html()
     desc_it = fields.Html()

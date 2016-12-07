@@ -189,7 +189,8 @@ class CompassionHold(models.Model):
     ##########################################################################
     @api.multi
     def update_hold(self):
-        message_obj = self.env['gmc.message.pool']
+        message_obj = self.env['gmc.message.pool'].with_context(
+            async_mode=False)
         action_id = self.env.ref('child_compassion.create_hold').id
 
         message_vals = {
@@ -219,24 +220,33 @@ class CompassionHold(models.Model):
     @api.model
     def reinstatement_notification(self, commkit_data):
         """ Called when a child was Reinstated. """
-        hold_ids = list()
         reinstatement_mapping = ReinstatementMapping(self.env)
+        # Reinstatement holds are available for 90 days (Connect default)
+        in_90_days = datetime.now() + timedelta(days=90)
 
-        for reinstatement_data in \
-                commkit_data.get('BeneficiaryReinstatementNotificationList',
-                                 [commkit_data]):
-            vals = reinstatement_mapping.\
-                get_vals_from_connect(reinstatement_data)
-            hold = self.create(vals)
+        hold_data = commkit_data.get(
+            'ReinstatementHoldNotification', commkit_data)
+        vals = reinstatement_mapping.get_vals_from_connect(hold_data)
+        child_id = vals.get('child_id')
+        if not child_id:
+            raise ValueError("No child found")
+        vals.update({
+            'expiration_date': fields.Datetime.to_string(in_90_days),
+            'state': 'active'
+        })
+        hold = self.create(vals)
+        child = self.env['compassion.child'].browse(child_id)
+        child.hold_id = hold
 
-            # Update hold duration to what is configured
-            hold.write({
-                'expiration_date': self.get_default_hold_expiration(
-                    HoldType.REINSTATEMENT_HOLD)
-            })
-            hold_ids.append(hold.id)
+        # Update hold duration to what is configured
+        hold.write({
+            'expiration_date': self.get_default_hold_expiration(
+                HoldType.REINSTATEMENT_HOLD)
+        })
 
-        return hold_ids
+        child.get_lifecycle_event()
+
+        return [hold.id]
 
     def reservation_to_hold(self, commkit_data):
         """ Called when a reservation gots converted to a hold. """
@@ -315,12 +325,23 @@ class CompassionHold(models.Model):
     @api.model
     def beneficiary_hold_removal(self, commkit_data):
         data = commkit_data.get('BeneficiaryHoldRemovalNotification')
-        hold = self.env['compassion.hold'].search([
+        hold = self.search([
             ('hold_id', '=', data.get('HoldID'))
         ])
         if not hold:
-            return []
-        hold.comments = data.get('NotificationReason')
+            child = self.env['compassion.child'].search([
+                ('global_id', '=', data.get('Beneficiary_GlobalID'))
+            ])
+            if not child:
+                return []
+            hold = child.hold_id
+            if not hold:
+                hold = self.create({
+                    'hold_id': data.get('HoldID'),
+                    'expiration_date': fields.Datetime.now(),
+                    'child_id': child.id,
+                })
 
+        hold.comments = data.get('NotificationReason')
         hold.hold_released()
         return [hold.id]

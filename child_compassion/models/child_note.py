@@ -11,8 +11,7 @@
 
 
 from openerp import models, fields, api
-from openerp.addons.message_center_compassion.mappings import base_mapping as \
-    mapping
+from ..mappings.child_note_mapping import ChildNoteMapping
 
 
 class ChildNote(models.Model):
@@ -40,10 +39,10 @@ class ChildNote(models.Model):
 
     @api.model
     def process_commkit(self, commkit_data):
-        child_note_mapping = mapping.new_onramp_mapping(
-                                                self._name,
-                                                self.env,
-                                                'beneficiary_note')
-        vals = child_note_mapping.get_vals_from_connect(commkit_data)
-        child_note = self.create(vals)
-        return [child_note.id]
+        child_note_mapping = ChildNoteMapping(self.env)
+        note_ids = list()
+        for notes_data in commkit_data.get('GPPublicNotesKit', [commkit_data]):
+            vals = child_note_mapping.get_vals_from_connect(notes_data)
+            child_note = self.create(vals)
+            note_ids.append(child_note.id)
+        return note_ids

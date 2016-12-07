@@ -12,8 +12,7 @@
 
 from openerp import models, fields, api
 
-from openerp.addons.message_center_compassion.mappings import base_mapping as \
-    mapping
+from ..mappings.child_assessment_mapping import ChildAssessmentMapping
 
 
 class ChildAssessment(models.Model):
@@ -37,9 +36,11 @@ class ChildAssessment(models.Model):
 
     @api.model
     def process_commkit(self, commkit_data):
-        child_assessment_mapping = mapping.new_onramp_mapping(
-            self._name, self.env, 'beneficiary_cdpr'
-        )
-        vals = child_assessment_mapping.get_vals_from_connect(commkit_data)
-        child_assessment = self.create(vals)
-        return [child_assessment.id]
+        child_assessment_mapping = ChildAssessmentMapping(self.env)
+        assessment_ids = list()
+        for cdpr_data in commkit_data.get(
+                'BeneficiaryAssessmentResponseList', [commkit_data]):
+            vals = child_assessment_mapping.get_vals_from_connect(cdpr_data)
+            child_assessment = self.create(vals)
+            assessment_ids.append(child_assessment.id)
+        return assessment_ids

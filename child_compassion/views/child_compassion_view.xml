@@ -197,7 +197,7 @@
             <field name="name">compassion.child.tree</field>
             <field name="model">compassion.child</field>
             <field name="arch" type="xml">
-                <tree string="Children" colors="blue:state == 'N'; black:state in ('P', 'I'); gray:state in ('F', 'R')">
+                <tree string="Children" colors="red:state == 'W'; blue:state == 'N'; black:state in ('P', 'I'); gray:state in ('F', 'R')">
                     <field name="name"/>
                     <field name="local_id"/>
                     <field name="date"/>

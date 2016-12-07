@@ -12,10 +12,9 @@ from datetime import date, timedelta
 from openerp import fields, models, api, _
 from openerp.exceptions import Warning
 
+from ..mappings.gift_mapping import CreateGiftMapping
 from openerp.addons.sponsorship_compassion.models.product import \
     GIFT_NAMES, GIFT_CATEGORY
-from openerp.addons.message_center_compassion.mappings import base_mapping \
-     as mapping
 
 
 class SponsorshipGift(models.Model):
@@ -92,10 +91,16 @@ class SponsorshipGift(models.Model):
         ('Undeliverable', _('Undeliverable')),
     ], default='draft', readonly=True, track_visibility='onchange')
     undeliverable_reason = fields.Selection([
-        ('Project Transitioned', 'Project Transitioned'),
-        ('Beneficiary Exited', 'Beneficiary Exited'),
-        ('Beneficiary Exited More Than 90 Days Ago',
-         'Beneficiary Exited More Than 90 Days Ago'),
+        ("Gift Amount Exceeded Allowed Limit For An Year",
+         "Gift Amount Exceeded Allowed Limit For An Year"),
+        ("Gift Amount Greater Than Maximum Limit",
+         "Gift Amount Greater Than Maximum Limit"),
+        ("Gift Amount Less Than Minimum Limit",
+         "Gift Amount Less Than Minimum Limit"),
+        ("Gift Frequency Exceeded Allowed Limit",
+         "Gift Frequency Exceeded Allowed Limit"),
+        ("Gift Not Within 1 Year of Completion Date",
+         "Gift Not Within 1 Year of Completion Date"),
     ], readonly=True, copy=False)
     threshold_alert = fields.Boolean(
         help='Partner exceeded the maximum gift amount allowed',
@@ -377,26 +382,25 @@ class SponsorshipGift(models.Model):
 
     @api.model
     def process_commkit(self, commkit_data):
-        ''' This function is automatically executed when an Update Gift
+        """"
+        This function is automatically executed when an Update Gift
         Message is received. It will convert the message from json to odoo
         format and then update the concerned records
-        :param commkit_data contains the data of the message (json)
-        :return list of gift ids which are concerned by the message '''
 
-        gift_update_mapping = mapping.new_onramp_mapping(
-                                                self._name,
-                                                self.env,
-                                                'create_update_gifts')
+        :param commkit_data contains the data of the message (json)
+        :return list of gift ids which are concerned by the message
+        """
+        gift_update_mapping = CreateGiftMapping(self.env)
 
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
-        GiftUpdateRequestList = commkit_data['GiftUpdateRequestList']
+        gifts_data = commkit_data['GiftUpdatesRequest'][
+            'GiftUpdateRequestList']
         gift_ids = []
         changed_gifts = self
         # For each dictionary, we update the corresponding record
-        for GiftUpdateRequest in GiftUpdateRequestList:
-            vals = gift_update_mapping.\
-                get_vals_from_connect(GiftUpdateRequest)
+        for gift_data in gifts_data:
+            vals = gift_update_mapping.get_vals_from_connect(gift_data)
             gift_id = vals['id']
             gift_ids.append(gift_id)
             gift = self.env['sponsorship.gift'].browse([gift_id])
