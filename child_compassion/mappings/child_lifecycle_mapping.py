@@ -57,3 +57,9 @@ class LifecycleMapping(OnrampMapping):
     CONSTANTS = {
 
     }
+
+    def _process_odoo_data(self, odoo_data):
+        """ Put the request reason in lower case. """
+        request_reason = odoo_data.get('request_reason')
+        if request_reason:
+            odoo_data['request_reason'] = request_reason.lower()
