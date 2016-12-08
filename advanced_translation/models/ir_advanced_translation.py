@@ -10,6 +10,9 @@
 ##############################################################################
 
 import logging
+import re
+import sys
+
 from openerp import models, fields, api, _
 
 logger = logging.getLogger(__name__)
@@ -57,11 +60,10 @@ class IrAdvancedTranslation(models.Model):
 
 
 class AdvancedTranslatable(models.AbstractModel):
-    """ Inherit this classe in order to let your model fetch keywords
+    """ Inherit this class in order to let your model fetch keywords
     based on the source recordset and a gender field in the model.
     """
-
-    _name = 'advanced.translatable'
+    _name = 'translatable.model'
 
     gender = fields.Selection([
         ('M', 'Male'),
@@ -82,3 +84,54 @@ class AdvancedTranslatable(models.AbstractModel):
             return advanced_translation.get(keyword, female=True)
         else:
             return advanced_translation.get(keyword)
+
+    @api.multi
+    def translate(self, field):
+        """ helps getting the translated value of a
+        char/selection field by adding a translate function.
+        """
+        pattern_keyword = re.compile("(\\{)(.*)(\\})")
+
+        def _replace_keyword(match):
+            return self.get(match.group(2))
+
+        res = list()
+        field_path = field.split('.')
+        definition = self.fields_get([field_path[0]]).get(field_path[0])
+        if definition:
+            for record in self:
+                raw_value = record
+                for field_traversal in field_path:
+                    raw_value = getattr(raw_value, field_traversal, False)
+                if raw_value:
+                    if definition['type'] in ('char', 'text') or isinstance(
+                            raw_value, basestring):
+                        val = _(raw_value)
+                    elif definition['type'] == 'selection':
+                        val = _(dict(definition['selection'])[raw_value])
+                    if val:
+                        val = pattern_keyword.sub(_replace_keyword, val)
+                        res.append(val)
+        if len(res) == 1:
+            res = res[0]
+        return res or ''
+
+    @api.multi
+    def get_list(self, field, max=sys.maxint, substitution=None):
+        """
+        Get a list of values, separated with commas. (last separator 'and')
+        :param field: the field values to retrieve from the recordset
+        :param max: optional max number of values to be displayed
+        :param substitution: optional substitution text, if number of values is
+                             greater than max number provided
+        :return: string of comma separated values
+        """
+        values = self.translate(field)
+        if isinstance(values, list):
+            values = list(set(values))
+            if len(values) > max:
+                values = [substitution] or values[:max]
+            res_string = ', '.join(values[:-1])
+            res_string += ' ' + _('and') + ' ' + values[-1]
+            values = res_string
+        return values

@@ -27,6 +27,10 @@ class CommunicationConfig(models.Model):
     ##########################################################################
     name = fields.Char(
         required=True, help='Rule name')
+    model_id = fields.Many2one(
+        'ir.model', 'Applies to', required=True,
+        help="The kind of document with this communication can be used")
+    model = fields.Char(related='model_id.model', store=True)
     send_mode = fields.Selection('_get_send_mode', required=True)
     send_mode_pref_field = fields.Char(
         'Partner preference field',
@@ -38,9 +42,13 @@ class CommunicationConfig(models.Model):
              "an e-mail address"
     )
     email_template_id = fields.Many2one(
-        'email.template', 'Email template')
+        'email.template', 'Email template',
+        domain=[('model', '=', 'partner.communication.job')]
+    )
     report_id = fields.Many2one(
-        'ir.actions.report.xml', 'Letter template')
+        'ir.actions.report.xml', 'Letter template',
+        domain=[('model', '=', 'partner.communication.job')]
+    )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -58,6 +66,22 @@ class CommunicationConfig(models.Model):
                 "Following field does not exist in res.partner: %s." %
                 self.send_mode_pref_field
             )
+
+    @api.constrains('email_template_id', 'report_id')
+    def _validate_attached_reports(self):
+        for config in self:
+            if config.email_template_id and config.email_template_id.model \
+                    != 'partner.communication.job':
+                raise ValidationError(
+                    "Attached e-mail templates should be linked to "
+                    "partner.communication.job objects!"
+                )
+            if config.report_id and config.report_id.model != \
+                    'partner.communication.job':
+                raise ValidationError(
+                    "Attached report templates should be linked to "
+                    "partner.communication.job objects!"
+                )
 
     def _get_send_mode(self):
         send_modes = self.get_delivery_preferences()
