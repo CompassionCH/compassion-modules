@@ -85,8 +85,8 @@ class CommunicationJob(models.Model):
     def _compute_html(self):
         for job in self:
             if job.email_template_id:
-                job.body_html = self.env[
-                    'mail.compose.message'].get_generated_html(
+                job.body_html = self.env['mail.compose.message'].with_context(
+                    lang=job.partner_id.lang).get_generated_html(
                     job.email_template_id, [job.id])
 
     @api.multi
@@ -107,7 +107,7 @@ class CommunicationJob(models.Model):
         # a comma separated list of integers
         object_ids = vals.get('object_ids')
         if isinstance(object_ids, list):
-            vals['object_ids'] = ','.join(object_ids)
+            vals['object_ids'] = ','.join(map(str, object_ids))
         else:
             vals['object_ids'] = str(object_ids)
 
@@ -117,7 +117,7 @@ class CommunicationJob(models.Model):
             ('state', '=', 'pending')
         ])
         if job:
-            job.object_ids = job.object_ids + ',' + object_ids
+            job.object_ids = job.object_ids + ',' + vals['object_ids']
             job.refresh_text()
             return job
 
@@ -169,15 +169,15 @@ class CommunicationJob(models.Model):
         action = {
             'name': _('Related objects'),
             'type': 'ir.actions.act_window',
-            'view_type': 'form,tree',
-            'view_mode': 'form',
+            'view_type': 'form',
+            'view_mode': 'form,tree',
             'res_model': self.config_id.model,
             'context': self.env.context,
             'target': 'current',
         }
         if len(object_ids) > 1:
             action.update({
-                'view_type': 'tree,form',
+                'view_mode': 'tree,form',
                 'domain': [('id', 'in', object_ids)]
             })
         else:
