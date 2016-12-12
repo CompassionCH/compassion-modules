@@ -46,7 +46,6 @@ class RecurringContract(models.Model):
     def _get_sds_states(self):
         return [
             ('draft', _('Draft')),
-            ('start', _('Start')),
             ('waiting_welcome', _('Waiting welcome')),
             ('active', _('Active')),
             ('field_memo', _('Field memo')),
@@ -54,7 +53,6 @@ class RecurringContract(models.Model):
             ('sub', _('Sub')),
             ('sub_accept', _('Sub Accept')),
             ('sub_reject', _('Sub Reject')),
-            ('inform_no_sub', _('Inform No sub')),
             ('no_sub', _('No sub')),
             ('cancelled', _('Cancelled'))
         ]
@@ -274,6 +272,10 @@ class RecurringContract(models.Model):
         res = super(RecurringContract, self).contract_terminated()
         self.write({'project_state': False, 'sds_uid': self.env.user.id})
         return res
+
+    @api.multi
+    def no_sub(self):
+        return self.write({'sds_state': 'no_sub', 'color': 1})
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

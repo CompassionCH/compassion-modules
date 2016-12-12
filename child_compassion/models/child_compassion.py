@@ -309,8 +309,13 @@ class CompassionChild(models.Model):
            portrait picture and creates the project if it doesn't exist.
         """
         message_obj = self.env['gmc.message.pool']
-        action_id = self.env.ref(
-            'child_compassion.beneficiaries_details').id
+        try:
+            action_id = self.env.ref(
+                'child_compassion.beneficiaries_details').id
+        except ValueError:
+            # At migration, the action does not yet exist. We should
+            # just avoid updating children at that moment.
+            return True
 
         message_vals = {
             'action_id': action_id,

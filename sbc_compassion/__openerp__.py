@@ -35,8 +35,7 @@
     'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['sponsorship_compassion', 'web_tree_image',
-                'partner_communication'],
+    'depends': ['sponsorship_compassion', 'web_tree_image'],
     'external_dependencies': {
         'java': ['zxing'],
         'python': ['magic', 'wand', 'numpy', 'cv2']

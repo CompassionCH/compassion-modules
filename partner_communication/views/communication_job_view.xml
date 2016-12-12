@@ -14,7 +14,7 @@
                     </header>
                     <sheet>
                         <div class="oe_right oe_button_box" name="buttons">
-                            <button name="open_related" string="Go to record" type="object" icon="fa-folder-open-o" class="oe_stat_button"/>
+                            <button name="open_related" string="Go to records" type="object" icon="fa-folder-open-o" class="oe_stat_button"/>
                         </div>
                         <group>
                             <group>

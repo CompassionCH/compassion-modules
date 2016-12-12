@@ -40,7 +40,7 @@ class CommunicationJob(models.Model):
     partner_id = fields.Many2one('res.partner', 'Send to', required=True)
     partner_phone = fields.Char(related='partner_id.phone')
     partner_mobile = fields.Char(related='partner_id.mobile')
-    object_id = fields.Integer('Resource id', required=True)
+    object_ids = fields.Char('Resource ids', required=True)
 
     date = fields.Datetime(default=fields.Datetime.now)
     sent_date = fields.Datetime()
@@ -80,14 +80,14 @@ class CommunicationJob(models.Model):
                 job.send_mode = job.config_id.get_inform_mode(
                     job.partner_id)[0]
 
-    @api.depends('object_id', 'config_id')
+    @api.depends('object_ids', 'config_id')
     @api.multi
     def _compute_html(self):
         for job in self:
-            if job.object_id and job.email_template_id:
-                job.body_html = self.env[
-                    'mail.compose.message'].get_generated_html(
-                    job.email_template_id, [job.object_id])
+            if job.email_template_id:
+                job.body_html = self.env['mail.compose.message'].with_context(
+                    lang=job.partner_id.lang).get_generated_html(
+                    job.email_template_id, [job.id])
 
     @api.multi
     def _inverse_generation(self):
@@ -99,6 +99,32 @@ class CommunicationJob(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
+        """ If a pending communication for same partner exists,
+        add the object_ids to it. Otherwise, create a new communication.
+        opt-out partners won't create any communication.
+        """
+        # Object ids accept lists, integer or string values. It should contain
+        # a comma separated list of integers
+        object_ids = vals.get('object_ids')
+        if isinstance(object_ids, list):
+            vals['object_ids'] = ','.join(map(str, object_ids))
+        else:
+            vals['object_ids'] = str(object_ids)
+
+        job = self.search([
+            ('partner_id', '=', vals.get('partner_id')),
+            ('config_id', '=', vals.get('config_id')),
+            ('state', '=', 'pending')
+        ])
+        if job:
+            job.object_ids = job.object_ids + ',' + vals['object_ids']
+            job.refresh_text()
+            return job
+
+        partner = self.env['res.partner'].browse([vals['partner_id']])
+        if partner.opt_out:
+            return False
+
         job = super(CommunicationJob, self).create(vals)
         if 'auto_send' not in vals:
             job.auto_send = job.config_id.get_inform_mode(job.partner_id)[1]
@@ -135,20 +161,29 @@ class CommunicationJob(models.Model):
 
     @api.multi
     def refresh_text(self):
-        self._compute_generation()
+        self._compute_html()
 
     @api.multi
     def open_related(self):
-        return {
-            'name': _('Related object'),
+        object_ids = map(int, self.object_ids.split(','))
+        action = {
+            'name': _('Related objects'),
             'type': 'ir.actions.act_window',
-            'view_type': 'form,tree',
-            'view_mode': 'form',
-            'res_model': self.email_template_id.model_id.model,
+            'view_type': 'form',
+            'view_mode': 'form,tree',
+            'res_model': self.config_id.model,
             'context': self.env.context,
-            'res_id': self.object_id,
             'target': 'current',
         }
+        if len(object_ids) > 1:
+            action.update({
+                'view_mode': 'tree,form',
+                'domain': [('id', 'in', object_ids)]
+            })
+        else:
+            action['res_id'] = object_ids[0]
+
+        return action
 
     @api.multi
     def log_call(self):
@@ -182,6 +217,12 @@ class CommunicationJob(models.Model):
         )
         return self.log_call()
 
+    @api.multi
+    def get_objects(self):
+        self.ensure_one()
+        object_ids = map(int, self.object_ids.split(','))
+        return self.env[self.config_id.model].browse(object_ids)
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
@@ -209,7 +250,7 @@ class CommunicationJob(models.Model):
 
                     email = self.env['mail.compose.message'].with_context(
                         lang=partner.lang).create_emails(
-                        self.email_template_id, [self.object_id], email_vals)
+                        self.email_template_id, [self.id], email_vals)
                     self.email_id = email
 
                 email.send_sendgrid()

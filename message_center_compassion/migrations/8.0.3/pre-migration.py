@@ -17,6 +17,8 @@ def migrate(cr, version):
     # Delete old actions and old processed messages (no history!)
     cr.execute("""
 DELETE FROM gmc_message_pool where state = 'success';
+DELETE FROM gmc_message_pool where action_id = 9 AND state IN ('new',
+    'pending') AND invoice_line_id IS NULL; -- Delete invalid gifts.
 ALTER TABLE gmc_message_pool ADD COLUMN old_action character varying;
 ALTER TABLE gmc_message_pool ALTER COLUMN action_id DROP NOT NULL;
 UPDATE gmc_message_pool m SET old_action = (

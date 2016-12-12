@@ -9,7 +9,6 @@
 #
 ##############################################################################
 
-from . import translate_model
 from . import global_child
 from . import child_compassion
 from . import child_pictures
