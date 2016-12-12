@@ -29,7 +29,7 @@ class MigrationR4(models.TransientModel):
 
         # Remove backup column for old messages
         self.env.cr.execute(
-            "ALTER TABLE gmc_message_pool DROP COLUMN old_action IF EXISTS;"
+            "ALTER TABLE gmc_message_pool DROP COLUMN old_action;"
         )
 
         return True

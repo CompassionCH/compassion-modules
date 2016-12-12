@@ -43,7 +43,7 @@ class MigrationR4(models.TransientModel):
             'expiration_date': '2017-03-01',
         }
         available_children = self.env['compassion.child'].search([
-            ('state', 'in', ['N', 'I']),
+            ('state', 'in', ['N', 'I', 'W']),
             ('global_id', '!=', False)
         ])
         for child in available_children:
