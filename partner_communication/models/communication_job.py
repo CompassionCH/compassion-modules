@@ -229,6 +229,7 @@ class CommunicationJob(models.Model):
     def _inform_sponsor(self):
         """ Sends a communication to the sponsor based on the configuration.
         Returns the state of the job.
+        Can accept email_vals in context value 'default_email_vals'
         """
         self.ensure_one()
         partner = self.partner_id
@@ -247,6 +248,9 @@ class CommunicationJob(models.Model):
                         # Replace partner e-mail by specified address
                         email_vals['email_to'] = self.email_to
                         del email_vals['recipient_ids']
+                    if 'default_email_vals' in self.env.context:
+                        email_vals.update(
+                            self.env.context['default_email_vals'])
 
                     email = self.env['mail.compose.message'].with_context(
                         lang=partner.lang).create_emails(

@@ -16,6 +16,7 @@ from ..mappings.field_office_disaster_mapping import FieldOfficeDisasterMapping
 class ICPDisasterImpact(models.Model):
     _name = 'icp.disaster.impact'
     _description = 'ICP Disaster Impact'
+    _order = 'id desc'
 
     project_id = fields.Many2one(
         'compassion.project', 'Project', ondelete='cascade'
@@ -33,6 +34,7 @@ class ICPDisasterImpact(models.Model):
 class FieldOfficeDisasterUpdate(models.Model):
     _name = 'fo.disaster.update'
     _description = 'Field Office Disaster Update'
+    _order = 'id desc'
 
     disaster_id = fields.Many2one(
         'fo.disaster.alert', 'Disaster Alert', ondelete='cascade'
@@ -54,6 +56,7 @@ class FieldOfficeDisasterUpdate(models.Model):
 class ChildDisasterImpact(models.Model):
     _name = 'child.disaster.impact'
     _description = 'Child Disaster Impact'
+    _order = 'id desc'
 
     child_id = fields.Many2one(
         'compassion.child', 'Child', ondelete='cascade'
@@ -99,6 +102,8 @@ class FieldOfficeDisasterAlert(models.Model):
     _name = 'fo.disaster.alert'
     _description = 'Field Office Disaster Alert'
     _rec_name = 'disaster_name'
+    _inherit = 'mail.thread'
+    _order = 'disaster_date desc, id desc'
 
     ##########################################################################
     #                                 FIELDS                                 #

@@ -72,7 +72,7 @@ class MigrationR4(models.TransientModel):
                 'sponsorship_id': sponsorship.id,
                 'invoice_line_ids': [(4, invl.id)],
                 'message_id': message.id,
-                'instructions': invl.name,
+                'instructions': invl.name.replace('[', '(').replace(']', ')'),
                 'gift_type': gift_type,
                 'attribution': attribution,
                 'sponsorship_gift_type': sponsorship_gift_type,

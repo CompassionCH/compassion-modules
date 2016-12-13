@@ -189,4 +189,5 @@ class ICPMapping(OnrampMapping):
 
         monthly_income = odoo_data.get('monthly_income')
         if monthly_income:
-            odoo_data['monthly_income'] = monthly_income.replace(',', '.')
+            monthly_income = monthly_income.replace(',', '')
+            odoo_data['monthly_income'] = monthly_income

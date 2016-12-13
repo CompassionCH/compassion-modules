@@ -18,7 +18,7 @@ class ChildNote(models.Model):
     """ A child Note """
     _name = 'compassion.child.note'
     _description = 'Child Note'
-    # _order = 'date desc'
+    _order = 'id desc'
 
     child_id = fields.Many2one(
         'compassion.child', 'Child', required=True, ondelete='cascade'
