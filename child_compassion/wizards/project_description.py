@@ -99,11 +99,14 @@ class ProjectDescription(models.TransientModel):
             desc('.community_language')[1], desc('#community_language'),
             project.primary_language_id.name
         )
-        desc('.community_job')[0].text = _("Typical job")
-        self._show_field(
-            desc('.community_job')[1], desc('#community_job'),
-            project.primary_adults_occupation_ids[0].value
-        )
+        if project.primary_adults_occupation_ids:
+            desc('.community_job')[0].text = _("Typical job")
+            self._show_field(
+                desc('.community_job')[1], desc('#community_job'),
+                project.primary_adults_occupation_ids[0].value
+            )
+        else:
+            desc('#community_job').remove()
         if project.chf_income:
             desc('.community_income')[0].text = _("Family monthly income")
             desc('.community_income')[1].text = 'CHF {:10.0f}.-'.format(
