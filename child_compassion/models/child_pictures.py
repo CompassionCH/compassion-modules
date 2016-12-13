@@ -44,7 +44,7 @@ class child_pictures(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.one
-    def set_pictures(self, typeshot='Headshot'):
+    def set_pictures(self):
         """Get the picture given field_name (headshot or fullshot)"""
         attachment_obj = self.env['ir.attachment']
 

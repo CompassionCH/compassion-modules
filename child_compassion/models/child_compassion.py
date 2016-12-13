@@ -192,7 +192,8 @@ class CompassionChild(models.Model):
     portrait = fields.Binary(related='pictures_ids.headshot')
     fullshot = fields.Binary(related='pictures_ids.fullshot')
     child_disaster_impact_ids = fields.One2many(
-        'child.disaster.impact', 'child_id', 'Child Disaster Impact'
+        'child.disaster.impact', 'child_id', 'Child Disaster Impact',
+        readonly=True
     )
 
     # Descriptions
@@ -346,6 +347,9 @@ class CompassionChild(models.Model):
         handled by the Reinstatement Hold Notification. """
         self.delete_workflow()
         self.create_workflow()
+
+    def new_photo(self):
+        self.get_infos()
 
     @api.multi
     def get_lifecycle_event(self):

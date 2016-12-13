@@ -186,6 +186,8 @@ class ChildLifecycleEvent(models.Model):
     @api.model
     def _get_type(self):
         return [
+            ('Beneficiary Update', 'Beneficiary Update'),
+            ('Home Based Caregiver Death', 'Home Based Caregiver Death'),
             ('Planned Exit', 'Planned Exit'),
             ('Registration', 'Registration'),
             ('Reinstatement', 'Reinstatement'),
@@ -292,6 +294,8 @@ class ChildLifecycleEvent(models.Model):
                 lifecycle.child_id.depart()
             elif lifecycle.type == 'Reinstatement':
                 lifecycle.child_id.reinstatement()
+            elif lifecycle.type == 'Beneficiary Update':
+                lifecycle.child_id.new_photo()
         return lifecycle
 
     @api.model
