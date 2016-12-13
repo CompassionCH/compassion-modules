@@ -262,6 +262,17 @@ class CompassionHold(models.Model):
             hold.state = 'active'
             child.hold_id = hold
 
+            # Notify reservation owner
+            hold.message_post(
+                body="A new hold has been created because of an existing "
+                "reservation.",
+                subject="Reservation converted to hold",
+                partner_ids=hold.primary_owner.partner_id.ids,
+                type='comment',
+                subtype='mail.mt_comment',
+                content_subtype='plaintext'
+            )
+
             return [hold.id]
 
         return list()
