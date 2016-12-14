@@ -134,6 +134,6 @@
         </record>
 
         <menuitem id="menu_demand_planning_compassion" name="Demand Planning" parent="base.menu_sales" action="open_view_demand_planning_form"/>
-        <menuitem id="menu_demand_planning_configuration" name="Demand Planning" parent="base.menu_config" action="open_view_demand_planning_config"/>
+        <menuitem id="menu_demand_planning_configuration" name="Demand Planning" parent="child_compassion.child_config" action="open_view_demand_planning_config"/>
     </data>
 </openerp>

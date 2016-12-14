@@ -71,7 +71,7 @@
                                 <field name="gift_date"/>
                                 <field name="date_partner_paid"/>
                                 <field name="date_sent"/>
-                                <field name="message_id"/>
+                                <field name="message_id" groups="message_center_compassion.group_gmc"/>
                                 <field name="payment_id"/>
                             </group>
                             <group>
@@ -128,47 +128,6 @@
             </field>
         </record>
 
-        <!-- Configuration View -->
-        <record id="view_gift_threshold_settings_form" model="ir.ui.view">
-            <field name="name">gift.threshold.settings.form</field>
-            <field name="model">gift.threshold.settings</field>
-            <field name="arch" type="xml">
-                <form>
-                    <group>
-                        <group>
-                            <field name="gift_type"/>
-                            <field name="gift_attribution"/>
-                            <field name="sponsorship_gift_type"/>
-                        </group>
-                        <group>
-                            <field name="currency_id"/>
-                            <field name="min_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                            <field name="max_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                            <field name="gift_frequency"/>
-                            <field name="yearly_threshold"/>
-                        </group>
-                    </group>
-                </form>
-            </field>
-        </record>
-
-        <record id="view_gift_threshold_settings_tree" model="ir.ui.view">
-            <field name="name">gift.threshold.settings.tree</field>
-            <field name="model">gift.threshold.settings</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="gift_type"/>
-                    <field name="gift_attribution"/>
-                    <field name="sponsorship_gift_type"/>
-                    <field name="min_amount"/>
-                    <field name="max_amount"/>
-                    <field name="currency_id"/>
-                    <field name="gift_frequency"/>
-                    <field name="yearly_threshold"/>
-                </tree>
-            </field>
-        </record>
-
         <record id="action_sponsorship_gift" model="ir.actions.act_window">
             <field name="name">Sponsorship Gifts</field>
             <field name="type">ir.actions.act_window</field>
@@ -183,14 +142,6 @@
             <field name="context">{'search_default_not_sent': 1, 'search_default_group_by_date': 1}</field>
         </record>
 
-        <record id="open_view_gift_threshold_settings" model="ir.actions.act_window">
-            <field name="name">Gift Threshold Configuration</field>
-            <field name="res_model">gift.threshold.settings</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
         <menuitem id="menu_sponsorship_gift" parent="account.menu_finance_receivables" action="action_sponsorship_gift"/>
-        <menuitem id="menu_gift_configuration" name="Gift Thresholds" parent="child_compassion.menu_configuration" action="open_view_gift_threshold_settings"/>
     </data>
 </openerp>

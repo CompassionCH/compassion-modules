@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -43,6 +44,7 @@
         'views/collect_gifts_wizard_view.xml',
         'views/gift_view.xml',
         'views/gmc_message_view.xml',
+        'views/settings_view.xml',
     ],
     'demo': [
     ],

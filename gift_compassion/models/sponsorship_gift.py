@@ -91,16 +91,10 @@ class SponsorshipGift(models.Model):
         ('Undeliverable', _('Undeliverable')),
     ], default='draft', readonly=True, track_visibility='onchange')
     undeliverable_reason = fields.Selection([
-        ("Gift Amount Exceeded Allowed Limit For An Year",
-         "Gift Amount Exceeded Allowed Limit For An Year"),
-        ("Gift Amount Greater Than Maximum Limit",
-         "Gift Amount Greater Than Maximum Limit"),
-        ("Gift Amount Less Than Minimum Limit",
-         "Gift Amount Less Than Minimum Limit"),
-        ("Gift Frequency Exceeded Allowed Limit",
-         "Gift Frequency Exceeded Allowed Limit"),
-        ("Gift Not Within 1 Year of Completion Date",
-         "Gift Not Within 1 Year of Completion Date"),
+        ('Project Transitioned', 'Project Transitioned'),
+        ('Beneficiary Exited', 'Beneficiary Exited'),
+        ('Beneficiary Exited More Than 90 Days Ago',
+         'Beneficiary Exited More Than 90 Days Ago'),
     ], readonly=True, copy=False)
     threshold_alert = fields.Boolean(
         help='Partner exceeded the maximum gift amount allowed',
@@ -552,5 +546,30 @@ class SponsorshipGift(models.Model):
 
     @api.multi
     def _gift_undeliverable(self):
-        # TODO Implement this
-        pass
+        """ Notify users defined in settings. """
+        notify_ids = self.env['gift.notification.settings'].get_param(
+            'notify_partner_ids')
+        if notify_ids:
+            for gift in self:
+                partner = gift.partner_id
+                child = gift.child_id
+                values = {
+                    'name': partner.name,
+                    'ref': partner.ref,
+                    'child_name': child.name,
+                    'child_code': child.local_id,
+                    'reason': gift.undeliverable_reason
+                }
+                body = (
+                    "{name} ({ref}) made a gift to {child_name}"
+                    " ({child_code}) which is undeliverable because {reason}."
+                    "\nPlease inform the sponsor about it."
+                ).format(**values)
+                gift.message_post(
+                    body=body,
+                    subject="Gift Undeliverable Notification",
+                    partner_ids=notify_ids,
+                    type='comment',
+                    subtype='mail.mt_comment',
+                    content_subtype='plaintext'
+                )

@@ -11,3 +11,4 @@
 
 from . import migration_r4
 from . import collect_gifts_wizard
+from . import gift_notification_settings
