@@ -130,7 +130,9 @@ class AdvancedTranslatable(models.AbstractModel):
         if isinstance(values, list):
             values = list(set(values))
             if len(values) > max:
-                values = [substitution] or values[:max]
+                if substitution:
+                    return substitution
+                values = values[:max]
             res_string = ', '.join(values[:-1])
             res_string += ' ' + _('and') + ' ' + values[-1]
             values = res_string

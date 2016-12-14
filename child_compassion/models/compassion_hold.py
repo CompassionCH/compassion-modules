@@ -131,6 +131,9 @@ class CompassionHold(models.Model):
     _rec_name = 'hold_id'
     _inherit = ['compassion.abstract.hold', 'mail.thread']
 
+    ##########################################################################
+    #                                 FIELDS                                 #
+    ##########################################################################
     hold_id = fields.Char(readonly=True)
     child_id = fields.Many2one(
         'compassion.child', 'Child on hold', readonly=True
@@ -142,12 +145,16 @@ class CompassionHold(models.Model):
         readonly=True, default='draft', track_visibility='onchange')
     reinstatement_reason = fields.Char(readonly=True)
     reservation_id = fields.Many2one('compassion.reservation', 'Reservation')
+    no_money_extension = fields.Integer(
+        help="Counts how many time the no money hold was extended."
+    )
 
     # Track field changes
     ambassador = fields.Many2one(track_visibility='onchange')
     primary_owner = fields.Many2one(track_visibility='onchange')
     type = fields.Selection(track_visibility='onchange')
     channel = fields.Selection(track_visibility='onchange')
+    expiration_date = fields.Datetime(track_visibility='onchange')
 
     _sql_constraints = [
         ('hold_id', 'unique(hold_id)',
@@ -192,12 +199,14 @@ class CompassionHold(models.Model):
         message_obj = self.env['gmc.message.pool'].with_context(
             async_mode=False)
         action_id = self.env.ref('child_compassion.create_hold').id
-
-        message_vals = {
-            'action_id': action_id,
-            'object_id': self.id
-        }
-        message_obj.create(message_vals).process_messages()
+        messages = message_obj
+        for hold in self:
+            message_vals = {
+                'action_id': action_id,
+                'object_id': hold.id
+            }
+            messages += message_obj.create(message_vals)
+        messages.process_messages()
 
     @api.multi
     def hold_sent(self, vals):
@@ -313,23 +322,36 @@ class CompassionHold(models.Model):
 
     @api.model
     def check_hold_validity(self):
+        """
+        - Update and notify no money hold expiring
+        - Remove expired holds
+        :return: True
+        """
         # Mark old holds as expired and release children if necessary
-        holds = self.env['compassion.hold'].search([
+        holds = self.search([
             ('expiration_date', '<', fields.Datetime.now()),
             ('state', '=', 'active')
         ])
         holds.write({'state': 'expired'})
         holds.mapped('child_id').write({'hold_id': False})
-        free_children = holds.mapped('child_id').filtered(
-            lambda c: not c.sponsor_id)
-        free_children.signal_workflow('release')
+        holds.mapped('child_id').signal_workflow('release')
 
         # Remove holds that have no child linked anymore
-        holds = self.env['compassion.hold'].search([
+        holds = self.search([
             ('state', '=', 'expired'),
             ('child_id', '=', False)
         ])
         holds.unlink()
+
+        # Search for expiring No Money Hold
+        this_week_delay = datetime.now() + timedelta(days=7)
+        holds = self.search([
+            ('state', '=', 'active'),
+            ('expiration_date', '<=', fields.Datetime.to_string(
+                this_week_delay)),
+            ('type', '=', HoldType.NO_MONEY_HOLD.value)
+        ])
+        holds.postpone_no_money_hold()
 
         return True
 
@@ -356,3 +378,52 @@ class CompassionHold(models.Model):
         hold.comments = data.get('NotificationReason')
         hold.hold_released()
         return [hold.id]
+
+    @api.multi
+    def postpone_no_money_hold(self, additional_text=None):
+        """
+        When a No Money Hold is expiring, this will extend the hold duration.
+        Only 2 extensions are allowed, then the hold is not modified.
+        Send a notification to hold owner.
+        :return: None
+        """
+        settings = self.env['availability.management.settings']
+        first_extension = settings.get_param('no_money_hold_duration')
+        second_extension = settings.get_param('no_money_hold_extension')
+        body_extension = (
+            "The no money hold for child {local_id} was expiring on "
+            "{old_expiration} and was extended to {new_expiration}."
+            "{additional_text}"
+        )
+        body_expiration = (
+            "The no money hold for child {local_id} will expire on "
+            "{old_expiration}. The sponsorship will be cancelled on that "
+            "date.{additional_text}"
+        )
+        for hold in self.filtered(lambda h: h.no_money_extension < 3):
+            hold_extension = first_extension if not hold.no_money_extension \
+                else second_extension
+            new_hold_date = fields.Datetime.from_string(
+                hold.expiration_date) + timedelta(days=hold_extension)
+            extension = hold.no_money_extension < 2
+            subject = "No money hold extension" if extension else "No money " \
+                "hold expiration"
+            body = body_extension if extension else body_expiration
+            values = {
+                'local_id': hold.child_id.local_id,
+                'old_expiration': hold.expiration_date,
+                'new_expiration': new_hold_date.strftime("%d %B %Y"),
+                'additional_text': additional_text or '',
+            }
+            hold.message_post(
+                body=body.format(**values),
+                subject=subject,
+                partner_ids=hold.primary_owner.partner_id.ids,
+                type='comment',
+                subtype='mail.mt_comment',
+                content_subtype='plaintext'
+            )
+            hold.write({
+                'no_money_extension': hold.no_money_extension + 1,
+                'expiration_date': fields.Datetime.to_string(new_hold_date)
+            })
