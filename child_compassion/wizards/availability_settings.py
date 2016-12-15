@@ -21,6 +21,7 @@ class AvailabilitySettings(models.TransientModel):
     consignment_hold_duration = fields.Integer(help='In Days')
     e_commerce_hold_duration = fields.Integer(help='In Minutes')
     no_money_hold_duration = fields.Integer(help='In Days')
+    no_money_hold_extension = fields.Integer(help='In Days')
     reinstatement_hold_duration = fields.Integer(help='In Days')
     reservation_duration = fields.Integer(help='In Days')
     reservation_hold_duration = fields.Integer(help='In Days')
@@ -44,6 +45,12 @@ class AvailabilitySettings(models.TransientModel):
         self.env['ir.config_parameter'].set_param(
             'child_compassion.no_money_hold_duration',
             str(self.consignment_hold_duration))
+
+    @api.multi
+    def set_no_money_hold_extension(self):
+        self.env['ir.config_parameter'].set_param(
+            'child_compassion.no_money_hold_extension',
+            str(self.consignment_hold_extension))
 
     @api.multi
     def set_reinstatement_hold_duration(self):
@@ -84,6 +91,8 @@ class AvailabilitySettings(models.TransientModel):
             'child_compassion.e_commerce_hold_duration', '15'))
         no_money = int(param_obj.get_param(
             'child_compassion.no_money_hold_duration', '30'))
+        no_money_extension = int(param_obj.get_param(
+            'child_compassion.no_money_hold_extension', '15'))
         reinstatement = int(param_obj.get_param(
             'child_compassion.reinstatement_hold_duration', '15'))
         reservation = int(param_obj.get_param(
@@ -99,6 +108,7 @@ class AvailabilitySettings(models.TransientModel):
             'consignment_hold_duration': consignment,
             'e_commerce_hold_duration': e_commerce,
             'no_money_hold_duration': no_money,
+            'no_money_hold_extension': no_money_extension,
             'reinstatement_hold_duration': reinstatement,
             'reservation_duration': reservation,
             'reservation_hold_duration': reservation_hold,

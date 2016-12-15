@@ -52,10 +52,10 @@ class CommunicationJob(models.Model):
 
     auto_send = fields.Boolean(
         help='Job is processed at creation if set to true')
-    send_mode = fields.Selection(
-        [('digital', _('By e-mail')), ('physical', _('Print report'))],
-        compute='_compute_send_mode', inverse='_inverse_generation',
-        store=True)
+    send_mode = fields.Selection([
+        ('digital', 'By e-mail'), ('physical', 'Print report'),
+        ('both', 'Both')
+    ], compute='_compute_send_mode', inverse='_inverse_generation', store=True)
     email_template_id = fields.Many2one(
         related='config_id.email_template_id', store=True)
     report_id = fields.Many2one(related='config_id.report_id', store=True)
@@ -140,10 +140,14 @@ class CommunicationJob(models.Model):
         """ Executes the job. """
         for job in self:
             state = job._inform_sponsor()
-            job.write({
-                'state': state,
-                'sent_date': fields.Datetime.now()
-            })
+            if job.send_mode != 'both':
+                job.write({
+                    'state': state,
+                    'sent_date': fields.Datetime.now()
+                })
+            else:
+                # Job was sent by e-mail and must now be printed
+                job.send_mode = 'physical'
         return True
 
     @api.multi
@@ -234,7 +238,7 @@ class CommunicationJob(models.Model):
         self.ensure_one()
         partner = self.partner_id
 
-        if self.send_mode == 'digital':
+        if self.send_mode in ('both', 'digital'):
             if self.email_to or partner.email:
                 # Send by e-mail
                 email = self.email_id

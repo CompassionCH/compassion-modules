@@ -101,6 +101,7 @@ class CommunicationConfig(models.Model):
             ('digital', _('Prepare e-mail (sent manually)')),
             ('auto_physical', _('Print letter automatically')),
             ('physical', _('Prepare report (print manually)')),
+            ('both', _('Send e-mail + prepare report (print manually)')),
         ]
 
     def get_inform_mode(self, partner):
@@ -116,7 +117,7 @@ class CommunicationConfig(models.Model):
             send_mode = getattr(
                 partner, self.send_mode_pref_field,  False)
 
-        auto_mode = 'auto' in send_mode
+        auto_mode = 'auto' in send_mode or send_mode == 'both'
         send_mode = send_mode.replace('auto_', '')
         if send_mode == 'none':
             send_mode = False
