@@ -166,6 +166,7 @@ class Household(models.Model):
             ('Construction/ Tradesman', 'Construction worker'),
             ('Day Labor/ Different Jobs', 'Daily jobs'),
             ('Domestic Service / Housekeeper', 'Housekeeper'),
+            ('Domestic Service/ Housekeeper', 'Housekeeper'),
             ('Food Services', 'Food vendor'),
             ('Laborer', 'Laborer'),
             ('Housewife', 'Housewife'),
