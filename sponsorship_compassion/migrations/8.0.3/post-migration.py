@@ -41,9 +41,16 @@ def migrate(cr, version):
         csvreader.next()
         for row in csvreader:
             cr.execute("""
-                UPDATE res_partner
+                UPDATE res_partner p
                 SET global_id = '{}'
                 WHERE ref = '{}'
+                AND EXISTS(
+                    SELECT category_id
+                    FROM res_partner_res_partner_category_rel r
+                    JOIN res_partner_category c
+                    ON r.category_id = c.id
+                    WHERE r.partner_id = p.id AND c.name LIKE '%Sponsor'
+                )
             """.format(row[1], row[0]))
 
     logger.info("MIGRATION : LOADING SPONSORSHIP GLOBAL IDS")
