@@ -87,14 +87,20 @@
                             </page>
                             <page string="Lifecycle Events">
                                 <group>
-                                    <field name="lifecycle_ids"
-                                           context="{'default_child_id': active_id}">
+                                    <field name="lifecycle_ids" context="{'default_child_id': active_id}">
                                         <tree>
                                             <field name="date"/>
                                             <field name="type"/>
                                         </tree>
                                     </field>
-                                    <field name="assessment_ids" readonly="1">
+                                    <field name="revised_value_ids" attrs="{'invisible': [('revised_value_ids', '=', False)]}">
+                                        <tree>
+                                            <field name="create_date" string="Date"/>
+                                            <field name="name"/>
+                                            <field name="old_value"/>
+                                        </tree>
+                                    </field>
+                                    <field name="assessment_ids" readonly="1" attrs="{'invisible': [('assessment_ids', '=', False)]}">
                                         <tree>
                                             <field name="date"/>
                                             <field name="physical_score"/>
@@ -103,7 +109,7 @@
                                             <field name="sociological_score"/>
                                         </tree>
                                     </field>
-                                    <field name="child_disaster_impact_ids">
+                                    <field name="child_disaster_impact_ids" attrs="{'invisible': [('child_disaster_impact_ids', '=', False)]}">
                                         <tree>
                                             <field name="name"/>
                                             <field name="beneficiary_location"/>
@@ -113,7 +119,7 @@
                                             <field name="state"/>
                                         </tree>
                                     </field>
-                                    <field name="note_ids">
+                                    <field name="note_ids" attrs="{'invisible': [('lifecycle_ids', '=', False)]}">
                                         <tree>
                                             <field name="body"/>
                                             <field name="record_type"/>

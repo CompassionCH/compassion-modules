@@ -49,7 +49,8 @@ class DemandPlanningSettings(models.TransientModel):
     @api.model
     def get_default_values(self, _fields):
         param_obj = self.env['ir.config_parameter']
-        web = int(param_obj.get_param('crm_compassion.number_children_web'))
+        web = int(param_obj.get_param(
+            'crm_compassion.number_children_web', '500'))
         ambassador = int(param_obj.get_param(
             'crm_compassion.number_children_ambassador', '10'))
         days_event = int(param_obj.get_param(

@@ -145,8 +145,8 @@
                             <field name="primary_owner"/>
                             <field name="ambassador" attrs="{'invisible': [('channel', 'not in', ['ambassador', 'event'])], 'required': [('channel', '=', 'ambassador')]}"/>
                             <field name="secondary_owner" attrs="{'invisible': [('channel', 'in', ['ambassador', 'event'])]}"/>
-                            <field name="no_money_yield_rate"/>
-                            <field name="yield_rate"/>
+                            <!--<field name="no_money_yield_rate"/>-->
+                            <!--<field name="yield_rate"/>-->
                             <field name="channel"/>
                             <field name="comments" help="Will display the comments when child is selected for sponsorship"/>
                         </group>

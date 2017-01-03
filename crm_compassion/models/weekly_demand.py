@@ -275,7 +275,6 @@ class WeeklyDemand(models.Model):
         return {
             'number_children_website': web,
             'number_children_ambassador': ambassador,
-            'resupply_sub': self._compute_resupply_sub(),
             'average_unsponsored_web': self._default_unsponsored_web(),
             'average_unsponsored_ambassador':
                 self._default_unsponsored_ambassador(),

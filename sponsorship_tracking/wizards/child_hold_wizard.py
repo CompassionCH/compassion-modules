@@ -32,7 +32,8 @@ class ChildHoldWizard(models.TransientModel):
         action = super(ChildHoldWizard, self)._get_action(holds)
         if self.return_action == 'sub':
             sub_contract = self.env['recurring.contract'].browse(
-                self.env.context.get('contract_id'))
+                self.env.context.get('contract_id')).with_context(
+                allow_rewind=True)
             sub_contract.write({'child_id': holds[0].child_id.id})
             sub_contract.signal_workflow('contract_validated')
             sub_contract.next_invoice_date = self.env.context.get(
