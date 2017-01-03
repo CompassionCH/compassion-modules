@@ -207,15 +207,17 @@ class SponsorshipGift(models.Model):
 
     @api.multi
     def unlink(self):
-        for gift in self:
+        # Cancel gmc messages
+        self.mapped('message_id').unlink()
+        to_remove = self.filtered(lambda g: g.state != 'Undeliverable')
+        for gift in to_remove:
             if gift.gmc_gift_id:
                 raise Warning(
-                    _("You cannot delete the %s. It is already sent to GMC.")
+                    _("You cannot delete the %s."
+                      "It is already sent to GMC.")
                     % gift.name
                 )
-            if gift.message_id:
-                gift.message_id.unlink()
-        return super(SponsorshipGift, self).unlink()
+        return super(SponsorshipGift, to_remove).unlink()
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
