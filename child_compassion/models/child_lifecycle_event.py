@@ -26,7 +26,7 @@ class ChildLifecycleEvent(models.Model):
         'compassion.child', 'Child', required=True, ondelete='cascade',
         readonly=True)
     global_id = fields.Char(readonly=True, required=True)
-    date = fields.Datetime(readonly=True)
+    date = fields.Date(readonly=True)
     type = fields.Selection('_get_type', readonly=True)
 
     # All reasons for all request types
