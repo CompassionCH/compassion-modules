@@ -14,7 +14,6 @@ from enum import Enum
 from datetime import datetime, timedelta
 
 from openerp import api, models, fields, _
-from openerp.exceptions import Warning
 
 from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from ..mappings.childpool_create_hold_mapping import ReservationToHoldMapping
