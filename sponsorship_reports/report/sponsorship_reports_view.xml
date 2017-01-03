@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+    <record id="view_sponsorship_report_by_origin" model="ir.ui.view">
+         <field name="name">sponsorship.contract.report.graph</field>
+         <field name="model">sponsorship.contract.report</field>
+         <field name="arch" type="xml">
+             <graph string="Acquisition By origin" type="pivot" default_order="aquisition_fy desc">
+                 <field name="aquisition_fy" type="row"/>
+                 <field name="origin_type" type="row"/>
+                 <field name="lang" type="col"/>
+             </graph>
+         </field>
+    </record>
+    <record id="view_sponsorship_level_by_lang" model="ir.ui.view">
+         <field name="name">sponsorship.level.report.graph</field>
+         <field name="model">sponsorship.level.report</field>
+         <field name="arch" type="xml">
+             <graph string="Net spn By lang" type="pivot">
+                 <field name="fy" type="row"/>
+                 <field name="date_level" type="row"/>
+                 <field name="lang" type="col"/>
+                 <field name="spn_level" type="measure"/>
+             </graph>
+         </field>
+    </record>
+    <record id="view_sponsorship_report_by_month" model="ir.ui.view">
+         <field name="name">sponsorship.contract.report.graph</field>
+         <field name="model">sponsorship.contract.report</field>
+         <field name="arch" type="xml">
+             <graph string="Acquisition By month" type="bar" >
+                 <field name="aquisition_month" type="row"/>
+                 <field name="aquisition_fy" type="col"/>
+             </graph>
+         </field>
+    </record>
+    <record id="view_sponsorship_report_level_search" model="ir.ui.view">
+        <field name="name">sponsorship.level.report.search</field>
+        <field name="model">sponsorship.level.report</field>
+        <field name="arch" type="xml">
+            <search string="Sponsorship Analysis">
+                <filter string="Last ten Year" name="lasttenyear" domain="['&amp;', ('date_level', '!=', False), ('date_level','&gt;', (context_today() + relativedelta(years=-10)).strftime('%%Y-06-30'))]" help=""/>
+                <filter string="Last three Year" name="lastthreeyear" domain="['&amp;', ('date_level', '!=', False), ('date_level','&gt;', (context_today() + relativedelta(years=-3)).strftime('%%Y-06-30'))]" help=""/>
+            </search>
+        </field>
+    </record>
+    <record id="view_sponsorship_report_search" model="ir.ui.view">
+        <field name="name">sponsorship.contract.report.search</field>
+        <field name="model">sponsorship.contract.report</field>
+        <field name="arch" type="xml">
+            <search string="Sponsorship Analysis">
+                <filter string="Last ten Year" name="lasttenyear" domain="['&amp;', ('start_date', '!=', False), ('start_date','&gt;', (context_today() + relativedelta(years=-10)).strftime('%%Y-06-30'))]" help=""/>
+                <filter string="Last three Year" name="lastthreeyear" domain="['&amp;', ('start_date', '!=', False), ('start_date','&gt;', (context_today() + relativedelta(years=-3)).strftime('%%Y-06-30'))]" help=""/>
+                <separator />
+                <filter string="Marketing activites" name="mktg_act" domain="['&amp;', ('origin_type', '!=', 'transfer'), ('origin_type','!=', 'sub' )]" help="No Sub or transfer as aquisition"/>
+                <separator/>
+                <filter string="Active" domain="[('state','=','active')]" help = "active commitment"/>
+                <filter string="No money commitment" domain="['|', ('state','=','waiting'),('state','=','mandate')]"/>
+                <filter string="Cancelled" domain="[('state','=','cancelled')]"/>
+                <group expand="1" string="Compare FY up to">
+                <!-- <filter string="ytd comparison" name="ytdcomp" domain="['|','&amp;',(int(time.strftime('%%m')),'&lt;',7),('aquisition_month','&lt;=', (int(time.strftime('%%m'))+6)),'&amp;', (int(time.strftime('%%m')),'&gt;',6),('aquisition_month','&lt;=', (int(time.strftime('%%m'))-6))]" help="limit all FY with the current month or lower"/> -->
+                <filter string="July" name="ytdcomp1" domain="[('aquisition_month','&lt;=', 1)]" help="limit all FY with the month equal or lower than July"/>
+                <filter string="Aug" name="ytdcomp2" domain="[('aquisition_month','&lt;=', 2)]" help="limit all FY with the month equal or lower than Aug"/>
+                <filter string="Sept" name="ytdcomp3" domain="[('aquisition_month','&lt;=', 3)]" help="limit all FY with the month equal or lower than Sept"/>
+                <filter string="Oct" name="ytdcomp4" domain="[('aquisition_month','&lt;=', 4)]" help="limit all FY with the month equal or lower than Oct"/>
+                <filter string="Nov" name="ytdcomp5" domain="[('aquisition_month','&lt;=', 5)]" help="limit all FY with the month equal or lower than Nov"/>
+                <filter string="Dec" name="ytdcomp6" domain="[('aquisition_month','&lt;=', 6)]" help="limit all FY with the month equal or lower than Dec"/>
+                <filter string="Jan" name="ytdcomp7" domain="[('aquisition_month','&lt;=', 7)]" help="limit all FY with the month equal or lower than Jan"/>
+                <filter string="Feb" name="ytdcomp8" domain="[('aquisition_month','&lt;=', 8)]" help="limit all FY with the month equal or lower than Feb"/>
+                <filter string="Mar" name="ytdcomp9" domain="[('aquisition_month','&lt;=', 9)]" help="limit all FY with the month equal or lower than Mar"/>
+                <filter string="Apr" name="ytdcomp10" domain="[('aquisition_month','&lt;=', 10)]" help="limit all FY with the month equal or lower than Apr"/>
+                <filter string="May" name="ytdcomp11" domain="[('aquisition_month','&lt;=', 11)]" help="limit all FY with the month equal or lower than May"/>
+                <filter string="June" name="ytdcomp12" domain="[('aquisition_month','&lt;=', 12)]" help="limit all FY with the month equal or lower than June"/>
+                </group>
+                <group expand="1" string="Group By">
+                    <filter string="Partner" name="partner_id" context="{'group_by':'partner_id','residual_visible':True}"/>
+                    <filter string="Advocate" name='user' context="{'group_by':'advocate_id'}"/>
+                    <filter string="Status" context="{'group_by':'state'}"/>
+                    <separator orientation="vertical" />
+                    <filter string="Date" context="{'group_by':'start_date'}"/>
+                    <filter string="Start Month" context="{'group_by':'start_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_sponsorship_monthly_comparison" model="ir.actions.act_window">
+        <field name="name">aquisition monthly comparison</field>
+        <field name="res_model">sponsorship.contract.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_sponsorship_report_by_month"/>
+        <field name="context">{"search_default_lasttenyear":1,"search_default_mktg_act":1}</field>
+        <field name="search_view_id" ref="view_sponsorship_report_search"/>
+        <field name="help">From this report, you can have an overview of the sponsorship.</field>
+    </record>
+    <record id="action_sponsorship_aquisition_origin" model="ir.actions.act_window">
+        <field name="name">aquisition by origin</field>
+        <field name="res_model">sponsorship.contract.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_sponsorship_report_by_origin"/>
+        <field name="context">{"search_default_lastthreeyear":1,"search_default_mktg_act":1}</field>
+        <field name="search_view_id" ref="view_sponsorship_report_search"/>
+        <field name="help">From this report, you can have an overview of the sponsorship.</field>
+    </record>
+    <record id="action_sponsorship_level" model="ir.actions.act_window">
+        <field name="name">Net sponsorship level by lang</field>
+        <field name="res_model">sponsorship.level.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_sponsorship_level_by_lang"/>
+        <field name="context">{"search_default_lasttenyear":1}</field> 
+        <field name="search_view_id" ref="view_sponsorship_report_level_search"/>
+        <field name="help">From this report, you can have an overview of the sponsorship.</field>
+    </record>
+    <menuitem id="menu_sponsorship_reporting" name="Sponsorship" parent="base.menu_reporting" sequence="0"/>
+    <menuitem action="action_sponsorship_monthly_comparison" id="menu_action_sponsorship_monthly_comparison" parent="menu_sponsorship_reporting" sequence="0"/>
+    <menuitem action="action_sponsorship_aquisition_origin" id="menu_action_sponsorship_aquisition_origin" parent="menu_sponsorship_reporting" sequence="1"/>
+    <menuitem action="action_sponsorship_level" id="menu_action_sponsorship_level" parent="menu_sponsorship_reporting" sequence="3"/>
+
+</data>
+</openerp>
