@@ -8,6 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+import logging
 from enum import Enum
 
 from datetime import datetime, timedelta
@@ -17,6 +18,8 @@ from openerp.exceptions import Warning
 
 from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from ..mappings.childpool_create_hold_mapping import ReservationToHoldMapping
+
+logger = logging.getLogger(__name__)
 
 
 class HoldType(Enum):
@@ -301,9 +304,9 @@ class CompassionHold(models.Model):
         self.env.cr.commit()
         fail = messages.filtered('failure_reason').mapped('failure_reason')
         if fail:
-            raise Warning(
-                "\n".join(fail)
-            )
+            logger.error("\n".join(fail))
+            # Force hold removal
+            self.hold_released()
 
         return True
 

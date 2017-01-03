@@ -261,6 +261,12 @@ class CompassionChild(models.Model):
             child = super(CompassionChild, self).create(vals)
         return child
 
+    @api.multi
+    def unlink(self):
+        holds = self.mapped('hold_id').filtered(lambda h: h.state == 'active')
+        holds.release_hold()
+        return super(CompassionChild, self).unlink()
+
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
