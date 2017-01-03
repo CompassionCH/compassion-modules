@@ -42,10 +42,13 @@ class Contracts(models.Model):
 
     @api.onchange('child_id')
     def onchange_child_id(self):
-        origin = self.child_id.hold_id.origin_id
+        hold = self.child_id.hold_id
+        origin = hold.origin_id
         if origin:
             self.origin_id = origin
-        if self.child_id.hold_id.comments:
+        if hold.channel and hold.channel == 'web':
+            self.channel = 'internet'
+        if hold.comments:
             return {
                 'warning': {'title': _('The child has some comments'),
                             'message': self.child_id.hold_id.comments}
