@@ -38,6 +38,7 @@
                 <form string="Gift">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,In Progress,Delivered"/>
+                        <button name="action_send" type="object" string="Send Now" class="oe_highlight" states="draft,open"/>
                         <button name="action_verify" type="object" string="To Verify" states="draft,error"/>
                         <button name="action_ok" type="object" string="Gift OK" class="oe_highlight" states="verify"/>
                         <button name="action_cancel" type="object" string="Cancel Gift" help="Will unreconcile the payment" states="draft,verify"/>
@@ -140,6 +141,21 @@
               </p>
             </field>
             <field name="context">{'search_default_not_sent': 1, 'search_default_group_by_date': 1}</field>
+        </record>
+        
+        <!-- Send Gift actions -->
+        <record id="send_gift" model="ir.actions.server">
+            <field name="name">Send Now</field>
+            <field name="model_id" ref="model_sponsorship_gift"/>
+            <field name="state">code</field>
+            <field name="code">self.action_send(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+
+        <record id="send_gifts" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'sponsorship.gift'" name="model"/>
+            <field name="name">Send Now</field>
+            <field eval="'ir.actions.server,%d'%send_gift" name="value"/>
         </record>
 
         <menuitem id="menu_sponsorship_gift" parent="account.menu_finance_receivables" action="action_sponsorship_gift"/>

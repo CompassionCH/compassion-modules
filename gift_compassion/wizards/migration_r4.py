@@ -74,16 +74,14 @@ class MigrationR4(models.TransientModel):
                 'message_id': message.id,
                 'instructions': invl.name.replace('[', '(').replace(']', ')'),
                 'gift_type': gift_type,
+                'gift_date': message.date,
                 'attribution': attribution,
                 'sponsorship_gift_type': sponsorship_gift_type,
                 'state': state,
             }
-            gift = gift_obj.create(gift_vals)
-            message_vals = {
-                'object_id': gift.id,
-                'action_id': action.id
-            }
-            message.write(message_vals)
+            gift_obj.create(gift_vals)
+            # New gift will create new message
+            message.unlink()
 
         # Messages were sent to GMC, only money has to be sent.
         self.env.cr.execute(

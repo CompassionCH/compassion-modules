@@ -434,11 +434,18 @@ class SponsorshipGift(models.Model):
     def action_ok(self):
         self.write({'state': 'draft'})
         self.mapped('message_id').write({'state': 'new'})
+        return True
+
+    @api.multi
+    def action_send(self):
+        self.mapped('message_id').process_messages()
+        return True
 
     @api.multi
     def action_verify(self):
         self.write({'state': 'verify'})
         self.mapped('message_id').write({'state': 'postponed'})
+        return True
 
     @api.multi
     def action_cancel(self):
@@ -466,6 +473,7 @@ class SponsorshipGift(models.Model):
     ##########################################################################
     @api.multi
     def _create_gift_message(self):
+        today = date.today()
         for gift in self:
             # message_center_compassion/models/gmc_messages
             message_obj = self.env['gmc.message.pool']
@@ -481,6 +489,9 @@ class SponsorshipGift(models.Model):
                 'state': 'new' if gift.state != 'verify' else 'postponed',
             }
             gift.message_id = message_obj.create(message_vals)
+            gift_date = fields.Date.from_string(gift.gift_date)
+            if gift.state == 'draft' and gift_date <= today:
+                gift.message_id.process_messages()
 
     @api.multi
     def _gift_delivered(self):
