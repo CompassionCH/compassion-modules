@@ -560,8 +560,8 @@ class SponsorshipGift(models.Model):
     @api.multi
     def _gift_undeliverable(self):
         """ Notify users defined in settings. """
-        notify_ids = self.env['gift.notification.settings'].get_param(
-            'notify_partner_ids')
+        notify_ids = self.env['staff.notification.settings'].get_param(
+            'gift_notify_ids')
         if notify_ids:
             for gift in self:
                 partner = gift.partner_id

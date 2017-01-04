@@ -51,6 +51,7 @@
         'views/compassion_reservation_view.xml',
         'views/field_office_disaster_alert_view.xml',
         'views/res_config_view.xml',
+        'views/notification_settings_view.xml',
         'workflow/child_workflow.xml',
         'data/validity_checks_cron.xml',
         'data/migrate_r4.xml',

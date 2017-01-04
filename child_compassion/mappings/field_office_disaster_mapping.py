@@ -114,7 +114,7 @@ class FieldOfficeDisasterMapping(OnrampMapping):
         'IsCommunicationSensitive': 'is_communication_sensitive',
         'IsEstimatedDamageOverOneMillionUSD':
             'is_estimated_damage_over_one_million_usd',
-        'Disaster_Name': 'disaster_name',
+        'Disaster_Name': 'name',
         'ReportedLossOfLifeBeneficiaries':
             'reported_loss_of_life_beneficiaries',
         'ReportedLossOfLifeCaregivers':
