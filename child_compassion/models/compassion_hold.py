@@ -243,7 +243,9 @@ class CompassionHold(models.Model):
             raise ValueError("No child found")
         vals.update({
             'expiration_date': fields.Datetime.to_string(in_90_days),
-            'state': 'active'
+            'state': 'active',
+            'comments': 'Child was reinstated! Be sure to propose it to its '
+                        'previous sponsor.'
         })
         hold = self.create(vals)
         child = self.env['compassion.child'].browse(child_id)
