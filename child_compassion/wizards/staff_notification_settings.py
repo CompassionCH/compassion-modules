@@ -12,14 +12,14 @@
 from openerp import api, models, fields
 
 
-class GiftNotificationSettings(models.TransientModel):
-    """ Settings configuration for Gift Notifications."""
-    _inherit = 'staff.notification.settings'
+class StaffNotificationSettings(models.TransientModel):
+    """ Settings configuration for any Notifications."""
+    _name = 'staff.notification.settings'
+    _inherit = 'res.config.settings'
 
-    # Users to notify
-    gift_notify_ids = fields.Many2many(
-        'res.partner', 'gift_notification_config', 'config_id', 'partner_id',
-        string='Gift Undeliverable',
+    # Users to notify after Disaster Alert
+    disaster_notify_ids = fields.Many2many(
+        'res.partner', string='Disaster Alert',
         domain=[
             ('user_ids', '!=', False),
             ('user_ids.share', '=', False),
@@ -27,17 +27,22 @@ class GiftNotificationSettings(models.TransientModel):
     )
 
     @api.multi
-    def set_gift_notify_ids(self):
+    def set_disaster_notify_ids(self):
         self.env['ir.config_parameter'].set_param(
-            'gift_compassion.gift_notify_ids',
-            ','.join(map(str, self.gift_notify_ids.ids)))
+            'child_compassion.disaster_notify_ids',
+            ','.join(map(str, self.disaster_notify_ids.ids)))
 
     @api.model
     def get_default_values(self, _fields):
-        res = super(GiftNotificationSettings, self).get_default_values(_fields)
         param_obj = self.env['ir.config_parameter']
+        res = {'notify_partner_ids': False}
         partners = param_obj.get_param(
-            'gift_compassion.gift_notify_ids', False)
+            'child_compassion.disaster_notify_ids', False)
         if partners:
-            res['gift_notify_ids'] = map(int, partners.split(','))
+            res['disaster_notify_ids'] = map(int, partners.split(','))
         return res
+
+    @api.model
+    def get_param(self, param):
+        """ Retrieve a single parameter. """
+        return self.get_default_values([param])[param]

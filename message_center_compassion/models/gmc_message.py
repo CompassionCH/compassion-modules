@@ -141,9 +141,9 @@ class GmcMessagePool(models.Model):
         new_messages.write({'state': 'pending', 'failure_reason': False})
         if self.env.context.get('async_mode', True):
             session = ConnectorSession.from_env(self.env)
-            process_messages_job.delay(session, self._name, self.ids)
+            process_messages_job.delay(session, self._name, new_messages.ids)
         else:
-            self._process_messages()
+            new_messages._process_messages()
         return True
 
     ##########################################################################

@@ -31,8 +31,8 @@ class CompassionProject(models.Model):
 
     # General Information
     #####################
-    icp_id = fields.Char(required=True, oldname='code', readonly=True)
-    name = fields.Char()
+    icp_id = fields.Char(required=True, oldname='code')
+    name = fields.Char(readonly=True)
     child_center_original_name = fields.Char(readonly=True)
     local_church_name = fields.Char(readonly=True)
     local_church_original_name = fields.Char(readonly=True)
@@ -167,7 +167,7 @@ class CompassionProject(models.Model):
     )
     reservation_id = fields.Many2one(
         'compassion.reservation', string='Project Reservation',
-        ondelete='cascade'
+        readonly=True, ondelete='cascade'
     )
     activities_for_parents = fields.Char(readonly=True)
 
@@ -291,7 +291,7 @@ class CompassionProject(models.Model):
     @api.depends('icp_id')
     def _compute_field_office(self):
         fo_obj = self.env['compassion.field.office']
-        for project in self:
+        for project in self.filtered('icp_id'):
             fo = fo_obj.search([('field_office_id', '=', project.icp_id[:2])])
             project.field_office_id = fo.id
 
@@ -302,7 +302,12 @@ class CompassionProject(models.Model):
     @api.depends('lifecycle_ids')
     @api.one
     def _set_suspension_state(self):
-        old_value = self.read(['suspension'])[0]['suspension']
+        if isinstance(self.id, models.NewId):
+            return
+        try:
+            old_value = self.read(['suspension'])[0]['suspension']
+        except IndexError:
+            return
         if self.lifecycle_ids:
             last_info = self.lifecycle_ids[0]
             if last_info.type == 'Suspension':
@@ -381,7 +386,7 @@ class CompassionProject(models.Model):
     @api.model
     def create(self, vals):
         project = super(CompassionProject, self).create(vals)
-        project.update_informations(async_mode=True)
+        project.with_context(async_mode=True).update_informations()
         return project
 
     ##########################################################################
@@ -422,7 +427,7 @@ class CompassionProject(models.Model):
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     @api.multi
-    def update_informations(self, context=None, async_mode=False):
+    def update_informations(self):
         """ Get the most recent informations for selected projects and update
             them accordingly. """
         message_obj = self.env['gmc.message.pool']
@@ -431,9 +436,8 @@ class CompassionProject(models.Model):
             'action_id': action_id,
             'object_id': self.id,
         }
-        message = message_obj.with_context(async_mode=async_mode).create(
-            message_vals)
-        if message.state == 'failure' and not async_mode:
+        message = message_obj.create(message_vals)
+        if message.state == 'failure':
             raise Warning(message.failure_reason)
 
         return True

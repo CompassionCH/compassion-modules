@@ -239,37 +239,40 @@ class CommunicationJob(models.Model):
         partner = self.partner_id
 
         if self.send_mode in ('both', 'digital'):
-            if self.email_to or partner.email:
-                # Send by e-mail
-                email = self.email_id
-                if not email:
-                    email_vals = {
-                        'recipient_ids': [(4, partner.id)],
-                        'communication_config_id': self.config_id.id,
-                        'body_html': self.body_html
-                    }
-                    if self.email_to:
-                        # Replace partner e-mail by specified address
-                        email_vals['email_to'] = self.email_to
-                        del email_vals['recipient_ids']
-                    if 'default_email_vals' in self.env.context:
-                        email_vals.update(
-                            self.env.context['default_email_vals'])
+            # Send by e-mail
+            email = self.email_id
+            if not email:
+                email_vals = {
+                    'recipient_ids': [(4, partner.id)],
+                    'communication_config_id': self.config_id.id,
+                    'body_html': self.body_html
+                }
+                if self.email_to:
+                    # Replace partner e-mail by specified address
+                    email_vals['email_to'] = self.email_to
+                    del email_vals['recipient_ids']
+                if 'default_email_vals' in self.env.context:
+                    email_vals.update(
+                        self.env.context['default_email_vals'])
 
-                    email = self.env['mail.compose.message'].with_context(
-                        lang=partner.lang).create_emails(
-                        self.email_template_id, [self.id], email_vals)
-                    self.email_id = email
+                email = self.env['mail.compose.message'].with_context(
+                    lang=partner.lang).create_emails(
+                    self.email_template_id, [self.id], email_vals)
+                self.email_id = email
 
                 email.send_sendgrid()
                 return 'done' if email.state == 'sent' else 'pending'
 
-        elif self.send_mode == 'physical':
+        if self.send_mode == 'physical':
             # TODO Print letter
             return 'pending'
 
         # A valid path was not found
-        return 'pending'
+        self.message_post(
+            'No valid send mode selected. Partner may not have an e-mail '
+            'address while selected communication is only sent by e-mail.',
+            'Communication not sent')
+        return 'cancel'
 
     @api.model
     def _needaction_domain_get(self):

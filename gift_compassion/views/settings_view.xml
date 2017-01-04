@@ -49,27 +49,13 @@
         
         <record id="view_gift_notification_settings_form" model="ir.ui.view">
             <field name="name">gift.notification.settings.form</field>
-            <field name="model">gift.notification.settings</field>
+            <field name="model">staff.notification.settings</field>
+            <field name="inherit_id" ref="child_compassion.view_notification_settings_form"/>
             <field name="arch" type="xml">
-                <form string="Gift Notification Configuration" class="oe_form_configuration">
-                    <header>
-                        <button string="Apply" type="object" name="execute" class="oe_highlight"/>
-                        or
-                        <button string="Cancel" type="object" name="cancel" class="oe_link"/>
-                    </header>
-                    <group>
-                        <field name="notify_partner_ids" widget="many2many_tags"/>
-                    </group>
-                </form>
+                <field name="disaster_notify_ids" position="after">
+                    <field name="gift_notify_ids" widget="many2many_tags"/>
+                </field>
             </field>
-        </record>
-
-        <record id="open_view_gift_notification_config" model="ir.actions.act_window">
-            <field name="name">Gift Notification Configuration</field>
-            <field name="res_model">gift.notification.settings</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form</field>
-            <field name="target">inline</field>
         </record>
 
         <record id="open_view_gift_threshold_settings" model="ir.actions.act_window">
@@ -80,8 +66,5 @@
         </record>
 
         <menuitem id="menu_gift_configuration" name="Gift Thresholds" parent="child_compassion.menu_configuration" action="open_view_gift_threshold_settings"/>
-
-
-        <menuitem id="menu_gift_notification_configuration" name="Gift Notification" parent="child_compassion.menu_communication_config" action="open_view_gift_notification_config"/>
     </data>
 </openerp>

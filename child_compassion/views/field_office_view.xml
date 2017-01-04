@@ -15,7 +15,7 @@
 							</h1>
 						</div>
 						<div class="oe_right oe_button_box" name="button_box">
-							<button name="update_informations" type="object" string="get info" icon="fa-refresh" class="oe_stat_button"/>
+							<button name="update_informations" type="object" string="get info" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
 						</div>
                         <group>
                             <group>
@@ -57,7 +57,7 @@
                                 <group>
                                     <field name="disaster_alert_ids">
                                         <tree>
-                                            <field name="disaster_name"/>
+                                            <field name="name"/>
                                             <field name="disaster_date"/>
                                             <field name="state"/>
                                             <field name="disaster_type"/>

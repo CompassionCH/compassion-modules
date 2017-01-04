@@ -85,7 +85,7 @@ class ChildDisasterImpact(models.Model):
         if impact.child_id:
             impact.child_id.message_post(
                 "Child was affected by the natural disaster {}".format(
-                    impact.disaster_id.disaster_name),
+                    impact.disaster_id.name),
                 "Disaster Alert"
             )
         return impact
@@ -101,7 +101,6 @@ class DisasterLoss(models.Model):
 class FieldOfficeDisasterAlert(models.Model):
     _name = 'fo.disaster.alert'
     _description = 'Field Office Disaster Alert'
-    _rec_name = 'disaster_name'
     _inherit = 'mail.thread'
     _order = 'disaster_date desc, id desc'
 
@@ -112,7 +111,7 @@ class FieldOfficeDisasterAlert(models.Model):
     area_description = fields.Char()
     close_date = fields.Date()
 
-    disaster_name = fields.Char()
+    name = fields.Char()
     disaster_date = fields.Datetime()
     state = fields.Selection([
         ('Active', 'Active'),
@@ -204,10 +203,31 @@ class FieldOfficeDisasterAlert(models.Model):
         """ Update if disaster already exists. """
         disaster_id = vals.get('disaster_id')
         disaster = self.search([('disaster_id', '=', disaster_id)])
+        # Notify users
+        notify_ids = self.env['staff.notification.settings'].get_param(
+            'disaster_notify_ids')
         if disaster:
             disaster.write(vals)
+            if notify_ids:
+                disaster.message_post(
+                    body="The Disaster Alert was just updated.",
+                    subject="Disaster Alert Update",
+                    partner_ids=notify_ids,
+                    type='comment',
+                    subtype='mail.mt_comment',
+                    content_subtype='plaintext'
+                )
         else:
             disaster = super(FieldOfficeDisasterAlert, self).create(vals)
+            if notify_ids:
+                disaster.message_post(
+                    body="The disaster alert has just been received.",
+                    subject="New Disaster Alert",
+                    partner_ids=notify_ids,
+                    type='comment',
+                    subtype='mail.mt_comment',
+                    content_subtype='plaintext'
+                )
         return disaster
 
     ##########################################################################

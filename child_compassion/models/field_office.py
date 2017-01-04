@@ -64,14 +64,14 @@ class FieldOffice(models.Model):
     @api.model
     def create(self, vals):
         field_office = super(FieldOffice, self).create(vals)
-        field_office.update_informations(async_mode=True)
+        field_office.with_context(async_mode=True).update_informations()
         return field_office
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     @api.multi
-    def update_informations(self, context=None, async_mode=False):
+    def update_informations(self):
         """ Get the most recent informations for selected field offices and
         update them accordingly. """
         message_obj = self.env['gmc.message.pool']
