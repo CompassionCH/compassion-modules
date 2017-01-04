@@ -425,7 +425,10 @@ class CompassionHold(models.Model):
                 subtype='mail.mt_comment',
                 content_subtype='plaintext'
             )
-            hold.write({
+            hold_vals = {
                 'no_money_extension': hold.no_money_extension + 1,
-                'expiration_date': fields.Datetime.to_string(new_hold_date)
-            })
+            }
+            if extension:
+                hold_vals['expiration_date'] = fields.Datetime.to_string(
+                    new_hold_date)
+            hold.write(hold_vals)
