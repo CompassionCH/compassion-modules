@@ -22,6 +22,7 @@
                         <field name="consignment_hold_duration"/>
                         <field name="e_commerce_hold_duration"/>
                         <field name="no_money_hold_duration"/>
+                        <field name="no_money_hold_extension"/>
                         <field name="reinstatement_hold_duration"/>
                         <field name="reservation_duration"/>
                         <field name="reservation_hold_duration"/>
