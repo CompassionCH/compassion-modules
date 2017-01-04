@@ -31,9 +31,6 @@ class RecurringContract(models.Model):
         'SDS state date', readonly=True, copy=False)
     cancel_gifts_on_termination = fields.Boolean(
         'Cancel pending gifts if sponsorship is terminated')
-    project_state = fields.Selection(
-        '_get_project_states', 'Project Status', select=True,
-        readonly=True, track_visibility='onchange')
     color = fields.Integer('Color Index')
     no_sub_reason = fields.Char('No sub reason')
     sds_uid = fields.Many2one(
@@ -48,27 +45,12 @@ class RecurringContract(models.Model):
             ('draft', _('Draft')),
             ('waiting_welcome', _('Waiting welcome')),
             ('active', _('Active')),
-            ('field_memo', _('Field memo')),
             ('sub_waiting', _('Sub waiting')),
             ('sub', _('Sub')),
             ('sub_accept', _('Sub Accept')),
             ('sub_reject', _('Sub Reject')),
             ('no_sub', _('No sub')),
             ('cancelled', _('Cancelled'))
-        ]
-
-    def _get_project_states(self):
-        return [
-            ('active', _('Active')),
-            ('inform_suspended', _('Inform fund suspension')),
-            ('fund-suspended', _('Fund Suspended')),
-            ('inform_reactivation', _('Inform reactivation')),
-            ('inform_extension', _('Inform extension')),
-            ('inform_suspended_reactivation',
-             _('Inform suspended and reactivation')),
-            ('inform_project_terminated', _('Inform project terminated')),
-            ('phase_out', _('Phase out')),
-            ('terminated', _('Terminated'))
         ]
 
     ##########################################################################
@@ -95,14 +77,6 @@ class RecurringContract(models.Model):
         """
         contracts = self.search([('sds_state', '=', value)])
         contracts.signal_workflow('mail_sent')
-        return True
-
-    @api.model
-    def button_project_mail_sent(self, value):
-        """Button in Kanban view calling action on all contracts of one group.
-        """
-        contracts = self.search([('project_state', '=', value)])
-        contracts.signal_workflow('project_mail_sent')
         return True
 
     # CRON Methods
@@ -260,17 +234,16 @@ class RecurringContract(models.Model):
 
     @api.multi
     def contract_cancelled(self):
-        """ Project state is no more relevant when contract is cancelled. """
+        """ Change SDS Follower """
         res = super(RecurringContract, self).contract_cancelled()
-        self.write({'project_state': False, 'sds_uid': self.env.user.id})
+        self.write({'sds_uid': self.env.user.id})
         return res
 
     @api.multi
     def contract_terminated(self):
-        """ Project state is no more relevant when contract is terminated.
-        We also put the person who terminated the contract as follower. """
+        """ Change SDS Follower """
         res = super(RecurringContract, self).contract_terminated()
-        self.write({'project_state': False, 'sds_uid': self.env.user.id})
+        self.write({'sds_uid': self.env.user.id})
         return res
 
     @api.multi
@@ -315,9 +288,5 @@ class RecurringContract(models.Model):
                 '|', ('sds_state', 'in', ('sub_waiting', 'inform_no_sub')),
                 '&', ('sds_state', '=', 'waiting_welcome'),
                 ('color', '=', 4)]
-        if menu == 'menu_follow_project':
-            domain = [
-                ('sds_uid', '=', self.env.user.id),
-                ('project_state', 'like', 'inform')]
 
         return domain

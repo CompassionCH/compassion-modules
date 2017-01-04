@@ -35,10 +35,6 @@ class recurring_contract(models.TransientModel):
             [('sds_state', '=', 'active')]).ids
         draft_contract_ids = contract_obj.search(
             [('sds_state', '=', 'draft')]).ids
-        project_active_contracts_ids = contract_obj.search(
-            [('project_state', '=', 'active')]).ids
-        project_suspended_contracts_ids = contract_obj.search(
-            [('project_state', '=', 'fund-suspended')]).ids
         sub_waiting_contract_ids = contract_obj.search(
             [('sds_state', '=', 'sub_waiting')]).ids
         sub_contract_ids = contract_obj.search(
@@ -52,10 +48,6 @@ class recurring_contract(models.TransientModel):
         self._ins_wkf_items(
             'act_sub_waiting', wkf_id, sub_waiting_contract_ids)
         self._ins_wkf_items('act_sub', wkf_id, sub_contract_ids)
-        self._ins_wkf_items(
-            'act_project_active', wkf_id, project_active_contracts_ids)
-        self._ins_wkf_items(
-            'act_project_suspended', wkf_id, project_suspended_contracts_ids)
 
     def _ins_wkf_items(self, act_id, wkf_id, cont_ids):
         if cont_ids:
@@ -190,37 +182,3 @@ class recurring_contract(models.TransientModel):
 
         return no_sub_ids, sub_ids, sub_accept_ids, sub_reject_ids, \
             sub_waiting_ids
-
-    # Only at module installation
-    @api.model
-    def set_project_state(self):
-        """ Pushes the state of the project to the active contracts. """
-        project_obj = self.env['compassion.project']
-        contract_obj = self.env['recurring.contract']
-        suspended_project_ids = project_obj.search(
-            [('suspension', '=', 'fund-suspended')]).ids
-        suspended_project_contract_ids = contract_obj.search([
-            ('project_id', 'in', suspended_project_ids),
-            ('state', 'not in', ['terminated', 'cancelled'])]).ids
-
-        active_project_ids = project_obj.search([
-            ('status', '=', 'A'),
-            ('id', 'not in', suspended_project_ids)]).ids
-        active_project_contract_ids = contract_obj.search(
-            [('project_id', 'in', active_project_ids),
-             ('state', 'not in', ['terminated', 'cancelled'])]).ids
-
-        cr = self.env.cr
-        if suspended_project_contract_ids:
-            cr.execute(
-                "UPDATE recurring_contract "
-                "SET project_state = 'fund-suspended' "
-                "WHERE id IN ({0})".format(','.join(
-                    [str(id) for id in suspended_project_contract_ids])))
-
-        if active_project_contract_ids:
-            cr.execute(
-                "UPDATE recurring_contract "
-                "SET project_state = 'active' "
-                "WHERE id IN ({0})".format(','.join(
-                    [str(id) for id in active_project_contract_ids])))

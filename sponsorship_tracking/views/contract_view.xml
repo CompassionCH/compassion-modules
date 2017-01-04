@@ -32,7 +32,6 @@
                                         <b><field name="name"/></b>
                                         <div>SDS State : <field name="sds_state"/></div>
                                         <div>State : <field name="state"/></div>
-                                        <div t-if="record.project_state.raw_value">Project : <field name="project_state"/></div>
                                         <div class="oe_kanban_footer_left">
                                             <span>
                                                 <span class="oe_e">N</span>
@@ -45,13 +44,6 @@
                                     </div>
                                     <div class="oe_clear"></div>
                                     <div class="oe_kanban_bottom_right">
-                                        <!-- Project status color indicator -->
-                                        <span t-if="record.project_state.raw_value">
-                                            <span t-if="['active','inform_reactivation','inform_suspended_reactivation'].indexOf(record.project_state.raw_value) !== -1"
-                                                  string="Project active" class="oe_kanban_status oe_kanban_status_green"> </span>
-                                            <span t-if="['active','inform_reactivation','inform_suspended_reactivation'].indexOf(record.project_state.raw_value) === -1"
-                                                  string="Project not active" class="oe_kanban_status oe_kanban_status_red"> </span>
-                                        </span>
                                         <img t-att-src="kanban_image('res.users', 'image_small', record.sds_uid.raw_value)" t-att-title="record.sds_uid.value" width="24" height="24" class="oe_kanban_avatar"/>
                                     </div>
                                     <div class="oe_clear"></div>
@@ -94,11 +86,6 @@
                                 context="{'default_state': 'sub'}"/>
                         <button name="%(action_create_sub_sponsorship)d" type="action" string="No sub" attrs="{'invisible':[('sds_state','!=','sub_waiting')]}"
                                 context="{'default_state': 'no_sub'}"/>
-                        <button 
-                            name="project_mail_sent" 
-                            class="oe_highlight" 
-                            string="Project mail sent" 
-                            attrs="{'invisible':[('project_state','not in',['inform_suspended', 'inform_extension', 'inform_suspended_reactivation', 'inform_reactivation', 'inform_project_terminated'])]}"/>
                         <button name="%(contract_compassion.action_end_contract)d" string="Terminate" states="waiting,mandate,active" type="action"/>
                     </header>
                     <sheet>
@@ -137,7 +124,6 @@
                                 <field name="end_reason" states="terminated,cancelled" readonly="1"/>
                                 <field name="no_sub_reason" attrs="{'invisible': [('sds_state', 'not in', ['inform_no_sub', 'no_sub'])]}"/>
                                 <field name="state" readonly="1"/>
-                                <field name="project_state" readonly="1"/>
                             </group>
                         </group>
                     </sheet>
@@ -167,7 +153,6 @@
                     <field name="end_reason"/>
                     <field name="origin_id"/>
                     <field name="state"/>
-                    <field name="project_state"/>
                     <field name="sds_state"/>
                 </tree>
 			</field>
@@ -191,7 +176,6 @@
                     <field name="partner_codega"/>
                     <field name="sds_state"/>
                     <field name="state"/>
-                    <field name="project_state"/>
                     <field name="sds_uid"/>
                     
                     <filter name="active" string="Active" domain="[('state', '=', 'active')]"/>
@@ -204,7 +188,6 @@
                         <filter string="SDS state date" domain="[]" context="{'group_by':'sds_state_date'}"/>
                         <filter string="Status" domain="[]"  context="{'group_by':'state'}"/>
                         <filter string="SDS Status" domain="[]"  context="{'group_by':'sds_state'}"/>
-                        <filter string="Project Status" domain="[]"  context="{'group_by':'project_state'}"/>
                     </group>
                 </search>
             </field>
@@ -220,16 +203,6 @@
             <field name="context">{'default_type': 'S', 'search_default_user':1, 'count_menu': 'menu_follow_sds'}</field>
             <field name="search_view_id" ref="contract_tracking_filter"/>
         </record>
-
-        <record model="ir.actions.act_window" id="action_follow_project">
-            <field name="name">Project Status</field>
-            <field name="res_model">recurring.contract</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">kanban,tree,form</field>
-            <field name="domain">[('type', 'like', 'S')]</field>
-            <field name="context">{'default_type': 'S', 'group_by': 'project_state', 'search_default_user':1, 'count_menu': 'menu_follow_project'}</field>
-            <field name="search_view_id" ref="contract_tracking_filter"/>
-        </record>
         
         <!-- Select correct kanban, form and tree view -->
         <record model="ir.actions.act_window.view" id="act_follow_contract_kanban1">
@@ -238,23 +211,11 @@
             <field name="view_id" ref="view_follow_contract_kanban_compassion"/>
             <field name="act_window_id" ref="action_follow_sds"/>
         </record>
-        <record model="ir.actions.act_window.view" id="act_follow_contract_kanban3">
-            <field eval="1" name="sequence"/>
-            <field name="view_mode">kanban</field>
-            <field name="view_id" ref="view_follow_contract_kanban_compassion"/>
-            <field name="act_window_id" ref="action_follow_project"/>
-        </record>
         <record model="ir.actions.act_window.view" id="act_follow_contract_tree1">
             <field eval="2" name="sequence"/>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="view_follow_contract_tree_compassion"/>
             <field name="act_window_id" ref="action_follow_sds"/>
-        </record>
-        <record model="ir.actions.act_window.view" id="act_follow_contract_tree3">
-            <field eval="2" name="sequence"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="view_follow_contract_tree_compassion"/>
-            <field name="act_window_id" ref="action_follow_project"/>
         </record>
 
         <record model="ir.actions.act_window.view" id="act_follow_contract_form1">
@@ -263,19 +224,11 @@
             <field name="view_id" ref="view_follow_contract_form_compassion"/>
             <field name="act_window_id" ref="action_follow_sds"/>
         </record>
-        <record model="ir.actions.act_window.view" id="act_follow_contract_form3">
-            <field eval="3" name="sequence"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="view_follow_contract_form_compassion"/>
-            <field name="act_window_id" ref="action_follow_project"/>
-        </record>
 
         <!-- Menu Items -->
         <menuitem id="menu_tracking" parent="child_compassion.menu_sponsorship_root"
                   name="Track sponsorships" sequence="5"/>
         <menuitem action="action_follow_sds" id="menu_follow_sds" parent="menu_tracking"
                   name="Welcome / SUB" sequence="2" groups="child_compassion.group_sponsorship"/>
-        <menuitem action="action_follow_project" id="menu_follow_project" parent="menu_tracking"
-                  name="Project Status" sequence="3"/>
 	</data>
 </openerp>

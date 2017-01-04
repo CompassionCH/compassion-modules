@@ -40,7 +40,6 @@
         'views/contract_view.xml',
         'views/sponsorship_tracking.xml',
         'workflow/sds_workflow.xml',
-        'workflow/project_workflow.xml',
         'data/contract_cron.xml',
         'data/install.xml',
         ],
