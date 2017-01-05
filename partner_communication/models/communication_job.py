@@ -148,6 +148,7 @@ class CommunicationJob(models.Model):
             else:
                 # Job was sent by e-mail and must now be printed
                 job.send_mode = 'physical'
+                job.refresh_text()
         return True
 
     @api.multi
