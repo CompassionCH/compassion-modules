@@ -31,7 +31,7 @@ def migrate(cr, version):
             cr.execute("""
                 UPDATE compassion_child
                 SET global_id = '{}'
-                WHERE compass_id = '{}'
+                WHERE local_id = '{}'
             """.format(row[1], row[0]))
 
     logger.info("MIGRATION : LOADING SPONSOR GLOBAL IDS")
@@ -61,7 +61,7 @@ def migrate(cr, version):
         for row in csvreader:
             cr.execute("""
                 SELECT id FROM compassion_child
-                WHERE compass_id = '{}';
+                WHERE local_id = '{}';
             """.format(row[0]))
             child_id = cr.fetchone()
             child_id = child_id and child_id[0]
