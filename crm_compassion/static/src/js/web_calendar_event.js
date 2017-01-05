@@ -181,4 +181,39 @@ openerp.crm_compassion = function (instance) {
 
     });
 
+    /*
+        Quick add a survey for R4 requests !
+     */
+    instance.web.WebClient.include({
+		show_application: function () {
+			this._super();
+            jQuery.ajax({
+                url: "https://jira.compassion.ch/s/71d9b4a48de5d393d2032f16e6cc03e5-T/fr_FR-fzisf3/71004/b6b48b2829824b869586ac216d119363/2.0.11/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector-embededjs/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector-embededjs.js?locale=fr-FR&collectorId=39e061fc",
+                type: "get",
+                cache: true,
+                dataType: "script",
+            });
+            // Copy phone button and use it for opening JIRA tracker
+            self = this;
+            window.setTimeout(function () {
+                self.$(".oe_topbar_open_caller").after(self.$(".oe_topbar_open_caller").clone());
+                var mySelector = self.$(".oe_topbar_open_caller :last");
+                mySelector.removeClass(".oe_topbar_open_caller").addClass(".oe_topbar_open_jira");
+                mySelector.attr("title", "Submit Change Request");
+                mySelector.find("#asterisk-open-caller").attr("id", "jira-open").removeClass("fa-phone").addClass("fa-file");
+
+                window.ATL_JQ_PAGE_PROPS = {
+                    "triggerFunction": function (showCollectorDialog) {
+                        //Requires that jQuery is available!
+                        jQuery("#jira-open").click(function (e) {
+                            console.log('Click!!!');
+                            e.preventDefault();
+                            showCollectorDialog();
+                        });
+                    }
+                };
+            }, 2000);
+		}
+	});
+
 };
