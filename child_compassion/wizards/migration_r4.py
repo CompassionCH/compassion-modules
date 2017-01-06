@@ -9,11 +9,15 @@
 #
 ##############################################################################
 
+import os
+import csv
 import logging
 from openerp import models, api
 
 
 logger = logging.getLogger(__name__)
+
+IMPORT_DIR = os.path.join(os.path.dirname(__file__)) + '/../data/'
 
 
 class MigrationR4(models.TransientModel):
@@ -38,16 +42,20 @@ class MigrationR4(models.TransientModel):
         logger.info("MIGRATION : Putting hold on available children")
         hold_vals = {
             'type': 'Consignment Hold',
-            'comments': 'Pre-R4 Allocated children hold',
-            'source_code': 'Please update hold_id once known',
-            'expiration_date': '2017-03-01',
+            'expiration_date': '2017-03-19 13:00:00',
+            'state': 'active',
+            'source_code': 'R4 freeze hold',
         }
-        available_children = self.env['compassion.child'].search([
-            ('state', 'in', ['N', 'I', 'W']),
-            ('global_id', '!=', False)
-        ])
-        for child in available_children:
-            hold_vals['child_id'] = child.id
-            hold_vals['hold_id'] = child.local_id
-            hold_id = self.env['compassion.hold'].create(hold_vals).id
-            available_children.write({'hold_id': hold_id})
+        child_obj = self.env['compassion.child']
+        hold_obj = self.env['compassion.hold']
+        logger.info(IMPORT_DIR + 'ch_children_hold.csv')
+        with open(IMPORT_DIR + 'ch_children_hold.csv', 'rb') as csvfile:
+            csvreader = csv.reader(csvfile)
+            # Skip header
+            csvreader.next()
+            for row in csvreader:
+                child = child_obj.search([('code', '=', row[0])])
+                if child:
+                    hold_vals['child_id'] = child.id
+                    hold_vals['hold_id'] = row[1]
+                    child.hold_id = hold_obj.create(hold_vals)
