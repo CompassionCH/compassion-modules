@@ -89,7 +89,7 @@
         'data/ir.advanced.translation.csv',
     ],
     'demo': [
-        'demo/compassion.child.csv'
+        # 'demo/compassion.child.csv'
     ],
     'installable': True,
     'auto_install': False,

@@ -163,6 +163,8 @@ class ProjectDescription(models.TransientModel):
         if the value is not set.
         """
         if value:
-            field.text = str(value)
+            if not isinstance(value, basestring):
+                value = str(value)
+            field.text = value
         else:
             container.remove()
