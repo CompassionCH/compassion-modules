@@ -104,8 +104,10 @@ class AdvancedTranslatable(models.AbstractModel):
                 for field_traversal in field_path:
                     raw_value = getattr(raw_value, field_traversal, False)
                 if raw_value:
+                    val = False
                     if definition['type'] in ('char', 'text') or isinstance(
-                            raw_value, basestring):
+                            raw_value, basestring) and definition['type'] !=\
+                            'selection':
                         val = _(raw_value)
                     elif definition['type'] == 'selection':
                         val = _(dict(definition['selection'])[raw_value])

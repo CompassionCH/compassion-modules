@@ -287,7 +287,7 @@ class ChildDescription(models.TransientModel):
         if not household.father_living_with_child:
             f_alive = desc('.father').children('.is_alive')
             f_alive[0].text = _('Father alive')
-            f_alive[1].text = _('Yes') if household.father_alive else _('No')
+            f_alive[1].text = household.translate('father_alive')
         else:
             desc('.father').remove()
         self._job(desc('.father_job'), 'father')
@@ -295,15 +295,21 @@ class ChildDescription(models.TransientModel):
         if not household.mother_living_with_child:
             m_alive = desc('.mother').children('.is_alive')
             m_alive[0].text = _('Mother alive')
-            m_alive[1].text = _('Yes') if household.mother_alive else _('No')
+            m_alive[1].text = household.translate('mother_alive')
         else:
             desc('.mother').remove()
         self._job(desc('.mother_job'), 'mother')
 
-        desc('.brothers')[0].text = _("Number of brothers")
-        desc('.brothers')[1].text = str(household.nb_brothers)
-        desc('.sisters')[0].text = _("Number of sisters")
-        desc('.sisters')[1].text = str(household.nb_sisters)
+        if household.nb_brothers:
+            desc('.brothers')[0].text = _("Number of brothers")
+            desc('.brothers')[1].text = str(household.nb_brothers)
+        else:
+            desc('.brothers').remove()
+        if household.nb_sisters:
+            desc('.sisters')[0].text = _("Number of sisters")
+            desc('.sisters')[1].text = str(household.nb_sisters)
+        else:
+            desc('.sisters').remove()
 
         # 3. Schooling
         ##############
@@ -415,10 +421,10 @@ class ChildDescription(models.TransientModel):
                     + '.'
         elif father_with_child:
             live_with += _('with') + ' ' + self.his(
-                self._gender('M'), PLURAL, DATIVE) + ' ' + _('father') + '.'
+                self._gender('M'), tense=DATIVE) + ' ' + _('father') + '.'
         elif mother_with_child:
             live_with += _('with') + ' ' + self.his(
-                self._gender('F'), PLURAL, DATIVE) + ' ' + _('mother') + '.'
+                self._gender('F'), tense=DATIVE) + ' ' + _('mother') + '.'
         elif youth:
             live_with += _('in a youth headed house.')
         else:
@@ -448,7 +454,7 @@ class ChildDescription(models.TransientModel):
         f_job_type[1].text = household.translate(job_type_field)
 
         if job_type == 'Not Employed' or not job:
-            desc[0].clear()
+            desc.remove()
         else:
             f_job = desc.children('.job')
             f_job[0].text = job_label
