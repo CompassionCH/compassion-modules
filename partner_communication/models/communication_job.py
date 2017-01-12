@@ -68,6 +68,7 @@ class CommunicationJob(models.Model):
     body_html = fields.Html(
         compute='_compute_html', inverse='_inverse_generation',
         store=True)
+    subject = fields.Char(compute='_compute_subject')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -88,6 +89,13 @@ class CommunicationJob(models.Model):
                 job.body_html = self.env['mail.compose.message'].with_context(
                     lang=job.partner_id.lang).get_generated_html(
                     job.email_template_id, [job.id])
+
+    @api.multi
+    def _compute_subject(self):
+        for job in self:
+            job.subject = self.env['mail.compose.message'].with_context(
+                lang=job.partner_id.lang).get_generated_subject(
+                job.email_template_id, [job.id])
 
     @api.multi
     def _inverse_generation(self):
