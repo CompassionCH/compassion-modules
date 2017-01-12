@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
-		<record id="view_child_compassion_tree" model="ir.ui.view">
-			<field name="name">child.compassion.tree.inherit</field>
-			<field name="model">compassion.child</field>
-			<field name="inherit_id" ref="child_compassion.view_compassion_child_tree"/>
-			<field eval="18" name="priority"/>
-			<field name="arch" type="xml">
-                <field name="date" position="after">
-                    <field name="unsponsored_since"/>
-                </field>
-			</field>
-		</record>
-		
 		<record id="view_child_compassion_form" model="ir.ui.view">
 			<field name="name">child.compassion.form.inherit</field>
 			<field name="model">compassion.child</field>
