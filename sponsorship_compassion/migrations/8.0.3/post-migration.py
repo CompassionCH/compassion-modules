@@ -84,3 +84,9 @@ def migrate(cr, version):
     cr.execute("""
     UPDATE res_partner SET preferred_name = COALESCE(firstname, name)
     """)
+
+    # Update CODEGA sequence which will now be used for new contact references
+    cr.execute("UPDATE res_partner SET ref = 0 WHERE ref = 'false'")
+    cr.execute("SELECT max(cast(ref as int) + 1) FROM res_partner")
+    max_val = cr.fetchone()[0]
+    cr.execute("ALTER SEQUENCE ir_sequence_279 RESTART WITH " + str(max_val))
