@@ -88,7 +88,7 @@ class generate_gift_wizard(models.TransientModel):
                             'journal_id': journal_id,
                             'date_invoice': invoice_date,
                             'payment_term': contract.payment_term_id.id,
-                            'bvr_reference': self._generate_bvr_reference(
+                            'bvr_reference': self.generate_bvr_reference(
                                 contract, self.product_id),
                             'recurring_invoicer_id': self.env.context.get(
                                 'recurring_invoicer_id', False)
@@ -140,9 +140,8 @@ class generate_gift_wizard(models.TransientModel):
 
         return inv_line_data
 
-    @api.multi
-    def _generate_bvr_reference(self, contract, product):
-        self.ensure_one()
+    @api.model
+    def generate_bvr_reference(self, contract, product):
         ref = contract.partner_id.ref
         bvr_reference = '0' * (9 + (7 - len(ref))) + ref
         num_pol_ga = str(contract.num_pol_ga)
