@@ -34,36 +34,20 @@ class EmailComposeMessage(models.TransientModel):
         return emails
 
     @api.model
-    def get_generated_html(self, template, res_ids):
-        """ Helper to generate a new e-mail given a template and objects.
+    def get_generated_fields(self, template, res_ids):
+        """ Helper to retrieve generated html given a template and objects.
 
         :param int template: email.template record
         :param res_ids: ids of the resource objects
         :return: html code generated for the e-mail (list if len(res_ids)>1)
         """
         all_mail_values = self._get_mail_values(template, res_ids)
-        email_bodies = list()
+        email_fields = list()
         for res_id in res_ids:
-            email_bodies.append(all_mail_values[res_id]['body_html'])
-        if len(email_bodies) == 1:
-            email_bodies = email_bodies[0]
-        return email_bodies
-
-    @api.model
-    def get_generated_subject(self, template, res_ids):
-        """ Helper to get the generated subject of an e-mail template.
-
-        :param int template: email.template record
-        :param res_ids: ids of the resource objects
-        :return: html code generated for the e-mail (list if len(res_ids)>1)
-        """
-        all_mail_values = self._get_mail_values(template, res_ids)
-        email_bodies = list()
-        for res_id in res_ids:
-            email_bodies.append(all_mail_values[res_id]['subject'])
-        if len(email_bodies) == 1:
-            email_bodies = email_bodies[0]
-        return email_bodies
+            email_fields.append(all_mail_values[res_id])
+        if len(email_fields) == 1:
+            email_fields = email_fields[0]
+        return email_fields
 
     def _get_mail_values(self, template, res_ids):
         """ Helper to get e-mail values given a template and objects.

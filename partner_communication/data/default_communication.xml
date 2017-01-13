@@ -1,0 +1,10 @@
+<openerp>
+    <data>
+        <record id="default_communication" model="partner.communication.config">
+            <field name="name">Default communication</field>
+            <field name="model_id" ref="model_res_partner"/>
+            <field name="send_mode">partner_preference</field>
+            <field name="send_mode_pref_field">global_communication_delivery_preference</field>
+        </record>
+    </data>
+</openerp>
