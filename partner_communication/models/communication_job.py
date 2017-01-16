@@ -39,7 +39,7 @@ class CommunicationJob(models.Model):
     config_id = fields.Many2one(
         'partner.communication.config', 'Type', required=True, readonly=True,
         default=lambda s: s.env.ref(
-                'partner_communication.default_communication').id,
+                'partner_communication.default_communication'),
     )
     partner_id = fields.Many2one(
         'res.partner', 'Send to', required=True,
@@ -65,7 +65,8 @@ class CommunicationJob(models.Model):
     email_template_id = fields.Many2one(
         related='config_id.email_template_id', store=True)
     report_id = fields.Many2one(related='config_id.report_id', store=True)
-    user_id = fields.Many2one('res.users', 'From', default=lambda s: s.env.uid)
+    user_id = fields.Many2one(
+        'res.users', 'From', default=lambda s: s.env.user)
     email_to = fields.Char(
         help='optional e-mail address to override recipient')
     email_id = fields.Many2one('mail.mail', 'Generated e-mail')
@@ -74,6 +75,7 @@ class CommunicationJob(models.Model):
 
     body_html = fields.Html()
     subject = fields.Char()
+    attachment_ids = fields.Many2many('ir.attachment', string="Attachments")
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -112,8 +114,11 @@ class CommunicationJob(models.Model):
         if not job.body_html:
             job.refresh_text()
 
+        send_mode = job.config_id.get_inform_mode(job.partner_id)
+        if 'send_mode' not in vals:
+            job.send_mode = send_mode[0]
         if 'auto_send' not in vals:
-            job.auto_send = job.config_id.get_inform_mode(job.partner_id)[1]
+            job.auto_send = send_mode[1]
         if job.auto_send:
             job.send()
         return job
@@ -124,6 +129,7 @@ class CommunicationJob(models.Model):
     @api.multi
     def send(self):
         """ Executes the job. """
+        self._get_attachments()
         for job in self.filtered(lambda j: j.send_mode in ('both', 'digital')):
             state = job._send_mail()
             if job.send_mode != 'both':
@@ -256,6 +262,7 @@ class CommunicationJob(models.Model):
                 'communication_config_id': self.config_id.id,
                 'body_html': self.body_html,
                 'subject': self.subject,
+                'attachment_ids': [(6, 0, self.attachment_ids.ids)]
             }
             if self.email_to:
                 # Replace partner e-mail by specified address
@@ -284,6 +291,26 @@ class CommunicationJob(models.Model):
             job.partner_id.message_post(
                 job.body_html, job.subject)
         return pdf
+
+    def _get_attachments(self):
+        """
+        Generates attachments for the communication and link them to the
+        communication record.
+        """
+        attachment_obj = self.env['ir.attachment']
+        for job in self.with_context(must_skip_send_to_printer=True):
+            attachments = attachment_obj
+            binaries = getattr(
+                job, job.config_id.attachments_function, dict())()
+            for name, binary in binaries.iteritems():
+                attachments += attachment_obj.create({
+                    'res_model': self._name,
+                    'res_is': job.id,
+                    'datas': binary,
+                    'datas_fname': name,
+                    'name': name
+                })
+            job.attachment_ids = attachments
 
     @api.model
     def _needaction_domain_get(self):

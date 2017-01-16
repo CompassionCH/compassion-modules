@@ -12,6 +12,7 @@
                                 <field name="send_mode"/>
                                 <field name="send_mode_pref_field"/>
                                 <field name="print_if_not_email"/>
+                                <field name="attachments_function"/>
                             </group>
                             <group>
                                 <field name="user_id"/>
