@@ -13,6 +13,7 @@ import logging
 from openerp import api, models, fields, _, http
 from openerp.addons.base_phone.controller import BasePhoneController
 
+from openerp.exceptions import Warning
 
 logger = logging.getLogger(__name__)
 
@@ -35,9 +36,14 @@ class CommunicationJob(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    config_id = fields.Many2one('partner.communication.config',
-                                'Type', required=True)
-    partner_id = fields.Many2one('res.partner', 'Send to', required=True)
+    config_id = fields.Many2one(
+        'partner.communication.config', 'Type', required=True, readonly=True,
+        default=lambda s: s.env.ref(
+                'partner_communication.default_communication').id,
+    )
+    partner_id = fields.Many2one(
+        'res.partner', 'Send to', required=True,
+        domain=[('opt_out', '=', False)])
     partner_phone = fields.Char(related='partner_id.phone')
     partner_mobile = fields.Char(related='partner_id.mobile')
     object_ids = fields.Char('Resource ids', required=True)
@@ -55,44 +61,19 @@ class CommunicationJob(models.Model):
     send_mode = fields.Selection([
         ('digital', 'By e-mail'), ('physical', 'Print report'),
         ('both', 'Both')
-    ], compute='_compute_send_mode', inverse='_inverse_generation', store=True)
+    ])
     email_template_id = fields.Many2one(
         related='config_id.email_template_id', store=True)
     report_id = fields.Many2one(related='config_id.report_id', store=True)
+    user_id = fields.Many2one('res.users', 'From', default=lambda s: s.env.uid)
     email_to = fields.Char(
         help='optional e-mail address to override recipient')
     email_id = fields.Many2one('mail.mail', 'Generated e-mail')
     generated_document = fields.Many2one('ir.attachment')
     phonecall_id = fields.Many2one('crm.phonecall', 'Phonecall log')
 
-    body_html = fields.Html(
-        compute='_compute_html', inverse='_inverse_generation',
-        store=True)
-
-    ##########################################################################
-    #                             FIELDS METHODS                             #
-    ##########################################################################
-    @api.depends('partner_id', 'config_id')
-    @api.multi
-    def _compute_send_mode(self):
-        for job in self:
-            if job.config_id:
-                job.send_mode = job.config_id.get_inform_mode(
-                    job.partner_id)[0]
-
-    @api.depends('object_ids', 'config_id')
-    @api.multi
-    def _compute_html(self):
-        for job in self:
-            if job.email_template_id:
-                job.body_html = self.env['mail.compose.message'].with_context(
-                    lang=job.partner_id.lang).get_generated_html(
-                    job.email_template_id, [job.id])
-
-    @api.multi
-    def _inverse_generation(self):
-        # Allow to write on computed field
-        return True
+    body_html = fields.Html()
+    subject = fields.Char()
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -108,8 +89,10 @@ class CommunicationJob(models.Model):
         object_ids = vals.get('object_ids')
         if isinstance(object_ids, list):
             vals['object_ids'] = ','.join(map(str, object_ids))
-        else:
+        elif object_ids:
             vals['object_ids'] = str(object_ids)
+        else:
+            vals['object_ids'] = str(vals['partner_id'])
 
         job = self.search([
             ('partner_id', '=', vals.get('partner_id')),
@@ -123,9 +106,12 @@ class CommunicationJob(models.Model):
 
         partner = self.env['res.partner'].browse([vals['partner_id']])
         if partner.opt_out:
-            return False
+            return self
 
         job = super(CommunicationJob, self).create(vals)
+        if not job.body_html:
+            job.refresh_text()
+
         if 'auto_send' not in vals:
             job.auto_send = job.config_id.get_inform_mode(job.partner_id)[1]
         if job.auto_send:
@@ -138,8 +124,8 @@ class CommunicationJob(models.Model):
     @api.multi
     def send(self):
         """ Executes the job. """
-        for job in self:
-            state = job._inform_sponsor()
+        for job in self.filtered(lambda j: j.send_mode in ('both', 'digital')):
+            state = job._send_mail()
             if job.send_mode != 'both':
                 job.write({
                     'state': state,
@@ -149,6 +135,16 @@ class CommunicationJob(models.Model):
                 # Job was sent by e-mail and must now be printed
                 job.send_mode = 'physical'
                 job.refresh_text()
+
+        # Commit after sending by e-mail
+        self.env.cr.commit()
+        to_print = self.filtered(lambda j: j.send_mode == 'physical')
+        if to_print:
+            to_print.write({
+                'state': 'done',
+                'sent_date': fields.Datetime.now()
+            })
+            return to_print._print_report()
         return True
 
     @api.multi
@@ -166,7 +162,20 @@ class CommunicationJob(models.Model):
 
     @api.multi
     def refresh_text(self):
-        self._compute_html()
+        for job in self:
+            if job.email_template_id and job.object_ids:
+                fields = self.env['mail.compose.message'].with_context(
+                    lang=job.partner_id.lang).get_generated_fields(
+                    job.email_template_id, [job.id])
+                job.write({
+                    'body_html': fields['body_html'],
+                    'subject': fields['subject'],
+                })
+
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        if self.config_id and self.partner_id:
+            self.send_mode = self.config_id.get_inform_mode(self.partner_id)[0]
 
     @api.multi
     def open_related(self):
@@ -231,49 +240,50 @@ class CommunicationJob(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    def _inform_sponsor(self):
-        """ Sends a communication to the sponsor based on the configuration.
-        Returns the state of the job.
-        Can accept email_vals in context value 'default_email_vals'
+    def _send_mail(self):
+        """
+        Called for sending the communication by e-mail.
+        :return: state of the communication depending if the e-mail was
+                 successfully sent or not.
         """
         self.ensure_one()
         partner = self.partner_id
+        # Send by e-mail
+        email = self.email_id
+        if not email:
+            email_vals = {
+                'recipient_ids': [(4, partner.id)],
+                'communication_config_id': self.config_id.id,
+                'body_html': self.body_html,
+                'subject': self.subject,
+            }
+            if self.email_to:
+                # Replace partner e-mail by specified address
+                email_vals['email_to'] = self.email_to
+                del email_vals['recipient_ids']
+            if 'default_email_vals' in self.env.context:
+                email_vals.update(
+                    self.env.context['default_email_vals'])
 
-        if self.send_mode in ('both', 'digital'):
-            # Send by e-mail
-            email = self.email_id
-            if not email:
-                email_vals = {
-                    'recipient_ids': [(4, partner.id)],
-                    'communication_config_id': self.config_id.id,
-                    'body_html': self.body_html
-                }
-                if self.email_to:
-                    # Replace partner e-mail by specified address
-                    email_vals['email_to'] = self.email_to
-                    del email_vals['recipient_ids']
-                if 'default_email_vals' in self.env.context:
-                    email_vals.update(
-                        self.env.context['default_email_vals'])
+            email = self.env['mail.compose.message'].with_context(
+                lang=partner.lang).create_emails(
+                self.email_template_id, [self.id], email_vals)
+            self.email_id = email
+            email.send_sendgrid()
 
-                email = self.env['mail.compose.message'].with_context(
-                    lang=partner.lang).create_emails(
-                    self.email_template_id, [self.id], email_vals)
-                self.email_id = email
+        return 'done' if email.state == 'sent' else 'pending'
 
-                email.send_sendgrid()
-                return 'done' if email.state == 'sent' else 'pending'
-
-        if self.send_mode == 'physical':
-            # TODO Print letter
-            return 'pending'
-
-        # A valid path was not found
-        self.message_post(
-            'No valid send mode selected. Partner may not have an e-mail '
-            'address while selected communication is only sent by e-mail.',
-            'Communication not sent')
-        return 'cancel'
+    def _print_report(self):
+        report_names = self.mapped('report_id.report_name')
+        if len(report_names) > 1:
+            raise Warning(
+                _("You can only print one report type at a time")
+            )
+        pdf = self.env['report'].get_action(self, report_names[0])
+        for job in self:
+            job.partner_id.message_post(
+                job.body_html, job.subject)
+        return pdf
 
     @api.model
     def _needaction_domain_get(self):

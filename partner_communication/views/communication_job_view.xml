@@ -19,6 +19,7 @@
                         <group>
                             <group>
                                 <field name="config_id"/>
+                                <field name="user_id"/>
                                 <field name="partner_id"/>
                                 <field name="partner_phone" widget="phone_communication"/>
                                 <field name="partner_mobile" widget="phone_communication"/>
@@ -26,19 +27,20 @@
                                 <field name="auto_send"/>
                             </group>
                             <group>
-                                <field name="email_template_id"/>
+                                <field name="email_template_id" readonly="1"/>
                                 <field name="report_id"/>
                                 <field name="email_to"/>
                             </group>
                         </group>
                         <group>
+                            <field name="subject"/>
                             <field name="body_html"/>
                         </group>
                         <group>
-                            <field name="sent_date"/>
-                            <field name="email_id"/>
-                            <field name="generated_document"/>
-                            <field name="phonecall_id"/>
+                            <field name="sent_date" readonly="1"/>
+                            <field name="email_id" readonly="1"/>
+                            <field name="generated_document" readonly="1"/>
+                            <field name="phonecall_id" readonly="1"/>
                         </group>
                     </sheet>
                     <div class="oe_chatter">
@@ -54,7 +56,7 @@
             <field name="name">communication.job.tree</field>
             <field name="model">partner.communication.job</field>
             <field name="arch" type="xml">
-                <tree colors="blue:state=='pending';grey:state=='done';red:state=='cancel'" create="false">
+                <tree colors="blue:state=='pending';grey:state=='done';red:state=='cancel'">
                     <field name="date"/>
                     <field name="config_id"/>
                     <field name="partner_id"/>

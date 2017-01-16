@@ -41,6 +41,7 @@
         'views/communication_job_view.xml',
         'views/communication_config_view.xml',
         'views/call_wizard_view.xml',
+        'data/default_communication.xml'
     ],
     'demo': [],
     'installable': True,
