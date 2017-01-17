@@ -17,6 +17,8 @@ import base64
 from copy import deepcopy
 from math import ceil
 
+ONE_INCH = 25.4
+
 
 class report_dynamic_label(report_sxw.rml_parse):
     def __init__(self, cr, uid, name, context):
@@ -112,8 +114,18 @@ class report_dynamic_label(report_sxw.rml_parse):
                     cur_row = 0
         return result
 
-    def barcode(self, type, value, width=600, height=100, humanreadable=0):
-        width, height = int(width), int(height)
+    def barcode(self, type, value, width=20, height=20, humanreadable=0,
+                dpi=144):
+        """
+        Creates a barcode picture for the report
+        :param type: type of barcode ('QR' or '??')
+        :param value: text of the barcode
+        :param width: in millimeters
+        :param height: in millimeters
+        :param humanreadable:
+        :return: base64 encoded picture
+        """
+        width, height = int(dpi*width/ONE_INCH), int(dpi*height/ONE_INCH)
         humanreadable = bool(humanreadable)
         barcode_obj = createBarcodeDrawing(
             type, value=value, format='png', width=width, height=height,

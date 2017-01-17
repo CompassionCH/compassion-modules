@@ -50,6 +50,14 @@ class CommunicationConfig(models.Model):
         'ir.actions.report.xml', 'Letter template',
         domain=[('model', '=', 'partner.communication.job')]
     )
+    attachments_function = fields.Char(
+        help='Define a function in the communication_job model that will '
+        'return all the attachment information for the communication in a '
+        'dict of following format: {attach_name: [report_name, b64_data]}'
+        'where attach_name is the name of the file generated,'
+        'report_name is the name of the report used for printing,'
+        'b64_data is the binary of the attachment'
+    )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -82,6 +90,16 @@ class CommunicationConfig(models.Model):
                 raise ValidationError(
                     "Attached report templates should be linked to "
                     "partner.communication.job objects!"
+                )
+
+    @api.constrains('attachments_function')
+    def _validate_attachment_function(self):
+        job_obj = self.env['partner.communication.job']
+        for config in self.filtered('attachments_function'):
+            if not hasattr(job_obj, config.attachments_function):
+                raise ValidationError(
+                    "partner.communication.job has no function called " +
+                    config.attachments_function
                 )
 
     def _get_send_mode(self):
