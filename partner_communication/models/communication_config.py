@@ -52,8 +52,11 @@ class CommunicationConfig(models.Model):
     )
     attachments_function = fields.Char(
         help='Define a function in the communication_job model that will '
-        'return all the attachment binaries for the communication in a '
-        'dict of following format: {attach_name: b64_data}'
+        'return all the attachment information for the communication in a '
+        'dict of following format: {attach_name: [report_name, b64_data]}'
+        'where attach_name is the name of the file generated,'
+        'report_name is the name of the report used for printing,'
+        'b64_data is the binary of the attachment'
     )
 
     ##########################################################################

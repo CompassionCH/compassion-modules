@@ -40,6 +40,7 @@ class label_print(models.Model):
         for label in self:
             label.is_barcode = bool(label.field_ids.filtered(
                 lambda f: f.type == 'barcode'))
+
     @api.depends('fields_ids', 'fields_ids.type')
     def onchange_image(self):
         for label in self:

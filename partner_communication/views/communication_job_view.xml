@@ -39,8 +39,7 @@
                         <group>
                             <field name="sent_date" readonly="1"/>
                             <field name="email_id" readonly="1"/>
-                            <field name="generated_document" readonly="1"/>
-                            <field name="attachment_ids" readonly="1"/>
+                            <field name="ir_attachment_ids" readonly="1"/>
                             <field name="phonecall_id" readonly="1"/>
                         </group>
                     </sheet>

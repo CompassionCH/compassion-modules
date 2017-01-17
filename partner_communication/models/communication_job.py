@@ -13,8 +13,6 @@ import logging
 from openerp import api, models, fields, _, http
 from openerp.addons.base_phone.controller import BasePhoneController
 
-from openerp.exceptions import Warning
-
 logger = logging.getLogger(__name__)
 
 
@@ -70,12 +68,19 @@ class CommunicationJob(models.Model):
     email_to = fields.Char(
         help='optional e-mail address to override recipient')
     email_id = fields.Many2one('mail.mail', 'Generated e-mail')
-    generated_document = fields.Many2one('ir.attachment')
     phonecall_id = fields.Many2one('crm.phonecall', 'Phonecall log')
 
     body_html = fields.Html()
     subject = fields.Char()
-    attachment_ids = fields.Many2many('ir.attachment', string="Attachments")
+    attachment_ids = fields.One2many(
+        'partner.communication.attachment', 'communication_id',
+        string="Attachments")
+    ir_attachment_ids = fields.Many2many(
+        'ir.attachment', compute='_compute_ir_attachments')
+
+    def _compute_ir_attachments(self):
+        for job in self:
+            job.ir_attachment_ids = job.mapped('attachment_ids.attachment_id')
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -111,6 +116,7 @@ class CommunicationJob(models.Model):
             return self
 
         job = super(CommunicationJob, self).create(vals)
+        job.set_attachments()
         if not job.body_html:
             job.refresh_text()
 
@@ -129,7 +135,6 @@ class CommunicationJob(models.Model):
     @api.multi
     def send(self):
         """ Executes the job. """
-        self._get_attachments()
         for job in self.filtered(lambda j: j.send_mode in ('both', 'digital')):
             state = job._send_mail()
             if job.send_mode != 'both':
@@ -163,7 +168,6 @@ class CommunicationJob(models.Model):
             'state': 'pending',
             'date_sent': False,
             'email_id': False,
-            'generated_document': False
         })
 
     @api.multi
@@ -243,6 +247,26 @@ class CommunicationJob(models.Model):
         object_ids = map(int, self.object_ids.split(','))
         return self.env[self.config_id.model].browse(object_ids)
 
+    @api.multi
+    def set_attachments(self):
+        """
+        Generates attachments for the communication and link them to the
+        communication record.
+        """
+        attachment_obj = self.env['partner.communication.attachment']
+        for job in self.with_context(must_skip_send_to_printer=True):
+            if job.config_id.attachments_function:
+                binaries = getattr(
+                    job.with_context(lang=job.partner_id.lang),
+                    job.config_id.attachments_function, dict())()
+                for name, data in binaries.iteritems():
+                    attachment_obj.create({
+                        'name': name,
+                        'communication_id': job.id,
+                        'report_name': data[0],
+                        'data': data[1],
+                    })
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
@@ -262,7 +286,7 @@ class CommunicationJob(models.Model):
                 'communication_config_id': self.config_id.id,
                 'body_html': self.body_html,
                 'subject': self.subject,
-                'attachment_ids': [(6, 0, self.attachment_ids.ids)]
+                'attachment_ids': [(6, 0, self.ir_attachment_ids.ids)]
             }
             if self.email_to:
                 # Replace partner e-mail by specified address
@@ -281,36 +305,16 @@ class CommunicationJob(models.Model):
         return 'done' if email.state == 'sent' else 'pending'
 
     def _print_report(self):
-        report_names = self.mapped('report_id.report_name')
-        if len(report_names) > 1:
-            raise Warning(
-                _("You can only print one report type at a time")
-            )
-        pdf = self.env['report'].get_action(self, report_names[0])
+        report_obj = self.env['report']
         for job in self:
+            # Get pdf should directly send it to the printer if report
+            # is correctly configured.
+            report_obj.get_pdf(job, job.report_id.report_name)
+            # Print attachments
+            job.attachment_ids.print_attachments()
             job.partner_id.message_post(
                 job.body_html, job.subject)
-        return pdf
-
-    def _get_attachments(self):
-        """
-        Generates attachments for the communication and link them to the
-        communication record.
-        """
-        attachment_obj = self.env['ir.attachment']
-        for job in self.with_context(must_skip_send_to_printer=True):
-            attachments = attachment_obj
-            binaries = getattr(
-                job, job.config_id.attachments_function, dict())()
-            for name, binary in binaries.iteritems():
-                attachments += attachment_obj.create({
-                    'res_model': self._name,
-                    'res_is': job.id,
-                    'datas': binary,
-                    'datas_fname': name,
-                    'name': name
-                })
-            job.attachment_ids = attachments
+        return True
 
     @api.model
     def _needaction_domain_get(self):

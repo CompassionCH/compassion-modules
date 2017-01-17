@@ -11,7 +11,6 @@
 import math
 
 from openerp import fields, models, api, _
-from openerp.tools import misc
 
 
 class label_print_wizard(models.TransientModel):
