@@ -31,10 +31,15 @@ class label_print(models.Model):
     padding_bottom = fields.Float("Padding Bottom  (in mm)", default=1.0)
     padding_left = fields.Float("Padding Left (in mm)", default=1.0)
     padding_right = fields.Float("Padding Right (in mm)", default=1.0)
-    barcode_width = fields.Float(_('Width (in mm)'), default=20)
-    barcode_height = fields.Float(_('Height (in mm)'), default=20)
-    is_barcode = fields.Boolean(_('Is Barcode?'), default=False)
+    barcode_width = fields.Float('Barcode Width (in mm)', default=20)
+    barcode_height = fields.Float('Barcode Height (in mm)', default=20)
+    is_barcode = fields.Boolean(
+        _('Is Barcode?'), compute='_compute_is_barcode')
 
+    def _compute_is_barcode(self):
+        for label in self:
+            label.is_barcode = bool(label.field_ids.filtered(
+                lambda f: f.type == 'barcode'))
     @api.depends('fields_ids', 'fields_ids.type')
     def onchange_image(self):
         for label in self:

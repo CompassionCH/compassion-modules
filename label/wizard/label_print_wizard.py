@@ -25,8 +25,6 @@ class label_print_wizard(models.TransientModel):
     labels_per_page = fields.Integer(_('Number of Labels per Pages'),
                                      compute="_compute_labels_per_page")
     brand_id = fields.Many2one('label.brand', _('Brand Name'), required=True)
-    mm2px = fields.Float('mm to px')
-    IN2MM = 25.4
 
     @api.model
     def default_get(self, fields):
@@ -56,14 +54,12 @@ class label_print_wizard(models.TransientModel):
                 self.labels_per_page = columns * rows
 
     @api.multi
-    def print_report(self):
-        if self._context is None:
-            self._context = {}
-        if (not self._context.get('label_print') or
-                not self._context.get('active_ids') or
-                not self.name):
+    def get_report_data(self):
+        if self._context is None or (not self._context.get('label_print') or
+                                     not self._context.get('active_ids') or
+                                     not self.name):
             return False
-        datas = {}
+
         column = (float(210) / float(self.name.width or 1))
         no_row_per_page = int((297-self.name.left_margin -
                                self.name.right_margin) /
@@ -76,8 +72,6 @@ class label_print_wizard(models.TransientModel):
         ids = self.env.context['active_ids']
         rows_usable = int(math.ceil(float(math.ceil(
             self.number_of_labels*len(ids)) / int(column))))
-        # dpi in mm
-        self.mm2px = self.env.ref('label.paperformat_label').dpi / self.IN2MM
         datas = {
             'rows': int(no_row_per_page),
             'columns': int(column),
@@ -90,19 +84,17 @@ class label_print_wizard(models.TransientModel):
             'padding_right': label_print_data.padding_right,
             'barcode_width': label_print_data.barcode_width,
             'barcode_height': label_print_data.barcode_height,
+            'dpi': self.env.ref('label.paperformat_label').dpi,
         }
-
-        cr, uid, context = self.env.args
-        context = dict(context)
-        context.update({"label_print_id": self.env.context['label_print'],
-                        'datas': datas})
-        self.env.args = cr, uid, misc.frozendict(context)
-
         data = {
             'ids': self.ids,
             'model': 'label.config',
             'form': datas,
         }
-        report_obj = self.env['report'].with_context(datas)
-        return report_obj.get_action(self, 'label.report_label',
-                                     data=data)
+        return data
+
+    @api.multi
+    def print_report(self):
+        data = self.get_report_data()
+        report_obj = self.env['report'].with_context(data['form'])
+        return report_obj.get_action(self, 'label.report_label', data=data)
