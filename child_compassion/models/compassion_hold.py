@@ -14,6 +14,7 @@ from enum import Enum
 from datetime import datetime, timedelta
 
 from openerp import api, models, fields, _
+from openerp.exceptions import Warning
 
 from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from ..mappings.childpool_create_hold_mapping import ReservationToHoldMapping
@@ -241,6 +242,9 @@ class CompassionHold(models.Model):
         child_id = vals.get('child_id')
         if not child_id:
             raise ValueError("No child found")
+        child = self.env['compassion.child'].browse(child_id)
+        if child.state not in ('F', 'R'):
+            raise Warning("Child is not departed.")
         vals.update({
             'expiration_date': fields.Datetime.to_string(in_90_days),
             'state': 'active',
@@ -248,7 +252,6 @@ class CompassionHold(models.Model):
                         'previous sponsor.'
         })
         hold = self.create(vals)
-        child = self.env['compassion.child'].browse(child_id)
         child.hold_id = hold
 
         # Update hold duration to what is configured
