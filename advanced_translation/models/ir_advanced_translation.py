@@ -135,8 +135,11 @@ class AdvancedTranslatable(models.AbstractModel):
                 if substitution:
                     return substitution
                 values = values[:max]
-            res_string = ', '.join(values[:-1])
-            res_string += ' ' + _('and') + ' ' + values[-1]
+            if len(values) > 1:
+                res_string = ', '.join(values[:-1])
+                res_string += ' ' + _('and') + ' ' + values[-1]
+            else:
+                res_string = values[0]
             values = res_string
         return values
 
@@ -151,6 +154,9 @@ class AdvancedTranslatable(models.AbstractModel):
         _format = self.env['ir.advanced.translation'].get(date_type)
         dates = map(fields.Date.from_string, self.mapped(field))
         dates_string = list(set([d.strftime(_format) for d in dates]))
-        res_string = ', '.join(dates_string[:-1])
-        res_string += ' ' + _('and') + ' ' + dates_string[-1]
+        if len(dates_string) > 1:
+            res_string = ', '.join(dates_string[:-1])
+            res_string += ' ' + _('and') + ' ' + dates_string[-1]
+        else:
+            res_string = dates_string[0]
         return res_string

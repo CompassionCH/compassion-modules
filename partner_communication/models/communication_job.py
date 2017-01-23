@@ -164,6 +164,7 @@ class CommunicationJob(models.Model):
             'date_sent': False,
             'email_id': False,
         })
+        return True
 
     @api.multi
     def refresh_text(self):
@@ -176,6 +177,7 @@ class CommunicationJob(models.Model):
                     'body_html': fields['body_html'],
                     'subject': fields['subject'],
                 })
+        return True
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):

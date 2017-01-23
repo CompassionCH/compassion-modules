@@ -26,7 +26,8 @@ class CommunicationAttachment(models.Model):
     ##########################################################################
     name = fields.Char(required=True)
     communication_id = fields.Many2one(
-        'partner.communication.job', 'Communication', required=True)
+        'partner.communication.job', 'Communication', required=True,
+        ondelete='cascade')
     report_name = fields.Char(
         required=True, help='Identifier of the report used to print')
     attachment_id = fields.Many2one(
