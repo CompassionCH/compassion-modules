@@ -43,6 +43,7 @@ class Household(models.Model):
     mother_living_with_child = fields.Boolean()
     youth_headed_household = fields.Boolean()
     primary_caregiver = fields.Char(compute='_compute_primary_caregiver')
+    primary_caregiver_id = fields.Char(compute='_compute_primary_caregiver')
 
     # Employment
     ############
@@ -82,6 +83,7 @@ class Household(models.Model):
         for household in self:
             primary_caregiver = household.member_ids.filtered(
                 'is_primary_caregiver')
+            household.primary_caregiver_id = primary_caregiver
             household.primary_caregiver = primary_caregiver.translate('role')
 
     @api.multi

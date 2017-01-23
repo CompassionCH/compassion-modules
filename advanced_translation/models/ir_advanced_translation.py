@@ -68,7 +68,7 @@ class AdvancedTranslatable(models.AbstractModel):
     gender = fields.Selection([
         ('M', 'Male'),
         ('F', 'Female'),
-    ])
+    ], default='M')
 
     @api.multi
     def get(self, keyword):
@@ -135,7 +135,28 @@ class AdvancedTranslatable(models.AbstractModel):
                 if substitution:
                     return substitution
                 values = values[:max]
-            res_string = ', '.join(values[:-1])
-            res_string += ' ' + _('and') + ' ' + values[-1]
+            if len(values) > 1:
+                res_string = ', '.join(values[:-1])
+                res_string += ' ' + _('and') + ' ' + values[-1]
+            else:
+                res_string = values[0]
             values = res_string
         return values
+
+    @api.multi
+    def get_date(self, field, date_type='date_short'):
+        """
+        Useful to format a date field in a given language
+        :param field: the date field inside the model
+        :param date_type: a valid src of a ir.advanced.translation date format
+        :return: the formatted dates
+        """
+        _format = self.env['ir.advanced.translation'].get(date_type)
+        dates = map(fields.Date.from_string, self.mapped(field))
+        dates_string = list(set([d.strftime(_format) for d in dates]))
+        if len(dates_string) > 1:
+            res_string = ', '.join(dates_string[:-1])
+            res_string += ' ' + _('and') + ' ' + dates_string[-1]
+        else:
+            res_string = dates_string[0]
+        return res_string
