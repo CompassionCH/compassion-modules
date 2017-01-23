@@ -36,7 +36,8 @@
     'website': 'http://www.compassion.ch',
     'depends': ['base'],
     'data': [
-        'security/ir.model.access.csv'
+        'security/ir.model.access.csv',
+        'data/ir.advanced.translation.csv'
     ],
     'demo': [],
     'installable': True,

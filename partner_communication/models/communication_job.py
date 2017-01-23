@@ -40,8 +40,7 @@ class CommunicationJob(models.Model):
                 'partner_communication.default_communication'),
     )
     partner_id = fields.Many2one(
-        'res.partner', 'Send to', required=True,
-        domain=[('opt_out', '=', False)])
+        'res.partner', 'Send to', required=True)
     partner_phone = fields.Char(related='partner_id.phone')
     partner_mobile = fields.Char(related='partner_id.mobile')
     object_ids = fields.Char('Resource ids', required=True)
@@ -110,10 +109,6 @@ class CommunicationJob(models.Model):
             job.object_ids = job.object_ids + ',' + vals['object_ids']
             job.refresh_text()
             return job
-
-        partner = self.env['res.partner'].browse([vals['partner_id']])
-        if partner.opt_out:
-            return self
 
         job = super(CommunicationJob, self).create(vals)
         job.set_attachments()
