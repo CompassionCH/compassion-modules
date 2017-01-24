@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-02 08:57+0100\n"
-"PO-Revision-Date: 2017-01-06 11:08+0100\n"
+"PO-Revision-Date: 2017-01-24 15:57+0100\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 1.8.4\n"
 
 #. module: child_compassion
 #: code:addons/child_compassion/wizards/child_description.py:275
@@ -1104,8 +1104,9 @@ msgstr "Augenbohnen"
 #: field:child.hold.wizard,create_uid:0
 #: field:child.household.duty,create_uid:0
 #: field:child.physical.disability,create_uid:0
-#: field:child.project.activity,create_uid:0 field:child.property,create_uid:0
-#: field:child.school.subject,create_uid:0 field:compassion.child,create_uid:0
+#: field:child.project.activity,create_uid:0
+#: field:child.property,create_uid:0 field:child.school.subject,create_uid:0
+#: field:compassion.child,create_uid:0
 #: field:compassion.child.ble,create_uid:0
 #: field:compassion.child.cdpr,create_uid:0
 #: field:compassion.child.description,create_uid:0
@@ -1157,7 +1158,8 @@ msgstr "Created holds"
 #: field:child.household.duty,create_date:0
 #: field:child.physical.disability,create_date:0
 #: field:child.project.activity,create_date:0
-#: field:child.property,create_date:0 field:child.school.subject,create_date:0
+#: field:child.property,create_date:0
+#: field:child.school.subject,create_date:0
 #: field:compassion.child,create_date:0
 #: field:compassion.child.ble,create_date:0
 #: field:compassion.child.cdpr,create_date:0
@@ -1180,19 +1182,22 @@ msgstr "Created holds"
 #: field:compassion.query.operator,create_date:0
 #: field:compassion.reservation,create_date:0
 #: field:connect.month,create_date:0 field:fo.disaster.alert,create_date:0
-#: field:fo.disaster.loss,create_date:0 field:fo.disaster.update,create_date:0
-#: field:fo.high.risk,create_date:0 field:icp.church.facility,create_date:0
+#: field:fo.disaster.loss,create_date:0
+#: field:fo.disaster.update,create_date:0 field:fo.high.risk,create_date:0
+#: field:icp.church.facility,create_date:0
 #: field:icp.church.ministry,create_date:0
 #: field:icp.church.utility,create_date:0
 #: field:icp.cognitive.activity,create_date:0
 #: field:icp.community.occupation,create_date:0 field:icp.diet,create_date:0
-#: field:icp.disaster.impact,create_date:0 field:icp.involvement,create_date:0
+#: field:icp.disaster.impact,create_date:0
+#: field:icp.involvement,create_date:0
 #: field:icp.lifecycle.reason,create_date:0
 #: field:icp.mobile.device,create_date:0
 #: field:icp.physical.activity,create_date:0 field:icp.program,create_date:0
 #: field:icp.property,create_date:0 field:icp.school.cost,create_date:0
 #: field:icp.sociological.activity,create_date:0
-#: field:icp.spiritual.activity,create_date:0 field:migration.r4,create_date:0
+#: field:icp.spiritual.activity,create_date:0
+#: field:migration.r4,create_date:0
 msgid "Created on"
 msgstr "Created on"
 
@@ -1461,8 +1466,8 @@ msgstr "Jüngerschaft Eltern/Bezugspersonen"
 #: field:availability.management.settings,display_name:0
 #: field:child.christian.activity,display_name:0
 #: field:child.chronic.illness,display_name:0
-#: field:child.disaster.impact,display_name:0 field:child.hobby,display_name:0
-#: field:child.hold.wizard,display_name:0
+#: field:child.disaster.impact,display_name:0
+#: field:child.hobby,display_name:0 field:child.hold.wizard,display_name:0
 #: field:child.household.duty,display_name:0
 #: field:child.physical.disability,display_name:0
 #: field:child.project.activity,display_name:0
@@ -1498,13 +1503,14 @@ msgstr "Jüngerschaft Eltern/Bezugspersonen"
 #: field:icp.church.ministry,display_name:0
 #: field:icp.church.utility,display_name:0
 #: field:icp.cognitive.activity,display_name:0
-#: field:icp.community.occupation,display_name:0 field:icp.diet,display_name:0
-#: field:icp.disaster.impact,display_name:0
+#: field:icp.community.occupation,display_name:0
+#: field:icp.diet,display_name:0 field:icp.disaster.impact,display_name:0
 #: field:icp.involvement,display_name:0
 #: field:icp.lifecycle.reason,display_name:0
 #: field:icp.mobile.device,display_name:0
-#: field:icp.physical.activity,display_name:0 field:icp.program,display_name:0
-#: field:icp.property,display_name:0 field:icp.school.cost,display_name:0
+#: field:icp.physical.activity,display_name:0
+#: field:icp.program,display_name:0 field:icp.property,display_name:0
+#: field:icp.school.cost,display_name:0
 #: field:icp.sociological.activity,display_name:0
 #: field:icp.spiritual.activity,display_name:0
 #: field:migration.r4,display_name:0 field:res.lang.compassion,display_name:0
@@ -2475,12 +2481,13 @@ msgstr "ICP spiritual activity"
 #: field:compassion.abstract.hold,id:0 field:compassion.child,id:0
 #: field:compassion.child.ble,id:0 field:compassion.child.cdpr,id:0
 #: field:compassion.child.description,id:0 field:compassion.child.note,id:0
-#: field:compassion.child.pictures,id:0 field:compassion.childpool.search,id:0
-#: field:compassion.field.office,id:0 field:compassion.generic.child,id:0
-#: field:compassion.global.child,id:0 field:compassion.global.partner,id:0
-#: field:compassion.hold,id:0 field:compassion.household,id:0
-#: field:compassion.household.member,id:0 field:compassion.major.revision,id:0
-#: field:compassion.project,id:0 field:compassion.project.description,id:0
+#: field:compassion.child.pictures,id:0
+#: field:compassion.childpool.search,id:0 field:compassion.field.office,id:0
+#: field:compassion.generic.child,id:0 field:compassion.global.child,id:0
+#: field:compassion.global.partner,id:0 field:compassion.hold,id:0
+#: field:compassion.household,id:0 field:compassion.household.member,id:0
+#: field:compassion.major.revision,id:0 field:compassion.project,id:0
+#: field:compassion.project.description,id:0
 #: field:compassion.project.ile,id:0 field:compassion.project.need,id:0
 #: field:compassion.query.filter,id:0 field:compassion.query.operator,id:0
 #: field:compassion.reservation,id:0 field:connect.month,id:0
@@ -2860,9 +2867,11 @@ msgstr "Last Message Date"
 #: field:compassion.query.filter,__last_update:0
 #: field:compassion.query.operator,__last_update:0
 #: field:compassion.reservation,__last_update:0
-#: field:connect.month,__last_update:0 field:fo.disaster.alert,__last_update:0
+#: field:connect.month,__last_update:0
+#: field:fo.disaster.alert,__last_update:0
 #: field:fo.disaster.loss,__last_update:0
-#: field:fo.disaster.update,__last_update:0 field:fo.high.risk,__last_update:0
+#: field:fo.disaster.update,__last_update:0
+#: field:fo.high.risk,__last_update:0
 #: field:icp.church.facility,__last_update:0
 #: field:icp.church.ministry,__last_update:0
 #: field:icp.church.utility,__last_update:0
@@ -2918,8 +2927,8 @@ msgstr "Last Update"
 #: field:compassion.reservation,write_uid:0 field:connect.month,write_uid:0
 #: field:fo.disaster.alert,write_uid:0 field:fo.disaster.loss,write_uid:0
 #: field:fo.disaster.update,write_uid:0 field:fo.high.risk,write_uid:0
-#: field:icp.church.facility,write_uid:0 field:icp.church.ministry,write_uid:0
-#: field:icp.church.utility,write_uid:0
+#: field:icp.church.facility,write_uid:0
+#: field:icp.church.ministry,write_uid:0 field:icp.church.utility,write_uid:0
 #: field:icp.cognitive.activity,write_uid:0
 #: field:icp.community.occupation,write_uid:0 field:icp.diet,write_uid:0
 #: field:icp.disaster.impact,write_uid:0 field:icp.involvement,write_uid:0
@@ -2939,8 +2948,9 @@ msgstr "Last Updated by"
 #: field:child.hold.wizard,write_date:0
 #: field:child.household.duty,write_date:0
 #: field:child.physical.disability,write_date:0
-#: field:child.project.activity,write_date:0 field:child.property,write_date:0
-#: field:child.school.subject,write_date:0 field:compassion.child,write_date:0
+#: field:child.project.activity,write_date:0
+#: field:child.property,write_date:0 field:child.school.subject,write_date:0
+#: field:compassion.child,write_date:0
 #: field:compassion.child.ble,write_date:0
 #: field:compassion.child.cdpr,write_date:0
 #: field:compassion.child.description,write_date:0
@@ -2998,7 +3008,8 @@ msgid "Last update"
 msgstr "Last update"
 
 #. module: child_compassion
-#: field:compassion.child,lastname:0 field:compassion.generic.child,lastname:0
+#: field:compassion.child,lastname:0
+#: field:compassion.generic.child,lastname:0
 #: field:compassion.global.child,lastname:0
 msgid "Lastname"
 msgstr "Name"
@@ -3055,7 +3066,8 @@ msgid "Livelihood skills development"
 msgstr "Lebenspraktischer Unterricht"
 
 #. module: child_compassion
-#: field:compassion.child,local_id:0 field:compassion.generic.child,local_id:0
+#: field:compassion.child,local_id:0
+#: field:compassion.generic.child,local_id:0
 #: field:compassion.global.child,local_id:0
 msgid "Local ID"
 msgstr "Local ID"
@@ -3338,8 +3350,9 @@ msgstr "My Reservations"
 #: field:child.project.activity,name:0 field:child.property,name:0
 #: field:child.school.subject,name:0 field:compassion.child,name:0
 #: field:compassion.field.office,name:0 field:compassion.generic.child,name:0
-#: field:compassion.global.child,name:0 field:compassion.global.partner,name:0
-#: field:compassion.household,name:0 field:compassion.household.member,name:0
+#: field:compassion.global.child,name:0
+#: field:compassion.global.partner,name:0 field:compassion.household,name:0
+#: field:compassion.household.member,name:0
 #: field:compassion.major.revision,name:0 field:compassion.project,name:0
 #: field:compassion.project.ile,name:0 field:compassion.query.operator,name:0
 #: field:connect.month,name:0 field:fo.disaster.loss,name:0
@@ -5102,12 +5115,12 @@ msgstr "Validieren"
 #: field:child.school.subject,value:0 field:compassion.query.filter,value:0
 #: field:fo.high.risk,value:0 field:icp.church.facility,value:0
 #: field:icp.church.ministry,value:0 field:icp.church.utility,value:0
-#: field:icp.cognitive.activity,value:0 field:icp.community.occupation,value:0
-#: field:icp.diet,value:0 field:icp.involvement,value:0
-#: field:icp.lifecycle.reason,value:0 field:icp.mobile.device,value:0
-#: field:icp.physical.activity,value:0 field:icp.program,value:0
-#: field:icp.property,value:0 field:icp.school.cost,value:0
-#: field:icp.sociological.activity,value:0
+#: field:icp.cognitive.activity,value:0
+#: field:icp.community.occupation,value:0 field:icp.diet,value:0
+#: field:icp.involvement,value:0 field:icp.lifecycle.reason,value:0
+#: field:icp.mobile.device,value:0 field:icp.physical.activity,value:0
+#: field:icp.program,value:0 field:icp.property,value:0
+#: field:icp.school.cost,value:0 field:icp.sociological.activity,value:0
 #: field:icp.spiritual.activity,value:0
 msgid "Value"
 msgstr "Wert"
@@ -5390,7 +5403,7 @@ msgstr "hört biblische Geschichten"
 #: code:addons/child_compassion/wizards/child_description.py:399
 #, python-format
 msgid "lives"
-msgstr "Leben"
+msgstr "lebt"
 
 #. module: child_compassion
 #: model:fo.high.risk,value:child_compassion.fo_risk_malaria

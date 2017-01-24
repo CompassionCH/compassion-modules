@@ -115,8 +115,8 @@ class ChildDescription(models.TransientModel):
 
     school_no_lang = {
         'fr_CH': {
-            'M': u"{firstname} ne va à l'école.",
-            'F': u"{firstname} ne va à l'école.",
+            'M': u"{firstname} ne va pas à l'école.",
+            'F': u"{firstname} ne va pas à l'école.",
         },
         'de_DE': {
             'M': u'{firstname} geht nicht zur Schule.',
