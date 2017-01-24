@@ -137,7 +137,8 @@ class GmcMessagePool(models.Model):
 
     @api.multi
     def process_messages(self):
-        new_messages = self.filtered(lambda m: m.state in ('new', 'failure'))
+        new_messages = self.filtered(
+            lambda m: m.state in ('new', 'failure', 'pending'))
         new_messages.write({'state': 'pending', 'failure_reason': False})
         if self.env.context.get('async_mode', True):
             session = ConnectorSession.from_env(self.env)

@@ -489,9 +489,10 @@ class SponsorshipGift(models.Model):
                 'state': 'new' if gift.state != 'verify' else 'postponed',
             }
             gift.message_id = message_obj.create(message_vals)
-            gift_date = fields.Date.from_string(gift.gift_date)
-            if gift.state == 'draft' and gift_date <= today:
-                gift.message_id.process_messages()
+            # TODO Activate auto processing after go-live
+            # gift_date = fields.Date.from_string(gift.gift_date)
+            # if gift.state == 'draft' and gift_date <= today:
+            #     gift.message_id.process_messages()
 
     @api.multi
     def _gift_delivered(self):

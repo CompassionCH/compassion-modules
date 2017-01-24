@@ -10,7 +10,6 @@
             <field name="connect_outgoing_wrapper">SupporterProfile</field>
             <field name="connect_answer_wrapper">SupporterProfileResponse</field>
             <field name="request_type">POST</field>
-            <field name="batch_send">False</field>
         </record>
         <!-- Sponsorship Message Creation -->
         <record id="create_sponsorship" model="gmc.action">

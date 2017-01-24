@@ -51,11 +51,11 @@ class IrAdvancedTranslation(models.Model):
         if not term:
             return _(src)
         if female and plural:
-            return term.female_plural
+            return term.female_plural or ''
         if female:
-            return term.female_singular
+            return term.female_singular or ''
         if plural:
-            return term.male_plural
+            return term.male_plural or ''
         return term.male_singular
 
 

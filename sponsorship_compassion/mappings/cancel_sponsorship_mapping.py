@@ -8,6 +8,8 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+
+from openerp import fields
 from base_sponsorship_mapping import BaseSponsorshipMapping
 from datetime import datetime
 
@@ -36,8 +38,8 @@ class CancelSponsorship(BaseSponsorshipMapping):
 
     def _process_connect_data(self, connect_data):
         # Set end date to correct format for Connect
-
-        end_date_str = connect_data['HoldExpirationDate']
+        end_date_str = connect_data.get(
+            'HoldExpirationDate') or fields.Datetime.now()
         end_date = datetime.strptime(end_date_str, "%Y-%m-%d %H:%M:%S")
         connect_data['HoldExpirationDate'] = end_date.strftime(
             "%Y-%m-%dT%H:%M:%SZ")

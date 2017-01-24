@@ -67,18 +67,32 @@ def migrate(cr, version):
             child_id = child_id and child_id[0]
             cr.execute("""
                 SELECT id FROM res_partner
-                WHERE ref = '{}' AND parent_id is NULL AND has_sponsorships
-                = TRUE;
+                WHERE ref = '{}' AND has_sponsorships = TRUE;
             """.format(row[1]))
             sponsor_id = cr.fetchone()
             sponsor_id = sponsor_id and sponsor_id[0]
             if child_id and sponsor_id:
                 cr.execute("""
-                    UPDATE recurring_contract
-                    SET global_id = %s
+                    SELECT id FROM recurring_contract
                     WHERE child_id = %s AND correspondant_id = %s
-                    AND state NOT IN ('cancelled', 'terminated')
-                """, (row[2], child_id, sponsor_id))
+                    AND state NOT IN  ('cancelled', 'terminated')
+                    ORDER BY id desc
+                """, (child_id, sponsor_id))
+                con_id = cr.fetchone() and con_id[0]
+                if not con_id:
+                    cr.execute("""
+                        SELECT id FROM recurring_contract
+                        WHERE child_id = %s AND correspondant_id = %s
+                        AND state = 'terminated'
+                        ORDER BY id desc
+                    """, (child_id, sponsor_id))
+                    con_id = cr.fetchone() and con_id[0]
+                if con_id:
+                    cr.execute("""
+                        UPDATE recurring_contract
+                        SET global_id = %s
+                        WHERE id = %s
+                    """, (row[2], con_id))
 
     # Update partner preferred names
     cr.execute("""

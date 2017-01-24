@@ -403,20 +403,21 @@ class SponsorshipContract(models.Model):
     def cancel_sent(self, vals):
         """ Called when GMC received the commitment cancel request. """
         self.ensure_one()
-        hold_expiration = fields.Datetime.from_string(
-            self.hold_expiration_date)
-        if 'hold_id' in vals and hold_expiration >= datetime.now():
-            child = self.child_id
-            hold_vals = {
-                'hold_id': vals['hold_id'],
-                'child_id': child.id,
-                'type': HoldType.SPONSOR_CANCEL_HOLD.value,
-                'expiration_date': self.hold_expiration_date,
-                'primary_owner': self.write_uid.id,
-                'state': 'active',
-            }
-            hold = self.env['compassion.hold'].create(hold_vals)
-            child.write({'hold_id': hold.id})
+        if self.hold_expiration_date:
+            hold_expiration = fields.Datetime.from_string(
+                self.hold_expiration_date)
+            if 'hold_id' in vals and hold_expiration >= datetime.now():
+                child = self.child_id
+                hold_vals = {
+                    'hold_id': vals['hold_id'],
+                    'child_id': child.id,
+                    'type': HoldType.SPONSOR_CANCEL_HOLD.value,
+                    'expiration_date': self.hold_expiration_date,
+                    'primary_owner': self.write_uid.id,
+                    'state': 'active',
+                }
+                hold = self.env['compassion.hold'].create(hold_vals)
+                child.write({'hold_id': hold.id})
         return True
 
     ##########################################################################
