@@ -111,15 +111,17 @@ class CommunicationJob(models.Model):
             return job
 
         job = super(CommunicationJob, self).create(vals)
-        job.set_attachments()
-        if not job.body_html:
-            job.refresh_text()
-
         send_mode = job.config_id.get_inform_mode(job.partner_id)
         if 'send_mode' not in vals:
             job.send_mode = send_mode[0]
         if 'auto_send' not in vals:
             job.auto_send = send_mode[1]
+
+        if not job.body_html:
+            job.refresh_text()
+        else:
+            job.set_attachments()
+
         if job.auto_send:
             job.send()
         return job
@@ -168,6 +170,8 @@ class CommunicationJob(models.Model):
 
     @api.multi
     def refresh_text(self):
+        self.mapped('attachment_ids').unlink()
+        self.set_attachments()
         for job in self:
             if job.email_template_id and job.object_ids:
                 fields = self.env['mail.compose.message'].with_context(

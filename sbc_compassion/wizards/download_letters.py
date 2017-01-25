@@ -10,7 +10,7 @@
 ##############################################################################
 import base64
 from io import BytesIO
-from openerp import models, api, fields
+from openerp import models, api, fields, _
 from zipfile import ZipFile
 
 
@@ -34,7 +34,7 @@ class DownloadLetters(models.TransientModel):
     ##########################################################################
     @api.model
     def get_file_name(self):
-        return fields.Date.context_today(self) + '_letters.zip'
+        return fields.Date.context_today(self) + _('_letters.zip')
 
     @api.model
     def get_letters(self):

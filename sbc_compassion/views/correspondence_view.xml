@@ -11,8 +11,6 @@
                     <field name="kit_identifier"/>
                     <field name="direction"/>
                     <field name="status_date"/>
-                    <field name="last_read" />
-                    <field name="read_count" />
                     <field name="translator_id"/>
                     <field name="state"/>
                 </tree>
@@ -79,8 +77,6 @@
                                 <field name="marked_for_rework" invisible="1"/>
                                 <field name="rework_reason" attrs="{'invisible': [('marked_for_rework', '=', False)]}"/>
                                 <field name="rework_comments" attrs="{'invisible': [('marked_for_rework', '=', False)]}"/>
-                                <field name="last_read" />
-                                <field name="read_count" />
                             </group>
                             <group string="Supporter">
                                 <field name="correspondant_id"/>
@@ -178,8 +174,6 @@
                         <filter string="State" domain="[]" context="{'group_by': 'state'}" />
                         <filter string="Translator" domain="[]" context="{'group_by': 'translator_id'}" />
                     </group>
-                    <separator />
-                    <filter name="unread" string="Unread" domain="[('last_read','=',False)]" />
                 </search>
             </field>
         </record>

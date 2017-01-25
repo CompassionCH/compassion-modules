@@ -133,12 +133,10 @@ class Correspondence(models.Model):
         'res.partner', 'GP Translator', compute='_compute_translator',
         inverse='_set_translator', store=True)
 
-    # Letter remote access and stats
-    ###################################
+    # Letter remote access
+    ######################
     uuid = fields.Char(required=True, default=lambda self: self._get_uuid())
-    read_url = fields.Char(compute='_get_read_url')
-    last_read = fields.Datetime()
-    read_count = fields.Integer(default=0)
+    read_url = fields.Char()
 
     # 5. SQL Constraints
     ####################
@@ -371,14 +369,6 @@ class Correspondence(models.Model):
 
     def _get_uuid(self):
         return str(uuid.uuid4())
-
-    @api.multi
-    def _get_read_url(self):
-        base_url = self.env['ir.config_parameter'].get_param(
-            'web.external.url')
-        for letter in self:
-            letter.read_url = "{}/b2s_image?id={}".format(
-                base_url, letter.uuid)
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -672,20 +662,10 @@ class Correspondence(models.Model):
         self.download_attach_letter_image(type='original_letter_url')
         return True
 
-    def get_image(self, user=None):
-        """ Method for retrieving the image and updating the read status of
-        the letter.
-        """
+    def get_image(self):
+        """ Method for retrieving the image """
         self.ensure_one()
-        self.write({
-            'last_read': fields.Datetime.now(),
-            'read_count': self.read_count + 1,
-        })
         data = base64.b64decode(self.letter_image.datas)
-        message = _("The sponsor requested the child letter image.")
-        if user is not None:
-            message = _("User requested the child letter image.")
-        self.message_post(message, _("Letter downloaded"))
         return data
 
     def hold_letters(self, message='Project suspended'):
@@ -753,10 +733,3 @@ class Correspondence(models.Model):
                 'res_id': letter.id
             })
         return self.env['ir.attachment'].create(vals), type_
-
-    @api.model
-    def _needaction_domain_get(self):
-        domain = [('direction', '=', 'Beneficiary To Supporter'),
-                  ('state', '=', 'Published to Global Partner'),
-                  ('last_read', '=', False)]
-        return domain

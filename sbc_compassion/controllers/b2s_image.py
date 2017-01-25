@@ -23,7 +23,7 @@ _logger = logging.getLogger(__name__)
 class RestController(http.Controller):
 
     @http.route('/b2s_image', type='http', auth='public', methods=['GET'])
-    def handler_b2s_image(self, id=None, user=None):
+    def handler_b2s_image(self, id=None):
         """ Handler for `/b2s_image` url for json data.
 
         It accepts only Communication Kit Notifications.
@@ -34,12 +34,10 @@ class RestController(http.Controller):
         headers = request.httprequest.headers
         self._validate_headers(headers)
         correspondence_obj = request.env['correspondence'].sudo()
-        if user is not None:
-            correspondence_obj = correspondence_obj.sudo(user)
         correspondence = correspondence_obj.search([('uuid', '=', id)])
         if not correspondence:
             raise NotFound()
-        data = correspondence.get_image(user)
+        data = correspondence.get_image()
         headers = Headers()
         headers.add(
             'Content-Disposition', 'attachment',

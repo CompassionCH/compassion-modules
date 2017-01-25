@@ -78,7 +78,8 @@ def migrate(cr, version):
                     AND state NOT IN  ('cancelled', 'terminated')
                     ORDER BY id desc
                 """, (child_id, sponsor_id))
-                con_id = cr.fetchone() and con_id[0]
+                con_id = cr.fetchone()
+                con_id = con_id and con_id[0]
                 if not con_id:
                     cr.execute("""
                         SELECT id FROM recurring_contract
@@ -86,7 +87,8 @@ def migrate(cr, version):
                         AND state = 'terminated'
                         ORDER BY id desc
                     """, (child_id, sponsor_id))
-                    con_id = cr.fetchone() and con_id[0]
+                    con_id = cr.fetchone()
+                    con_id = con_id and con_id[0]
                 if con_id:
                     cr.execute("""
                         UPDATE recurring_contract
