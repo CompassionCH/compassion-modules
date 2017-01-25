@@ -473,7 +473,7 @@ class SponsorshipGift(models.Model):
     ##########################################################################
     @api.multi
     def _create_gift_message(self):
-        today = date.today()
+        # today = date.today()
         for gift in self:
             # message_center_compassion/models/gmc_messages
             message_obj = self.env['gmc.message.pool']

@@ -47,12 +47,11 @@ class CorrespondenceMapping(OnrampMapping):
     }
 
     SUPPORTER_MAPPING = {
-        'CompassConstituentId': ('correspondant_id.ref', 'res.partner'),
-        'CommunicationDeliveryPreference': None,  # Todo Where to find this ?
-        'GlobalId': None,
+        'CompassConstituentId': None,
+        'GlobalId': ('correspondant_id.global_id', 'res.partner'),
         'MandatoryReviewRequired': 'mandatory_review',
         'ObjectUrl': None,
-        'PreferredName': ('correspondant_id.name', 'res.partner'),
+        'PreferredName': ('correspondant_id.preferred_name', 'res.partner'),
         'Gender': None
     }
 
@@ -98,7 +97,8 @@ class CorrespondenceMapping(OnrampMapping):
     FIELDS_TO_SUBMIT = {
         'Beneficiary.LocalId': None,
         'GlobalPartner.Id': None,
-        'Supporter.CompassConstituentId': lambda id: '65-' + id,
+        # 'Supporter.CompassConstituentId': lambda id: '65-' + id,
+        'Supporter.GlobalId': None,
         'Direction': None,
         'Pages': None,
         'RelationshipType': None,
@@ -119,13 +119,8 @@ class CorrespondenceMapping(OnrampMapping):
 
     def _convert_connect_data(self, connect_name, value_mapping, value,
                               relation_search=None):
-        """ Remove 65- suffix from partner reference and look only
-            for non-company partners.
-            Replace mapping for template to look for B2S templates.
+        """ Replace mapping for template to look for B2S templates.
         """
-        if connect_name == 'CompassConstituentId':
-            value = value[3:]
-            relation_search = [('has_sponsorships', '=', True)]
         if connect_name == 'Template' and not value.startswith('CH'):
             value_mapping = ('b2s_layout_id.code', 'correspondence.b2s.layout')
             # Value is FO-X-YYYY-Z and we are only interested in YYYY
