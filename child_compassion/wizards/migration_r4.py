@@ -56,6 +56,11 @@ class MigrationR4(models.TransientModel):
             for row in csvreader:
                 child = child_obj.search([('code', '=', row[0])])
                 if child:
+                    hold_vals.update({
+                        'child_id': child.id,
+                        'hold_id': row[1],
+                        'comments': child.delegated_comment
+                    })
                     hold_vals['child_id'] = child.id
                     hold_vals['hold_id'] = row[1]
                     child.hold_id = hold_obj.create(hold_vals)
