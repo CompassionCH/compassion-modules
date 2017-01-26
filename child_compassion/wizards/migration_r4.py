@@ -61,6 +61,4 @@ class MigrationR4(models.TransientModel):
                         'hold_id': row[1],
                         'comments': child.delegated_comment
                     })
-                    hold_vals['child_id'] = child.id
-                    hold_vals['hold_id'] = row[1]
                     child.hold_id = hold_obj.create(hold_vals)
