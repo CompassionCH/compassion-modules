@@ -203,6 +203,9 @@ class CompassionChild(models.Model):
     desc_de = fields.Text('German description', readonly=True)
     desc_it = fields.Text('Italian description', readonly=True)
 
+    # Just for migration
+    delegated_comment = fields.Text()
+
     _sql_constraints = [
         ('compass_id', 'unique(compass_id)',
          'The child already exists in database.'),

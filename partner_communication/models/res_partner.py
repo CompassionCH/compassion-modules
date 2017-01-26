@@ -24,7 +24,7 @@ class ResPartner(models.Model):
     ##########################################################################
     global_communication_delivery_preference = fields.Selection(
         selection='_get_delivery_preference',
-        default='digital',
+        default='auto_digital',
         required=True,
         help='Delivery preference for Global Communication')
 

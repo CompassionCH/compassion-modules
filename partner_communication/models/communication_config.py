@@ -126,17 +126,56 @@ class CommunicationConfig(models.Model):
     def get_inform_mode(self, partner):
         """ Returns how the partner should be informed for the given
         communication (digital, physical or False).
+        It makes the product of the communication preference and the partner
+        preference :
+
+        comm_pref   partner_pref    result
+        ----------------------------------
+        digital     physical        physical if "print if no e-mail" else none
+        physical    digital         physical
+
+        auto        manual          manual
+        manual      auto            manual
+
         :param partner: res.partner record
-        :returns: send_mode (auto/digital/False), auto_mode (True/False)
+        :returns: send_mode (physical/digital/False), auto_mode (True/False)
         """
         self.ensure_one()
+        # First key is the comm send_mode, second key is the partner send_mode
+        # value is the send_mode that should be selected.
+        send_priority = {
+            'physical': {
+                'digital': 'physical',
+                'none': 'none',
+                'both': 'physical'
+            },
+            'digital': {
+                'physical': 'physical' if self.print_if_not_email else 'none',
+                'none': 'none',
+                'both': 'both' if self.print_if_not_email else 'digital'
+            }
+        }
+
         if self.send_mode != 'partner_preference':
-            send_mode = self.send_mode
+            partner_mode = partner.global_communication_delivery_preference
+            if self.send_mode == partner_mode:
+                send_mode = self.send_mode
+                auto_mode = 'auto' in send_mode or send_mode == 'both'
+            else:
+                auto_mode = (
+                    'auto' in self.send_mode and 'auto' in partner_mode or
+                    self.send_mode == 'both' and 'auto' in partner_mode or
+                    'auto' in self.send_mode and partner_mode == 'both'
+                )
+                comm_mode = self.send_mode.replace('auto_', '')
+                partner_mode = partner_mode.replace('auto_', '')
+                send_mode = send_priority[comm_mode][partner_mode]
+
         else:
             send_mode = getattr(
-                partner, self.send_mode_pref_field,  False)
+                partner, self.send_mode_pref_field,  'none')
+            auto_mode = 'auto' in send_mode or send_mode == 'both'
 
-        auto_mode = 'auto' in send_mode or send_mode == 'both'
         send_mode = send_mode.replace('auto_', '')
         if send_mode == 'none':
             send_mode = False
