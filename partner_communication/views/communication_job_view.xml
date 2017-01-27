@@ -97,7 +97,22 @@
             <field name="res_model">partner.communication.job</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_pending': True}</field>
+            <field name="context">{'search_default_pending': True, 'search_default_config': True}</field>
+        </record>
+
+        <!-- Send communication actions -->
+        <record id="send_action" model="ir.actions.server">
+            <field name="name">Send communication</field>
+            <field name="model_id" ref="model_partner_communication_job"/>
+            <field name="state">code</field>
+            <field name="code">self.send(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+
+        <record id="send_action_menu" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'partner.communication.job'" name="model"/>
+            <field name="name">Send communication</field>
+            <field eval="'ir.actions.server,%d'%send_action" name="value"/>
         </record>
 
         <menuitem name="Partner Communication" id="menu_communication" parent="mail.mail_feeds_main" sequence="1"/>
