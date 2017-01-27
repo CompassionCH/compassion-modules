@@ -198,6 +198,8 @@ class Correspondence(models.Model):
             ('Published to Global Partner', _('Published')),
             # TODO: Check the following states with GMC to validate them...
             ('Quality check unsuccessful', _('Quality check unsuccessful')),
+            ('Translation check unsuccessful', _('Translation check '
+                                                 'unsuccessful')),
             ('Cancelled', _('Cancelled')),
             ('Exception', _('Exception')),
         ]
