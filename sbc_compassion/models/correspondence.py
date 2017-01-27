@@ -420,20 +420,7 @@ class Correspondence(models.Model):
                 letter.write({'page_ids': pages})
 
         if not self.env.context.get('no_comm_kit'):
-            action_id = self.env.ref('sbc_compassion.create_letter').id
-            message = self.env['gmc.message.pool'].create({
-                'action_id': action_id,
-                'object_id': letter.id
-            })
-            if letter.sponsorship_id.state != \
-                    'active' or letter.child_id.project_id.hold_s2b_letters:
-                message.state = 'postponed'
-                if letter.child_id.project_id.hold_s2b_letters:
-                    letter.state = 'Exception'
-                    letter.message_post(
-                        'Letter was put on hold because the project is '
-                        'suspended',
-                        'Project suspended')
+            letter.create_commkit()
 
         return letter
 
@@ -463,6 +450,25 @@ class Correspondence(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.multi
+    def create_commkit(self):
+        for letter in self:
+            action_id = self.env.ref('sbc_compassion.create_letter').id
+            message = self.env['gmc.message.pool'].create({
+                'action_id': action_id,
+                'object_id': letter.id
+            })
+            if letter.sponsorship_id.state != \
+                    'active' or letter.child_id.project_id.hold_s2b_letters:
+                message.state = 'postponed'
+                if letter.child_id.project_id.hold_s2b_letters:
+                    letter.state = 'Exception'
+                    letter.message_post(
+                        'Letter was put on hold because the project is '
+                        'suspended',
+                        'Project suspended')
+        return True
+
     @api.multi
     def compose_letter_button(self):
         """ Remove old images, download original and compose translation. """

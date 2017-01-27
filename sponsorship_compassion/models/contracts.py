@@ -194,7 +194,8 @@ class SponsorshipContract(models.Model):
 
         updated_correspondents = self.env[self._name]
         if 'correspondant_id' in vals:
-            updated_correspondents = self._on_change_correspondant()
+            updated_correspondents = self._on_change_correspondant(
+                vals['correspondant_id'])
 
         super(SponsorshipContract, self).write(vals)
 
@@ -566,7 +567,7 @@ class SponsorshipContract(models.Model):
                 self.env.cr.commit()
 
     @api.multi
-    def _on_change_correspondant(self):
+    def _on_change_correspondant(self, correspondant_id):
         """
         This is useful for not having to internally cancel and create
         a new commitment just to change the corresponding partner.
@@ -580,8 +581,8 @@ class SponsorshipContract(models.Model):
             'sponsorship_compassion.cancel_sponsorship')
 
         sponsorships = self.filtered(
-            lambda s: s.global_id and
-            s.state not in ('cancelled', 'terminated'))
+            lambda s: s.correspondant_id.id != correspondant_id and s.global_id
+            and s.state not in ('cancelled', 'terminated'))
         sponsorships.write({
             'hold_expiration_date': self.env[
                 'compassion.hold'].get_default_hold_expiration(
