@@ -62,8 +62,7 @@ class CommunicationJob(models.Model):
     email_template_id = fields.Many2one(
         related='config_id.email_template_id', store=True)
     report_id = fields.Many2one(related='config_id.report_id', store=True)
-    user_id = fields.Many2one(
-        'res.users', 'From', default=lambda s: s.env.user)
+    user_id = fields.Many2one('res.users', 'From')
     email_to = fields.Char(
         help='optional e-mail address to override recipient')
     email_id = fields.Many2one('mail.mail', 'Generated e-mail')
@@ -111,6 +110,15 @@ class CommunicationJob(models.Model):
             return job
 
         job = super(CommunicationJob, self).create(vals)
+
+        # Determine user by default : employee or take in config
+        if 'user_id' not in vals:
+            user = self.env.user
+            if not user.employee_ids and job.config_id.user_id:
+                user = job.config_id.user_id
+            job.user_id = user
+
+        # Determine send mode
         send_mode = job.config_id.get_inform_mode(job.partner_id)
         if 'send_mode' not in vals:
             job.send_mode = send_mode[0]
@@ -124,6 +132,7 @@ class CommunicationJob(models.Model):
 
         if job.auto_send:
             job.send()
+
         return job
 
     ##########################################################################
@@ -244,9 +253,13 @@ class CommunicationJob(models.Model):
 
     @api.multi
     def get_objects(self):
-        self.ensure_one()
-        object_ids = map(int, self.object_ids.split(','))
-        return self.env[self.config_id.model].browse(object_ids)
+        config = self.mapped('config_id')
+        config.ensure_one()
+        object_ids = list()
+        object_id_strings = self.mapped('object_ids')
+        for id_strings in object_id_strings:
+            object_ids += map(int, id_strings.split(','))
+        return self.env[config.model].browse(object_ids)
 
     @api.multi
     def set_attachments(self):

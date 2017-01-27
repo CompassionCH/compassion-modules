@@ -209,7 +209,8 @@ class CompassionHold(models.Model):
                 'object_id': hold.id
             }
             messages += message_obj.create(message_vals)
-        messages.process_messages()
+        # TODO Reactivate at go-live
+        # messages.process_messages()
 
     @api.multi
     def hold_sent(self, vals):
