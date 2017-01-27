@@ -1,0 +1,48 @@
+# -*- encoding: utf-8 -*-
+##############################################################################
+#
+#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Emanuel Cino <ecino@compassion.ch>
+#
+#    The licence is in the file __openerp__.py
+#
+##############################################################################
+
+from openerp import api, models, fields
+
+
+class StaffNotificationSettings(models.TransientModel):
+    """ Settings configuration for any Notifications."""
+    _name = 'staff.notification.settings'
+    _inherit = 'res.config.settings'
+
+    # Users to notify after Disaster Alert
+    disaster_notify_ids = fields.Many2many(
+        'res.partner', string='Disaster Alert',
+        domain=[
+            ('user_ids', '!=', False),
+            ('user_ids.share', '=', False),
+        ]
+    )
+
+    @api.multi
+    def set_disaster_notify_ids(self):
+        self.env['ir.config_parameter'].set_param(
+            'child_compassion.disaster_notify_ids',
+            ','.join(map(str, self.disaster_notify_ids.ids)))
+
+    @api.model
+    def get_default_values(self, _fields):
+        param_obj = self.env['ir.config_parameter']
+        res = {'notify_partner_ids': False}
+        partners = param_obj.get_param(
+            'child_compassion.disaster_notify_ids', False)
+        if partners:
+            res['disaster_notify_ids'] = map(int, partners.split(','))
+        return res
+
+    @api.model
+    def get_param(self, param):
+        """ Retrieve a single parameter. """
+        return self.get_default_values([param])[param]

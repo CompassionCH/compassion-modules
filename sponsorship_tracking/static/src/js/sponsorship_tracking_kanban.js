@@ -30,11 +30,6 @@ openerp.sponsorship_tracking = function (instance) {
                     label = _t('Mail sent')
                     action = 'button_mail_sent'
                 }
-                if (this.group_by == 'project_state') {
-                    visible_on_groups = ['inform_suspended', 'inform_reactivation', 'inform_project_terminated', 'inform_extension', 'inform_suspended_reactivation'];
-                    label = _t('Project mail sent')
-                    action = 'button_project_mail_sent'
-                }
                 if (this.group_by == 'gmc_state') {
                     label = _t('Reset GMC Status')
                     action = 'button_reset_gmc_state'

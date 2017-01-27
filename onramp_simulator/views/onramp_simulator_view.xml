@@ -1,0 +1,47 @@
+<openerp>
+    <data>
+        <record id="onramp_simulator_form" model="ir.ui.view">
+            <field name="name">onramp.simulator.form</field>
+            <field name="model">onramp.simulator</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="send_message" type="object" string="Send" class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="server_url"/>
+                            <field name="action_id"/>
+                            <field name="body_json"/>
+                            <field name="result"/>
+                            <field name="result_code"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+         <record id="onramp_simulator_tree" model="ir.ui.view">
+            <field name="name">onramp.simulator.tree</field>
+            <field name="model">onramp.simulator</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="server_url"/>
+                    <field name="message_type_url"/>
+                    <field name="result_code"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="open_simulator" model="ir.actions.act_window">
+            <field name="name">Simulator</field>
+            <field name="res_model">onramp.simulator</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_simulator" parent="message_center_compassion.menu_message_config" name="Simulate Message" action="open_simulator" sequence="13"/>
+    </data>
+</openerp>

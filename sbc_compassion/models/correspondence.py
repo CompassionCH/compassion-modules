@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino, Emmanuel Mathier
 #
@@ -11,18 +11,24 @@
 import magic
 import base64
 import re
+import uuid
 
 from openerp import fields, models, api, exceptions, _
 from pyPdf import PdfFileWriter, PdfFileReader
 from io import BytesIO
 
 from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
+from ..tools.onramp_connector import SBCConnector
+
+from openerp.addons.message_center_compassion.mappings import base_mapping as \
+    mapping
 
 
 class CorrespondenceType(models.Model):
     _name = 'correspondence.type'
-
-    name = fields.Char(required=True)
+    _inherit = 'connect.multipicklist'
+    res_model = 'correspondence'
+    res_field = 'communication_type_ids'
 
 
 class Correspondence(models.Model):
@@ -80,7 +86,7 @@ class Correspondence(models.Model):
     supporter_languages_ids = fields.Many2many(
         related='correspondant_id.spoken_lang_ids', readonly=True)
     beneficiary_language_ids = fields.Many2many(
-        related='child_id.project_id.country_id.spoken_lang_ids',
+        related='child_id.project_id.field_office_id.spoken_language_ids',
         readonly=True)
     # First spoken lang of partner
     original_language_id = fields.Many2one(
@@ -126,6 +132,11 @@ class Correspondence(models.Model):
     translator_id = fields.Many2one(
         'res.partner', 'GP Translator', compute='_compute_translator',
         inverse='_set_translator', store=True)
+
+    # Letter remote access
+    ######################
+    uuid = fields.Char(required=True, default=lambda self: self._get_uuid())
+    read_url = fields.Char()
 
     # 5. SQL Constraints
     ####################
@@ -238,7 +249,7 @@ class Correspondence(models.Model):
             if letter.sponsorship_id and letter.communication_type_ids:
                 letter.name = letter.communication_type_ids[0].name + ' (' + \
                     letter.sponsorship_id.partner_id.ref + " - " + \
-                    letter.child_id.code + ')'
+                    letter.child_id.local_id + ')'
             else:
                 letter.name = _('New correspondence')
 
@@ -295,7 +306,7 @@ class Correspondence(models.Model):
                 for i in xrange(0, len(self.page_ids)):
                     setattr(self.page_ids[i], field, pages_text[i].strip('\n'))
                 last_page_text = getattr(self.page_ids[i], field)
-                last_page_text += '\n\n' + '\n\n'.join(pages_text[i+1:])
+                last_page_text += '\n\n' + '\n\n'.join(pages_text[i + 1:])
         else:
             for i in xrange(0, len(pages_text)):
                 self.page_ids.create({
@@ -305,7 +316,7 @@ class Correspondence(models.Model):
     def _get_text(self, source_text):
         """ Gets the desired text (original/translated) from the pages. """
         txt = self.page_ids.filtered(source_text).mapped(source_text)
-        return ('\n'+PAGE_SEPARATOR+'\n').join(txt)
+        return ('\n' + PAGE_SEPARATOR + '\n').join(txt)
 
     def _change_language(self):
         return True
@@ -358,6 +369,9 @@ class Correspondence(models.Model):
                 if match:
                     letter.translator_id.translator_email = match.group(2)
 
+    def _get_uuid(self):
+        return str(uuid.uuid4())
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -404,6 +418,23 @@ class Correspondence(models.Model):
                 for i in range(letter.nbr_pages, image_pdf.numPages):
                     pages.append((0, 0, {'correspondence_id': letter.id}))
                 letter.write({'page_ids': pages})
+
+        if not self.env.context.get('no_comm_kit'):
+            action_id = self.env.ref('sbc_compassion.create_letter').id
+            message = self.env['gmc.message.pool'].create({
+                'action_id': action_id,
+                'object_id': letter.id
+            })
+            if letter.sponsorship_id.state != \
+                    'active' or letter.child_id.project_id.hold_s2b_letters:
+                message.state = 'postponed'
+                if letter.child_id.project_id.hold_s2b_letters:
+                    letter.state = 'Exception'
+                    letter.message_post(
+                        'Letter was put on hold because the project is '
+                        'suspended',
+                        'Project suspended')
+
         return letter
 
     @api.multi
@@ -432,6 +463,12 @@ class Correspondence(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.multi
+    def compose_letter_button(self):
+        """ Remove old images, download original and compose translation. """
+        self.attach_original()
+        return self.compose_letter_image()
+
     @api.multi
     def compose_letter_image(self):
         """
@@ -483,10 +520,10 @@ class Correspondence(models.Model):
                 final_pdf.addPage(existing_pdf.getPage(i))
                 if remaining_text:
                     remaining_text += '\n\n' + additional_pages_header +\
-                        str(i+1) + ':\n' + text
+                        str(i + 1) + ':\n' + text
                 else:
-                    remaining_text = additional_pages_header + str(i+1) +\
-                                     ':\n' + text
+                    remaining_text = additional_pages_header + str(i + 1) +\
+                        ':\n' + text
                 continue
             box_texts = text.split(BOX_SEPARATOR)
             if len(box_texts) > len(boxes):
@@ -537,6 +574,133 @@ class Correspondence(models.Model):
         self.letter_image.datas = base64.b64encode(output_stream.read())
 
         return True
+
+    @api.model
+    def process_commkit(self, commkit_data):
+        """ Update or Create the letter with given values. """
+        letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
+        letter_ids = list()
+        for commkit in commkit_data.get('Responses', [commkit_data]):
+            vals = letter_mapping.get_vals_from_connect(commkit)
+            published_state = 'Published to Global Partner'
+            is_published = vals.get('state') == published_state
+
+            # Write/update letter
+            kit_identifier = vals.get('kit_identifier')
+            letter = self.search([('kit_identifier', '=', kit_identifier)])
+            if letter:
+                # Avoid to publish twice a same letter
+                is_published = is_published and letter.state != published_state
+                letter.write(vals)
+            else:
+                if 'id' in vals:
+                    del vals['id']
+                letter = self.with_context(no_comm_kit=True).create(vals)
+
+            if is_published:
+                letter.process_letter()
+            letter_ids.append(letter.id)
+
+        return letter_ids
+
+    def on_send_to_connect(self):
+        """
+        Method called before Letter is sent to GMC.
+        Upload the image to Persistence if not already done.
+        """
+        onramp = SBCConnector()
+        for letter in self.filtered(lambda l: not l.original_letter_url):
+            letter.original_letter_url = onramp.send_letter_image(
+                letter.letter_image.datas, letter.letter_format)
+
+    @api.multi
+    def enrich_letter(self, vals):
+        """
+        Enrich correspondence data with GMC data after CommKit Submission.
+        Check that we received a valid kit identifier.
+        """
+        if vals.get('kit_identifier', 'null') == 'null':
+            raise Warning(
+                'No valid kit id was returned. This is most '
+                'probably because the sponsorship is not known.')
+        return self.write(vals)
+
+    def process_letter(self):
+        """ Method called when new B2S letter is Published. """
+        self.download_attach_letter_image(type='original_letter_url')
+        res = True
+        for letter in self:
+            if letter.original_language_id not in \
+                    letter.correspondant_id.spoken_lang_ids:
+                res = res and letter.compose_letter_image()
+        return res
+
+    @api.multi
+    def download_attach_letter_image(self, type='final_letter_url'):
+        """ Download letter image from US service and attach to letter. """
+        for letter in self:
+            # Download and store letter
+            letter_url = getattr(letter, type)
+            image_data = None
+            if letter_url:
+                image_data = SBCConnector().get_letter_image(
+                    letter_url, 'pdf', dpi=300)  # resolution
+            if image_data is None:
+                raise Warning(
+                    _("Image of letter {} was not found remotely.").format(
+                        letter.kit_identifier))
+            name = letter.child_id.local_id + '_' + letter.kit_identifier + \
+                '.pdf'
+            letter.letter_image = self.env['ir.attachment'].create({
+                "name": name,
+                "db_datas": image_data,
+                'res_model': self._name,
+                'res_id': letter.id,
+            })
+
+    @api.multi
+    def attach_original(self):
+        self.mapped('letter_image').unlink()
+        self.download_attach_letter_image(type='original_letter_url')
+        return True
+
+    def get_image(self):
+        """ Method for retrieving the image """
+        self.ensure_one()
+        data = base64.b64decode(self.letter_image.datas)
+        return data
+
+    def hold_letters(self, message='Project suspended'):
+        """ Prevents to send S2B letters to GMC. """
+        self.write({
+            'state': 'Exception'
+        })
+        for letter in self:
+            letter.message_post(
+                'Letter was put on hold', message)
+        gmc_action = self.env.ref('sbc_compassion.create_letter')
+        gmc_messages = self.env['gmc.message.pool'].search([
+            ('action_id', '=', gmc_action.id),
+            ('object_id', 'in', self.ids),
+            ('state', 'in', ['new', 'failure'])
+        ])
+        gmc_messages.write({'state': 'postponed'})
+
+    def reactivate_letters(self, message='Project reactivated'):
+        """ Release the hold on S2B letters. """
+        self.write({
+            'state': 'Received in the system'
+        })
+        for letter in self:
+            letter.message_post(
+                'The letter can now be sent.', message)
+        gmc_action = self.env.ref('sbc_compassion.create_letter')
+        gmc_messages = self.env['gmc.message.pool'].search([
+            ('action_id', '=', gmc_action.id),
+            ('object_id', 'in', self.ids),
+            ('state', '=', 'postponed')
+        ])
+        gmc_messages.write({'state': 'new'})
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

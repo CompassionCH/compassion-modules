@@ -1,0 +1,5 @@
+<openerp>
+    <data noupdate="1">
+        <function name="install_cat_rel" model="compassion.intervention.subcategory"/>
+    </data>
+</openerp>

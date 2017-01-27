@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--Compassion project reservation form view -->
+        <record id="view_compassion_reservation_form"
+                model="ir.ui.view">
+            <field name="name">compassion.reservation.form</field>
+            <field name="model">compassion.reservation</field>
+            <field name="arch" type="xml">
+                <form string="Reservation">
+                    <header>
+                        <button name="send_reservation" type="object" string="Send Reservation" states="draft" class="oe_highlight" />
+                        <button name="cancel_reservation" type="object" string="Cancel Reservation" states="active" />
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="reservation_id" />
+                            </h1>
+                        </div>
+                        <div class="oe_right oe_button_box" name="buttons">
+                            <button name="show_reserved_children" string="Allocated children" type="object" icon="fa-child" class="oe_stat_button"/>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="reservation_type" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="icp_id" attrs="{'invisible': [('reservation_type', '!=', 'project')],
+                                                             'required': [('reservation_type', '=', 'project')],
+                                                             'readonly': [('state', '!=', 'draft')]}" />
+                                <label for="child_id" attrs="{'invisible': [('reservation_type', '!=', 'child')]}" >Child</label>
+                                <div attrs="{'invisible': [('reservation_type', '!=', 'child')]}" >
+                                    <field name="child_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                    <field name="child_global_id" attrs="{'required': [('reservation_type', '=', 'child')],
+                                                                          'readonly': [('state', '!=', 'draft')]}"/>
+                                </div>
+                                <field name="primary_owner" />
+                                <field name="secondary_owner" />
+
+                            </group>
+                            <group>
+                                <field name="channel" />
+                                <field name="campaign_event_identifier" />
+                                <field name="source_code" />
+                                <field name="is_reservation_auto_approved" />
+                            </group>
+                            <group>
+                                <field name="expiration_date" invisible="1"/>
+                                <field name="reservation_expiration_date" />
+                                <field name="expiration_date"/>
+                                <field name="number_of_beneficiaries" attrs="{'invisible': [('reservation_type', '=', 'child')],
+                                                                              'required': [('reservation_type', '=', 'project')]}" />
+                                <field name="comments" />
+                                <field name="yield_rate" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"
+                               widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_compassion_reservation_tree" model="ir.ui.view">
+            <field name="name">compassion.reservation.tree</field>
+            <field name="model">compassion.reservation</field>
+            <field name="arch" type="xml">
+                <tree string="Reservations"
+                      colors="blue:state == 'draft';black:state == 'active';grey:state == 'expired'">
+                    <field name="reservation_type" />
+                    <field name="reservation_id" />
+                    <field name="child_id" />
+                    <field name="child_global_id" />
+                    <field name="icp_id" />
+                    <field name="channel" />
+                    <field name="reservation_expiration_date" />
+                    <field name="expiration_date"/>
+                    <field name="primary_owner" />
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Search view -->
+        <record id="view_reservation_filter" model="ir.ui.view">
+            <field name="name">compassion.reservation.select</field>
+            <field name="model">compassion.reservation</field>
+            <field name="arch" type="xml">
+                <search string="Search reservation">
+                    <field name="child_id"/>
+                    <field name="reservation_id"/>
+                    <field name="primary_owner"/>
+                    <field name="type"/>
+                    <field name="channel"/>
+                    <filter name="not_expired" string="Not Expired" domain="[('state','!=','expired')]"/>
+                    <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                    <filter name="active" string="Active" domain="[('state','=','active')]"/>
+                    <filter name="expired" string="Expired" domain="[('state','=','expired')]"/>
+                    <separator/>
+                    <filter name="my_reservations" string="My Reservations" domain="[('primary_owner', '=', uid)]"/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+                        <filter string="Channel" domain="[]" context="{'group_by':'channel'}"/>
+                        <filter string="Owner" domain="[]" context="{'group_by':'primary_owner'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action opening the tree view -->
+        <record id="open_view_reservation_form" model="ir.actions.act_window">
+            <field name="name">Reservation</field>
+            <field name="res_model">compassion.reservation</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_not_expired': 1}</field>
+        </record>
+
+        <menuitem id="menu_sponsorship_reservation"
+                  parent="menu_pool_section" name="Reservations"
+                  action="child_compassion.open_view_reservation_form"
+                  sequence="1"/>
+
+    </data>
+</openerp>

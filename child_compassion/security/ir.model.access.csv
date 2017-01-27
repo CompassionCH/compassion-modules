@@ -1,9 +1,83 @@
-"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-"access_compassion_project","Full access on compassion_project","model_compassion_project","group_sponsorship",1,1,1,1
-"access_compassion_child","Full access on compassion_child","model_compassion_child","group_sponsorship",1,1,1,1
-"access_compassion_child_property","Full access on compassion_child_property","model_compassion_child_property","group_sponsorship",1,1,1,1
-"access_compassion_child_pictures","Full access on compassion_child_pictures","model_compassion_child_pictures","group_sponsorship",1,1,1,1
-"access_compassion_translated_value","Full access on compassion_translated_value","model_compassion_translated_value","group_sponsorship",1,1,1,1
-"access_compassion_country","Full access on compassion_country","model_compassion_country","group_sponsorship",1,1,1,1
-"access_compassion_project_age_group","Full access on compassion_project_age_group","model_compassion_project_age_group","group_sponsorship",1,1,1,1
-"access_document_directory","Full access on document_directory","document.model_document_directory","group_sponsorship",1,1,1,1
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_compassion_project,Full access on compassion_project,model_compassion_project,group_sponsorship,1,1,1,1
+access_compassion_child,Full access on compassion_child,model_compassion_child,group_sponsorship,1,1,1,1
+access_compassion_child_pictures,Full access on compassion_child_pictures,model_compassion_child_pictures,group_sponsorship,1,1,1,1
+access_document_directory,Full access on document_directory,document.model_document_directory,group_sponsorship,1,1,1,1
+access_res_lang_compassion,Read only access on res_lang_compassion,model_res_lang_compassion,group_sponsorship,1,0,0,0
+access_admin_res_lang_compassion,Full access on res_lang_compassion,model_res_lang_compassion,base.group_erp_manager,1,1,1,1
+access_child_assessement,Read access on child_assessement,model_compassion_child_cdpr,group_sponsorship,1,0,1,0
+access_child_lifecycle,Read access on child lifecycle,model_compassion_child_ble,group_sponsorship,1,1,1,0
+access_child_household,Read access on child household,model_compassion_household,group_sponsorship,1,1,1,0
+access_child_household_duty,Read access on household duty,model_child_household_duty,group_sponsorship,1,0,1,0
+access_child_project_activity,Read access on child project activity,model_child_project_activity,group_sponsorship,1,0,1,0
+access_child_school_subject,Read access on child school subject,model_child_school_subject,group_sponsorship,1,0,1,0
+access_child_hobby,Read access on child hoby,model_child_hobby,group_sponsorship,1,0,1,0
+access_child_christian_activity,Read access on child christian activity,model_child_christian_activity,group_sponsorship,1,0,1,0
+access_physical_disability,Read access on child physical disability,model_child_physical_disability,group_sponsorship,1,0,1,0
+access_child_chronic_illness,Read access on child chronic illness,model_child_chronic_illness,group_sponsorship,1,0,1,0
+access_project_involvement,Read access on icp involvement,model_icp_involvement,group_sponsorship,1,0,1,0
+access_icp_church_ministry,Read access on icp church ministry,model_icp_church_ministry,group_sponsorship,1,0,1,0
+access_icp_program,Read access on icp program,model_icp_program,group_sponsorship,1,0,1,0
+access_icp_church_facility,Read access on icp church facility,model_icp_church_facility,group_sponsorship,1,0,1,0
+access_icp_lifecycle_reason,Read access on icp lifecycle reason,model_icp_lifecycle_reason,group_sponsorship,1,0,1,0
+access_icp_mobile_device,Read access on icp mobile device,model_icp_mobile_device,group_sponsorship,1,0,1,0
+access_icp_church_utility,Read access on icp church utility,model_icp_church_utility,group_sponsorship,1,0,1,0
+access_icp_spiritual_activity,Read access on icp spiritual activity,model_icp_spiritual_activity,group_sponsorship,1,0,1,0
+access_icp_cognitive_activity,Read access on icp cognitive_activity,model_icp_cognitive_activity,group_sponsorship,1,0,1,0
+access_icp_physical_activity,Read access on icp physical_activity,model_icp_physical_activity,group_sponsorship,1,0,1,0
+access_icp_sociological,Read access on icp sociological,model_icp_sociological_activity,group_sponsorship,1,0,1,0
+access_icp_community_occupation,Read access on icp community_occupation,model_icp_community_occupation,group_sponsorship,1,0,1,0
+access_icp_school_cost,Read access on icp school_cost,model_icp_school_cost,group_sponsorship,1,0,1,0
+access_icp_diet,Read access on icp diet,model_icp_diet,group_sponsorship,1,0,1,1
+access_connect_month,Read only access on connect_month,model_connect_month,group_sponsorship,1,0,0,0
+access_admin_connect_month,Full access on connect_month,model_connect_month,base.group_erp_manager,1,1,1,1
+access_project_lifecycle,Read access on project_lifecycle,model_compassion_project_ile,group_sponsorship,1,0,1,0
+access_project_need,Read access on project need,model_compassion_project_need,group_sponsorship,1,0,1,0
+access_admin_child_assessement,Full access on child_assessement,model_compassion_child_cdpr,message_center_compassion.group_gmc,1,1,1,1
+access_admin_child_lifecycle,Full access on child lifecycle,model_compassion_child_ble,message_center_compassion.group_gmc,1,1,1,1
+access_admin_child_household,Full access on child household,model_compassion_household,message_center_compassion.group_gmc,1,1,1,1
+access_admin_child_household_duty,Full access on household duty,model_child_household_duty,base.group_erp_manager,1,1,1,1
+access_admin_child_project_activity,Full access on child project activity,model_child_project_activity,base.group_erp_manager,1,1,1,1
+access_admin_child_school_subject,Full access on child school subject,model_child_school_subject,base.group_erp_manager,1,1,1,1
+access_admin_child_hobby,Full access on child hoby,model_child_hobby,base.group_erp_manager,1,1,1,1
+access_admin_child_christian_activity,Full access on child christian activity,model_child_christian_activity,base.group_erp_manager,1,1,1,1
+access_admin_physical_disability,Full access on child physical disability,model_child_physical_disability,base.group_erp_manager,1,1,1,1
+access_admin_child_chronic_illness,Full access on child chronic illness,model_child_chronic_illness,base.group_erp_manager,1,1,1,1
+access_admin_project_involvement,Full access on icp involvement,model_icp_involvement,base.group_erp_manager,1,1,1,1
+access_admin_icp_church_ministry,Full access on icp church ministry,model_icp_church_ministry,base.group_erp_manager,1,1,1,1
+access_admin_icp_program,Full access on icp program,model_icp_program,base.group_erp_manager,1,1,1,1
+access_admin_icp_church_facility,Full access on icp church facility,model_icp_church_facility,base.group_erp_manager,1,1,1,1
+access_admin_icp_lifecycle_reason,Full access on icp lifecycle reason,model_icp_lifecycle_reason,base.group_erp_manager,1,1,1,1
+access_admin_icp_mobile_device,Full access on icp mobile device,model_icp_mobile_device,base.group_erp_manager,1,1,1,1
+access_admin_icp_church_utility,Full access on icp church utility,model_icp_church_utility,base.group_erp_manager,1,1,1,1
+access_admin_icp_spiritual_activity,Full access on icp spiritual activity,model_icp_spiritual_activity,base.group_erp_manager,1,1,1,1
+access_admin_icp_cognitive_activity,Full access on icp cognitive_activity,model_icp_cognitive_activity,base.group_erp_manager,1,1,1,1
+access_admin_icp_physical_activity,Full access on icp physical_activity,model_icp_physical_activity,base.group_erp_manager,1,1,1,1
+access_admin_icp_sociological,Full access on icp sociological,model_icp_sociological_activity,base.group_erp_manager,1,1,1,1
+access_admin_icp_community_occupation,Full access on icp community_occupation,model_icp_community_occupation,base.group_erp_manager,1,1,1,1
+access_admin_icp_school_cost,Full access on icp school_cost,model_icp_school_cost,base.group_erp_manager,1,1,1,1
+access_admin_icp_diet,Full access on icp diet,model_icp_diet,base.group_erp_manager,1,1,1,1
+access_admin_project_lifecycle,Full access on project_lifecycle,model_compassion_project_ile,message_center_compassion.group_gmc,1,1,1,1
+access_admin_project_need,Full access on project need,model_compassion_project_need,message_center_compassion.group_gmc,1,1,1,1
+access_field_office,Full access on field office,model_compassion_field_office,group_sponsorship,1,1,1,1
+access_household_member,Full access on household member,model_compassion_household_member,group_sponsorship,1,0,1,0
+access_admin_household_member,Full access on household member,model_compassion_household_member,message_center_compassion.group_gmc,1,1,1,1
+access_global_partner,Read access on global partner,model_compassion_global_partner,group_sponsorship,1,0,0,0
+access_admin_global_partner,Full access on global partner,model_compassion_global_partner,message_center_compassion.group_gmc,1,1,1,1
+access_compassion_hold,Full access on compassion hold,model_compassion_hold,group_sponsorship,1,1,1,1
+access_compassion_reservation_spo,User access on reservations,model_compassion_reservation,group_sponsorship,1,1,1,0
+access_compassion_reservation,Full access on reservations,model_compassion_reservation,message_center_compassion.group_gmc,1,1,1,1
+access_major_revision_admin,Full access on major revision fields,model_compassion_major_revision,message_center_compassion.group_gmc,1,1,1,1
+access_major_revision,User access on major revision fields,model_compassion_major_revision,group_sponsorship,1,0,1,0
+access_compassion_child_note_admin,Full access on child notes,model_compassion_child_note,message_center_compassion.group_gmc,1,1,1,1
+access_compassion_child_note,User access on child notes,model_compassion_child_note,group_sponsorship,1,0,1,0
+access_fo_disaster_alert,Full access on Field Office Disaster Alert,model_fo_disaster_alert,message_center_compassion.group_gmc,1,1,1,1
+access_fo_disaster_alert_spo,User access on Field Office Disaster Alert,model_fo_disaster_alert,group_sponsorship,1,1,1,0
+access_child_disaster_impact,Full access on Child Disaster Impact,model_child_disaster_impact,message_center_compassion.group_gmc,1,1,1,1
+access_child_disaster_impact_spo,User access on Child Disaster Impact,model_child_disaster_impact,group_sponsorship,1,0,1,1
+access_fo_disaster_update,Full access on Field Office Disaster Update,model_fo_disaster_update,message_center_compassion.group_gmc,1,1,1,1
+access_fo_disaster_update_spo,User access on Field Office Disaster Update,model_fo_disaster_update,group_sponsorship,1,0,1,1
+access_icp_disaster_impact,Full access on ICP Disaster Impact,model_icp_disaster_impact,message_center_compassion.group_gmc,1,1,1,1
+access_icp_disaster_impact_spo,User access on ICP Disaster Impact,model_icp_disaster_impact,group_sponsorship,1,0,1,1
+access_fo_disaster_loss,Full access on Field Office Disaster Loss,model_fo_disaster_loss,message_center_compassion.group_gmc,1,1,1,1
+access_fo_disaster_loss_spo,User access on Field Office Disaster Loss,model_fo_disaster_loss,group_sponsorship,1,0,0,0

@@ -9,5 +9,7 @@
 #
 ##############################################################################
 
-from . import model
-from . import wizard
+from . import models
+from . import mappings
+from . import controllers
+from . import wizards

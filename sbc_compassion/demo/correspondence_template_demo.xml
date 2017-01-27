@@ -20,7 +20,7 @@
     <!-- Language checkboxes -->
     <record id="test_french_checkbox1" model="correspondence.lang.checkbox">
       <field name="template_id" ref="test_template1"/>
-      <field name="language_id" ref="lang_compassion_french"/>
+      <field name="language_id" ref="child_compassion.lang_compassion_french"/>
       <field name="x_min">1282</field>
       <field name="x_max">1338</field>
       <field name="y_min">101</field>
@@ -29,7 +29,7 @@
 
     <record id="test_italian_checkbox1" model="correspondence.lang.checkbox">
       <field name="template_id" ref="test_template1"/>
-      <field name="language_id" ref="lang_compassion_italian"/>
+      <field name="language_id" ref="child_compassion.lang_compassion_italian"/>
       <field name="x_min">1282</field>
       <field name="x_max">1338</field>
       <field name="y_min">183</field>
@@ -38,7 +38,7 @@
 
     <record id="test_german_checkbox1" model="correspondence.lang.checkbox">
       <field name="template_id" ref="test_template1"/>
-      <field name="language_id" ref="lang_compassion_german"/>
+      <field name="language_id" ref="child_compassion.lang_compassion_german"/>
       <field name="x_min">1282</field>
       <field name="x_max">1338</field>
       <field name="y_min">266</field>
@@ -47,7 +47,7 @@
 
     <record id="test_spanish_checkbox1" model="correspondence.lang.checkbox">
       <field name="template_id" ref="test_template1"/>
-      <field name="language_id" ref="lang_compassion_spanish"/>
+      <field name="language_id" ref="child_compassion.lang_compassion_spanish"/>
       <field name="x_min">1726</field>
       <field name="x_max">1783</field>
       <field name="y_min">101</field>
@@ -56,7 +56,7 @@
 
     <record id="test_english_checkbox1" model="correspondence.lang.checkbox">
       <field name="template_id" ref="test_template1"/>
-      <field name="language_id" ref="lang_compassion_english"/>
+      <field name="language_id" ref="child_compassion.lang_compassion_english"/>
       <field name="x_min">1726</field>
       <field name="x_max">1783</field>
       <field name="y_min">183</field>
@@ -74,7 +74,7 @@
     <!-- Second Template -->
     <record id="test_template2" model="correspondence.template">
       <field name="name">Test Template 2</field>
-      <field name="layout">CH-A-1S01-1</field>
+      <field name="layout">CH-A-1S11-1</field>
       <field name="pattern_image" type="base64" file="sbc_compassion/static/src/img/Test-L1-Batman_Pattern.png"/>
       <field name="template_image" type="base64" file="sbc_compassion/static/src/img/Test-L1-Batman.png"/>
       <field name="page_width">2481</field>
@@ -89,7 +89,7 @@
     <!-- Language checkboxes -->
     <record id="test_french_checkbox2" model="correspondence.lang.checkbox">
       <field name="template_id" ref="test_template2"/>
-      <field name="language_id" ref="lang_compassion_french"/>
+      <field name="language_id" ref="child_compassion.lang_compassion_french"/>
       <field name="x_min">1248</field>
       <field name="x_max">1302</field>
       <field name="y_min">123</field>
@@ -98,7 +98,7 @@
 
     <record id="test_italian_checkbox2" model="correspondence.lang.checkbox">
       <field name="template_id" ref="test_template2"/>
-      <field name="language_id" ref="lang_compassion_italian"/>
+      <field name="language_id" ref="child_compassion.lang_compassion_italian"/>
       <field name="x_min">1248</field>
       <field name="x_max">1302</field>
       <field name="y_min">205</field>
@@ -107,7 +107,7 @@
 
     <record id="test_german_checkbox2" model="correspondence.lang.checkbox">
       <field name="template_id" ref="test_template2"/>
-      <field name="language_id" ref="lang_compassion_german"/>
+      <field name="language_id" ref="child_compassion.lang_compassion_german"/>
       <field name="x_min">1248</field>
       <field name="x_max">1302</field>
       <field name="y_min">282</field>
@@ -116,7 +116,7 @@
 
     <record id="test_spanish_checkbox2" model="correspondence.lang.checkbox">
       <field name="template_id" ref="test_template2"/>
-      <field name="language_id" ref="lang_compassion_spanish"/>
+      <field name="language_id" ref="child_compassion.lang_compassion_spanish"/>
       <field name="x_min">1692</field>
       <field name="x_max">1751</field>
       <field name="y_min">123</field>
@@ -125,7 +125,7 @@
 
     <record id="test_english_checkbox2" model="correspondence.lang.checkbox">
       <field name="template_id" ref="test_template2"/>
-      <field name="language_id" ref="lang_compassion_english"/>
+      <field name="language_id" ref="child_compassion.lang_compassion_english"/>
       <field name="x_min">1692</field>
       <field name="x_max">1751</field>
       <field name="y_min">205</field>

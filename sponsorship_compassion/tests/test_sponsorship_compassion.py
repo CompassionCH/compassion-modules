@@ -35,7 +35,7 @@ class test_sponsorship_compassion(test_base_module):
             no mistakes.
         """
         # Create a child and get the project associated
-        child = self.env['compassion.child'].create({'code': 'PE3760140'})
+        child = self.env['compassion.child'].create({'local_id': 'PE03760140'})
         child.get_infos()
         # Creation of the sponsorship contract
         sp_group = self._create_group(
@@ -118,7 +118,7 @@ class test_sponsorship_compassion(test_base_module):
             are no invoice lines too. Test if a contract is
             cancelled well if we don't generate invoices.
         """
-        child = self.env['compassion.child'].create({'code': 'IO6790211'})
+        child = self.env['compassion.child'].create({'local_id': 'IO06790211'})
         child.project_id.write({'disburse_funds': True})
         sp_group = self._create_group(
             'do_nothing', self.partners.ids[0], 1, self.payment_term_id)
@@ -207,9 +207,12 @@ class test_sponsorship_compassion(test_base_module):
             Check if the 3 contracts create one merged invoice for every month
             (2 months here) with the good values.
         """
-        child1 = self.env['compassion.child'].create({'code': 'UG8320010'})
-        child2 = self.env['compassion.child'].create({'code': 'UG8320011'})
-        child3 = self.env['compassion.child'].create({'code': 'UG8320013'})
+        child1 = self.env['compassion.child'].create({'local_id':
+                                                      'UG08320010'})
+        child2 = self.env['compassion.child'].create({'local_id':
+                                                      'UG08320011'})
+        child3 = self.env['compassion.child'].create({'local_id':
+                                                      'UG08320013'})
         sp_group = self._create_group(
             'do_nothing', self.partners.ids[0], 1, self.payment_term_id)
         sponsorship1 = self._create_contract(

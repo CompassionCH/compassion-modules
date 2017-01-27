@@ -36,10 +36,12 @@ class recurring_contract(models.Model):
                 'waiting': [('readonly', False)],
                 'mandate': [('readonly', False)]}, ondelete='restrict',
         track_visibility='onchange')
+    project_id = fields.Many2one('compassion.project', 'Project',
+                                 related='child_id.project_id')
     child_name = fields.Char(
         'Sponsored child name', related='child_id.name', readonly=True)
     child_code = fields.Char(
-        'Sponsored child code', related='child_id.code', readonly=True)
+        'Sponsored child code', related='child_id.local_id', readonly=True)
     partner_codega = fields.Char(
         'Partner ref', related='partner_id.ref', readonly=True)
     activation_date = fields.Date(readonly=True, copy=False)
@@ -52,14 +54,13 @@ class recurring_contract(models.Model):
         ('terminated', _('Terminated')),
         ('cancelled', _('Cancelled'))])
     is_active = fields.Boolean(
-        'Contract Active', compute='_set_active', store=True,
+        'Contract Active', compute='compute_active', store=True,
         help="It indicates that the first invoice has been paid and the "
              "contract was activated.")
     # Field used for identifying gifts from sponsor (because of bad GP)
     num_pol_ga = fields.Integer(
         'Partner Contract Number', required=True, copy=False)
     end_reason = fields.Selection('get_ending_reasons')
-    end_date = fields.Date(readonly=True, track_visibility='onchange')
     months_paid = fields.Integer(
         compute='_set_months_paid',
         string='Months paid')
@@ -96,11 +97,12 @@ class recurring_contract(models.Model):
                 name += ' - ' + self.contract_line_ids[0].product_id.name
             self.name = name
 
-    @api.one
-    @api.depends('activation_date')
-    def _set_active(self):
-        self.is_active = bool(self.activation_date) and \
-            self.state not in ('terminated', 'cancelled')
+    @api.multi
+    @api.depends('activation_date', 'state')
+    def compute_active(self):
+        for contract in self:
+            contract.is_active = bool(contract.activation_date) and \
+                contract.state not in ('terminated', 'cancelled')
 
     def get_ending_reasons(self):
         """Returns all the ending reasons of sponsorships"""
@@ -227,14 +229,8 @@ class recurring_contract(models.Model):
     ##########################################################################
     @api.multi
     def invoice_unpaid(self, invoice):
-        """ Check if at least one invoice is paid.
-            Cancel activation otherwise.
-        """
-        for contract in self.filtered(lambda c: c.state == 'active'):
-            paid_invoices = contract.invoice_line_ids.filtered(
-                lambda l: l.state == 'paid')
-            if not paid_invoices:
-                contract.signal_workflow('contract_activation_cancelled')
+        """ Hook when invoice is unpaid """
+        pass
 
     @api.multi
     def invoice_paid(self, invoice):
@@ -324,25 +320,34 @@ class recurring_contract(models.Model):
     ##########################################################################
     #                            WORKFLOW METHODS                            #
     ##########################################################################
-    @api.one
+    @api.multi
     def contract_active(self):
-        vals = {'state': 'active'}
-        if not self.is_active:
-            vals.update({'activation_date': datetime.today().strftime(DF)})
-        self.write(vals)
+        self.filtered(lambda c: not c.is_active).write({
+            'activation_date': fields.Date.today()
+        })
+        self.write({'state': 'active'})
+
         # Write payment term in partner property
-        self.partner_id.property_payment_term = self.payment_term_id
+        for contract in self:
+            contract.partner_id.property_payment_term = \
+                contract.payment_term_id
         return True
 
     @api.multi
     def contract_cancelled(self):
-        self.write({'state': 'cancelled'})
+        self.write({
+            'state': 'cancelled',
+            'end_date': fields.Datetime.now()
+        })
         self.clean_invoices()
         return True
 
     @api.multi
     def contract_terminated(self):
-        self.write({'state': 'terminated'})
+        self.write({
+            'state': 'terminated',
+            'end_date': fields.Datetime.now()
+        })
         self.clean_invoices()
         return True
 

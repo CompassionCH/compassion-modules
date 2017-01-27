@@ -64,11 +64,26 @@
             <field name="signal">contract_terminated</field>
             <field name="condition">not is_active</field>
         </record>
+        <record model="workflow.transition" id="t3a">
+            <field name="act_from" ref="act_mandate" />
+            <field name="act_to" ref="act_cancelled" />
+            <field name="signal">contract_terminated</field>
+            <field name="condition">not global_id</field>
+        </record>
         <record model="workflow.transition" id="t3b">
             <field name="act_from" ref="act_mandate" />
             <field name="act_to" ref="recurring_contract.act_terminated" />
             <field name="signal">contract_terminated</field>
-            <field name="condition">is_active</field>
+            <field name="condition">global_id</field>
+        </record>
+        <record model="workflow.transition" id="recurring_contract.t2">
+            <field name="condition">global_id</field>
+        </record>
+        <record model="workflow.transition" id="t3c">
+            <field name="act_from" ref="recurring_contract.act_active" />
+            <field name="act_to" ref="act_cancelled" />
+            <field name="signal">contract_terminated</field>
+            <field name="condition">not global_id</field>
         </record>
         <record model="workflow.transition" id="t4a">
             <field name="act_from" ref="act_validation" />
@@ -88,12 +103,7 @@
         <record model="workflow.transition" id="t6">
             <field name="act_from" ref="act_banking_validation" />
             <field name="act_to" ref="act_waiting" />
-            <field name="condition">has_mandate and not is_active</field>
-        </record>
-        <record model="workflow.transition" id="t7">
-            <field name="act_from" ref="act_banking_validation" />
-            <field name="act_to" ref="recurring_contract.act_active" />
-            <field name="condition">has_mandate and is_active</field>
+            <field name="condition">has_mandate</field>
         </record>
         <record model="workflow.transition" id="t6a">
             <field name="act_from" ref="act_mandate" />
@@ -118,11 +128,6 @@
             <field name="act_to" ref="act_mandate" />
             <field name="signal">will_pay_by_lsv_dd</field>
             <field name="condition">not has_mandate</field>
-        </record>
-        <record model="workflow.transition" id="t10">
-            <field name="act_from" ref="recurring_contract.act_active" />
-            <field name="act_to" ref="act_waiting" />
-            <field name="signal">contract_activation_cancelled</field>
         </record>
     </data>
 </openerp>

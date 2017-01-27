@@ -1,18 +1,24 @@
 .. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
-    :alt: License: AGPL-3
+   :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
+   :alt: License: AGPL-3
 
+==================
 GMC Message Center
 ==================
 
 Message Center that offers a queue of messages that have to be sent
 to GMC and a queue of messages received from GMC.
 
+This module adds a route for listening to OnRamp messages call from Compassion
+using REST message using authentification with a oauth2 token.
+
 Installation
 ============
 
-To install this module, you need to:
+To install this module, you need to install dependencies:
 
 * install python-requests (sudo apt-get install python-requests)
+* install jwt (sudo pip install jwt)
 
 Configuration
 =============
@@ -20,19 +26,30 @@ Configuration
 To configure this module, you need to:
 
 * add settings in .conf file of Odoo
-* middleware_url = <url to middleware talking with GMC Message System>
+* connect_url = <url to entry point of GMC Onramp>
+* connect_api_key = <api key for using GMC messages services>
+* connect_client = <username for token requests>
+* connect_secret = <password for token requests>
+* connect_env = core for TEST environment, pcore for STAGE and PROD environment
+
+To allow incoming messages you must setup a user with required access rights
+and with login = <username sent by GMC in tokens> and password = <password
+sent by GMC in tokens>
+
+In order to manage messages, setup a user with the "GMC Manager" access
+rights.
 
 Usage
 =====
 
 To use this module, you need to:
 
-* Go to Sponsorship -> Message Center
+* Go to Message Center
 
 Known issues / Roadmap
 ======================
 
-* Migrate code for V8
+* Test for R4
 
 Credits
 =======

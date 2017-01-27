@@ -1,0 +1,5 @@
+<openerp>
+    <data>
+        <function model="migration.r4" name="perform_migration"/>
+    </data>
+</openerp>

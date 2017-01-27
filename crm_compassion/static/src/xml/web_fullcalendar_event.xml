@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <tr t-extend="CalendarView.quick_create">
+        <t t-jquery=".form-group" t-operation="after">
+            <div class="form-group" id="div_crm_event_compassion"/>
+        </t>
+    </tr>
+</templates>

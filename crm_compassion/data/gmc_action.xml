@@ -1,0 +1,16 @@
+<openerp>
+    <data>
+        <!-- Weekly Planning Message Creation -->
+        <record id="create_demand_planning" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">DemandPlanning</field>
+            <field name="mapping_name">create_demand_planning</field>
+            <field name="model">demand.planning</field>
+            <field name="description">This will send a new set of Weekly Plannings to GMC.</field>
+            <field name="connect_service">globalpartners/demandplanning</field>
+            <field name="connect_answer_wrapper">GlobalPartnerWeeklyDemandResponseDetails</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">False</field>
+        </record>
+    </data>
+</openerp>

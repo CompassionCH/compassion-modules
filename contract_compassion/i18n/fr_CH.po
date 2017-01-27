@@ -326,6 +326,11 @@ msgid "End date"
 msgstr "Date de fin"
 
 #. module: contract_compassion
+#: field:end.contract.wizard,hold_expiration_date:0
+msgid "Hold expiration date"
+msgstr "Date d'expiration de la prochaine réservation"
+
+#. module: contract_compassion
 #: view:end.contract.wizard:contract_compassion.end_contract_view
 msgid "End of contract"
 msgstr "Fin de l'engagement"

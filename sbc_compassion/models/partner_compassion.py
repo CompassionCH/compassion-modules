@@ -9,31 +9,25 @@
 #
 ##############################################################################
 
-from openerp import fields, models, api, _
+from openerp import fields, models, api
 
 
 class ResPartner(models.Model):
     """ Add correspondence preferences to Partners
     """
-
     _inherit = 'res.partner'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-
     spoken_lang_ids = fields.Many2many(
         'res.lang.compassion', string='Spoken languages')
-    mandatory_review = fields.Boolean(
-        help='Indicates that we should review the letters of this sponsor '
-             'before sending them to GMC.')
-    delivery_preference = fields.Selection([
-        ('digital', _('By e-mail')),
-        ('physical', _('By postal service'))], default='digital',
-        required=True, help='Delivery preference for Child letters')
-    send_original = fields.Boolean(
-        help='Indicates that we request the original letters for this sponsor'
-        )
+    letter_delivery_preference = fields.Selection(
+        selection='_get_delivery_preference',
+        default='auto_digital',
+        required=True,
+        help='Delivery preference for Child Letters',
+        oldname='delivery_preference')
     translator_email = fields.Char(help='e-mail address used in SDL')
 
     @api.multi

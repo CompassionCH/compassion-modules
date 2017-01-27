@@ -1,0 +1,111 @@
+<openerp>
+    <data>
+        <!-- Get Intervention Kit -->
+        <record id="intervention_details_request" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionDetailsRequest</field>
+            <field name="mapping_name">intervention_mapping</field>
+            <field name="model">compassion.intervention</field>
+            <field name="description">GET Intervention Kit</field>
+            <field name="connect_service">interventions/${object.intervention_id}/kits/InterventionKit</field>
+            <field name="connect_answer_wrapper">InterventionDetailsRequest</field>
+            <field name="request_type">GET</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- update Intervention Kit -->
+        <record id="update_intervention_details" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">UpdateInterventionDetailsRequest</field>
+            <field name="mapping_name">intervention_mapping</field>
+            <field name="model">compassion.intervention</field>
+            <field name="incoming_method">update_intervention_details_request</field>
+            <field name="description">Update Intervention Kit</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- Search Intervention -->
+        <record id="intervention_search_action" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionSearch</field>
+            <field name="model">compassion.intervention.search</field>
+            <field name="description">This will send a search query for Interventions.</field>
+            <field name="connect_service">interventions/availabilityquery</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- Create Hold -->
+        <record id="intervention_create_hold_action" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionHoldCreate</field>
+            <field name="model">compassion.intervention.hold.wizard</field>
+            <field name="description">This will create a hold for Interventions.</field>
+            <field name="connect_service">interventions/holds</field>
+            <field name="connect_outgoing_wrapper">InterventionHoldList</field>
+            <field name="connect_answer_wrapper">InterventionHoldResponse</field>
+            <field name="success_method">hold_sent</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- Update Hold -->
+        <record id="intervention_update_hold_action" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionHoldUpdate</field>
+            <field name="model">compassion.intervention</field>
+            <field name="mapping_name">update_hold</field>
+            <field name="description">This will update a hold for Interventions.</field>
+            <field name="connect_service">interventions/${object.intervention_id}/holds/${object.hold_id}</field>
+            <field name="connect_outgoing_wrapper">InterventionHoldList</field>
+            <field name="connect_answer_wrapper">InterventionHoldResponse</field>
+            <field name="success_method">hold_sent</field>
+            <field name="request_type">PUT</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- Cancel Hold -->
+        <record id="intervention_cancel_hold_action" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionHoldCancel</field>
+            <field name="model">compassion.intervention</field>
+            <field name="mapping_name">cancel_hold</field>
+            <field name="description">This will cancel a hold for Interventions.</field>
+            <field name="connect_service">interventions/holds/release</field>
+            <field name="connect_outgoing_wrapper">InterventionHoldCancellationList</field>
+            <field name="connect_answer_wrapper">InterventionHoldCancellationResponseList</field>
+            <field name="success_method">hold_cancelled</field>
+            <field name="request_type">POST</field>
+        </record>
+
+        <!-- Remove Intervention Hold -->
+        <record id="intervention_hold_removal_notification" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">InterventionHoldRemovalNotification</field>
+            <field name="mapping_name">intervention_mapping</field>
+            <field name="model">compassion.intervention</field>
+            <field name="incoming_method">intervention_hold_removal_notification</field>
+            <field name="description">Notification sent to GP when a intervention hold is cancelled</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- Create Commitment -->
+        <record id="intervention_create_commitment_action" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionCreateCommitment</field>
+            <field name="model">compassion.intervention.commitment.wizard</field>
+            <field name="description">This will create a commitment for an Intervention</field>
+            <field name="connect_service">interventions/commitments</field>
+            <field name="connect_outgoing_wrapper">InterventionCommitmentList</field>
+            <field name="connect_answer_wrapper">InterventionCommitmentResponseList</field>
+            <field name="success_method">commitment_created</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <record id="intervention_hold_removal_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/04/InterventionHoldRemovalNotification</field>
+            <field name="action_id" ref="intervention_hold_removal_notification"/>
+        </record>
+    </data>
+</openerp>

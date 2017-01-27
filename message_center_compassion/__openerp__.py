@@ -30,24 +30,24 @@
 
 {
     'name': 'Compassion CH Message Center',
-    'version': '8.0.1',
+    'version': '8.0.3.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['sponsorship_compassion', 'connector'],
+    'depends': ['base', 'connector'],
     'external_dependencies': {
-        'python': ['requests'],
+        'python': ['requests', 'jwt'],
     },
     'data': [
         'security/gmc_groups.xml',
         'security/ir.model.access.csv',
-        'view/gmc_message_view.xml',
-        'view/contracts_view.xml',
-        'view/child_compassion_view.xml',
-        'data/gmc_action.xml',
-        'data/gmc_message_cron.xml',
+        'views/gmc_message_view.xml',
+        'views/advanced_query_view.xml',
+        'data/query_operators.xml',
     ],
-    'demo': [],
+    'demo': [
+        'demo/res_users.xml'
+    ],
     'installable': True,
     'auto_install': False,
 }

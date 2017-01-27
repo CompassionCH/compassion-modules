@@ -30,19 +30,16 @@
 
 {
     'name': 'Compassion Sponsorships Tracking',
-    'version': '8.0.1',
+    'version': '8.0.3.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': [
-        'message_center_compassion',
-        ],
+    'depends': ['sponsorship_compassion'],
     'data': [
-        'view/sub_sponsorship_wizard_view.xml',
-        'view/contract_view.xml',
-        'view/sponsorship_tracking.xml',
+        'views/sub_sponsorship_wizard_view.xml',
+        'views/contract_view.xml',
+        'views/sponsorship_tracking.xml',
         'workflow/sds_workflow.xml',
-        'workflow/project_workflow.xml',
         'data/contract_cron.xml',
         'data/install.xml',
         ],

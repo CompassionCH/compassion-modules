@@ -9,8 +9,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
-#    @author: Cyril Sester <csester@compassion.ch>
+#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
+#    @author: Cyril Sester <csester@compassion.ch>, Emanuel Cino
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -30,36 +30,66 @@
 
 {
     'name': 'Compassion Children',
-    'version': '8.0.1',
+    'version': '8.0.3.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['mail', 'web_m2x_options', 'document'],
+    'depends': ['mail', 'web_m2x_options', 'document',
+                'message_center_compassion', 'advanced_translation'],
     'external_dependencies': {
-        'python': ['urllib3', 'certifi'],
+        'python': ['enum', 'pyquery']
     },
     'data': [
         'security/sponsorship_groups.xml',
         'security/ir.model.access.csv',
-        'view/child_depart_wizard_view.xml',
-        'view/child_compassion_view.xml',
-        'view/child_compassion_property_view.xml',
-        'view/child_description_wizard_view.xml',
-        'view/project_compassion_view.xml',
-        'view/translated_values_view.xml',
-        'view/country_compassion_view.xml',
-        'view/delegate_child_wizard.xml',
-        'view/undelegate_child_wizard.xml',
-        'view/project_description_wizard_view.xml',
-        'view/project_compassion_age_groups_view.xml',
+        'views/child_compassion_view.xml',
+        'views/field_office_view.xml',
+        'views/child_holds_view.xml',
+        'views/global_childpool_view.xml',
+        'views/project_compassion_view.xml',
+        'views/gmc_message_view.xml',
+        'views/compassion_reservation_view.xml',
+        'views/field_office_disaster_alert_view.xml',
+        'views/res_config_view.xml',
+        'views/notification_settings_view.xml',
         'workflow/child_workflow.xml',
-        'data/delegate_child_compassion_cron.xml',
-        'data/child_compassion_template.xml',
+        'data/validity_checks_cron.xml',
+        'data/migrate_r4.xml',
+        'data/child.hobby.csv',
+        'data/child.household.duty.csv',
+        'data/child.project.activity.csv',
+        'data/child.school.subject.csv',
+        'data/child.christian.activity.csv',
+        'data/child.chronic.illness.csv',
+        'data/child.physical.disability.csv',
+        'data/connect.month.csv',
+        'data/gmc_action.xml',
+        'data/compassion.field.office.csv',
+        'data/global_partner.xml',
+        'data/lang_data.xml',
+        'data/icp.involvement.csv',
+        'data/icp.church.ministry.csv',
+        'data/icp.program.csv',
+        'data/global_partner.xml',
+        'data/gmc_action.xml',
+        'data/connect.month.csv',
+        'data/icp.church.facility.csv',
+        'data/icp.church.utility.csv',
+        'data/icp.cognitive.activity.csv',
+        'data/icp.community.occupation.csv',
+        'data/icp.diet.csv',
+        'data/icp.lifecycle.reason.csv',
+        'data/icp.mobile.device.csv',
+        'data/icp.physical.activity.csv',
+        'data/icp.school.cost.csv',
+        'data/icp.sociological.activity.csv',
+        'data/icp.spiritual.activity.csv',
+        'data/fo.high.risk.csv',
+        'data/fo.disaster.loss.csv',
+        'data/ir.advanced.translation.csv',
     ],
     'demo': [
-        'demo/compassion.country.csv',
-        'demo/install.xml',
-        'demo/compassion.child.csv'
+        # 'demo/compassion.child.csv'
     ],
     'installable': True,
     'auto_install': False,

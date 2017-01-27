@@ -23,13 +23,6 @@
             <field name="flow_start" eval='True' />
         </record>
         
-        <record model="workflow.activity" id="act_start">
-            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
-            <field name="name">start</field>
-            <field name="kind">function</field>
-            <field name="action">write({'sds_state': 'start', 'color': 4})</field>
-        </record>
-        
         <record model="workflow.activity" id="act_waiting_welcome">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">waiting_welcome</field>
@@ -61,18 +54,11 @@
             <field name="action">write({'sds_state': 'sub_waiting', 'color': 3})</field>
         </record>
         
-        <record model="workflow.activity" id="act_inform_no_sub">
-            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
-            <field name="name">inform_no_sub</field>
-            <field name="kind">function</field>
-            <field name="action">write({'sds_state': 'inform_no_sub', 'color': 0})</field>
-        </record>
-        
         <record model="workflow.activity" id="act_no_sub">
             <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
             <field name="name">no_sub</field>
             <field name="kind">function</field>
-            <field name="action">write({'sds_state': 'no_sub', 'color': 1})</field>
+            <field name="action">no_sub()</field>
             <field name="flow_stop" eval='True' />
         </record>
         
@@ -103,22 +89,8 @@
         <!-- Transitions -->
         <record model="workflow.transition" id="t0">
             <field name="act_from" ref="act_draft" />
-            <field name="act_to" ref="act_start" />
-            <field name="signal">contract_validated</field>
-        </record>
-
-        <record model="workflow.transition" id="t1a">
-            <field name="act_from" ref="act_start" />
             <field name="act_to" ref="act_waiting_welcome" />
-            <field name="signal">mail_sent</field>
-            <field name="condition">correspondant_id.email</field>
-        </record>
-
-         <record model="workflow.transition" id="t1b">
-            <field name="act_from" ref="act_start" />
-            <field name="act_to" ref="act_active" />
-            <field name="signal">mail_sent</field>
-            <field name="condition">not correspondant_id.email</field>
+            <field name="signal">contract_validated</field>
         </record>
         
         <record model="workflow.transition" id="t2">
@@ -140,26 +112,12 @@
             <field name="signal">contract_terminated</field>
             <field name="condition">end_reason!='1' or not is_active</field>
         </record>
-
-        <record model="workflow.transition" id="t5c">
-            <field name="act_from" ref="act_start" />
-            <field name="act_to" ref="act_cancelled" />
-            <field name="signal">contract_terminated</field>
-            <field name="condition">end_reason!='1' or not is_active</field>
-        </record>
         
         <record model="workflow.transition" id="t5d">
             <field name="act_from" ref="act_waiting_welcome" />
             <field name="act_to" ref="act_cancelled" />
             <field name="signal">contract_terminated</field>
             <field name="condition">end_reason!='1' or not is_active</field>
-        </record>
-        
-        <record model="workflow.transition" id="t5e">
-            <field name="act_from" ref="act_start" />
-            <field name="act_to" ref="act_sub_waiting" />
-            <field name="signal">contract_terminated</field>
-            <field name="condition">end_reason=='1' and is_active</field>
         </record>
         
         <record model="workflow.transition" id="t5f">
@@ -171,14 +129,8 @@
 
         <record model="workflow.transition" id="t6">
             <field name="act_from" ref="act_sub_waiting" />
-            <field name="act_to" ref="act_inform_no_sub" />
-            <field name="signal">no_sub</field>
-        </record>
-        
-        <record model="workflow.transition" id="t6b">
-            <field name="act_from" ref="act_inform_no_sub" />
             <field name="act_to" ref="act_no_sub" />
-            <field name="signal">mail_sent</field>
+            <field name="signal">no_sub</field>
         </record>
 
         <record model="workflow.transition" id="t7">

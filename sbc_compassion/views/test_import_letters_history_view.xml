@@ -87,7 +87,7 @@
 
 
         <!-- Menu Definition -->
-        <menuitem id="test_import_letters_menu" parent="child_compassion.menu_configuration"
+        <menuitem id="test_import_letters_menu" parent="correspondence_config"
                   name="Test Imports" action="action_compassion_test_import_letters_action" sequence="10"/>
     </data>
 </openerp>
