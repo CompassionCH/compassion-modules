@@ -456,7 +456,9 @@ class Correspondence(models.Model):
             action_id = self.env.ref('sbc_compassion.create_letter').id
             message = self.env['gmc.message.pool'].create({
                 'action_id': action_id,
-                'object_id': letter.id
+                'object_id': letter.id,
+                'child_id': letter.child_id.id,
+                'partner_id': letter.correspondant_id.id
             })
             if letter.sponsorship_id.state != \
                     'active' or letter.child_id.project_id.hold_s2b_letters:
