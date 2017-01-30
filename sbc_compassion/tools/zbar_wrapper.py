@@ -35,7 +35,7 @@ def _scan(img, scanner=None):
     # convert cv image to raw data
     pil = Image.fromarray(img)
     width, height = pil.size
-    raw = pil.tostring()
+    raw = pil.tobytes()
     # wrap image data
     image = zbar.Image(width, height, 'Y800', raw)
 
