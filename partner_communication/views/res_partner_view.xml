@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="view_partner_form">
+            <field name="name">Partner Form Communication</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <div class="oe_right oe_button_box" position="inside">
+                    <button name="%(partner_communication.action_communication_job_partner)d"
+                            context="{'default_partner_id': active_id}"
+                            type="action"
+                            class="oe_stat_button oe_inline"
+                            icon="fa-envelope-o">
+                        <field name="communication_count"
+                               widget="statinfo"
+                               string="Communications"/>
+                    </button>
+                </div>
+            </field>
+        </record>
+
+    </data>
+</openerp>

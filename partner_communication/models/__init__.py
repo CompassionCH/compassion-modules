@@ -14,3 +14,4 @@ from . import communication_job
 from . import communication_attachment
 from . import res_partner
 from . import email
+from . import crm_phonecall
