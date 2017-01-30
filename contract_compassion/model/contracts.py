@@ -79,8 +79,7 @@ class recurring_contract(models.Model):
         ondelete='restrict', track_visibility='onchange')
     type = fields.Selection('_get_type', required=True)
     group_freq = fields.Char(
-        string='Payment frequency',
-        compute='_set_frequency', store=True, readonly=True)
+        string='Payment frequency', compute='_set_frequency', readonly=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -143,10 +142,7 @@ class recurring_contract(models.Model):
         return [('O', _('General'))]
 
     @api.one
-    @api.depends('group_id.recurring_unit', 'group_id.recurring_value',
-                 'group_id.advance_billing_months')
     def _set_frequency(self):
-        recurring_value = 0
         frequencies = {
             '1 month': _('Monthly'),
             '2 month': _('Bimonthly'),
@@ -166,7 +162,7 @@ class recurring_contract(models.Model):
         if frequency in frequencies:
             frequency = frequencies[frequency]
         else:
-            frequency = 'Every ' + frequency + 's'
+            frequency = _('Every') + ' ' + frequency.lower()
         self.group_freq = frequency
 
     @api.multi

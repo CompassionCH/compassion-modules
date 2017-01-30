@@ -7,14 +7,14 @@ msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-30 12:28+0000\n"
-"PO-Revision-Date: 2017-01-30 13:39+0100\n"
+"PO-Revision-Date: 2017-01-30 13:38+0100\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
-"Language: fr_CH\n"
+"Language: de\n"
 "X-Generator: Poedit 1.8.4\n"
 
 #. module: contract_compassion
@@ -25,17 +25,17 @@ msgstr "\"Highly Vulnerable Children\" Fund"
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_sm
 msgid "\"Stop Mosquitoes\" campaign"
-msgstr "Campagne \"Stop Mosquitoes\""
+msgstr "\"Stop Mosquitoes\" campaign"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_wtp
 msgid "\"Water for the children\" Fund"
-msgstr "Fonds \"De l'eau pour les enfants\""
+msgstr "\"Water for the children\" Fund"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_wol
 msgid "\"Water of Life\" - Water filter fund"
-msgstr "\"De l'eau pour la vie\" - Fonds pour les filtres à eau"
+msgstr "\"Water of Life\" - Water filter fund"
 
 #. module: contract_compassion
 #: field:product.product,product_variant_count:0
@@ -55,12 +55,12 @@ msgstr "A description of the Product that you want to communicate to your suppli
 #. module: contract_compassion
 #: model:ir.model,name:contract_compassion.model_account_banking_mandate
 msgid "A generic banking mandate"
-msgstr "Un mandat bancaire"
+msgstr "Ein allgemeines Bank-Mandat"
 
 #. module: contract_compassion
 #: model:ir.model,name:contract_compassion.model_recurring_contract_group
 msgid "A group of contracts"
-msgstr "Groupe de contrats"
+msgstr "A group of contracts"
 
 #. module: contract_compassion
 #: help:product.product,description:0
@@ -70,30 +70,30 @@ msgstr "A precise description of the Product, used only for internal information
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_aid
 msgid "AIDS/HIV Fund"
-msgstr "Fonds SIDA/HIV"
+msgstr "AIDS/HIV Fund"
 
 #. module: contract_compassion
 #: view:recurring.contract.activate.wizard:contract_compassion.view_activate_sponsorship
 msgid "Activate"
-msgstr "Activer"
+msgstr "Activate"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:53
 #, python-format
 msgid "Active"
-msgstr "Actif"
+msgstr "Active"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:156
 #: code:addons/contract_compassion/model/contracts.py:157
 #, python-format
 msgid "Annual"
-msgstr "Annuel"
+msgstr "Jährlich"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_any
 msgid "Anonymous donations"
-msgstr "Dons anonymes"
+msgstr "Anonymous donations"
 
 #. module: contract_compassion
 #: model:account.payment.term,name:contract_compassion.payment_term_bvr
@@ -103,17 +103,17 @@ msgstr "BVR"
 #. module: contract_compassion
 #: model:account.payment.term,note:contract_compassion.payment_term_bvr
 msgid "BVR immediate"
-msgstr "BVR immédiat"
+msgstr "BVR immediate"
 
 #. module: contract_compassion
 #: model:account.payment.term,name:contract_compassion.payment_term_virement
 msgid "Bank Transfer"
-msgstr "Virement Bancaire"
+msgstr "Bank Transfer"
 
 #. module: contract_compassion
 #: model:account.payment.term,note:contract_compassion.payment_term_virement
 msgid "Bank Transfer Immediate"
-msgstr "Virement bancaire Immédiat"
+msgstr "Bank Transfer Immediate"
 
 #. module: contract_compassion
 #: help:product.product,list_price:0
@@ -123,67 +123,67 @@ msgstr "Base price to compute the customer price. Sometimes called the catalog p
 #. module: contract_compassion
 #: selection:account.banking.mandate,format:0
 msgid "Basic Mandate"
-msgstr "Mandat de base"
+msgstr "Basic Mandate"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:155
 #, python-format
 msgid "Bi-annual"
-msgstr "Semestriel"
+msgstr "Halbjährlich"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_bib
 msgid "Bible Fund"
-msgstr "Fonds pour les bibles"
+msgstr "Bible Fund"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:152
 #, python-format
 msgid "Bimonthly"
-msgstr "Bimestriel"
+msgstr "Zweimonatlich"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_bli
 msgid "Blind Children Fund"
-msgstr "Fonds enfants aveugles"
+msgstr "Blind Children Fund"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:128
 #, python-format
 msgid "By e-mail"
-msgstr "E-mail"
+msgstr "By e-mail"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:126
 #, python-format
 msgid "By mail"
-msgstr "Par courrier"
+msgstr "By mail"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:130
 #, python-format
 msgid "By phone"
-msgstr "Téléphone"
+msgstr "By phone"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_c20
 msgid "CSP EC-C20 in Ecuador"
-msgstr "CSP EC-C20 en Equateur"
+msgstr "CSP EC-C20 in Ecuador"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_c13
 msgid "CSP HA-C13 in Haiti"
-msgstr "CSP HA-C13 à Haiti"
+msgstr "CSP HA-C13 in Haiti"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_c46
 msgid "CSP HA-C46 in Haiti"
-msgstr "CSP HA-C46 à Haiti"
+msgstr "CSP HA-C46 in Haiti"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_cal
 msgid "Calendar"
-msgstr "Calendrier"
+msgstr "Calendar"
 
 #. module: contract_compassion
 #: field:product.product,rental:0
@@ -199,19 +199,19 @@ msgstr "Can be Sold"
 #: view:end.contract.wizard:contract_compassion.end_contract_view
 #: view:recurring.contract.activate.wizard:contract_compassion.view_activate_sponsorship
 msgid "Cancel"
-msgstr "Annuler"
+msgstr "Cancel"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:447
 #, python-format
 msgid "Cancel Invoice Error"
-msgstr "Erreur annulation de facture"
+msgstr "Cancel Invoice Error"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:55
 #, python-format
 msgid "Cancelled"
-msgstr "Annulé"
+msgstr "Cancelled"
 
 #. module: contract_compassion
 #: field:product.product,loc_case:0
@@ -226,17 +226,17 @@ msgstr "Child Survival Program"
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_kdo
 msgid "Child gift"
-msgstr "Cadeau enfant"
+msgstr "Child gift"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_haf
 msgid "Cholera in Haiti - Filter action"
-msgstr "Haïti - Action filtres"
+msgstr "Haiti - Filter action"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_nol
 msgid "Christmas Gift Fund"
-msgstr "Fonds cadeaux de Noël"
+msgstr "Christmas Gift Fund"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_c3b
@@ -265,12 +265,12 @@ msgstr "Compassion Suisse"
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_don
 msgid "Compassion Suisse grant"
-msgstr "Fonds Compassion Suisse"
+msgstr "Compassion Suisse grant"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_mag
 msgid "Compassion magazine"
-msgstr "Magazine Compassion"
+msgstr "Compassion magazine"
 
 #. module: contract_compassion
 #: model:product.template,description:contract_compassion.product_template_fund_ovc
@@ -296,28 +296,28 @@ msgstr ""
 #: code:addons/contract_compassion/model/contract_origin.py:61
 #, python-format
 msgid "Contact with Sponsor/Ambassador"
-msgstr "Contact parrain/ambassadeur"
+msgstr "Contact with Sponsor/Ambassador"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contract_origin.py:79
 #, python-format
 msgid "Contact with sponsor/ambassador"
-msgstr "Contact parrain/ambassadeur"
+msgstr "Contact with sponsor/ambassador"
 
 #. module: contract_compassion
 #: field:end.contract.wizard,contract_id:0
 msgid "Contract"
-msgstr "Engagement"
+msgstr "Contract"
 
 #. module: contract_compassion
 #: view:recurring.contract.activate.wizard:contract_compassion.view_activate_sponsorship
 msgid "Contract activation"
-msgstr "Activation"
+msgstr "Contract activation"
 
 #. module: contract_compassion
 #: model:ir.model,name:contract_compassion.model_recurring_contract
 msgid "Contract for recurring invoicing"
-msgstr "Contrat à facturation récurrente"
+msgstr "Contract for recurring invoicing"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:529
@@ -325,7 +325,7 @@ msgstr "Contrat à facturation récurrente"
 #: view:recurring.contract:contract_compassion.view_recurring_contract_tree_compassion
 #, python-format
 msgid "Contracts"
-msgstr "Contrats"
+msgstr "Verträge"
 
 #. module: contract_compassion
 #: field:product.product,standard_price:0
@@ -345,26 +345,26 @@ msgstr "Costing Method"
 #. module: contract_compassion
 #: field:end.contract.wizard,transfer_country_id:0
 msgid "Country"
-msgstr "Pays"
+msgstr "Country"
 
 #. module: contract_compassion
 #: field:end.contract.wizard,create_uid:0
 #: field:recurring.contract.activate.wizard,create_uid:0
 #: field:recurring.contract.origin,create_uid:0
 msgid "Created by"
-msgstr "Créé par"
+msgstr "Created by"
 
 #. module: contract_compassion
 #: field:end.contract.wizard,create_date:0
 #: field:recurring.contract.activate.wizard,create_date:0
 #: field:recurring.contract.origin,create_date:0
 msgid "Created on"
-msgstr "Créé le"
+msgstr "Created on"
 
 #. module: contract_compassion
 #: view:recurring.contract:contract_compassion.view_recurring_contract_form_compassion
 msgid "Creation date"
-msgstr "Date de création"
+msgstr "Creation date"
 
 #. module: contract_compassion
 #: field:product.product,sale_delay:0
@@ -380,7 +380,7 @@ msgstr "Customer Taxes"
 #: code:addons/contract_compassion/model/contracts.py:111
 #, python-format
 msgid "Death of partner"
-msgstr "Décès parrain"
+msgstr "Death of partner"
 
 #. module: contract_compassion
 #: help:product.product,uom_id:0
@@ -411,12 +411,12 @@ msgstr "Direct"
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_hai
 msgid "Disaster Fund Haiti"
-msgstr "Fonds catastrophe à Haïti"
+msgstr "Disaster Fund Haiti"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_ind
 msgid "Disaster Fund India"
-msgstr "Fonds catastrophe en Inde"
+msgstr "Disaster Fund India"
 
 #. module: contract_compassion
 #: field:end.contract.wizard,display_name:0
@@ -430,35 +430,35 @@ msgstr "Display Name"
 #: code:addons/contract_compassion/model/contracts.py:114
 #, python-format
 msgid "Doesn't pay"
-msgstr "Ne paie pas"
+msgstr "Doesn't pay"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:50
 #, python-format
 msgid "Draft"
-msgstr "Brouillon"
+msgstr "Draft"
 
 #. module: contract_compassion
 #: view:end.contract.wizard:contract_compassion.end_contract_view
 #: model:ir.actions.act_window,name:contract_compassion.action_end_contract
 msgid "End contract"
-msgstr "Terminer engagement"
+msgstr "End contract"
 
 #. module: contract_compassion
 #: view:end.contract.wizard:contract_compassion.end_contract_view
 msgid "End of contract"
-msgstr "Fin de l'engagement"
+msgstr "End of contract"
 
 #. module: contract_compassion
 #: field:end.contract.wizard,end_reason:0
 msgid "End reason"
-msgstr "Motif de fin"
+msgstr "End reason"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contract_origin.py:80
 #, python-format
 msgid "Event"
-msgstr "Evénement"
+msgstr "Event"
 
 #. module: contract_compassion
 #: field:product.product,property_account_expense:0
@@ -468,18 +468,18 @@ msgstr "Expense Account"
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_fam
 msgid "Famine Fund"
-msgstr "Fonds contre la famine"
+msgstr "Famine Fund"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:117
 #, python-format
 msgid "Financial reasons"
-msgstr "Raisons financières"
+msgstr "Financial reasons"
 
 #. module: contract_compassion
 #: view:recurring.contract:contract_compassion.view_recurring_contract_compassion_filter
 msgid "Finished"
-msgstr "Terminé"
+msgstr "Finished"
 
 #. module: contract_compassion
 #: model:ir.actions.act_window,name:contract_compassion.action_activate_contract
@@ -495,13 +495,13 @@ msgstr "Forces to specify a Serial Number on each and every operation related to
 #: code:addons/contract_compassion/model/contracts.py:154
 #, python-format
 msgid "Four-monthly"
-msgstr "Quadrimestriel"
+msgstr "Dreijährig"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:129
 #, python-format
 msgid "From the website"
-msgstr "Site internet"
+msgstr "From the website"
 
 #. module: contract_compassion
 #: field:product.product,track_all:0
@@ -511,23 +511,23 @@ msgstr "Full Lots Traceability"
 #. module: contract_compassion
 #: model:product.category,name:contract_compassion.product_category_fund
 msgid "Fund"
-msgstr "Fonds non désigné"
+msgstr "Fund"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_bfa
 msgid "Fund \"Floods in Burkina Faso\""
-msgstr "Fonds \"Inondations au Burkina Faso\""
+msgstr "Fund \"Floods in Burkina Faso\""
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:143
 #, python-format
 msgid "General"
-msgstr "Général"
+msgstr "General"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_gen
 msgid "General Fund"
-msgstr "Fonds Général"
+msgstr "General Fund"
 
 #. module: contract_compassion
 #: help:product.product,packaging_ids:0
@@ -542,17 +542,17 @@ msgstr "Gross Weight"
 #. module: contract_compassion
 #: view:recurring.contract.origin:contract_compassion.view_contract_origin_filter
 msgid "Group By..."
-msgstr "Grouper Par..."
+msgstr "Group By..."
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_urg
 msgid "Humanitarian Fund"
-msgstr "Fonds Humanitaire"
+msgstr "Humanitarian Fund"
 
 #. module: contract_compassion
 #: field:end.contract.wizard,do_transfer:0
 msgid "I want to transfer the child"
-msgstr "Je veux transférer l'enfant"
+msgstr "I want to transfer the child"
 
 #. module: contract_compassion
 #: field:end.contract.wizard,id:0
@@ -584,7 +584,7 @@ msgstr "Inventory Location"
 #. module: contract_compassion
 #: model:ir.model,name:contract_compassion.model_account_invoice
 msgid "Invoice"
-msgstr "Facture"
+msgstr "Invoice"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_kgs
@@ -594,7 +594,7 @@ msgstr "Kids Games Burkina Faso"
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_ldp
 msgid "LDP Fund"
-msgstr "Fonds LDP"
+msgstr "LDP Fund"
 
 #. module: contract_compassion
 #: model:account.payment.term,name:contract_compassion.payment_term_lsv
@@ -606,17 +606,17 @@ msgstr "LSV"
 #. module: contract_compassion
 #: model:account.payment.term,name:contract_compassion.payment_term_lsv_25th
 msgid "LSV 25th"
-msgstr "LSV au 25"
+msgstr "LSV 25th"
 
 #. module: contract_compassion
 #: model:account.payment.term,note:contract_compassion.payment_term_lsv
 msgid "LSV immediate"
-msgstr "LSV immédiat"
+msgstr "LSV immediate"
 
 #. module: contract_compassion
 #: model:account.payment.term,name:contract_compassion.payment_term_lsv_multi_months
 msgid "LSV multi-months"
-msgstr "LSV multi-mois"
+msgstr "LSV multi-months"
 
 #. module: contract_compassion
 #: field:end.contract.wizard,__last_update:0
@@ -631,19 +631,19 @@ msgstr "Last Modified on"
 #: field:recurring.contract.activate.wizard,write_uid:0
 #: field:recurring.contract.origin,write_uid:0
 msgid "Last Updated by"
-msgstr "Modifié par"
+msgstr "Last Updated by"
 
 #. module: contract_compassion
 #: field:end.contract.wizard,write_date:0
 #: field:recurring.contract.activate.wizard,write_date:0
 #: field:recurring.contract.origin,write_date:0
 msgid "Last Updated on"
-msgstr "Modifié le"
+msgstr "Last Updated on"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_loc
 msgid "Local projects"
-msgstr "Projets locaux"
+msgstr "Local projects"
 
 #. module: contract_compassion
 #: field:product.product,packaging_ids:0
@@ -653,18 +653,18 @@ msgstr "Logistical Units"
 #. module: contract_compassion
 #: model:product.template,description:contract_compassion.product_template_fund_sm
 msgid "Malaria Fund"
-msgstr "Fonds Malaria"
+msgstr "Malaria Fund"
 
 #. module: contract_compassion
 #: field:account.banking.mandate,format:0
 msgid "Mandate Format"
-msgstr "Format du mandat"
+msgstr "Mandate Format"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contract_origin.py:81
 #, python-format
 msgid "Marketing campaign"
-msgstr "Campagne Marketing"
+msgstr "Marketing campaign"
 
 #. module: contract_compassion
 #: field:product.product,mes_type:0
@@ -674,30 +674,30 @@ msgstr "Measure Type"
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_med
 msgid "Medical Fund"
-msgstr "Fonds médical"
+msgstr "Medical Fund"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:110
 #, python-format
 msgid "Mistake from our staff"
-msgstr "Erreur équipe"
+msgstr "Mistake from our staff"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:151
 #, python-format
 msgid "Monthly"
-msgstr "Mensuel"
+msgstr "Monatlich"
 
 #. module: contract_compassion
 #: field:recurring.contract,months_paid:0
 msgid "Months paid"
-msgstr "Mois payés"
+msgstr "Months paid"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:112
 #, python-format
 msgid "Moved to foreign country"
-msgstr "A déménagé à l'étranger"
+msgstr "Moved to foreign country"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_4mu
@@ -728,24 +728,24 @@ msgstr "Net Weight"
 #: code:addons/contract_compassion/model/contracts.py:116
 #, python-format
 msgid "Never paid"
-msgstr "N'a jamais payé"
+msgstr "Never paid"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_new
 msgid "New Building Yverdon"
-msgstr "Nouveaux bureaux à Yverdon"
+msgstr "New Building Yverdon"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:118
 #, python-format
 msgid "Not given"
-msgstr "Non renseigné"
+msgstr "Not given"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:113
 #, python-format
 msgid "Not satisfied"
-msgstr "Pas satisfait"
+msgstr "Not satisfied"
 
 #. module: contract_compassion
 #: model:product.template,description:contract_compassion.product_template_fund_mds
@@ -760,7 +760,7 @@ msgstr ""
 #: view:recurring.contract:contract_compassion.view_recurring_contract_compassion_filter
 #: view:recurring.contract.origin:contract_compassion.view_contract_origin_form
 msgid "Origin"
-msgstr "Origine"
+msgstr "Origin"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contract_origin.py:24
@@ -771,26 +771,26 @@ msgstr "Origin of contract :  * Contact with sponsor/ambassador : an other spons
 #. module: contract_compassion
 #: view:recurring.contract.origin:contract_compassion.view_contract_origin_form
 msgid "Originated Sponsorships"
-msgstr "Parrainages liés"
+msgstr "Originated Sponsorships"
 
 #. module: contract_compassion
 #: model:ir.actions.act_window,name:contract_compassion.open_view_origin_tree
 #: model:ir.ui.menu,name:contract_compassion.menu_sponsorship_origin
 #: view:recurring.contract.origin:contract_compassion.view_contract_origin_tree
 msgid "Origins"
-msgstr "Provenances"
+msgstr "Origins"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contract_origin.py:84
 #, python-format
 msgid "Other"
-msgstr "Autre"
+msgstr "Other"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:131
 #, python-format
 msgid "Payment"
-msgstr "Paiement"
+msgstr "Payment"
 
 #. module: contract_compassion
 #: field:recurring.contract,group_freq:0
@@ -800,18 +800,18 @@ msgstr "Payment frequency"
 #. module: contract_compassion
 #: model:account.payment.term,name:contract_compassion.payment_term_permanent_order
 msgid "Permanent Order"
-msgstr "Ordre permanent"
+msgstr "Permanent Order"
 
 #. module: contract_compassion
 #: model:account.payment.term,note:contract_compassion.payment_term_permanent_order
 msgid "Permanent order immediate"
-msgstr "Ordre permanent immédiat"
+msgstr "Permanent order immediate"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:115
 #, python-format
 msgid "Personal reasons"
-msgstr "Raisons personnelles"
+msgstr "Personal reasons"
 
 #. module: contract_compassion
 #: model:account.payment.term,name:contract_compassion.payment_term_postfinance_dd
@@ -821,12 +821,12 @@ msgstr "Postfinance Direct Debit"
 #. module: contract_compassion
 #: model:account.payment.term,name:contract_compassion.payment_term_postfinance_dd_25th
 msgid "Postfinance Direct Debit 25th"
-msgstr "Postfinance Débit Direct au 25"
+msgstr "Postfinance Direct Debit 25th"
 
 #. module: contract_compassion
 #: model:account.payment.term,name:contract_compassion.payment_term_postfinance_dd_multi_months
 msgid "Postfinance Direct Debit multi-months"
-msgstr "Postfinance Débit Direct multi-mois"
+msgstr "Postfinance Direct Debit multi-months"
 
 #. module: contract_compassion
 #: model:account.payment.term,note:contract_compassion.payment_term_postfinance_dd_multi_months
@@ -841,7 +841,7 @@ msgstr "Postfinance direct debit"
 #. module: contract_compassion
 #: model:account.payment.term,note:contract_compassion.payment_term_postfinance_dd
 msgid "Postfinance direct debit immediate"
-msgstr "Postfinance débit direct immédiat"
+msgstr "Postfinance direct debit immediate"
 
 #. module: contract_compassion
 #: field:product.product,property_stock_procurement:0
@@ -851,7 +851,7 @@ msgstr "Procurement Location"
 #. module: contract_compassion
 #: model:ir.model,name:contract_compassion.model_product_product
 msgid "Product"
-msgstr "Produit"
+msgstr "Produkt"
 
 #. module: contract_compassion
 #: field:product.product,attribute_line_ids:0
@@ -871,7 +871,7 @@ msgstr "Product Type"
 #. module: contract_compassion
 #: field:product.product,categ_name:0
 msgid "Product category"
-msgstr "Catégorie de Produit"
+msgstr "Product category"
 
 #. module: contract_compassion
 #: field:product.product,property_stock_production:0
@@ -886,12 +886,12 @@ msgstr "Products"
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_pro
 msgid "Professional Fund"
-msgstr "Fonds professionnel"
+msgstr "Professional Fund"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_mds
 msgid "Project \"Marathon des Sables\""
-msgstr "Projet \"Marathon des Sables\""
+msgstr "Project \"Marathon des Sables\""
 
 #. module: contract_compassion
 #: field:product.product,description_purchase:0
@@ -907,7 +907,7 @@ msgstr "Purchase Unit of Measure"
 #: code:addons/contract_compassion/model/contracts.py:153
 #, python-format
 msgid "Quarterly"
-msgstr "Trimestriel"
+msgstr "Dreimonatlich"
 
 #. module: contract_compassion
 #: field:product.product,loc_rack:0
@@ -917,7 +917,7 @@ msgstr "Rack"
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_phi
 msgid "Relief Fund Philippines"
-msgstr "Fonds d'assistance pour les Philippines"
+msgstr "Relief Fund Philippines"
 
 #. module: contract_compassion
 #: field:product.product,route_ids:0
@@ -934,7 +934,7 @@ msgstr "Row"
 #: code:addons/contract_compassion/model/contract_origin.py:82
 #, python-format
 msgid "SUB Sponsorship"
-msgstr "Reprise"
+msgstr "SUB Sponsorship"
 
 #. module: contract_compassion
 #: field:product.product,description_sale:0
@@ -954,7 +954,7 @@ msgstr "Sawyer Water Filters for Ndeiya"
 #. module: contract_compassion
 #: view:recurring.contract.origin:contract_compassion.view_contract_origin_filter
 msgid "Search origin"
-msgstr "Recherche Provenance"
+msgstr "Search origin"
 
 #. module: contract_compassion
 #: help:product.product,categ_id:0
@@ -964,12 +964,12 @@ msgstr "Select category for the current product"
 #. module: contract_compassion
 #: view:recurring.contract:contract_compassion.view_recurring_contract_form_compassion
 msgid "Set back to draft"
-msgstr "Remettre à brouillon"
+msgstr "Set back to draft"
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_sgi
 msgid "Special gift"
-msgstr "Cadeau spécial"
+msgstr "Special gift"
 
 #. module: contract_compassion
 #: help:product.product,uos_id:0
@@ -989,7 +989,7 @@ msgstr "Sponsored child"
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_par
 msgid "Sponsorship Fund"
-msgstr "Fonds Parrainage"
+msgstr "Sponsorship Fund"
 
 #. module: contract_compassion
 #: help:product.product,cost_method:0
@@ -1030,13 +1030,13 @@ msgstr "Supplier Taxes"
 #. module: contract_compassion
 #: view:recurring.contract:contract_compassion.view_recurring_contract_form_compassion
 msgid "Terminate"
-msgstr "Terminer"
+msgstr "Terminate"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:54
 #, python-format
 msgid "Terminated"
-msgstr "Terminé"
+msgstr "Terminated"
 
 #. module: contract_compassion
 #: model:product.template,description:contract_compassion.product_template_fund_aid
@@ -1094,9 +1094,9 @@ msgid ""
 "\t\t\ttherefore give the children and their families."
 msgstr ""
 "Thanks to water filters and rehydratation kits, the families of \n"
-"tttsponsored children can face this severe epidemic efficiently.\n"
-"tttWe are very grateful to you for your contribution to this action and for the help you \n"
-"ttttherefore give the children and their families."
+"\t\t\tsponsored children can face this severe epidemic efficiently.\n"
+"\t\t\tWe are very grateful to you for your contribution to this action and for the help you \n"
+"\t\t\ttherefore give the children and their families."
 
 #. module: contract_compassion
 #: model:product.template,description:contract_compassion.product_template_fund_anl
@@ -1321,9 +1321,9 @@ msgid ""
 "\t\t\tThis help would not be possible without you and we are very grateful for your support."
 msgstr ""
 "Thanks to your donation. It allows us to finance water filters \n"
-"tttto provide sponsored children, their families, their community and villages with drinking \n"
-"tttwater, in the poorest regions of the world.\n"
-"tttThis help would not be possible without you and we are very grateful for your support."
+"\t\t\tto provide sponsored children, their families, their community and villages with drinking \n"
+"\t\t\twater, in the poorest regions of the world.\n"
+"\t\t\tThis help would not be possible without you and we are very grateful for your support."
 
 #. module: contract_compassion
 #: model:product.template,description:contract_compassion.product_template_fund_kdo
@@ -1335,10 +1335,10 @@ msgid ""
 "\t\t\tbrings more hope and great encouragement to them."
 msgstr ""
 "Thanks to your gift that will be entirely allocated to them, the family of \n"
-"tttyour sponsored child will receive a precious additional help to cover their special needs and to \n"
-"tttimprove their living conditions.\n"
-"tttWe are very grateful for your complementary support to your sponsored child and his family that \n"
-"tttbrings more hope and great encouragement to them."
+"\t\t\tyour sponsored child will receive a precious additional help to cover their special needs and to \n"
+"\t\t\timprove their living conditions.\n"
+"\t\t\tWe are very grateful for your complementary support to your sponsored child and his family that \n"
+"\t\t\tbrings more hope and great encouragement to them."
 
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_4mu_2
@@ -1397,13 +1397,13 @@ msgstr ""
 #: code:addons/contract_compassion/model/contract_group.py:202
 #, python-format
 msgid "The reference of the partner has not been set, or is in wrong format. Please make sure to enter a valid BVR reference for the contract."
-msgstr "La référence du partenaire n'a pas le bon format. Assurez-vous que la référence BVR du contrat soit correcte."
+msgstr "The reference of the partner has not been set, or is in wrong format. Please make sure to enter a valid BVR reference for the contract."
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:448
 #, python-format
 msgid "The sponsor has already paid in advance for this sponsorship, but the system was unable to automatically cancel the invoices. Please refer to an accountant for changing the attribution of his payment before cancelling the sponsorship."
-msgstr "Le partenaire a payé en avance mais l'annulation de ses paiements à échoué. Veuillez changer l'attribution de son versement avant d'annuler son engagement."
+msgstr "The sponsor has already paid in advance for this sponsorship, but the system was unable to automatically cancel the invoices. Please refer to an accountant for changing the attribution of his payment before cancelling the sponsorship."
 
 #. module: contract_compassion
 #: help:product.product,volume:0
@@ -1438,25 +1438,25 @@ msgstr "This stock location will be used, instead of the default one, as the sou
 #. module: contract_compassion
 #: view:recurring.contract.activate.wizard:contract_compassion.view_activate_sponsorship
 msgid "This will mark the contract as Active, even if the partner has made no payment. Please be sure that you want to do this."
-msgstr "Cela va activer le contrat même si le partenaire n'a fait aucun paiement."
+msgstr "This will mark the contract as Active, even if the partner has made no payment. Please be sure that you want to do this."
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contract_origin.py:83
 #, python-format
 msgid "Transfer"
-msgstr "Transfert"
+msgstr "Transfer"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contract_origin.py:67
 #, python-format
 msgid "Transfer from "
-msgstr "Transfert de"
+msgstr "Transfer from "
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contract_origin.py:69
 #, python-format
 msgid "Transfer from partner country"
-msgstr "Transfert de pays partenaire"
+msgstr "Transfer from partner country"
 
 #. module: contract_compassion
 #: view:recurring.contract.origin:contract_compassion.view_contract_origin_filter
@@ -1481,7 +1481,7 @@ msgstr "Unit of Sale"
 #. module: contract_compassion
 #: model:product.template,name:contract_compassion.product_template_fund_usp
 msgid "Unsponsored Children Fund"
-msgstr "Fonds pour les enfants non-parrainés"
+msgstr "Unsponsored Children Fund"
 
 #. module: contract_compassion
 #: field:product.product,volume:0
@@ -1491,26 +1491,26 @@ msgstr "Volume"
 #. module: contract_compassion
 #: view:recurring.contract:contract_compassion.view_recurring_contract_compassion_filter
 msgid "Waiting"
-msgstr "En Création"
+msgstr "Waiting"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:51
 #, python-format
 msgid "Waiting Mandate"
-msgstr "Attente du mandat"
+msgstr "Waiting Mandate"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contracts.py:52
 #, python-format
 msgid "Waiting Payment"
-msgstr "En attente de paiement"
+msgstr "Waiting Payment"
 
 #. module: contract_compassion
 #: code:addons/contract_compassion/model/contract_group.py:158
 #: code:addons/contract_compassion/model/contract_group.py:201
 #, python-format
 msgid "Warning"
-msgstr "Attention"
+msgstr "Warning"
 
 #. module: contract_compassion
 #: field:product.product,warranty:0
@@ -1520,12 +1520,12 @@ msgstr "Warranty"
 #. module: contract_compassion
 #: model:account.payment.term,name:contract_compassion.payment_term_web
 msgid "Web Payment"
-msgstr "Paiement Web"
+msgstr "Web Payment"
 
 #. module: contract_compassion
 #: model:account.payment.term,note:contract_compassion.payment_term_web
 msgid "Web Payment Immediate"
-msgstr "Paiement Web Immédiat"
+msgstr "Web Payment Immediate"
 
 #. module: contract_compassion
 #: field:recurring.contract,website_message_ids:0
@@ -1589,7 +1589,7 @@ msgstr ""
 #: sql_constraint:recurring.contract.origin:0
 #, python-format
 msgid "You cannot have two origins with same name.The origin does probably already exist."
-msgstr "Cette origine existe déjà."
+msgstr "You cannot have two origins with same name.The origin does probably already exist."
 
 #. module: contract_compassion
 #: model:product.template,description:contract_compassion.product_template_fund_usp
@@ -1660,7 +1660,7 @@ msgstr "draft,active,waiting,terminated"
 #. module: contract_compassion
 #: view:recurring.contract.activate.wizard:contract_compassion.view_activate_sponsorship
 msgid "or"
-msgstr "ou"
+msgstr "or"
 
 #. module: contract_compassion
 #: view:recurring.contract:contract_compassion.view_recurring_contract_form_compassion
