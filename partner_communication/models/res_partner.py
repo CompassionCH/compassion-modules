@@ -27,6 +27,16 @@ class ResPartner(models.Model):
         default='auto_digital',
         required=True,
         help='Delivery preference for Global Communication')
+    communication_count = fields.Integer(compute='_compute_comm_count')
+
+    @api.multi
+    def _compute_comm_count(self):
+        for partner in self:
+            partner.communication_count = self.env[
+                'partner.communication.job'].search_count([
+                    ('partner_id', '=', partner.id),
+                    ('state', '!=', 'cancel'),
+                ])
 
     @api.model
     def _get_delivery_preference(self):

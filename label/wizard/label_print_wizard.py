@@ -17,13 +17,19 @@ class label_print_wizard(models.TransientModel):
 
     _name = 'label.print.wizard'
 
-    name = fields.Many2one('label.config', _('Label Type'), required=True)
+    name = fields.Many2one(
+        'label.config', _('Label Type'), required=True,
+        default=lambda s: s.env.ref('label.label_4455')
+    )
     number_of_labels = fields.Integer(_('Number of Labels (per item)'),
                                       required=True,
-                                      default=0)
+                                      default=33)
     labels_per_page = fields.Integer(_('Number of Labels per Pages'),
                                      compute="_compute_labels_per_page")
-    brand_id = fields.Many2one('label.brand', _('Brand Name'), required=True)
+    brand_id = fields.Many2one(
+        'label.brand', _('Brand Name'), required=True,
+        default=lambda s: s.env.ref('label.herma4')
+    )
 
     @api.model
     def default_get(self, fields):
