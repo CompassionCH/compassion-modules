@@ -38,7 +38,7 @@ class AvailabilitySettings(models.TransientModel):
     def set_e_commerce_hold_duration(self):
         self.env['ir.config_parameter'].set_param(
             'child_compassion.e_commerce_hold_duration',
-            str(self.consignment_hold_duration))
+            str(self.e_commerce_hold_duration))
 
     @api.multi
     def set_no_money_hold_duration(self):
@@ -50,31 +50,31 @@ class AvailabilitySettings(models.TransientModel):
     def set_no_money_hold_extension(self):
         self.env['ir.config_parameter'].set_param(
             'child_compassion.no_money_hold_extension',
-            str(self.consignment_hold_extension))
+            str(self.no_money_hold_extension))
 
     @api.multi
     def set_reinstatement_hold_duration(self):
         self.env['ir.config_parameter'].set_param(
             'child_compassion.reinstatement_hold_duration',
-            str(self.consignment_hold_duration))
+            str(self.reinstatement_hold_duration))
 
     @api.multi
     def set_reservation_duration(self):
         self.env['ir.config_parameter'].set_param(
             'child_compassion.reservation_duration',
-            str(self.consignment_hold_duration))
+            str(self.reservation_duration))
 
     @api.multi
     def set_reservation_hold_duration(self):
         self.env['ir.config_parameter'].set_param(
             'child_compassion.reservation_hold_duration',
-            str(self.consignment_hold_duration))
+            str(self.reservation_hold_duration))
 
     @api.multi
     def set_sponsor_cancel_hold_duration(self):
         self.env['ir.config_parameter'].set_param(
             'child_compassion.sponsor_cancel_hold_duration',
-            str(self.consignment_hold_duration))
+            str(self.sponsor_cancel_hold_duration))
 
     @api.multi
     def set_sub_child_hold_duration(self):
