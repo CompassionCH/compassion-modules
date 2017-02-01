@@ -1,0 +1,20 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="pdf_wizard_form">
+            <field name="name">communication.pdf.wizard.form</field>
+            <field name="model">partner.communication.pdf.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <field name="state" invisible="1"/>
+                    <group states="physical,both">
+                        <field name="fname" invisible="1"/>
+                        <field name="pdf" filename="fname"/>
+                    </group>
+                    <div states="digital,both">
+                        <field name="body_html"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

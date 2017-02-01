@@ -281,6 +281,18 @@ class CommunicationJob(models.Model):
                         'data': data[1],
                     })
 
+    @api.multi
+    def preview_pdf(self):
+        return {
+            'name': _("Preview"),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'partner.communication.pdf.wizard',
+            'context': self.env.context,
+            'target': 'new',
+        }
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
