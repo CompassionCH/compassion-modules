@@ -75,4 +75,6 @@ openerp.partner_communication = function (instance) {
     });
 
     instance.web.form.widgets.add('phone_communication', 'instance.partner_communication.PhoneCommunication');
+    // Replace html widget to display base html editor (to avoid breaking templates)
+    instance.web.form.widgets.add('html', 'instance.web.form.FieldTextHtml');
 };

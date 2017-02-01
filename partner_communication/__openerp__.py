@@ -43,6 +43,8 @@
         'views/communication_config_view.xml',
         'views/call_wizard_view.xml',
         'views/res_partner_view.xml',
+        'views/change_text_wizard_view.xml',
+        'views/pdf_wizard_view.xml',
         'data/default_communication.xml'
     ],
     'demo': [],

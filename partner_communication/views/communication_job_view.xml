@@ -14,6 +14,7 @@
                     </header>
                     <sheet>
                         <div class="oe_right oe_button_box" name="buttons">
+                            <button name="preview_pdf" string="Preview" type="object" icon="fa-search-plus" class="oe_stat_button"/>
                             <button name="open_related" string="Go to records" type="object" icon="fa-folder-open-o" class="oe_stat_button"/>
                         </div>
                         <group>
@@ -34,7 +35,7 @@
                         </group>
                         <group>
                             <field name="subject"/>
-                            <field name="body_html"/>
+                            <field name="body_html" widget="text_ckeditor4"/>
                         </group>
                         <group>
                             <field name="email_id" readonly="1"/>
@@ -121,6 +122,21 @@
             <field eval="'partner.communication.job'" name="model"/>
             <field name="name">Send communication</field>
             <field eval="'ir.actions.server,%d'%send_action" name="value"/>
+        </record>
+
+        <!-- Refresh communication actions -->
+        <record id="refresh_action" model="ir.actions.server">
+            <field name="name">Refresh communication</field>
+            <field name="model_id" ref="model_partner_communication_job"/>
+            <field name="state">code</field>
+            <field name="code">self.refresh_text(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+
+        <record id="refresh_action_menu" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'partner.communication.job'" name="model"/>
+            <field name="name">Refresh communication</field>
+            <field eval="'ir.actions.server,%d'%refresh_action" name="value"/>
         </record>
 
         <menuitem name="Partner Communication" id="menu_communication" parent="mail.mail_feeds_main" sequence="1"/>
