@@ -142,6 +142,7 @@ class generate_gift_wizard(models.TransientModel):
 
     @api.model
     def generate_bvr_reference(self, contract, product):
+        product = product.with_context(lang='en_US')
         ref = contract.partner_id.ref
         bvr_reference = '0' * (9 + (7 - len(ref))) + ref
         num_pol_ga = str(contract.num_pol_ga)

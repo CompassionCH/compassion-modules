@@ -314,7 +314,7 @@ class CommunicationJob(models.Model):
                 lang=partner.lang).create_emails(
                 self.email_template_id, [self.id], email_vals)
             self.email_id = email
-            email.send_sendgrid()
+            email.send()
 
         return 'done' if email.state == 'sent' else 'pending'
 

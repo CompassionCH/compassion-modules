@@ -34,7 +34,7 @@
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['mail_sendgrid', 'crm_phone', 'sync_mail_multi_attach',
+    'depends': ['crm_phone', 'sync_mail_multi_attach',
                 'base_report_to_printer'],
     'data': [
         'security/ir.model.access.csv',
