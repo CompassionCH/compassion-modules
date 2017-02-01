@@ -26,7 +26,7 @@ class Phonecall(models.Model):
         self.env['partner.communication.job'].create({
             'config_id': config.id,
             'partner_id': phonecall_log.partner_id.id,
-            'user_id': self.uid,
+            'user_id': self.env.uid,
             'object_ids': phonecall_log.partner_id.ids,
             'state': 'done',
             'phonecall_id': phonecall_log.id,

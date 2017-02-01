@@ -8,10 +8,10 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import models, fields
+from openerp import api, models, fields
 
 
-class MailMessage(models.Model):
+class Email(models.Model):
     """ Add relation to communication configuration to track generated
     e-mails.
     """
@@ -21,3 +21,26 @@ class MailMessage(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     communication_config_id = fields.Many2one('partner.communication.config')
+
+    @api.multi
+    def send(self):
+        """ Create communication for partner, if not already existing.
+        """
+        super(Email, self).send()
+        comm_obj = self.env['partner.communication.job']
+        config = self.env.ref('partner_communication.default_communication')
+        for email in self:
+            communication = comm_obj.search([('email_id', '=', email.id)])
+            if not communication:
+                for partner in email.recipient_ids:
+                    comm_obj.create({
+                        'config_id': config.id,
+                        'partner_id': partner.id,
+                        'user_id': self.env.uid,
+                        'object_ids': email.recipient_ids.ids,
+                        'state': 'done',
+                        'email_id': email.id,
+                        'sent_date': fields.Datetime.now(),
+                        'body_html': email.body_html,
+                        'subject': email.subject,
+                    })
