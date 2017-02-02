@@ -147,12 +147,14 @@ class CommunicationConfig(models.Model):
             'physical': {
                 'digital': 'physical',
                 'none': 'none',
-                'both': 'physical'
+                'both': 'physical',
+                'physical': 'physical',
             },
             'digital': {
                 'physical': 'physical' if self.print_if_not_email else 'none',
                 'none': 'none',
-                'both': 'both' if self.print_if_not_email else 'digital'
+                'both': 'both' if self.print_if_not_email else 'digital',
+                'digital': 'digital',
             }
         }
 
