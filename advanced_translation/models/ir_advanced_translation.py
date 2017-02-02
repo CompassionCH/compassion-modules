@@ -12,10 +12,25 @@
 import logging
 import re
 import sys
+import threading
+import locale
+
+from contextlib import contextmanager
 
 from openerp import models, fields, api, _
 
 logger = logging.getLogger(__name__)
+
+LOCALE_LOCK = threading.Lock()
+
+@contextmanager
+def setlocale(name):
+    with LOCALE_LOCK:
+        saved = locale.setlocale(locale.LC_ALL)
+        try:
+            yield locale.setlocale(locale.LC_ALL, (name, 'UTF-8'))
+        finally:
+            locale.setlocale(locale.LC_ALL, saved)
 
 
 class IrAdvancedTranslation(models.Model):
@@ -151,9 +166,13 @@ class AdvancedTranslatable(models.AbstractModel):
         :param date_type: a valid src of a ir.advanced.translation date format
         :return: the formatted dates
         """
-        _format = self.env['ir.advanced.translation'].get(date_type)
+        _format = self.env['ir.advanced.translation'].get(date_type).encode(
+            'utf-8')
         dates = map(fields.Date.from_string, self.mapped(field))
-        dates_string = list(set([d.strftime(_format) for d in dates]))
+        with setlocale(self.env.lang):
+            dates_string = list(set([
+                d.strftime(_format).decode('utf-8') for d in dates
+            ]))
         if len(dates_string) > 1:
             res_string = ', '.join(dates_string[:-1])
             res_string += ' ' + _('and') + ' ' + dates_string[-1]
