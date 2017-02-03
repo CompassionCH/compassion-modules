@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 LOCALE_LOCK = threading.Lock()
 
+
 @contextmanager
 def setlocale(name):
     with LOCALE_LOCK:

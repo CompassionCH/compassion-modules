@@ -27,6 +27,7 @@ class ResPartner(models.Model):
         default='auto_digital',
         required=True,
         help='Delivery preference for Global Communication')
+    email_only = fields.Boolean(help="Don't send any printed communication")
     communication_count = fields.Integer(compute='_compute_comm_count')
 
     @api.multi

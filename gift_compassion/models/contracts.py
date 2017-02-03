@@ -23,6 +23,15 @@ class SponsorshipContract(models.Model):
         "This means a birthday gift will always be sent to GMC "
         "even if we didn't register a payment."
     ))
+    number_gifts = fields.Integer(compute='_compute_nb_gifts')
+
+    @api.multi
+    def _compute_nb_gifts(self):
+        gift_obj = self.env['sponsorship.gift']
+        for contract in self:
+            contract.number_gifts = gift_obj.search_count([
+                ('sponsorship_id', '=', contract.id),
+            ])
 
     @api.multi
     def invoice_paid(self, invoice):
@@ -53,6 +62,19 @@ class SponsorshipContract(models.Model):
             if not gift.invoice_line_ids:
                 gift.unlink()
         super(SponsorshipContract, self).invoice_unpaid(invoice)
+
+    @api.multi
+    def open_gifts(self):
+        return {
+            'name': _('Sponsorship gifts'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'sponsorship.gift',
+            'domain': [('sponsorship_id', 'in', self.ids)],
+            'context': self.env.context,
+            'target': 'current',
+        }
 
     def hold_gifts(self):
         """ Postpone open gifts. """

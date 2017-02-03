@@ -132,7 +132,7 @@ class CommunicationConfig(models.Model):
         comm_pref   partner_pref    result
         ----------------------------------
         digital     physical        physical if "print if no e-mail" else none
-        physical    digital         physical
+        physical    digital         physical if not "email only"
 
         auto        manual          manual
         manual      auto            manual
@@ -145,7 +145,7 @@ class CommunicationConfig(models.Model):
         # value is the send_mode that should be selected.
         send_priority = {
             'physical': {
-                'digital': 'physical',
+                'digital': 'physical' if not partner.email_only else 'none',
                 'none': 'none',
                 'both': 'physical'
             },

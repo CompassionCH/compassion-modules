@@ -42,13 +42,13 @@
                 <field name="state" position="attributes">
                     <attribute name="statusbar_visible">draft,active,waiting,terminated</attribute>
                 </field>
+                <header>
+                    <button name="action_cancel_draft" type="object" string="Set back to draft" states="cancelled"/>
+                </header>
                 <button name="button_generate_invoices" position="attributes">
                     <attribute name="states" position="replace">
                         <attribute name="states">waiting,active</attribute>
                     </attribute>
-                </button>
-                <button name="button_generate_invoices" position="after">
-                    <button name="action_cancel_draft" type="object" string="Set back to draft" states="cancelled"/>
                 </button>
 
                 <button name="contract_terminated" position="replace">
@@ -76,20 +76,16 @@
                             <field name="activation_date" states="active,terminated,cancelled" />
                             <field name="end_date" attrs="{'invisible':[('end_date', '=', False)]}" />
                             <field name="next_invoice_date" states="draft,waiting,mandate,active" />
+                            <field name="end_reason" states="terminated,cancelled"/>
                         </group>
-
                         <group>
+                            <field name="child_id" domain="[('state', 'in', ('N', 'I'))]"
+                                   options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
                             <field name="origin_id"/>
                             <field name="channel"/>
                         </group>
                         <group>
                             <field name="type" />
-                            <field name="child_id" domain="[('state', 'in', ('N', 'I'))]"
-                                   options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
-                            <field name="end_reason" states="terminated,cancelled"/>
-                            <field name="num_pol_ga" invisible="1"/>
-                        </group>
-                        <group>
                             <field name="group_freq"/>
                             <field name="months_paid"/>
                             <field name="last_paid_invoice_date"/>
