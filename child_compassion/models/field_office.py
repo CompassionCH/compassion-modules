@@ -38,10 +38,12 @@ class FieldOffice(models.Model):
 
     primary_language_id = fields.Many2one('res.lang.compassion', 'Primary '
                                                                  'language')
-    spoken_language_ids = fields.Many2many('res.lang.compassion',
-                                           string='Spoken languages')
-    translated_language_ids = fields.Many2many('res.lang.compassion',
-                                               string='Translated languages')
+    spoken_language_ids = fields.Many2many(
+        'res.lang.compassion', 'field_office_spoken_langs',
+        string='Spoken languages')
+    translated_language_ids = fields.Many2many(
+        'res.lang.compassion', 'field_office_translated_langs',
+        string='Translated languages')
 
     staff_number = fields.Integer()
     country_information = fields.Char()

@@ -33,7 +33,6 @@
                                 <field name="last_update_date" />
                                 <field name="field_office_id" />
                                 <field name="country_id" />
-                                <field name="country" />
                             </group>
                         </group>
 						<notebook>
