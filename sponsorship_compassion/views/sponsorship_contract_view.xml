@@ -41,8 +41,8 @@
                 </field>
 
                 <!-- Add global_id field -->
-                <field name="end_reason" position="before">
-                    <field name="global_id"/>
+                <field name="type" position="after">
+                    <field name="global_id" attrs="{'invisible': [('type', 'not like', 'S')]}"/>
                 </field>
 
                 <!-- Add transfer field -->
