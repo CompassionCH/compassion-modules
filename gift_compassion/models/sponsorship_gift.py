@@ -468,6 +468,14 @@ class SponsorshipGift(models.Model):
             self.attribution = 'Center Based Programming'
             self.sponsorship_gift_type = False
 
+    @api.multi
+    def mark_sent(self):
+        self.mapped('message_id').unlink()
+        return self.write({
+            'state': 'Delivered',
+            'status_change_date': fields.Datetime.now(),
+        })
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
