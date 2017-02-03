@@ -48,6 +48,8 @@ class Contracts(models.Model):
             self.origin_id = origin
         if hold.channel and hold.channel == 'web':
             self.channel = 'internet'
+        if hold.ambassador:
+            self.user_id = hold.ambassador
         if hold.comments:
             return {
                 'warning': {'title': _('The child has some comments'),

@@ -64,7 +64,7 @@ class AbstractHold(models.AbstractModel):
         domain=[('share', '=', False)]
     )
     secondary_owner = fields.Char()
-    ambassador = fields.Many2one('res.users')
+    ambassador = fields.Many2one('res.partner')
     yield_rate = fields.Float()
     no_money_yield_rate = fields.Float()
     channel = fields.Selection('get_channel')
