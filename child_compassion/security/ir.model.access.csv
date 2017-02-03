@@ -81,3 +81,5 @@ access_icp_disaster_impact,Full access on ICP Disaster Impact,model_icp_disaster
 access_icp_disaster_impact_spo,User access on ICP Disaster Impact,model_icp_disaster_impact,group_sponsorship,1,0,1,1
 access_fo_disaster_loss,Full access on Field Office Disaster Loss,model_fo_disaster_loss,message_center_compassion.group_gmc,1,1,1,1
 access_fo_disaster_loss_spo,User access on Field Office Disaster Loss,model_fo_disaster_loss,group_sponsorship,1,0,0,0
+access_fo_high_risk,Full access on Field Office High Risk,model_fo_high_risk,message_center_compassion.group_gmc,1,1,1,1
+access_fo_high_risk_user,User access on Field Office High Risk,model_fo_high_risk,group_sponsorship,1,0,0,0
