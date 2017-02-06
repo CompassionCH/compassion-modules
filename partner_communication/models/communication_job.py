@@ -167,7 +167,7 @@ class CommunicationJob(models.Model):
 
     @api.multi
     def cancel(self):
-        self.write({'state': 'cancel'})
+        return self.write({'state': 'cancel'})
 
     @api.multi
     def reset(self):
@@ -334,12 +334,21 @@ class CommunicationJob(models.Model):
 
     def _print_report(self):
         report_obj = self.env['report']
+        already_printed = False
+
+        # Print all in once if no attachments
+        if not self.mapped('attachment_ids') and len(self.mapped(
+                'report_id')) == 1:
+            report_obj.get_pdf(self, self[0].report_id.report_name)
+            already_printed = True
+
         for job in self:
             # Get pdf should directly send it to the printer if report
             # is correctly configured.
-            report_obj.get_pdf(job, job.report_id.report_name)
-            # Print attachments
-            job.attachment_ids.print_attachments()
+            if not already_printed:
+                report_obj.get_pdf(job, job.report_id.report_name)
+                # Print attachments
+                job.attachment_ids.print_attachments()
             job.partner_id.message_post(
                 job.body_html, job.subject)
         return True
