@@ -62,7 +62,8 @@ class CommunicationJob(models.Model):
     email_template_id = fields.Many2one(
         related='config_id.email_template_id', store=True)
     report_id = fields.Many2one(related='config_id.report_id', store=True)
-    user_id = fields.Many2one('res.users', 'From')
+    user_id = fields.Many2one(
+        'res.users', 'From', domain=[('share', '=', False)])
     email_to = fields.Char(
         help='optional e-mail address to override recipient')
     email_id = fields.Many2one('mail.mail', 'Generated e-mail')
@@ -189,6 +190,7 @@ class CommunicationJob(models.Model):
                 job.write({
                     'body_html': fields['body_html'],
                     'subject': fields['subject'],
+                    'user_id': self.env.uid,
                 })
         return True
 
