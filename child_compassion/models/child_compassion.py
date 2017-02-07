@@ -119,6 +119,7 @@ class CompassionChild(models.Model):
         ('Manufacturing/ Fabrication', 'Manufacturing / Fabrication'),
         ('Medical/ Health Services', 'Medical / Health services'),
         ('Not Enrolled', 'Not enrolled'),
+        ('Not enrolled', 'Not enrolled'),
         ('Telecommunication', 'Telecommunication'),
         ('Transportation', 'Transportation'),
         ('Transportation/ Driver', 'Driver'),

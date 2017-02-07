@@ -100,8 +100,8 @@ class ChildDescription(models.TransientModel):
             'F': u"{firstname} va à {level}.",
         },
         'de_DE': {
-            'M': u'{firstname} geht zur {level}.',
-            'F': u'{firstname} geht zur {level}.',
+            'M': u'{firstname} geht in {level}.',
+            'F': u'{firstname} geht in {level}.',
         },
         'it_IT': {
             'M': u'{firstname} abbiamo {level}.',
@@ -138,8 +138,8 @@ class ChildDescription(models.TransientModel):
             'F': u"À la maison, elle participe aux tâches suivantes :",
         },
         'de_DE': {
-            'M': u'Er hilft zur Hause:',
-            'F': u'Sie hilft zur Hause:',
+            'M': u'Er hilft zu Hause:',
+            'F': u'Sie hilft zu Hause:',
         },
         'it_IT': {
             'M': u'Abbiamo lavoro:',
@@ -153,12 +153,12 @@ class ChildDescription(models.TransientModel):
 
     church_intro_lang = {
         'fr_CH': {
-            'M': u"À l'église, il s'engage dans ces activités :",
-            'F': u"À l'église, elle s'engage dans ces activités :",
+            'M': u"À l'église, il participe aux activités suivantes :",
+            'F': u"À l'église, elle participe aux activités suivantes :",
         },
         'de_DE': {
-            'M': u'Er hilft zur Kirche:',
-            'F': u'Sie hilft zur Kirche:',
+            'M': u'In der Kirche macht er mit bei:',
+            'F': u'In der Kirche macht sie mit bei:',
         },
         'it_IT': {
             'M': u'Abbiamo iglesia:',
@@ -177,8 +177,8 @@ class ChildDescription(models.TransientModel):
             'F': u"Les activités favorites de {firstname} sont :",
         },
         'de_DE': {
-            'M': u'Er mag:',
-            'F': u'Sie mag:',
+            'M': u'Er mag gern:',
+            'F': u'Sie mag gern:',
         },
         'it_IT': {
             'M': u'{firstname} amo:',
@@ -319,9 +319,12 @@ class ChildDescription(models.TransientModel):
                     firstname=child.firstname, level=child.translate(
                         'education_level'))
             )
-            desc('.school_performance')[0].text = _('School performance')
-            desc('.school_performance')[1].text = child.translate(
-                'academic_performance')
+            if child.academic_performance:
+                desc('.school_performance')[0].text = _('School performance')
+                desc('.school_performance')[1].text = child.translate(
+                    'academic_performance')
+            else:
+                desc('#school_performance').remove()
             if child.major_course_study:
                 desc('.school_subject')[0].text = _('Best school subject')
                 desc('.school_subject')[1].text = child.translate(
@@ -417,8 +420,10 @@ class ChildDescription(models.TransientModel):
         live_with = self.child_id.firstname + ' ' + _('lives') + ' '
         if father_with_child and mother_with_child:
             live_with += _('with') + ' ' + self.his(
-                self.child_id.gender, PLURAL, DATIVE) + ' ' + _('parents')  \
-                    + '.'
+                self.child_id.gender, PLURAL, DATIVE) + ' ' + _('parents')
+            if self.env.lang == 'de_DE':
+                live_with += ' zusammen'
+            live_with += '.'
         elif father_with_child:
             live_with += _('with') + ' ' + self.his(
                 self._gender('M'), tense=DATIVE) + ' ' + _('father') + '.'
@@ -438,20 +443,20 @@ class ChildDescription(models.TransientModel):
         en = household.with_context(lang='en_US')
         if guardian == 'father':
             job_type = household.male_guardian_job_type
-            job_type_field = 'male_guardian_job_type'
-            job_type_label = _('Father occupation')
+            # job_type_field = 'male_guardian_job_type'
+            # job_type_label = _('Father occupation')
             job = at.get(en.translate('male_guardian_job'))
             job_label = _('Father job')
         elif guardian == 'mother':
             job_type = household.female_guardian_job_type
-            job_type_field = 'female_guardian_job_type'
-            job_type_label = _('Mother occupation')
+            # job_type_field = 'female_guardian_job_type'
+            # job_type_label = _('Mother occupation')
             job = at.get(en.translate('female_guardian_job'), female=True)
             job_label = _('Mother job')
 
-        f_job_type = desc.children('.job_type')
-        f_job_type[0].text = job_type_label
-        f_job_type[1].text = household.translate(job_type_field)
+        # f_job_type = desc.children('.job_type')
+        # f_job_type[0].text = job_type_label
+        # f_job_type[1].text = household.translate(job_type_field)
 
         if job_type == 'Not Employed' or not job:
             desc.remove()
