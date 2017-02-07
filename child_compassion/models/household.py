@@ -123,23 +123,52 @@ class Household(models.Model):
     def _get_jobs(self):
         return [
             ('Agriculture / Farmer', 'Farmer'),
+            ('Agriculture/ Farmer', 'Farmer'),
+            ('Farmer', 'Farmer'),
+
+            ('Church Worker / Project Worker', 'Project worker'),
+            ('Church Worker', 'Project worker'),
+
+            ('Construction Worker', 'Construction worker'),
+            ('Construction / Tradesman', 'Construction worker'),
+            ('Construction/ Tradesman', 'Construction worker'),
+
+            ('Clothing Trade', 'Works in clothing trade'),
+            ('Clothing Trades', 'Works in clothing trade'),
+
+            ('Day Labor / Different Jobs', 'Daily jobs'),
+            ('Day Labor/ Different Jobs', 'Daily jobs'),
+
+            ('Food Vendor', 'Food vendor'),
+            ('Food Services', 'Food vendor'),
+
+            ('Guard / Watchman', 'Guard'),
+            ('Security / Guard', 'Guard'),
+            ('Security/ Guard', 'Guard'),
+
+            ('Hairdresser', 'Hairdresser'),
+            ('Hairdresser/ Manicurist', 'Hairdresser'),
+
+            ('Merchant / Seller', 'Merchant'),
+            ('Merchant/ Seller', 'Merchant'),
+            ('Sells In Market', 'Merchant'),
+
+            ('Transportation / Driver', 'Driver'),
+            ('Transportation/ Driver', 'Driver'),
+
+            ('Domestic Service / Housekeeper', 'Housekeeper'),
+            ('Domestic Service/ Housekeeper', 'Housekeeper'),
+
             ('Baker', 'Baker'),
             ('Carpenter', 'Carpenter'),
-            ('Church Worker / Project Worker', 'Project worker'),
-            ('Construction Worker', 'Construction worker'),
             ('Cook', 'Cook'),
-            ('Clothing Trade', 'Works in clothing trade'),
-            ('Construction / Tradesman', 'Construction worker'),
-            ('Day Labor / Different Jobs', 'Daily jobs'),
             ('Electrician', 'Electrician'),
             ('Factory Worker', 'Factory worker'),
-            ('Farmer', 'Farmer'),
             ('Fish Seller', 'Fish seller'),
             ('Fisher', 'Fisher'),
-            ('Food Vendor', 'Food vendor'),
             ('Gardener', 'Gardener'),
-            ('Guard / Watchman', 'Guard'),
-            ('Hairdresser', 'Hairdresser'),
+            ('Laborer', 'Laborer'),
+            ('Housewife', 'Housewife'),
             ('Health Care Worker', 'Health care worker'),
             ('Homemaker', 'Homemaker'),
             ('Janitor', 'Janitor'),
@@ -149,33 +178,15 @@ class Household(models.Model):
             ('Manicurist', 'Manicurist'),
             ('Mason / Bricklayer', 'Mason'),
             ('Mechanic', 'Mechanic'),
-            ('Merchant / Seller', 'Merchant'),
             ('Nurse', 'Nurse'),
             ('Other', 'Other'),
             ('Painter', 'Painter'),
             ('Plumber', 'Plumber'),
-            ('Security / Guard', 'Security guard'),
             ('Tailor / Seamstress', 'Tailor'),
             ('Teacher', 'Teacher'),
-            ('Transportation / Driver', 'Driver'),
             ('Unknown', 'Unknown'),
             ('Waiter / Food Server', 'Food server'),
             ('Welder', 'Welder'),
-            # TODO see if these values are only in test
-            ('Agriculture/ Farmer', 'Farmer'),
-            ('Church Worker', 'Project worker'),
-            ('Clothing Trades', 'Works in clothing trade'),
-            ('Construction/ Tradesman', 'Construction worker'),
-            ('Day Labor/ Different Jobs', 'Daily jobs'),
-            ('Domestic Service / Housekeeper', 'Housekeeper'),
-            ('Domestic Service/ Housekeeper', 'Housekeeper'),
-            ('Food Services', 'Food vendor'),
-            ('Laborer', 'Laborer'),
-            ('Housewife', 'Housewife'),
-            ('Merchant/ Seller', 'Merchant'),
-            ('Security/ Guard', 'Security guard'),
-            ('Sells In Market', 'Merchant'),
-            ('Transportation/ Driver', 'Driver'),
         ]
 
     def process_commkit(self, commkit_data):
