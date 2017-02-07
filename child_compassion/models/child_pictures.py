@@ -162,7 +162,10 @@ class child_pictures(models.Model):
         _image_date = False
         for picture in self.filtered('image_url'):
             image_split = picture.image_url.split('/')
-            ind = image_split.index('upload')
+            if 'upload' in picture.image_url:
+                ind = image_split.index('upload')
+            else:
+                ind = image_split.index('media.ci.org')
             image_split[ind + 1] = cloudinary
             url = "/".join(image_split)
             try:

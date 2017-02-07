@@ -367,9 +367,11 @@ class CompassionProject(models.Model):
     @api.multi
     def _compute_chf_income(self):
         for project in self:
-            project.chf_income = \
-                project.monthly_income / \
+            income = project.monthly_income / \
                 project.country_id.currency_id.rate_silent
+            if int(income) == 0:
+                income = project.monthly_income / project.usd.rate_silent
+            project.chf_income = income
 
     @api.model
     def _get_electrical_power(self):
