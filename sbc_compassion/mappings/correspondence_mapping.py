@@ -97,15 +97,13 @@ class CorrespondenceMapping(OnrampMapping):
     FIELDS_TO_SUBMIT = {
         'Beneficiary.LocalId': None,
         'GlobalPartner.Id': None,
-        # 'Supporter.CompassConstituentId': lambda id: '65-' + id,
         'Supporter.GlobalId': None,
         'Direction': None,
         'Pages': None,
         'RelationshipType': None,
         'SBCGlobalStatus': None,
         'GlobalPartnerSBCId': str,
-        # Put again language if GMC can handle it.
-        # 'OriginalLanguage': None,
+        'OriginalLanguage': None,
         'OriginalLetterURL': None,
         'Template': None,
         'SourceSystem': None,
