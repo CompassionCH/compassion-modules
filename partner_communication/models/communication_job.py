@@ -136,6 +136,15 @@ class CommunicationJob(models.Model):
 
         return job
 
+    @api.multi
+    def write(self, vals):
+        object_ids = vals.get('object_ids')
+        if isinstance(object_ids, list):
+            vals['object_ids'] = ','.join(map(str, object_ids))
+        elif object_ids:
+            vals['object_ids'] = str(object_ids)
+        return super(CommunicationJob, self).write(vals)
+
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
@@ -179,7 +188,7 @@ class CommunicationJob(models.Model):
         return True
 
     @api.multi
-    def refresh_text(self):
+    def refresh_text(self, refresh_uid=False):
         self.mapped('attachment_ids').unlink()
         self.set_attachments()
         for job in self:
@@ -190,8 +199,9 @@ class CommunicationJob(models.Model):
                 job.write({
                     'body_html': fields['body_html'],
                     'subject': fields['subject'],
-                    'user_id': self.env.uid,
                 })
+                if refresh_uid:
+                    job.user_id = self.env.user
         return True
 
     @api.onchange('partner_id')
@@ -208,7 +218,7 @@ class CommunicationJob(models.Model):
             'view_type': 'form',
             'view_mode': 'form,tree',
             'res_model': self.config_id.model,
-            'context': self.env.context,
+            'context': self.with_context(group_by=False).env.context,
             'target': 'current',
         }
         if len(object_ids) > 1:

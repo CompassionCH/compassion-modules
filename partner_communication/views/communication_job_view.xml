@@ -129,7 +129,7 @@
             <field name="name">Refresh communication</field>
             <field name="model_id" ref="model_partner_communication_job"/>
             <field name="state">code</field>
-            <field name="code">self.refresh_text(cr, uid, context.get('active_ids', []), context=context)</field>
+            <field name="code">self.refresh_text(cr, uid, context.get('active_ids', []), refresh_uid=True, context=context)</field>
         </record>
 
         <record id="refresh_action_menu" model="ir.values">
