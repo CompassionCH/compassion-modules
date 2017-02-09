@@ -112,7 +112,7 @@ Sample Unsuccessful Response
 
         http_response = Response(
             body, headers=headers, status=status)
-        ONRAMP_LOGGER.info("[SEND] %s %s %s", status, headers, response)
+        ONRAMP_LOGGER.info('[SEND] %s %s "%s"', status, headers, response)
         return http_response
 
     def _handle_exception(self, exception):

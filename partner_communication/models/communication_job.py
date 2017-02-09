@@ -46,12 +46,18 @@ class CommunicationJob(models.Model):
     object_ids = fields.Char('Resource ids', required=True)
 
     date = fields.Datetime(default=fields.Datetime.now)
-    sent_date = fields.Datetime()
+    sent_date = fields.Datetime(readonly=True)
     state = fields.Selection([
+        ('call', _('Call partner')),
         ('pending', _('Pending')),
         ('done', _('Done')),
         ('cancel', _('Cancelled')),
     ], default='pending', readonly=True, track_visibility='onchange')
+    need_call = fields.Boolean(
+        help='Indicates we should have a personal contact with the partner',
+        readonly=True,
+        states={'pending': [('readonly', False)]}
+    )
 
     auto_send = fields.Boolean(
         help='Job is processed at creation if set to true')
@@ -66,8 +72,9 @@ class CommunicationJob(models.Model):
         'res.users', 'From', domain=[('share', '=', False)])
     email_to = fields.Char(
         help='optional e-mail address to override recipient')
-    email_id = fields.Many2one('mail.mail', 'Generated e-mail')
-    phonecall_id = fields.Many2one('crm.phonecall', 'Phonecall log')
+    email_id = fields.Many2one('mail.mail', 'Generated e-mail', readonly=True)
+    phonecall_id = fields.Many2one('crm.phonecall', 'Phonecall log',
+                                   readonly=True)
 
     body_html = fields.Html()
     subject = fields.Char()
@@ -100,11 +107,12 @@ class CommunicationJob(models.Model):
         else:
             vals['object_ids'] = str(vals['partner_id'])
 
-        job = self.search([
+        same_job_search = [
             ('partner_id', '=', vals.get('partner_id')),
             ('config_id', '=', vals.get('config_id')),
-            ('state', '=', 'pending')
-        ])
+            ('state', 'in', ('call', 'pending'))
+        ] + self.env.context.get('same_job_search', [])
+        job = self.search(same_job_search)
         if job:
             job.object_ids = job.object_ids + ',' + vals['object_ids']
             job.refresh_text()
@@ -118,6 +126,10 @@ class CommunicationJob(models.Model):
             if not user.employee_ids and job.config_id.user_id:
                 user = job.config_id.user_id
             job.user_id = user
+
+        # Check if phonecall is needed
+        if job.need_call or job.config_id.need_call:
+            job.state = 'call'
 
         # Determine send mode
         send_mode = job.config_id.get_inform_mode(job.partner_id)
@@ -143,6 +155,9 @@ class CommunicationJob(models.Model):
             vals['object_ids'] = ','.join(map(str, object_ids))
         elif object_ids:
             vals['object_ids'] = str(object_ids)
+        if vals.get('need_call'):
+            vals['state'] = 'call'
+
         return super(CommunicationJob, self).write(vals)
 
     ##########################################################################
@@ -176,7 +191,10 @@ class CommunicationJob(models.Model):
 
     @api.multi
     def cancel(self):
-        return self.write({'state': 'cancel'})
+        to_call = self.filtered(lambda j: j.state == 'call')
+        to_call.write({'state': 'pending', 'need_call': False})
+        (self - to_call).write({'state': 'cancel'})
+        return True
 
     @api.multi
     def reset(self):
@@ -202,6 +220,9 @@ class CommunicationJob(models.Model):
                 })
                 if refresh_uid:
                     job.user_id = self.env.user
+                if job.state == 'call' and not job.need_call:
+                    job.state = 'pending'
+
         return True
 
     @api.onchange('partner_id')
@@ -369,4 +390,4 @@ class CommunicationJob(models.Model):
         Used to display a count icon in the menu
         :return: domain of jobs counted
         """
-        return [('state', '=', 'pending')]
+        return [('state', 'in', ('call', 'pending'))]

@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, fields
+from openerp import api, models, fields, _
 import logging
 
 
@@ -21,20 +21,48 @@ class Phonecall(models.Model):
 
     @api.model
     def create(self, vals):
-        phonecall_log = super(Phonecall, self).create(vals)
-        config = self.env.ref('partner_communication.phonecall_communication')
-        self.env['partner.communication.job'].create({
-            'config_id': config.id,
-            'partner_id': phonecall_log.partner_id.id,
-            'user_id': self.env.uid,
-            'object_ids': phonecall_log.partner_id.ids,
-            'state': 'done',
-            'phonecall_id': phonecall_log.id,
-            'sent_date': fields.Datetime.now(),
-            'body_html': phonecall_log.name,
-            'subject': phonecall_log.name,
-        })
-        phonecall_log.partner_id.message_post(
-            phonecall_log.name, "Phonecall"
-        )
-        return phonecall_log
+        phonecall = super(Phonecall, self).create(vals)
+        communication_id = self.env.context.get('communication_id')
+        if communication_id:
+            # Mark communication done when phonecall log created from
+            # communication call wizard.
+            communication = self.env['partner.communication.job'].browse(
+                communication_id)
+            if communication.state == 'pending':
+                communication.write({
+                    'state': 'done',
+                    'sent_date': fields.Datetime.now(),
+                    'phonecall_id': phonecall.id
+                })
+            elif communication.state == 'call':
+                # Unlock the need call state
+                communication.write({
+                    'need_call': False,
+                    'state': 'pending'
+                })
+            info = _('Phone call with sponsor') + ':' + '<br/>'
+            if phonecall.description:
+                info += phonecall.description + \
+                        '<br/>--------------------------------<br/>'
+            communication.partner_id.message_post(
+                info + communication.body_html, communication.config_id.name)
+        else:
+            # Phone call was made outside from communication call wizard.
+            # Create a communication to log the call.
+            config = self.env.ref(
+                'partner_communication.phonecall_communication')
+            self.env['partner.communication.job'].create({
+                'config_id': config.id,
+                'partner_id': phonecall.partner_id.id,
+                'user_id': self.env.uid,
+                'object_ids': phonecall.partner_id.ids,
+                'state': 'done',
+                'phonecall_id': phonecall.id,
+                'sent_date': fields.Datetime.now(),
+                'body_html': phonecall.name,
+                'subject': phonecall.name,
+            })
+            phonecall.partner_id.message_post(
+                phonecall.name, "Phonecall"
+            )
+        return phonecall
