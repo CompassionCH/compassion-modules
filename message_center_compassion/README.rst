@@ -18,7 +18,7 @@ Installation
 To install this module, you need to install dependencies:
 
 * install python-requests (sudo apt-get install python-requests)
-* install jwt (sudo pip install jwt)
+* install jwt (sudo pip install pyjwt)
 
 Configuration
 =============

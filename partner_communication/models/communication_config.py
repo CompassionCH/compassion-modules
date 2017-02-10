@@ -39,6 +39,9 @@ class CommunicationConfig(models.Model):
         help='Name of the field in res.partner in which to find the '
              'delivery preference'
     )
+    need_call = fields.Boolean(
+        help='Indicates we should have a personal contact with the partner'
+    )
     print_if_not_email = fields.Boolean(
         help="Should we print the communication if the sponsor don't have "
              "an e-mail address"

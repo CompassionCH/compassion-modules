@@ -14,31 +14,6 @@ from datetime import datetime
 from openerp import models, api, fields, _
 
 
-class CrmPhonecall(models.Model):
-    _inherit = 'crm.phonecall'
-
-    @api.model
-    def create(self, vals):
-        """ Mark communication done when phonecall log created. """
-        phonecall = super(CrmPhonecall, self).create(vals)
-        communication_id = self.env.context.get('communication_id')
-        if communication_id:
-            communication = self.env['partner.communication.job'].browse(
-                communication_id)
-            communication.write({
-                    'state': 'done',
-                    'sent_date': fields.Datetime.now(),
-                    'phonecall_id': phonecall.id
-            })
-            info = _('Phone call with sponsor') + ':' + '<br/>'
-            if phonecall.description:
-                info += phonecall.description + \
-                       '<br/>--------------------------------<br/>'
-            communication.partner_id.message_post(
-                info + communication.body_html, communication.config_id.name)
-        return phonecall
-
-
 class CallWizard(models.TransientModel):
     _name = 'partner.communication.call.wizard'
 

@@ -6,11 +6,11 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <field name="state" widget="statusbar" statusbar_visible="pending,done"/>
+                        <field name="state" widget="statusbar" statusbar_visible="call,pending,done"/>
                         <button name="send" string="Send Now" icon="terp-mail-" type="object" class="oe_highlight" states='pending'/>
-                        <button name="log_call" string="Log call" icon="terp-call-start" type="object" states='pending'/>
+                        <button name="log_call" string="Log call" icon="terp-call-start" type="object" states='call,pending'/>
                         <button name="reset" string="Retry" type="object" states='done,cancel'/>
-                        <button name="cancel" string="Cancel" type="object" states='pending'/>
+                        <button name="cancel" string="Cancel" type="object" states='call,pending'/>
                     </header>
                     <sheet>
                         <div class="oe_right oe_button_box" name="buttons">
@@ -29,6 +29,7 @@
                             <group>
                                 <field name="sent_date" readonly="1"/>
                                 <field name="send_mode"/>
+                                <field name="need_call"/>
                                 <field name="report_id" attrs="{'invisible': [('send_mode', '!=', 'physical')]}"/>
                                 <field name="auto_send"/>
                             </group>
@@ -56,7 +57,7 @@
             <field name="name">communication.job.tree</field>
             <field name="model">partner.communication.job</field>
             <field name="arch" type="xml">
-                <tree colors="blue:state=='pending';grey:state=='done';red:state=='cancel'">
+                <tree colors="blue:state=='pending';grey:state in ('done','cancel');red:state=='call'">
                     <field name="date"/>
                     <field name="config_id"/>
                     <field name="partner_id"/>
@@ -66,9 +67,9 @@
                     <field name="state"/>
                     <field name="sent_date"/>
                     <button name="send" string="Send Now" type="object" icon="terp-mail-" states='pending'/>
-                    <button name="call" string="Call" type="object" icon="terp-call-start" states='pending'/>
+                    <button name="call" string="Call" type="object" icon="terp-call-start" states='call,pending'/>
                     <button name="reset" string="Retry" type="object" icon="gtk-redo" states='done,cancel'/>
-                    <button name="cancel" string="Cancel" type="object" icon="terp-gtk-stop" states='pending'/>
+                    <button name="cancel" string="Cancel" type="object" icon="terp-gtk-stop" states='call,pending'/>
                 </tree>
             </field>
         </record>
@@ -80,7 +81,7 @@
                 <search>
                     <field name="config_id"/>
                     <field name="partner_id"/>
-                    <filter string="Pending" name="pending" domain="[('state', '=', 'pending')]" context=""/>
+                    <filter string="Pending" name="pending" domain="[('state', 'in', ('call', 'pending'))]" context=""/>
                     <filter string="Letters" name="digital" domain="[('send_mode', '=', 'physical')]" context=""/>
                     <filter string="E-mails" name="physical" domain="[('send_mode', '=', 'digital')]" context=""/>
                     <group expand="0" string="Group By">
@@ -129,7 +130,7 @@
             <field name="name">Refresh communication</field>
             <field name="model_id" ref="model_partner_communication_job"/>
             <field name="state">code</field>
-            <field name="code">self.refresh_text(cr, uid, context.get('active_ids', []), context=context)</field>
+            <field name="code">self.refresh_text(cr, uid, context.get('active_ids', []), refresh_uid=True, context=context)</field>
         </record>
 
         <record id="refresh_action_menu" model="ir.values">
