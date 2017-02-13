@@ -5,7 +5,7 @@
             <field name="name">correspondence.tree</field>
             <field name="model">correspondence</field>
             <field name="arch" type="xml">
-                <tree string="Correspondence">
+                <tree string="Correspondence" colors="red:is_final_letter">
                     <field name="scanned_date"/>
                     <field name="sponsorship_id"/>
                     <field name="kit_identifier"/>
@@ -13,6 +13,7 @@
                     <field name="status_date"/>
                     <field name="translator_id"/>
                     <field name="state"/>
+                    <field name="is_final_letter" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -81,10 +82,13 @@
                             <group string="Supporter">
                                 <field name="correspondant_id"/>
                                 <field name="supporter_languages_ids" string="Partner spoken languages" widget="many2many_tags" options="{'create':False}"/>
+                                <field name="letter_delivery_preference"/>
+                                <field name="email"/>
                             </group>
                             <group string="Beneficiary">
                                 <field name="child_id"/>
                                 <field name="beneficiary_language_ids" string="Child spoken languages" widget="many2many_tags" options="{'create':False}"/>
+                                <field name="sponsorship_state"/>
                             </group>
                         </group>
                         <separator string="Letter content"/>

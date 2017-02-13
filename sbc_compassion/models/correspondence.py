@@ -132,6 +132,12 @@ class Correspondence(models.Model):
     translator_id = fields.Many2one(
         'res.partner', 'GP Translator', compute='_compute_translator',
         inverse='_set_translator', store=True)
+    letter_delivery_preference = fields.Selection(
+        related='correspondant_id.letter_delivery_preference')
+    email = fields.Char(related='correspondant_id.email')
+    sponsorship_state = fields.Selection(
+        related='sponsorship_id.state', string='Sponsorship state')
+    is_final_letter = fields.Boolean(compute='_is_final_letter')
 
     # Letter remote access
     ######################
@@ -371,6 +377,12 @@ class Correspondence(models.Model):
 
     def _get_uuid(self):
         return str(uuid.uuid4())
+
+    def _is_final_letter(self):
+        for letter in self:
+            letter.is_final_letter = \
+                'Final Letter' in letter.communication_type_ids.mapped(
+                    'name') or letter.sponsorship_state != 'active'
 
     ##########################################################################
     #                              ORM METHODS                               #
