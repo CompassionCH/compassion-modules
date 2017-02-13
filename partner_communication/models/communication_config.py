@@ -188,6 +188,7 @@ class CommunicationConfig(models.Model):
         if send_mode == 'digital' and not partner.email:
             if self.print_if_not_email:
                 send_mode = 'physical'
+                auto_mode = False
             else:
                 send_mode = False
         return send_mode, auto_mode
