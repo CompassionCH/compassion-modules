@@ -10,7 +10,7 @@
 ##############################################################################
 import logging
 
-from openerp import http
+from openerp import http, fields
 from openerp.http import request
 
 from werkzeug.exceptions import BadRequest, NotFound
@@ -39,13 +39,17 @@ class RestController(http.Controller):
             raise NotFound()
         data = correspondence.get_image()
         headers = Headers()
-        headers.add(
-            'Content-Disposition', 'attachment',
-            filename=correspondence.letter_image.name)
         if correspondence.letter_format == 'zip':
+            fname = fields.Date.today() + ' letters.zip'
+            headers.add(
+                'Content-Disposition', 'attachment',
+                filename=fname)
             response = Response(data, content_type='application/zip',
                                 headers=headers)
         else:
+            headers.add(
+                'Content-Disposition', 'attachment',
+                filename=correspondence.letter_image.name)
             response = Response(data, content_type='application/pdf',
                                 headers=headers)
         return response
