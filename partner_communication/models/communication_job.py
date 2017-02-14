@@ -230,6 +230,13 @@ class CommunicationJob(models.Model):
         if self.config_id and self.partner_id:
             self.send_mode = self.config_id.get_inform_mode(self.partner_id)[0]
 
+    @api.onchange('config_id')
+    def onchange_config_id(self):
+        if self.config_id:
+            send_mode = self.config_id.get_inform_mode(self.partner_id)
+            self.send_mode = send_mode[0]
+            self.auto_send = send_mode[1]
+
     @api.multi
     def open_related(self):
         object_ids = map(int, self.object_ids.split(','))
