@@ -19,7 +19,8 @@
                         </div>
                         <group>
                             <group>
-                                <field name="config_id" domain="[('model', '=', 'res.partner')]"/>
+                                <field name="model" invisible="1"/>
+                                <field name="config_id" domain="[('model', '=', model)]"/>
                                 <field name="user_id"/>
                                 <field name="partner_id"/>
                                 <field name="email_to"/>

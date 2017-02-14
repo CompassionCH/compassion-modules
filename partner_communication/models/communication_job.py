@@ -39,6 +39,7 @@ class CommunicationJob(models.Model):
         default=lambda s: s.env.ref(
                 'partner_communication.default_communication'),
     )
+    model = fields.Char(related='config_id.model')
     partner_id = fields.Many2one(
         'res.partner', 'Send to', required=True)
     partner_phone = fields.Char(related='partner_id.phone')
@@ -225,14 +226,9 @@ class CommunicationJob(models.Model):
 
         return True
 
-    @api.onchange('partner_id')
-    def onchange_partner_id(self):
-        if self.config_id and self.partner_id:
-            self.send_mode = self.config_id.get_inform_mode(self.partner_id)[0]
-
-    @api.onchange('config_id')
+    @api.onchange('config_id', 'partner_id')
     def onchange_config_id(self):
-        if self.config_id:
+        if self.config_id and self.partner_id:
             send_mode = self.config_id.get_inform_mode(self.partner_id)
             self.send_mode = send_mode[0]
             self.auto_send = send_mode[1]
