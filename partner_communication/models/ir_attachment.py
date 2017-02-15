@@ -8,11 +8,14 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+from openerp import models, fields, _
 
-from . import communication_config
-from . import communication_job
-from . import communication_attachment
-from . import res_partner
-from . import email
-from . import crm_phonecall
-from . import ir_attachment
+
+class IrAttachment(models.Model):
+    """ Add a link to report to know how to print the attachment. """
+    _inherit = 'ir.attachment'
+
+    report_id = fields.Many2one(
+        'ir.actions.report.xml', 'Print configuration',
+        domain=[('property_printing_action.type', '=', 'server')]
+    )

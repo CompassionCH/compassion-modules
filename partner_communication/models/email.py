@@ -27,8 +27,10 @@ class Email(models.Model):
         """ Create communication for partner, if not already existing.
         """
         super(Email, self).send()
-        comm_obj = self.env['partner.communication.job']
-        config = self.env.ref('partner_communication.default_communication')
+        comm_obj = self.env['partner.communication.job'].with_context(
+            no_print=True, default_attachment_ids=False)
+        config = self.env.ref(
+            'partner_communication.default_communication')
         for email in self:
             communication = comm_obj.search([('email_id', '=', email.id)])
             if not communication:
@@ -43,4 +45,5 @@ class Email(models.Model):
                         'sent_date': fields.Datetime.now(),
                         'body_html': email.body_html,
                         'subject': email.subject,
+                        'ir_attachment_ids': [(6, 0, email.attachment_ids.ids)]
                     })
