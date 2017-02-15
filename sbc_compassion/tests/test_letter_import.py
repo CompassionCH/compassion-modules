@@ -35,11 +35,11 @@ def import_letters(env, filename, csv_file):
     csv_content = get_file_content(path_csv)
     attachment = {
         "name": filename,
-        "db_datas": file_content,
+        "datas": file_content,
     }
     csv_file = {
         "name": csv_file,
-        "db_datas": csv_content,
+        "datas": csv_content,
     }
     test_letters = test_letters_obj.create({
         "data": [(0, 0, attachment)],
