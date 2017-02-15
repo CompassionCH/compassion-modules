@@ -677,7 +677,7 @@ class Correspondence(models.Model):
                 '.pdf'
             letter.letter_image = self.env['ir.attachment'].create({
                 "name": name,
-                "db_datas": image_data,
+                "datas": image_data,
                 'res_model': self._name,
                 'res_id': letter.id,
             })
