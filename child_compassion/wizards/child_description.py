@@ -104,8 +104,8 @@ class ChildDescription(models.TransientModel):
             'F': u'{firstname} geht in {level}.',
         },
         'it_IT': {
-            'M': u'{firstname} abbiamo {level}.',
-            'F': u'{firstname} abbiama {level}.',
+            'M': u'{firstname} frequenta {level}.',
+            'F': u'{firstname} frequenta {level}.',
         },
         'en_US': {
             'M': u'{firstname} does attend {level}.',
@@ -123,8 +123,8 @@ class ChildDescription(models.TransientModel):
             'F': u'{firstname} geht nicht zur Schule.',
         },
         'it_IT': {
-            'M': u'{firstname} non abbiamo scuola.',
-            'F': u'{firstname} non abbiama scuola.',
+            'M': u'{firstname} non frequenta la scuola.',
+            'F': u'{firstname} non frequenta la scuola.',
         },
         'en_US': {
             'M': u"{firstname} doesn't attend school.",
@@ -142,8 +142,8 @@ class ChildDescription(models.TransientModel):
             'F': u'Sie hilft zu Hause:',
         },
         'it_IT': {
-            'M': u'Abbiamo lavoro:',
-            'F': u'Abbiama lavora:',
+            'M': u'A casa aiuta nei seguenti compiti:',
+            'F': u'A casa aiuta nei seguenti compiti:',
         },
         'en_US': {
             'M': u"He helps with the following duties at home:",
@@ -161,8 +161,8 @@ class ChildDescription(models.TransientModel):
             'F': u'In der Kirche macht sie mit bei:',
         },
         'it_IT': {
-            'M': u'Abbiamo iglesia:',
-            'F': u'Abbiama iglesia:',
+            'M': u'In chiesa partecipa alle seguenti attività:',
+            'F': u'In chiesa partecipa alle seguenti attività:',
         },
         'en_US': {
             'M': u"He is engaged with his church in the following activities:",
@@ -181,8 +181,8 @@ class ChildDescription(models.TransientModel):
             'F': u'Sie mag gern:',
         },
         'it_IT': {
-            'M': u'{firstname} amo:',
-            'F': u'{firstname} ama:',
+            'M': u'A {firstname} piace:',
+            'F': u'A {firstname} piace:',
         },
         'en_US': {
             'M': u"{firstname}'s favourite interests include:",
