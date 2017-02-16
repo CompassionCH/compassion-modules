@@ -164,7 +164,8 @@ class CommunicationConfig(models.Model):
 
         if self.send_mode != 'partner_preference':
             partner_mode = getattr(
-                partner, self.send_mode_pref_field,
+                partner, self.send_mode_pref_field or
+                'global_communication_delivery_preference',
                 partner.global_communication_delivery_preference)
             if self.send_mode == partner_mode:
                 send_mode = self.send_mode

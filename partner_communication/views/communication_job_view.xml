@@ -83,6 +83,7 @@
                     <field name="config_id"/>
                     <field name="partner_id"/>
                     <filter string="Pending" name="pending" domain="[('state', 'in', ('call', 'pending'))]" context=""/>
+                    <separator/>
                     <filter string="Letters" name="digital" domain="[('send_mode', '=', 'physical')]" context=""/>
                     <filter string="E-mails" name="physical" domain="[('send_mode', '=', 'digital')]" context=""/>
                     <group expand="0" string="Group By">
