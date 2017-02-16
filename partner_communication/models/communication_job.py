@@ -11,6 +11,7 @@
 import logging
 
 from openerp import api, models, fields, _, http
+from openerp.exceptions import Warning
 from openerp.addons.base_phone.controller import BasePhoneController
 
 logger = logging.getLogger(__name__)
@@ -83,11 +84,34 @@ class CommunicationJob(models.Model):
         'partner.communication.attachment', 'communication_id',
         string="Attachments")
     ir_attachment_ids = fields.Many2many(
-        'ir.attachment', compute='_compute_ir_attachments')
+        'ir.attachment', string='Attachments',
+        compute='_compute_ir_attachments',
+        inverse='_inverse_ir_attachments',
+        domain=[('report_id', '!=', False)]
+    )
 
     def _compute_ir_attachments(self):
         for job in self:
             job.ir_attachment_ids = job.mapped('attachment_ids.attachment_id')
+
+    def _inverse_ir_attachments(self):
+        attach_obj = self.env['partner.communication.attachment']
+        for job in self:
+            for attachment in job.ir_attachment_ids:
+                if attachment not in job.attachment_ids.mapped(
+                        'attachment_id'):
+                    if not attachment.report_id and not \
+                            self.env.context.get('no_print'):
+                        raise Warning(
+                            _("Please select a printing configuration for the "
+                              "attachments you add.")
+                        )
+                    attach_obj.create({
+                        'name': attachment.name,
+                        'communication_id': job.id,
+                        'report_name': attachment.report_id.report_name or '',
+                        'attachment_id': attachment.id
+                    })
 
     ##########################################################################
     #                              ORM METHODS                               #

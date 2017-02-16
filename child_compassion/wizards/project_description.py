@@ -127,28 +127,40 @@ class ProjectDescription(models.TransientModel):
 
         # 3. Activities
         ###############
-        desc('#activities_label').html(_("Project activities for children"))
+        spiritual = project.get_activities('spiritual_activity', 3)
+        physical = project.get_activities('physical_activity', 3)
+        cognitive = project.get_activities('cognitive_activity', 3)
+        socio = project.get_activities('socio_activity', 3)
+        if spiritual or physical or cognitive or socio:
+            desc('#activities_label').html(
+                _("Project activities for children"))
+        else:
+            desc('#activities').remove()
 
-        desc('.spiritual_activities').html(_("Spiritual activities"))
-        desc('#spiritual_activities_list').html(''.join(
-            ['<li>' + activity + '</li>' for activity in
-             project.get_activities('spiritual_activity', 3)]))
-
-        desc('.physical_activities').html(_("Physical activities"))
-        desc('#physical_activities_list').html(''.join(
-            ['<li>' + activity + '</li>' for activity in
-             project.get_activities('physical_activity', 3)]))
-
-        desc('.cognitive_activities').html(_("Cognitive activities"))
-        desc('#cognitive_activities_list').html(''.join(
-            ['<li>' + activity + '</li>' for activity in
-             project.get_activities('cognitive_activity', 3)]))
-
-        desc('.socio_activities').html(_("Socio-emotional activities"))
-        desc('#socio_activities_list').html(''.join(
-            ['<li>' + activity + '</li>' for activity in
-             project.get_activities('socio_activity', 3)]))
-
+        if spiritual:
+            desc('.spiritual_activities').html(_("Spiritual activities"))
+            desc('#spiritual_activities_list').html(''.join(
+                ['<li>' + activity + '</li>' for activity in spiritual]))
+        else:
+            desc('#spiritual_activities').remove()
+        if physical:
+            desc('.physical_activities').html(_("Physical activities"))
+            desc('#physical_activities_list').html(''.join(
+                ['<li>' + activity + '</li>' for activity in physical]))
+        else:
+            desc('#physical_activities').remove()
+        if cognitive:
+            desc('.cognitive_activities').html(_("Cognitive activities"))
+            desc('#cognitive_activities_list').html(''.join(
+                ['<li>' + activity + '</li>' for activity in cognitive]))
+        else:
+            desc('#cognitive_activities').remove()
+        if socio:
+            desc('.socio_activities').html(_("Socio-emotional activities"))
+            desc('#socio_activities_list').html(''.join(
+                ['<li>' + activity + '</li>' for activity in socio]))
+        else:
+            desc('#socio_activities').remove()
         if project.activities_for_parents:
             desc('.parent_activities').html(
                 _("In addition, the project offers special activities for the "

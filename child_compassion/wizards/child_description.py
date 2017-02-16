@@ -81,12 +81,16 @@ class ChildDescription(models.TransientModel):
                  u'bas-âge.',
         },
         'de_DE': {
-            'M': u'{firstname} ist zu Hause.',
-            'F': u'{firstname} ist zu Hause.',
+            'M': u'{firstname} wird zu Hause im Programm für kleine Kinder '
+                 u'begleitet.',
+            'F': u'{firstname} wird zu Hause im Programm für kleine Kinder '
+                 u'begleitet.',
         },
         'it_IT': {
-            'M': u'{firstname} abbiamo casa.',
-            'F': u'{firstname} abbiama casa.',
+            'M': u'{firstname} segue il programma a casa per i bambini '
+                 u'piccoli.',
+            'F': u'{firstname} segue il programma a casa per i bambini '
+                 u'piccoli.',
         },
         'en_US': {
             'M': u'{firstname} follows the home based program for small kids.',
@@ -104,8 +108,8 @@ class ChildDescription(models.TransientModel):
             'F': u'{firstname} geht in {level}.',
         },
         'it_IT': {
-            'M': u'{firstname} abbiamo {level}.',
-            'F': u'{firstname} abbiama {level}.',
+            'M': u'{firstname} frequenta {level}.',
+            'F': u'{firstname} frequenta {level}.',
         },
         'en_US': {
             'M': u'{firstname} does attend {level}.',
@@ -123,8 +127,8 @@ class ChildDescription(models.TransientModel):
             'F': u'{firstname} geht nicht zur Schule.',
         },
         'it_IT': {
-            'M': u'{firstname} non abbiamo scuola.',
-            'F': u'{firstname} non abbiama scuola.',
+            'M': u'{firstname} non frequenta la scuola.',
+            'F': u'{firstname} non frequenta la scuola.',
         },
         'en_US': {
             'M': u"{firstname} doesn't attend school.",
@@ -142,8 +146,8 @@ class ChildDescription(models.TransientModel):
             'F': u'Sie hilft zu Hause:',
         },
         'it_IT': {
-            'M': u'Abbiamo lavoro:',
-            'F': u'Abbiama lavora:',
+            'M': u'A casa aiuta nei seguenti compiti:',
+            'F': u'A casa aiuta nei seguenti compiti:',
         },
         'en_US': {
             'M': u"He helps with the following duties at home:",
@@ -161,8 +165,8 @@ class ChildDescription(models.TransientModel):
             'F': u'In der Kirche macht sie mit bei:',
         },
         'it_IT': {
-            'M': u'Abbiamo iglesia:',
-            'F': u'Abbiama iglesia:',
+            'M': u'In chiesa partecipa alle seguenti attività:',
+            'F': u'In chiesa partecipa alle seguenti attività:',
         },
         'en_US': {
             'M': u"He is engaged with his church in the following activities:",
@@ -181,8 +185,8 @@ class ChildDescription(models.TransientModel):
             'F': u'Sie mag gern:',
         },
         'it_IT': {
-            'M': u'{firstname} amo:',
-            'F': u'{firstname} ama:',
+            'M': u'A {firstname} piace:',
+            'F': u'A {firstname} piace:',
         },
         'en_US': {
             'M': u"{firstname}'s favourite interests include:",
@@ -196,12 +200,12 @@ class ChildDescription(models.TransientModel):
             'F': u"{firstname} souffre de :",
         },
         'de_DE': {
-            'M': u'Er ist krank:',
-            'F': u'Sie ist krank:',
+            'M': u'{firstname} leidet unter:',
+            'F': u'{firstname} leidet unter:',
         },
         'it_IT': {
-            'M': u'{firstname} aiuto:',
-            'F': u'{firstname} aiuta:',
+            'M': u'{firstname} soffre di:',
+            'F': u'{firstname} soffre di:',
         },
         'en_US': {
             'M': u"{firstname} has the following chronic illnesses:",
@@ -215,12 +219,12 @@ class ChildDescription(models.TransientModel):
             'F': u"{firstname} souffre de handicaps :",
         },
         'de_DE': {
-            'M': u'Er hat schwer:',
-            'F': u'Sie hat schwer:',
+            'M': u'{firstname} hat folgende Behinderung:',
+            'F': u'{firstname} hat folgende Behinderung:',
         },
         'it_IT': {
-            'M': u'{firstname} non posso:',
-            'F': u'{firstname} non possa:',
+            'M': u'{firstname} ha le seguenti disabilità fisiche:',
+            'F': u'{firstname} ha le seguenti disabilità fisiche:',
         },
         'en_US': {
             'M': u"{firstname} has the following physical disabilities:",
