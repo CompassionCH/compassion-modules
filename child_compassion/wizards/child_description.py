@@ -81,12 +81,16 @@ class ChildDescription(models.TransientModel):
                  u'bas-âge.',
         },
         'de_DE': {
-            'M': u'{firstname} ist zu Hause.',
-            'F': u'{firstname} ist zu Hause.',
+            'M': u'{firstname} wird zu Hause im Programm für kleine Kinder '
+                 u'begleitet.',
+            'F': u'{firstname} wird zu Hause im Programm für kleine Kinder '
+                 u'begleitet.',
         },
         'it_IT': {
-            'M': u'{firstname} abbiamo casa.',
-            'F': u'{firstname} abbiama casa.',
+            'M': u'{firstname} segue il programma a casa per i bambini '
+                 u'piccoli.',
+            'F': u'{firstname} segue il programma a casa per i bambini '
+                 u'piccoli.',
         },
         'en_US': {
             'M': u'{firstname} follows the home based program for small kids.',
@@ -196,12 +200,12 @@ class ChildDescription(models.TransientModel):
             'F': u"{firstname} souffre de :",
         },
         'de_DE': {
-            'M': u'Er ist krank:',
-            'F': u'Sie ist krank:',
+            'M': u'{firstname} leidet unter:',
+            'F': u'{firstname} leidet unter:',
         },
         'it_IT': {
-            'M': u'{firstname} aiuto:',
-            'F': u'{firstname} aiuta:',
+            'M': u'{firstname} soffre di:',
+            'F': u'{firstname} soffre di:',
         },
         'en_US': {
             'M': u"{firstname} has the following chronic illnesses:",
@@ -215,12 +219,12 @@ class ChildDescription(models.TransientModel):
             'F': u"{firstname} souffre de handicaps :",
         },
         'de_DE': {
-            'M': u'Er hat schwer:',
-            'F': u'Sie hat schwer:',
+            'M': u'{firstname} hat folgende Behinderung:',
+            'F': u'{firstname} hat folgende Behinderung:',
         },
         'it_IT': {
-            'M': u'{firstname} non posso:',
-            'F': u'{firstname} non possa:',
+            'M': u'{firstname} ha le seguenti disabilità fisiche:',
+            'F': u'{firstname} ha le seguenti disabilità fisiche:',
         },
         'en_US': {
             'M': u"{firstname} has the following physical disabilities:",
