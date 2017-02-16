@@ -354,8 +354,8 @@ class CompassionProject(models.Model):
             ('Tile', 'Tile'),
             ('Tin/Corrugated Iron', 'Tin'),
             ('Wood', 'Wood'),
-            # TODO: Verify if we receive this in PROD
             ('Tin', 'Tin'),
+            ('Plastic', 'Plastic'),
         ]
 
     @api.multi

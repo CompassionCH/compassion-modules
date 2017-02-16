@@ -128,6 +128,7 @@ class Household(models.Model):
 
             ('Church Worker / Project Worker', 'Project worker'),
             ('Church Worker', 'Project worker'),
+            ('Church Employee/ Project Worker', 'Project worker'),
 
             ('Construction Worker', 'Construction worker'),
             ('Construction / Tradesman', 'Construction worker'),
