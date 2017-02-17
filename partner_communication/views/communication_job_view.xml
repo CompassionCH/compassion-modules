@@ -80,6 +80,8 @@
             <field name="model">partner.communication.job</field>
             <field name="arch" type="xml">
                 <search>
+                    <filter string="My Communications" name="user_id" domain="[('user_id', '=', uid)]"/>
+                    <separator/>
                     <field name="config_id"/>
                     <field name="partner_id"/>
                     <filter string="Pending" name="pending" domain="[('state', 'in', ('call', 'pending'))]" context=""/>
