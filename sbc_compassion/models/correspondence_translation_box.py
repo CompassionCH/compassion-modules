@@ -72,6 +72,7 @@ class CorrespondenceTranslationBox(models.Model):
                 design_pdf = PdfFileReader(file(design_pdf_path, 'rb'))
                 page = design_pdf.getPage(0)
                 page.mergePage(out_pdf.getPage(0))
+                page.compressContentStreams()
                 out_pdf = PdfFileWriter()
                 out_pdf.addPage(page)
         return out_pdf, remaining

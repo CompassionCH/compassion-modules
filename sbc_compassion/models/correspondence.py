@@ -576,6 +576,8 @@ class Correspondence(models.Model):
                 # Merge the translation on the existing page
                 page = page_output.getPage(j)
                 page.mergePage(translation_pdf.getPage(0))
+                # Compress page
+                page.compressContentStreams()
                 page_output.addPage(page)
 
             # Write the last version of the page into final pdf
