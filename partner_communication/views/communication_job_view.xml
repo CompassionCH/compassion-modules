@@ -65,6 +65,7 @@
                     <field name="send_mode"/>
                     <field name="email_to"/>
                     <field name="subject"/>
+                    <field name="user_id"/>
                     <field name="state"/>
                     <field name="sent_date"/>
                     <button name="send" string="Send Now" type="object" icon="terp-mail-" states='pending'/>
