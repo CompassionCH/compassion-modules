@@ -335,7 +335,8 @@ class ChildDescription(models.TransientModel):
                     'major_course_study')
             else:
                 desc('#school_subject').remove()
-            if child.vocational_training_type:
+            if child.vocational_training_type and \
+                    child.vocational_training_type.lower() != 'not enrolled':
                 desc('.vocational_training')[0].text = _('Vocational training')
                 desc('.vocational_training')[1].text = child.translate(
                     'vocational_training_type')
