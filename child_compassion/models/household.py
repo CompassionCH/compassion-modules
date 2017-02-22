@@ -43,7 +43,8 @@ class Household(models.Model):
     mother_living_with_child = fields.Boolean()
     youth_headed_household = fields.Boolean()
     primary_caregiver = fields.Char(compute='_compute_primary_caregiver')
-    primary_caregiver_id = fields.Char(compute='_compute_primary_caregiver')
+    primary_caregiver_id = fields.Many2one(
+        'compassion.household.member', compute='_compute_primary_caregiver')
 
     # Employment
     ############
@@ -247,11 +248,11 @@ class HouseholdMembers(models.Model):
     def _get_male_roles(self):
         return [
             ('Father', 'Father'),
-            ('Grandfather', 'Grandfather'),
-            ('Uncle', 'Uncle'),
-            ('Step Father', 'Step father'),
-            ('Godfather', 'Godfather'),
-            ('Brother', 'Brother'),
+            ('Grandfather', _('grandfather')),
+            ('Uncle', _('uncle')),
+            ('Step Father', _('step father')),
+            ('Godfather', _('godfather')),
+            ('Brother', _('brother')),
             ('Beneficiary - Male', 'Beneficiary - Male'),
         ]
 
@@ -259,11 +260,11 @@ class HouseholdMembers(models.Model):
     def _get_female_roles(self):
         return [
             ('Mother', 'Mother'),
-            ('Grandmother', 'Grandmother'),
-            ('Aunt', 'Aunt'),
-            ('Step Mother', 'Step mother'),
-            ('Godmother', 'Godmother'),
-            ('Sister', 'Sister'),
+            ('Grandmother', _('grandmother')),
+            ('Aunt', _('aunt')),
+            ('Step Mother', _('step mother')),
+            ('Godmother', _('godmother')),
+            ('Sister', _('sister')),
             ('Beneficiary - Female', 'Beneficiary - Female'),
         ]
 

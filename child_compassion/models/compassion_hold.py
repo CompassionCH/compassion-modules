@@ -206,11 +206,11 @@ class CompassionHold(models.Model):
         for hold in self:
             message_vals = {
                 'action_id': action_id,
-                'object_id': hold.id
+                'object_id': hold.id,
+                'child_id': hold.child_id.id,
             }
             messages += message_obj.create(message_vals)
-        # TODO Reactivate at go-live
-        # messages.process_messages()
+        messages.process_messages()
 
     @api.multi
     def hold_sent(self, vals):
