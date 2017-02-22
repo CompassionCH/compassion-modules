@@ -50,7 +50,8 @@ class ChildDescription(models.TransientModel):
         },
         'de_DE': {
             'M': [['sein', 'seinen', 'seinem'], ['seine', 'seinen', 'seinen']],
-            'F': [['ihr', 'ihren', 'ihrem'], ['ihre', 'ihren', 'ihren']],
+            'F': [['seine', 'seine', 'seiner'], ['seine', 'seinen',
+                                                 'seinen']],
         },
         'it_IT': {
             'M': [['suo'] * 3, ['i suoi'] * 3],
@@ -170,7 +171,7 @@ class ChildDescription(models.TransientModel):
         },
         'en_US': {
             'M': u"He is engaged with his church in the following activities:",
-            'F': u"She is engaged with his church in the following "
+            'F': u"She is engaged with her church in the following "
                  u"activities:",
         }
     }
@@ -236,7 +237,11 @@ class ChildDescription(models.TransientModel):
         return self.he_lang[self.env.lang][gender][number][tense]
 
     def his(self, gender, number=SINGULAR, tense=NOMINATIVE):
-        return self.his_lang[self.env.lang][gender][number][tense]
+        result = self.his_lang[self.env.lang][gender][number][tense]
+        if self.env.lang == 'de_DE':
+            # In german, "sein" becomes "ihr"
+            result = self.child_id.get(result)
+        return result
 
     @api.model
     def create(self, vals):
@@ -408,9 +413,10 @@ class ChildDescription(models.TransientModel):
         return desc.html()
 
     def _gender(self, default):
-        """ In all languages except German, the gender is defined by the
-        complement. For German, the gender is taken by the subject. """
-        return self.child_id.gender if self.env.lang == 'de_DE' else default
+        """ In all languages except English, the gender is defined
+        by the complement. For English, the gender is taken by the subject.
+        """
+        return self.child_id.gender if self.env.lang == 'en_US' else default
 
     def _he(self):
         """ Utility to quickly return he or she. """
@@ -438,7 +444,18 @@ class ChildDescription(models.TransientModel):
         elif youth:
             live_with += _('in a youth headed house.')
         else:
-            live_with += _('in an institution.')
+            caregiver = household.primary_caregiver_id
+            if caregiver:
+                caregiver_role = household.primary_caregiver
+                if caregiver_role == 'Beneficiary - Male':
+                    caregiver_role = _('brother')
+                if caregiver_role == 'Beneficiary - Female':
+                    caregiver_role = _('sister')
+                live_with += _('with') + ' ' + self.his(
+                    self._gender(caregiver.gender), tense=DATIVE
+                ) + ' ' + caregiver_role
+            else:
+                live_with += _('in an institution.')
         return live_with
 
     def _job(self, desc, guardian):
