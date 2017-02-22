@@ -159,6 +159,12 @@ class CommunicationConfig(models.Model):
                 'none': 'none',
                 'both': 'both' if self.print_if_not_email else 'digital',
                 'digital': 'digital',
+            },
+            'both': {
+                'none': 'none',
+                'physical': 'physical',
+                'digital': 'both',
+                'both': 'both',
             }
         }
 

@@ -83,3 +83,17 @@ job_nurse_it,Nurse,it_IT,Caregiver Job,Cura professionale,,Infermiera,
 job_daily_fr,Daily jobs,fr_CH,Caregiver Job,Ouvrier journalier,,Ouvrière journalière,
 job_daily_de,Daily jobs,de_DE,Caregiver Job,Tagelöhner,,Tagelöhnerin,
 job_daily_it,Daily jobs,it_IT,Caregiver Job,Bracciante,,Bracciante,
+child_he_fr,he,fr_CH,Child,il,ils,elle,elles
+child_son_fr,son,fr_CH,Child,son,leur,son,leur
+child_sa_fr,sa,fr_CH,Child,sa,leur,sa,leur
+child_ses_fr,ses,fr_CH,Child,ses,leurs,ses,leurs
+child_he_de,he,de_DE,Child,er,sie,sie,sie
+child_sein_de,sein,de_DE,Child,sein,ihr,ihr,ihr
+child_seiner_de,seiner,de_DE,Child,seiner,ihrer,ihrer,ihrer
+child_seine_de,seine,de_DE,Child,seine,ihre,ihre,ihre
+child_seinen_de,seinen,de_DE,Child,seinen,ihren,ihren,ihren
+child_seinem_de,seinem,de_DE,Child,seinem,ihren,ihrem,ihren
+child_suo_it,suo,it_IT,Child,suo,loro,suo,loro
+child_sua_it,sua,it_IT,Child,sua,loro,sua,loro
+child_he_en,he,en_US,Child,he,they,she,they
+child_his_en,his,en_US,Child,his,their,her,their

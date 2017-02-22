@@ -23,7 +23,7 @@ class ResLang(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
 
-    name = fields.Char(size=128)
+    name = fields.Char(size=128, translate=True)
     code_iso = fields.Char(size=128)
     lang_id = fields.Many2one('res.lang')
     translatable = fields.Boolean(help='Can be translated by GP')
