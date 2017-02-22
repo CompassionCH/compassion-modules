@@ -231,7 +231,6 @@
                     <field name="local_id"/>
                     <field name="global_id"/>
                     <field name="sponsor_id"/>
-                    <field name="sponsor_ref"/>
                     <field name="state"/>
                     <field name="hold_type"/>
                     <field name="hold_channel"/>

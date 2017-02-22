@@ -42,7 +42,7 @@ class CommunicationJob(models.Model):
     )
     model = fields.Char(related='config_id.model')
     partner_id = fields.Many2one(
-        'res.partner', 'Send to', required=True)
+        'res.partner', 'Send to', required=True, ondelete='cascade')
     partner_phone = fields.Char(related='partner_id.phone')
     partner_mobile = fields.Char(related='partner_id.mobile')
     object_ids = fields.Char('Resource ids', required=True)
@@ -319,7 +319,7 @@ class CommunicationJob(models.Model):
         object_id_strings = self.mapped('object_ids')
         for id_strings in object_id_strings:
             object_ids += map(int, id_strings.split(','))
-        return self.env[config.model].browse(object_ids)
+        return self.env[config.model].browse(set(object_ids))
 
     @api.multi
     def set_attachments(self):
