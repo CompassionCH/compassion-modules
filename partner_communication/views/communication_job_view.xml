@@ -85,6 +85,7 @@
                     <separator/>
                     <field name="config_id"/>
                     <field name="partner_id"/>
+                    <field name="user_id"/>
                     <filter string="Pending" name="pending" domain="[('state', 'in', ('call', 'pending'))]" context=""/>
                     <separator/>
                     <filter string="Letters" name="digital" domain="[('send_mode', '=', 'physical')]" context=""/>
