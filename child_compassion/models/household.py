@@ -161,6 +161,9 @@ class Household(models.Model):
             ('Domestic Service / Housekeeper', 'Housekeeper'),
             ('Domestic Service/ Housekeeper', 'Housekeeper'),
 
+            ('Laundry Worker', 'Laundry worker'),
+            ('Laundress', 'Laundry worker'),
+
             ('Baker', 'Baker'),
             ('Carpenter', 'Carpenter'),
             ('Cook', 'Cook'),
@@ -175,7 +178,6 @@ class Household(models.Model):
             ('Homemaker', 'Homemaker'),
             ('Janitor', 'Janitor'),
             ('Knitter / Weaver', 'Knitter'),
-            ('Laundry Worker', 'Laundry worker'),
             ('Law Enforcement', 'Law enforcement'),
             ('Manicurist', 'Manicurist'),
             ('Mason / Bricklayer', 'Mason'),
