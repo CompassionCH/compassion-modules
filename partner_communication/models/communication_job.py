@@ -146,7 +146,7 @@ class CommunicationJob(models.Model):
         job = super(CommunicationJob, self).create(vals)
 
         # Determine user by default : employee or take in config
-        if 'user_id' not in vals:
+        if not vals.get('user_id'):
             user = self.env.user
             if not user.employee_ids and job.config_id.user_id:
                 user = job.config_id.user_id
