@@ -107,7 +107,7 @@ class ProjectDescription(models.TransientModel):
             )
         else:
             desc('#community_job').remove()
-        if project.chf_income:
+        if project.chf_income and project.chf_income > 10:
             desc('.community_income')[0].text = _("Family monthly income")
             desc('.community_income')[1].text = 'CHF {:10.0f}.-'.format(
                 project.chf_income)

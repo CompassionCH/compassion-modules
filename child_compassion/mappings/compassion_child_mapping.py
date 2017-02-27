@@ -27,7 +27,7 @@ class GenericChildMapping(OnrampMapping):
         'Beneficiary_Gender': 'gender',
         'Beneficiary_GlobalID': 'global_id',
         'Beneficiary_LocalID': 'local_id',
-        'Beneficiary_LocalNumber': 'local_id',
+        'Beneficiary_LocalNumber': None,
         'BirthDate': 'birthdate',
         'Birthdate': 'birthdate',
         'CDSPType': 'cdsp_type',

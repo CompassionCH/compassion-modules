@@ -24,7 +24,7 @@ class ReservationCreateMapping(OnrampMapping):
         'Beneficiary_GlobalID': 'child_global_id',
         'Channel_Name': 'channel',
         'ICP_ID': ('icp_id.icp_id', 'compassion.project'),
-        'CampaignEventIdentifier': 'campaign_event_identifier',
+        'CampaignEventIdentifier': ('icp_id.icp_id', 'compassion.project'),
         'ExpirationDate': 'reservation_expiration_date',
         'HoldExpirationDate': 'expiration_date',
         'HoldYieldRate': 'yield_rate',
@@ -40,7 +40,7 @@ class ReservationCreateMapping(OnrampMapping):
         'Channel_Name': None,
         'GlobalPartner_ID': None,
         'ICP_ID': None,
-        'CampaignEventIdentifier': None,
+        'CampaignEventIdentifier': lambda x: x or 'Child reservation',
         'ExpirationDate': None,
         'HoldExpirationDate': None,
         'HoldYieldRate': None,
@@ -109,4 +109,5 @@ class BeneficiaryReservationMapping(ReservationCreateMapping):
         'GlobalPartner_ID': 'CH',
         'ReservationType': 'Sponsorship Beneficiary',
         'SourceCode': '',
+        'CampaignEventIdentifier': 'Child reservation',
     }

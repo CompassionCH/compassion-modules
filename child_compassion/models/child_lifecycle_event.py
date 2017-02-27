@@ -60,13 +60,15 @@ class ChildLifecycleEvent(models.Model):
          '{he} recently exited and attends a new ICP'),
         ("relocation: caregiver's work.",
          "of a relocation of {his} caregiver's work."),
+        ("relocation: caregiver's work",
+         "of a relocation of {his} caregiver's work."),
         ('relocation: change of caregiver',
          'of a change of caregiver'),
         ('relocation: moved to another area',
          '{he} moved to another area'),
         ('relocation: voc / tech or higher educ',
          'of a relocation for his higher education'),
-        ('relocation: vocational / technical or higher education.',
+        ('relocation: vocational / technical or higher education',
          'of a relocation for his higher education'),
         ('programming availability is a better fit for beneficiary',
          'programming availability is a better fit for {him}'),
@@ -296,6 +298,8 @@ class ChildLifecycleEvent(models.Model):
                 lifecycle.child_id.reinstatement()
             elif lifecycle.type == 'Beneficiary Update':
                 lifecycle.child_id.new_photo()
+            else:
+                lifecycle.child_id.with_context(async_mode=False).get_infos()
         return lifecycle
 
     @api.model

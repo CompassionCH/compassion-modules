@@ -369,7 +369,7 @@ class CompassionProject(models.Model):
         for project in self:
             income = project.monthly_income / \
                 project.country_id.currency_id.rate_silent
-            if int(income) == 0:
+            if int(income) < 10:
                 income = project.monthly_income / project.usd.rate_silent
             project.chf_income = income
 

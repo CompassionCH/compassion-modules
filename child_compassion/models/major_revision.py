@@ -35,6 +35,7 @@ class MajorRevision(models.Model):
             ('Last Name', 'Last Name'),
             ('Planned Completion Date', 'Planned Completion Date'),
             ('Preferred Name', 'Preferred Name'),
+            ('Local Grade Level', 'Local Grade Level'),
             # Household major revision
             ('Is Natural Father Alive?', 'Natural Father Alive'),
             ('Is Natural Mother Alive?', 'Natural Mother Alive'),
@@ -62,6 +63,7 @@ class MajorRevision(models.Model):
             'Is Natural Father Alive?': 'father_alive',
             'Is Natural Mother Alive?': 'mother_alive',
             'Primary Caregiver': 'primary_caregiver',
+            'Local Grade Level': 'local_grade_level',
         }
 
     @api.multi

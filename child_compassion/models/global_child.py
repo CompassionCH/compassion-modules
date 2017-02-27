@@ -146,8 +146,8 @@ class GlobalChild(models.TransientModel):
                 #   https://media.ci.org/image/upload/w_150/ChildPhotos/Published/06182814_539e18.jpg
 
                 image_split = (child.image_url).split('/')
-                ind = image_split.index("upload")
-                image_split[ind + 1] = cloudinary
+                ind = image_split.index("w_150")
+                image_split[ind] = cloudinary
                 url = "/".join(image_split)
                 child.thumbnail_url = url
 
