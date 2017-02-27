@@ -18,7 +18,9 @@
                             </h1>
                         </div>
                         <div class="oe_right oe_button_box" name="buttons">
-                            <button name="view_children" string="Impacted children" type="object" icon="fa-child" class="oe_stat_button"/>
+                            <button name="view_children" type="object" icon="fa-child" class="oe_stat_button oe_inline">
+                                <field name="number_impacted_children" widget="statinfo" string="Impacted children"/>
+                            </button>
                             <button name="view_icp" string="Impacted projects" type="object" icon="fa-home" class="oe_stat_button"/>
                         </div>
                         <group>
@@ -132,6 +134,21 @@
                         <field name="message_ids" widget="mail_thread"/>
                     </div>
                 </form>
+            </field>
+        </record>
+
+        <record id="view_field_office_disaster_tree" model="ir.ui.view">
+            <field name="name">fo.disaster.alert.tree</field>
+            <field name="model">fo.disaster.alert</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="disaster_type"/>
+                    <field name="disaster_date"/>
+                    <field name="field_office_id"/>
+                    <field name="number_impacted_children"/>
+                    <field name="state"/>
+                </tree>
             </field>
         </record>
 

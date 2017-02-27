@@ -1,5 +1,5 @@
 <openerp>
-    <data>
+    <data noupdate="1">
         <!-- Get Intervention Kit -->
         <record id="intervention_details_request" model="gmc.action">
             <field name="direction">out</field>

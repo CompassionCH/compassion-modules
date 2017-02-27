@@ -1,5 +1,5 @@
 <openerp>
-    <data>
+    <data noupdate="1">
         <!-- Weekly Planning Message Creation -->
         <record id="create_demand_planning" model="gmc.action">
             <field name="direction">out</field>

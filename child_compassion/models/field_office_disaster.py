@@ -165,6 +165,8 @@ class FieldOfficeDisasterAlert(models.Model):
     child_disaster_impact_ids = fields.One2many(
         'child.disaster.impact', 'disaster_id', 'Child Disaster Impact'
     )
+    number_impacted_children = fields.Integer(
+        compute='_compute_impacted_children', store=True)
 
     _sql_constraints = [
         ('disaster_id', 'unique(disaster_id)',
@@ -194,6 +196,12 @@ class FieldOfficeDisasterAlert(models.Model):
             ("Volcanic Activity", "Volcanic Activity"),
             ("Water Contamination Crisis", "Water Contamination Crisis")
         ]
+
+    @api.depends('child_disaster_impact_ids')
+    def _compute_impacted_children(self):
+        for disaster in self:
+            disaster.number_impacted_children = len(
+                disaster.child_disaster_impact_ids.mapped('child_id'))
 
     ##########################################################################
     #                              ORM METHODS                               #
