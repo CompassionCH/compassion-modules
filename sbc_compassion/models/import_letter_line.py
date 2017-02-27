@@ -128,9 +128,10 @@ class ImportLetterLine(models.Model):
                 'direction': 'Supporter To Beneficiary',
                 'original_text': line.original_text,
                 'source': line.source,
+                'import_id': line.import_id.id,
             })
             if line.is_encourager:
                 vals['relationship'] = 'Encourager'
             del vals['is_encourager']
-            letter_data.append((0, 0, vals))
+            letter_data.append(vals)
         return letter_data

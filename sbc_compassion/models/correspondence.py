@@ -426,10 +426,8 @@ class Correspondence(models.Model):
             image_data = base64.b64decode(attachment.datas)
             image_pdf = PdfFileReader(BytesIO(image_data))
             if letter.nbr_pages < image_pdf.numPages:
-                pages = list()
                 for i in range(letter.nbr_pages, image_pdf.numPages):
-                    pages.append((0, 0, {'correspondence_id': letter.id}))
-                letter.write({'page_ids': pages})
+                    letter.page_ids.create({'correspondence_id': letter.id})
 
         if not self.env.context.get('no_comm_kit'):
             letter.create_commkit()

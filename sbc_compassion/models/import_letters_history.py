@@ -187,9 +187,10 @@ class ImportLettersHistory(models.Model):
                 raise exceptions.Warning(_("Some letters are not ready"))
         # save the imports
         for letters in self:
-            ids = letters.import_line_ids.get_letter_data()
+            correspondence_vals = letters.import_line_ids.get_letter_data()
             # letters_ids should be empty before this line
-            letters.write({'letters_ids': ids})
+            for vals in correspondence_vals:
+                letters.letters_ids.create(vals)
             letters.mapped('import_line_ids.letter_image').unlink()
             letters.import_line_ids.unlink()
         return True
