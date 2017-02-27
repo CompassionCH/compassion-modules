@@ -103,28 +103,28 @@
             <field name="act_from" ref="act_active" />
             <field name="act_to" ref="act_sub_waiting" />
             <field name="signal">contract_terminated</field>
-            <field name="condition">end_reason=='1' and is_active</field>
+            <field name="condition">end_reason=='1' and global_id</field>
         </record>
         
         <record model="workflow.transition" id="t5b">
             <field name="act_from" ref="act_active" />
             <field name="act_to" ref="act_cancelled" />
             <field name="signal">contract_terminated</field>
-            <field name="condition">end_reason!='1' or not is_active</field>
+            <field name="condition">end_reason!='1' or not global_id</field>
         </record>
         
         <record model="workflow.transition" id="t5d">
             <field name="act_from" ref="act_waiting_welcome" />
             <field name="act_to" ref="act_cancelled" />
             <field name="signal">contract_terminated</field>
-            <field name="condition">end_reason!='1' or not is_active</field>
+            <field name="condition">end_reason!='1' or not global_id</field>
         </record>
         
         <record model="workflow.transition" id="t5f">
             <field name="act_from" ref="act_waiting_welcome" />
             <field name="act_to" ref="act_sub_waiting" />
             <field name="signal">contract_terminated</field>
-            <field name="condition">end_reason=='1' and is_active</field>
+            <field name="condition">end_reason=='1' and global_id</field>
         </record>
 
         <record model="workflow.transition" id="t6">
