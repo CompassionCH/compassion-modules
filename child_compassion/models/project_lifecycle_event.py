@@ -98,6 +98,11 @@ class ProjectLifecycle(models.Model):
         lifecycle_ids = list()
         for single_data in commkit_data.get('ICPLifecycleEventList',
                                             [commkit_data]):
+            project = self.env['compassion.project'].search([
+                ('icp_id', '=', single_data['ICP_ID'])
+            ])
+            if not project:
+                project.create({'icp_id': single_data['ICP_ID']})
             vals = project_mapping.get_vals_from_connect(single_data)
             lifecycle = self.create(vals)
             lifecycle_ids.append(lifecycle.id)
