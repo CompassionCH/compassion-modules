@@ -7,7 +7,7 @@ field_office_co,Colombia,CO,base.co
 field_office_dr,Dominican Republic,DR,base.do
 field_office_ec,Ecuador,EC,base.ec
 field_office_ei,India,EI,base.in
-field_office_es,El Salvador,ES,base.es
+field_office_es,El Salvador,ES,base.sv
 field_office_et,Ethiopia,ET,base.et
 field_office_gh,Ghana,GH,base.gh
 field_office_gu,Guatemala,GU,base.gt
@@ -18,7 +18,7 @@ field_office_in,India,IN,base.in
 field_office_io,Indonesia,IO,base.id
 field_office_ke,Kenya,KE,base.ke
 field_office_lk,Sri Lanka,LK,base.lk
-field_office_me,Mexico,ME,base.me
+field_office_me,Mexico,ME,base.mx
 field_office_ni,Nicaragua,NI,base.ni
 field_office_pe,Peru,PE,base.pe
 field_office_ph,Philippines,PH,base.ph
