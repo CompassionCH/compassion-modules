@@ -69,6 +69,7 @@ class GenericChildMapping(OnrampMapping):
         'IsOrphan': 'is_orphan',
         'IsSpecialNeeds': 'is_special_needs',
         'LastName': 'lastname',
+        'LastPhotoDate': 'last_photo_date',
         'LastReviewDate': 'last_review_date',
         'LocalNumber': 'local_id',
         'MajorCourseOfStudy': 'major_course_study',

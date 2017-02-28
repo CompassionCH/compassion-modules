@@ -50,6 +50,7 @@ class CompassionChild(models.Model):
         ('Center Based', 'Center based'),
     ], track_visibility='onchange', readonly=True)
     last_review_date = fields.Date(track_visibility='onchange', readonly=True)
+    last_photo_date = fields.Date()
     type = fields.Selection('_get_ctype', required=True, default='CDSP')
     date = fields.Date('Allocation date')
     completion_date = fields.Date(readonly=True)

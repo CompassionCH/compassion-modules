@@ -181,7 +181,8 @@ class child_pictures(models.Model):
             # name of the file (typically 'Fullshot.jpg' or 'Headshot.jpg'
             _store_fname = type + '.' + extension
 
-            _image_date = datetime.now().strftime(DF)
+            _image_date = picture.child_id.last_photo_date or \
+                fields.Date.today()
 
             if not attach_id:
                 return data

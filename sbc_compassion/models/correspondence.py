@@ -328,7 +328,7 @@ class Correspondence(models.Model):
         return True
 
     def _compute_letter_format(self):
-        for letter in self:
+        for letter in self.filtered('letter_image'):
             ftype = magic.from_buffer(base64.b64decode(
                 letter.letter_image.datas), True)
             if 'pdf' in ftype:

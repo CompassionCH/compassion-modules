@@ -8,6 +8,8 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+import re
+
 from openerp.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
@@ -190,4 +192,4 @@ class ICPMapping(OnrampMapping):
         monthly_income = odoo_data.get('monthly_income')
         if monthly_income:
             monthly_income = monthly_income.replace(',', '')
-            odoo_data['monthly_income'] = monthly_income
+            odoo_data['monthly_income'] = re.sub("[^\d.]+", "", monthly_income)

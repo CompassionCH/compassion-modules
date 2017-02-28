@@ -145,6 +145,7 @@
                     <field name="action_id"/>
                     <field name="partner_id"/>
                     <filter string="Incoming" name="incoming" domain="[('direction','=','in')]" context="{'group_by':'action_id'}" />
+                    <filter string="Outgoing" name="outgoing" domain="[('direction','=','out')]" context="{'group_by':'action_id'}" />
                     <separator />
                     <filter string="Pending" name="pending" domain="['|', ('state','=','pending'), ('state','=','new')]" />
                     <filter string="Failed" name="failure" domain="[('state','=','failure')]" />
