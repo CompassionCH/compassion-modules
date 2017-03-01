@@ -301,16 +301,17 @@ class CompassionChild(models.Model):
     @api.model
     def new_kit(self, commkit_data):
         """ New child kit is received. """
-        child_ids = list()
         child_mapping = CompassionChildMapping(self.env)
+        children = self
         for child_data in commkit_data.get('BeneficiaryResponseList',
                                            [commkit_data]):
             global_id = child_data.get('Beneficiary_GlobalID')
             child = self.search([('global_id', '=', global_id)])
             if child:
-                child_ids.append(child.id)
+                children += child
                 child.write(child_mapping.get_vals_from_connect(child_data))
-        return child_ids
+        children.get_lifecycle_event()
+        return children.ids
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -321,23 +322,17 @@ class CompassionChild(models.Model):
            portrait picture and creates the project if it doesn't exist.
         """
         message_obj = self.env['gmc.message.pool']
-        try:
-            action_id = self.env.ref(
-                'child_compassion.beneficiaries_details').id
-        except ValueError:
-            # At migration, the action does not yet exist. We should
-            # just avoid updating children at that moment.
-            return True
-
-        message_vals = {
-            'action_id': action_id,
-            'object_id': self.id,
-            'child_id': self.id,
-        }
-        message = message_obj.create(message_vals)
-        if message.state == 'failure' and not self.env.context.get(
-                'async_mode'):
-            raise Warning(message.failure_reason)
+        action_id = self.env.ref('child_compassion.beneficiaries_details').id
+        for child in self:
+            message_vals = {
+                'action_id': action_id,
+                'object_id': child.id,
+                'child_id': child.id,
+            }
+            message = message_obj.create(message_vals)
+            if message.state == 'failure' and not self.env.context.get(
+                    'async_mode'):
+                raise Warning(message.failure_reason)
         return True
 
     @api.multi
