@@ -38,6 +38,8 @@ class child_pictures(models.Model):
     headshot = fields.Binary(compute='set_pictures')
     image_url = fields.Char()
     date = fields.Date('Date of pictures', default=fields.Date.today)
+    fname = fields.Char(compute='_compute_filename')
+    hname = fields.Char(compute='_compute_filename')
     _error_msg = 'Image cannot be fetched: No image url available'
 
     ##########################################################################
@@ -65,6 +67,13 @@ class child_pictures(models.Model):
             if rec.datas_fname.split('.')[0] == 'Fullshot':
                 self.fullshot = rec.datas
                 break
+
+    def _compute_filename(self):
+        for pictures in self:
+            date = pictures.date
+            code = pictures.child_id.local_id
+            pictures.fname = code + ' ' + date + ' fullshot.jpg'
+            pictures.hname = code + ' ' + date + ' headshot.jpg'
 
     ##########################################################################
     #                              ORM METHODS                               #

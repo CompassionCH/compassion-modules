@@ -77,11 +77,7 @@
                                                widget="many2many_tags"/>
                                     </group>
                                     <group colspan="2">
-                                        <field name="pictures_ids">
-                                            <tree string="date of pictures">
-                                                <field name="date"/>
-                                            </tree>
-                                        </field>
+                                        <field name="pictures_ids"/>
                                     </group>
                                 </group>
                             </page>
