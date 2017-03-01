@@ -83,7 +83,7 @@ class Household(models.Model):
     def _compute_primary_caregiver(self):
         for household in self:
             primary_caregiver = household.member_ids.filtered(
-                'is_primary_caregiver')
+                'is_primary_caregiver')[0]
             household.primary_caregiver_id = primary_caregiver
             household.primary_caregiver = primary_caregiver.translate('role')
 

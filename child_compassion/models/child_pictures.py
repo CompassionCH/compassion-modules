@@ -93,7 +93,7 @@ class child_pictures(models.Model):
                 _('The picture was the same'), 'Picture update')
             pictures._unlink_related_attachment()
             pictures.unlink()
-            same_url.write({'date': datetime.now().strftime(DF)})
+            same_url.write({'date': same_url.child_id.last_photo_date})
             return False
 
         # Retrieve Headshot

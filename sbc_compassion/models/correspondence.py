@@ -654,8 +654,8 @@ class Correspondence(models.Model):
         self.download_attach_letter_image(type='original_letter_url')
         res = True
         for letter in self:
-            if not (letter.beneficiary_language_ids &
-                    letter.supporter_languages_ids):
+            if letter.original_language_id not in \
+                    letter.supporter_languages_ids:
                 res = res and letter.compose_letter_image()
         return res
 

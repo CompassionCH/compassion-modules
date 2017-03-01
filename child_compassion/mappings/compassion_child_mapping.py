@@ -110,7 +110,6 @@ class GenericChildMapping(OnrampMapping):
         'FundType': None,
         'ICP_Country': None,
         'ICP_Name': None,
-        'LastPhotoDate': None,
         'LocalBeneficiaryNumber': None,
         'MentalDevelopmentConditions': None,
         'PrimaryCaregiverName': None,
