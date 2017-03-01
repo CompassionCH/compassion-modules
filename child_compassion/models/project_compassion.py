@@ -312,7 +312,8 @@ class CompassionProject(models.Model):
             if last_info.type == 'Suspension':
                 suspension_status = 'fund-suspended' if \
                     last_info.hold_cdsp_funds else 'suspended'
-                if suspension_status != old_value:
+                if suspension_status == 'fund-suspended' and suspension_status\
+                        != old_value:
                     self.suspend_funds()
                 if last_info.hold_gifts:
                     self._hold_gifts()
