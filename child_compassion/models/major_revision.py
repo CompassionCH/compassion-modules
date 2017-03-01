@@ -74,4 +74,4 @@ class MajorRevision(models.Model):
             res_object = revision.child_id or revision.household_id
             if res_object:
                 values.extend(res_object.mapped(field_mapping[revision.name]))
-        return ', '.join(map(str, values))
+        return u', '.join(map(unicode, values))
