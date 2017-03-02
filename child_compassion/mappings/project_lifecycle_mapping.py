@@ -66,7 +66,7 @@ class ICPLifecycleMapping(OnrampMapping):
 
     def _process_odoo_data(self, odoo_data):
         # Convert Project Status
-        status = odoo_data.get('status')
+        status = odoo_data.get('project_status')
         if status:
             status_mapping = {
                 'Active': 'A',
@@ -74,4 +74,4 @@ class ICPLifecycleMapping(OnrampMapping):
                 'Suspended': 'S',
                 'Transitioned': 'T',
             }
-            odoo_data['status'] = status_mapping[status]
+            odoo_data['project_status'] = status_mapping[status]
