@@ -69,7 +69,7 @@ class ProjectLifecycle(models.Model):
 
     name = fields.Char(readonly=True)
     reactivation_date = fields.Date(readonly=True)
-    project_status = fields.Selection('_get_project_status', readonly=True)
+    project_status = fields.Selection(related='project_id.status')
 
     @api.model
     def _get_type(self):
