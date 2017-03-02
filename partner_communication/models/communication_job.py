@@ -158,9 +158,11 @@ class CommunicationJob(models.Model):
 
         # Determine send mode
         send_mode = job.config_id.get_inform_mode(job.partner_id)
-        if 'send_mode' not in vals:
+        if 'send_mode' not in vals and 'default_send_mode' not in \
+                self.env.context:
             job.send_mode = send_mode[0]
-        if 'auto_send' not in vals:
+        if 'auto_send' not in vals and 'default_auto_send' not in \
+                self.env.context:
             job.auto_send = send_mode[1]
 
         if not job.body_html:
