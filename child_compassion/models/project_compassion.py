@@ -335,7 +335,6 @@ class CompassionProject(models.Model):
             ('A', _('Active')),
             ('P', _('Phase-out')),
             ('T', _('Terminated')),
-            ('TR', _('Transitioned')),
             ('S', _('Suspended')),
         ]
 

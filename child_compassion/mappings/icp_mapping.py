@@ -179,7 +179,7 @@ class ICPMapping(OnrampMapping):
                 'Active': 'A',
                 'Phase Out': 'P',
                 'Suspended': 'S',
-                'Transitioned': 'TR',
+                'Transitioned': 'T',
             }
             odoo_data['status'] = status_mapping[status]
 
