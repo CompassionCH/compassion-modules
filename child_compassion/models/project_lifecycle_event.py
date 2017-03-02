@@ -107,6 +107,7 @@ class ProjectLifecycle(models.Model):
             lifecycle = self.create(vals)
             lifecycle_ids.append(lifecycle.id)
 
+            lifecycle.project_id.status = vals['project_status']
             lifecycle.project_id.status_date = fields.Date.today()
 
         return lifecycle_ids
