@@ -118,7 +118,7 @@
                     <field name="state"/>
                     <field name="state"/>
 
-                    <filter name="not_sent" string="Not sent" domain="[('state', 'not in', ['Delivered','Undeliverable'])]"/>
+                    <filter name="not_sent" string="Not sent" domain="[('gmc_gift_id', '=', False)]"/>
                     <filter string="Sent" domain="[('gmc_gift_id', '!=', False)]"/>
                     <filter string="Delivered" domain="[('state', '=', 'Delivered')]"/>
                     <group expand="0" string="Group By...">
