@@ -19,9 +19,6 @@ class EndContractWizard(models.TransientModel):
     _inherit = 'end.contract.wizard'
 
     child_id = fields.Many2one(related='contract_id.child_id')
-    do_transfer = fields.Boolean('I want to transfer the child')
-    transfer_country_id = fields.Many2one(
-        'compassion.global.partner', 'Country')
     keep_child_on_hold = fields.Boolean(default=True)
     hold_expiration_date = fields.Datetime(
         default=lambda s: s.env[
