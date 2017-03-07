@@ -341,7 +341,8 @@ class ChildDescription(models.TransientModel):
             else:
                 desc('#school_subject').remove()
             if child.vocational_training_type and \
-                    child.vocational_training_type.lower() != 'not enrolled':
+                    child.vocational_training_type.lower() not in (
+                            'not enrolled', 'other'):
                 desc('.vocational_training')[0].text = _('Vocational training')
                 desc('.vocational_training')[1].text = child.translate(
                     'vocational_training_type')
