@@ -193,6 +193,7 @@ class CommunicationJob(models.Model):
     @api.multi
     def send(self):
         """ Executes the job. """
+        to_print = self.filtered(lambda j: j.send_mode == 'physical')
         for job in self.filtered(lambda j: j.send_mode in ('both', 'digital')):
             state = job._send_mail()
             if job.send_mode != 'both':
@@ -207,7 +208,6 @@ class CommunicationJob(models.Model):
 
         # Commit after sending by e-mail
         self.env.cr.commit()
-        to_print = self.filtered(lambda j: j.send_mode == 'physical')
         if to_print:
             to_print.write({
                 'state': 'done',
