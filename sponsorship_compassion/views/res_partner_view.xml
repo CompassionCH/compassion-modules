@@ -2,7 +2,7 @@
 <openerp>
     <data>
         <record id="view_res_partner_invoice_line_button_form" model="ir.ui.view">
-            <field name="name">res.partner.invoice.line.button.form</field>
+            <field name="name">res.partner.sponsorships.form</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="recurring_contract.view_partner_add_contract_form"/>
             <field eval="18" name="priority"/>

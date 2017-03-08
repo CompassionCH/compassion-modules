@@ -44,6 +44,9 @@ class ResPartner(models.Model):
     receivable_items = fields.Integer(compute='_set_count_items')
     has_sponsorships = fields.Boolean(
         compute='_compute_has_sponsorships', store=True)
+    number_sponsorships = fields.Integer(
+        compute='_compute_has_sponsorships',
+        inverse='_inverse_number_sponsorships', store=True)
     send_original = fields.Boolean(
         help='Indicates that we request the original letters for this sponsor'
     )
@@ -62,10 +65,24 @@ class ResPartner(models.Model):
         for partner in self:
             partner.has_sponsorships = self.env[
                 'recurring.contract'].search_count([
-                    '|', ('partner_id', '=', partner.id),
+                    '|',
+                    ('partner_id', '=', partner.id),
                     ('correspondant_id', '=', partner.id),
                     ('type', 'like', 'S')
                 ])
+            partner.number_sponsorships = self.env[
+                'recurring.contract'].search_count([
+                    '|',
+                    ('partner_id', '=', partner.id),
+                    ('correspondant_id', '=', partner.id),
+                    ('type', 'like', 'S'),
+                    ('state', 'in', ('mandate', 'active')),
+                    ('global_id', '!=', False)
+                ])
+
+    def _inverse_number_sponsorships(self):
+        # Allow setting the number of sponsorships (useful for activations)
+        return True
 
     @api.multi
     def _get_related_contracts(self):
