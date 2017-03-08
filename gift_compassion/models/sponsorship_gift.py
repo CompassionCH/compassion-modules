@@ -476,14 +476,21 @@ class SponsorshipGift(models.Model):
             'status_change_date': fields.Datetime.now(),
         })
 
+    @api.model
+    def process_gifts_cron(self):
+        gifts = self.search([
+            ('state', '=', 'draft'),
+            ('gift_date', '<=', fields.Date.today())
+        ])
+        gifts.mapped('message_id').process_messages()
+        return True
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
     @api.multi
     def _create_gift_message(self):
-        # today = date.today()
         for gift in self:
-            # message_center_compassion/models/gmc_messages
             message_obj = self.env['gmc.message.pool']
 
             action_id = self.env.ref(
@@ -497,10 +504,6 @@ class SponsorshipGift(models.Model):
                 'state': 'new' if gift.state != 'verify' else 'postponed',
             }
             gift.message_id = message_obj.create(message_vals)
-            # TODO Activate auto processing after go-live
-            # gift_date = fields.Date.from_string(gift.gift_date)
-            # if gift.state == 'draft' and gift_date <= today:
-            #     gift.message_id.process_messages()
 
     @api.multi
     def _gift_delivered(self):
