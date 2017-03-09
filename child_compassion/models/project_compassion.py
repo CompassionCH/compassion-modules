@@ -10,10 +10,11 @@
 ##############################################################################
 
 import logging
-from openerp import models, fields, api, _
-
 import sys
 
+from ..mappings.icp_mapping import ICPMapping
+
+from openerp import models, fields, api, _
 from openerp.exceptions import Warning
 
 logger = logging.getLogger(__name__)
@@ -423,6 +424,23 @@ class CompassionProject(models.Model):
         self.env['compassion.project.description'].create({
             'project_id': self.id})
         return True
+
+    @api.model
+    def new_kit(self, commkit_data):
+        """ New project kit is received. """
+        project_mapping = ICPMapping(self.env)
+        projects = self
+        for project_data in commkit_data.get('ICPResponseList',
+                                             [commkit_data]):
+            icp_id = project_data.get('ICP_ID')
+            project = self.search([('icp_id', '=', icp_id)])
+            vals = project_mapping.get_vals_from_connect(project_data)
+            if project:
+                projects += project
+                project.write(vals)
+            else:
+                projects += self.create(vals)
+        return projects.ids
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

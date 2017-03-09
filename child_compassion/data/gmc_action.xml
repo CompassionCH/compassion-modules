@@ -131,6 +131,15 @@
             <field name="description">This will update the child with the fresh information.</field>
             <field name="auto_process">1</field>
         </record>
+        <!-- ICP Kit -->
+        <record id="icp_kit" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">ICPKit</field>
+            <field name="model">compassion.project</field>
+            <field name="incoming_method">new_kit</field>
+            <field name="description">This will update the project  with the fresh information.</field>
+            <field name="auto_process">1</field>
+        </record>
         <!-- Beneficiary CDPR Messages -->
         <record id="beneficiary_cdpr" model="gmc.action">
             <field name="direction">in</field>
@@ -217,6 +226,10 @@
         <record id="beneficiary_kit_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messages/beneficiaries/2016/04/BeneficiaryKit</field>
             <field name="action_id" ref="beneficiary_kit"/>
+        </record>
+        <record id="icp_kit_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/churchpartners/2016/04/ICPKit</field>
+            <field name="action_id" ref="icp_kit"/>
         </record>
         <record id="beneficiary_cdpr_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messages/beneficiaries/2016/04/CDPRAssessmentKit</field>
