@@ -26,46 +26,46 @@ install:
     - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis/install_opencv.sh || echo "Not installing OpenCV in Pull requests"'
     - export PYTHONPATH=${PYTHONPATH}:${OPENCV_ROOT}/install/lib/python2.7/site-packages
     - pip install flake8
-    - pip install pysftp
-    - sudo apt-get purge python-openssl
-    - pip install pyopenssl
-    - pip install MySQL-python
-    - pip install unidecode
-    - pip install pysmb
-    - pip install urllib3
-    - pip install certifi
-    - pip install coveralls
-    - pip install python-magic
-    - pip install wand
-    - pip install sendgrid
-    - pip install jwt
-    - pip install pyquery
-    - pip install phonenumbers
-    - sudo apt-get install zbar-tools python-zbar
-    - pip install pdfminer
+#    - pip install pysftp
+#    - sudo apt-get purge python-openssl
+#    - pip install pyopenssl
+#    - pip install MySQL-python
+#    - pip install unidecode
+#    - pip install pysmb
+#    - pip install urllib3
+#    - pip install certifi
+#    - pip install coveralls
+#    - pip install python-magic
+#    - pip install wand
+#    - pip install sendgrid
+#    - pip install jwt
+#    - pip install pyquery
+#    - pip install phonenumbers
+#    - sudo apt-get install zbar-tools python-zbar
+#    - pip install pdfminer
     - git clone https://github.com/CompassionCH/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools -b r2
     - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
-    - git clone https://github.com/OCA/l10n-switzerland.git ${HOME}/build/CompassionCH/l10n-switzerland -b 8.0
-    - git clone https://github.com/OCA/web.git ${HOME}/build/CompassionCH/web -b 8.0
-    - git clone https://github.com/CompassionCH/compassion-accounting.git ${HOME}/build/CompassionCH/compassion-accounting -b master
-    - git clone https://github.com/OCA/bank-payment.git ${HOME}/build/CompassionCH/bank-payment -b 8.0
-    - git clone https://github.com/OCA/bank-statement-reconcile.git ${HOME}/build/CompassionCH/bank-statement-reconcile -b 8.0
-    - git clone https://github.com/OCA/bank-statement-import.git ${HOME}/build/CompassionCH/bank-statement-import -b 8.0
-    - git clone https://github.com/OCA/account-financial-tools.git ${HOME}/build/CompassionCH/account-financial-tools -b 8.0
-    - git clone https://github.com/OCA/partner-contact.git ${HOME}/build/CompassionCH/partner-contact -b 8.0
-    - git clone https://github.com/OCA/connector.git ${HOME}/build/CompassionCH/connector -b 8.0
-    - git clone https://github.com/OCA/connector-telephony.git ${HOME}/build/CompassionCH/connector-telephony -b 8.0
-    - git clone https://github.com/CompassionCH/social.git ${HOME}/build/CompassionCH/social -b 8.0
-    - git clone https://github.com/OCA/server-tools.git ${HOME}/build/CompassionCH/server-tools -b 8.0
-    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis_install_nightly || echo "Not installing odoo in Pull requests"'
+#    - git clone https://github.com/OCA/l10n-switzerland.git ${HOME}/build/CompassionCH/l10n-switzerland -b 8.0
+#    - git clone https://github.com/OCA/web.git ${HOME}/build/CompassionCH/web -b 8.0
+#    - git clone https://github.com/CompassionCH/compassion-accounting.git ${HOME}/build/CompassionCH/compassion-accounting -b master
+#    - git clone https://github.com/OCA/bank-payment.git ${HOME}/build/CompassionCH/bank-payment -b 8.0
+#    - git clone https://github.com/OCA/bank-statement-reconcile.git ${HOME}/build/CompassionCH/bank-statement-reconcile -b 8.0
+#    - git clone https://github.com/OCA/bank-statement-import.git ${HOME}/build/CompassionCH/bank-statement-import -b 8.0
+#    - git clone https://github.com/OCA/account-financial-tools.git ${HOME}/build/CompassionCH/account-financial-tools -b 8.0
+#    - git clone https://github.com/OCA/partner-contact.git ${HOME}/build/CompassionCH/partner-contact -b 8.0
+#    - git clone https://github.com/OCA/connector.git ${HOME}/build/CompassionCH/connector -b 8.0
+#    - git clone https://github.com/OCA/connector-telephony.git ${HOME}/build/CompassionCH/connector-telephony -b 8.0
+#    - git clone https://github.com/CompassionCH/social.git ${HOME}/build/CompassionCH/social -b 8.0
+#    - git clone https://github.com/OCA/server-tools.git ${HOME}/build/CompassionCH/server-tools -b 8.0
+#    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis_install_nightly || echo "Not installing odoo in Pull requests"'
 
-before_script:
-    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && openssl aes-256-cbc -K $encrypted_f7bf959fc25e_key -iv $encrypted_f7bf959fc25e_iv -in travis/odoo.conf.enc -out ${HOME}/odoo-8.0/odoo.conf -d || echo "encrypted files not available"'
+#before_script:
+#    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && openssl aes-256-cbc -K $encrypted_f7bf959fc25e_key -iv $encrypted_f7bf959fc25e_iv -in travis/odoo.conf.enc -out ${HOME}/odoo-8.0/odoo.conf -d || echo "encrypted files not available"'
 
 script:
     - travis/travis_header.sh
     - test_flake8
-    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis_run_tests || [ "${TRAVIS_SECURE_ENV_VARS}" = "false" ]'
+#    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis_run_tests || [ "${TRAVIS_SECURE_ENV_VARS}" = "false" ]'
 
-after_success:
-    - coveralls
+#after_success:
+#    - coveralls

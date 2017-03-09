@@ -97,3 +97,6 @@ child_suo_it,suo,it_IT,Child,suo,loro,suo,loro
 child_sua_it,sua,it_IT,Child,sua,loro,sua,loro
 child_he_en,he,en_US,Child,he,they,she,they
 child_his_en,his,en_US,Child,his,their,her,their
+job_homemaker_fr,Homemaker,fr_CH,Caregiver Job,Homme de ménage,,Femme de ménage,
+job_homemaker_de,Homemaker,de_DE,Caregiver Job,Hausmann,,Hausfrau,
+job_homemaker_it,Homemaker,it_IT,Caregiver Job,Casalingo,,Casalinga,

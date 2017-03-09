@@ -486,6 +486,10 @@ class SponsorshipContract(models.Model):
             gift_contract_lines.mapped('contract_id').signal_workflow(
                 'contract_active')
 
+        # Update sponsorships on partner
+        partners = self.mapped('partner_id') | self.mapped('correspondant_id')
+        partners._compute_has_sponsorships()
+
         return True
 
     @api.multi
@@ -691,6 +695,10 @@ class SponsorshipContract(models.Model):
                     ('state', 'in', ['new', 'failure']),
                     ('object_id', '=', sponsorship.id),
                 ]).unlink()
+
+        # Update sponsorships on partner
+        partners = self.mapped('partner_id') | self.mapped('correspondant_id')
+        partners._compute_has_sponsorships()
 
     @api.multi
     def _on_change_child_id(self, vals):

@@ -106,11 +106,15 @@ class CompassionChild(models.Model):
     ], readonly=True)
     vocational_training_type = fields.Selection([
         ('Agriculture', 'Agriculture'),
+        ('Architecture / Drafting', 'Architecture'),
+        ('Art / Design', 'Art / Design'),
         ('Automotive', 'Automotive'),
+        ('Automotive / Mechanics', 'Automotive'),
         ('Business/Administrative', 'Business administration'),
         ('Clothing Trades', 'Clothing trades'),
         ('Computer Technology', 'Computer technology'),
         ('Construction/ Tradesman', 'Construction'),
+        ('Construction / Tradesman', 'Construction'),
         ('Cooking / Food Service', 'Cooking and food service'),
         ('Cosmetology', 'Cosmetology'),
         ('Electrical/ Electronics', 'Electronics'),
@@ -121,9 +125,13 @@ class CompassionChild(models.Model):
         ('Medical/ Health Services', 'Medical / Health services'),
         ('Not Enrolled', 'Not enrolled'),
         ('Not enrolled', 'Not enrolled'),
+        ('Other', 'Other'),
+        ('Para-Medical / Medical / Health Services',
+         'Medical / Health services'),
         ('Telecommunication', 'Telecommunication'),
         ('Transportation', 'Transportation'),
         ('Transportation/ Driver', 'Driver'),
+        ('Transportation / Driver', 'Driver'),
     ], readonly=True)
     university_year = fields.Integer(readonly=True)
     major_course_study = fields.Selection([

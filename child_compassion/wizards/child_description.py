@@ -322,7 +322,7 @@ class ChildDescription(models.TransientModel):
 
         # 3. Schooling
         ##############
-        if child.education_level != 'Not Enrolled':
+        if child.education_level and child.education_level != 'Not Enrolled':
             desc('#school_attending').html(
                 self.school_yes_lang[self.env.lang][child.gender].format(
                     firstname=child.firstname, level=child.translate(
@@ -341,7 +341,8 @@ class ChildDescription(models.TransientModel):
             else:
                 desc('#school_subject').remove()
             if child.vocational_training_type and \
-                    child.vocational_training_type.lower() != 'not enrolled':
+                    child.vocational_training_type.lower() not in (
+                            'not enrolled', 'other'):
                 desc('.vocational_training')[0].text = _('Vocational training')
                 desc('.vocational_training')[1].text = child.translate(
                     'vocational_training_type')
@@ -432,15 +433,12 @@ class ChildDescription(models.TransientModel):
         if father_with_child and mother_with_child:
             live_with += _('with') + ' ' + self.his(
                 self.child_id.gender, PLURAL, DATIVE) + ' ' + _('parents')
-            if self.env.lang == 'de_DE':
-                live_with += ' zusammen'
-            live_with += '.'
         elif father_with_child:
             live_with += _('with') + ' ' + self.his(
-                self._gender('M'), tense=DATIVE) + ' ' + _('father') + '.'
+                self._gender('M'), tense=DATIVE) + ' ' + _('father')
         elif mother_with_child:
             live_with += _('with') + ' ' + self.his(
-                self._gender('F'), tense=DATIVE) + ' ' + _('mother') + '.'
+                self._gender('F'), tense=DATIVE) + ' ' + _('mother')
         elif youth:
             live_with += _('in a youth headed house.')
         else:
@@ -456,6 +454,12 @@ class ChildDescription(models.TransientModel):
                 ) + ' ' + caregiver_role
             else:
                 live_with += _('in an institution.')
+
+        if household.primary_caregiver_id and not youth:
+            if self.env.lang == 'de_DE':
+                live_with += ' zusammen'
+            live_with += '.'
+
         return live_with
 
     def _job(self, desc, guardian):
