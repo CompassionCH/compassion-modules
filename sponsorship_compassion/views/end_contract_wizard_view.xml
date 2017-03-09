@@ -13,7 +13,8 @@
             <field name="arch" type="xml">
                 <!-- End sponsorship form -->
                 <field name="end_reason" position="after">
-                    <field name="keep_child_on_hold"/>
+                    <field name="contract_type" invisible="1"/>
+                    <field name="keep_child_on_hold" attrs="{'invisible': [('contract_type', 'not in', ['S','SC'])]}"/>
                     <field name="hold_expiration_date"
                            attrs="{'invisible': [('keep_child_on_hold', '=', False)]}"/>
                 </field>

@@ -23,6 +23,8 @@ class sub_sponsorship_wizard(models.TransientModel):
         ('sub', 'sub'),
         ('no_sub', 'no_sub')])
     channel = fields.Selection('_get_channels')
+    child_id = fields.Many2one(
+        'compassion.child', 'Child', domain=[('state', 'in', ['N', 'I'])])
     no_sub_default_reasons = fields.Selection(
         '_get_no_sub_reasons', 'No sub reason')
     no_sub_reason = fields.Char('No sub reason')
@@ -60,31 +62,49 @@ class sub_sponsorship_wizard(models.TransientModel):
             'parent_id': sponsorship_id,
             'origin_id': sub_origin_id,
             'channel': self.channel,
+            'child_id': self.child_id.id,
+            'user_id': False,
         })
+        today = datetime.today()
+        next_invoice_date = fields.Date.from_string(
+            contract.next_invoice_date).replace(month=today.month,
+                                                year=today.year)
         if contract.last_paid_invoice_date:
-            next_invoice_date = fields.Date.from_string(
+            sub_invoice_date = fields.Date.from_string(
                 contract.last_paid_invoice_date) + relativedelta(months=1)
-        else:
-            today = datetime.today()
-            next_invoice_date = fields.Date.from_string(
-                contract.next_invoice_date).replace(month=today.month,
-                                                    year=today.year)
+            next_invoice_date = max(next_invoice_date, sub_invoice_date)
 
-        return {
-            'name': _('Global Childpool'),
-            'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': 'compassion.childpool.search',
-            'target': 'current',
-            'context': self.with_context({
-                'default_take': 1,
-                'contract_id': sub_contract.id,
-                'next_invoice_date': fields.Date.to_string(next_invoice_date),
-                'default_type': HoldType.SUB_CHILD_HOLD.value,
-                'default_return_action': 'sub',
-            }).env.context
-        }
+        if self.child_id:
+            sub_contract.signal_workflow('contract_validated')
+            sub_contract.next_invoice_date = next_invoice_date
+            return {
+                'name': sub_contract.name,
+                'type': 'ir.actions.act_window',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'recurring.contract',
+                'res_id': sub_contract.id,
+                'target': 'current',
+                'context': self.with_context({
+                    'default_type': 'S',
+                }).env.context
+            }
+        else:
+            return {
+                'name': _('Global Childpool'),
+                'type': 'ir.actions.act_window',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'compassion.childpool.search',
+                'target': 'current',
+                'context': self.with_context({
+                    'default_take': 1,
+                    'contract_id': sub_contract.id,
+                    'next_invoice_date': fields.Date.to_string(next_invoice_date),
+                    'default_type': HoldType.SUB_CHILD_HOLD.value,
+                    'default_return_action': 'sub',
+                }).env.context
+            }
 
     @api.multi
     def no_sub(self):
@@ -93,7 +113,6 @@ class sub_sponsorship_wizard(models.TransientModel):
         sponsorship_id = self.env.context.get('active_id')
         contract = self.env['recurring.contract'].browse(sponsorship_id)
         default_reason = self.no_sub_default_reasons
-        reason = False
         if default_reason == 'other':
             reason = self.no_sub_reason
         else:

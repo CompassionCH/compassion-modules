@@ -19,7 +19,8 @@ class EndContractWizard(models.TransientModel):
     _inherit = 'end.contract.wizard'
 
     child_id = fields.Many2one(related='contract_id.child_id')
-    keep_child_on_hold = fields.Boolean(default=True)
+    contract_type = fields.Selection(related='contract_id.type')
+    keep_child_on_hold = fields.Boolean()
     hold_expiration_date = fields.Datetime(
         default=lambda s: s.env[
             'compassion.hold'].get_default_hold_expiration(

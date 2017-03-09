@@ -28,10 +28,12 @@ class ChildHoldWizard(models.TransientModel):
             action.update({
                 'name': _('Sponsor the child on hold'),
                 'res_model': 'recurring.contract',
+                'res_id': self.env.context.get('contract_id'),
                 'view_mode': 'form',
             })
             action['context'] = self.with_context({
                 'default_child_id': child.id,
+                'child_id': child.id,
                 'default_type': 'S',
             }).env.context
         return action
