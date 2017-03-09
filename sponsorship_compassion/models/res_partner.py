@@ -45,8 +45,7 @@ class ResPartner(models.Model):
     has_sponsorships = fields.Boolean(
         compute='_compute_has_sponsorships', store=True)
     number_sponsorships = fields.Integer(
-        compute='_compute_has_sponsorships',
-        inverse='_inverse_number_sponsorships', store=True)
+        compute='_compute_has_sponsorships', store=True)
     send_original = fields.Boolean(
         help='Indicates that we request the original letters for this sponsor'
     )
@@ -76,13 +75,8 @@ class ResPartner(models.Model):
                     ('partner_id', '=', partner.id),
                     ('correspondant_id', '=', partner.id),
                     ('type', 'like', 'S'),
-                    ('state', 'in', ('mandate', 'active')),
-                    ('global_id', '!=', False)
+                    ('state', 'in', ('waiting', 'mandate', 'active')),
                 ])
-
-    def _inverse_number_sponsorships(self):
-        # Allow setting the number of sponsorships (useful for activations)
-        return True
 
     @api.multi
     def _get_related_contracts(self):

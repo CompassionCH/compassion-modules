@@ -283,7 +283,7 @@ class CompassionHold(models.Model):
             hold.message_post(
                 body="A new hold has been created because of an existing "
                 "reservation.",
-                subject="Reservation converted to hold",
+                subject="%s - Reservation converted to hold" % child.local_id,
                 partner_ids=hold.primary_owner.partner_id.ids,
                 type='comment',
                 subtype='mail.mt_comment',

@@ -487,9 +487,8 @@ class SponsorshipContract(models.Model):
                 'contract_active')
 
         # Update sponsorships on partner
-        partners = self.mapped('partner_id') + self.mapped('correspondant_id')
-        for p in partners:
-            p.number_sponsorships += 1
+        partners = self.mapped('partner_id') | self.mapped('correspondant_id')
+        partners._compute_has_sponsorships()
 
         return True
 
@@ -698,7 +697,7 @@ class SponsorshipContract(models.Model):
                 ]).unlink()
 
         # Update sponsorships on partner
-        partners = self.mapped('partner_id') + self.mapped('correspondant_id')
+        partners = self.mapped('partner_id') | self.mapped('correspondant_id')
         partners._compute_has_sponsorships()
 
     @api.multi
