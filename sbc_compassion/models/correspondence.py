@@ -79,7 +79,7 @@ class Correspondence(models.Model):
     letter_image = fields.Many2one('ir.attachment')
     letter_format = fields.Selection([
         ('pdf', 'pdf'), ('tiff', 'tiff'), ('zip', 'zip')],
-        compute='_compute_letter_format')
+        compute='compute_letter_format', store=True)
 
     # 3. Letter language and text information
     #########################################
@@ -327,7 +327,9 @@ class Correspondence(models.Model):
     def _change_language(self):
         return True
 
-    def _compute_letter_format(self):
+    @api.multi
+    @api.depends('letter_image')
+    def compute_letter_format(self):
         for letter in self.filtered('letter_image'):
             ftype = magic.from_buffer(base64.b64decode(
                 letter.letter_image.datas), True)

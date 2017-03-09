@@ -239,16 +239,15 @@ class ResPartner(models.Model):
     ##########################################################################
     def upsert_constituent(self):
         """If partner has active contracts, UPSERT Constituent in GMC."""
+        message_obj = self.env['gmc.message.pool'].with_context(
+            async_mode=False)
+        action_id = self.env.ref('sponsorship_compassion.upsert_partner').id
         for partner in self:
             contract_count = self.env['recurring.contract'].search_count([
                 ('correspondant_id', '=', partner.id),
                 ('state', 'not in', ('terminated', 'cancelled'))])
             if contract_count:
                 # UpsertConstituent Message if not one already pending
-                message_obj = self.env['gmc.message.pool']
-                action_id = self.env.ref(
-                    'sponsorship_compassion.upsert_partner').id
-
                 message_vals = {
                     'action_id': action_id,
                     'object_id': partner.id,
