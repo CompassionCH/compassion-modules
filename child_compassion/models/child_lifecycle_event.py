@@ -49,6 +49,7 @@ class ChildLifecycleEvent(models.Model):
         # Reinstatement
         ('beneficiary exit was a mistake', 'the exit was a mistake'),
         ('beneficiary moved back', '{he} moved back'),
+        ('reinstate: child moved back', '{he} moved back'),
         ('family needs help again', '{his} family needs help again'),
         ('no longer sponsored by another organization',
          '{he} is no longer sponsored by another organization'),
