@@ -135,7 +135,8 @@ class SponsorshipGift(models.Model):
             ('Graduation/Final', _('Graduation/Final')),
         ]
 
-    @api.depends('invoice_line_ids')
+    @api.depends('invoice_line_ids', 'invoice_line_ids.state',
+                 'invoice_line_ids.price_subtotal', 'state')
     def _compute_invoice_fields(self):
         for gift in self.filtered('invoice_line_ids'):
             pay_dates = gift.invoice_line_ids.filtered('last_payment').mapped(

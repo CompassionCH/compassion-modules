@@ -461,7 +461,6 @@ class event_compassion(models.Model):
                 'default_channel': 'event',
                 'default_ambassador': self.user_id.id,
                 'default_source_code': self.name,
-                'default_return_action': 'event',
                 'default_no_money_yield_rate': no_money_yield,
                 'default_yield_rate': yield_rate,
                 'default_expiration_date':
