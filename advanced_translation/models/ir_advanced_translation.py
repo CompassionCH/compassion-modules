@@ -113,13 +113,17 @@ class AdvancedTranslatable(models.AbstractModel):
 
         res = list()
         field_path = field.split('.')
-        definition = self.fields_get([field_path[0]]).get(field_path[0])
+        obj = self
+        if len(field_path) > 1:
+            field_traversal = '.'.join(field_path[:-1])
+            obj = obj.mapped(field_traversal)
+        definition = obj.fields_get([field_path[-1]]).get(
+            field_path[-1])
         if definition:
             for record in self:
-                raw_value = record
-                for field_traversal in field_path:
-                    raw_value = getattr(raw_value, field_traversal, False)
-                if raw_value:
+                for raw_value in record.mapped(field):
+                    if not raw_value:
+                        continue
                     val = False
                     if definition['type'] in ('char', 'text') or isinstance(
                             raw_value, basestring) and definition['type'] !=\

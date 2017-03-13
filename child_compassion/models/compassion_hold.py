@@ -357,7 +357,8 @@ class CompassionHold(models.Model):
             ('state', '=', 'active'),
             ('expiration_date', '<=', fields.Datetime.to_string(
                 this_week_delay)),
-            ('type', '=', HoldType.NO_MONEY_HOLD.value)
+            ('type', 'in', [HoldType.NO_MONEY_HOLD.value,
+                            HoldType.SUB_CHILD_HOLD.value])
         ])
         holds.postpone_no_money_hold()
 
