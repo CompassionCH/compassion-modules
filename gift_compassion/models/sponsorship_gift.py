@@ -248,22 +248,17 @@ class SponsorshipGift(models.Model):
         :param: invoice_line: account.invoice.line record
         :return: dictionary of sponsorship.gift values
         """
-        instructions = False
         product = invoice_line.product_id
         sponsorship = invoice_line.contract_id
         if not product.categ_name == GIFT_CATEGORY:
             return False
-
-        if _(product.with_context(lang=invoice_line.create_uid.lang)
-                .name).lower() not in invoice_line.name.lower():
-            instructions = invoice_line.name
 
         gift_vals = self.get_gift_types(product)
         if gift_vals:
             gift_vals.update({
                 'sponsorship_id': sponsorship.id,
                 'invoice_line_ids': [(4, invoice_line.id)],
-                'instructions': instructions,
+                'instructions': invoice_line.invoice_id.comment,
             })
 
         return gift_vals
