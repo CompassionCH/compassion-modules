@@ -17,6 +17,7 @@ from openerp.addons.message_center_compassion.mappings \
 
 class ProjectLifecycle(models.Model):
     _name = 'compassion.project.ile'
+    _inherit = 'translatable.model'
     _description = 'Project lifecycle event'
     _order = 'date desc, id desc'
 
@@ -70,6 +71,8 @@ class ProjectLifecycle(models.Model):
     name = fields.Char(readonly=True)
     reactivation_date = fields.Date(readonly=True)
     project_status = fields.Selection(related='project_id.status')
+
+    gender = fields.Char(size=1, default='M')
 
     @api.model
     def _get_type(self):
