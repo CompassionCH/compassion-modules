@@ -18,9 +18,6 @@ class ResPartner(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    ref = fields.Char(
-        required=True,
-        default=lambda self: self.env['ir.sequence'].get('partner.ref'))
     global_id = fields.Char()
     contracts_fully_managed = fields.One2many(
         "recurring.contract", compute='_get_related_contracts',

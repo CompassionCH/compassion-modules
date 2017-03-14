@@ -72,6 +72,12 @@
             <field name="condition">hold_id</field>
         </record>
 
+        <record model="workflow.transition" id="waiting_fail">
+            <field name="act_from" ref="act_waiting"/>
+            <field name="act_to" ref="act_released"/>
+            <field name="signal">release</field>
+        </record>
+
         <record model="workflow.transition" id="sponsor_cancel">
             <field name="act_from" ref="act_sponsored"/>
             <field name="act_to" ref="act_released"/>
