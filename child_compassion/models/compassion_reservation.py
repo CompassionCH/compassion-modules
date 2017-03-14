@@ -52,6 +52,7 @@ class CompassionReservation(models.Model):
         default=lambda s: s._default_expiration_date())
     is_reservation_auto_approved = fields.Boolean(default=True)
     number_of_beneficiaries = fields.Integer(track_visibility='onchange')
+    number_reserved = fields.Integer()
 
     _sql_constraints = [
         ('reservation_id', 'unique(reservation_id)',
