@@ -12,7 +12,7 @@
 import logging
 
 from openerp import models, fields, api, exceptions, _
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF, mod10r
 from openerp.addons.connector.queue.job import job, related_action
 from openerp.addons.connector.session import ConnectorSession
 
@@ -435,8 +435,16 @@ class recurring_contract(models.Model):
     def _update_invoice_lines(self, invoices):
         super(recurring_contract, self)._update_invoice_lines(invoices)
         # Update bvr_reference of invoices
-        invoices.write({
-            'bvr_reference': self.group_id.bvr_reference})
+        ref = False
+        bank_terms = self.env['account.payment.term'].with_context(
+            lang='en_US').search(
+            ['|', ('name', 'like', 'LSV'), ('name', 'like', 'Postfinance')])
+        if self.group_id.bvr_reference:
+            ref = self.group_id.bvr_reference
+        elif self.group_id.payment_term_id in bank_terms:
+            seq = self.env['ir.sequence']
+            ref = mod10r(seq.next_by_code('contract.bvr.ref'))
+        invoices.write({'bvr_reference': ref})
 
     def _clean_error(self):
         raise exceptions.Warning(
