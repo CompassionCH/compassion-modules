@@ -63,5 +63,15 @@
             </field>
         </record>
 
+        <record id="view_reservation_crm_form" model="ir.ui.view">
+            <field name="name">compassion.reservation.crm.form</field>
+            <field name="model">compassion.reservation</field>
+            <field name="inherit_id" ref="child_compassion.view_compassion_reservation_form"/>
+            <field name="arch" type="xml">
+                <field name="ambassador" position="before">
+                    <field name="event_id"/>
+                </field>
+            </field>
+        </record>
     </data>
 </openerp>

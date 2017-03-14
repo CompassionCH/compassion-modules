@@ -38,6 +38,12 @@ class CompassionHold(models.Model):
             if origin_search:
                 hold.origin_id = origin_obj.search(origin_search, limit=1)
 
+    def reservation_to_hold(self, commkit_data):
+        res_ids = super(CompassionHold, self).reservation_to_hold(commkit_data)
+        for hold in self.browse(res_ids):
+            hold.event_id = hold.reservation_id.event_id
+        return res_ids
+
 
 class ChildCompassion(models.Model):
     _inherit = 'compassion.child'
@@ -72,3 +78,9 @@ class ChildHoldWizard(models.TransientModel):
                 'view_mode': 'form,tree',
             })
         return action
+
+
+class Reservation(models.Model):
+    _inherit = 'compassion.reservation'
+
+    event_id = fields.Many2one('crm.event.compassion', 'Event')

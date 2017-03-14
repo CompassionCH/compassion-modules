@@ -276,8 +276,13 @@ class CompassionHold(models.Model):
                 'global_id': child_global_id})
             hold = self.env['compassion.hold'].create(
                 mapping.get_vals_from_connect(hold_data))
-            hold.state = 'active'
+            hold.write({
+                'state': 'active',
+                'ambassador': hold.reservation_id.ambassador.id,
+                'channel': hold.reservation_id.channel
+            })
             child.hold_id = hold
+            hold.reservation_id.number_reserved += 1
 
             # Notify reservation owner
             hold.message_post(
