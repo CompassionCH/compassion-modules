@@ -459,7 +459,7 @@ class event_compassion(models.Model):
                 'default_take': self.number_allocate_children,
                 'event_id': self.id,
                 'default_channel': 'event',
-                'default_ambassador': self.user_id.id,
+                'default_ambassador': self.user_id.partner_id.id,
                 'default_source_code': self.name,
                 'default_no_money_yield_rate': no_money_yield,
                 'default_yield_rate': yield_rate,
