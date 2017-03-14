@@ -188,10 +188,10 @@ class CompassionHold(models.Model):
         active_holds = self.filtered(lambda h: h.state == 'active')
         active_holds.release_hold()
         inactive_holds = self - active_holds
-        inactive_children = inactive_holds.mapped('child_id')
+        inactive_children = inactive_holds.mapped('child_id').filtered(
+            lambda c: not c.hold_id)
         inactive_children.signal_workflow('release')
-        invalid_holds = self.filtered(lambda h: not h.child_id)
-        super(CompassionHold, invalid_holds).unlink()
+        super(CompassionHold, inactive_holds).unlink()
         return True
 
     ##########################################################################
