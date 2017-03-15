@@ -60,8 +60,7 @@ access_admin_icp_diet,Full access on icp diet,model_icp_diet,base.group_erp_mana
 access_admin_project_lifecycle,Full access on project_lifecycle,model_compassion_project_ile,message_center_compassion.group_gmc,1,1,1,1
 access_admin_project_need,Full access on project need,model_compassion_project_need,message_center_compassion.group_gmc,1,1,1,1
 access_field_office,Full access on field office,model_compassion_field_office,group_sponsorship,1,1,1,1
-access_household_member,Full access on household member,model_compassion_household_member,group_sponsorship,1,0,1,0
-access_admin_household_member,Full access on household member,model_compassion_household_member,message_center_compassion.group_gmc,1,1,1,1
+access_household_member,Full access on household member,model_compassion_household_member,group_sponsorship,1,1,1,1
 access_global_partner,Read access on global partner,model_compassion_global_partner,group_sponsorship,1,0,0,0
 access_admin_global_partner,Full access on global partner,model_compassion_global_partner,message_center_compassion.group_gmc,1,1,1,1
 access_compassion_hold,Full access on compassion hold,model_compassion_hold,group_sponsorship,1,1,1,1
