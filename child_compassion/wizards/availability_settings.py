@@ -44,7 +44,7 @@ class AvailabilitySettings(models.TransientModel):
     def set_no_money_hold_duration(self):
         self.env['ir.config_parameter'].set_param(
             'child_compassion.no_money_hold_duration',
-            str(self.consignment_hold_duration))
+            str(self.no_money_hold_duration))
 
     @api.multi
     def set_no_money_hold_extension(self):
@@ -86,7 +86,7 @@ class AvailabilitySettings(models.TransientModel):
     def get_default_values(self, _fields):
         param_obj = self.env['ir.config_parameter']
         consignment = int(param_obj.get_param(
-            'child_compassion.consignment_hold_duration', '7'))
+            'child_compassion.consignment_hold_duration', '14'))
         e_commerce = int(param_obj.get_param(
             'child_compassion.e_commerce_hold_duration', '15'))
         no_money = int(param_obj.get_param(
@@ -102,7 +102,7 @@ class AvailabilitySettings(models.TransientModel):
         sponsor_cancel = int(param_obj.get_param(
             'child_compassion.sponsor_cancel_hold_duration', '7'))
         sub_child = int(param_obj.get_param(
-            'child_compassion.sub_child_hold_duration', '15'))
+            'child_compassion.sub_child_hold_duration', '30'))
 
         all_values = {
             'consignment_hold_duration': consignment,

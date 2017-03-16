@@ -24,9 +24,12 @@ class ChildHoldWizard(models.TransientModel):
     @api.multi
     def send(self):
         """ Remove default_type from context to avoid putting type in child.
+        For SUB, put async mode to False in order to wait for the message
+        answers.
         """
+        async_mode = self.return_action != 'sub'
         return super(ChildHoldWizard, self.with_context(
-            default_type='CDSP')).send()
+            default_type='CDSP', async_mode=async_mode)).send()
 
     def _get_action(self, holds):
         action = super(ChildHoldWizard, self)._get_action(holds)
