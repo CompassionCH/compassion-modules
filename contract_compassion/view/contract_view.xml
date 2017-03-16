@@ -56,6 +56,10 @@
                             attrs="{'invisible': ['|', ('state', 'not in', ['waiting', 'mandate', 'active']), ('end_date', '!=', False)]}"/>
                 </button>
 
+                <button name="open_invoices" position="attributes">
+                    <attribute name="groups" position="replace"/>
+                </button>
+
                 <!-- Hide reference -->
                 <field name="reference" position="replace">
                     <field name="name"/>
