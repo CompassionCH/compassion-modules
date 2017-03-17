@@ -65,6 +65,7 @@ class event_compassion(models.Model):
         'compassion.child',
         compute='_compute_allocate_children',
         string='Allocated children')
+    effective_allocated = fields.Integer(compute='_compute_allocate_children')
     staff_ids = fields.Many2many(
         'res.partner', 'partners_to_staff_event', 'event_id', 'partner_id',
         'Staff')
@@ -77,7 +78,7 @@ class event_compassion(models.Model):
     expense_line_ids = fields.One2many(
         'account.analytic.line', compute='_set_analytic_lines', readonly=True)
     income_line_ids = fields.One2many(
-        'account.analytic.line', compute='_set_analytic_lines', readonly=True)
+        'account.invoice.line', compute='_set_analytic_lines', readonly=True)
     total_expense = fields.Float(
         'Total expense', compute='_set_analytic_lines', readonly=True,
         store=True)
@@ -97,6 +98,8 @@ class event_compassion(models.Model):
     lead_ids = fields.One2many('crm.lead', 'event_id', 'Leads')
     won_sponsorships = fields.Integer(
         related='origin_id.won_sponsorships', store=True)
+    conversion_rate = fields.Float(
+        related='origin_id.conversion_rate', store=True)
     project_id = fields.Many2one('project.project', 'Project')
     use_tasks = fields.Boolean('Use tasks')
     parent_id = fields.Many2one(
@@ -119,21 +122,28 @@ class event_compassion(models.Model):
     @api.depends('analytic_id', 'analytic_id.line_ids',
                  'analytic_id.line_ids.amount')
     def _set_analytic_lines(self):
-        line_obj = self.env['account.analytic.line']
+        analytic_line_obj = self.env['account.analytic.line']
+        invoice_line_obj = self.env['account.invoice.line']
         if self.analytic_id:
-            expenses = line_obj.search([
+            expenses = analytic_line_obj.search([
                 ('account_id', '=', self.analytic_id.id),
                 ('amount', '<', '0.0')])
-            incomes = line_obj.search([
-                ('account_id', '=', self.analytic_id.id),
-                ('amount', '>', '0.0')])
+            incomes = invoice_line_obj.search([
+                ('state', '=', 'paid'),
+                ('account_analytic_id', '=', self.analytic_id.id),
+                ('contract_id', '=', False),
+                ('invoice_id.type', '=', 'out_invoice'),
+            ])
             expense = abs(sum(expenses.mapped('amount')))
-            income = sum(incomes.mapped('amount'))
+            income = sum(incomes.mapped('price_subtotal'))
             self.expense_line_ids = expenses.ids
             self.income_line_ids = incomes.ids
             self.total_expense = expense
             self.total_income = income
-            self.balance = income - expense
+            if expense:
+                self.balance = income / float(expense)
+            else:
+                self.balance = 0
         elif not isinstance(self.id, models.NewId):
             self.expense_line_ids = False
             self.income_line_ids = False
@@ -165,7 +175,9 @@ class event_compassion(models.Model):
     @api.depends('hold_ids')
     def _compute_allocate_children(self):
         for event in self:
-            event.allocate_child_ids = event.hold_ids.mapped('child_id')
+            children = event.hold_ids.mapped('child_id')
+            event.allocate_child_ids = children
+            event.effective_allocated = len(children)
 
     @api.one
     @api.constrains('hold_start_date', 'start_date')
@@ -292,7 +304,7 @@ class event_compassion(models.Model):
         self.ensure_one()
         project_id = self.project_id.id
         return {
-            'name': 'Project Tasks',
+            'name': _('Project Tasks'),
             'type': 'ir.actions.act_window',
             'view_mode': 'kanban,tree,form,calendar,gantt,graph',
             'view_type': 'form',
@@ -304,6 +316,68 @@ class event_compassion(models.Model):
                 'active_test': False},
             'search_view_id': self.env['ir.model.data'].get_object_reference(
                 'project', 'view_task_search_form')[1]
+        }
+
+    @api.multi
+    def show_sponsorships(self):
+        self.ensure_one()
+        return {
+            'name': _('Sponsorships'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'res_model': 'recurring.contract',
+            'src_model': 'crm.event.compassion',
+            'context': self.with_context(default_type='S',
+                                         group_by=False).env.context,
+            'domain': [('id', 'in', self.origin_id.contract_ids.ids)],
+        }
+
+    @api.multi
+    def show_expenses(self):
+        self.ensure_one()
+        return {
+            'name': _('Expenses'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'res_model': 'account.analytic.line',
+            'src_model': 'crm.event.compassion',
+            'context': self.with_context(
+                group_by='general_account_id').env.context,
+            'domain': [('id', 'in', self.expense_line_ids.ids)],
+        }
+
+    @api.multi
+    def show_income(self):
+        return {
+            'name': _('Income'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'res_model': 'account.invoice.line',
+            'src_model': 'crm.event.compassion',
+            'context': self.with_context(group_by=False).env.context,
+            'views': [
+                (self.env.ref('sponsorship_compassion.'
+                              'view_invoice_line_partner_tree').id,
+                 'tree'),
+                (False, 'form')
+            ],
+            'domain': [('id', 'in', self.income_line_ids.ids)]
+        }
+
+    @api.multi
+    def show_children(self):
+        return {
+            'name': _('Allocated Children'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'res_model': 'compassion.child',
+            'src_model': 'crm.event.compassion',
+            'context': self.env.context,
+            'domain': [('id', 'in', self.allocate_child_ids.ids)]
         }
 
     @api.onchange('type')

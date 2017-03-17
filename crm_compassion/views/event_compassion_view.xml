@@ -20,10 +20,11 @@
                     <field name="partner_id"/>
                     <field name="city"/>
                     <field name="user_id"/>
-                    <field name="total_income"/>
-                    <field name="total_expense"/>
-                    <field name="balance"/>
-                    <field name="won_sponsorships"/>
+                    <field name="total_income" sum="Income"/>
+                    <field name="total_expense" sum="Expense"/>
+                    <field name="balance" sum="Balance"/>
+                    <field name="won_sponsorships" sum="Won Sponsorships"/>
+                    <field name="conversion_rate" widget="progressbar"/>
                 </tree>
             </field>
         </record>
@@ -44,7 +45,43 @@
                             </h1>
                         </div>
                         <div class="oe_right oe_button_box" name="buttons">
-                            <button name="show_tasks" string="Open tasks" type="object" attrs="{'invisible': [('use_tasks', '=', False)]}"/>
+                            <button name="show_children" type="object" class="oe_stat_button" icon="fa-child">
+                                <div>
+                                    <strong>
+                                        <field name="effective_allocated" class="statinfo"/>
+                                    </strong>
+                                    <br/>
+                                    Allocated children
+                                </div>
+                            </button>
+                            <button name="show_sponsorships" type="object" class="oe_stat_button" icon="fa-link">
+                                <div>
+                                    <strong>
+                                        <field name="won_sponsorships" class="statinfo"/>
+                                    </strong>
+                                    <br/>
+                                    Sponsorships
+                                </div>
+                            </button>
+                            <button name="show_expenses" type="object" class="oe_stat_button" icon="fa-credit-card">
+                                <div>
+                                    <strong>
+                                        <field name="total_expense" class="statinfo"/>
+                                    </strong>
+                                    <br/>
+                                    Expenses
+                                </div>
+                            </button>
+                            <button name="show_income" type="object" class="oe_stat_button" icon="fa-money">
+                                <div>
+                                    <strong>
+                                        <field name="total_income" class="statinfo"/>
+                                    </strong>
+                                    <br/>
+                                    Income
+                                </div>
+                            </button>
+                            <button name="show_tasks" string="Open tasks" type="object" attrs="{'invisible': [('use_tasks', '=', False)]}" class="oe_stat_button" icon="fa-tasks"/>
                         </div>
                         <group>
                             <group>
@@ -88,9 +125,8 @@
                             <group>
                                 <field name="number_allocate_children"/>
                                 <field name="planned_sponsorships"/>
-                                <field name="won_sponsorships"/>
-                                <field name="total_expense"/>
-                                <field name="total_income"/>
+                                <field name="conversion_rate"/>
+                                <field name="balance"/>
                             </group>
                         </group>
                         <notebook>
@@ -100,20 +136,8 @@
                             <page string="Internal Notes">
                                 <field name="description"/>
                             </page>
-                            <page string="Incomes">
-                                <field name="income_line_ids"/>
-                            </page>
-                            <page string="Expenses">
-                                <field name="expense_line_ids"/>
-                            </page>
-                            <page string="Allocated children">
-                                <field name="allocate_child_ids"/>
-                            </page>
                             <page string="Leads">
                                 <field name="lead_ids"/>
-                            </page>
-                            <page string="New sponsorships">
-                                <field name="contract_ids"/>
                             </page>
                         </notebook>
                     </sheet>
