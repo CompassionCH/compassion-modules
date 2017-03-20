@@ -471,7 +471,7 @@
 			<field name="type">service</field>
 			<field name="categ_id" ref="product_category_fund" />
 			<field name="list_price">8</field>
-            <field name="property_account_income" search="[('code','=','6000')]"/>
+            <field name="property_account_income" search="[('code','=','6016')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
             </record>
         <record id="product_template_fund_4mu_2" model="product.template">
@@ -479,7 +479,7 @@
 			<field name="type">service</field>
 			<field name="categ_id" ref="product_category_fund" />
 			<field name="list_price">8</field>
-            <field name="property_account_income" search="[('code','=','6000')]"/>
+            <field name="property_account_income" search="[('code','=','6016')]"/>
             <field name="property_account_expense" search="[('code','=','5000')]"/>
 		</record>
         <record id="product_template_fund_sawyer" model="product.template">
