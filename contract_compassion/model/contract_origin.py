@@ -40,7 +40,9 @@ class contract_origin(models.Model):
     country_id = fields.Many2one('res.country', 'Country')
     other_name = fields.Char('Give details', size=128)
     won_sponsorships = fields.Integer(
-        compute='_get_won_sponsorships', store=True)
+        compute='get_won_sponsorships', store=True)
+    conversion_rate = fields.Float(
+        compute='get_won_sponsorships', store=True)
 
     _sql_constraints = [(
         'name_uniq', 'UNIQUE(name)',
@@ -84,12 +86,15 @@ class contract_origin(models.Model):
             ('other', _("Other")),
         ]
 
-    @api.depends('contract_ids.origin_id', 'contract_ids.state')
-    @api.one
-    def _get_won_sponsorships(self):
-        contract_ids = self.contract_ids.filtered(
-            lambda c: c.state in ('active', 'terminated'))
-        self.won_sponsorships = len(contract_ids)
+    @api.depends('contract_ids.origin_id', 'contract_ids.activation_date')
+    @api.multi
+    def get_won_sponsorships(self):
+        for origin in self.filtered('contract_ids'):
+            contract_ids = origin.contract_ids
+            origin.won_sponsorships = len(contract_ids)
+            origin.conversion_rate = len(
+                contract_ids.filtered('activation_date')) / float(len(
+                    contract_ids)) * 100
 
     ##########################################################################
     #                              ORM METHODS                               #
