@@ -204,6 +204,8 @@ class recurring_contract(models.Model):
                 other_nums = self.search([
                     ('partner_id', '=', partner_id)]).mapped('num_pol_ga')
                 vals['num_pol_ga'] = max(other_nums or [-1]) + 1
+            else:
+                vals['num_pol_ga'] = 1
         return super(recurring_contract, self).create(vals)
 
     @api.multi
@@ -500,11 +502,11 @@ class recurring_contract(models.Model):
         group = self.env['recurring.contract.group'].browse(
             group_id)
         payment_name = group.payment_term_id.name
-        if 'LSV' in payment_name or 'Postfinance' in payment_name:
+        if group and ('LSV' in payment_name or 'Postfinance' in payment_name):
             self.signal_workflow('will_pay_by_lsv_dd')
         else:
             # Check if old payment_term was LSV or DD
-            for contract in self:
+            for contract in self.filtered('group_id'):
                 payment_name = contract.group_id.payment_term_id.name
                 if 'LSV' in payment_name or 'Postfinance' in payment_name:
                     contract.signal_workflow('mandate_validated')
