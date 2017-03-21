@@ -45,6 +45,7 @@
         'views/res_partner_view.xml',
         'views/change_text_wizard_view.xml',
         'views/pdf_wizard_view.xml',
+        'views/generate_communication_wizard_view.xml',
         'data/default_communication.xml'
     ],
     'demo': [],

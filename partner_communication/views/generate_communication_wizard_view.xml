@@ -1,0 +1,29 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="generate_communication_wizard_form">
+            <field name="name">genereate.communication.wizard.form</field>
+            <field name="model">partner.communication.generate.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="partner_ids"/>
+                        <field name="model_id"/>
+                    </group>
+                    <footer>
+                        <button name="generate" string="Generate Communications" type="object" class="oe_highlight" icon="gtk-apply"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_generate_communication" model="ir.actions.act_window">
+            <field name="name">Generate Communications</field>
+            <field name="res_model">partner.communication.generate.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem name="Generate Communications" parent="menu_communication" id="menu_communication_generate" sequence="2" action="action_generate_communication"/>
+    </data>
+</openerp>
