@@ -73,5 +73,3 @@ class FutureHope(models.Model):
     _inherit = 'child.property'
     res_model = 'compassion.child.ble'
     res_field = 'future_hope_ids'
-
-
