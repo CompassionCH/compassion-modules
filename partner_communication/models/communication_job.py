@@ -259,7 +259,6 @@ class CommunicationJob(models.Model):
         if self.config_id and self.partner_id:
             send_mode = self.config_id.get_inform_mode(self.partner_id)
             self.send_mode = send_mode[0]
-            self.auto_send = send_mode[1]
 
     @api.multi
     def open_related(self):
