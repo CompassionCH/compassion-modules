@@ -193,8 +193,10 @@ class CommunicationJob(models.Model):
     @api.multi
     def send(self):
         """ Executes the job. """
-        to_print = self.filtered(lambda j: j.send_mode == 'physical')
-        for job in self.filtered(lambda j: j.send_mode in ('both', 'digital')):
+        no_call = self.filtered(lambda j: not j.need_call)
+        to_print = no_call.filtered(lambda j: j.send_mode == 'physical')
+        for job in no_call.filtered(lambda j: j.send_mode in ('both',
+                                                              'digital')):
             state = job._send_mail()
             if job.send_mode != 'both':
                 job.write({
