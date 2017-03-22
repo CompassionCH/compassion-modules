@@ -273,7 +273,7 @@
                         <group attrs="{'invisible': [('type', '!=', 'Planned Exit')]}">
                             <field name="sponsor_impact"/>
                             <field name="new_situation"/>
-                            <field name="future_hopes"/>
+                            <field name="future_hope_ids" widget="many2many_tags"/>
                             <field name="family_impact"/>
                         </group>
                         <group attrs="{'invisible': [('type', '!=', 'Unplanned Exit')]}">
