@@ -63,6 +63,7 @@
         'data/child.christian.activity.csv',
         'data/child.chronic.illness.csv',
         'data/child.physical.disability.csv',
+        'data/child.future.hope.csv',
         'data/connect.month.csv',
         'data/gmc_action.xml',
         'data/compassion.field.office.csv',

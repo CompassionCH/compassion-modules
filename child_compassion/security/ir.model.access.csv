@@ -82,3 +82,5 @@ access_fo_disaster_loss,Full access on Field Office Disaster Loss,model_fo_disas
 access_fo_disaster_loss_spo,User access on Field Office Disaster Loss,model_fo_disaster_loss,group_sponsorship,1,0,0,0
 access_fo_high_risk,Full access on Field Office High Risk,model_fo_high_risk,message_center_compassion.group_gmc,1,1,1,1
 access_fo_high_risk_user,User access on Field Office High Risk,model_fo_high_risk,group_sponsorship,1,0,0,0
+access_future_hopes,Read access on child future hopes,model_child_future_hope,group_sponsorship,1,0,1,0
+access_admin_future_hopes,Full access on child future hopes,model_child_future_hope,base.group_erp_manager,1,1,1,1

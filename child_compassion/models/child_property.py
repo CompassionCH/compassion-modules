@@ -66,3 +66,12 @@ class ChronicIllness(models.Model):
     _name = 'child.chronic.illness'
     _inherit = 'child.property'
     res_field = 'chronic_illness_ids'
+
+
+class FutureHope(models.Model):
+    _name = 'child.future.hope'
+    _inherit = 'child.property'
+    res_model = 'compassion.child.ble'
+    res_field = 'future_hope_ids'
+
+

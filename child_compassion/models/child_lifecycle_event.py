@@ -28,6 +28,7 @@ class ChildLifecycleEvent(models.Model):
     global_id = fields.Char(readonly=True, required=True)
     date = fields.Date(readonly=True)
     type = fields.Selection('_get_type', readonly=True)
+    gender = fields.Selection(related='child_id.gender')
 
     # All reasons for all request types
     request_reason = fields.Selection([
@@ -154,6 +155,8 @@ class ChildLifecycleEvent(models.Model):
     final_letter_sent = fields.Boolean(readonly=True)
     sponsor_impact = fields.Char(readonly=True)
     new_situation = fields.Char(readonly=True)
+    future_hope_ids = fields.Many2many(
+        'child.future.hope', string='Future hopes', readonly=True)
     future_hopes = fields.Char(readonly=True)
     family_impact = fields.Char(readonly=True)
 

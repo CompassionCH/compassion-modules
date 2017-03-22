@@ -21,7 +21,7 @@ class LifecycleMapping(OnrampMapping):
         'DeathCategory': 'child_death_category',
         'DeathSubcategory': 'child_death_subcategory',
         'FamilyImpact': 'family_impact',
-        'FutureHopes': 'future_hopes',
+        'FutureHopes': ('future_hope_ids.name', 'child.future.hope'),
         'IsFinalLetterSent': 'final_letter_sent',
         'IsPrimarySchoolComplete': 'primary_school_finished',
         'LastAttendedDate': 'last_attended_project',
@@ -63,3 +63,12 @@ class LifecycleMapping(OnrampMapping):
         request_reason = odoo_data.get('request_reason')
         if request_reason:
             odoo_data['request_reason'] = request_reason.lower()
+
+    def _convert_connect_data(self, connect_name, value_mapping, value,
+                              relation_search=None):
+        """ Convert Future Hopes in List"""
+        if connect_name == 'FutureHopes':
+            value = value.split(';')
+        return super(LifecycleMapping, self)._convert_connect_data(
+            connect_name, value_mapping, value, relation_search
+        )
