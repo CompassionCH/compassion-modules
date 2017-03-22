@@ -154,7 +154,7 @@ class recurring_contract(models.Model):
         }
         if self.type == 'S':
             recurring_value = self.group_id.advance_billing_months
-            recurring_unit = 'month'
+            recurring_unit = _('month')
         else:
             recurring_value = self.group_id.recurring_value
             recurring_unit = self.group_id.recurring_unit
@@ -162,7 +162,7 @@ class recurring_contract(models.Model):
         if frequency in frequencies:
             frequency = frequencies[frequency]
         else:
-            frequency = _('Every') + ' ' + frequency.lower()
+            frequency = _('every') + ' ' + frequency.lower()
         self.group_freq = frequency
 
     @api.multi
