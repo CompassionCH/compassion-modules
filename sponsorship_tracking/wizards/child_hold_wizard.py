@@ -27,7 +27,8 @@ class ChildHoldWizard(models.TransientModel):
         For SUB, put async mode to False in order to wait for the message
         answers.
         """
-        async_mode = self.return_action != 'sub'
+        async_mode = self.env.context.get(
+            'async_mode', self.return_action != 'sub')
         return super(ChildHoldWizard, self.with_context(
             default_type='CDSP', async_mode=async_mode)).send()
 
