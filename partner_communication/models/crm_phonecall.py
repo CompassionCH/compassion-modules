@@ -58,9 +58,10 @@ class Phonecall(models.Model):
                 'object_ids': phonecall.partner_id.ids,
                 'state': 'done',
                 'phonecall_id': phonecall.id,
-                'sent_date': fields.Datetime.now(),
+                'sent_date': vals.get('date', fields.Datetime.now()),
                 'body_html': phonecall.name,
                 'subject': phonecall.name,
+                'auto_send': False,
             })
             phonecall.partner_id.message_post(
                 phonecall.name, "Phonecall"
