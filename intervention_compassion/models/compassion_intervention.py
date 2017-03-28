@@ -392,6 +392,9 @@ class CompassionIntervention(models.Model):
         # Apparently this message contains a single dictionary, and not a
         # list of dictionaries,
         ihrn = commkit_data['InterventionHoldRemovalNotification']
+        # Remove problematic type as it is not needed and contains
+        # erroneous data
+        del ihrn['InterventionType_Name']
 
         vals = intervention_mapping.get_vals_from_connect(ihrn)
         intervention_id = vals['intervention_id']
