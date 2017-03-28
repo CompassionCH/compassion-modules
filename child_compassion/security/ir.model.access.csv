@@ -84,3 +84,5 @@ access_fo_high_risk,Full access on Field Office High Risk,model_fo_high_risk,mes
 access_fo_high_risk_user,User access on Field Office High Risk,model_fo_high_risk,group_sponsorship,1,0,0,0
 access_future_hopes,Read access on child future hopes,model_child_future_hope,group_sponsorship,1,0,1,0
 access_admin_future_hopes,Full access on child future hopes,model_child_future_hope,base.group_erp_manager,1,1,1,1
+access_suspension_extension_reason,Read access on suspension extension reason,model_icp_suspension_extension_reason,group_sponsorship,1,0,1,0
+access_admin_suspension_extension_reason,Full access on suspension extension reason,model_icp_suspension_extension_reason,base.group_erp_manager,1,1,1,1

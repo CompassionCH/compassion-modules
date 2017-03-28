@@ -51,11 +51,13 @@ class ProjectLifecycle(models.Model):
 
     extension_1 = fields.Boolean(
         help='Suspension is extended by 30 days', readonly=True)
-    extension_1_reason = fields.Text(readonly=True)
+    extension_1_reason_ids = fields.Many2many(
+        'icp.suspension.extension.reason', readonly=True)
     extension_2 = fields.Boolean(
         help='Suspension is extended by additional 30 days (60 in total)',
         readonly=True)
-    extension_2_reason = fields.Text(readonly=True)
+    extension_2_reason_ids = fields.Many2many(
+        'icp.suspension.extension.reason', readonly=True)
 
     # Transition
     ############
