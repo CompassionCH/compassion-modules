@@ -156,3 +156,11 @@ class ICPLifecycleReason(models.Model):
     _description = 'ICP Lifecycle Reason'
     res_model = 'compassion.project.ile'
     res_field = 'suspension_reason_ids'
+
+
+class ICPSuspensionExtensionReason(models.Model):
+    _name = 'icp.suspension.extension.reason'
+    _inherit = 'icp.property'
+    _description = 'ICP Suspension Reason'
+    res_model = 'compassion.project.ile'
+    res_field = 'extension_1_reason_ids'

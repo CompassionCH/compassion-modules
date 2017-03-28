@@ -81,6 +81,7 @@
         'data/icp.community.occupation.csv',
         'data/icp.diet.csv',
         'data/icp.lifecycle.reason.csv',
+        'data/icp.suspension.extension.reason.csv',
         'data/icp.mobile.device.csv',
         'data/icp.physical.activity.csv',
         'data/icp.school.cost.csv',

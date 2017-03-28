@@ -1,0 +1,18 @@
+id,name,value
+icp_suspension_reason_leadership,Church Leadership / Denomination Issues,the church leadership
+icp_suspension_reason_processes,Compassion Processes Not Being Followed,compassion processes not being followed
+icp_suspension_reason_financial,Financial Issues,financial issues
+icp_suspension_reason_fund,Fund Balance Beyond Standard Limits,fund balance beyond standard limits
+icp_suspension_reason_government,Government Restriction Issues,government restriction issues
+icp_suspension_reason_leaders_commitment,ICP Leaders Do Not Show Commitment,icp leaders not showing commitment
+icp_suspension_reason_leadership_commitee,ICP Leadership Committee Issues,icp leadership committee issues
+icp_suspension_reason_management,ICP Management Practices Issues,icp management practices issues
+icp_suspension_reason_processes_staff,ICP Processes Not Followed By Staff,icp processes not followed by staff
+icp_suspension_reason_staff_conflicts,ICP Staff Conflicts,icp staff conflicts
+icp_suspension_reason_integrity,Integrity Issue,integrity issue
+icp_suspension_reason_community,Issues With Community,issues with community
+icp_suspension_reason_legal,Legal Issues,legal issues
+icp_suspension_reason_program,Program Implemented Incorrectly,program implemented incorrectly
+icp_suspension_reason_reporting,Reports / Docs Not Meeting Standards,reports not meeting standards
+icp_suspension_reason_staff_issues,Staffing Issues,staffing issues
+icp_suspension_reason_work_environment,Work Environment Not Supporting Program,work environment not supporting program
