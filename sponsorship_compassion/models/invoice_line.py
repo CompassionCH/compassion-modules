@@ -26,8 +26,8 @@ class invoice_line(models.Model):
     def _set_last_payment(self):
         for line in self:
             last_date = None
-            for payment in line.invoice_id.payment_ids:
-                if payment.credit > 0 and payment.date > last_date:
+            for payment in line.invoice_id.payment_ids.filtered('credit'):
+                if payment.date > last_date:
                     last_date = payment.date
             line.last_payment = last_date
 
