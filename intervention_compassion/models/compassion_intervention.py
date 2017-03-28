@@ -155,7 +155,7 @@ class CompassionIntervention(models.Model):
 
     @api.multi
     def _compute_level1_deliverables(self):
-        for intervention in self:
+        for intervention in self.filtered('type'):
             if 'CIV' in intervention.type:
                 intervention.deliverable_level_1_ids = self.env.ref(
                     'intervention_compassion.deliverable_final_program_report')
