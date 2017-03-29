@@ -81,7 +81,7 @@ class InterventionMapping(OnrampMapping):
         "ExpirationDate": 'expiration_date',
         "NotificationReason": 'cancel_reason',
         "HoldAmount": 'hold_amount',
-        "PrimaryOwner": 'primary_owner',
+        "PrimaryOwner": ('primary_owner.name', 'res.users'),
         "SecondaryOwner": 'secondary_owner',
         "InterventionHold_ID": 'hold_id',
 

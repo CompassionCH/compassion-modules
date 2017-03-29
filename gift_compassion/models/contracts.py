@@ -52,7 +52,7 @@ class SponsorshipContract(models.Model):
         """
         for invl in invoice.invoice_line.filtered('gift_id'):
             gift = invl.gift_id
-            if gift.gmc_gift_id:
+            if gift.gmc_gift_id and gift.state != 'Undeliverable':
                 raise Warning(
                     _("You cannot delete the %s. It is already sent to GMC.")
                     % gift.name

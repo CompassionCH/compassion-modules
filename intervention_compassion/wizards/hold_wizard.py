@@ -89,3 +89,9 @@ class HoldWizard(models.TransientModel):
             'res_id': self.created_intervention_id.id,
             'target': 'current',
         }
+
+    @api.onchange('intervention_id')
+    def onchange_intervention(self):
+        for wizard in self.filtered('intervention_id.type'):
+            if 'Ongoing' in wizard.intervention_id.type:
+                wizard.service_level = 'Level 1'
