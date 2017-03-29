@@ -47,7 +47,8 @@ class RestController(http.Controller):
             })
             result["Message"] = "Your message was successfully received."
         else:
-            ONRAMP_LOGGER.error("Unknown message type received.")
+            ONRAMP_LOGGER.error(
+                "Unknown message type received: " + message_type)
             result["Message"] = "Unknown message type - not processed."
         return result
 

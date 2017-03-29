@@ -45,6 +45,11 @@ class FieldOfficeDisasterUpdate(OnrampMapping):
         'Disaster_Name': None,
     }
 
+    def _process_odoo_data(self, odoo_data):
+        if 'summary' in odoo_data:
+            odoo_data['summary'] = odoo_data['summary'].replace(
+                '\\r', '\n').replace('\\n', '\n').replace('\\t', '\t')
+
 
 class ChildDisasterImpact(OnrampMapping):
     """
