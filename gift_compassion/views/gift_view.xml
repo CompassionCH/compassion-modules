@@ -38,7 +38,7 @@
                 <form string="Gift">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,In Progress,Delivered"/>
-                        <button name="action_send" type="object" string="Send Now" class="oe_highlight" states="draft,open"/>
+                        <button name="action_send" type="object" string="Send Now" class="oe_highlight" states="draft,open" context="{'async_mode': False}"/>
                         <button name="action_verify" type="object" string="To Verify" states="draft,error"/>
                         <button name="action_ok" type="object" string="Gift OK" class="oe_highlight" states="verify"/>
                         <button name="action_cancel" type="object" string="Cancel Gift" help="Will unreconcile the payment" states="draft,verify"/>
@@ -149,6 +149,7 @@
             <field name="name">Send Now</field>
             <field name="model_id" ref="model_sponsorship_gift"/>
             <field name="state">code</field>
+            <field name="code">self.action_send(cr, uid, context.get('active_ids', []), context=context)</field>
             <field name="code">self.action_send(cr, uid, context.get('active_ids', []), context=context)</field>
         </record>
         <record id="deliver_gift" model="ir.actions.server">

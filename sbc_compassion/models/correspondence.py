@@ -175,13 +175,10 @@ class Correspondence(models.Model):
             ('Field Office translation queue', _('SDL FO Translation Queue')),
             ('Composition process', _('Composition Process')),
             ('Printed and sent to ICP', _('Sent to ICP')),
-            # TODO: Check the following states with GMC to validate them...
-            ('Complete Delivered', _('Delivered')),
-            ('Complete Undelivered', _('Undelivered')),
-            ('Undeliverable', _('Undeliverable')),
-            ('Cancelled', _('Cancelled')),
             ('Exception', _('Exception')),
             ('Quality check unsuccessful', _('Quality check failed')),
+            ('Translation check unsuccessful', _('Translation check '
+                                                 'unsuccessful')),
         ]
 
     @api.model
@@ -202,11 +199,9 @@ class Correspondence(models.Model):
             ('Global Partner translation process', _('Translating')),
             ('Composition process', _('Composition Process')),
             ('Published to Global Partner', _('Published')),
-            # TODO: Check the following states with GMC to validate them...
             ('Quality check unsuccessful', _('Quality check unsuccessful')),
             ('Translation check unsuccessful', _('Translation check '
                                                  'unsuccessful')),
-            ('Cancelled', _('Cancelled')),
             ('Exception', _('Exception')),
         ]
 
