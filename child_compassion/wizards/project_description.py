@@ -114,10 +114,10 @@ class ProjectDescription(models.TransientModel):
         else:
             desc('#community_income').remove()
         desc('.community_food')[0].text = _("Typical food")
-        self._show_field(
-            desc('.community_food')[1], desc('#community_food'),
-            project.primary_diet_ids[0].value
-        )
+        if project.primary_diet_ids:
+            desc('.community_food')[1].text = project.primary_diet_ids[0].value
+        else:
+            desc('#community_food').remove()
         desc('.community_school_begins')[0].text = _("School begins in")
         self._show_field(
             desc('.community_school_begins')[1],

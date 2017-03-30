@@ -11,8 +11,10 @@
 
 import logging
 
+from dateutil.relativedelta import relativedelta
+
 from openerp import models, fields, api, _
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 from ..mappings.compassion_child_mapping import CompassionChildMapping
 
@@ -349,21 +351,37 @@ class CompassionChild(models.Model):
         # Update child's pictures
         for child in self:
             res = child._get_last_pictures() and res
+            pictures = child.pictures_ids
+            if len(pictures) > 1:
+                today = date.today()
+                last_photo = fields.Date.from_string(pictures[1].date)
+                new_photo = fields.Date.from_string(pictures[0].date)
+                diff_pic = relativedelta(new_photo, last_photo)
+                diff_today = relativedelta(today, new_photo)
+                if (diff_pic.months > 6 or diff_pic.years > 1) and (
+                        diff_today.months > 6 or diff_today.years > 1):
+                    child.new_photo()
         return res
 
     # Lifecycle methods
     ###################
+    @api.multi
     def depart(self):
         self.signal_workflow('release')
 
+    @api.multi
     def reinstatement(self):
         """ Called by Lifecycle Event. Hold and state of Child is
         handled by the Reinstatement Hold Notification. """
         self.delete_workflow()
         self.create_workflow()
 
+    @api.multi
     def new_photo(self):
-        self.get_infos()
+        """
+        Hook for doing something when a new photo is attached to the child.
+        """
+        pass
 
     @api.multi
     def get_lifecycle_event(self):

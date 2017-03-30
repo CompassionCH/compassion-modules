@@ -192,4 +192,6 @@ class ICPMapping(OnrampMapping):
         monthly_income = odoo_data.get('monthly_income')
         if monthly_income:
             monthly_income = monthly_income.replace(',', '')
-            odoo_data['monthly_income'] = re.sub("[^\d.]+", "", monthly_income)
+            # Replace all but last dot
+            odoo_data['monthly_income'] = re.sub(
+                "\.(?=[^.]*\.)", "", monthly_income)

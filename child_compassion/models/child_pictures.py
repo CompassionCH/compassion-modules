@@ -8,7 +8,6 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-
 from openerp import models, fields, api, _
 
 import logging
@@ -18,7 +17,7 @@ import urllib2
 logger = logging.getLogger(__name__)
 
 
-class child_pictures(models.Model):
+class ChildPictures(models.Model):
     """ Holds two pictures of a given child
         - Headshot
         - Fullshot
@@ -83,7 +82,7 @@ class child_pictures(models.Model):
         and attach the pictures to the last case study.
         """
 
-        pictures = super(child_pictures, self).create(vals)
+        pictures = super(ChildPictures, self).create(vals)
 
         same_url = pictures._find_same_picture_by_url()
         if same_url:
@@ -91,7 +90,6 @@ class child_pictures(models.Model):
                 _('The picture was the same'), 'Picture update')
             pictures._unlink_related_attachment()
             pictures.unlink()
-            same_url.write({'date': same_url.child_id.last_photo_date})
             return False
 
         # Retrieve Headshot
@@ -118,7 +116,6 @@ class child_pictures(models.Model):
                 _('The picture was the same'), 'Picture update')
             pictures._unlink_related_attachment()
             pictures.unlink()
-            same_pictures.write({'date': image_date})
             return False
 
         pictures.write({'date': image_date})
