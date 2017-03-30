@@ -229,6 +229,6 @@
         <menuitem id="menu_tracking" parent="child_compassion.menu_sponsorship_root"
                   name="Track sponsorships" sequence="5"/>
         <menuitem action="action_follow_sds" id="menu_follow_sds" parent="menu_tracking"
-                  name="Welcome / SUB" sequence="2" groups="child_compassion.group_sponsorship"/>
+                  name="SUB Sponsorships" sequence="2" groups="child_compassion.group_sponsorship"/>
 	</data>
 </openerp>

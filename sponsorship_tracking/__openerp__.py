@@ -39,6 +39,7 @@
         'views/sub_sponsorship_wizard_view.xml',
         'views/contract_view.xml',
         'views/sponsorship_tracking.xml',
+        'views/settings_view.xml',
         'workflow/sds_workflow.xml',
         'data/contract_cron.xml',
         'data/install.xml',

@@ -56,6 +56,7 @@ class sub_sponsorship_wizard(models.TransientModel):
         contract_obj = self.env['recurring.contract'].with_context(
             allow_rewind=True)
         contract = contract_obj.browse(sponsorship_id)
+        contract.sds_uid = self.env.user
         origin_obj = self.env['recurring.contract.origin']
         sub_origin_id = origin_obj.search([('type', '=', 'sub')], limit=1).id
         sub_contract = contract.copy({
@@ -64,6 +65,7 @@ class sub_sponsorship_wizard(models.TransientModel):
             'channel': self.channel,
             'child_id': self.child_id.id,
             'user_id': False,
+            'sds_uid': self.env.uid,
         })
         today = datetime.today()
         next_invoice_date = fields.Date.from_string(
@@ -118,6 +120,9 @@ class sub_sponsorship_wizard(models.TransientModel):
             reason = self.no_sub_reason
         else:
             reason = dict(self._get_no_sub_reasons()).get(default_reason)
-        contract.write({'no_sub_reason': reason})
+        contract.write({
+            'no_sub_reason': reason,
+            'sds_uid': self.env.uid
+        })
         contract.signal_workflow('no_sub')
         return True

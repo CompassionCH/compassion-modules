@@ -179,19 +179,19 @@ class RecurringContract(models.Model):
     @api.model
     def sds_kanban_groups(self, ids, domain, **kwargs):
         fold = {
-            'active': True,
             'sub_accept': True,
             'sub_reject': True,
             'no_sub': True,
-            'cancelled': True
         }
         sds_states = self._get_sds_states()
         display_states = list()
         for sds_state in sds_states:
-            sponsorship_count = self.search_count([
-                ('sds_state', '=', sds_state[0])])
-            if sponsorship_count:
-                display_states.append(sds_state)
+            # Only display SUB Sponsorship states
+            if 'sub' in sds_state[0]:
+                sponsorship_count = self.search_count([
+                    ('sds_state', '=', sds_state[0])])
+                if sponsorship_count:
+                    display_states.append(sds_state)
         return display_states, fold
 
     @api.model
@@ -207,14 +207,18 @@ class RecurringContract(models.Model):
         """
         if groupby == 'sds_state':
             state_dict = dict(self._get_sds_states())
+            filter_group_result = list()
             for result in read_group_result:
                 state = result[groupby]
-                result[groupby] = (state, state_dict.get(state))
+                # Only display SUB Sponsorship states
+                if 'sub' in state:
+                    result[groupby] = (state, state_dict.get(state))
+                    filter_group_result.append(result)
 
         return super(RecurringContract, self)._read_group_fill_results(
             domain, groupby,
             remaining_groupbys, aggregated_fields, count_field,
-            read_group_result, read_group_order
+            filter_group_result, read_group_order
         )
 
     _group_by_full = {
@@ -236,14 +240,22 @@ class RecurringContract(models.Model):
     def contract_cancelled(self):
         """ Change SDS Follower """
         res = super(RecurringContract, self).contract_cancelled()
-        self.write({'sds_uid': self.env.user.id})
+        for contract in self:
+            lang = contract.correspondant_id.lang[:2]
+            sds_user = self.env['sds.follower.settings'].get_param(
+                'sub_' + lang)
+            contract.write({'sds_uid': sds_user})
         return res
 
     @api.multi
     def contract_terminated(self):
         """ Change SDS Follower """
         res = super(RecurringContract, self).contract_terminated()
-        self.write({'sds_uid': self.env.user.id})
+        for contract in self:
+            lang = contract.correspondant_id.lang[:2]
+            sds_user = self.env['sds.follower.settings'].get_param(
+                'sub_' + lang)
+            contract.write({'sds_uid': sds_user})
         return res
 
     @api.multi
@@ -281,12 +293,9 @@ class RecurringContract(models.Model):
         domain = False
         menu = self.env.context.get('count_menu')
         if menu == 'menu_follow_sds':
-            # All contracts followed by user that are sub_waiting or
-            # inform_no_sub or waiting_welcome with color (> 10 days)
+            # All contracts followed by user that are sub_waiting
             domain = [
                 ('sds_uid', '=', self.env.user.id),
-                '|', ('sds_state', 'in', ('sub_waiting', 'inform_no_sub')),
-                '&', ('sds_state', '=', 'waiting_welcome'),
-                ('color', '=', 4)]
+                ('sds_state', '=', 'sub_waiting')]
 
         return domain
