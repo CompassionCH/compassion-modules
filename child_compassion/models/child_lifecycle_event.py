@@ -8,8 +8,6 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-
-
 from openerp import models, fields, api
 from openerp.addons.message_center_compassion.mappings \
     import base_mapping as mapping
@@ -295,13 +293,12 @@ class ChildLifecycleEvent(models.Model):
             lifecycle.write(vals)
         else:
             lifecycle = super(ChildLifecycleEvent, self).create(vals)
+            child = lifecycle.child_id
             # Process lifecycle event
             if 'Exit' in lifecycle.type:
-                lifecycle.child_id.depart()
+                child.depart()
             elif lifecycle.type == 'Reinstatement':
-                lifecycle.child_id.reinstatement()
-            elif lifecycle.type == 'Beneficiary Update':
-                lifecycle.child_id.new_photo()
+                child.reinstatement()
             else:
                 lifecycle.child_id.with_context(async_mode=False).get_infos()
         return lifecycle
