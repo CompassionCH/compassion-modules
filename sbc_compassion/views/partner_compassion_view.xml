@@ -6,9 +6,11 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <!-- Add correspondence options -->
-                <field name="user_id" position="before">
-                    <button name="open_letters" string="Letters" type="object"/>
-                </field>
+                <xpath expr="//div[@name='buttons']" position="inside">
+                    <button class="oe_inline oe_stat_button" type="object" name="open_letters" icon="fa-pencil">
+                        <field string="Letters" name="nb_letters" widget="statinfo"/>
+                    </button>
+                </xpath>
                 <field name="lang" position="after">
                     <field name="spoken_lang_ids" widget="many2many_tags" options="{'create':False}" attrs="{'required': [('is_company', '=', False), ('customer', '=', True)]}"/>
                     <field name="letter_delivery_preference"/>
