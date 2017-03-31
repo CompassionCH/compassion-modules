@@ -12,6 +12,9 @@
                     <button class="oe_inline oe_stat_button" type="object" name="open_contracts" icon="fa-book">
                         <field string="Sponsorships" name="number_sponsorships" widget="statinfo"/>
                     </button>
+                    <button class="oe_inline oe_stat_button" type="object" name="open_sponsored_children" icon="fa-child">
+                        <field string="Sponsored children" name="number_children" widget="statinfo"/>
+                    </button>
                 </xpath>
                 <xpath expr="//page[@string='Contracts']" position="replace">
                     <page string="Sponsorships" groups="child_compassion.group_sponsorship">
