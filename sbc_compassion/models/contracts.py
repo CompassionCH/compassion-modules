@@ -31,6 +31,9 @@ class Contracts(models.Model):
     sponsor_letter_ids = fields.Many2many(
         'correspondence', string='Sponsor letters',
         compute='_get_letters')
+    nb_letters = fields.Integer(
+        compute='_get_letters'
+    )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -45,6 +48,7 @@ class Contracts(models.Model):
                 lambda l: l.direction == 'Beneficiary To Supporter')
             sponsorship.sponsor_letter_ids = letters.filtered(
                 lambda l: l.direction == 'Supporter To Beneficiary')
+            sponsorship.nb_letters = len(letters)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -77,6 +81,22 @@ class Contracts(models.Model):
                         sponsorship.reading_language = common_langs[0]
                     else:
                         sponsorship.reading_language = english
+
+    @api.multi
+    def open_letters(self):
+        letters = self.child_letter_ids | self.sponsor_letter_ids
+        return {
+            'name': letters._description,
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': letters._name,
+            'context': self.with_context(
+                group_by=False,
+                search_default_correspondant_id=self.correspondant_id.id
+            ).env.context,
+            'target': 'current',
+        }
 
     ##########################################################################
     #                            WORKFLOW METHODS                            #
