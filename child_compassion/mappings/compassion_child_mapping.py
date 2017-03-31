@@ -125,6 +125,11 @@ class GenericChildMapping(OnrampMapping):
         gender = odoo_data.get('gender')
         if gender:
             odoo_data['gender'] = gender[0]
+        # Put firstname in preferred_name if not defined
+        preferred_name = odoo_data.get('preferred_name')
+        if not preferred_name:
+            odoo_data['preferred_name'] = odoo_data.get('firstname')
+        # Remove invalid data
         for key in odoo_data.iterkeys():
             val = odoo_data[key]
             if isinstance(val, basestring) and val.lower() in (
