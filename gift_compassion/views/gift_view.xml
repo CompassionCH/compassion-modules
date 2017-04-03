@@ -93,7 +93,7 @@
                                 <field name="invoice_line_ids"/>
                                 <group class="oe_subtotal_footer oe_right">
                                     <field name="amount_us_dollars" widget="monetary" options="{'currency_field': 'currency_usd'}" />
-                                    <field name="amount" widget="monetary" class="oe_subtotal_footer_separator" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                                    <field name="amount" widget="monetary" class="oe_subtotal_footer_separator" options="{'currency_field': 'currency_id'}"/>
                                 </group>
                                 <separator/>
                             </page>
