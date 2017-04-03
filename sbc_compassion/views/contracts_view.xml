@@ -5,7 +5,18 @@
             <field name="model">recurring.contract</field>
             <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
             <field name="arch" type="xml">
-                 <!-- Add correspondence to sponsorships -->
+                <!-- Add correspondence to sponsorships -->
+                <button name="open_invoices" position="after">
+                    <button name="open_letters" type="object" class="oe_inline oe_stat_button" icon="fa-pencil">
+                        <div>
+                            <strong>
+                                <field name="nb_letters"/>
+                            </strong>
+                            <br/>Letters
+                        </div>
+                    </button>
+                </button>
+
                 <xpath expr="//page[@string='Contract lines']" position="after">
                     <page string="Correspondence" attrs="{'invisible': [('type', 'not in', ['S','SC'])]}">
                         <group>

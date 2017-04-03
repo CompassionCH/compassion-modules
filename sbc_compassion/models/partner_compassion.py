@@ -29,6 +29,14 @@ class ResPartner(models.Model):
         help='Delivery preference for Child Letters',
         oldname='delivery_preference')
     translator_email = fields.Char(help='e-mail address used in SDL')
+    nb_letters = fields.Integer(compute='_compute_nb_letters')
+
+    @api.multi
+    def _compute_nb_letters(self):
+        for partner in self:
+            partner.nb_letters = self.env['correspondence'].search_count([
+                ('correspondant_id', '=', partner.id)
+            ])
 
     @api.multi
     def open_letters(self):
@@ -38,9 +46,13 @@ class ResPartner(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Letters',
             'res_model': 'correspondence',
-            "views": [[False, "tree"], [False, "form"]],
-            'domain': [["correspondant_id", "=", self.id]],
-            }
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'context': self.with_context(
+                group_by=False,
+                search_default_correspondant_id=self.id
+            ).env.context,
+        }
 
     @api.onchange('lang')
     def onchange_main_language(self):

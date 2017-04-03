@@ -201,7 +201,11 @@ class SponsorshipGift(models.Model):
             if gift_to_verify:
                 vals['state'] = 'verify'
             gift = super(SponsorshipGift, self).create(vals)
-            gift.invoice_line_ids.write({'gift_id': gift.id})
+            if gift.invoice_line_ids:
+                gift.invoice_line_ids.write({'gift_id': gift.id})
+            else:
+                # Prevent computed fields to reset their values
+                gift.write(vals)
             gift._create_gift_message()
 
         return gift

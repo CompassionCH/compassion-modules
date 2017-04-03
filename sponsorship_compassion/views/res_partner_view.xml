@@ -8,10 +8,17 @@
             <field eval="18" name="priority"/>
             <field name="arch" type="xml">
                 <!-- Redefine how contracts are shown. -->
+                <xpath expr="//div[@name='buttons']" position="inside">
+                    <button class="oe_inline oe_stat_button" type="object" name="open_contracts" icon="fa-book">
+                        <field string="Sponsorships" name="number_sponsorships" widget="statinfo"/>
+                    </button>
+                    <button class="oe_inline oe_stat_button" type="object" name="open_sponsored_children" icon="fa-child">
+                        <field string="Sponsored children" name="number_children" widget="statinfo"/>
+                    </button>
+                </xpath>
                 <xpath expr="//page[@string='Contracts']" position="replace">
                     <page string="Sponsorships" groups="child_compassion.group_sponsorship">
                         <button name="create_contract" string="Add" type="object"/>
-                        <button name="open_contracts" string="Details" type="object"/>
                         <field name="contracts_fully_managed" invisible="True" />
                         <field name="contracts_paid" invisible="True" />
                         <field name="contracts_correspondant" invisible="True" />

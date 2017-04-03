@@ -47,6 +47,9 @@ class ResPartner(models.Model):
         help='Indicates that we request the original letters for this sponsor'
     )
     preferred_name = fields.Char()
+    sponsored_child_ids = fields.One2many(
+        'compassion.child', 'sponsor_id', 'Sponsored children')
+    number_children = fields.Integer(compute='_compute_children')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -115,6 +118,11 @@ class ResPartner(models.Model):
             partner.receivable_items = move_line_obj.search_count([
                 ('partner_id', '=', partner.id),
                 ('account_id.code', '=', '1050')])
+
+    @api.multi
+    def _compute_children(self):
+        for partner in self:
+            partner.number_children = len(partner.sponsored_child_ids)
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -225,6 +233,21 @@ class ResPartner(models.Model):
                        ('partner_id', '=', self.id)],
             'context': self.with_context({
                 'default_type': 'S'}).env.context,
+        }
+
+    @api.multi
+    def open_sponsored_children(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Children',
+            'res_model': 'compassion.child',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'context': self.with_context(
+                group_by=False,
+                search_default_sponsor_id=self.id
+            ).env.context,
         }
 
     @api.onchange('lastname', 'firstname')
