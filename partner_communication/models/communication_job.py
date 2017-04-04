@@ -63,10 +63,7 @@ class CommunicationJob(models.Model):
 
     auto_send = fields.Boolean(
         help='Job is processed at creation if set to true')
-    send_mode = fields.Selection([
-        ('digital', 'By e-mail'), ('physical', 'Print report'),
-        ('both', 'Both')
-    ])
+    send_mode = fields.Selection('send_mode_select')
     email_template_id = fields.Many2one(
         related='config_id.email_template_id', store=True)
     report_id = fields.Many2one(related='config_id.report_id', store=True)
@@ -112,6 +109,14 @@ class CommunicationJob(models.Model):
                         'report_name': attachment.report_id.report_name or '',
                         'attachment_id': attachment.id
                     })
+
+    @api.model
+    def send_mode_select(self):
+        return [
+            ('digital', _('By e-mail')),
+            ('physical', _('Print report')),
+            ('both', _('Both'))
+        ]
 
     ##########################################################################
     #                              ORM METHODS                               #
