@@ -103,6 +103,6 @@
 
         <!-- Menu Definition -->
         <menuitem id="import_letters_menu" parent="menu_correspondence"
-                  name="Imports" action="action_compassion_import_letters_action" sequence="1"/>
+                  name="Imports" action="action_compassion_import_letters_action" sequence="3"/>
     </data>
 </openerp>

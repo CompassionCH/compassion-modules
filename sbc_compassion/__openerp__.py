@@ -54,6 +54,8 @@
         'views/import_review_view.xml',
         'views/download_letters_view.xml',
         'views/get_letter_image_wizard_view.xml',
+        'views/correspondence_s2b_generator_view.xml',
+        'report/s2b_letter.xml',
         'data/correspondence_template_data.xml',
         'data/correspondence_type.xml',
         'data/child_layouts.xml',

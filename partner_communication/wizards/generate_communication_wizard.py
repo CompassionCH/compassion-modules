@@ -17,6 +17,7 @@ class GenerateCommunicationWizard(models.TransientModel):
     state = fields.Selection(
         [('edit', 'edit'), ('preview', 'preview')], default='edit'
     )
+    selection_domain = fields.Char()
     partner_ids = fields.Many2many(
         'res.partner', string='Recipients',
         default=lambda s: s._default_partners()
@@ -52,12 +53,16 @@ class GenerateCommunicationWizard(models.TransientModel):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.onchange('force_language')
-    def onchange_force_language(self):
-        """ Filter partners that has the selected language. """
+    @api.onchange('selection_domain', 'force_language')
+    def onchange_domain(self):
         if self.force_language:
-            self.partner_ids = self.partner_ids.filtered(
-                lambda p: p.lang == self.force_language)
+            domain = self.selection_domain or '[]'
+            domain = domain[:-1] + ", ('lang', '=', '{}')]".format(
+                self.force_language)
+            self.selection_domain = domain.replace('[, ', '[')
+        if self.selection_domain:
+            self.partner_ids = self.env['res.partner'].search(
+                eval(self.selection_domain))
 
     @api.onchange('model_id')
     def onchange_model_id(self):
