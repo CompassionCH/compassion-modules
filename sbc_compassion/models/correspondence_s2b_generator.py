@@ -10,6 +10,9 @@
 ##############################################################################
 import base64
 from bs4 import BeautifulSoup
+
+from io import BytesIO
+from pyPdf.pdf import PdfFileReader, PdfFileWriter
 from wand.image import Image
 
 from openerp import api, fields, models
@@ -87,8 +90,19 @@ class CorrespondenceS2bGenerator(models.Model):
         """ Generate a picture for preview.
         """
         pdf = self._get_pdf(self.sponsorship_ids[0], preview=True)
+        if self.s2b_template_id.layout == 'CH-A-3S01-1':
+            # Read page 2
+            in_pdf = PdfFileReader(BytesIO(pdf))
+            output_pdf = PdfFileWriter()
+            out_data = BytesIO()
+            output_pdf.addPage(in_pdf.getPage(1))
+            output_pdf.write(out_data)
+            out_data.seek(0)
+            pdf = out_data.read()
+
         with Image(blob=pdf) as pdf_image:
             preview = base64.b64encode(pdf_image.make_blob(format='jpeg'))
+
         return self.write({'state': 'preview', 'preview_image': preview})
 
     @api.multi

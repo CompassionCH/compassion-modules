@@ -750,10 +750,14 @@ class Correspondence(models.Model):
             'datas': image_data
         }
         if letter:
-            vals.update({
-                'name': letter.kit_identifier or
-                letter.child_id.code + '_' + type_,
-                'datas_fname': letter.name,
-                'res_id': letter.id
-            })
+            if letter.letter_image:
+                letter.letter_image.datas = image_data
+                return letter.letter_image, type_
+            else:
+                vals.update({
+                    'name': letter.kit_identifier or
+                    letter.child_id.local_id + '_' + type_,
+                    'datas_fname': letter.name,
+                    'res_id': letter.id
+                })
         return self.env['ir.attachment'].create(vals), type_

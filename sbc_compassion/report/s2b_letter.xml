@@ -25,10 +25,17 @@
                         left: 65mm;
                         top: 6.5mm;
                         z-index: 2;
+                        font-size: 8pt;
                     }
                     #body {
                         position: absolute;
                         overflow: hidden;
+                    }
+                    .layout3 {
+                        position: absolute;
+                        top: 50mm;
+                        left: 50mm;
+                        width: 50mm;
                     }
                 </style>
             </xpath>
@@ -45,6 +52,12 @@
         <template id="s2b_letter">
             <t t-call="sbc_compassion.layout">
                 <t t-foreach="docs" t-as="o">
+                    <t t-set="l" t-value="o.s2b_template_id"/>
+                    <div class="page" t-if="l.layout == 'CH-A-3S01-1'">
+                        <p class="layout3">
+                            No design. Text on page 2.
+                        </p>
+                    </div>
                     <div class="page">
                         <div id="header">
                             <t t-set="sponsor" t-value="o.sponsorship_id.correspondant_id"/>
@@ -53,15 +66,14 @@
                             <br/>
                             <span t-field="child.local_id"/> - <span t-field="child.name"/>
                             <br/>
-                            GP: CH
+                            TID: <span t-raw="l.layout"/>
                         </div>
                         <span t-field="o.background" t-field-options='{"widget": "image"}' id="background"/>
-                        <t t-set="l" t-value="o.s2b_template_id"/>
                         <span t-raw="o.body_html" id="body"
                               t-attf-style="left: {{ l.text_box_left_position }}mm; top: {{ l.text_box_top_position }}mm; width: {{ l.text_box_width }}mm; max-height: {{ l.text_box_height }}mm;"
                         />
                     </div>
-                    <div class="page"/>
+                    <div class="page" t-if="l.layout != 'CH-A-3S01-1'"/>
                 </t>
             </t>
         </template>
