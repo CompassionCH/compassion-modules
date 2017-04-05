@@ -40,10 +40,6 @@
                             <group string="Metadata">
                                 <field name="page_width"/>
                                 <field name="page_height"/>
-                                <separator colspan="2"/>
-                                <field name="bluesquare_x"/>
-                                <field name="bluesquare_y"/>
-                                <separator colspan="2"/>
                                 <field name="qrcode_x_min"/>
                                 <field name="qrcode_x_max"/>
                                 <field name="qrcode_y_min"/>
@@ -53,12 +49,8 @@
                                 <field name="pattern_x_max"/>
                                 <field name="pattern_y_min"/>
                                 <field name="pattern_y_max"/>
-                                <separator colspan="2"/>
-                                <field name="pattern_center_x"/>
-                                <field name="pattern_center_y"/>
 				                <field name="nber_keypoints"/>
-                            </group>
-                            <group string="S2B Generation">
+                                <separator string="S2B Generation" colspan="2"/>
                                 <field name="report_id"/>
                                 <field name="text_box_left_position"/>
                                 <field name="text_box_top_position"/>

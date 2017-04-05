@@ -478,21 +478,16 @@ def _find_template(env, img, line_vals, test, resize_ratio):
     """
     templates = env['correspondence.template'].search(
         [('pattern_image', '!=', False)])
-    threshold = float(
-        env.ref('sbc_compassion.threshold_keypoints_template').value)
-    template, pattern_center, result_img = pr.find_template(
-        img, templates,  threshold=threshold, test=test,
-        resize_ratio=resize_ratio)
+    template, result_img = pr.find_template(
+        img, templates, test=test, resize_ratio=resize_ratio)
     if test:
         result_preview = manyImages2OneImage(result_img, 1)
         line_vals['template_preview'] = result_preview
 
     if template is None:
-        pattern_center = np.array(([0, 0], [0, 0]))
         template = env.ref('sbc_compassion.default_template')
 
     line_vals['template_id'] = template.id
-    return pattern_center
 
 
 def _find_languages(env, img, line_vals, test, resize_ratio=1.0):
