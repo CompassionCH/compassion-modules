@@ -20,7 +20,6 @@ from openerp.exceptions import ValidationError, Warning
 from wand.image import Image
 
 from ..tools import patternrecognition as pr
-from ..tools import bluecornerfinder as bcf
 
 
 class Style:
@@ -30,7 +29,6 @@ class Style:
     pattern_color_sq = (34, 139, 34)  # green (forest)
     pattern_color_pt = (0, 128, 0)  # green (html/css color)
     pattern_color_key = (0, 204, 239)  # yellow (munsell)
-    bluesquare_color = (51, 2, 196)  # red NCS
     qr_color = (168, 24, 0)  # blue (Pantone)
     lang_color = (0, 97, 232)  # Spanish orange
     # defines scaling for circles radius
@@ -64,14 +62,6 @@ class CorrespondenceTemplate(models.Model):
         help='Width of the template in pixels')
     page_height = fields.Integer(
         help='Height of the template in pixels')
-    bluesquare_x = fields.Integer(
-        compute='_compute_template_keypoints', store=True,
-        help='X Position of the upper-right corner of the blue square '
-             'in pixels')
-    bluesquare_y = fields.Integer(
-        compute='_compute_template_keypoints', store=True,
-        help='Y Position of the upper-right corner of the blue square '
-             'in pixels')
     qrcode_x_min = fields.Integer(
         compute="_onchange_template_image",
         help='Minimum X position of the area in which to look for the QR '
@@ -88,14 +78,6 @@ class CorrespondenceTemplate(models.Model):
         compute="_onchange_template_image",
         help='Maximum Y position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
-    pattern_center_x = fields.Float(
-        compute="_compute_template_keypoints", store=True,
-        help='X coordinate of the center of the pattern. '
-        'Used to detect the orientation of the pattern in the image')
-    pattern_center_y = fields.Float(
-        compute="_compute_template_keypoints", store=True,
-        help='Y coordinate of the center of the pattern. '
-        'Used to detect the orientation of the pattern in the image')
     pattern_x_min = fields.Integer(
         help='Minimum X position of the area in which to look for the '
              'pattern inside the template (given in pixels)')
@@ -158,7 +140,7 @@ class CorrespondenceTemplate(models.Model):
         ]
 
     @api.constrains(
-        'bluesquare_x', 'bluesquare_y', 'pattern_x_min', 'pattern_x_max',
+        'pattern_x_min', 'pattern_x_max',
         'pattern_y_min', 'pattern_y_max', 'page_width', 'page_height')
     def verify_position(self):
         """ Check that position of elements inside template are valid
@@ -241,7 +223,7 @@ class CorrespondenceTemplate(models.Model):
     @api.depends('pattern_image')
     def _compute_template_keypoints(self):
         """ This method computes all key points that can be automatically
-        detected (blue square and pattern_center)
+        detected
         """
         for template in self:
             if template.template_image and template.pattern_image:
@@ -261,81 +243,20 @@ class CorrespondenceTemplate(models.Model):
                         pattern_keypoints = res[0]
 
                     template.nber_keypoints = pattern_keypoints.shape[0]
-                    # find center of the pattern
-                    pattern_center = pr.keyPointCenter(pattern_keypoints)
-                    template.pattern_center_x = pattern_center[0]
-                    template.pattern_center_y = pattern_center[1]
-                    # blue corner detection
-                    bluecorner = bcf.BlueCornerFinder(
-                        img).getIndices()
-                    template.bluesquare_x = bluecorner[0]
-                    template.bluesquare_y = bluecorner[1]
 
     @api.multi
     def _compute_detection(self):
         for template in self:
-            if (template.pattern_image and template.template_image and
-                    _verify_template(template)):
+            if template.pattern_image and template.template_image:
                 img = template._compute_img_constant()
                 if img is None:
                     pass
-
-                # computation before any modifications
-                res = pr.patternRecognition(
-                    img, template.with_context(bin_size=False).pattern_image,
-                    template.get_pattern_area())
-                if res is not None:
-                    pattern_keypoints = res[0]
-
-                # no reason behind it, just need a scaling
-                radius = template.page_width/Style.radius_scale
-                # blue square
-                img.itemset((self.bluesquare_y, self.bluesquare_x, 0),
-                            Style.bluesquare_color[0])
-                img.itemset((self.bluesquare_y, self.bluesquare_x, 1),
-                            Style.bluesquare_color[1])
-                img.itemset((self.bluesquare_y, self.bluesquare_x, 2),
-                            Style.bluesquare_color[2])
-                cv2.circle(img, (self.bluesquare_x, self.bluesquare_y),
-                           radius, Style.bluesquare_color)
-                config = self.env['ir.config_parameter']
-                bc_x_min = int(
-                    float(config.get_param('bluecorner_x_min')) *
-                    template.page_width)
-                bc_y_max = int(
-                    float(config.get_param('bluecorner_y_max')) *
-                    template.page_height)
-                cv2.rectangle(img,
-                              (bc_x_min, 0), (template.page_width, bc_y_max),
-                              Style.bluesquare_color)
 
                 # QR code
                 cv2.rectangle(img,
                               (template.qrcode_x_min, template.qrcode_y_min),
                               (template.qrcode_x_max, template.qrcode_y_max),
                               Style.qr_color)
-                # Pattern
-                # box
-                pattern_center = (int(self.pattern_center_y),
-                                  int(self.pattern_center_x))
-                cv2.rectangle(img,
-                              (template.pattern_x_min, template.pattern_y_min),
-                              (template.pattern_x_max, template.pattern_y_max),
-                              Style.pattern_color_sq)
-                # center
-                img.itemset((pattern_center[0], pattern_center[1], 0),
-                            Style.pattern_color_pt[0])
-                img.itemset((pattern_center[0], pattern_center[1], 1),
-                            Style.pattern_color_pt[1])
-                img.itemset((pattern_center[0], pattern_center[1], 2),
-                            Style.pattern_color_pt[2])
-                cv2.circle(img, pattern_center[::-1], radius,
-                           Style.pattern_color_pt)
-                # key points
-                for key in pattern_keypoints:
-                    cv2.line(img, (int(key[0]), int(key[1])),
-                             pattern_center[::-1],
-                             Style.pattern_color_key)
 
                 # languages
                 for check in template.checkbox_ids:
@@ -380,23 +301,11 @@ class CorrespondenceTemplate(models.Model):
         area[2:] = area[2:]/float(self.page_height)
         return area
 
-    def get_bluesquare_area(self, resize_factor=1.0):
-        """ Returns the coordinates of the blue square upper-right corner
-            [x, y]
-        """
-        upper_right = numpy.array([self.bluesquare_x, self.bluesquare_y])
-        upper_right *= resize_factor
-        return upper_right
-
     def get_template_size(self, resize_factor=1.0):
         """ Returns the width and height of the template in a numpy array. """
         wh = numpy.array([self.page_width, self.page_height])
         wh *= resize_factor
         return wh
-
-    def get_pattern_center(self):
-        """ Returns the coordinates of the pattern center. """
-        return numpy.array([self.pattern_center_x, self.pattern_center_y])
 
 
 class CorrespondenceLanguageCheckbox(models.Model):
@@ -447,14 +356,10 @@ def _verify_template(tpl):
     height = tpl.page_height
     if tpl.template_image and tpl.pattern_image:
         valid_coordinates = (
-            0 <= tpl.bluesquare_x <= width and
-            0 <= tpl.bluesquare_y <= height and
             0 <= tpl.pattern_x_min < tpl.pattern_x_max <= width and
             0 <= tpl.pattern_y_min < tpl.pattern_y_max <= height)
     else:
         valid_coordinates = (
-            0 <= tpl.bluesquare_x <= width and
-            0 <= tpl.bluesquare_y <= height and
             0 <= tpl.pattern_x_min <= tpl.pattern_x_max <= width and
             0 <= tpl.pattern_y_min <= tpl.pattern_y_max <= height)
     return valid_coordinates

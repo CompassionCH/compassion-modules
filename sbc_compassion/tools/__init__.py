@@ -8,7 +8,6 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from . import bluecornerfinder
 from . import checkboxreader
 from . import import_letter_functions
 from . import patternrecognition

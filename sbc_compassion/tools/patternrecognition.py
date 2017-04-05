@@ -329,8 +329,7 @@ def keyPointCenter(keypoints):
         return center / N
 
 
-def find_template(img, templates, test=False,
-                  threshold=0.8, resize_ratio=1.0):
+def find_template(img, templates, test=False, resize_ratio=1.0):
     """
     Use pattern recognition to detect which template correponds to img.
 
@@ -338,7 +337,6 @@ def find_template(img, templates, test=False,
     :param templates: Collection of all templates
     :param bool test: Enable the test mode (return an image as the last \
         parameter). If False, the image is None.
-    :param threshold: Ratio of the templates' keypoints requested
     :returns: Detected template, center position of detected pattern,\
         image showing the detected keypoints for all the template
     :rtype: template, layout, None or np.array
@@ -367,7 +365,6 @@ def find_template(img, templates, test=False,
         (xmin, ymin), img1 = subsetImage(img, crop_area)
 
         # resizing the pattern, assuming it had been saved at 300dpi
-        temp_image = []
         with tempfile.NamedTemporaryFile() as temp:
             temp.write(base64.b64decode(template.pattern_image))
             temp.flush()
@@ -415,4 +412,4 @@ def find_template(img, templates, test=False,
                         nb_keypoints, tic))
     else:
         logger.info("\t\t\tNo template found.")
-    return matching_template, keyPointCenter(key_img), test_img
+    return matching_template, keyPointCenter(key_img)
