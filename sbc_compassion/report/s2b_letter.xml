@@ -22,6 +22,7 @@
                     }
                     #body {
                         position: absolute;
+                        overflow: hidden;
                     }
                 </style>
             </xpath>
@@ -42,7 +43,7 @@
                         <span t-field="o.background" t-field-options='{"widget": "image"}' id="background"/>
                         <t t-set="l" t-value="o.s2b_template_id"/>
                         <span t-raw="o.body_html" id="body"
-                              t-attf-style="left: {{ l.text_box_left_position }}mm; top: {{ l.text_box_top_position }}mm; width: {{ l.text_box_width }}mm; height: {{ l.text_box_height }}mm;"
+                              t-attf-style="left: {{ l.text_box_left_position }}mm; top: {{ l.text_box_top_position }}mm; width: {{ l.text_box_width }}mm; max-height: {{ l.text_box_height }}mm;"
                         />
                     </div>
                     <div class="page"/>
