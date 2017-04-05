@@ -138,6 +138,7 @@ class Correspondence(models.Model):
     sponsorship_state = fields.Selection(
         related='sponsorship_id.state', string='Sponsorship state')
     is_final_letter = fields.Boolean(compute='_is_final_letter')
+    generator_id = fields.Many2one('correspondence.s2b.generator')
 
     # Letter remote access
     ######################

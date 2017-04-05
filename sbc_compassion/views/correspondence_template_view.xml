@@ -56,7 +56,14 @@
                                 <separator colspan="2"/>
                                 <field name="pattern_center_x"/>
                                 <field name="pattern_center_y"/>
-				<field name="nber_keypoints"/>
+				                <field name="nber_keypoints"/>
+                            </group>
+                            <group string="S2B Generation">
+                                <field name="report_id"/>
+                                <field name="text_box_left_position"/>
+                                <field name="text_box_top_position"/>
+                                <field name="text_box_width"/>
+                                <field name="text_box_height"/>
                             </group>
                             <group>
                               <field name="template_image" widget="image" required="1" width="210px" height="297px"/>

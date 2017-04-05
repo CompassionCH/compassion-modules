@@ -117,6 +117,16 @@ class CorrespondenceTemplate(models.Model):
     usage_count = fields.Integer(
         compute='_compute_usage_count'
     )
+    report_id = fields.Many2one(
+        'ir.actions.report.xml', 'Report for S2B generation',
+        required=True,
+        domain=[('model', '=', 'correspondence.s2b.generator')],
+        default=lambda s: s.env.ref('sbc_compassion.report_s2b_letter'),
+    )
+    text_box_left_position = fields.Float(help='In millimeters')
+    text_box_top_position = fields.Float(help='In millimeters')
+    text_box_width = fields.Float(help='In millimeters')
+    text_box_height = fields.Float(help='In millimeters')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
