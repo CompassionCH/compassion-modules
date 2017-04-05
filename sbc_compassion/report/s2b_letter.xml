@@ -20,6 +20,12 @@
                         max-height: 100%;
                         margin: auto;
                     }
+                    #header {
+                        position: absolute;
+                        left: 65mm;
+                        top: 6.5mm;
+                        z-index: 2;
+                    }
                     #body {
                         position: absolute;
                         overflow: hidden;
@@ -40,6 +46,15 @@
             <t t-call="sbc_compassion.layout">
                 <t t-foreach="docs" t-as="o">
                     <div class="page">
+                        <div id="header">
+                            <t t-set="sponsor" t-value="o.sponsorship_id.correspondant_id"/>
+                            <t t-set="child" t-value="o.sponsorship_id.child_id"/>
+                            <span t-field="sponsor.global_id"/> - <span t-field="sponsor.name"/>
+                            <br/>
+                            <span t-field="child.local_id"/> - <span t-field="child.name"/>
+                            <br/>
+                            GP: CH
+                        </div>
                         <span t-field="o.background" t-field-options='{"widget": "image"}' id="background"/>
                         <t t-set="l" t-value="o.s2b_template_id"/>
                         <span t-raw="o.body_html" id="body"
