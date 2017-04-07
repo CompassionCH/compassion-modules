@@ -167,6 +167,7 @@
                     <field name="correspondant_id" />
                     <field name="direction" />
                     <field name="state" />
+                    <field name="sponsorship_id" />
                     <filter name="direction_stb" string="Supporter To Beneficiary" domain="[('direction','=','Supporter To Beneficiary')]" />
                     <separator />
                     <filter name="direction_bts" string="Beneficiary To Supporter" domain="[('direction','=','Beneficiary To Supporter')]" />

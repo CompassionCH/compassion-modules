@@ -453,7 +453,15 @@ class Correspondence(models.Model):
                 raise exceptions.Warning(
                     _("You cannot delete a letter which is in "
                       "translation or already sent to GMC."))
-        super(Correspondence, self).unlink()
+        # Remove unsent messages
+        gmc_action = self.env.ref('sbc_compassion.create_letter')
+        gmc_messages = self.env['gmc.message.pool'].search([
+            ('action_id', '=', gmc_action.id),
+            ('object_id', 'in', self.ids),
+            ('state', 'in', ['new', 'failure', 'postponed'])
+        ])
+        gmc_messages.unlink()
+        return super(Correspondence, self).unlink()
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
