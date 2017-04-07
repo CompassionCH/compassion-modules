@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import api, fields, models
+from openerp import api, fields, models, _
 
 
 class Contracts(models.Model):
@@ -84,16 +84,15 @@ class Contracts(models.Model):
 
     @api.multi
     def open_letters(self):
-        letters = self.child_letter_ids | self.sponsor_letter_ids
         return {
-            'name': letters._description,
+            'name': _('Letters'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree,form',
-            'res_model': letters._name,
+            'res_model': 'correspondence',
             'context': self.with_context(
                 group_by=False,
-                search_default_correspondant_id=self.correspondant_id.id
+                search_default_sponsorship_id=self.id
             ).env.context,
             'target': 'current',
         }
