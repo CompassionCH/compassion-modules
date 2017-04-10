@@ -76,64 +76,64 @@ class ChildDescription(models.TransientModel):
 
     home_based_lang = {
         'fr_CH': {
-            'M': u'{firstname} suit le programme à la maison pour enfants en '
+            'M': u'{preferred_name} suit le programme à la maison pour enfants en '
                  u'bas-âge.',
-            'F': u'{firstname} suit le programme à la maison pour enfants en '
+            'F': u'{preferred_name} suit le programme à la maison pour enfants en '
                  u'bas-âge.',
         },
         'de_DE': {
-            'M': u'{firstname} wird zu Hause im Programm für kleine Kinder '
+            'M': u'{preferred_name} wird zu Hause im Programm für kleine Kinder '
                  u'begleitet.',
-            'F': u'{firstname} wird zu Hause im Programm für kleine Kinder '
+            'F': u'{preferred_name} wird zu Hause im Programm für kleine Kinder '
                  u'begleitet.',
         },
         'it_IT': {
-            'M': u'{firstname} segue il programma a casa per i bambini '
+            'M': u'{preferred_name} segue il programma a casa per i bambini '
                  u'piccoli.',
-            'F': u'{firstname} segue il programma a casa per i bambini '
+            'F': u'{preferred_name} segue il programma a casa per i bambini '
                  u'piccoli.',
         },
         'en_US': {
-            'M': u'{firstname} follows the home based program for small kids.',
-            'F': u'{firstname} follows the home based program for small kids.',
+            'M': u'{preferred_name} follows the home based program for small kids.',
+            'F': u'{preferred_name} follows the home based program for small kids.',
         }
     }
 
     school_yes_lang = {
         'fr_CH': {
-            'M': u"{firstname} va à {level}",
-            'F': u"{firstname} va à {level}.",
+            'M': u"{preferred_name} va à {level}",
+            'F': u"{preferred_name} va à {level}.",
         },
         'de_DE': {
-            'M': u'{firstname} geht in {level}.',
-            'F': u'{firstname} geht in {level}.',
+            'M': u'{preferred_name} geht in {level}.',
+            'F': u'{preferred_name} geht in {level}.',
         },
         'it_IT': {
-            'M': u'{firstname} frequenta {level}.',
-            'F': u'{firstname} frequenta {level}.',
+            'M': u'{preferred_name} frequenta {level}.',
+            'F': u'{preferred_name} frequenta {level}.',
         },
         'en_US': {
-            'M': u'{firstname} does attend {level}.',
-            'F': u"{firstname} does attend {level}.",
+            'M': u'{preferred_name} does attend {level}.',
+            'F': u"{preferred_name} does attend {level}.",
         }
     }
 
     school_no_lang = {
         'fr_CH': {
-            'M': u"{firstname} ne va pas à l'école.",
-            'F': u"{firstname} ne va pas à l'école.",
+            'M': u"{preferred_name} ne va pas à l'école.",
+            'F': u"{preferred_name} ne va pas à l'école.",
         },
         'de_DE': {
-            'M': u'{firstname} geht nicht zur Schule.',
-            'F': u'{firstname} geht nicht zur Schule.',
+            'M': u'{preferred_name} geht nicht zur Schule.',
+            'F': u'{preferred_name} geht nicht zur Schule.',
         },
         'it_IT': {
-            'M': u'{firstname} non frequenta la scuola.',
-            'F': u'{firstname} non frequenta la scuola.',
+            'M': u'{preferred_name} non frequenta la scuola.',
+            'F': u'{preferred_name} non frequenta la scuola.',
         },
         'en_US': {
-            'M': u"{firstname} doesn't attend school.",
-            'F': u"{firstname} doesn't attend school.",
+            'M': u"{preferred_name} doesn't attend school.",
+            'F': u"{preferred_name} doesn't attend school.",
         }
     }
 
@@ -186,50 +186,50 @@ class ChildDescription(models.TransientModel):
             'F': u'Sie mag gern:',
         },
         'it_IT': {
-            'M': u'A {firstname} piace:',
-            'F': u'A {firstname} piace:',
+            'M': u'A {preferred_name} piace:',
+            'F': u'A {preferred_name} piace:',
         },
         'en_US': {
-            'M': u"{firstname}'s favourite interests include:",
-            'F': u"{firstname}'s favourite interests include:",
+            'M': u"{preferred_name}'s favourite interests include:",
+            'F': u"{preferred_name}'s favourite interests include:",
         }
     }
 
     illness_intro_lang = {
         'fr_CH': {
-            'M': u"{firstname} souffre de :",
-            'F': u"{firstname} souffre de :",
+            'M': u"{preferred_name} souffre de :",
+            'F': u"{preferred_name} souffre de :",
         },
         'de_DE': {
-            'M': u'{firstname} leidet unter:',
-            'F': u'{firstname} leidet unter:',
+            'M': u'{preferred_name} leidet unter:',
+            'F': u'{preferred_name} leidet unter:',
         },
         'it_IT': {
-            'M': u'{firstname} soffre di:',
-            'F': u'{firstname} soffre di:',
+            'M': u'{preferred_name} soffre di:',
+            'F': u'{preferred_name} soffre di:',
         },
         'en_US': {
-            'M': u"{firstname} has the following chronic illnesses:",
-            'F': u"{firstname} has the following chronic illnesses:",
+            'M': u"{preferred_name} has the following chronic illnesses:",
+            'F': u"{preferred_name} has the following chronic illnesses:",
         }
     }
 
     handicap_intro_lang = {
         'fr_CH': {
-            'M': u"{firstname} souffre de handicaps :",
-            'F': u"{firstname} souffre de handicaps :",
+            'M': u"{preferred_name} souffre de handicaps :",
+            'F': u"{preferred_name} souffre de handicaps :",
         },
         'de_DE': {
-            'M': u'{firstname} hat folgende Behinderung:',
-            'F': u'{firstname} hat folgende Behinderung:',
+            'M': u'{preferred_name} hat folgende Behinderung:',
+            'F': u'{preferred_name} hat folgende Behinderung:',
         },
         'it_IT': {
-            'M': u'{firstname} ha le seguenti disabilità fisiche:',
-            'F': u'{firstname} ha le seguenti disabilità fisiche:',
+            'M': u'{preferred_name} ha le seguenti disabilità fisiche:',
+            'F': u'{preferred_name} ha le seguenti disabilità fisiche:',
         },
         'en_US': {
-            'M': u"{firstname} has the following physical disabilities:",
-            'F': u"{firstname} has the following physical disabilities:",
+            'M': u"{preferred_name} has the following physical disabilities:",
+            'F': u"{preferred_name} has the following physical disabilities:",
         }
     }
 
@@ -276,7 +276,7 @@ class ChildDescription(models.TransientModel):
         if child.cdsp_type == 'Home Based':
             desc('.program_type').html(
                 self.home_based_lang[self.env.lang][child.gender].format(
-                    firstname=child.preferred_name or child.firstname)
+                    firstname=child.preferred_name)
             )
         else:
             desc('#program_type').remove()
@@ -325,7 +325,7 @@ class ChildDescription(models.TransientModel):
         if child.education_level and child.education_level != 'Not Enrolled':
             desc('#school_attending').html(
                 self.school_yes_lang[self.env.lang][child.gender].format(
-                    firstname=child.preferred_name or child.firstname,
+                    firstname=child.preferred_name,
                     level=child.translate('education_level'))
             )
             if child.academic_performance:
@@ -351,7 +351,7 @@ class ChildDescription(models.TransientModel):
         else:
             desc('#school_attending').html(
                 self.school_no_lang[self.env.lang][child.gender].format(
-                    firstname=child.preferred_name or child.firstname)
+                    firstname=child.preferred_name)
             )
             desc('.school').remove()
 
@@ -382,7 +382,7 @@ class ChildDescription(models.TransientModel):
         if child.hobby_ids:
             desc('#hobbies_intro').html(
                 self.hobbies_intro_lang[self.env.lang][child.gender].format(
-                    firstname=child.preferred_name or child.firstname))
+                    firstname=child.preferred_name))
             desc('#hobbies_list').html(''.join(
                 ['<li>' + hobby.value + '</li>'
                  for hobby in child.hobby_ids[:3]]))
@@ -394,7 +394,7 @@ class ChildDescription(models.TransientModel):
         if child.chronic_illness_ids:
             desc('#chronic_illness_intro').html(
                 self.illness_intro_lang[self.env.lang][child.gender].format(
-                    firstname=child.preferred_name or child.firstname))
+                    firstname=child.preferred_name))
             desc('#chronic_illness_list').html(''.join(
                 ['<li>' + illness.value + '</li>' for illness in
                  child.chronic_illness_ids]))
@@ -404,7 +404,7 @@ class ChildDescription(models.TransientModel):
         if child.physical_disability_ids:
             desc('#handicap_intro').html(
                 self.illness_intro_lang[self.env.lang][child.gender].format(
-                    firstname=child.preferred_name or child.firstname))
+                    firstname=child.preferred_name))
             desc('#handicap_list').html(''.join(
                 ['<li>' + handicap.value + '</li>' for handicap in
                  child.physical_disability_ids]))
@@ -429,7 +429,7 @@ class ChildDescription(models.TransientModel):
         father_with_child = household.father_living_with_child
         mother_with_child = household.mother_living_with_child
         youth = household.youth_headed_household
-        live_with = self.child_id.firstname + ' ' + _('lives') + ' '
+        live_with = self.child_id.preferred_name + ' ' + _('lives') + ' '
         if father_with_child and mother_with_child:
             live_with += _('with') + ' ' + self.his(
                 self.child_id.gender, PLURAL, DATIVE) + ' ' + _('parents')
