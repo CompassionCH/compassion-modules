@@ -196,6 +196,9 @@ class SponsorshipContract(models.Model):
         if 'correspondant_id' in vals:
             updated_correspondents = self._on_change_correspondant(
                 vals['correspondant_id'])
+            self.mapped('child_id').write({
+                'sponsor_id': vals['correspondant_id']
+            })
 
         super(SponsorshipContract, self).write(vals)
 

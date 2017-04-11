@@ -278,7 +278,7 @@ class ChildDescription(models.TransientModel):
         if child.cdsp_type == 'Home Based':
             desc('.program_type').html(
                 self.home_based_lang[self.env.lang][child.gender].format(
-                    firstname=child.preferred_name)
+                    preferred_name=child.preferred_name)
             )
         else:
             desc('#program_type').remove()
@@ -327,7 +327,7 @@ class ChildDescription(models.TransientModel):
         if child.education_level and child.education_level != 'Not Enrolled':
             desc('#school_attending').html(
                 self.school_yes_lang[self.env.lang][child.gender].format(
-                    firstname=child.preferred_name,
+                    preferred_name=child.preferred_name,
                     level=child.translate('education_level'))
             )
             if child.academic_performance:
@@ -353,7 +353,7 @@ class ChildDescription(models.TransientModel):
         else:
             desc('#school_attending').html(
                 self.school_no_lang[self.env.lang][child.gender].format(
-                    firstname=child.preferred_name)
+                    preferred_name=child.preferred_name)
             )
             desc('.school').remove()
 
@@ -384,7 +384,7 @@ class ChildDescription(models.TransientModel):
         if child.hobby_ids:
             desc('#hobbies_intro').html(
                 self.hobbies_intro_lang[self.env.lang][child.gender].format(
-                    firstname=child.preferred_name))
+                    preferred_name=child.preferred_name))
             desc('#hobbies_list').html(''.join(
                 ['<li>' + hobby.value + '</li>'
                  for hobby in child.hobby_ids[:3]]))
@@ -396,7 +396,7 @@ class ChildDescription(models.TransientModel):
         if child.chronic_illness_ids:
             desc('#chronic_illness_intro').html(
                 self.illness_intro_lang[self.env.lang][child.gender].format(
-                    firstname=child.preferred_name))
+                    preferred_name=child.preferred_name))
             desc('#chronic_illness_list').html(''.join(
                 ['<li>' + illness.value + '</li>' for illness in
                  child.chronic_illness_ids]))
@@ -406,7 +406,7 @@ class ChildDescription(models.TransientModel):
         if child.physical_disability_ids:
             desc('#handicap_intro').html(
                 self.illness_intro_lang[self.env.lang][child.gender].format(
-                    firstname=child.preferred_name))
+                    preferred_name=child.preferred_name))
             desc('#handicap_list').html(''.join(
                 ['<li>' + handicap.value + '</li>' for handicap in
                  child.physical_disability_ids]))
