@@ -57,13 +57,19 @@ class ChildPictures(models.Model):
         # We recover the newest Fullshot and Headshots
         for rec in attachments:
             if rec.datas_fname.split('.')[0] == 'Headshot':
-                self.headshot = rec.datas
-                break
+                try:
+                    self.headshot = rec.datas
+                    break
+                except:
+                    continue
 
         for rec in attachments:
             if rec.datas_fname.split('.')[0] == 'Fullshot':
-                self.fullshot = rec.datas
-                break
+                try:
+                    self.fullshot = rec.datas
+                    break
+                except:
+                    continue
 
     def _compute_filename(self):
         for pictures in self:

@@ -176,7 +176,7 @@ class AdvancedTranslatable(models.AbstractModel):
         dates = map(fields.Date.from_string, self.mapped(field))
         with setlocale(self.env.lang):
             dates_string = list(set([
-                d.strftime(_format).decode('utf-8') for d in dates
+                d.strftime(_format).decode('utf-8') for d in dates if d
             ]))
         if len(dates_string) > 1:
             res_string = ', '.join(dates_string[:-1])

@@ -76,16 +76,16 @@ class ChildDescription(models.TransientModel):
 
     home_based_lang = {
         'fr_CH': {
-            'M': u'{preferred_name} suit le programme à la maison pour enfants en '
-                 u'bas-âge.',
-            'F': u'{preferred_name} suit le programme à la maison pour enfants en '
-                 u'bas-âge.',
+            'M': u'{preferred_name} suit le programme à la maison pour '
+                 u'enfants en bas-âge.',
+            'F': u'{preferred_name} suit le programme à la maison pour '
+                 u'enfants en bas-âge.',
         },
         'de_DE': {
-            'M': u'{preferred_name} wird zu Hause im Programm für kleine Kinder '
-                 u'begleitet.',
-            'F': u'{preferred_name} wird zu Hause im Programm für kleine Kinder '
-                 u'begleitet.',
+            'M': u'{preferred_name} wird zu Hause im Programm für kleine '
+                 u'Kinder begleitet.',
+            'F': u'{preferred_name} wird zu Hause im Programm für kleine '
+                 u'Kinder begleitet.',
         },
         'it_IT': {
             'M': u'{preferred_name} segue il programma a casa per i bambini '
@@ -94,8 +94,10 @@ class ChildDescription(models.TransientModel):
                  u'piccoli.',
         },
         'en_US': {
-            'M': u'{preferred_name} follows the home based program for small kids.',
-            'F': u'{preferred_name} follows the home based program for small kids.',
+            'M': u'{preferred_name} follows the home based program for '
+                 u'small kids.',
+            'F': u'{preferred_name} follows the home based program for '
+                 u'small kids.',
         }
     }
 
