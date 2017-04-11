@@ -195,5 +195,9 @@ class ICPMapping(OnrampMapping):
             # Replace all but last dot
             monthly_income = re.sub("\.(?=[^.]*\.)", "", monthly_income)
             # Replace any alpha character
-            odoo_data['monthly_income'] = re.sub(
-                '[a-zA-Z$ ]', "", monthly_income)
+            monthly_income = re.sub('[a-zA-Z$ ]', "", monthly_income)
+            try:
+                float(monthly_income)
+                odoo_data['monthly_income'] = monthly_income
+            except ValueError:
+                del odoo_data['monthly_income']
