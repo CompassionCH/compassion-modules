@@ -105,6 +105,7 @@ class CompassionChild(models.Model):
         ('Above Average', 'Above average'),
         ('Average', 'Average'),
         ('Below Average', 'Below average'),
+        ('Not Available', ''),
     ], readonly=True)
     vocational_training_type = fields.Selection([
         ('Agriculture', 'Agriculture'),
