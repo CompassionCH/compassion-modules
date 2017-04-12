@@ -96,6 +96,7 @@ class CorrespondenceMapping(OnrampMapping):
 
     FIELDS_TO_SUBMIT = {
         'Beneficiary.LocalId': None,
+        'Beneficiary.GlobalId': None,
         'GlobalPartner.Id': None,
         'Supporter.GlobalId': None,
         'Direction': None,
