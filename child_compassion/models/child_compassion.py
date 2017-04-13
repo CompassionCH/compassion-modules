@@ -348,6 +348,13 @@ class CompassionChild(models.Model):
 
     @api.multi
     def update_child_pictures(self):
+        """
+        Check if there is a new picture if all conditions are satisfied:
+        - At least two pictures
+        - Difference between two last pictures is at least 6 months
+        - Last picture is no older than 6 months
+        :return: True
+        """
         res = True
         # Update child's pictures
         for child in self:
@@ -360,7 +367,7 @@ class CompassionChild(models.Model):
                 diff_pic = relativedelta(new_photo, last_photo)
                 diff_today = relativedelta(today, new_photo)
                 if (diff_pic.months > 6 or diff_pic.years > 1) and (
-                        diff_today.months > 6 or diff_today.years > 1):
+                        diff_today.months <= 6 and diff_today.years == 0):
                     child.new_photo()
         return res
 
