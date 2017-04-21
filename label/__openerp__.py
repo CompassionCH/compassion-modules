@@ -45,6 +45,6 @@
         'reports/dynamic_label.xml',
         'reports/one_label.xml'
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

@@ -64,6 +64,6 @@
         'demo/recurring.contract.csv',
         'demo/install.xml'
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

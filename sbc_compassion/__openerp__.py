@@ -66,6 +66,6 @@
         # 'demo/update_demo_partner_compassion.xml',
         # 'demo/update_demo_child_compassion.xml',
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

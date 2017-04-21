@@ -71,19 +71,20 @@ class GmcAction(models.Model):
         ('PUT', 'PUT'),
     ])
 
-    @api.one
+    @api.multi
     @api.constrains('model', 'direction', 'incoming_method')
     def _validate_action(self):
         """ Test if the action can be performed on given model. """
-        valid = True
-        model_obj = self.env[self.model]
-        if self.direction == 'in':
-            valid = hasattr(model_obj, self.incoming_method)
+        for action in self:
+            valid = True
+            model_obj = self.env[self.model]
+            if action.direction == 'in':
+                valid = hasattr(model_obj, action.incoming_method)
 
-        if not valid:
-            raise ValidationError(
-                _("Invalid action (%s, %s).") % (
-                    self.direction, self.model))
+            if not valid:
+                raise ValidationError(
+                    _("Invalid action (%s, %s).") % (
+                        action.direction, action.model))
 
     def get_action_id(self, name):
         """ Returns the id of the action given its name. """

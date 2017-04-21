@@ -46,6 +46,6 @@
         ],
     'demo': [],
     'js': ['static/src/js/sponsorship_tracking_kanban.js'],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }
