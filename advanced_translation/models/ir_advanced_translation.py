@@ -182,5 +182,5 @@ class AdvancedTranslatable(models.AbstractModel):
             res_string = ', '.join(dates_string[:-1])
             res_string += ' ' + _('and') + ' ' + dates_string[-1]
         else:
-            res_string = dates_string[0]
+            res_string = dates_string and dates_string[0] or ''
         return res_string
