@@ -504,7 +504,7 @@ class event_compassion(models.Model):
             'start': self.start_date,
             'stop': self.end_date or self.start_date,
             'allday': self.end_date and (
-                    self.start_date[0:10] != self.end_date[0:10]),
+                self.start_date[0:10] != self.end_date[0:10]),
             'state': 'open',  # to block that meeting date in the calendar
             'class': 'confidential',
         }

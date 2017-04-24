@@ -588,8 +588,8 @@ class SponsorshipContract(models.Model):
             'sponsorship_compassion.cancel_sponsorship')
 
         sponsorships = self.filtered(
-            lambda s: s.correspondant_id.id != correspondant_id and s.global_id
-            and s.state not in ('cancelled', 'terminated'))
+            lambda s: s.correspondant_id.id != correspondant_id and
+            s.global_id and s.state not in ('cancelled', 'terminated'))
         sponsorships.write({
             'hold_expiration_date': self.env[
                 'compassion.hold'].get_default_hold_expiration(

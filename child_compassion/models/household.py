@@ -246,7 +246,7 @@ class HouseholdMembers(models.Model):
 
     def _get_roles(self):
         return self._get_male_roles() + self._get_female_roles() + \
-               self._get_other_roles()
+            self._get_other_roles()
 
     @api.model
     def _get_male_roles(self):

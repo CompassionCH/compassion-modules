@@ -43,7 +43,7 @@ class Phonecall(models.Model):
             info = _('Phone call with sponsor') + ':' + '<br/>'
             if phonecall.description:
                 info += phonecall.description + \
-                        '<br/>--------------------------------<br/>'
+                    '<br/>--------------------------------<br/>'
             communication.partner_id.message_post(
                 info + communication.body_html, communication.config_id.name)
         else:

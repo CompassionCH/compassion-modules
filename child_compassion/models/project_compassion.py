@@ -177,7 +177,7 @@ class CompassionProject(models.Model):
     community_population = fields.Integer(readonly=True)
     primary_ethnic_group_name = fields.Char(readonly=True)
     primary_language_id = fields.Many2one(
-            'res.lang.compassion', 'Primary language', readonly=True)
+        'res.lang.compassion', 'Primary language', readonly=True)
     primary_adults_occupation_ids = fields.Many2many(
         'icp.community.occupation', string='Primary adults occupation',
         readonly=True

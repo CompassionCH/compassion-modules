@@ -127,7 +127,7 @@ class WeeklyDemand(models.Model):
             resupply = 0
             for event in events:
                 resupply += event.number_allocate_children - \
-                            event.planned_sponsorships
+                    event.planned_sponsorships
 
             week.number_children_events = allocate
             week.resupply_events = resupply
@@ -202,9 +202,9 @@ class WeeklyDemand(models.Model):
             ('channel', '!=', 'internet')
         ]).filtered(
             lambda s: ((
-                           fields.Date.from_string(s.end_date) -
-                           fields.Date.from_string(s.start_date)
-                       ).days <= SUB_DURATION)
+                fields.Date.from_string(s.end_date) -
+                fields.Date.from_string(s.start_date)
+            ).days <= SUB_DURATION)
         )
         sub_reject_average = len(rejected_sub) / STATS_DURATION
         for week in self:

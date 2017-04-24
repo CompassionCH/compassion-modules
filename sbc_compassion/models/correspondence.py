@@ -519,7 +519,8 @@ class Correspondence(models.Model):
         elif self.correspondant_id.lang == 'it_IT':
             additional_pages_header = 'Pagina '
 
-        def get_chars(t): return "".join(re.findall("[a-zA-Z]+", t))
+        def get_chars(t):
+            return "".join(re.findall("[a-zA-Z]+", t))
 
         for i in xrange(0, existing_pdf.numPages):
             text = ''
