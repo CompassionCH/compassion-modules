@@ -160,8 +160,8 @@ class ChildPictures(models.Model):
 
     @api.multi
     def _get_picture(self, type='Headshot', width=300, height=400):
-        self.ensure_one()
         """ Gets a picture from Compassion webservice """
+        self.ensure_one()
         attach_id = self.id
         if type.lower() == 'headshot':
             cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(

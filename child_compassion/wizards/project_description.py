@@ -10,8 +10,14 @@
 ##############################################################################
 import os
 
-from pyquery import PyQuery
 from openerp import api, models, fields, _
+from openerp.exceptions import Warning as UserError
+
+try:
+    from pyquery import PyQuery
+except ImportError:
+    raise UserError(_("Please install python pyquery"))
+
 
 NOMINATIVE = 0
 ACCUSATIVE = 1

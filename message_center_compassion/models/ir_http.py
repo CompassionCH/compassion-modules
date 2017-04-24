@@ -8,12 +8,17 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-import jwt
 import logging
 
 from openerp.http import request
-from openerp import models
+from openerp import models, _
+from openerp.exceptions import Warning as UserError
 from werkzeug.exceptions import Unauthorized
+
+try:
+    import jwt
+except ImportError:
+    raise UserError(_("Please install python jwt"))
 
 logger = logging.getLogger(__name__)
 

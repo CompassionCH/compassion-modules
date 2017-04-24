@@ -193,9 +193,9 @@ class ICPMapping(OnrampMapping):
         if monthly_income:
             monthly_income = monthly_income.replace(',', '')
             # Replace all but last dot
-            monthly_income = re.sub("\.(?=[^.]*\.)", "", monthly_income)
+            monthly_income = re.sub(r"\.(?=[^.]*\.)", "", monthly_income)
             # Replace any alpha character
-            monthly_income = re.sub('[a-zA-Z$ ]', "", monthly_income)
+            monthly_income = re.sub(r'[a-zA-Z$ ]', "", monthly_income)
             try:
                 float(monthly_income)
                 odoo_data['monthly_income'] = monthly_income

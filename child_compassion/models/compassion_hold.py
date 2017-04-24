@@ -9,12 +9,17 @@
 #
 ##############################################################################
 import logging
-from enum import Enum
 
 from datetime import datetime, timedelta
 
 from openerp import api, models, fields, _
 from openerp.exceptions import Warning
+
+try:
+    from enum import Enum
+except ImportError:
+    raise Warning(_("Please install Python Enum"))
+
 
 from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from ..mappings.childpool_create_hold_mapping import ReservationToHoldMapping

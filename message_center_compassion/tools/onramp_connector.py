@@ -15,7 +15,7 @@ import requests
 import base64
 from datetime import datetime, timedelta
 
-from onramp_logging import log_message
+from .onramp_logging import log_message
 
 from openerp import _
 from openerp.exceptions import Warning

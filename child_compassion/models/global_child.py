@@ -14,7 +14,6 @@ import logging
 from openerp import models, fields, api
 import base64
 import urllib2
-import timeit
 
 logger = logging.getLogger(__name__)
 
@@ -162,18 +161,12 @@ class GlobalChild(models.TransientModel):
 
     @api.multi
     def _load_image_portrait(self):
-        tic = timeit.default_timer()
         self._load_image(True, True)
-        print "load portrait: " + str(timeit.default_timer()-tic) + " sec"
 
     @api.multi
     def _load_image_fullshot(self):
-        tic = timeit.default_timer()
         self._load_image(False, True)
-        print "load fullshot: " + str(timeit.default_timer()-tic) + " sec"
 
     @api.multi
     def _load_image_thumb(self):
-        tic = timeit.default_timer()
         self._load_image(True, False)
-        print "load thumbnail: " + str(timeit.default_timer()-tic) + " sec"

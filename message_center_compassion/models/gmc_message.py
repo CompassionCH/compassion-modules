@@ -393,7 +393,7 @@ class GmcMessagePool(models.Model):
         url_endpoint = self.mapped('action_id').connect_service
         if '${object' in url_endpoint:
             url_endpoint = re.sub(
-                '\$\{(object\.)(.+?)\}',
+                r'\$\{(object\.)(.+?)\}',
                 lambda match: self._replace_object_string(match),
                 url_endpoint
             )
