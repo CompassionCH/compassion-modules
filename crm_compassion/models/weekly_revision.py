@@ -56,7 +56,7 @@ class WeeklyRevision(models.Model):
     def _compute_effective_resupply(self):
         for revision in self:
             revision.effective_resupply = revision.holds - \
-                                          revision.sponsorships
+                revision.sponsorships
 
     ##########################################################################
     #                              ORM METHODS                               #

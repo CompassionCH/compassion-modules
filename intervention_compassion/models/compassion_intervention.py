@@ -14,7 +14,7 @@ import logging
 from openerp import models, fields, _, api
 from openerp.exceptions import Warning
 from openerp.addons.message_center_compassion.mappings import base_mapping \
-     as mapping
+    as mapping
 
 logger = logging.getLogger(__name__)
 

@@ -365,6 +365,11 @@ class SponsorshipGift(models.Model):
 
     @api.multi
     def on_gift_sent(self, data):
+        """
+        Called when gifts message is received by GMC.
+        Create a move record in the GMC Gift Due Account.
+        :return:
+        """
         self.ensure_one()
         try:
             exchange_rate = float(data.get('exchange_rate'))
@@ -374,6 +379,60 @@ class SponsorshipGift(models.Model):
             'state': 'In Progress',
             'amount_us_dollars': exchange_rate * self.amount
         })
+        account_credit = self.env.ref('gift_compassion.comp_2002_2')
+        account_debit = self.env['account.account'].search([
+            ('code', '=', '5003')])
+        journal = self.env['account.journal'].search([
+            ('code', '=', 'OD')])
+        move = self.env['account.move'].create({
+            'journal_id': journal.id,
+            'ref': 'Gift payment to GMC'
+        })
+        today = fields.Date.today()
+        analytic = self.env.ref(
+            'account_analytic_attribution.account_attribution_CD')
+        mvl_obj = self.env['account.move.line']
+        # Create the debit lines from the Gift Account
+        if self.invoice_line_ids:
+            for invl in self.invoice_line_ids:
+                mvl_obj.create({
+                    'move_id': move.id,
+                    'partner_id': invl.partner_id.id,
+                    'account_id': account_debit.id,
+                    'name': invl.name,
+                    'debit': invl.price_subtotal,
+                    'credit': 0.0,
+                    'analytic_account_id': analytic.id,
+                    'date_maturity': today,
+                    'currency_id': self.currency_usd.id,
+                    'amount_currency': invl.price_subtotal * exchange_rate
+                })
+        else:
+            mvl_obj.create({
+                'move_id': move.id,
+                'partner_id': self.partner_id.id,
+                'account_id': account_debit.id,
+                'name': self.name,
+                'debit': self.amount,
+                'analytic_account_id': analytic.id,
+                'date_maturity': today,
+                'currency_id': self.currency_usd.id,
+                'amount_currency': data['amount_us_dollars']
+            })
+
+        # Create the credit line in the GMC Gift Due Account
+        mvl_obj.create({
+            'move_id': move.id,
+            'partner_id': self.partner_id.id,
+            'account_id': account_credit.id,
+            'name': self.name,
+            'date_maturity': today,
+            'currency_id': self.currency_usd.id,
+            'amount_currency': self.amount * exchange_rate * -1
+        })
+
+        move.button_validate()
+        data['payment_id'] = move.id
         self.write(data)
 
     @api.model
@@ -509,65 +568,8 @@ class SponsorshipGift(models.Model):
     def _gift_delivered(self):
         """
         Called when gifts delivered notification is received from GMC.
-        Create a move record in the GMC Gift Due Account.
-        :return:
         """
-        account_credit = self.env.ref('gift_compassion.comp_2002_2')
-        account_debit = self.env['account.account'].search([
-            ('code', '=', '5003')])
-        journal = self.env['account.journal'].search([
-            ('code', '=', 'OD')])
-        move = self.env['account.move'].create({
-            'journal_id': journal.id,
-            'ref': 'Gift payment to GMC'
-        })
-        today = fields.Date.today()
-        analytic = self.env.ref(
-            'account_analytic_attribution.account_attribution_CD')
-        mvl_obj = self.env['account.move.line']
-        for gift in self:
-            # Create the debit lines from the Gift Account
-            if gift.invoice_line_ids:
-                for invl in gift.invoice_line_ids:
-                    mvl_obj.create({
-                        'move_id': move.id,
-                        'partner_id': invl.partner_id.id,
-                        'account_id': account_debit.id,
-                        'name': invl.name,
-                        'debit': invl.price_subtotal,
-                        'credit': 0.0,
-                        'analytic_account_id': analytic.id,
-                        'date_maturity': today,
-                        'currency_id': gift.currency_usd.id,
-                        'amount_currency': invl.price_subtotal *
-                        gift.exchange_rate
-                    })
-            else:
-                mvl_obj.create({
-                    'move_id': move.id,
-                    'partner_id': gift.partner_id.id,
-                    'account_id': account_debit.id,
-                    'name': gift.name,
-                    'debit': gift.amount,
-                    'analytic_account_id': analytic.id,
-                    'date_maturity': today,
-                    'currency_id': gift.currency_usd.id,
-                    'amount_currency': gift.amount_us_dollars
-                })
-
-            # Create the credit line in the GMC Gift Due Account
-            mvl_obj.create({
-                'move_id': move.id,
-                'partner_id': gift.partner_id.id,
-                'account_id': account_credit.id,
-                'name': gift.name,
-                'date_maturity': today,
-                'currency_id': gift.currency_usd.id,
-                'amount_currency': gift.amount * gift.exchange_rate * -1
-            })
-
-        move.button_validate()
-        self.write({'payment_id': move.id})
+        pass
 
     @api.multi
     def _gift_undeliverable(self):

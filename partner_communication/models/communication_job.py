@@ -38,7 +38,7 @@ class CommunicationJob(models.Model):
     config_id = fields.Many2one(
         'partner.communication.config', 'Type', required=True,
         default=lambda s: s.env.ref(
-                'partner_communication.default_communication'),
+            'partner_communication.default_communication'),
     )
     model = fields.Char(related='config_id.model')
     partner_id = fields.Many2one(

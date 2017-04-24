@@ -44,7 +44,8 @@ class ChangeTextWizard(models.TransientModel):
         communications = self.env[context['active_model']].browse(
             context['active_ids'])
         config = communications.mapped('config_id')
-        template = config.email_template_id
+        lang = communications[0].partner_id.lang
+        template = config.email_template_id.with_context(lang=lang)
         if len(config) != 1:
             raise Warning(
                 _("You can only update text on one communication type at "
