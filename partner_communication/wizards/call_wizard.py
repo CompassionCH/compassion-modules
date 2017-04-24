@@ -9,9 +9,13 @@
 #
 ##############################################################################
 import phonenumbers
+import logging
 from datetime import datetime
 
 from openerp import models, api, fields, _
+
+
+_logger = logging.getLogger(__name__)
 
 
 class CallWizard(models.TransientModel):
@@ -55,14 +59,18 @@ class CallWizard(models.TransientModel):
         partner_id = self.env.context.get('click2dial_id')
         action_ctx['default_partner_id'] = partner_id
         domain = [('partner_id', '=', partner_id)]
-        parsed_num = phonenumbers.parse(self.env.context.get('phone_number'))
-        number_type = phonenumbers.number_type(parsed_num)
-        if number_type == 1:
-            action_ctx['default_partner_mobile'] = \
-                self.env.context.get('phone_number')
-        else:
-            action_ctx['default_partner_phone'] = \
-                self.env.context.get('phone_number')
+        try:
+            parsed_num = phonenumbers.parse(
+                self.env.context.get('phone_number'))
+            number_type = phonenumbers.number_type(parsed_num)
+            if number_type == 1:
+                action_ctx['default_partner_mobile'] = \
+                    self.env.context.get('phone_number')
+            else:
+                action_ctx['default_partner_phone'] = \
+                    self.env.context.get('phone_number')
+        except TypeError:
+            _logger.info("Partner has no phone number")
         return {
             'name': _('Phone Call'),
             'domain': domain,
