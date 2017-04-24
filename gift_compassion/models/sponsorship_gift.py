@@ -388,7 +388,7 @@ class SponsorshipGift(models.Model):
             'journal_id': journal.id,
             'ref': 'Gift payment to GMC'
         })
-        today = fields.Date.today()
+        maturity = self.date_sent or fields.Date.today()
         analytic = self.env.ref(
             'account_analytic_attribution.account_attribution_CD')
         mvl_obj = self.env['account.move.line']
@@ -403,7 +403,7 @@ class SponsorshipGift(models.Model):
                     'debit': invl.price_subtotal,
                     'credit': 0.0,
                     'analytic_account_id': analytic.id,
-                    'date_maturity': today,
+                    'date_maturity': maturity,
                     'currency_id': self.currency_usd.id,
                     'amount_currency': invl.price_subtotal * exchange_rate
                 })
@@ -415,7 +415,7 @@ class SponsorshipGift(models.Model):
                 'name': self.name,
                 'debit': self.amount,
                 'analytic_account_id': analytic.id,
-                'date_maturity': today,
+                'date_maturity': maturity,
                 'currency_id': self.currency_usd.id,
                 'amount_currency': data['amount_us_dollars']
             })
@@ -426,7 +426,7 @@ class SponsorshipGift(models.Model):
             'partner_id': self.partner_id.id,
             'account_id': account_credit.id,
             'name': self.name,
-            'date_maturity': today,
+            'date_maturity': maturity,
             'currency_id': self.currency_usd.id,
             'amount_currency': self.amount * exchange_rate * -1
         })
