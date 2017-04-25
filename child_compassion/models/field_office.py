@@ -61,15 +61,6 @@ class FieldOffice(models.Model):
     ]
 
     ##########################################################################
-    #                              ORM METHODS                               #
-    ##########################################################################
-    @api.model
-    def create(self, vals):
-        field_office = super(FieldOffice, self).create(vals)
-        field_office.with_context(async_mode=True).update_informations()
-        return field_office
-
-    ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     @api.multi

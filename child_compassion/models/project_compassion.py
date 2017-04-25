@@ -286,9 +286,6 @@ class CompassionProject(models.Model):
     # Project Descriptions
     ######################
     description_en = fields.Text('English description', readonly=True)
-    description_fr = fields.Text('French description', readonly=True)
-    description_de = fields.Text('German description', readonly=True)
-    description_it = fields.Text('Italian description', readonly=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #

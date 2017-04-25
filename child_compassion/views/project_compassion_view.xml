@@ -80,15 +80,6 @@
                                 <group>
                                     <field name="description_en" widget="html"/>
                                 </group>
-                                <group>
-                                    <field name="description_fr" widget="html"/>
-                                </group>
-                                <group>
-                                    <field name="description_de" widget="html"/>
-                                </group>
-                                <group>
-                                    <field name="description_it" widget="html"/>
-                                </group>
                             </page>
                             <page string="Detailed Information">
                                 <group>

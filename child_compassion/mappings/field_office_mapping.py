@@ -55,6 +55,6 @@ class FieldOfficeMapping(OnrampMapping):
         'gpid': None,
     }
 
-    CONSTANTS = {
-        'gpid': 'CH',
-    }
+    def __init__(self, env):
+        super(FieldOfficeMapping, self).__init__(env)
+        self.CONSTANTS = {'gpid': env.user.country_id.code}

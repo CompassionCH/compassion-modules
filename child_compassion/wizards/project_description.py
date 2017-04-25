@@ -39,10 +39,6 @@ class ProjectDescription(models.TransientModel):
 
     project_id = fields.Many2one(
         'compassion.project', required=True, ondelete='cascade')
-    desc_fr = fields.Html()
-    desc_de = fields.Html()
-    desc_it = fields.Html()
-    desc_en = fields.Html()
 
     @api.model
     def create(self, vals):
@@ -50,22 +46,20 @@ class ProjectDescription(models.TransientModel):
         in the related child.
         """
         generator = super(ProjectDescription, self).create(vals)
-        generator.desc_fr = generator.with_context(
-            lang='fr_CH')._generate_translation()
-        generator.desc_de = generator.with_context(
-            lang='de_DE')._generate_translation()
-        generator.desc_it = generator.with_context(
-            lang='it_IT')._generate_translation()
-        generator.desc_en = generator.with_context(
-            lang='en_US')._generate_translation()
-        generator.project_id.write({
-            'description_fr': generator.desc_fr,
-            'description_de': generator.desc_de,
-            'description_it': generator.desc_it,
-            'description_en': generator.desc_en,
-        })
+        for lang, field in self._supported_languages().iteritems():
+            desc = generator.with_context(lang=lang)._generate_translation()
+            generator.project_id.write({field: desc})
 
         return generator
+
+    @api.model
+    def _supported_languages(self):
+        """
+        Inherit to add more languages to have translations of
+        descriptions.
+        {lang: description_field}
+        """
+        return {'en_US': 'description_en'}
 
     def _generate_translation(self):
         """ Generate project description. """

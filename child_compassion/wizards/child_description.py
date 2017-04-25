@@ -38,30 +38,14 @@ class ChildDescription(models.TransientModel):
 
     child_id = fields.Many2one(
         'compassion.child', required=True, ondelete='cascade')
-    desc_fr = fields.Html()
-    desc_de = fields.Html()
-    desc_it = fields.Html()
-    desc_en = fields.Html()
 
     # language mappings are like this : {'M': [values], 'F': [values]}
     # where [values] is a list of list
     # [[singular_nominative, singular_accusative, singular_dative],
     #  [plural_nominative, plural_accusative, plural_dative]
     # ] values
+    # You can add other languages by overriding __init__ method in submodules
     his_lang = {
-        'fr_CH': {
-            'M': [['son'] * 3, ['ses'] * 3],
-            'F': [['sa'] * 3, ['ses'] * 3],
-        },
-        'de_DE': {
-            'M': [['sein', 'seinen', 'seinem'], ['seine', 'seinen', 'seinen']],
-            'F': [['seine', 'seine', 'seiner'], ['seine', 'seinen',
-                                                 'seinen']],
-        },
-        'it_IT': {
-            'M': [['suo'] * 3, ['i suoi'] * 3],
-            'F': [['sua'] * 3, ['i suoi'] * 3],
-        },
         'en_US': {
             'M': [['his'] * 3] * 2,
             'F': [['her'] * 3] * 2,
@@ -69,35 +53,11 @@ class ChildDescription(models.TransientModel):
     }
 
     he_lang = {
-        'fr_CH': {'M': [['il'] * 3, ['ils'] * 3],
-                  'F': [['elle'] * 3, ['elles'] * 3]},
-        'de_DE': {'M': [['er'] * 3, ['sie'] * 3],
-                  'F': [['sie'] * 3, ['sie'] * 3]},
-        'it_IT': {'M': [[''] * 3, [''] * 3],
-                  'F': [[''] * 3, [''] * 3]},
         'en_US': {'M': [['he'] * 3, ['they'] * 3],
                   'F': [['she'] * 3, ['they'] * 3]},
     }
 
     home_based_lang = {
-        'fr_CH': {
-            'M': u'{preferred_name} suit le programme à la maison pour '
-                 u'enfants en bas-âge.',
-            'F': u'{preferred_name} suit le programme à la maison pour '
-                 u'enfants en bas-âge.',
-        },
-        'de_DE': {
-            'M': u'{preferred_name} wird zu Hause im Programm für kleine '
-                 u'Kinder begleitet.',
-            'F': u'{preferred_name} wird zu Hause im Programm für kleine '
-                 u'Kinder begleitet.',
-        },
-        'it_IT': {
-            'M': u'{preferred_name} segue il programma a casa per i bambini '
-                 u'piccoli.',
-            'F': u'{preferred_name} segue il programma a casa per i bambini '
-                 u'piccoli.',
-        },
         'en_US': {
             'M': u'{preferred_name} follows the home based program for '
                  u'small kids.',
@@ -107,18 +67,6 @@ class ChildDescription(models.TransientModel):
     }
 
     school_yes_lang = {
-        'fr_CH': {
-            'M': u"{preferred_name} va à {level}",
-            'F': u"{preferred_name} va à {level}.",
-        },
-        'de_DE': {
-            'M': u'{preferred_name} geht in {level}.',
-            'F': u'{preferred_name} geht in {level}.',
-        },
-        'it_IT': {
-            'M': u'{preferred_name} frequenta {level}.',
-            'F': u'{preferred_name} frequenta {level}.',
-        },
         'en_US': {
             'M': u'{preferred_name} does attend {level}.',
             'F': u"{preferred_name} does attend {level}.",
@@ -126,18 +74,6 @@ class ChildDescription(models.TransientModel):
     }
 
     school_no_lang = {
-        'fr_CH': {
-            'M': u"{preferred_name} ne va pas à l'école.",
-            'F': u"{preferred_name} ne va pas à l'école.",
-        },
-        'de_DE': {
-            'M': u'{preferred_name} geht nicht zur Schule.',
-            'F': u'{preferred_name} geht nicht zur Schule.',
-        },
-        'it_IT': {
-            'M': u'{preferred_name} non frequenta la scuola.',
-            'F': u'{preferred_name} non frequenta la scuola.',
-        },
         'en_US': {
             'M': u"{preferred_name} doesn't attend school.",
             'F': u"{preferred_name} doesn't attend school.",
@@ -145,18 +81,6 @@ class ChildDescription(models.TransientModel):
     }
 
     duties_intro_lang = {
-        'fr_CH': {
-            'M': u"À la maison, il participe aux tâches suivantes :",
-            'F': u"À la maison, elle participe aux tâches suivantes :",
-        },
-        'de_DE': {
-            'M': u'Er hilft zu Hause:',
-            'F': u'Sie hilft zu Hause:',
-        },
-        'it_IT': {
-            'M': u'A casa aiuta nei seguenti compiti:',
-            'F': u'A casa aiuta nei seguenti compiti:',
-        },
         'en_US': {
             'M': u"He helps with the following duties at home:",
             'F': u"She helps with the following duties at home:",
@@ -164,18 +88,6 @@ class ChildDescription(models.TransientModel):
     }
 
     church_intro_lang = {
-        'fr_CH': {
-            'M': u"À l'église, il participe aux activités suivantes :",
-            'F': u"À l'église, elle participe aux activités suivantes :",
-        },
-        'de_DE': {
-            'M': u'In der Kirche macht er mit bei:',
-            'F': u'In der Kirche macht sie mit bei:',
-        },
-        'it_IT': {
-            'M': u'In chiesa partecipa alle seguenti attività:',
-            'F': u'In chiesa partecipa alle seguenti attività:',
-        },
         'en_US': {
             'M': u"He is engaged with his church in the following activities:",
             'F': u"She is engaged with her church in the following "
@@ -184,18 +96,6 @@ class ChildDescription(models.TransientModel):
     }
 
     hobbies_intro_lang = {
-        'fr_CH': {
-            'M': u"Ses activités favorites sont :",
-            'F': u"Ses activités favorites sont :",
-        },
-        'de_DE': {
-            'M': u'Er mag gern:',
-            'F': u'Sie mag gern:',
-        },
-        'it_IT': {
-            'M': u'A {preferred_name} piace:',
-            'F': u'A {preferred_name} piace:',
-        },
         'en_US': {
             'M': u"{preferred_name}'s favourite interests include:",
             'F': u"{preferred_name}'s favourite interests include:",
@@ -203,18 +103,6 @@ class ChildDescription(models.TransientModel):
     }
 
     illness_intro_lang = {
-        'fr_CH': {
-            'M': u"{preferred_name} souffre de :",
-            'F': u"{preferred_name} souffre de :",
-        },
-        'de_DE': {
-            'M': u'{preferred_name} leidet unter:',
-            'F': u'{preferred_name} leidet unter:',
-        },
-        'it_IT': {
-            'M': u'{preferred_name} soffre di:',
-            'F': u'{preferred_name} soffre di:',
-        },
         'en_US': {
             'M': u"{preferred_name} has the following chronic illnesses:",
             'F': u"{preferred_name} has the following chronic illnesses:",
@@ -222,18 +110,6 @@ class ChildDescription(models.TransientModel):
     }
 
     handicap_intro_lang = {
-        'fr_CH': {
-            'M': u"{preferred_name} souffre de handicaps :",
-            'F': u"{preferred_name} souffre de handicaps :",
-        },
-        'de_DE': {
-            'M': u'{preferred_name} hat folgende Behinderung:',
-            'F': u'{preferred_name} hat folgende Behinderung:',
-        },
-        'it_IT': {
-            'M': u'{preferred_name} ha le seguenti disabilità fisiche:',
-            'F': u'{preferred_name} ha le seguenti disabilità fisiche:',
-        },
         'en_US': {
             'M': u"{preferred_name} has the following physical disabilities:",
             'F': u"{preferred_name} has the following physical disabilities:",
@@ -244,11 +120,7 @@ class ChildDescription(models.TransientModel):
         return self.he_lang[self.env.lang][gender][number][tense]
 
     def his(self, gender, number=SINGULAR, tense=NOMINATIVE):
-        result = self.his_lang[self.env.lang][gender][number][tense]
-        if self.env.lang == 'de_DE':
-            # In german, "sein" becomes "ihr"
-            result = self.child_id.get(result)
-        return result
+        return self.his_lang[self.env.lang][gender][number][tense]
 
     @api.model
     def create(self, vals):
@@ -256,22 +128,19 @@ class ChildDescription(models.TransientModel):
         in the related child.
         """
         generator = super(ChildDescription, self).create(vals)
-        generator.desc_fr = generator.with_context(
-            lang='fr_CH')._generate_translation()
-        generator.desc_de = generator.with_context(
-            lang='de_DE')._generate_translation()
-        generator.desc_it = generator.with_context(
-            lang='it_IT')._generate_translation()
-        generator.desc_en = generator.with_context(
-            lang='en_US')._generate_translation()
-        generator.child_id.write({
-            'desc_fr': generator.desc_fr,
-            'desc_de': generator.desc_de,
-            'desc_it': generator.desc_it,
-            'desc_en': generator.desc_en,
-        })
-
+        for lang, field in self._supported_languages().iteritems():
+            desc = generator.with_context(lang=lang)._generate_translation()
+            generator.child_id.write({field: desc})
         return generator
+
+    @api.model
+    def _supported_languages(self):
+        """
+        Inherit to add more languages to have translations of
+        descriptions.
+        {lang: description_field}
+        """
+        return {'en_US': 'desc_en'}
 
     def _generate_translation(self):
         """ Generate child description. """
@@ -476,22 +345,14 @@ class ChildDescription(models.TransientModel):
         en = household.with_context(lang='en_US')
         if guardian == 'father':
             job_type = household.male_guardian_job_type
-            # job_type_field = 'male_guardian_job_type'
-            # job_type_label = _('Father occupation')
             job = at.get(en.translate('male_guardian_job'))
             job_label = _('Father job')
             alive = household.father_alive == 'Yes'
         elif guardian == 'mother':
             job_type = household.female_guardian_job_type
-            # job_type_field = 'female_guardian_job_type'
-            # job_type_label = _('Mother occupation')
             job = at.get(en.translate('female_guardian_job'), female=True)
             job_label = _('Mother job')
             alive = household.mother_alive == 'Yes'
-
-        # f_job_type = desc.children('.job_type')
-        # f_job_type[0].text = job_type_label
-        # f_job_type[1].text = household.translate(job_type_field)
 
         if job_type == 'Not Employed' or not job or not alive:
             desc.remove()

@@ -65,8 +65,6 @@ class GlobalChildSearch(models.TransientModel):
         'compassion.global.child', 'childpool_children_rel',
         string='Available Children', readonly=True,
     )
-    nb_male = fields.Integer('Boys', compute='_compute_nb_children')
-    nb_female = fields.Integer('Girls', compute='_compute_nb_children')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -74,10 +72,6 @@ class GlobalChildSearch(models.TransientModel):
     def _compute_nb_children(self):
         for search in self:
             search.nb_selected = len(search.global_child_ids)
-            search.nb_male = len(search.global_child_ids.filtered(
-                lambda child: child.gender == 'M'))
-            search.nb_female = len(search.global_child_ids.filtered(
-                lambda child: child.gender == 'F'))
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

@@ -2,12 +2,3 @@ id,src,lang,group,male_singular
 date_short_en,date_short,en_US,format,%d.%m.%Y
 date_month_en,date_month,en_US,Date format,%d %B
 date_full_en,date_full,en_US,Date format,%d %B %Y
-date_short_fr,date_short,fr_CH,Date format,%d.%m.%Y
-date_month_fr,date_month,fr_CH,Date format,%d %B
-date_full_fr,date_full,fr_CH,Date format,%d %B %Y
-date_short_de,date_short,de_DE,Date format,%d.%m.%Y
-date_month_de,date_month,de_DE,Date format,%d. %B
-date_full_de,date_full,de_DE,Date format,%d. %B %Y
-date_short_it,date_short,it_IT,Date format,%d.%m.%Y
-date_month_it,date_month,it_IT,Date format,%d %B
-date_full_it,date_full,it_IT,Date format,%d %B %Y

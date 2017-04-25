@@ -30,12 +30,16 @@
 
 {
     'name': 'Compassion Children',
-    'version': '8.0.3.0',
+    'version': '9.0.1.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['mail', 'web_m2x_options', 'document',
-                'message_center_compassion', 'advanced_translation'],
+    'depends': [
+        'mail',
+        'web_m2x_options',
+        'web_sheet_full_width',  # Allows a better view of childpool
+        'message_center_compassion',
+        'advanced_translation'],
     'external_dependencies': {
         'python': ['enum', 'pyquery']
     },
@@ -55,7 +59,6 @@
         'views/child_pictures_view.xml',
         'workflow/child_workflow.xml',
         'data/validity_checks_cron.xml',
-        'data/migrate_r4.xml',
         'data/child.hobby.csv',
         'data/child.household.duty.csv',
         'data/child.project.activity.csv',
@@ -89,7 +92,6 @@
         'data/icp.spiritual.activity.csv',
         'data/fo.high.risk.csv',
         'data/fo.disaster.loss.csv',
-        'data/ir.advanced.translation.csv',
     ],
     'demo': [
         # 'demo/compassion.child.csv'

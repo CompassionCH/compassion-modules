@@ -156,9 +156,9 @@ class ICPMapping(OnrampMapping):
         'gpid': None,
     }
 
-    CONSTANTS = {
-        'gpid': 'CH',
-    }
+    def __init__(self, env):
+        super(ICPMapping, self).__init__(env)
+        self.CONSTANTS = {'gpid': env.user.country_id.code}
 
     def _convert_connect_data(self, connect_name, value_mapping, value,
                               relation_search=None):

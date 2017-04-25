@@ -3,8 +3,6 @@
     <data>
         <!-- Top menu item -->
         <menuitem name="Sponsorship" id="menu_sponsorship_root" groups="group_sponsorship" sequence="0"/>
-        <menuitem id="base.menu_base_partner" name="Sales" sequence="2"/>
-        <menuitem id="account.menu_finance" name="Accounting" sequence="3"/>
 
         <menuitem id="menu_sponsorship_section" parent="menu_sponsorship_root" name="Sponsorship" sequence="1"/>
         <menuitem id="menu_pool_section" parent="menu_sponsorship_root" name="Global Childpool" sequence="2"/>
@@ -21,6 +19,11 @@
                                statusbar_visible="N,P,F"/>
                     </header>
                     <sheet>
+                        <div class="oe_right oe_button_box" name="buttons">
+                            <button name="get_infos" string="get info" type="object" icon="fa-refresh" class="oe_stat_button"
+                                    context="{'async_mode': False}"/>
+                            <button name="get_lifecycle_event" string="get lifecycle" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
+                        </div>
                         <field name="portrait" widget='image'
                                class="oe_left oe_avatar"
                                options='{"size": [90, 90]}'/>
@@ -35,11 +38,6 @@
                                 <label for="preferred_name"/>
                                 <field name="preferred_name"/>
                             </div>
-                        </div>
-                        <div class="oe_right oe_button_box" name="buttons">
-                            <button name="get_infos" string="get info" type="object" icon="fa-refresh" class="oe_stat_button"
-                                    context="{'async_mode': False}"/>
-                            <button name="get_lifecycle_event" string="get lifecycle" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
                         </div>
                         <notebook>
                             <page string="General Information">
@@ -129,9 +127,6 @@
                             <page string="Descriptions">
                                 <group>
                                     <field name="desc_en" widget="html"/>
-                                    <field name="desc_fr" widget="html"/>
-                                    <field name="desc_de" widget="html"/>
-                                    <field name="desc_it" widget="html"/>
                                 </group>
                             </page>
                             <page string="Detailed Information">

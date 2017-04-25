@@ -164,9 +164,9 @@ class CompassionChildMapping(GenericChildMapping):
         'gpid': None,
     }
 
-    CONSTANTS = {
-        'gpid': 'CH',
-    }
+    def __init__(self, env):
+        super(CompassionChildMapping, self).__init__(env)
+        self.CONSTANTS = {'gpid': env.user.country_id.code}
 
     def _process_odoo_data(self, odoo_data):
         if 'gender' in odoo_data:
