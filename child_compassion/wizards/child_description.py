@@ -475,18 +475,20 @@ class ChildDescription(models.TransientModel):
             # job_type_label = _('Father occupation')
             job = at.get(en.translate('male_guardian_job'))
             job_label = _('Father job')
+            alive = household.father_alive == 'Yes'
         elif guardian == 'mother':
             job_type = household.female_guardian_job_type
             # job_type_field = 'female_guardian_job_type'
             # job_type_label = _('Mother occupation')
             job = at.get(en.translate('female_guardian_job'), female=True)
             job_label = _('Mother job')
+            alive = household.mother_alive == 'Yes'
 
         # f_job_type = desc.children('.job_type')
         # f_job_type[0].text = job_type_label
         # f_job_type[1].text = household.translate(job_type_field)
 
-        if job_type == 'Not Employed' or not job:
+        if job_type == 'Not Employed' or not job or not alive:
             desc.remove()
         else:
             f_job = desc.children('.job')
