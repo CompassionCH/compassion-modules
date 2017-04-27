@@ -13,22 +13,6 @@ from datetime import datetime, timedelta
 from openerp.exceptions import Warning
 
 
-class AccountMoveLine(models.Model):
-    _inherit = 'account.move.line'
-
-    @api.multi
-    def unlink(self):
-        """ Override unlink to recompute expense/income of events. """
-        analytic_lines = self.env['account.analytic.line'].search(
-            [('move_id', 'in', self.ids)])
-        account_ids = analytic_lines.mapped('account_id.id')
-        events = self.env['crm.event.compassion'].search([
-            ('analytic_id', 'in', account_ids)])
-        res = super(AccountMoveLine, self).unlink()
-        events._set_analytic_lines()
-        return res
-
-
 class event_compassion(models.Model):
     """A Compassion event. """
     _name = 'crm.event.compassion'
@@ -78,7 +62,7 @@ class event_compassion(models.Model):
     expense_line_ids = fields.One2many(
         'account.analytic.line', compute='_set_analytic_lines', readonly=True)
     income_line_ids = fields.One2many(
-        'account.invoice.line', compute='_set_analytic_lines', readonly=True)
+        'account.analytic.line', compute='_set_analytic_lines', readonly=True)
     total_expense = fields.Float(
         'Total expense', compute='_set_analytic_lines', readonly=True,
         store=True)
@@ -123,21 +107,19 @@ class event_compassion(models.Model):
                  'analytic_id.line_ids.amount')
     def _set_analytic_lines(self):
         analytic_line_obj = self.env['account.analytic.line']
-        invoice_line_obj = self.env['account.invoice.line']
         if self.analytic_id:
             expenses = analytic_line_obj.search([
                 ('account_id', '=', self.analytic_id.id),
                 ('amount', '<', '0.0')])
-            incomes = invoice_line_obj.search([
-                ('state', '=', 'paid'),
-                ('account_analytic_id', '=', self.analytic_id.id),
-                ('contract_id', '=', False),
-                ('invoice_id.type', '=', 'out_invoice'),
-            ])
+            incomes = analytic_line_obj.search([
+                ('account_id', '=', self.analytic_id.id),
+                ('general_account_id.code', 'not in', ['6000', '6004']),
+                ('amount', '>', '0.0')]
+            )
             expense = abs(sum(expenses.mapped('amount')))
-            income = sum(incomes.mapped('price_subtotal'))
-            self.expense_line_ids = expenses.ids
-            self.income_line_ids = incomes.ids
+            income = sum(incomes.mapped('amount'))
+            self.expense_line_ids = expenses
+            self.income_line_ids = incomes
             self.total_expense = expense
             self.total_income = income
             if expense:
@@ -355,15 +337,10 @@ class event_compassion(models.Model):
             'type': 'ir.actions.act_window',
             'view_mode': 'tree,form',
             'view_type': 'form',
-            'res_model': 'account.invoice.line',
+            'res_model': 'account.analytic.line',
             'src_model': 'crm.event.compassion',
-            'context': self.with_context(group_by=False).env.context,
-            'views': [
-                (self.env.ref('sponsorship_compassion.'
-                              'view_invoice_line_partner_tree').id,
-                 'tree'),
-                (False, 'form')
-            ],
+            'context': self.with_context(
+                group_by='general_account_id').env.context,
             'domain': [('id', 'in', self.income_line_ids.ids)]
         }
 

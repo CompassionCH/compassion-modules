@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields
+from openerp import api, models, fields
 
 
 class account_analytic_account(models.Model):
@@ -41,3 +41,36 @@ class account_analytic_account(models.Model):
             ('contract', 'Contract or Project'),
             ('template', 'Template of Contract'),
             ('event', 'Analytic Account for Event')]
+
+
+class AnalyticLine(models.Model):
+    """ Triggers for computation on event lines. """
+    _inherit = 'account.analytic.line'
+
+    @api.model
+    def create(self, vals):
+        line = super(AnalyticLine, self).create(vals)
+        line.onchange_line()
+        return line
+
+    @api.multi
+    def unlink(self):
+        events = self.env['crm.event.compassion'].search([
+            ('analytic_id', 'in', self.mapped('account_id').ids)
+        ])
+        super(AnalyticLine, self).unlink()
+        events.update_analytics()
+        return True
+
+    @api.multi
+    def write(self, vals):
+        super(AnalyticLine, self).write(vals)
+        self.onchange_line()
+        return True
+
+    @api.multi
+    def onchange_line(self):
+        events = self.env['crm.event.compassion'].search([
+            ('analytic_id', 'in', self.mapped('account_id').ids)
+        ])
+        events.update_analytics()
