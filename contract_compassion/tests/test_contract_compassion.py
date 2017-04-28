@@ -1,24 +1,53 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2015-2017 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Albert SHENOUDA <albert.shenouda@efrei.net>
+#    @author: Albert SHENOUDA <albert.shenouda@efrei.net>, Emanuel Cino
 #
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
 
 
-from test_base_module import test_base_module
 from datetime import datetime
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from openerp import fields
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from openerp.addons.recurring_contract.tests.test_recurring_contract import \
+    BaseContractTest
 import logging
 logger = logging.getLogger(__name__)
 
 
-class test_contract_compassion(test_base_module):
+class BaseContractCompassionTest(BaseContractTest):
+    def create_contract(self, vals, line_vals):
+        # Add default values
+        default_values = {
+            'channel': 'phone',
+            'type': 'O'
+        }
+        default_values.update(vals)
+        return super(BaseContractCompassionTest,
+                     self).create_contract(default_values, line_vals)
+
+    def _pay_invoice(self, invoice):
+        bank_journal = self.env['account.journal'].search(
+            [('code', '=', 'BNK1')], limit=1)
+        payment = self.env['account.payment'].create({
+            'journal_id': bank_journal.id,
+            'amount': invoice.amount_total,
+            'payment_date': invoice.date_due,
+            'payment_type': 'inbound',
+            'payment_method_id': bank_journal.inbound_payment_method_ids[0].id,
+            'partner_type': 'customer',
+            'partner_id': invoice.partner_id.id,
+            'currency_id': invoice.currency_id.id,
+            'invoice_ids': [(6, 0, invoice.ids)]
+        })
+        payment.post()
+
+
+class TestContractCompassion(BaseContractCompassionTest):
     """
         Test Project contract compassion.
         We are testing 3 scenarios :
@@ -29,26 +58,24 @@ class test_contract_compassion(test_base_module):
          - in the last one, we are testing the _reset_open_invoices method.
     """
     def setUp(self):
-        super(test_contract_compassion, self).setUp()
-        category = self.env['res.partner.category'].create({
-            'name': 'sponsor'})
-        self.partners.write({'category_id': [(4, category.id)]})
+        super(TestContractCompassion, self).setUp()
 
     def test_contract_compassion_first_scenario(self):
         """
             In this test we are testing states changement of a contract and if
             the old invoice are well cancelled when we pay one invoice.
         """
-        contract_group = self._create_group(
-            'do_nothing', self.partners.ids[0], 5,
-            self.payment_term_id,
-            other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
-        contract = self._create_contract(
-            datetime.today().strftime(DF), contract_group,
-            datetime.today().strftime(DF),
-            other_vals={'channel': 'phone', 'type': 'O'})
-        self._create_contract_line(
-            contract.id, '40.0', other_vals={'quantity': '2'})
+        contract_group = self.create_group({
+            'advance_billing_months': 5,
+            'partner_id': self.michel.id
+        })
+        contract = self.create_contract(
+            {
+                'partner_id': self.michel.id,
+                'group_id': contract_group.id,
+            },
+            [{'amount': 40.0}]
+        )
         self.assertEqual(contract.state, 'draft')
 
         # Switching to "waiting for payment" state
@@ -65,11 +92,11 @@ class test_contract_compassion(test_base_module):
         # be cancelled.
         self._pay_invoice(invoices[3])
         self.assertEqual(invoices[3].state, 'paid')
-        self.assertEqual(invoices[0].state, 'cancel')
-        self.assertEqual(invoices[1].state, 'cancel')
-        self.assertEqual(invoices[2].state, 'cancel')
-        self.assertEqual(invoices[4].state, 'open')
-        self.assertEqual(invoices[5].state, 'open')
+        self.assertEqual(invoices[0].state, 'open')
+        self.assertEqual(invoices[1].state, 'open')
+        self.assertEqual(invoices[2].state, 'open')
+        self.assertEqual(invoices[4].state, 'cancel')
+        self.assertEqual(invoices[5].state, 'cancel')
         self.assertEqual(contract.state, 'active')
         contract.signal_workflow('contract_terminated')
         self.assertEqual(contract.state, 'terminated')
@@ -79,22 +106,20 @@ class test_contract_compassion(test_base_module):
             Testing if invoices are well cancelled when we cancel the related
             contract.
         """
-        contract_group = self._create_group(
-            'do_nothing', self.partners.ids[1], 1,
-            self.payment_term_id,
-            other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
-        contract = self._create_contract(
-            datetime.today().strftime(DF), contract_group,
-            datetime.today().strftime(DF),
-            other_vals={'channel': 'postal', 'type': 'O'})
-        self._create_contract_line(
-            contract.id, '200.0', other_vals={'quantity': '3'})
+        contract_group = self.create_group({'partner_id': self.thomas.id})
+        contract = self.create_contract(
+            {
+                'partner_id': self.thomas.id,
+                'group_id': contract_group.id,
+            },
+            [{'amount': 200, 'quantity': 3}])
+
         # Switch to "waiting for payment" state
         contract.signal_workflow('contract_validated')
         invoices = contract.button_generate_invoices().invoice_ids
+        self.assertEqual(len(invoices), 2)
         self.assertEqual(invoices[0].state, 'open')
         self.assertEqual(invoices[1].state, 'open')
-        self.assertEqual(len(invoices), 2)
 
         # Cancelling of the contract
         date_finish = fields.Datetime.now()
@@ -116,26 +141,23 @@ class test_contract_compassion(test_base_module):
             THe invoice paid should not be updated, whereas the other one
             should be updated.
         """
-        contract_group = self._create_group(
-            'do_nothing', self.partners.ids[0], 1,
-            self.payment_term_id,
-            other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
-        contract_group2 = self._create_group(
-            'do_nothing', self.partners.ids[1], 2,
-            self.payment_term_id,
-            other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
-        contract = self._create_contract(
-            datetime.today().strftime(DF), contract_group,
-            datetime.today().strftime(DF),
-            other_vals={'channel': 'postal', 'type': 'O'})
-        contract_line = self._create_contract_line(
-            contract.id, '60.0', other_vals={'quantity': '2'})
+        contract_group = self.create_group({'partner_id': self.michel.id})
+        contract_group2 = self.create_group({
+            'partner_id': self.david.id,
+            'advance_billing_months': 2
+        })
+        contract = self.create_contract(
+            {
+                'partner_id': self.michel.id,
+                'group_id': contract_group.id,
+            },
+            [{'amount': 60.0, 'quantity': 2}])
         contract.signal_workflow('contract_validated')
         invoices = contract.button_generate_invoices().invoice_ids
-        self._pay_invoice(invoices[0])
         self.assertEqual(len(invoices), 2)
+        self._pay_invoice(invoices[1])
         # Updating of the contract
-        contract_line.write({
+        contract.contract_line_ids.write({
             'quantity': '3',
             'amount': '100.0',
         })
@@ -143,13 +165,14 @@ class test_contract_compassion(test_base_module):
             'group_id': contract_group2.id})
 
         # Check if the invoice unpaid is well updated
-        invoice_upd = invoices[1]
-        invoice_line_up = invoice_upd.invoice_line[0]
+        invoice_upd = invoices[0]
+        invoice_line_up = invoice_upd.invoice_line_ids[0]
+        contract_line = contract.contract_line_ids
         self.assertEqual(invoice_line_up.price_unit, contract_line.amount)
         self.assertEqual(
             invoice_line_up.price_subtotal, contract_line.subtotal)
 
-    def test_contract_compassion_third_scenario(self):
+    def _test_contract_compassion_third_scenario(self):
         """
             Test the changement of a partner in a payment option and after that
             changement test if the BVR reference is set.
@@ -158,15 +181,15 @@ class test_contract_compassion(test_base_module):
             payment term.
             Test the changement of a payment option for a contract.
         """
-        contract_group = self._create_group(
+        contract_group = self.create_group(
             'do_nothing', self.partners.ids[0], 1,
             self.payment_term_id,
             other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
-        contract_group2 = self._create_group(
+        contract_group2 = self.create_group(
             'do_nothing', self.partners.ids[1], 1,
             self.payment_term_id,
             other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
-        contract = self._create_contract(
+        contract = self.create_contract(
             datetime.today().strftime(DF), contract_group,
             datetime.today().strftime(DF),
             other_vals={'channel': 'postal', 'type': 'O'})

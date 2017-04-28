@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2017 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __openerp__.py
+-->
+<odoo>
+    <!-- Change transition conditions to check for global id of sponsorship -->
+    <record model="workflow.transition" id="recurring_contract.t2">
+        <field name="condition">global_id</field>
+    </record>
+    <record model="workflow.transition" id="t3c">
+        <field name="condition">not global_id</field>
+    </record>
+</odoo>

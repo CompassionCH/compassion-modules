@@ -9,5 +9,4 @@
 #
 ##############################################################################
 
-from . import test_base_module
 from . import test_contract_compassion

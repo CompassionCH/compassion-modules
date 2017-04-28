@@ -9,8 +9,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
-#    @author: David Coninckx
+#    Copyright (C) 2014-2017 Compassion CH (http://www.compassion.ch)
+#    @author: David Coninckx, Emanuel Cino
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Contracts',
-    'version': '8.0.3.0',
+    'version': '9.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -38,19 +38,18 @@
                 'child_compassion', 'account_analytic_compassion',
                 'l10n_ch_payment_slip'],
     'data': [
-        'view/end_contract_wizard_view.xml',
-        'view/contract_group_view.xml',
-        'view/contract_origin_view.xml',
-        'view/contract_view.xml',
-        'view/activate_contract_view.xml',
+        'views/end_contract_wizard_view.xml',
+        'views/contract_group_view.xml',
+        'views/contract_origin_view.xml',
+        'views/contract_view.xml',
+        'views/activate_contract_view.xml',
         'workflow/contract_workflow.xml',
         'workflow/invoice_workflow.xml',
         'security/ir.model.access.csv',
         'data/friday_invoicer_cron.xml',
         'data/product.xml',
-        'data/payment_terms.xml',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }
