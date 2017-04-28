@@ -48,6 +48,7 @@
         'views/gmc_message_view.xml',
         'views/end_contract_wizard_view.xml',
         'views/download_child_pictures_view.xml',
+        'workflow/contract_workflow.xml',
         'data/sequence.xml',
         'data/sponsorship_product.xml',
         'data/analytic_accounting.xml',

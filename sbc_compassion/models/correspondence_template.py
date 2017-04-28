@@ -16,7 +16,7 @@ import magic
 import cv2
 
 from openerp import fields, models, api, _
-from openerp.exceptions import ValidationError, Warning
+from openerp.exceptions import ValidationError, UserError
 from wand.image import Image
 
 from ..tools import patternrecognition as pr
@@ -162,8 +162,7 @@ class CorrespondenceTemplate(models.Model):
             datas = base64.b64decode(self.template_image)
             ftype = magic.from_buffer(datas, True)
             if not ('jpg' in ftype or 'jpeg' in ftype or 'png' in ftype):
-                raise Warning(
-                    _("Unsupported format"),
+                raise UserError(
                     _("Please only use jpg or png files."))
             # Be sure image is in 300 DPI
             with Image(blob=datas, resolution=300) as img:  # resolution
@@ -235,8 +234,7 @@ class CorrespondenceTemplate(models.Model):
                         img, template.pattern_image,
                         template.get_pattern_area())
                     if res is None:
-                        raise Warning(
-                            _("Pattern not found"),
+                        raise UserError(
                             _("The pattern could not be detected in given "
                               "template image."))
                     else:

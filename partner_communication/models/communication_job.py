@@ -11,7 +11,7 @@
 import logging
 
 from openerp import api, models, fields, _, http
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 from openerp.addons.base_phone.controller import BasePhoneController
 
 logger = logging.getLogger(__name__)
@@ -99,7 +99,7 @@ class CommunicationJob(models.Model):
                         'attachment_id'):
                     if not attachment.report_id and not \
                             self.env.context.get('no_print'):
-                        raise Warning(
+                        raise UserError(
                             _("Please select a printing configuration for the "
                               "attachments you add.")
                         )

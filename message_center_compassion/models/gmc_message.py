@@ -14,7 +14,7 @@ from ..tools.onramp_connector import OnrampConnector
 from ..mappings import base_mapping as mapping
 
 from openerp import api, models, fields, _
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 
 from openerp.addons.connector.queue.job import job, related_action
 from openerp.addons.connector.session import ConnectorSession
@@ -206,9 +206,10 @@ class GmcMessagePool(models.Model):
         # actions at once)
         action = messages.mapped('action_id')
         if len(action) > 1:
-            raise Warning(_("Cannot process several actions at the same "
-                            "time. Please process each message type "
-                            "individually."))
+            raise UserError(_(
+                "Cannot process several actions at the same "
+                "time. Please process each message type "
+                "individually."))
         elif not action:
             # No messages pending
             return True
@@ -229,7 +230,7 @@ class GmcMessagePool(models.Model):
         elif action.direction == 'out':
             try:
                 self._perform_outgoing_action()
-            except Warning as e:
+            except UserError as e:
                 # Put the messages in failure state
                 self.write({
                     'state': 'failure',

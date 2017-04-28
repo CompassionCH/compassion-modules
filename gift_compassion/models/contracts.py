@@ -10,7 +10,7 @@
 ##############################################################################
 
 from openerp import api, models, fields, _
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 
 from openerp.addons.sponsorship_compassion.models.product import GIFT_CATEGORY
 
@@ -37,7 +37,7 @@ class SponsorshipContract(models.Model):
     def invoice_paid(self, invoice):
         """ Prevent to reconcile invoices for fund-suspended projects
             or sponsorships older than 3 months. """
-        for invl in invoice.invoice_line:
+        for invl in invoice.invoice_line_ids:
             if invl.product_id.categ_name == GIFT_CATEGORY and \
                     invl.contract_id.child_id:
                 # Create the Sponsorship Gift
@@ -50,10 +50,10 @@ class SponsorshipContract(models.Model):
         """ Remove pending gifts or prevent unreconcile if gift are already
             sent.
         """
-        for invl in invoice.invoice_line.filtered('gift_id'):
+        for invl in invoice.invoice_line_ids.filtered('gift_id'):
             gift = invl.gift_id
             if gift.gmc_gift_id and gift.state != 'Undeliverable':
-                raise Warning(
+                raise UserError(
                     _("You cannot delete the %s. It is already sent to GMC.")
                     % gift.name
                 )

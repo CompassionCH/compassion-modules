@@ -15,7 +15,7 @@ env:
     global:
         - VERSION="9.0"
         - ODOO_REPO="odoo/odoo"
-        - EXCLUDE="child_compassion,contract_compassion,crm_compassion,label,message_center_compassion,sbc_compassion,sponsorship_compassion,sponsorship_tracking"
+        - EXCLUDE="child_compassion,crm_compassion,label,message_center_compassion,sbc_compassion,sponsorship_compassion,sponsorship_tracking"
         - OPENCV_ROOT=${HOME}/opencv
         - ZXING_ROOT=${HOME}/.libZxing
 
@@ -25,6 +25,7 @@ virtualenv:
 install:
     - pip install click flake8 coveralls xlrd pylint pylint_odoo coverage codecov
     - pip install pyjwt pyquery
+    - git clone https://github.com/CompassionCH/compassion-accounting.git ${HOME}/build/CompassionCH/compassion-accounting -b 9.0
     - git clone https://github.com/CompassionCH/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools -b r2
     - git clone https://github.com/OCA/web.git ${HOME}/build/CompassionCH/web -b 9.0
     - git clone https://github.com/OCA/connector.git ${HOME}/build/CompassionCH/connector -b 9.0
@@ -49,7 +50,6 @@ install:
 #    - sudo apt-get install zbar-tools python-zbar
 #    - pip install pdfminer
 #    - git clone https://github.com/OCA/l10n-switzerland.git ${HOME}/build/CompassionCH/l10n-switzerland -b 9.0
-#    - git clone https://github.com/CompassionCH/compassion-accounting.git ${HOME}/build/CompassionCH/compassion-accounting -b master
 #    - git clone https://github.com/OCA/bank-payment.git ${HOME}/build/CompassionCH/bank-payment -b 9.0
 #    - git clone https://github.com/OCA/bank-statement-reconcile.git ${HOME}/build/CompassionCH/bank-statement-reconcile -b 9.0
 #    - git clone https://github.com/OCA/bank-statement-import.git ${HOME}/build/CompassionCH/bank-statement-import -b 9.0

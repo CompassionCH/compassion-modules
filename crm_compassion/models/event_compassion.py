@@ -10,7 +10,7 @@
 ##############################################################################
 from openerp import api, models, fields, exceptions, _
 from datetime import datetime, timedelta
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 
 
 class event_compassion(models.Model):
@@ -166,9 +166,9 @@ class event_compassion(models.Model):
     @api.constrains('hold_start_date', 'start_date')
     def _check_hold_start_date(self):
         if self.hold_start_date > self.start_date:
-            raise Warning("Invalid Date", "The hold start date must "
-                                          "be before the event "
-                                          "starting date !")
+            raise UserError(
+                "The hold start date must "
+                "be before the event starting date !")
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -249,8 +249,7 @@ class event_compassion(models.Model):
         sponsorships."""
         for event in self:
             if event.contract_ids or event.balance:
-                raise exceptions.Warning(
-                    _('Not authorized action'),
+                raise exceptions.UserError(
                     _('The event is linked to expenses or sponsorships. '
                       'You cannot delete it.'))
             else:

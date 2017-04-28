@@ -9,7 +9,7 @@
 #
 ##############################################################################
 from openerp import models, fields, api
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 
 
 class HoldWizard(models.TransientModel):
@@ -53,5 +53,5 @@ class HoldWizard(models.TransientModel):
                 'object_id': self.id,
             })
         if message.state == 'failure':
-            raise Warning(message.failure_reason)
+            raise UserError(message.failure_reason)
         return True

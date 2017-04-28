@@ -106,7 +106,7 @@ class ImportLetterLine(models.Model):
         for line in self:
             if line.sponsorship_id:
                 line.name = str(
-                    line.sponsorship_id.partner_codega) + " - " + str(
+                    line.sponsorship_id.partner_id.ref) + " - " + str(
                         line.child_id.local_id)
 
     @api.multi

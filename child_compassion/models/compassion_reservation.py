@@ -13,7 +13,7 @@ from datetime import timedelta
 import datetime
 
 from openerp import models, fields, api, _
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 
 
 class CompassionReservation(models.Model):
@@ -108,8 +108,7 @@ class CompassionReservation(models.Model):
             messages.with_context(async_mode=False).process_messages()
             failed = messages.filtered(lambda m: m.state == 'failure')
             if failed:
-                raise Warning(
-                    _("Reservation Update failed"),
+                raise UserError(
                     "\n\n".join(failed.mapped('failure_reason'))
                 )
         return res

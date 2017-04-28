@@ -49,7 +49,7 @@ class test_tracking(common.TransactionCase):
             'origin_id': origin_ids[0],
             'group_id': group_ids[0],
             'channel': 'direct',
-            'num_pol_ga': randint(700, 999),
+            'commitment_number': randint(700, 999),
             'child_id': child_id,
             'next_invoice_date': self.today,
             'activation_date': self.today,

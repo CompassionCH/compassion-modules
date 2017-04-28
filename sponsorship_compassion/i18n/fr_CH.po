@@ -629,7 +629,7 @@ msgid "end.contract.wizard"
 msgstr "end.contract.wizard"
 
 #. module: sponsorship_compassion
-#: field:recurring.contract,num_pol_ga:0
+#: field:recurring.contract,commitment_number:0
 msgid "Partner Contract Number"
 msgstr "N° de contrat du partenaire"
 

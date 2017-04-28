@@ -10,7 +10,7 @@
 ##############################################################################
 
 from openerp import models, api, fields, _
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 
 
 class ChangeTextWizard(models.TransientModel):
@@ -28,11 +28,11 @@ class ChangeTextWizard(models.TransientModel):
         config = communications.mapped('config_id')
         lang = list(set(communications.mapped('partner_id.lang')))
         if len(config) != 1:
-            raise Warning(
+            raise UserError(
                 _("You can only update text on one communication type at "
                   "time."))
         if len(lang) != 1:
-            raise Warning(
+            raise UserError(
                 _("Please update only one language at a time."))
         return config.email_template_id.with_context(lang=lang[0]).body_html
 
@@ -47,7 +47,7 @@ class ChangeTextWizard(models.TransientModel):
         lang = communications[0].partner_id.lang
         template = config.email_template_id.with_context(lang=lang)
         if len(config) != 1:
-            raise Warning(
+            raise UserError(
                 _("You can only update text on one communication type at "
                   "time."))
         new_texts = template.render_template_batch(

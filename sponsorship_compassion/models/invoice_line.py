@@ -43,7 +43,7 @@ class account_invoice(models.Model):
     def _set_children(self):
         """ View children contained in invoice. """
         for invoice in self:
-            children = invoice.mapped('invoice_line.contract_id.child_id')
+            children = invoice.mapped('invoice_line_ids.contract_id.child_id')
             if len(children) > 1:
                 invoice.children = _("{0} children".format(str(len(
                     children))))
@@ -65,11 +65,10 @@ class account_invoice(models.Model):
                 seq = self.env['ir.sequence']
                 ref = mod10r(seq.next_by_code('contract.bvr.ref'))
                 invoice.write({'bvr_reference': ref})
-            for invl in invoice.invoice_line:
+            for invl in invoice.invoice_line_ids:
                 if not invl.contract_id and invl.product_id.categ_name in (
                         SPONSORSHIP_CATEGORY, GIFT_CATEGORY):
-                    raise exceptions.Warning(
-                        _('Sponsorship missing in invoice'),
+                    raise exceptions.UserError(
                         _("Invoice %s for '%s' is missing a sponsorship.") %
                         (str(invoice.id), invoice.partner_id.name))
 

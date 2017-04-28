@@ -281,8 +281,7 @@ class RecurringContract(models.Model):
         for contract in self:
             if 'S' in contract.type and contract.state != 'draft':
                 if contract.parent_id:
-                    raise exceptions.Warning(
-                        _("Operation Failure"),
+                    raise exceptions.UserError(
                         _("You cannot change the sub sponsorship."))
                 parent = self.browse(parent_id)
                 if parent.sds_state == 'sub_waiting':

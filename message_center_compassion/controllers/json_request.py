@@ -168,7 +168,7 @@ Sample Unsuccessful Response
                 })
         except Exception:
             # Any other cases, lookup what exception type was raised.
-            if not isinstance(exception, (exceptions.Warning)):
+            if not isinstance(exception, (exceptions.UserError)):
                 _logger.exception("Exception during JSON request handling.")
             error.update({
                 'ErrorCode': 500,

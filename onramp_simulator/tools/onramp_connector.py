@@ -16,7 +16,7 @@ from openerp.addons.message_center_compassion.tools.onramp_logging import \
     log_message
 
 from openerp import _
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 from openerp.tools.config import config
 
 
@@ -40,8 +40,7 @@ class TestOnrampConnector(OnrampConnector):
                 session.params.update({'api_key': api_key})
                 TestOnrampConnector.__instance._session = session
             else:
-                raise Warning(
-                    _('Missing configuration'),
+                raise UserError(
                     _('Please give connect_url and connect_api_key values '
                       'in your Odoo configuration file.'))
         return TestOnrampConnector.__instance

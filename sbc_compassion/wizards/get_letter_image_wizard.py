@@ -11,7 +11,7 @@
 from ..tools.onramp_connector import OnrampConnector
 
 from openerp import api, models, fields, _
-from openerp.exceptions import Warning, ValidationError
+from openerp.exceptions import UserError, ValidationError
 
 
 class GetLetterImageWizard(models.TransientModel):
@@ -60,8 +60,7 @@ class GetLetterImageWizard(models.TransientModel):
                 letter.final_letter_url, self.format,
                 self.page_number, self.dpi)
         if image_data is None:
-            raise Warning(
-                _('Image does not exist'),
+            raise UserError(
                 _("Image requested was not found remotely."))
         self.write({
             'image_preview': image_data,

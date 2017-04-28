@@ -12,7 +12,7 @@
 import logging
 
 from openerp import models, fields, _, api
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 from openerp.addons.message_center_compassion.mappings import base_mapping \
     as mapping
 
@@ -298,7 +298,7 @@ class CompassionIntervention(models.Model):
     def unlink(self):
         """ Only allow to delete cancelled Interventions. """
         if self.filtered(lambda i: i.state != 'cancel'):
-            raise Warning(_("You can only delete cancelled Interventions."))
+            raise UserError(_("You can only delete cancelled Interventions."))
         return super(CompassionIntervention, self).unlink()
 
     ##########################################################################
@@ -348,7 +348,7 @@ class CompassionIntervention(models.Model):
                 'object_id': self.id
             })
         if message.state == 'failure':
-            raise Warning(_('Hold not updated'), message.failure_reason)
+            raise UserError(message.failure_reason)
         return True
 
     @api.multi
@@ -380,7 +380,7 @@ class CompassionIntervention(models.Model):
         message = self.env['gmc.message.pool'].with_context(
             hold_update=False).create(message_vals)
         if message.state == 'failure':
-            raise Warning(message.failure_reason)
+            raise UserError(message.failure_reason)
         return True
 
     @api.multi
@@ -393,7 +393,7 @@ class CompassionIntervention(models.Model):
                 'object_id': self.id
             })
         if message.state == 'failure':
-            raise Warning(_('Hold not cancelled'), message.failure_reason)
+            raise UserError(message.failure_reason)
         return True
 
     @api.multi

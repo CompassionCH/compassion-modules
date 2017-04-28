@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 from openerp.addons.contract_compassion.tests.test_base_module\
     import test_base_module
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
@@ -105,7 +105,7 @@ class test_messages(test_base_module):
             'origin_id': self.origin.id,
             'group_id': self.group.id,
             'channel': 'direct',
-            'num_pol_ga': randint(700, 999),
+            'commitment_number': randint(700, 999),
             'child_id': child_id,
             'next_invoice_date': self.today,
             'type': 'S',
@@ -125,7 +125,7 @@ class test_messages(test_base_module):
             ('state', '=', 'new')])
         self.assertTrue(messages)
         if will_fail:
-            with self.assertRaises(Warning):
+            with self.assertRaises(UserError):
                 messages.process_messages()
             for message in messages:
                 self.assertEqual(message.state, 'failure')

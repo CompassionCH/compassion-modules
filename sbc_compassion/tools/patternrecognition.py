@@ -24,7 +24,7 @@ from copy import deepcopy
 from time import time
 
 from openerp import _
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 
 logger = logging.getLogger(__name__)
 
@@ -59,8 +59,7 @@ def patternRecognition(image, pattern, crop_area=None,
     # read images
     img1 = deepcopy(image)
     if img1 is None:
-        raise Warning(
-            _("Could not read template image"),
+        raise UserError(
             _("Template image is broken"))
     if isinstance(pattern, str):
         with tempfile.NamedTemporaryFile() as temp:
@@ -71,8 +70,7 @@ def patternRecognition(image, pattern, crop_area=None,
     else:
         img2 = pattern
     if img2 is None:
-        raise Warning(
-            _("Could not read pattern image"),
+        raise UserError(
             _("The pattern image is broken"))
 
     # cut the part useful for the recognition

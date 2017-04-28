@@ -94,7 +94,7 @@ class test_crm_compassion(test_base_module):
         self.assertEqual(len(invoices), 2)
         self.assertEqual(invoices[0].state, 'open')
         self.assertEqual(
-            invoices[0].invoice_line[0].user_id, sponsorship.user_id)
+            invoices[0].invoice_line_ids[0].user_id, sponsorship.user_id)
         event_dico = self.partners[2].open_events()
         self.assertEqual(len(event_dico['domain'][0][2]), 2)
         is_unlinked = event.unlink()

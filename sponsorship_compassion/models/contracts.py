@@ -215,9 +215,8 @@ class SponsorshipContract(models.Model):
         for contract in self:
             # We can only delete draft sponsorships.
             if 'S' in contract.type and contract.state != 'draft':
-                raise exceptions.Warning(_('Warning'),
-                                         _('You cannot delete a validated '
-                                           'sponsorship.'))
+                raise exceptions.UserError(
+                    _('You cannot delete a validated sponsorship.'))
             # Remove sponsor of child
             if 'S' in contract.type and contract.child_id:
                 child_sponsor_id = contract.child_id.sponsor_id and \
@@ -579,10 +578,7 @@ class SponsorshipContract(models.Model):
                 failure = message.failure_reason
                 message.unlink()
                 self.env.cr.commit()
-                raise exceptions.Warning(
-                    _("Commitment %s not updated :") % sponsorship.name,
-                    failure
-                )
+                raise exceptions.UserError(failure)
             else:
                 self.env.cr.commit()
 
@@ -736,21 +732,19 @@ class SponsorshipContract(models.Model):
     def invoice_paid(self, invoice):
         """ Prevent to reconcile invoices for fund-suspended projects
             or sponsorships older than 3 months. """
-        for invl in invoice.invoice_line:
+        for invl in invoice.invoice_line_ids:
             if invl.contract_id and invl.contract_id.child_id:
                 contract = invl.contract_id
 
                 # Check contract is active or terminated recently.
                 if contract.state == 'cancelled':
-                    raise exceptions.Warning(
-                        _("Reconcile error"),
+                    raise exceptions.UserError(
                         _("The contract %s is not active.") % contract.name)
                 if contract.state == 'terminated' and contract.end_date:
                     ended_since = date.today() - fields.Date.from_string(
                         contract.end_date)
                     if not ended_since.days <= 180:
-                        raise exceptions.Warning(
-                            _("Reconcile error"),
+                        raise exceptions.UserError(
                             _("The contract %s is not active.")
                             % contract.name)
 
@@ -761,8 +755,7 @@ class SponsorshipContract(models.Model):
                     payment_allowed = not project.hold_cdsp_funds or \
                         invl.due_date < project.status_date
                 if not payment_allowed:
-                    raise exceptions.Warning(
-                        _("Reconcile error"),
+                    raise exceptions.UserError(
                         _("The project %s is fund-suspended. You cannot "
                           "reconcile invoice (%s).") % (project.icp_id,
                                                         invoice.id))
@@ -803,8 +796,7 @@ class SponsorshipContract(models.Model):
                         str(allowed)) if allowed else _(
                         'You should not select product '
                         'from category "{0}"'.format(categ_name))
-                    raise exceptions.Warning(
-                        _('Please select a valid product'), message)
+                    raise exceptions.UserError(message)
         return True
 
     @api.multi
@@ -897,4 +889,4 @@ class SponsorshipContract(models.Model):
                     self.env.ref('sponsorship_compassion.{}'.format(
                         row[contract_id])).contract_cancelled()
                 else:
-                    raise Warning('State not implemented')
+                    raise exceptions.UserError('State not implemented')

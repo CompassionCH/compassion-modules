@@ -57,7 +57,7 @@ def testline(env, line_vals, csv_file_ids, doc_name):
     # creates a list containing all the csv data
     for csv_ in csv_file_ids:
         if os.path.splitext(csv_.name)[1] != '.csv':
-            raise exceptions.Warning(
+            raise exceptions.UserError(
                 _("File '{}' is not a csv file".format(csv_.name)))
         csv_string = base64.b64decode(csv_.datas).splitlines()
         csv_data += read_csv(csv_string)

@@ -10,7 +10,7 @@
 ##############################################################################
 from datetime import date, timedelta
 from openerp import fields, models, api, _
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 
 from ..mappings.gift_mapping import CreateGiftMapping
 from openerp.addons.sponsorship_compassion.models.product import \
@@ -217,7 +217,7 @@ class SponsorshipGift(models.Model):
         to_remove = self.filtered(lambda g: g.state != 'Undeliverable')
         for gift in to_remove:
             if gift.gmc_gift_id:
-                raise Warning(
+                raise UserError(
                     _("You cannot delete the %s."
                       "It is already sent to GMC.")
                     % gift.name

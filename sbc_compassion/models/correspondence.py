@@ -13,7 +13,8 @@ import base64
 import re
 import uuid
 
-from openerp import fields, models, api, exceptions, _
+from openerp import fields, models, api, _
+from openerp.exceptions import UserError
 from pyPdf import PdfFileWriter, PdfFileReader
 from io import BytesIO
 
@@ -450,7 +451,7 @@ class Correspondence(models.Model):
         for letter in self:
             if letter.kit_identifier or letter.state == 'Global Partner ' \
                                                         'translation queue':
-                raise exceptions.Warning(
+                raise UserError(
                     _("You cannot delete a letter which is in "
                       "translation or already sent to GMC."))
         # Remove unsent messages
@@ -651,7 +652,7 @@ class Correspondence(models.Model):
         Check that we received a valid kit identifier.
         """
         if vals.get('kit_identifier', 'null') == 'null':
-            raise Warning(
+            raise UserError(
                 'No valid kit id was returned. This is most '
                 'probably because the sponsorship is not known.')
         return self.write(vals)
@@ -677,7 +678,7 @@ class Correspondence(models.Model):
                 image_data = SBCConnector().get_letter_image(
                     letter_url, 'pdf', dpi=300)  # resolution
             if image_data is None:
-                raise Warning(
+                raise UserError(
                     _("Image of letter {} was not found remotely.").format(
                         letter.kit_identifier))
             name = letter.child_id.local_id + '_' + letter.kit_identifier + \
@@ -750,8 +751,7 @@ class Correspondence(models.Model):
         elif 'tiff' in ftype:
             type_ = '.tiff'
         else:
-            raise exceptions.Warning(
-                _('Unsupported file format'),
+            raise UserError(
                 _('You can only attach tiff or pdf files'))
         vals = {
             'name': 'New letter' + type_,

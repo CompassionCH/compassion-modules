@@ -13,12 +13,12 @@ import logging
 from datetime import datetime, timedelta
 
 from openerp import api, models, fields, _
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 
 try:
     from enum import Enum
 except ImportError:
-    raise Warning(_("Please install Python Enum"))
+    raise UserError(_("Please install Python Enum"))
 
 
 from ..mappings.child_reinstatement_mapping import ReinstatementMapping
@@ -250,7 +250,7 @@ class CompassionHold(models.Model):
             raise ValueError("No child found")
         child = self.env['compassion.child'].browse(child_id)
         if child.state not in ('F', 'R'):
-            raise Warning("Child is not departed.")
+            raise UserError("Child is not departed.")
         vals.update({
             'expiration_date': fields.Datetime.to_string(in_90_days),
             'state': 'active',

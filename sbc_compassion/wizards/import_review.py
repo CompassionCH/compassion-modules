@@ -9,7 +9,7 @@
 #
 ##############################################################################
 from openerp import models, api, fields, _
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 
 
 class ImportReview(models.TransientModel):
@@ -96,8 +96,7 @@ class ImportReview(models.TransientModel):
         """ Load the next import line in the view. """
         self.ensure_one()
         if self.current_line_id.status not in ('ok', 'no_template'):
-            raise Warning(
-                _("Import is not valid"),
+            raise UserError(
                 _("Please review this import before going to the next."))
         self.write({
             'current_line_index': self.current_line_index + 1,

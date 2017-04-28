@@ -55,8 +55,7 @@ class generate_gift_wizard(models.TransientModel):
 
                         # Birthday Gift
                         if not contract.child_id.birthdate:
-                                raise exceptions.Warning(
-                                    'BirthdayError',
+                                raise exceptions.UserError(
                                     _('The birthdate of the \
                                         child is missing !'))
                         if self.product_id.name == GIFT_NAMES[0]:
@@ -102,8 +101,7 @@ class generate_gift_wizard(models.TransientModel):
                                 inv_line_data)
                             invoice_ids.append(invoice.id)
                     else:
-                        raise exceptions.Warning(
-                            _("Generation Error"),
+                        raise exceptions.UserError(
                             _("You can only generate gifts for active child "
                               "sponsorships"))
         return {
@@ -145,8 +143,8 @@ class generate_gift_wizard(models.TransientModel):
         product = product.with_context(lang='en_US')
         ref = contract.partner_id.ref
         bvr_reference = '0' * (9 + (7 - len(ref))) + ref
-        num_pol_ga = str(contract.num_pol_ga)
-        bvr_reference += '0' * (5 - len(num_pol_ga)) + num_pol_ga
+        commitment_number = str(contract.commitment_number)
+        bvr_reference += '0' * (5 - len(commitment_number)) + commitment_number
         # Type of gift
         bvr_reference += str(GIFT_NAMES.index(product.name) + 1)
         bvr_reference += '0' * 4

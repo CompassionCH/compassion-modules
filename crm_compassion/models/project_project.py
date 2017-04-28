@@ -36,8 +36,7 @@ class project_project(models.Model):
         type = vals.get('project_type')
         if type in ('stand', 'concert', 'presentation', 'meeting',
                     'sport') and not self.env.context.get('from_event'):
-            raise exceptions.Warning(
-                _("Type not allowed for creation"),
+            raise exceptions.UserError(
                 _("Please create an event. It will automatically create "
                   "an associated Project for the event."))
         project = super(project_project, self).create(vals)
@@ -57,7 +56,6 @@ class project_project(models.Model):
         """ Push the changes to linked events and to analytic account. """
         super(project_project, self).write(vals)
         if 'project_type' in vals and not self.env.context.get('from_event'):
-            raise exceptions.Warning(
-                _("Type cannot be changed"),
+            raise exceptions.UserError(
                 _("You cannot change the type of the project."))
         return True

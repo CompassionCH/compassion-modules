@@ -73,13 +73,11 @@ class hr_planning_day_move_request(models.Model):
                              self).create(vals)
             # Check if the move will have no effect
             elif vals['old_date'] == vals['new_date']:
-                raise exceptions.Warning(_('Warning'),
-                                         _(u'You chose the same date'))
+                raise exceptions.UserError(_(u'You chose the same date'))
             else:
                 employee_name = self.env['hr.employee'].browse(
                     vals['employee_id']).name
-                raise exceptions.Warning(
-                    _('Warning'),
+                raise exceptions.UserError(
                     _(u'{} does not work this day : {}').format(
                         employee_name, vals['old_date'])
                 )
@@ -119,8 +117,7 @@ class hr_planning_day_move_request(models.Model):
             if(move_request._check_is_working(
                     move_request.employee_id.id,
                     move_request.new_date)):
-                raise exceptions.Warning(
-                    _('Warning'),
+                raise exceptions.UserError(
                     _(u'{} already works this day : {}').format(
                         move_request.employee_id.name,
                         move_request.new_date)

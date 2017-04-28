@@ -15,7 +15,7 @@ import sys
 from ..mappings.icp_mapping import ICPMapping
 
 from openerp import models, fields, api, _
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 
 logger = logging.getLogger(__name__)
 
@@ -460,7 +460,7 @@ class CompassionProject(models.Model):
         }
         message = message_obj.create(message_vals)
         if message.state == 'failure':
-            raise Warning(message.failure_reason)
+            raise UserError(message.failure_reason)
 
         return True
 

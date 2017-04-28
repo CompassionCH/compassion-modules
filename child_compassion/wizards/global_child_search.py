@@ -10,7 +10,7 @@
 ##############################################################################
 from math import ceil
 from openerp import models, fields, api, _
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 
 from openerp.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
@@ -96,7 +96,7 @@ class GlobalChildSearch(models.TransientModel):
             'profile_search', 'beneficiaries/availabilitysearch',
             'BeneficiarySearchResponseList')
         if self.nb_found == 0:
-            raise Warning(_('No children found.'))
+            raise UserError(_('No children found.'))
         return True
 
     @api.multi
@@ -159,7 +159,7 @@ class GlobalChildSearch(models.TransientModel):
             self.skip += self.take
             tries += 1
             if tries > 5:
-                raise Warning(
+                raise UserError(
                     _("Cannot find enough availalbe children in all "
                       "countries. Try with less"))
 
@@ -213,7 +213,7 @@ class GlobalChildSearch(models.TransientModel):
                 self.global_child_ids += self.env[
                     'compassion.global.child'].create(child_vals)
         else:
-            raise Warning(result.get('content', result)['Error'])
+            raise UserError(result.get('content', result)['Error'])
 
     def _does_match(self, child):
         """ Returns if the selected criterias correspond to the given child.

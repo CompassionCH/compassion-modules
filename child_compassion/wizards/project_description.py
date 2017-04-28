@@ -11,7 +11,7 @@
 import os
 
 from openerp import api, models, fields, _
-from openerp.exceptions import Warning as UserError
+from openerp.exceptions import UserError
 
 try:
     from pyquery import PyQuery

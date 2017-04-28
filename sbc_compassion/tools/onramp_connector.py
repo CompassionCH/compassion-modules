@@ -13,7 +13,7 @@ import base64
 import requests
 
 from openerp import _
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 from openerp.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
 from openerp.addons.message_center_compassion.tools.onramp_logging import \
@@ -47,8 +47,7 @@ class SBCConnector(OnrampConnector):
                 })
                 SBCConnector.__instance._session = session
             else:
-                raise Warning(
-                    _('Missing configuration'),
+                raise UserError(
                     _('Please give connect_url and connect_api_key values '
                       'in your Odoo configuration file.'))
         return SBCConnector.__instance
@@ -73,8 +72,7 @@ class SBCConnector(OnrampConnector):
         if status == 201:
             letter_url = r.text
         else:
-            raise Warning(
-                _("Error while uploading letter image to GMC."),
+            raise UserError(
                 '[%s] %s' % (r.status_code, r.text))
         return letter_url
 

@@ -21,7 +21,7 @@ from datetime import datetime, timedelta, date
 from ..mappings.compassion_child_mapping import CompassionChildMapping
 from .compassion_hold import HoldType
 
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 from openerp.addons.connector.queue.job import job
 from openerp.addons.connector.session import ConnectorSession
 from openerp.addons.message_center_compassion.tools.onramp_connector import \
@@ -362,7 +362,7 @@ class CompassionChild(models.Model):
             message = message_obj.create(message_vals)
             if message.state == 'failure' and not self.env.context.get(
                     'async_mode'):
-                raise Warning(message.failure_reason)
+                raise UserError(message.failure_reason)
         return True
 
     @api.multi

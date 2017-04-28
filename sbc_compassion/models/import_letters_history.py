@@ -17,10 +17,10 @@ import base64
 import zipfile
 
 from io import BytesIO
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 
 from ..tools import import_letter_functions as func
-from openerp import api, fields, models, _, exceptions
+from openerp import api, fields, models, _
 
 from openerp.addons.connector.queue.job import job, related_action
 from openerp.addons.connector.session import ConnectorSession
@@ -127,17 +127,17 @@ class ImportLettersHistory(models.Model):
                         for tmp_file in list_file:
                             tmp += (func.check_file(tmp_file) == 1)
                     except zipfile.BadZipfile:
-                        raise exceptions.Warning(
+                        raise UserError(
                             _('Zip file corrupted (' +
                               attachment.name + ')'))
                     except zipfile.LargeZipFile:
-                        raise exceptions.Warning(
+                        raise UserError(
                             _('Zip64 is not supported(' +
                               attachment.name + ')'))
 
             self.nber_letters = tmp
         else:
-            raise exceptions.Warning(
+            raise UserError(
                 _("State: '{}' not implemented".format(self.state)))
 
     ##########################################################################
@@ -150,7 +150,7 @@ class ImportLettersHistory(models.Model):
                 ('config_id', '=', vals['config_id']),
                 ('state', '!=', 'done')])
             if other_import:
-                raise Warning(
+                raise UserError(
                     _("Another import with the same configuration is "
                       "already open. Please finish it before creating a new "
                       "one.")
@@ -184,7 +184,7 @@ class ImportLettersHistory(models.Model):
         # check if all the imports are OK
         for letters_h in self:
             if letters_h.state != "ready":
-                raise exceptions.Warning(_("Some letters are not ready"))
+                raise UserError(_("Some letters are not ready"))
         # save the imports
         for letters in self:
             correspondence_vals = letters.import_line_ids.get_letter_data()
@@ -255,10 +255,10 @@ class ImportLettersHistory(models.Model):
                     self._analyze_attachment(file_data, attachment.name)
                     progress += 1
                 else:
-                    raise exceptions.Warning(
+                    raise UserError(
                         'Only zip/pdf files are supported.')
             else:
-                raise exceptions.Warning(_('Two files are the same'))
+                raise UserError(_('Two files are the same'))
 
         # remove all the files (now they are inside import_line_ids)
         self.data.unlink()

@@ -11,7 +11,7 @@
 import sys
 
 from openerp import models, fields, api, _
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 
 
 class InterventionSearch(models.TransientModel):
@@ -171,8 +171,8 @@ class InterventionSearch(models.TransientModel):
                 'object_id': self.id
             })
         if not self.intervention_ids:
-            raise Warning(_("No intervention found"),
-                          message.failure_reason or '')
+            raise UserError(
+                message.failure_reason or _("No intervention found"))
         return {
             'name': _('Interventions'),
             'type': 'ir.actions.act_window',
