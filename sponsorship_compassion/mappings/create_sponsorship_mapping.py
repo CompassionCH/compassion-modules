@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from base_sponsorship_mapping import BaseSponsorshipMapping
+from .base_sponsorship_mapping import BaseSponsorshipMapping
 
 
 class CreateSponsorship(BaseSponsorshipMapping):

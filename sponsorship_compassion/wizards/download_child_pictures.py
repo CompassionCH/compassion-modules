@@ -47,7 +47,7 @@ class DownloadChildPictures(models.TransientModel):
     def get_file_name(self):
         return fields.Date.context_today(self) + '_child_pictures.zip'
 
-    @api.one
+    @api.multi
     def _get_picture_url(self, raw_url, type, width, height):
         if (type.lower() == 'headshot'):
             cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(

@@ -9,22 +9,18 @@
 #
 ##############################################################################
 
-from openerp import api, fields, models
-from openerp.osv import orm
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from openerp.tools.translate import _
-
+import logging
 from datetime import datetime
 
-from .product import GIFT_NAMES, SPONSORSHIP_CATEGORY
-
-import logging
-import time
+from openerp import api, fields, models
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from openerp.tools.translate import _
+from .product import GIFT_NAMES
 
 logger = logging.getLogger(__name__)
 
 
-class contract_group(models.Model):
+class ContractGroup(models.Model):
     _inherit = 'recurring.contract.group'
 
     ##########################################################################
@@ -40,10 +36,11 @@ class contract_group(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
 
-    @api.one
+    @api.multi
     def _contains_sponsorship(self):
-        types = self.mapped('contract_ids.type')
-        self.contains_sponsorship = 'S' in types or 'SC' in types
+        for group in self:
+            types = group.mapped('contract_ids.type')
+            group.contains_sponsorship = 'S' in types or 'SC' in types
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -51,7 +48,7 @@ class contract_group(models.Model):
     def _generate_invoices(self, invoicer=None):
         """ Add birthday gifts generation. """
         invoicer = self._generate_birthday_gifts(invoicer)
-        invoicer = super(contract_group, self)._generate_invoices(invoicer)
+        invoicer = super(ContractGroup, self)._generate_invoices(invoicer)
         return invoicer
 
     @api.multi
@@ -117,59 +114,3 @@ class contract_group(models.Model):
             'amount': contract.birthday_invoice})
         gift_wizard.with_context(
             active_ids=contract.id).generate_invoice()
-
-    @api.multi
-    def _setup_inv_line_data(self, contract_line, invoice):
-        """ Contract gifts relate their invoice lines to sponsorship,
-            Correspondence sponsorships don't create invoice lines.
-            Add analytic account to invoice_lines.
-        """
-        invl_data = False
-        contract = contract_line.contract_id
-        if contract.type != 'SC':
-            invl_data = super(contract_group, self)._setup_inv_line_data(
-                contract_line, invoice)
-
-            # If project is suspended, either skip invoice or replace product
-            if contract.type == 'S' and \
-                    contract.project_id.hold_cdsp_funds:
-                config_obj = self.env['ir.config_parameter']
-                suspend_config = config_obj.search([(
-                    'key', '=',
-                    'sponsorship_compassion.suspend_product_id')])
-                if not suspend_config:
-                    return False
-                current_product = self.env['product.product'].with_context(
-                    lang='en_US').browse(invl_data['product_id'])
-                if current_product.categ_name == SPONSORSHIP_CATEGORY:
-                    invl_data.update(self.env[
-                        'recurring.contract'].get_suspend_invl_data(
-                            int(suspend_config[0].value)))
-
-            if contract.type == 'G':
-                sponsorship = contract_line.sponsorship_id
-                if sponsorship.project_id.hold_gifts:
-                    # no gift allowed for project
-                    return False
-                if sponsorship.state in self._get_gen_states():
-                    invl_data['contract_id'] = sponsorship.id
-                else:
-                    raise orm.except_orm(
-                        _('Invoice generation error'),
-                        _('No active sponsorship found for child {0}. '
-                          'The gift contract with id {1} is not valid.')
-                        .format(sponsorship.child_code, str(contract.id)))
-
-            product_id = contract_line.product_id.id
-            partner_id = contract_line.contract_id.partner_id.id
-            analytic = contract_line.contract_id.origin_id.analytic_id
-            if not analytic:
-                a_default = self.env['account.analytic.default'].account_get(
-                    product_id, partner_id, time.strftime(
-                        '%Y-%m-%d'))
-                analytic = a_default and a_default.analytic_id
-            if analytic:
-                invl_data.update({
-                    'account_analytic_id': analytic.id})
-
-        return invl_data

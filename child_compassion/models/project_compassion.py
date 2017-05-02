@@ -303,35 +303,15 @@ class CompassionProject(models.Model):
         return self.env['connect.month'].get_months_selection()
 
     @api.depends('lifecycle_ids')
-    @api.one
+    @api.multi
     def _set_suspension_state(self):
-        if isinstance(self.id, models.NewId):
-            return
-        try:
-            old_value = self.read(['suspension'])[0]['suspension']
-        except IndexError:
-            return
-        if self.lifecycle_ids:
-            last_info = self.lifecycle_ids[0]
+        for project in self.filtered('lifecycle_ids'):
+            last_info = project.lifecycle_ids[0]
             if last_info.type == 'Suspension':
-                suspension_status = 'fund-suspended' if \
+                project.suspension = 'fund-suspended' if \
                     last_info.hold_cdsp_funds else 'suspended'
-                if suspension_status == 'fund-suspended' and suspension_status\
-                        != old_value:
-                    self.suspend_funds()
-                if last_info.hold_gifts:
-                    self._hold_gifts()
-                if last_info.hold_s2b_letters:
-                    self._hold_letters()
-                self.suspension = suspension_status
             elif last_info.type == 'Reactivation':
-                if old_value == 'fund-suspended':
-                    self._reactivate_project()
-                if not last_info.hold_gifts:
-                    self._reactivate_gifts()
-                if not last_info.hold_s2b_letters:
-                    self._reactivate_letters()
-                self.suspension = False
+                project.suspension = False
 
     @api.model
     def _get_state(self):
@@ -397,14 +377,14 @@ class CompassionProject(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.one
     def suspend_funds(self):
         """ Hook to perform some action when project is suspended.
         By default: log a message.
         """
-        self.message_post(
-            "The project was suspended and funds are retained.",
-            "Project Suspended", 'comment')
+        for project in self:
+            project.message_post(
+                "The project was suspended and funds are retained.",
+                "Project Suspended", 'comment')
         return True
 
     @api.model
@@ -467,22 +447,22 @@ class CompassionProject(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    @api.one
-    def _reactivate_project(self):
+    def reactivate_project(self):
         """ To perform some actions when project is reactivated """
-        self.message_post(
-            "The project is reactivated.",
-            "Project Reactivation", 'comment')
+        for project in self:
+            project.message_post(
+                "The project is reactivated.",
+                "Project Reactivation", 'comment')
         return True
 
-    def _hold_gifts(self):
+    def hold_gifts_action(self):
         pass
 
-    def _hold_letters(self):
+    def hold_letters_action(self):
         pass
 
-    def _reactivate_gifts(self):
+    def reactivate_gifts(self):
         pass
 
-    def _reactivate_letters(self):
+    def reactivate_letters(self):
         pass

@@ -1,100 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
-        <record id="view_sponsorship_contract_form_compassion" model="ir.ui.view">
-            <field name="name">sponsorship.contract.compassion.form</field>
-            <field name="model">recurring.contract</field>
-            <field name="inherit_id" ref="contract_compassion.view_recurring_contract_form_compassion"/>
-            <field name="arch" type="xml">
-                <!-- Add correspondant field for sponsorships -->
-                <field name="partner_id" position="after">
-                    <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', 'not in', ['S','SC'])], 'required': [('type', 'in', ['S', 'SC'])]}"/>
-                </field>
-                
-                <!-- Make origin and channel mandatory for sponsorships -->
-                <field name="origin_id" position="attributes">
-                    <attribute name="attrs">{'required':[('type', 'in', ['S','SC'])]}</attribute>
-                </field>
-                <field name="channel" position="attributes">
-                    <attribute name="attrs">{'required':[('type', 'in', ['S','SC'])]}</attribute>
-                </field>
-                
-                <!-- Field child_id is not available for general contracts -->
-                <xpath expr="//field[@name='child_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': ['|', ('type', 'not in', ['S','SC']), ('state', 'in', ['active', 'terminated', 'cancelled'])], 'required': [('type', 'in', ['S','SC'])]}</attribute>
-                </xpath>
-                
-                <!-- Add context in contract lines -->
-                <xpath expr="//field[@name='contract_line_ids']" position="attributes">
-                    <attribute name="context">{'default_type': type}</attribute>
-                </xpath>
-                
-                <!-- Automatic birthday invoice -->
-                <field name="next_invoice_date" position="after">
-                    <field name="birthday_invoice"
-                           attrs="{'invisible': ['|', ('state', 'in', ['terminated', 'cancelled']), ('type', 'not in', ['S','SC'])]}"/>
-                </field>
-                
-                <!-- Add context for group view -->
-                <field name="group_id" position="attributes">
-                    <attribute name="context">{'default_type': context.get('default_type'), 'default_partner_id': partner_id}</attribute>
-                </field>
-
-                <!-- Add global_id field -->
-                <field name="type" position="after">
-                    <field name="global_id" attrs="{'invisible': [('type', 'not like', 'S')]}"/>
-                </field>
-
-                <!-- Add transfer field -->
-                <field name="end_reason" position="after">
-                    <field name="transfer_partner_id" attrs="{'invisible': [('transfer_partner_id', '=', False)]}"/>
-                </field>
-                
-                <!-- Replace filter domain of parent_id field to take correspondant -->
-                <field name="parent_id" position="attributes">
-                    <attribute name="domain" position="replace">
-                        <attribute name="domain">[('correspondant_id', '=', correspondant_id), ('child_id', '!=', child_id)]</attribute>
-                    </attribute>
-                </field>
+<odoo>
+    <record id="view_sponsorship_contract_form_compassion" model="ir.ui.view">
+        <field name="name">sponsorship.contract.compassion.form</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id" ref="contract_compassion.view_recurring_contract_form_compassion"/>
+        <field name="arch" type="xml">
+            <!-- Add correspondant field for sponsorships -->
+            <field name="partner_id" position="after">
+                <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', 'not in', ['S','SC'])], 'required': [('type', 'in', ['S', 'SC'])]}"/>
             </field>
-        </record>
 
-        <record id="view_compassion_contract_line_tree" model="ir.ui.view">
-            <field name="name">compassion.contract.line.tree</field>
-            <field name="model">recurring.contract.line</field>
-            <field name="inherit_id" ref="recurring_contract.view_recurring_contract_line_tree" />
-            <field name="arch" type="xml">
-                <field name="product_id" position="attributes">
-                    <attribute name="options">
-                        {'colors':{'Sponsorship':'blue', 'Fund':'green', 'Sponsor gifts':'blueviolet'}, 'field_color':'categ_name'}
-                    </attribute>
-                </field>
-                <field name="product_id" position="after">
-                    <!-- Ability to link gift contract lines to sponsorships -->
-                    <field name="sponsorship_id"
-                           domain="[('partner_id', '=', parent.partner_id), ('type', 'like', 'S'), ('state', 'not in', ['draft', 'terminated', 'cancelled'])]"/>
-                </field>
+            <!-- Make origin and channel mandatory for sponsorships -->
+            <field name="origin_id" position="attributes">
+                <attribute name="attrs">{'required':[('type', 'in', ['S','SC'])]}</attribute>
             </field>
-        </record>
+            <field name="channel" position="attributes">
+                <attribute name="attrs">{'required':[('type', 'in', ['S','SC'])]}</attribute>
+            </field>
 
-        <record model="ir.actions.act_window" id="contract_compassion.action_contract">
-            <field name="domain">[('type','in',['O','G'])]</field>
-        </record>
+            <!-- Field child_id is not available for general contracts -->
+            <xpath expr="//field[@name='child_id']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|', ('type', 'not in', ['S','SC']), ('state', 'in', ['active', 'terminated', 'cancelled'])], 'required': [('type', 'in', ['S','SC'])]}</attribute>
+            </xpath>
 
-        <record id="action_sponsorship_contract" model="ir.actions.act_window">
-            <field name="name">Sponsorships</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">recurring.contract</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="domain">[('type','like','S')]</field>
-            <field name="context">{'default_type':'S'}</field>
-        </record>
+            <!-- Add context in contract lines -->
+            <xpath expr="//field[@name='contract_line_ids']" position="attributes">
+                <attribute name="context">{'default_type': type}</attribute>
+            </xpath>
 
-        <!-- Move the Sponsorships Menu to the Sponsorship Section -->
-        <menuitem id="menu_sponsorship_contract_form" parent="child_compassion.menu_sponsorship_section"
-                  name="Sponsorships" sequence="2" action="action_sponsorship_contract"/>
-        <menuitem id="open_customers" parent="child_compassion.menu_sponsorship_section"
-                  name="Supporters" action="base.action_partner_customer_form" sequence="0"/>
-    </data>
-</openerp>
+            <!-- Automatic birthday invoice -->
+            <field name="next_invoice_date" position="after">
+                <field name="birthday_invoice"
+                       attrs="{'invisible': ['|', ('state', 'in', ['terminated', 'cancelled']), ('type', 'not in', ['S','SC'])]}"/>
+            </field>
+
+            <!-- Add context for group view -->
+            <field name="group_id" position="attributes">
+                <attribute name="context">{'default_type': context.get('default_type'), 'default_partner_id': partner_id}</attribute>
+            </field>
+
+            <!-- Add global_id field -->
+            <field name="type" position="after">
+                <field name="global_id" attrs="{'invisible': [('type', 'not like', 'S')]}"/>
+            </field>
+
+            <!-- Add transfer field -->
+            <field name="end_reason" position="after">
+                <field name="transfer_partner_id" attrs="{'invisible': [('transfer_partner_id', '=', False)]}"/>
+            </field>
+
+            <!-- Replace filter domain of parent_id field to take correspondant -->
+            <field name="parent_id" position="attributes">
+                <attribute name="domain" position="replace">
+                    <attribute name="domain">[('correspondant_id', '=', correspondant_id), ('child_id', '!=', child_id)]</attribute>
+                </attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_compassion_sponsorship_line_tree" model="ir.ui.view">
+        <field name="name">compassion.sponsorship.line.tree</field>
+        <field name="model">recurring.contract.line</field>
+        <field name="inherit_id" ref="recurring_contract.view_recurring_contract_line_tree" />
+        <field name="arch" type="xml">
+            <field name="product_id" position="attributes">
+                <attribute name="options">
+                    {'colors':{'Sponsorship':'blue', 'Fund':'green', 'Sponsor gifts':'blueviolet'}, 'field_color':'categ_name'}
+                </attribute>
+            </field>
+            <field name="product_id" position="after">
+                <!-- Ability to link gift contract lines to sponsorships -->
+                <field name="contract_type" invisible="1"/>
+                <field name="sponsorship_id"
+                       domain="[('partner_id', '=', parent.partner_id), ('type', 'like', 'S'), ('state', 'not in', ['draft', 'terminated', 'cancelled'])]"
+                />
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="contract_compassion.action_contract">
+        <field name="domain">[('type','in',['O','G'])]</field>
+    </record>
+
+    <record id="action_sponsorship_contract" model="ir.actions.act_window">
+        <field name="name">Sponsorships</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">recurring.contract</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('type','like','S')]</field>
+        <field name="context">{'default_type':'S'}</field>
+    </record>
+
+    <!-- Move the Sponsorships Menu to the Sponsorship Section -->
+    <menuitem id="menu_sponsorship_contract_form" parent="child_compassion.menu_sponsorship_section"
+              name="Sponsorships" sequence="2" action="action_sponsorship_contract"/>
+    <menuitem id="open_customers" parent="child_compassion.menu_sponsorship_section"
+              name="Supporters" action="base.action_partner_customer_form" sequence="0"/>
+</odoo>

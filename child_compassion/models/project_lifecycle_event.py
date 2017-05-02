@@ -94,6 +94,31 @@ class ProjectLifecycle(models.Model):
         ]
 
     @api.model
+    def create(self, vals):
+        """ Call suspension and reactivation process on projects. """
+        project = self.env['compassion.project'].browse(
+            vals.get('project_id'))
+        fund_suspended = project.suspension == 'fund-suspended'
+        hold_gifts = project.hold_gifts
+        hold_letters = project.hold_s2b_letters
+        event = super(ProjectLifecycle, self).create(vals)
+        if event.type == 'Suspension':
+            if event.hold_cdsp_funds and not fund_suspended:
+                project.suspend_funds()
+            if event.hold_gifts and not hold_gifts:
+                project.hold_gifts_action()
+            if event.hold_s2b_letters and not hold_letters:
+                project.hold_letters_action()
+        if event.type == 'Reactivation':
+            if fund_suspended:
+                project.reactivate_project()
+            if hold_gifts and not event.hold_gifts():
+                project.reactivate_gifts()
+            if hold_letters and not event.hold_s2b_letters:
+                project.reactivate_letters()
+        return event
+
+    @api.model
     def process_commkit(self, commkit_data):
         project_mapping = mapping.new_onramp_mapping(
             self._name,

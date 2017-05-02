@@ -10,7 +10,7 @@
 ##############################################################################
 
 from openerp import fields
-from base_sponsorship_mapping import BaseSponsorshipMapping
+from .base_sponsorship_mapping import BaseSponsorshipMapping
 from datetime import datetime
 
 

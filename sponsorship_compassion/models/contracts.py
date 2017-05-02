@@ -9,9 +9,9 @@
 #
 ##############################################################################
 
-from openerp import api, exceptions, fields, models, _
+from openerp import api, fields, models, _
+from openerp.exceptions import UserError, ValidationError
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-
 from openerp.addons.child_compassion.models.compassion_hold import HoldType
 
 from datetime import datetime, date
@@ -26,35 +26,45 @@ logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)
 
 
-class sponsorship_line(models.Model):
+class SponsorshipLine(models.Model):
     _inherit = 'recurring.contract.line'
 
+    contract_type = fields.Selection(related='contract_id.type')
     sponsorship_id = fields.Many2one(
-        'recurring.contract', 'Sponsorship')
+        'recurring.contract', 'Sponsorship', ondelete='cascade'
+    )
 
-    @api.v7
-    def fields_view_get(self, cr, uid, view_id=None, view_type='tree',
-                        context=None, toolbar=False, submenu=False):
-        """ Change product domain depending on contract type. """
-        res = super(sponsorship_line, self).fields_view_get(
-            cr, uid, view_id, view_type, context, toolbar, submenu)
+    def fields_view_get(self, *args, **kwargs):
+        """ Hide field sponsorship_id for sponsorships.
+        """
+        res = super(SponsorshipLine, self).fields_view_get(
+            *args, **kwargs)
 
-        if view_type == 'tree':
-            type = context.get('default_type', 'O')
-            if 'S' in type:
-                res['fields']['product_id']['domain'] = [
-                    ('categ_name', 'in', [SPONSORSHIP_CATEGORY,
-                                          FUND_CATEGORY])]
+        if kwargs.get('view_type') == 'tree':
+            s_type = kwargs.get('context', dict()).get('default_type', 'O')
+            if 'S' in s_type:
                 # Remove field sponsorship_id for sponsorship contracts
                 doc = etree.XML(res['arch'])
                 for node in doc.xpath("//field[@name='sponsorship_id']"):
                     node.getparent().remove(node)
                 res['arch'] = etree.tostring(doc)
-                del(res['fields']['sponsorship_id'])
-            else:
-                res['fields']['product_id']['domain'] = [
-                    ('categ_name', '!=', SPONSORSHIP_CATEGORY)]
+                del (res['fields']['sponsorship_id'])
 
+        return res
+
+    @api.onchange('contract_type')
+    def onchange_type(self):
+        """ Change domain of product depending on type of contract. """
+        res = dict()
+        if 'S' in self.contract_id.type:
+            res['domain'] = {
+                'product_id': [('categ_name', 'in', [SPONSORSHIP_CATEGORY,
+                                                     FUND_CATEGORY])]
+            }
+        else:
+            res['domain'] = {
+                'product_id': [('categ_name', '!=', SPONSORSHIP_CATEGORY)]
+            }
         return res
 
 
@@ -74,8 +84,6 @@ class SponsorshipContract(models.Model):
         "Set the amount to enable automatic invoice creation each year "
         "for a birthday gift. The invoice is set two months before "
         "child's birthday."), track_visibility='onchange')
-    contract_line_ids = fields.One2many(default=lambda self:
-                                        self._get_standard_lines())
     reading_language = fields.Many2one(
         'res.lang.compassion', 'Preferred language', required=False,
         track_visiblity='onchange')
@@ -94,6 +102,24 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    def fields_view_get(self, *args, **kwargs):
+        """ Display only contract type needed in view.
+        """
+        res = super(SponsorshipContract, self).fields_view_get(
+            *args, **kwargs)
+
+        if kwargs.get('view_type') == 'form':
+            s_type = kwargs.get('context', dict()).get('default_type', 'O')
+            if 'S' in s_type:
+                # Remove non sponsorship types
+                res['fields']['type']['selection'].pop(0)
+                res['fields']['type']['selection'].pop(0)
+            else:
+                # Remove type Sponsorships so that we cannot change to it.
+                res['fields']['type']['selection'].pop(2)
+                res['fields']['type']['selection'].pop(2)
+
+        return res
 
     @api.model
     def get_ending_reasons(self):
@@ -113,37 +139,6 @@ class SponsorshipContract(models.Model):
             res.sort(key=lambda tup: int(float(tup[0])))  # Sort res
         return res
 
-    @api.model
-    def _get_sponsorship_standard_lines(self):
-        """ Select Sponsorship and General Fund by default """
-        res = []
-        product_obj = self.env['product.product'].with_context(lang='en_US')
-        sponsorship_id = product_obj.search(
-            [('name', '=', 'Sponsorship')])[0].id
-        gen_id = product_obj.search(
-            [('name', '=', 'General Fund')])[0].id
-        sponsorship_vals = {
-            'product_id': sponsorship_id,
-            'quantity': 1,
-            'amount': 42,
-            'subtotal': 42
-        }
-        gen_vals = {
-            'product_id': gen_id,
-            'quantity': 1,
-            'amount': 8,
-            'subtotal': 8
-        }
-        res.append([0, 6, sponsorship_vals])
-        res.append([0, 6, gen_vals])
-        return res
-
-    @api.model
-    def _get_standard_lines(self):
-        if 'S' in self.env.context.get('default_type', 'O'):
-            return self._get_sponsorship_standard_lines()
-        return []
-
     @api.multi
     @api.depends('partner_id', 'correspondant_id')
     def _is_fully_managed(self):
@@ -161,14 +156,15 @@ class SponsorshipContract(models.Model):
             ('SC', _('Correspondence'))])
         return res
 
-    @api.one
+    @api.multi
     def _get_last_paid_invoice(self):
         """ Override to exclude gift invoices. """
-        self.last_paid_invoice_date = max(
-            self.invoice_line_ids.with_context(lang='en_US').filtered(
-                lambda l: l.state == 'paid' and
-                l.product_id.categ_name != GIFT_CATEGORY).mapped(
-                    'invoice_id.date_invoice') or [False])
+        for contract in self:
+            contract.last_paid_invoice_date = max(
+                contract.invoice_line_ids.with_context(lang='en_US').filtered(
+                    lambda l: l.state == 'paid' and
+                    l.product_id.categ_name != GIFT_CATEGORY).mapped(
+                        'invoice_id.date_invoice') or [False])
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -215,7 +211,7 @@ class SponsorshipContract(models.Model):
         for contract in self:
             # We can only delete draft sponsorships.
             if 'S' in contract.type and contract.state != 'draft':
-                raise exceptions.UserError(
+                raise UserError(
                     _('You cannot delete a validated sponsorship.'))
             # Remove sponsor of child
             if 'S' in contract.type and contract.child_id:
@@ -236,10 +232,11 @@ class SponsorshipContract(models.Model):
         inv_line_obj = self.env['account.invoice.line']
         invl_search = self._filter_clean_invoices(since_date, to_date)
         inv_lines = inv_line_obj.search(invl_search)
-        reconciles = inv_lines.mapped('invoice_id.payment_ids.reconcile_id')
+        reconciles = inv_lines.mapped(
+            'invoice_id.payment_move_line_ids.full_reconcile_id')
 
         # Unreconcile paid invoices
-        reconciles.mapped('line_id')._remove_move_reconcile()
+        reconciles.mapped('reconciled_line_ids').remove_move_reconcile()
 
         return True
 
@@ -258,8 +255,8 @@ class SponsorshipContract(models.Model):
         date_start = datetime.today().strftime(DF)
 
         config_obj = self.env['ir.config_parameter']
-        suspend_config = config_obj.search(
-            [('key', '=', 'sponsorship_compassion.suspend_product_id')])
+        suspend_config = config_obj.get_param(
+            'sponsorship_compassion.suspend_product_id')
         # Cancel invoices in the period of suspension
         self._clean_invoices(
             date_start, keep_lines=_('Center suspended'))
@@ -283,7 +280,7 @@ class SponsorshipContract(models.Model):
 
         # Change invoices if config tells to do so.
         if suspend_config:
-            product_id = int(suspend_config[0].value)
+            product_id = int(suspend_config)
             self._suspend_change_invoices(date_start,
                                           product_id)
 
@@ -313,9 +310,9 @@ class SponsorshipContract(models.Model):
         product = self.env['product.product'].browse(product_id)
         vals = {
             'product_id': product_id,
-            'account_id': product.property_account_income.id,
+            'account_id': product.property_account_income_id.id,
             'name': 'Replacement of sponsorship (fund-suspended)'}
-        rec = self.env['account.analytic.default'].account_get(product.id)
+        rec = self.env['account.analytic.attribution'].account_get(product.id)
         if rec and rec.analytic_id:
             vals['account_analytic_id'] = rec.analytic_id.id
 
@@ -329,16 +326,14 @@ class SponsorshipContract(models.Model):
         """
         date_start = datetime.today().strftime(DF)
         config_obj = self.env['ir.config_parameter']
-        suspend_config = config_obj.search(
-            [('key', '=', 'sponsorship_compassion.suspend_product_id')],
-            limit=1)
+        suspend_config = config_obj.get_param(
+            'sponsorship_compassion.suspend_product_id')
         invl_obj = self.env['account.invoice.line']
         sponsorship_product = self.env['product.product'].with_context(
             lang='en_US').search([('name', '=', 'Sponsorship')])
-        contracts = None
         if suspend_config:
             # Revert future invoices with sponsorship product
-            susp_product_id = int(suspend_config.value)
+            susp_product_id = int(suspend_config)
             invl_lines = invl_obj.search([
                 ('contract_id', 'in', self.ids),
                 ('product_id', '=', susp_product_id),
@@ -346,10 +341,11 @@ class SponsorshipContract(models.Model):
                 ('due_date', '>=', date_start)])
             invl_data = {
                 'product_id': sponsorship_product.id,
-                'account_id': sponsorship_product.property_account_income.id,
+                'account_id':
+                sponsorship_product.property_account_income_id.id,
                 'name': sponsorship_product.name
             }
-            rec = self.env['account.analytic.default'].account_get(
+            rec = self.env['account.analytic.attribution'].account_get(
                 sponsorship_product.id)
             if rec and rec.analytic_id:
                 invl_data['account_analytic_id'] = rec.analytic_id.id
@@ -359,10 +355,10 @@ class SponsorshipContract(models.Model):
             contracts = invl_lines.mapped('contract_id')
             reconciles = invoices.filtered(
                 lambda inv: inv.state == 'paid').mapped(
-                'payment_ids.reconcile_id')
+                'payment_move_line_ids.full_reconcile_id')
 
             # Unreconcile paid invoices
-            reconciles.mapped('line_id')._remove_move_reconcile()
+            reconciles.mapped('line_id').remove_move_reconcile()
             reconciles.unlink()
             # Cancel and confirm again invoices to update move lines
             invoices.action_cancel()
@@ -376,11 +372,12 @@ class SponsorshipContract(models.Model):
                 ('state', '=', 'cancel'),
                 ('due_date', '>=', date_start)])
             contracts = inv_lines.mapped('contract_id')
-
-            for invoice in inv_lines.mapped('invoice_id').filtered(
-                    lambda inv: inv.state == 'cancel'):
-                invoice.action_cancel_draft()
-                invoice.signal_workflow('invoice_open')
+            to_open = inv_lines.mapped('invoice_id').filtered(
+                lambda inv: inv.state == 'cancel')
+            to_open.action_cancel_draft()
+            for i in to_open:
+                i.signal_workflow('invoice_open')
+                i.env.cr.commit()
 
         # Log a note in the contracts
         for contract in contracts:
@@ -423,29 +420,73 @@ class SponsorshipContract(models.Model):
                 child.write({'hold_id': hold.id})
         return True
 
+    @api.multi
+    def get_inv_lines_data(self):
+        """ Contract gifts relate their invoice lines to sponsorship,
+            Correspondence sponsorships don't create invoice lines.
+            Add analytic account to invoice_lines.
+        """
+        contracts = self.filtered(lambda c: c.type != 'SC')
+        suspend_config = int(self.env['ir.config_parameter'].get_param(
+            'sponsorship_compassion.suspend_product_id', 0))
+        res = list()
+        for contract in contracts:
+            invl_datas = super(SponsorshipContract,
+                               contract).get_inv_lines_data()
+
+            # If project is suspended, either skip invoice or replace product
+            if contract.type == 'S' and \
+                    contract.project_id.hold_cdsp_funds:
+                if not suspend_config:
+                    continue
+                for invl_data in invl_datas:
+                    current_product = self.env['product.product'].with_context(
+                        lang='en_US').browse(invl_data['product_id'])
+                    if current_product.categ_name == SPONSORSHIP_CATEGORY:
+                        invl_data.update(self.get_suspend_invl_data(
+                            suspend_config))
+
+            if contract.type == 'G':
+                sponsorship = contract.sponsorship_id
+                if sponsorship.project_id.hold_gifts:
+                    # no gift allowed for project
+                    continue
+                if sponsorship.state in self._get_gen_states():
+                    for invl_data in invl_datas:
+                        invl_data['contract_id'] = sponsorship.id
+                else:
+                    logger.error(
+                        'No active sponsorship found for child {0}. '
+                        'The gift contract with id {1} is not valid.'
+                        .format(sponsorship.child_code, str(contract.id))
+                    )
+                    continue
+
+            # Find the analytic account
+            for invl_data in invl_datas:
+                contract = self.env['recurring.contract'].browse(
+                    invl_data['contract_id'])
+                product_id = invl_data['product_id']
+                partner_id = contract.partner_id.id
+                analytic = contract.origin_id.analytic_id
+                if not analytic:
+                    a_default = self.env[
+                        'account.analytic.attribution'].account_get(
+                            product_id, partner_id, date=fields.Date.today())
+                    analytic = a_default and a_default.analytic_id
+                if analytic:
+                    invl_data.update({
+                        'account_analytic_id': analytic.id})
+
+            # Append the invoice lines.
+            res.extend(invl_datas)
+
+        return res
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.v7
-    def fields_view_get(self, cr, uid, view_id=None, view_type='form',
-                        context=None, toolbar=False, submenu=False):
-        """ Display only contract type needed in view. """
-        res = super(SponsorshipContract, self).fields_view_get(
-            cr, uid, view_id, view_type, context, toolbar, submenu)
-
-        if view_type == 'form' and (isinstance(res['fields'], dict) and
-                                    'type' in res['fields']):
-            if 'S' in context.get('default_type', 'O'):
-                # Remove non sponsorship types
-                res['fields']['type']['selection'].pop(0)
-                res['fields']['type']['selection'].pop(0)
-            else:
-                # Remove type Sponsorships so that we cannot change to it.
-                res['fields']['type']['selection'].pop(2)
-                res['fields']['type']['selection'].pop(2)
-        return res
-
-    @api.one
+    @api.multi
     @api.onchange('partner_id')
     def on_change_partner_id(self):
         super(SponsorshipContract, self).on_change_partner_id()
@@ -523,14 +564,7 @@ class SponsorshipContract(models.Model):
                             "activation_date = current_date,is_active = True "
                             "where id = %s", [contract.id])
                         self.env.invalidate_all()
-            elif contract.type == 'SC':
-                # Activate directly correspondence sponsorships
-                self.env.cr.execute(
-                    "update recurring_contract set "
-                    "activation_date = current_date,is_active = True "
-                    "where id = %s", [contract.id])
-                self.env.invalidate_all()
-            if 'S' in contract.type:
+            if contract.type == 'S':
                 # Update the hold of the child to No Money Hold
                 hold = contract.child_id.hold_id
                 hold.write({
@@ -578,7 +612,7 @@ class SponsorshipContract(models.Model):
                 failure = message.failure_reason
                 message.unlink()
                 self.env.cr.commit()
-                raise exceptions.UserError(failure)
+                raise UserError(failure)
             else:
                 self.env.cr.commit()
 
@@ -738,13 +772,13 @@ class SponsorshipContract(models.Model):
 
                 # Check contract is active or terminated recently.
                 if contract.state == 'cancelled':
-                    raise exceptions.UserError(
+                    raise UserError(
                         _("The contract %s is not active.") % contract.name)
                 if contract.state == 'terminated' and contract.end_date:
                     ended_since = date.today() - fields.Date.from_string(
                         contract.end_date)
                     if not ended_since.days <= 180:
-                        raise exceptions.UserError(
+                        raise UserError(
                             _("The contract %s is not active.")
                             % contract.name)
 
@@ -755,48 +789,21 @@ class SponsorshipContract(models.Model):
                     payment_allowed = not project.hold_cdsp_funds or \
                         invl.due_date < project.status_date
                 if not payment_allowed:
-                    raise exceptions.UserError(
+                    raise UserError(
                         _("The project %s is fund-suspended. You cannot "
                           "reconcile invoice (%s).") % (project.icp_id,
                                                         invoice.id))
         super(SponsorshipContract, self).invoice_paid(invoice)
 
-    @api.one
+    @api.multi
     @api.constrains('group_id')
     def _is_a_valid_group(self):
-        if 'S' in self.type:
-            if not self.group_id.contains_sponsorship or\
-                    self.group_id.recurring_value != 1:
-                raise exceptions.ValidationError(_(
+        for contract in self.filtered(lambda c: 'S' in c.type):
+            if not contract.group_id.contains_sponsorship or \
+                    contract.group_id.recurring_value != 1:
+                raise ValidationError(_(
                     'You should select payment option with '
                     '"1 month" as recurring value'))
-        return True
-
-    @api.one
-    @api.depends('contract_line_ids')
-    def _has_valid_contract_lines(self, contract_lines, type):
-        forbidden_product_types = {
-            'O': [SPONSORSHIP_CATEGORY, GIFT_CATEGORY],
-        }
-        whitelist_product_types = {
-            'G': [GIFT_CATEGORY],
-            'S': [SPONSORSHIP_CATEGORY, FUND_CATEGORY],
-            'SC': [SPONSORSHIP_CATEGORY, FUND_CATEGORY],
-        }
-
-        for contract_line in self.contract_line_ids.with_context(lang='en_US'):
-            product = contract_line.product_id
-            if product:
-                categ_name = product.categ_name
-                allowed = whitelist_product_types.get(self.type)
-                forbidden = forbidden_product_types.get(self.type)
-                if (allowed and categ_name not in allowed) or \
-                        (forbidden and categ_name in forbidden):
-                    message = _('You can only select {0} products.').format(
-                        str(allowed)) if allowed else _(
-                        'You should not select product '
-                        'from category "{0}"'.format(categ_name))
-                    raise exceptions.UserError(message)
         return True
 
     @api.multi
@@ -889,4 +896,4 @@ class SponsorshipContract(models.Model):
                     self.env.ref('sponsorship_compassion.{}'.format(
                         row[contract_id])).contract_cancelled()
                 else:
-                    raise exceptions.UserError('State not implemented')
+                    raise UserError('State not implemented')

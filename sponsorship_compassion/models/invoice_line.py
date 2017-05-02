@@ -9,35 +9,32 @@
 #
 ##############################################################################
 
-from openerp import api, exceptions, fields, models, _
-from openerp.tools import mod10r
-
-from .product import GIFT_CATEGORY, SPONSORSHIP_CATEGORY
+from openerp import api, fields, models, _
 
 
-class invoice_line(models.Model):
+class InvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
     last_payment = fields.Date(
-        compute='_set_last_payment', store=True)
-
-    @api.multi
-    @api.depends('invoice_id.payment_ids', 'state')
-    def _set_last_payment(self):
-        for line in self:
-            last_date = None
-            for payment in line.invoice_id.payment_ids.filtered('credit'):
-                if payment.date > last_date:
-                    last_date = payment.date
-            line.last_payment = last_date
+        related='invoice_id.last_payment', store=True)
 
 
-class account_invoice(models.Model):
+class AccountInvoice(models.Model):
     """Generate automatically a BVR Reference for LSV Invoices"""
     _inherit = 'account.invoice'
 
     children = fields.Char(
         'Children', compute='_set_children')
+    last_payment = fields.Date(compute='compute_last_payment', store=True)
+
+    @api.depends('payment_move_line_ids', 'state')
+    @api.multi
+    def compute_last_payment(self):
+        for invoice in self.filtered('payment_move_line_ids'):
+            filter = 'credit' if invoice.type == 'out_invoice' else 'debit'
+            payment_dates = invoice.payment_move_line_ids.filtered(
+                filter).mapped('date')
+            invoice.last_payment = max(payment_dates or [False])
 
     @api.multi
     def _set_children(self):
@@ -51,25 +48,3 @@ class account_invoice(models.Model):
                 invoice.children = children.local_id
             else:
                 invoice.children = False
-
-    @api.multi
-    def action_date_assign(self):
-        """Method called when invoice is validated.
-            - Add BVR Reference if payment term is LSV and no reference is
-              set.
-            - Prevent validating invoices missing related contract.
-        """
-        for invoice in self:
-            if invoice.payment_term and 'LSV' in invoice.payment_term.name \
-                    and not invoice.bvr_reference:
-                seq = self.env['ir.sequence']
-                ref = mod10r(seq.next_by_code('contract.bvr.ref'))
-                invoice.write({'bvr_reference': ref})
-            for invl in invoice.invoice_line_ids:
-                if not invl.contract_id and invl.product_id.categ_name in (
-                        SPONSORSHIP_CATEGORY, GIFT_CATEGORY):
-                    raise exceptions.UserError(
-                        _("Invoice %s for '%s' is missing a sponsorship.") %
-                        (str(invoice.id), invoice.partner_id.name))
-
-        return super(account_invoice, self).action_date_assign()

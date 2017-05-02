@@ -10,8 +10,6 @@
 ##############################################################################
 
 from . import generate_gift_wizard
-from . import migration_r4
-from . import migration_analytic
 from . import end_contract_wizard
 from . import child_hold_wizard
 from . import download_child_pictures

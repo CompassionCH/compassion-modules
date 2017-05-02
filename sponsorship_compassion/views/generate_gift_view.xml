@@ -1,35 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
-        <record id="view_generate_gift" model="ir.ui.view">
-            <field name="name">contract.generate.gift.form</field>
-            <field name="model">generate.gift.wizard</field>
-            <field eval="18" name="priority"/>
-            <field name="arch" type="xml">
-                <form string="Gift Generation" version="7.0">
-                    <separator string="Gift generation from contract"/>
-                    <group>
-                        <field name="product_id" domain="[('categ_name', '=', 'Sponsor gifts')]"
-                               options="{'colors': {'Sponsorship':'blue', 'Fund':'green', 'Sponsor gifts':'blueviolet'}, 'field_color':'categ_name'}"/>
-                        <field name="amount" />
-                        <field name="invoice_date" />
-                        <field name="description" />
-                        <field name="force" />
-                    </group>
-                    <footer>
-                        <button name="generate_invoice" string="Generate" type="object" class="oe_highlight"/>
-                        or
-                        <button string="Cancel" class="oe_link" special="cancel"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
+<odoo>
+    <record id="view_generate_gift" model="ir.ui.view">
+        <field name="name">contract.generate.gift.form</field>
+        <field name="model">generate.gift.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Gift Generation">
+                <separator string="Gift generation from contract"/>
+                <group>
+                    <field name="product_id" domain="[('categ_name', '=', 'Sponsor gifts')]"
+                           options="{'colors': {'Sponsorship':'blue', 'Fund':'green', 'Sponsor gifts':'blueviolet'}, 'field_color':'categ_name'}"/>
+                    <field name="amount" />
+                    <field name="invoice_date" />
+                    <field name="description" />
+                    <field name="force" />
+                </group>
+                <footer>
+                    <button name="generate_invoice" string="Generate" type="object" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
 
-        <!-- Generate Gift -->
-        <act_window id="action_generate_gift"
-                key2="client_action_multi" name="Generate Gift"
-                res_model="generate.gift.wizard" src_model="recurring.contract"
-                view_mode="form" target="new" view_type="form"
-                />
-    </data>
-</openerp>
+    <!-- Generate Gift -->
+    <act_window id="action_generate_gift"
+            key2="client_action_multi" name="Generate Gift"
+            res_model="generate.gift.wizard" src_model="recurring.contract"
+            view_mode="form" target="new" view_type="form"
+            />
+</odoo>
