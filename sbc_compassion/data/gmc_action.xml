@@ -1,4 +1,4 @@
-<openerp>
+<odoo>
     <data noupdate="1">
         <!-- Letter Messages -->
         <record id="update_letter" model="gmc.action">
@@ -30,4 +30,4 @@
             <field name="action_id" ref="update_letter"/>
         </record>
     </data>
-</openerp>
+</odoo>

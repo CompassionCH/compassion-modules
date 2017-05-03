@@ -8,14 +8,13 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-import magic
 import base64
+import logging
 import re
 import uuid
 
 from openerp import fields, models, api, _
 from openerp.exceptions import UserError
-from pyPdf import PdfFileWriter, PdfFileReader
 from io import BytesIO
 
 from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
@@ -23,6 +22,14 @@ from ..tools.onramp_connector import SBCConnector
 
 from openerp.addons.message_center_compassion.mappings import base_mapping as \
     mapping
+
+_logger = logging.getLogger(__name__)
+
+try:
+    import magic
+    from pyPdf import PdfFileWriter, PdfFileReader
+except ImportError:
+    _logger.error('Please install magic and pypdf in order to use SBC module')
 
 
 class CorrespondenceType(models.Model):
@@ -133,8 +140,6 @@ class Correspondence(models.Model):
     translator_id = fields.Many2one(
         'res.partner', 'GP Translator', compute='_compute_translator',
         inverse='_set_translator', store=True)
-    letter_delivery_preference = fields.Selection(
-        related='correspondant_id.letter_delivery_preference')
     email = fields.Char(related='correspondant_id.email')
     sponsorship_state = fields.Selection(
         related='sponsorship_id.state', string='Sponsorship state')
@@ -282,39 +287,42 @@ class Correspondence(models.Model):
         for letter in self:
             letter.nbr_pages = len(letter.page_ids)
 
-    @api.one
+    @api.multi
     def _inverse_original(self):
         self._set_text('original_text', self.original_text)
 
-    @api.one
+    @api.multi
     def _inverse_english(self):
         self._set_text('english_translated_text', self.english_text)
 
-    @api.one
+    @api.multi
     def _inverse_translated(self):
         self._set_text('translated_text', self.translated_text)
 
-    @api.one
+    @api.multi
     def _set_text(self, field, text):
         # Try to put text in correct pages (the text should contain
         # separators).
         if not text:
             return
-        pages_text = text.split(PAGE_SEPARATOR)
-        if self.page_ids:
-            if len(pages_text) <= len(self.page_ids):
-                for i in xrange(0, len(pages_text)):
-                    setattr(self.page_ids[i], field, pages_text[i].strip('\n'))
+        for letter in self:
+            pages_text = text.split(PAGE_SEPARATOR)
+            if letter.page_ids:
+                if len(pages_text) <= len(letter.page_ids):
+                    for i in range(0, len(pages_text)):
+                        setattr(letter.page_ids[i], field,
+                                pages_text[i].strip('\n'))
+                else:
+                    for i in range(0, len(letter.page_ids)):
+                        setattr(letter.page_ids[i], field,
+                                pages_text[i].strip('\n'))
+                    last_page_text = getattr(letter.page_ids[i], field)
+                    last_page_text += '\n\n' + '\n\n'.join(pages_text[i + 1:])
             else:
-                for i in xrange(0, len(self.page_ids)):
-                    setattr(self.page_ids[i], field, pages_text[i].strip('\n'))
-                last_page_text = getattr(self.page_ids[i], field)
-                last_page_text += '\n\n' + '\n\n'.join(pages_text[i + 1:])
-        else:
-            for i in xrange(0, len(pages_text)):
-                self.page_ids.create({
-                    field: pages_text[i].strip('\n'),
-                    'correspondence_id': self.id})
+                for i in range(0, len(pages_text)):
+                    letter.page_ids.create({
+                        field: pages_text[i].strip('\n'),
+                        'correspondence_id': letter.id})
 
     def _get_text(self, source_text):
         """ Gets the desired text (original/translated) from the pages. """
@@ -343,7 +351,7 @@ class Correspondence(models.Model):
         partner_obj = self.env['res.partner']
         for letter in self:
             if letter.translator:
-                match = re.search('(.*)\[(.*)\]', letter.translator)
+                match = re.search(r'(.*)\[(.*)\]', letter.translator)
                 if match:
                     (name, email) = match.group(1, 2)
                     # 1. Search by e-mail
@@ -370,7 +378,7 @@ class Correspondence(models.Model):
         """ Sets the translator e-mail address. """
         for letter in self:
             if letter.translator:
-                match = re.search('(.*)\[(.*)\]', letter.translator)
+                match = re.search(r'(.*)\[(.*)\]', letter.translator)
                 if match:
                     letter.translator_id.translator_email = match.group(2)
 

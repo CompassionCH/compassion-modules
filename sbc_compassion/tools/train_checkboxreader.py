@@ -14,13 +14,18 @@ class CheckBoxReader. The main is at the end of the file and contains a few
 more explanations
 """
 
-
 import os
-import cv2
-import numpy as np
-import checkboxreader as cbr
-import matplotlib.pyplot as plt  # deactivate this import if you don't need
-#  any plots
+import logging
+from . import checkboxreader as cbr
+
+_logger = logging.getLogger(__name__)
+
+try:
+    import cv2
+    import numpy as np
+    import matplotlib.pyplot as plt
+except ImportError:
+    _logger.error('Please install cv2, numpy and matplotlib to use SBC module')
 
 
 def findmax(x):
@@ -153,6 +158,7 @@ DFalse = train(folder0 + '/False')
 # we compute the threshold which minimize the probability error. Set
 # display to False if you haven't matplotlib installed
 thresh = compute_threshold(DTrue, DFalse, display=True)
+# pylint: disable=print-statement
 print('A nice decision threshold would be ' + str(thresh))
 
 # Test:
@@ -163,5 +169,7 @@ print('A nice decision threshold would be ' + str(thresh))
 TruePR = test(thresh, folder0 + '/True')
 FalsePR = test(thresh, folder0 + '/False')
 
+# pylint: disable=print-statement
 print('True Rositive Rate: ' + str(TruePR))
+# pylint: disable=print-statement
 print('False Positive Rate: ' + str(FalsePR))

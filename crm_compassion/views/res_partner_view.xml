@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field eval="18" name="priority"/>
             <field name="arch" type="xml">
-                <xpath expr="//div[@name='buttons']" position="inside">
+                <xpath expr="//div[@name='button_box']" position="inside">
                     <button name="open_events" string="Events" type="object" groups="base.group_sale_salesman" class="oe_stat_button" icon="fa-calendar"/>
                 </xpath>
             </field>

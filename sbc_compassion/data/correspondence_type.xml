@@ -1,4 +1,4 @@
-<openerp>
+<odoo>
     <data>
         <!-- Correspondence types -->
         <record id="correspondence_type_bene" model="correspondence.type">
@@ -33,4 +33,4 @@
             <field name="name">Supporter Letter</field>
         </record>
     </data>
-</openerp>
+</odoo>

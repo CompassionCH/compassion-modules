@@ -94,7 +94,6 @@ class ImportLettersHistory(models.Model):
             else:
                 import_letters.state = "draft"
 
-    @api.one
     @api.onchange("data")
     def _count_nber_letters(self):
         """
@@ -211,7 +210,6 @@ class ImportLettersHistory(models.Model):
         }
 
     @api.onchange('config_id')
-    @api.one
     def onchange_config(self):
         config = self.config_id
         if config:

@@ -29,7 +29,7 @@
 
 {
     'name': "Sponsor to beneficiary communication",
-    'version': '8.0.3.0',
+    'version': '9.0.1.0.0',
     'category': 'Other',
     'summary': "SBC - Supporter to Beneficiary Communication",
     'sequence': 150,
@@ -38,7 +38,8 @@
     'depends': ['sponsorship_compassion', 'web_tree_image'],
     'external_dependencies': {
         'java': ['zxing'],
-        'python': ['magic', 'wand', 'numpy', 'cv2']
+        'python': ['magic', 'wand', 'numpy', 'cv2', 'zbar', 'pdfminer',
+                   'matplotlib', 'pypdf', 'bs4']
     },
     'data': [
         'security/ir.model.access.csv',
@@ -62,10 +63,7 @@
         'data/gmc_action.xml',
     ],
     'demo': [
-        # 'demo/correspondence_template_demo.xml',
-        # 'demo/update_demo_partner_compassion.xml',
-        # 'demo/update_demo_child_compassion.xml',
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

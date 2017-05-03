@@ -57,19 +57,21 @@ class ImportReview(models.TransientModel):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.one
+    @api.multi
     @api.depends('current_line_index')
     def _get_current_line(self):
         line_ids = self.env.context.get('line_ids')
         if line_ids:
-            self.current_line_id = line_ids[self.current_line_index]
-            self.nb_lines = len(line_ids)
-            self.count = self.current_line_index + 1
-            self.progress = (float(self.count) / self.nb_lines) * 100
-            self.letter_image = self.with_context(
-                bin_size=False).current_line_id.letter_image_preview
-            self.letter_file = self.with_context(
-                bin_size=False).current_line_id.letter_image.datas
+            for review in self:
+                review.current_line_id = line_ids[review.current_line_index]
+                review.nb_lines = len(line_ids)
+                review.count = review.current_line_index + 1
+                review.progress = (
+                    float(review.count) / review.nb_lines) * 100
+                review.letter_image = review.with_context(
+                    bin_size=False).current_line_id.letter_image_preview
+                review.letter_file = review.with_context(
+                    bin_size=False).current_line_id.letter_image.datas
 
     @api.onchange('sponsorship_id')
     def _get_partner_child(self):

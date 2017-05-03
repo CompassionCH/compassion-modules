@@ -9,15 +9,22 @@
 #
 ##############################################################################
 import base64
-from bs4 import BeautifulSoup
+import logging
 
 from io import BytesIO
-from pyPdf.pdf import PdfFileReader, PdfFileWriter
-from wand.image import Image
 
 from openerp import api, fields, models
 from openerp.addons.connector.queue.job import job, related_action
 from openerp.addons.connector.session import ConnectorSession
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from bs4 import BeautifulSoup
+    from pyPdf.pdf import PdfFileReader, PdfFileWriter
+    from wand.image import Image
+except ImportError:
+    _logger.error('Please install bs4, pypdf and wand to use SBC module')
 
 
 class CorrespondenceS2bGenerator(models.Model):

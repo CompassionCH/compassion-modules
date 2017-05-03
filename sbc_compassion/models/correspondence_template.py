@@ -9,17 +9,25 @@
 #
 ##############################################################################
 
-import numpy
 import base64
 import tempfile
-import magic
-import cv2
+import logging
 
 from openerp import fields, models, api, _
 from openerp.exceptions import ValidationError, UserError
-from wand.image import Image
 
 from ..tools import patternrecognition as pr
+
+_logger = logging.getLogger(__name__)
+
+try:
+    import numpy
+    import magic
+    import cv2
+    from wand.image import Image
+except ImportError:
+    _logger.error('Please install numpy, magic, cv2 and wand to use SBC '
+                  'module')
 
 
 class Style:

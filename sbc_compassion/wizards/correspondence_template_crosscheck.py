@@ -10,10 +10,16 @@
 ##############################################################################
 from openerp import models, api, fields
 import base64
-import cv2
 import tempfile
+import logging
 from ..tools import patternrecognition as pr
 from os import remove
+
+_logger = logging.getLogger(__name__)
+try:
+    import cv2
+except ImportError:
+    _logger.error('Please install cv2 to use SBC module')
 
 
 class CorrespondenceCrosscheck(models.TransientModel):

@@ -11,28 +11,29 @@
 """
 Defines a few functions useful in ../models/import_letters_history.py
 """
-import csv
-import os
-import logging
-from io import BytesIO
-
-import cv2
 import base64
-import zxing_wrapper
-import zbar_wrapper
-import patternrecognition as pr
-import checkboxreader as cbr
-import sniffpdf
-import numpy as np
-from time import time
-from math import ceil
-from wand.image import Image as WandImage
+import csv
+import logging
+import os
 from collections import namedtuple
-from pyPdf import PdfFileWriter, PdfFileReader
+from io import BytesIO
+from math import ceil
+from time import time
 
 from openerp import _, exceptions
+from . import zxing_wrapper, zbar_wrapper, patternrecognition as pr, \
+    checkboxreader as cbr, sniffpdf
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
+
+try:
+    import numpy as np
+    import cv2
+    from pyPdf import PdfFileWriter, PdfFileReader
+    from wand.image import Image as WandImage
+except ImportError:
+    _logger.error('Please install numpy, cv2, pypdf and wand to use SBC '
+                  'module')
 
 ##########################################################################
 #                           GENERAL METHODS                              #
@@ -170,13 +171,13 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
     line_vals = list()
     document_vals = list()
     letter_datas = list()
-    logger.info("\tImport file : {}".format(file_name))
+    _logger.info("\tImport file : {}".format(file_name))
 
     inputpdf = PdfFileReader(BytesIO(file_data))
     tic = time()
     letter_indexes, imgs = _find_qrcodes(
         env, line_vals, inputpdf, new_dpi, test)
-    logger.info("\t{} letters found!".format(len(letter_indexes)-1 or 1))
+    _logger.info("\t{} letters found!".format(len(letter_indexes)-1 or 1))
 
     # Construct the datas for each detected letter: store as PDF
     if len(letter_indexes) > 1:
@@ -196,7 +197,7 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
     # now try to find the layout for all splitted letters
     file_split = file_name.split('.')
     for i in range(len(letter_datas)):
-        logger.info(
+        _logger.info(
             "\tAnalyzing template and language of letter {}/{}".format(
                 i+1, len(letter_datas)))
 
@@ -216,11 +217,11 @@ def analyze_attachment(env, file_data, file_name, force_template, test=False):
                 env.ref('sbc_compassion.default_template').id:
             tic = time()
             _find_languages(env, imgs[i], letter_vals, test, resize_ratio)
-            logger.info(
+            _logger.info(
                 "\t\tLanguage analysis done in {:.3} sec.".format(time()-tic))
 
         else:
-            logger.info("\t\tAnalysis failed")
+            _logger.info("\t\tAnalysis failed")
             letter_vals['letter_language_id'] = False
             if test:
                 letter_vals.update({
@@ -253,7 +254,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi, test):
     page_imgs = list()
 
     previous_qrcode = ''
-    logger.info("\tThe imported PDF is made of {} pages.".format(
+    _logger.info("\tThe imported PDF is made of {} pages.".format(
         inputpdf.numPages))
     for i in xrange(inputpdf.numPages):
         tic = time()
@@ -287,7 +288,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi, test):
                 'letter_image_preview': preview_data
             }
 
-            logger.info(
+            _logger.info(
                 "\t\tPage {}/{} opened and QRCode analyzed in {:.2} "
                 "sec".format(i + 1, inputpdf.numPages, time() - tic))
 
@@ -298,7 +299,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi, test):
                 values['qr_preview'] = cropped_data
             line_vals.append(values)
         else:
-            logger.info(
+            _logger.info(
                 "\t\tPage {}/{} opened, no QRCode on this page. {:.2} "
                 "sec".format(i + 1, inputpdf.numPages, time() - tic))
 
@@ -332,7 +333,7 @@ def _decode_page(env, page_data):
             page_data, dst_folder=os.getcwd(), dst_name='page')
         img_url = img_url[0]
         img = cv2.imread(img_url)
-        logger.info("\t\tPDF opened with sniffpdf in {:.3} sec".format(
+        _logger.info("\t\tPDF opened with sniffpdf in {:.3} sec".format(
             time() - tic))
         # its time to remove the temporary PDF file
         os.remove(tmp_url)
@@ -352,7 +353,7 @@ def _decode_page(env, page_data):
         img_url = os.getcwd() + '/page.jpg'
         cv2.imwrite(img_url, img)
 
-        logger.info("\t\tPDF opened with wand.image in {:.3} sec".format(
+        _logger.info("\t\tPDF opened with wand.image in {:.3} sec".format(
             time() - tic))
 
     # We are now about to crop the img around the QRCode and save it on disk
@@ -373,12 +374,12 @@ def _decode_page(env, page_data):
     decoder_lib = 'zbar'
     if decoder_lib == 'zxing':
         qrdata = zxing_wrapper.scan_qrcode(cropped_url)
-        logger.debug(
+        _logger.debug(
             "\t\tQRCode decoded using ZXing in {:.3} sec".format(time() -
                                                                  tic))
     elif decoder_lib == 'zbar':
         qrdata = zbar_wrapper.scan_qrcode(cropped_url)
-        logger.debug("\t\tQRCode decoded using ZBar in {:.3} sec".format(
+        _logger.debug("\t\tQRCode decoded using ZBar in {:.3} sec".format(
             time()-tic))
 
     return qrdata, img_url, cropped_url

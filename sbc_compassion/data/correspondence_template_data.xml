@@ -1,4 +1,4 @@
-<openerp>
+<odoo>
     <data noupdate="1">
     <!-- Templates -->
         <record id="default_template" model="correspondence.template">
@@ -43,4 +43,4 @@
         <field name="value">0.7</field>
         </record>
     </data>
-</openerp>
+</odoo>

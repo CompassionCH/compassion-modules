@@ -12,10 +12,14 @@
 """ This wrapper allows to scan QRCodes thanks to the ZBar library. When no
 ZBar is detected, it apply a few filter on the input image and try the
 scanning again. This technique reduces the number of false negative."""
-
-import zbar
-import cv2  # we use openCV to repair broken QRCodes.
-from PIL import Image
+import logging
+_logger = logging.getLogger(__name__)
+try:
+    import zbar
+    import cv2  # we use openCV to repair broken QRCodes.
+    from PIL import Image
+except ImportError:
+    _logger.error("SBC module needs zbar, cv2 and PIL to work.")
 
 
 def scan_qrcode(filename):

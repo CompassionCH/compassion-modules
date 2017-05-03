@@ -12,13 +12,18 @@
 Define the class CheckboxReader that read a checkbox (the input image
 should contains more or less only the box).
 """
-
-import cv2
-from cv2 import filter2D
-from numpy import logical_and as and2
-from numpy import logical_or as or2
-import numpy as np
 import os
+import logging
+_logger = logging.getLogger(__name__)
+try:
+    import cv2
+    from cv2 import filter2D
+    from numpy import logical_and as and2
+    from numpy import logical_or as or2
+    import numpy as np
+except ImportError:
+    _logger.error('Please install cv2 and numpy on your system to use SBC '
+                  'module')
 
 
 class CheckboxReader:

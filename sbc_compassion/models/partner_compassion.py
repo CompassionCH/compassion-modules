@@ -22,12 +22,6 @@ class ResPartner(models.Model):
     ##########################################################################
     spoken_lang_ids = fields.Many2many(
         'res.lang.compassion', string='Spoken languages')
-    letter_delivery_preference = fields.Selection(
-        selection='_get_delivery_preference',
-        default='auto_digital',
-        required=True,
-        help='Delivery preference for Child Letters',
-        oldname='delivery_preference')
     translator_email = fields.Char(help='e-mail address used in SDL')
     nb_letters = fields.Integer(compute='_compute_nb_letters')
 

@@ -188,7 +188,7 @@ class BarCode:
 
         self.points = []
         for l in lines:
-            m = re.search("format:\s([^,]+)", l)
+            m = re.search(r"format:\s([^,]+)", l)
             if not raw_block and not parsed_block and not point_block and m:
                 self.format = m.group(1)
                 continue
@@ -207,22 +207,18 @@ class BarCode:
                 parsed_block = True
                 continue
 
-            if parsed_block and not re.match("Found\s\d\sresult\spoints", l):
+            if parsed_block and not re.match(r"Found\s\d\sresult\spoints", l):
                 self.data += l + "\n"
                 continue
 
-            if parsed_block and re.match("Found\s\d\sresult\spoints", l):
+            if parsed_block and re.match(r"Found\s\d\sresult\spoints", l):
                 parsed_block = False
                 point_block = True
                 continue
 
             if point_block:
-                m = re.search("Point\s(\d+):\s\(([\d\.]+),([\d\.]+)\)", l)
+                m = re.search(r"Point\s(\d+):\s\(([\d\.]+),([\d\.]+)\)", l)
                 if (m):
                     self.points.append((float(m.group(2)), float(m.group(3))))
 
         return
-
-
-if __name__ == "__main__":
-    print("ZXing module")
