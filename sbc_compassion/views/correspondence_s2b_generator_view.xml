@@ -30,6 +30,7 @@
                             <field name="sponsorship_ids" widget="many2many_tags" invisible="1"/>
                             <field name="s2b_template_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="language_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="month" string="Filter birthday month"/>
                         </group>
                         <div states="draft">
                             <p>Available keywords:</p>

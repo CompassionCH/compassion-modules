@@ -71,10 +71,15 @@ class CorrespondenceS2bGenerator(models.Model):
     )
     nb_letters = fields.Integer(compute='_compute_nb_letters')
     preview_image = fields.Binary(readonly=True)
+    month = fields.Selection('_get_months')
 
     def _compute_nb_letters(self):
         for generator in self:
             generator.nb_letters = len(generator.letter_ids)
+
+    @api.model
+    def _get_months(self):
+        return self.env['compassion.child']._get_months()
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -84,6 +89,21 @@ class CorrespondenceS2bGenerator(models.Model):
         if self.selection_domain:
             self.sponsorship_ids = self.env['recurring.contract'].search(
                 eval(self.selection_domain))
+
+    @api.onchange('month')
+    def onchange_month(self):
+        if self.month:
+            domain = eval(self.selection_domain)
+            month_select = ('child_id.birthday_month', '=', self.month)
+            index = 0
+            for filter in domain:
+                if filter[0] == 'child_id.birthday_month':
+                    index = domain.index(filter)
+            if index:
+                domain[index] = month_select
+            else:
+                domain.append(month_select)
+            self.selection_domain = str(domain)
 
     @api.multi
     def preview(self):
