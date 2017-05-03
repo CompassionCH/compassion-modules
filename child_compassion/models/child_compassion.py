@@ -14,6 +14,8 @@ import logging
 from dateutil.relativedelta import relativedelta
 
 from openerp import models, fields, api, _
+from openerp.addons.advanced_translation.models.ir_advanced_translation \
+    import setlocale
 from datetime import datetime, timedelta, date
 
 from ..mappings.compassion_child_mapping import CompassionChildMapping
@@ -68,6 +70,8 @@ class CompassionChild(models.Model):
     has_been_sponsored = fields.Boolean()
     exit_reason = fields.Char(compute='_compute_exit_reason')
     non_latin_name = fields.Char()
+    birthday_month = fields.Selection(
+        '_get_months', compute='_compute_birthday_month', store=True)
 
     # Hold Information
     ##################
@@ -259,6 +263,17 @@ class CompassionChild(models.Model):
     @api.model
     def _get_ctype(self):
         return [('CDSP', 'CDSP'), ('LDP', 'LDP')]
+
+    @api.model
+    def _get_months(self):
+        return self.env['connect.month'].get_months_selection()[12:]
+
+    @api.depends('birthdate')
+    def _compute_birthday_month(self):
+        with setlocale('en_US'):
+            for child in self.filtered('birthdate'):
+                birthday = fields.Date.from_string(child.birthdate)
+                child.birthday_month = birthday.strftime('%B')
 
     ##########################################################################
     #                              ORM METHODS                               #

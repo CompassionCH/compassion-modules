@@ -232,6 +232,7 @@
                     <field name="hold_channel"/>
                     <field name="hold_owner"/>
                     <field name="hold_ambassador"/>
+                    <field name="birthday_month"/>
                     <filter name="available" string="Consigned" domain="[('state','in',('N','I'))]"/>
                     <filter name="sponsored" string="Sponsored" domain="[('state','=','P')]"/>
                     <filter name="departed" string="Departed" domain="[('state','=','F')]" help="Departed children"/>
