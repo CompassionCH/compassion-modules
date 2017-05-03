@@ -65,11 +65,21 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         return super(BaseSponsorshipTest,
                      self).create_contract(default_values, line_vals)
 
+    @mock.patch(mock_update_hold)
+    def validate_sponsorship(self, contract, update_hold):
+        """
+        Validates a sponsorship without updating hold with Connect
+        :param contract: recurring.contract object
+        :return: mock object on update hold method
+        """
+        update_hold.return_value = True
+        contract.signal_workflow('contract_validated')
+        return update_hold
+
 
 class TestSponsorship(BaseSponsorshipTest):
 
-    @mock.patch(mock_update_hold)
-    def test_sponsorship_compassion_first_scenario(self, update_hold):
+    def test_sponsorship_compassion_first_scenario(self):
         """
             This first scenario consists in creating a sponsorship contract
             (type 'S') and associate a child to the sponsor.
@@ -101,8 +111,7 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertEqual(child.sponsor_id, self.thomas)
 
         # Test validation of contract
-        update_hold.return_value = True
-        sponsorship.signal_workflow('contract_validated')
+        update_hold = self.validate_sponsorship(sponsorship)
         self.assertEqual(sponsorship.state, 'waiting')
         self.assertTrue(update_hold.called)
         hold = child.hold_id
@@ -175,8 +184,7 @@ class TestSponsorship(BaseSponsorshipTest):
             self.assertEqual(invoice.state, 'cancel')
         self.assertEqual(invoice1.state, 'cancel')
 
-    @mock.patch(mock_update_hold)
-    def test_sponsorship_compassion_second_scenario(self, update_hold):
+    def test_sponsorship_compassion_second_scenario(self):
         """
             We are testing in this scenario the other type of sponsorship
             contract (type 'SC'). Check if we pass from "draft" state to
@@ -195,10 +203,8 @@ class TestSponsorship(BaseSponsorshipTest):
             },
             [{'amount': 50.0}]
         )
-        update_hold.return_value = True
-
         # Activate correspondence sponsorship
-        sponsorship.signal_workflow('contract_validated')
+        update_hold = self.validate_sponsorship(sponsorship)
         self.assertEqual(sponsorship.state, 'active')
         self.assertFalse(update_hold.called)
 
@@ -216,7 +222,7 @@ class TestSponsorship(BaseSponsorshipTest):
             },
             [{'amount': 50.0}]
         )
-        sponsorship2.signal_workflow('contract_validated')
+        update_hold = self.validate_sponsorship(sponsorship2)
         self.assertEqual(sponsorship2.state, 'waiting')
         self.assertTrue(update_hold.called)
         hold = child.hold_id

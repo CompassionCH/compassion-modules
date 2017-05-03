@@ -12,7 +12,7 @@
 from openerp import api, models, fields
 
 
-class crm_lead(models.Model):
+class CrmLead(models.Model):
     _inherit = "crm.lead"
 
     planned_sponsorships = fields.Integer(

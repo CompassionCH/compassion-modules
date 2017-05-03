@@ -18,13 +18,13 @@ class ContractOrigin(models.Model):
 
     event_id = fields.Many2one('crm.event.compassion', 'Event')
 
-    @api.one
     @api.depends('type')
     def _set_name(self):
-        if self.type == 'event':
-            self.name = self.event_id.full_name
-        else:
-            super(ContractOrigin, self)._set_name()
+        for origin in self:
+            if origin.type == 'event':
+                origin.name = origin.event_id.full_name
+            else:
+                super(ContractOrigin, origin)._set_name()
 
 
 class Contracts(models.Model):
@@ -60,10 +60,10 @@ class Contracts(models.Model):
         user_id = False
         if origin.partner_id:
             user_id = origin.partner_id.id
-        elif origin.analytic_id and origin.analytic_id.manager_id:
-            user_id = origin.analytic_id.manager_id.partner_id.id
         elif origin.event_id and origin.event_id.user_id:
             user_id = origin.event_id.user_id.partner_id.id
+        elif origin.analytic_id and origin.analytic_id.partner_id:
+            user_id = origin.analytic_id.partner_id.id
         return user_id
 
 

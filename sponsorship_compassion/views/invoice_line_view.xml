@@ -64,7 +64,7 @@
                 <group expand="0" string="Group By...">
                     <filter string="Partner" domain="[]" context="{'group_by':'partner_id'}"/>
                     <filter string="Product" domain="[]" context="{'group_by':'product_id'}"/>
-                    <filter string="Contract" domain="[]"  context="{'group_by':'contract_id'}"/>
+                    <filter name="group_contract" string="Contract" domain="[]"  context="{'group_by':'contract_id'}"/>
                     <filter string="State" domain="[]" context="{'group_by':'state'}"/>
                     <filter string="Last payment" domain="[]" context="{'group_by':'last_payment'}"/>
                     <filter string="Invoice" domain="[]" context="{'group_by':'invoice_id'}" />

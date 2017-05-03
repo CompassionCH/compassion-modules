@@ -22,3 +22,4 @@ from . import project_lifecycle_mapping
 from . import child_reinstatement_mapping
 from . import field_office_disaster_mapping
 from . import field_office_mapping
+from . import demand_planning_mapping

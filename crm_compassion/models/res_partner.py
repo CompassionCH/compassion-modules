@@ -12,7 +12,7 @@
 from openerp import api, models, _
 
 
-class res_partner(models.Model):
+class Partner(models.Model):
     _inherit = 'res.partner'
 
     @api.multi

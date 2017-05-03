@@ -29,7 +29,7 @@
 
 {
     'name': 'Compassion CH - Events',
-    'version': '8.0.3',
+    'version': '9.0.1.0.0',
     'category': 'CRM',
     'sequence': 150,
     'author': 'Compassion CH',
@@ -40,27 +40,22 @@
         'security/ir.model.access.csv',
         'data/account_analytic_data.xml',
         'data/calendar_event_type.xml',
-        'data/gmc_action.xml',
-        'data/demand_planning_cron.xml',
         'views/event_compassion_view.xml',
         'views/contract_origin_view.xml',
         'views/crm_lead_view.xml',
         'views/project_view.xml',
         'views/hr_timesheet_view.xml',
-        'views/account_view.xml',
-        'views/close_old_projects_view.xml',
         'views/account_invoice_line.xml',
         'views/res_partner_view.xml',
         'views/calendar_event_view.xml',
         'views/demand_planning.xml',
         'views/demand_weekly_revision.xml',
         'views/hold_view.xml',
-        'views/web_calendar_js_loader.xml'
     ],
     'qweb': [
         'static/src/xml/web_fullcalendar_event.xml',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

@@ -22,22 +22,11 @@ STATS_DURATION = 52.0
 
 
 class WeeklyDemand(models.Model):
-    _name = 'demand.weekly.demand'
-    _description = 'Weekly Demand'
-    _rec_name = 'week_start_date'
-    _order = 'week_start_date asc, id desc'
+    _inherit = 'demand.weekly.demand'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    demand_id = fields.Many2one(
-        'demand.planning', string='Demand Planning', readonly=True,
-        ondelete='cascade'
-    )
-    week_start_date = fields.Date(required=True)
-    week_end_date = fields.Date(required=True)
-    period_locked = fields.Boolean(compute='_compute_period_locked',
-                                   store=True)
     # Demand fields
     number_children_website = fields.Integer(
         'Web demand',
@@ -86,15 +75,6 @@ class WeeklyDemand(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.depends('week_start_date')
-    @api.multi
-    def _compute_period_locked(self):
-        for week in self:
-            date_week = fields.Datetime.from_string(week.week_start_date)
-            if date_week:
-                week.period_locked = date_week <= (datetime.today() +
-                                                   timedelta(weeks=8))
-
     @api.depends('week_start_date', 'week_end_date')
     @api.multi
     def _compute_demand_events(self):
@@ -207,7 +187,7 @@ class WeeklyDemand(models.Model):
             ).days <= SUB_DURATION)
         )
         sub_reject_average = len(rejected_sub) / STATS_DURATION
-        for week in self:
+        for week in self.filtered('sub_average'):
             start_date = fields.Datetime.from_string(
                 week.week_start_date) - timedelta(days=SUB_DURATION)
             if start_date <= today:
@@ -266,6 +246,18 @@ class WeeklyDemand(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    def get_values(self):
+        """ Returns the values of a given week. """
+        self.ensure_one()
+        return self.read([
+            'week_start_date', 'week_end_date',
+            'number_children_website',
+            'number_children_ambassador', 'number_sub_sponsorship',
+            'number_children_events', 'average_unsponsored_web',
+            'average_unsponsored_ambassador',
+            'resupply_sub', 'average_cancellation',
+            'resupply_events'])[0]
+
     def get_defaults(self):
         """ Returns the computation defaults in a dictionary. """
         web = self.env['demand.planning.settings'].get_param(

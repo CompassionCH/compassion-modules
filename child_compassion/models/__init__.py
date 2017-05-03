@@ -29,3 +29,5 @@ from . import compassion_reservation
 from . import major_revision
 from . import field_office_disaster
 from . import child_note
+from . import demand_planning
+from . import weekly_demand

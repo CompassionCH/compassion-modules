@@ -10,10 +10,10 @@
 ##############################################################################
 from openerp import api, models, fields, exceptions, _
 from datetime import datetime, timedelta
-from openerp.exceptions import UserError
+from openerp.exceptions import ValidationError
 
 
-class event_compassion(models.Model):
+class EventCompassion(models.Model):
     """A Compassion event. """
     _name = 'crm.event.compassion'
     _description = 'Compassion event'
@@ -86,11 +86,6 @@ class event_compassion(models.Model):
         related='origin_id.conversion_rate', store=True)
     project_id = fields.Many2one('project.project', 'Project')
     use_tasks = fields.Boolean('Use tasks')
-    parent_id = fields.Many2one(
-        'account.analytic.account', 'Parent', track_visibility='onchange')
-    # This field circumvents problem for passing parent_id in a subview.
-    parent_copy = fields.Many2one(
-        'account.analytic.account', related='parent_id')
     calendar_event_id = fields.Many2one('calendar.event')
     hold_start_date = fields.Date(required=True)
     hold_end_date = fields.Date()
@@ -102,48 +97,52 @@ class event_compassion(models.Model):
     def update_analytics(self):
         self._set_analytic_lines()
 
-    @api.one
+    @api.multi
     @api.depends('analytic_id', 'analytic_id.line_ids',
                  'analytic_id.line_ids.amount')
     def _set_analytic_lines(self):
         analytic_line_obj = self.env['account.analytic.line']
-        if self.analytic_id:
-            expenses = analytic_line_obj.search([
-                ('account_id', '=', self.analytic_id.id),
-                ('amount', '<', '0.0')])
-            incomes = self.env['account.invoice.line'].search([
-                ('state', '=', 'paid'),
-                ('account_analytic_id', '=', self.analytic_id.id),
-                ('contract_id', '=', False),
-                ('invoice_id.type', '=', 'out_invoice'),
-            ])
-            expense = abs(sum(expenses.mapped('amount')))
-            income = sum(incomes.mapped('price_subtotal'))
-            self.expense_line_ids = expenses
-            self.income_line_ids = incomes
-            self.total_expense = expense
-            self.total_income = income
-            if expense:
-                self.balance = income / float(expense)
-            else:
-                self.balance = 0
-        elif not isinstance(self.id, models.NewId):
-            self.expense_line_ids = False
-            self.income_line_ids = False
-            self.total_expense = 0.0
-            self.total_income = 0.0
-            self.balance = 0.0
+        for event in self.filtered('analytic_id'):
+            if event.analytic_id:
+                expenses = analytic_line_obj.search([
+                    ('account_id', '=', event.analytic_id.id),
+                    ('amount', '<', '0.0')])
+                incomes = self.env['account.invoice.line'].search([
+                    ('state', '=', 'paid'),
+                    ('account_analytic_id', '=', self.analytic_id.id),
+                    ('contract_id', '=', False),
+                    ('invoice_id.type', '=', 'out_invoice'),
+                ])
+                expense = abs(sum(expenses.mapped('amount')))
+                income = sum(incomes.mapped('price_subtotal'))
+                event.expense_line_ids = expenses
+                event.income_line_ids = incomes
+                event.total_expense = expense
+                event.total_income = income
+                if expense:
+                    event.balance = income / float(expense)
+                else:
+                    event.balance = 0
+            elif not isinstance(event.id, models.NewId):
+                event.expense_line_ids = False
+                event.income_line_ids = False
+                event.total_expense = 0.0
+                event.total_income = 0.0
+                event.balance = 0.0
 
-    @api.one
+    @api.multi
     @api.depends('start_date')
     def _set_year(self):
-        if self.start_date:
-            self.year = self.start_date[:4]
+        for event in self.filtered('start_date'):
+            event.year = event.start_date[:4]
 
-    @api.one
+    @api.multi
     def _get_full_name(self):
-        self.full_name = self.type.title() + ' ' + self.name + ' ' + self.year
+        for event in self:
+            event.full_name = event.type.title() + ' ' + event.name + ' ' +\
+                event.year
 
+    @api.model
     def get_event_types(self):
         return [
             ('stand', _("Stand")),
@@ -162,13 +161,13 @@ class event_compassion(models.Model):
             event.allocate_child_ids = children
             event.effective_allocated = len(children)
 
-    @api.one
     @api.constrains('hold_start_date', 'start_date')
     def _check_hold_start_date(self):
-        if self.hold_start_date > self.start_date:
-            raise UserError(
-                "The hold start date must "
-                "be before the event starting date !")
+        for event in self:
+            if event.hold_start_date > event.start_date:
+                raise ValidationError(
+                    "The hold start date must "
+                    "be before the event starting date !")
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -189,13 +188,13 @@ class event_compassion(models.Model):
         elif event_name[-2:] == event_year[-2:]:
             vals['name'] = event_name[:-2]
 
-        event = super(event_compassion, self).create(vals)
+        event = super(EventCompassion, self).create(vals)
 
         # Create project for the tasks
         project_id = False
         if event.use_tasks:
             project_id = self.env['project.project'].with_context(
-                from_event=True).create(event._get_project_vals())
+                from_event=True).create(event._get_project_vals()).id
 
         # Analytic account and Origin linked to this event
         analytic_id = self.env['account.analytic.account'].create(
@@ -218,7 +217,7 @@ class event_compassion(models.Model):
     @api.multi
     def write(self, vals):
         """ Push values to linked objects. """
-        super(event_compassion, self).write(vals)
+        super(EventCompassion, self).write(vals)
         if not self.env.context.get('no_sync'):
             for event in self:
                 if 'use_tasks' in vals and event.use_tasks:
@@ -259,7 +258,7 @@ class event_compassion(models.Model):
                     event.analytic_id.unlink()
                 event.origin_id.unlink()
                 event.calendar_event_id.unlink()
-        return super(event_compassion, self).unlink()
+        return super(EventCompassion, self).unlink()
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -358,10 +357,14 @@ class event_compassion(models.Model):
 
     @api.onchange('type')
     def onchange_type(self):
-        """ Update parent analytic account """
-        for event in self:
-            if event.year:
-                event.parent_id = event._find_parent_analytic()
+        """ Update analytic account """
+        for event in self.filtered('type'):
+            tag_ids = self.env['account.analytic.tag'].search([
+                ('name', 'ilike', event.type)
+            ]).ids
+            event.analytic_id.write({
+                'account_tag_ids': [(6, 0, tag_ids)]
+            })
 
     @api.onchange('start_date')
     @api.multi
@@ -375,7 +378,7 @@ class event_compassion(models.Model):
         for event in self.filtered('start_date'):
             event.hold_start_date = fields.Date.to_string(
                 fields.Datetime.from_string(event.start_date) - dt)
-            if not event.end_date:
+            if not event.end_date or event.end_date < event.start_date:
                 event.end_date = event.start_date
 
     @api.onchange('end_date')
@@ -394,40 +397,42 @@ class event_compassion(models.Model):
     def _get_project_vals(self):
         """ Creates a new project based on the event.
         """
-        members = self.env['res.users'].search(
-            [('partner_id', 'in', self.staff_ids.ids)]).ids
-        return {
+        vals = {
             'name': self.full_name,
             'use_tasks': True,
             'analytic_account_id': self.analytic_id.id,
             'project_type': self.type,
             'user_id': self.user_id.id,
             'partner_id': self.partner_id.id,
-            'members': [(6, 0, members)],   # many2many field
             'date_start': self.start_date,
             'date': self.end_date,
             'state': 'open',
+            'privacy_visibility': 'employees',
         }
+        followers = list()
+        existing = self.project_id.message_follower_ids.mapped(
+            'partner_id').ids
+        for staff in self.staff_ids:
+            if staff.id not in existing:
+                followers.append((0, 0, {
+                    'partner_id': staff.id,
+                    'res_model': 'project.project'
+                }))
+        if followers:
+            vals['message_follower_ids'] = followers
+        return vals
 
     def _get_analytic_vals(self):
-        name = self.name
-        parent_id = self.parent_id and self.parent_id.id
+        name = self.name + ' ' + self.year
+        tag_ids = self.env['account.analytic.tag'].search([
+            ('name', 'ilike', self.type)
+        ]).ids
         if self.city:
             name += ' ' + self.city
-        if not parent_id:
-            parent_id = self._find_parent_analytic()
-            super(event_compassion, self).write({'parent_id': parent_id})
         return {
             'name': name,
-            'type': 'event',
-            'event_type': self.type,
-            'date_start': self.start_date,
-            'date': self.end_date,
-            'parent_id': parent_id,
-            'use_timesheets': True,
+            'tag_ids': [(6, 0, tag_ids)],
             'partner_id': self.partner_id.id,
-            'manager_id': self.user_id.id,
-            'user_id': self.user_id.id,
         }
 
     def _get_origin_vals(self, analytic_id):
@@ -436,23 +441,6 @@ class event_compassion(models.Model):
             'event_id': self.id,
             'analytic_id': analytic_id,
         }
-
-    def _find_parent_analytic(self):
-        analytics_obj = self.env['account.analytic.account']
-        categ_id = analytics_obj.search(
-            [('name', '=', self.type.capitalize())], order='id', limit=1).id
-        acc_id = analytics_obj.search(
-            [('name', '=', self.year), ('parent_id', '=', categ_id)],
-            limit=1).id
-        if not acc_id:
-            # The category for this year does not yet exist
-            acc_id = analytics_obj.create({
-                'name': self.year,
-                'type': 'view',
-                'code': 'AA' + self.type[:2].upper() + self.year,
-                'parent_id': categ_id
-            }).id
-        return acc_id
 
     def _get_calendar_vals(self):
         """

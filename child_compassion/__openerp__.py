@@ -35,6 +35,7 @@
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': [
+        'sale',
         'mail',
         'web_m2x_options',
         'web_sheet_full_width',  # Allows a better view of childpool
@@ -57,6 +58,7 @@
         'views/res_config_view.xml',
         'views/notification_settings_view.xml',
         'views/child_pictures_view.xml',
+        'views/demand_planning.xml',
         'workflow/child_workflow.xml',
         'data/validity_checks_cron.xml',
         'data/child.hobby.csv',
@@ -77,6 +79,7 @@
         'data/icp.program.csv',
         'data/global_partner.xml',
         'data/gmc_action.xml',
+        'data/demand_planning_cron.xml',
         'data/connect.month.csv',
         'data/icp.church.facility.csv',
         'data/icp.church.utility.csv',
@@ -93,9 +96,7 @@
         'data/fo.high.risk.csv',
         'data/fo.disaster.loss.csv',
     ],
-    'demo': [
-        # 'demo/compassion.child.csv'
-    ],
+    'demo': [],
     'installable': True,
     'auto_install': False,
 }

@@ -12,7 +12,7 @@
 from openerp import api, models, fields
 
 
-class account_invoice_line(models.Model):
+class AccountInvoiceLine(models.Model):
     """ Add salespersons to invoice_lines. """
     _inherit = "account.invoice.line"
 

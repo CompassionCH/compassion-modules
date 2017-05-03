@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data noupdate="True">
+<odoo>
+    <data noupdate="1">
     	<!--
             Resource: calendar.event.type
         -->
@@ -14,4 +14,4 @@
             <field name="value">True></field>
         </record>
     </data>
-</openerp>
+</odoo>

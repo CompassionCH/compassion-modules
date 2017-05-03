@@ -39,7 +39,7 @@
     'external_dependencies': {
         'java': ['zxing'],
         'python': ['magic', 'wand', 'numpy', 'cv2', 'zbar', 'pdfminer',
-                   'matplotlib', 'pypdf', 'bs4']
+                   'matplotlib', 'pyPdf', 'bs4']
     },
     'data': [
         'security/ir.model.access.csv',

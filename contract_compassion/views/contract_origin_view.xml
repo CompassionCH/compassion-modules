@@ -61,7 +61,7 @@
                 <field name="type"/>
                 <field name="partner_id"/>
                 <group expand="0" string="Group By...">
-                    <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+                    <filter name="group_type" string="Type" domain="[]" context="{'group_by':'type'}"/>
                 </group>
             </search>
         </field>

@@ -1,139 +1,82 @@
 <?xml version="1.0"?>
-<openerp>
-    <data>
-        <!--Demand Planning Form View -->
-        <record id="view_demand_planning_form" model="ir.ui.view">
-            <field name="name">demand.planning.form</field>
-            <field name="model">demand.planning</field>
-            <field name="arch" type="xml">
-                <form string="Demand Planning">
-                    <header>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,sent"/>
-                        <button name="send_planning" type="object" string="Send Planning" class="oe_highlight" states="draft"/>
-                        <button name="reset" type="object" string="Reset" states="error"/>
-                    </header>
-                    <sheet>
-                        <group>
-                            <group>
-                                <field name="date" />
-                                <field name="sent_date"/>
-                            </group>
-                            <group colspan="2">
-                                <field name="weekly_demand_ids" context="{'default_demand_id': active_id}"/>
-                            </group>
-                        </group>
-                    </sheet>
-                </form>
+<odoo>
+    <!-- Weekly Demand Form View -->
+    <record id="view_demand_weekly_demand_form" model="ir.ui.view">
+        <field name="name">demand.weekly.demand.crm.form</field>
+        <field name="model">demand.weekly.demand</field>
+        <field name="inherit_id" ref="child_compassion.view_demand_weekly_demand_form"/>
+        <field name="arch" type="xml">
+            <field name="total_demand" position="before">
+                <field name="number_children_website"/>
+                <field name="number_children_ambassador"/>
+                <field name="number_sub_sponsorship"/>
+                <field name="number_children_events"/>
+                <field name="total_demand"/>
             </field>
-        </record>
-
-        <!-- Demand Planning Tree View -->
-        <record id="view_demand_planning_tree" model="ir.ui.view">
-            <field name="name">demand.planning.tree</field>
-            <field name="model">demand.planning</field>
-            <field name="arch" type="xml">
-                <tree string="Demand Planning" colors="blue:state == 'draft';grey:state == 'sent';red:state == 'error'">
-                    <field name="date"/>
-                    <field name="sent_date"/>
-                    <field name="state"/>
-                </tree>
+            <field name="total_resupply" position="before">
+                <field name="average_unsponsored_web"/>
+                <field name="average_unsponsored_ambassador"/>
+                <field name="resupply_sub"/>
+                <field name="resupply_events"/>
+                <field name="average_cancellation"/>
             </field>
-        </record>
+        </field>
+    </record>
 
-        <!-- Weekly Demand Form View -->
-        <record id="view_demand_weekly_demand_form" model="ir.ui.view">
-            <field name="name">demand.weekly.demand.form</field>
-            <field name="model">demand.weekly.demand</field>
-            <field name="arch" type="xml">
-                <form string="Weekly Demand">
-                    <group>
-                        <field name="week_start_date"/>
-                        <field name="week_end_date"/>
-                    </group>
-                    <group>
-                        <group string="Demand">
-                            <field name="number_children_website"/>
-                            <field name="number_children_ambassador"/>
-                            <field name="number_sub_sponsorship"/>
-                            <field name="number_children_events"/>
-                            <field name="total_demand"/>
-                        </group>
-                        <group string="Resupply">
-                            <field name="average_unsponsored_web"/>
-                            <field name="average_unsponsored_ambassador"/>
-                            <field name="resupply_sub"/>
-                            <field name="resupply_events"/>
-                            <field name="average_cancellation"/>
-                            <field name="total_resupply"/>
-                        </group>
-                    </group>
-                </form>
+    <record id="view_demand_weekly_demand_tree" model="ir.ui.view">
+        <field name="name">demand.weekly.demand.crm.tree</field>
+        <field name="model">demand.weekly.demand</field>
+        <field name="inherit_id" ref="child_compassion.view_demand_weekly_demand_tree"/>
+        <field name="arch" type="xml">
+            <field name="total_demand" position="before">
+                <field name="period_locked"/>
+                <field name="week_start_date"/>
+                <field name="week_end_date"/>
+                <field name="number_children_website"/>
+                <field name="number_children_ambassador"/>
+                <field name="number_sub_sponsorship"/>
+                <field name="number_children_events"/>
             </field>
-        </record>
-
-        <record id="view_demand_weekly_demand_tree" model="ir.ui.view">
-            <field name="name">demand.weekly.demand.tree</field>
-            <field name="model">demand.weekly.demand</field>
-            <field name="arch" type="xml">
-                <tree string="Weekly Demand">
-                    <field name="period_locked"/>
-                    <field name="week_start_date"/>
-                    <field name="week_end_date"/>
-                    <field name="number_children_website"/>
-                    <field name="number_children_ambassador"/>
-                    <field name="number_sub_sponsorship"/>
-                    <field name="number_children_events"/>
-                    <field name="total_demand"/>
-                    <field name="average_unsponsored_web"/>
-                    <field name="average_unsponsored_ambassador"/>
-                    <field name="resupply_sub"/>
-                    <field name="resupply_events"/>
-                    <field name="average_cancellation"/>
-                    <field name="total_resupply"/>
-                </tree>
+            <field name="total_resupply" position="before">
+                <field name="average_unsponsored_web"/>
+                <field name="average_unsponsored_ambassador"/>
+                <field name="resupply_sub"/>
+                <field name="resupply_events"/>
+                <field name="average_cancellation"/>
             </field>
-        </record>
+        </field>
+    </record>
 
-        <!-- Action Opening the Tree View -->
-        <record id="open_view_demand_planning_form" model="ir.actions.act_window">
-            <field name="name">Demand Planning</field>
-            <field name="res_model">demand.planning</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>
+    <!-- Configuration View -->
+    <record id="view_demand_demand_settings_form" model="ir.ui.view">
+        <field name="name">demand.planning.settings.form</field>
+        <field name="model">demand.planning.settings</field>
+        <field name="arch" type="xml">
+            <form string="Demand Planning Configuration" class="oe_form_configuration">
+                <header>
+                    <button string="Apply" type="object" name="execute" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" type="object" name="cancel" class="oe_link"/>
+                </header>
+                <group string="Allocation per week">
+                    <field name="number_children_website" string="Number of children for the website"/>
+                    <field name="number_children_ambassador" string="Number of children for the ambassadors"/>
+                </group>
+                <group string="Events Allocation">
+                    <field name="days_allocate_before_event" string="Number of days to make child allocations before an event"/>
+                    <field name="days_hold_after_event" string="Number of days to keep the child on hold after an event"/>
+                </group>
+            </form>
+        </field>
+    </record>
 
-        <!-- Configuration View -->
-        <record id="view_demand_demand_settings_form" model="ir.ui.view">
-            <field name="name">demand.planning.settings.form</field>
-            <field name="model">demand.planning.settings</field>
-            <field name="arch" type="xml">
-                <form string="Demand Planning Configuration" class="oe_form_configuration">
-                    <header>
-                        <button string="Apply" type="object" name="execute" class="oe_highlight"/>
-                        or
-                        <button string="Cancel" type="object" name="cancel" class="oe_link"/>
-                    </header>
-                    <group string="Allocation per week">
-                        <field name="number_children_website" string="Number of children for the website"/>
-                        <field name="number_children_ambassador" string="Number of children for the ambassadors"/>
-                    </group>
-                    <group string="Events Allocation">
-                        <field name="days_allocate_before_event" string="Number of days to make child allocations before an event"/>
-                        <field name="days_hold_after_event" string="Number of days to keep the child on hold after an event"/>
-                    </group>
-                </form>
-            </field>
-        </record>
+    <record id="open_view_demand_planning_config" model="ir.actions.act_window">
+        <field name="name">Demand Planning Configuration</field>
+        <field name="res_model">demand.planning.settings</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+    </record>
 
-        <record id="open_view_demand_planning_config" model="ir.actions.act_window">
-            <field name="name">Demand Planning Configuration</field>
-            <field name="res_model">demand.planning.settings</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form</field>
-            <field name="target">inline</field>
-        </record>
-
-        <menuitem id="menu_demand_planning_compassion" name="Demand Planning" parent="base.menu_sales" action="open_view_demand_planning_form"/>
-        <menuitem id="menu_demand_planning_configuration" name="Demand Planning" parent="child_compassion.child_config" action="open_view_demand_planning_config"/>
-    </data>
-</openerp>
+    <menuitem id="menu_demand_planning_configuration" name="Demand Planning" parent="child_compassion.child_config" action="open_view_demand_planning_config"/>
+</odoo>

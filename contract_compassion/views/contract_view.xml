@@ -131,7 +131,7 @@
                 </xpath>
                 <xpath expr="//filter[@name='state']" position="after">
                     <separator />
-                    <filter string="Origin" domain="[]"  context="{'group_by':'origin_id'}"/>
+                    <filter name="group_type" string="Origin" domain="[]"  context="{'group_by':'origin_id'}"/>
                 </xpath>
             </data>
         </field>

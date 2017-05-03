@@ -85,3 +85,7 @@ access_future_hopes,Read access on child future hopes,model_child_future_hope,gr
 access_admin_future_hopes,Full access on child future hopes,model_child_future_hope,base.group_erp_manager,1,1,1,1
 access_suspension_extension_reason,Read access on suspension extension reason,model_icp_suspension_extension_reason,group_sponsorship,1,0,1,0
 access_admin_suspension_extension_reason,Full access on suspension extension reason,model_icp_suspension_extension_reason,base.group_erp_manager,1,1,1,1
+access_demand_planning,Full access on demand_planning,model_demand_planning,base.group_sale_salesman_all_leads,1,1,1,1
+read_access_demand_planning,Read only access on demand_planning,model_demand_planning,group_sponsorship,1,0,0,0
+access_demand_weekly_demand,Full access on demand_weekly_demand,model_demand_weekly_demand,base.group_sale_salesman_all_leads,1,1,1,1
+read_access_demand_weekly_demand,Read only access on demand_weekly_demand,model_demand_weekly_demand,group_sponsorship,1,0,0,0

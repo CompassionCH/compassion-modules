@@ -11,24 +11,16 @@
 
 
 from datetime import datetime
-from openerp.addons.contract_compassion.tests.test_base_module\
-    import test_base_module
+from openerp.addons.sponsorship_compassion.tests.test_sponsorship_compassion\
+    import BaseSponsorshipTest
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import logging
 logger = logging.getLogger(__name__)
 
 
-class test_crm_compassion(test_base_module):
+class TestCrmCompassion(BaseSponsorshipTest):
 
-    def setUp(self):
-        super(test_crm_compassion, self).setUp()
-        # Creation of partners
-        self.admin_id = self.env['res.users'].search(
-            [('name', '=', 'Administrator')])[0].id
-        self.partner_id = self.env['res.partner'].search(
-            [('name', '=', 'Michel Fletcher')])[0].id
-
-    def test_crm_compassion(self):
+    def test_crm(self):
         """
             This scenario consists in the creation of an opportunity,
             then comes the event. Check if the project which is created from
@@ -38,15 +30,15 @@ class test_crm_compassion(test_base_module):
         """
         # Creation of a lead and an event
         lead = self._create_lead(
-            'PlayoffsCompassion', self.admin_id)
+            'PlayoffsCompassion', 1)
         lead2 = self._create_lead(
-            'JO_Compassion', self.admin_id)
+            'JO_Compassion', 1)
         self.assertTrue(lead.id)
         event = self._create_event(lead, 'sport')
         event2 = self._create_event(lead2, 'sport')
         self.assertTrue(event.id)
-        event.write({'use_tasks': True, 'partner_id': self.partners[2].id})
-        event2.write({'use_tasks': True, 'partner_id': self.partners[2].id})
+        event.write({'use_tasks': True, 'partner_id': self.david.id})
+        event2.write({'use_tasks': True, 'partner_id': self.david.id})
         self.assertTrue(event.project_id)
 
         # Retrieve of the project from the event
@@ -54,7 +46,7 @@ class test_crm_compassion(test_base_module):
 
         # Creation of a marketing project and check if an origin is created
         self._create_project(
-            'Marketing Project', 'employees', self.admin_id, 'marketing', True)
+            'Marketing Project', 'employees', 1, 'marketing', True)
         mark_origin = self.env['recurring.contract.origin'].search(
             [('type', '=', 'marketing')])
         self.assertTrue(mark_origin)
@@ -62,40 +54,35 @@ class test_crm_compassion(test_base_module):
         self.assertEqual(project.analytic_account_id, event.analytic_id)
         self.assertEqual(project.project_type, event.type)
         self.assertEqual(project.user_id, event.user_id)
-        self.assertEqual(project.name, event.name)
+        self.assertEqual(project.name, event.name + ' ' + event.year)
         # Create a child and get the project associated
-        child = self.env['compassion.child'].create({'code': 'PE3760136'})
-        child.project_id.write({'disburse_funds': True})
+        child = self.create_child('AB123456789')
 
         # Creation of the sponsorship contract
-        sp_group = self._create_group(
-            'do_nothing', self.partners.ids[2], 1, self.payment_term_id)
-        sponsorship = self._create_contract(
-            datetime.today().strftime(DF), sp_group,
-            datetime.today().strftime(DF),
-            other_vals={
+        sp_group = self.create_group({'partner_id': self.thomas.id})
+        sponsorship = self.create_contract(
+            {
+                'partner_id': self.thomas.id,
+                'group_id': sp_group.id,
                 'origin_id': event.origin_id.id,
-                'channel': 'postal',
-                'type': 'S',
                 'child_id': child.id,
                 'correspondant_id': sp_group.partner_id.id
-            })
-        sponsorship.write({'user_id': self.partner_id})
+            },
+            [{'amount': 50.0}]
+        )
+        sponsorship.write({'user_id': self.michel.id})
         self.assertEqual(sponsorship.origin_id.name, event.full_name)
         self.assertEqual(sponsorship.state, 'draft')
         sponsorship.write({'origin_id': mark_origin.id})
         sponsorship.on_change_origin()
-        self.assertEqual(
-            sponsorship.user_id.id,
-            mark_origin.analytic_id.manager_id.partner_id.id)
-        sponsorship.signal_workflow('contract_validated')
+        self.validate_sponsorship(sponsorship)
         invoicer_id = sponsorship.button_generate_invoices()
         invoices = invoicer_id.invoice_ids
         self.assertEqual(len(invoices), 2)
         self.assertEqual(invoices[0].state, 'open')
         self.assertEqual(
             invoices[0].invoice_line_ids[0].user_id, sponsorship.user_id)
-        event_dico = self.partners[2].open_events()
+        event_dico = self.david.open_events()
         self.assertEqual(len(event_dico['domain'][0][2]), 2)
         is_unlinked = event.unlink()
         self.assertTrue(is_unlinked)
@@ -114,14 +101,19 @@ class test_crm_compassion(test_base_module):
 
     def _create_event(self, lead, type):
         event_dico = lead.create_event()
+        now = datetime.today().strftime(DF)
         event = self.env['crm.event.compassion'].create(
             {
                 'name': event_dico['context']['default_name'],
                 'type': type,
-                'start_date': datetime.today().strftime(DF),
+                'start_date': now,
+                'end_date': now,
+                'hold_start_date': now,
+                'hold_end_date': now,
+                'number_allocate_children': 2,
+                'planned_sponsorships': 0,
                 'lead_id': lead.id,
                 'user_id': event_dico['context']['default_user_id'],
-                'parent_id': 7,
             })
         return event
 
