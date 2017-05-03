@@ -14,6 +14,7 @@ import re
 import sys
 import threading
 import locale
+from collections import OrderedDict
 
 from contextlib import contextmanager
 
@@ -178,11 +179,13 @@ class AdvancedTranslatable(models.AbstractModel):
         """
         _format = self.env['ir.advanced.translation'].get(date_type).encode(
             'utf-8')
-        dates = map(fields.Date.from_string, self.mapped(field))
+        dates = map(fields.Date.from_string,
+                    self.sorted(key=lambda r: getattr(r, field)).mapped(field))
         with setlocale(self.env.lang):
-            dates_string = list(set([
-                d.strftime(_format).decode('utf-8') for d in dates if d
-            ]))
+            ordered_dates = OrderedDict.fromkeys(dates)
+            for d in dates:
+                ordered_dates[d] = d.strftime(_format).decode('utf-8')
+        dates_string = ordered_dates.values()
         if len(dates_string) > 1:
             res_string = ', '.join(dates_string[:-1])
             res_string += ' ' + _('and') + ' ' + dates_string[-1]
