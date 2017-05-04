@@ -300,6 +300,15 @@ class CompassionHold(models.Model):
         return list()
 
     @api.multi
+    def button_release_hold(self):
+        """ 
+        Prevent releasing No Money Holds!
+        """
+        if self.filtered(lambda h: h.type == HoldType.NO_MONEY_HOLD.value):
+            raise Warning(_("You cannot release No Money Hold!"))
+        return self.release_hold()
+
+    @api.multi
     def release_hold(self):
         messages = self.env['gmc.message.pool'].with_context(
             async_mode=False)

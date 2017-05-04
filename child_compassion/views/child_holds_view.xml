@@ -10,7 +10,7 @@
                     <header>
                         <field name="state" widget="statusbar"/>
                         <button name="update_hold" type="object" string="Send Hold" states="draft" class="oe_highlight" />
-                        <button name="release_hold" type="object" string="Release Hold" states="active" />
+                        <button name="button_release_hold" type="object" string="Release Hold" states="active" />
                     </header>
                     <sheet>
                         <group>
