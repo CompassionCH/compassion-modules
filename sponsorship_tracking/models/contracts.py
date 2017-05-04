@@ -68,17 +68,6 @@ class RecurringContract(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-
-    # Kanban Buttons
-    ################
-    @api.model
-    def button_mail_sent(self, value):
-        """Button in Kanban view calling action on all contracts of one group.
-        """
-        contracts = self.search([('sds_state', '=', value)])
-        contracts.signal_workflow('mail_sent')
-        return True
-
     # CRON Methods
     ##############
     @api.model
@@ -174,6 +163,26 @@ class RecurringContract(models.Model):
     def project_mail_sent(self):
         return self.signal_workflow('project_mail_sent')
 
+    @api.multi
+    def action_no_sub(self):
+        return self.with_context(default_state='no_sub').sub_wizard()
+
+    @api.multi
+    def action_sub(self):
+        return self.with_context(default_state='sub').sub_wizard()
+
+    def sub_wizard(self):
+        sub_model = 'sds.subsponsorship.wizard'
+        wizard_id = self.env[sub_model].create({}).id
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': sub_model,
+            'target': 'new',
+            'res_id': wizard_id,
+        }
+
     # KANBAN GROUP METHODS
     ######################
     @api.model
@@ -195,10 +204,9 @@ class RecurringContract(models.Model):
         return display_states, fold
 
     @api.model
-    def _read_group_fill_results(self, domain, groupby,
-                                 remaining_groupbys, aggregated_fields,
-                                 count_field, read_group_result,
-                                 read_group_order=None):
+    def _read_group_fill_results(
+            self, domain, groupby, remaining_groupbys, aggregated_fields,
+            count_field, read_group_result, read_group_order=None):
         """
         The method seems to support grouping using m2o fields only,
         while we want to group by a simple status field.

@@ -104,7 +104,11 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertEqual(sponsorship.state, 'draft')
 
         # Check correspondent is updated when partner is changed
-        self.create_group({'partner_id': self.thomas.id})
+        group = self.env['recurring.contract.group'].search([
+            ('partner_id', '=', self.thomas.id)
+        ])
+        if not group:
+            self.create_group({'partner_id': self.thomas.id})
         sponsorship.write({'partner_id': self.thomas.id})
         sponsorship.on_change_partner_id()
         self.assertEqual(sponsorship.correspondant_id, sponsorship.partner_id)

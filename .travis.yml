@@ -15,7 +15,7 @@ env:
     global:
         - VERSION="9.0"
         - ODOO_REPO="odoo/odoo"
-        - EXCLUDE="child_compassion,crm_compassion,label,message_center_compassion,sbc_compassion,sponsorship_compassion,sponsorship_tracking"
+        - EXCLUDE="child_compassion,label,message_center_compassion,sbc_compassion"
         - OPENCV_ROOT=${HOME}/opencv
         - ZXING_ROOT=${HOME}/.libZxing
 
@@ -29,6 +29,7 @@ install:
     - git clone https://github.com/CompassionCH/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools -b r2
     - git clone https://github.com/OCA/web.git ${HOME}/build/CompassionCH/web -b 9.0
     - git clone https://github.com/OCA/connector.git ${HOME}/build/CompassionCH/connector -b 9.0
+    - git clone https://github.com/OCA/partner-contact.git ${HOME}/build/CompassionCH/partner-contact -b 9.0
     - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
     - travis_install_nightly
 #    - export PYTHONPATH=${PYTHONPATH}:${OPENCV_ROOT}/install/lib/python2.7/site-packages
@@ -54,7 +55,6 @@ install:
 #    - git clone https://github.com/OCA/bank-statement-reconcile.git ${HOME}/build/CompassionCH/bank-statement-reconcile -b 9.0
 #    - git clone https://github.com/OCA/bank-statement-import.git ${HOME}/build/CompassionCH/bank-statement-import -b 9.0
 #    - git clone https://github.com/OCA/account-financial-tools.git ${HOME}/build/CompassionCH/account-financial-tools -b 9.0
-#    - git clone https://github.com/OCA/partner-contact.git ${HOME}/build/CompassionCH/partner-contact -b 9.0
 #    - git clone https://github.com/OCA/connector-telephony.git ${HOME}/build/CompassionCH/connector-telephony -b 9.0
 #    - git clone https://github.com/CompassionCH/social.git ${HOME}/build/CompassionCH/social -b 9.0
 #    - git clone https://github.com/OCA/server-tools.git ${HOME}/build/CompassionCH/server-tools -b 9.0

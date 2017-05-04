@@ -121,7 +121,7 @@ class GenerateGiftWizard(models.TransientModel):
         }
 
         # Define analytic journal
-        analytic = self.env['account.analytic.attribution'].account_get(
+        analytic = self.env['account.analytic.default'].account_get(
             product.id, contract.partner_id.id, date=fields.Date.today())
         if analytic and analytic.analytic_id:
             inv_line_data['account_analytic_id'] = analytic.analytic_id.id

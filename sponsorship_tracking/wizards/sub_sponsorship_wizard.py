@@ -16,8 +16,9 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 
-class sub_sponsorship_wizard(models.TransientModel):
+class SubSponsorshipWizard(models.TransientModel):
     _name = "sds.subsponsorship.wizard"
+    _description = "Sub Sponsorship Wizard"
 
     state = fields.Selection([
         ('sub', 'sub'),

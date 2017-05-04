@@ -108,7 +108,7 @@ class SponsorshipContract(models.Model):
         res = super(SponsorshipContract, self).fields_view_get(
             *args, **kwargs)
 
-        if kwargs.get('view_type') == 'form':
+        if kwargs.get('view_type') == 'form' and 'type' in res['fields']:
             s_type = kwargs.get('context', dict()).get('default_type', 'O')
             if 'S' in s_type:
                 # Remove non sponsorship types
@@ -471,7 +471,7 @@ class SponsorshipContract(models.Model):
                 analytic = contract.origin_id.analytic_id
                 if not analytic:
                     a_default = self.env[
-                        'account.analytic.attribution'].account_get(
+                        'account.analytic.default'].account_get(
                             product_id, partner_id, date=fields.Date.today())
                     analytic = a_default and a_default.analytic_id
                 if analytic:

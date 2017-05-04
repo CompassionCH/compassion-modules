@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Sponsorships Tracking',
-    'version': '8.0.3.0',
+    'version': '9.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -38,14 +38,12 @@
     'data': [
         'views/sub_sponsorship_wizard_view.xml',
         'views/contract_view.xml',
-        'views/sponsorship_tracking.xml',
         'views/settings_view.xml',
         'workflow/sds_workflow.xml',
         'data/contract_cron.xml',
         'data/install.xml',
         ],
     'demo': [],
-    'js': ['static/src/js/sponsorship_tracking_kanban.js'],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

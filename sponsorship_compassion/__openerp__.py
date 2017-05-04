@@ -36,7 +36,8 @@
     'website': 'http://www.compassion.ch',
     'depends': ['contract_compassion', 'crm', 'account_cancel',
                 'web_m2x_options', 'account_invoice_split_invoice',
-                'partner_firstname', 'account_analytic_attribution'],
+                'partner_firstname', 'account_analytic_attribution',
+                'account_analytic_default'],
     'data': [
         'views/sponsorship_contract_view.xml',
         'views/sponsorship_contract_group_view.xml',

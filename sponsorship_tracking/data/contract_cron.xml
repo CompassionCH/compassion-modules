@@ -4,7 +4,7 @@
     @author David Coninckx <david@coninckx.com>, Emanuel Cino <ecino@compassion.ch>
     The licence is in the file __openerp__.py
 -->
-<openerp>
+<odoo>
     <data noupdate="1"> <!-- noupdate = 1 for the 'active' field -->
         <record id="follow_contract_sub_accept_reject" model="ir.cron">
             <field name="name">Check sub accept/reject</field>
@@ -46,4 +46,4 @@
         </record>
 
     </data>
-</openerp>
+</odoo>

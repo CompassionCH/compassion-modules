@@ -9,17 +9,11 @@
 #
 ##############################################################################
 
-from openerp.tests import common
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-
-from datetime import date
-from random import randint
-import logging
-
-logger = logging.getLogger(__name__)
+from openerp.addons.sponsorship_compassion.tests.test_sponsorship_compassion\
+    import BaseSponsorshipTest
 
 
-class test_tracking(common.TransactionCase):
+class TestTracking(BaseSponsorshipTest):
     """
     Test whole lifecycle of contracts and see if sds tracking information
     is correct.
@@ -28,34 +22,7 @@ class test_tracking(common.TransactionCase):
     """
 
     def setUp(self):
-        super(test_tracking, self).setUp()
-        self.con_obj = self.registry('recurring.contract')
-        self.child_obj = self.registry('compassion.child')
-        self.today = date.today().strftime(DF)
-
-    def _create_contract(self, child_id):
-        """Creates a new contract for given child."""
-        sponsor_category = self.registry('res.partner.category').search(
-            self.cr, self.uid, [('name', 'ilike', 'sponsor')])
-        partner_ids = self.registry('res.partner').search(
-            self.cr, self.uid, [('category_id', 'in', sponsor_category)])
-        origin_ids = self.registry('recurring.contract.origin').search(
-            self.cr, self.uid, [('name', 'like', 'Other')])
-        group_ids = self.registry('recurring.contract.group').search(
-            self.cr, self.uid, [('partner_id', '=', partner_ids[0])])
-        contract_vals = {
-            'partner_id': partner_ids[0],
-            'correspondant_id': partner_ids[0],
-            'origin_id': origin_ids[0],
-            'group_id': group_ids[0],
-            'channel': 'direct',
-            'commitment_number': randint(700, 999),
-            'child_id': child_id,
-            'next_invoice_date': self.today,
-            'activation_date': self.today,
-        }
-        con_id = self.con_obj.create(self.cr, self.uid, contract_vals)
-        return con_id
+        super(TestTracking, self).setUp()
 
     def test_contract_tracking_until_sub_sponsorship_made(self):
         """

@@ -16,6 +16,7 @@ class SdsFollowerSettings(models.TransientModel):
     """ Settings configuration for any Notifications."""
     _name = 'sds.follower.settings'
     _inherit = 'res.config.settings'
+    _description = 'SDS Followe Settings'
 
     # Users to notify after Child Departure
     sub_fr = fields.Many2one(
@@ -60,13 +61,13 @@ class SdsFollowerSettings(models.TransientModel):
     def get_default_values(self, _fields):
         param_obj = self.env['ir.config_parameter']
         fr = param_obj.get_param(
-            'sponsorship_tracking.sub_follower_fr', '32')
+            'sponsorship_tracking.sub_follower_fr', self.env.uid)
         de = param_obj.get_param(
-            'sponsorship_tracking.sub_follower_de', '16')
+            'sponsorship_tracking.sub_follower_de', self.env.uid)
         it = param_obj.get_param(
-            'sponsorship_tracking.sub_follower_it', '16')
+            'sponsorship_tracking.sub_follower_it', self.env.uid)
         en = param_obj.get_param(
-            'sponsorship_tracking.sub_follower_en', '16')
+            'sponsorship_tracking.sub_follower_en', self.env.uid)
         return {
             'sub_fr': int(fr),
             'sub_de': int(de),

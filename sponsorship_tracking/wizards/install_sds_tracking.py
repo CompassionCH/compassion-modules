@@ -24,8 +24,9 @@ SDS_COLORS = {
 }
 
 
-class recurring_contract(models.TransientModel):
+class InstallSdsTracking(models.TransientModel):
     _name = "install.sds.tracking"
+    _description = "Install SDS Tracking"
 
     # Only at module installation
     @api.model
