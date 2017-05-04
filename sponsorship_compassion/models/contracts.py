@@ -542,6 +542,19 @@ class SponsorshipContract(models.Model):
 
         return super(SponsorshipContract, self).contract_waiting()
 
+    @api.multi
+    def contract_waiting_mandate(self):
+        for contract in self:
+            if 'S' in contract.type and contract.child_id.hold_id:
+                # Update the hold of the child to No Money Hold
+                hold = contract.child_id.hold_id
+                hold.write({
+                    'type': HoldType.NO_MONEY_HOLD.value,
+                    'expiration_date': hold.get_default_hold_expiration(
+                        HoldType.NO_MONEY_HOLD)
+                })
+        return super(SponsorshipContract, self).contract_waiting_mandate()
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
