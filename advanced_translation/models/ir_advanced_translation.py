@@ -165,7 +165,7 @@ class AdvancedTranslatable(models.AbstractModel):
                 res_string = ', '.join(values[:-1])
                 res_string += ' ' + _('and') + ' ' + values[-1]
             else:
-                res_string = values[0]
+                res_string = values and values[0] or ""
             values = res_string
         return values
 
