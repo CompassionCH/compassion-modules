@@ -180,12 +180,17 @@ class AdvancedTranslatable(models.AbstractModel):
         _format = self.env['ir.advanced.translation'].get(date_type).encode(
             'utf-8')
         dates = map(fields.Date.from_string,
-                    self.sorted(key=lambda r: getattr(r, field)).mapped(field))
+                    self.filtered(field).sorted(
+                        key=lambda r: getattr(r, field)).mapped(field))
         with setlocale(self.env.lang):
             ordered_dates = OrderedDict.fromkeys(dates)
             for d in dates:
                 ordered_dates[d] = d.strftime(_format).decode('utf-8')
-        dates_string = ordered_dates.values()
+        # Filter unique dates
+        unique = set()
+        unique_add = unique.add
+        dates_string = [d for d in ordered_dates.values() if not (
+            d in unique or unique_add(d))]
         if len(dates_string) > 1:
             res_string = ', '.join(dates_string[:-1])
             res_string += ' ' + _('and') + ' ' + dates_string[-1]
