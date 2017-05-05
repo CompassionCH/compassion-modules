@@ -76,12 +76,19 @@ class GenerateCommunicationWizard(models.TransientModel):
 
     @api.multi
     def get_preview(self):
-        communication = self.model_id or self.env.ref(
+        comm_model = 'partner.communication.job'
+        config = self.model_id or self.env.ref(
             'partner_communication.default_communication')
-        template = communication.email_template_id
-        self.preview = template.render_template_batch(
-            self.body_html, template.model, communication.ids)[
-            communication.id]
+        template = config.email_template_id
+        model = template.model or comm_model
+        res_preview = self.env[comm_model].create({
+            'partner_id': self.partner_ids[0].id,
+            'config_id': config.id,
+            'object_ids': self.partner_ids[0].id,
+        })
+        self.preview = template.render_template(
+            self.body_html, model, res_preview.ids)[res_preview.id]
+        res_preview.unlink()
         self.state = 'preview'
         return self._reload()
 
@@ -114,15 +121,17 @@ class GenerateCommunicationWizard(models.TransientModel):
                 'config_id': model.id,
                 'auto_send': False,
                 'send_mode': self.send_mode,
+                'report_id': model.report_id.id,
             })
             communications += comm
 
         if self.customize_template or not self.model_id:
             template = model.email_template_id
-            new_texts = template.render_template_batch(
-                self.body_html, template.model, communications.ids)
-            new_subjects = template.render_template_batch(
-                self.subject, template.model, communications.ids)
+            new_subjects = template.render_template(
+                self.subject, 'partner.communication.job', communications.ids)
+            new_texts = template.render_template(
+                self.body_html, 'partner.communication.job',
+                communications.ids)
             for comm in communications:
                 comm.body_html = new_texts[comm.id]
                 comm.subject = new_subjects[comm.id]

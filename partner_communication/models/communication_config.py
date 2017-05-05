@@ -47,7 +47,7 @@ class CommunicationConfig(models.Model):
              "an e-mail address"
     )
     email_template_id = fields.Many2one(
-        'email.template', 'Email template',
+        'mail.template', 'Email template',
         domain=[('model', '=', 'partner.communication.job')]
     )
     report_id = fields.Many2one(
@@ -66,19 +66,17 @@ class CommunicationConfig(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.one
     @api.constrains('send_mode_pref_field')
     def _validate_config(self):
         """ Test if the config is valid. """
-        valid = True
-        if self.send_mode_pref_field:
-            valid = hasattr(self.env['res.partner'], self.send_mode_pref_field)
-
-        if not valid:
-            raise ValidationError(
-                "Following field does not exist in res.partner: %s." %
-                self.send_mode_pref_field
-            )
+        for config in self.filtered('send_mode_pref_field'):
+            valid = hasattr(self.env['res.partner'],
+                            config.send_mode_pref_field)
+            if not valid:
+                raise ValidationError(
+                    "Following field does not exist in res.partner: %s." %
+                    config.send_mode_pref_field
+                )
 
     @api.constrains('email_template_id', 'report_id')
     def _validate_attached_reports(self):

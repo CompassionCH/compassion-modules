@@ -12,7 +12,7 @@ import logging
 
 from openerp import api, models, fields, _, http
 from openerp.exceptions import UserError
-from openerp.addons.base_phone.controller import BasePhoneController
+from openerp.addons.base_phone.models.controller import BasePhoneController
 
 logger = logging.getLogger(__name__)
 
@@ -351,12 +351,17 @@ class CommunicationJob(models.Model):
 
     @api.multi
     def preview_pdf(self):
+        preview_model = 'partner.communication.pdf.wizard'
+        preview = self.env[preview_model].create({
+            'communication_id': self.id
+        })
         return {
             'name': _("Preview"),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'form',
-            'res_model': 'partner.communication.pdf.wizard',
+            'res_model': preview_model,
+            'res_id': preview.id,
             'context': self.env.context,
             'target': 'new',
         }
@@ -404,7 +409,7 @@ class CommunicationJob(models.Model):
         for job in self:
             # Get pdf should directly send it to the printer if report
             # is correctly configured.
-            report_obj.get_pdf(job, job.report_id.report_name)
+            report_obj.get_pdf(job.ids, job.report_id.report_name)
             # Print attachments
             job.attachment_ids.print_attachments()
             job.partner_id.message_post(

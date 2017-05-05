@@ -8,7 +8,6 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-import phonenumbers
 import logging
 from datetime import datetime
 
@@ -16,6 +15,11 @@ from openerp import models, api, fields, _
 
 
 _logger = logging.getLogger(__name__)
+
+try:
+    import phonenumbers
+except ImportError:
+    _logger.error('Please install phonenumbers')
 
 
 class CallWizard(models.TransientModel):

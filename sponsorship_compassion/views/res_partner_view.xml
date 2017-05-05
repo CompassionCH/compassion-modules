@@ -55,19 +55,11 @@
             <xpath expr="//button[@name='%(sale.act_res_partner_2_sale_order)d']" position="replace">
                 <button name="unreconciled_transaction_items" type='object' groups="account.group_account_user" class="oe_inline oe_stat_button"
                         icon="fa-exchange">
-                    <div>
-                        <strong>
-                            <field name="unrec_items"/>
-                        </strong>
-                        <br/>Unreconciled Items</div>
+                    <field name="unrec_items" string="Unreconciled Items" widget="statinfo"/>
                 </button>
                 <button name="receivable_transaction_items" type='object' groups="account.group_account_user"
                         class="oe_inline oe_stat_button" icon="fa-exchange">
-                    <div>
-                        <strong>
-                            <field name="receivable_items"/>
-                        </strong>
-                        <br/>1050 Items</div>
+                    <field name="receivable_items" string="1050 Items" widget="statinfo"/>
                 </button>
             </xpath>
         </field>

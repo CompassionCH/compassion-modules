@@ -19,7 +19,7 @@ class EmailComposeMessage(models.TransientModel):
     def create_emails(self, template, res_ids, default_mail_values=None):
         """ Helper to generate a new e-mail given a template and objects.
 
-        :param int template: email.template record
+        :param int template: mail.template record
         :param res_ids: ids of the resource objects
         :return: browse records of created e-mails (one per resource object)
         """
@@ -37,7 +37,7 @@ class EmailComposeMessage(models.TransientModel):
     def get_generated_fields(self, template, res_ids):
         """ Helper to retrieve generated html given a template and objects.
 
-        :param int template: email.template record
+        :param int template: mail.template record
         :param res_ids: ids of the resource objects
         :return: html code generated for the e-mail (list if len(res_ids)>1)
         """
@@ -52,7 +52,7 @@ class EmailComposeMessage(models.TransientModel):
     def _get_mail_values(self, template, res_ids):
         """ Helper to get e-mail values given a template and objects.
 
-        :param int template: email.template record
+        :param int template: mail.template record
         :param res_ids: ids of the resource objects
         :return: list of dictionaries containing e-mail values
         """
@@ -70,7 +70,7 @@ class EmailComposeMessage(models.TransientModel):
         wizard.write(
             wizard.onchange_template_id(
                 template.id, 'mass_mail', False, False)['value'])
-        return self.get_mail_values(wizard, res_ids)
+        return wizard.get_mail_values(res_ids)
 
     @api.multi
     def send_mail(self):
