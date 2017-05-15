@@ -19,6 +19,7 @@ from openerp.addons.advanced_translation.models.ir_advanced_translation \
 from datetime import datetime, timedelta, date
 
 from ..mappings.compassion_child_mapping import CompassionChildMapping
+from .compassion_hold import HoldType
 
 from openerp.exceptions import Warning
 from openerp.addons.connector.queue.job import job
@@ -294,9 +295,12 @@ class CompassionChild(models.Model):
 
     @api.multi
     def unlink(self):
-        holds = self.mapped('hold_id').filtered(lambda h: h.state == 'active')
+        res = super(CompassionChild, self).unlink()
+        holds = self.mapped('hold_id').filtered(
+            lambda h: h.state == 'active' and
+            h.type != HoldType.NO_MONEY_HOLD.value)
         holds.release_hold()
-        return super(CompassionChild, self).unlink()
+        return res
 
     ##########################################################################
     #                             PUBLIC METHODS                             #

@@ -74,13 +74,10 @@ class CompassionReservation(models.Model):
             child = self.env['compassion.child'].search([
                 ('global_id', '=', reservation.child_global_id)])
             if not child:
-                # Create child in "Released" state (not available yet to us)
+                # Create child (not available yet to us)
                 child = self.env['compassion.child'].create({
                     'global_id': reservation.child_global_id,
                 })
-                child.hold_expiration = reservation.expiration_date
-                child.signal_workflow('release')
-                child.get_infos()
             reservation.child_id = child
 
     def _default_expiration_date(self):

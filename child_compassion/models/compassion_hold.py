@@ -301,7 +301,7 @@ class CompassionHold(models.Model):
 
     @api.multi
     def button_release_hold(self):
-        """ 
+        """
         Prevent releasing No Money Holds!
         """
         if self.filtered(lambda h: h.type == HoldType.NO_MONEY_HOLD.value):
