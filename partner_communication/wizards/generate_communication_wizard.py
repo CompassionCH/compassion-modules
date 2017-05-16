@@ -113,6 +113,7 @@ class GenerateCommunicationWizard(models.TransientModel):
                 'object_ids': partner.id,
                 'config_id': model.id,
                 'auto_send': False,
+                'send_mode': self.send_mode,
             })
             communications += comm
 
