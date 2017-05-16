@@ -15,6 +15,7 @@
                         <field name="send_mode"/>
                         <field name="force_language" attrs="{'required': [('body_html', '!=', False), '|', ('model_id', '=', False), ('customize_template', '=', True)]}"/>
                         <field name="customize_template" attrs="{'invisible': [('model_id', '=', False)]}"/>
+                        <field name="subject" attrs="{'invisible': [('customize_template', '=', False), ('model_id', '!=', False)]}"/>
                         <field name="body_html" attrs="{'invisible': [('customize_template', '=', False), ('model_id', '!=', False)]}"/>
                     </group>
                     <group states="preview">
