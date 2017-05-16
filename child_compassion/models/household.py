@@ -277,8 +277,8 @@ class HouseholdMembers(models.Model):
     @api.model
     def _get_other_roles(self):
         return [
-            ('Foster parent', 'Foster parent'),
-            ('Friend', 'Friend'),
+            ('Foster parent', _('foster parent')),
+            ('Friend', _('friend')),
             ('Other non-relative', 'Other non-relative'),
             ('Other relative', 'Other relative'),
         ]

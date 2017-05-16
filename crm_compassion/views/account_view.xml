@@ -57,5 +57,17 @@
                 </xpath>
             </field>
         </record>
+
+        <!-- Add group by analytic in move line -->
+        <record model="ir.ui.view" id="crm_invoice_supplier_compassion">
+            <field name="name">account.move.line.analytic.search</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account.view_account_move_line_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group">
+                    <filter string="Analytic Account" domain="[]" context="{'group_by':'analytic_account_id'}"/>
+                </xpath>
+            </field>
+        </record>
     </data>
 </openerp>

@@ -29,6 +29,7 @@ class GenerateCommunicationWizard(models.TransientModel):
     )
     send_mode = fields.Selection('_send_mode_select', default='physical')
     customize_template = fields.Boolean()
+    subject = fields.Char()
     body_html = fields.Html()
     preview = fields.Html(readonly=True)
 
@@ -68,6 +69,7 @@ class GenerateCommunicationWizard(models.TransientModel):
     def onchange_model_id(self):
         if self.model_id:
             self.body_html = self.model_id.email_template_id.body_html
+            self.subject = self.model_id.email_template_id.subject
             send_mode = self.model_id.send_mode.replace('auto_', '')
             if send_mode in [m[0] for m in self._send_mode_select()]:
                 self.send_mode = send_mode
@@ -111,6 +113,7 @@ class GenerateCommunicationWizard(models.TransientModel):
                 'object_ids': partner.id,
                 'config_id': model.id,
                 'auto_send': False,
+                'send_mode': self.send_mode,
             })
             communications += comm
 
@@ -118,8 +121,11 @@ class GenerateCommunicationWizard(models.TransientModel):
             template = model.email_template_id
             new_texts = template.render_template_batch(
                 self.body_html, template.model, communications.ids)
+            new_subjects = template.render_template_batch(
+                self.subject, template.model, communications.ids)
             for comm in communications:
                 comm.body_html = new_texts[comm.id]
+                comm.subject = new_subjects[comm.id]
 
         return {
             'name': _('Communications'),
