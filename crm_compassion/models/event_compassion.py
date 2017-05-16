@@ -62,7 +62,7 @@ class event_compassion(models.Model):
     expense_line_ids = fields.One2many(
         'account.analytic.line', compute='_set_analytic_lines', readonly=True)
     income_line_ids = fields.One2many(
-        'account.analytic.line', compute='_set_analytic_lines', readonly=True)
+        'account.invoice.line', compute='_set_analytic_lines', readonly=True)
     total_expense = fields.Float(
         'Total expense', compute='_set_analytic_lines', readonly=True,
         store=True)
@@ -111,13 +111,14 @@ class event_compassion(models.Model):
             expenses = analytic_line_obj.search([
                 ('account_id', '=', self.analytic_id.id),
                 ('amount', '<', '0.0')])
-            incomes = analytic_line_obj.search([
-                ('account_id', '=', self.analytic_id.id),
-                ('general_account_id.code', 'not in', ['6000', '6004']),
-                ('amount', '>', '0.0')]
-            )
+            incomes = self.env['account.invoice.line'].search([
+                ('state', '=', 'paid'),
+                ('account_analytic_id', '=', self.analytic_id.id),
+                ('contract_id', '=', False),
+                ('invoice_id.type', '=', 'out_invoice'),
+            ])
             expense = abs(sum(expenses.mapped('amount')))
-            income = sum(incomes.mapped('amount'))
+            income = sum(incomes.mapped('price_subtotal'))
             self.expense_line_ids = expenses
             self.income_line_ids = incomes
             self.total_expense = expense
@@ -337,10 +338,9 @@ class event_compassion(models.Model):
             'type': 'ir.actions.act_window',
             'view_mode': 'tree,form',
             'view_type': 'form',
-            'res_model': 'account.analytic.line',
+            'res_model': 'account.invoice.line',
             'src_model': 'crm.event.compassion',
-            'context': self.with_context(
-                group_by='general_account_id').env.context,
+            'context': self.env.context,
             'domain': [('id', 'in', self.income_line_ids.ids)]
         }
 
