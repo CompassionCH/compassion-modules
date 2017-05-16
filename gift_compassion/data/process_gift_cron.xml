@@ -1,4 +1,4 @@
-<openerp>
+<odoo>
     <data noupdate="1">
         <record id="process_gift_cron" model="ir.cron">
             <field name="name">Process gifts</field>
@@ -11,4 +11,4 @@
             <field name="active" eval="False"/>
         </record>
     </data>
-</openerp>
+</odoo>

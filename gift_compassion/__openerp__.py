@@ -29,7 +29,7 @@
 
 {
     'name': 'Compassion Sponsorship Gifts',
-    'version': '8.0.1.0',
+    'version': '9.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -37,7 +37,6 @@
     'data': [
         'security/ir.model.access.csv',
         'data/gmc_action.xml',
-        'data/migrate_r4.xml',
         'data/gift_thresholds.xml',
         'data/account.xml',
         'data/process_gift_cron.xml',
@@ -48,6 +47,6 @@
     ],
     'demo': [
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }
