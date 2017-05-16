@@ -1,4 +1,4 @@
-<openerp>
+<odoo>
     <data noupdate="1">
         <!-- Get Intervention Kit -->
         <record id="intervention_details_request" model="gmc.action">
@@ -113,4 +113,4 @@
             <field name="action_id" ref="update_intervention_details"/>
         </record>
     </data>
-</openerp>
+</odoo>

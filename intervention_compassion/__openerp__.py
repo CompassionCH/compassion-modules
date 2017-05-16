@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Interventions',
-    'version': '8.0.1.0',
+    'version': '9.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -50,6 +50,6 @@
         'views/project_view.xml',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

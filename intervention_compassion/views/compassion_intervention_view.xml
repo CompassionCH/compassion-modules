@@ -1,100 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
-        <!-- Intervention Form View -->
-        <record id="view_compassion_intervention_form" model="ir.ui.view">
-            <field name="name">compassion.intervention.form</field>
-            <field name="model">compassion.intervention</field>
-            <field name="arch" type="xml">
-                <form>
-                    <header>
-                        <field name="state" widget="statusbar" statusbar_visible="on_hold,committed,active,close"/>
-                        <button name="create_commitment" string="Commit Funds" type="object" states="on_hold" class="oe_highlight"/>
-                        <button name="cancel_hold" string="Cancel Hold" type="object" attrs="{'invisible': [('hold_id', '=', False)]}"/>
-                    </header>
-                    <sheet>
-                        <div class="oe_title">
-                            <h1>
-                                <field name="name"/>
-                            </h1>
-                        </div>
-                        <div class="oe_right oe_button_box" name="buttons">
-                            <button name="get_infos" string="get infos" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
-                        </div>
+<odoo>
+    <!-- Intervention Form View -->
+    <record id="view_compassion_intervention_form" model="ir.ui.view">
+        <field name="name">compassion.intervention.form</field>
+        <field name="model">compassion.intervention</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="on_hold,committed,active,close"/>
+                    <button name="create_commitment" string="Commit Funds" type="object" states="on_hold" class="oe_highlight"/>
+                    <button name="cancel_hold" string="Cancel Hold" type="object" attrs="{'invisible': [('hold_id', '=', False)]}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <div class="oe_right oe_button_box" name="buttons">
+                        <button name="get_infos" string="get infos" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
+                    </div>
+                    <group>
                         <group>
-                            <group>
-                                <field name="intervention_id"/>
-                                <field name="field_office_id"/>
-                                <field name="icp_ids" widget="many2many_tags"/>
-                                <field name="category_id"/>
-                                <field name="subcategory_id" domain="[('category_ids', '=', category_id)]"/>
-                                <field name="type"/>
-                            </group>
-                            <group>
-                                <field name="funding_status"/>
-                                <field name="intervention_status"/>
-                                <field name="funding_global_partners"/>
-                                <field name="service_level"/>
-                                <field name="cancel_reason"/>
-                            </group>
+                            <field name="intervention_id"/>
+                            <field name="field_office_id"/>
+                            <field name="icp_ids" widget="many2many_tags"/>
+                            <field name="category_id"/>
+                            <field name="subcategory_id" domain="[('category_ids', '=', category_id)]"/>
+                            <field name="type"/>
                         </group>
-                        <notebook>
-                            <page string="Budget">
-                                <group>
-                                    <group string="Hold Information" attrs="{'invisible': [('hold_id', '=', False)]}">
-                                        <field name="hold_id"/>
-                                        <field name="hold_amount" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                        <field name="expiration_date"/>
-                                        <!--<field name="next_year_opt_in"/>-->
-                                        <field name="primary_owner"/>
-                                        <field name="secondary_owner"/>
-                                    </group>
-                                    <group string="Previsions">
-                                        <field name="currency_usd" invisible="1"/>
-                                        <field name="estimated_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                        <field name="estimated_impacted_beneficiaries"/>
-                                        <field name="estimated_local_contribution" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                    </group>
-                                    <group string="Actual numbers">
-                                        <field name="total_cost" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                        <field name="requested_additional_funding" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                        <field name="commitment_amount" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                        <field name="local_contribution" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                        <field name="impacted_beneficiaries"/>
-                                    </group>
+                        <group>
+                            <field name="funding_status"/>
+                            <field name="intervention_status"/>
+                            <field name="funding_global_partners"/>
+                            <field name="service_level"/>
+                            <field name="cancel_reason"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Budget">
+                            <group>
+                                <group string="Hold Information" attrs="{'invisible': [('hold_id', '=', False)]}">
+                                    <field name="hold_id"/>
+                                    <field name="hold_amount" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="expiration_date"/>
+                                    <!--<field name="next_year_opt_in"/>-->
+                                    <field name="primary_owner"/>
+                                    <field name="secondary_owner"/>
                                 </group>
-                            </page>
-                            <page string="Schedule">
-                                <group>
-                                    <group string="Start">
-                                        <field name="is_fo_priority"/>
-                                        <field name="proposed_start_date"/>
-                                        <field name="start_no_later_than"/>
-                                        <field name="start_date"/>
-                                        <field name="expected_duration"/>
-                                        <field name="actual_duration"/>
-                                    </group>
-                                    <group string="End">
-                                        <field name="initial_planned_end_date"/>
-                                        <field name="planned_end_date"/>
-                                        <field name="end_date"/>
-                                    </group>
+                                <group string="Previsions">
+                                    <field name="currency_usd" invisible="1"/>
+                                    <field name="estimated_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="estimated_impacted_beneficiaries"/>
+                                    <field name="estimated_local_contribution" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                                 </group>
-                            </page>
-                            <page string="SLA Negotiation">
-                                <group>
-                                    <field name="sla_negotiation_status"/>
-                                    <field name="fo_proposed_sla_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                    <field name="approved_sla_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                    <field name="sla_comments"/>
+                                <group string="Actual numbers">
+                                    <field name="total_cost" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="requested_additional_funding" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="commitment_amount" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="local_contribution" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="impacted_beneficiaries"/>
                                 </group>
-                                <group>
-                                    <field name="deliverable_level_1_ids" widget="many2many_tags"/>
-                                    <field name="deliverable_level_2_ids" widget="many2many_tags" attrs="{'invisible': [('service_level', '!=', 'Level 2')]}"/>
-                                    <field name="deliverable_level_3_ids" widget="many2many_tags" attrs="{'invisible': [('service_level', '!=', 'Level 3')]}"/>
+                            </group>
+                        </page>
+                        <page string="Schedule">
+                            <group>
+                                <group string="Start">
+                                    <field name="is_fo_priority"/>
+                                    <field name="proposed_start_date"/>
+                                    <field name="start_no_later_than"/>
+                                    <field name="start_date"/>
+                                    <field name="expected_duration"/>
+                                    <field name="actual_duration"/>
                                 </group>
-                            </page>
-                            <page string="Details">
+                                <group string="End">
+                                    <field name="initial_planned_end_date"/>
+                                    <field name="planned_end_date"/>
+                                    <field name="end_date"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="SLA Negotiation">
+                            <group>
+                                <field name="sla_negotiation_status"/>
+                                <field name="fo_proposed_sla_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                <field name="approved_sla_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                <field name="sla_comments"/>
+                            </group>
+                            <group>
+                                <field name="deliverable_level_1_ids" widget="many2many_tags"/>
+                                <field name="deliverable_level_2_ids" widget="many2many_tags" attrs="{'invisible': [('service_level', '!=', 'Level 2')]}"/>
+                                <field name="deliverable_level_3_ids" widget="many2many_tags" attrs="{'invisible': [('service_level', '!=', 'Level 3')]}"/>
+                            </group>
+                        </page>
+                        <page string="Details">
+                            <group>
+                                <group>
+                                    <field name="problem_statement"/>
+                                    <field name="background_information"/>
+                                    <field name="objectives"/>
+                                    <field name="success_factors"/>
+                                </group>
                                 <group>
                                     <group>
                                         <field name="problem_statement"/>
@@ -126,94 +132,94 @@
                                         <field name="other_activities"/>
                                     </group>
                                 </group>
-                            </page>
-                        </notebook>
-                    </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids" widget="mail_followers"/>
-                        <field name="message_ids" widget="mail_thread"/>
-                    </div>
-                </form>
-            </field>
-        </record>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
 
-        <record id="view_compassion_intervention_tree" model="ir.ui.view">
-            <field name="name">compassion.intervention.tree</field>
-            <field name="model">compassion.intervention</field>
-            <field name="arch" type="xml">
-                <tree colors="blue:state == 'on_hold';grey:state in ('close','cancel');green:state == 'committed';red:state == 'sla'">
-                    <field name="name"/>
-                    <field name="category_id"/>
-                    <field name="intervention_id"/>
-                    <field name="field_office_id"/>
-                    <field name="description"/>
-                    <field name="funding_status"/>
-                    <field name="state"/>
-                </tree>
-            </field>
-        </record>
+    <record id="view_compassion_intervention_tree" model="ir.ui.view">
+        <field name="name">compassion.intervention.tree</field>
+        <field name="model">compassion.intervention</field>
+        <field name="arch" type="xml">
+            <tree colors="blue:state == 'on_hold';grey:state in ('close','cancel');green:state == 'committed';red:state == 'sla'">
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="intervention_id"/>
+                <field name="field_office_id"/>
+                <field name="description"/>
+                <field name="funding_status"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
 
-        <record id="view_compassion_intervention_filter" model="ir.ui.view">
-            <field name="name">compassion.intervention.select</field>
-            <field name="model">compassion.intervention</field>
-            <field name="arch" type="xml">
-                <search>
-                    <field name="name"/>
-                    <field name="category_id"/>
-                    <field name="subcategory_id"/>
-                    <field name="icp_ids"/>
-                    <field name="field_office_id"/>
-                    <field name="funding_status"/>
-                    <field name="type"/>
-                    <field name="state"/>
-                    <filter name="active" string="Active" domain="[('state', 'not in', ['close', 'cancel'])]"/>
-                    <group expand="0" string="Group By...">
-                        <filter string="Category" domain="[]" context="{'group_by':'category_id'}"/>
-                        <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
-                        <filter string="Funding Status" domain="[]" context="{'group_by':'funding_status'}"/>
-                        <filter string="State" domain="[]" context="{'group_by':'state'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
+    <record id="view_compassion_intervention_filter" model="ir.ui.view">
+        <field name="name">compassion.intervention.select</field>
+        <field name="model">compassion.intervention</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="subcategory_id"/>
+                <field name="icp_ids"/>
+                <field name="field_office_id"/>
+                <field name="funding_status"/>
+                <field name="type"/>
+                <field name="state"/>
+                <filter name="active" string="Active" domain="[('state', 'not in', ['close', 'cancel'])]"/>
+                <group expand="0" string="Group By...">
+                    <filter string="Category" domain="[]" context="{'group_by':'category_id'}"/>
+                    <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+                    <filter string="Funding Status" domain="[]" context="{'group_by':'funding_status'}"/>
+                    <filter string="State" domain="[]" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
 
-        <!-- Commitment Wizard -->
-        <record id="view_intervention_commitment_wizard_form" model="ir.ui.view">
-            <field name="name">compassion.intervention.commitment.form</field>
-            <field name="model">compassion.intervention.commitment.wizard</field>
-            <field name="arch" type="xml">
-                <form>
+    <!-- Commitment Wizard -->
+    <record id="view_intervention_commitment_wizard_form" model="ir.ui.view">
+        <field name="name">compassion.intervention.commitment.form</field>
+        <field name="model">compassion.intervention.commitment.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="usd" invisible="1"/>
+                    <field name="intervention_id" invisible="1"/>
+                    <field name="commitment_amount" widget="monetary" options="{'currency_field': 'usd'}"/>
+                </group>
+                <div attrs="{'invisible': [('additional_fund_amount', '=', 0)]}">
+                    <p>Additional fundings were requested by the Field Office for this Intervention:</p>
                     <group>
-                        <field name="usd" invisible="1"/>
-                        <field name="intervention_id" invisible="1"/>
-                        <field name="commitment_amount" widget="monetary" options="{'currency_field': 'usd'}"/>
+                        <field name="additional_fund_amount" widget="monetary" options="{'currency_field': 'usd'}"/>
+                        <field name="additional_info"/>
+                        <field name="commit_to_additional_fund"/>
                     </group>
-                    <div attrs="{'invisible': [('additional_fund_amount', '=', 0)]}">
-                        <p>Additional fundings were requested by the Field Office for this Intervention:</p>
-                        <group>
-                            <field name="additional_fund_amount" widget="monetary" options="{'currency_field': 'usd'}"/>
-                            <field name="additional_info"/>
-                            <field name="commit_to_additional_fund"/>
-                        </group>
-                    </div>
-                    <footer>
-                        <button name="send_commitment" string="Send Commitment" type="object" class="oe_highlight"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
+                </div>
+                <footer>
+                    <button name="send_commitment" string="Send Commitment" type="object" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
 
-        <!-- Actions -->
-        <record id="open_view_intervention_tree" model="ir.actions.act_window">
-            <field name="name">Interventions</field>
-            <field name="res_model">compassion.intervention</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_active': 1}</field>
-        </record>
+    <!-- Actions -->
+    <record id="open_view_intervention_tree" model="ir.actions.act_window">
+        <field name="name">Interventions</field>
+        <field name="res_model">compassion.intervention</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
 
-        <menuitem id="menu_interventions"
-                  parent="child_compassion.menu_field_section" name="Interventions"
-                  action="open_view_intervention_tree" sequence="6"/>
-    </data>
-</openerp>
+    <menuitem id="menu_interventions"
+              parent="child_compassion.menu_field_section" name="Interventions"
+              action="open_view_intervention_tree" sequence="6"/>
+</odoo>
