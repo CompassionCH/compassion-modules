@@ -7,12 +7,7 @@
             <!-- Add correspondence to sponsorships -->
             <button name="open_invoices" position="after">
                 <button name="open_letters" type="object" class="oe_inline oe_stat_button" icon="fa-pencil">
-                    <div>
-                        <strong>
-                            <field name="nb_letters"/>
-                        </strong>
-                        <br/>Letters
-                    </div>
+                    <field name="nb_letters" widget="statinfo" string="Letters"/>
                 </button>
             </button>
 

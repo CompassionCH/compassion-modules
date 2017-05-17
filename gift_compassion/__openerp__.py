@@ -38,7 +38,6 @@
         'security/ir.model.access.csv',
         'data/gmc_action.xml',
         'data/gift_thresholds.xml',
-        'data/account.xml',
         'data/process_gift_cron.xml',
         'views/collect_gifts_wizard_view.xml',
         'views/gift_view.xml',

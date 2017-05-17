@@ -379,7 +379,8 @@ class SponsorshipGift(models.Model):
             'state': 'In Progress',
             'amount_us_dollars': exchange_rate * self.amount
         })
-        account_credit = self.env.ref('gift_compassion.comp_2002_2')
+        account_credit = self.env['account.account'].search([
+            ('code', '=', '2002')])
         account_debit = self.env['account.account'].search([
             ('code', '=', '5003')])
         journal = self.env['account.journal'].search([

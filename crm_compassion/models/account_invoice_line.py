@@ -30,13 +30,13 @@ class AccountInvoiceLine(models.Model):
             self.user_id = contract.user_id.id
 
 
-class generate_gift_wizard(models.TransientModel):
+class GenerateGiftWizard(models.TransientModel):
     """ Push salespersons to generated invoices """
     _inherit = 'generate.gift.wizard'
 
-    def _setup_invoice_line(self, invoice_id, contract):
-        invl_data = super(generate_gift_wizard, self)._setup_invoice_line(
-            invoice_id, contract)
+    def _setup_invoice_line(self, contract):
+        invl_data = super(GenerateGiftWizard, self)._setup_invoice_line(
+            contract)
         if contract.user_id:
             invl_data['user_id'] = contract.user_id.id
         return invl_data
