@@ -297,10 +297,10 @@ class CompassionChild(models.Model):
 
     @api.multi
     def unlink(self):
-        res = super(CompassionChild, self).unlink()
         holds = self.mapped('hold_id').filtered(
             lambda h: h.state == 'active' and
             h.type != HoldType.NO_MONEY_HOLD.value)
+        res = super(CompassionChild, self).unlink()
         holds.release_hold()
         return res
 
