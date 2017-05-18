@@ -22,8 +22,8 @@ try:
     from numpy import logical_or as or2
     import numpy as np
 except ImportError:
-    _logger.error('Please install cv2 and numpy on your system to use SBC '
-                  'module')
+    _logger.warning('Please install cv2 and numpy on your system to use SBC '
+                    'module')
 
 
 class CheckboxReader:

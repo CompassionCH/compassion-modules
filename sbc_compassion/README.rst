@@ -27,8 +27,6 @@ To install this module, you need to install dependencies:
         - python-pdfminer
         - python-magic
     * requires opencv3
-    * Notice that zxing is no longer used. We're using zbar instead
-    * requires a java environment
 
 Contributors
 ------------

@@ -6,6 +6,20 @@ addons:
         - expect-dev
         - python-lxml
         - python-cups
+        # OpenCV requirements packages
+        - build-essential
+        - cmake
+        - pkg-config
+        - libjpeg-dev
+        - libtiff4-dev
+        - libjasper-dev
+        - libgtk2.0-dev
+        - libavcodec-dev
+        - libavformat-dev
+        - libswscale-dev
+        - libv4l-dev
+        - zbar-tools
+        - python-zbar
 
 language: python
 
@@ -16,16 +30,17 @@ env:
     global:
         - VERSION="9.0"
         - ODOO_REPO="odoo/odoo"
-        - EXCLUDE="child_compassion,label,message_center_compassion,sbc_compassion"
-        - OPENCV_ROOT=${HOME}/opencv
-        - ZXING_ROOT=${HOME}/.libZxing
+        - EXCLUDE="child_compassion,label,message_center_compassion"
 
 virtualenv:
   system_site_packages: true
 
 install:
+#  See how to prevent too much log when sing opencv in Travis.
+#    - sh ${HOME}/build/CompassionCH/compassion-modules/sbc_compassion/tools/install_opencv.sh
     - pip install click flake8 coveralls xlrd pylint pylint_odoo coverage codecov
-    - pip install pyjwt pyquery phonenumbers wand
+    - pip install pyjwt pyquery phonenumbers
+    - pip install python-magic wand numpy pdfminer matplotlib pyPdf bs4  # SBC requirements
     - git clone https://github.com/CompassionCH/compassion-accounting.git ${HOME}/build/CompassionCH/compassion-accounting -b 9.0
     - git clone https://github.com/CompassionCH/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools -b r2
     - git clone https://github.com/OCA/web.git ${HOME}/build/CompassionCH/web -b 9.0
@@ -63,6 +78,7 @@ install:
 #    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis_install_nightly || echo "Not installing odoo in Pull requests"'
 
 before_script:
+    - rm -rf opencv*
     - touch ${HOME}/odoo-9.0/odoo.conf
 #    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && openssl aes-256-cbc -K $encrypted_f7bf959fc25e_key -iv $encrypted_f7bf959fc25e_iv -in travis/odoo.conf.enc -out ${HOME}/odoo-9.0/odoo.conf -d || echo "encrypted files not available"'
 

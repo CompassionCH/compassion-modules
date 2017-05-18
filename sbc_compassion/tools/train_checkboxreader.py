@@ -25,7 +25,8 @@ try:
     import numpy as np
     import matplotlib.pyplot as plt
 except ImportError:
-    _logger.error('Please install cv2, numpy and matplotlib to use SBC module')
+    _logger.warning('Please install cv2, numpy and matplotlib to use SBC '
+                    'module')
 
 
 def findmax(x):

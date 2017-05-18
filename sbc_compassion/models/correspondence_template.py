@@ -26,8 +26,8 @@ try:
     import cv2
     from wand.image import Image
 except ImportError:
-    _logger.error('Please install numpy, magic, cv2 and wand to use SBC '
-                  'module')
+    _logger.warning('Please install numpy, magic, cv2 and wand to use SBC '
+                    'module')
 
 
 class Style:

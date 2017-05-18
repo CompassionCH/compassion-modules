@@ -32,8 +32,8 @@ try:
     from pyPdf import PdfFileWriter, PdfFileReader
     from wand.image import Image as WandImage
 except ImportError:
-    _logger.error('Please install numpy, cv2, pypdf and wand to use SBC '
-                  'module')
+    _logger.warning('Please install numpy, cv2, pypdf and wand to use SBC '
+                    'module')
 
 ##########################################################################
 #                           GENERAL METHODS                              #

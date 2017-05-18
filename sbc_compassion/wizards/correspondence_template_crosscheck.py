@@ -19,7 +19,7 @@ _logger = logging.getLogger(__name__)
 try:
     import cv2
 except ImportError:
-    _logger.error('Please install cv2 to use SBC module')
+    _logger.warning('Please install cv2 to use SBC module')
 
 
 class CorrespondenceCrosscheck(models.TransientModel):

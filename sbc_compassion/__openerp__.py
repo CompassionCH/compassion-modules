@@ -37,8 +37,7 @@
     'website': 'http://www.compassion.ch',
     'depends': ['sponsorship_compassion', 'web_tree_image'],
     'external_dependencies': {
-        'java': ['zxing'],
-        'python': ['magic', 'wand', 'numpy', 'cv2', 'zbar', 'pdfminer',
+        'python': ['magic', 'wand', 'numpy', 'zbar', 'pdfminer',
                    'matplotlib', 'pyPdf', 'bs4']
     },
     'data': [

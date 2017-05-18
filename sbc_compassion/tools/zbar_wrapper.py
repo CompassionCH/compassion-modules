@@ -19,7 +19,7 @@ try:
     import cv2  # we use openCV to repair broken QRCodes.
     from PIL import Image
 except ImportError:
-    _logger.error("SBC module needs zbar, cv2 and PIL to work.")
+    _logger.warning("SBC module needs zbar, cv2 and PIL to work.")
 
 
 def scan_qrcode(filename):
