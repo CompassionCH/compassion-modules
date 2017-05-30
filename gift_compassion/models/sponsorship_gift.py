@@ -432,7 +432,7 @@ class SponsorshipGift(models.Model):
             'amount_currency': self.amount * exchange_rate * -1
         })
 
-        move.button_validate()
+        move.post()
         data['payment_id'] = move.id
         self.write(data)
 
