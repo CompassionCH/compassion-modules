@@ -283,7 +283,7 @@ class SponsorshipGift(models.Model):
             ('sponsorship_gift_type', '=', self.sponsorship_gift_type),
         ], limit=1)
         if threshold_rule:
-            current_rate = threshold_rule.currency_id.rate_silent or 1.0
+            current_rate = threshold_rule.currency_id.rate or 1.0
             minimum_amount = threshold_rule.min_amount
             maximum_amount = threshold_rule.max_amount
 
@@ -374,7 +374,7 @@ class SponsorshipGift(models.Model):
         try:
             exchange_rate = float(data.get('exchange_rate'))
         except ValueError:
-            exchange_rate = self.env.ref('base.USD').rate_silent or 1.0
+            exchange_rate = self.env.ref('base.USD').rate or 1.0
         data.update({
             'state': 'In Progress',
             'amount_us_dollars': exchange_rate * self.amount

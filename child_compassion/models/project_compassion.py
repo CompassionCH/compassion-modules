@@ -352,9 +352,9 @@ class CompassionProject(models.Model):
     def _compute_chf_income(self):
         for project in self.filtered('country_id'):
             income = project.monthly_income / \
-                project.country_id.currency_id.rate_silent
+                project.country_id.currency_id.rate
             if int(income) < 10:
-                income = project.monthly_income / project.usd.rate_silent
+                income = project.monthly_income / project.usd.rate
             project.chf_income = income
 
     @api.model
