@@ -8,4 +8,4 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-import label_print_wizard
+from . import label_print_wizard

@@ -9,8 +9,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
-#    @author: Serpent Consulting Services Pvt. Ltd.
+#    Copyright (C) 2015-2017 Compassion CH (http://www.compassion.ch)
+#    @author: Emanuel Cino, Serpent Consulting Services Pvt. Ltd.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,7 @@
 
 {
     "name": "Mass Label Reporting",
-    "version": "1.0",
+    "version": "9.0.1.0.0",
     "author": "Serpent Consulting Services Pvt. Ltd.",
     "category": "Tools",
     "website": "http://www.serpentcs.com",
@@ -37,7 +37,7 @@
     'data': [
         'views/label_config_view.xml',
         'views/label_print_view.xml',
-        'wizard/label_print_wizard_view.xml',
+        'wizards/label_print_wizard_view.xml',
         'security/ir.model.access.csv',
         'data/label.brand.csv',
         'data/label.config.csv',
@@ -45,6 +45,6 @@
         'reports/dynamic_label.xml',
         'reports/one_label.xml'
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

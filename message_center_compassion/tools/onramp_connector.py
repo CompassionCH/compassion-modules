@@ -9,8 +9,6 @@
 #
 ##############################################################################
 import logging
-import httplib
-import simplejson
 import requests
 import base64
 from datetime import datetime, timedelta
@@ -22,6 +20,12 @@ from openerp.exceptions import UserError
 from openerp.tools.config import config
 
 logger = logging.getLogger(__name__)
+
+try:
+    import httplib
+    import simplejson
+except ImportError:
+    logger.warning("Please install httplib and simplejson")
 
 
 class OnrampConnector(object):

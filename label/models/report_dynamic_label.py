@@ -1,37 +1,25 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2015-2017 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Serpent Consulting Services Pvt. Ltd.
+#    @author: Emanuel Cino, Serpent Consulting Services Pvt. Ltd.
 #
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp.osv import osv
-from openerp.report import report_sxw
+from openerp import api, models
 from openerp.osv.orm import browse_record
-from reportlab.graphics.barcode import createBarcodeDrawing
-
-import base64
 from copy import deepcopy
 from math import ceil
 
 ONE_INCH = 25.4
 
 
-class report_dynamic_label(report_sxw.rml_parse):
-    def __init__(self, cr, uid, name, context):
-        super(report_dynamic_label, self).__init__(
-            cr, uid, name, context=context)
-        self.context = context
-        self.rec_no = 0
-        self.localcontext.update({
-            'get_data': self.get_data,
-            'barcode': self.barcode
-        })
+class ReportDynamicLabel(models.TransientModel):
+    _name = 'report.label.report_label'
 
-    def get_data(self, row, columns, ids, model, nber_labels):
+    def get_data(self, row, columns, records, nber_labels):
         """
         Function called in the xml in order to get the datas for one page
         (in dynamic_label.xml).
@@ -40,19 +28,17 @@ class report_dynamic_label(report_sxw.rml_parse):
 
         :param int row: Number of row for one page of labels
         :param int columns: Number of columns of labels
-        :param ids: Id(s) of the model
-        :param model: Model used for the labels
+        :param records: recordset used for the labels
         :param int nber_labels: Number of labels of each ids
 
         :returns: Data to print
         :rtype: list[page,row,columns,value] = dict
         """
-        active_model_obj = self.pool.get(model)
-        label_print_obj = self.pool.get('label.print')
+        label_print_obj = self.env['label.print']
         label_print_data = label_print_obj.browse(
-            self.cr, self.uid, self.context.get('label_print'))
+            self.env.context.get('label_print'))
 
-        tot = nber_labels * len(ids)
+        tot = nber_labels * len(records)
         tot_page = int(ceil(float(ceil(tot) / (columns*row))))
         # return value
         result = []
@@ -65,17 +51,16 @@ class report_dynamic_label(report_sxw.rml_parse):
         cur_col = 0
         cur_page = 0
         # loop over all the items
-        for id_model in ids:
-            datas = active_model_obj.browse(self.cr, self.uid, id_model)
+        for record in records:
             # value to add
             vals = []
             # loop over each field for one label
             for field in label_print_data.sudo().field_ids:
                 if field.python_expression and field.python_field:
-                    value = eval(field.python_field, {'obj': datas})
+                    value = eval(field.python_field, {'obj': record})
 
                 elif field.field_id.name:
-                    value = getattr(datas, field.field_id.name)
+                    value = getattr(record, field.field_id.name)
 
                 if not value:
                     continue
@@ -114,28 +99,21 @@ class report_dynamic_label(report_sxw.rml_parse):
                     cur_row = 0
         return result
 
-    def barcode(self, type, value, width=20, height=20, humanreadable=0,
-                dpi=144):
+    @api.multi
+    def render_html(self, data=None):
         """
-        Creates a barcode picture for the report
-        :param type: type of barcode ('QR' or '??')
-        :param value: text of the barcode
-        :param width: in millimeters
-        :param height: in millimeters
-        :param humanreadable:
-        :return: base64 encoded picture
+        Called from the LabelPrintWizard
+        Add the active model and active ids in the data to generate a correct
+        report.
+        :param data: data collected from the print wizard.
+        :return: html rendered report
         """
-        width, height = int(dpi*width/ONE_INCH), int(dpi*height/ONE_INCH)
-        humanreadable = bool(humanreadable)
-        barcode_obj = createBarcodeDrawing(
-            type, value=value, format='png', width=width, height=height,
-            humanReadable=humanreadable
-        )
-        return base64.encodestring(barcode_obj.asString('png'))
-
-
-class report_employee(osv.AbstractModel):
-    _name = 'report.label.report_label'
-    _inherit = 'report.abstract_report'
-    _template = 'label.report_label'
-    _wrapped_report_class = report_dynamic_label
+        model = data['active_model']
+        ids = data['active_ids']
+        records = self.env[model].browse(ids)
+        data.update({
+            'docs': self.env[data['doc_model']].browse(data['doc_ids']),
+            'label_data': self.get_data(
+                data['rows'], data['columns'], records, data['number_labels'])
+        })
+        return self.env['report'].render('label.report_label', data)

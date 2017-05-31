@@ -12,8 +12,9 @@
 from openerp import models, fields, api, _
 
 
-class label_print(models.Model):
+class LabelPrint(models.Model):
     _name = "label.print"
+    _description = 'Label Print'
 
     name = fields.Char("Name", size=64, required=True, select=1)
     model_id = fields.Many2one('ir.model', 'Model', required=True, select=1)
@@ -121,8 +122,9 @@ class label_print(models.Model):
         return True
 
 
-class label_print_field(models.Model):
+class LabelPrintField(models.Model):
     _name = "label.print.field"
+    _description = 'Label Print Field'
 
     field_id = fields.Many2one('ir.model.fields', 'Fields', required=False)
     report_id = fields.Many2one('label.print', 'Report')
@@ -134,16 +136,15 @@ class label_print_field(models.Model):
     fontsize = fields.Float("Font Size", default=12)
 
 
-class ir_model_fields(models.Model):
+class IrModelFields(models.Model):
 
     _inherit = 'ir.model.fields'
 
     @api.model
     def name_search(self, name='', args=None, operator='ilike', limit=None):
-
         data = self.env.context.get('model_list')
         if data:
             args.append(('model', 'in', eval(data)))
-        ret_vat = super(ir_model_fields, self).name_search(
+        ret_vat = super(IrModelFields, self).name_search(
             name=name, args=args, operator=operator, limit=limit)
         return ret_vat

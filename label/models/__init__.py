@@ -8,6 +8,6 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-import dynamic_label
-import label_print
-import label_config
+from . import report_dynamic_label
+from . import label_print
+from . import label_config

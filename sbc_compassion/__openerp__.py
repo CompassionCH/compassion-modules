@@ -38,7 +38,7 @@
     'depends': ['sponsorship_compassion', 'web_tree_image'],
     'external_dependencies': {
         'python': ['magic', 'wand', 'numpy', 'zbar', 'pdfminer',
-                   'matplotlib', 'pyPdf', 'bs4']
+                   'matplotlib', 'pyPdf', 'bs4', 'HTMLParser']
     },
     'data': [
         'security/ir.model.access.csv',

@@ -8,7 +8,7 @@
                 <form string="Print Label">
                     <group>
                         <field name="brand_id" colspan="4"/>
-                        <field name="name" colspan="4" domain="[('label_main_id', '=', brand_id)]"/>
+                        <field name="config_id" colspan="4" domain="[('label_main_id', '=', brand_id)]"/>
                         <group>
                             <field name="labels_per_page"/>
                             <field name="number_of_labels"/>

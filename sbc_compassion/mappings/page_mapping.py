@@ -8,12 +8,19 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from HTMLParser import HTMLParser
+import logging
 
 from openerp.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 from openerp.addons.sbc_compassion.models.correspondence_page import \
     BOX_SEPARATOR
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from HTMLParser import HTMLParser
+except ImportError:
+    _logger.warning("Please install HTMLParser")
 
 
 def _format_text(text):

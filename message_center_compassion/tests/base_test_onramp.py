@@ -10,10 +10,17 @@
 ##############################################################################
 import base64
 import urllib2
-import httplib
-import simplejson
+import logging
 
 from openerp.tests import common
+
+_logger = logging.getLogger(__name__)
+
+try:
+    import httplib
+    import simplejson
+except ImportError:
+    _logger.warning("Please install httplib and simplejson")
 
 
 class TestOnramp(common.HttpCase):

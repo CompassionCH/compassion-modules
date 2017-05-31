@@ -36,7 +36,7 @@
     'website': 'http://www.compassion.ch',
     'depends': ['base', 'connector'],
     'external_dependencies': {
-        'python': ['requests', 'jwt'],
+        'python': ['requests', 'jwt', 'httplib', 'simplejson'],
     },
     'data': [
         'security/gmc_groups.xml',

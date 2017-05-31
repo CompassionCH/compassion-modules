@@ -8,5 +8,5 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-import wizard
-import models
+from . import wizards
+from . import models

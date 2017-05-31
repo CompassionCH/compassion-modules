@@ -30,7 +30,7 @@ env:
     global:
         - VERSION="9.0"
         - ODOO_REPO="odoo/odoo"
-        - EXCLUDE="child_compassion,label,message_center_compassion"
+        - EXCLUDE="child_compassion,message_center_compassion"
 
 virtualenv:
   system_site_packages: true
