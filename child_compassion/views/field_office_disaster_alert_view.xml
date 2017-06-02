@@ -80,13 +80,15 @@
                                     <group colspan="2">
                                         <field name="icp_disaster_impact_ids">
                                             <tree>
+                                                <field name="project_id"/>
                                                 <field name="impact_on_icp_program"/>
-                                                <field name="state"/>
                                                 <field name="infrastructure"/>
+                                                <field name="state"/>
                                             </tree>
                                         </field>
                                         <field name="child_disaster_impact_ids">
                                             <tree>
+                                                <field name="child_id"/>
                                                 <field name="name"/>
                                                 <field name="beneficiary_location"/>
                                                 <field name="beneficiary_physical_condition"/>

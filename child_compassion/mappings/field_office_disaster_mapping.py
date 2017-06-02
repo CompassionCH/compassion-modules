@@ -69,10 +69,9 @@ class ChildDisasterImpact(OnrampMapping):
         'SiblingsSeriouslyInjuredNumber': 'siblings_seriously_injured_number',
         'Beneficiary_GlobalID': ('child_id.global_id', 'compassion.child'),
         'SponsorshipStatus': 'sponsorship_status',
+        'Beneficiary_FullName': 'name',
         # Not used in Odoo
         'DisasterStatus': None,
-        'Beneficiary_FullName': None,
-        'Beneficiary_FullName': None,
         'Beneficiary_LocalID': None,
         'Disaster_Name': None,
     }
@@ -162,6 +161,7 @@ class FieldOfficeDisasterMapping(OnrampMapping):
             odoo_data['icp_disaster_impact_ids'] = impact_list
 
         if 'fo_disaster_update_ids' in odoo_data:
+            disaster.fo_disaster_update_ids.unlink()
             update_list = [(0, 0, impact) for impact in
                            odoo_data['fo_disaster_update_ids']]
             odoo_data['fo_disaster_update_ids'] = update_list
