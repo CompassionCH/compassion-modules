@@ -409,7 +409,7 @@ class CommunicationJob(models.Model):
         for job in self:
             # Get pdf should directly send it to the printer if report
             # is correctly configured.
-            report_obj.get_pdf(job.ids, job.report_id.report_name)
+            report_obj.get_pdf(job, job.report_id.report_name)
             # Print attachments
             job.attachment_ids.print_attachments()
             job.partner_id.message_post(

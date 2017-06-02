@@ -1,0 +1,41 @@
+<odoo>
+    <record model="ir.ui.view" id="communication_job_form_thankyou">
+        <field name="name">communication.job.form.thankyou</field>
+        <field name="model">partner.communication.job</field>
+        <field name="inherit_id" ref="partner_communication.communication_job_form"/>
+        <field name="arch" type="xml">
+            <field name="auto_send" position="after">
+                <field name="success_story_id"/>
+            </field>
+            <field name="subject" position="after">
+                <field name="print_subject"/>
+                <field name="print_header"/>
+            </field>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="communication_job_tree_thankyou">
+        <field name="name">communication.job.tree.thankyou</field>
+        <field name="model">partner.communication.job</field>
+        <field name="inherit_id" ref="partner_communication.communication_job_tree"/>
+        <field name="arch" type="xml">
+            <field name="subject" position="after">
+                <field name="success_story_id"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Add menus for thank you letters -->
+    <record id="partner_communication.action_communication_job" model="ir.actions.act_window">
+        <field name="domain">[('config_id.model', '!=', 'account.invoice.line')]</field>
+    </record>
+    <record id="action_thank_you" model="ir.actions.act_window">
+        <field name="name">Donation Receipts</field>
+        <field name="res_model">partner.communication.job</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('config_id.model', '=', 'account.invoice.line')]</field>
+        <field name="context">{'search_default_pending': True, 'search_default_config': True, 'default_user_id': uid}</field>
+    </record>
+
+    <menuitem id="menu_donation_general" name="General Donations" parent="menu_donation" action="action_thank_you"/>
+</odoo>

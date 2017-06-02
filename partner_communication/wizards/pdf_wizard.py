@@ -45,7 +45,7 @@ class PdfPreviewWizard(models.TransientModel):
         comm = self.communication_id
         report_obj = self.env['report'].with_context(
             lang=comm.partner_id.lang, must_skip_send_to_printer=True)
-        data = report_obj.get_pdf(comm.ids, comm.report_id.report_name)
+        data = report_obj.get_pdf(comm, comm.report_id.report_name)
         with Image(blob=data) as pdf_image:
             preview = base64.b64encode(pdf_image.make_blob(format='jpeg'))
 

@@ -1,0 +1,478 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* thankyou_letters
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-03-24 15:48+0100\n"
+"PO-Revision-Date: 2017-03-24 15:49+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CH\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.8.4\n"
+
+#. module: thankyou_letters
+#: model:email.template,body_html:thankyou_letters.event_letter_template
+msgid ""
+"<div>\n"
+"                    % set invoice_lines = object.get_objects()\n"
+"                    % set donations = invoice_lines.get_donations()\n"
+"                    % set partner = object.partner_id\n"
+"                    % set ambassadors = invoice_lines.mapped('user_id')."
+"filtered('ambassador_quote')\n"
+"                </div>\n"
+"                <div>\n"
+"                    ${partner.salutation},\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Compassion Switzerland thank you so much for your "
+"generous donation of CHF ${donations[0]}.- you made\n"
+"                    % if donations[1]:\n"
+"                        % if len(ambassadors) == 1:\n"
+"                            <!-- space --> for ${ambassadors.firstname} "
+"${ambassadors.lastname}\n"
+"                        % else:\n"
+"                            <!-- space --> (${donations[1]}).\n"
+"                        % endif\n"
+"                    % else\n"
+"                        .\n"
+"                    % endif\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    % if len(ambassadors) == 1:\n"
+"                        ${ambassadors.ambassador_quote |safe}\n"
+"                        <br/>\n"
+"                    % endif\n"
+"                    % if object.event_id.thank_you_text:\n"
+"                        ${object.event_id.thank_you_text |safe}\n"
+"                    % endif\n"
+"                    % if partner.number_sponsorships:\n"
+"                        Did you write to your child recently? Our new "
+"website allows you to write a letter online.\n"
+"                        Why not take advantage of this and write a letter "
+"this week?\n"
+"                    % else:\n"
+"                        % if partner.is_new_donor:\n"
+"                            Since 1952, Compassion has one goal: free as "
+"much as possible children from extreme poverty.\n"
+"                            In partnership with 7'000 local churches, we can "
+"support and help 1.8 million children in 25 countries from the South.\n"
+"                            <br/>\n"
+"                            <br/>\n"
+"                        % endif\n"
+"                            Do you have a heart for children in need? "
+"Compassion offers you various ways to contribute.\n"
+"                            One is through the sponsorship. You can find "
+"information in French, German and Italian on our website www.compassion.ch\n"
+"                            or call us at 0800 874 773.\n"
+"                    % endif\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Thanks again for your generosity towards the children in "
+"need.\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Yours sincerely\n"
+"                </div>\n"
+"            "
+msgstr ""
+"<div>\n"
+"                    % set invoice_lines = object.get_objects()\n"
+"                    % set donations = invoice_lines.get_donations()\n"
+"                    % set partner = object.partner_id\n"
+"                    % set ambassadors = invoice_lines.mapped('user_id')."
+"filtered('ambassador_quote')\n"
+"                </div>\n"
+"                <div>\n"
+"                    ${partner.salutation},\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Compassion Suisse vous remercie infiniment pour votre "
+"généreux don de CHF ${donations[0]}.- \n"
+"                    % if donations[1]:\n"
+"                        % if len(ambassadors) == 1:\n"
+"                            <!-- space --> pour ${ambassadors.firstname} "
+"${ambassadors.lastname}\n"
+"                        % else:\n"
+"                            <!-- space --> (${donations[1]}).\n"
+"                        % endif\n"
+"                    % else\n"
+"                        .\n"
+"                    % endif\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    % if len(ambassadors) == 1:\n"
+"<div id=\"ambassador_quote\">\n"
+"                        ${ambassadors.ambassador_quote |safe}\n"
+"</div>\n"
+"                    % endif\n"
+"                    % if object.event_id.thank_you_text:\n"
+"                        ${object.event_id.thank_you_text |safe}\n"
+"                    % endif\n"
+"                    % if partner.number_sponsorships:\n"
+"                        Avez-vous récemment écrit à votre filleul(e)? Notre "
+"nouveau site internet vous permet d'écrire un courrier directement en "
+"ligne.  Pourquoi ne pas en profiter encore cette semaine?\n"
+"                    % else:\n"
+"                        % if partner.is_new_donor:\n"
+"                            Depuis 1952, Compassion poursuit une mission "
+"bien précise: libérer autant d'enfants possible de l'extrême pauvreté. En "
+"collaboration avec 7000 Eglises locales, nous pouvons soutenir et participer "
+"au développement de 1.8 millions d'enfants dans 25 pays du Sud.\n"
+"                            <br/>\n"
+"                            <br/>\n"
+"                        % endif\n"
+"                            Le sort des enfants parmi les plus démunis de la "
+"planète vous tient à cœur? Compassion vous propose différentes formes "
+"d'engagements dont le parrainage d'un enfant. Vous trouverez les infos sur "
+"www.compassion.ch ou en nous appelant au 0800 874 773.\n"
+"                    % endif\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Encore une fois, merci de tout coeur de votre générosité "
+"pour les enfants démunis.\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Recevez nos meilleures salutations.\n"
+"                </div>\n"
+"            "
+
+#. module: thankyou_letters
+#: model:email.template,body_html:thankyou_letters.thankyou_letter_template
+msgid ""
+"<div>\n"
+"                    % set invoice_lines = object.get_objects()\n"
+"                    % set donations = invoice_lines.get_donations()\n"
+"                    % set partner = object.partner_id\n"
+"                    % set ambassadors = invoice_lines.mapped('user_id')."
+"filtered('ambassador_quote')\n"
+"                </div>\n"
+"                <div>\n"
+"                    ${partner.salutation},\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    We thank you for the donation of CHF ${donations[0]}.-\n"
+"                    % if donations[1]:\n"
+"                        you made for ${donations[1]}.\n"
+"                    % else\n"
+"                        you made.\n"
+"                    % endif\n"
+"                    We appreciate your generosity towards the poorest "
+"children of the world.\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Thanks to your commitment and the help of 7'000 church "
+"partners in 25 countries from the South,\n"
+"                    we currently can help 1.8 million children. We have one "
+"goal: free them from poverty.\n"
+"                    Thanks again for your support.\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    % if partner.number_sponsorships:\n"
+"                        The letters that children receive have a huge impact "
+"by encouraging them. Did you write to your child recently?\n"
+"                        Our new website allows you to write a letter online. "
+"The other good news is that the delivery time has been reduced\n"
+"                        thanks to the digitalization of the process all "
+"through the projects!\n"
+"                    % else:\n"
+"                        Do you have a heart for children in need? Compassion "
+"offers you various ways to contribute.\n"
+"                        One is through the sponsorship. You can find "
+"information in French, German and Italian on our website www.compassion.ch\n"
+"                        or call us at 0800 874 773.\n"
+"                    % endif\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Thanks again for your generosity towards the children in "
+"need.\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Yours sincerely\n"
+"                </div>\n"
+"            "
+msgstr ""
+"<div>\n"
+"                    % set invoice_lines = object.get_objects()\n"
+"                    % set donations = invoice_lines.get_donations()\n"
+"                    % set partner = object.partner_id\n"
+"                    % set ambassadors = invoice_lines.mapped('user_id')."
+"filtered('ambassador_quote')\n"
+"                </div>\n"
+"                <div>\n"
+"                    ${partner.salutation},\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Votre don de CHF ${donations[0]}.-\n"
+"                    % if donations[1]:\n"
+"                        <!-- space --> pour ${donations[1]}\n"
+"                    % endif\n"
+"                    <!-- space --> nous est bien parvenu. Merci de tout "
+"coeur de votre élan de générosité en faveur des enfants les plus démunis de "
+"ce monde.\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Grâce à votre soutien et à l'engagement de 7000 Eglises "
+"partenaires dans 25 pays du Sud, nous pouvons soutenir 1.8 millions enfants "
+"à l'heure actuelle. Avec un objectif commun: libérer le plus d'enfants "
+"possible durablement de la pauvreté. Merci de tout cœur de votre don "
+"précieux.\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    % if partner.number_sponsorships:\n"
+"                        Les courriers que reçoivent les enfants ont un "
+"impact déterminant, pour l'encouragement des enfants. Si vous parrainez déjà "
+"un enfant, avez-vous récemment écrit à votre filleul(e)? Notre nouveau site "
+"internet vous permet d'écrire un courrier directement en ligne. Autre bonne "
+"nouvelle, le délai de transmission des courriers a été réduit, grâce à "
+"l'informatisation du processus jusque dans les centres d'accueil!\n"
+"                    % else:\n"
+"                        Le sort des enfants parmi les plus démunis de la "
+"planète vous tient à cœur? Compassion vous propose différentes formes "
+"d'engagements dont le parrainage d'un enfant. Vous trouverez les infos sur "
+"www.compassion.ch ou en nous appelant au 0800 874 773.\n"
+"                    % endif\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Encore une fois, merci de tout coeur de votre générosité "
+"pour les enfants démunis.\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Recevez nos meilleures salutations.\n"
+"                </div>"
+
+#. module: thankyou_letters
+#: model:email.template,body_html:thankyou_letters.donation_summary_template
+msgid ""
+"<div>\n"
+"                    % set invoices = object.get_objects()\n"
+"                    % set month = invoices.get_date('date_invoice', '%B "
+"%Y')\n"
+"                    % set partner = object.partner_id\n"
+"                </div>\n"
+"                <div>\n"
+"                    ${partner.salutation},\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Voici un résumé des donations reçues en ${month} :\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <table style=\"border: 1px solid black; border-collapse: "
+"collapse;\">\n"
+"                        <tr>\n"
+"                            <th style=\"border: 1px solid black; padding-"
+"right: 5px; padding-left: 5px; text-align: center;\">Partenaire</th>\n"
+"                            <th style=\"border: 1px solid black; padding-"
+"right: 5px; padding-left: 5px; text-align: center;\">Date</th>\n"
+"                            <th style=\"border: 1px solid black; padding-"
+"right: 5px; padding-left: 5px; text-align: center;\">Attribution</th>\n"
+"                            <th style=\"border: 1px solid black; padding-"
+"right: 5px; padding-left: 5px; text-align: center;\">Montant</th>\n"
+"                            <th style=\"border: 1px solid black; padding-"
+"right: 5px; padding-left: 5px; text-align: center;\">Remerciement</th>\n"
+"                        </tr>\n"
+"                        % for p, p_invoices in invoices.group_by_partner()."
+"iteritems():\n"
+"                            % set donor = p_invoices.mapped('partner_id')\n"
+"                            % set comm = p_invoices."
+"mapped('communication_id')[0]\n"
+"                            % set date = p_invoices."
+"get_date('date_invoice')\n"
+"                            % set attribution = ', '.join(p_invoices."
+"mapped('invoice_line.product_id.name'))\n"
+"                            % set total = sum(p_invoices."
+"mapped('amount_total'))\n"
+"                            <tr>\n"
+"                                <td style=\"border: 1px solid black; padding-"
+"right: 5px; padding-left: 5px; text-align: center;\">${donor.name}</td>\n"
+"                                <td style=\"border: 1px solid black; padding-"
+"right: 5px; padding-left: 5px; text-align: center;\">${date}</td>\n"
+"                                <td style=\"border: 1px solid black; padding-"
+"right: 5px; padding-left: 5px; text-align: center;\">${attribution}</td>\n"
+"                                <td style=\"border: 1px solid black; padding-"
+"right: 5px; padding-left: 5px; text-align: right;\">${total}</td>\n"
+"                                % if comm and comm.state == 'done':\n"
+"                                    <td style=\"border: 1px solid black; "
+"padding-right: 5px; padding-left: 5px; text-align: center;\">Remercié par "
+"${'papier' if comm.send_mode == 'physical' else 'e-mail'}</td>\n"
+"                                % elif comm and comm.state != 'cancel':\n"
+"                                    <td style=\"border: 1px solid black; "
+"padding-right: 5px; padding-left: 5px; text-align: center;\">Pas encore "
+"remercié</td>\n"
+"                                % else:\n"
+"                                    <td style=\"border: 1px solid black; "
+"padding-right: 5px; padding-left: 5px; text-align: center;\">Non remercié "
+"${'selon volonté du parrain' if p.thankyou_letter == 'no' else ''}</td>\n"
+"                                % endif\n"
+"                            </tr>\n"
+"                        % endfor\n"
+"                    </table>\n"
+"                </div>\n"
+"            "
+msgstr ""
+
+#. module: thankyou_letters
+#: field:res.partner,ambassador_quote:0
+msgid "Ambassador quote"
+msgstr "Citation d'Ambassadeur"
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_partner_communication_job
+msgid "Communication Job"
+msgstr "Communication"
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_crm_event_compassion
+msgid "Compassion event"
+msgstr "Événement Compassion"
+
+#. module: thankyou_letters
+#: field:init.sendgrid.template.donation,create_uid:0
+msgid "Created by"
+msgstr ""
+
+#. module: thankyou_letters
+#: field:init.sendgrid.template.donation,create_date:0
+msgid "Created on"
+msgstr ""
+
+#. module: thankyou_letters
+#: field:init.sendgrid.template.donation,display_name:0
+msgid "Display Name"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:email.template,subject:thankyou_letters.event_letter_template
+#: model:email.template,subject:thankyou_letters.thankyou_letter_template
+msgid "Donation Receipt"
+msgstr "Remerciement"
+
+#. module: thankyou_letters
+#: view:crm.event.compassion:thankyou_letters.view_events_form_donation
+#: model:ir.actions.act_window,name:thankyou_letters.action_thank_you
+#: view:res.partner:thankyou_letters.view_partner_form_donation
+msgid "Donation Receipts"
+msgstr "Remerciements"
+
+#. module: thankyou_letters
+#: view:partner.communication.job:thankyou_letters.communication_job_search_event
+#: field:partner.communication.job,event_id:0
+msgid "Event"
+msgstr "Événement"
+
+#. module: thankyou_letters
+#: model:ir.actions.act_window,name:thankyou_letters.action_thank_you_event
+msgid "Event Donation Receipts"
+msgstr "Remerciements événements"
+
+#. module: thankyou_letters
+#: model:ir.ui.menu,name:thankyou_letters.menu_donation_event
+msgid "Event Donations"
+msgstr "Dons événements"
+
+#. module: thankyou_letters
+#: field:account.invoice.line,event_id:0
+msgid "Event id"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.ui.menu,name:thankyou_letters.menu_donation_general
+msgid "General Donations"
+msgstr "Dons"
+
+#. module: thankyou_letters
+#: field:init.sendgrid.template.donation,id:0
+msgid "ID"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_account_invoice
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_account_invoice_line
+msgid "Invoice Line"
+msgstr "Ligne de facture"
+
+#. module: thankyou_letters
+#: field:res.partner,is_new_donor:0
+msgid "Is new donor"
+msgstr "Nouveau donateur"
+
+#. module: thankyou_letters
+#: field:init.sendgrid.template.donation,__last_update:0
+msgid "Last Modified on"
+msgstr ""
+
+#. module: thankyou_letters
+#: field:init.sendgrid.template.donation,write_uid:0
+msgid "Last Updated by"
+msgstr ""
+
+#. module: thankyou_letters
+#: field:init.sendgrid.template.donation,write_date:0
+msgid "Last Updated on"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_res_partner
+msgid "Partner"
+msgstr "Partenaire"
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_product_product
+msgid "Product"
+msgstr "Produit"
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_product_template
+msgid "Product Template"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:email.template,subject:thankyou_letters.donation_summary_template
+msgid "Résumé des donations"
+msgstr "Résumé des donations"
+
+#. module: thankyou_letters
+#: view:res.partner:thankyou_letters.view_partner_form_donation
+msgid ""
+"Set a custom text used in thank you letters for donations linked to an event "
+"and to this partner."
+msgstr ""
+"Définissez un texte qui apparaîtra dans les remerciements pour les dons "
+"d'événements en faveur de cette personne."
+
+#. module: thankyou_letters
+#: field:account.invoice,communication_id:0
+msgid "Thank you letter"
+msgstr "Lettre de remerciement"
+
+#. module: thankyou_letters
+#: field:crm.event.compassion,thank_you_text:0
+msgid "Thank you text"
+msgstr "Texte de remerciement"
+
+#. module: thankyou_letters
+#: field:product.product,thanks_name:0 field:product.template,thanks_name:0
+msgid "Thanks name"
+msgstr "Nom pour remerciements"
+
+#. module: thankyou_letters
+#: field:res.partner,thankyou_preference:0
+msgid "Thankyou preference"
+msgstr "Reçu de dons"
+
+#. module: thankyou_letters
+#: help:res.partner,ambassador_quote:0
+msgid ""
+"Used in thank you letters for donations linked to an event and to this "
+"partner."
+msgstr ""
