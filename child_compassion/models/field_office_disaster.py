@@ -245,12 +245,12 @@ class FieldOfficeDisasterAlert(models.Model):
     def view_children(self):
         return {
             'name': _('Impacted children'),
-            'domain': [('id', 'in', self.child_disaster_impact_ids.mapped(
-                        'child_id').ids)],
+            'domain': [('id', 'in', self.child_disaster_impact_ids.filtered(
+                'child_id').ids)],
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree,form',
-            'res_model': 'compassion.child',
+            'res_model': 'child.disaster.impact',
             'target': 'current',
         }
 

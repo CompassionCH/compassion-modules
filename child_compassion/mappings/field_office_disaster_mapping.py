@@ -148,8 +148,9 @@ class FieldOfficeDisasterMapping(OnrampMapping):
             [('disaster_id', '=', odoo_data['disaster_id'])])
 
         if 'child_disaster_impact_ids' in odoo_data:
-            # Remove all old impacts
-            disaster.child_disaster_impact_ids.unlink()
+            # Remove old impacts not related to our children
+            disaster.child_disaster_impact_ids.filtered(
+                lambda i: not i.child_id).unlink()
             impact_list = [(0, 0, impact) for impact in
                            odoo_data['child_disaster_impact_ids']]
             odoo_data['child_disaster_impact_ids'] = impact_list
