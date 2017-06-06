@@ -197,7 +197,7 @@ class ChildPictures(models.Model):
             if not attach_id:
                 return data
 
-            picture.env['ir.attachment'].create({
+            picture.env['ir.attachment'].with_context({}).create({
                 'datas_fname': _store_fname,
                 'res_model': picture._name,
                 'res_id': attach_id,

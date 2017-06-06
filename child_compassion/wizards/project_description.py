@@ -107,12 +107,6 @@ class ProjectDescription(models.TransientModel):
             )
         else:
             desc('#community_job').remove()
-        if project.chf_income and 10 < project.chf_income < 500:
-            desc('.community_income')[0].text = _("Family monthly income")
-            desc('.community_income')[1].text = 'CHF {:10.0f}.-'.format(
-                project.chf_income)
-        else:
-            desc('#community_income').remove()
         desc('.community_food')[0].text = _("Typical food")
         if project.primary_diet_ids:
             desc('.community_food')[1].text = project.primary_diet_ids[0].value
