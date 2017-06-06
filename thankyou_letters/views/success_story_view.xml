@@ -12,8 +12,10 @@
                     <field name="name"/>
                     <group>
                         <group>
-                            <field name="date_start"/>
-                            <field name="date_stop"/>
+                            <field name="type"/>
+                            <field name="date_start" attrs="{'invisible': [('type', '=', 'sentence')]}"/>
+                            <field name="date_stop" attrs="{'invisible': [('type', '=', 'sentence')]}"/>
+                            <field name="is_active" attrs="{'invisible': [('type', '=', 'story')]}"/>
                             <field name="print_count"/>
                         </group>
                     </group>
@@ -34,6 +36,7 @@
                 <field name="date_start"/>
                 <field name="date_stop"/>
                 <field name="print_count"/>
+                <field name="type"/>
                 <field name="state"/>
             </tree>
         </field>
@@ -46,8 +49,12 @@
             <search>
                 <field name="name"/>
                 <field name="state"/>
+                <field name="type"/>
+                <filter name="story" string="Story" domain="[('type', '=', 'story')]"/>
+                <filter name="sentence" string="Sentence" domain="[('type', '=', 'sentence')]"/>
                 <group expand="0" string="Group By">
                     <filter string="Status" name="status" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="Type" name="status" domain="[]" context="{'group_by':'type'}"/>
                 </group>
             </search>
         </field>

@@ -25,13 +25,17 @@ class SuccessStory(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     name = fields.Char()
-    body = fields.Html(required=True, translate=True)
+    type = fields.Selection([
+        ('story', 'Story'),
+        ('sentence', 'Sentence')
+    ], default='story', required=True)
+    body = fields.Html(translate=True)
     date_start = fields.Date(
-        required=True, readonly=True,
+        readonly=True,
         states={'new': [('readonly', False)]}
     )
     date_stop = fields.Date(
-        required=True, readonly=True,
+        readonly=True,
         states={'new': [('readonly', False)]}
     )
     is_active = fields.Boolean()
@@ -67,7 +71,7 @@ class SuccessStory(models.Model):
     @api.multi
     @api.constrains('date_start', 'date_stop')
     def _check_dates(self):
-        for story in self:
+        for story in self.filtered(lambda s: s.type == 'story'):
             date_start = fields.Date.from_string(story.date_start)
             date_stop = fields.Date.from_string(story.date_stop)
             if date_stop <= date_start:
@@ -80,11 +84,13 @@ class SuccessStory(models.Model):
     def validity_cron(self):
         today = fields.Date.today()
         active_stories = self.search([
-            ('is_active', '=', True)
+            ('is_active', '=', True),
+            ('type', '=', 'story'),
         ])
         current_stories = self.search([
             ('date_start', '<=', today),
-            ('date_stop', '>=', today)
+            ('date_stop', '>=', today),
+            ('type', '=', 'story'),
         ])
         # Deactivate old stories
         (active_stories - current_stories).write({'is_active': False})
