@@ -295,9 +295,9 @@ class CompassionIntervention(models.Model):
             intervention = self.env['compassion.intervention'].search([
                 ('intervention_id', '=', intervention_id)
             ])
-
-            intervention_local_ids.append(intervention.id)
-            intervention.write(vals)
+            if intervention:
+                intervention_local_ids.append(intervention.id)
+                intervention.write(vals)
 
         return intervention_local_ids
 

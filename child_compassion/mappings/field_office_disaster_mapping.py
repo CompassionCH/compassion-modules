@@ -162,7 +162,13 @@ class FieldOfficeDisasterMapping(OnrampMapping):
             odoo_data['icp_disaster_impact_ids'] = impact_list
 
         if 'fo_disaster_update_ids' in odoo_data:
-            disaster.fo_disaster_update_ids.unlink()
-            update_list = [(0, 0, impact) for impact in
-                           odoo_data['fo_disaster_update_ids']]
+            update_list = list()
+            update_obj = self.env['fo.disaster.update']
+            for impact in odoo_data['fo_disaster_update_ids']:
+                update = update_obj.search([
+                    ('fodu_id', '=', impact.get('fodu_id'))])
+                if update:
+                    update_list.append((1, update.id, impact))
+                else:
+                    update_list.append((0, 0, impact))
             odoo_data['fo_disaster_update_ids'] = update_list

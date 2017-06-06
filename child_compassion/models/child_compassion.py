@@ -129,6 +129,7 @@ class CompassionChild(models.Model):
         ('Cosmetology', 'Cosmetology'),
         ('Electrical/ Electronics', 'Electronics'),
         ('Graphic Arts', 'Graphic arts'),
+        ('Hospitality / Hotel / Tourism', 'Hospitality, hotel and tourism'),
         ('Income-Generating Program at Project',
          'Income-generating program at project'),
         ('Manufacturing/ Fabrication', 'Manufacturing / Fabrication'),
