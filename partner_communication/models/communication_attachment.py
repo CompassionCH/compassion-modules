@@ -67,6 +67,9 @@ class CommunicationAttachment(models.Model):
             behaviour = report.behaviour()[report.id]
             printer = behaviour['printer']
             if printer:
-                printer.print_document(
+                printer.with_context(
+                    print_name=self.env.user.firstname[:3] + ' ' +
+                    attachment.name
+                ).print_document(
                     report, attachment.data, report.report_type)
         return True

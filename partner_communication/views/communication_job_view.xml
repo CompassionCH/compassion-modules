@@ -104,7 +104,7 @@
         <field name="model">ir.attachment</field>
         <field name="inherit_id" ref="base.view_attachment_form"/>
         <field name="arch" type="xml">
-            <field name="public" position="after">
+            <field name="type" position="after">
                 <field name="report_id"/>
             </field>
         </field>

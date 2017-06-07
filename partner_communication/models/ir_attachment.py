@@ -17,5 +17,5 @@ class IrAttachment(models.Model):
 
     report_id = fields.Many2one(
         'ir.actions.report.xml', 'Print configuration',
-        domain=[('property_printing_action.type', '=', 'server')]
+        domain=[('property_printing_action_id.type', '=', 'server')]
     )

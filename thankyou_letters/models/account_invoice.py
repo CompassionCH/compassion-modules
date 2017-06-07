@@ -101,7 +101,6 @@ class AccountInvoice(models.Model):
                 'partner_id')
             invoices = self.search([
                 ('type', '=', 'out_invoice'),
-                ('invoice_type', '!=', 'sponsorship'),
                 ('state', '=', 'paid'),
                 ('last_payment', '>=', fields.Date.to_string(last_month)),
                 ('last_payment', '<', fields.Date.to_string(first)),
