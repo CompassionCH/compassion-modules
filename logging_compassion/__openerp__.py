@@ -30,7 +30,7 @@
 
 {
     'name': "Compassion Logging",
-    'version': '8.0.3.0',
+    'version': '9.0.1.0.0',
     'category': 'Audit and Logging',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -38,6 +38,6 @@
     'data': [
         'data/compassion_auditlog_rules.xml',
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }
