@@ -423,7 +423,7 @@ class EventCompassion(models.Model):
         return vals
 
     def _get_analytic_vals(self):
-        name = self.name + ' ' + self.year
+        name = self.name
         tag_ids = self.env['account.analytic.tag'].search([
             ('name', 'ilike', self.type)
         ]).ids
@@ -431,6 +431,7 @@ class EventCompassion(models.Model):
             name += ' ' + self.city
         return {
             'name': name,
+            'year': self.year,
             'tag_ids': [(6, 0, tag_ids)],
             'partner_id': self.partner_id.id,
         }

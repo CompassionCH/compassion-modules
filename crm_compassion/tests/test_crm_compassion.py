@@ -54,7 +54,7 @@ class TestCrmCompassion(BaseSponsorshipTest):
         self.assertEqual(project.analytic_account_id, event.analytic_id)
         self.assertEqual(project.project_type, event.type)
         self.assertEqual(project.user_id, event.user_id)
-        self.assertEqual(project.name, event.name + ' ' + event.year)
+        self.assertEqual(project.name, event.name)
         # Create a child and get the project associated
         child = self.create_child('AB123456789')
 
