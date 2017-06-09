@@ -242,7 +242,7 @@ class TestSponsorship(BaseSponsorshipTest):
         """
         # TODO Migrate this test
         contract_group = self._create_group(
-            'do_nothing', self.partners.ids[0], 1, self.payment_term_id)
+            'do_nothing', self.partners.ids[0], 1, self.payment_mode_id)
         contract = self._create_contract(
             other_vals={
                 'type': 'O',
@@ -296,7 +296,7 @@ class TestSponsorship(BaseSponsorshipTest):
         child3 = self.env['compassion.child'].create({'local_id':
                                                       'UG08320013'})
         sp_group = self._create_group(
-            'do_nothing', self.partners.ids[0], 1, self.payment_term_id)
+            'do_nothing', self.partners.ids[0], 1, self.payment_mode_id)
         sponsorship1 = self._create_contract(
             other_vals={
                 'origin_id': self.origin_id,

@@ -97,7 +97,7 @@ class GenerateGiftWizard(models.TransientModel):
             'partner_id': contract.partner_id.id,
             'journal_id': journal_id,
             'date_invoice': invoice_date,
-            'payment_term_id': contract.payment_term_id.id,
+            'payment_mode_id': contract.payment_mode_id.id,
             'recurring_invoicer_id': self.env.context.get(
                 'recurring_invoicer_id', False),
             'invoice_line_ids': [(0, 0, self.with_context(

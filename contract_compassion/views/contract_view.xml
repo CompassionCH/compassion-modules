@@ -15,7 +15,7 @@
             <field name="start_date" position="after">
                 <field name="activation_date"/>
             </field>
-            <field name="payment_term_id" position="after">
+            <field name="payment_mode_id" position="after">
                 <field name="group_freq" invisible="not context.get('partner_contracts_view')"/>
                 <field name="last_paid_invoice_date" invisible="not context.get('partner_contracts_view')"/>
                 <field name="months_paid" invisible="not context.get('partner_contracts_view')"/>
@@ -104,7 +104,7 @@
                         ['|', '|', '|', '|', '|', '|',
                         ('reference','ilike',self),
                         ('partner_id','child_of',self),
-                        ('payment_term_id', 'ilike', self),
+                        ('payment_mode_id', 'ilike', self),
                         ('partner_codega', 'ilike', self),
                         ('child_code', 'ilike', self),
                         ('child_name', 'ilike', self),
@@ -112,7 +112,7 @@
                         ]
                     </attribute>
                 </field>
-                <field name="payment_term_id" position="after">
+                <field name="payment_mode_id" position="after">
                     <field name="origin_id"/>
                 </field>
                 <xpath expr="//filter[@name='draft']" position="replace">

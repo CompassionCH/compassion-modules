@@ -41,7 +41,7 @@ class test_messages(test_base_module):
             })
         self.group = self._create_group(
             'do_nothing', self.partners.ids[0], 1,
-            self.payment_term_id,
+            self.payment_mode_id,
             other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
 
     def _allocate_new_children(self, child_keys):

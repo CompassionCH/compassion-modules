@@ -290,8 +290,8 @@ class RecurringContract(models.Model):
 
         # Write payment term in partner property
         for contract in self:
-            contract.partner_id.property_payment_term = \
-                contract.payment_term_id
+            contract.partner_id.customer_payment_mode_id = \
+                contract.payment_mode_id
         return True
 
     @api.multi

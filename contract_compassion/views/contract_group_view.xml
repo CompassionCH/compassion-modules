@@ -16,7 +16,7 @@
                 <group name="partner_info" position="replace">
                     <group name="partner_info">
                         <field name="partner_id" domain="[('customer', '=', True)]" readonly="1"/>
-                        <field name="payment_term_id"/>
+                        <field name="payment_mode_id"/>
                     </group>
                 </group>
                 <!-- Remove change_method (we always use clean_invoices) -->

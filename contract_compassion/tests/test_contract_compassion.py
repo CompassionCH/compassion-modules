@@ -180,11 +180,11 @@ class TestContractCompassion(BaseContractCompassionTest):
         """
         contract_group = self.create_group(
             'do_nothing', self.partners.ids[0], 1,
-            self.payment_term_id,
+            self.payment_mode_id,
             other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
         contract_group2 = self.create_group(
             'do_nothing', self.partners.ids[1], 1,
-            self.payment_term_id,
+            self.payment_mode_id,
             other_vals={'recurring_value': 1, 'recurring_unit': 'month'})
         contract = self.create_contract(
             datetime.today().strftime(DF), contract_group,
@@ -193,13 +193,13 @@ class TestContractCompassion(BaseContractCompassionTest):
         contract_group.write({'partner_id': self.partners.ids[1]})
         contract_group.on_change_partner_id()
         self.assertTrue(contract_group.bvr_reference)
-        payment_termbvr_id = self.env['account.payment.term'].search(
-            [('name', '=', 'BVR')])[0].id
-        contract_group2.write({'payment_term_id': payment_termbvr_id})
-        contract_group2.on_change_payment_term()
+        payment_mode_2 = self.env.ref(
+            'account_payment_mode.payment_mode_inbound_dd1')
+        contract_group2.write({'payment_mode_id': payment_mode_2.id})
+        contract_group2.on_change_payment_mode()
         self.assertTrue(contract_group2.bvr_reference)
         contract.signal_workflow('contract_validated')
         contract.write({'group_id': contract_group2.id})
         contract.on_change_group_id()
         self.assertEqual(
-            contract.group_id.payment_term_id.id, payment_termbvr_id)
+            contract.group_id.payment_mode_id, payment_mode_2)
