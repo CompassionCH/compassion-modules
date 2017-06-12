@@ -35,7 +35,7 @@ class ChildCompassion(models.Model):
         for child in self:
             child.sponsorship_ids = con_obj.search([
                 ('child_id', '=', child.id),
-                ('type', '=', 'S')])
+                ('type', 'like', 'S')])
 
     def depart(self):
         """ End the sponsorship. """
