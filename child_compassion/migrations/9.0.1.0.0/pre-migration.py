@@ -23,6 +23,5 @@ WHERE name IN ('lang_compassion_german', 'lang_compassion_italian');
     # Move translate data
     cr.execute("""
 UPDATE ir_model_data SET module='child_switzerland'
-WHERE module = 'child_compassion' and (
-  name LIKE '%_fr' OR name LIKE '%_de' OR name LIKE '%_it')
+WHERE module = 'child_compassion' and model = 'ir.advanced.translation'
     """)

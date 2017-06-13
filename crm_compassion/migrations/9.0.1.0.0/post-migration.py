@@ -20,7 +20,8 @@ def migrate(cr, version):
 
     # Put analytic tags
     cr.execute("""
-    SELECT analytic_id, type FROM crm_event_compassion;
+    SELECT analytic_id, type FROM crm_event_compassion
+    WHERE analytic_id IS NOT NULL;
     """)
     for row in cr.fetchall():
         aid = row[0]
