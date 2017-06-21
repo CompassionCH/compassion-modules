@@ -91,7 +91,8 @@ class ContractGroup(models.Model):
 
             gift_wizard = self.env['generate.gift.wizard'].with_context(
                 recurring_invoicer_id=invoicer.id).create({
-                    'description': _('Automatic birthday gift'),
+                    'description': 'Automatic birthday gift',
+                    'origin': 'Automatic birthday gift',
                     'invoice_date': datetime.today().strftime(DF),
                     'product_id': product_id,
                     'amount': 0.0})
