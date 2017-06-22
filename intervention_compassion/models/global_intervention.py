@@ -30,7 +30,6 @@ class GenericIntervention(models.AbstractModel):
     intervention_id = fields.Char(required=True, readonly=True)
     field_office_id = fields.Many2one('compassion.field.office',
                                       'Field Office', readonly=True)
-    icp_id = fields.Many2one('compassion.project', 'ICP', readonly=True)
     description = fields.Text(readonly=True)
     additional_marketing_information = fields.Text(readonly=True)
     category_id = fields.Many2one(
@@ -76,7 +75,7 @@ class GenericIntervention(models.AbstractModel):
     @api.model
     def get_fields(self):
         return [
-            'name', 'intervention_id', 'field_office_id', 'icp_id',
+            'name', 'intervention_id', 'field_office_id', 'icp_ids',
             'description', 'additional_marketing_information', 'category_id',
             'subcategory_id', 'funding_status', 'is_fo_priority',
             'proposed_start_date', 'start_no_later_than', 'estimated_costs',
@@ -91,7 +90,7 @@ class GenericIntervention(models.AbstractModel):
         """
         self.ensure_one()
         vals = self.read(self.get_fields())[0]
-        rel_fields = ['field_office_id', 'icp_id', 'category_id',
+        rel_fields = ['field_office_id', 'icp_ids', 'category_id',
                       'subcategory_id']
         for field in rel_fields:
             if vals.get(field):
@@ -117,6 +116,10 @@ class GlobalIntervention(models.TransientModel):
     holding_partner_id = fields.Many2one(
         'compassion.global.partner', 'Major holding partner', readonly=True)
     can_be_funded = fields.Boolean(compute='_compute_can_be_funded')
+    icp_ids = fields.Many2many(
+        'compassion.project', 'icp_global_interventions', 'intervention_id',
+        'icp_id', string='ICPs', readonly=True
+    )
 
     @api.multi
     def _compute_amount_on_hold(self):

@@ -12,3 +12,4 @@
 from . import global_intervention
 from . import compassion_intervention
 from . import intervention_category
+from . import project

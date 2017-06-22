@@ -47,6 +47,7 @@
         'views/compassion_intervention_view.xml',
         'views/global_intervention_view.xml',
         'views/intervention_search_view.xml',
+        'views/project_view.xml',
     ],
     'demo': [],
     'installable': True,

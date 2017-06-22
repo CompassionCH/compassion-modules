@@ -53,6 +53,10 @@ class CompassionIntervention(models.Model):
     ], readonly=True)
     funding_global_partners = fields.Char(readonly=True)
     cancel_reason = fields.Char(readonly=True)
+    icp_ids = fields.Many2many(
+        'compassion.project', 'icp_interventions', 'intervention_id', 'icp_id',
+        string='ICPs', readonly=True
+    )
 
     # Schedule Information
     ######################
@@ -152,6 +156,44 @@ class CompassionIntervention(models.Model):
         'on_hold': [('readonly', False)],
         'sla': [('readonly', False)],
     })
+
+    # Survival Information
+    ######################
+    survival_slots = fields.Integer(readonly=True)
+    launch_reason = fields.Char(readonly=True)
+    mother_children_challenges = fields.Char(
+        'Challenges for mother and children', readonly=True
+    )
+    community_benefits = fields.Char(readonly=True)
+    mother_average_age = fields.Integer(
+        'Avg age of first-time mother', readonly=True)
+    household_children_average = fields.Integer(
+        'Avg of children per household', readonly=True
+    )
+    under_five_population = fields.Char(
+        '% population under age 5', readonly=True
+    )
+    birth_medical = fields.Char(
+        '% births in medical facility', readonly=True
+    )
+    spiritual_activity_ids = fields.Many2many(
+        'icp.spiritual.activity', 'intervention_spiritual_activities',
+        string='Spiritual activities', readonly=True
+    )
+    cognitive_activity_ids = fields.Many2many(
+        'icp.cognitive.activity', 'intervention_cognitive_activities',
+        string='Cognitive activities', readonly=True
+    )
+    physical_activity_ids = fields.Many2many(
+        'icp.physical.activity', 'intervention_physical_activities',
+        string='Physical activities', readonly=True
+    )
+    socio_activity_ids = fields.Many2many(
+        'icp.sociological.activity', 'intervention_socio_activities',
+        string='Sociological activities', readonly=True
+    )
+    activities_for_parents = fields.Char(readonly=True)
+    other_activities = fields.Char(readonly=True)
 
     @api.multi
     def _compute_level1_deliverables(self):

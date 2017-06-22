@@ -25,7 +25,7 @@
                             <group>
                                 <field name="intervention_id"/>
                                 <field name="field_office_id"/>
-                                <field name="icp_id" domain="[('field_office_id', '=', field_office_id)]"/>
+                                <field name="icp_ids" widget="many2many_tags"/>
                                 <field name="category_id"/>
                                 <field name="subcategory_id" domain="[('category_ids', '=', category_id)]"/>
                                 <field name="type"/>
@@ -107,6 +107,24 @@
                                         <field name="not_funded_implications"/>
                                         <field name="implementation_risks"/>
                                     </group>
+                                    <group string="Survival" attrs="{'invisible': [('type', 'not like', 'Survival')]}">
+                                        <field name="survival_slots"/>
+                                        <field name="launch_reason"/>
+                                        <field name="mother_children_challenges"/>
+                                        <field name="community_benefits"/>
+                                        <field name="mother_average_age"/>
+                                        <field name="household_children_average"/>
+                                        <field name="under_five_population"/>
+                                        <field name="birth_medical"/>
+                                    </group>
+                                    <group attrs="{'invisible': [('type', 'not like', 'Survival')]}">
+                                        <field name="spiritual_activity_ids" widget="many2many_tags"/>
+                                        <field name="cognitive_activity_ids" widget="many2many_tags"/>
+                                        <field name="physical_activity_ids" widget="many2many_tags"/>
+                                        <field name="socio_activity_ids" widget="many2many_tags"/>
+                                        <field name="activities_for_parents"/>
+                                        <field name="other_activities"/>
+                                    </group>
                                 </group>
                             </page>
                         </notebook>
@@ -128,7 +146,6 @@
                     <field name="category_id"/>
                     <field name="intervention_id"/>
                     <field name="field_office_id"/>
-                    <field name="icp_id"/>
                     <field name="description"/>
                     <field name="funding_status"/>
                     <field name="state"/>
@@ -144,7 +161,7 @@
                     <field name="name"/>
                     <field name="category_id"/>
                     <field name="subcategory_id"/>
-                    <field name="icp_id"/>
+                    <field name="icp_ids"/>
                     <field name="field_office_id"/>
                     <field name="funding_status"/>
                     <field name="type"/>

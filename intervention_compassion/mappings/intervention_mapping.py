@@ -53,7 +53,7 @@ class InterventionMapping(OnrampMapping):
             'deliverable_level_2_ids.name',
             'compassion.intervention.deliverable'),
         "GlobalPartnerLevel2Selection": "sla_selection_complete",
-        "ICP": ('icp_id.icp_id', 'compassion.project'),
+        "ICP": ('icp_ids.icp_id', 'compassion.project'),
         "Intervention_ID": 'intervention_id',
         "ImpactedBeneficiaryQuantity": 'impacted_beneficiaries',
         "ImplementationRisks": 'implementation_risks',
@@ -85,6 +85,26 @@ class InterventionMapping(OnrampMapping):
         "SecondaryOwner": 'secondary_owner',
         "InterventionHold_ID": 'hold_id',
 
+        # Survival fields
+        "AllocatedSurvivalSlots": 'survival_slots',
+        "ReasonsForLaunch": 'launch_reason',
+        "MotherAndChildrenChallenges": 'mother_children_challenges',
+        "DesiredCommuniyBenefits": 'community_benefits',
+        "FirstTimeMothersAverageAge": 'mother_average_age',
+        "HouseholdChildrenAverageQuantity": 'household_children_average',
+        "PopulationUnderAge5": 'under_five_population',
+        "MedicalFacilityBirthPercent": 'birth_medical',
+        "SpiritualActivities": ('spiritual_activity_ids.name',
+                                'icp.spiritual.activity'),
+        "SocioEmotionalActivities": ('socio_activity_ids.name',
+                                     'icp.spiritual.activity'),
+        "CognitiveVocationalActivities": ('cognitive_activity_ids.name',
+                                          'icp.spiritual.activity'),
+        "OtherActivities": 'other_activities',
+        "ParentFamilyActivities": 'activities_for_parents',
+        "PhysicalHealthActivities": ('physical_activity_ids.name',
+                                     'icp.spiritual.activity'),
+
         # Not used in odoo:
         "Beneficiary_ProgramFieldManualExemption": None,
         "Case_ApprovedDate": None,
@@ -101,37 +121,23 @@ class InterventionMapping(OnrampMapping):
         "TotalActualCosts": None,
         "TotalEstimatedCost": None,
         "AdditionalFundsCommitted": None,
-        "AllocatedSurvivalSlots": None,
         "ApprovedDate": None,
-        "CognitiveVocationalActivities": None,
         "ContractorInformation": None,
-        "DesiredCommuniyBenefits": None,
-        "FirstTimeMothersAverageAge": None,
         "FiscalYear": None,
         "FocusAreaNumber": None,
         "FundCode": None,
         "FundingStatusCommittedDate": None,
-        "HouseholdChildrenAverageQuantity": None,
         "InitiationType": None,
         "IsIncludedInInterventionStrategy": None,
         "LeadershipApproval": None,
         "LinkToFieldOfficeStrategy": None,
-        "MedicalFacilityBirthPercent": None,
         "MonthFundsRequested": None,
         "MonthOfNBRAllocation": None,
-        "MotherAndChildrenChallenges": None,
-        "OtherActivities": None,
-        "ParentFamilyActivities": None,
-        "PhysicalHealthActivities": None,
-        "PopulationUnderAge5": None,
         "ProgramActivitiesFirstDayDate": None,
         "ProgramType": None,
         "ProposedSLACost": None,
-        "ReasonsForLaunch": None,
         "RequestedAdditionalFundingUSD": 'requested_additional_funding',
         "SLAPreferenceSubmittedByUser": None,
-        "SocioEmotionalActivities": None,
-        "SpiritualActivities": None,
         "Supporter": None,
         "SurvivalInterventionDesignation": None,
         "TopThreeAnticipatedExpenses": None,
@@ -142,3 +148,12 @@ class InterventionMapping(OnrampMapping):
     CONSTANTS = {
         "GlobalPartner_ID": 'CH',
     }
+
+    def _convert_connect_data(self, connect_name, value_mapping, value,
+                              relation_search=None):
+        """ Split ICP ids"""
+        if connect_name == 'ICP':
+            value = value.split("; ")
+        return super(InterventionMapping, self)._convert_connect_data(
+            connect_name, value_mapping, value, relation_search
+        )

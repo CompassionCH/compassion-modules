@@ -10,7 +10,6 @@
                     <field name="category_id"/>
                     <field name="intervention_id"/>
                     <field name="field_office_id"/>
-                    <field name="icp_id"/>
                     <field name="description"/>
                     <field name="proposed_start_date"/>
                     <field name="total_cost"/>
@@ -42,7 +41,7 @@
                                 <field name="intervention_id"/>
                                 <field name="parent_intervention"/>
                                 <field name="field_office_id"/>
-                                <field name="icp_id"/>
+                                <field name="icp_ids" widget="many2many_tags"/>
                             </group>
                             <group>
                                 <field name="category_id"/>
@@ -81,7 +80,7 @@
                     <field name="name"/>
                     <field name="category_id"/>
                     <field name="subcategory_id"/>
-                    <field name="icp_id"/>
+                    <field name="icp_ids"/>
                     <field name="field_office_id"/>
                     <field name="funding_status"/>
                     <field name="type"/>
