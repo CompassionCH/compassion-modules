@@ -8,7 +8,12 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, _
+from datetime import datetime
+
+from openerp import api, models, fields, _
+from openerp.exceptions import Warning
+from openerp.tools import relativedelta
+
 
 
 class ChildHoldWizard(models.TransientModel):
@@ -38,7 +43,16 @@ class ChildHoldWizard(models.TransientModel):
             sub_contract = self.env['recurring.contract'].browse(
                 self.env.context.get('contract_id')).with_context(
                 allow_rewind=True)
-            sub_contract.write({'child_id': holds[0].child_id.id})
+            # Prevent choosing child completing in less than 2 years
+            in_two_years = datetime.today() + relativedelta(years=2)
+            child = holds[0].child_id
+            if child.completion_date and fields.Datetime.from_string(
+                    child.completion_date) < in_two_years:
+                raise Warning(_(
+                    "Completion date of child is in less than 2 years! "
+                    "Please choose another child."
+                ))
+            sub_contract.write({'child_id': child.id})
             sub_contract.signal_workflow('contract_validated')
             sub_contract.next_invoice_date = self.env.context.get(
                 'next_invoice_date')

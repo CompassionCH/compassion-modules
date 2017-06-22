@@ -8,15 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-
-import logging
-import csv
-import os
 from openerp import api, models, fields, _
-
-logger = logging.getLogger(__name__)
-
-IMPORT_DIR = os.path.join(os.path.dirname(__file__)) + '/../data/'
 
 
 class ICP(models.Model):

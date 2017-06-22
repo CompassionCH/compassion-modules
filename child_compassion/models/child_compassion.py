@@ -446,7 +446,7 @@ class CompassionChild(models.Model):
         ])
         jobs.button_done()
         jobs.unlink()
-        self.get_infos()
+        self.with_context(async_mode=False).get_infos()
         return True
 
     @api.multi
