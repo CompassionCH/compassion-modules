@@ -107,7 +107,7 @@
                                         <field name="not_funded_implications"/>
                                         <field name="implementation_risks"/>
                                     </group>
-                                    <group string="Survival" attrs="{'invisible': [('type', 'not like', 'Survival')]}">
+                                    <group attrs="{'invisible': [('type', 'not in', ('Survival', 'Survival FY Details'))]}">
                                         <field name="survival_slots"/>
                                         <field name="launch_reason"/>
                                         <field name="mother_children_challenges"/>
@@ -117,7 +117,7 @@
                                         <field name="under_five_population"/>
                                         <field name="birth_medical"/>
                                     </group>
-                                    <group attrs="{'invisible': [('type', 'not like', 'Survival')]}">
+                                    <group attrs="{'invisible': [('type', 'not in', ('Survival', 'Survival FY Details'))]}">
                                         <field name="spiritual_activity_ids" widget="many2many_tags"/>
                                         <field name="cognitive_activity_ids" widget="many2many_tags"/>
                                         <field name="physical_activity_ids" widget="many2many_tags"/>
