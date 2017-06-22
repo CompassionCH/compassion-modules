@@ -216,11 +216,6 @@ class CompassionIntervention(models.Model):
                 update_hold = self.env.context.get('hold_update', True)
                 break
 
-        # Check SLA change
-        service_level = vals.get('service_level')
-        if service_level == 'Level 1':
-            vals['state'] = 'on_hold'
-
         res = super(CompassionIntervention, self).write(vals)
 
         if update_hold:
@@ -235,7 +230,7 @@ class CompassionIntervention(models.Model):
                 i.sla_negotiation_status == 'GP Accepted Costs'
         )
         super(CompassionIntervention, sla_done).write({'state': 'on_hold'})
-        if service_level != 'Level 1':
+        if vals.get('service_level') != 'Level 1':
             sla_wait = check_sla - sla_done
             super(CompassionIntervention, sla_wait).write({'state': 'sla'})
 

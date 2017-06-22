@@ -142,22 +142,3 @@ class InterventionMapping(OnrampMapping):
     CONSTANTS = {
         "GlobalPartner_ID": 'CH',
     }
-
-    def _process_odoo_data(self, odoo_data):
-        """ Prepend deliverables to replace current selection. """
-        deliverable_field = False
-        level2_deliverable_field = 'deliverable_level_2_ids'
-        service_level = odoo_data.get('service_level')
-        if service_level == 'Level 2':
-            deliverable_field = level2_deliverable_field
-        elif service_level == 'Level 3':
-            deliverable_field = 'deliverable_level_3_ids'
-
-        if service_level == 'Level 3' and level2_deliverable_field in \
-                odoo_data:
-            # Level 3 is set but we receive deliverables in Level 2 field
-            odoo_data[deliverable_field] = odoo_data[level2_deliverable_field]
-            del odoo_data[level2_deliverable_field]
-        elif deliverable_field:
-            # No deliverables received
-            odoo_data[deliverable_field] = [(5, 0, 0)]
