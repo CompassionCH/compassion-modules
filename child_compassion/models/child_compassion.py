@@ -529,4 +529,4 @@ class CompassionChild(models.Model):
 def unlink_children_job(session, model_name, message_ids):
     """Job for deleting released children."""
     children = session.env[model_name].browse(message_ids)
-    children.unlink()
+    children.filtered(lambda c: c.state == 'R').unlink()
