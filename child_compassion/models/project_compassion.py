@@ -217,13 +217,19 @@ class CompassionProject(models.Model):
         'connect.month', string='Rainy months', readonly=True
     )
     planting_month_ids = fields.Many2many(
-        'connect.month', string='Planting months', readonly=True
+        'connect.month',
+        relation='compassion_project_planting_months',
+        string='Planting months', readonly=True
     )
     harvest_month_ids = fields.Many2many(
-        'connect.month', string='Harvest months', readonly=True
+        'connect.month',
+        relation='compassion_project_harvest_months',
+        string='Harvest months', readonly=True
     )
     hunger_month_ids = fields.Many2many(
-        'connect.month', string='Hunger months', readonly=True
+        'connect.month',
+        relation='compassion_project_hunger_months',
+        string='Hunger months', readonly=True
     )
     cultural_rituals = fields.Text(readonly=True)
     economic_needs = fields.Text(readonly=True)
