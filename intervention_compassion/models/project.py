@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, fields, _
+from openerp import api, models, fields
 
 
 class ICP(models.Model):

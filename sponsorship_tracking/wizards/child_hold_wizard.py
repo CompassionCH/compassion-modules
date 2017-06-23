@@ -15,7 +15,6 @@ from openerp.exceptions import Warning
 from openerp.tools import relativedelta
 
 
-
 class ChildHoldWizard(models.TransientModel):
     """ Add return action for sub_sponsorship. """
     _inherit = 'child.hold.wizard'
