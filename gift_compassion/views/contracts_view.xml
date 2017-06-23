@@ -8,12 +8,7 @@
         <field name="arch" type="xml">
             <button name="open_invoices" position="after">
                 <button name="open_gifts" type="object" class="oe_inline oe_stat_button" icon="fa-gift">
-                    <div>
-                        <strong>
-                            <field name="number_gifts"/>
-                        </strong>
-                        <br/>Gifts
-                    </div>
+                    <field string="Gifts" name="number_gifts" widget="statinfo"/>
                 </button>
             </button>
         </field>
