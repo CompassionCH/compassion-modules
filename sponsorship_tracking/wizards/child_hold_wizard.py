@@ -11,7 +11,7 @@
 from datetime import datetime
 
 from openerp import api, models, fields, _
-from openerp.exceptions import Warning
+from openerp.exceptions import UserError
 from openerp.tools import relativedelta
 
 
@@ -47,7 +47,7 @@ class ChildHoldWizard(models.TransientModel):
             child = holds[0].child_id
             if child.completion_date and fields.Datetime.from_string(
                     child.completion_date) < in_two_years:
-                raise Warning(_(
+                raise UserError(_(
                     "Completion date of child is in less than 2 years! "
                     "Please choose another child."
                 ))
