@@ -23,6 +23,9 @@ mock_update_hold = ('openerp.addons.child_compassion.models.compassion_hold'
                     '.CompassionHold.update_hold')
 mock_release_hold = ('openerp.addons.child_compassion.models.compassion_hold'
                      '.CompassionHold.release_hold')
+mock_get_infos = ('openerp.addons.child_compassion.models.child_compassion'
+                  '.CompassionChild.get_infos')
+
 logger = logging.getLogger(__name__)
 
 
@@ -36,7 +39,9 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
             ('name', '=', 'Sponsorship')
         ], limit=1)
 
-    def create_child(self, local_id):
+    @mock.patch(mock_get_infos)
+    def create_child(self, local_id, get_infos):
+        get_infos.return_value = True
         return self.env['compassion.child'].create({
             'local_id': local_id,
             'global_id': self.ref(9),
