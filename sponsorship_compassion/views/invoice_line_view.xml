@@ -78,6 +78,7 @@
         <field name="name">account.invoice.tree.compassion</field>
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="account.invoice_tree"/>
+        <field name="priority">12</field>
         <field name="arch" type="xml">
             <field name="number" position="after">
                 <field name="children"/>
