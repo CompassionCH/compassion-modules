@@ -86,6 +86,6 @@
 
     <menuitem id="menu_label_print_view"
               action="action_label_print_form"
-              parent="base.menu_config"/>
+              parent="report.reporting_menuitem"/>
 
 </odoo>

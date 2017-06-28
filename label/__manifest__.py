@@ -29,11 +29,11 @@
 
 {
     "name": "Mass Label Reporting",
-    "version": "9.0.1.0.0",
+    "version": "10.0.1.0.0",
     "author": "Serpent Consulting Services Pvt. Ltd.",
     "category": "Tools",
     "website": "http://www.serpentcs.com",
-    'depends': ['report_webkit'],
+    'depends': ['report'],
     'data': [
         'views/label_config_view.xml',
         'views/label_print_view.xml',
@@ -45,6 +45,6 @@
         'reports/dynamic_label.xml',
         'reports/one_label.xml'
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

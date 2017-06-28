@@ -11,7 +11,6 @@
 
 
 from datetime import datetime
-from odoo import fields
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from odoo.addons.recurring_contract.tests.test_recurring_contract import \
     BaseContractTest
@@ -119,7 +118,6 @@ class TestContractCompassion(BaseContractCompassionTest):
         self.assertEqual(invoices[1].state, 'open')
 
         # Cancelling of the contract
-        date_finish = fields.Datetime.now()
         contract.signal_workflow('contract_terminated')
         # Force cleaning invoices immediately
         contract._clean_invoices()

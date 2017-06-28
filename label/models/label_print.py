@@ -16,8 +16,8 @@ class LabelPrint(models.Model):
     _name = "label.print"
     _description = 'Label Print'
 
-    name = fields.Char("Name", size=64, required=True, select=1)
-    model_id = fields.Many2one('ir.model', 'Model', required=True, select=1)
+    name = fields.Char("Name", size=64, required=True, index=1)
+    model_id = fields.Many2one('ir.model', 'Model', required=True, index=1)
     field_ids = fields.One2many(
         "label.print.field", 'report_id', string='Fields')
     ref_ir_act_report = fields.Many2one(

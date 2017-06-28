@@ -16,7 +16,7 @@ class LabelBrand(models.Model):
     _rec_name = 'brand_name'
     _description = 'Label Brand'
 
-    brand_name = fields.Char(_("Name"), size=64, select=1)
+    brand_name = fields.Char(_("Name"), size=64, index=1)
     label_config_ids = fields.One2many(
         'label.config', 'label_main_id', _('Label Config'))
 
@@ -25,7 +25,7 @@ class LabelConfig(models.Model):
     _name = 'label.config'
     _description = 'Label Config'
 
-    name = fields.Char("Name", size=64, required=True, select=1)
+    name = fields.Char("Name", size=64, required=True, index=1)
     height = fields.Float("Height (in mm)", required=True)
     width = fields.Float("Width (in mm)", required=True)
     top_margin = fields.Float("Top Margin (in mm)", default=0.0)
