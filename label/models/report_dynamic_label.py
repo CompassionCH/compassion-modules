@@ -8,8 +8,8 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models
-from openerp.osv.orm import browse_record
+from odoo import api, models
+from odoo.osv.orm import browse_record
 from copy import deepcopy
 from math import ceil
 

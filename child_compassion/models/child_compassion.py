@@ -13,18 +13,18 @@ import logging
 
 from dateutil.relativedelta import relativedelta
 
-from openerp import models, fields, api, _
-from openerp.addons.advanced_translation.models.ir_advanced_translation \
+from odoo import models, fields, api, _
+from odoo.addons.advanced_translation.models.ir_advanced_translation \
     import setlocale
 from datetime import datetime, timedelta, date
 
 from ..mappings.compassion_child_mapping import CompassionChildMapping
 from .compassion_hold import HoldType
 
-from openerp.exceptions import UserError
-from openerp.addons.connector.queue.job import job
-from openerp.addons.connector.session import ConnectorSession
-from openerp.addons.message_center_compassion.tools.onramp_connector import \
+from odoo.exceptions import UserError
+from odoo.addons.connector.queue.job import job
+from odoo.addons.connector.session import ConnectorSession
+from odoo.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
 
 logger = logging.getLogger(__name__)

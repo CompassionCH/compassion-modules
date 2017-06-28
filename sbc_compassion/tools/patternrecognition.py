@@ -20,8 +20,8 @@ import math
 import logging
 from copy import deepcopy
 from time import time
-from openerp import _
-from openerp.exceptions import UserError
+from odoo import _
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 

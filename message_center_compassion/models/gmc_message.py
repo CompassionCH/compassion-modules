@@ -13,11 +13,11 @@ import re
 from ..tools.onramp_connector import OnrampConnector
 from ..mappings import base_mapping as mapping
 
-from openerp import api, models, fields, _
-from openerp.exceptions import UserError
+from odoo import api, models, fields, _
+from odoo.exceptions import UserError
 
-from openerp.addons.connector.queue.job import job, related_action
-from openerp.addons.connector.session import ConnectorSession
+from odoo.addons.connector.queue.job import job, related_action
+from odoo.addons.connector.session import ConnectorSession
 
 from datetime import datetime
 

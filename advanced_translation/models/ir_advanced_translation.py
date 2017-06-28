@@ -18,7 +18,7 @@ from collections import OrderedDict
 
 from contextlib import contextmanager
 
-from openerp import models, fields, api, _
+from odoo import models, fields, api, _
 
 logger = logging.getLogger(__name__)
 

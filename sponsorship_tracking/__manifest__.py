@@ -9,8 +9,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
+#    @author: David Coninckx
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -27,35 +27,23 @@
 #
 ##############################################################################
 
+
 {
-    'name': 'Compassion CH - Events',
+    'name': 'Compassion Sponsorships Tracking',
     'version': '9.0.1.0.0',
-    'category': 'CRM',
-    'sequence': 150,
+    'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['mail', 'base_location', 'sponsorship_compassion', 'project',
-                'hr_timesheet', 'hr_expense', 'hr_holidays'],
+    'depends': ['sponsorship_compassion'],
     'data': [
-        'security/ir.model.access.csv',
-        'data/account_analytic_data.xml',
-        'data/calendar_event_type.xml',
-        'views/event_compassion_view.xml',
-        'views/contract_origin_view.xml',
-        'views/crm_lead_view.xml',
-        'views/project_view.xml',
-        'views/hr_timesheet_view.xml',
-        'views/account_invoice_line.xml',
-        'views/res_partner_view.xml',
-        'views/calendar_event_view.xml',
-        'views/demand_planning.xml',
-        'views/demand_weekly_revision.xml',
-        'views/hold_view.xml',
-    ],
-    'qweb': [
-        'static/src/xml/web_fullcalendar_event.xml',
-    ],
+        'views/sub_sponsorship_wizard_view.xml',
+        'views/contract_view.xml',
+        'views/settings_view.xml',
+        'workflow/sds_workflow.xml',
+        'data/contract_cron.xml',
+        'data/install.xml',
+        ],
     'demo': [],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

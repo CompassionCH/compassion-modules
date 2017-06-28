@@ -10,9 +10,9 @@
 ##############################################################################
 from datetime import datetime
 
-from openerp import api, models, fields, _
-from openerp.exceptions import UserError
-from openerp.tools import relativedelta
+from odoo import api, models, fields, _
+from odoo.exceptions import UserError
+from odoo.tools import relativedelta
 
 
 class ChildHoldWizard(models.TransientModel):

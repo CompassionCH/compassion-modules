@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp.addons.sponsorship_compassion.tests.test_sponsorship_compassion\
+from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion\
     import BaseSponsorshipTest
 
 

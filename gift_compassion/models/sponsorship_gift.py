@@ -9,11 +9,11 @@
 #
 ##############################################################################
 from datetime import date, timedelta
-from openerp import fields, models, api, _
-from openerp.exceptions import UserError
+from odoo import fields, models, api, _
+from odoo.exceptions import UserError
 
 from ..mappings.gift_mapping import CreateGiftMapping
-from openerp.addons.sponsorship_compassion.models.product import \
+from odoo.addons.sponsorship_compassion.models.product import \
     GIFT_NAMES, GIFT_CATEGORY
 
 

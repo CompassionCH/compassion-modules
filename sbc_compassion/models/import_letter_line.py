@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import fields, models, api, _
+from odoo import fields, models, api, _
 
 
 class ImportLetterLine(models.Model):

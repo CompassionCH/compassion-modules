@@ -12,11 +12,11 @@ import logging
 from datetime import datetime
 from datetime import timedelta
 
-from openerp import http
-from openerp.http import request
+from odoo import http
+from odoo.http import request
 
-from openerp.addons.connector.queue.job import job
-from openerp.addons.connector.session import ConnectorSession
+from odoo.addons.connector.queue.job import job
+from odoo.addons.connector.session import ConnectorSession
 
 from werkzeug.wrappers import Response
 from werkzeug.datastructures import Headers

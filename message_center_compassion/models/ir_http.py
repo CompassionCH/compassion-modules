@@ -10,9 +10,9 @@
 ##############################################################################
 import logging
 
-from openerp.http import request
-from openerp import models, _
-from openerp.exceptions import UserError
+from odoo.http import request
+from odoo import models, _
+from odoo.exceptions import UserError
 from werkzeug.exceptions import Unauthorized
 
 try:

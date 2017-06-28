@@ -9,8 +9,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2015-2017 Compassion CH (http://www.compassion.ch)
-#    @author: Emanuel Cino, Serpent Consulting Services Pvt. Ltd.
+#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    @author: Maxime Beck <mbcompte@gmail.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -27,24 +27,17 @@
 #
 ##############################################################################
 
+
 {
-    "name": "Mass Label Reporting",
-    "version": "9.0.1.0.0",
-    "author": "Serpent Consulting Services Pvt. Ltd.",
-    "category": "Tools",
-    "website": "http://www.serpentcs.com",
-    'depends': ['report_webkit'],
+    'name': "Compassion Logging",
+    'version': '9.0.1.0.0',
+    'category': 'Audit and Logging',
+    'author': 'Compassion CH',
+    'website': 'http://www.compassion.ch',
+    'depends': ['base', 'auditlog', 'sbc_compassion'],
     'data': [
-        'views/label_config_view.xml',
-        'views/label_print_view.xml',
-        'wizards/label_print_wizard_view.xml',
-        'security/ir.model.access.csv',
-        'data/label.brand.csv',
-        'data/label.config.csv',
-        'data/report_paperformat.xml',
-        'reports/dynamic_label.xml',
-        'reports/one_label.xml'
+        'data/compassion_auditlog_rules.xml',
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

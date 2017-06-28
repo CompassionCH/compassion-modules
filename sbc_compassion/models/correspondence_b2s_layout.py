@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import fields, models
+from odoo import fields, models
 
 
 class CorrespondenceB2SLayout(models.Model):

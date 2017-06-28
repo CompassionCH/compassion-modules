@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import models, api, fields, _
+from odoo import models, api, fields, _
 
 
 class GenerateCommunicationWizard(models.TransientModel):

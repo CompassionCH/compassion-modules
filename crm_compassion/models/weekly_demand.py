@@ -10,7 +10,7 @@
 ##############################################################################
 import math
 
-from openerp import api, models, fields
+from odoo import api, models, fields
 from datetime import datetime, timedelta
 
 

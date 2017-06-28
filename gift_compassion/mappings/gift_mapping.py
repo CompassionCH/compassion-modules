@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp.addons.message_center_compassion.mappings.base_mapping \
+from odoo.addons.message_center_compassion.mappings.base_mapping \
     import OnrampMapping
 
 

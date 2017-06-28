@@ -9,7 +9,7 @@
 #
 ##############################################################################
 from ..models.compassion_hold import AbstractHold  # NOQA
-from openerp import models, api, fields, _
+from odoo import models, api, fields, _
 
 
 class ChildHoldWizard(models.TransientModel):

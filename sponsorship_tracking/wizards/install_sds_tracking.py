@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, fields
+from odoo import api, models, fields
 
 from datetime import timedelta, datetime
 

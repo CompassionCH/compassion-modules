@@ -17,13 +17,13 @@ import base64
 import zipfile
 
 from io import BytesIO
-from openerp.exceptions import UserError
+from odoo.exceptions import UserError
 
 from ..tools import import_letter_functions as func
-from openerp import api, fields, models, _
+from odoo import api, fields, models, _
 
-from openerp.addons.connector.queue.job import job, related_action
-from openerp.addons.connector.session import ConnectorSession
+from odoo.addons.connector.queue.job import job, related_action
+from odoo.addons.connector.session import ConnectorSession
 
 logger = logging.getLogger(__name__)
 

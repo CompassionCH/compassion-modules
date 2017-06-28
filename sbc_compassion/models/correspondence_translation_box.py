@@ -9,7 +9,7 @@
 #
 ##############################################################################
 import StringIO
-from openerp import models, fields
+from odoo import models, fields
 from pyPdf.pdf import PdfFileReader, PdfFileWriter
 from reportlab.lib.units import inch
 from reportlab.pdfbase.pdfmetrics import stringWidth

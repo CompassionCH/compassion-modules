@@ -14,8 +14,8 @@ import sys
 
 from ..mappings.icp_mapping import ICPMapping
 
-from openerp import models, fields, api, _
-from openerp.exceptions import UserError
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 logger = logging.getLogger(__name__)
 

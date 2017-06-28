@@ -9,10 +9,10 @@
 #
 ##############################################################################
 
-from openerp import api, fields, models, _
-from openerp.exceptions import UserError, ValidationError
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from openerp.addons.child_compassion.models.compassion_hold import HoldType
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from odoo.addons.child_compassion.models.compassion_hold import HoldType
 
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta

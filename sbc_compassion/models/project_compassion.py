@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import models
+from odoo import models
 
 
 class ProjectCompassion(models.Model):

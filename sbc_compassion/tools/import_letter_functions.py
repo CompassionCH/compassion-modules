@@ -20,7 +20,7 @@ from io import BytesIO
 from math import ceil
 from time import time
 
-from openerp import _, exceptions
+from odoo import _, exceptions
 from . import zxing_wrapper, zbar_wrapper, patternrecognition as pr, \
     checkboxreader as cbr, sniffpdf
 

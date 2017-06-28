@@ -13,7 +13,7 @@ import locale
 from contextlib import contextmanager
 from datetime import datetime
 
-from openerp import api, models, fields
+from odoo import api, models, fields
 
 LOCALE_LOCK = threading.Lock()
 

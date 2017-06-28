@@ -10,7 +10,7 @@
 ##############################################################################
 import base64
 
-from openerp import api, models, fields
+from odoo import api, models, fields
 import logging
 
 

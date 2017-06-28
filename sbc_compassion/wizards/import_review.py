@@ -8,8 +8,8 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import models, api, fields, _
-from openerp.exceptions import UserError
+from odoo import models, api, fields, _
+from odoo.exceptions import UserError
 
 
 class ImportReview(models.TransientModel):

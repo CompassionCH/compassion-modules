@@ -10,7 +10,7 @@
 ##############################################################################
 import base64
 from io import BytesIO
-from openerp import models, api, fields, _
+from odoo import models, api, fields, _
 from zipfile import ZipFile
 
 

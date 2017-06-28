@@ -9,8 +9,8 @@
 #
 ##############################################################################
 
-from openerp.tests import common
-from openerp.tools.config import config
+from odoo.tests import common
+from odoo.tools.config import config
 import logging
 logger = logging.getLogger(__name__)
 

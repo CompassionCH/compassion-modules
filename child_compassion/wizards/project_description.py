@@ -10,8 +10,8 @@
 ##############################################################################
 import os
 
-from openerp import api, models, fields, _
-from openerp.exceptions import UserError
+from odoo import api, models, fields, _
+from odoo.exceptions import UserError
 
 try:
     from pyquery import PyQuery

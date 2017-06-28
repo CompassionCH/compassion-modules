@@ -9,7 +9,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -28,41 +28,34 @@
 ##############################################################################
 
 {
-    'name': "Sponsor to beneficiary communication",
+    'name': 'Compassion CH - Events',
     'version': '9.0.1.0.0',
-    'category': 'Other',
-    'summary': "SBC - Supporter to Beneficiary Communication",
+    'category': 'CRM',
     'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['sponsorship_compassion', 'web_tree_image'],
-    'external_dependencies': {
-        'python': ['magic', 'wand', 'numpy', 'zbar', 'pdfminer',
-                   'matplotlib', 'pyPdf', 'bs4', 'HTMLParser']
-    },
+    'depends': ['mail', 'base_location', 'sponsorship_compassion', 'project',
+                'hr_timesheet', 'hr_expense', 'hr_holidays'],
     'data': [
         'security/ir.model.access.csv',
-        'views/config_view.xml',
-        'views/contracts_view.xml',
-        'views/partner_compassion_view.xml',
-        'views/lang_compassion_view.xml',
-        'views/correspondence_view.xml',
-        'views/import_letters_history_view.xml',
-        'views/correspondence_template_view.xml',
-        'views/correspondence_template_crosscheck_view.xml',
-        'views/test_import_letters_history_view.xml',
-        'views/import_review_view.xml',
-        'views/download_letters_view.xml',
-        'views/get_letter_image_wizard_view.xml',
-        'views/correspondence_s2b_generator_view.xml',
-        'report/s2b_letter.xml',
-        'data/correspondence_template_data.xml',
-        'data/correspondence_type.xml',
-        'data/child_layouts.xml',
-        'data/gmc_action.xml',
+        'data/account_analytic_data.xml',
+        'data/calendar_event_type.xml',
+        'views/event_compassion_view.xml',
+        'views/contract_origin_view.xml',
+        'views/crm_lead_view.xml',
+        'views/project_view.xml',
+        'views/hr_timesheet_view.xml',
+        'views/account_invoice_line.xml',
+        'views/res_partner_view.xml',
+        'views/calendar_event_view.xml',
+        'views/demand_planning.xml',
+        'views/demand_weekly_revision.xml',
+        'views/hold_view.xml',
     ],
-    'demo': [
+    'qweb': [
+        'static/src/xml/web_fullcalendar_event.xml',
     ],
-    'installable': True,
+    'demo': [],
+    'installable': False,
     'auto_install': False,
 }

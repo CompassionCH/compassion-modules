@@ -9,11 +9,11 @@
 #
 ##############################################################################
 
-from openerp.exceptions import UserError
-from openerp.addons.contract_compassion.tests.test_base_module\
+from odoo.exceptions import UserError
+from odoo.addons.contract_compassion.tests.test_base_module\
     import test_base_module
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from openerp.tools.config import config
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from odoo.tools.config import config
 
 from datetime import date
 from random import randint

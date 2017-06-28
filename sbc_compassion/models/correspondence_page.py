@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, _
+from odoo import models, fields, _
 
 BOX_SEPARATOR = '#BOX#'
 PAGE_SEPARATOR = '#PAGE#'

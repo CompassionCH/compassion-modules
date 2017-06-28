@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import fields
+from odoo import fields
 from .base_sponsorship_mapping import BaseSponsorshipMapping
 from datetime import datetime
 

@@ -10,9 +10,9 @@
 ##############################################################################
 import logging
 
-from openerp import api, models, fields, _, http
-from openerp.exceptions import UserError
-from openerp.addons.base_phone.models.controller import BasePhoneController
+from odoo import api, models, fields, _, http
+from odoo.exceptions import UserError
+from odoo.addons.base_phone.models.controller import BasePhoneController
 
 logger = logging.getLogger(__name__)
 

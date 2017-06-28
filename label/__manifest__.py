@@ -9,8 +9,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    Copyright (C) 2015-2017 Compassion CH (http://www.compassion.ch)
+#    @author: Emanuel Cino, Serpent Consulting Services Pvt. Ltd.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -28,18 +28,23 @@
 ##############################################################################
 
 {
-    'name': 'Advanced Translation',
-    'version': '9.0.1.0',
-    'category': 'Other',
-    'sequence': 150,
-    'author': 'Compassion CH',
-    'website': 'http://www.compassion.ch',
-    'depends': ['base'],
+    "name": "Mass Label Reporting",
+    "version": "9.0.1.0.0",
+    "author": "Serpent Consulting Services Pvt. Ltd.",
+    "category": "Tools",
+    "website": "http://www.serpentcs.com",
+    'depends': ['report_webkit'],
     'data': [
+        'views/label_config_view.xml',
+        'views/label_print_view.xml',
+        'wizards/label_print_wizard_view.xml',
         'security/ir.model.access.csv',
-        'data/ir.advanced.translation.csv'
+        'data/label.brand.csv',
+        'data/label.config.csv',
+        'data/report_paperformat.xml',
+        'reports/dynamic_label.xml',
+        'reports/one_label.xml'
     ],
-    'demo': [],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

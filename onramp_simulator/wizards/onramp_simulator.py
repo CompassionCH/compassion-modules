@@ -10,7 +10,7 @@
 ##############################################################################
 from ..tools.onramp_connector import TestOnrampConnector
 
-from openerp import api, models, fields
+from odoo import api, models, fields
 
 
 class GetLetterImageWizard(models.Model):

@@ -10,7 +10,7 @@
 ##############################################################################
 
 
-from openerp import api, models, fields
+from odoo import api, models, fields
 
 
 class MajorRevision(models.Model):

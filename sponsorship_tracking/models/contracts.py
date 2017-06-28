@@ -8,8 +8,8 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, fields, exceptions, _
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from odoo import api, models, fields, exceptions, _
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 from datetime import datetime, date, timedelta
 import logging

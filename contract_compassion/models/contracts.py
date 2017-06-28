@@ -11,10 +11,10 @@
 
 import logging
 
-from openerp import models, fields, api, _
-from openerp.exceptions import UserError
-from openerp.addons.connector.queue.job import job, related_action
-from openerp.addons.connector.session import ConnectorSession
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+from odoo.addons.connector.queue.job import job, related_action
+from odoo.addons.connector.session import ConnectorSession
 
 logger = logging.getLogger(__name__)
 

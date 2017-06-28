@@ -13,7 +13,7 @@ import simplejson
 import os
 import sys
 
-from openerp.netsvc import DBFormatter
+from odoo.netsvc import DBFormatter
 
 ONRAMP_LOGGER = logging.getLogger('ONRAMP')
 

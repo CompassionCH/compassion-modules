@@ -9,9 +9,9 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from odoo import models, fields, api
 
-from openerp.addons.child_compassion.models.compassion_hold import \
+from odoo.addons.child_compassion.models.compassion_hold import \
     HoldType
 
 

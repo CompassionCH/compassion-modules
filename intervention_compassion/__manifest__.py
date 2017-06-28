@@ -26,26 +26,30 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+
+
 {
-    'name': 'Thank You Letters',
+    'name': 'Compassion Interventions',
     'version': '9.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['partner_communication', 'advanced_translation'],
+    'depends': ['child_compassion'],
+    'external_dependencies': {},
     'data': [
+        'data/compassion.intervention.category.csv',
+        'data/compassion.intervention.subcategory.csv',
+        'data/compassion.intervention.deliverable.csv',
+        'data/install_category_rel.xml',
+        'data/gmc_action.xml',
+        'security/intervention_groups.xml',
         'security/ir.model.access.csv',
-        'report/donation_report.xml',
-        'data/email_template.xml',
-        'data/communication_config.xml',
-        'data/ir_cron.xml',
-        'views/success_story_view.xml',
-        'views/communication_job_view.xml',
-        'views/account_invoice_view.xml',
-        'views/product_view.xml',
-        'views/res_partner_view.xml',
+        'views/compassion_intervention_view.xml',
+        'views/global_intervention_view.xml',
+        'views/intervention_search_view.xml',
+        'views/project_view.xml',
     ],
     'demo': [],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

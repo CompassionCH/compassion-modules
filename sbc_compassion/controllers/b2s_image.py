@@ -10,8 +10,8 @@
 ##############################################################################
 import logging
 
-from openerp import http, fields
-from openerp.http import request
+from odoo import http, fields
+from odoo.http import request
 
 from werkzeug.exceptions import BadRequest, NotFound
 from werkzeug.wrappers import Response

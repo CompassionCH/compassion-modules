@@ -8,10 +8,10 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, exceptions, fields, models, _
+from odoo import api, exceptions, fields, models, _
 from datetime import datetime
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
 
 
 class hr_planning_day_move_request(models.Model):

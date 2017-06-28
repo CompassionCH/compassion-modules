@@ -10,7 +10,7 @@
 ##############################################################################
 
 
-from openerp import models, fields, api
+from odoo import models, fields, api
 
 from ..mappings.child_assessment_mapping import ChildAssessmentMapping
 

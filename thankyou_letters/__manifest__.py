@@ -26,31 +26,26 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
-
 {
-    'name': 'Partner Communication',
+    'name': 'Thank You Letters',
     'version': '9.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['crm_phone', 'base_report_to_printer', 'hr'],
-    'external_dependencies': {
-        'python': ['phonenumbers']
-    },
+    'depends': ['partner_communication', 'advanced_translation'],
     'data': [
         'security/ir.model.access.csv',
-        'static/src/xml/partner_communication.xml',
+        'report/donation_report.xml',
+        'data/email_template.xml',
+        'data/communication_config.xml',
+        'data/ir_cron.xml',
+        'views/success_story_view.xml',
         'views/communication_job_view.xml',
-        'views/communication_config_view.xml',
-        'views/call_wizard_view.xml',
+        'views/account_invoice_view.xml',
+        'views/product_view.xml',
         'views/res_partner_view.xml',
-        'views/change_text_wizard_view.xml',
-        'views/pdf_wizard_view.xml',
-        'views/generate_communication_wizard_view.xml',
-        'data/default_communication.xml'
     ],
     'demo': [],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

@@ -9,13 +9,13 @@
 #
 ##############################################################################
 from math import ceil
-from openerp import models, fields, api, _
-from openerp.exceptions import UserError
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
-from openerp.addons.message_center_compassion.tools.onramp_connector import \
+from odoo.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
 
-from openerp.addons.message_center_compassion.mappings import base_mapping
+from odoo.addons.message_center_compassion.mappings import base_mapping
 
 
 class GlobalChildSearch(models.TransientModel):

@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import models, fields, _, api
+from odoo import models, fields, _, api
 from ..tools import import_letter_functions as func
 
 

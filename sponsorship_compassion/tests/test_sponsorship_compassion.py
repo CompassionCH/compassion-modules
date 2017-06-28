@@ -14,8 +14,8 @@ import mock
 
 from datetime import date
 
-from openerp import fields
-from openerp.addons.contract_compassion.tests.test_contract_compassion \
+from odoo import fields
+from odoo.addons.contract_compassion.tests.test_contract_compassion \
     import BaseContractCompassionTest
 
 

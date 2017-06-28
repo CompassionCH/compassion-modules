@@ -15,8 +15,8 @@ import uuid
 from datetime import datetime
 
 from ..tools.onramp_logging import ONRAMP_LOGGER
-from openerp import exceptions
-from openerp.http import (
+from odoo import exceptions
+from odoo.http import (
     Response, JsonRequest, Root, SessionExpiredException,
     AuthenticationError, serialize_exception
 )

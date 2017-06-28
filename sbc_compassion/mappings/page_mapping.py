@@ -10,9 +10,9 @@
 ##############################################################################
 import logging
 
-from openerp.addons.message_center_compassion.mappings.base_mapping import \
+from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
-from openerp.addons.sbc_compassion.models.correspondence_page import \
+from odoo.addons.sbc_compassion.models.correspondence_page import \
     BOX_SEPARATOR
 
 _logger = logging.getLogger(__name__)

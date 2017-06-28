@@ -13,14 +13,14 @@ import logging
 import re
 import uuid
 
-from openerp import fields, models, api, _
-from openerp.exceptions import UserError
+from odoo import fields, models, api, _
+from odoo.exceptions import UserError
 from io import BytesIO
 
 from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
 from ..tools.onramp_connector import SBCConnector
 
-from openerp.addons.message_center_compassion.mappings import base_mapping as \
+from odoo.addons.message_center_compassion.mappings import base_mapping as \
     mapping
 
 _logger = logging.getLogger(__name__)

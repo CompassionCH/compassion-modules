@@ -10,14 +10,14 @@
 ##############################################################################
 import simplejson
 import requests
-from openerp.addons.message_center_compassion.tools.onramp_connector import \
+from odoo.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
-from openerp.addons.message_center_compassion.tools.onramp_logging import \
+from odoo.addons.message_center_compassion.tools.onramp_logging import \
     log_message
 
-from openerp import _
-from openerp.exceptions import UserError
-from openerp.tools.config import config
+from odoo import _
+from odoo.exceptions import UserError
+from odoo.tools.config import config
 
 
 class TestOnrampConnector(OnrampConnector):

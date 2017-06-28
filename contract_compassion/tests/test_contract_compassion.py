@@ -11,9 +11,9 @@
 
 
 from datetime import datetime
-from openerp import fields
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from openerp.addons.recurring_contract.tests.test_recurring_contract import \
+from odoo import fields
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from odoo.addons.recurring_contract.tests.test_recurring_contract import \
     BaseContractTest
 import logging
 logger = logging.getLogger(__name__)

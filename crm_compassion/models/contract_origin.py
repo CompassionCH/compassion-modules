@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import api, models, fields, _
+from odoo import api, models, fields, _
 
 
 class ContractOrigin(models.Model):

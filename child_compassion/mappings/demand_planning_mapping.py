@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp.addons.message_center_compassion.mappings.base_mapping import \
+from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 

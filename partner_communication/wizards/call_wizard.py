@@ -11,7 +11,7 @@
 import logging
 from datetime import datetime
 
-from openerp import models, api, fields, _
+from odoo import models, api, fields, _
 
 
 _logger = logging.getLogger(__name__)

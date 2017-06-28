@@ -10,8 +10,8 @@
 ##############################################################################
 import simplejson as json
 
-from openerp import http, exceptions
-from openerp.http import request
+from odoo import http, exceptions
+from odoo.http import request
 from ..tools.onramp_logging import ONRAMP_LOGGER, log_message
 
 # Put any authorized sender here. Its address must be part of the headers

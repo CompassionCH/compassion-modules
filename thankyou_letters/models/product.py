@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import models, fields
+from odoo import models, fields
 
 
 class ProductTemplate(models.Model):

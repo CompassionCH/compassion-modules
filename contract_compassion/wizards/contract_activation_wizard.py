@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import models, api
+from odoo import models, api
 
 
 class activate_contract_wizard(models.TransientModel):

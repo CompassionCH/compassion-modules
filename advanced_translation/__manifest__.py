@@ -28,19 +28,18 @@
 ##############################################################################
 
 {
-    'name': "Compassion Onramp Simulator",
+    'name': 'Advanced Translation',
     'version': '9.0.1.0',
     'category': 'Other',
-    'summary': "Send messages to Compassion Onramps",
     'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['message_center_compassion'],
-    'external_dependencies': {},
+    'depends': ['base'],
     'data': [
-        'views/onramp_simulator_view.xml',
+        'security/ir.model.access.csv',
+        'data/ir.advanced.translation.csv'
     ],
     'demo': [],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

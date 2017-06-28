@@ -13,8 +13,8 @@ import base64
 import tempfile
 import logging
 
-from openerp import fields, models, api, _
-from openerp.exceptions import ValidationError, UserError
+from odoo import fields, models, api, _
+from odoo.exceptions import ValidationError, UserError
 
 from ..tools import patternrecognition as pr
 

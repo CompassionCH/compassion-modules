@@ -15,9 +15,9 @@ from datetime import datetime, timedelta
 
 from .onramp_logging import log_message
 
-from openerp import _
-from openerp.exceptions import UserError
-from openerp.tools.config import config
+from odoo import _
+from odoo.exceptions import UserError
+from odoo.tools.config import config
 
 logger = logging.getLogger(__name__)
 

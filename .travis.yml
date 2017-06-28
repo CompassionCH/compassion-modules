@@ -1,91 +1,66 @@
-sudo: required
+language: python
+sudo: false
+cache:
+  apt: true
+  directories:
+    - $HOME/.cache/pip
+
+python:
+  - "2.7"
 
 addons:
   apt:
     packages:
-        - expect-dev
-        - python-lxml
-        - python-cups
-        # OpenCV requirements packages
-        - build-essential
-        - cmake
-        - pkg-config
-        - libjpeg-dev
-        - libtiff4-dev
-        - libjasper-dev
-        - libgtk2.0-dev
-        - libavcodec-dev
-        - libavformat-dev
-        - libswscale-dev
-        - libv4l-dev
-        - zbar-tools
-        - python-zbar
-
-language: python
-
-python:
-    - '2.7'
+      - expect-dev  # provides unbuffer utility
+      - python-lxml  # because pip installation is slow
+      - python-simplejson
+      - python-serial
+      - python-yaml
+      - python-cups
+    # OpenCV requirements packages
+      - build-essential
+      - cmake
+      - pkg-config
+      - libjpeg-dev
+      - libtiff4-dev
+      - libjasper-dev
+      - libgtk2.0-dev
+      - libavcodec-dev
+      - libavformat-dev
+      - libswscale-dev
+      - libv4l-dev
+      - zbar-tools
+      - python-zbar
 
 env:
-    global:
-        - VERSION="9.0"
-        - ODOO_REPO="odoo/odoo"
-        - EXCLUDE="child_compassion,message_center_compassion"
+  global:
+  - VERSION="10.0" TESTS="0" LINT_CHECK="0" TRANSIFEX="0"
+  - PHANTOMJS_VERSION="latest"
+  # The above line controls the PhantomJS version that is used for JS testing.
+  #   It is not necessary to include this value unless you are altering the default.
+  #   Use `OS` to skip the PhantomJS upgrade & use the system version instead.
+
+  matrix:
+  - LINT_CHECK="1"
+  - TESTS="1" ODOO_REPO="odoo/odoo" EXCLUDE="sbc_compassion"
+
 
 virtualenv:
   system_site_packages: true
 
-install:
-#  See how to prevent too much log when sing opencv in Travis.
-#    - sh ${HOME}/build/CompassionCH/compassion-modules/sbc_compassion/tools/install_opencv.sh
-    - pip install click flake8 coveralls xlrd pylint pylint_odoo coverage codecov
-    - pip install pyjwt pyquery phonenumbers
-    - pip install python-magic wand numpy pdfminer matplotlib pyPdf bs4  # SBC requirements
-    - git clone https://github.com/CompassionCH/compassion-accounting.git ${HOME}/build/CompassionCH/compassion-accounting -b 9.0
-    - git clone https://github.com/CompassionCH/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools -b r2
-    - git clone https://github.com/OCA/web.git ${HOME}/build/CompassionCH/web -b 9.0
-    - git clone https://github.com/OCA/connector.git ${HOME}/build/CompassionCH/connector -b 9.0
-    - git clone https://github.com/OCA/partner-contact.git ${HOME}/build/CompassionCH/partner-contact -b 9.0
-    - git clone https://github.com/OCA/connector-telephony.git ${HOME}/build/CompassionCH/connector-telephony -b 9.0
-    - git clone https://github.com/OCA/report-print-send.git ${HOME}/build/CompassionCH/report-print-send -b 9.0
-    - git clone https://github.com/OCA/server-tools.git ${HOME}/build/CompassionCH/server-tools -b 9.0
-    - git clone https://github.com/OCA/bank-payment.git ${HOME}/build/CompassionCH/bank-payment -b 9.0
-    - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
-    - travis_install_nightly
-#    - export PYTHONPATH=${PYTHONPATH}:${OPENCV_ROOT}/install/lib/python2.7/site-packages
-#    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis/install_opencv.sh || echo "Not installing OpenCV in Pull requests"'
-#    - pip install pysftp
-#    - sudo apt-get purge python-openssl
-#    - pip install pyopenssl
-#    - pip install MySQL-python
-#    - pip install unidecode
-#    - pip install pysmb
-#    - pip install urllib3
-#    - pip install certifi
-#    - pip install coveralls
-#    - pip install python-magic
-#    - pip install wand
-#    - pip install sendgrid
-#    - pip install pyquery
-#    - pip install phonenumbers
-#    - sudo apt-get install zbar-tools python-zbar
-#    - pip install pdfminer
-#    - git clone https://github.com/OCA/l10n-switzerland.git ${HOME}/build/CompassionCH/l10n-switzerland -b 9.0
-#    - git clone https://github.com/OCA/bank-statement-reconcile.git ${HOME}/build/CompassionCH/bank-statement-reconcile -b 9.0
-#    - git clone https://github.com/OCA/bank-statement-import.git ${HOME}/build/CompassionCH/bank-statement-import -b 9.0
-#    - git clone https://github.com/OCA/account-financial-tools.git ${HOME}/build/CompassionCH/account-financial-tools -b 9.0
-#    - git clone https://github.com/CompassionCH/social.git ${HOME}/build/CompassionCH/social -b 9.0
-#    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis_install_nightly || echo "Not installing odoo in Pull requests"'
 
-before_script:
-    - rm -rf opencv*
-    - touch ${HOME}/odoo-9.0/odoo.conf
-#    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && openssl aes-256-cbc -K $encrypted_f7bf959fc25e_key -iv $encrypted_f7bf959fc25e_iv -in travis/odoo.conf.enc -out ${HOME}/odoo-9.0/odoo.conf -d || echo "encrypted files not available"'
+install:
+  - pip install pyjwt pyquery phonenumbers
+  - pip install python-magic wand numpy pdfminer matplotlib pyPdf bs4  # SBC requirements
+  #  See how to prevent too much log when sing opencv in Travis.
+  #    - sh ${HOME}/build/CompassionCH/compassion-modules/sbc_compassion/tools/install_opencv.sh
+  - git clone --depth=1 https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
+  - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
+  - travis_install_nightly
 
 script:
-    - travis/travis_header.sh
-    - travis_run_tests
-#    - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && travis_run_tests || [ "${TRAVIS_SECURE_ENV_VARS}" = "false" ]'
+  - travis/travis_header.sh
+  - travis_run_tests
 
 after_success:
-    - travis_after_success
+  - travis_after_tests_success

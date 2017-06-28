@@ -10,8 +10,8 @@
 ##############################################################################
 import logging
 
-from openerp import api, models, fields, _
-from openerp.exceptions import ValidationError
+from odoo import api, models, fields, _
+from odoo.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
 

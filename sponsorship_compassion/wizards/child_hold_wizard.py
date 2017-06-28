@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, _
+from odoo import api, models, _
 
 
 class ChildHoldWizard(models.TransientModel):

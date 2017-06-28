@@ -11,7 +11,7 @@
 import base64
 import logging
 
-from openerp import models, api, fields
+from odoo import models, api, fields
 
 _logger = logging.getLogger(__name__)
 

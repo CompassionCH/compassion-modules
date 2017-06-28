@@ -12,8 +12,8 @@ from datetime import timedelta
 
 import datetime
 
-from openerp import models, fields, api, _
-from openerp.exceptions import UserError
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 
 class CompassionReservation(models.Model):

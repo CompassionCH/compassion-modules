@@ -10,7 +10,7 @@
 ##############################################################################
 import base64
 
-from openerp import fields, models, api
+from odoo import fields, models, api
 from reportlab.graphics.barcode import createBarcodeDrawing
 
 DPI = 150

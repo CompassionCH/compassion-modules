@@ -8,9 +8,9 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, fields, exceptions, _
+from odoo import api, models, fields, exceptions, _
 from datetime import datetime, timedelta
-from openerp.exceptions import ValidationError
+from odoo.exceptions import ValidationError
 
 
 class EventCompassion(models.Model):

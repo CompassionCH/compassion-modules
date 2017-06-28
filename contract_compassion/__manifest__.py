@@ -9,8 +9,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    Copyright (C) 2014-2017 Compassion CH (http://www.compassion.ch)
+#    @author: David Coninckx, Emanuel Cino
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -27,16 +27,25 @@
 #
 ##############################################################################
 
+
 {
-    'name': 'Compassion CH - Website Events',
-    'version': '8.0.1.0',
-    'category': 'CRM',
-    'sequence': 150,
+    'name': 'Compassion Contracts',
+    'version': '9.0.1.0.0',
+    'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['crm_compassion', 'website'],
+    'depends': ['recurring_contract', 'child_compassion'],
     'data': [
-        'views/website_events.xml',
+        'views/end_contract_wizard_view.xml',
+        'views/contract_group_view.xml',
+        'views/contract_origin_view.xml',
+        'views/contract_view.xml',
+        'views/activate_contract_view.xml',
+        'workflow/contract_workflow.xml',
+        'workflow/invoice_workflow.xml',
+        'security/ir.model.access.csv',
+        'data/friday_invoicer_cron.xml',
+        'data/product.xml',
     ],
     'demo': [],
     'installable': False,

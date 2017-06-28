@@ -8,8 +8,8 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import models, fields, api
-from openerp.addons.message_center_compassion.mappings \
+from odoo import models, fields, api
+from odoo.addons.message_center_compassion.mappings \
     import base_mapping as mapping
 
 

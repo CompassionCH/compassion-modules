@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from openerp import api, models, fields
+from odoo import api, models, fields
 from ..mappings.base_mapping import new_onramp_mapping
 
 

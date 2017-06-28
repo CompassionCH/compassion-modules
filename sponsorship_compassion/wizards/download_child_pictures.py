@@ -11,7 +11,7 @@
 import base64
 import urllib2
 from io import BytesIO
-from openerp import models, api, fields
+from odoo import models, api, fields
 from zipfile import ZipFile
 import logging
 

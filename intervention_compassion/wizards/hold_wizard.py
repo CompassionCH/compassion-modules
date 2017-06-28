@@ -8,8 +8,8 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import models, fields, api, _
-from openerp.exceptions import UserError
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 
 class HoldWizard(models.TransientModel):

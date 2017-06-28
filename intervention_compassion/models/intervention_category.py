@@ -12,7 +12,7 @@
 import logging
 import csv
 import os
-from openerp import api, models, fields, _
+from odoo import api, models, fields, _
 
 logger = logging.getLogger(__name__)
 

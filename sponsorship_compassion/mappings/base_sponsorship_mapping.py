@@ -8,9 +8,9 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp.addons.message_center_compassion.mappings.base_mapping \
+from odoo.addons.message_center_compassion.mappings.base_mapping \
     import OnrampMapping
-from openerp.addons.child_compassion.models.compassion_hold import \
+from odoo.addons.child_compassion.models.compassion_hold import \
     HoldType
 
 

@@ -13,9 +13,9 @@ import logging
 
 from io import BytesIO
 
-from openerp import api, fields, models
-from openerp.addons.connector.queue.job import job, related_action
-from openerp.addons.connector.session import ConnectorSession
+from odoo import api, fields, models
+from odoo.addons.connector.queue.job import job, related_action
+from odoo.addons.connector.session import ConnectorSession
 
 _logger = logging.getLogger(__name__)
 

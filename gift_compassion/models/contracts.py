@@ -9,10 +9,10 @@
 #
 ##############################################################################
 
-from openerp import api, models, fields, _
-from openerp.exceptions import UserError
+from odoo import api, models, fields, _
+from odoo.exceptions import UserError
 
-from openerp.addons.sponsorship_compassion.models.product import GIFT_CATEGORY
+from odoo.addons.sponsorship_compassion.models.product import GIFT_CATEGORY
 
 
 class SponsorshipContract(models.Model):

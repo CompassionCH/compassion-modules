@@ -12,8 +12,8 @@
 import logging
 from datetime import datetime
 
-from openerp import api, fields, models
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from odoo import api, fields, models
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from .product import GIFT_NAMES
 
 logger = logging.getLogger(__name__)

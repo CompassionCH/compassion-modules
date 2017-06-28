@@ -10,7 +10,7 @@
 #                            in Jesus' name
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
-#    @author: Maxime Beck <mbcompte@gmail.com>
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -27,17 +27,20 @@
 #
 ##############################################################################
 
-
 {
-    'name': "Compassion Logging",
-    'version': '9.0.1.0.0',
-    'category': 'Audit and Logging',
+    'name': "Compassion Onramp Simulator",
+    'version': '9.0.1.0',
+    'category': 'Other',
+    'summary': "Send messages to Compassion Onramps",
+    'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['base', 'auditlog', 'sbc_compassion'],
+    'depends': ['message_center_compassion'],
+    'external_dependencies': {},
     'data': [
-        'data/compassion_auditlog_rules.xml',
+        'views/onramp_simulator_view.xml',
     ],
-    'installable': True,
+    'demo': [],
+    'installable': False,
     'auto_install': False,
 }

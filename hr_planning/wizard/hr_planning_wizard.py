@@ -9,9 +9,9 @@
 #
 ##############################################################################
 
-from openerp import api, models, SUPERUSER_ID
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
+from odoo import api, models, SUPERUSER_ID
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
 import pytz
 from datetime import datetime, timedelta, time
 

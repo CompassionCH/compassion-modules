@@ -11,9 +11,9 @@
 
 
 from datetime import datetime
-from openerp.addons.sponsorship_compassion.tests.test_sponsorship_compassion\
+from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion\
     import BaseSponsorshipTest
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import logging
 logger = logging.getLogger(__name__)
 

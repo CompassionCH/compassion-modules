@@ -10,7 +10,7 @@
 ##############################################################################
 
 from datetime import datetime, timedelta
-from openerp import api, models, fields
+from odoo import api, models, fields
 
 
 class DemandPlanning(models.Model):

@@ -10,8 +10,8 @@
 ##############################################################################
 from ..tools.onramp_connector import OnrampConnector
 
-from openerp import api, models, fields, _
-from openerp.exceptions import UserError, ValidationError
+from odoo import api, models, fields, _
+from odoo.exceptions import UserError, ValidationError
 
 
 class GetLetterImageWizard(models.TransientModel):

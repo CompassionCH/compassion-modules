@@ -8,9 +8,9 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from openerp import api, models, fields, _
+from odoo import api, models, fields, _
 
-from openerp.addons.child_compassion.models.compassion_hold import HoldType
+from odoo.addons.child_compassion.models.compassion_hold import HoldType
 
 
 class WeeklyRevision(models.Model):
