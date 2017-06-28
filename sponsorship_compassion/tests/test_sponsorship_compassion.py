@@ -147,7 +147,7 @@ class TestSponsorship(BaseSponsorshipTest):
         gift_inv_ids = gift_wiz.with_context(
             active_ids=[sponsorship.id]).generate_invoice()['domain'][0][2]
         gift_inv = self.env['account.invoice'].browse(gift_inv_ids)
-        gift_inv[0].signal_workflow('invoice_open')
+        gift_inv[0].action_invoice_open()
         self._pay_invoice(gift_inv[0])
         self.assertEqual(gift_inv[0].state, 'paid')
 
@@ -178,12 +178,7 @@ class TestSponsorship(BaseSponsorshipTest):
         else:
             self.assertEqual(invoice.state, 'open')
         self.assertEqual(invoice1.state, 'open')
-        date_finish = fields.Datetime.now()
         sponsorship.signal_workflow('contract_terminated')
-        # Check a job for cleaning invoices has been created
-        self.assertTrue(self.env['queue.job'].search([
-            ('name', '=', 'Job for cleaning invoices of contracts.'),
-            ('date_created', '>=', date_finish)]))
         # Force cleaning invoices immediatley
         sponsorship._clean_invoices()
         self.assertTrue(sponsorship.state, 'terminated')

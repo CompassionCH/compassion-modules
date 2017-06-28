@@ -13,6 +13,7 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
+from odoo.addons.queue_job.job import job, related_action
 
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
@@ -29,7 +30,7 @@ THIS_DIR = os.path.dirname(__file__)
 class SponsorshipLine(models.Model):
     _inherit = 'recurring.contract.line'
 
-    contract_type = fields.Selection(related='contract_id.type')
+    contract_type = fields.Selection(related='contract_id.type', readonly=True)
     sponsorship_id = fields.Many2one(
         'recurring.contract', 'Sponsorship', ondelete='cascade'
     )
@@ -40,8 +41,8 @@ class SponsorshipLine(models.Model):
         res = super(SponsorshipLine, self).fields_view_get(
             *args, **kwargs)
 
-        if kwargs.get('view_type') == 'tree':
-            s_type = kwargs.get('context', dict()).get('default_type', 'O')
+        if len(args) == 2 and args[1] == 'tree':
+            s_type = self._context.get('default_type', 'O')
             if 'S' in s_type:
                 # Remove field sponsorship_id for sponsorship contracts
                 doc = etree.XML(res['arch'])
@@ -108,8 +109,8 @@ class SponsorshipContract(models.Model):
         res = super(SponsorshipContract, self).fields_view_get(
             *args, **kwargs)
 
-        if kwargs.get('view_type') == 'form' and 'type' in res['fields']:
-            s_type = kwargs.get('context', dict()).get('default_type', 'O')
+        if len(args) >= 2 and args[1] == 'form' and 'type' in res['fields']:
+            s_type = self._context.get('default_type', 'O')
             if 'S' in s_type:
                 # Remove non sponsorship types
                 res['fields']['type']['selection'].pop(0)
@@ -297,10 +298,11 @@ class SponsorshipContract(models.Model):
                 ('product_id.categ_name', '=', SPONSORSHIP_CATEGORY),
                 ('due_date', '>=', since_date)])
         invoices = cancel_inv_lines.mapped('invoice_id')
-        invoices.action_cancel_draft()
+        invoices.action_invoice_draft()
+        invoices.env.invalidate_all()
         vals = self.get_suspend_invl_data(product_id)
         cancel_inv_lines.write(vals)
-        invoices.signal_workflow('invoice_open')
+        invoices.action_invoice_open()
 
     @api.multi
     def get_suspend_invl_data(self, product_id):
@@ -361,9 +363,10 @@ class SponsorshipContract(models.Model):
             reconciles.mapped('line_id').remove_move_reconcile()
             reconciles.unlink()
             # Cancel and confirm again invoices to update move lines
-            invoices.action_cancel()
-            invoices.action_cancel_draft()
-            invoices.signal_workflow('invoice_open')
+            invoices.action_invoice_cancel()
+            invoices.action_invoice_draft()
+            invoices.env.invalidate_all()
+            invoices.action_invoice_open()
         else:
             # Open again cancelled invoices
             inv_lines = invl_obj.search([
@@ -374,9 +377,10 @@ class SponsorshipContract(models.Model):
             contracts = inv_lines.mapped('contract_id')
             to_open = inv_lines.mapped('invoice_id').filtered(
                 lambda inv: inv.state == 'cancel')
-            to_open.action_cancel_draft()
+            to_open.action_invoice_draft()
+            to_open.env.invalidate_all()
             for i in to_open:
-                i.signal_workflow('invoice_open')
+                i.action_invoice_open()
                 i.env.cr.commit()
 
         # Log a note in the contracts
@@ -690,6 +694,8 @@ class SponsorshipContract(models.Model):
                 )
 
     @api.multi
+    @job(default_channel='root.recurring_invoicer')
+    @related_action(action='related_action_contract')
     def _clean_invoices(self, since_date=None, to_date=None,
                         keep_lines=None, clean_invoices_paid=True):
         """ Take into consideration when the sponsor has paid in advance,

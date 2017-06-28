@@ -14,6 +14,7 @@ from datetime import datetime
 
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from odoo.addons.queue_job.job import job, related_action
 from .product import GIFT_NAMES
 
 logger = logging.getLogger(__name__)
@@ -44,6 +45,9 @@ class ContractGroup(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    @job(default_channel='root.recurring_invoicer')
+    @related_action(action='related_action_invoicer')
+    @api.multi
     def _generate_invoices(self, invoicer=None):
         """ Add birthday gifts generation. """
         invoicer = self._generate_birthday_gifts(invoicer)

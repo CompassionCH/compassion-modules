@@ -69,8 +69,9 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="account.partner_view_buttons" />
         <field name="arch" type="xml">
-            <xpath expr="//button[@name='%(account.action_invoice_refund_out_tree)d']" position="attributes">
+            <xpath expr="//button[@name='open_partner_history']" position="attributes">
                 <attribute name="name">%(account.action_invoice_tree)d</attribute>
+                <attribute name="type">action</attribute>
             </xpath>
         </field>
     </record>
