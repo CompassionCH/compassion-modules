@@ -29,21 +29,21 @@
 
 {
     'name': 'Compassion CH - Planning',
-    'version': '9.0.1.0',
+    'version': '10.0.1.0.0',
     'category': 'CRM',
     'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': ['hr_contract', 'hr_holidays'],
     'data': [
-        'view/hr_planning_view.xml',
-        'view/hr_planning_wizard_view.xml',
-        'view/hr_planning_move_request_view.xml',
+        'views/hr_planning_view.xml',
+        'views/hr_planning_wizard_view.xml',
+        'views/hr_planning_move_request_view.xml',
         'security/ir.model.access.csv',
         'security/ir_rule.xml',
     ],
     'css': ['static/src/css/hr_planning.css'],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

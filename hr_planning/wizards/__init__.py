@@ -9,5 +9,4 @@
 #
 ##############################################################################
 
-from . import models
-from . import wizards
+from . import hr_planning_wizard
