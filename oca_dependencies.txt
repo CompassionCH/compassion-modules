@@ -19,4 +19,5 @@ partner-contact
 web
 report-print-send
 server-tools
+connector-telephony
 compassion-accounting https://github.com/CompassionCH/compassion-accounting 10.0

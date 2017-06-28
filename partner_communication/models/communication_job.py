@@ -12,7 +12,8 @@ import logging
 
 from odoo import api, models, fields, _, http
 from odoo.exceptions import UserError
-from odoo.addons.base_phone.models.controller import BasePhoneController
+from odoo.addons.base_phone import fields as phone_fields
+from odoo.addons.base_phone.controllers.main import BasePhoneController
 
 logger = logging.getLogger(__name__)
 
@@ -43,8 +44,8 @@ class CommunicationJob(models.Model):
     model = fields.Char(related='config_id.model')
     partner_id = fields.Many2one(
         'res.partner', 'Send to', required=True, ondelete='cascade')
-    partner_phone = fields.Char(related='partner_id.phone')
-    partner_mobile = fields.Char(related='partner_id.mobile')
+    partner_phone = phone_fields.Phone(related='partner_id.phone')
+    partner_mobile = phone_fields.Phone(related='partner_id.mobile')
     object_ids = fields.Char('Resource ids', required=True)
 
     date = fields.Datetime(default=fields.Datetime.now)

@@ -30,11 +30,11 @@
 
 {
     'name': 'Partner Communication',
-    'version': '9.0.1.0.0',
+    'version': '10.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['crm_phone', 'base_report_to_printer', 'hr'],
+    'depends': ['crm_phone', 'base_report_to_printer', 'hr', 'contacts'],
     'external_dependencies': {
         'python': ['phonenumbers']
     },
@@ -51,6 +51,6 @@
         'data/default_communication.xml'
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }
