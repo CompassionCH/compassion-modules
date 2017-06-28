@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2017 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Cyril Sester, Emanuel Cino
 #
@@ -13,8 +13,7 @@ import logging
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
-from odoo.addons.connector.queue.job import job, related_action
-from odoo.addons.connector.session import ConnectorSession
+from odoo.addons.queue_job.job import job, related_action
 
 logger = logging.getLogger(__name__)
 
@@ -366,11 +365,13 @@ class RecurringContract(models.Model):
             inv_lines = self._get_filtered_invoice_lines(invoice_lines)
 
             if len(inv_lines) == len(invoice_lines):
-                invoice.signal_workflow('invoice_cancel')
+                invoice.action_invoice_cancel()
             else:
-                invoice.action_cancel_draft()
+                invoice.action_invoice_cancel()
+                invoice.action_invoice_draft()
+                invoice.env.invalidate_all()
                 inv_lines.unlink()
-                invoice.signal_workflow('invoice_open')
+                invoice.action_invoice_open()
 
     def _clean_error(self):
         raise UserError(
@@ -383,13 +384,14 @@ class RecurringContract(models.Model):
     def _reset_open_invoices(self):
         """ Launch the task in asynchrnous job by default. """
         if self.env.context.get('async_mode', True):
-            session = ConnectorSession.from_env(self.env)
-            reset_open_invoices_job.delay(
-                session, self._name, self.ids)
+            self.with_delay()._reset_open_invoices_job()
         else:
             self._reset_open_invoices_job()
         return True
 
+    @job(default_channel='root.recurring_invoicer')
+    @related_action(action='related_action_contracts')
+    @api.multi
     def _reset_open_invoices_job(self):
         """Clean the open invoices in order to generate new invoices.
         This can be useful if contract was updated when active."""
@@ -405,7 +407,8 @@ class RecurringContract(models.Model):
                     ('id', 'in', invoices_canceled.ids)])
                 if cancel_invoices:
                     inv_update_ids.update(cancel_invoices.ids)
-                    cancel_invoices.action_cancel_draft()
+                    cancel_invoices.action_invoice_draft()
+                    cancel_invoices.env.invalidate_all()
                     contract._update_invoice_lines(cancel_invoices)
                 # If no invoices are left in cancel state, we rewind
                 # the next_invoice_date for the contract to generate again
@@ -416,7 +419,7 @@ class RecurringContract(models.Model):
                         invoicer.unlink()
             # Validate again modified invoices
             validate_invoices = invoice_obj.browse(list(inv_update_ids))
-            validate_invoices.signal_workflow('invoice_open')
+            validate_invoices.action_invoice_open()
         return True
 
     def _on_group_id_changed(self):
@@ -432,27 +435,3 @@ class RecurringContract(models.Model):
                     contract.group_id.next_invoice_date)
                 if group_date > next_invoice_date:
                     contract.group_id._set_next_invoice_date()
-
-
-##############################################################################
-#                            CONNECTOR METHODS                               #
-##############################################################################
-def related_action_contracts(session, job):
-    contract_ids = job.args[2]
-    action = {
-        'name': _("Contracts"),
-        'type': 'ir.actions.act_window',
-        'res_model': 'recurring.contract',
-        'view_type': 'form',
-        'view_mode': 'tree,form',
-        'domain': [('id', 'in', contract_ids)],
-    }
-    return action
-
-
-@job(default_channel='root.recurring_invoicer')
-@related_action(action=related_action_contracts)
-def reset_open_invoices_job(session, model_name, contract_ids):
-    """Job for generating again open invoices of contracts."""
-    contracts = session.env[model_name].browse(contract_ids)
-    contracts._reset_open_invoices_job()

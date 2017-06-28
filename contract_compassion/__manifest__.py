@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Contracts',
-    'version': '9.0.1.0.0',
+    'version': '10.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -42,12 +42,11 @@
         'views/contract_view.xml',
         'views/activate_contract_view.xml',
         'workflow/contract_workflow.xml',
-        'workflow/invoice_workflow.xml',
         'security/ir.model.access.csv',
         'data/friday_invoicer_cron.xml',
         'data/product.xml',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

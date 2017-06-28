@@ -121,11 +121,7 @@ class TestContractCompassion(BaseContractCompassionTest):
         # Cancelling of the contract
         date_finish = fields.Datetime.now()
         contract.signal_workflow('contract_terminated')
-        # Check a job for cleaning invoices has been created
-        self.assertTrue(self.env['queue.job'].search([
-            ('name', '=', 'Job for cleaning invoices of contracts.'),
-            ('date_created', '>=', date_finish)]))
-        # Force cleaning invoices immediatley
+        # Force cleaning invoices immediately
         contract._clean_invoices()
         self.assertEqual(contract.state, 'cancelled')
         self.assertEqual(invoices[0].state, 'cancel')

@@ -12,24 +12,24 @@
 from odoo import api, models
 
 
-class account_invoice(models.Model):
+class AccountInvoice(models.Model):
     _name = 'account.invoice'
     _inherit = 'account.invoice'
 
     @api.multi
-    def confirm_paid(self):
+    def action_invoice_paid(self):
         """ Call invoice_paid method on related contracts. """
-        res = super(account_invoice, self).confirm_paid()
+        res = super(AccountInvoice, self).action_invoice_paid()
         for invoice in self:
             contracts = invoice.mapped('invoice_line_ids.contract_id')
             contracts.invoice_paid(invoice)
         return res
 
     @api.multi
-    def action_reopen(self):
+    def action_invoice_re_open(self):
         """ Call invoice_unpaid method on related contract. """
-        self.write({'state': 'open'})
+        res = super(AccountInvoice, self).action_invoice_re_open()
         for invoice in self:
             contracts = invoice.mapped('invoice_line_ids.contract_id')
             contracts.invoice_unpaid(invoice)
-        return True
+        return res
