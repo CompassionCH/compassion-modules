@@ -29,7 +29,7 @@
 
 {
     'name': "Compassion Onramp Simulator",
-    'version': '9.0.1.0',
+    'version': '10.0.1.0.0',
     'category': 'Other',
     'summary': "Send messages to Compassion Onramps",
     'sequence': 150,
@@ -41,6 +41,6 @@
         'views/onramp_simulator_view.xml',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2017 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -16,8 +16,7 @@ from ..mappings import base_mapping as mapping
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
 
-from odoo.addons.connector.queue.job import job, related_action
-from odoo.addons.connector.session import ConnectorSession
+from odoo.addons.queue_job.job import job, related_action
 
 from datetime import datetime
 
@@ -141,8 +140,7 @@ class GmcMessagePool(models.Model):
             lambda m: m.state in ('new', 'failure', 'pending'))
         new_messages.write({'state': 'pending', 'failure_reason': False})
         if self.env.context.get('async_mode', True):
-            session = ConnectorSession.from_env(self.env)
-            process_messages_job.delay(session, self._name, new_messages.ids)
+            new_messages.with_delay()._process_messages()
         else:
             new_messages._process_messages()
         return True
@@ -194,6 +192,8 @@ class GmcMessagePool(models.Model):
     #                             PRIVATE METHODS                            #
     ##########################################################################
     @api.multi
+    @job(default_channel='root.gmc_pool')
+    @related_action(action='related_action_messages')
     def _process_messages(self):
         """ Process given messages in pool. """
         today = datetime.now()
@@ -415,27 +415,3 @@ class GmcMessagePool(models.Model):
     @api.model
     def _needaction_domain_get(self):
         return [('state', 'in', ('new', 'pending'))]
-
-
-##############################################################################
-#                            CONNECTOR METHODS                               #
-##############################################################################
-def related_action_messages(session, job):
-    message_ids = job.args[1]
-    action = {
-        'name': _("Messages"),
-        'type': 'ir.actions.act_window',
-        'res_model': 'gmc.message.pool',
-        'domain': [('id', 'in', message_ids)],
-        'view_type': 'form',
-        'view_mode': 'tree,form',
-    }
-    return action
-
-
-@job(default_channel='root.gmc_pool')
-@related_action(action=related_action_messages)
-def process_messages_job(session, model_name, message_ids):
-    """Job for processing messages."""
-    messages = session.env[model_name].browse(message_ids)
-    messages._process_messages()
