@@ -38,6 +38,7 @@
     'depends': ['message_center_compassion'],
     'external_dependencies': {},
     'data': [
+        'security/ir.model.access.csv',
         'views/onramp_simulator_view.xml',
     ],
     'demo': [],

@@ -8,14 +8,15 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+from datetime import datetime, timedelta
 from math import ceil
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
 from odoo.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
-
 from odoo.addons.message_center_compassion.mappings import base_mapping
+from odoo.addons.queue_job.job import job
 
 
 class GlobalChildSearch(models.TransientModel):
@@ -185,6 +186,32 @@ class GlobalChildSearch(models.TransientModel):
             'rich_mix', 'beneficiaries/richmix',
             'BeneficiaryRichMixResponseList')
         return True
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    @job(default_channel='root.global_pool')
+    def hold_children_job(self):
+        """Job for holding requested children on the web."""
+        self.ensure_one()
+        child_hold = self.env['child.hold.wizard'].with_context(
+            active_id=self.id).sudo()
+        expiration_date = datetime.now() + timedelta(minutes=15)
+
+        user_id = self.env['res.users']. \
+            search([('name', '=', 'Reber Rose-Marie')]).id or self.env.uid
+
+        holds = child_hold.create({
+            'type': 'E-Commerce Hold',
+            'hold_expiration_date': expiration_date.strftime(
+                "%Y-%m-%dT%H:%M:%SZ"),
+            'primary_owner': user_id,
+            'secondary_owner': 'Carole Rochat',
+            'no_money_yield_rate': '1.1',
+            'yield_rate': '1.1',
+            'channel': 'Website',
+        })
+        holds.send()
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

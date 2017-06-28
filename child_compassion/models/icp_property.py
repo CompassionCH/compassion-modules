@@ -13,7 +13,7 @@
 from odoo import api, models, fields, _
 
 
-class ICPProperty(models.TransientModel):
+class ICPProperty(models.AbstractModel):
     """ An ICP property is a class linked to projects to describe
     the project hobbies/activities/etc... in several languages. """
     _name = 'icp.property'

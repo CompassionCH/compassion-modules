@@ -9,7 +9,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2017 Compassion CH (http://www.compassion.ch)
 #    @author: Cyril Sester <csester@compassion.ch>, Emanuel Cino
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Children',
-    'version': '9.0.1.0.0',
+    'version': '10.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -97,6 +97,6 @@
         'data/fo.disaster.loss.csv',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

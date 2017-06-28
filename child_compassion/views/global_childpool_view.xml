@@ -160,7 +160,6 @@
     <record id="view_compassion_global_child_form" model="ir.ui.view">
         <field name="name">compassion.global.child.form</field>
         <field name="model">compassion.global.child</field>
-        <field name="portrait"/>
         <field name="arch" type="xml">
             <form>
                 <field name="portrait" widget='image' class="oe_left oe_avatar" options='{"size": [90, 90]}'/>

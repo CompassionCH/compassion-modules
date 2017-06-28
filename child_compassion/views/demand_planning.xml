@@ -84,5 +84,5 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_demand_planning_compassion" name="Demand Planning" parent="base.menu_sales" action="open_view_demand_planning_form"/>
+    <menuitem id="menu_demand_planning_compassion" name="Demand Planning" parent="sales_team.menu_sales" action="open_view_demand_planning_form"/>
 </odoo>

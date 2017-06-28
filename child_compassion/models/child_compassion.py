@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2017 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino, Cyril Sester
 #
@@ -16,14 +16,13 @@ from dateutil.relativedelta import relativedelta
 from odoo import models, fields, api, _
 from odoo.addons.advanced_translation.models.ir_advanced_translation \
     import setlocale
-from datetime import datetime, timedelta, date
+from datetime import datetime, date
 
 from ..mappings.compassion_child_mapping import CompassionChildMapping
 from .compassion_hold import HoldType
 
 from odoo.exceptions import UserError
-from odoo.addons.connector.queue.job import job
-from odoo.addons.connector.session import ConnectorSession
+from odoo.addons.queue_job.job import job, related_action
 from odoo.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
 
@@ -302,6 +301,13 @@ class CompassionChild(models.Model):
         holds.release_hold()
         return res
 
+    @api.multi
+    @job(default_channel='root.child_compassion')
+    @related_action('related_action_child_compassion')
+    def unlink_job(self):
+        """ Small wrapper to unlink only released children. """
+        return self.filtered(lambda c: c.state == 'R').unlink()
+
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
@@ -471,13 +477,14 @@ class CompassionChild(models.Model):
         other_children.get_lifecycle_event()
 
         # the children will be deleted when we reach their expiration date
-        default_expiration = datetime.now() + timedelta(weeks=1)
+        postpone = 60 * 60 * 24 * 7  # One week by default
+        today = datetime.today()
         for child in other_children:
-            postpone = fields.Datetime.from_string(child.hold_expiration) or \
-                default_expiration
-            session = ConnectorSession.from_env(other_children.env)
-            unlink_children_job.delay(session, self._name, child.ids,
-                                      eta=postpone)
+            if child.hold_expiration:
+                expire = fields.Datetime.from_string(child.hold_expiration)
+                postpone = (expire - today).total_seconds() + 60
+
+            child.with_delay(eta=postpone).unlink_job()
 
         return True
 
@@ -517,13 +524,3 @@ class CompassionChild(models.Model):
         self.ensure_one()
         self.write(vals)
         self.get_infos()
-
-
-##############################################################################
-#                            CONNECTOR METHODS                               #
-##############################################################################
-@job(default_channel='root.child_compassion')
-def unlink_children_job(session, model_name, message_ids):
-    """Job for deleting released children."""
-    children = session.env[model_name].browse(message_ids)
-    children.filtered(lambda c: c.state == 'R').unlink()

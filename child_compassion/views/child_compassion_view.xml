@@ -35,6 +35,7 @@
                             <div class="oe_inline">
                                 <label for="firstname"/>
                                 <field name="firstname"/>
+                                <br/>
                                 <label for="preferred_name"/>
                                 <field name="preferred_name"/>
                             </div>
