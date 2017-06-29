@@ -68,6 +68,6 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_donation" name="Donation Receipts" parent="base.menu_base_partner" sequence="2"/>
+    <menuitem id="menu_donation" name="Donation Receipts" parent="contacts.menu_contacts" sequence="2"/>
     <menuitem id="menu_donation_success_story" name="Success Stories" parent="menu_donation" action="action_success_story"/>
 </odoo>

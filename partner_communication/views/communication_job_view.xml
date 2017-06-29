@@ -6,8 +6,8 @@
             <form>
                 <header>
                     <field name="state" widget="statusbar" statusbar_visible="call,pending,done"/>
-                    <button name="send" string="Send Now" icon="terp-mail-" type="object" class="oe_highlight" states='pending'/>
-                    <button name="log_call" string="Log call" icon="terp-call-start" type="object" states='call,pending'/>
+                    <button name="send" string="Send Now" icon="fa-envelope" type="object" class="oe_highlight" states='pending'/>
+                    <button name="log_call" string="Log call" icon="fa-phone" type="object" states='call,pending'/>
                     <button name="reset" string="Retry" type="object" states='done,cancel'/>
                     <button name="cancel" string="Cancel" type="object" states='call,pending'/>
                 </header>
@@ -132,7 +132,7 @@
         <field name="name">Send communication</field>
         <field name="model_id" ref="model_partner_communication_job"/>
         <field name="state">code</field>
-        <field name="code">self.send(cr, uid, context.get('active_ids', []), context=context)</field>
+        <field name="code">object.send()</field>
     </record>
 
     <record id="send_action_menu" model="ir.values">
@@ -147,7 +147,7 @@
         <field name="name">Refresh communication</field>
         <field name="model_id" ref="model_partner_communication_job"/>
         <field name="state">code</field>
-        <field name="code">self.refresh_text(cr, uid, context.get('active_ids', []), refresh_uid=True, context=context)</field>
+        <field name="code">object.refresh_text(refresh_uid=True)</field>
     </record>
 
     <record id="refresh_action_menu" model="ir.values">

@@ -29,11 +29,11 @@ class AccountInvoice(models.Model):
     )
 
     @api.multi
-    def confirm_paid(self):
+    def action_invoice_paid(self):
         """ Generate a Thank you Communication when invoice is a donation
             (no sponsorship product inside)
         """
-        res = super(AccountInvoice, self).confirm_paid()
+        res = super(AccountInvoice, self).action_invoice_paid()
         invoices = self.filtered(
             lambda i: i.type == 'out_invoice' and (
                 not i.communication_id or
