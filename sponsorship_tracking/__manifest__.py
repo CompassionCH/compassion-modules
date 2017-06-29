@@ -30,7 +30,7 @@
 
 {
     'name': 'Compassion Sponsorships Tracking',
-    'version': '9.0.1.0.0',
+    'version': '10.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
@@ -44,6 +44,6 @@
         'data/install.xml',
         ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }
