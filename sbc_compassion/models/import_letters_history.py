@@ -22,8 +22,7 @@ from odoo.exceptions import UserError
 from ..tools import import_letter_functions as func
 from odoo import api, fields, models, _
 
-from odoo.addons.connector.queue.job import job, related_action
-from odoo.addons.connector.session import ConnectorSession
+from odoo.addons.queue_job.job import job, related_action
 
 logger = logging.getLogger(__name__)
 
@@ -168,9 +167,7 @@ class ImportLettersHistory(models.Model):
             if letters_import.data:
                 letters_import.state = 'pending'
                 if self.env.context.get('async_mode', True):
-                    session = ConnectorSession.from_env(self.env)
-                    import_letters_job.delay(
-                        session, self._name, letters_import.id)
+                    letters_import.with_delay()._run_analyze()
                 else:
                     letters_import._run_analyze()
         return True
@@ -219,6 +216,8 @@ class ImportLettersHistory(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    @job(default_channel='root.sbc_compassion')
+    @related_action(action='related_action_s2b_imports')
     def _run_analyze(self):
         """
         Analyze each attachment:
@@ -275,28 +274,3 @@ class ImportLettersHistory(models.Model):
             })
             letters_line.letter_image = self.env['ir.attachment'].create(
                 document_vals[i])
-            # self.import_line_ids += letters_line
-
-
-##############################################################################
-#                            CONNECTOR METHODS                               #
-##############################################################################
-def related_action_imports(session, job):
-    import_model = job.args[0]
-    import_id = job.args[1]
-    action = {
-        'type': 'ir.actions.act_window',
-        'res_model': import_model,
-        'view_type': 'form',
-        'view_mode': 'form',
-        'res_id': import_id,
-    }
-    return action
-
-
-@job(default_channel='root.sbc_compassion')
-@related_action(action=related_action_imports)
-def import_letters_job(session, model_name, import_id):
-    """Job for importing letters."""
-    import_history = session.env[model_name].browse(import_id)
-    import_history._run_analyze()
