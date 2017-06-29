@@ -164,5 +164,5 @@
         </field>
     </record>
 
-    <menuitem id="menu_events_compassion" name="Events" parent="base.menu_sales" sequence="3" action="action_events_compassion"/>
+    <menuitem id="menu_events_compassion" name="Events" parent="sales_team.menu_sales" sequence="3" action="action_events_compassion"/>
 </odoo>

@@ -29,13 +29,15 @@
 
 {
     'name': 'Compassion CH - Events',
-    'version': '9.0.1.0.0',
+    'version': '10.0.1.0.0',
     'category': 'CRM',
     'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['mail', 'base_location', 'sponsorship_compassion', 'project',
-                'hr_timesheet', 'hr_expense', 'hr_holidays'],
+    'depends': [
+        'sponsorship_compassion',
+        'project',
+    ],
     'data': [
         'security/ir.model.access.csv',
         'data/account_analytic_data.xml',
@@ -44,7 +46,6 @@
         'views/contract_origin_view.xml',
         'views/crm_lead_view.xml',
         'views/project_view.xml',
-        'views/hr_timesheet_view.xml',
         'views/account_invoice_line.xml',
         'views/res_partner_view.xml',
         'views/calendar_event_view.xml',
@@ -56,6 +57,6 @@
         'static/src/xml/web_fullcalendar_event.xml',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

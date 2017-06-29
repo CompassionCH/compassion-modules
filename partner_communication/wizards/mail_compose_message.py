@@ -73,14 +73,14 @@ class EmailComposeMessage(models.TransientModel):
         return wizard.get_mail_values(res_ids)
 
     @api.multi
-    def send_mail(self):
+    def send_mail(self, auto_commit=False):
         """ Return to e-mails generated. """
         # Fix bug in v8 Core : update default value of attachment in context
         # otherwise it doesn't set attachments properly
-        context = self.env.context.copy()
-        context['default_attachment_ids'] = [(4, _id) for _id in
-                                             self.attachment_ids.ids]
-        super(EmailComposeMessage, self.with_context(context)).send_mail()
+        # context = self.env.context.copy()
+        # context['default_attachment_ids'] = [(4, _id) for _id in
+        #                                      self.attachment_ids.ids]
+        super(EmailComposeMessage, self).send_mail(auto_commit)
         mail_ids = self.env['mail.mail'].search([
             ('res_id', 'in', self.env.context.get('active_ids', [])),
             ('model', '=', self.env.context.get('active_model'))

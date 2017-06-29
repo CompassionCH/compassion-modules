@@ -187,7 +187,7 @@ class WeeklyDemand(models.Model):
             ).days <= SUB_DURATION)
         )
         sub_reject_average = len(rejected_sub) / STATS_DURATION
-        for week in self.filtered('sub_average'):
+        for week in self:
             start_date = fields.Datetime.from_string(
                 week.week_start_date) - timedelta(days=SUB_DURATION)
             if start_date <= today:

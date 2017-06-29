@@ -17,7 +17,6 @@ from . import account_analytic_line
 from . import account_invoice_line
 from . import res_partner
 from . import calendar_event
-from . import hr_holidays
 from . import demand_planning
 from . import weekly_demand
 from . import weekly_revision
