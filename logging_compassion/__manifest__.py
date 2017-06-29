@@ -30,14 +30,14 @@
 
 {
     'name': "Compassion Logging",
-    'version': '9.0.1.0.0',
+    'version': '10.0.1.0.0',
     'category': 'Audit and Logging',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['base', 'auditlog', 'sbc_compassion'],
+    'depends': ['auditlog', 'sbc_compassion'],
     'data': [
         'data/compassion_auditlog_rules.xml',
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }
