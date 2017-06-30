@@ -26,7 +26,7 @@ class RecurringContract(models.Model):
     ##########################################################################
     sds_state = fields.Selection(
         '_get_sds_states', 'SDS Status', readonly=True,
-        track_visibility='onchange', select=True, copy=False)
+        track_visibility='onchange', index=True, copy=False)
     sds_state_date = fields.Date(
         'SDS state date', readonly=True, copy=False)
     cancel_gifts_on_termination = fields.Boolean(

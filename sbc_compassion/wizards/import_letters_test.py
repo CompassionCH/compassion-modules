@@ -65,7 +65,7 @@ class TestImportLetters(models.TransientModel):
             self.test_import_line_ids += letters_line
 
     @api.multi
-    @api.depends("test_import_line_ids", "test_ok")
+    @api.depends("test_import_line_ids")
     def _set_ready(self):
         """ Check in which state self is by counting the number of elements in
         each Many2many and delete the lines that have been correctly analyzed
@@ -73,7 +73,7 @@ class TestImportLetters(models.TransientModel):
         for import_letters in self:
             if import_letters.nber_test:
                 import_letters.state = 'open'
-                import_letters = func.update_stat_text(import_letters)
+                # import_letters = func.update_stat_text(import_letters)
             else:
                 import_letters.state = 'draft'
 

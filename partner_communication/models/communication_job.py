@@ -46,6 +46,8 @@ class CommunicationJob(models.Model):
         'res.partner', 'Send to', required=True, ondelete='cascade')
     partner_phone = phone_fields.Phone(related='partner_id.phone')
     partner_mobile = phone_fields.Phone(related='partner_id.mobile')
+    country_id = fields.Many2one(related='partner_id.country_id')
+    parent_id = fields.Many2one(related='partner_id.parent_id')
     object_ids = fields.Char('Resource ids', required=True)
 
     date = fields.Datetime(default=fields.Datetime.now)
