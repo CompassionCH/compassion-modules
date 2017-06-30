@@ -100,7 +100,7 @@ class ReportDynamicLabel(models.TransientModel):
         return result
 
     @api.multi
-    def render_html(self, data=None):
+    def render_html(self, docids, data=None):
         """
         Called from the LabelPrintWizard
         Add the active model and active ids in the data to generate a correct
@@ -109,10 +109,9 @@ class ReportDynamicLabel(models.TransientModel):
         :return: html rendered report
         """
         model = data['active_model']
-        ids = data['active_ids']
-        records = self.env[model].browse(ids)
+        records = self.env[model].browse(docids)
         data.update({
-            'docs': self.env[data['doc_model']].browse(data['doc_ids']),
+            'docs': self.env[data['doc_model']].browse(docids),
             'label_data': self.get_data(
                 data['rows'], data['columns'], records, data['number_labels'])
         })

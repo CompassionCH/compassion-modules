@@ -414,7 +414,7 @@ class CommunicationJob(models.Model):
             # is correctly configured.
             report_obj.with_context(
                 print_name=self.env.user.firstname[:3] + ' ' + job.subject
-            ).get_pdf(job, job.report_id.report_name)
+            ).get_pdf(job.ids, job.report_id.report_name)
             # Print attachments
             job.attachment_ids.print_attachments()
             job.partner_id.message_post(
