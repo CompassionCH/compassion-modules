@@ -36,20 +36,6 @@ class LabelPrintWizard(models.TransientModel):
         default=lambda s: s.env.ref('label.herma4')
     )
 
-    @api.model
-    def default_get(self, fields):
-        if self._context is None:
-            self._context = {}
-        result = super(LabelPrintWizard, self).default_get(fields)
-        if self._context.get('label_print'):
-            label_print_obj = self.env['label.print']
-            label_print_data = label_print_obj.browse(
-                self._context.get('label_print'))
-            for field in label_print_data.sudo().field_ids:
-                if field.type == 'barcode':
-                    result['is_barcode'] = True
-        return result
-
     @api.onchange('config_id')
     def _compute_labels_per_page(self):
         """
@@ -80,13 +66,12 @@ class LabelPrintWizard(models.TransientModel):
             self._context.get('label_print'))
 
         data = {
-            'doc_ids': self.ids,
-            'doc_model': self._name,
             'rows': int(no_row_per_page),
             'columns': int(column),
             'number_labels': self.number_of_labels,
             'active_model': self.env.context.get('active_model'),
             'active_ids': self.env.context.get('active_ids'),
+            'doc_ids': self.ids,
             'padding_top': label_print_data.padding_top,
             'padding_bottom': label_print_data.padding_bottom,
             'padding_left': label_print_data.padding_left,

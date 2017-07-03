@@ -25,7 +25,7 @@
                     </group>
                 </sheet>
                 <footer>
-                    <button name="generate" string="Generate Communications" type="object" class="oe_highlight" icon="gtk-apply"/>
+                    <button name="generate" string="Generate Communications" type="object" class="oe_highlight" icon="fa-cog"/>
                 </footer>
             </form>
         </field>

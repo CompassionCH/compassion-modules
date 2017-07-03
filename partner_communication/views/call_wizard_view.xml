@@ -9,7 +9,7 @@
                 </group>
                 <footer>
                     <button name="call_success" string="Log the call" type="object" class="oe_highlight" icon="terp-camera_test"/>
-                    <button name="log_fail" string="Still pending" type="object" icon="terp-gtk-stop"/>
+                    <button name="log_fail" string="Still pending" type="object" icon="fa-ban"/>
                 </footer>
             </form>
         </field>

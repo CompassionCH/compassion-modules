@@ -14,12 +14,9 @@
                             <field name="number_of_labels"/>
                         </group>
                     </group>
-                    <separator colspan="4"/>
-                    <group colspan="4">
-                        <label string="" colspan="2"/>
-                        <button special="cancel" string="Cancel" icon="gtk-cancel"/>
-                        <button name="print_report" string="Print" type="object" icon="gtk-print"/>
-                    </group>
+                    <footer>
+                        <button name="print_report" string="Print" type="object" icon="fa-print"/>
+                    </footer>
                 </form>
             </field>
         </record>

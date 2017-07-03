@@ -67,10 +67,10 @@
                 <field name="user_id"/>
                 <field name="state"/>
                 <field name="sent_date"/>
-                <button name="send" string="Send Now" type="object" icon="terp-mail-" states='pending'/>
-                <button name="call" string="Call" type="object" icon="terp-call-start" states='call,pending'/>
-                <button name="reset" string="Retry" type="object" icon="gtk-redo" states='done,cancel'/>
-                <button name="cancel" string="Cancel" type="object" icon="terp-gtk-stop" states='call,pending'/>
+                <button name="send" string="Send Now" type="object" icon="fa-paper-plane-o" states='pending'/>
+                <button name="call" string="Call" type="object" icon="fa-phone" states='call,pending'/>
+                <button name="reset" string="Retry" type="object" icon="fa-undo" states='done,cancel'/>
+                <button name="cancel" string="Cancel" type="object" icon="fa-ban" states='call,pending'/>
             </tree>
         </field>
     </record>

@@ -108,11 +108,14 @@ class ReportDynamicLabel(models.TransientModel):
         :param data: data collected from the print wizard.
         :return: html rendered report
         """
-        model = data['active_model']
-        records = self.env[model].browse(docids)
+        if docids is None:
+            docids = data['doc_ids']
+        label_print_records = self.env['label.print.wizard'].browse(docids)
         data.update({
-            'docs': self.env[data['doc_model']].browse(docids),
+            'docs': label_print_records,
             'label_data': self.get_data(
-                data['rows'], data['columns'], records, data['number_labels'])
+                data['rows'], data['columns'],
+                self.env[data['active_model']].browse(data['active_ids']),
+                data['number_labels'])
         })
         return self.env['report'].render('label.report_label', data)
