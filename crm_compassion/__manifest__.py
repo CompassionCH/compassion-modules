@@ -35,6 +35,7 @@
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
     'depends': [
+        'base_location',
         'sponsorship_compassion',
         'project',
     ],
