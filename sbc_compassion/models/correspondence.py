@@ -476,8 +476,8 @@ class Correspondence(models.Model):
                 'child_id': letter.child_id.id,
                 'partner_id': letter.correspondant_id.id
             })
-            if letter.sponsorship_id.state != \
-                    'active' or letter.child_id.project_id.hold_s2b_letters:
+            if letter.sponsorship_id.state not in ('active', 'terminated') or\
+                    letter.child_id.project_id.hold_s2b_letters:
                 message.state = 'postponed'
                 if letter.child_id.project_id.hold_s2b_letters:
                     letter.state = 'Exception'
