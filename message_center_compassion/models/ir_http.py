@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 class IrHTTP(models.AbstractModel):
     _inherit = 'ir.http'
 
+    @classmethod
     def _auth_method_oauth2(self):
         if request.httprequest.method == 'GET':
             mode = 'read'
