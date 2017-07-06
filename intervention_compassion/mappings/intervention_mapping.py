@@ -148,8 +148,6 @@ class InterventionMapping(OnrampMapping):
         "DueDate": None,
         "HoldID": None,
         "HoldReason": None,
-
-
     }
 
     CONSTANTS = {
