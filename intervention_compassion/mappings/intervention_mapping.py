@@ -146,6 +146,10 @@ class InterventionMapping(OnrampMapping):
         "InterventionReportingMilestone_ID": None,
         "Intervention_RecordTypeID": None,
         "DueDate": None,
+        "HoldID": None,
+        "HoldReason": None,
+
+
     }
 
     CONSTANTS = {
