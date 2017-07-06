@@ -143,6 +143,11 @@ class InterventionMapping(OnrampMapping):
         "TopThreeAnticipatedExpenses": None,
         "SourceKitName": None,
         "Supporter_GlobalID": None,
+        "InterventionReportingMilestone_ID": None,
+        "Intervention_RecordTypeID": None,
+        "DueDate": None,
+        "HoldID": None,
+        "HoldReason": None,
     }
 
     CONSTANTS = {

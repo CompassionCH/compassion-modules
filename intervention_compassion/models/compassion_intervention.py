@@ -329,12 +329,18 @@ class CompassionIntervention(models.Model):
             vals = intervention_mapping.get_vals_from_connect(idr)
             intervention_id = vals['intervention_id']
 
-            intervention = self.env['compassion.intervention'].search([
+            intervention = self.search([
                 ('intervention_id', '=', intervention_id)
             ])
             if intervention:
                 intervention_local_ids.append(intervention.id)
                 intervention.write(vals)
+                intervention.message_post("The information of this "
+                                          "intervention have been updated",
+                                          subject=(intervention.name +
+                                                   "got an Update"),
+                                          message_type='email',
+                                          subtype='mail.mt_comment')
 
         return intervention_local_ids
 
@@ -445,6 +451,82 @@ class CompassionIntervention(models.Model):
             intervention.hold_cancelled()
 
         return [intervention.id]
+
+    @api.model
+    def intervention_reporting_milestone(self, commkit_data):
+        """This function is automatically executed when a
+                InterventionReportingMilestoneRequestList is received,
+                it send a message to the follower of the Intervention
+                :param commkit_data contains the data of the
+                message (json)
+                :return list of intervention ids which are concerned by the
+                message """
+        intervention_mapping = mapping.new_onramp_mapping(
+            self._name,
+            self.env,
+            'intervention_mapping')
+        # actually commkit_data is a dictionary with a single entry which
+        # value is a list of dictionary (for each record)
+        interventionmilestones = commkit_data[
+            'InterventionReportingMilestoneRequestList']
+        intervention_local_ids = []
+
+        for idr in interventionmilestones:
+            val = intervention_mapping.get_vals_from_connect(idr)
+            intervention_id = val['intervention_id']
+            intervention = self.env['compassion.intervention'].search([
+                ('intervention_id', '=', intervention_id)
+            ])
+
+            if intervention:
+                intervention_local_ids.append(intervention_id)
+                intervention.message_post("An update has been realised for "
+                                          "this intervention",
+                                          subject=(intervention.name +
+                                                   ': New milestone '
+                                                   'received.'),
+                                          message_type='email',
+                                          subtype='mail.mt_comment')
+        return intervention_local_ids
+
+    @api.model
+    def intervention_amendement_commitment(self, commkit_data):
+        """This function is automatically executed when a
+                        InterventionAmendmentCommitmentNotification is
+                        received,
+                        it send a message to the follower of the Intervention,
+                        and update it
+                        :param commkit_data contains the data of the
+                        message (json)
+                        :return list of intervention ids which are concerned
+                        by the message """
+        intervention_mapping = mapping.new_onramp_mapping(
+            self._name,
+            self.env,
+            'intervention_mapping')
+        # actually commkit_data is a dictionary with a single entry which
+        # value is a list of dictionary (for each record)
+        interventionamendment = commkit_data[
+            'InterventionAmendmentCommitmentNotification']
+        intervention_local_ids = []
+
+        v = intervention_mapping.get_vals_from_connect(interventionamendment)
+        intervention_id = v['intervention_id']
+        intervention = self.env['compassion.intervention'].search([
+            ('intervention_id', '=', intervention_id)
+        ])
+
+        if intervention:
+            intervention_local_ids.append(intervention_id)
+            intervention.message_post("This intervention has "
+                                      "been modified",
+                                      subject=(intervention.name +
+                                               ": Amendment received"),
+                                      message_type='email',
+                                      subtype='mail.mt_comment')
+            intervention.get_infos()
+
+        return intervention_local_ids
 
 
 class InterventionDeliverable(models.Model):
