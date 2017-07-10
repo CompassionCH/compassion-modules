@@ -151,6 +151,7 @@ class GmcMessagePool(models.Model):
     @api.multi
     def force_success(self):
         self.write({'state': 'success', 'failure_reason': False})
+        self.mapped('message_ids').unlink()
         return True
 
     @api.multi
@@ -242,6 +243,9 @@ class GmcMessagePool(models.Model):
             raise NotImplementedError
 
         self.write(message_update)
+        if message_update.get('state') == 'success':
+            # Remove thread history
+            self.mapped('message_ids').unlink()
 
         return True
 
