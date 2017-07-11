@@ -1,103 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
-        <!--Compassion field office form view -->
-        <record id="view_compassion_holds_form" model="ir.ui.view">
-            <field name="name">compassion.hold.form</field>
-            <field name="model">compassion.hold</field>
-            <field name="arch" type="xml">
-                <form string="Holds">
-                    <header>
-                        <field name="state" widget="statusbar"/>
-                        <button name="update_hold" type="object" string="Send Hold" states="draft" class="oe_highlight" />
-                        <button name="button_release_hold" type="object" string="Release Hold" states="active" />
-                    </header>
-                    <sheet>
+<odoo>
+    <!--Compassion field office form view -->
+    <record id="view_compassion_holds_form" model="ir.ui.view">
+        <field name="name">compassion.hold.form</field>
+        <field name="model">compassion.hold</field>
+        <field name="arch" type="xml">
+            <form string="Holds">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="update_hold" type="object" string="Send Hold" states="draft" class="oe_highlight" />
+                    <button name="button_release_hold" type="object" string="Release Hold" states="active" />
+                </header>
+                <sheet>
+                    <group>
                         <group>
-                            <group>
-                                <field name="hold_id"/>
-                                <field name="reservation_id" attrs="{'invisible': [('reservation_id', '=', False)]}"/>
-                                <field name="child_id"/>
-                                <field name="primary_owner"/>
-                                <field name="secondary_owner"/>
-                            </group>
-                            <group>
-                                <field name="type"/>
-                                <field name="no_money_extension" attrs="{'invisible': [('type', 'not in', ('No Money Hold', 'Sub Child Hold'))]}"/>
-                                <field name="channel"/>
-                                <field name="source_code"/>
-                                <field name="comments"/>
-                            </group>
-                            <group>
-                                <field name="expiration_date"/>
-                                <field name="ambassador"/>
-                                <!--<field name="yield_rate"/>-->
-                                <!--<field name="no_money_yield_rate"/>-->
-                            </group>
+                            <field name="hold_id"/>
+                            <field name="reservation_id" attrs="{'invisible': [('reservation_id', '=', False)]}"/>
+                            <field name="child_id"/>
+                            <field name="primary_owner"/>
+                            <field name="secondary_owner"/>
                         </group>
-                    </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids"
-                               widget="mail_followers"/>
-                        <field name="message_ids" widget="mail_thread"/>
-                    </div>
-                </form>
-            </field>
-        </record>
-        <record id="view_compassion_holds_tree" model="ir.ui.view">
-            <field name="name">compassion.hold.tree</field>
-            <field name="model">compassion.hold</field>
-            <field name="arch" type="xml">
-                <tree string="Holds"
-                      colors="blue:state == 'draft';black:state == 'active';grey:state == 'expired'">
-                    <field name="hold_id" />
-                    <field name="child_id" />
-                    <field name="type" />
-                    <field name="channel" />
-                    <field name="expiration_date" />
-                    <field name="primary_owner" />
-                    <field name="ambassador" />
-                    <field name="state"/>
-                </tree>
-            </field>
-        </record>
-
-        <!-- Search view -->
-        <record id="view_hold_filter" model="ir.ui.view">
-            <field name="name">compassion.hold.select</field>
-            <field name="model">compassion.hold</field>
-            <field name="arch" type="xml">
-                <search string="Search hold">
-                    <field name="child_id"/>
-                    <field name="hold_id"/>
-                    <field name="primary_owner"/>
-                    <field name="ambassador"/>
-                    <field name="type"/>
-                    <field name="channel"/>
-                    <filter name="not_expired" string="Not Expired" domain="[('state','!=','expired')]"/>
-                    <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
-                    <filter name="active" string="Active" domain="[('state','=','active')]"/>
-                    <filter name="expired" string="Expired" domain="[('state','=','expired')]"/>
-                    <separator/>
-                    <filter name="my_holds" string="My Holds" domain="[('primary_owner', '=', uid)]"/>
-                    <group expand="0" string="Group By...">
-                        <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
-                        <filter string="Channel" domain="[]" context="{'group_by':'channel'}"/>
-                        <filter string="Owner" domain="[]" context="{'group_by':'primary_owner'}"/>
-                        <filter name="ambassador" string="Ambassador" domain="[]" context="{'group_by':'ambassador'}"/>
+                        <group>
+                            <field name="type"/>
+                            <field name="no_money_extension" attrs="{'invisible': [('type', 'not in', ('No Money Hold', 'Sub Child Hold'))]}"/>
+                            <field name="channel"/>
+                            <field name="source_code"/>
+                            <field name="comments"/>
+                        </group>
+                        <group>
+                            <field name="expiration_date"/>
+                            <field name="ambassador"/>
+                            <!--<field name="yield_rate"/>-->
+                            <!--<field name="no_money_yield_rate"/>-->
+                        </group>
                     </group>
-                </search>
-            </field>
-        </record>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"
+                           widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="view_compassion_holds_tree" model="ir.ui.view">
+        <field name="name">compassion.hold.tree</field>
+        <field name="model">compassion.hold</field>
+        <field name="arch" type="xml">
+            <tree string="Holds"
+                  colors="blue:state == 'draft';black:state == 'active';grey:state == 'expired'">
+                <field name="hold_id" />
+                <field name="child_id" />
+                <field name="type" />
+                <field name="channel" />
+                <field name="expiration_date" />
+                <field name="primary_owner" />
+                <field name="ambassador" />
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
 
-        <record id="open_view_holds" model="ir.actions.act_window">
-            <field name="name">Holds Management</field>
-            <field name="res_model">compassion.hold</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_not_expired':1}</field>
-        </record>
+    <!-- Search view -->
+    <record id="view_hold_filter" model="ir.ui.view">
+        <field name="name">compassion.hold.select</field>
+        <field name="model">compassion.hold</field>
+        <field name="arch" type="xml">
+            <search string="Search hold">
+                <field name="child_id"/>
+                <field name="hold_id"/>
+                <field name="primary_owner"/>
+                <field name="ambassador"/>
+                <field name="type"/>
+                <field name="channel"/>
+                <filter name="not_expired" string="Not Expired" domain="[('state','!=','expired')]"/>
+                <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="active" string="Active" domain="[('state','=','active')]"/>
+                <filter name="expired" string="Expired" domain="[('state','=','expired')]"/>
+                <separator/>
+                <filter name="my_holds" string="My Holds" domain="[('primary_owner', '=', uid)]"/>
+                <group expand="0" string="Group By...">
+                    <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+                    <filter string="Channel" domain="[]" context="{'group_by':'channel'}"/>
+                    <filter string="Owner" domain="[]" context="{'group_by':'primary_owner'}"/>
+                    <filter name="ambassador" string="Ambassador" domain="[]" context="{'group_by':'ambassador'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
 
-        <menuitem id="menu_holds" parent="menu_pool_section" name="Holds" action="open_view_holds" sequence="1" />
-    </data>
-</openerp>
+    <record id="open_view_holds" model="ir.actions.act_window">
+        <field name="name">Holds Management</field>
+        <field name="res_model">compassion.hold</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_not_expired':1}</field>
+    </record>
+
+    <!-- Release hold action -->
+    <record id="release_hold_action" model="ir.actions.server">
+        <field name="name">Release Hold</field>
+        <field name="model_id" ref="model_compassion_hold"/>
+        <field name="state">code</field>
+        <field name="code">object.release_hold()</field>
+    </record>
+
+    <record id="release_hold_action_multi" model="ir.values">
+        <field eval="'client_action_multi'" name="key2"/>
+        <field eval="'compassion.hold'" name="model"/>
+        <field name="name">Release Hold</field>
+        <field eval="'ir.actions.server,%d'%release_hold_action"
+               name="value"/>
+    </record>
+
+    <menuitem id="menu_holds" parent="menu_pool_section" name="Holds" action="open_view_holds" sequence="1" />
+</odoo>
