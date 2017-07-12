@@ -43,6 +43,7 @@ class HoldWizard(models.TransientModel):
     @api.multi
     def hold_sent(self, hold_vals):
         """ Called when hold is created """
+        del hold_vals['intervention_id.intervention_id']
         intervention_vals = self.intervention_id.get_vals()
         intervention_vals.update(hold_vals)
         intervention_vals.update({
@@ -55,7 +56,8 @@ class HoldWizard(models.TransientModel):
         intervention = self.env['compassion.intervention'].search([
             ('intervention_id', '=', self.intervention_id.intervention_id)])
         if intervention:
-            intervention.write(intervention_vals)
+            intervention.with_context(hold_update=False).write(
+                intervention_vals)
         else:
             # Grant create access rights to create intervention
             intervention = self.env[
