@@ -17,7 +17,6 @@ from odoo.exceptions import UserError
 
 
 class CompassionReservation(models.Model):
-
     _name = 'compassion.reservation'
     _description = 'Project Reservation'
     _inherit = ['compassion.abstract.hold', 'mail.thread']

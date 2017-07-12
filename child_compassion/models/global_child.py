@@ -130,8 +130,11 @@ class GlobalChild(models.TransientModel):
 
     @api.multi
     def _compute_color(self):
-        for child in self:
+        available = self.filtered(lambda c: c.beneficiary_state == 'Available')
+        for child in available:
             child.color = 6 if child.gender == 'M' else 9
+        for child in self - available:
+            child.color = 5 if child.gender == 'M' else 2
 
     @api.multi
     def _load_image(self, thumb=False, binar=False):
