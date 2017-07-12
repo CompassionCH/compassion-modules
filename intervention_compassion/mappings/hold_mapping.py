@@ -19,8 +19,7 @@ class HoldCreateMapping(OnrampMapping):
     ODOO_MODEL = 'compassion.intervention.hold.wizard'
 
     CONNECT_MAPPING = {
-        "Intervention_ID": ("intervention_id.intervention_id",
-                            "compassion.intervention"),
+        "Intervention_ID": "intervention_id.intervention_id",
         "ExpirationDate": "expiration_date",
         "HoldAmount": "hold_amount",
         "HoldID": "hold_id",
