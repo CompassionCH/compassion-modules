@@ -1,6 +1,8 @@
-[![Build Status](https://travis-ci.org/CompassionCH/compassion-modules.svg?branch=1.5-devel)](https://travis-ci.org/CompassionCH/compassion-modules)
-[![Coverage Status](https://coveralls.io/repos/CompassionCH/compassion-modules/badge.svg)](https://coveralls.io/r/CompassionCH/compassion-modules)
-[![Documentation](https://readthedocs.org/projects/compassion-modules/badge/?version=sbc-devel)](http://compassion-modules.readthedocs.org/en/sbc-devel/#sbc_compassion.tools.import_letter_functions)
+.. image:: https://travis-ci.org/CompassionCH/compassion-modules.svg?branch=10.0
+    :target: https://travis-ci.org/CompassionCH/compassion-modules
+.. image:: https://coveralls.io/repos/github/CompassionCH/compassion-modules/badge.svg?branch=10.0
+:target: https://coveralls.io/github/CompassionCH/compassion-modules?branch=10.0
+
 Compassion modules
 ==================
 
