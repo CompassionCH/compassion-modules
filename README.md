@@ -1,7 +1,5 @@
-.. image:: https://travis-ci.org/CompassionCH/compassion-modules.svg?branch=10.0
-    :target: https://travis-ci.org/CompassionCH/compassion-modules
-.. image:: https://coveralls.io/repos/github/CompassionCH/compassion-modules/badge.svg?branch=10.0
-:target: https://coveralls.io/github/CompassionCH/compassion-modules?branch=10.0
+[![Coverage Status](https://coveralls.io/repos/github/CompassionCH/compassion-modules/badge.svg?branch=10.0)](https://coveralls.io/github/CompassionCH/compassion-modules?branch=10.0)
+[![Build Status](https://travis-ci.org/CompassionCH/compassion-modules.svg?branch=10.0)](https://travis-ci.org/CompassionCH/compassion-modules)
 
 Compassion modules
 ==================
