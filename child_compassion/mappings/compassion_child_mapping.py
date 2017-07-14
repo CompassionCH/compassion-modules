@@ -23,6 +23,7 @@ class GenericChildMapping(OnrampMapping):
         'Age': 'age',
         'BeneficiaryHousehold': ('household_id', 'compassion.household'),
         'BeneficiaryHouseholdList': ('household_id', 'compassion.household'),
+        'BeneficiaryState': 'beneficiary_state',
         'BeneficiaryStatus': 'beneficiary_state',
         'Beneficiary_Gender': 'gender',
         'Beneficiary_GlobalID': 'global_id',
@@ -60,6 +61,9 @@ class GenericChildMapping(OnrampMapping):
         'HoldExpirationDate': 'hold_expiration_date',
         'HoldingGlobalPartner': (
             'holding_global_partner_id.name', 'compassion.global.partner'),
+        'HoldingGlobalPartnerID': (
+            'holding_global_partner_id.country_id.code',
+            'compassion.global.partner'),
         'HouseholdDuty_Name': ('duty_ids.name', 'child.household.duty'),
         'ICPID': ('project_id.icp_id', 'compassion.project'),
         'ICP_ID': ('project_id.icp_id', 'compassion.project'),

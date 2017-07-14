@@ -46,7 +46,6 @@ class ChildHoldWizard(models.TransientModel):
     ##########################################################################
     @api.multi
     def send(self):
-
         holds = self.env['compassion.hold']
         messages = self.env['gmc.message.pool']
         child_search = self.env['compassion.childpool.search'].browse(

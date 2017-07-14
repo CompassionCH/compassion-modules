@@ -7,8 +7,9 @@
         <field name="arch" type="xml">
             <form string="Global Childpool">
                 <header>
-                    <button name="make_a_hold" string="Make a hold" type="object" class="oe_highlight" attrs="{'invisible': [('nb_selected', '=', 0)]}"/>
-
+                    <field name="all_children_available" invisible="1"/>
+                    <button name="make_a_hold" string="Make a hold" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('nb_selected', '=', 0), ('all_children_available', '=', True)]}"/>
+                    <button name="create_reservation" string="Make a reservation" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('nb_selected', '=', 0), ('all_children_available', '=', 'False')]}"/>
                 </header>
                 <sheet>
                     <h1>Today I'm feeling we will sponsor new children!</h1>
@@ -30,30 +31,61 @@
                                 <button name="add_search" string="Add children" type="object" class="oe_highlight"/>
                                 <button name="filter" string="Apply Filter" type="object" attrs="{'invisible': [('nb_selected', '=', 0)]}"/>
                             </div>
-                            <group col="8">
-                                <group>
-                                    <field name="field_office_ids" widget="many2many_tags"/>
-                                    <field name="icp_ids" widget="many2many_tags"/>
-                                    <field name="icp_name"/>
-                                    <field name="child_name"/>
-                                    <field name="gender"/>
-                                </group>
-                                <group>
-                                    <field name="hiv_affected_area"/>
-                                    <field name="is_orphan"/>
-                                    <field name="has_special_needs"/>
-                                </group>
-                                <group>
-                                    <field name="min_age"/>
-                                    <field name="max_age"/>
-                                    <field name="min_days_waiting"/>
-                                </group>
-                                <group>
-                                    <field name="birthday_month"/>
-                                    <field name="birthday_day"/>
-                                    <field name="birthday_year"/>
-                                </group>
-                            </group>
+                            <notebook>
+                                <page String="Common filters">
+                                    <group col="4">
+                                        <group>
+                                            <label for="state_chooser" string="Status selection"/>
+                                            <div>
+                                                <field name="state_chooser"/>
+                                                <button name="add_status" string="Add" type="object" class="oe_link oe_inline"/>
+                                                <button name="reset_status" string="Reset" type="object" class="oe_link oe_inline"/>
+                                                <field name="state_selected"/>
+                                            </div>
+                                            <field name="local_id"/>
+                                        </group>
+                                        <group>
+                                            <field name="field_office_ids" widget="many2many_tags"/>
+                                            <field name="icp_ids" widget="many2many_tags"/>
+                                            <field name="child_name"/>
+                                        </group>
+                                        <group>
+                                            <field name="gender"/>
+                                            <field name="min_age"/>
+                                            <field name="max_age"/>
+                                        </group>
+                                        <group>
+                                            <field name="birthday_month"/>
+                                            <field name="birthday_day"/>
+                                            <field name="birthday_year"/>
+                                        </group>
+                                    </group>
+                                </page>
+                                <page string="Other filters">
+                                    <group col="4">
+                                        <group>
+                                            <field name="holding_gp_ids" widget="many2many_tags"/>
+                                            <field name="min_days_waiting"/>
+                                            <field name="icp_name"/>
+                                        </group>
+                                        <group>
+                                            <field name="is_orphan"/>
+                                            <field name="father_alive"/>
+                                            <field name="mother_alive"/>
+                                        </group>
+                                        <group>
+                                            <field name="hiv_affected_area"/>
+                                            <field name="completion_date_after"/>
+                                            <field name="completion_date_before"/>
+                                        </group>
+                                        <group>
+                                            <field name="has_special_needs"/>
+                                            <field name="chronic_illness"/>
+                                            <field name="physical_disability"/>
+                                        </group>
+                                    </group>
+                                </page>
+                            </notebook>
                         </page>
                     </notebook>
                     <separator string="Search Results"/>
@@ -96,6 +128,7 @@
 
                                                                 <h4><a type="open"><field name="name"/></a></h4>
                                                                 <div>Code: <field name="local_id"/></div>
+                                                                <div>Status: <field name="beneficiary_state"/></div>
                                                                 <div>Age: <field name="age"/></div>
                                                                 <div>Priority: <field name="priority_score"/></div>
                                                                 <div>Waiting since: <field name="unsponsored_since"/></div>
@@ -130,6 +163,7 @@
         </field>
     </record>
 
+    <!-- Child Hold and Reservation Wizard view -->
     <record id="view_compassion_global_child_attributes_form" model="ir.ui.view">
         <field name="name">child.hold.wizard.form</field>
         <field name="model">child.hold.wizard</field>
@@ -156,6 +190,28 @@
         </field>
     </record>
 
+    <record id="view_compassion_child_reservation_wizard_form" model="ir.ui.view">
+        <field name="name">child.reservation.wizard.form</field>
+        <field name="model">child.reservation.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="expiration_date"/>
+                        <field name="primary_owner"/>
+                        <field name="channel"/>
+                        <field name="ambassador" attrs="{'invisible': [('channel', 'not in', ['ambassador', 'event'])], 'required': [('channel', '=', 'ambassador')]}"/>
+                        <field name="secondary_owner" attrs="{'invisible': [('channel', 'in', ['ambassador', 'event'])]}"/>
+                        <field name="comments" help="Will display the comments when child is selected for sponsorship"/>
+                    </group>
+                    <footer>
+                        <button name="send" string="Validate" type="object" class="oe_highlight"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
     <!-- Global Child Form View -->
     <record id="view_compassion_global_child_form" model="ir.ui.view">
         <field name="name">compassion.global.child.form</field>
@@ -168,6 +224,8 @@
                     <h1>
                         <field name="name"/>
                     </h1>
+                    <field name="beneficiary_state"/>
+                    <field name="sponsorship_status"/>
                 </div>
                 <group>
                     <group>
@@ -183,7 +241,6 @@
                         <field name="field_office_id"/>
                     </group>
                     <group>
-                        <field name="beneficiary_state"/>
                         <field name="unsponsored_since"/>
                         <field name="priority_score"/>
                         <field name="correspondent_score"/>
@@ -195,8 +252,8 @@
                         <field name="is_special_needs"/>
                     </group>
                     <group attrs="{'invisible': [('holding_global_partner_id', '=', False)]}">
-                        <field name="sponsorship_status"/>
                         <field name="holding_global_partner_id"/>
+                        <field name="hold_expiration_date"/>
                         <field name="source_code"/>
                     </group>
                 </group>
