@@ -84,7 +84,8 @@ class RecurringContract(models.Model):
         return states
 
     @api.multi
-    @api.depends('partner_id', 'child_id')
+    @api.depends('partner_id', 'partner_id.ref', 'child_id',
+                 'child_id.local_id')
     def _set_name(self):
         """ Gives a friendly name for a sponsorship """
         for contract in self:

@@ -126,7 +126,8 @@ class GenerateCommunicationWizard(models.TransientModel):
             communications += comm
 
         if self.customize_template or not self.model_id:
-            template = model.email_template_id
+            template = model.email_template_id.with_context(
+                lang=self.force_language or self.env.context.lang)
             new_subjects = template.render_template(
                 self.subject, 'partner.communication.job', communications.ids)
             new_texts = template.render_template(
