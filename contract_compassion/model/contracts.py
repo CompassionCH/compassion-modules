@@ -85,7 +85,8 @@ class recurring_contract(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.one
-    @api.depends('partner_id', 'child_id')
+    @api.depends('partner_id', 'partner_id.ref', 'child_id',
+                 'child_id.local_id')
     def _set_name(self):
         """ Gives a friendly name for a sponsorship """
         if self.partner_id.ref or self.reference:
