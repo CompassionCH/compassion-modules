@@ -52,6 +52,7 @@ class HoldWizard(models.TransientModel):
             'primary_owner': self.primary_owner.id,
             'secondary_owner': self.secondary_owner,
             'service_level': self.service_level,
+            'state': 'on_hold',
         })
         intervention = self.env['compassion.intervention'].search([
             ('intervention_id', '=', self.intervention_id.intervention_id)])
