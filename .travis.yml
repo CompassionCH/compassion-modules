@@ -52,8 +52,7 @@ virtualenv:
 install:
   - pip install pyjwt pyquery phonenumbers
   - pip install python-magic wand numpy pdfminer matplotlib pyPdf bs4  # SBC requirements
-  #  See how to prevent too much log when sing opencv in Travis.
-  #    - sh ${HOME}/build/CompassionCH/compassion-modules/sbc_compassion/tools/install_opencv.sh
+  - echo "Installing opencv ..."; sh ${HOME}/build/CompassionCH/compassion-modules/sbc_compassion/tools/install_opencv.sh 1> /dev/null
   - git clone --depth=1 https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
   - travis_install_nightly
