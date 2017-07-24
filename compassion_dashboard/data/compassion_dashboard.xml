@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- add js -->
+        <template id="assets_backend" name="compassion_dashboard assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/compassion_dashboard/static/src/js/compassion_dashboard.js"></script>
+            </xpath>
+        </template>
+    </data>
+</odoo>
