@@ -23,10 +23,10 @@ class Email(models.Model):
     communication_config_id = fields.Many2one('partner.communication.config')
 
     @api.multi
-    def send(self):
+    def send(self, raise_exception=False):
         """ Create communication for partner, if not already existing.
         """
-        super(Email, self).send()
+        super(Email, self).send(raise_exception=raise_exception)
         comm_obj = self.env['partner.communication.job'].with_context(
             no_print=True, default_attachment_ids=False)
         config = self.env.ref(
