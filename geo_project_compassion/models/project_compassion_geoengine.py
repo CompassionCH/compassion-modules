@@ -20,8 +20,6 @@ class CompassionProject(geo_model.GeoModel):
     @api.multi
     def compute_geopoint(self):
         """ Compute geopoints. """
-        # self.filtered(lambda p: not p.gps_latitude or not
-        #               p.gps_longitude).geo_localize()
         for project in self.filtered(lambda p: p.gps_latitude and
                                      p.gps_longitude):
             geo_point = GeoPoint.from_latlon(

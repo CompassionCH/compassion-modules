@@ -1,7 +1,7 @@
     :alt: License: AGPL-3
 
-Advanced Translation
-====================
+Geopoint for compassion's project
+=================================
 
 Use this module to add geo localisation to the project
 
