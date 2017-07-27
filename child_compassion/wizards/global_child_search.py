@@ -99,7 +99,7 @@ class GlobalChildSearch(models.TransientModel):
     nb_selected = fields.Integer(
         'Selected children', compute='_compute_nb_children')
     all_children_available = fields.Boolean(
-        compute='_compute_nb_children', store=True
+        compute='_compute_available'
     )
     global_child_ids = fields.Many2many(
         'compassion.global.child', 'childpool_children_rel',
@@ -121,10 +121,12 @@ class GlobalChildSearch(models.TransientModel):
             self.physical_disability or self.completion_date_after or \
             self.completion_date_before or self.local_id
 
-    @api.depends('global_child_ids')
     def _compute_nb_children(self):
         for search in self:
             search.nb_selected = len(search.global_child_ids)
+
+    def _compute_available(self):
+        for search in self:
             search.all_children_available = len(
                 search.global_child_ids.filtered(
                     lambda c: c.beneficiary_state == 'Available')) == len(
