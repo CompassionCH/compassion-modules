@@ -42,7 +42,11 @@
         <field name="view_mode">tree,form</field>
         <field name="context">{'search_default_pending':1, 'search_default_failure':1, 'group_by': 'action_id'}</field>
         <!-- Add here other message to include -->
+<<<<<<< HEAD
         <field name="domain">[('action_id.model', 'not in', ['res.partner', 'recurring.contract', 'sponsorship.gift', 'correspondence']), ('direction','=','out')]</field>
+=======
+        <field name="domain">[('action_id.model', 'not in', ['res.partner', 'recurring.contract', 'correspondence', 'sponsorship.gift']), ('direction','=','out')]</field>
+>>>>>>> 6e0e94d... [WIP] geoengine for projects and remove the gift message form the other pool in GMC message manager
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 No messages.
