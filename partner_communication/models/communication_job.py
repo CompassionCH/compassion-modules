@@ -395,6 +395,9 @@ class CommunicationJob(models.Model):
                 self.email_template_id, [self.id], email_vals)
             self.email_id = email
             email.send()
+            # Subscribe author to thread, so that the reply
+            # notifies the author.
+            self.message_subscribe(self.user_id.partner_id.ids)
 
         return 'done' if email.state == 'sent' else 'pending'
 
