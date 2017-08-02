@@ -23,16 +23,18 @@ class Email(models.Model):
     communication_config_id = fields.Many2one('partner.communication.config')
 
     @api.multi
-    def send(self, raise_exception=False):
+    def send(self, auto_commit=False, raise_exception=False):
         """ Create communication for partner, if not already existing.
         """
-        super(Email, self).send(raise_exception=raise_exception)
+        super(Email, self).send(
+            auto_commit=auto_commit, raise_exception=raise_exception)
         comm_obj = self.env['partner.communication.job'].with_context(
             no_print=True, default_attachment_ids=False)
         config = self.env.ref(
             'partner_communication.default_communication')
-        for email in self.filtered(lambda e: e.mail_message_id.model !=
-                                   'partner.communication.job'):
+        for email in self.exists().filtered(
+                lambda e: e.mail_message_id.model !=
+                'partner.communication.job'):
             communication = comm_obj.search([('email_id', '=', email.id)])
             if not communication:
                 for partner in email.recipient_ids:
