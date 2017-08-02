@@ -32,7 +32,7 @@ class Email(models.Model):
         config = self.env.ref(
             'partner_communication.default_communication')
         for email in self.filtered(lambda e: e.mail_message_id.model !=
-                'partner.communication.job'):
+                                   'partner.communication.job'):
             communication = comm_obj.search([('email_id', '=', email.id)])
             if not communication:
                 for partner in email.recipient_ids:
