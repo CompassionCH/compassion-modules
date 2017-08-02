@@ -34,13 +34,13 @@
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['crm_phone', 'base_report_to_printer', 'hr', 'contacts'],
+    'depends': ['crm_phone', 'base_report_to_printer', 'hr', 'contacts', 'compassion_dashboard'],
     'external_dependencies': {
         'python': ['phonenumbers']
     },
     'data': [
         'security/ir.model.access.csv',
-        'static/src/xml/partner_communication.xml',
+        'views/partner_communication.xml',
         'views/communication_job_view.xml',
         'views/communication_config_view.xml',
         'views/call_wizard_view.xml',
@@ -48,9 +48,11 @@
         'views/change_text_wizard_view.xml',
         'views/pdf_wizard_view.xml',
         'views/generate_communication_wizard_view.xml',
+        'views/communication_dashboard.xml',
         'data/default_communication.xml'
     ],
+    'qweb': ["static/src/xml/communication_dashboard.xml"],
     'demo': [],
     'installable': True,
-    'auto_install': False,
+    'auto_install': False
 }

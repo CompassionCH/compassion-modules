@@ -3,6 +3,7 @@ odoo.define('compassion_dashboard', function (require) {
 
 var kanban_widgets = require('web_kanban.widgets');
 
+// Code copied from account/static/src/js/account_journal_dashboard_widget.js
 var CompassionDashboardGraph = kanban_widgets.AbstractField.extend({
     start: function() {
         this.graph_type = this.$node.attr('graph_type');

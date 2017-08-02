@@ -16,3 +16,4 @@ from . import res_partner
 from . import email
 from . import crm_phonecall
 from . import ir_attachment
+from . import communication_dashboard

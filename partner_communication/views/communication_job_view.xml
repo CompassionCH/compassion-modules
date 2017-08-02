@@ -110,6 +110,12 @@
         </field>
     </record>
 
+    <record id="action_communication_tree" model="ir.actions.act_window">
+        <field name="name">Communications</field>
+        <field name="res_model">partner.communication.job</field>
+        <field name="view_mode">tree</field>
+    </record>
+
     <record id="action_communication_job" model="ir.actions.act_window">
         <field name="name">Communication Job</field>
         <field name="res_model">partner.communication.job</field>

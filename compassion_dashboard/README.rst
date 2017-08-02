@@ -1,8 +1,8 @@
 .. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
     :alt: License: AGPL-3
 
-Partner Communication
-=====================
+Compassion Dashboard
+====================
 
 This module contains a kanban-widget related to the creation of
 dashboard graphs. It currently support line and bar charts.

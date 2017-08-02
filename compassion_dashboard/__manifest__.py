@@ -34,8 +34,11 @@
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
+    'depends': [
+        'web'
+    ],
     'data': [
-        'data/compassion_dashboard.xml'
+        'data/compassion_dashboard.xml',
     ],
     'demo': [],
     'installable': True,
