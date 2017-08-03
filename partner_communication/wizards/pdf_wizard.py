@@ -30,13 +30,9 @@ class PdfPreviewWizard(models.TransientModel):
     communication_id = fields.Many2one(
         'partner.communication.job', required=True)
     preview = fields.Binary(compute='_compute_pdf')
-    state = fields.Char(compute='_compute_state')
+    state = fields.Char(related='communication_id.send_mode')
+    send_state = fields.Char(related='communication_id.state')
     body_html = fields.Html(compute='_compute_html')
-
-    @api.multi
-    def _compute_state(self):
-        comm = self.communication_id
-        self.state = comm.send_mode
 
     @api.multi
     def _compute_pdf(self):

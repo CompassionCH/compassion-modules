@@ -171,8 +171,8 @@ msgstr "Taux de change"
 #. module: gift_compassion
 #: code:addons/gift_compassion/models/sponsorship_gift.py:114
 #, python-format
-msgid "Family Gift"
-msgstr "Cadeau Famille"
+msgid "Family"
+msgstr "Famille"
 
 #. module: gift_compassion
 #: selection:sponsorship.gift,gender:0
@@ -276,8 +276,8 @@ msgstr "Fréquence du cadeau"
 #. module: gift_compassion
 #: field:gift.threshold.settings,gift_type:0
 #: field:sponsorship.gift,gift_type:0
-msgid "Gift type"
-msgstr "Type de cadeau"
+msgid "Gift for"
+msgstr "Cadeau pour"
 
 #. module: gift_compassion
 #: view:recurring.contract:gift_compassion.view_sponsorship_contract_gift_form
@@ -489,8 +489,8 @@ msgstr "Project"
 #. module: gift_compassion
 #: code:addons/gift_compassion/models/sponsorship_gift.py:113
 #, python-format
-msgid "Project Gift"
-msgstr "Cadeau Centre d'accueil"
+msgid "Project"
+msgstr "Centre d'accueil"
 
 #. module: gift_compassion
 #: selection:sponsorship.gift,undeliverable_reason:0
@@ -528,8 +528,8 @@ msgstr "Parrainage"
 
 #. module: gift_compassion
 #: model:ir.model,name:gift_compassion.model_sponsorship_gift
-msgid "Sponsorship Gift"
-msgstr "Cadeau de parrainage"
+msgid "Sponsorship"
+msgstr "Parrainage"
 
 #. module: gift_compassion
 #: model:ir.actions.act_window,name:gift_compassion.action_sponsorship_gift
