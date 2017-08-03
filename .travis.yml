@@ -31,6 +31,7 @@ addons:
       - libv4l-dev
       - zbar-tools
       - python-zbar
+      - python-numpy
 
 env:
   global:
@@ -51,7 +52,7 @@ virtualenv:
 
 install:
   - pip install pyjwt pyquery phonenumbers
-  - pip install python-magic wand numpy pdfminer matplotlib pyPdf bs4  # SBC requirements
+  - pip install python-magic wand pdfminer matplotlib pyPdf bs4  # SBC requirements
   - echo "Installing opencv ..."; sh ${HOME}/build/CompassionCH/compassion-modules/sbc_compassion/tools/install_opencv.sh 1> /dev/null
   - git clone --depth=1 https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}

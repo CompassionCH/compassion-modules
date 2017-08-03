@@ -102,9 +102,8 @@ class CompassionReservation(models.Model):
                 sync = True
                 break
         if sync:
-            messages = self.filtered(
-                lambda r: r.state == 'active')._handle_reservation()
-            messages.with_context(async_mode=False).process_messages()
+            messages = self.with_context(async_mode=False).filtered(
+                lambda r: r.state == 'active').handle_reservation()
             failed = messages.filtered(lambda m: m.state == 'failure')
             if failed:
                 raise UserError(
@@ -132,17 +131,51 @@ class CompassionReservation(models.Model):
         expired_reservations.write({'state': 'expired'})
         return True
 
+    def handle_reservation(self, cancel=False):
+        messages = self.env['gmc.message.pool']
+        action = False
+        for reservation in self:
+            if reservation.reservation_type == 'child':
+                if cancel:
+                    action = self.env.ref(
+                        'child_compassion.cancel_reservation_child')
+                else:
+                    action = self.env.ref(
+                        'child_compassion.beneficiary_reservation')
+            elif reservation.reservation_type == 'project':
+                if cancel:
+                    action = self.env.ref(
+                        'child_compassion.cancel_reservation')
+                else:
+                    action = self.env.ref(
+                        'child_compassion.create_reservation')
+            messages += messages.create({
+                'action_id': action.id,
+                'object_id': reservation.id,
+                'child_id': reservation.child_id.id,
+            })
+
+        messages.process_messages()
+        return messages
+
+    def reservation_create_answer(self, vals):
+        """ Called when receiving the answer of CreateReservation message. """
+        vals['state'] = 'active'
+        return self.write(vals)
+
+    def reservation_cancel_answer(self, vals):
+        """ Called when receiving the answer of CreateReservation message. """
+        vals['state'] = 'expired'
+        return self.write(vals)
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     @api.multi
     def send_reservation(self):
-        messages = self._handle_reservation()
-        messages.with_context(async_mode=False).process_messages()
+        messages = self.with_context(async_mode=False).handle_reservation()
         for i in range(0, len(messages)):
-            if messages[i].state == 'success':
-                self[i].state = 'active'
-            else:
+            if messages[i].state != 'success':
                 self[i].message_post(
                     messages[i].failure_reason,
                     _("Reservation failed")
@@ -152,13 +185,7 @@ class CompassionReservation(models.Model):
 
     @api.multi
     def cancel_reservation(self):
-        messages = self._handle_reservation(cancel=True)
-        messages.with_context(async_mode=False).process_messages()
-        for i in range(0, len(messages)):
-            if messages[i].state == 'success':
-                self[i].state = 'expired'
-            else:
-                messages[i].unlink()
+        self.with_context(async_mode=False).handle_reservation(cancel=True)
         return True
 
     @api.multi
@@ -188,32 +215,3 @@ class CompassionReservation(models.Model):
             'reservation_hold_duration')
         dt = timedelta(days=days_on_hold)
         self.expiration_date = fields.Date.to_string(expiration + dt)
-
-    ##########################################################################
-    #                             PRIVATE METHODS                            #
-    ##########################################################################
-    def _handle_reservation(self, cancel=False):
-        messages = self.env['gmc.message.pool']
-        action = False
-        for reservation in self:
-            if reservation.reservation_type == 'child':
-                if cancel:
-                    action = self.env.ref(
-                        'child_compassion.cancel_reservation_child')
-                else:
-                    action = self.env.ref(
-                        'child_compassion.beneficiary_reservation')
-            elif reservation.reservation_type == 'project':
-                if cancel:
-                    action = self.env.ref(
-                        'child_compassion.cancel_reservation')
-                else:
-                    action = self.env.ref(
-                        'child_compassion.create_reservation')
-            messages += messages.create({
-                'action_id': action.id,
-                'object_id': reservation.id,
-                'child_id': reservation.child_id.id,
-            })
-
-        return messages

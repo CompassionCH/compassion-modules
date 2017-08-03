@@ -48,7 +48,7 @@ class ChildReservationWizard(models.TransientModel):
             reservation_vals.update(self.get_hold_values())
             reservations += reservation_obj.create(reservation_vals)
 
-        reservations._handle_reservation().process_messages()
+        reservations.handle_reservation()
 
         return {
             'type': 'ir.actions.act_window',
