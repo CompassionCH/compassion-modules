@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -10,8 +10,7 @@
 ##############################################################################
 from collections import OrderedDict
 
-from odoo.addons.message_center_compassion.mappings.base_mapping import \
-    OnrampMapping, new_onramp_mapping
+from .base_mapping import OnrampMapping, new_onramp_mapping
 
 
 class AdvancedQueryMapping(OnrampMapping):

@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016-2017 Compassion CH (http://www.compassion.ch)
@@ -14,6 +14,7 @@ import logging
 from io import BytesIO
 
 from odoo import api, fields, models
+from odoo.tools import safe_eval
 from odoo.addons.queue_job.job import job, related_action
 
 _logger = logging.getLogger(__name__)
@@ -94,12 +95,12 @@ class CorrespondenceS2bGenerator(models.Model):
     def onchange_domain(self):
         if self.selection_domain:
             self.sponsorship_ids = self.env['recurring.contract'].search(
-                eval(self.selection_domain))
+                safe_eval(self.selection_domain))
 
     @api.onchange('month')
     def onchange_month(self):
         if self.month:
-            domain = eval(self.selection_domain)
+            domain = safe_eval(self.selection_domain)
             month_select = ('child_id.birthday_month', '=', self.month)
             index = 0
             for filter in domain:

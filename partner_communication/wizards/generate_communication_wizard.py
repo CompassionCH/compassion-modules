@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -9,6 +9,7 @@
 #
 ##############################################################################
 from odoo import models, api, fields, _
+from odoo.tools import safe_eval
 
 
 class GenerateCommunicationWizard(models.TransientModel):
@@ -63,7 +64,7 @@ class GenerateCommunicationWizard(models.TransientModel):
             self.selection_domain = domain.replace('[, ', '[')
         if self.selection_domain:
             self.partner_ids = self.env['res.partner'].search(
-                eval(self.selection_domain))
+                safe_eval(self.selection_domain))
 
     @api.onchange('model_id')
     def onchange_model_id(self):

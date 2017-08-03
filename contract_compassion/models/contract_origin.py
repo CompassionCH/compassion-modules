@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -107,7 +107,7 @@ class contract_origin(models.Model):
             res = super(contract_origin, self).create(vals)
         except IntegrityError:
             # Find the origin
-            self.env.cr.commit()     # Release the lock
+            self.env.invalidate_all()
             origins = self.search([
                 ('type', '=', vals.get('type')),
                 ('partner_id', '=', vals.get('partner_id')),

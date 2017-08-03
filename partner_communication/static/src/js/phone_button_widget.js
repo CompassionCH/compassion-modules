@@ -20,10 +20,7 @@ odoo.define('partner_communication.phone_widget', function (require) {
                 if (phone_num && !this.options.dial_button_invisible) {
                     click2dial_text = _t('Dial');
                 }
-                this.$el.filter('#click2dial')
-                    .text(click2dial_text)
-                    .attr('href', '#')
-                    .on('click', function(ev) {
+                this.$el.filter('#click2dial').text(click2dial_text).attr('href', '#').on('click', function(ev) {
                         self.do_notify(
                                 _t('Click2dial started'),
                                 _t('Unhook your ringing phone'),
@@ -48,7 +45,7 @@ odoo.define('partner_communication.phone_widget', function (require) {
                                         'phone_number': phone_num,
                                         'communication_id': self.view.datarecord.id,
                                         'timestamp': new Date().getTime(),
-                                        'call_name': self.view.datarecord.config_id[1],
+                                        'call_name': self.view.datarecord.config_id[1]
                                     };
                                     var action = {
                                         name: _t("Log your call"),
@@ -57,7 +54,7 @@ odoo.define('partner_communication.phone_widget', function (require) {
                                         view_mode: 'form',
                                         views: [[false, 'form']],
                                         target: 'new',
-                                        context: context,
+                                        context: context
                                     };
                                     web_client.action_manager.do_action(action);
                                 }
@@ -65,7 +62,7 @@ odoo.define('partner_communication.phone_widget', function (require) {
                         });
                     });
             }
-        },
+        }
     });
 
     if(!core.form_widget_registry.get('phone_communication')) {

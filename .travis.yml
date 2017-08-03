@@ -1,5 +1,4 @@
 language: python
-sudo: false
 cache:
   apt: true
   directories:
@@ -7,6 +6,9 @@ cache:
 
 python:
   - "2.7"
+
+compiler:
+  - gcc
 
 addons:
   apt:
@@ -18,20 +20,8 @@ addons:
       - python-yaml
       - python-cups
     # OpenCV requirements packages
-      - build-essential
-      - cmake
-      - pkg-config
-      - libjpeg-dev
-      - libtiff4-dev
-      - libjasper-dev
-      - libgtk2.0-dev
-      - libavcodec-dev
-      - libavformat-dev
-      - libswscale-dev
-      - libv4l-dev
       - zbar-tools
       - python-zbar
-      - python-numpy
 
 env:
   global:
@@ -43,20 +33,27 @@ env:
 
   matrix:
   - LINT_CHECK="1"
-  - TESTS="1" ODOO_REPO="odoo/odoo" EXCLUDE="sbc_compassion"
+  - TESTS="1" ODOO_REPO="odoo/odoo" EXCLUDE="geo_project_compassion"
 
 
 virtualenv:
   system_site_packages: true
 
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install python-opencv
+  - sudo dpkg -L python-opencv
 
 install:
-  - pip install pyjwt pyquery phonenumbers
-  - pip install python-magic wand pdfminer matplotlib pyPdf bs4  # SBC requirements
-  - echo "Installing opencv ..."; sh ${HOME}/build/CompassionCH/compassion-modules/sbc_compassion/tools/install_opencv.sh 1> /dev/null
+  - pip install -r requirements.txt
   - git clone --depth=1 https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
   - travis_install_nightly
+
+#before_script:
+#  - echo "Installing opencv ..."; sh ${HOME}/build/CompassionCH/compassion-modules/sbc_compassion/tools/install_opencv.sh 1> ~/error.log
+#  - echo "Errors :"
+#  - cat ~/error.log
 
 script:
   - travis/travis_header.sh

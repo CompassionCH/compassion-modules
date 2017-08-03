@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -10,6 +10,7 @@
 ##############################################################################
 
 from odoo import models, fields, api, _
+from odoo.tools import safe_eval
 
 
 class LabelPrint(models.Model):
@@ -35,7 +36,7 @@ class LabelPrint(models.Model):
     barcode_width = fields.Float('Barcode Width (in mm)', default=20)
     barcode_height = fields.Float('Barcode Height (in mm)', default=20)
     is_barcode = fields.Boolean(
-        _('Is Barcode?'), compute='_compute_is_barcode')
+        'Is Barcode?', compute='_compute_is_barcode')
 
     def _compute_is_barcode(self):
         for label in self:
@@ -144,7 +145,7 @@ class IrModelFields(models.Model):
     def name_search(self, name='', args=None, operator='ilike', limit=None):
         data = self.env.context.get('model_list')
         if data:
-            args.append(('model', 'in', eval(data)))
+            args.append(('model', 'in', safe_eval(data)))
         ret_vat = super(IrModelFields, self).name_search(
             name=name, args=args, operator=operator, limit=limit)
         return ret_vat

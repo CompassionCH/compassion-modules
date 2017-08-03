@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2017 Compassion CH (http://www.compassion.ch)
@@ -229,16 +229,7 @@ class GmcMessagePool(models.Model):
                     'failure_reason': traceback.format_exc()})
 
         elif action.direction == 'out':
-            try:
-                self._perform_outgoing_action()
-            except UserError as e:
-                # Put the messages in failure state
-                self.write({
-                    'state': 'failure',
-                    'failure_reason': e.args[1]
-                })
-                self.env.cr.commit()
-                raise
+            self._perform_outgoing_action()
         else:
             raise NotImplementedError
 

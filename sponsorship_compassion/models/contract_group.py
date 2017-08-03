@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
@@ -105,8 +105,8 @@ class ContractGroup(models.Model):
                 logger.info("Birthday Gift Generation: {0}/{1} ".format(
                     str(count), total))
                 self._generate_birthday_gift(gift_wizard, contract)
-                self.env.cr.commit()
-                count += 1
+                with self.env.cr.savepoint():
+                    count += 1
 
             gift_wizard.unlink()
 

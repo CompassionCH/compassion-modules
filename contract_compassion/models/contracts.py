@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2017 Compassion CH (http://www.compassion.ch)
@@ -180,7 +180,8 @@ class RecurringContract(models.Model):
             "   categ_name != 'Sponsor gifts'"
             "   group by contract_id"
             ") due on due.contract_id = c.id "
-            "WHERE c.id in (%s)" % ",".join([str(id) for id in self.ids])
+            "WHERE c.id = ANY (%s)",
+            (self.ids,)
         )
         res = self._cr.dictfetchall()
         dict_contract_id_paidmonth = {
@@ -319,13 +320,15 @@ class RecurringContract(models.Model):
     @api.multi
     def action_cancel_draft(self):
         """ Set back a cancelled contract to draft state. """
-        update_sql = "UPDATE RecurringContract SET state='draft', "\
-            "end_date=NULL, activation_date=NULL, start_date=CURRENT_DATE"
+        update_sql = "UPDATE recurring_contract " \
+            "SET state='draft', end_date=NULL, activation_date=NULL, " \
+            "start_date=CURRENT_DATE"
         for contract in self.filtered(lambda c: c.state == 'cancelled'):
             query = update_sql
             if contract.child_id and not contract.child_id.is_available:
                 query += ', child_id = NULL'
-            self.env.cr.execute(query + " WHERE id = %s", [contract.id])
+            query += " WHERE id = %s"
+            self.env.cr.execute(query, [contract.id])
             contract.delete_workflow()
             contract.create_workflow()
             self.env.invalidate_all()

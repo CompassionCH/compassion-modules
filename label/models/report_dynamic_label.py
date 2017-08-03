@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015-2017 Compassion CH (http://www.compassion.ch)
@@ -10,6 +10,7 @@
 ##############################################################################
 from odoo import api, models
 from odoo.osv.orm import browse_record
+from odoo.tools import safe_eval
 from copy import deepcopy
 from math import ceil
 
@@ -57,7 +58,7 @@ class ReportDynamicLabel(models.TransientModel):
             # loop over each field for one label
             for field in label_print_data.sudo().field_ids:
                 if field.python_expression and field.python_field:
-                    value = eval(field.python_field, {'obj': record})
+                    value = safe_eval(field.python_field, {'obj': record})
 
                 elif field.field_id.name:
                     value = getattr(record, field.field_id.name)
@@ -67,8 +68,8 @@ class ReportDynamicLabel(models.TransientModel):
 
                 if isinstance(value, browse_record):
                     model_obj = self.pool.get(value._name)
-                    value = eval("obj." + model_obj._rec_name,
-                                 {'obj': value})
+                    value = safe_eval(
+                        "obj." + model_obj._rec_name, {'obj': value})
 
                 if not value:
                     value = ''

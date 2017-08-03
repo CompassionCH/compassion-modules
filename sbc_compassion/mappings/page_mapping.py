@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -12,8 +12,8 @@ import logging
 
 from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
-from odoo.addons.sbc_compassion.models.correspondence_page import \
-    BOX_SEPARATOR
+
+from ..models.correspondence_page import BOX_SEPARATOR
 
 _logger = logging.getLogger(__name__)
 
