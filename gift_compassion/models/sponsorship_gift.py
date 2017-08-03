@@ -76,12 +76,14 @@ class SponsorshipGift(models.Model):
     currency_id = fields.Many2one('res.currency', default=lambda s:
                                   s.env.user.company_id.currency_id)
     currency_usd = fields.Many2one('res.currency', compute='_compute_usd')
-    exchange_rate = fields.Float(readonly=True, copy=False)
+    exchange_rate = fields.Float(readonly=True, copy=False, digits=(12, 6))
     amount_us_dollars = fields.Float('Amount due', readonly=True, copy=False)
     instructions = fields.Char()
-    gift_type = fields.Selection('get_gift_type_selection', required=True)
+    gift_type = fields.Selection('get_gift_type_selection', required=True,
+                                 string=_("Gift for"))
     attribution = fields.Selection('get_gift_attributions', required=True)
-    sponsorship_gift_type = fields.Selection('get_sponsorship_gifts')
+    sponsorship_gift_type = fields.Selection('get_sponsorship_gifts',
+                                             string=_("Gift type"))
     state = fields.Selection([
         ('draft', _('Draft')),
         ('verify', _('Verify')),
@@ -109,9 +111,9 @@ class SponsorshipGift(models.Model):
     @api.model
     def get_gift_type_selection(self):
         return [
-            ('Project Gift', _('Project Gift')),
-            ('Family Gift', _('Family Gift')),
-            ('Beneficiary Gift', _('Beneficiary Gift')),
+            ('Project Gift', _('Project')),
+            ('Family Gift', _('Family')),
+            ('Beneficiary Gift', _('Beneficiary')),
         ]
 
     @api.model

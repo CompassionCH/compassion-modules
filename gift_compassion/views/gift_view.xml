@@ -14,13 +14,14 @@
                                          green:state == 'verify';
                                          red:state == 'error';
                                          grey:state == 'fund_delivered'">
+                <field name="gmc_gift_id"/>
                 <field name="create_date"/>
                 <field name="gift_date"/>
                 <field name="partner_id"/>
                 <field name="child_id"/>
                 <field name="gift_type"/>
                 <field name="sponsorship_gift_type"/>
-                <field name="amount"/>
+                <field name="amount" sum="Amount"/>
                 <field name="amount_us_dollars"/>
                 <field name="instructions"/>
                 <field name="date_sent" />
@@ -115,7 +116,7 @@
                 <field name="partner_id"/>
                 <field name="child_id"/>
                 <field name="state"/>
-                <field name="state"/>
+                <field name="gmc_gift_id"/>
 
                 <filter name="not_sent" string="Not sent" domain="[('gmc_gift_id', '=', False)]"/>
                 <filter string="Sent" domain="[('gmc_gift_id', '!=', False)]"/>
