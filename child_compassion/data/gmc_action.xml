@@ -1,5 +1,5 @@
-<openerp>
-    <data noupdate="1">
+<odoo>
+    <data>
         <!-- Hold Message Creation -->
         <record id="create_hold" model="gmc.action">
             <field name="direction">out</field>
@@ -75,6 +75,7 @@
             <field name="connect_answer_wrapper">GlobalPartnerReservationResponseList</field>
             <field name="request_type">POST</field>
             <field name="batch_send">1</field>
+            <field name="success_method">reservation_create_answer</field>
         </record>
         <!-- Reservation Message Creation for Beneficiary -->
         <record id="beneficiary_reservation" model="gmc.action">
@@ -88,6 +89,7 @@
             <field name="connect_answer_wrapper">GlobalPartnerReservationResponseList</field>
             <field name="request_type">POST</field>
             <field name="batch_send">1</field>
+            <field name="success_method">reservation_create_answer</field>
         </record>
         <!-- Reservation Message Release -->
         <record id="cancel_reservation" model="gmc.action">
@@ -101,6 +103,7 @@
             <field name="connect_answer_wrapper">ReservationCancelResponseList</field>
             <field name="request_type">POST</field>
             <field name="batch_send">1</field>
+            <field name="success_method">reservation_cancel_answer</field>
         </record>
         <record id="cancel_reservation_child" model="gmc.action">
             <field name="direction">out</field>
@@ -113,6 +116,7 @@
             <field name="connect_answer_wrapper">ReservationCancelResponseList</field>
             <field name="request_type">POST</field>
             <field name="batch_send">1</field>
+            <field name="success_method">reservation_cancel_answer</field>
         </record>
         <!-- Beneficiary Major Revision -->
         <record id="major_revision" model="gmc.action">
@@ -284,4 +288,4 @@
             <field name="action_id" ref="beneficiary_hold_removal"/>
         </record>
     </data>
-</openerp>
+</odoo>

@@ -38,7 +38,7 @@
         <field name="value">0.15</field>
         </record>
 
-        <record id="qrcode_x_min" model="ir.config_parameter">
+        <record id="bluecorner_x_min" model="ir.config_parameter">
         <field name="key">bluecorner_x_min</field>
         <field name="value">0.7</field>
         </record>

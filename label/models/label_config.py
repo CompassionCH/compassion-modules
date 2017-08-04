@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-from odoo import models, fields, _
+from odoo import models, fields
 
 
 class LabelBrand(models.Model):
@@ -16,9 +16,9 @@ class LabelBrand(models.Model):
     _rec_name = 'brand_name'
     _description = 'Label Brand'
 
-    brand_name = fields.Char(_("Name"), size=64, index=1)
+    brand_name = fields.Char("Name", size=64, index=1)
     label_config_ids = fields.One2many(
-        'label.config', 'label_main_id', _('Label Config'))
+        'label.config', 'label_main_id', 'Label Config')
 
 
 class LabelConfig(models.Model):

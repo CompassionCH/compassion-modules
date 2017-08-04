@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -78,5 +78,5 @@ class InterventionSubCategory(models.Model):
                     self.env.cr.execute("""
                         INSERT INTO compassion_intervention_cat_subcat_rel
                         ("category_id", "subcategory_id")
-                        VALUES ({}, {})
-                        """.format(cat_id, subcategory.id))
+                        VALUES (%s, %s)
+                        """, (cat_id, subcategory.id))

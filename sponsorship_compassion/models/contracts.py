@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
@@ -81,10 +81,11 @@ class SponsorshipContract(models.Model):
         'Partner ref', related='correspondant_id.ref', readonly=True)
     fully_managed = fields.Boolean(
         compute='_is_fully_managed', store=True)
-    birthday_invoice = fields.Float("Annual birthday gift", help=_(
-        "Set the amount to enable automatic invoice creation each year "
+    birthday_invoice = fields.Float(
+        "Annual birthday gift",
+        help="Set the amount to enable automatic invoice creation each year "
         "for a birthday gift. The invoice is set two months before "
-        "child's birthday."), track_visibility='onchange')
+        "child's birthday.", track_visibility='onchange')
     reading_language = fields.Many2one(
         'res.lang.compassion', 'Preferred language', required=False,
         track_visiblity='onchange')
@@ -199,11 +200,13 @@ class SponsorshipContract(models.Model):
 
         super(SponsorshipContract, self).write(vals)
 
-        if updated_correspondents:
-            updated_correspondents._on_correspondant_changed()
+        with self.env.cr.savepoint():
+            if updated_correspondents:
+                updated_correspondents._on_correspondant_changed()
 
-        if 'reading_language' in vals:
-            (self - updated_correspondents)._on_language_changed()
+        with self.env.cr.savepoint():
+            if 'reading_language' in vals:
+                (self - updated_correspondents)._on_language_changed()
 
         return True
 
@@ -381,7 +384,6 @@ class SponsorshipContract(models.Model):
             to_open.env.invalidate_all()
             for i in to_open:
                 i.action_invoice_open()
-                i.env.cr.commit()
 
         # Log a note in the contracts
         for contract in contracts:
@@ -604,21 +606,18 @@ class SponsorshipContract(models.Model):
         for sponsorship in self.filtered(
                 lambda s: s.global_id and s.state not in ('cancelled',
                                                           'terminated')):
-            message = message_obj.create({
-                'action_id': action.id,
-                'child_id': sponsorship.child_id.id,
-                'partner_id': sponsorship.correspondant_id.id,
-                'object_id': sponsorship.id
-            })
-            message.process_messages()
-            if message.state == 'failure':
-                self.env.cr.rollback()
-                failure = message.failure_reason
-                message.unlink()
-                self.env.cr.commit()
-                raise UserError(failure)
-            else:
-                self.env.cr.commit()
+            # Commit at each message processed
+            with self.env.cr.savepoint():
+                message = message_obj.create({
+                    'action_id': action.id,
+                    'child_id': sponsorship.child_id.id,
+                    'partner_id': sponsorship.correspondant_id.id,
+                    'object_id': sponsorship.id
+                })
+                message.process_messages()
+                if message.state == 'failure':
+                    failure = message.failure_reason
+                    raise UserError(failure)
 
     @api.multi
     def _on_change_correspondant(self, correspondant_id):
@@ -659,7 +658,6 @@ class SponsorshipContract(models.Model):
             else:
                 messages[i].unlink()
 
-        self.env.cr.commit()
         return sponsorships.filtered(lambda s: not s.global_id)
 
     @api.multi

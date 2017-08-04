@@ -21,3 +21,4 @@ report-print-send
 server-tools
 connector-telephony
 compassion-accounting https://github.com/CompassionCH/compassion-accounting 10.0
+geospatial https://github.com/CompassionCH/geospatial 10.0-geoengine-partner

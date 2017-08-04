@@ -31,7 +31,8 @@ will be cancelled.
 
 If you want to change sponsorship with a fund donation, you can add
 the following key-value in the System Parameters:
-    - sponsorship_compassion.suspend_product_id : product_id
+
+* sponsorship_compassion.suspend_product_id : product_id
     
 Usage
 =====

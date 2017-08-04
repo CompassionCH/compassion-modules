@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -325,12 +325,12 @@ class CompassionHold(models.Model):
                 'object_id': hold.id
             })
         messages.process_messages()
-        self.env.cr.commit()
-        fail = messages.filtered('failure_reason').mapped('failure_reason')
-        if fail:
-            logger.error("\n".join(fail))
-            # Force hold removal
-            self.hold_released()
+        with self.env.cr.savepoint():
+            fail = messages.filtered('failure_reason').mapped('failure_reason')
+            if fail:
+                logger.error("\n".join(fail))
+                # Force hold removal
+                self.hold_released()
 
         return True
 

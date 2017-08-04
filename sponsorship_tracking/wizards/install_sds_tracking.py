@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -58,15 +58,16 @@ class InstallSdsTracking(models.TransientModel):
                 'sponsorship_tracking', act_id)[1]
 
             wkf_instance_ids = list()
-            con_ids_string = ','.join([str(c) for c in cont_ids])
             cr.execute(
                 "UPDATE wkf_instance SET state='active' "
-                "WHERE wkf_id = {0} and res_id in ({1})".format(
-                    wkf_id, con_ids_string))
+                "WHERE wkf_id = %s and res_id = ANY (%s)",
+                (wkf_id, cont_ids)
+            )
             cr.execute(
                 "SELECT id FROM wkf_instance "
-                "WHERE wkf_id = {0} AND res_id in ({1})".format(
-                    wkf_id, con_ids_string))
+                "WHERE wkf_id = %s AND res_id = ANY (%s)",
+                (wkf_id, cont_ids)
+            )
             res = cr.fetchall()
             if res:
                 for row in res:
@@ -75,8 +76,9 @@ class InstallSdsTracking(models.TransientModel):
             for wkf_instance_id in wkf_instance_ids:
                 cr.execute(
                     "INSERT INTO wkf_workitem(act_id, inst_id, state) "
-                    "VALUES ('{0}', '{1}', 'complete')".format(
-                        wkf_activity_id, wkf_instance_id))
+                    "VALUES (%s, %s, 'complete')",
+                    (wkf_activity_id, wkf_instance_id)
+                )
 
     # Only at module installation
     @api.model
@@ -118,15 +120,15 @@ class InstallSdsTracking(models.TransientModel):
     def _set_sds_state(self, contract_ids, sds_state, sds_change_date,
                        date_delta=0):
         if contract_ids:
-            con_ids = ','.join([str(c) for c in contract_ids])
-            self.env.cr.execute("""
+            self.env.cr.execute(
+                """
                 UPDATE recurring_contract
-                SET sds_state = '{0}',
-                    sds_state_date = {1} + interval '{2} days',
-                    color = {3}
-                WHERE id in ({4})
-            """.format(sds_state, sds_change_date,
-                       date_delta, SDS_COLORS[sds_state], con_ids))
+                SET sds_state = %s, sds_state_date = %s + interval '%s days',
+                    color = %s
+                WHERE id = ANY (%s)""",
+                (sds_state, sds_change_date, date_delta, SDS_COLORS[sds_state],
+                 contract_ids)
+            )
 
     def _get_contract_sub(self):
         """ Rules for setting SUB Status of a contract with child departed:

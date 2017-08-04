@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -205,7 +205,9 @@ class CommunicationJob(models.Model):
         to_print = no_call.filtered(lambda j: j.send_mode == 'physical')
         for job in no_call.filtered(lambda j: j.send_mode in ('both',
                                                               'digital')):
-            state = job._send_mail()
+            # Commit after sending by e-mail
+            with self.env.cr.savepoint():
+                state = job._send_mail()
             if job.send_mode != 'both':
                 job.write({
                     'state': state,
@@ -216,8 +218,6 @@ class CommunicationJob(models.Model):
                 job.send_mode = 'physical'
                 job.refresh_text()
 
-        # Commit after sending by e-mail
-        self.env.cr.commit()
         if to_print:
             to_print.write({
                 'state': 'done',

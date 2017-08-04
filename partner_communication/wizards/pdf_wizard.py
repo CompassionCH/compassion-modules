@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -30,8 +30,8 @@ class PdfPreviewWizard(models.TransientModel):
     communication_id = fields.Many2one(
         'partner.communication.job', required=True)
     preview = fields.Binary(compute='_compute_pdf')
-    state = fields.Char(related='communication_id.send_mode')
-    send_state = fields.Char(related='communication_id.state')
+    state = fields.Selection(related='communication_id.send_mode')
+    send_state = fields.Selection(related='communication_id.state')
     body_html = fields.Html(compute='_compute_html')
 
     @api.multi

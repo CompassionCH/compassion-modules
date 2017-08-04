@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -80,10 +80,10 @@ class SponsorshipGift(models.Model):
     amount_us_dollars = fields.Float('Amount due', readonly=True, copy=False)
     instructions = fields.Char()
     gift_type = fields.Selection('get_gift_type_selection', required=True,
-                                 string=_("Gift for"))
+                                 string="Gift for")
     attribution = fields.Selection('get_gift_attributions', required=True)
     sponsorship_gift_type = fields.Selection('get_sponsorship_gifts',
-                                             string=_("Gift type"))
+                                             string="Gift type")
     state = fields.Selection([
         ('draft', _('Draft')),
         ('verify', _('Verify')),

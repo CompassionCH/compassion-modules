@@ -5,11 +5,11 @@
         <field name="name">compassion.childpool.search.form</field>
         <field name="model">compassion.childpool.search</field>
         <field name="arch" type="xml">
-            <form string="Global Childpool">
+            <form>
                 <header>
                     <field name="all_children_available" invisible="1"/>
-                    <button name="make_a_hold" string="Make a hold" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('nb_selected', '=', 0), ('all_children_available', '=', True)]}"/>
-                    <button name="create_reservation" string="Make a reservation" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('nb_selected', '=', 0), ('all_children_available', '=', 'False')]}"/>
+                    <button name="make_a_hold" string="Make a hold" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('nb_selected', '=', 0), ('all_children_available', '=', False)]}"/>
+                    <button name="create_reservation" string="Make a reservation" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('nb_selected', '=', 0), ('all_children_available', '=', True)]}"/>
                 </header>
                 <sheet>
                     <h1>Today I'm feeling we will sponsor new children!</h1>
