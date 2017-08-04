@@ -229,8 +229,7 @@ class RecurringContract(models.Model):
         """ Activate contract if it is waiting for payment. """
         activate_contracts = self.filtered(lambda c: c.state == 'waiting')
         # Cancel the old invoices if a contract is activated
-        activate_contracts._cancel_old_invoices(
-            invoice.partner_id.id, invoice.date_invoice)
+        activate_contracts._cancel_old_invoices(invoice.date_invoice)
         activate_contracts.signal_workflow('contract_active')
 
     @api.multi
@@ -348,7 +347,7 @@ class RecurringContract(models.Model):
     def _get_filtered_invoice_lines(self, invoice_lines):
         return invoice_lines.filtered(lambda l: l.contract_id.id in self.ids)
 
-    def _cancel_old_invoices(self, partner_id, date_invoice):
+    def _cancel_old_invoices(self, date_invoice):
         """
             Cancel the open invoices of a contract
             which are older than a given date.
@@ -359,7 +358,7 @@ class RecurringContract(models.Model):
         invoice_lines = invoice_line_obj.search([
             ('contract_id', 'in', self.ids),
             ('state', '=', 'open'),
-            ('due_date', '<', date_invoice)])
+            ('invoice_id.date_invoice', '<', date_invoice)])
 
         invoices = invoice_lines.mapped('invoice_id')
 

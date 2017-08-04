@@ -8,6 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+from psycopg2 import sql
 from odoo import api, models, fields
 
 from datetime import timedelta, datetime
@@ -121,13 +122,13 @@ class InstallSdsTracking(models.TransientModel):
                        date_delta=0):
         if contract_ids:
             self.env.cr.execute(
-                """
+                sql.SQL("""
                 UPDATE recurring_contract
-                SET sds_state = %s, sds_state_date = %s + interval '%s days',
+                SET sds_state = %s, sds_state_date = {} + interval '%s days',
                     color = %s
-                WHERE id = ANY (%s)""",
-                (sds_state, sds_change_date, date_delta, SDS_COLORS[sds_state],
-                 contract_ids)
+                WHERE id = ANY (%s)""").format(
+                    sql.Identifier(sds_change_date)),
+                (sds_state, date_delta, SDS_COLORS[sds_state], contract_ids)
             )
 
     def _get_contract_sub(self):
