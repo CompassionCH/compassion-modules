@@ -345,18 +345,21 @@ class CompassionHold(models.Model):
     @api.model
     def check_hold_validity(self):
         """
-        - Update and notify no money hold expiring
-        - Remove expired holds
+        Remove expired holds
         :return: True
         """
-        # Mark old holds as expired and release children if necessary
+        # Mark old holds as expired
         holds = self.search([
             ('expiration_date', '<', fields.Datetime.now()),
             ('state', '=', 'active')
         ])
         holds.write({'state': 'expired'})
-        holds.mapped('child_id').write({'hold_id': False})
-        holds.mapped('child_id').signal_workflow('release')
+
+        # Release children (don't call workflow which sometimes crashes)
+        children = holds.mapped('child_id')
+        children.write({'hold_id': False})
+        children.delete_workflow()
+        children.child_released()
 
         # Remove holds that have no child linked anymore
         holds = self.search([
@@ -365,6 +368,15 @@ class CompassionHold(models.Model):
         ])
         holds.unlink()
 
+        # Remove draft holds
+        holds = self.search([
+            ('state', '=', 'draft')
+        ])
+        holds.unlink()
+        return True
+
+    @api.model
+    def postpone_no_money_cron(self):
         # Search for expiring No Money Hold
         this_week_delay = datetime.now() + timedelta(days=7)
         holds = self.search([
@@ -375,7 +387,6 @@ class CompassionHold(models.Model):
                             HoldType.SUB_CHILD_HOLD.value])
         ])
         holds.postpone_no_money_hold()
-
         return True
 
     @api.model
