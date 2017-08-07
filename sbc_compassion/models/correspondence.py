@@ -12,6 +12,7 @@ import base64
 import logging
 import re
 import uuid
+import threading
 
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError
@@ -158,6 +159,9 @@ class Correspondence(models.Model):
          'unique(kit_identifier)',
          _('The kit id already exists in database.'))
     ]
+    # Lock
+    #######
+    process_lock = threading.Lock()
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -614,33 +618,38 @@ class Correspondence(models.Model):
     @api.model
     def process_commkit(self, commkit_data):
         """ Update or Create the letter with given values. """
-        letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
-        letter_ids = list()
-        process_letters = self
-        for commkit in commkit_data.get('Responses', [commkit_data]):
-            vals = letter_mapping.get_vals_from_connect(commkit)
-            published_state = 'Published to Global Partner'
-            is_published = vals.get('state') == published_state
+        self.process_lock.acquire()
+        try:
+            letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
+            letter_ids = list()
+            process_letters = self
+            for commkit in commkit_data.get('Responses', [commkit_data]):
+                vals = letter_mapping.get_vals_from_connect(commkit)
+                published_state = 'Published to Global Partner'
+                is_published = vals.get('state') == published_state
 
-            # Write/update letter
-            kit_identifier = vals.get('kit_identifier')
-            letter = self.search([('kit_identifier', '=', kit_identifier)])
-            if letter:
-                # Avoid to publish twice a same letter
-                is_published = is_published and letter.state != published_state
-                letter.write(vals)
-            else:
-                if 'id' in vals:
-                    del vals['id']
-                letter = self.with_context(no_comm_kit=True).create(vals)
+                # Write/update letter
+                kit_identifier = vals.get('kit_identifier')
+                letter = self.search([('kit_identifier', '=', kit_identifier)])
+                if letter:
+                    # Avoid to publish twice a same letter
+                    is_published = is_published and \
+                                   letter.state != published_state
+                    if is_published or letter.state != published_state:
+                        letter.write(vals)
+                else:
+                    if 'id' in vals:
+                        del vals['id']
+                    letter = self.with_context(no_comm_kit=True).create(vals)
 
-            if is_published:
-                process_letters += letter
+                if is_published:
+                    process_letters += letter
 
-            letter_ids.append(letter.id)
+                letter_ids.append(letter.id)
 
-        process_letters.process_letter()
-
+            process_letters.process_letter()
+        finally:
+            self.process_lock.release()
         return letter_ids
 
     def on_send_to_connect(self):
