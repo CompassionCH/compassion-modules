@@ -58,3 +58,8 @@ class PdfPreviewWizard(models.TransientModel):
             self.body_html = body_html
 
         self.body_html = comm.body_html
+
+    @api.multi
+    def send(self):
+        return self.communication_id.send()
+
