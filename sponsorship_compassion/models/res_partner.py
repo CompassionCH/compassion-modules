@@ -39,8 +39,8 @@ class ResPartner(models.Model):
         string='Other contracts')
     unrec_items = fields.Integer(compute='_set_count_items')
     receivable_items = fields.Integer(compute='_set_count_items')
-    has_sponsorships = fields.Boolean(default=0)
-    number_sponsorships = fields.Integer(default=0)
+    has_sponsorships = fields.Boolean()
+    number_sponsorships = fields.Integer()
     send_original = fields.Boolean(
         help='Indicates that we request the original letters for this sponsor'
     )
@@ -248,10 +248,3 @@ class ResPartner(models.Model):
                     'partner_id': partner.id,
                 }
                 message_obj.create(message_vals)
-
-    def update_church_sponsorships_number(self, inc):
-        church = self.search([('members_ids', '=', self.id)])
-        if inc and church:
-            church.number_sponsorships += 1
-        else:
-            church.number_sponsorships -= 1

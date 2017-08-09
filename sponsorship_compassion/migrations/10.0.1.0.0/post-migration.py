@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2017 Compassion CH (http://www.compassion.ch)
@@ -18,8 +18,12 @@ def migrate(env, version):
 
     cr = env.cr
     cr.execute("""
-        UPDATE res.partner p
+        UPDATE res_partner p
         SET number_sponsorships = (SELECT count(*)
-                                   FROM recurring.contract c
-                                   WHERE c.partner_id = p.id)
+                                   FROM recurring_contract c
+                                   WHERE (c.partner_id = p.id
+                                         OR c.correspondant_id = p.id)
+                                         AND c.child_id IS NOT NULL
+                                         AND c.state = 'active'
+                                         )
     """)
