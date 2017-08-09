@@ -34,7 +34,8 @@
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
-    'depends': ['crm_phone', 'base_report_to_printer', 'hr', 'contacts', 'compassion_dashboard'],
+    'depends': ['crm_phone', 'base_report_to_printer', 'hr', 'contacts',
+                'compassion_dashboard'],
     'external_dependencies': {
         'python': ['phonenumbers']
     },
