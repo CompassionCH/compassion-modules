@@ -39,10 +39,8 @@ class ResPartner(models.Model):
         string='Other contracts')
     unrec_items = fields.Integer(compute='_set_count_items')
     receivable_items = fields.Integer(compute='_set_count_items')
-    has_sponsorships = fields.Boolean(
-        compute='_compute_has_sponsorships', store=True)
-    number_sponsorships = fields.Integer(
-        compute='_compute_has_sponsorships', store=True)
+    has_sponsorships = fields.Boolean(default=0)
+    number_sponsorships = fields.Integer(default=0)
     send_original = fields.Boolean(
         help='Indicates that we request the original letters for this sponsor'
     )
@@ -54,30 +52,6 @@ class ResPartner(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.multi
-    @api.depends('category_id')
-    def _compute_has_sponsorships(self):
-        """
-        A partner is sponsor if he is correspondent of at least one
-        sponsorship.
-        """
-        for partner in self:
-            partner.has_sponsorships = self.env[
-                'recurring.contract'].search_count([
-                    '|',
-                    ('partner_id', '=', partner.id),
-                    ('correspondant_id', '=', partner.id),
-                    ('type', 'like', 'S')
-                ])
-            partner.number_sponsorships = self.env[
-                'recurring.contract'].search_count([
-                    '|',
-                    ('partner_id', '=', partner.id),
-                    ('correspondant_id', '=', partner.id),
-                    ('type', 'like', 'S'),
-                    ('state', 'in', ('waiting', 'mandate', 'active')),
-                ])
-
     @api.multi
     def _get_related_contracts(self):
         """ Returns the contracts of the sponsor of given type
@@ -274,3 +248,10 @@ class ResPartner(models.Model):
                     'partner_id': partner.id,
                 }
                 message_obj.create(message_vals)
+
+    def update_church_sponsorships_number(self, inc):
+        church = self.search([('members_ids', '=', self.id)])
+        if inc and church:
+            church.number_sponsorships += 1
+        else:
+            church.number_sponsorships -= 1

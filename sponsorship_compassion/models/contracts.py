@@ -537,8 +537,9 @@ class SponsorshipContract(models.Model):
 
         # Update sponsorships on partner
         partners = self.mapped('partner_id') | self.mapped('correspondant_id')
-        partners._compute_has_sponsorships()
-
+        partners.number_sponsorships += 1
+        partners.has_sponsorships = partners.number_sponsorships
+        partners.update_church_sponsorships_number(True)
         return True
 
     @api.multi
@@ -748,7 +749,9 @@ class SponsorshipContract(models.Model):
 
         # Update sponsorships on partner
         partners = self.mapped('partner_id') | self.mapped('correspondant_id')
-        partners._compute_has_sponsorships()
+        partners.number_sponsorships -= 1
+        partners.has_sponsorships = partners.number_sponsorships
+        partners.update_church_sponsorships_number(False)
 
     @api.multi
     def _on_change_child_id(self, vals):
