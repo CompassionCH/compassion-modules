@@ -633,8 +633,8 @@ class Correspondence(models.Model):
                 letter = self.search([('kit_identifier', '=', kit_identifier)])
                 if letter:
                     # Avoid to publish twice a same letter
-                    is_published = is_published and \
-                                   letter.state != published_state
+                    is_published = is_published and letter.state != \
+                        published_state
                     if is_published or letter.state != published_state:
                         letter.write(vals)
                 else:

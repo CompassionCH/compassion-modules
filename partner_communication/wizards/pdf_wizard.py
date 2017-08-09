@@ -62,4 +62,3 @@ class PdfPreviewWizard(models.TransientModel):
     @api.multi
     def send(self):
         return self.communication_id.send()
-
