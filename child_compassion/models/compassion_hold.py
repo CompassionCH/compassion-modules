@@ -137,7 +137,7 @@ class CompassionHold(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    hold_id = fields.Char(readonly=True)
+    hold_id = fields.Char(readonly=True, track_visibility='onchange')
     child_id = fields.Many2one(
         'compassion.child', 'Child on hold', readonly=True
     )
@@ -211,6 +211,10 @@ class CompassionHold(models.Model):
             }
             messages += message_obj.create(message_vals)
         messages.process_messages()
+        failed = messages.filtered(lambda m: m.state == 'failure')
+        if failed:
+            self.env.cr.rollback()
+            raise Warning('\n\n'.join(failed.mapped('failure_reason')))
 
     @api.multi
     def hold_sent(self, vals):
@@ -435,32 +439,35 @@ class CompassionHold(models.Model):
             "date.{additional_text}"
         )
         for hold in self.filtered(lambda h: h.no_money_extension < 3):
-            hold_extension = first_extension if not hold.no_money_extension \
-                else second_extension
+            hold_extension = first_extension \
+                if not hold.no_money_extension else second_extension
             new_hold_date = fields.Datetime.from_string(
                 hold.expiration_date) + timedelta(days=hold_extension)
             extension = hold.no_money_extension < 2
-            subject = "No money hold extension" if extension else "No money " \
-                "hold expiration"
-            body = body_extension if extension else body_expiration
-            values = {
-                'local_id': hold.child_id.local_id,
-                'old_expiration': hold.expiration_date,
-                'new_expiration': new_hold_date.strftime("%d %B %Y"),
-                'additional_text': additional_text or '',
-            }
-            hold.message_post(
-                body=body.format(**values),
-                subject=subject,
-                partner_ids=hold.primary_owner.partner_id.ids,
-                type='comment',
-                subtype='mail.mt_comment',
-                content_subtype='plaintext'
-            )
             hold_vals = {
                 'no_money_extension': hold.no_money_extension + 1,
             }
             if extension:
                 hold_vals['expiration_date'] = fields.Datetime.to_string(
                     new_hold_date)
+            old_date = hold.expiration_date
             hold.write(hold_vals)
+            with self.env.cr.savepoint():
+                # Notify hold owner
+                subject = "No money hold extension" if extension else \
+                    "No money hold expiration"
+                body = body_extension if extension else body_expiration
+                values = {
+                    'local_id': hold.child_id.local_id,
+                    'old_expiration': old_date,
+                    'new_expiration': new_hold_date.strftime("%d %B %Y"),
+                    'additional_text': additional_text or '',
+                }
+                hold.message_post(
+                    body=body.format(**values),
+                    subject=subject,
+                    partner_ids=hold.primary_owner.partner_id.ids,
+                    type='comment',
+                    subtype='mail.mt_comment',
+                    content_subtype='plaintext'
+                )
