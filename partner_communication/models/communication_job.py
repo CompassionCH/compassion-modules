@@ -378,14 +378,13 @@ class CommunicationJob(models.Model):
         :param kwargs: arguments
         :return: mail_message record
         """
-        message_id = super(CommunicationJob, self).message_post(**kwargs)
-        message = self.env['mail.message'].browse(message_id)
+        message = super(CommunicationJob, self).message_post(**kwargs)
         if not message.author_id.user_ids:
             message.write({
                 'model': 'res.partner',
                 'res_id': self.partner_id.id
             })
-        return message_id
+        return message
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
