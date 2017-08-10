@@ -132,6 +132,8 @@ class CompassionChild(models.Model):
         ('Hospitality / Hotel / Tourism', 'Hospitality, hotel and tourism'),
         ('Income-Generating Program at Project',
          'Income-generating program at project'),
+        ('Industrial / Manufacturing / Fabrication',
+         'Industrial / Manufacturing / Fabrication'),
         ('Manufacturing/ Fabrication', 'Manufacturing / Fabrication'),
         ('Medical/ Health Services', 'Medical / Health services'),
         ('Not Enrolled', 'Not enrolled'),
