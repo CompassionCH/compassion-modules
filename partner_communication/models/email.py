@@ -30,7 +30,9 @@ class Email(models.Model):
             no_print=True, default_attachment_ids=False)
         config = self.env.ref(
             'partner_communication.default_communication')
-        for email in self.filtered(lambda e: not e.auto_delete):
+        for email in self.exists().filtered(
+                lambda e: e.mail_message_id.model !=
+                'partner.communication.job'):
             communication = comm_obj.search([('email_id', '=', email.id)])
             if not communication:
                 for partner in email.recipient_ids:

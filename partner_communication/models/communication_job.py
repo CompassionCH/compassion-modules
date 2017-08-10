@@ -369,6 +369,23 @@ class CommunicationJob(models.Model):
             'target': 'new',
         }
 
+    @api.multi
+    def message_post(self, **kwargs):
+        """
+        If message is not from a user, it is probably the answer of the
+        partner by e-mail. We post it on the partner thread instead of
+        the communication thread
+        :param kwargs: arguments
+        :return: mail_message record
+        """
+        message = super(CommunicationJob, self).message_post(**kwargs)
+        if not message.author_id.user_ids:
+            message.write({
+                'model': 'res.partner',
+                'res_id': self.partner_id.id
+            })
+        return message
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
@@ -403,6 +420,9 @@ class CommunicationJob(models.Model):
                 self.email_template_id, [self.id], email_vals)
             self.email_id = email
             email.send()
+            # Subscribe author to thread, so that the reply
+            # notifies the author.
+            self.message_subscribe(self.user_id.partner_id.ids)
 
         return 'done' if email.state == 'sent' else 'pending'
 

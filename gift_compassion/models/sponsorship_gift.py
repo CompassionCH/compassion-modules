@@ -95,6 +95,8 @@ class SponsorshipGift(models.Model):
     undeliverable_reason = fields.Selection([
         ('Project Transitioned', 'Project Transitioned'),
         ('Beneficiary Exited', 'Beneficiary Exited'),
+        ('Beneficiary Exited/Whereabouts Unknown',
+         'Beneficiary Exited/Whereabouts Unknown'),
         ('Beneficiary Exited More Than 90 Days Ago',
          'Beneficiary Exited More Than 90 Days Ago'),
     ], readonly=True, copy=False)

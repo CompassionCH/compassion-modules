@@ -30,6 +30,7 @@ class EndContractWizard(models.TransientModel):
     @api.multi
     def end_contract(self):
         self.ensure_one()
+        super(EndContractWizard, self).end_contract()
         child = self.child_id
 
         if self.keep_child_on_hold:
@@ -52,4 +53,4 @@ class EndContractWizard(models.TransientModel):
 
         child.signal_workflow('release')
 
-        return super(EndContractWizard, self).end_contract()
+        return True

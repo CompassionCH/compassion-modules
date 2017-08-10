@@ -65,8 +65,7 @@ def _decode(filename):
     scanner.parse_config('enable')
 
     # obtain image data
-    img = cv2.imread(filename)
-    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    img = cv2.imread(filename, 0)
 
     qrcode = _scan(img, scanner=scanner)
     if not qrcode:

@@ -17,6 +17,16 @@
             <field name="model" eval="'compassion.hold'"/>
             <field name="args" eval="()"/>
         </record>
+        <record id="no_money_cron" model="ir.cron">
+            <field name="name">Postpone No Money Holds</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="function" eval="'postpone_no_money_cron'" />
+            <field name="model" eval="'compassion.hold'"/>
+            <field name="args" eval="()"/>
+        </record>
     </data>
     <data>
         <record id="project_reservation_cron" model="ir.cron">
