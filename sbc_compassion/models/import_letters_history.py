@@ -93,50 +93,51 @@ class ImportLettersHistory(models.Model):
             else:
                 import_letters.state = "draft"
 
-    @api.onchange("data")
+    @api.depends("data")
     def _count_nber_letters(self):
         """
         Counts the number of scans. If a zip file is given, the number of
         scans inside is counted.
         """
-        if self.state in ("open", "pending", "ready"):
-            self.nber_letters = len(self.import_line_ids)
-        elif self.state == "done":
-            self.nber_letters = len(self.letters_ids)
-        elif self.state is False or self.state == "draft":
-            # counter
-            tmp = 0
-            # loop over all the attachments
-            for attachment in self.data:
-                # pdf or tiff case
-                if func.check_file(attachment.name) == 1:
-                    tmp += 1
-                # zip case
-                elif func.isZIP(attachment.name):
-                    # create a tempfile and read it
-                    zip_file = BytesIO(base64.b64decode(
-                        attachment.with_context(bin_size=False).datas))
-                    # catch ALL the exceptions that can be raised
-                    # by class zipfile
-                    try:
-                        zip_ = zipfile.ZipFile(zip_file, 'r')
-                        list_file = zip_.namelist()
-                        # loop over all files in zip
-                        for tmp_file in list_file:
-                            tmp += (func.check_file(tmp_file) == 1)
-                    except zipfile.BadZipfile:
-                        raise UserError(
-                            _('Zip file corrupted (' +
-                              attachment.name + ')'))
-                    except zipfile.LargeZipFile:
-                        raise UserError(
-                            _('Zip64 is not supported(' +
-                              attachment.name + ')'))
+        for letter in self:
+            if letter.state in ("open", "pending", "ready"):
+                letter.nber_letters = len(letter.import_line_ids)
+            elif letter.state == "done":
+                letter.nber_letters = len(letter.letters_ids)
+            elif letter.state is False or letter.state == "draft":
+                # counter
+                tmp = 0
+                # loop over all the attachments
+                for attachment in letter.data:
+                    # pdf or tiff case
+                    if func.check_file(attachment.name) == 1:
+                        tmp += 1
+                    # zip case
+                    elif func.isZIP(attachment.name):
+                        # create a tempfile and read it
+                        zip_file = BytesIO(base64.b64decode(
+                            attachment.with_context(bin_size=False).datas))
+                        # catch ALL the exceptions that can be raised
+                        # by class zipfile
+                        try:
+                            zip_ = zipfile.ZipFile(zip_file, 'r')
+                            list_file = zip_.namelist()
+                            # loop over all files in zip
+                            for tmp_file in list_file:
+                                tmp += (func.check_file(tmp_file) == 1)
+                        except zipfile.BadZipfile:
+                            raise UserError(
+                                _('Zip file corrupted (' +
+                                  attachment.name + ')'))
+                        except zipfile.LargeZipFile:
+                            raise UserError(
+                                _('Zip64 is not supported(' +
+                                  attachment.name + ')'))
 
-            self.nber_letters = tmp
-        else:
-            raise UserError(
-                _("State: '{}' not implemented".format(self.state)))
+                letter.nber_letters = tmp
+            else:
+                raise UserError(
+                    _("State: '{}' not implemented".format(letter.state)))
 
     ##########################################################################
     #                              ORM METHODS                               #
