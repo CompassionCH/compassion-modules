@@ -116,7 +116,8 @@ class PartnerCommunication(models.Model):
                     job.success_story_id = story
 
             if sentences and 'object.success_sentence' in \
-                    job.email_template_id.body_html:
+                    job.with_context(
+                        lang=job.partner_id.lang).email_template_id.body_html:
                 if len(sentences) == 1:
                     job.success_sentence_id = sentences
                 else:
