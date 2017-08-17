@@ -88,6 +88,7 @@ class SponsorshipGift(models.Model):
         ('draft', _('Draft')),
         ('verify', _('Verify')),
         ('open', _('Pending')),
+        ('suspended', _('Suspended')),
         ('In Progress', _('In Progress')),
         ('Delivered', _('Delivered')),
         ('Undeliverable', _('Undeliverable')),
@@ -513,6 +514,16 @@ class SponsorshipGift(models.Model):
     def action_verify(self):
         self.write({'state': 'verify'})
         self.mapped('message_id').write({'state': 'postponed'})
+        return True
+
+    @api.multi
+    def action_in_progress(self):
+        self.write({'state': 'In Progress'})
+        return True
+
+    @api.multi
+    def action_suspended(self):
+        self.write({'state': 'suspended'})
         return True
 
     @api.multi

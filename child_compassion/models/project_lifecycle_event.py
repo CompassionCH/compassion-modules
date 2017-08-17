@@ -112,7 +112,7 @@ class ProjectLifecycle(models.Model):
         if event.type == 'Reactivation':
             if fund_suspended:
                 project.reactivate_project()
-            if hold_gifts and not event.hold_gifts():
+            if hold_gifts and not event.hold_gifts:
                 project.reactivate_gifts()
             if hold_letters and not event.hold_s2b_letters:
                 project.reactivate_letters()

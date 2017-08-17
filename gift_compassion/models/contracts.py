@@ -8,6 +8,8 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+import datetime
+import calendar
 
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
@@ -77,7 +79,27 @@ class SponsorshipContract(models.Model):
         }
 
     def hold_gifts(self):
-        """ Postpone open gifts. """
+        for contract in self:
+            today = datetime.date.today()
+            first_day = today.replace(day=1)
+            last_day = today.replace(day=calendar.monthrange(today.year,
+                                                             today.month)[1])
+            suspended_gifts = self.env['sponsorship.gift'].search([
+                '&',
+                ('child_id.project_id', '=', contract.project_id.id),
+                ('create_date', '>=', str(first_day)),
+                ('create_date', '<=', str(last_day)),
+                '|',
+                ('state', '=', 'open'),
+                ('state', '=', 'In Progress'),
+            ])
+            suspended_gifts.action_suspended()
+
+            related_move = suspended_gifts.mapped('payment_id')
+            related_move.button_cancel()
+            related_move.unlink()
+
+        # Postpone open gifts.
         pending_gifts = self.env['sponsorship.gift'].search([
             ('sponsorship_id', 'in', self.ids),
             ('gmc_gift_id', '=', False)
@@ -85,7 +107,15 @@ class SponsorshipContract(models.Model):
         pending_gifts.action_verify()
 
     def reactivate_gifts(self):
-        """ Put again gifts in OK state. """
+        for contract in self:
+            suspended_gifts = self.env['sponsorship.gift'].search([
+                ('child_id.project_id', '=', contract.project_id.id),
+                ('state', '=', 'suspended')
+            ])
+            suspended_gifts.action_in_progress()
+            suspended_gifts.action_send()
+
+        # Put again gifts in OK state.
         pending_gifts = self.env['sponsorship.gift'].search([
             ('sponsorship_id', 'in', self.ids),
             ('state', '=', 'verify')
