@@ -15,11 +15,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class test_webservice(common.TransactionCase):
+class TestWebservice(common.TransactionCase):
     """ Test Project Webservices """
 
     def setUp(self):
-        super(test_webservice, self).setUp()
+        super(TestWebservice, self).setUp()
         self.project_id = self._create_project("TZ112", "Project 1")
         self.child_id = self._create_child("TZ1120316", "Child 1")
 

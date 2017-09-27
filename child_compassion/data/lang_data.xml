@@ -197,10 +197,5 @@
             <field name="name">Zapoteco</field>
             <field name="code_iso">zap</field>
         </record>
-
-        <record id="lang_compassion_karen" model="res.lang.compassion">
-            <field name="name">Karen</field>
-            <field name="code_iso">kar</field>
-        </record>
     </data>
 </openerp>
