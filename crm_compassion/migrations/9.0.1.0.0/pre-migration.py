@@ -20,10 +20,9 @@ def migrate(cr, version):
 
     # Delete analytic views
     cr.execute("""
-    DELETE FROM account_analytic_account WHERE type = 'view';
-    DELETE FROM account_analytic_account WHERE name in ('Stand',
-    'Presentation', 'Events', 'Meeting', 'Partners', 'Sport', 'Concert',
-    'Tour', 'Campaign');
+    DELETE FROM account_analytic_account WHERE openupgrade_legacy_9_0_type = 'view';
+    DELETE FROM account_analytic_account WHERE name in (
+        'Presentation', 'Concert', 'Tour');
     UPDATE account_analytic_account SET code = event_type
     WHERE event_type != '';
     UPDATE account_analytic_account SET code = NULL WHERE event_type = '';
