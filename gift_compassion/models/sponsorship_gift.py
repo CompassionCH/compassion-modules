@@ -519,11 +519,13 @@ class SponsorshipGift(models.Model):
     @api.multi
     def action_in_progress(self):
         self.write({'state': 'In Progress'})
+        self.mapped('payment_id').post()
         return True
 
     @api.multi
     def action_suspended(self):
         self.write({'state': 'suspended'})
+        self.mapped('payment_id').button_cancel()
         return True
 
     @api.multi

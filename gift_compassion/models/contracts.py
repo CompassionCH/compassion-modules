@@ -85,21 +85,14 @@ class SponsorshipContract(models.Model):
             last_day = today.replace(day=calendar.monthrange(today.year,
                                                              today.month)[1])
             suspended_gifts = self.env['sponsorship.gift'].search([
-                '&',
                 ('child_id.project_id', '=', contract.project_id.id),
-                ('create_date', '>=', str(first_day)),
-                ('create_date', '<=', str(last_day)),
-                '|',
-                ('state', '=', 'open'),
+                ('create_date', '>=', fields.Datetime.to_string(first_day)),
+                ('create_date', '<=', fields.Datetime.to_string(last_day)),
                 ('state', '=', 'In Progress'),
             ])
             suspended_gifts.action_suspended()
 
-            related_move = suspended_gifts.mapped('payment_id')
-            related_move.button_cancel()
-            related_move.unlink()
-
-        # Postpone open gifts.
+        # Postpone open gifts (not received by GMC).
         pending_gifts = self.env['sponsorship.gift'].search([
             ('sponsorship_id', 'in', self.ids),
             ('gmc_gift_id', '=', False)
@@ -113,7 +106,6 @@ class SponsorshipContract(models.Model):
                 ('state', '=', 'suspended')
             ])
             suspended_gifts.action_in_progress()
-            suspended_gifts.action_send()
 
         # Put again gifts in OK state.
         pending_gifts = self.env['sponsorship.gift'].search([
