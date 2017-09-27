@@ -8,6 +8,8 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
+import datetime
+import calendar
 
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
@@ -77,7 +79,20 @@ class SponsorshipContract(models.Model):
         }
 
     def hold_gifts(self):
-        """ Postpone open gifts. """
+        for contract in self:
+            today = datetime.date.today()
+            first_day = today.replace(day=1)
+            last_day = today.replace(day=calendar.monthrange(today.year,
+                                                             today.month)[1])
+            suspended_gifts = self.env['sponsorship.gift'].search([
+                ('child_id.project_id', '=', contract.project_id.id),
+                ('create_date', '>=', fields.Datetime.to_string(first_day)),
+                ('create_date', '<=', fields.Datetime.to_string(last_day)),
+                ('state', '=', 'In Progress'),
+            ])
+            suspended_gifts.action_suspended()
+
+        # Postpone open gifts (not received by GMC).
         pending_gifts = self.env['sponsorship.gift'].search([
             ('sponsorship_id', 'in', self.ids),
             ('gmc_gift_id', '=', False)
@@ -85,7 +100,14 @@ class SponsorshipContract(models.Model):
         pending_gifts.action_verify()
 
     def reactivate_gifts(self):
-        """ Put again gifts in OK state. """
+        for contract in self:
+            suspended_gifts = self.env['sponsorship.gift'].search([
+                ('child_id.project_id', '=', contract.project_id.id),
+                ('state', '=', 'suspended')
+            ])
+            suspended_gifts.action_in_progress()
+
+        # Put again gifts in OK state.
         pending_gifts = self.env['sponsorship.gift'].search([
             ('sponsorship_id', 'in', self.ids),
             ('state', '=', 'verify')

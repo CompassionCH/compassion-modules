@@ -254,7 +254,7 @@ class CompassionHold(models.Model):
             raise ValueError("No child found")
         child = self.env['compassion.child'].browse(child_id)
         if child.state not in ('F', 'R'):
-            raise UserError("Child is not departed.")
+            raise UserError(_("Child is not departed."))
         vals.update({
             'expiration_date': fields.Datetime.to_string(in_90_days),
             'state': 'active',

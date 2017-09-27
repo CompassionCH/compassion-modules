@@ -47,7 +47,7 @@ class ResPartner(models.Model):
     preferred_name = fields.Char()
     sponsored_child_ids = fields.One2many(
         'compassion.child', 'sponsor_id', 'Sponsored children')
-    number_children = fields.Integer(compute='_compute_children')
+    number_children = fields.Integer(compute='_compute_children', store=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -94,6 +94,7 @@ class ResPartner(models.Model):
                 ('account_id.code', '=', '1050')])
 
     @api.multi
+    @api.depends('sponsored_child_ids')
     def _compute_children(self):
         for partner in self:
             partner.number_children = len(partner.sponsored_child_ids)
