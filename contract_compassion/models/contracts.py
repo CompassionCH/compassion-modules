@@ -28,6 +28,7 @@ class ContractGroup(models.Model):
 class RecurringContract(models.Model):
     _inherit = "recurring.contract"
     _order = 'start_date desc'
+    _rec_name = 'name'
 
     ##########################################################################
     #                                 FIELDS                                 #
