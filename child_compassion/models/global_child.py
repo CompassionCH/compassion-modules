@@ -148,10 +148,13 @@ class GlobalChild(models.TransientModel):
                 #   https://media.ci.org/image/upload/w_150/ChildPhotos/Published/06182814_539e18.jpg
 
                 image_split = (child.image_url).split('/')
-                ind = image_split.index("w_150")
-                image_split[ind] = cloudinary
-                url = "/".join(image_split)
-                child.thumbnail_url = url
+                try:
+                    ind = image_split.index("w_150")
+                    image_split[ind] = cloudinary
+                    url = "/".join(image_split)
+                    child.thumbnail_url = url
+                except ValueError:
+                    continue
 
         if binar:
             for child in self.filtered('image_url'):
@@ -160,7 +163,7 @@ class GlobalChild(models.TransientModel):
                     child.portrait = base64.encodestring(
                         urllib2.urlopen(url).read())
                 except:
-                    logger.error('Image cannot be fetched : ' + url)
+                    logger.error('Image cannot be fetched : ' + str(url))
 
     @api.multi
     def _load_image_portrait(self):
