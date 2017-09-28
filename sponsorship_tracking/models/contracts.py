@@ -213,9 +213,9 @@ class RecurringContract(models.Model):
         Hence the code below - it replaces simple status values
         with (value, name) tuples.
         """
+        filter_group_result = list()
         if groupby == 'sds_state':
             state_dict = dict(self._get_sds_states())
-            filter_group_result = list()
             for result in read_group_result:
                 state = result[groupby]
                 # Only display SUB Sponsorship states
@@ -226,7 +226,7 @@ class RecurringContract(models.Model):
         return super(RecurringContract, self)._read_group_fill_results(
             domain, groupby,
             remaining_groupbys, aggregated_fields, count_field,
-            filter_group_result, read_group_order
+            filter_group_result or read_group_result, read_group_order
         )
 
     _group_by_full = {

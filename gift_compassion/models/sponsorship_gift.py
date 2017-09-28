@@ -390,19 +390,17 @@ class SponsorshipGift(models.Model):
             ('code', '=', '5003')])
         journal = self.env['account.journal'].search([
             ('code', '=', 'OD')])
-        move = self.env['account.move'].create({
+        move_data = {
             'journal_id': journal.id,
             'ref': 'Gift payment to GMC'
-        })
+        }
+        move_lines_data = list()
         maturity = self.date_sent or fields.Date.today()
-        analytic = self.env.ref(
-            'account_analytic_attribution.account_attribution_CD')
-        mvl_obj = self.env['account.move.line']
+        analytic = self.env['account.analytic.account'].search([('code', '=', 'ATT_CD')])
         # Create the debit lines from the Gift Account
         if self.invoice_line_ids:
             for invl in self.invoice_line_ids:
-                mvl_obj.create({
-                    'move_id': move.id,
+                move_lines_data.append({
                     'partner_id': invl.partner_id.id,
                     'account_id': account_debit.id,
                     'name': invl.name,
@@ -414,8 +412,7 @@ class SponsorshipGift(models.Model):
                     'amount_currency': invl.price_subtotal * exchange_rate
                 })
         else:
-            mvl_obj.create({
-                'move_id': move.id,
+            move_lines_data.append({
                 'partner_id': self.partner_id.id,
                 'account_id': account_debit.id,
                 'name': self.name,
@@ -427,16 +424,17 @@ class SponsorshipGift(models.Model):
             })
 
         # Create the credit line in the GMC Gift Due Account
-        mvl_obj.create({
-            'move_id': move.id,
+        move_lines_data.append({
             'partner_id': self.partner_id.id,
             'account_id': account_credit.id,
             'name': self.name,
             'date_maturity': maturity,
+            'credit': self.amount,
             'currency_id': self.currency_usd.id,
             'amount_currency': self.amount * exchange_rate * -1
         })
-
+        move_data['line_ids'] = [(0, False, line_data) for line_data in move_lines_data]
+        move = self.env['account.move'].create(move_data)
         move.post()
         data['payment_id'] = move.id
         self.write(data)
