@@ -31,6 +31,8 @@ def setlocale(name):
         saved = locale.setlocale(locale.LC_ALL)
         try:
             yield locale.setlocale(locale.LC_ALL, (name, 'UTF-8'))
+        except:
+            yield
         finally:
             locale.setlocale(locale.LC_ALL, saved)
 
