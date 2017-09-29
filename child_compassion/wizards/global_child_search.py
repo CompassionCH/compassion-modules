@@ -215,7 +215,8 @@ class GlobalChildSearch(models.TransientModel):
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'child.hold.wizard',
-            'context': self.with_context(active_id=self.id, active_model=self._name).env.context,
+            'context': self.with_context(
+                active_id=self.id, active_model=self._name).env.context,
             'target': 'new',
         }
 

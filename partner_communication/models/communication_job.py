@@ -143,6 +143,8 @@ class CommunicationJob(models.Model):
         same_job_search = [
             ('partner_id', '=', vals.get('partner_id')),
             ('config_id', '=', vals.get('config_id')),
+            ('config_id', '!=',
+             self.env.ref('partner_communication.default_communication').id),
             ('state', 'in', ('call', 'pending'))
         ] + self.env.context.get('same_job_search', [])
         job = self.search(same_job_search)
@@ -211,7 +213,7 @@ class CommunicationJob(models.Model):
             if job.send_mode != 'both':
                 job.write({
                     'state': state,
-                    'sent_date': fields.Datetime.now()
+                    'sent_date': state != 'pending' and fields.Datetime.now()
                 })
             else:
                 # Job was sent by e-mail and must now be printed

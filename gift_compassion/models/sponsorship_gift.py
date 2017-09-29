@@ -396,7 +396,8 @@ class SponsorshipGift(models.Model):
         }
         move_lines_data = list()
         maturity = self.date_sent or fields.Date.today()
-        analytic = self.env['account.analytic.account'].search([('code', '=', 'ATT_CD')])
+        analytic = self.env['account.analytic.account'].search([
+            ('code', '=', 'ATT_CD')])
         # Create the debit lines from the Gift Account
         if self.invoice_line_ids:
             for invl in self.invoice_line_ids:
@@ -433,7 +434,8 @@ class SponsorshipGift(models.Model):
             'currency_id': self.currency_usd.id,
             'amount_currency': self.amount * exchange_rate * -1
         })
-        move_data['line_ids'] = [(0, False, line_data) for line_data in move_lines_data]
+        move_data['line_ids'] = [
+            (0, False, line_data) for line_data in move_lines_data]
         move = self.env['account.move'].create(move_data)
         move.post()
         data['payment_id'] = move.id
