@@ -105,9 +105,9 @@ class GlobalChild(models.TransientModel):
     _inherit = 'compassion.generic.child'
     _description = 'Global Child'
 
-    portrait = fields.Binary(compute='_load_image_portrait')
-    fullshot = fields.Binary(compute='_load_image_fullshot')
-    thumbnail_url = fields.Char(compute='_load_image_thumb')
+    portrait = fields.Binary(compute='_compute_image_portrait')
+    fullshot = fields.Binary(compute='_compute_image_fullshot')
+    thumbnail_url = fields.Char(compute='_compute_image_thumb')
 
     color = fields.Integer(compute='_compute_color')
     is_special_needs = fields.Boolean()
@@ -167,13 +167,13 @@ class GlobalChild(models.TransientModel):
                     logger.error('Image cannot be fetched : ' + str(url))
 
     @api.multi
-    def _load_image_portrait(self):
+    def _compute_image_portrait(self):
         self._load_image(True, True)
 
     @api.multi
-    def _load_image_fullshot(self):
+    def _compute_image_fullshot(self):
         self._load_image(False, True)
 
     @api.multi
-    def _load_image_thumb(self):
+    def _compute_image_thumb(self):
         self._load_image(True, False)

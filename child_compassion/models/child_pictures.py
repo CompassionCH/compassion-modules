@@ -31,8 +31,8 @@ class ChildPictures(models.Model):
     ##########################################################################
     child_id = fields.Many2one(
         'compassion.child', 'Child', required=True, ondelete='cascade')
-    fullshot = fields.Binary(compute='set_pictures')
-    headshot = fields.Binary(compute='set_pictures')
+    fullshot = fields.Binary(compute='_compute_pictures')
+    headshot = fields.Binary(compute='_compute_pictures')
     image_url = fields.Char()
     date = fields.Date('Date of pictures', default=fields.Date.today)
     fname = fields.Char(compute='_compute_filename')
@@ -42,36 +42,35 @@ class ChildPictures(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.one
-    def set_pictures(self):
+    def _compute_pictures(self):
         """Get the picture given field_name (headshot or fullshot)"""
         attachment_obj = self.env['ir.attachment']
+        for pictures in self:
+            # We search related images, and sort them by date of creation
+            # from newest to oldest
+            attachments = attachment_obj.search([
+                ('res_model', '=', self._name),
+                ('res_id', '=', pictures.id)],
+                order='create_date desc')
 
-        # We search related images, and sort them by date of creation
-        # from newest to oldest
-        attachments = attachment_obj.search([
-            ('res_model', '=', self._name),
-            ('res_id', '=', self.id)],
-            order='create_date desc')
+            # We recover the newest Fullshot and Headshots
+            for rec in attachments:
+                if rec.datas_fname.split('.')[0] == 'Headshot':
+                    try:
+                        pictures.headshot = rec.datas
+                        break
+                    except:
+                        logger.error(
+                            "Couldn't find attachment for child headshot.")
 
-        # We recover the newest Fullshot and Headshots
-        for rec in attachments:
-            if rec.datas_fname.split('.')[0] == 'Headshot':
-                try:
-                    self.headshot = rec.datas
-                    break
-                except:
-                    logger.error(
-                        "Couldn't find attachment for child headshot.")
-
-        for rec in attachments:
-            if rec.datas_fname.split('.')[0] == 'Fullshot':
-                try:
-                    self.fullshot = rec.datas
-                    break
-                except:
-                    logger.error(
-                        "Couldn't find attachement for child fullshot.")
+            for rec in attachments:
+                if rec.datas_fname.split('.')[0] == 'Fullshot':
+                    try:
+                        pictures.fullshot = rec.datas
+                        break
+                    except:
+                        logger.error(
+                            "Couldn't find attachement for child fullshot.")
 
     def _compute_filename(self):
         for pictures in self:

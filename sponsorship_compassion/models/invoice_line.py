@@ -24,12 +24,12 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     children = fields.Char(
-        'Children', compute='_set_children')
-    last_payment = fields.Date(compute='compute_last_payment', store=True)
+        'Children', compute='_compute_children')
+    last_payment = fields.Date(compute='_compute_last_payment', store=True)
 
     @api.depends('payment_move_line_ids', 'state')
     @api.multi
-    def compute_last_payment(self):
+    def _compute_last_payment(self):
         for invoice in self.filtered('payment_move_line_ids'):
             filter = 'credit' if invoice.type == 'out_invoice' else 'debit'
             payment_dates = invoice.payment_move_line_ids.filtered(
@@ -37,7 +37,7 @@ class AccountInvoice(models.Model):
             invoice.last_payment = max(payment_dates or [False])
 
     @api.multi
-    def _set_children(self):
+    def _compute_children(self):
         """ View children contained in invoice. """
         for invoice in self:
             children = invoice.mapped('invoice_line_ids.contract_id.child_id')

@@ -27,12 +27,13 @@
 #
 ##############################################################################
 
-
+# pylint: disable=C8101
 {
     'name': 'Partner Communication',
     'version': '10.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
+    'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
     'depends': ['crm_phone', 'base_report_to_printer', 'hr', 'contacts',
                 'compassion_dashboard'],

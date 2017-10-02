@@ -4,7 +4,6 @@
         <field name="name">res.partner.sponsorships.form</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="recurring_contract.view_partner_add_contract_form"/>
-        <field eval="18" name="priority"/>
         <field name="arch" type="xml">
             <!-- Redefine how contracts are shown. -->
             <xpath expr="//div[@name='button_box']" position="inside">

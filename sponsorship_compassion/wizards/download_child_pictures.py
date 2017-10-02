@@ -37,7 +37,7 @@ class DownloadChildPictures(models.TransientModel):
     height = fields.Integer()
     width = fields.Integer()
     download_data = fields.Binary(readonly=True)
-    preview = fields.Binary(compute='_load_preview')
+    preview = fields.Binary(compute='_compute_preview')
     information = fields.Text(readonly=True)
 
     ##########################################################################
@@ -124,7 +124,7 @@ class DownloadChildPictures(models.TransientModel):
             self.width = 800
         self._height_change += 1
         self._width_change += 1
-        self._load_preview()
+        self._compute_preview()
 
     @api.onchange('height')  # if these fields are changed,
     # call method
@@ -133,7 +133,7 @@ class DownloadChildPictures(models.TransientModel):
             if self.type == 'fullshot':
                 self.width = round(self.height * 800 / 1200)
                 self._width_change += 1
-            self._load_preview()
+            self._compute_preview()
         else:
             self._height_change -= 1
 
@@ -144,12 +144,12 @@ class DownloadChildPictures(models.TransientModel):
             if self.type == 'fullshot':
                 self.height = round(self.width * 1200 / 800)
                 self._height_change += 1
-            self._load_preview()
+            self._compute_preview()
         else:
             self._width_change -= 1
 
     @api.multi
-    def _load_preview(self):
+    def _compute_preview(self):
         children = self._get_children()
 
         for child in children.filtered('image_url'):

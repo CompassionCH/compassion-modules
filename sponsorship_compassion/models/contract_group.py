@@ -28,7 +28,7 @@ class ContractGroup(models.Model):
     ##########################################################################
 
     contains_sponsorship = fields.Boolean(
-        string='Contains sponsorship', compute='_contains_sponsorship',
+        string='Contains sponsorship', compute='_compute_contains_sponsorship',
         readonly=True, default=lambda self: 'S' in self.env.context.get(
             'default_type', 'O'))
 
@@ -37,7 +37,7 @@ class ContractGroup(models.Model):
     ##########################################################################
 
     @api.multi
-    def _contains_sponsorship(self):
+    def _compute_contains_sponsorship(self):
         for group in self:
             types = group.mapped('contract_ids.type')
             group.contains_sponsorship = 'S' in types or 'SC' in types

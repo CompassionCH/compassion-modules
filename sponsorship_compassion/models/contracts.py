@@ -80,7 +80,7 @@ class SponsorshipContract(models.Model):
     partner_codega = fields.Char(
         'Partner ref', related='correspondant_id.ref', readonly=True)
     fully_managed = fields.Boolean(
-        compute='_is_fully_managed', store=True)
+        compute='_compute_fully_managed', store=True)
     birthday_invoice = fields.Float(
         "Annual birthday gift",
         help="Set the amount to enable automatic invoice creation each year "
@@ -143,7 +143,7 @@ class SponsorshipContract(models.Model):
 
     @api.multi
     @api.depends('partner_id', 'correspondant_id')
-    def _is_fully_managed(self):
+    def _compute_fully_managed(self):
         """Tells if the correspondent and the payer is the same person."""
         for contract in self:
             contract.fully_managed = (contract.partner_id ==
@@ -915,4 +915,4 @@ class SponsorshipContract(models.Model):
                     self.env.ref('sponsorship_compassion.{}'.format(
                         row[contract_id])).contract_cancelled()
                 else:
-                    raise UserError('State not implemented')
+                    raise UserError(_('State not implemented'))
