@@ -370,18 +370,19 @@ class CompassionHold(models.Model):
         children.delete_workflow()
         children.child_released()
 
-        # Remove holds that have no child linked anymore
-        holds = self.search([
-            ('state', '=', 'expired'),
-            ('child_id', '=', False)
-        ])
-        holds.unlink()
+        with self.env.cr.savepoint():
+            # Remove holds that have no child linked anymore
+            holds = self.search([
+                ('state', '=', 'expired'),
+                ('child_id', '=', False)
+            ])
+            holds.unlink()
 
-        # Remove draft holds
-        holds = self.search([
-            ('state', '=', 'draft')
-        ])
-        holds.unlink()
+            # Remove draft holds
+            holds = self.search([
+                ('state', '=', 'draft')
+            ])
+            holds.unlink()
         return True
 
     @api.model
