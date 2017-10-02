@@ -208,8 +208,12 @@ class CommunicationJob(models.Model):
         for job in no_call.filtered(lambda j: j.send_mode in ('both',
                                                               'digital')):
             # Commit after sending by e-mail
-            with self.env.cr.savepoint():
-                state = job._send_mail()
+            try:
+                with self.env.cr.savepoint():
+                    state = job._send_mail()
+            except:
+                logger.error("Partner communication: send mail failed.")
+                continue
             if job.send_mode != 'both':
                 job.write({
                     'state': state,
