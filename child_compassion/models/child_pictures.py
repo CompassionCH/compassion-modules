@@ -61,7 +61,8 @@ class ChildPictures(models.Model):
                     self.headshot = rec.datas
                     break
                 except:
-                    continue
+                    logger.error(
+                        "Couldn't find attachment for child headshot.")
 
         for rec in attachments:
             if rec.datas_fname.split('.')[0] == 'Fullshot':
@@ -69,7 +70,8 @@ class ChildPictures(models.Model):
                     self.fullshot = rec.datas
                     break
                 except:
-                    continue
+                    logger.error(
+                        "Couldn't find attachement for child fullshot.")
 
     def _compute_filename(self):
         for pictures in self:

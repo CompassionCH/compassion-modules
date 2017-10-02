@@ -154,7 +154,8 @@ class GlobalChild(models.TransientModel):
                     url = "/".join(image_split)
                     child.thumbnail_url = url
                 except ValueError:
-                    continue
+                    logger.error(
+                        "Wrong child image received: " + str(child.image_url))
 
         if binar:
             for child in self.filtered('image_url'):
