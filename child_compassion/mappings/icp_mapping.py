@@ -200,4 +200,5 @@ class ICPMapping(OnrampMapping):
                 float(monthly_income)
                 odoo_data['monthly_income'] = monthly_income
             except ValueError:
+                # Weird value received, we prefer to ignore it.
                 del odoo_data['monthly_income']

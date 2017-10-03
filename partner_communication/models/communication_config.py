@@ -74,7 +74,7 @@ class CommunicationConfig(models.Model):
                             config.send_mode_pref_field)
             if not valid:
                 raise ValidationError(
-                    "Following field does not exist in res.partner: %s." %
+                    _("Following field does not exist in res.partner: %s.") %
                     config.send_mode_pref_field
                 )
 
@@ -84,14 +84,14 @@ class CommunicationConfig(models.Model):
             if config.email_template_id and config.email_template_id.model \
                     != 'partner.communication.job':
                 raise ValidationError(
-                    "Attached e-mail templates should be linked to "
-                    "partner.communication.job objects!"
+                    _("Attached e-mail templates should be linked to "
+                      "partner.communication.job objects!")
                 )
             if config.report_id and config.report_id.model != \
                     'partner.communication.job':
                 raise ValidationError(
-                    "Attached report templates should be linked to "
-                    "partner.communication.job objects!"
+                    _("Attached report templates should be linked to "
+                      "partner.communication.job objects!")
                 )
 
     @api.constrains('attachments_function')
@@ -100,7 +100,7 @@ class CommunicationConfig(models.Model):
         for config in self.filtered('attachments_function'):
             if not hasattr(job_obj, config.attachments_function):
                 raise ValidationError(
-                    "partner.communication.job has no function called " +
+                    _("partner.communication.job has no function called ") +
                     config.attachments_function
                 )
 

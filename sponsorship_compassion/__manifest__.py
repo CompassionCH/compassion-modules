@@ -27,12 +27,13 @@
 #
 ##############################################################################
 
-
+# pylint: disable=C8101
 {
     'name': 'Compassion Sponsorships',
     'version': '10.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
+    'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
     'depends': ['contract_compassion', 'crm', 'account_cancel',
                 'web_m2x_options', 'account_invoice_split_invoice',

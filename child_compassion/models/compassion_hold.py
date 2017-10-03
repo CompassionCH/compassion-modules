@@ -329,13 +329,16 @@ class CompassionHold(models.Model):
                 'object_id': hold.id
             })
         messages.process_messages()
-        with self.env.cr.savepoint():
-            fail = messages.filtered('failure_reason').mapped('failure_reason')
-            if fail:
-                logger.error("\n".join(fail))
-                # Force hold removal
-                self.hold_released()
-
+        try:
+            with self.env.cr.savepoint():
+                fail = messages.filtered('failure_reason').mapped(
+                    'failure_reason')
+                if fail:
+                    logger.error("\n".join(fail))
+                    # Force hold removal
+                    self.hold_released()
+        except:
+            logger.error("Some holds couldn't be released.")
         return True
 
     @api.multi
@@ -370,18 +373,22 @@ class CompassionHold(models.Model):
         children.delete_workflow()
         children.child_released()
 
-        # Remove holds that have no child linked anymore
-        holds = self.search([
-            ('state', '=', 'expired'),
-            ('child_id', '=', False)
-        ])
-        holds.unlink()
+        try:
+            with self.env.cr.savepoint():
+                # Remove holds that have no child linked anymore
+                holds = self.search([
+                    ('state', '=', 'expired'),
+                    ('child_id', '=', False)
+                ])
+                holds.unlink()
 
-        # Remove draft holds
-        holds = self.search([
-            ('state', '=', 'draft')
-        ])
-        holds.unlink()
+                # Remove draft holds
+                holds = self.search([
+                    ('state', '=', 'draft')
+                ])
+                holds.unlink()
+        except:
+            logger.error("Some old or draft holds couldn't be removed.")
         return True
 
     @api.model
@@ -457,22 +464,26 @@ class CompassionHold(models.Model):
                     new_hold_date)
             old_date = hold.expiration_date
             hold.write(hold_vals)
-            with self.env.cr.savepoint():
-                # Notify hold owner
-                subject = "No money hold extension" if extension else \
-                    "No money hold expiration"
-                body = body_extension if extension else body_expiration
-                values = {
-                    'local_id': hold.child_id.local_id,
-                    'old_expiration': old_date,
-                    'new_expiration': new_hold_date.strftime("%d %B %Y"),
-                    'additional_text': additional_text or '',
-                }
-                hold.message_post(
-                    body=body.format(**values),
-                    subject=subject,
-                    partner_ids=hold.primary_owner.partner_id.ids,
-                    type='comment',
-                    subtype='mail.mt_comment',
-                    content_subtype='plaintext'
-                )
+            try:
+                with self.env.cr.savepoint():
+                    # Notify hold owner
+                    subject = "No money hold extension" if extension else \
+                        "No money hold expiration"
+                    body = body_extension if extension else body_expiration
+                    values = {
+                        'local_id': hold.child_id.local_id,
+                        'old_expiration': old_date,
+                        'new_expiration': new_hold_date.strftime("%d %B %Y"),
+                        'additional_text': additional_text or '',
+                    }
+                    hold.message_post(
+                        body=body.format(**values),
+                        subject=subject,
+                        partner_ids=hold.primary_owner.partner_id.ids,
+                        type='comment',
+                        subtype='mail.mt_comment',
+                        content_subtype='plaintext'
+                    )
+            except:
+                logger.error(
+                    "No money extension notification not sent to owner.")

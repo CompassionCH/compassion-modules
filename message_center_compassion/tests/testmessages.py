@@ -21,14 +21,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class test_messages(test_base_module):
+class TestMessages(test_base_module):
     """Test and simulate reception of GMC Messages.
     Warning : Please make sure module sponsorship_sync_gp is not installed
               in order to be sure no information is sent to GP.
     """
 
     def setUp(self):
-        super(test_messages, self).setUp()
+        super(TestMessages, self).setUp()
         self.message_obj = self.env['gmc.message.pool'].with_context(
             async_mode=False, test_mode=True)
         self.action_obj = self.env['gmc.action']
@@ -155,7 +155,7 @@ class test_messages(test_base_module):
         gift = self.env['product.product'].search([
             ('name', '=', 'Project Gift')])[0]
         gift.write({
-            'property_account_income': self.property_account_income})
+            'property_account_income_id': self.property_account_income})
         gift_wizard = self.env['generate.gift.wizard'].with_context(
             active_ids=[contract_id])
         wizard = gift_wizard.create({

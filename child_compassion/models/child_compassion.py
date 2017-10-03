@@ -62,7 +62,7 @@ class CompassionChild(models.Model):
     state = fields.Selection(
         '_get_child_states', readonly=True, required=True,
         track_visibility='onchange', default='N',)
-    is_available = fields.Boolean(compute='_set_available')
+    is_available = fields.Boolean(compute='_compute_available')
     sponsor_id = fields.Many2one(
         'res.partner', 'Sponsor', track_visibility='onchange', readonly=True)
     sponsor_ref = fields.Char(
@@ -246,7 +246,7 @@ class CompassionChild(models.Model):
             ('R', _('Released')),
         ]
 
-    def _set_available(self):
+    def _compute_available(self):
         for child in self:
             child.is_available = child.state in self._available_states()
 

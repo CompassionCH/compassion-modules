@@ -20,25 +20,25 @@ class ResPartner(models.Model):
     ##########################################################################
     global_id = fields.Char()
     contracts_fully_managed = fields.One2many(
-        "recurring.contract", compute='_get_related_contracts',
+        "recurring.contract", compute='_compute_related_contracts',
         string='Fully managed sponsorships',
         order="state asc")
     contracts_paid = fields.One2many(
-        "recurring.contract", compute='_get_related_contracts',
+        "recurring.contract", compute='_compute_related_contracts',
         string='Sponsorships as payer only')
     contracts_correspondant = fields.One2many(
-        "recurring.contract", compute='_get_related_contracts',
+        "recurring.contract", compute='_compute_related_contracts',
         string='Sponsorships as correspondant only')
     sponsorship_ids = fields.One2many(
-        "recurring.contract", compute='_get_related_contracts')
+        "recurring.contract", compute='_compute_related_contracts')
     mandatory_review = fields.Boolean(
         help='Indicates that we should review the letters of this sponsor '
              'before sending them to GMC.')
     other_contract_ids = fields.One2many(
-        "recurring.contract", compute='_get_related_contracts',
+        "recurring.contract", compute='_compute_related_contracts',
         string='Other contracts')
-    unrec_items = fields.Integer(compute='_set_count_items')
-    receivable_items = fields.Integer(compute='_set_count_items')
+    unrec_items = fields.Integer(compute='_compute_count_items')
+    receivable_items = fields.Integer(compute='_compute_count_items')
     has_sponsorships = fields.Boolean()
     number_sponsorships = fields.Integer()
     send_original = fields.Boolean(
@@ -53,7 +53,7 @@ class ResPartner(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.multi
-    def _get_related_contracts(self):
+    def _compute_related_contracts(self):
         """ Returns the contracts of the sponsor of given type
         ('fully_managed', 'correspondant' or 'payer')
         """
@@ -82,7 +82,7 @@ class ResPartner(models.Model):
                  ('type', 'not in', ['S', 'SC'])],
                 order='start_date desc').ids
 
-    def _set_count_items(self):
+    def _compute_count_items(self):
         move_line_obj = self.env['account.move.line']
         for partner in self:
             partner.unrec_items = move_line_obj.search_count([

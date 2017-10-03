@@ -80,7 +80,7 @@ class SponsorshipContract(models.Model):
     partner_codega = fields.Char(
         'Partner ref', related='correspondant_id.ref', readonly=True)
     fully_managed = fields.Boolean(
-        compute='_is_fully_managed', store=True)
+        compute='_compute_fully_managed', store=True)
     birthday_invoice = fields.Float(
         "Annual birthday gift",
         help="Set the amount to enable automatic invoice creation each year "
@@ -143,7 +143,7 @@ class SponsorshipContract(models.Model):
 
     @api.multi
     @api.depends('partner_id', 'correspondant_id')
-    def _is_fully_managed(self):
+    def _compute_fully_managed(self):
         """Tells if the correspondent and the payer is the same person."""
         for contract in self:
             contract.fully_managed = (contract.partner_id ==
@@ -200,13 +200,18 @@ class SponsorshipContract(models.Model):
 
         super(SponsorshipContract, self).write(vals)
 
-        with self.env.cr.savepoint():
-            if updated_correspondents:
-                updated_correspondents._on_correspondant_changed()
-
-        with self.env.cr.savepoint():
-            if 'reading_language' in vals:
-                (self - updated_correspondents)._on_language_changed()
+        try:
+            with self.env.cr.savepoint():
+                if updated_correspondents:
+                    updated_correspondents._on_correspondant_changed()
+        except:
+            logger.error(
+                "Error while changing correspondant at GMC. "
+                "The sponsorship is no longer active at GMC side. "
+                "Please activate it again manually."
+            )
+        if 'reading_language' in vals:
+            (self - updated_correspondents)._on_language_changed()
 
         return True
 
@@ -608,17 +613,24 @@ class SponsorshipContract(models.Model):
                 lambda s: s.global_id and s.state not in ('cancelled',
                                                           'terminated')):
             # Commit at each message processed
-            with self.env.cr.savepoint():
-                message = message_obj.create({
-                    'action_id': action.id,
-                    'child_id': sponsorship.child_id.id,
-                    'partner_id': sponsorship.correspondant_id.id,
-                    'object_id': sponsorship.id
-                })
-                message.process_messages()
-                if message.state == 'failure':
-                    failure = message.failure_reason
-                    raise UserError(failure)
+            try:
+                with self.env.cr.savepoint():
+                    message = message_obj.create({
+                        'action_id': action.id,
+                        'child_id': sponsorship.child_id.id,
+                        'partner_id': sponsorship.correspondant_id.id,
+                        'object_id': sponsorship.id
+                    })
+                    message.process_messages()
+                    if message.state == 'failure':
+                        failure = message.failure_reason
+                        sponsorship.message_post(
+                            failure, "Language update failed.")
+            except:
+                logger.error(
+                    "Error when updating sponsorship language. "
+                    "You may be out of sync with GMC - please try again."
+                )
 
     @api.multi
     def _on_change_correspondant(self, correspondant_id):
@@ -903,4 +915,4 @@ class SponsorshipContract(models.Model):
                     self.env.ref('sponsorship_compassion.{}'.format(
                         row[contract_id])).contract_cancelled()
                 else:
-                    raise UserError('State not implemented')
+                    raise UserError(_('State not implemented'))

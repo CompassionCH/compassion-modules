@@ -27,12 +27,13 @@
 #
 ##############################################################################
 
-
+# pylint: disable=C8101
 {
     'name': 'Compassion CH Message Center',
     'version': '10.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
+    'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
     'depends': ['base', 'queue_job'],
     'external_dependencies': {

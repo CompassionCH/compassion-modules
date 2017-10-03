@@ -269,7 +269,7 @@ class CompassionProject(models.Model):
     suspension = fields.Selection([
         ('suspended', 'Suspended'),
         ('fund-suspended', 'Suspended & fund retained')], 'Suspension',
-        compute='_set_suspension_state', store=True,
+        compute='_compute_suspension_state', store=True,
         track_visibility='onchange')
     status = fields.Selection(
         '_get_state', track_visibility='onchange', default='A', readonly=True)
@@ -304,7 +304,7 @@ class CompassionProject(models.Model):
 
     @api.depends('lifecycle_ids')
     @api.multi
-    def _set_suspension_state(self):
+    def _compute_suspension_state(self):
         for project in self.filtered('lifecycle_ids'):
             last_info = project.lifecycle_ids[0]
             if last_info.type == 'Suspension':

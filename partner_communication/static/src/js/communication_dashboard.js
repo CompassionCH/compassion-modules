@@ -9,7 +9,7 @@ var KanbanView = require('web_kanban.KanbanView');
 
 var QWeb = core.qweb;
 
-var _model = new Model('partner.communication.config')
+var _model = new Model('partner.communication.config');
 
 var _t = core._t;
 var _lt = core._lt;
@@ -30,7 +30,7 @@ var CommunicationDashboardView = KanbanView.extend({
         return _model.call('get_communication_rubbon_datas').then(function(result){
             var sales_dashboard = QWeb.render('partner_communication.CommunicationDashboard', {
                  widget: self,
-                 values: result,
+                 values: result
             });
             super_render.call(self);
             $(sales_dashboard).prependTo(self.$el);
@@ -46,7 +46,7 @@ var CommunicationDashboardView = KanbanView.extend({
         var additional_context = {};
 
         this.do_action(action_name, {additional_context: additional_context});
-    },
+    }
 });
 
 core.view_registry.add('partner_communication_dashboard', CommunicationDashboardView);

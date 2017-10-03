@@ -24,19 +24,20 @@ class CommunicationDashboard(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     @api.multi
-    def _kanban_dashboard(self):
+    def _compute_kanban_dashboard(self):
         for config in self:
             config.kanban_dashboard = json.dumps(
                 config.get_communication_dashboard_datas())
 
     @api.multi
-    def _kanban_dashboard_graph(self):
+    def _compute_kanban_dashboard_graph(self):
         for config in self:
             config.kanban_dashboard_graph = json.dumps(
                 self.get_bar_graph_datas())
 
-    kanban_dashboard_graph = fields.Text(compute='_kanban_dashboard_graph')
-    kanban_dashboard = fields.Text(compute='_kanban_dashboard')
+    kanban_dashboard_graph = fields.Text(
+        compute='_compute_kanban_dashboard_graph')
+    kanban_dashboard = fields.Text(compute='_compute_kanban_dashboard')
 
     @api.multi
     def get_communication_dashboard_datas(self):
