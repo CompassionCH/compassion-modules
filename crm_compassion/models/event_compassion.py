@@ -109,7 +109,7 @@ class EventCompassion(models.Model):
                     ('amount', '<', '0.0')])
                 incomes = self.env['account.invoice.line'].search([
                     ('state', '=', 'paid'),
-                    ('account_analytic_id', '=', self.analytic_id.id),
+                    ('account_analytic_id', '=', event.analytic_id.id),
                     ('contract_id', '=', False),
                     ('invoice_id.type', '=', 'out_invoice'),
                 ])
