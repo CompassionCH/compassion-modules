@@ -34,11 +34,7 @@ class AccountInvoice(models.Model):
             (no sponsorship product inside)
         """
         res = super(AccountInvoice, self).action_invoice_paid()
-        invoices = self.filtered(
-            lambda i: i.type == 'out_invoice' and (
-                not i.communication_id or
-                i.communication_id.state in ('call', 'pending'))
-        )
+        invoices = self._filter_invoice_to_thank()
         if invoices:
             invoices.generate_thank_you()
         return res
@@ -124,3 +120,16 @@ class AccountInvoice(models.Model):
             invoice_lines = self.mapped('invoice_line_ids').filtered(
                 lambda l: l.partner_id == partner)
             invoice_lines.generate_thank_you()
+
+    @api.multi
+    def _filter_invoice_to_thank(self):
+        """
+        Given a recordset of paid invoices, return only those that have
+        to be thanked.
+        :return: account.invoice recordset
+        """
+        return self.filtered(
+            lambda i: i.type == 'out_invoice' and (
+                not i.communication_id or
+                i.communication_id.state in ('call', 'pending'))
+        )
