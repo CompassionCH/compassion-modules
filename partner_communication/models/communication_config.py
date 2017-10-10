@@ -30,7 +30,7 @@ class CommunicationConfig(models.Model):
     model_id = fields.Many2one(
         'ir.model', 'Applies to', required=True,
         help="The kind of document with this communication can be used")
-    model = fields.Char(related='model_id.model', store=True)
+    model = fields.Char(related='model_id.model', store=True, readonly=True)
     user_id = fields.Many2one(
         'res.users', 'From', domain=[('share', '=', False)])
     send_mode = fields.Selection('_get_send_mode', required=True)
