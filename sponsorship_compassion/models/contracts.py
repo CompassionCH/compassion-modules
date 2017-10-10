@@ -35,13 +35,16 @@ class SponsorshipLine(models.Model):
         'recurring.contract', 'Sponsorship', ondelete='cascade'
     )
 
-    def fields_view_get(self, *args, **kwargs):
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False,
+                        submenu=False):
         """ Hide field sponsorship_id for sponsorships.
         """
         res = super(SponsorshipLine, self).fields_view_get(
-            *args, **kwargs)
+            view_id=view_id, view_type=view_type, toolbar=toolbar,
+            submenu=submenu)
 
-        if len(args) == 2 and args[1] == 'tree':
+        if view_type == 'tree':
             s_type = self._context.get('default_type', 'O')
             if 'S' in s_type:
                 # Remove field sponsorship_id for sponsorship contracts
@@ -104,13 +107,16 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    def fields_view_get(self, *args, **kwargs):
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False,
+                        submenu=False):
         """ Display only contract type needed in view.
         """
         res = super(SponsorshipContract, self).fields_view_get(
-            *args, **kwargs)
+            view_id=view_id, view_type=view_type, toolbar=toolbar,
+            submenu=submenu)
 
-        if len(args) >= 2 and args[1] == 'form' and 'type' in res['fields']:
+        if view_type == 'form' and 'type' in res['fields']:
             s_type = self._context.get('default_type', 'O')
             if 'S' in s_type:
                 # Remove non sponsorship types
