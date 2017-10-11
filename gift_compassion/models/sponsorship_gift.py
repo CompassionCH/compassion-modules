@@ -69,7 +69,8 @@ class SponsorshipGift(models.Model):
         compute='_compute_invoice_fields',
         inverse=lambda g: True, store=True
     )
-    date_sent = fields.Datetime(related='message_id.process_date')
+    date_sent = fields.Datetime(
+        related='message_id.process_date', store=True, readonly=True)
     amount = fields.Float(
         compute='_compute_invoice_fields',
         inverse=lambda g: True, store=True, track_visibility='onchange')
