@@ -4,7 +4,6 @@
         <field name="name">recurring.contract.compassion.tree</field>
         <field name="model">recurring.contract</field>
         <field name="inherit_id" ref="recurring_contract.view_recurring_contract_tree"/>
-        <field eval="18" name="priority"/>
         <field name="arch" type="xml">
             <tree position="attributes">
                 <attribute name="colors">blue:state == 'draft';green:state == 'waiting';black:state == 'active';gray:state in ('terminated','cancelled')</attribute>
@@ -14,14 +13,6 @@
             </field>
             <field name="start_date" position="after">
                 <field name="activation_date"/>
-            </field>
-            <field name="payment_mode_id" position="after">
-                <field name="group_freq" invisible="not context.get('partner_contracts_view')"/>
-                <field name="last_paid_invoice_date" invisible="not context.get('partner_contracts_view')"/>
-                <field name="months_paid" invisible="not context.get('partner_contracts_view')"/>
-            </field>
-            <field name="state" position="after">
-                <button name="open_contract" type="object" invisible="not context.get('partner_contracts_view')" icon="STOCK_JUMP_TO" />
             </field>
             <field name="reference" position="replace" />
         </field>

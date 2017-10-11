@@ -25,11 +25,11 @@ class EventCompassion(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     name = fields.Char(size=128, required=True, track_visibility='onchange')
-    full_name = fields.Char(compute='_get_full_name')
+    full_name = fields.Char(compute='_compute_full_name')
     type = fields.Selection(
         'get_event_types', required=True, track_visibility='onchange')
     start_date = fields.Datetime(required=True)
-    year = fields.Char(compute='_set_year', store=True)
+    year = fields.Char(compute='_compute_year', store=True)
     end_date = fields.Datetime(required=True)
     partner_id = fields.Many2one(
         'res.partner', 'Customer', track_visibility='onchange')
@@ -60,16 +60,18 @@ class EventCompassion(models.Model):
     contract_ids = fields.One2many(
         'recurring.contract', related='origin_id.contract_ids', readonly=True)
     expense_line_ids = fields.One2many(
-        'account.analytic.line', compute='_set_analytic_lines', readonly=True)
+        'account.analytic.line', compute='_compute_analytic_lines',
+        readonly=True)
     income_line_ids = fields.One2many(
-        'account.invoice.line', compute='_set_analytic_lines', readonly=True)
+        'account.invoice.line', compute='_compute_analytic_lines',
+        readonly=True)
     total_expense = fields.Float(
-        'Total expense', compute='_set_analytic_lines', readonly=True,
+        'Total expense', compute='_compute_analytic_lines', readonly=True,
         store=True)
     total_income = fields.Float(
-        compute='_set_analytic_lines', readonly=True, store=True)
+        compute='_compute_analytic_lines', readonly=True, store=True)
     balance = fields.Float(
-        compute='_set_analytic_lines', readonly=True, store=True)
+        compute='_compute_analytic_lines', readonly=True, store=True)
     number_allocate_children = fields.Integer(
         'Number of children to allocate',
         track_visibility='onchange',
@@ -95,12 +97,12 @@ class EventCompassion(models.Model):
     ##########################################################################
     @api.multi
     def update_analytics(self):
-        self._set_analytic_lines()
+        self._compute_analytic_lines()
 
     @api.multi
     @api.depends('analytic_id', 'analytic_id.line_ids',
                  'analytic_id.line_ids.amount')
-    def _set_analytic_lines(self):
+    def _compute_analytic_lines(self):
         analytic_line_obj = self.env['account.analytic.line']
         for event in self.filtered('analytic_id'):
             if event.analytic_id:
@@ -132,12 +134,12 @@ class EventCompassion(models.Model):
 
     @api.multi
     @api.depends('start_date')
-    def _set_year(self):
+    def _compute_year(self):
         for event in self.filtered('start_date'):
             event.year = event.start_date[:4]
 
     @api.multi
-    def _get_full_name(self):
+    def _compute_full_name(self):
         for event in self:
             event.full_name = event.type.title() + ' ' + event.name + ' ' +\
                 event.year
@@ -166,8 +168,8 @@ class EventCompassion(models.Model):
         for event in self:
             if event.hold_start_date > event.start_date:
                 raise ValidationError(
-                    "The hold start date must "
-                    "be before the event starting date !")
+                    _("The hold start date must "
+                      "be before the event starting date !"))
 
     ##########################################################################
     #                              ORM METHODS                               #

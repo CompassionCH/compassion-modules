@@ -18,7 +18,6 @@ from odoo.addons.queue_job.job import job, related_action
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from lxml import etree
-import csv
 import os
 
 from .product import GIFT_CATEGORY, SPONSORSHIP_CATEGORY, FUND_CATEGORY
@@ -35,13 +34,16 @@ class SponsorshipLine(models.Model):
         'recurring.contract', 'Sponsorship', ondelete='cascade'
     )
 
-    def fields_view_get(self, *args, **kwargs):
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False,
+                        submenu=False):
         """ Hide field sponsorship_id for sponsorships.
         """
         res = super(SponsorshipLine, self).fields_view_get(
-            *args, **kwargs)
+            view_id=view_id, view_type=view_type, toolbar=toolbar,
+            submenu=submenu)
 
-        if len(args) == 2 and args[1] == 'tree':
+        if view_type == 'tree':
             s_type = self._context.get('default_type', 'O')
             if 'S' in s_type:
                 # Remove field sponsorship_id for sponsorship contracts
@@ -104,13 +106,16 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    def fields_view_get(self, *args, **kwargs):
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False,
+                        submenu=False):
         """ Display only contract type needed in view.
         """
         res = super(SponsorshipContract, self).fields_view_get(
-            *args, **kwargs)
+            view_id=view_id, view_type=view_type, toolbar=toolbar,
+            submenu=submenu)
 
-        if len(args) >= 2 and args[1] == 'form' and 'type' in res['fields']:
+        if view_type == 'form' and 'type' in res['fields']:
             s_type = self._context.get('default_type', 'O')
             if 'S' in s_type:
                 # Remove non sponsorship types
@@ -587,19 +592,6 @@ class SponsorshipContract(models.Model):
 
         return super(SponsorshipContract, self).contract_waiting()
 
-    @api.multi
-    def contract_waiting_mandate(self):
-        for contract in self:
-            if 'S' in contract.type and contract.child_id.hold_id:
-                # Update the hold of the child to No Money Hold
-                hold = contract.child_id.hold_id
-                hold.write({
-                    'type': HoldType.NO_MONEY_HOLD.value,
-                    'expiration_date': hold.get_default_hold_expiration(
-                        HoldType.NO_MONEY_HOLD)
-                })
-        return super(SponsorshipContract, self).contract_waiting_mandate()
-
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
@@ -878,41 +870,3 @@ class SponsorshipContract(models.Model):
             invl_search.append(('due_date', '<=', to_date))
 
         return invl_search
-
-    @api.model
-    def _set_demo_data(self):
-        """ Set the state of the demo datas.
-        Read the states from demo/recurring.contract.csv
-        """
-        file = THIS_DIR + '/../demo/recurring.contract.csv'
-        with open(file, 'rb') as csvfile:
-            reader = csv.reader(csvfile, delimiter=',')
-            header = True
-            for row in reader:
-                if header:
-                    contract_id = row.index('id')
-                    state = row.index('state')
-                    header = False
-                    continue
-
-                if row[state] == 'active':
-                    self.env.ref('sponsorship_compassion.{}'.format(
-                        row[contract_id])).contract_active()
-                elif row[state] == 'draft':
-                    continue
-                elif row[state] == 'mandate':
-                    self.env.ref('sponsorship_compassion.{}'.format(
-                        row[contract_id])).contract_waiting_mandate()
-                elif row[state] == 'waiting':
-                    self.env.ref('sponsorship_compassion.{}'.format(
-                        row[contract_id])).contract_waiting()
-
-                elif row[state] == 'terminated':
-                    self.env.ref('sponsorship_compassion.{}'.format(
-                        row[contract_id])).contract_terminated()
-
-                elif row[state] == 'cancelled':
-                    self.env.ref('sponsorship_compassion.{}'.format(
-                        row[contract_id])).contract_cancelled()
-                else:
-                    raise UserError(_('State not implemented'))

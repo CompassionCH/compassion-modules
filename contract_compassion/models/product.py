@@ -12,7 +12,7 @@
 from odoo import models, fields
 
 
-class product(models.Model):
+class Product(models.Model):
     _inherit = 'product.product'
 
     categ_name = fields.Char(
