@@ -3,7 +3,7 @@
     <record id="view_res_partner_invoice_line_button_form" model="ir.ui.view">
         <field name="name">res.partner.sponsorships.form</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="recurring_contract.view_partner_add_contract_form"/>
+        <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <!-- Redefine how contracts are shown. -->
             <xpath expr="//div[@name='button_box']" position="inside">
@@ -14,27 +14,82 @@
                     <field string="Sponsored children" name="number_children" widget="statinfo"/>
                 </button>
             </xpath>
-            <xpath expr="//page[1]" position="replace">
-                <page string="Sponsorships" groups="child_compassion.group_sponsorship">
+            <xpath expr="//page[1]" position="before">
+                <page string="Sponsorships" groups="child_compassion.group_sponsorship" autofocus="autofocus">
                     <button name="create_contract" string="Add" type="object"/>
                     <field name="contracts_fully_managed" invisible="True" />
                     <field name="contracts_paid" invisible="True" />
                     <field name="contracts_correspondant" invisible="True" />
                     <div attrs="{'invisible' : [('contracts_paid','=', [])]}">
                         <h3>Sponsorships as payer only</h3>
-                        <field name="contracts_paid" context="{'partner_contracts_view': True, 'default_type': 'S'}" />
+                        <field name="contracts_paid" context="{'default_type': 'S'}">
+                            <tree colors="blue:state == 'draft';black:state == 'active';gray:state == 'terminated'">
+                                <field name="child_id" />
+                                <field name="child_name" />
+                                <field name="start_date" />
+                                <field name="end_date" />
+                                <field name="payment_mode_id" />
+                                <field name="group_freq"/>
+                                <field name="last_paid_invoice_date"/>
+                                <field name="months_paid"/>
+                                <field name="total_amount" />
+                                <field name="state" />
+                                <button name="open_contract" type="object" string="open" />
+                            </tree>
+                        </field>
                     </div>
                     <div attrs="{'invisible' : [('contracts_correspondant','=', [])]}">
                         <h3>Sponsorships as correspondent only</h3>
-                        <field name="contracts_correspondant" context="{'partner_contracts_view': True, 'default_type': 'S'}" />
+                        <field name="contracts_correspondant" context="{'default_type': 'S'}">
+                            <tree colors="blue:state == 'draft';black:state == 'active';gray:state == 'terminated'">
+                                <field name="child_id" />
+                                <field name="child_name" />
+                                <field name="start_date" />
+                                <field name="end_date" />
+                                <field name="payment_mode_id" />
+                                <field name="group_freq"/>
+                                <field name="last_paid_invoice_date"/>
+                                <field name="months_paid"/>
+                                <field name="total_amount" />
+                                <field name="state" />
+                                <button name="open_contract" type="object" icon="fa-open" />
+                            </tree>
+                        </field>
                     </div>
                     <div attrs="{'invisible' : [('contracts_fully_managed','=', [])]}">
                         <h3>Sponsorships fully managed</h3>
-                        <field name="contracts_fully_managed" context="{'partner_contracts_view': True, 'default_type': 'S'}" />
+                        <field name="contracts_fully_managed" context="{'default_type': 'S'}">
+                            <tree colors="blue:state == 'draft';black:state == 'active';gray:state == 'terminated'">
+                                <field name="child_id" />
+                                <field name="child_name" />
+                                <field name="start_date" />
+                                <field name="end_date" />
+                                <field name="payment_mode_id" />
+                                <field name="group_freq"/>
+                                <field name="last_paid_invoice_date"/>
+                                <field name="months_paid"/>
+                                <field name="total_amount" />
+                                <field name="state" />
+                                <button name="open_contract" type="object" icon="fa-open" />
+                            </tree>
+                        </field>
                     </div>
                     <div attrs="{'invisible' : [('other_contract_ids','=', [])]}">
                         <h3>Other contracts</h3>
-                        <field name="other_contract_ids" context="{'partner_contracts_view': True, 'default_type': 'O'}" />
+                        <field name="other_contract_ids" context="{'default_type': 'O'}">
+                            <tree colors="blue:state == 'draft';black:state == 'active';gray:state == 'terminated'">
+                                <field name="name" />
+                                <field name="start_date" />
+                                <field name="end_date" />
+                                <field name="payment_mode_id" />
+                                <field name="group_freq"/>
+                                <field name="last_paid_invoice_date"/>
+                                <field name="months_paid"/>
+                                <field name="total_amount" />
+                                <field name="state" />
+                                <button name="open_contract" type="object" icon="fa-open" />
+                            </tree>
+                        </field>
                     </div>
                 </page>
             </xpath>

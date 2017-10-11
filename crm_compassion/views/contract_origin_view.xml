@@ -76,9 +76,9 @@
         <field name="inherit_id" ref="contract_compassion.view_recurring_contract_tree_compassion"/>
         <field eval="18" name="priority"/>
         <field name="arch" type="xml">
-            <field name="group_freq" position="after">
-                <field name="user_id" invisible="context.get('partner_contracts_view')"/>
-                <field name="origin_id" invisible="context.get('partner_contracts_view')"/>
+            <field name="payment_mode_id" position="after">
+                <field name="user_id"/>
+                <field name="origin_id"/>
             </field>
         </field>
     </record>
