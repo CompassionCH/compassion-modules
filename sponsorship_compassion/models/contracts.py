@@ -18,7 +18,6 @@ from odoo.addons.queue_job.job import job, related_action
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from lxml import etree
-import csv
 import os
 
 from .product import GIFT_CATEGORY, SPONSORSHIP_CATEGORY, FUND_CATEGORY

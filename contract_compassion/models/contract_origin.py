@@ -21,16 +21,17 @@ class contract_origin(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     name = fields.Char(compute='_set_name', store=True)
-    type = fields.Selection('_get_origin_types', help=_(
-        "Origin of contract : "
+    type = fields.Selection(
+        '_get_origin_types',
+        help="Origin of contract : "
         " * Contact with sponsor/ambassador : an other sponsor told the "
         "person about Compassion."
         " * Event : sponsorship was made during an event"
         " * Marketing campaign : sponsorship was made after specific "
         "campaign (magazine, ad, etc..)"
         " * Transfer : sponsorship transferred from another country."
-        " * Other : select only if none other type matches."
-    ), required=True)
+        " * Other : select only if none other type matches.",
+        required=True)
     partner_id = fields.Many2one('res.partner', 'Partner')
     analytic_id = fields.Many2one(
         'account.analytic.account', 'Analytic Account')
@@ -40,9 +41,9 @@ class contract_origin(models.Model):
     country_id = fields.Many2one('res.country', 'Country')
     other_name = fields.Char('Give details', size=128)
     won_sponsorships = fields.Integer(
-        compute='get_won_sponsorships', store=True)
+        compute='_compute_won_sponsorships', store=True)
     conversion_rate = fields.Float(
-        compute='get_won_sponsorships', store=True)
+        compute='_compute_won_sponsorships', store=True)
 
     _sql_constraints = [(
         'name_uniq', 'UNIQUE(name)',
@@ -89,7 +90,7 @@ class contract_origin(models.Model):
 
     @api.depends('contract_ids.origin_id', 'contract_ids.activation_date')
     @api.multi
-    def get_won_sponsorships(self):
+    def _compute_won_sponsorships(self):
         for origin in self.filtered('contract_ids'):
             contract_ids = origin.contract_ids
             origin.won_sponsorships = len(contract_ids)

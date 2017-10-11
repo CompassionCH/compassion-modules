@@ -47,7 +47,7 @@ class RecurringContract(models.Model):
         'Sponsored child code', related='child_id.local_id', readonly=True)
     activation_date = fields.Date(readonly=True, copy=False)
     is_active = fields.Boolean(
-        'Contract Active', compute='compute_active', store=True,
+        'Contract Active', compute='_compute_active', store=True,
         help="It indicates that the first invoice has been paid and the "
              "contract was activated.")
     # Field used for identifying gifts from sponsor
@@ -64,14 +64,15 @@ class RecurringContract(models.Model):
     parent_id = fields.Many2one(
         'recurring.contract', 'Previous sponsorship',
         track_visibility='onchange')
-    name = fields.Char(compute='_set_name', store=True)
+    name = fields.Char(compute='_compute_name', store=True)
     partner_id = fields.Many2one(
         'res.partner', 'Partner', required=True,
         readonly=False, states={'terminated': [('readonly', True)]},
         ondelete='restrict', track_visibility='onchange')
     type = fields.Selection('_get_type', required=True, default='O')
     group_freq = fields.Char(
-        string='Payment frequency', compute='_set_frequency', readonly=True)
+        string='Payment frequency', compute='_compute_frequency',
+        readonly=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -87,7 +88,7 @@ class RecurringContract(models.Model):
     @api.multi
     @api.depends('partner_id', 'partner_id.ref', 'child_id',
                  'child_id.local_id')
-    def _set_name(self):
+    def _compute_name(self):
         """ Gives a friendly name for a sponsorship """
         for contract in self:
             if contract.partner_id.ref or contract.reference:
@@ -101,7 +102,7 @@ class RecurringContract(models.Model):
 
     @api.multi
     @api.depends('activation_date', 'state')
-    def compute_active(self):
+    def _compute_active(self):
         for contract in self:
             contract.is_active = bool(contract.activation_date) and \
                 contract.state not in ('terminated', 'cancelled')
@@ -137,7 +138,7 @@ class RecurringContract(models.Model):
         return [('O', _('General'))]
 
     @api.multi
-    def _set_frequency(self):
+    def _compute_frequency(self):
         frequencies = {
             '1 month': _('Monthly'),
             '2 month': _('Bimonthly'),

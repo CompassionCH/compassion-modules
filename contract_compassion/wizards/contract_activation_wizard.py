@@ -12,7 +12,7 @@
 from odoo import models, api
 
 
-class activate_contract_wizard(models.TransientModel):
+class ActivateContractWizard(models.TransientModel):
     """ This wizard force activation of a contract. """
     _name = 'recurring.contract.activate.wizard'
 
