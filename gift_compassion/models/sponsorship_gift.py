@@ -391,12 +391,13 @@ class SponsorshipGift(models.Model):
             ('code', '=', '5003')])
         journal = self.env['account.journal'].search([
             ('code', '=', 'OD')])
+        maturity = self.date_sent or fields.Date.today()
         move_data = {
             'journal_id': journal.id,
-            'ref': 'Gift payment to GMC'
+            'ref': 'Gift payment to GMC',
+            'date': maturity
         }
         move_lines_data = list()
-        maturity = self.date_sent or fields.Date.today()
         analytic = self.env['account.analytic.account'].search([
             ('code', '=', 'ATT_CD')])
         # Create the debit lines from the Gift Account
@@ -409,6 +410,7 @@ class SponsorshipGift(models.Model):
                     'debit': invl.price_subtotal,
                     'credit': 0.0,
                     'analytic_account_id': analytic.id,
+                    'date': maturity,
                     'date_maturity': maturity,
                     'currency_id': self.currency_usd.id,
                     'amount_currency': invl.price_subtotal * exchange_rate
@@ -420,6 +422,7 @@ class SponsorshipGift(models.Model):
                 'name': self.name,
                 'debit': self.amount,
                 'analytic_account_id': analytic.id,
+                'date': maturity,
                 'date_maturity': maturity,
                 'currency_id': self.currency_usd.id,
                 'amount_currency': data['amount_us_dollars']
@@ -430,6 +433,7 @@ class SponsorshipGift(models.Model):
             'partner_id': self.partner_id.id,
             'account_id': account_credit.id,
             'name': self.name,
+            'date': maturity,
             'date_maturity': maturity,
             'credit': self.amount,
             'currency_id': self.currency_usd.id,
