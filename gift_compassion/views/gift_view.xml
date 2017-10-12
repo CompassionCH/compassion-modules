@@ -149,13 +149,13 @@
         <field name="name">Send Now</field>
         <field name="model_id" ref="model_sponsorship_gift"/>
         <field name="state">code</field>
-        <field name="code">object.action_send()</field>
+        <field name="code">records.action_send()</field>
     </record>
     <record id="deliver_gift" model="ir.actions.server">
         <field name="name">Mark as delivered</field>
         <field name="model_id" ref="model_sponsorship_gift"/>
         <field name="state">code</field>
-        <field name="code">object.mark_sent()</field>
+        <field name="code">records.mark_sent()</field>
     </record>
 
     <record id="send_gifts" model="ir.values">

@@ -139,7 +139,7 @@
         <field name="name">Send communication</field>
         <field name="model_id" ref="model_partner_communication_job"/>
         <field name="state">code</field>
-        <field name="code">object.send()</field>
+        <field name="code">records.send()</field>
     </record>
 
     <record id="send_action_menu" model="ir.values">
@@ -154,7 +154,7 @@
         <field name="name">Refresh communication</field>
         <field name="model_id" ref="model_partner_communication_job"/>
         <field name="state">code</field>
-        <field name="code">object.refresh_text(refresh_uid=True)</field>
+        <field name="code">records.refresh_text(refresh_uid=True)</field>
     </record>
 
     <record id="refresh_action_menu" model="ir.values">
