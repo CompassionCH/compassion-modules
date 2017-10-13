@@ -34,9 +34,9 @@ class ImportReview(models.TransientModel):
 
     # Import line related fields
     state = fields.Selection(related='current_line_id.status', readonly=True)
-    letter_image = fields.Binary(compute='_get_current_line')
-    letter_file = fields.Binary(
-        'Letter file', readonly=True, compute='_get_current_line')
+    letter_image = fields.Binary(
+        related='current_line_id.letter_image_preview')
+    letter_file = fields.Binary(related='current_line_id.letter_image.datas')
     fname = fields.Char(related='current_line_id.letter_image.name')
     partner_id = fields.Many2one(related='current_line_id.partner_id')
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
@@ -68,10 +68,6 @@ class ImportReview(models.TransientModel):
                 review.count = review.current_line_index + 1
                 review.progress = (
                     float(review.count) / review.nb_lines) * 100
-                review.letter_image = review.with_context(
-                    bin_size=False).current_line_id.letter_image_preview
-                review.letter_file = review.with_context(
-                    bin_size=False).current_line_id.letter_image.datas
 
     @api.onchange('sponsorship_id')
     def _get_partner_child(self):
