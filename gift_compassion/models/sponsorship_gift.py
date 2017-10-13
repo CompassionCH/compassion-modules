@@ -211,6 +211,7 @@ class SponsorshipGift(models.Model):
                 gift.invoice_line_ids.write({'gift_id': gift.id})
             else:
                 # Prevent computed fields to reset their values
+                vals.pop('message_follower_ids')
                 gift.write(vals)
             gift._create_gift_message()
 
