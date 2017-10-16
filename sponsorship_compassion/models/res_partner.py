@@ -143,21 +143,16 @@ class ResPartner(models.Model):
 
     @api.multi
     def show_move_lines(self):
-        try:
-            ir_model_data = self.env['ir.model.data']
-            move_line_id = ir_model_data.get_object_reference(
-                'account',
-                'view_move_line_tree')[1]
-        except ValueError:
-            move_line_id = False
+        tree_view_id = self.env.ref('account.view_move_line_tree').id
+        form_view_id = self.env.ref('account.view_move_line_form').id
         action = {
             'name': _('1050 move lines'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree',
             'res_model': 'account.move.line',
-            'view_id': move_line_id,
-            'views': [(move_line_id, 'tree')],
+            'view_id': tree_view_id,
+            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'target': 'current',
             'context': self.with_context(
                 search_default_partner_id=self.ids).env.context,
