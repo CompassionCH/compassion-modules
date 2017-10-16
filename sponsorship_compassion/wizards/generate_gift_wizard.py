@@ -8,7 +8,7 @@
 #    The licence is in the file __openerp__.py
 #
 ##############################################################################
-
+import odoo
 from odoo import api, fields, models, _
 
 from dateutil.relativedelta import relativedelta
@@ -74,8 +74,15 @@ class GenerateGiftWizard(models.TransientModel):
                     else:
                         invoice_date = self.invoice_date
                     inv_data = self._setup_invoice(contract, invoice_date)
-                    invoice = self.env['account.invoice'].create(inv_data)
-                    invoice_ids.append(invoice.id)
+                    # Commit at each invoice creation
+                    with odoo.api.Environment.manage():
+                        with odoo.registry(
+                                self.env.cr.dbname).cursor() as new_cr:
+                            new_env = api.Environment(
+                                new_cr, self.env.uid, self.env.context)
+                            invoice = self.env['account.invoice'].with_env(
+                                new_env).create(inv_data)
+                            invoice_ids.append(invoice.id)
 
         return {
             'name': _('Generated Invoices'),

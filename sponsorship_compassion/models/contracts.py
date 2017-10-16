@@ -327,7 +327,7 @@ class SponsorshipContract(models.Model):
             'product_id': product_id,
             'account_id': product.property_account_income_id.id,
             'name': 'Replacement of sponsorship (fund-suspended)'}
-        rec = self.env['account.analytic.attribution'].account_get(product.id)
+        rec = self.env['account.analytic.default'].account_get(product.id)
         if rec and rec.analytic_id:
             vals['account_analytic_id'] = rec.analytic_id.id
 
@@ -360,7 +360,7 @@ class SponsorshipContract(models.Model):
                 sponsorship_product.property_account_income_id.id,
                 'name': sponsorship_product.name
             }
-            rec = self.env['account.analytic.attribution'].account_get(
+            rec = self.env['account.analytic.default'].account_get(
                 sponsorship_product.id)
             if rec and rec.analytic_id:
                 invl_data['account_analytic_id'] = rec.analytic_id.id
@@ -463,20 +463,20 @@ class SponsorshipContract(models.Model):
                             suspend_config))
 
             if contract.type == 'G':
-                sponsorship = contract.sponsorship_id
-                if sponsorship.project_id.hold_gifts:
-                    # no gift allowed for project
-                    continue
-                if sponsorship.state in self._get_gen_states():
-                    for invl_data in invl_datas:
-                        invl_data['contract_id'] = sponsorship.id
-                else:
-                    logger.error(
-                        'No active sponsorship found for child {0}. '
-                        'The gift contract with id {1} is not valid.'
-                        .format(sponsorship.child_code, str(contract.id))
-                    )
-                    continue
+                for i in range(0, len(invl_datas)):
+                    sponsorship = contract.contract_line_ids[
+                        i].sponsorship_id
+                    gen_states = sponsorship.group_id._get_gen_states()
+                    if sponsorship.state in gen_states and not \
+                            sponsorship.project_id.hold_gifts:
+                        invl_datas[i]['contract_id'] = sponsorship.id
+                    else:
+                        logger.error(
+                            'No active sponsorship found for child {0}. '
+                            'The gift contract with id {1} is not valid.'
+                            .format(sponsorship.child_code, str(contract.id))
+                        )
+                        continue
 
             # Find the analytic account
             for invl_data in invl_datas:

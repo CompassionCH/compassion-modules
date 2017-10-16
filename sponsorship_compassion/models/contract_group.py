@@ -12,6 +12,7 @@
 import logging
 from datetime import datetime
 
+import odoo
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from odoo.addons.queue_job.job import job, related_action
@@ -105,8 +106,7 @@ class ContractGroup(models.Model):
                 logger.info("Birthday Gift Generation: {0}/{1} ".format(
                     str(count), total))
                 try:
-                    with self.env.cr.savepoint():
-                        self._generate_birthday_gift(gift_wizard, contract)
+                    self._generate_birthday_gift(gift_wizard, contract)
                 except:
                     logger.error("Gift generation failed")
                 finally:
@@ -120,5 +120,14 @@ class ContractGroup(models.Model):
     def _generate_birthday_gift(self, gift_wizard, contract):
         gift_wizard.write({
             'amount': contract.birthday_invoice})
-        gift_wizard.with_context(
+        res_action = gift_wizard.with_context(
             active_ids=contract.id).generate_invoice()
+        invoice_ids = res_action['domain'][0][2]
+        for invoice in self.env['account.invoice'].browse(invoice_ids):
+            # Commit at each invoice validation
+            with odoo.api.Environment.manage():
+                with odoo.registry(
+                        self.env.cr.dbname).cursor() as new_cr:
+                    new_env = api.Environment(
+                        new_cr, self.env.uid, self.env.context)
+                    invoice.with_env(new_env).action_invoice_open()
