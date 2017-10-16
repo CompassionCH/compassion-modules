@@ -164,7 +164,7 @@ class SponsorshipContract(models.Model):
         return res
 
     @api.multi
-    def _get_last_paid_invoice(self):
+    def _compute_last_paid_invoice(self):
         """ Override to exclude gift invoices. """
         for contract in self:
             contract.last_paid_invoice_date = max(
@@ -835,7 +835,7 @@ class SponsorshipContract(models.Model):
                 "UPDATE recurring_contract SET next_invoice_date = %s "
                 "WHERE id = %s", (next_date, contract.id))
         self.env.invalidate_all()
-        groups._set_next_invoice_date()
+        groups._compute_next_invoice_date()
         return True
 
     @api.multi
