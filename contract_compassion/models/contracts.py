@@ -439,4 +439,4 @@ class RecurringContract(models.Model):
                 group_date = fields.Datetime.from_string(
                     contract.group_id.next_invoice_date)
                 if group_date > next_invoice_date:
-                    contract.group_id._set_next_invoice_date()
+                    contract.group_id._compute_next_invoice_date()

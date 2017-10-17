@@ -105,8 +105,7 @@ class ContractGroup(models.Model):
                 logger.info("Birthday Gift Generation: {0}/{1} ".format(
                     str(count), total))
                 try:
-                    with self.env.cr.savepoint():
-                        self._generate_birthday_gift(gift_wizard, contract)
+                    self._generate_birthday_gift(gift_wizard, contract)
                 except:
                     logger.error("Gift generation failed")
                 finally:
