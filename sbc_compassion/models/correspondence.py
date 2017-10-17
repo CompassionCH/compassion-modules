@@ -703,6 +703,7 @@ class Correspondence(models.Model):
             letter.letter_image = self.env['ir.attachment'].create({
                 "name": name,
                 "datas": image_data,
+                'datas_fname': name,
                 'res_model': self._name,
                 'res_id': letter.id,
             })
@@ -772,6 +773,7 @@ class Correspondence(models.Model):
                 _('You can only attach tiff or pdf files'))
         vals = {
             'name': 'New letter' + type_,
+            'datas_fname': 'New letter' + type_,
             'res_model': self._name,
             'datas': image_data
         }
