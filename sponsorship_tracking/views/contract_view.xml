@@ -123,6 +123,7 @@
     <record id="view_follow_contract_tree_compassion" model="ir.ui.view">
         <field name="name">follow.contract.compassion.tree</field>
         <field name="model">recurring.contract</field>
+        <field eval="20" name="priority"/>
         <field name="arch" type="xml">
             <tree string="Follow contracts" create="false"
                   colors ="blue:sds_state == 'draft';red:sds_state == 'start';green:sds_state == 'waiting_welcome';black:sds_state == 'active';gray:state in ('cancelled')">
