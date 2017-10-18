@@ -127,6 +127,7 @@ class CompassionChild(models.Model):
         ('Cooking / Food Service', 'Cooking and food service'),
         ('Cosmetology', 'Cosmetology'),
         ('Electrical/ Electronics', 'Electronics'),
+        ('Electrical / Electronics', 'Electronics'),
         ('Graphic Arts', 'Graphic arts'),
         ('Hospitality / Hotel / Tourism', 'Hospitality, hotel and tourism'),
         ('Income-Generating Program at Project',
@@ -393,7 +394,7 @@ class CompassionChild(models.Model):
                 new_photo = fields.Date.from_string(pictures[0].date)
                 diff_pic = relativedelta(new_photo, last_photo)
                 diff_today = relativedelta(today, new_photo)
-                if (diff_pic.months > 6 or diff_pic.years > 1) and (
+                if (diff_pic.months > 6 or diff_pic.years > 0) and (
                         diff_today.months <= 6 and diff_today.years == 0):
                     child.new_photo()
         return res
