@@ -42,9 +42,10 @@ class Email(models.Model):
                     comm_obj.create({
                         'config_id': config.id,
                         'partner_id': partner.id,
-                        'user_id': self.env.uid,
+                        'user_id': email.author_id.user_ids.id,
                         'object_ids': email.recipient_ids.ids,
                         'state': 'done',
+                        'auto_send': False,
                         'email_id': email.id,
                         'sent_date': fields.Datetime.now(),
                         'body_html': email.body_html,

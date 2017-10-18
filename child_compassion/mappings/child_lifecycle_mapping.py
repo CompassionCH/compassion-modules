@@ -54,9 +54,9 @@ class LifecycleMapping(OnrampMapping):
         'gpid': None,
     }
 
-    CONSTANTS = {
-
-    }
+    def __init__(self, env):
+        super(LifecycleMapping, self).__init__(env)
+        self.CONSTANTS = {'gpid': env.user.country_id.code}
 
     def _process_odoo_data(self, odoo_data):
         """ Put the request reason in lower case. """

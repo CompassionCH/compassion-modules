@@ -62,9 +62,9 @@ class ICPLifecycleMapping(OnrampMapping):
         'gpid': None,
     }
 
-    CONSTANTS = {
-
-    }
+    def __init__(self, env):
+        super(ICPLifecycleMapping, self).__init__(env)
+        self.CONSTANTS = {'gpid': env.user.country_id.code}
 
     def _process_odoo_data(self, odoo_data):
         # Convert Project Status
