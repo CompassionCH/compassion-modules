@@ -99,8 +99,7 @@ class CorrespondenceTemplate(models.Model):
         help='Maximum Y position of the area in which to look for the '
              'pattern inside the template (given in pixels)')
     checkbox_ids = fields.One2many(
-        'correspondence.lang.checkbox', 'template_id',
-        default=lambda self: self._get_default_checkboxes(), copy=True)
+             'correspondence.lang.checkbox', 'template_id', copy=True)
     nber_keypoints = fields.Integer(
         "Number of key points", compute="_compute_template_keypoints",
         store=True)
@@ -131,21 +130,6 @@ class CorrespondenceTemplate(models.Model):
             ('CH-A-4S01-1', _('Layout 4')),
             ('CH-A-5S01-1', _('Layout 5')),
             ('CH-A-6S11-1', _('Layout 6'))]
-
-    def _get_default_checkboxes(self):
-        return [
-            (0, False, {'language_id': self.env.ref(
-                'child_compassion.lang_compassion_french').id}),
-            (0, False, {'language_id': self.env.ref(
-                'child_compassion.lang_compassion_german').id}),
-            (0, False, {'language_id': self.env.ref(
-                'child_compassion.lang_compassion_italian').id}),
-            (0, False, {'language_id': self.env.ref(
-                'child_compassion.lang_compassion_english').id}),
-            (0, False, {'language_id': self.env.ref(
-                'child_compassion.lang_compassion_spanish').id}),
-            (0, False, {'language_id': False}),
-        ]
 
     @api.constrains(
         'pattern_x_min', 'pattern_x_max',
