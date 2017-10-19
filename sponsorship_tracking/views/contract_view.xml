@@ -151,7 +151,7 @@
         <field name="priority" eval="18"/>
         <field name="arch" type="xml">
             <search string="Search contracts">
-                <field name="reference" filter_domain="['|', '|', '|', '|',
+                <field name="reference" filter_domain="['|', '|', '|',
                              ('reference','ilike',self),
                              ('partner_id','child_of',self),
                              ('child_code', 'ilike', self),
