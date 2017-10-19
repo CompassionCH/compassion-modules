@@ -99,7 +99,7 @@ class CorrespondenceTemplate(models.Model):
         help='Maximum Y position of the area in which to look for the '
              'pattern inside the template (given in pixels)')
     checkbox_ids = fields.One2many(
-             'correspondence.lang.checkbox', 'template_id', copy=True)
+        'correspondence.lang.checkbox', 'template_id', copy=True)
     nber_keypoints = fields.Integer(
         "Number of key points", compute="_compute_template_keypoints",
         store=True)
