@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Stephane Eicher <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 from odoo.addons.message_center_compassion.mappings.base_mapping import \

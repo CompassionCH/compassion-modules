@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Yannick Vaucher, Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import logging

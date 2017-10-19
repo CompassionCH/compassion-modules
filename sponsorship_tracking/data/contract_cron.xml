@@ -2,7 +2,7 @@
 <!--
     Copyright (C) 2015 Compassion (http://www.compassion.ch)
     @author David Coninckx <david@coninckx.com>, Emanuel Cino <ecino@compassion.ch>
-    The licence is in the file __openerp__.py
+    The licence is in the file __manifest__.py
 -->
 <odoo>
     <data noupdate="1"> <!-- noupdate = 1 for the 'active' field -->

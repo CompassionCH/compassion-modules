@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Albert SHENOUDA <albert.shenouda@efrei.net>, Emanuel Cino
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
