@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Michael Sandoz <michaelsandoz87@gmail.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 from .base_sponsorship_mapping import BaseSponsorshipMapping

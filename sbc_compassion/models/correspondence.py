@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino, Emmanuel Mathier
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import base64
@@ -60,7 +60,7 @@ class Correspondence(models.Model):
         'recurring.contract', 'Sponsorship', required=True, domain=[
             ('state', 'not in', ['draft', 'cancelled'])],
         track_visibility='onchange')
-    name = fields.Char(compute='_set_name')
+    name = fields.Char(compute='_compute_name')
     correspondant_id = fields.Many2one(
         related='sponsorship_id.correspondant_id', store=True)
     child_id = fields.Many2one(related='sponsorship_id.child_id', store=True)
@@ -88,7 +88,7 @@ class Correspondence(models.Model):
     letter_image = fields.Many2one('ir.attachment')
     letter_format = fields.Selection([
         ('pdf', 'pdf'), ('tiff', 'tiff'), ('zip', 'zip')],
-        compute='compute_letter_format', store=True)
+        compute='_compute_letter_format', store=True)
 
     # 3. Letter language and text information
     #########################################
@@ -140,11 +140,11 @@ class Correspondence(models.Model):
     translator = fields.Char()
     translator_id = fields.Many2one(
         'res.partner', 'GP Translator', compute='_compute_translator',
-        inverse='_set_translator', store=True)
+        inverse='_inverse_set_translator', store=True)
     email = fields.Char(related='correspondant_id.email')
     sponsorship_state = fields.Selection(
         related='sponsorship_id.state', string='Sponsorship state')
-    is_final_letter = fields.Boolean(compute='_is_final_letter')
+    is_final_letter = fields.Boolean(compute='_compute_is_final_letter')
     generator_id = fields.Many2one('correspondence.s2b.generator')
 
     # Letter remote access
@@ -256,7 +256,7 @@ class Correspondence(models.Model):
 
     @api.multi
     @api.depends('sponsorship_id')
-    def _set_name(self):
+    def _compute_name(self):
         for letter in self:
             if letter.sponsorship_id and letter.communication_type_ids:
                 letter.name = letter.communication_type_ids[0].name + ' (' + \
@@ -338,7 +338,7 @@ class Correspondence(models.Model):
 
     @api.multi
     @api.depends('letter_image')
-    def compute_letter_format(self):
+    def _compute_letter_format(self):
         for letter in self.filtered('letter_image'):
             ftype = magic.from_buffer(base64.b64decode(
                 letter.letter_image.datas), True)
@@ -378,7 +378,7 @@ class Correspondence(models.Model):
                         letter.translator_id = partner
 
     @api.multi
-    def _set_translator(self):
+    def _inverse_set_translator(self):
         """ Sets the translator e-mail address. """
         for letter in self:
             if letter.translator:
@@ -389,7 +389,7 @@ class Correspondence(models.Model):
     def _get_uuid(self):
         return str(uuid.uuid4())
 
-    def _is_final_letter(self):
+    def _compute_is_final_letter(self):
         for letter in self:
             letter.is_final_letter = \
                 'Final Letter' in letter.communication_type_ids.mapped(
@@ -670,8 +670,8 @@ class Correspondence(models.Model):
         """
         if vals.get('kit_identifier', 'null') == 'null':
             raise UserError(
-                'No valid kit id was returned. This is most '
-                'probably because the sponsorship is not known.')
+                _('No valid kit id was returned. This is most '
+                  'probably because the sponsorship is not known.'))
         return self.write(vals)
 
     def process_letter(self):

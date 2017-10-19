@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
@@ -27,18 +27,18 @@ class Contracts(models.Model):
         help='By now equals to reading language. Could be used in the future')
     child_letter_ids = fields.Many2many(
         'correspondence', string='Child letters',
-        compute='_get_letters')
+        compute='_compute_get_letters')
     sponsor_letter_ids = fields.Many2many(
         'correspondence', string='Sponsor letters',
-        compute='_get_letters')
+        compute='_compute_get_letters')
     nb_letters = fields.Integer(
-        compute='_get_letters'
+        compute='_compute_get_letters'
     )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    def _get_letters(self):
+    def _compute_get_letters(self):
         """ Retrieve correspondence of sponsorship contracts. """
         for sponsorship in self:
             letters_obj = self.env['correspondence']

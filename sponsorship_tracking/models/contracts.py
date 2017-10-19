@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: David Coninckx, Emanuel Cino
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 from odoo import api, models, fields, exceptions, _
@@ -252,7 +252,8 @@ class RecurringContract(models.Model):
             lang = contract.correspondant_id.lang[:2]
             sds_user = self.env['sds.follower.settings'].get_param(
                 'sub_' + lang)
-            contract.write({'sds_uid': sds_user})
+            contract.write(
+                {'sds_uid': sds_user, 'sds_state': 'cancelled', 'color': 1})
         return res
 
     @api.multi

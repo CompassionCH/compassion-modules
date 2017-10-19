@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
@@ -62,7 +62,7 @@ class CorrespondenceTemplate(models.Model):
     layout = fields.Selection('get_gmc_layouts', required=True)
     pattern_image = fields.Binary()
     template_image = fields.Binary(
-        compute='_compute_image', inverse='_set_image',
+        compute='_compute_image', inverse='_inverse_set_image',
         help='Use 300 DPI images')  # resolution
     detection_result = fields.Binary(
         compute='_compute_detection')
@@ -71,19 +71,19 @@ class CorrespondenceTemplate(models.Model):
     page_height = fields.Integer(
         help='Height of the template in pixels')
     qrcode_x_min = fields.Integer(
-        compute="_onchange_template_image",
+        compute="_compute_onchange_template_image",
         help='Minimum X position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_x_max = fields.Integer(
-        compute="_onchange_template_image",
+        compute="_compute_onchange_template_image",
         help='Maximum X position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_y_min = fields.Integer(
-        compute="_onchange_template_image",
+        compute="_compute_onchange_template_image",
         help='Minimum Y position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_y_max = fields.Integer(
-        compute="_onchange_template_image",
+        compute="_compute_onchange_template_image",
         help='Maximum Y position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     pattern_x_min = fields.Integer(
@@ -99,7 +99,7 @@ class CorrespondenceTemplate(models.Model):
         help='Maximum Y position of the area in which to look for the '
              'pattern inside the template (given in pixels)')
     checkbox_ids = fields.One2many(
-             'correspondence.lang.checkbox', 'template_id', copy=True)
+        'correspondence.lang.checkbox', 'template_id', copy=True)
     nber_keypoints = fields.Integer(
         "Number of key points", compute="_compute_template_keypoints",
         store=True)
@@ -149,7 +149,7 @@ class CorrespondenceTemplate(models.Model):
             if attachment:
                 template.template_image = attachment.datas
 
-    def _set_image(self):
+    def _inverse_set_image(self):
         if self.template_image:
             datas = base64.b64decode(self.template_image)
             ftype = magic.from_buffer(datas, True)
@@ -177,7 +177,7 @@ class CorrespondenceTemplate(models.Model):
             self._compute_template_keypoints()
 
     @api.onchange('template_image')
-    def _onchange_template_image(self):
+    def _compute_onchange_template_image(self):
         for template in self:
             # compute image size and QR code position
             template._compute_img_constant()

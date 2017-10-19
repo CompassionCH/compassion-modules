@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import logging
@@ -73,7 +73,7 @@ class SBCConnector(OnrampConnector):
             letter_url = r.text
         else:
             raise UserError(
-                '[%s] %s' % (r.status_code, r.text))
+                _('[%s] %s') % (r.status_code, r.text))
         return letter_url
 
     def get_letter_image(self, letter_url, type='jpeg', pages=0, dpi=96):

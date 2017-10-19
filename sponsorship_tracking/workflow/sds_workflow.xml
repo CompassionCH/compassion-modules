@@ -2,7 +2,7 @@
 <!--
     Copyright (C) 2015 Compassion (http://www.compassion.ch)
     @author David Coninckx <david@coninckx.com>
-    The licence is in the file __openerp__.py
+    The licence is in the file __manifest__.py
 -->
 <odoo>
     <!-- Override activities -->
@@ -35,14 +35,6 @@
         <field name="name">active</field>
         <field name="kind">function</field>
         <field name="action">write({'sds_state': 'active', 'color': 0})</field>
-    </record>
-
-    <record model="workflow.activity" id="act_cancelled">
-        <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
-        <field name="name">cancelled</field>
-        <field name="kind">function</field>
-        <field name="action">write({'sds_state': 'cancelled', 'color': 1})</field>
-        <field name="flow_stop" eval='True' />
     </record>
 
     <record model="workflow.activity" id="act_sub_waiting">
@@ -107,14 +99,14 @@
 
     <record model="workflow.transition" id="t5b">
         <field name="act_from" ref="act_active" />
-        <field name="act_to" ref="act_cancelled" />
+        <field name="act_to" ref="contract_compassion.act_cancelled" />
         <field name="signal">contract_terminated</field>
         <field name="condition">end_reason!='1' or not global_id</field>
     </record>
 
     <record model="workflow.transition" id="t5d">
         <field name="act_from" ref="act_waiting_welcome" />
-        <field name="act_to" ref="act_cancelled" />
+        <field name="act_to" ref="contract_compassion.act_cancelled" />
         <field name="signal">contract_terminated</field>
         <field name="condition">end_reason!='1' or not global_id</field>
     </record>
