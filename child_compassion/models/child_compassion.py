@@ -387,9 +387,6 @@ class CompassionChild(models.Model):
         # Update child's pictures
         for child in self:
             res = child._get_last_pictures() and res
-            # After retrieving pictures we want to commit to ensure
-            # the attachments are saved in database
-            self.env.cr.commit()
             pictures = child.pictures_ids
             if len(pictures) > 1:
                 today = date.today()

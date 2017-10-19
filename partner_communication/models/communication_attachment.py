@@ -45,18 +45,20 @@ class CommunicationAttachment(models.Model):
         :param vals: vals for creation
         :return: record created
         """
-        if 'data' in vals and 'attachment_id' not in vals:
+        new_record = 'data' in vals and 'attachment_id' not in vals
+        if new_record:
             name = vals['name']
             attachment = self.env['ir.attachment'].create({
                 'datas_fname': name,
-                'res_model': self._name,
+                'res_model': 'partner.communication.job',
                 'datas': vals['data'],
-                'name': name
+                'name': name,
             })
             vals['attachment_id'] = attachment.id
 
         res = super(CommunicationAttachment, self).create(vals)
-        res.attachment_id.res_id = res.id
+        if new_record:
+            res.attachment_id.res_id = res.communication_id.id
         return res
 
     @api.multi
