@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Loic Hausammann <loic_hausammann@hotmail.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 from odoo import models, api, fields

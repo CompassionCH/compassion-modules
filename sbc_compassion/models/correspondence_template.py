@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
@@ -71,19 +71,19 @@ class CorrespondenceTemplate(models.Model):
     page_height = fields.Integer(
         help='Height of the template in pixels')
     qrcode_x_min = fields.Integer(
-        compute="_onchange_template_image",
+        compute="_compute_onchange_template_image",
         help='Minimum X position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_x_max = fields.Integer(
-        compute="_onchange_template_image",
+        compute="_compute_onchange_template_image",
         help='Maximum X position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_y_min = fields.Integer(
-        compute="_onchange_template_image",
+        compute="_compute_onchange_template_image",
         help='Minimum Y position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_y_max = fields.Integer(
-        compute="_onchange_template_image",
+        compute="_compute_onchange_template_image",
         help='Maximum Y position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     pattern_x_min = fields.Integer(
@@ -177,7 +177,7 @@ class CorrespondenceTemplate(models.Model):
             self._compute_template_keypoints()
 
     @api.onchange('template_image')
-    def _onchange_template_image(self):
+    def _compute_onchange_template_image(self):
         for template in self:
             # compute image size and QR code position
             template._compute_img_constant()

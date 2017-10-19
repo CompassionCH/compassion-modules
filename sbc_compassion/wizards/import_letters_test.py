@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Loic Hausammann <loic_hausammann@hotmail.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 from odoo import models, fields, _, api
@@ -28,10 +28,10 @@ class TestImportLetters(models.TransientModel):
         'ir.attachment', relation='test_import_ir_attachment',
         string="Add a CSV file")
     nber_test = fields.Integer("NBER OF FILE")
-    test_ok = fields.Char("Test passed", compute="_set_ready")
-    template_ok = fields.Char("Template passed", compute="_set_ready")
-    qr_ok = fields.Char("QR code passed",  compute="_set_ready")
-    lang_ok = fields.Char("Languages passed", compute="_set_ready")
+    test_ok = fields.Char("Test passed", compute="_compute_set_ready")
+    template_ok = fields.Char("Template passed", compute="_compute_set_ready")
+    qr_ok = fields.Char("QR code passed",  compute="_compute_set_ready")
+    lang_ok = fields.Char("Languages passed", compute="_compute_set_ready")
     test_import_line_ids = fields.One2many(
         'test.import.letter.line', 'test_import_id', 'Files to process',
         ondelete='cascade')
@@ -66,7 +66,7 @@ class TestImportLetters(models.TransientModel):
 
     @api.multi
     @api.depends("test_import_line_ids")
-    def _set_ready(self):
+    def _compute_set_ready(self):
         """ Check in which state self is by counting the number of elements in
         each Many2many and delete the lines that have been correctly analyzed
         """

@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Nate Oostendo <nate@oostendorp.net>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 # This file has been written by Nate Oostendo but edited inside compassion

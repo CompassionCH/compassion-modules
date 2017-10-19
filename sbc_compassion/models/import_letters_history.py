@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Emmanuel Mathier, Loic Hausammann <loic_hausammann@hotmail.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 """
@@ -55,7 +55,7 @@ class ImportLettersHistory(models.Model):
         track_visibility='onchange')
     import_completed = fields.Boolean()
     nber_letters = fields.Integer(
-        "Number of files", readonly=True, compute="_count_nber_letters")
+        "Number of files", readonly=True, compute="_compute_count_nber_letters")
     data = fields.Many2many('ir.attachment', string="Add a file")
     import_line_ids = fields.One2many(
         'import.letter.line', 'import_id', 'Files to process',
@@ -94,7 +94,7 @@ class ImportLettersHistory(models.Model):
                 import_letters.state = "draft"
 
     @api.depends("data")
-    def _count_nber_letters(self):
+    def _compute_count_nber_letters(self):
         """
         Counts the number of scans. If a zip file is given, the number of
         scans inside is counted.

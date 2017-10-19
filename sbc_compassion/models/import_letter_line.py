@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Emmanuel Mathier <emmanuel.mathier@gmail.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 from odoo import fields, models, api, _
@@ -25,9 +25,9 @@ class ImportLetterLine(models.Model):
     ##########################################################################
 
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship',
-                                     compute='_set_sponsorship_id')
+                                     compute='_compute_set_sponsorship_id')
     partner_id = fields.Many2one('res.partner', 'Partner')
-    name = fields.Char(compute='_set_name')
+    name = fields.Char(compute='_compute_set_name')
     child_id = fields.Many2one('compassion.child', 'Child')
     letter_language_id = fields.Many2one(
         'res.lang.compassion', 'Language')
@@ -87,7 +87,7 @@ class ImportLetterLine(models.Model):
 
     @api.multi
     @api.depends('partner_id', 'child_id')
-    def _set_sponsorship_id(self):
+    def _compute_set_sponsorship_id(self):
         """ From the partner codega and the child code, find the record
         linking them together.
         At the same time, check if the child, the partner and the sponsorship
@@ -102,7 +102,7 @@ class ImportLetterLine(models.Model):
 
     @api.multi
     @api.depends('partner_id', 'child_id')
-    def _set_name(self):
+    def _compute_set_name(self):
         for line in self:
             if line.sponsorship_id:
                 line.name = str(
