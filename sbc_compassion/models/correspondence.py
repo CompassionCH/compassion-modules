@@ -670,8 +670,8 @@ class Correspondence(models.Model):
         """
         if vals.get('kit_identifier', 'null') == 'null':
             raise UserError(
-                'No valid kit id was returned. This is most '
-                'probably because the sponsorship is not known.')
+                _('No valid kit id was returned. This is most '
+                  'probably because the sponsorship is not known.'))
         return self.write(vals)
 
     def process_letter(self):

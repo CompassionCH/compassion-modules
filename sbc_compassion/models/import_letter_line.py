@@ -25,7 +25,7 @@ class ImportLetterLine(models.Model):
     ##########################################################################
 
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship',
-                                     compute='compute_sponsorship')
+                                     compute='_compute_sponsorship')
     partner_id = fields.Many2one('res.partner', 'Partner')
     name = fields.Char(compute='_compute_name')
     child_id = fields.Many2one('compassion.child', 'Child')
@@ -40,7 +40,8 @@ class ImportLetterLine(models.Model):
         ("no_sponsorship", _("Sponsorship not Found")),
         ("no_child_partner", _("Partner or Child not Found")),
         ("no_template", _("Template not Detected")),
-        ("ok", _("OK"))], compute="_compute_check_status", store=True, readonly=True)
+        ("ok", _("OK"))], compute="_compute_check_status",
+        store=True, readonly=True)
     original_text = fields.Text()
 
     ##########################################################################
@@ -87,7 +88,7 @@ class ImportLetterLine(models.Model):
 
     @api.multi
     @api.depends('partner_id', 'child_id')
-    def compute_sponsorship(self):
+    def _compute_sponsorship(self):
         """ From the partner codega and the child code, find the record
         linking them together.
         At the same time, check if the child, the partner and the sponsorship
