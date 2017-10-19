@@ -23,12 +23,12 @@ class ImportReview(models.TransientModel):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    progress = fields.Float(compute='_compute_get_current_line', store=True)
+    progress = fields.Float(compute='_compute_current_line', store=True)
     current_line_index = fields.Integer(default=0)
-    count = fields.Integer(compute='_compute_get_current_line', store=True)
-    nb_lines = fields.Integer(compute='_compute_get_current_line', store=True)
+    count = fields.Integer(compute='_compute_current_line', store=True)
+    nb_lines = fields.Integer(compute='_compute_current_line', store=True)
     current_line_id = fields.Many2one(
-        'import.letter.line', 'Letter', compute='_compute_get_current_line',
+        'import.letter.line', 'Letter', compute='_compute_current_line',
         store=True, readonly=True)
     postpone_import_id = fields.Many2one('import.letters.history')
 
@@ -59,7 +59,7 @@ class ImportReview(models.TransientModel):
     ##########################################################################
     @api.multi
     @api.depends('current_line_index')
-    def _compute_get_current_line(self):
+    def _compute_current_line(self):
         line_ids = self.env.context.get('line_ids')
         if line_ids:
             for review in self:
@@ -107,7 +107,7 @@ class ImportReview(models.TransientModel):
         """ Return to import view. """
         self.ensure_one()
         import_history = self.current_line_id.import_id
-        import_history.import_line_ids.check_status()
+        import_history.import_line_ids._compute_check_status()
         return {
             'type': 'ir.actions.act_window',
             'view_type': 'form',

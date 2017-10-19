@@ -62,7 +62,7 @@ class CorrespondenceTemplate(models.Model):
     layout = fields.Selection('get_gmc_layouts', required=True)
     pattern_image = fields.Binary()
     template_image = fields.Binary(
-        compute='_compute_image', inverse='_set_image',
+        compute='_compute_image', inverse='_inverse_set_image',
         help='Use 300 DPI images')  # resolution
     detection_result = fields.Binary(
         compute='_compute_detection')
@@ -149,7 +149,7 @@ class CorrespondenceTemplate(models.Model):
             if attachment:
                 template.template_image = attachment.datas
 
-    def _set_image(self):
+    def _inverse_set_image(self):
         if self.template_image:
             datas = base64.b64decode(self.template_image)
             ftype = magic.from_buffer(datas, True)

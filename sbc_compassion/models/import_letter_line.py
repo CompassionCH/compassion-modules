@@ -25,9 +25,9 @@ class ImportLetterLine(models.Model):
     ##########################################################################
 
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship',
-                                     compute='_compute_set_sponsorship_id')
+                                     compute='compute_sponsorship')
     partner_id = fields.Many2one('res.partner', 'Partner')
-    name = fields.Char(compute='_compute_set_name')
+    name = fields.Char(compute='_compute_name')
     child_id = fields.Many2one('compassion.child', 'Child')
     letter_language_id = fields.Many2one(
         'res.lang.compassion', 'Language')
@@ -40,7 +40,7 @@ class ImportLetterLine(models.Model):
         ("no_sponsorship", _("Sponsorship not Found")),
         ("no_child_partner", _("Partner or Child not Found")),
         ("no_template", _("Template not Detected")),
-        ("ok", _("OK"))], compute="check_status", store=True, readonly=True)
+        ("ok", _("OK"))], compute="_compute_check_status", store=True, readonly=True)
     original_text = fields.Text()
 
     ##########################################################################
@@ -64,7 +64,7 @@ class ImportLetterLine(models.Model):
     @api.multi
     @api.depends('partner_id', 'child_id', 'sponsorship_id',
                  'letter_language_id', 'import_id.template_id')
-    def check_status(self):
+    def _compute_check_status(self):
         """ At each change, check if all the fields are OK
         """
         default_template = self.env.ref('sbc_compassion.default_template')
@@ -87,7 +87,7 @@ class ImportLetterLine(models.Model):
 
     @api.multi
     @api.depends('partner_id', 'child_id')
-    def _compute_set_sponsorship_id(self):
+    def compute_sponsorship(self):
         """ From the partner codega and the child code, find the record
         linking them together.
         At the same time, check if the child, the partner and the sponsorship
@@ -102,7 +102,7 @@ class ImportLetterLine(models.Model):
 
     @api.multi
     @api.depends('partner_id', 'child_id')
-    def _compute_set_name(self):
+    def _compute_name(self):
         for line in self:
             if line.sponsorship_id:
                 line.name = str(

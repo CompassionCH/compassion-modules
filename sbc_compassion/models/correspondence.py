@@ -60,7 +60,7 @@ class Correspondence(models.Model):
         'recurring.contract', 'Sponsorship', required=True, domain=[
             ('state', 'not in', ['draft', 'cancelled'])],
         track_visibility='onchange')
-    name = fields.Char(compute='_compute_set_name')
+    name = fields.Char(compute='_compute_name')
     correspondant_id = fields.Many2one(
         related='sponsorship_id.correspondant_id', store=True)
     child_id = fields.Many2one(related='sponsorship_id.child_id', store=True)
@@ -88,7 +88,7 @@ class Correspondence(models.Model):
     letter_image = fields.Many2one('ir.attachment')
     letter_format = fields.Selection([
         ('pdf', 'pdf'), ('tiff', 'tiff'), ('zip', 'zip')],
-        compute='compute_letter_format', store=True)
+        compute='_compute_letter_format', store=True)
 
     # 3. Letter language and text information
     #########################################
@@ -140,7 +140,7 @@ class Correspondence(models.Model):
     translator = fields.Char()
     translator_id = fields.Many2one(
         'res.partner', 'GP Translator', compute='_compute_translator',
-        inverse='_set_translator', store=True)
+        inverse='_inverse_set_translator', store=True)
     email = fields.Char(related='correspondant_id.email')
     sponsorship_state = fields.Selection(
         related='sponsorship_id.state', string='Sponsorship state')
@@ -256,7 +256,7 @@ class Correspondence(models.Model):
 
     @api.multi
     @api.depends('sponsorship_id')
-    def _compute_set_name(self):
+    def _compute_name(self):
         for letter in self:
             if letter.sponsorship_id and letter.communication_type_ids:
                 letter.name = letter.communication_type_ids[0].name + ' (' + \
@@ -338,7 +338,7 @@ class Correspondence(models.Model):
 
     @api.multi
     @api.depends('letter_image')
-    def compute_letter_format(self):
+    def _compute_letter_format(self):
         for letter in self.filtered('letter_image'):
             ftype = magic.from_buffer(base64.b64decode(
                 letter.letter_image.datas), True)
@@ -378,7 +378,7 @@ class Correspondence(models.Model):
                         letter.translator_id = partner
 
     @api.multi
-    def _set_translator(self):
+    def _inverse_set_translator(self):
         """ Sets the translator e-mail address. """
         for letter in self:
             if letter.translator:
