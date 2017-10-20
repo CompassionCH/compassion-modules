@@ -49,14 +49,14 @@ class DownloadChildPictures(models.TransientModel):
 
     @api.multi
     def _get_picture_url(self, raw_url, type, width, height):
-        if (type.lower() == 'headshot'):
+        if type.lower() == 'headshot':
             cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(
                 width)
-        elif (type.lower() == 'fullshot'):
+        elif type.lower() == 'fullshot':
             cloudinary = "w_" + str(width) + ",h_" + str(height) + ",c_fit"
 
-        image_split = (raw_url).split('/')
-        ind = image_split.index('upload')
+        image_split = raw_url.split('/')
+        ind = image_split.index('media.ci.org')
         image_split[ind + 1] = cloudinary
         url = "/".join(image_split)
         return url
@@ -76,11 +76,10 @@ class DownloadChildPictures(models.TransientModel):
                                             type=self.type,
                                             height=self.height,
                                             width=self.width)
-                url = url[0]
                 try:
                     data = base64.encodestring(
                         urllib2.urlopen(url).read())
-                except:
+                except urllib2.URLError:
                     # Not good, the url doesn't lead to an image
                     logger.error('Image cannot be fetched: ' + str(
                         url))
@@ -98,7 +97,7 @@ class DownloadChildPictures(models.TransientModel):
             self.download_data = base64.b64encode(zip_buffer.read())
 
         self.information = 'Zip file contains ' + str(found) + ' ' \
-                           'pictures.\n\n'
+                                                               'pictures.\n\n'
         self._check_picture_availability()
         return {
             'type': 'ir.actions.act_window',
@@ -108,7 +107,7 @@ class DownloadChildPictures(models.TransientModel):
             'res_model': self._name,
             'context': self.env.context,
             'target': 'new',
-        }
+            }
 
     _height_change = 0
     _width_change = 0
@@ -170,7 +169,7 @@ class DownloadChildPictures(models.TransientModel):
         # Search children having a 'image_url' returning False
         children_with_no_url = children.filtered(
             lambda c: not c.image_url
-        )
+            )
         # If there is some, we will print their corresponding childe_code
         if children_with_no_url:
             child_codes = children_with_no_url.mapped('local_id')
@@ -184,10 +183,10 @@ class DownloadChildPictures(models.TransientModel):
             url = self._get_picture_url(
                 raw_url=child.image_url,
                 type='fullshot', height=1, width=1
-            )[0]
+                )
             try:
                 urllib2.urlopen(url)
-            except:
+            except urllib2.URLError:
                 # Not good, the url doesn't lead to an image
                 children_with_invalid_url += [child.local_id]
         if children_with_invalid_url:
