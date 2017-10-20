@@ -108,7 +108,7 @@ class EventCompassion(models.Model):
             if event.analytic_id:
                 expenses = analytic_line_obj.search([
                     ('account_id', '=', event.analytic_id.id),
-                    ('amount', '>', '0.0')])
+                    ('amount', '<', '0.0')])
                 incomes = self.env['account.invoice.line'].search([
                     ('state', '=', 'paid'),
                     ('account_analytic_id', '=', event.analytic_id.id),
