@@ -18,6 +18,7 @@
                     </div>
                     <div class="oe_right oe_button_box" name="button_box">
                         <button name="update_informations" type="object" string="get info" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
+                        <button name="get_lifecycle_event" string="get lifecycle" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
                     </div>
                     <group>
                         <group>
@@ -214,7 +215,7 @@
                 <field name="icp_id"/>
                 <field name="status"/>
                 <field name="last_update_date"/>
-                <filter name="suspended" string="Suspended" domain="[('suspension','in',('suspended','fund-suspended'))]"/>
+                <filter name="suspended" string="Suspended" domain="[('suspension','=','fund-suspended')]"/>
                 <group expand="0" string="Group By...">
                     <filter string="Last Update" domain="[]" context="{'group_by':'last_update_date'}"/>
                 </group>

@@ -135,6 +135,7 @@ class CompassionChild(models.Model):
         ('Industrial / Manufacturing / Fabrication',
          'Industrial / Manufacturing / Fabrication'),
         ('Manufacturing/ Fabrication', 'Manufacturing / Fabrication'),
+        ('Manufacturing / Fabrication', 'Manufacturing / Fabrication'),
         ('Medical/ Health Services', 'Medical / Health services'),
         ('Not Enrolled', 'Not enrolled'),
         ('Not enrolled', 'Not enrolled'),

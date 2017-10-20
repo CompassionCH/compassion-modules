@@ -17,6 +17,9 @@ from ..mappings.icp_mapping import ICPMapping
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
+from odoo.addons.message_center_compassion.tools.onramp_connector import \
+    OnrampConnector
+
 logger = logging.getLogger(__name__)
 
 
@@ -403,6 +406,7 @@ class CompassionProject(models.Model):
     def details_answer(self, vals):
         """ Called when receiving the answer of GetDetails message. """
         self.ensure_one()
+        vals['last_update_date'] = fields.Date.today()
         self.write(vals)
         self.env['compassion.project.description'].create({
             'project_id': self.id})
@@ -443,6 +447,20 @@ class CompassionProject(models.Model):
             raise UserError(message.failure_reason)
 
         return True
+
+    @api.multi
+    def get_lifecycle_event(self):
+        onramp = OnrampConnector()
+        endpoint = 'churchpartners/{}/kits/icplifecycleeventkit'
+        lifecylcle_ids = list()
+        for project in self:
+            result = onramp.send_message(
+                endpoint.format(project.icp_id), 'GET')
+            if 'ICPLifecycleEventList' in result.get('content', {}):
+                lifecylcle_ids.extend(
+                    self.env['compassion.project.ile'].process_commkit(
+                        result['content']))
+        return lifecylcle_ids
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
