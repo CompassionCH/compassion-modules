@@ -327,6 +327,7 @@ class EventCompassion(models.Model):
             'res_model': 'account.analytic.line',
             'src_model': 'crm.event.compassion',
             'context': self.with_context(
+                default_account_id=self.analytic_id.id,
                 group_by='general_account_id').env.context,
             'domain': [('id', 'in', self.expense_line_ids.ids)],
         }
