@@ -110,7 +110,7 @@
                     <filter name="waiting" string="Waiting" domain="[('state','in', ('draft','waiting','mandate'))]"/>
                 </xpath>
                 <xpath expr="//filter[@name='terminated']" position="replace">
-                    <filter name="finished" string="Finished" domain="[('state','in', ('cancelled','terminated'))]"/>
+                    <filter name="finished" string="Finished" domain="[('state','=', 'terminated')]"/>
                     <separator/>
                     <filter string="French" name="french" domain="[('partner_id.lang', '=', 'fr_CH')]"/>
                     <filter string="German" name="german" domain="[('partner_id.lang', '=', 'de_DE')]"/>
