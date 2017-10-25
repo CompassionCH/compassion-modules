@@ -14,7 +14,7 @@
                     <field name="state" invisible="1"/>
                     <group states="sub">
                         <field name="channel" attrs="{'required': [('state', '=', 'sub')]}"/>
-                        <field name="child_id" attrs="{'invisible': [('channel', '!=', 'internet')], 'required': [('channel', '=', 'internet')]}"/>
+                        <field name="child_id" attrs="{'invisible': [('channel', '=', 'childpool')], 'required': [('channel', '=', 'direct')]}"/>
                     </group>
                     <group states="no_sub">
                         <field name="no_sub_default_reasons" attrs="{'required': [('state', '=', 'no_sub')]}"/>

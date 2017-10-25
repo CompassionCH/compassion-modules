@@ -31,7 +31,7 @@ class contract_origin(models.Model):
         "campaign (magazine, ad, etc..)"
         " * Transfer : sponsorship transferred from another country."
         " * Other : select only if none other type matches.",
-        required=True)
+        required=True, index=True)
     partner_id = fields.Many2one('res.partner', 'Partner')
     analytic_id = fields.Many2one(
         'account.analytic.account', 'Analytic Account')
@@ -73,8 +73,6 @@ class contract_origin(models.Model):
                     name = _('Transfer from partner country')
             elif origin.type == 'other':
                 name = origin.other_name or 'Other'
-            elif origin.type == 'sub':
-                name = _('SUB Sponsorship')
 
             origin.name = name
 
@@ -83,7 +81,6 @@ class contract_origin(models.Model):
             ('partner', _("Contact with sponsor/ambassador")),
             ('event', _("Event")),
             ('marketing', _("Marketing campaign")),
-            ('sub', _("SUB Sponsorship")),
             ('transfer', _("Transfer")),
             ('other', _("Other")),
         ]

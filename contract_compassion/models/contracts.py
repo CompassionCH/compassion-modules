@@ -63,7 +63,7 @@ class RecurringContract(models.Model):
     channel = fields.Selection('_get_channels')
     parent_id = fields.Many2one(
         'recurring.contract', 'Previous sponsorship',
-        track_visibility='onchange')
+        track_visibility='onchange', index=True)
     name = fields.Char(compute='_compute_name', store=True)
     partner_id = fields.Many2one(
         'res.partner', 'Partner', required=True,
@@ -132,6 +132,7 @@ class RecurringContract(models.Model):
             ('internet', _("From the website")),
             ('phone', _("By phone")),
             ('payment', _("Payment")),
+            ('sub', _("SUB Sponsorship")),
         ]
 
     def _get_type(self):
@@ -260,9 +261,7 @@ class RecurringContract(models.Model):
         """ If a previous sponsorship is selected, the origin should be
         SUB Sponsorship. """
         if self.parent_id:
-            origin = self.env['recurring.contract.origin'].search(
-                [('type', '=', 'sub')])[0]
-            self.origin_id = origin.id
+            self.origin_id = self.parent_id.origin_id.id
 
     @api.multi
     def open_contract(self):
