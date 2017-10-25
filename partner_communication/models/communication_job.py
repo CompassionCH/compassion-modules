@@ -69,7 +69,10 @@ class CommunicationJob(models.Model):
     send_mode = fields.Selection('send_mode_select')
     email_template_id = fields.Many2one(
         related='config_id.email_template_id', store=True)
-    report_id = fields.Many2one(related='config_id.report_id', store=True)
+    report_id = fields.Many2one(
+        'ir.actions.report.xml', 'Letter template',
+        domain=[('model', '=', 'partner.communication.job')]
+    )
     user_id = fields.Many2one(
         'res.users', 'From', domain=[('share', '=', False)])
     email_to = fields.Char(
@@ -165,6 +168,10 @@ class CommunicationJob(models.Model):
         # Check if phonecall is needed
         if job.need_call or job.config_id.need_call:
             job.state = 'call'
+
+        # Check print report
+        if not vals.get('report_id'):
+            job.report_id = job.config_id.report_id
 
         # Determine send mode
         send_mode = job.config_id.get_inform_mode(job.partner_id)
