@@ -32,6 +32,11 @@ class GenerateCommunicationWizard(models.TransientModel):
     customize_template = fields.Boolean()
     subject = fields.Char()
     body_html = fields.Html()
+    report_id = fields.Many2one(
+        'ir.actions.report.xml', 'Letter template',
+        domain=[('model', '=', 'partner.communication.job')]
+    )
+    language_added_in_domain = fields.Boolean()
     preview = fields.Html(readonly=True)
 
     ##########################################################################
@@ -57,14 +62,17 @@ class GenerateCommunicationWizard(models.TransientModel):
     ##########################################################################
     @api.onchange('selection_domain', 'force_language')
     def onchange_domain(self):
-        if self.force_language:
+        if self.force_language and not self.language_added_in_domain:
             domain = self.selection_domain or '[]'
             domain = domain[:-1] + ", ('lang', '=', '{}')]".format(
                 self.force_language)
             self.selection_domain = domain.replace('[, ', '[')
+            self.language_added_in_domain = True
         if self.selection_domain:
             self.partner_ids = self.env['res.partner'].search(
                 safe_eval(self.selection_domain))
+        if not self.force_language:
+            self.language_added_in_domain = False
 
     @api.onchange('model_id')
     def onchange_model_id(self):
@@ -122,7 +130,7 @@ class GenerateCommunicationWizard(models.TransientModel):
                 'config_id': model.id,
                 'auto_send': False,
                 'send_mode': self.send_mode,
-                'report_id': model.report_id.id,
+                'report_id': self.report_id.id or model.report_id.id,
             })
             communications += comm
 

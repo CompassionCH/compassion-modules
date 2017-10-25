@@ -1,0 +1,16 @@
+<odoo>
+    <record model="ir.ui.view" id="generate_communication_wizard_thanks_form">
+        <field name="name">genereate.communication.wizard.thanks.form</field>
+        <field name="model">partner.communication.generate.wizard</field>
+        <field name="inherit_id" ref="partner_communication.generate_communication_wizard_form"/>
+        <field name="arch" type="xml">
+            <field name="report_id" position="after">
+                <field name="print_subject" attrs="{'invisible': [('send_mode', '=', 'digital')]}"/>
+                <field name="print_header" attrs="{'invisible': [('send_mode', '=', 'digital')]}"/>
+            </field>
+            <field name="force_language" position="after">
+                <field name="success_story_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>
