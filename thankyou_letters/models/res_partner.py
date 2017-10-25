@@ -24,8 +24,8 @@ class ResPartner(models.Model):
     _name = 'res.partner'
     _inherit = 'res.partner'
 
-    salutation = fields.Char(compute='_get_salutation')
-    short_salutation = fields.Char(compute='_get_salutation')
+    salutation = fields.Char(compute='_compute_salutation')
+    short_salutation = fields.Char(compute='_compute_salutation')
     gender = fields.Selection(related='title.gender')
     thankyou_preference = fields.Selection(
         '_get_delivery_preference', default='auto_digital', required=True)
@@ -33,7 +33,7 @@ class ResPartner(models.Model):
     short_address = fields.Char(compute='_compute_address')
 
     @api.multi
-    def _get_salutation(self):
+    def _compute_salutation(self):
         for p in self:
             partner = p.with_context(lang=p.lang)
             if partner.title and partner.firstname and not partner.is_company:
@@ -61,14 +61,13 @@ class ResPartner(models.Model):
         # Replace line returns
         p = re.compile('\\n+')
         for partner in self:
+            res = ''
             t_partner = partner.with_context(lang=partner.lang)
             if not partner.is_company and partner.title.shortcut:
                 res = t_partner.title.shortcut + ' '
                 if partner.firstname:
                     res += partner.firstname + ' '
                 res += partner.lastname + '<br/>'
-            else:
-                res = partner.name + '<br/>'
             res += t_partner.contact_address
             partner.short_address = p.sub('<br/>', res)
 
