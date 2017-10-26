@@ -214,13 +214,7 @@ class CommunicationJob(models.Model):
         to_print = no_call.filtered(lambda j: j.send_mode == 'physical')
         for job in no_call.filtered(lambda j: j.send_mode in ('both',
                                                               'digital')):
-            # Commit after sending by e-mail
-            try:
-                with self.env.cr.savepoint():
-                    state = job._send_mail()
-            except:
-                logger.error("Partner communication: send mail failed.")
-                continue
+            state = job._send_mail()
             if job.send_mode != 'both':
                 job.write({
                     'state': state,
@@ -418,7 +412,8 @@ class CommunicationJob(models.Model):
                 'communication_config_id': self.config_id.id,
                 'body_html': self.body_html,
                 'subject': self.subject,
-                'attachment_ids': [(6, 0, self.ir_attachment_ids.ids)]
+                'attachment_ids': [(6, 0, self.ir_attachment_ids.ids)],
+                'auto_delete': False,
             }
             if self.email_to:
                 # Replace partner e-mail by specified address

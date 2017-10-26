@@ -72,7 +72,7 @@
                 <!-- Ability to link gift contract lines to sponsorships -->
                 <field name="contract_type" invisible="1"/>
                 <field name="sponsorship_id"
-                       domain="[('partner_id', '=', parent.partner_id), ('type', 'like', 'S'), ('state', 'not in', ['draft', 'terminated', 'cancelled'])]"
+                       domain="[('correspondant_id', '=', parent.partner_id), ('type', 'like', 'S'), ('state', 'not in', ['draft', 'terminated', 'cancelled'])]"
                 />
             </field>
         </field>

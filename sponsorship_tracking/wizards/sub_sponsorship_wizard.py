@@ -23,7 +23,10 @@ class SubSponsorshipWizard(models.TransientModel):
     state = fields.Selection([
         ('sub', 'sub'),
         ('no_sub', 'no_sub')])
-    channel = fields.Selection('_get_channels')
+    channel = fields.Selection([
+        ('childpool', 'Global Childpool'),
+        ('direct', 'Direct')
+    ])
     child_id = fields.Many2one(
         'compassion.child', 'Child', domain=[('state', 'in', ['N', 'I'])])
     no_sub_default_reasons = fields.Selection(
@@ -42,12 +45,6 @@ class SubSponsorshipWizard(models.TransientModel):
             ('other', _('Other...'))
         ]
 
-    def _get_channels(self):
-        """Returns the available channel through the new sponsor
-        reached Compassion.
-        """
-        return self.env['recurring.contract']._get_channels()
-
     @api.multi
     def create_subsponsorship(self):
         """ Creates a subsponsorship. """
@@ -58,12 +55,9 @@ class SubSponsorshipWizard(models.TransientModel):
             allow_rewind=True)
         contract = contract_obj.browse(sponsorship_id)
         contract.sds_uid = self.env.user
-        origin_obj = self.env['recurring.contract.origin']
-        sub_origin_id = origin_obj.search([('type', '=', 'sub')], limit=1).id
         sub_contract = contract.copy({
             'parent_id': sponsorship_id,
-            'origin_id': sub_origin_id,
-            'channel': self.channel,
+            'channel': 'sub',
             'child_id': self.child_id.id,
             'user_id': False,
             'sds_uid': self.env.uid,
