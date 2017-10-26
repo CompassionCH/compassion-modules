@@ -5,7 +5,7 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 from dateutil.relativedelta import relativedelta
@@ -60,8 +60,8 @@ def migrate(env, version):
             env.cr.execute(
                 "UPDATE recurring_contract "
                 "SET origin_id = %s, channel = 'sub' "
-                "WHERE id = ANY(%s)"
-                , [root_origin.origin_id.id, to_change.ids]
+                "WHERE id = ANY(%s)",
+                [root_origin.origin_id.id, to_change.ids]
             )
 
     # Change type of SUB Sponsorship Origin

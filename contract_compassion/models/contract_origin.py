@@ -13,14 +13,14 @@ from odoo import models, fields, api, _
 from psycopg2 import IntegrityError
 
 
-class contract_origin(models.Model):
+class ContractOrigin(models.Model):
     """ Origin of a contract """
     _name = 'recurring.contract.origin'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    name = fields.Char(compute='_set_name', store=True)
+    name = fields.Char(compute='_compute_name', store=True)
     type = fields.Selection(
         '_get_origin_types',
         help="Origin of contract : "
@@ -56,7 +56,7 @@ class contract_origin(models.Model):
     ##########################################################################
     @api.multi
     @api.depends('type')
-    def _set_name(self):
+    def _compute_name(self):
         for origin in self:
             name = ""
             if origin.type == 'partner':
@@ -102,7 +102,7 @@ class contract_origin(models.Model):
     def create(self, vals):
         """Try to find existing origin instead of raising an error."""
         try:
-            res = super(contract_origin, self).create(vals)
+            res = super(ContractOrigin, self).create(vals)
         except IntegrityError:
             # Find the origin
             self.env.invalidate_all()
