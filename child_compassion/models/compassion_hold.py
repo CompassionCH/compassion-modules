@@ -464,26 +464,16 @@ class CompassionHold(models.Model):
                     new_hold_date)
             old_date = hold.expiration_date
             hold.write(hold_vals)
-            try:
-                with self.env.cr.savepoint():
-                    # Notify hold owner
-                    subject = "No money hold extension" if extension else \
-                        "No money hold expiration"
-                    body = body_extension if extension else body_expiration
-                    values = {
-                        'local_id': hold.child_id.local_id,
-                        'old_expiration': old_date,
-                        'new_expiration': new_hold_date.strftime("%d %B %Y"),
-                        'additional_text': additional_text or '',
-                    }
-                    hold.message_post(
-                        body=body.format(**values),
-                        subject=subject,
-                        partner_ids=hold.primary_owner.partner_id.ids,
-                        type='comment',
-                        subtype='mail.mt_comment',
-                        content_subtype='plaintext'
-                    )
-            except:
-                logger.error(
-                    "No money extension notification not sent to owner.")
+            subject = "No money hold extension" if extension else \
+                "No money hold expiration"
+            body = body_extension if extension else body_expiration
+            values = {
+                'local_id': hold.child_id.local_id,
+                'old_expiration': old_date,
+                'new_expiration': new_hold_date.strftime("%d %B %Y"),
+                'additional_text': additional_text or '',
+            }
+            hold.message_post(
+                body=body.format(**values),
+                subject=subject,
+            )
