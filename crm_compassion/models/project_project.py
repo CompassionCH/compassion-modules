@@ -28,7 +28,7 @@ class Project(models.Model):
         """ Set the analytic tag. """
         if self.project_type == 'marketing':
             tag_id = self.env.ref(
-                'crm_compassion.tag_campaign').id
+                'crm_compassion.tag_campaign')
             self.tag_ids += tag_id
 
     @api.model

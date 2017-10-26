@@ -39,4 +39,16 @@
             </field>
         </field>
     </record>
+
+    <!-- Remove quick creation of project -->
+    <record model="ir.ui.view" id="project_kanban_compassion">
+        <field name="name">Project remove quick create</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="on_create" position="replace"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>
