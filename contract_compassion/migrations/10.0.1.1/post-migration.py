@@ -29,10 +29,8 @@ def migrate(env, version):
         start_date = sponsorship.start_date
         one_month_before = fields.Date.to_string(fields.Date.from_string(
             start_date) - relativedelta(months=1))
-        partners = sponsorship.partner_id | sponsorship.correspondant_id
         candidates = contract_obj.search([
-            '|', ('partner_id', 'in', partners.ids),
-            ('correspondant_id', 'in', partners.ids),
+            ('partner_id', '=', sponsorship.partner_id.id),
             ('state', '=', 'terminated'),
             ('end_date', '<', start_date),
             ('end_date', '>', one_month_before)
