@@ -31,8 +31,12 @@ class SponsorshipContract(models.Model):
     def _compute_nb_gifts(self):
         gift_obj = self.env['sponsorship.gift']
         for contract in self:
+            sponsorship_ids = contract.ids
+            if contract.type == 'G':
+                sponsorship_ids = contract.mapped(
+                    'contract_line_ids.sponsorship_id.id')
             contract.number_gifts = gift_obj.search_count([
-                ('sponsorship_id', '=', contract.id),
+                ('sponsorship_id', 'in', sponsorship_ids),
             ])
 
     @api.multi
@@ -67,13 +71,17 @@ class SponsorshipContract(models.Model):
 
     @api.multi
     def open_gifts(self):
+        sponsorship_ids = self.ids
+        if self.type == 'G':
+            sponsorship_ids = self.mapped(
+                'contract_line_ids.sponsorship_id.id')
         return {
             'name': _('Sponsorship gifts'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree,form',
             'res_model': 'sponsorship.gift',
-            'domain': [('sponsorship_id', 'in', self.ids)],
+            'domain': [('sponsorship_id', 'in', sponsorship_ids)],
             'context': self.env.context,
             'target': 'current',
         }

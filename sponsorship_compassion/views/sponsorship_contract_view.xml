@@ -54,6 +54,7 @@
                 <attribute name="domain" position="replace">
                     <attribute name="domain">[('correspondant_id', '=', correspondant_id), ('child_id', '!=', child_id)]</attribute>
                 </attribute>
+                <attribute name="attrs">{'invisible': [('type', 'not in', ['S', 'SC'])]}</attribute>
             </field>
         </field>
     </record>
