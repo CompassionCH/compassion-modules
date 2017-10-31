@@ -67,6 +67,6 @@ class CallWizard(models.TransientModel):
             'view_mode': 'form,tree,calendar',
             'type': 'ir.actions.act_window',
             'nodestroy': False,  # close the pop-up wizard after action
-            'target': 'current',
+            'target': 'new',
             'context': action_ctx,
         }
