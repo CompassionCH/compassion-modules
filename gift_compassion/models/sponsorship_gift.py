@@ -53,6 +53,9 @@ class SponsorshipGift(models.Model):
     payment_id = fields.Many2one(
         'account.move', 'GMC Payment', copy=False
     )
+    inverse_payment_id = fields.Many2one(
+        'account.move', 'Inverse move', copy=False
+    )
     message_id = fields.Many2one(
         'gmc.message.pool', 'GMC message', copy=False
     )
@@ -601,7 +604,34 @@ class SponsorshipGift(models.Model):
 
     @api.multi
     def _gift_undeliverable(self):
-        """ Notify users defined in settings. """
+        """
+        Create an inverse move
+        Notify users defined in settings.
+        """
+        inverse_credit_account = self.env['account.account'].search([
+            ('code', '=', '5003')
+        ])
+        inverse_debit_account = self.env['account.account'].search([
+            ('code', '=', '2001')
+        ])
+        analytic = self.env['account.analytic.account'].search([
+            ('code', '=', 'ATT_CD')])
+        for gift in self:
+            pay_move = gift.payment_id
+            inverse_move = pay_move.copy({
+                'date': fields.Date.today()
+            })
+            inverse_move.line_ids.write({'date_maturity': fields.Date.today()})
+            for line in inverse_move.line_ids:
+                if line.debit > 0:
+                    line.account_id = inverse_debit_account
+                    line.analytic_account_id = False
+                elif line.credit > 0:
+                    line.account_id = inverse_credit_account
+                    line.analytic_account_id = analytic
+            inverse_move.post()
+            gift.inverse_payment_id = inverse_move
+
         notify_ids = self.env['staff.notification.settings'].get_param(
             'gift_notify_ids')
         if notify_ids:
@@ -616,9 +646,9 @@ class SponsorshipGift(models.Model):
                     'reason': gift.undeliverable_reason
                 }
                 body = (
-                    "{name} ({ref}) made a gift to {child_name}"
-                    " ({child_code}) which is undeliverable because {reason}."
-                    "\nPlease inform the sponsor about it."
+                    u"{name} ({ref}) made a gift to {child_name}"
+                    u" ({child_code}) which is undeliverable because {reason}."
+                    u"\nPlease inform the sponsor about it."
                 ).format(**values)
                 gift.message_post(
                     body=body,
