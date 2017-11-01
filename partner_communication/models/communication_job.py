@@ -441,7 +441,8 @@ class CommunicationJob(models.Model):
             # Get pdf should directly send it to the printer if report
             # is correctly configured.
             report_obj.with_context(
-                print_name=self.env.user.firstname[:3] + ' ' + job.subject
+                print_name=self.env.user.firstname[:3] + ' ' + (
+                    job.subject or '')
             ).get_pdf(job.ids, job.report_id.report_name)
             # Print attachments
             job.attachment_ids.print_attachments()
