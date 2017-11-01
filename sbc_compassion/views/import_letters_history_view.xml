@@ -11,6 +11,7 @@
                     <field name="state" widget="statusbar" statusbar_visible="draft,open,done"/>
                     <field name="import_completed" invisible="1"/>
                     <button name="button_save" string="Import Letters" states="ready" type="object" class="oe_highlight"/>
+                    <button name="button_import" string="Load Files" type="object" states="draft"/>
                 </header>
                 <sheet>
                     <h1>Imported Letters</h1>
@@ -18,8 +19,6 @@
                         <label for="data" string="Files" states="draft"/>
                         <div states="draft">
                             <field name="data" widget="many2many_binary"/>
-                            <separator/>
-                            <button name="button_import" string="Load Files" type="object" attrs="{'invisible':[('state', '!=', 'draft')]}"/>
                         </div>
                         <field name="config_id" widget="radio"/>
                         <field name="nber_letters"/>

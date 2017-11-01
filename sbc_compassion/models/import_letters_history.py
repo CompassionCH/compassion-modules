@@ -93,7 +93,7 @@ class ImportLettersHistory(models.Model):
             else:
                 import_letters.state = "draft"
 
-    @api.depends("data")
+    @api.onchange("data")
     def _compute_nber_letters(self):
         """
         Counts the number of scans. If a zip file is given, the number of
