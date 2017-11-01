@@ -88,7 +88,9 @@ class ResPartner(models.Model):
             partner.unrec_items = move_line_obj.search_count([
                 ('partner_id', '=', partner.id),
                 ('reconciled', '=', False),
-                ('account_id.reconcile', '=', True)])
+                ('account_id.reconcile', '=', True),
+                ('account_id.code', '=', '1050')
+            ])
             partner.receivable_items = move_line_obj.search_count([
                 ('partner_id', '=', partner.id),
                 ('account_id.code', '=', '1050')])
@@ -180,7 +182,7 @@ class ResPartner(models.Model):
     @api.multi
     def unreconciled_transaction_items(self):
         return self.with_context(
-            search_default_unreconciled=1).show_move_lines()
+            search_default_unreconciled=1).receivable_transaction_items()
 
     @api.multi
     def receivable_transaction_items(self):
