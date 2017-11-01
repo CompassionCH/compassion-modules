@@ -38,7 +38,8 @@ class Phonecall(models.Model):
                 # Unlock the need call state
                 communication.write({
                     'need_call': False,
-                    'state': 'pending'
+                    'state': 'pending',
+                    'phonecall_id': phonecall.id
                 })
             info = _('Phone call with sponsor') + ':' + '<br/>'
             if phonecall.description:

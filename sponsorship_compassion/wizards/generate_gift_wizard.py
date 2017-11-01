@@ -77,7 +77,7 @@ class GenerateGiftWizard(models.TransientModel):
                     invoice = self.env['account.invoice'].create(inv_data)
                     # Commit at each invoice creation. This does not break
                     # the state
-                    self.env.cr.commit()
+                    self.env.cr.commit()    # pylint: disable=invalid-commit
                     invoice_ids.append(invoice.id)
 
         return {

@@ -173,6 +173,18 @@ class SponsorshipContract(models.Model):
                     l.product_id.categ_name != GIFT_CATEGORY).mapped(
                         'invoice_id.date_invoice') or [False])
 
+    @api.multi
+    def _compute_invoices(self):
+        gift_contracts = self.filtered(lambda c: c.type == 'G')
+        for contract in gift_contracts:
+            invoices = contract.mapped(
+                'contract_line_ids.sponsorship_id.invoice_line_ids.invoice_id')
+            gift_invoices = invoices.filtered(
+                lambda i: i.invoice_type == 'gift' and i.state not in
+                ('cancel', 'draft'))
+            contract.nb_invoices = len(gift_invoices)
+        super(SponsorshipContract, self - gift_contracts)._compute_invoices()
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -510,6 +522,18 @@ class SponsorshipContract(models.Model):
             # If state draft correspondant_id=partner_id
             self.correspondant_id = self.partner_id
 
+    @api.multi
+    def open_invoices(self):
+        res = super(SponsorshipContract, self).open_invoices()
+        if self.type == 'G':
+            # Include gifts of related sponsorship for gift contracts
+            sponsorship_invoices = self.mapped(
+                'contract_line_ids.sponsorship_id.invoice_line_ids.invoice_id')
+            gift_invoices = sponsorship_invoices.filtered(
+                lambda i: i.invoice_type == 'gift')
+            res['domain'] = [('id', 'in', gift_invoices.ids)]
+        return res
+
     ##########################################################################
     #                            WORKFLOW METHODS                            #
     ##########################################################################
@@ -804,6 +828,16 @@ class SponsorshipContract(models.Model):
                         _("The project %s is fund-suspended. You cannot "
                           "reconcile invoice (%s).") % (project.icp_id,
                                                         invoice.id))
+
+                # Activate gift related contracts (if any)
+                if 'S' in contract.type:
+                    gift_contract_lines = self.env[
+                        'recurring.contract.line'].search([
+                            ('sponsorship_id', '=', contract.id),
+                            ('contract_id.state', '=', 'waiting')
+                        ])
+                    gift_contract_lines.mapped('contract_id').signal_workflow(
+                        'contract_active')
         super(SponsorshipContract, self).invoice_paid(invoice)
 
     @api.multi

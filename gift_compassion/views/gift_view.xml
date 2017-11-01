@@ -75,6 +75,7 @@
                             <field name="date_sent"/>
                             <field name="message_id" groups="message_center_compassion.group_gmc"/>
                             <field name="payment_id"/>
+                            <field name="inverse_payment_id" attrs="{'invisible': [('inverse_payment_id', '=', False)]}"/>
                         </group>
                         <group>
                             <field name="gmc_gift_id"/>
