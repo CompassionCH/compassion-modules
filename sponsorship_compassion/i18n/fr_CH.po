@@ -984,6 +984,12 @@ msgid "Exchange of sponsor"
 msgstr "Echange parrain"
 
 #. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:145
+#, python-format
+msgid "Exchange of beneficiary"
+msgstr "Changement d'enfant"
+
+#. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_account_move
 msgid "Account Entry"
 msgstr "Account Entry"

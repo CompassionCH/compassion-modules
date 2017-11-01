@@ -141,7 +141,8 @@ class SponsorshipContract(models.Model):
             res.extend([
                 ('1', _("Depart of child")),
                 ('10', _("Subreject")),
-                ('11', _("Exchange of sponsor"))
+                ('11', _("Exchange of sponsor")),
+                ('13', _("Exchange of beneficiary")),
             ])
             res.sort(key=lambda tup: int(float(tup[0])))  # Sort res
         return res
@@ -213,7 +214,7 @@ class SponsorshipContract(models.Model):
                 vals['correspondant_id'])
             self.mapped('child_id').write({
                 'sponsor_id': vals['correspondant_id']
-            })
+                })
 
         super(SponsorshipContract, self).write(vals)
 
@@ -226,7 +227,7 @@ class SponsorshipContract(models.Model):
                 "Error while changing correspondant at GMC. "
                 "The sponsorship is no longer active at GMC side. "
                 "Please activate it again manually."
-            )
+                )
         if 'reading_language' in vals:
             (self - updated_correspondents)._on_language_changed()
 
