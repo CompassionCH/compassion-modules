@@ -96,41 +96,33 @@
                         <page string="Details">
                             <group>
                                 <group>
-                                    <field name="problem_statement"/>
-                                    <field name="background_information"/>
-                                    <field name="objectives"/>
-                                    <field name="success_factors"/>
+                                    <field name="problem_statement" widget="html"/>
+                                    <field name="background_information" widget="html"/>
+                                    <field name="objectives" widget="html"/>
+                                    <field name="success_factors" widget="html"/>
                                 </group>
                                 <group>
-                                    <group>
-                                        <field name="problem_statement"/>
-                                        <field name="background_information"/>
-                                        <field name="objectives"/>
-                                        <field name="success_factors"/>
-                                    </group>
-                                    <group>
-                                        <field name="solutions"/>
-                                        <field name="not_funded_implications"/>
-                                        <field name="implementation_risks"/>
-                                    </group>
-                                    <group attrs="{'invisible': [('type', 'not in', ('Survival', 'Survival FY Details'))]}">
-                                        <field name="survival_slots"/>
-                                        <field name="launch_reason"/>
-                                        <field name="mother_children_challenges"/>
-                                        <field name="community_benefits"/>
-                                        <field name="mother_average_age"/>
-                                        <field name="household_children_average"/>
-                                        <field name="under_five_population"/>
-                                        <field name="birth_medical"/>
-                                    </group>
-                                    <group attrs="{'invisible': [('type', 'not in', ('Survival', 'Survival FY Details'))]}">
-                                        <field name="spiritual_activity_ids" widget="many2many_tags"/>
-                                        <field name="cognitive_activity_ids" widget="many2many_tags"/>
-                                        <field name="physical_activity_ids" widget="many2many_tags"/>
-                                        <field name="socio_activity_ids" widget="many2many_tags"/>
-                                        <field name="activities_for_parents"/>
-                                        <field name="other_activities"/>
-                                    </group>
+                                    <field name="solutions" widget="html"/>
+                                    <field name="not_funded_implications" widget="html"/>
+                                    <field name="implementation_risks" widget="html"/>
+                                </group>
+                                <group attrs="{'invisible': [('type', 'not in', ('Survival', 'Survival FY Details'))]}">
+                                    <field name="survival_slots"/>
+                                    <field name="launch_reason" widget="html"/>
+                                    <field name="mother_children_challenges" widget="html"/>
+                                    <field name="community_benefits" widget="html"/>
+                                    <field name="mother_average_age"/>
+                                    <field name="household_children_average"/>
+                                    <field name="under_five_population"/>
+                                    <field name="birth_medical"/>
+                                </group>
+                                <group attrs="{'invisible': [('type', 'not in', ('Survival', 'Survival FY Details'))]}">
+                                    <field name="spiritual_activity_ids" widget="many2many_tags"/>
+                                    <field name="cognitive_activity_ids" widget="many2many_tags"/>
+                                    <field name="physical_activity_ids" widget="many2many_tags"/>
+                                    <field name="socio_activity_ids" widget="many2many_tags"/>
+                                    <field name="activities_for_parents" widget="html"/>
+                                    <field name="other_activities" widget="html"/>
                                 </group>
                             </group>
                         </page>
