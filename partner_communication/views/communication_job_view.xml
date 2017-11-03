@@ -37,7 +37,7 @@
                     </group>
                     <group>
                         <field name="subject"/>
-                        <field name="body_html" widget="text_ckeditor4"/>
+                        <field name="body_html" options="{'style-inline': true}"/>
                     </group>
                     <group>
                         <field name="ir_attachment_ids" context="{'default_res_model': 'partner.communication.job', 'default_res_id': active_id}"/>
