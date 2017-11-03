@@ -43,10 +43,9 @@ class Phonecall(models.Model):
                 })
             info = _('Phone call with sponsor') + ':' + '<br/>'
             if phonecall.description:
-                info += phonecall.description + \
-                    '<br/>--------------------------------<br/>'
+                info += phonecall.description
             communication.partner_id.message_post(
-                info + communication.body_html, communication.config_id.name)
+                info, communication.config_id.name)
         else:
             # Phone call was made outside from communication call wizard.
             # Create a communication to log the call.

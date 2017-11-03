@@ -25,7 +25,7 @@ class AccountInvoice(models.Model):
 
     communication_id = fields.Many2one(
         'partner.communication.job', 'Thank you letter', ondelete='set null',
-        readonly=True
+        readonly=True, copy=False
     )
 
     @api.multi

@@ -20,7 +20,7 @@
                         </group>
                     </group>
                     <group>
-                        <field name="body" widget="text_ckeditor4"/>
+                        <field name="body" options="{'style-inline': true}"/>
                     </group>
                 </sheet>
             </form>
