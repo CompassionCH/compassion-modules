@@ -9,7 +9,7 @@
         <field name="name">follow.contract.compassion.kanban</field>
         <field name="model">recurring.contract</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="sds_state" create="false" edit="false">
+            <kanban default_group_by="sds_state" default_order="sds_state_date asc" create="false" edit="false">
                 <field name="name"/>
                 <field name="color"/>
                 <field name="sds_state"/>
