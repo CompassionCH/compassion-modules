@@ -16,7 +16,7 @@
         <field name="name">Make Ambassador</field>
         <field name="model_id" ref="model_res_partner"/>
         <field name="state">code</field>
-        <field name="code">self.make_ambassador(cr, uid, context.get('active_ids', []), context=context)</field>
+        <field name="code">records.make_ambassador()</field>
     </record>
 
     <record id="test_more_item" model="ir.values">

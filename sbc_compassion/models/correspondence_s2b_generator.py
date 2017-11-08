@@ -209,7 +209,9 @@ class CorrespondenceS2bGenerator(models.Model):
             'body_backup': self.body_html,
             'sponsorship_id': sponsorship.id
         })
-        pdf = self.env['report'].get_pdf(self.ids, self.report.report_name)
+        pdf = self.env['report'].with_context(
+            must_skip_send_to_printer=True
+        ).get_pdf(self.ids, self.report.report_name)
         if preview:
             self.body_html = self.body_backup
         return pdf

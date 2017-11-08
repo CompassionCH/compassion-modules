@@ -33,7 +33,7 @@ class Partner(models.Model):
     @api.multi
     def make_ambassador(self):
         portal = self.env['portal.wizard'].create({})
-        portal.write(portal.onchange_portal_id(portal.portal_id.id)['value'])
+        portal.onchange_portal_id()
         users = portal.mapped('user_ids')
         users.write({'in_portal': True})
         no_mail = users.filtered(lambda u: not u.email)

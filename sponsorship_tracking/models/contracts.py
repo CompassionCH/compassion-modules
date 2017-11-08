@@ -186,24 +186,6 @@ class RecurringContract(models.Model):
     # KANBAN GROUP METHODS
     ######################
     @api.model
-    def sds_kanban_groups(self, ids, domain, **kwargs):
-        fold = {
-            'sub_accept': True,
-            'sub_reject': True,
-            'no_sub': True,
-        }
-        sds_states = self._get_sds_states()
-        display_states = list()
-        for sds_state in sds_states:
-            # Only display SUB Sponsorship states
-            if 'sub' in sds_state[0]:
-                sponsorship_count = self.search_count([
-                    ('sds_state', '=', sds_state[0])])
-                if sponsorship_count:
-                    display_states.append(sds_state)
-        return display_states, fold
-
-    @api.model
     def _read_group_fill_results(
             self, domain, groupby, remaining_groupbys, aggregated_fields,
             count_field, read_group_result, read_group_order=None):
@@ -213,25 +195,25 @@ class RecurringContract(models.Model):
         Hence the code below - it replaces simple status values
         with (value, name) tuples.
         """
-        filter_group_result = list()
         if groupby == 'sds_state':
             state_dict = dict(self._get_sds_states())
+            state_order = [s[0] for s in self._get_sds_states()
+                           if 'sub' in s[0]]
+            filter_group_result = list(state_order)
+            state_order = {s: state_order.index(s) for s in state_order}
             for result in read_group_result:
                 state = result[groupby]
                 # Only display SUB Sponsorship states
                 if 'sub' in state:
                     result[groupby] = (state, state_dict.get(state))
-                    filter_group_result.append(result)
+                    filter_group_result[state_order[state]] = result
+            return [r for r in filter_group_result if isinstance(r, dict)]
 
         return super(RecurringContract, self)._read_group_fill_results(
             domain, groupby,
             remaining_groupbys, aggregated_fields, count_field,
-            filter_group_result or read_group_result, read_group_order
+            read_group_result, read_group_order
         )
-
-    _group_by_full = {
-        'sds_state': sds_kanban_groups,
-    }
 
     ##########################################################################
     #                            WORKFLOW METHODS                            #

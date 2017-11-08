@@ -1,87 +1,94 @@
-<openerp>
-    <data>
-        <template id="layout" inherit_id="report.layout" primary="True">
-            <!-- Add report style -->
-            <xpath expr="//head" position="inside">
-                <style type="text/css">
-                    /* Remove padding of reports to allow precise positionning */
-                    .container {
-                        padding: 0mm;
-                    }
-                    #background {
-                        position: absolute;
-                        left: 0;
-                        top: 0;
-                        width: 210mm;
-                        height: 297mm;
-                    }
-                    #background img {
-                        max-width: 100%;
-                        max-height: 100%;
-                        margin: auto;
-                    }
-                    #header {
-                        position: absolute;
-                        left: 65mm;
-                        top: 6.5mm;
-                        z-index: 2;
-                        font-size: 8pt;
-                    }
-                    #body {
-                        position: absolute;
-                        overflow: hidden;
-                    }
-                    .layout3 {
-                        position: absolute;
-                        top: 50mm;
-                        left: 50mm;
-                        width: 50mm;
-                    }
-                </style>
-            </xpath>
-        </template>
+<odoo>
+    <template id="style">
+        <!-- Add report style -->
+        <style type="text/css">
+            /* Remove padding of reports to allow precise positionning */
+            .container {
+                padding: 0mm;
+            }
+            #background {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 210mm;
+                height: 297mm;
+            }
+            #background img {
+                max-width: 100%;
+                max-height: 100%;
+                margin: auto;
+            }
+            #header {
+                position: absolute;
+                left: 65mm;
+                top: 6.5mm;
+                z-index: 2;
+                font-size: 8pt;
+            }
+            #body {
+                position: absolute;
+                overflow: hidden;
+            }
+            .layout3 {
+                position: absolute;
+                top: 50mm;
+                left: 50mm;
+                width: 50mm;
+            }
+        </style>
+    </template>
 
-        <report id="report_s2b_letter"
-                model="correspondence.s2b.generator"
-                string="S2B Letter"
-                report_type="qweb-pdf"
-                name="sbc_compassion.s2b_letter"
-                menu="False"
-        />
+    <!-- Default container -->
+    <template id="html_container">
+        <t t-call="report.html_container">
+            <t t-raw="0"/>
+        </t>
+        <xpath expr="//head" position="inside">
+            <t t-call="report_compassion.style"/>
+        </xpath>
+    </template>
 
-        <template id="s2b_letter">
-            <t t-call="sbc_compassion.layout">
-                <t t-foreach="docs" t-as="o">
-                    <t t-set="l" t-value="o.s2b_template_id"/>
-                    <div class="page" t-if="l.layout == 'CH-A-3S01-1'">
-                        <p class="layout3">
-                            No design. Text on page 2.
-                        </p>
+    <report id="report_s2b_letter"
+            model="correspondence.s2b.generator"
+            string="S2B Letter"
+            report_type="qweb-pdf"
+            name="sbc_compassion.s2b_letter"
+            menu="False"
+    />
+
+    <template id="s2b_letter">
+        <t t-call="sbc_compassion.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="l" t-value="o.s2b_template_id"/>
+                <div class="page" t-if="l.layout == 'CH-A-3S01-1'">
+                    <p class="layout3">
+                        No design. Text on page 2.
+                    </p>
+                </div>
+                <div class="page">
+                    <t t-call="sbc_compassion.style"/>
+                    <div id="header">
+                        <t t-set="sponsor" t-value="o.sponsorship_id.correspondant_id"/>
+                        <t t-set="child" t-value="o.sponsorship_id.child_id"/>
+                        <span t-field="sponsor.global_id"/> - <span t-field="sponsor.name"/>
+                        <br/>
+                        <span t-field="child.local_id"/> - <span t-field="child.name"/>
+                        <br/>
+                        TID: <span t-raw="l.layout"/>
                     </div>
-                    <div class="page">
-                        <div id="header">
-                            <t t-set="sponsor" t-value="o.sponsorship_id.correspondant_id"/>
-                            <t t-set="child" t-value="o.sponsorship_id.child_id"/>
-                            <span t-field="sponsor.global_id"/> - <span t-field="sponsor.name"/>
-                            <br/>
-                            <span t-field="child.local_id"/> - <span t-field="child.name"/>
-                            <br/>
-                            TID: <span t-raw="l.layout"/>
-                        </div>
-                        <span t-field="o.background" t-field-options='{"widget": "image"}' id="background"/>
-                        <span t-raw="o.body_html" id="body"
-                              t-attf-style="left: {{ l.text_box_left_position }}mm; top: {{ l.text_box_top_position }}mm; width: {{ l.text_box_width }}mm; max-height: {{ l.text_box_height }}mm;"
-                        />
-                    </div>
-                    <div class="page" t-if="l.layout != 'CH-A-3S01-1'"/>
-                </t>
+                    <span t-field="o.background" t-field-options='{"widget": "image"}' id="background"/>
+                    <span t-raw="o.body_html" id="body"
+                          t-attf-style="left: {{ l.text_box_left_position }}mm; top: {{ l.text_box_top_position }}mm; width: {{ l.text_box_width }}mm; max-height: {{ l.text_box_height }}mm;"
+                    />
+                </div>
+                <div class="page" t-if="l.layout != 'CH-A-3S01-1'"/>
             </t>
-        </template>
-    </data>
+        </t>
+    </template>
 
     <data noupdate="1">
         <record id="report_s2b_letter" model="ir.actions.report.xml">
             <field name="paperformat_id" ref="report.paperformat_euro"/>
         </record>
     </data>
-</openerp>
+</odoo>
