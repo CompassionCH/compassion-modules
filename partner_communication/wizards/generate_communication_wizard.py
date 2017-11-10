@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2017 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -93,7 +93,8 @@ class GenerateCommunicationWizard(models.TransientModel):
         res_preview = self.env[comm_model].create({
             'partner_id': self.partner_ids[0].id,
             'config_id': config.id,
-            'object_ids': self.partner_ids[0].id,
+            'object_ids': self.env.context.get('object_ids',
+                                               self.partner_ids[0].id),
         })
         self.preview = template.render_template(
             self.body_html, model, res_preview.ids)[res_preview.id]
@@ -119,22 +120,11 @@ class GenerateCommunicationWizard(models.TransientModel):
 
     @api.multi
     def generate(self):
-        comm_obj = self.env['partner.communication.job']
-        communications = comm_obj
-        default = self.env.ref('partner_communication.default_communication')
-        model = self.model_id or default
-        for partner in self.partner_ids:
-            comm = comm_obj.create({
-                'partner_id': partner.id,
-                'object_ids': partner.id,
-                'config_id': model.id,
-                'auto_send': False,
-                'send_mode': self.send_mode,
-                'report_id': self.report_id.id or model.report_id.id,
-            })
-            communications += comm
-
+        communications = self._get_communications()
         if self.customize_template or not self.model_id:
+            default = self.env.ref(
+                'partner_communication.default_communication')
+            model = self.model_id or default
             template = model.email_template_id.with_context(
                 lang=self.force_language or self.env.context.lang)
             new_subjects = template.render_template(
@@ -151,7 +141,25 @@ class GenerateCommunicationWizard(models.TransientModel):
             'type': 'ir.actions.act_window',
             'view_mode': 'tree,form',
             'view_type': 'form',
-            'res_model': comm_obj._name,
+            'res_model': 'partner.communication.job',
             'context': self.env.context,
             'domain': [('id', 'in', communications.ids)]
         }
+
+    def _get_communications(self):
+        """ Create the communication records """
+        comm_obj = self.env['partner.communication.job']
+        communications = comm_obj
+        default = self.env.ref('partner_communication.default_communication')
+        model = self.model_id or default
+        for partner in self.partner_ids:
+            comm = comm_obj.create({
+                'partner_id': partner.id,
+                'object_ids': partner.id,
+                'config_id': model.id,
+                'auto_send': False,
+                'send_mode': self.send_mode,
+                'report_id': self.report_id.id or model.report_id.id,
+            })
+            communications += comm
+        return communications
