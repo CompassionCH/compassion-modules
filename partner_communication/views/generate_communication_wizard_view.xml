@@ -6,7 +6,7 @@
             <form>
                 <field name="state" invisible="1"/>
                 <sheet>
-                    <div class="oe_button_box">
+                    <div class="oe_button_box" states="edit,preview">
                         <button name="get_preview" string="Generate preview" type="object" class="oe_stat_button" icon="fa-search-plus" states="edit"/>
                         <button name="edit" string="Edit" type="object" class="oe_stat_button" icon="fa-edit" states="preview"/>
                     </div>
@@ -29,9 +29,16 @@
                     <group states="preview">
                         <field name="preview"/>
                     </group>
+                    <div states="generation">
+                        <p>The communications are being generated! You can track here the progress by clicking the reload button, or close the wizard.</p>
+                        <br/>
+                        <field name="progress" widget="progressbar"/>
+                    </div>
                 </sheet>
                 <footer>
-                    <button name="generate" string="Generate Communications" type="object" class="oe_highlight" icon="fa-cog"/>
+                    <button name="generate" string="Generate Communications" type="object" class="oe_highlight" icon="fa-cog" states="edit,preview"/>
+                    <button name="reload" string="Reload" type="object" class="oe_highlight" icon="fa-refresh" states="generation"/>
+                    <button name="close" string="Close" type="object" states="generation"/>
                 </footer>
             </form>
         </field>
