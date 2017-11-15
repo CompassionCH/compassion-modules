@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2017 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -10,14 +10,17 @@
 ##############################################################################
 from odoo import models, api, fields, _
 from odoo.tools import safe_eval
+from odoo.addons.queue_job.job import job
 
 
 class GenerateCommunicationWizard(models.TransientModel):
     _name = 'partner.communication.generate.wizard'
 
-    state = fields.Selection(
-        [('edit', 'edit'), ('preview', 'preview')], default='edit'
-    )
+    state = fields.Selection([
+        ('edit', 'edit'),
+        ('preview', 'preview'),
+        ('generation', 'generation')
+    ], default='edit')
     selection_domain = fields.Char()
     partner_ids = fields.Many2many(
         'res.partner', string='Recipients',
@@ -38,6 +41,10 @@ class GenerateCommunicationWizard(models.TransientModel):
     )
     language_added_in_domain = fields.Boolean()
     preview = fields.Html(readonly=True)
+    communication_ids = fields.Many2many(
+        'partner.communication.job', 'partner_communication_generation_rel',
+        string='Communications')
+    progress = fields.Float(compute='_compute_progress')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -56,6 +63,12 @@ class GenerateCommunicationWizard(models.TransientModel):
     @api.model
     def _send_mode_select(self):
         return self.env['partner.communication.job'].send_mode_select()
+
+    @api.multi
+    def _compute_progress(self):
+        for wizard in self:
+            wizard.progress = float(len(wizard.communication_ids) * 100) / (
+                len(wizard.partner_ids) or 1)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -93,38 +106,58 @@ class GenerateCommunicationWizard(models.TransientModel):
         res_preview = self.env[comm_model].create({
             'partner_id': self.partner_ids[0].id,
             'config_id': config.id,
-            'object_ids': self.partner_ids[0].id,
+            'object_ids': self.env.context.get('object_ids',
+                                               self.partner_ids[0].id),
         })
         self.preview = template.render_template(
             self.body_html, model, res_preview.ids)[res_preview.id]
         res_preview.unlink()
         self.state = 'preview'
-        return self._reload()
+        return self.reload()
 
     @api.multi
     def edit(self):
         self.state = 'edit'
-        return self._reload()
-
-    def _reload(self):
-        return {
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'view_type': 'form',
-            'res_id': self.id,
-            'res_model': self._name,
-            'target': 'new',
-            'context': self.env.context,
-        }
+        return self.reload()
 
     @api.multi
     def generate(self):
-        comm_obj = self.env['partner.communication.job']
-        communications = comm_obj
+        self.state = 'generation'
+        self.with_delay().generate_communications()
+        return self.reload()
+
+    @api.multi
+    def reload(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Generate Communications'),
+            'res_model': self._name,
+            'res_id': self.id,
+            'view_mode': 'form',
+            'view_type': 'form',
+            'context': self._context,
+            'target': 'new',
+        }
+
+    @api.multi
+    def close(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Communications'),
+            'res_model': 'partner.communication.job',
+            'domain': [('id', 'in', self.communication_ids.ids)],
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'context': self._context,
+        }
+
+    @job
+    def generate_communications(self):
+        """ Create the communication records """
         default = self.env.ref('partner_communication.default_communication')
         model = self.model_id or default
         for partner in self.partner_ids:
-            comm = comm_obj.create({
+            self.with_delay().create_communication({
                 'partner_id': partner.id,
                 'object_ids': partner.id,
                 'config_id': model.id,
@@ -132,26 +165,25 @@ class GenerateCommunicationWizard(models.TransientModel):
                 'send_mode': self.send_mode,
                 'report_id': self.report_id.id or model.report_id.id,
             })
-            communications += comm
+        return True
 
+    @job(default_channel='root.partner_communication')
+    def create_communication(self, vals):
+        """ Generate partner communication """
+        communication = self.env['partner.communication.job'].create(vals)
         if self.customize_template or not self.model_id:
+            default = self.env.ref(
+                'partner_communication.default_communication')
+            model = self.model_id or default
             template = model.email_template_id.with_context(
                 lang=self.force_language or self.env.context.lang)
-            new_subjects = template.render_template(
-                self.subject, 'partner.communication.job', communications.ids)
-            new_texts = template.render_template(
+            new_subject = template.render_template(
+                self.subject, 'partner.communication.job',
+                communication.ids)
+            new_text = template.render_template(
                 self.body_html, 'partner.communication.job',
-                communications.ids)
-            for comm in communications:
-                comm.body_html = new_texts[comm.id]
-                comm.subject = new_subjects[comm.id]
+                communication.ids)
+            communication.body_html = new_text[communication.id]
+            communication.subject = new_subject[communication.id]
 
-        return {
-            'name': _('Communications'),
-            'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
-            'view_type': 'form',
-            'res_model': comm_obj._name,
-            'context': self.env.context,
-            'domain': [('id', 'in', communications.ids)]
-        }
+        self.communication_ids += communication
