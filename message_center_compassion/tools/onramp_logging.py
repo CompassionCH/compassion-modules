@@ -39,7 +39,7 @@ def init_logger():
         if dirname and not os.path.isdir(dirname):
             os.makedirs(dirname)
         handler = logging.handlers.TimedRotatingFileHandler(
-            filename=logf, when='D', interval=1, backupCount=30)
+            filename=logf, when='midnight', backupCount=90)
         formatter = DBFormatter(format)
         handler.setFormatter(formatter)
 
