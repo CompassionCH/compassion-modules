@@ -315,6 +315,7 @@ class RecurringContract(models.Model):
 
     @api.multi
     def contract_waiting(self):
+        self.group_id.generate_invoices()
         return self.write({'state': 'waiting'})
 
     @api.multi
