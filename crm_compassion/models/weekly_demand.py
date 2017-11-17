@@ -122,7 +122,7 @@ class WeeklyDemand(models.Model):
         """ Compute average of SUB since one year. """
         start_date = datetime.today() - timedelta(weeks=STATS_DURATION)
         sub_sponsored = self.env['recurring.contract'].search_count([
-            ('origin_id.type', '=', 'sub'),
+            ('parent_id', '!=', False),
             ('start_date', '>=', fields.Date.to_string(start_date)),
             ('channel', '!=', 'internet')
         ])
@@ -175,7 +175,7 @@ class WeeklyDemand(models.Model):
         sub_average = self._default_demand_sub()
         today = datetime.today()
         rejected_sub = self.env['recurring.contract'].search([
-            ('origin_id.type', '=', 'sub'),
+            ('parent_id', '!=', False),
             ('start_date', '>=',
              datetime.today() - timedelta(weeks=STATS_DURATION)),
             ('end_date', '!=', None),
@@ -192,7 +192,7 @@ class WeeklyDemand(models.Model):
                 week.week_start_date) - timedelta(days=SUB_DURATION)
             if start_date <= today:
                 sub = self.env['recurring.contract'].search_count([
-                    ('origin_id.type', '=', 'sub'),
+                    ('parent_id', '!=', False),
                     ('start_date', '>=', start_date),
                     ('start_date', '<=', fields.Date.from_string(
                         week.week_end_date) - timedelta(days=SUB_DURATION)),
@@ -208,7 +208,7 @@ class WeeklyDemand(models.Model):
         start_date = datetime.today() - timedelta(weeks=STATS_DURATION)
         cancellations = self.env['recurring.contract'].search_count([
             ('state', '=', 'terminated'),
-            ('origin_id.type', '!=', 'sub'),
+            ('parent_id', '=', False),
             ('channel', '!=', 'internet'),
             ('end_reason', '!=', '1'),
             ('end_date', '>=', fields.Date.to_string(start_date))
