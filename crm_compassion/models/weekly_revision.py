@@ -92,7 +92,8 @@ class WeeklyRevision(models.Model):
             nb_holds = len(holds.filtered(lambda h: h.channel == 'web'))
             nb_sponsorships = len(sponsorships.filtered(
                 lambda s: s.channel == 'website' and
-                s.origin_id.type not in ('partner', 'event', 'sub')))
+                s.origin_id.type not in ('partner', 'event')
+                and not s.parent_id))
         elif revision.type == 'ambassador':
             nb_holds = len(holds.filtered(
                 lambda h: h.channel == 'ambassador'))
@@ -110,7 +111,7 @@ class WeeklyRevision(models.Model):
                 ('type', '=', HoldType.SUB_CHILD_HOLD.value)
             ])
             nb_sponsorships = len(sponsorships.filtered(
-                lambda s: s.origin_id.type == 'sub'))
+                lambda s: s.parent_id))
         elif revision.type == 'cancel':
             nb_holds = 0
             nb_sponsorships = self.env['recurring.contract'].search_count([
