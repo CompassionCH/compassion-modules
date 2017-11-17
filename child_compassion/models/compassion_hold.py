@@ -476,4 +476,7 @@ class CompassionHold(models.Model):
             hold.message_post(
                 body=body.format(**values),
                 subject=subject,
+                type='comment',
             )
+            # Commit after hold is updated
+            self.env.cr.commit()  # pylint:disable=invalid-commit

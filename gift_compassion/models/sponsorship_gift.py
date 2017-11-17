@@ -624,11 +624,15 @@ class SponsorshipGift(models.Model):
             inverse_move.line_ids.write({'date_maturity': fields.Date.today()})
             for line in inverse_move.line_ids:
                 if line.debit > 0:
-                    line.account_id = inverse_debit_account
-                    line.analytic_account_id = False
+                    line.write({
+                        'account_id': inverse_debit_account.id,
+                        'analytic_account_id': False
+                    })
                 elif line.credit > 0:
-                    line.account_id = inverse_credit_account
-                    line.analytic_account_id = analytic
+                    line.write({
+                        'account_id': inverse_credit_account.id,
+                        'analytic_account_id': analytic.id
+                    })
             inverse_move.post()
             gift.inverse_payment_id = inverse_move
 
