@@ -698,7 +698,11 @@ class Correspondence(models.Model):
                 raise UserError(
                     _("Image of letter {} was not found remotely.").format(
                         letter.kit_identifier))
-            name = letter.child_id.local_id + '_' + letter.kit_identifier + \
+            name = ''
+            if len(letter.communication_type_ids.ids) > 0:
+                name = letter.communication_type_ids[0].name + '_'
+
+            name += letter.child_id.local_id + '_' + letter.kit_identifier + \
                 '.pdf'
             letter.letter_image = self.env['ir.attachment'].create({
                 "name": name,
