@@ -57,7 +57,7 @@ class CorrespondenceTemplate(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    name = fields.Char(required=True)
+    name = fields.Char(required=True, translate=True)
     active = fields.Boolean(default=True)
     layout = fields.Selection('get_gmc_layouts', required=True)
     pattern_image = fields.Binary()

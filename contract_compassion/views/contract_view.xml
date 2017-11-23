@@ -59,9 +59,7 @@
                         <field name="group_id" domain="[('partner_id', '=', partner_id)]"
                                context="{'default_partner_id': partner_id}"/>
                         <field name="parent_id" domain="[('partner_id', '=', partner_id), ('child_id', '!=', child_id), ('sub_sponsorship_id', '=', False)]"/>
-                    </group>
-                    <group>
-                        <field name="sub_sponsorship_id"/>
+                        <field name="sub_sponsorship_id" attrs="{'invisible':[('state', '=', 'terminated')]}"/>
                     </group>
                     <group>
                         <field name="start_date" string="Creation date"/>

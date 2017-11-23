@@ -227,9 +227,9 @@ class RecurringContract(models.Model):
         # Set the sub_sponsorship_id in the current parent_id
         if 'parent_id' in vals and vals['parent_id']:
             sponsorship = self.env['recurring.contract'].\
-                browse(vals['parent_id' ])
+                browse(vals['parent_id'])
 
-            sponsorship.sub_sponsorship_id = new_sponsorship.id
+            sponsorship.sub_sponsorship_id = new_sponsorship
 
         return new_sponsorship
 
@@ -247,7 +247,7 @@ class RecurringContract(models.Model):
         # Set the sub_sponsorship_id in the current parent_id
         if 'parent_id' in vals:
             for sponsorship in self:
-                sponsorship.parent_id.sub_sponsorship_id = sponsorship.id
+                sponsorship.parent_id.sub_sponsorship_id = sponsorship
 
         if 'group_id' in vals or 'partner_id' in vals:
             self._on_group_id_changed()
