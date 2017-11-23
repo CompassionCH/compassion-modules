@@ -61,9 +61,14 @@ class RecurringContract(models.Model):
         'recurring.contract.origin', 'Origin', ondelete='restrict',
         track_visibility='onchange')
     channel = fields.Selection('_get_channels')
+
     parent_id = fields.Many2one(
         'recurring.contract', 'Previous sponsorship',
         track_visibility='onchange', index=True)
+
+    sub_sponsorship_id = fields.Many2one(
+        'recurring.contract', 'sub sponsorship', readonly=True)
+
     name = fields.Char(compute='_compute_name', store=True)
     partner_id = fields.Many2one(
         'res.partner', 'Partner', required=True,
@@ -73,6 +78,16 @@ class RecurringContract(models.Model):
     group_freq = fields.Char(
         string='Payment frequency', compute='_compute_frequency',
         readonly=True)
+
+    _sql_constraints = [('parent_id_unique',
+                         'UNIQUE(parent_id)',
+                         'Unfortunately this sponsorship is already used,'
+                         'please choose a unique one')]
+
+    _sql_constraints = [('sub_sponsorship_id_unique',
+                         'UNIQUE(sub_sponsorship_id)',
+                         'Unfortunately this sponsorship is already'
+                         'used, please choose a unique one')]
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -206,13 +221,33 @@ class RecurringContract(models.Model):
                 vals['commitment_number'] = max(other_nums or [-1]) + 1
             else:
                 vals['commitment_number'] = 1
-        return super(RecurringContract, self).create(vals)
+
+        new_sponsorship = super(RecurringContract, self).create(vals)
+
+        # Set the sub_sponsorship_id in the current parent_id
+        if 'parent_id' in vals and vals['parent_id']:
+            sponsorship = self.env['recurring.contract'].\
+                browse(vals['parent_id' ])
+
+            sponsorship.sub_sponsorship_id = new_sponsorship.id
+
+        return new_sponsorship
 
     @api.multi
     def write(self, vals):
         """ Perform various checks when a contract is modified. """
+
+        # Change the sub_sponsorship_id value in the previous parent_id
+        if 'parent_id' in vals:
+            self.mapped('parent_id').write({'sub_sponsorship_id': False})
+
         # Write the changes
         res = super(RecurringContract, self).write(vals)
+
+        # Set the sub_sponsorship_id in the current parent_id
+        if 'parent_id' in vals:
+            for sponsorship in self:
+                sponsorship.parent_id.sub_sponsorship_id = sponsorship.id
 
         if 'group_id' in vals or 'partner_id' in vals:
             self._on_group_id_changed()
