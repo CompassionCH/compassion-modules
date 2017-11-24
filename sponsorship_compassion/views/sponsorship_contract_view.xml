@@ -52,7 +52,7 @@
             <!-- Replace filter domain of parent_id field to take correspondant -->
             <field name="parent_id" position="attributes">
                 <attribute name="domain" position="replace">
-                    <attribute name="domain">[('correspondant_id', '=', correspondant_id), ('child_id', '!=', child_id)]</attribute>
+                    <attribute name="domain">[('correspondant_id', '=', correspondant_id), ('child_id', '!=', child_id), ('sub_sponsorship_id', '=', False)]</attribute>
                 </attribute>
                 <attribute name="attrs">{'invisible': [('type', 'not in', ['S', 'SC'])]}</attribute>
             </field>
