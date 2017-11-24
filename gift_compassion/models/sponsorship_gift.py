@@ -541,8 +541,9 @@ class SponsorshipGift(models.Model):
     def action_cancel(self):
         """ Cancel Invoices and delete Gifts. """
         invoices = self.mapped('invoice_line_ids.invoice_id')
-        self.env['account.move.line'].remove_move_reconcile(
-            invoices.mapped('payment_ids.full_reconcile_id.line_id.id'))
+        invoices.mapped(
+            'payment_ids.full_reconcile_id.'
+            'reconciled_line_ids').remove_move_reconcile()
         invoices.action_invoice_cancel()
         self.mapped('message_id').unlink()
         return self.unlink()

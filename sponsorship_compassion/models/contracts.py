@@ -386,7 +386,7 @@ class SponsorshipContract(models.Model):
                 'payment_move_line_ids.full_reconcile_id')
 
             # Unreconcile paid invoices
-            reconciles.mapped('line_id').remove_move_reconcile()
+            reconciles.mapped('reconciled_line_ids').remove_move_reconcile()
             reconciles.unlink()
             # Cancel and confirm again invoices to update move lines
             invoices.action_invoice_cancel()
