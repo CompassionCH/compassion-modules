@@ -18,6 +18,8 @@ from odoo.addons.message_center_compassion.mappings import base_mapping \
 
 logger = logging.getLogger(__name__)
 
+INTERVENTION_PORTAL_URL = "https://compassion.force.com/GlobalPartners/"
+
 
 class CompassionIntervention(models.Model):
     """ All interventions on hold or sponsored.
@@ -64,8 +66,10 @@ class CompassionIntervention(models.Model):
     actual_duration = fields.Integer(
         help='Actual duration in months', readonly=True)
     initial_planned_end_date = fields.Date(readonly=True)
-    planned_end_date = fields.Date(readonly=True)
-    end_date = fields.Date(help='Actual end date', readonly=True)
+    planned_end_date = fields.Date(
+        readonly=True, track_visibility='onchange')
+    end_date = fields.Date(
+        help='Actual end date', readonly=True, track_visibility='onchange')
 
     # Budget Information (all monetary fields are in US dollars)
     ####################
@@ -74,7 +78,8 @@ class CompassionIntervention(models.Model):
         help='Actual number of impacted beneficiaries', readonly=True)
     local_contribution = fields.Float(
         readonly=True, help='Actual local contribution')
-    commitment_amount = fields.Float(readonly=True)
+    commitment_amount = fields.Float(
+        readonly=True, track_visibility='onchange')
 
     # Intervention Details Information
     ##################################
@@ -138,7 +143,7 @@ class CompassionIntervention(models.Model):
     hold_amount = fields.Float(readonly=True, states={
         'on_hold': [('readonly', False)],
         'sla': [('readonly', False)],
-    })
+    }, track_visibility='onchange')
     expiration_date = fields.Date(readonly=True, states={
         'on_hold': [('readonly', False)],
         'sla': [('readonly', False)],
@@ -147,11 +152,14 @@ class CompassionIntervention(models.Model):
         'on_hold': [('readonly', False)],
         'sla': [('readonly', False)],
     })
-    primary_owner = fields.Many2one(
+    user_id = fields.Many2one(
         'res.users', domain=[('share', '=', False)], readonly=True, states={
             'on_hold': [('readonly', False)],
             'sla': [('readonly', False)],
-        })
+        },
+        track_visibility='onchange',
+        oldname='primary_owner'
+    )
     secondary_owner = fields.Char(readonly=True, states={
         'on_hold': [('readonly', False)],
         'sla': [('readonly', False)],
@@ -370,6 +378,19 @@ class CompassionIntervention(models.Model):
             'state': 'cancel',
         })
 
+    @api.model
+    def auto_subscribe(self):
+        """
+        Method added to auto subscribe users after migration
+        """
+        interventions = self.search([
+            ('user_id', '!=', False)
+        ])
+        for intervention in interventions:
+            vals = {'user_id': intervention.user_id.id}
+            intervention.message_auto_subscribe(['user_id'], vals)
+        return True
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
@@ -467,26 +488,31 @@ class CompassionIntervention(models.Model):
             'intervention_mapping')
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
-        interventionmilestones = commkit_data[
+        milestones_data = commkit_data[
             'InterventionReportingMilestoneRequestList']
         intervention_local_ids = []
 
-        for idr in interventionmilestones:
-            val = intervention_mapping.get_vals_from_connect(idr)
-            intervention_id = val['intervention_id']
-            intervention = self.env['compassion.intervention'].search([
+        for milestone in milestones_data:
+            intervention_vals = intervention_mapping.get_vals_from_connect(
+                milestone)
+            milestone_id = milestone.get('InterventionReportingMilestone_ID')
+            intervention_id = intervention_vals.get('intervention_id')
+            intervention = self.search([
                 ('intervention_id', '=', intervention_id)
             ])
-
             if intervention:
-                intervention_local_ids.append(intervention_id)
-                intervention.message_post("An update has been realised for "
-                                          "this intervention",
-                                          subject=(intervention.name +
-                                                   ': New milestone '
-                                                   'received.'),
-                                          message_type='email',
-                                          subtype='mail.mt_comment')
+                intervention_local_ids.append(intervention.id)
+                body = "A new milestone is available"
+                if milestone_id:
+                    milestone_url = INTERVENTION_PORTAL_URL + milestone_id
+                    body += ' at <a href="{}" target="_blank">{}</a>.'.format(
+                            milestone_url, milestone_url)
+                intervention.message_post(
+                    body,
+                    subject=(intervention.name + ': New milestone received.'),
+                    message_type='email',
+                    subtype='mail.mt_comment'
+                )
         return intervention_local_ids
 
     @api.model

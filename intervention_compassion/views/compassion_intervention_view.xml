@@ -45,7 +45,7 @@
                                     <field name="hold_amount" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                                     <field name="expiration_date"/>
                                     <!--<field name="next_year_opt_in"/>-->
-                                    <field name="primary_owner"/>
+                                    <field name="user_id"/>
                                     <field name="secondary_owner"/>
                                 </group>
                                 <group string="Previsions">
