@@ -518,14 +518,13 @@ class CompassionIntervention(models.Model):
     @api.model
     def intervention_amendement_commitment(self, commkit_data):
         """This function is automatically executed when a
-                        InterventionAmendmentCommitmentNotification is
-                        received,
-                        it send a message to the follower of the Intervention,
-                        and update it
-                        :param commkit_data contains the data of the
-                        message (json)
-                        :return list of intervention ids which are concerned
-                        by the message """
+        InterventionAmendmentCommitmentNotification is received,
+        it send a message to the follower of the Intervention,
+        and update it
+        :param commkit_data contains the data of the
+               message (json)
+        :return list of intervention ids which are concerned
+                by the message """
         intervention_mapping = mapping.new_onramp_mapping(
             self._name,
             self.env,
@@ -543,14 +542,12 @@ class CompassionIntervention(models.Model):
         ])
 
         if intervention:
-            intervention_local_ids.append(intervention_id)
-            intervention.message_post("This intervention has "
-                                      "been modified",
-                                      subject=(intervention.name +
-                                               ": Amendment received"),
-                                      message_type='email',
-                                      subtype='mail.mt_comment')
             intervention.get_infos()
+            intervention_local_ids.append(intervention.id)
+            intervention.message_post(
+                "This intervention has been modified by amendment",
+                subject=intervention.name + ": Amendment received",
+                message_type='email', subtype='mail.mt_comment')
 
         return intervention_local_ids
 
