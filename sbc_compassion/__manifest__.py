@@ -39,7 +39,7 @@
     'external_dependencies': {
         'python': ['magic', 'wand', 'numpy', 'zbar', 'pdfminer',
                    'matplotlib', 'pyPdf', 'bs4', 'HTMLParser']
-    },
+        },
     'data': [
         'security/ir.model.access.csv',
         'views/config_view.xml',
@@ -60,9 +60,9 @@
         'data/correspondence_type.xml',
         'data/child_layouts.xml',
         'data/gmc_action.xml',
-    ],
-    'demo': [
-    ],
+        ],
+    'demo': ['demo/correspondence_template.xml',
+             ],
     'installable': True,
     'auto_install': False,
-}
+    }
