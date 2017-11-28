@@ -17,7 +17,6 @@
         <record id="update_intervention_details" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">UpdateInterventionDetailsRequest</field>
-            <field name="mapping_name">intervention_mapping</field>
             <field name="model">compassion.intervention</field>
             <field name="incoming_method">update_intervention_details_request</field>
             <field name="description">Update Intervention Kit</field>
@@ -82,7 +81,6 @@
         <record id="intervention_hold_removal_notification" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">InterventionHoldRemovalNotification</field>
-            <field name="mapping_name">intervention_mapping</field>
             <field name="model">compassion.intervention</field>
             <field name="incoming_method">intervention_hold_removal_notification</field>
             <field name="description">Notification sent to GP when a intervention hold is cancelled</field>
@@ -93,7 +91,6 @@
         <record id="intervention_reporting_milestone" model = "gmc.action">
             <field name="direction">in</field>
             <field name="name">InterventionReportingMilestoneRequestList</field>
-            <field name="mapping_name">intervention_mapping</field>
             <field name="model">compassion.intervention</field>
             <field name="incoming_method">intervention_reporting_milestone</field>
             <field name="description">Notification send to follower of an intervention when it has an update</field>
@@ -104,14 +101,12 @@
         <record id="intervention_amendment_commitment_notification" model = "gmc.action">
             <field name="direction">in</field>
             <field name="name">InterventionAmendmentCommitmentNotification</field>
-            <field name="mapping_name">intervention_mapping</field>
             <field name="model">compassion.intervention</field>
             <field name="incoming_method">intervention_amendement_commitment</field>
             <field name="description">Notification send to follower of an intervention when a modification is made, and update this intervention
             </field>
             <field name="auto_process">1</field>
         </record>
-
 
         <!-- Create Commitment -->
         <record id="intervention_create_commitment_action" model="gmc.action">
@@ -124,6 +119,16 @@
             <field name="connect_answer_wrapper">InterventionCommitmentResponseList</field>
             <field name="success_method">commitment_created</field>
             <field name="request_type">POST</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- Commitment percent change notification -->
+        <record id="commitment_percent_change_notification" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">InterventionCommittedPercentChangeNotification</field>
+            <field name="model">compassion.intervention</field>
+            <field name="incoming_method">commited_percent_change</field>
+            <field name="description">Notification sent to GP when the commited funding percentage has changed for an intervention.</field>
             <field name="auto_process">1</field>
         </record>
 
@@ -145,6 +150,11 @@
         <record id="intervention_update_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messages/interventions/2016/04/InterventionKit</field>
             <field name="action_id" ref="update_intervention_details"/>
+        </record>
+
+        <record id="intervention_commited_percent_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/04/InterventionCommittedPercentChangeNotification</field>
+            <field name="action_id" ref="commitment_percent_change_notification"/>
         </record>
     </data>
 </odoo>

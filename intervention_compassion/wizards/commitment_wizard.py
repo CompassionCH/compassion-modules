@@ -39,6 +39,9 @@ class HoldWizard(models.TransientModel):
         self.intervention_id.write({
             'state': 'committed',
             'commitment_amount': self.commitment_amount,
+            'commited_percentage': (
+                self.commitment_amount / self.intervention_id.total_cost
+            ) * 100,
             'hold_id': False
         })
 

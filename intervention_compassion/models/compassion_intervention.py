@@ -80,6 +80,8 @@ class CompassionIntervention(models.Model):
         readonly=True, help='Actual local contribution')
     commitment_amount = fields.Float(
         readonly=True, track_visibility='onchange')
+    commited_percentage = fields.Float(
+        readonly=True, track_visibility='onchange', default=100.0)
 
     # Intervention Details Information
     ##################################
@@ -243,6 +245,7 @@ class CompassionIntervention(models.Model):
     def create(self, vals):
         if vals.get('service_level') != 'Level 1':
             vals['state'] = 'sla'
+        vals['commited_percentage'] = 0
         intervention = super(CompassionIntervention, self).create(vals)
         intervention.get_infos()
         return intervention
@@ -279,6 +282,7 @@ class CompassionIntervention(models.Model):
                 (i.service_level == 'Level 2' and i.sla_selection_complete) or
                 i.sla_negotiation_status == 'GP Accepted Costs'
         )
+
         super(CompassionIntervention, sla_done).write({'state': 'on_hold'})
         if vals.get('service_level') != 'Level 1':
             sla_wait = check_sla - sla_done
@@ -312,7 +316,6 @@ class CompassionIntervention(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-
     @api.model
     def update_intervention_details_request(self, commkit_data):
         """This function is automatically executed when a
@@ -390,6 +393,28 @@ class CompassionIntervention(models.Model):
             vals = {'user_id': intervention.user_id.id}
             intervention.message_auto_subscribe(['user_id'], vals)
         return True
+
+    @api.model
+    def commited_percent_change(self, commkit_data):
+        """
+        Called when GMC message received
+        :param commkit_data: json data
+        :return: list of ids updated
+        """
+        json_data = commkit_data.get(
+            'InterventionCommittedPercentChangeNotification')
+        intervention_id = json_data.get("Intervention_ID")
+        intervention = self.search([
+            ('intervention_id', '=', intervention_id)
+        ])
+        if intervention:
+            intervention.commited_percentage = json_data.get(
+                "CommittedPercent", 100)
+            intervention.message_post(
+                "The commitment percentage has changed.",
+                message_type='email', subtype='mail.mt_comment'
+            )
+        return intervention.ids
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
