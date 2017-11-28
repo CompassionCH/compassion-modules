@@ -103,12 +103,13 @@ class GenerateCommunicationWizard(models.TransientModel):
             'partner_communication.default_communication')
         template = config.email_template_id
         model = template.model or comm_model
-        res_preview = self.env[comm_model].create({
-            'partner_id': self.partner_ids[0].id,
-            'config_id': config.id,
-            'object_ids': self.env.context.get('object_ids',
-                                               self.partner_ids[0].id),
-        })
+        partner = self.partner_ids[0]
+        res_preview = self.env[comm_model].with_context(
+            lang=partner.lang).create({
+                'partner_id': partner.id,
+                'config_id': config.id,
+                'object_ids': self.env.context.get('object_ids', partner.id),
+            })
         self.preview = template.render_template(
             self.body_html, model, res_preview.ids)[res_preview.id]
         res_preview.unlink()
