@@ -49,7 +49,7 @@ class HoldWizard(models.TransientModel):
         intervention_vals.update({
             'expiration_date': self.expiration_date,
             'next_year_opt_in': self.next_year_opt_in,
-            'primary_owner': self.primary_owner.id,
+            'user_id': self.primary_owner.id,
             'secondary_owner': self.secondary_owner,
             'service_level': self.service_level,
             'state': 'on_hold',

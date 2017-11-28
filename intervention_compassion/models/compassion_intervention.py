@@ -262,7 +262,7 @@ class CompassionIntervention(models.Model):
         """
         hold_fields = [
             'hold_amount', 'expiration_date', 'next_year_opt_in',
-            'primary_owner', 'secondary_owner', 'service_level']
+            'user_id', 'secondary_owner', 'service_level']
         update_hold = False
         for field in hold_fields:
             if field in vals:
