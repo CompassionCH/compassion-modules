@@ -18,6 +18,8 @@ from odoo.addons.message_center_compassion.mappings import base_mapping \
 
 logger = logging.getLogger(__name__)
 
+INTERVENTION_PORTAL_URL = "https://compassion.force.com/GlobalPartners/"
+
 
 class CompassionIntervention(models.Model):
     """ All interventions on hold or sponsored.
@@ -64,8 +66,10 @@ class CompassionIntervention(models.Model):
     actual_duration = fields.Integer(
         help='Actual duration in months', readonly=True)
     initial_planned_end_date = fields.Date(readonly=True)
-    planned_end_date = fields.Date(readonly=True)
-    end_date = fields.Date(help='Actual end date', readonly=True)
+    planned_end_date = fields.Date(
+        readonly=True, track_visibility='onchange')
+    end_date = fields.Date(
+        help='Actual end date', readonly=True, track_visibility='onchange')
 
     # Budget Information (all monetary fields are in US dollars)
     ####################
@@ -74,7 +78,10 @@ class CompassionIntervention(models.Model):
         help='Actual number of impacted beneficiaries', readonly=True)
     local_contribution = fields.Float(
         readonly=True, help='Actual local contribution')
-    commitment_amount = fields.Float(readonly=True)
+    commitment_amount = fields.Float(
+        readonly=True, track_visibility='onchange')
+    commited_percentage = fields.Float(
+        readonly=True, track_visibility='onchange', default=100.0)
 
     # Intervention Details Information
     ##################################
@@ -138,7 +145,7 @@ class CompassionIntervention(models.Model):
     hold_amount = fields.Float(readonly=True, states={
         'on_hold': [('readonly', False)],
         'sla': [('readonly', False)],
-    })
+    }, track_visibility='onchange')
     expiration_date = fields.Date(readonly=True, states={
         'on_hold': [('readonly', False)],
         'sla': [('readonly', False)],
@@ -147,11 +154,14 @@ class CompassionIntervention(models.Model):
         'on_hold': [('readonly', False)],
         'sla': [('readonly', False)],
     })
-    primary_owner = fields.Many2one(
+    user_id = fields.Many2one(
         'res.users', domain=[('share', '=', False)], readonly=True, states={
             'on_hold': [('readonly', False)],
             'sla': [('readonly', False)],
-        })
+        },
+        track_visibility='onchange',
+        oldname='primary_owner'
+    )
     secondary_owner = fields.Char(readonly=True, states={
         'on_hold': [('readonly', False)],
         'sla': [('readonly', False)],
@@ -235,6 +245,7 @@ class CompassionIntervention(models.Model):
     def create(self, vals):
         if vals.get('service_level') != 'Level 1':
             vals['state'] = 'sla'
+        vals['commited_percentage'] = 0
         intervention = super(CompassionIntervention, self).create(vals)
         intervention.get_infos()
         return intervention
@@ -271,6 +282,7 @@ class CompassionIntervention(models.Model):
                 (i.service_level == 'Level 2' and i.sla_selection_complete) or
                 i.sla_negotiation_status == 'GP Accepted Costs'
         )
+
         super(CompassionIntervention, sla_done).write({'state': 'on_hold'})
         if vals.get('service_level') != 'Level 1':
             sla_wait = check_sla - sla_done
@@ -304,7 +316,6 @@ class CompassionIntervention(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-
     @api.model
     def update_intervention_details_request(self, commkit_data):
         """This function is automatically executed when a
@@ -369,6 +380,41 @@ class CompassionIntervention(models.Model):
             'hold_id': False,
             'state': 'cancel',
         })
+
+    @api.model
+    def auto_subscribe(self):
+        """
+        Method added to auto subscribe users after migration
+        """
+        interventions = self.search([
+            ('user_id', '!=', False)
+        ])
+        for intervention in interventions:
+            vals = {'user_id': intervention.user_id.id}
+            intervention.message_auto_subscribe(['user_id'], vals)
+        return True
+
+    @api.model
+    def commited_percent_change(self, commkit_data):
+        """
+        Called when GMC message received
+        :param commkit_data: json data
+        :return: list of ids updated
+        """
+        json_data = commkit_data.get(
+            'InterventionCommittedPercentChangeNotification')
+        intervention_id = json_data.get("Intervention_ID")
+        intervention = self.search([
+            ('intervention_id', '=', intervention_id)
+        ])
+        if intervention:
+            intervention.commited_percentage = json_data.get(
+                "CommittedPercent", 100)
+            intervention.message_post(
+                "The commitment percentage has changed.",
+                message_type='email', subtype='mail.mt_comment'
+            )
+        return intervention.ids
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -467,39 +513,43 @@ class CompassionIntervention(models.Model):
             'intervention_mapping')
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
-        interventionmilestones = commkit_data[
+        milestones_data = commkit_data[
             'InterventionReportingMilestoneRequestList']
         intervention_local_ids = []
 
-        for idr in interventionmilestones:
-            val = intervention_mapping.get_vals_from_connect(idr)
-            intervention_id = val['intervention_id']
-            intervention = self.env['compassion.intervention'].search([
+        for milestone in milestones_data:
+            intervention_vals = intervention_mapping.get_vals_from_connect(
+                milestone)
+            milestone_id = milestone.get('InterventionReportingMilestone_ID')
+            intervention_id = intervention_vals.get('intervention_id')
+            intervention = self.search([
                 ('intervention_id', '=', intervention_id)
             ])
-
             if intervention:
-                intervention_local_ids.append(intervention_id)
-                intervention.message_post("An update has been realised for "
-                                          "this intervention",
-                                          subject=(intervention.name +
-                                                   ': New milestone '
-                                                   'received.'),
-                                          message_type='email',
-                                          subtype='mail.mt_comment')
+                intervention_local_ids.append(intervention.id)
+                body = "A new milestone is available"
+                if milestone_id:
+                    milestone_url = INTERVENTION_PORTAL_URL + milestone_id
+                    body += ' at <a href="{}" target="_blank">{}</a>.'.format(
+                            milestone_url, milestone_url)
+                intervention.message_post(
+                    body,
+                    subject=(intervention.name + ': New milestone received.'),
+                    message_type='email',
+                    subtype='mail.mt_comment'
+                )
         return intervention_local_ids
 
     @api.model
     def intervention_amendement_commitment(self, commkit_data):
         """This function is automatically executed when a
-                        InterventionAmendmentCommitmentNotification is
-                        received,
-                        it send a message to the follower of the Intervention,
-                        and update it
-                        :param commkit_data contains the data of the
-                        message (json)
-                        :return list of intervention ids which are concerned
-                        by the message """
+        InterventionAmendmentCommitmentNotification is received,
+        it send a message to the follower of the Intervention,
+        and update it
+        :param commkit_data contains the data of the
+               message (json)
+        :return list of intervention ids which are concerned
+                by the message """
         intervention_mapping = mapping.new_onramp_mapping(
             self._name,
             self.env,
@@ -517,14 +567,12 @@ class CompassionIntervention(models.Model):
         ])
 
         if intervention:
-            intervention_local_ids.append(intervention_id)
-            intervention.message_post("This intervention has "
-                                      "been modified",
-                                      subject=(intervention.name +
-                                               ": Amendment received"),
-                                      message_type='email',
-                                      subtype='mail.mt_comment')
             intervention.get_infos()
+            intervention_local_ids.append(intervention.id)
+            intervention.message_post(
+                "This intervention has been modified by amendment",
+                subject=intervention.name + ": Amendment received",
+                message_type='email', subtype='mail.mt_comment')
 
         return intervention_local_ids
 
