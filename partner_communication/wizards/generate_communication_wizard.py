@@ -21,7 +21,7 @@ class GenerateCommunicationWizard(models.TransientModel):
         ('preview', 'preview'),
         ('generation', 'generation')
     ], default='edit')
-    selection_domain = fields.Char()
+    selection_domain = fields.Char(default="[]")
     partner_ids = fields.Many2many(
         'res.partner', string='Recipients',
         default=lambda s: s._default_partners()
@@ -123,11 +123,17 @@ class GenerateCommunicationWizard(models.TransientModel):
     @api.multi
     def generate(self):
         self.state = 'generation'
-        self.with_delay().generate_communications()
-        return self.reload()
+        if len(self.partner_ids) > 5:
+            self.with_delay().generate_communications()
+            return self.reload()
+        else:
+            self.generate_communications(async_mode=False)
+            return self.close()
 
     @api.multi
     def reload(self):
+        if not self.exists():
+            return True
         return {
             'type': 'ir.actions.act_window',
             'name': _('Generate Communications'),
@@ -152,19 +158,23 @@ class GenerateCommunicationWizard(models.TransientModel):
         }
 
     @job
-    def generate_communications(self):
+    def generate_communications(self, async_mode=True):
         """ Create the communication records """
         default = self.env.ref('partner_communication.default_communication')
         model = self.model_id or default
         for partner in self.partner_ids:
-            self.with_delay().create_communication({
+            vals = {
                 'partner_id': partner.id,
                 'object_ids': partner.id,
                 'config_id': model.id,
                 'auto_send': False,
                 'send_mode': self.send_mode,
                 'report_id': self.report_id.id or model.report_id.id,
-            })
+            }
+            if async_mode:
+                self.with_delay().create_communication(vals)
+            else:
+                self.create_communication(vals)
         return True
 
     @job(default_channel='root.partner_communication')
