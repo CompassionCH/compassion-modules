@@ -317,6 +317,26 @@ class CompassionIntervention(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     @api.model
+    def create_intervention(self, commkit_data):
+        intervention_mapping = mapping.new_onramp_mapping(
+            self._name,
+            self.env,
+            'intervention_mapping')
+
+        intervention_details_request = commkit_data[
+            'GPInitiatedInterventionHoldNotification']
+
+        vals = intervention_mapping.get_vals_from_connect(
+            intervention_details_request)
+
+        if 'service_level' not in vals:
+            vals['service_level'] = 'Level 1'
+
+        intervention = self.create(vals)
+
+        return intervention.ids
+
+    @api.model
     def update_intervention_details_request(self, commkit_data):
         """This function is automatically executed when a
         UpdateInterventionDetailsRequest Message is received. It will

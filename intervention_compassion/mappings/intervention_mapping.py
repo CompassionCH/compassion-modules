@@ -146,7 +146,7 @@ class InterventionMapping(OnrampMapping):
         "InterventionReportingMilestone_ID": None,
         "Intervention_RecordTypeID": None,
         "DueDate": None,
-        "HoldID": None,
+        "HoldID": 'hold_id',
         "HoldReason": None,
     }
 
