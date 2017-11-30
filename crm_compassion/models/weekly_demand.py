@@ -198,7 +198,8 @@ class WeeklyDemand(models.Model):
                         week.week_end_date) - timedelta(days=SUB_DURATION)),
                     ('channel', '!=', 'internet')
                 ])
-                week.resupply_sub = sub * (sub_reject_average / sub_average)
+                week.resupply_sub = sub * (
+                    sub_reject_average / sub_average or 1)
             else:
                 week.resupply_sub = sub_reject_average
 
