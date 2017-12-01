@@ -110,7 +110,7 @@ class GenerateCommunicationWizard(models.TransientModel):
             'object_ids': self.env.context.get('object_ids', partner.id),
         })
         self.preview = template.render_template(
-            self.body_html, model, res_preview.ids)[res_preview.id]
+            template.body_html, model, res_preview.ids)[res_preview.id]
         res_preview.unlink()
         self.state = 'preview'
         return self.reload()
