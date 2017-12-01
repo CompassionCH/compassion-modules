@@ -45,6 +45,9 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         return self.env['compassion.child'].create({
             'local_id': local_id,
             'global_id': self.ref(9),
+            'firstname': 'Test',
+            'preferred_name': 'Test',
+            'lastname': 'Last',
             'type': 'CDSP',
             'state': 'N',
             'birthdate': '2010-01-01',
@@ -152,20 +155,36 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertEqual(gift_inv[0].state, 'paid')
 
         # Suspend of the sponsorship contract
+        contracts_in_invoices = invoices.mapped(
+            'invoice_line_ids.contract_id')
         self.env['compassion.project.ile'].create({
             'project_id': child.project_id.id,
             'type': 'Suspension',
             'hold_cdsp_funds': True,
         })
-        invoice1 = self.env['account.invoice'].browse(invoices[0].id)
+        logger.info(
+            "Suspension done, this is the dates and states of invoices")
+        logger.info(str(invoices.mapped('date_invoice')))
+        logger.info(str(invoices.mapped('state')))
+        invoice1 = invoices[0]
         today = date.today()
         invoice_date = fields.Date.from_string(invoice.date_invoice)
         if invoice_date < today:
             self.assertEqual(invoice.state, 'paid')
         else:
-            self.assertEqual(invoice.state, 'cancel')
+            if len(contracts_in_invoices) == 1:
+                self.assertEqual(invoice.state, 'cancel')
+            else:
+                self.assertEqual(invoice.state, 'open')
+                self.assertNotIn(sponsorship, invoice.mapped(
+                    'invoice_line_ids.contract_id'))
 
-        self.assertEqual(invoice1.state, 'cancel')
+        if len(contracts_in_invoices) == 1:
+            self.assertEqual(invoice1.state, 'cancel')
+        else:
+            self.assertEqual(invoice.state, 'open')
+            self.assertNotIn(sponsorship, invoice1.mapped(
+                'invoice_line_ids.contract_id'))
 
         # Reactivation of the sponsorship contract
         self.env['compassion.project.ile'].create({
@@ -185,8 +204,14 @@ class TestSponsorship(BaseSponsorshipTest):
         if invoice_date < today:
             self.assertEqual(invoice.state, 'paid')
         else:
-            self.assertEqual(invoice.state, 'cancel')
-        self.assertEqual(invoice1.state, 'cancel')
+            if len(contracts_in_invoices) == 1:
+                self.assertEqual(invoice.state, 'cancel')
+                self.assertEqual(invoice1.state, 'cancel')
+            else:
+                self.assertNotIn(sponsorship, invoice.mapped(
+                    'invoice_line_ids.contract_id'))
+                self.assertNotIn(sponsorship, invoice1.mapped(
+                    'invoice_line_ids.contract_id'))
 
     def test_sponsorship_compassion_second_scenario(self):
         """
