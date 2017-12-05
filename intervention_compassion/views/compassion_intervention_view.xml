@@ -18,7 +18,36 @@
                         </h1>
                     </div>
                     <div class="oe_right oe_button_box" name="buttons">
-                        <button name="get_infos" string="get infos" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
+                        <button name="get_infos"
+                                string="get infos"
+                                type="object"
+                                icon="fa-refresh"
+                                class="oe_stat_button"
+                                context="{'async_mode': False}"/>
+
+                        <button name="show_expenses"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-credit-card"
+                                string="Expenses"/>
+
+                        <button name="show_income"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-money"
+                                string="Income"/>
+
+                        <button name="show_contract"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-external-link"
+                                string="Contract"/>
+
+                        <button name="show_partner"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-male"
+                                string="Partner"/>
                     </div>
                     <group>
                         <group>
@@ -28,6 +57,7 @@
                             <field name="category_id"/>
                             <field name="subcategory_id" domain="[('category_ids', '=', category_id)]"/>
                             <field name="type"/>
+                            <field name="parent_intervention_name"/>
                         </group>
                         <group>
                             <field name="funding_status"/>
@@ -35,6 +65,7 @@
                             <field name="funding_global_partners"/>
                             <field name="service_level"/>
                             <field name="cancel_reason"/>
+                            <field name="product_template_id"/>
                         </group>
                     </group>
                     <notebook>

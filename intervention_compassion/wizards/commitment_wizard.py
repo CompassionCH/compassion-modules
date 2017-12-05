@@ -44,6 +44,7 @@ class HoldWizard(models.TransientModel):
             ) * 100,
             'hold_id': False
         })
+        self.intervention_id.link_product()
 
     @api.multi
     def send_commitment(self):

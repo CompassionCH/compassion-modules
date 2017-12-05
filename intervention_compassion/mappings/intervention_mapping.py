@@ -63,6 +63,7 @@ class InterventionMapping(OnrampMapping):
         "Intervention_Name": 'name',
         "NotFundedImplications": 'not_funded_implications',
         "Objectives": 'objectives',
+        "ParentInterventionName": 'parent_intervention_name',
         "ProblemStatement": 'problem_statement',
         "ProposedSLACostUSD": 'fo_proposed_sla_costs',
         "ProposedStartDate": 'proposed_start_date',

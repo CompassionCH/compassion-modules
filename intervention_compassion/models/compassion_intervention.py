@@ -42,9 +42,8 @@ class CompassionIntervention(models.Model):
         ('cancel', _('Cancelled')),
     ], default='on_hold', track_visibility='onchange')
     type = fields.Selection(store=True, readonly=True)
-    parent_id = fields.Many2one(
-        'compassion.intervention', help='Parent Intervention', readonly=True
-    )
+    parent_intervention_name = fields.Char(string='Parent Intervention',
+                                           readonly=True)
     intervention_status = fields.Selection([
         ("Approved", _("Approved")),
         ("Cancelled", _("Cancelled")),
@@ -59,6 +58,7 @@ class CompassionIntervention(models.Model):
         'compassion.project', 'icp_interventions', 'intervention_id', 'icp_id',
         string='ICPs', readonly=True
     )
+    product_template_id = fields.Many2one('product.template', 'Linked product')
 
     # Schedule Information
     ######################
@@ -436,23 +436,106 @@ class CompassionIntervention(models.Model):
             )
         return intervention.ids
 
+    @api.multi
+    def link_product(self):
+        # search existing project or create a new one if doesn't exist.
+        for intervention in self:
+            if intervention.product_template_id or \
+                    intervention.state != 'committed' or not \
+                    intervention.parent_intervention_name:
+                continue
+            product_name = intervention.parent_intervention_name
+            product_price = intervention.total_cost
+            product = intervention.env['product.template'].search(
+                [['name', '=', product_name]])
+            intervention.product_template_id = product if product else \
+                intervention.env['product.template'].create(
+                    {'name': product_name,
+                     'type': 'service',
+                     'list_price': product_price,
+                     })
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     @api.multi
+    def show_expenses(self):
+        return {
+            'name': _('Expenses'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'res_model': 'account.move.line',
+            'context': self.env.context,
+            'domain': [('product_id.product_tmpl_id', '=',
+                        self.product_template_id.id), ('debit', '>', 0)],
+        }
+
+    @api.multi
+    def show_income(self):
+        return {
+            'name': _('Income'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'res_model': 'account.move.line',
+            'context': self.env.context,
+            'domain': [('product_id.product_tmpl_id', '=',
+                        self.product_template_id.id), ('credit', '>', 0)],
+        }
+
+    @api.multi
+    def show_contract(self):
+        return {
+            'name': _('Contract'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'res_model': 'recurring.contract.line',
+            'context': self.env.context,
+            'domain': [('product_id.product_tmpl_id', '=',
+                        self.product_template_id.id)]
+        }
+
+    @api.multi
+    def show_partner(self):
+        contracts = self.env['recurring.contract'].search(
+            [('type', 'not in', ['S', 'SC']),
+             ('contract_line_ids.product_id.product_tmpl_id', '=',
+              self.product_template_id.id)])
+
+        move_lines = self.env['account.move.line'].search(
+            [('product_id.product_tmpl_id', '=', self.product_template_id.id),
+             ('credit', '>', 0)])
+
+        return {
+            'name': _('Partner'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'res_model': 'res.partner',
+            'context': self.env.context,
+            'domain': ['|', ('id', 'in', contracts.mapped('partner_id.id')),
+                       ('id', 'in', move_lines.mapped('partner_id.id'))]
+        }
+
+    @api.multi
     def get_infos(self):
         """ Get the most recent information about the intervention """
-        action_id = self.env.ref(
-            'intervention_compassion.intervention_details_request').id
+        for intervention in self:
+            if intervention.state == 'cancel':
+                continue
+            action_id = intervention.env.ref(
+                'intervention_compassion.intervention_details_request').id
 
-        message_vals = {
-            'action_id': action_id,
-            'object_id': self.id,
-        }
-        message = self.env['gmc.message.pool'].with_context(
-            hold_update=False).create(message_vals)
-        if message.state == 'failure':
-            raise UserError(message.failure_reason)
+            message_vals = {
+                'action_id': action_id,
+                'object_id': intervention.id,
+            }
+            message = intervention.env['gmc.message.pool'].with_context(
+                hold_update=False).create(message_vals)
+            if message.state == 'failure':
+                raise UserError(message.failure_reason)
         return True
 
     @api.multi
