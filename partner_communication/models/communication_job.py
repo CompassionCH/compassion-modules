@@ -350,7 +350,7 @@ class CommunicationJob(models.Model):
             if job.config_id.attachments_function:
                 binaries = getattr(
                     job.with_context(lang=job.partner_id.lang),
-                    job.config_id.attachments_function, dict())()
+                    job.config_id.attachments_function, lambda: dict())()
                 for name, data in binaries.iteritems():
                     attachment_obj.create({
                         'name': name,

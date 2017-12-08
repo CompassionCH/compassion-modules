@@ -55,7 +55,7 @@ class RecurringContract(models.Model):
         'Partner Contract Number', required=True, copy=False,
         oldname='num_pol_ga'
     )
-    end_reason = fields.Selection('get_ending_reasons')
+    end_reason = fields.Selection('get_ending_reasons', copy=False)
     months_paid = fields.Integer(compute='_compute_months_paid')
     origin_id = fields.Many2one(
         'recurring.contract.origin', 'Origin', ondelete='restrict',
@@ -64,10 +64,10 @@ class RecurringContract(models.Model):
 
     parent_id = fields.Many2one(
         'recurring.contract', 'Previous sponsorship',
-        track_visibility='onchange', index=True)
+        track_visibility='onchange', index=True, copy=False)
 
     sub_sponsorship_id = fields.Many2one(
-        'recurring.contract', 'sub sponsorship', readonly=True)
+        'recurring.contract', 'sub sponsorship', readonly=True, copy=False)
 
     name = fields.Char(compute='_compute_name', store=True)
     partner_id = fields.Many2one(
@@ -358,7 +358,7 @@ class RecurringContract(models.Model):
         """ Set back a cancelled contract to draft state. """
         update_sql = "UPDATE recurring_contract " \
             "SET state='draft', end_date=NULL, activation_date=NULL, " \
-            "start_date=CURRENT_DATE"
+            "start_date=CURRENT_DATE, end_reason=NULL"
         for contract in self.filtered(lambda c: c.state == 'cancelled'):
             query = update_sql
             if contract.child_id and not contract.child_id.is_available:

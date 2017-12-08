@@ -72,7 +72,6 @@ class SubSponsorshipWizard(models.TransientModel):
             next_invoice_date = max(next_invoice_date, sub_invoice_date)
 
         if self.child_id:
-            sub_contract.signal_workflow('contract_validated')
             sub_contract.next_invoice_date = next_invoice_date
             return {
                 'name': sub_contract.name,
@@ -118,7 +117,8 @@ class SubSponsorshipWizard(models.TransientModel):
             reason = dict(self._get_no_sub_reasons()).get(default_reason)
         contract.write({
             'no_sub_reason': reason,
-            'sds_uid': self.env.uid
+            'sds_uid': self.env.uid,
+            'sds_state': 'no_sub',
+            'color': 1
         })
-        contract.signal_workflow('no_sub')
         return True

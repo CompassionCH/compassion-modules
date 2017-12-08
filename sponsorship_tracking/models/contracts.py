@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2015-2017 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: David Coninckx, Emanuel Cino
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import api, models, fields, exceptions, _
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-
-from datetime import datetime, date, timedelta
 import logging
 
+from odoo import api, models, fields, exceptions, _
 
 logger = logging.getLogger(__name__)
 
@@ -25,17 +22,18 @@ class RecurringContract(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     sds_state = fields.Selection(
-        '_get_sds_states', 'SDS Status', readonly=True,
-        track_visibility='onchange', index=True, copy=False)
+        '_get_sds_states', 'SDS Status', track_visibility='onchange',
+        index=True, copy=False, readonly=True, default='draft')
     sds_state_date = fields.Date(
         'SDS state date', readonly=True, copy=False)
     cancel_gifts_on_termination = fields.Boolean(
         'Cancel pending gifts if sponsorship is terminated')
-    color = fields.Integer('Color Index')
+    color = fields.Integer('Color Index', default=0)
     no_sub_reason = fields.Char('No sub reason')
     sds_uid = fields.Many2one(
         'res.users', 'SDS Follower', default=lambda self: self.env.user,
         copy=False)
+    sub_notes = fields.Text('Notes for SUB Sponsorship')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -43,7 +41,6 @@ class RecurringContract(models.Model):
     def _get_sds_states(self):
         return [
             ('draft', _('Draft')),
-            ('waiting_welcome', _('Waiting welcome')),
             ('active', _('Active')),
             ('sub_waiting', _('Sub waiting')),
             ('sub', _('Sub')),
@@ -56,6 +53,17 @@ class RecurringContract(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
+    @api.model
+    def create(self, vals):
+        """ Push parent contract in SUB state. """
+        contract = super(RecurringContract, self).create(vals)
+        if contract.parent_id.sds_state == 'sub_waiting':
+            contract.parent_id.write({
+                'sds_state': 'sub',
+                'color': 2  # Red until sub is active
+            })
+        return contract
+
     @api.multi
     def write(self, vals):
         if 'sds_state' in vals:
@@ -68,61 +76,6 @@ class RecurringContract(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    # CRON Methods
-    ##############
-    @api.model
-    def check_sub_duration(self):
-        """ Check all sponsorships in SUB State.
-            After 50 days SUB Sponsorship started, Sponsorship becomes :
-                - SUB Accept if SUB sponsorship is active
-                - SUB Reject otherwise
-        """
-        fifty_days_ago = date.today() + timedelta(days=-50)
-        contracts = self.search([('sds_state', '=', 'sub')])
-
-        for contract in contracts:
-            transition = 'sub_reject'
-            sub_sponsorships = self.search([('parent_id', '=', contract.id)])
-            if sub_sponsorships:
-                for sub_contract in sub_sponsorships:
-                    if sub_contract.state == 'active' or \
-                            sub_contract.end_reason == 1:
-                        transition = 'sub_accept'
-                        break
-
-                contract.write({'color': 5 if transition == 'sub_accept'
-                                else 2})
-                sub_start_date = datetime.strptime(
-                    sub_contract.start_date, DF).date()
-                if sub_start_date < fifty_days_ago:
-                    contract.signal_workflow(transition)
-
-        return True
-
-    @api.model
-    def check_waiting_welcome_duration(self):
-        """ Check all sponsorships in Waiting Welcome state. Put them in
-            light green color after 10 days, indicating the mailing should
-            be sent.
-        """
-        ten_days_ago = date.today() + timedelta(days=-10)
-        contracts = self.search([
-            ('sds_state_date', '<', ten_days_ago),
-            ('sds_state', '=', 'waiting_welcome')])
-        return contracts.write({'color': 4})
-
-    @api.model
-    def end_workflow(self):
-        """ Terminate all workflows related to inactive contracts. """
-        inactive_contracts = self.search([
-            ('sds_state', 'in', ['cancelled', 'no_sub', 'sub_accept',
-                                 'sub_reject']),
-            ('state', 'in', ['terminated', 'cancelled'])])
-        inactive_contracts.delete_workflow()
-        return True
-
-    # Other view callbacks
-    ######################
     @api.onchange('partner_id')
     def on_change_partner_id(self):
         """ Find parent sponsorship if any is sub_waiting. """
@@ -144,7 +97,6 @@ class RecurringContract(models.Model):
         view_id = ir_model_data.get_object_reference(
             'sponsorship_tracking',
             self.env.context['view_id'])[1]
-
         return {
             'view_type': 'form',
             'view_mode': 'form',
@@ -154,14 +106,6 @@ class RecurringContract(models.Model):
             'target': 'current',
             "res_id": self.ids[0],
         }
-
-    @api.multi
-    def mail_sent(self):
-        return self.signal_workflow('mail_sent')
-
-    @api.multi
-    def project_mail_sent(self):
-        return self.signal_workflow('project_mail_sent')
 
     @api.multi
     def action_no_sub(self):
@@ -198,15 +142,17 @@ class RecurringContract(models.Model):
         if groupby == 'sds_state':
             state_dict = dict(self._get_sds_states())
             state_order = [s[0] for s in self._get_sds_states()
-                           if 'sub' in s[0]]
+                           if 'sub' in s[0] or s[0] == 'active']
             filter_group_result = list(state_order)
             state_order = {s: state_order.index(s) for s in state_order}
             for result in read_group_result:
                 state = result[groupby]
                 # Only display SUB Sponsorship states
-                if 'sub' in state:
+                if 'sub' in state or state == 'active':
                     result[groupby] = (state, state_dict.get(state))
                     filter_group_result[state_order[state]] = result
+                    if state == 'active':
+                        result['__fold'] = True
             return [r for r in filter_group_result if isinstance(r, dict)]
 
         return super(RecurringContract, self)._read_group_fill_results(
@@ -219,43 +165,83 @@ class RecurringContract(models.Model):
     #                            WORKFLOW METHODS                            #
     ##########################################################################
     @api.multi
-    def contract_validation(self):
-        for contract in self:
-            if contract.parent_id:
-                logger.info("Contract " + str(contract.id) + " contract sub.")
-                contract.parent_id.signal_workflow('new_contract_validated')
-        return True
+    def contract_waiting(self):
+        """ Make contract SDS status in active mode. """
+        self.filtered(lambda s: s.sds_state == 'draft').write({
+            'sds_state': 'active',
+            'sds_state_date': fields.Date.today()
+        })
+        return super(RecurringContract, self).contract_waiting()
 
     @api.multi
     def contract_cancelled(self):
         """ Change SDS Follower """
         res = super(RecurringContract, self).contract_cancelled()
-        for contract in self:
-            lang = contract.correspondant_id.lang[:2]
-            sds_user = self.env['sds.follower.settings'].get_param(
-                'sub_' + lang)
-            contract.write(
-                {'sds_uid': sds_user, 'sds_state': 'cancelled', 'color': 1})
+        self._check_need_sub()
         return res
 
     @api.multi
     def contract_terminated(self):
         """ Change SDS Follower """
         res = super(RecurringContract, self).contract_terminated()
-        for contract in self:
-            lang = contract.correspondant_id.lang[:2]
-            sds_user = self.env['sds.follower.settings'].get_param(
-                'sub_' + lang)
-            contract.write({'sds_uid': sds_user})
+        self._check_need_sub()
         return res
 
     @api.multi
-    def no_sub(self):
-        return self.write({'sds_state': 'no_sub', 'color': 1})
+    def contract_active(self):
+        """ Change color of parent Sponsorship. """
+        res = super(RecurringContract, self).contract_active()
+        for sub in self.filtered(lambda s: s.parent_id.sds_state == 'sub'):
+            sub.parent_id.color_id = 5  # Green
+        return res
+
+    @api.multi
+    def check_sub_state(self):
+        """ Called from base_action_rule to verify subs. """
+        for sponsorship in self:
+            if sponsorship.sub_sponsorship_id.state == 'active':
+                sponsorship.sds_state = 'sub_accept'
+            else:
+                sponsorship.sds_state = 'sub_reject'
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    def _check_need_sub(self):
+        """ Called when a contract is terminated, update the sds states. """
+        for contract in self:
+            lang = contract.correspondant_id.lang[:2]
+            sds_user = self.env['sds.follower.settings'].get_param(
+                'sub_' + lang)
+            if contract.end_reason == '1':  # Child departure
+                # When a departure comes for a sub sponsorship, we consider
+                # the sub proposal as accepted.
+                if contract.parent_id.sds_state == 'sub':
+                    contract.parent_id.write({
+                        'sds_state': 'sub_accept',
+                        'color': 5
+                    })
+                vals = {
+                    'sds_state': 'sub_waiting',
+                    'sds_uid': sds_user,
+                    'color': 3  # Yellow
+                }
+            else:
+                if contract.parent_id.sds_state == 'sub' and \
+                        contract.end_reason != '11':    # 11=Exchange of child
+                    # This is as subreject
+                    contract.parent_id.write({
+                        'sds_state': 'sub_reject',
+                        'color': 2
+                    })
+                vals = {
+                    'sds_state': 'cancelled',
+                    'color': 1
+                }
+            # Avoid updating contracts already marked as no sub
+            if contract.sds_state != 'no_sub':
+                contract.write(vals)
+
     def _define_parent_id(self, correspondant_id):
         same_partner_contracts = self.search(
             [('correspondant_id', '=', correspondant_id),
@@ -276,7 +262,10 @@ class RecurringContract(models.Model):
                         _("You cannot change the sub sponsorship."))
                 parent = self.browse(parent_id)
                 if parent.sds_state == 'sub_waiting':
-                    parent.signal_workflow('new_contract_validated')
+                    parent.write({
+                        'sds_state': 'sub',
+                        'color': 2  # Red until sub is active
+                    })
 
     @api.model
     def _needaction_domain_get(self):

@@ -4,9 +4,9 @@
 Compassion Sponsorships Tracking
 ================================
 
-Module to track the sponsorships.
+Module to track the sponsorship departures and SUB sponsorships.
 It is based on a new state : sds_state.
-It adds a new kanban, tree and form view to track sponsorships.
+It adds a new kanban, tree and form view to track sponsorships after child departure.
 
 Color conventions for SDS Tracking Kanban View :
 
@@ -31,7 +31,10 @@ To use this module, you need to:
 Known issues / Roadmap
 ======================
 
-* Migrate code for V8
+To add in the tests :
+
+* Departure -> Departure -> Sub reject
+* Departure -> Exchange of child -> Sub accept
 
 Credits
 =======

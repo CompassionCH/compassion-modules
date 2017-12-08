@@ -9,7 +9,7 @@
         <field name="name">sds.subsponsorship.wizard.view</field>
         <field name="model">sds.subsponsorship.wizard</field>
         <field name="arch" type="xml">
-            <form string="Create SUB Sponsorship" version="7.0">
+            <form>
                 <sheet>
                     <field name="state" invisible="1"/>
                     <group states="sub">

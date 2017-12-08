@@ -31,58 +31,6 @@ class InstallSdsTracking(models.TransientModel):
 
     # Only at module installation
     @api.model
-    def insert_wkf_items_for_sds_state(self):
-        contract_obj = self.env['recurring.contract']
-        active_contract_ids = contract_obj.search(
-            [('sds_state', '=', 'active')]).ids
-        draft_contract_ids = contract_obj.search(
-            [('sds_state', '=', 'draft')]).ids
-        sub_waiting_contract_ids = contract_obj.search(
-            [('sds_state', '=', 'sub_waiting')]).ids
-        sub_contract_ids = contract_obj.search(
-            [('sds_state', '=', 'sub')]).ids
-        self.env.cr.execute(
-            "SELECT id FROM wkf WHERE name = 'recurring.contract.wkf'")
-        wkf_id = self.env.cr.fetchall()[0][0]
-
-        self._ins_wkf_items('act_draft', wkf_id, draft_contract_ids)
-        self._ins_wkf_items('act_active', wkf_id, active_contract_ids)
-        self._ins_wkf_items(
-            'act_sub_waiting', wkf_id, sub_waiting_contract_ids)
-        self._ins_wkf_items('act_sub', wkf_id, sub_contract_ids)
-
-    def _ins_wkf_items(self, act_id, wkf_id, cont_ids):
-        if cont_ids:
-            cr = self.env.cr
-            ir_model_data = self.env['ir.model.data']
-            wkf_activity_id = ir_model_data.get_object_reference(
-                'sponsorship_tracking', act_id)[1]
-
-            wkf_instance_ids = list()
-            cr.execute(
-                "UPDATE wkf_instance SET state='active' "
-                "WHERE wkf_id = %s and res_id = ANY (%s)",
-                (wkf_id, cont_ids)
-            )
-            cr.execute(
-                "SELECT id FROM wkf_instance "
-                "WHERE wkf_id = %s AND res_id = ANY (%s)",
-                (wkf_id, cont_ids)
-            )
-            res = cr.fetchall()
-            if res:
-                for row in res:
-                    wkf_instance_ids.append(row[0])
-
-            for wkf_instance_id in wkf_instance_ids:
-                cr.execute(
-                    "INSERT INTO wkf_workitem(act_id, inst_id, state) "
-                    "VALUES (%s, %s, 'complete')",
-                    (wkf_activity_id, wkf_instance_id)
-                )
-
-    # Only at module installation
-    @api.model
     def set_sds_states(self):
         """ Rules for setting the SDS State of a contract.
             1. Draft contracts -> draft
