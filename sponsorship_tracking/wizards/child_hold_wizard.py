@@ -52,7 +52,6 @@ class ChildHoldWizard(models.TransientModel):
                     "Please choose another child."
                 ))
             sub_contract.write({'child_id': child.id})
-            sub_contract.signal_workflow('contract_validated')
             sub_contract.next_invoice_date = self.env.context.get(
                 'next_invoice_date')
             action.update({

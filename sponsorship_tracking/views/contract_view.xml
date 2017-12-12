@@ -9,7 +9,7 @@
         <field name="name">follow.contract.compassion.kanban</field>
         <field name="model">recurring.contract</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="sds_state" default_order="sds_state_date asc" create="false" edit="false">
+            <kanban default_group_by="sds_state" default_order="sds_state_date asc" create="false">
                 <field name="name"/>
                 <field name="color"/>
                 <field name="sds_state"/>
@@ -71,7 +71,7 @@
                 <header>
                     <field name="sds_state" widget="statusbar" statusbar_visible="draft,start,waiting_welcome,active,sub,sub_accept"/>
                     <button name="action_sub" type="object" class="oe_highlight" string="Create SUB Sponsorship" attrs="{'invisible':[('sds_state','!=','sub_waiting')]}"/>
-                    <button name="action_no_sub" type="object" string="No sub" attrs="{'invisible':[('sds_state','!=','sub_waiting')]}"/>
+                    <button name="action_no_sub" type="object" string="No sub" attrs="{'invisible':[('sds_state','not in',['active', 'sub_waiting'])]}"/>
                 </header>
                 <sheet>
                     <div class="oe_right oe_button_box" name="button_box">
@@ -90,7 +90,9 @@
                             <field name="parent_id" context="{
                                     'form_view_ref' : 'sponsorship_tracking.view_follow_contract_form_compassion',
                                     'tree_view_ref' : 'sponsorship_tracking.view_follow_contract_tree_compassion'
-                                    }" readonly="1"/>
+                                    }" readonly="1" attrs="{'invisible': [('parent_id', '=', False)]}"/>
+                            <field name="sub_sponsorship_id"/>
+                            <field name="sub_notes" attrs="{'invisible': [('sds_state', 'not in', ['active', 'sub_waiting'])]}" style="color: red;"/>
                         </group>
                         <group>
                             <field name="origin_id" readonly="1"/>
@@ -125,7 +127,7 @@
         <field name="model">recurring.contract</field>
         <field eval="20" name="priority"/>
         <field name="arch" type="xml">
-            <tree string="Follow contracts" create="false"
+            <tree string="Follow contracts" create="false" edit="false"
                   colors ="blue:sds_state == 'draft';red:sds_state == 'start';green:sds_state == 'waiting_welcome';black:sds_state == 'active';gray:state in ('cancelled')">
                 <field name="partner_codega"/>
                 <field name="partner_id"/>
