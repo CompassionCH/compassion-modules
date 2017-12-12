@@ -33,8 +33,11 @@ class ChildHoldWizard(models.TransientModel):
         """
         async_mode = self.env.context.get(
             'async_mode', self.return_action != 'sub')
-        return super(ChildHoldWizard, self.with_context(
-            default_type='CDSP', async_mode=async_mode)).send()
+        context_copy = self.env.context.copy()
+        context_copy['async_mode'] = async_mode
+        if 'default_type' in context_copy:
+            del context_copy['default_type']
+        return super(ChildHoldWizard, self.with_context(context_copy)).send()
 
     def _get_action(self, holds):
         action = super(ChildHoldWizard, self)._get_action(holds)
