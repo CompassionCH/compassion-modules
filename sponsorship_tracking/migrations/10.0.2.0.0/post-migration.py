@@ -25,3 +25,12 @@ def migrate(env, version):
         WHERE STATE NOT IN
         ('terminated', 'cancelled');
     """)
+    # Remove waiting_welcome state of non sponsorship contracts
+    # or old contracts
+    cr.execute("""
+            UPDATE recurring_contract
+            SET sds_state = 'active'
+            WHERE sds_state = 'waiting_welcome'
+            AND (type not in ('S', 'SC')
+                 OR sds_state_date < current_date - INTERVAL '15 days');
+        """)
