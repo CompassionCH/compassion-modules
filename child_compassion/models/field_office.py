@@ -35,6 +35,10 @@ class FieldOffice(models.Model):
     province = fields.Char()
     zip_code = fields.Char()
     currency = fields.Char()
+    available_on_childpool = fields.Boolean(
+        default=True, groups="base.group_system",
+        help='Uncheck to restrict child selection from this field office.'
+    )
 
     primary_language_id = fields.Many2one('res.lang.compassion', 'Primary '
                                                                  'language')
