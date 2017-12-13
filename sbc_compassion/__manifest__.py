@@ -26,7 +26,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
+# pylint: disable=C8101
 {
     'name': "Sponsor to beneficiary communication",
     'version': '10.0.1.0.0',
@@ -34,6 +34,7 @@
     'summary': "SBC - Supporter to Beneficiary Communication",
     'sequence': 150,
     'author': 'Compassion CH',
+    'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
     'depends': ['sponsorship_compassion', 'web_tree_image'],
     'external_dependencies': {
