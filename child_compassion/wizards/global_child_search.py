@@ -105,6 +105,11 @@ class GlobalChildSearch(models.TransientModel):
         'compassion.global.child', 'childpool_children_rel',
         string='Available Children', readonly=True,
     )
+    nb_restricted_children = fields.Integer(
+        "Number of restricted children", readonly=True,
+        help="These children were removed from the search results because "
+             "of a Field Office restriction configuration."
+    )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -448,11 +453,18 @@ class GlobalChildSearch(models.TransientModel):
                 'compassion.global.child', self.env)
             if not result['content'][result_name]:
                 raise UserError(_("No children found meeting criterias"))
+            new_children = self.env['compassion.global.child']
             for child_data in result['content'][result_name]:
                 child_vals = mapping.get_vals_from_connect(child_data)
                 child_vals['search_view_id'] = self.id
-                self.global_child_ids += self.env[
-                    'compassion.global.child'].create(child_vals)
+                new_children += self.env['compassion.global.child'].create(
+                    child_vals)
+            restricted_children = new_children - new_children.filtered(
+                'field_office_id.available_on_childpool')
+            new_children -= restricted_children
+            self.nb_restricted_children = len(restricted_children)
+            restricted_children.unlink()
+            self.global_child_ids += new_children
         else:
             raise UserError(
                 result.get('content', result)['Error']['ErrorMessage'])

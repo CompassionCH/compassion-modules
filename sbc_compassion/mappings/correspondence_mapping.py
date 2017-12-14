@@ -138,11 +138,17 @@ class CorrespondenceMapping(OnrampMapping):
     def _process_odoo_data(self, odoo_data):
         # Replace child and correspondant values with sponsorship
         if 'child_id' in odoo_data and 'correspondant_id' in odoo_data:
+            correspondant_id = odoo_data.pop('correspondant_id')
+            child_id = odoo_data.pop('child_id')
             sponsorship = self.env['recurring.contract'].search([
-                ('correspondant_id', '=', odoo_data['correspondant_id']),
-                ('child_id', '=', odoo_data['child_id'])], limit=1)
-            del odoo_data['child_id']
-            del odoo_data['correspondant_id']
+                ('correspondant_id', '=', correspondant_id),
+                ('child_id', '=', child_id)], limit=1)
+            if not sponsorship:
+                # We can have multiple partners with same global_id :(
+                partner = self.env['res.partner'].browse(correspondant_id)
+                sponsorship = self.env['recurring.contract'].search([
+                    ('correspondant_id.global_id', '=', partner.global_id),
+                    ('child_id', '=', child_id)], limit=1)
             if sponsorship:
                 odoo_data['sponsorship_id'] = sponsorship.id
         # Replace dict by a tuple for the ORM update/create

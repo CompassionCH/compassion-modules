@@ -92,6 +92,7 @@
                     <group>
                         <field name="nb_selected"/>
                         <field name="nb_found" attrs="{'invisible': [('nb_found', '=', 0)]}"/>
+                        <field name="nb_restricted_children" attrs="{'invisible': [('nb_restricted_children', '=', 0)]}"/>
                     </group>
                     <div attrs="{'invisible': [('nb_found', '=', 0)]}">
                         <p style="color:red">A filter is active</p>

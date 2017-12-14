@@ -235,7 +235,7 @@ class CompassionHold(models.Model):
                     'date': fields.Date.today(),
                 })
                 # Always commit after receiving a hold to avoid losing it
-                self.env.cr.commit()    # pylint: ignore=invalid-commit
+                self.env.cr.commit()    # pylint: disable=invalid-commit
             else:
                 # Release child if no hold_id received
                 hold.unlink()
