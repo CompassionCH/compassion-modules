@@ -30,7 +30,7 @@
                             <field name="primary_language_id" />
                             <field name="spoken_language_ids" widget="many2many_tags"/>
                             <field name="translated_language_ids" widget="many2many_tags"/>
-                            <field name="available_on_childpool"/>
+                            <field name="available_on_childpool" groups="base.group_system"/>
                         </group>
                     </group>
                     <notebook>
