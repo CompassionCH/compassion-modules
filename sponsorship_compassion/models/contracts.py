@@ -812,9 +812,9 @@ class SponsorshipContract(models.Model):
                     raise UserError(
                         _("The contract %s is not active.") % contract.name)
                 if contract.state == 'terminated' and contract.end_date:
-                    ended_since = date.today() - fields.Date.from_string(
-                        contract.end_date)
-                    if not ended_since.days <= 180:
+                    limit = date.today() - relativedelta(days=180)
+                    ended_since = fields.Date.from_string(contract.end_date)
+                    if ended_since < limit:
                         raise UserError(
                             _("The contract %s is not active.")
                             % contract.name)

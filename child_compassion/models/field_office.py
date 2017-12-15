@@ -36,7 +36,7 @@ class FieldOffice(models.Model):
     zip_code = fields.Char()
     currency = fields.Char()
     available_on_childpool = fields.Boolean(
-        default=True, groups="base.group_system",
+        default=True,
         help='Uncheck to restrict child selection from this field office.'
     )
 

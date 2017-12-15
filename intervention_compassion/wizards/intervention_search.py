@@ -139,7 +139,8 @@ class InterventionSearch(models.TransientModel):
             new_filters.append(_get_filter(
                 'icp_id', anyof_id, icp_codes))
         if self.field_office_ids:
-            fo_codes = ';'.join(self.field_office_ids.mapped('country_code'))
+            fo_codes = ';'.join(self.field_office_ids.mapped(
+                'field_office_id'))
             new_filters.append(_get_filter(
                 'field_office_id', anyof_id, fo_codes))
         if self.remaining_amount_equal:
