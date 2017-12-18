@@ -69,6 +69,25 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_donation" name="Donation Receipts" parent="contacts.menu_contacts" sequence="2"/>
-    <menuitem id="menu_donation_success_story" name="Success Stories" parent="menu_donation" action="action_success_story"/>
+    <menuitem id="menu_donation"
+              name="Donation Receipts"
+              parent="child_compassion.menu_sponsorship_root"
+              sequence="6"/>
+
+    <menuitem id="menu_donation_sales"
+              name="Donation Receipts"
+              parent="sales_team.menu_base_partner"
+              sequence="5"/>
+
+    <menuitem id="menu_donation_success_story"
+              name="Success Stories"
+              parent="menu_donation"
+              action="action_success_story"/>
+
+    <!-- Add menu in Sales-->
+    <menuitem id="menu_donation_success_story_sales"
+              name="Success Stories"
+              parent="menu_donation_sales"
+              action="action_success_story"/>
+
 </odoo>

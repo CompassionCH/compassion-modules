@@ -1,11 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Top menu item -->
-    <menuitem name="Sponsorship" id="menu_sponsorship_root" groups="group_sponsorship" sequence="0"/>
+    <menuitem id="menu_sponsorship_root"
+              name="Sponsorship"
+              groups="group_sponsorship"
+              sequence="0"
+              web_icon="child_compassion,static/description/icon.png"/>
+    <menuitem id="menu_sponsorship_section"
+              name="Sponsorship"
+              parent="menu_sponsorship_root"
+              sequence="1"/>
+    <menuitem id="menu_pool_section"
+              name="Global Childpool"
+              parent="menu_sponsorship_root"
+              sequence="2"/>
+    <menuitem id="menu_field_section"
+              name="Field"
+              parent="menu_sponsorship_root"
+              sequence="3"/>
 
-    <menuitem id="menu_sponsorship_section" parent="menu_sponsorship_root" name="Sponsorship" sequence="1"/>
-    <menuitem id="menu_pool_section" parent="menu_sponsorship_root" name="Global Childpool" sequence="2"/>
-    <menuitem id="menu_field_section" parent="menu_sponsorship_root" name="Field" sequence="3"/>
+    <!--Compassion child kanban view -->
+    <record model="ir.ui.view"
+            id="view_compassion_child_kanban">
+        <field name="name">compassion.child.kanban</field>
+        <field name="model">compassion.child</field>
+        <field name="type">kanban</field>
+        <field name="arch"
+               type="xml">
+            <kanban>
+                <field name="state"/>
+                <field name="portrait"/>
+                <templates>
+                    <t t-debug="pdb"
+                       t-name="kanban-box">
+                        <div class="oe_kanban_vignette">
+                            <!-- Left side image: -->
+                            <div class="oe_kanban_details">
+                                <!-- Title and data -->
+                                <div class="oe_product_desc">
+                                    <img class="oe_kanban_image"
+                                         t-att-src="kanban_image('compassion.child', 'portrait', record.id.raw_value)"/>
+                                    <h4>
+                                        <a type="open">
+                                            <field name="name"></field>
+                                        </a>
+                                    </h4>
+                                    <strong>
+                                        <field name="local_id"></field>
+                                    </strong>
+                                    <ul>
+                                        <li>Gender :
+                                            <field name="gender"></field>
+                                        </li>
+                                        <li>State :
+                                            <field name="state"></field>
+                                        </li>
+                                        <li t-if="record.state.raw_value == 'P'">
+                                            Sponsor :
+                                            <field name="sponsor_id"></field>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
 
     <!--Compassion child form view -->
     <record id="view_compassion_child_form" model="ir.ui.view">
@@ -354,9 +416,19 @@
         <field name="name">Children</field>
         <field name="res_model">compassion.child</field>
         <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,kanban,form</field>
         <field name="context">{'search_default_available':1}</field>
     </record>
+
+    <!-- Action opening the kanban view -->
+    <!--<record model="ir.actions.act_window"-->
+    <!--id="open_view_children">-->
+    <!--<field name="name">Children</field>-->
+    <!--<field name="res_model">compassion.child</field>-->
+    <!--<field name="view_type">kanban</field>-->
+    <!--<field name="view_id"-->
+    <!--ref=""/>-->
+    <!--</record>-->
 
     <!-- Update child picture actions -->
     <record id="update_child_picture" model="ir.actions.server">
@@ -375,7 +447,9 @@
     </record>
 
     <menuitem id="menu_sponsorship_children"
-              parent="menu_sponsorship_section" name="Children"
-              action="open_view_children_tree" sequence="1"/>
+              parent="menu_sponsorship_section"
+              name="Children"
+              action="open_view_children_tree"
+              sequence="1"/>
 
 </odoo>
