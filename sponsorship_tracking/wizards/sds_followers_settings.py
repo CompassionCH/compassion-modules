@@ -16,7 +16,7 @@ class SdsFollowerSettings(models.TransientModel):
     """ Settings configuration for any Notifications."""
     _name = 'sds.follower.settings'
     _inherit = 'res.config.settings'
-    _description = 'SDS Followe Settings'
+    _description = 'SDS Followers Settings'
 
     # Users to notify after Child Departure
     sub_fr = fields.Many2one(
