@@ -429,6 +429,7 @@ class CompassionIntervention(models.Model):
                     {'name': product_name,
                      'type': 'service',
                      'list_price': product_price,
+                     'intervention_id': None
                      })
 
     ##########################################################################
