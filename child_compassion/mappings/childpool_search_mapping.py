@@ -35,7 +35,6 @@ class ChilpoolSearchMapping(OnrampMapping):
         'isOrphan': 'is_orphan',
         'hasSpecialNeeds': 'has_special_needs',
         'minDaysWaiting': 'min_days_waiting',
-        'sourceCode': 'source_code',
         'skip': 'skip',
         'take': 'take',
     }

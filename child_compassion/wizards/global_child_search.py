@@ -348,7 +348,7 @@ class GlobalChildSearch(models.TransientModel):
         new_filters = list()
         if self.min_age or self.max_age:
             min_age = self.min_age or 0
-            max_age = self.max_age or sys.maxint
+            max_age = self.max_age or 120
             age_range = str(min_age) + ';' + str(max_age)
             new_filters.append(_get_filter('min_age', between_id, age_range))
         if self.local_id:
@@ -379,7 +379,7 @@ class GlobalChildSearch(models.TransientModel):
                 'field_office_ids', anyof_id, values))
         if self.gender:
             new_filters.append(_get_filter(
-                'gender', anyof_id, self.gender))
+                'gender', anyof_id, self.gender[0]))
         if self.holding_gp_ids:
             values = ';'.join(self.holding_gp_ids.mapped('country_id.code'))
             new_filters.append(_get_filter(
