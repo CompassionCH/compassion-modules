@@ -28,7 +28,7 @@
                 <attribute name="statusbar_visible">draft,active,waiting,terminated</attribute>
             </field>
             <header>
-                <button name="action_cancel_draft" type="object" string="Set back to draft" states="cancelled,terminated" attrs="{'invisible': [('state','=', 'terminated'), ('end_reason', '!=', '13')]}"/>
+                <button name="action_cancel_draft" type="object" string="Set back to draft" attrs="{'invisible': [('state', '!=', 'cancelled'), ('end_reason', '!=', '13')]}"/>
             </header>
             <button name="button_generate_invoices" position="attributes">
                 <attribute name="states" position="replace">
