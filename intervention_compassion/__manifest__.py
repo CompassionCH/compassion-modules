@@ -30,7 +30,7 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion Interventions',
-    'version': '10.0.1.2.0',
+    'version': '10.0.1.3.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
@@ -42,6 +42,8 @@
         'data/compassion.intervention.subcategory.csv',
         'data/compassion.intervention.deliverable.csv',
         'data/install_category_rel.xml',
+        'data/intervention_server_actions.xml',
+        'data/intervention_action_rules.xml',
         'data/gmc_action.xml',
         'security/intervention_groups.xml',
         'security/ir.model.access.csv',

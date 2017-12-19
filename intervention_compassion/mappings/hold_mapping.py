@@ -20,11 +20,11 @@ class HoldCreateMapping(OnrampMapping):
 
     CONNECT_MAPPING = {
         "Intervention_ID": "intervention_id.intervention_id",
+        "HoldID": "intervention_id.hold_id",
         "ExpirationDate": "expiration_date",
         "HoldAmount": "hold_amount",
-        "HoldID": "hold_id",
         "NextYearOptIn": "next_year_opt_in",
-        "PrimaryOwner": ("primary_owner.name", "res.users"),
+        "PrimaryOwner": ("user_id.name", "res.users"),
         "SecondaryOwner": "secondary_owner",
         "ServiceLevelAgreement": "service_level",
     }
@@ -55,7 +55,10 @@ class HoldUpdateMapping(OnrampMapping):
         self.CONNECT_MAPPING = HoldCreateMapping.CONNECT_MAPPING
         self.FIELDS_TO_SUBMIT = HoldCreateMapping.FIELDS_TO_SUBMIT
         self.CONSTANTS = HoldCreateMapping.CONSTANTS
-        self.CONNECT_MAPPING['Intervention_ID'] = 'intervention_id'
+        self.CONNECT_MAPPING.update({
+            'Intervention_ID': 'intervention_id',
+            "HoldID": "hold_id",
+        })
         self.FIELDS_TO_SUBMIT['HoldID'] = None
 
 
