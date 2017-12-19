@@ -29,8 +29,8 @@ class HoldWizard(models.TransientModel):
     usd = fields.Many2one(related='intervention_id.currency_usd')
     expiration_date = fields.Date(required=True)
     next_year_opt_in = fields.Boolean()
-    primary_owner = fields.Many2one(
-        'res.users', default=lambda s: s.env.user,
+    user_id = fields.Many2one(
+        'res.users', 'Primary owner', default=lambda s: s.env.user,
         domain=[('share', '=', False)], required=True
     )
     secondary_owner = fields.Char()
@@ -44,12 +44,13 @@ class HoldWizard(models.TransientModel):
     def hold_sent(self, hold_vals):
         """ Called when hold is created """
         del hold_vals['intervention_id.intervention_id']
+        hold_vals['hold_id'] = hold_vals.pop('intervention_id.hold_id')
         intervention_vals = self.intervention_id.get_vals()
         intervention_vals.update(hold_vals)
         intervention_vals.update({
             'expiration_date': self.expiration_date,
             'next_year_opt_in': self.next_year_opt_in,
-            'user_id': self.primary_owner.id,
+            'user_id': self.user_id.id,
             'secondary_owner': self.secondary_owner,
             'service_level': self.service_level,
             'state': 'on_hold',

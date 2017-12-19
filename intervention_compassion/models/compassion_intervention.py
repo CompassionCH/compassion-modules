@@ -155,7 +155,8 @@ class CompassionIntervention(models.Model):
         'sla': [('readonly', False)],
     })
     user_id = fields.Many2one(
-        'res.users', domain=[('share', '=', False)], readonly=True, states={
+        'res.users', 'Primary owner',
+        domain=[('share', '=', False)], readonly=True, states={
             'on_hold': [('readonly', False)],
             'sla': [('readonly', False)],
         },
@@ -256,8 +257,7 @@ class CompassionIntervention(models.Model):
         When record is updated :
 
         - Update hold if values are changed.
-        - Check SLA Negotiation modifications
-        - Check start of intervention
+        - Check SLA Negotiation modifications (in ir.action.rules)
         - Check end of intervention
         """
         hold_fields = [
@@ -273,30 +273,6 @@ class CompassionIntervention(models.Model):
 
         if update_hold:
             self.update_hold()
-
-        # Check SLA Negotiation Status
-        check_sla = self.filtered(lambda i: i.state in ('on_hold', 'sla'))
-        sla_done = check_sla.filtered(
-            lambda i:
-                i.service_level == 'Level 1' or
-                (i.service_level == 'Level 2' and i.sla_selection_complete) or
-                i.sla_negotiation_status == 'GP Accepted Costs'
-        )
-
-        super(CompassionIntervention, sla_done).write({'state': 'on_hold'})
-        if vals.get('service_level') != 'Level 1':
-            sla_wait = check_sla - sla_done
-            super(CompassionIntervention, sla_wait).write({'state': 'sla'})
-
-        # Check start of Intervention
-        today = fields.Date.today()
-        start = vals.get('start_date')
-        if start and start < today:
-            super(
-                CompassionIntervention,
-                self.filtered(lambda i: i.state == 'committed')).write({
-                    'state': 'active'
-                })
 
         # Check closure of Intervention
         intervention_status = vals.get('intervention_status')
