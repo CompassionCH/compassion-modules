@@ -450,7 +450,11 @@ class CompassionIntervention(models.Model):
             'res_model': 'account.move.line',
             'context': self.env.context,
             'domain': [('product_id.product_tmpl_id', '=',
-                        self.product_template_id.id), ('debit', '>', 0)],
+                        self.product_template_id.id),
+                       ('debit', '>', 0),
+                       ('account_id', '=',
+                        self.product_template_id.property_account_expense_id.id)
+                       ],
         }
 
     @api.multi
@@ -463,7 +467,11 @@ class CompassionIntervention(models.Model):
             'res_model': 'account.move.line',
             'context': self.env.context,
             'domain': [('product_id.product_tmpl_id', '=',
-                        self.product_template_id.id), ('credit', '>', 0)],
+                        self.product_template_id.id),
+                       ('credit', '>', 0),
+                       ('account_id', '=',
+                        self.product_template_id.property_account_income_id.id)
+                       ],
         }
 
     @api.multi
@@ -476,7 +484,7 @@ class CompassionIntervention(models.Model):
             'res_model': 'recurring.contract.line',
             'context': self.env.context,
             'domain': [('product_id.product_tmpl_id', '=',
-                        self.product_template_id.id)]
+                        self.product_template_id.id), ]
         }
 
     @api.multi
