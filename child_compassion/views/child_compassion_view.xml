@@ -31,8 +31,7 @@
                 <field name="state"/>
                 <field name="portrait"/>
                 <templates>
-                    <t t-debug="pdb"
-                       t-name="kanban-box">
+                    <t t-name="kanban-box">
                         <div class="oe_kanban_vignette">
                             <!-- Left side image: -->
                             <div class="oe_kanban_details">
@@ -42,22 +41,22 @@
                                          t-att-src="kanban_image('compassion.child', 'portrait', record.id.raw_value)"/>
                                     <h4>
                                         <a type="open">
-                                            <field name="name"></field>
+                                            <field name="name"/>
                                         </a>
                                     </h4>
                                     <strong>
-                                        <field name="local_id"></field>
+                                        <field name="local_id"/>
                                     </strong>
                                     <ul>
                                         <li>Gender :
-                                            <field name="gender"></field>
+                                            <field name="gender"/>
                                         </li>
                                         <li>State :
-                                            <field name="state"></field>
+                                            <field name="state"/>
                                         </li>
                                         <li t-if="record.state.raw_value == 'P'">
                                             Sponsor :
-                                            <field name="sponsor_id"></field>
+                                            <field name="sponsor_id"/>
                                         </li>
                                     </ul>
                                 </div>
@@ -418,16 +417,6 @@
         <field name="view_mode">tree,kanban,form</field>
         <field name="context">{'search_default_available':1}</field>
     </record>
-
-    <!-- Action opening the kanban view -->
-    <!--<record model="ir.actions.act_window"-->
-    <!--id="open_view_children">-->
-    <!--<field name="name">Children</field>-->
-    <!--<field name="res_model">compassion.child</field>-->
-    <!--<field name="view_type">kanban</field>-->
-    <!--<field name="view_id"-->
-    <!--ref=""/>-->
-    <!--</record>-->
 
     <!-- Update child picture actions -->
     <record id="update_child_picture" model="ir.actions.server">
