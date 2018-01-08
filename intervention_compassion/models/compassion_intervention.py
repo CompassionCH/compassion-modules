@@ -82,6 +82,10 @@ class CompassionIntervention(models.Model):
         readonly=True, track_visibility='onchange')
     commited_percentage = fields.Float(
         readonly=True, track_visibility='onchange', default=100.0)
+    total_expense = fields.Char(
+        'Total expense', compute='_compute_move_line', readonly=True)
+    total_income = fields.Char(
+        'Total income', compute='_compute_move_line', readonly=True)
 
     # Intervention Details Information
     ##################################
@@ -238,6 +242,28 @@ class CompassionIntervention(models.Model):
                     'intervention_compassion.'
                     'deliverable_sponsorship_launch_budget'
                 )
+
+    def _compute_move_line(self):
+        for record in self:
+            mv_line_expense = record.env['account.move.line'].search(
+                [('product_id.product_tmpl_id', '=',
+                  record.product_template_id.id),
+                 ('debit', '>', 0),
+                 ('account_id', '=',
+                  record.product_template_id.property_account_expense_id.id)
+                 ])
+            mv_line_income = record.env['account.move.line'].search(
+                [('product_id.product_tmpl_id', '=',
+                  record.product_template_id.id),
+                 ('credit', '>', 0),
+                 ('account_id', '=',
+                  record.product_template_id.property_account_income_id.id)
+                 ])
+
+            record.total_income = '{0} CHF'.format(
+                sum(mv_line_income.mapped('credit')))
+            record.total_expense = ("{0} CHF".format(sum(
+                mv_line_expense.mapped('credit'))))
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -453,8 +479,9 @@ class CompassionIntervention(models.Model):
                         self.product_template_id.id),
                        ('debit', '>', 0),
                        ('account_id', '=',
-                        self.product_template_id.property_account_expense_id.id)
-                       ],
+                        self.product_template_id.property_account_expense_id
+                        .id)
+                       ]
         }
 
     @api.multi
@@ -484,7 +511,7 @@ class CompassionIntervention(models.Model):
             'res_model': 'recurring.contract.line',
             'context': self.env.context,
             'domain': [('product_id.product_tmpl_id', '=',
-                        self.product_template_id.id), ]
+                        self.product_template_id.id)]
         }
 
     @api.multi
