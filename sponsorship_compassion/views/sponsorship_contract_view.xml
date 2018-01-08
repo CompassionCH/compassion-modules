@@ -79,6 +79,41 @@
         </field>
     </record>
 
+    <record id="view_compassion_sponsorship_pivot" model="ir.ui.view">
+        <field name="name">compassion.sponsorship.line.pivot</field>
+        <field name="model">recurring.contract</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="start_date" interval="week" type="col"/>
+                <field name="state" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_compassion_sponsorship_graph" model="ir.ui.view">
+        <field name="name">compassion.sponsorship.line.graph</field>
+        <field name="model">recurring.contract</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="start_date" interval="week" type="col"/>
+                <field name="state" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_recurring_contract_filter_graph" model="ir.ui.view">
+        <field name="name">recurring.contract.graph.select</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id" ref="contract_compassion.view_recurring_contract_compassion_filter" />
+        <field name="arch" type="xml">
+            <filter name="english" position="after">
+                <filter string="Last 3 Months"  name="last_3_months"
+                    domain="[('start_date', '&gt;=' , (context_today()-relativedelta(months=3)).strftime('%Y-%m-01')),
+                             ('start_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]" help="Last 3 months"/>
+            </filter>
+        </field>
+    </record>
+
     <record model="ir.actions.act_window" id="contract_compassion.action_contract">
         <field name="domain">[('type','in',['O','G'])]</field>
     </record>
@@ -88,9 +123,30 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">recurring.contract</field>
         <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
         <field name="domain">[('type','like','S')]</field>
         <field name="context">{'default_type':'S'}</field>
+    </record>
+
+    <record id="action_reccuring_contract_view_pivot" model="ir.actions.act_window.view">
+        <field eval="20" name="sequence"/>
+        <field name="view_mode">pivot</field>
+        <field name="view_id" ref="view_compassion_sponsorship_pivot"/>
+        <field name="act_window_id" ref="action_sponsorship_contract"/>
+    </record>
+
+    <record id="action_reccuring_contract_view_form" model="ir.actions.act_window.view">
+        <field eval="10" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_sponsorship_contract_form_compassion"/>
+        <field name="act_window_id" ref="action_sponsorship_contract"/>
+    </record>
+
+    <record id="action_reccuring_contract_view_tree" model="ir.actions.act_window.view">
+        <field eval="5" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="contract_compassion.view_recurring_contract_tree_compassion"/>
+        <field name="act_window_id" ref="action_sponsorship_contract"/>
     </record>
 
     <!-- Move the Sponsorships Menu to the Sponsorship Section -->
