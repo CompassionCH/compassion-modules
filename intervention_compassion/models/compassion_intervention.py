@@ -299,16 +299,21 @@ class CompassionIntervention(models.Model):
             self.env,
             'intervention_mapping')
 
-        intervention_details_request = commkit_data[
-            'GPInitiatedInterventionHoldNotification']
+        # Two messages can call this method. Try to find which one.
+        intervention_details_request = commkit_data.get(
+            'GPInitiatedInterventionHoldNotification',
+            commkit_data.get('InterventionOptInHoldNotification')
+        )
 
-        vals = intervention_mapping.get_vals_from_connect(
-            intervention_details_request)
+        intervention = self
+        if intervention_details_request:
+            vals = intervention_mapping.get_vals_from_connect(
+                intervention_details_request)
 
-        if 'service_level' not in vals:
-            vals['service_level'] = 'Level 1'
+            if 'service_level' not in vals:
+                vals['service_level'] = 'Level 1'
 
-        intervention = self.create(vals)
+            intervention = self.create(vals)
 
         return intervention.ids
 

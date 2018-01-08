@@ -115,6 +115,10 @@ class CommunicationJob(models.Model):
                         'report_name': attachment.report_id.report_name or '',
                         'attachment_id': attachment.id
                     })
+            # Remove deleted attachments
+            job.attachment_ids.filtered(
+                lambda a: a.attachment_id not in job.ir_attachment_ids
+            ).unlink()
 
     @api.model
     def send_mode_select(self):
