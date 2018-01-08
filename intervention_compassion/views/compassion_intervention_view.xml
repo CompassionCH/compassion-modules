@@ -28,14 +28,20 @@
                         <button name="show_expenses"
                                 type="object"
                                 class="oe_stat_button"
-                                icon="fa-credit-card"
-                                string="Expenses"/>
+                                icon="fa-credit-card">
+                            <field name="total_expense"
+                                   widget="statinfo"
+                                   string="Expenses"/>
+                        </button>
 
                         <button name="show_income"
                                 type="object"
                                 class="oe_stat_button"
-                                icon="fa-money"
-                                string="Income"/>
+                                icon="fa-money">
+                            <field name="total_income"
+                                   string="Income"
+                                   widget="statinfo"/>
+                        </button>
 
                         <button name="show_contract"
                                 type="object"
