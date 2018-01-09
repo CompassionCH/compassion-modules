@@ -608,10 +608,9 @@ class SponsorshipContract(models.Model):
                             "where id = %s", [contract.id])
                         self.env.invalidate_all()
             if contract.type == 'S':
-                # Update the hold of the child to No Money Hold
+                # Update the expiration date of the No Money Hold
                 hold = contract.child_id.hold_id
                 hold.write({
-                    'type': HoldType.NO_MONEY_HOLD.value,
                     'expiration_date': hold.get_default_hold_expiration(
                         HoldType.NO_MONEY_HOLD)
                 })
