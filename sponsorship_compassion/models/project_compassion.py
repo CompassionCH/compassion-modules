@@ -9,11 +9,37 @@
 #
 ##############################################################################
 
-from odoo import api, models
+from odoo import api, models, fields
 
 
 class ProjectCompassion(models.Model):
     _inherit = 'compassion.project'
+
+    sponsorships_count = fields.Integer(compute='_get_sponsorships_count')
+
+    def _get_sponsorships_count(self):
+
+        for project in self:
+            project.sponsorships_count = self.env['recurring.contract'].\
+                search_count([('child_id.project_id', '=', self.id)])
+
+    @api.multi
+    def list_sponsorships(self):
+
+        contract_list = self.env['recurring.contract'].search([
+            ('child_id.project_id', '=', self.id)])
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Sponsorships',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'recurring.contract',
+            'res_id': contract_list.ids,
+            'domain': [('id', 'in', contract_list.ids)],
+            'target': 'current',
+            'context': self.env.context
+        }
 
     @api.multi
     def suspend_funds(self):
