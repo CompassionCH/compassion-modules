@@ -24,6 +24,7 @@ class Household(models.Model):
     child_ids = fields.One2many(
         'compassion.child', 'household_id', 'Beneficiaries')
     name = fields.Char()
+    unknown_role = fields.Char()
     number_beneficiaries = fields.Integer()
     revised_value_ids = fields.One2many(
         'compassion.major.revision', 'household_id', 'Major revisions',
@@ -215,6 +216,9 @@ class Household(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
+        if vals.get('role') not in [t[0] for t in self._get_roles()]:
+            vals['unknown_role'] = vals.pop('role')
+
         res = self.search([('household_id', '=', vals.get('household_id'))])
         if res:
             res.write(vals)
