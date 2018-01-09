@@ -127,7 +127,7 @@ class InterventionSearch(models.TransientModel):
                 'type', anyof_id, self.type_selected))
         if self.category_id:
             new_filters.append(_get_filter(
-                'category_id', is_id, self.category_id.name))
+                'category_id', anyof_id, self.category_id.name))
         if self.status_selected:
             new_filters.append(_get_filter(
                 'funding_status', anyof_id, self.status_selected))
