@@ -98,7 +98,8 @@ class GenerateGiftWizard(models.TransientModel):
             ('company_id', '=', 1)], limit=1).id
         return {
             'type': 'out_invoice',
-            'partner_id': contract.correspondant_id.id,
+            'partner_id': getattr(contract, contract.send_gifts_to,
+                                  contract.correspondant_id).id,
             'journal_id': journal_id,
             'date_invoice': invoice_date,
             'payment_mode_id': contract.payment_mode_id.id,

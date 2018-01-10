@@ -97,6 +97,10 @@ class SponsorshipContract(models.Model):
                             copy=False, track_visibility='onchange')
     hold_expiration_date = fields.Datetime(
         help='Used for setting a hold after sponsorship cancellation')
+    send_gifts_to = fields.Selection([
+        ('partner_id', 'Payer'),
+        ('correspondant_id', 'Correspondent')
+    ], default='correspondant_id')
 
     _sql_constraints = [
         ('unique_global_id', 'unique(global_id)', 'You cannot have same '
