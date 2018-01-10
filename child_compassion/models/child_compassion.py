@@ -473,7 +473,7 @@ class CompassionChild(models.Model):
                 hold.write({
                     'type': HoldType.NO_MONEY_HOLD.value,
                     'expiration_date': hold.get_default_hold_expiration(
-                            HoldType.NO_MONEY_HOLD)
+                        HoldType.NO_MONEY_HOLD)
                 })
         return self.write({
             'state': 'P',
