@@ -43,7 +43,7 @@ class PartnerCommunication(models.Model):
     success_sentence_id = fields.Many2one(
         'success.story', 'Success Sentence',
         domain=[('type', '=', 'sentence')])
-    success_sentence = fields.Html(related='success_sentence_id.body')
+    success_sentence = fields.Text(related='success_sentence_id.body_text')
     print_subject = fields.Boolean(default=True)
     print_header = fields.Boolean()
 

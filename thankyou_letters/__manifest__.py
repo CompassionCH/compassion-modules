@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     'name': 'Thank You Letters',
-    'version': '10.0.1.0.0',
+    'version': '10.0.1.0.3',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',

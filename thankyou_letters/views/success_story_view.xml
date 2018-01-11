@@ -20,7 +20,8 @@
                         </group>
                     </group>
                     <group>
-                        <field name="body" options="{'style-inline': true}"/>
+                        <field name="body" options="{'style-inline': true}" attrs="{'invisible': [('type', '!=', 'story')]}"/>
+                        <field name="body_text" options="{'style-inline': true }" attrs="{'invisible': [('type', '!=', 'sentence')]}"/>
                     </group>
                 </sheet>
             </form>

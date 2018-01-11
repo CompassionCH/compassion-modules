@@ -24,7 +24,6 @@ class Household(models.Model):
     child_ids = fields.One2many(
         'compassion.child', 'household_id', 'Beneficiaries')
     name = fields.Char()
-    unknown_role = fields.Char()
     number_beneficiaries = fields.Integer()
     revised_value_ids = fields.One2many(
         'compassion.major.revision', 'household_id', 'Major revisions',
@@ -216,7 +215,8 @@ class Household(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
-        if vals.get('role') not in [t[0] for t in self._get_roles()]:
+        role = vals.get('role')
+        if role and role not in [t[0] for t in self._get_roles()]:
             vals['unknown_role'] = vals.pop('role')
 
         res = self.search([('household_id', '=', vals.get('household_id'))])
@@ -243,6 +243,7 @@ class HouseholdMembers(models.Model):
     is_primary_caregiver = fields.Boolean()
     name = fields.Char()
     role = fields.Selection('_get_roles')
+    unknown_role = fields.Char()
     gender = fields.Char(size=1, compute='_compute_gender', store=True)
     male_role = fields.Boolean(compute='_compute_gender', store=True)
     female_role = fields.Boolean(compute='_compute_gender', store=True)
