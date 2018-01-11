@@ -9,6 +9,9 @@
 #
 ##############################################################################
 import logging
+from datetime import date
+
+from dateutil.relativedelta import relativedelta
 
 from odoo import api, models, fields, exceptions, _
 
@@ -57,11 +60,7 @@ class RecurringContract(models.Model):
     def create(self, vals):
         """ Push parent contract in SUB state. """
         contract = super(RecurringContract, self).create(vals)
-        if contract.parent_id.sds_state == 'sub_waiting':
-            contract.parent_id.write({
-                'sds_state': 'sub',
-                'color': 2  # Red until sub is active
-            })
+        contract.parent_id._trigger_sub()
         return contract
 
     @api.multi
@@ -90,6 +89,13 @@ class RecurringContract(models.Model):
             if parent_id and self.state == 'draft':
                 self.parent_id = parent_id
                 self.origin_id = origin_id
+
+    @api.onchange('child_id')
+    def onchange_child_id(self):
+        """ Put back in SUB state if needed. """
+        res = super(RecurringContract, self).onchange_child_id()
+        self.parent_id._trigger_sub()
+        return res
 
     @api.multi
     def switch_contract_view(self):
@@ -253,19 +259,30 @@ class RecurringContract(models.Model):
         return False
 
     def _parent_id_changed(self, parent_id):
-        """ If contract is already validated and parent is sub_waiting,
-        mark the sub. """
+        """ If contract parent is sub_waiting, mark the sub. """
         for contract in self:
-            if 'S' in contract.type and contract.state != 'draft':
+            if 'S' in contract.type:
                 if contract.parent_id:
                     raise exceptions.UserError(
                         _("You cannot change the sub sponsorship."))
                 parent = self.browse(parent_id)
-                if parent.sds_state == 'sub_waiting':
-                    parent.write({
-                        'sds_state': 'sub',
-                        'color': 2  # Red until sub is active
-                    })
+                parent._trigger_sub()
+
+    @api.multi
+    def _trigger_sub(self):
+        """ Triggers the transition to SUB state if the sponsorship is in
+        valid state (either sub waiting or no sub since less than 50 days)
+        """
+        limit = date.today() - relativedelta(days=50)
+        valid_sub = self.filtered(
+            lambda s: s.sds_state == 'sub_waiting' or (
+                s.sds_state in ['sub_reject', 'no_sub'] and
+                fields.Date.from_string(s.end_date) >= limit)
+        )
+        valid_sub.write({
+            'sds_state': 'sub',
+            'color': 2  # Red until sub is active
+        })
 
     @api.model
     def _needaction_domain_get(self):

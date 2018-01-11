@@ -19,11 +19,11 @@ from odoo.addons.contract_compassion.tests.test_contract_compassion \
     import BaseContractCompassionTest
 
 
-mock_update_hold = ('openerp.addons.child_compassion.models.compassion_hold'
+mock_update_hold = ('odoo.addons.child_compassion.models.compassion_hold'
                     '.CompassionHold.update_hold')
-mock_release_hold = ('openerp.addons.child_compassion.models.compassion_hold'
+mock_release_hold = ('odoo.addons.child_compassion.models.compassion_hold'
                      '.CompassionHold.release_hold')
-mock_get_infos = ('openerp.addons.child_compassion.models.child_compassion'
+mock_get_infos = ('odoo.addons.child_compassion.models.child_compassion'
                   '.CompassionChild.get_infos')
 
 logger = logging.getLogger(__name__)
@@ -39,9 +39,11 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
             ('name', '=', 'Sponsorship')
         ], limit=1)
 
+    @mock.patch(mock_update_hold)
     @mock.patch(mock_get_infos)
-    def create_child(self, local_id, get_infos):
+    def create_child(self, local_id, get_infos, update_hold):
         get_infos.return_value = True
+        update_hold.return_value = True
         return self.env['compassion.child'].create({
             'local_id': local_id,
             'global_id': self.ref(9),
@@ -62,7 +64,9 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
             }).id
         })
 
-    def create_contract(self, vals, line_vals):
+    @mock.patch(mock_update_hold)
+    def create_contract(self, vals, line_vals, update_hold):
+        update_hold.return_value = True
         # Add default values
         default_values = {
             'type': 'S',
@@ -95,9 +99,9 @@ class TestSponsorship(BaseSponsorshipTest):
             no mistakes.
         """
         # Create a child and get the project associated
+        child = self.create_child('PE012304567')
 
         # Creation of the sponsorship contract
-        child = self.create_child('PE012304567')
         sp_group = self.create_group({'partner_id': self.michel.id})
         sponsorship = self.create_contract(
             {

@@ -219,7 +219,7 @@ class CompassionHold(models.Model):
         failed = messages.filtered(lambda m: m.state == 'failure')
         if failed:
             self.env.cr.rollback()
-            raise Warning('\n\n'.join(failed.mapped('failure_reason')))
+            raise UserError('\n\n'.join(failed.mapped('failure_reason')))
 
     @api.multi
     def hold_sent(self, vals):

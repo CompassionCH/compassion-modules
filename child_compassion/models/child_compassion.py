@@ -440,6 +440,11 @@ class CompassionChild(models.Model):
     def child_waiting_hold(self):
         """ Called on child creation. """
         self.write({'state': 'W', 'sponsor_id': False})
+        # If hold was already set, put it back in ConsignmentHold type
+        self.mapped('hold_id').write({
+            'type': HoldType.CONSIGNMENT_HOLD.value
+        })
+        return True
 
     @api.multi
     def child_consigned(self):
@@ -463,6 +468,13 @@ class CompassionChild(models.Model):
                 'child_id': child.id,
                 'image_url': child.image_url
             })
+            hold = child.hold_id
+            if hold.type != HoldType.SUB_CHILD_HOLD.value:
+                hold.write({
+                    'type': HoldType.NO_MONEY_HOLD.value,
+                    'expiration_date': hold.get_default_hold_expiration(
+                        HoldType.NO_MONEY_HOLD)
+                })
         return self.write({
             'state': 'P',
             'has_been_sponsored': True

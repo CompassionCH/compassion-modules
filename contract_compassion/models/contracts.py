@@ -205,7 +205,7 @@ class RecurringContract(models.Model):
         dict_contract_id_paidmonth = {
             row['contract_id']: int(row['paidmonth'] or 0) for row in res}
         for contract in self:
-            contract.months_paid = dict_contract_id_paidmonth[contract.id]
+            contract.months_paid = dict_contract_id_paidmonth.get(contract.id)
 
     ##########################################################################
     #                              ORM METHODS                               #

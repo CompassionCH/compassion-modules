@@ -8,6 +8,7 @@
             <!-- Add correspondant field for sponsorships -->
             <field name="partner_id" position="after">
                 <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', 'not in', ['S','SC'])], 'required': [('type', 'in', ['S', 'SC'])]}"/>
+                <field name="send_gifts_to"/>
             </field>
 
             <!-- Make origin and channel mandatory for sponsorships -->

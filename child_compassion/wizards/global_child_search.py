@@ -466,8 +466,10 @@ class GlobalChildSearch(models.TransientModel):
             restricted_children.unlink()
             self.global_child_ids += new_children
         else:
-            raise UserError(
-                result.get('content', result)['Error']['ErrorMessage'])
+            error = result.get('content', result)['Error']
+            if isinstance(error, dict):
+                error = error.get('ErrorMessage')
+            raise UserError(error)
 
     def _does_match(self, child):
         """ Returns if the selected criterias correspond to the given child.

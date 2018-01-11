@@ -97,6 +97,10 @@ class SponsorshipContract(models.Model):
                             copy=False, track_visibility='onchange')
     hold_expiration_date = fields.Datetime(
         help='Used for setting a hold after sponsorship cancellation')
+    send_gifts_to = fields.Selection([
+        ('partner_id', 'Payer'),
+        ('correspondant_id', 'Correspondent')
+    ], default='correspondant_id')
 
     _sql_constraints = [
         ('unique_global_id', 'unique(global_id)', 'You cannot have same '
@@ -608,10 +612,9 @@ class SponsorshipContract(models.Model):
                             "where id = %s", [contract.id])
                         self.env.invalidate_all()
             if contract.type == 'S':
-                # Update the hold of the child to No Money Hold
+                # Update the expiration date of the No Money Hold
                 hold = contract.child_id.hold_id
                 hold.write({
-                    'type': HoldType.NO_MONEY_HOLD.value,
                     'expiration_date': hold.get_default_hold_expiration(
                         HoldType.NO_MONEY_HOLD)
                 })
