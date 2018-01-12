@@ -240,6 +240,8 @@ class RecurringContract(models.Model):
                         'sds_state': 'sub_reject',
                         'color': 2
                     })
+                    # Remove parent to allow a new subsponsorship
+                    contract.parent_id = False
                 vals = {
                     'sds_state': 'cancelled',
                     'color': 1
