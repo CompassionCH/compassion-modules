@@ -234,14 +234,17 @@ class RecurringContract(models.Model):
                 }
             else:
                 if contract.parent_id.sds_state == 'sub' and \
-                        contract.end_reason != '11':    # 11=Exchange of child
+                        contract.end_reason != '13':    # 13=Exchange of child
                     # This is as subreject
                     contract.parent_id.write({
                         'sds_state': 'sub_reject',
                         'color': 2
                     })
+                elif contract.parent_id.sds_state == 'sub' and \
+                        contract.end_reason == '13':    # 13=Exchange of child
                     # Remove parent to allow a new subsponsorship
-                    contract.parent_id = False
+                    contract.with_context(
+                        allow_removing_sub=True).parent_id = False
                 vals = {
                     'sds_state': 'cancelled',
                     'color': 1
@@ -264,7 +267,8 @@ class RecurringContract(models.Model):
         """ If contract parent is sub_waiting, mark the sub. """
         for contract in self:
             if 'S' in contract.type:
-                if contract.parent_id:
+                if contract.parent_id and not self.env.context.get(
+                        'allow_removing_sub'):
                     raise exceptions.UserError(
                         _("You cannot change the sub sponsorship."))
                 parent = self.browse(parent_id)
