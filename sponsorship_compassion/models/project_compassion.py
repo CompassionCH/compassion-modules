@@ -15,7 +15,7 @@ from odoo import api, models, fields
 class ProjectCompassion(models.Model):
     _inherit = 'compassion.project'
 
-    sponsorships_count = fields.Integer(compute='_get_sponsorships_count')
+    sponsorships_count = fields.Integer(compute='_compute_sponsorships_count')
 
     def _compute_sponsorships_count(self):
 
