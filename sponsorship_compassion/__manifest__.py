@@ -50,6 +50,7 @@
         'views/gmc_message_view.xml',
         'views/end_contract_wizard_view.xml',
         'views/download_child_pictures_view.xml',
+        'views/project_view.xml',
         'workflow/contract_workflow.xml',
         'data/sponsorship_product.xml',
         'data/gmc_action.xml',

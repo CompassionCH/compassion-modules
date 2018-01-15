@@ -340,6 +340,7 @@
                         <field name="child_id"/>
                         <field name="name"/>
                         <field name="role"/>
+                        <field name="unknown_role"/>
                         <field name="is_primary_caregiver"/>
                         <field name="is_caregiver"/>
                     </tree>

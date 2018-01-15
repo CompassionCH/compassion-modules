@@ -30,6 +30,7 @@ class SuccessStory(models.Model):
         ('sentence', 'Sentence')
     ], default='story', required=True)
     body = fields.Html(translate=True)
+    body_text = fields.Text(translate=True)
     date_start = fields.Date(
         readonly=True,
         states={'new': [('readonly', False)]}
