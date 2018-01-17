@@ -141,7 +141,7 @@
                     <span t-raw="o.partner_id.short_address"/>
                 </div>
                 <div id="date" class="right">
-                    <span t-raw="o.date_communication"/>
+                    <span t-raw="o.partner_id.date_communication"/>
                 </div>
 
                 <div id="title" t-if="o.print_subject">
@@ -156,7 +156,8 @@
                     <div id="body">
                         <span t-raw="o.body_html" class="body_text"/>
                         <div class="right" style="margin-top: 10mm">
-                            <span t-raw="o.signature"/>
+                            <img t-if="o.show_signature and o.user_id.signature_image" t-attf-src="data:image/jpg;base64,{{ o.user_id.signature_image }}"/>
+                            <t t-raw="o.user_id.signature_letter"/>
                         </div>
                     </div>
                 </div>
