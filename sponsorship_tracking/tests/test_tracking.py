@@ -127,17 +127,14 @@ class TestTracking(BaseSponsorshipTest):
 
         # Activate the sponsorships contracts and make the depart of child
         self.list_sponsorships.with_context(async_mode=True).force_activation()
-        self.assertEqual(self.list_sponsorships[0].sds_state, 'active')
-        self.assertEqual(self.list_sponsorships[1].sds_state, 'active')
-        self.assertEqual(self.list_sponsorships[2].sds_state, 'active')
-        self.assertEqual(self.list_sponsorships[3].sds_state, 'active')
+        for subsponsorship in self.list_sponsorships:
+            self.assertEqual(subsponsorship.sds_state, 'active')
 
         list_childs = self.list_sponsorships.mapped('child_id')
         list_childs.depart()
-        self.assertEqual(self.list_sponsorships[0].sds_state, 'sub_waiting')
-        self.assertEqual(self.list_sponsorships[1].sds_state, 'sub_waiting')
-        self.assertEqual(self.list_sponsorships[2].sds_state, 'sub_waiting')
-        self.assertEqual(self.list_sponsorships[3].sds_state, 'sub_waiting')
+
+        for subsponsorship in self.list_sponsorships:
+            self.assertEqual(subsponsorship.sds_state, 'sub_waiting')
 
         sub_child1 = self.create_child('PE47601334')
         sub_child2 = self.create_child('PE57601335')
@@ -151,7 +148,8 @@ class TestTracking(BaseSponsorshipTest):
         ).create({'state': 'sub',
                   'channel': 'direct',
                   'child_id': sub_child1.id}).create_subsponsorship()['res_id']
-        # Get the subsponsorship frim its id and force his activation.
+        # Get the subsponsorship from its id and force his activation.
+        self.assertEqual(self.list_sponsorships[0].sds_state, 'sub')
         subsponsorship1 = self.env['recurring.contract'].browse(sub1_id)
         subsponsorship1.with_context(async_mode=True).force_activation()
         self.list_sponsorships[0].sds_state_date = '2017-11-01'
@@ -169,12 +167,15 @@ class TestTracking(BaseSponsorshipTest):
 
         sub2_id = subsponsorship2_wizzard.create_subsponsorship()['res_id']
         subsponsorship2 = self.env['recurring.contract'].browse(sub2_id)
+        self.assertEqual(self.list_sponsorships[1].sds_state, 'sub')
         subsponsorship2.with_context(async_mode=True).force_activation()
 
         # The subsponsorship is ended, the sponsor choose another child.
         self.env['end.contract.wizard'].with_context(default_type='S').create({
             'contract_id': subsponsorship2.id,
             'end_reason': '13'}).end_contract()
+
+        self.assertEqual(self.list_sponsorships[1].sds_state, 'sub')
 
         subsponsorship3_2 = self.create_contract(
             {
@@ -205,6 +206,8 @@ class TestTracking(BaseSponsorshipTest):
         # Force th activation of the sponsorship we just created.
         subsponsorship3 = self.env['recurring.contract'].browse(sub3_id)
         subsponsorship3.with_context(async_mode=True).force_activation()
+
+        self.assertEqual(self.list_sponsorships[2].sds_state, 'sub')
         # Setup a sponsorship end wizard and put and end to the subsponsorship
         # that we just created.
         self.env['end.contract.wizard'].with_context(default_type='S').create(
@@ -225,21 +228,3 @@ class TestTracking(BaseSponsorshipTest):
         # Four child codes available for testing
         # child_keys = ["PE3760144", "IO6790212", "UG8320012", "UG8350016"]
         return True
-
-    # def test_project_tracking(self):
-    #     """
-    #     Test scenario:
-    #         1. Two contracts activated
-    #         2. Two Projects become fund-suspended
-    #         3. Project A:
-    #             a. suspension extension
-    #             b. sponsor is not informed
-    #             c. project becomes phase-out
-    #             d. sponsor is alerted
-    #         4. Project B:
-    #             a. sponsor is informed
-    #             b. project is reactivated
-    #             c. funds are attributed
-    #     """
-    #     # TODO Implement the test
-    #     return True
