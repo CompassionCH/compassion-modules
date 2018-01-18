@@ -34,7 +34,11 @@
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['partner_communication', 'advanced_translation'],
+    'depends': [
+        'partner_communication',
+        'advanced_translation',
+        'web_widget_digitized_signature',
+    ],
     'data': [
         'security/ir.model.access.csv',
         'report/donation_report.xml',

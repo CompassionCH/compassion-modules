@@ -8,26 +8,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import threading
-import locale
-from contextlib import contextmanager
-from datetime import datetime
-
 from odoo import api, models, fields
-
-LOCALE_LOCK = threading.Lock()
-
-
-@contextmanager
-def setlocale(name):
-    with LOCALE_LOCK:
-        saved = locale.setlocale(locale.LC_ALL)
-        try:
-            yield locale.setlocale(locale.LC_ALL, (name, 'UTF-8'))
-        except:
-            yield locale.setlocale(locale.LC_ALL, name)
-        finally:
-            locale.setlocale(locale.LC_ALL, saved)
 
 
 class PartnerCommunication(models.Model):
@@ -36,8 +17,6 @@ class PartnerCommunication(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    date_communication = fields.Char(compute='_compute_date_communication')
-    signature = fields.Char(compute='_compute_signature')
     success_story_id = fields.Many2one(
         'success.story', 'Success Story', domain=[('type', '=', 'story')])
     success_sentence_id = fields.Many2one(
@@ -46,39 +25,7 @@ class PartnerCommunication(models.Model):
     success_sentence = fields.Text(related='success_sentence_id.body_text')
     print_subject = fields.Boolean(default=True)
     print_header = fields.Boolean()
-
-    ##########################################################################
-    #                             FIELDS METHODS                             #
-    ##########################################################################
-    @api.multi
-    def _compute_date_communication(self):
-        lang_map = {
-            'fr_CH': u'le %d %B %Y',
-            'fr': u'le %d %B %Y',
-            'de_DE': u'%d. %B %Y',
-            'en_US': u'%d %B %Y',
-            'it_IT': u'%d %B %Y',
-        }
-        today = datetime.today()
-        city = self.env.user.partner_id.company_id.city
-        for communication in self:
-            lang = communication.partner_id.lang
-            with setlocale(lang):
-                date = today.strftime(lang_map.get(lang)).decode('utf-8')
-                communication.date_communication = city + u", " + date
-
-    @api.multi
-    def _compute_signature(self):
-        for communication in self:
-            user = communication.user_id or self.env.user
-            user = user.with_context(lang=communication.partner_id.lang)
-            employee = user.employee_ids
-            signature = ''
-            if len(employee) == 1:
-                signature = employee.name + '<br/>' + \
-                    employee.department_id.name + '<br/>'
-            signature += user.company_id.name
-            communication.signature = signature
+    show_signature = fields.Boolean()
 
     ##########################################################################
     #                              ORM METHODS                               #

@@ -11,6 +11,7 @@
             <field name="subject" position="after">
                 <field name="print_subject" attrs="{'invisible': [('send_mode', '=', 'digital')]}"/>
                 <field name="print_header" attrs="{'invisible': [('send_mode', '=', 'digital')]}"/>
+                <field name="show_signature"/>
             </field>
         </field>
     </record>
