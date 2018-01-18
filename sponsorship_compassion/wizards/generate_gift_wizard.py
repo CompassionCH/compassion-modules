@@ -53,9 +53,12 @@ class GenerateGiftWizard(models.TransientModel):
                             logger.error(
                                 'The birthdate of the child is missing!')
                             continue
-                        invoice_date = self.compute_date_birthday_invoice(
-                            contract.child_id.birthdate,
-                            self.invoice_date)
+                        if 'lsv' in self._context and self._context['lsv']:
+                            invoice_date = self._compute_date_birthday_invoice(
+                                contract.child_id.birthdate,
+                                self.invoice_date)
+                        else:
+                            invoice_date = self.invoice_date
                         begin_year = fields.Date.from_string(
                             self.invoice_date).replace(month=1, day=1)
                         end_year = begin_year.replace(month=12, day=31)
@@ -134,15 +137,15 @@ class GenerateGiftWizard(models.TransientModel):
         return inv_line_data
 
     @api.model
-    def compute_date_birthday_invoice(self, child_birthdate, payment_date):
+    def _compute_date_birthday_invoice(self, child_birthdate, payment_date):
         """Set date of invoice two months before child's birthdate"""
         inv_date = fields.Date.from_string(payment_date)
         birthdate = fields.Date.from_string(child_birthdate)
         new_date = inv_date
         if birthdate.month >= inv_date.month + 2:
-            new_date = inv_date.replace(day=28, month=birthdate.month-2)
+            new_date = inv_date.replace(day=28, month=birthdate.month - 2)
         elif birthdate.month + 3 < inv_date.month:
             new_date = birthdate.replace(
-                day=28, year=inv_date.year+1) + relativedelta(months=-2)
+                day=28, year=inv_date.year + 1) + relativedelta(months=-2)
             new_date = max(new_date, inv_date)
         return fields.Date.to_string(new_date)
