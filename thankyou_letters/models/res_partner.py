@@ -130,11 +130,11 @@ class ResUsers(models.Model):
     @api.multi
     def _compute_signature_letter(self):
         for user in self:
-            user = user.with_context(lang=user.partner_id.lang)
             employee = user.employee_ids
             signature = ''
             if len(employee) == 1:
-                signature = employee.name + '<br/>' + \
-                    employee.department_id.name + '<br/>'
+                signature = employee.name + '<br/>'
+                if employee.department_id:
+                    signature += employee.department_id.name + '<br/>'
             signature += user.company_id.name
             user.signature_letter = signature
