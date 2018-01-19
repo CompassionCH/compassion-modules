@@ -16,10 +16,31 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class CommunicationDefaults(models.AbstractModel):
+    """ Abstract class to share config settings between communication config
+    and communication job. """
+    _name = 'partner.communication.defaults'
+
+    user_id = fields.Many2one(
+        'res.users', 'From', domain=[('share', '=', False)])
+    need_call = fields.Boolean(
+        help='Indicates we should have a personal contact with the partner'
+    )
+    print_if_not_email = fields.Boolean(
+        help="Should we print the communication if the sponsor don't have "
+             "an e-mail address"
+    )
+    report_id = fields.Many2one(
+        'ir.actions.report.xml', 'Letter template',
+        domain=[('model', '=', 'partner.communication.job')]
+    )
+
+
 class CommunicationConfig(models.Model):
     """ This class allows to configure if and how we will inform the
     sponsor when a given event occurs. """
     _name = 'partner.communication.config'
+    _inherit = 'partner.communication.defaults'
     _description = 'Communication Configuration'
 
     ##########################################################################
@@ -31,27 +52,14 @@ class CommunicationConfig(models.Model):
         'ir.model', 'Applies to', required=True,
         help="The kind of document with this communication can be used")
     model = fields.Char(related='model_id.model', store=True, readonly=True)
-    user_id = fields.Many2one(
-        'res.users', 'From', domain=[('share', '=', False)])
     send_mode = fields.Selection('_get_send_mode', required=True)
     send_mode_pref_field = fields.Char(
         'Partner preference field',
         help='Name of the field in res.partner in which to find the '
              'delivery preference'
     )
-    need_call = fields.Boolean(
-        help='Indicates we should have a personal contact with the partner'
-    )
-    print_if_not_email = fields.Boolean(
-        help="Should we print the communication if the sponsor don't have "
-             "an e-mail address"
-    )
     email_template_id = fields.Many2one(
         'mail.template', 'Email template',
-        domain=[('model', '=', 'partner.communication.job')]
-    )
-    report_id = fields.Many2one(
-        'ir.actions.report.xml', 'Letter template',
         domain=[('model', '=', 'partner.communication.job')]
     )
     attachments_function = fields.Char(
