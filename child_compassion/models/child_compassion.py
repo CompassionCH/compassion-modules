@@ -350,7 +350,7 @@ class CompassionChild(models.Model):
             if child:
                 children += child
                 child.write(child_mapping.get_vals_from_connect(child_data))
-        children.get_lifecycle_event()
+        children.update_child_pictures()
         return children.ids
 
     ##########################################################################
