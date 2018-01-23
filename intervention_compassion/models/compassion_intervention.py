@@ -275,6 +275,7 @@ class CompassionIntervention(models.Model):
         vals['commited_percentage'] = 0
         intervention = super(CompassionIntervention, self).create(vals)
         intervention.get_infos()
+        intervention.icp_ids.get_lifecycle_event()
         return intervention
 
     @api.multi

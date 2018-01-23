@@ -150,12 +150,21 @@ class SponsorshipGift(models.Model):
         for gift in self.filtered('invoice_line_ids'):
             pay_dates = gift.invoice_line_ids.filtered('last_payment').mapped(
                 'last_payment') or [gift.invoice_line_ids[0].last_payment]
+
             inv_dates = gift.invoice_line_ids.mapped('due_date')
             amounts = gift.mapped('invoice_line_ids.price_subtotal')
+
             gift.date_partner_paid = fields.Date.to_string(max(
                 map(lambda d: fields.Date.from_string(d), pay_dates)))
-            gift.gift_date = fields.Date.to_string(max(
-                map(lambda d: fields.Date.from_string(d), inv_dates)))
+
+            if gift.sponsorship_gift_type == 'Birthday':
+                gift.gift_date = self.env['generate.gift.wizard'].\
+                    compute_date_birthday_invoice(
+                        gift.child_id.birthdate, inv_dates[0])
+            else:
+                gift.gift_date = fields.Date.to_string(max(
+                    map(lambda d: fields.Date.from_string(d), inv_dates)))
+
             gift.amount = sum(amounts)
 
     def _compute_name(self):
