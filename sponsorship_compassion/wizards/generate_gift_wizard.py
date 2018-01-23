@@ -53,8 +53,8 @@ class GenerateGiftWizard(models.TransientModel):
                             logger.error(
                                 'The birthdate of the child is missing!')
                             continue
-                        if 'lsv' in self._context and self._context['lsv']:
-                            invoice_date = self._compute_date_birthday_invoice(
+                        if self.env.context.get('lsv'):
+                            invoice_date = self.compute_date_birthday_invoice(
                                 contract.child_id.birthdate,
                                 self.invoice_date)
                         else:
@@ -137,7 +137,7 @@ class GenerateGiftWizard(models.TransientModel):
         return inv_line_data
 
     @api.model
-    def _compute_date_birthday_invoice(self, child_birthdate, payment_date):
+    def compute_date_birthday_invoice(self, child_birthdate, payment_date):
         """Set date of invoice two months before child's birthdate"""
         inv_date = fields.Date.from_string(payment_date)
         birthdate = fields.Date.from_string(child_birthdate)

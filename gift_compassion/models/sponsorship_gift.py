@@ -159,7 +159,7 @@ class SponsorshipGift(models.Model):
 
             if gift.sponsorship_gift_type == 'Birthday':
                 gift.gift_date = self.env['generate.gift.wizard'].\
-                    _compute_date_birthday_invoice(
+                    compute_date_birthday_invoice(
                         gift.child_id.birthdate, inv_dates[0])
             else:
                 gift.gift_date = fields.Date.to_string(max(
