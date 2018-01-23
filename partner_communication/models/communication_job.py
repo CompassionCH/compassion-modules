@@ -8,13 +8,16 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import StringIO
 import logging
 from HTMLParser import HTMLParser
 
-from odoo import api, models, fields, _, http
-from odoo.exceptions import UserError
 from odoo.addons.base_phone import fields as phone_fields
 from odoo.addons.base_phone.controllers.main import BasePhoneController
+from pyPdf import PdfFileReader
+
+from odoo import api, models, fields, _, http
+from odoo.exceptions import UserError
 
 logger = logging.getLogger(__name__)
 
@@ -93,6 +96,9 @@ class CommunicationJob(models.Model):
     phonecall_id = fields.Many2one('crm.phonecall', 'Phonecall log',
                                    readonly=True)
     body_html = fields.Html()
+    pdf_page_count = fields.Integer(string='PDF size',
+                                    compute='_compute_pdf_page',
+                                    store=True,)
     subject = fields.Char()
     attachment_ids = fields.One2many(
         'partner.communication.attachment', 'communication_id',
@@ -107,6 +113,23 @@ class CommunicationJob(models.Model):
     def _compute_ir_attachments(self):
         for job in self:
             job.ir_attachment_ids = job.mapped('attachment_ids.attachment_id')
+
+    @api.depends('body_html')
+    def _compute_pdf_page(self):
+        if self.send_mode == 'physical':
+            report_obj = self.env['report'].with_context(
+                lang=self.partner_id.lang, must_skip_send_to_printer=True)
+            pdf_str = report_obj.get_pdf(self.ids, self.report_id.report_name)
+            pdf = PdfFileReader(StringIO.StringIO(pdf_str))
+
+            nb_page = pdf.getNumPages()
+
+            # Due to an unexplained reason the field body_html can be empty and
+            # the method get_pdf return an empty pdf too. So to avoid to
+            # update the field with a corrupted value we ignore this case and
+            # doesn't update the value.
+            if nb_page > 0:
+                self.pdf_page_count = pdf.getNumPages()
 
     def _inverse_ir_attachments(self):
         attach_obj = self.env['partner.communication.attachment']
