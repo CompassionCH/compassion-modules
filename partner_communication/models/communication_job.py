@@ -206,7 +206,7 @@ class CommunicationJob(models.Model):
                 self.env.context:
             job.auto_send = send_mode[1]
 
-        if not self.body_html or not strip_tags(self.body_html):
+        if not job.body_html or not strip_tags(job.body_html):
             job.refresh_text()
         else:
             job.set_attachments()
