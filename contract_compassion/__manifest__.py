@@ -30,7 +30,7 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion Contracts',
-    'version': '10.0.1.2.0',
+    'version': '10.0.2.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
@@ -42,10 +42,12 @@
         'views/contract_origin_view.xml',
         'views/contract_view.xml',
         'views/activate_contract_view.xml',
+        'views/utm_medium_view.xml',
         'workflow/contract_workflow.xml',
         'security/ir.model.access.csv',
         'data/friday_invoicer_cron.xml',
         'data/product.xml',
+        'data/utm_data.xml',
     ],
     'demo': [],
     'installable': True,

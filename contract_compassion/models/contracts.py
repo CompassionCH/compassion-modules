@@ -26,9 +26,10 @@ class ContractGroup(models.Model):
 
 
 class RecurringContract(models.Model):
-    _inherit = "recurring.contract"
+    _inherit = ['recurring.contract', 'utm.mixin']
     _order = 'start_date desc'
     _rec_name = 'name'
+    _name = 'recurring.contract'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -60,7 +61,6 @@ class RecurringContract(models.Model):
     origin_id = fields.Many2one(
         'recurring.contract.origin', 'Origin', ondelete='restrict',
         track_visibility='onchange')
-    channel = fields.Selection('_get_channels')
 
     parent_id = fields.Many2one(
         'recurring.contract', 'Previous sponsorship',
@@ -134,20 +134,6 @@ class RecurringContract(models.Model):
             ('9', _("Never paid")),
             ('12', _("Financial reasons")),
             ('25', _("Not given")),
-        ]
-
-    def _get_channels(self):
-        """Returns the available channel through the new sponsor
-        reached Compassion.
-        """
-        return [
-            ('postal', _("By mail")),
-            ('direct', _("Direct")),
-            ('email', _("By e-mail")),
-            ('internet', _("From the website")),
-            ('phone', _("By phone")),
-            ('payment', _("Payment")),
-            ('sub', _("SUB Sponsorship")),
         ]
 
     def _get_type(self):

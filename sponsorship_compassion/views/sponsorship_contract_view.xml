@@ -11,11 +11,11 @@
                 <field name="send_gifts_to"/>
             </field>
 
-            <!-- Make origin and channel mandatory for sponsorships -->
+            <!-- Make origin and medium mandatory for sponsorships -->
             <field name="origin_id" position="attributes">
                 <attribute name="attrs">{'required':[('type', 'in', ['S','SC'])]}</attribute>
             </field>
-            <field name="channel" position="attributes">
+            <field name="medium_id" position="attributes">
                 <attribute name="attrs">{'required':[('type', 'in', ['S','SC'])]}</attribute>
             </field>
 
