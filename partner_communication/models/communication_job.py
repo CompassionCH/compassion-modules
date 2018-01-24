@@ -129,7 +129,7 @@ class CommunicationJob(models.Model):
             # update the field with a corrupted value we ignore this case and
             # doesn't update the value.
             if nb_page > 0:
-                self.pdf_page_count = pdf.getNumPages()
+                self.pdf_page_count = nb_page
 
     def _inverse_ir_attachments(self):
         attach_obj = self.env['partner.communication.attachment']
