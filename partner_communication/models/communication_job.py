@@ -97,8 +97,7 @@ class CommunicationJob(models.Model):
                                    readonly=True)
     body_html = fields.Html()
     pdf_page_count = fields.Integer(string='PDF size',
-                                    compute='_compute_pdf_page',
-                                    store=True,)
+                                    readonly=True)
     subject = fields.Char()
     attachment_ids = fields.One2many(
         'partner.communication.attachment', 'communication_id',
@@ -114,22 +113,16 @@ class CommunicationJob(models.Model):
         for job in self:
             job.ir_attachment_ids = job.mapped('attachment_ids.attachment_id')
 
-    @api.depends('body_html')
-    def _compute_pdf_page(self):
-        if self.send_mode == 'physical':
-            report_obj = self.env['report'].with_context(
-                lang=self.partner_id.lang, must_skip_send_to_printer=True)
-            pdf_str = report_obj.get_pdf(self.ids, self.report_id.report_name)
-            pdf = PdfFileReader(StringIO.StringIO(pdf_str))
-
-            nb_page = pdf.getNumPages()
-
-            # Due to an unexplained reason the field body_html can be empty and
-            # the method get_pdf return an empty pdf too. So to avoid to
-            # update the field with a corrupted value we ignore this case and
-            # doesn't update the value.
-            if nb_page > 0:
-                self.pdf_page_count = nb_page
+    def count_pdf_page(self):
+        for record in self.filtered('report_id'):
+            if record.send_mode == 'physical':
+                report_obj = record.env['report'].with_context(
+                    lang=record.partner_id.lang,
+                    must_skip_send_to_printer=True)
+                pdf_str = report_obj.get_pdf(record.ids,
+                                             record.report_id.report_name)
+                pdf = PdfFileReader(StringIO.StringIO(pdf_str))
+                record.pdf_page_count = pdf.getNumPages()
 
     def _inverse_ir_attachments(self):
         attach_obj = self.env['partner.communication.attachment']
@@ -215,6 +208,9 @@ class CommunicationJob(models.Model):
         if job.need_call or job.config_id.need_call:
             job.state = 'call'
 
+        if job.body_html or job.send_mode == 'physical':
+            job.count_pdf_page()
+
         if job.auto_send:
             job.send()
 
@@ -260,7 +256,12 @@ class CommunicationJob(models.Model):
         if vals.get('need_call'):
             vals['state'] = 'call'
 
-        return super(CommunicationJob, self).write(vals)
+        super(CommunicationJob, self).write(vals)
+
+        if vals.get('body_html') or vals.get('send_mode') == 'physical':
+            self.count_pdf_page()
+
+        return True
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
