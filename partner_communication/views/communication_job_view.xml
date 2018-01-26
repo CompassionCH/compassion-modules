@@ -29,7 +29,7 @@
                         </group>
                         <group>
                             <field name="sent_date" readonly="1"/>
-                            <field name="send_mode"/>
+                            <field name="send_mode" required="1"/>
                             <field name="need_call"/>
                             <field name="report_id" attrs="{'invisible': [('send_mode', '!=', 'physical')]}"/>
                             <field name="auto_send"/>
