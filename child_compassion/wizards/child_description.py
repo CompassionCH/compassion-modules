@@ -102,17 +102,10 @@ class ChildDescription(models.TransientModel):
         }
     }
 
-    illness_intro_lang = {
-        'en_US': {
-            'M': u"{preferred_name} has the following chronic illnesses:",
-            'F': u"{preferred_name} has the following chronic illnesses:",
-        }
-    }
-
     handicap_intro_lang = {
         'en_US': {
-            'M': u"{preferred_name} has the following physical disabilities:",
-            'F': u"{preferred_name} has the following physical disabilities:",
+            'M': u"{preferred_name} suffers from:",
+            'F': u"{preferred_name} suffers from:",
         }
     }
 
@@ -267,23 +260,20 @@ class ChildDescription(models.TransientModel):
 
         # 7. Health
         ###########
-        if child.chronic_illness_ids:
-            desc('#chronic_illness_intro').html(
-                self.illness_intro_lang[self.env.lang][child.gender].format(
-                    preferred_name=child.preferred_name))
-            desc('#chronic_illness_list').html(''.join(
-                ['<li>' + illness.value + '</li>' for illness in
-                 child.chronic_illness_ids]))
-        else:
-            desc('.chronic_illness').remove()
-
-        if child.physical_disability_ids:
+        if child.physical_disability_ids or child.chronic_illness_ids:
             desc('#handicap_intro').html(
-                self.illness_intro_lang[self.env.lang][child.gender].format(
+                self.handicap_intro_lang[self.env.lang][child.gender].format(
                     preferred_name=child.preferred_name))
-            desc('#handicap_list').html(''.join(
-                ['<li>' + handicap.value + '</li>' for handicap in
-                 child.physical_disability_ids]))
+            handicap_list = []
+            if child.physical_disability_ids:
+                handicap_list.extend(
+                    ['<li>' + handicap.value + '</li>' for handicap in
+                     child.physical_disability_ids])
+            if child.chronic_illness_ids:
+                handicap_list.extend(
+                    ['<li>' + illness.value + '</li>' for illness in
+                     child.chronic_illness_ids])
+            desc('#handicap_list').html(''.join(handicap_list))
         else:
             desc('.handicap').remove()
 
