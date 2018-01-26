@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="hr_attendance_calendar_worked">
+        <field name="name">HR Attendance Worked Calendar Form View</field>
+        <field name="model">hr.attendance</field>
+        <field name="priority" eval="20"/>
+        <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
+        <field name="arch" type="xml">
+            <field name="check_out" position="after">
+                <field name="calendar_worked_hours" widget="float_time"/>
+                <field name="calendar_att_ids"/>
+            </field>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="hr_attendance_day_form">
+        <field name="name">HR Attendance Day Form View</field>
+        <field name="model">hr.attendance.day</field>
+        <field name="arch" type="xml">
+            <form string="Attendance day">
+                <header>
+                    <button name="recompute_worked_hours" string="Recompute worked hours" type="object" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="employee_id"/>
+                            <field name="calendar_due_hours" widget="float_time"/>
+                            <field name="calendar_worked_hours" widget="float_time"/>
+                            <field name="total_bonus_malus" widget="float_time"/>
+                            <field name="total_break_hours" widget="float_time"/>
+                            <field name="total_calendar_breaks" widget="float_time"/>
+                            <field name="attendance_ids">
+                                <tree>
+                                    <field name="employee_id"/>
+                                    <field name="check_in"/>
+                                    <field name="check_out"/>
+                                    <field name="calendar_worked_hours" widget="float_time"/>
+                                </tree>
+                            </field>
+                            <field name="calendar_att_ids">
+                            </field>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="hr_attendance_day_tree">
+        <field name="name">HR Attendance Day Tree View</field>
+        <field name="model">hr.attendance.day</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="total_bonus_malus &gt;= 0" decoration-danger="total_bonus_malus &lt; 0">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="calendar_due_hours" widget="float_time"/>
+                <field name="calendar_worked_hours" widget="float_time"/>
+                <field name="total_bonus_malus" widget="float_time"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="hr_attendance_day_search">
+        <field name="name">HR Attendance Day Search View</field>
+        <field name="model">hr.attendance.day</field>
+        <field name="arch" type="xml">
+             <search string="Attendances">
+                <field name="employee_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Employee" domain="" context="{'group_by':'employee_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_attendance_day" model="ir.actions.act_window">
+        <field name="name">Attendance days</field>
+        <field name="res_model">hr.attendance.day</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem action="action_attendance_day" id="menu_action_attendance_day" string="Attendance by day" parent="hr_attendance.menu_hr_attendance_manage_attendances" sequence="4"/>
+
+</odoo>

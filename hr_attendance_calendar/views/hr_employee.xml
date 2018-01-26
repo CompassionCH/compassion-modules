@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="hr_employe_bonus_malus_kanban">
+        <field name="name">HR Employee Bonus/Malus Kanban View</field>
+        <field name="model">hr.employee</field>
+        <field name="priority" eval="20"/>
+        <field name="inherit_id" ref="hr.hr_kanban_view_employees"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='oe_kanban_details']/ul/li" position="after">
+                <li><field name="bonus_malus" widget="float_time"/></li>
+            </xpath>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="hr_employe_bonus_malus_form">
+        <field name="name">HR Employee Bonus/Malus Form View</field>
+        <field name="model">hr.employee</field>
+        <field name="priority" eval="20"/>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='hr_settings']" position="after">
+                <page string="Jours de présences">
+                    <group>
+                        <field name="attendance_days_ids"/>
+                    </group>
+                </page>
+            </xpath>
+            <field name="category_ids"  position="after">
+                <div>
+                    <label for="bonus_malus"/>
+                    <field name="bonus_malus" widget="float_time"/>
+                </div>
+            </field>
+        </field>
+    </record>
+</odoo>
