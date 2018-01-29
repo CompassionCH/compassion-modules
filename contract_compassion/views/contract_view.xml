@@ -72,7 +72,9 @@
                         <field name="child_id" domain="[('state', 'in', ('N', 'I'))]"
                                options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
                         <field name="origin_id"/>
-                        <field name="channel"/>
+                        <field name="medium_id" domain="[('type', '=', 'manual')]"/>
+                        <field name="campaign_id" readonly="1"/>
+                        <field name="source_id" readonly="1"/>
                     </group>
                     <group>
                         <field name="type" />
