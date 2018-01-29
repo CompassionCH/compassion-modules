@@ -1,0 +1,93 @@
+<odoo>
+    <record model="ir.ui.view" id="success_story_form">
+        <field name="name">success.story.form</field>
+        <field name="model">success.story</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <label for="name"/>
+                    <field name="name"/>
+                    <group>
+                        <group>
+                            <field name="type"/>
+                            <field name="date_start" attrs="{'invisible': [('type', '=', 'sentence')]}"/>
+                            <field name="date_stop" attrs="{'invisible': [('type', '=', 'sentence')]}"/>
+                            <field name="is_active" attrs="{'invisible': [('type', '=', 'story')]}"/>
+                            <field name="print_count"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="body" options="{'style-inline': true}" attrs="{'invisible': [('type', '!=', 'story')]}"/>
+                        <field name="body_text" options="{'style-inline': true }" attrs="{'invisible': [('type', '!=', 'sentence')]}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="success_story_tree">
+        <field name="name">success.story.tree</field>
+        <field name="model">success.story</field>
+        <field name="arch" type="xml">
+            <tree colors="blue:state=='new';grey:state=='used'">
+                <field name="name"/>
+                <field name="date_start"/>
+                <field name="date_stop"/>
+                <field name="print_count"/>
+                <field name="type"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="success_story_search">
+        <field name="name">communication.job.search</field>
+        <field name="model">success.story</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="state"/>
+                <field name="type"/>
+                <filter name="story" string="Story" domain="[('type', '=', 'story')]"/>
+                <filter name="sentence" string="Sentence" domain="[('type', '=', 'sentence')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="status" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="Type" name="status" domain="[]" context="{'group_by':'type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action and menu -->
+    <record id="action_success_story" model="ir.actions.act_window">
+        <field name="name">Success Stories</field>
+        <field name="res_model">success.story</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_donation"
+              name="Donation Receipts"
+              parent="child_compassion.menu_sponsorship_root"
+              sequence="6"/>
+
+    <menuitem id="menu_donation_sales"
+              name="Donation Receipts"
+              parent="sales_team.menu_base_partner"
+              sequence="5"/>
+
+    <menuitem id="menu_donation_success_story"
+              name="Success Stories"
+              parent="menu_donation"
+              action="action_success_story"/>
+
+    <!-- Add menu in Sales-->
+    <menuitem id="menu_donation_success_story_sales"
+              name="Success Stories"
+              parent="menu_donation_sales"
+              action="action_success_story"/>
+
+</odoo>

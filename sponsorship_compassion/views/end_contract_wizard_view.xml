@@ -2,23 +2,21 @@
 <!--
     Copyright (C) 2016 Compassion (http://www.compassion.ch)
     @author Emanuel Cino <ecino@compassion.ch>
-    The licence is in the file __openerp__.py
+    The licence is in the file __manifest__.py
 -->
-<openerp>
-    <data>
-        <record id="end_sponsorship_view" model="ir.ui.view">
-            <field name="name">end.sponsorship.wizard.view</field>
-            <field name="model">end.contract.wizard</field>
-            <field name="inherit_id" ref="contract_compassion.end_contract_view"/>
-            <field name="arch" type="xml">
-                <!-- End sponsorship form -->
-                <field name="end_reason" position="after">
-                    <field name="contract_type" invisible="1"/>
-                    <field name="keep_child_on_hold" attrs="{'invisible': [('contract_type', 'not in', ['S','SC'])]}"/>
-                    <field name="hold_expiration_date"
-                           attrs="{'invisible': [('keep_child_on_hold', '=', False)]}"/>
-                </field>
+<odoo>
+    <record id="end_sponsorship_view" model="ir.ui.view">
+        <field name="name">end.sponsorship.wizard.view</field>
+        <field name="model">end.contract.wizard</field>
+        <field name="inherit_id" ref="contract_compassion.end_contract_view"/>
+        <field name="arch" type="xml">
+            <!-- End sponsorship form -->
+            <field name="end_reason" position="after">
+                <field name="contract_type" invisible="1"/>
+                <field name="keep_child_on_hold" attrs="{'invisible': [('contract_type', 'not in', ['S','SC'])]}"/>
+                <field name="hold_expiration_date"
+                       attrs="{'invisible': [('keep_child_on_hold', '=', False)]}"/>
             </field>
-        </record>
-    </data>
-</openerp>
+        </field>
+    </record>
+</odoo>

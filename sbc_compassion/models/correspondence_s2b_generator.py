@@ -1,23 +1,30 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2016-2017 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import base64
-from bs4 import BeautifulSoup
+import logging
 
 from io import BytesIO
-from pyPdf.pdf import PdfFileReader, PdfFileWriter
-from wand.image import Image
 
-from openerp import api, fields, models
-from openerp.addons.connector.queue.job import job, related_action
-from openerp.addons.connector.session import ConnectorSession
+from odoo import api, fields, models
+from odoo.tools import safe_eval
+from odoo.addons.queue_job.job import job, related_action
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from bs4 import BeautifulSoup
+    from pyPdf.pdf import PdfFileReader, PdfFileWriter
+    from wand.image import Image
+except ImportError:
+    _logger.error('Please install bs4, pypdf and wand to use SBC module')
 
 
 class CorrespondenceS2bGenerator(models.Model):
@@ -88,12 +95,12 @@ class CorrespondenceS2bGenerator(models.Model):
     def onchange_domain(self):
         if self.selection_domain:
             self.sponsorship_ids = self.env['recurring.contract'].search(
-                eval(self.selection_domain))
+                safe_eval(self.selection_domain))
 
     @api.onchange('month')
     def onchange_month(self):
         if self.month:
-            domain = eval(self.selection_domain)
+            domain = safe_eval(self.selection_domain)
             month_select = ('child_id.birthday_month', '=', self.month)
             index = 0
             for filter in domain:
@@ -137,14 +144,15 @@ class CorrespondenceS2bGenerator(models.Model):
         Launch S2B Creation job
         :return: True
         """
-        session = ConnectorSession.from_env(self.env)
-        generate_s2b_job.delay(session, self._name, self.id)
+        self.with_delay().generate_letters_job()
         return self.write({
             'state': 'done',
             'date': fields.Date.today(),
         })
 
     @api.multi
+    @job(default_channel='root.sbc_compassion')
+    @related_action(action='related_action_s2b')
     def generate_letters_job(self):
         """
         Create S2B Letters
@@ -201,28 +209,9 @@ class CorrespondenceS2bGenerator(models.Model):
             'body_backup': self.body_html,
             'sponsorship_id': sponsorship.id
         })
-        pdf = self.env['report'].get_pdf(self, self.report.report_name)
+        pdf = self.env['report'].with_context(
+            must_skip_send_to_printer=True
+        ).get_pdf(self.ids, self.report.report_name)
         if preview:
             self.body_html = self.body_backup
         return pdf
-
-
-def related_action_s2b(session, job):
-    model = job.args[0]
-    object_id = job.args[1]
-    action = {
-        'type': 'ir.actions.act_window',
-        'res_model': model,
-        'view_type': 'form',
-        'view_mode': 'form',
-        'res_id': object_id,
-    }
-    return action
-
-
-@job(default_channel='root.sbc_compassion')
-@related_action(action=related_action_s2b)
-def generate_s2b_job(session, model, generator_id):
-    """Job for generating S2B Letters."""
-    generator = session.env[model].browse(generator_id)
-    generator.generate_letters_job()

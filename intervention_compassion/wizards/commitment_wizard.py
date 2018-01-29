@@ -1,15 +1,15 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp import models, fields, api
-from openerp.exceptions import Warning
+from odoo import models, fields, api
+from odoo.exceptions import UserError
 
 
 class HoldWizard(models.TransientModel):
@@ -39,8 +39,12 @@ class HoldWizard(models.TransientModel):
         self.intervention_id.write({
             'state': 'committed',
             'commitment_amount': self.commitment_amount,
+            'commited_percentage': (
+                self.commitment_amount / self.intervention_id.total_cost
+            ) * 100,
             'hold_id': False
         })
+        self.intervention_id.link_product()
 
     @api.multi
     def send_commitment(self):
@@ -53,5 +57,5 @@ class HoldWizard(models.TransientModel):
                 'object_id': self.id,
             })
         if message.state == 'failure':
-            raise Warning(message.failure_reason)
+            raise UserError(message.failure_reason)
         return True

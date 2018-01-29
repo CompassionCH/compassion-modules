@@ -1,17 +1,17 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from odoo import models, fields, api
 
-from openerp.addons.child_compassion.models.compassion_hold import \
+from odoo.addons.child_compassion.models.compassion_hold import \
     HoldType
 
 
@@ -30,6 +30,7 @@ class EndContractWizard(models.TransientModel):
     @api.multi
     def end_contract(self):
         self.ensure_one()
+        super(EndContractWizard, self).end_contract()
         child = self.child_id
 
         if self.keep_child_on_hold:
@@ -52,4 +53,4 @@ class EndContractWizard(models.TransientModel):
 
         child.signal_workflow('release')
 
-        return super(EndContractWizard, self).end_contract()
+        return True

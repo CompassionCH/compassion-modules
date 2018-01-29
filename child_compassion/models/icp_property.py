@@ -1,19 +1,19 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
 
-from openerp import api, models, fields, _
+from odoo import api, models, fields, _
 
 
-class ICPProperty(models.TransientModel):
+class ICPProperty(models.AbstractModel):
     """ An ICP property is a class linked to projects to describe
     the project hobbies/activities/etc... in several languages. """
     _name = 'icp.property'

@@ -1,19 +1,25 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Loic Hausammann <loic_hausammann@hotmail.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp import models, api, fields
+from odoo import models, api, fields
 import base64
-import cv2
 import tempfile
+import logging
 from ..tools import patternrecognition as pr
 from os import remove
+
+_logger = logging.getLogger(__name__)
+try:
+    import cv2
+except ImportError:
+    _logger.warning('Please install cv2 to use SBC module')
 
 
 class CorrespondenceCrosscheck(models.TransientModel):

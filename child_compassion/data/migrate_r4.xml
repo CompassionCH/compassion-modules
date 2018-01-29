@@ -1,6 +1,0 @@
-<openerp>
-    <data>
-        <!-- child_compassion_migration -->
-        <function model="migration.r4" name="perform_migration"/>
-    </data>
-</openerp>

@@ -2,126 +2,49 @@
 <!--
     Copyright (C) 2014 Compassion (http://www.compassion.ch)
     @author Emanuel Cino <ecino@compassion.ch>
-    The licence is in the file __openerp__.py
+    The licence is in the file __manifest__.py
 -->
-<openerp>
-    <data>
-        <!-- Workflow activities (what is done when state is reached) -->
-        
-        <record model="workflow.activity" id="act_waiting">
-            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
-            <field name="name">waiting</field>
-            <field name="kind">function</field>
-            <field name="action">contract_waiting()</field>
-        </record>
+<odoo>
+    <!-- Workflow activities (what is done when state is reached) -->
 
-        <record model="workflow.activity" id="act_cancelled">
-            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
-            <field name="name">cancelled</field>
-            <field name="kind">function</field>
-            <field name="action">contract_cancelled()</field>
-            <field name="flow_stop" eval='True' />
-        </record>
+    <record model="workflow.activity" id="act_waiting">
+        <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
+        <field name="name">waiting</field>
+        <field name="kind">function</field>
+        <field name="action">contract_waiting()</field>
+    </record>
 
-        <record model="workflow.activity" id="act_mandate">
-            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
-            <field name="name">mandate</field>
-            <field name="kind">function</field>
-            <field name="action">contract_waiting_mandate()</field>
-        </record>
+    <record model="workflow.activity" id="act_cancelled">
+        <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
+        <field name="name">cancelled</field>
+        <field name="kind">function</field>
+        <field name="action">contract_cancelled()</field>
+        <field name="flow_stop" eval='True' />
+    </record>
 
-        <record model="workflow.activity" id="act_validation">
-            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
-            <field name="name">validation</field>
-            <field name="kind">dummy</field>
-        </record>
-
-        <record model="workflow.activity" id="act_banking_validation">
-            <field name="wkf_id" ref="recurring_contract.wkf_recurring_contract" />
-            <field name="name">banking_validation</field>
-            <field name="kind">dummy</field>
-        </record>
-
-        <!-- Workflow transitions (how are states reached) -->
-        <record model="workflow.transition" id="recurring_contract.t1">
-            <field name="act_from" ref="recurring_contract.act_draft" />
-            <field name="act_to" ref="act_validation" />
-            <field name="signal">contract_validated</field>
-        </record>
-        <record model="workflow.transition" id="t2">
-            <field name="act_from" ref="act_waiting" />
-            <field name="act_to" ref="recurring_contract.act_active" />
-            <field name="signal">contract_active</field>
-        </record>
-        <record model="workflow.transition" id="t3">
-            <field name="act_from" ref="act_waiting" />
-            <field name="act_to" ref="act_cancelled" />
-            <field name="signal">contract_terminated</field>
-        </record>
-        <record model="workflow.transition" id="t3a">
-            <field name="act_from" ref="act_mandate" />
-            <field name="act_to" ref="act_cancelled" />
-            <field name="signal">contract_terminated</field>
-            <field name="condition">not global_id</field>
-        </record>
-        <record model="workflow.transition" id="t3b">
-            <field name="act_from" ref="act_mandate" />
-            <field name="act_to" ref="recurring_contract.act_terminated" />
-            <field name="signal">contract_terminated</field>
-            <field name="condition">global_id</field>
-        </record>
-        <record model="workflow.transition" id="recurring_contract.t2">
-            <field name="condition">global_id</field>
-        </record>
-        <record model="workflow.transition" id="t3c">
-            <field name="act_from" ref="recurring_contract.act_active" />
-            <field name="act_to" ref="act_cancelled" />
-            <field name="signal">contract_terminated</field>
-            <field name="condition">not global_id</field>
-        </record>
-        <record model="workflow.transition" id="t4a">
-            <field name="act_from" ref="act_validation" />
-            <field name="act_to" ref="act_banking_validation" />
-            <field name="condition">'LSV' in group_id.payment_term_id.name or 'Postfinance' in group_id.payment_term_id.name</field>
-        </record>
-        <record model="workflow.transition" id="t4b">
-            <field name="act_from" ref="act_validation" />
-            <field name="act_to" ref="act_waiting" />
-            <field name="condition">not ('LSV' in group_id.payment_term_id.name or 'Postfinance' in group_id.payment_term_id.name)</field>
-        </record>
-        <record model="workflow.transition" id="t5">
-            <field name="act_from" ref="act_banking_validation" />
-            <field name="act_to" ref="act_mandate" />
-            <field name="condition">not has_mandate</field>
-        </record>
-        <record model="workflow.transition" id="t6">
-            <field name="act_from" ref="act_banking_validation" />
-            <field name="act_to" ref="act_waiting" />
-            <field name="condition">has_mandate</field>
-        </record>
-        <record model="workflow.transition" id="t6a">
-            <field name="act_from" ref="act_mandate" />
-            <field name="act_to" ref="act_waiting" />
-            <field name="signal">mandate_validated</field>
-            <field name="condition">not is_active</field>
-        </record>
-        <record model="workflow.transition" id="t6b">
-            <field name="act_from" ref="act_mandate" />
-            <field name="act_to" ref="recurring_contract.act_active" />
-            <field name="signal">mandate_validated</field>
-            <field name="condition">is_active</field>
-        </record>
-        <record model="workflow.transition" id="t8">
-            <field name="act_from" ref="recurring_contract.act_active" />
-            <field name="act_to" ref="act_mandate" />
-            <field name="signal">will_pay_by_lsv_dd</field>
-            <field name="condition">not has_mandate</field>
-        </record>
-        <record model="workflow.transition" id="t9">
-            <field name="act_from" ref="act_waiting" />
-            <field name="act_to" ref="act_mandate" />
-            <field name="signal">will_pay_by_lsv_dd</field>
-            <field name="condition">not has_mandate</field>
-        </record>
-    </data>
-</openerp>
+    <!-- Workflow transitions (how are states reached) -->
+    <record model="workflow.transition" id="recurring_contract.t1">
+        <field name="act_from" ref="recurring_contract.act_draft" />
+        <field name="act_to" ref="act_waiting" />
+        <field name="signal">contract_validated</field>
+    </record>
+    <record model="workflow.transition" id="t2">
+        <field name="act_from" ref="act_waiting" />
+        <field name="act_to" ref="recurring_contract.act_active" />
+        <field name="signal">contract_active</field>
+    </record>
+    <record model="workflow.transition" id="t3">
+        <field name="act_from" ref="act_waiting" />
+        <field name="act_to" ref="act_cancelled" />
+        <field name="signal">contract_terminated</field>
+    </record>
+    <record model="workflow.transition" id="recurring_contract.t2">
+        <field name="condition">is_active</field>
+    </record>
+    <record model="workflow.transition" id="t3c">
+        <field name="act_from" ref="recurring_contract.act_active" />
+        <field name="act_to" ref="act_cancelled" />
+        <field name="signal">contract_terminated</field>
+        <field name="condition">not is_active</field>
+    </record>
+</odoo>

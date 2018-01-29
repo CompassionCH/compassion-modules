@@ -1,15 +1,15 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from openerp import models, api
+from odoo import models, api
 
 
 class EmailComposeMessage(models.TransientModel):
@@ -19,7 +19,7 @@ class EmailComposeMessage(models.TransientModel):
     def create_emails(self, template, res_ids, default_mail_values=None):
         """ Helper to generate a new e-mail given a template and objects.
 
-        :param int template: email.template record
+        :param int template: mail.template record
         :param res_ids: ids of the resource objects
         :return: browse records of created e-mails (one per resource object)
         """
@@ -37,7 +37,7 @@ class EmailComposeMessage(models.TransientModel):
     def get_generated_fields(self, template, res_ids):
         """ Helper to retrieve generated html given a template and objects.
 
-        :param int template: email.template record
+        :param int template: mail.template record
         :param res_ids: ids of the resource objects
         :return: html code generated for the e-mail (list if len(res_ids)>1)
         """
@@ -52,7 +52,7 @@ class EmailComposeMessage(models.TransientModel):
     def _get_mail_values(self, template, res_ids):
         """ Helper to get e-mail values given a template and objects.
 
-        :param int template: email.template record
+        :param int template: mail.template record
         :param res_ids: ids of the resource objects
         :return: list of dictionaries containing e-mail values
         """
@@ -70,17 +70,17 @@ class EmailComposeMessage(models.TransientModel):
         wizard.write(
             wizard.onchange_template_id(
                 template.id, 'mass_mail', False, False)['value'])
-        return self.get_mail_values(wizard, res_ids)
+        return wizard.get_mail_values(res_ids)
 
     @api.multi
-    def send_mail(self):
+    def send_mail(self, auto_commit=False):
         """ Return to e-mails generated. """
         # Fix bug in v8 Core : update default value of attachment in context
         # otherwise it doesn't set attachments properly
-        context = self.env.context.copy()
-        context['default_attachment_ids'] = [(4, _id) for _id in
-                                             self.attachment_ids.ids]
-        super(EmailComposeMessage, self.with_context(context)).send_mail()
+        # context = self.env.context.copy()
+        # context['default_attachment_ids'] = [(4, _id) for _id in
+        #                                      self.attachment_ids.ids]
+        super(EmailComposeMessage, self).send_mail(auto_commit)
         mail_ids = self.env['mail.mail'].search([
             ('res_id', 'in', self.env.context.get('active_ids', [])),
             ('model', '=', self.env.context.get('active_model'))

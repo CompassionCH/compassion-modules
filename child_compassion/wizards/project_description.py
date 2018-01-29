@@ -1,17 +1,23 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import os
 
-from pyquery import PyQuery
-from openerp import api, models, fields, _
+from odoo import api, models, fields, _
+from odoo.exceptions import UserError
+
+try:
+    from pyquery import PyQuery
+except ImportError:
+    raise UserError(_("Please install python pyquery"))
+
 
 NOMINATIVE = 0
 ACCUSATIVE = 1
@@ -33,10 +39,6 @@ class ProjectDescription(models.TransientModel):
 
     project_id = fields.Many2one(
         'compassion.project', required=True, ondelete='cascade')
-    desc_fr = fields.Html()
-    desc_de = fields.Html()
-    desc_it = fields.Html()
-    desc_en = fields.Html()
 
     @api.model
     def create(self, vals):
@@ -44,22 +46,20 @@ class ProjectDescription(models.TransientModel):
         in the related child.
         """
         generator = super(ProjectDescription, self).create(vals)
-        generator.desc_fr = generator.with_context(
-            lang='fr_CH')._generate_translation()
-        generator.desc_de = generator.with_context(
-            lang='de_DE')._generate_translation()
-        generator.desc_it = generator.with_context(
-            lang='it_IT')._generate_translation()
-        generator.desc_en = generator.with_context(
-            lang='en_US')._generate_translation()
-        generator.project_id.write({
-            'description_fr': generator.desc_fr,
-            'description_de': generator.desc_de,
-            'description_it': generator.desc_it,
-            'description_en': generator.desc_en,
-        })
+        for lang, field in self._supported_languages().iteritems():
+            desc = generator.with_context(lang=lang)._generate_translation()
+            generator.project_id.write({field: desc})
 
         return generator
+
+    @api.model
+    def _supported_languages(self):
+        """
+        Inherit to add more languages to have translations of
+        descriptions.
+        {lang: description_field}
+        """
+        return {'en_US': 'description_en'}
 
     def _generate_translation(self):
         """ Generate project description. """
@@ -107,12 +107,6 @@ class ProjectDescription(models.TransientModel):
             )
         else:
             desc('#community_job').remove()
-        if project.chf_income and 10 < project.chf_income < 500:
-            desc('.community_income')[0].text = _("Family monthly income")
-            desc('.community_income')[1].text = 'CHF {:10.0f}.-'.format(
-                project.chf_income)
-        else:
-            desc('#community_income').remove()
         desc('.community_food')[0].text = _("Typical food")
         if project.primary_diet_ids:
             desc('.community_food')[1].text = project.primary_diet_ids[0].value

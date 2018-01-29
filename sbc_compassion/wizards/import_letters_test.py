@@ -1,14 +1,14 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Loic Hausammann <loic_hausammann@hotmail.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp import models, fields, _, api
+from odoo import models, fields, _, api
 from ..tools import import_letter_functions as func
 
 
@@ -28,10 +28,10 @@ class TestImportLetters(models.TransientModel):
         'ir.attachment', relation='test_import_ir_attachment',
         string="Add a CSV file")
     nber_test = fields.Integer("NBER OF FILE")
-    test_ok = fields.Char("Test passed", compute="_set_ready")
-    template_ok = fields.Char("Template passed", compute="_set_ready")
-    qr_ok = fields.Char("QR code passed",  compute="_set_ready")
-    lang_ok = fields.Char("Languages passed", compute="_set_ready")
+    test_ok = fields.Char("Test passed", compute="_compute_set_ready")
+    template_ok = fields.Char("Template passed", compute="_compute_set_ready")
+    qr_ok = fields.Char("QR code passed",  compute="_compute_set_ready")
+    lang_ok = fields.Char("Languages passed", compute="_compute_set_ready")
     test_import_line_ids = fields.One2many(
         'test.import.letter.line', 'test_import_id', 'Files to process',
         ondelete='cascade')
@@ -61,19 +61,19 @@ class TestImportLetters(models.TransientModel):
             })
             letters_line.letter_image = self.env[
                 'ir.attachment'].create(document_vals[i])
-            letters_line.check_status()
+            letters_line._compute_check_status()
             self.test_import_line_ids += letters_line
 
     @api.multi
-    @api.depends("test_import_line_ids", "test_ok")
-    def _set_ready(self):
+    @api.depends("test_import_line_ids")
+    def _compute_set_ready(self):
         """ Check in which state self is by counting the number of elements in
         each Many2many and delete the lines that have been correctly analyzed
         """
         for import_letters in self:
             if import_letters.nber_test:
                 import_letters.state = 'open'
-                import_letters = func.update_stat_text(import_letters)
+                # import_letters = func.update_stat_text(import_letters)
             else:
                 import_letters.state = 'draft'
 

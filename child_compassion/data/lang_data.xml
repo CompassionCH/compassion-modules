@@ -11,28 +11,16 @@
         <record id="lang_compassion_french" model="res.lang.compassion">
             <field name="name">French</field>
             <field name="code_iso">fra</field>
-            <field name="lang_id">2</field>
-            <field name="translatable">1</field>
-        </record>
-
-        <record id="lang_compassion_german" model="res.lang.compassion">
-            <field name="name">German</field>
-            <field name="code_iso">deu</field>
-            <field name="lang_id">3</field>
-            <field name="translatable">1</field>
         </record>
 
         <record id="lang_compassion_spanish" model="res.lang.compassion">
             <field name="name">Spanish</field>
             <field name="code_iso">spa</field>
-            <field name="lang_id">5</field>
-            <field name="translatable">1</field>
         </record>
 
         <record id="lang_compassion_portuguese" model="res.lang.compassion">
             <field name="name">Portuguese</field>
             <field name="code_iso">por</field>
-            <field name="translatable">1</field>
         </record>
 
         <record id="lang_compassion_thai" model="res.lang.compassion">
@@ -73,13 +61,6 @@
         <record id="lang_compassion_kinyarwanda" model="res.lang.compassion">
             <field name="name">Kinyarwanda</field>
             <field name="code_iso">kin</field>
-        </record>
-
-        <record id="lang_compassion_italian" model="res.lang.compassion">
-            <field name="name">Italian</field>
-            <field name="code_iso">ita</field>
-            <field name="lang_id">4</field>
-            <field name="translatable">1</field>
         </record>
 
         <record id="lang_compassion_bahasa_indonesia" model="res.lang.compassion">

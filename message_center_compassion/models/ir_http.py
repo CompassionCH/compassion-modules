@@ -1,19 +1,24 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Yannick Vaucher, Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import jwt
 import logging
 
-from openerp.http import request
-from openerp import models
+from odoo.http import request
+from odoo import models, _
+from odoo.exceptions import UserError
 from werkzeug.exceptions import Unauthorized
+
+try:
+    import jwt
+except ImportError:
+    raise UserError(_("Please install python jwt"))
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +26,7 @@ logger = logging.getLogger(__name__)
 class IrHTTP(models.AbstractModel):
     _inherit = 'ir.http'
 
+    @classmethod
     def _auth_method_oauth2(self):
         if request.httprequest.method == 'GET':
             mode = 'read'

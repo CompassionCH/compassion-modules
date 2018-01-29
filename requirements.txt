@@ -1,0 +1,13 @@
+bs4
+geojson
+matplotlib
+opencv-python
+pdfminer
+phonenumbers
+pyjwt
+pyPdf
+pyquery
+python-magic
+shapely
+Shapely
+wand

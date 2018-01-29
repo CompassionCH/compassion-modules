@@ -1,20 +1,25 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import logging
-from enum import Enum
 
 from datetime import datetime, timedelta
 
-from openerp import api, models, fields, _
-from openerp.exceptions import Warning
+from odoo import api, models, fields, _
+from odoo.exceptions import UserError
+
+try:
+    from enum import Enum
+except ImportError:
+    raise UserError(_("Please install Python Enum"))
+
 
 from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from ..mappings.childpool_create_hold_mapping import ReservationToHoldMapping
@@ -137,7 +142,7 @@ class CompassionHold(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    hold_id = fields.Char(readonly=True)
+    hold_id = fields.Char(readonly=True, track_visibility='onchange')
     child_id = fields.Many2one(
         'compassion.child', 'Child on hold', readonly=True
     )
@@ -211,6 +216,10 @@ class CompassionHold(models.Model):
             }
             messages += message_obj.create(message_vals)
         messages.process_messages()
+        failed = messages.filtered(lambda m: m.state == 'failure')
+        if failed:
+            self.env.cr.rollback()
+            raise UserError('\n\n'.join(failed.mapped('failure_reason')))
 
     @api.multi
     def hold_sent(self, vals):
@@ -225,6 +234,8 @@ class CompassionHold(models.Model):
                     'hold_id': hold.id,
                     'date': fields.Date.today(),
                 })
+                # Always commit after receiving a hold to avoid losing it
+                self.env.cr.commit()    # pylint: disable=invalid-commit
             else:
                 # Release child if no hold_id received
                 hold.unlink()
@@ -245,7 +256,7 @@ class CompassionHold(models.Model):
             raise ValueError("No child found")
         child = self.env['compassion.child'].browse(child_id)
         if child.state not in ('F', 'R'):
-            raise Warning("Child is not departed.")
+            raise UserError(_("Child is not departed."))
         vals.update({
             'expiration_date': fields.Datetime.to_string(in_90_days),
             'state': 'active',
@@ -320,13 +331,16 @@ class CompassionHold(models.Model):
                 'object_id': hold.id
             })
         messages.process_messages()
-        self.env.cr.commit()
-        fail = messages.filtered('failure_reason').mapped('failure_reason')
-        if fail:
-            logger.error("\n".join(fail))
-            # Force hold removal
-            self.hold_released()
-
+        try:
+            with self.env.cr.savepoint():
+                fail = messages.filtered('failure_reason').mapped(
+                    'failure_reason')
+                if fail:
+                    logger.error("\n".join(fail))
+                    # Force hold removal
+                    self.hold_released()
+        except:
+            logger.error("Some holds couldn't be released.")
         return True
 
     @api.multi
@@ -345,26 +359,42 @@ class CompassionHold(models.Model):
     @api.model
     def check_hold_validity(self):
         """
-        - Update and notify no money hold expiring
-        - Remove expired holds
+        Remove expired holds
         :return: True
         """
-        # Mark old holds as expired and release children if necessary
+        # Mark old holds as expired
         holds = self.search([
             ('expiration_date', '<', fields.Datetime.now()),
             ('state', '=', 'active')
         ])
         holds.write({'state': 'expired'})
-        holds.mapped('child_id').write({'hold_id': False})
-        holds.mapped('child_id').signal_workflow('release')
 
-        # Remove holds that have no child linked anymore
-        holds = self.search([
-            ('state', '=', 'expired'),
-            ('child_id', '=', False)
-        ])
-        holds.unlink()
+        # Release children (don't call workflow which sometimes crashes)
+        children = holds.mapped('child_id')
+        children.write({'hold_id': False})
+        children.delete_workflow()
+        children.child_released()
 
+        try:
+            with self.env.cr.savepoint():
+                # Remove holds that have no child linked anymore
+                holds = self.search([
+                    ('state', '=', 'expired'),
+                    ('child_id', '=', False)
+                ])
+                holds.unlink()
+
+                # Remove draft holds
+                holds = self.search([
+                    ('state', '=', 'draft')
+                ])
+                holds.unlink()
+        except:
+            logger.error("Some old or draft holds couldn't be removed.")
+        return True
+
+    @api.model
+    def postpone_no_money_cron(self):
         # Search for expiring No Money Hold
         this_week_delay = datetime.now() + timedelta(days=7)
         holds = self.search([
@@ -375,7 +405,6 @@ class CompassionHold(models.Model):
                             HoldType.SUB_CHILD_HOLD.value])
         ])
         holds.postpone_no_money_hold()
-
         return True
 
     @api.model
@@ -424,32 +453,32 @@ class CompassionHold(models.Model):
             "date.{additional_text}"
         )
         for hold in self.filtered(lambda h: h.no_money_extension < 3):
-            hold_extension = first_extension if not hold.no_money_extension \
-                else second_extension
+            hold_extension = first_extension \
+                if not hold.no_money_extension else second_extension
             new_hold_date = fields.Datetime.from_string(
                 hold.expiration_date) + timedelta(days=hold_extension)
             extension = hold.no_money_extension < 2
-            subject = "No money hold extension" if extension else "No money " \
-                "hold expiration"
-            body = body_extension if extension else body_expiration
-            values = {
-                'local_id': hold.child_id.local_id,
-                'old_expiration': hold.expiration_date,
-                'new_expiration': new_hold_date.strftime("%d %B %Y"),
-                'additional_text': additional_text or '',
-            }
-            hold.message_post(
-                body=body.format(**values),
-                subject=subject,
-                partner_ids=hold.primary_owner.partner_id.ids,
-                type='comment',
-                subtype='mail.mt_comment',
-                content_subtype='plaintext'
-            )
             hold_vals = {
                 'no_money_extension': hold.no_money_extension + 1,
             }
             if extension:
                 hold_vals['expiration_date'] = fields.Datetime.to_string(
                     new_hold_date)
+            old_date = hold.expiration_date
             hold.write(hold_vals)
+            subject = "No money hold extension" if extension else \
+                "No money hold expiration"
+            body = body_extension if extension else body_expiration
+            values = {
+                'local_id': hold.child_id.local_id,
+                'old_expiration': old_date,
+                'new_expiration': new_hold_date.strftime("%d %B %Y"),
+                'additional_text': additional_text or '',
+            }
+            hold.message_post(
+                body=body.format(**values),
+                subject=subject,
+                type='comment',
+            )
+            # Commit after hold is updated
+            self.env.cr.commit()  # pylint:disable=invalid-commit

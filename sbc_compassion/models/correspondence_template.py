@@ -1,25 +1,33 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-import numpy
 import base64
 import tempfile
-import magic
-import cv2
+import logging
 
-from openerp import fields, models, api, _
-from openerp.exceptions import ValidationError, Warning
-from wand.image import Image
+from odoo import fields, models, api, _
+from odoo.exceptions import ValidationError, UserError
 
 from ..tools import patternrecognition as pr
+
+_logger = logging.getLogger(__name__)
+
+try:
+    import numpy
+    import magic
+    import cv2
+    from wand.image import Image
+except ImportError:
+    _logger.warning('Please install numpy, magic, cv2 and wand to use SBC '
+                    'module')
 
 
 class Style:
@@ -49,12 +57,12 @@ class CorrespondenceTemplate(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    name = fields.Char(required=True)
+    name = fields.Char(required=True, translate=True)
     active = fields.Boolean(default=True)
     layout = fields.Selection('get_gmc_layouts', required=True)
     pattern_image = fields.Binary()
     template_image = fields.Binary(
-        compute='_compute_image', inverse='_set_image',
+        compute='_compute_image', inverse='_inverse_set_image',
         help='Use 300 DPI images')  # resolution
     detection_result = fields.Binary(
         compute='_compute_detection')
@@ -63,19 +71,19 @@ class CorrespondenceTemplate(models.Model):
     page_height = fields.Integer(
         help='Height of the template in pixels')
     qrcode_x_min = fields.Integer(
-        compute="_onchange_template_image",
+        compute="_compute_onchange_template_image",
         help='Minimum X position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_x_max = fields.Integer(
-        compute="_onchange_template_image",
+        compute="_compute_onchange_template_image",
         help='Maximum X position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_y_min = fields.Integer(
-        compute="_onchange_template_image",
+        compute="_compute_onchange_template_image",
         help='Minimum Y position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     qrcode_y_max = fields.Integer(
-        compute="_onchange_template_image",
+        compute="_compute_onchange_template_image",
         help='Maximum Y position of the area in which to look for the QR '
              'code inside the template (given in pixels)')
     pattern_x_min = fields.Integer(
@@ -91,8 +99,7 @@ class CorrespondenceTemplate(models.Model):
         help='Maximum Y position of the area in which to look for the '
              'pattern inside the template (given in pixels)')
     checkbox_ids = fields.One2many(
-        'correspondence.lang.checkbox', 'template_id',
-        default=lambda self: self._get_default_checkboxes(), copy=True)
+        'correspondence.lang.checkbox', 'template_id', copy=True)
     nber_keypoints = fields.Integer(
         "Number of key points", compute="_compute_template_keypoints",
         store=True)
@@ -124,21 +131,6 @@ class CorrespondenceTemplate(models.Model):
             ('CH-A-5S01-1', _('Layout 5')),
             ('CH-A-6S11-1', _('Layout 6'))]
 
-    def _get_default_checkboxes(self):
-        return [
-            (0, False, {'language_id': self.env.ref(
-                'child_compassion.lang_compassion_french').id}),
-            (0, False, {'language_id': self.env.ref(
-                'child_compassion.lang_compassion_german').id}),
-            (0, False, {'language_id': self.env.ref(
-                'child_compassion.lang_compassion_italian').id}),
-            (0, False, {'language_id': self.env.ref(
-                'child_compassion.lang_compassion_english').id}),
-            (0, False, {'language_id': self.env.ref(
-                'child_compassion.lang_compassion_spanish').id}),
-            (0, False, {'language_id': False}),
-        ]
-
     @api.constrains(
         'pattern_x_min', 'pattern_x_max',
         'pattern_y_min', 'pattern_y_max', 'page_width', 'page_height')
@@ -157,13 +149,12 @@ class CorrespondenceTemplate(models.Model):
             if attachment:
                 template.template_image = attachment.datas
 
-    def _set_image(self):
+    def _inverse_set_image(self):
         if self.template_image:
             datas = base64.b64decode(self.template_image)
             ftype = magic.from_buffer(datas, True)
             if not ('jpg' in ftype or 'jpeg' in ftype or 'png' in ftype):
-                raise Warning(
-                    _("Unsupported format"),
+                raise UserError(
                     _("Please only use jpg or png files."))
             # Be sure image is in 300 DPI
             with Image(blob=datas, resolution=300) as img:  # resolution
@@ -186,7 +177,7 @@ class CorrespondenceTemplate(models.Model):
             self._compute_template_keypoints()
 
     @api.onchange('template_image')
-    def _onchange_template_image(self):
+    def _compute_onchange_template_image(self):
         for template in self:
             # compute image size and QR code position
             template._compute_img_constant()
@@ -235,8 +226,7 @@ class CorrespondenceTemplate(models.Model):
                         img, template.pattern_image,
                         template.get_pattern_area())
                     if res is None:
-                        raise Warning(
-                            _("Pattern not found"),
+                        raise UserError(
                             _("The pattern could not be detected in given "
                               "template image."))
                     else:

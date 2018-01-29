@@ -1,22 +1,24 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Serpent Consulting Services Pvt. Ltd.
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from openerp import models, fields, api, _
+from odoo import models, fields, api, _
+from odoo.tools import safe_eval
 
 
-class label_print(models.Model):
+class LabelPrint(models.Model):
     _name = "label.print"
+    _description = 'Label Print'
 
-    name = fields.Char("Name", size=64, required=True, select=1)
-    model_id = fields.Many2one('ir.model', 'Model', required=True, select=1)
+    name = fields.Char("Name", size=64, required=True, index=1)
+    model_id = fields.Many2one('ir.model', 'Model', required=True, index=1)
     field_ids = fields.One2many(
         "label.print.field", 'report_id', string='Fields')
     ref_ir_act_report = fields.Many2one(
@@ -34,7 +36,7 @@ class label_print(models.Model):
     barcode_width = fields.Float('Barcode Width (in mm)', default=20)
     barcode_height = fields.Float('Barcode Height (in mm)', default=20)
     is_barcode = fields.Boolean(
-        _('Is Barcode?'), compute='_compute_is_barcode')
+        'Is Barcode?', compute='_compute_is_barcode')
 
     def _compute_is_barcode(self):
         for label in self:
@@ -121,8 +123,9 @@ class label_print(models.Model):
         return True
 
 
-class label_print_field(models.Model):
+class LabelPrintField(models.Model):
     _name = "label.print.field"
+    _description = 'Label Print Field'
 
     field_id = fields.Many2one('ir.model.fields', 'Fields', required=False)
     report_id = fields.Many2one('label.print', 'Report')
@@ -134,16 +137,15 @@ class label_print_field(models.Model):
     fontsize = fields.Float("Font Size", default=12)
 
 
-class ir_model_fields(models.Model):
+class IrModelFields(models.Model):
 
     _inherit = 'ir.model.fields'
 
     @api.model
     def name_search(self, name='', args=None, operator='ilike', limit=None):
-
         data = self.env.context.get('model_list')
         if data:
-            args.append(('model', 'in', eval(data)))
-        ret_vat = super(ir_model_fields, self).name_search(
+            args.append(('model', 'in', safe_eval(data)))
+        ret_vat = super(IrModelFields, self).name_search(
             name=name, args=args, operator=operator, limit=limit)
         return ret_vat

@@ -1,17 +1,17 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Yannick Vaucher, Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import simplejson as json
 
-from openerp import http, exceptions
-from openerp.http import request
+from odoo import http, exceptions
+from odoo.http import request
 from ..tools.onramp_logging import ONRAMP_LOGGER, log_message
 
 # Put any authorized sender here. Its address must be part of the headers

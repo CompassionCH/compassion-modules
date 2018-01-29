@@ -1,15 +1,15 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from openerp import api, models, fields
+from odoo import api, models, fields
 
 import logging
 
@@ -20,7 +20,7 @@ class ChildCompassion(models.Model):
     _inherit = 'compassion.child'
 
     sponsorship_ids = fields.One2many(
-        'recurring.contract', compute='_set_related_contracts',
+        'recurring.contract', compute='_compute_related_contracts',
         string="Sponsorships", readonly=True)
     has_been_sponsored = fields.Boolean(compute='_compute_has_been_sponsored')
 
@@ -30,12 +30,12 @@ class ChildCompassion(models.Model):
             child.has_been_sponsored = child.sponsorship_ids
 
     @api.multi
-    def _set_related_contracts(self):
+    def _compute_related_contracts(self):
         con_obj = self.env['recurring.contract']
         for child in self:
             child.sponsorship_ids = con_obj.search([
                 ('child_id', '=', child.id),
-                ('type', '=', 'S')])
+                ('type', 'like', 'S')])
 
     def depart(self):
         """ End the sponsorship. """

@@ -1,16 +1,16 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Michael Sandoz <michaelsandoz87@gmail.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from openerp import fields
-from base_sponsorship_mapping import BaseSponsorshipMapping
+from odoo import fields
+from .base_sponsorship_mapping import BaseSponsorshipMapping
 from datetime import datetime
 
 

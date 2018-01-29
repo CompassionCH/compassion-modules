@@ -1,11 +1,11 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emmanuel Mathier <emmanuel.mathier@gmail.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 from . import partner_compassion
@@ -21,3 +21,4 @@ from . import correspondence_b2s_layout
 from . import correspondence_translation_box
 from . import project_compassion
 from . import correspondence_s2b_generator
+from . import queue_job

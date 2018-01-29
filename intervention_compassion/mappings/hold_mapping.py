@@ -1,15 +1,15 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from openerp.addons.message_center_compassion.mappings.base_mapping \
+from odoo.addons.message_center_compassion.mappings.base_mapping \
     import OnrampMapping
 
 
@@ -19,13 +19,12 @@ class HoldCreateMapping(OnrampMapping):
     ODOO_MODEL = 'compassion.intervention.hold.wizard'
 
     CONNECT_MAPPING = {
-        "Intervention_ID": ("intervention_id.intervention_id",
-                            "compassion.intervention"),
+        "Intervention_ID": "intervention_id.intervention_id",
+        "HoldID": "intervention_id.hold_id",
         "ExpirationDate": "expiration_date",
         "HoldAmount": "hold_amount",
-        "HoldID": "hold_id",
         "NextYearOptIn": "next_year_opt_in",
-        "PrimaryOwner": ("primary_owner.name", "res.users"),
+        "PrimaryOwner": ("user_id.name", "res.users"),
         "SecondaryOwner": "secondary_owner",
         "ServiceLevelAgreement": "service_level",
     }
@@ -56,7 +55,10 @@ class HoldUpdateMapping(OnrampMapping):
         self.CONNECT_MAPPING = HoldCreateMapping.CONNECT_MAPPING
         self.FIELDS_TO_SUBMIT = HoldCreateMapping.FIELDS_TO_SUBMIT
         self.CONSTANTS = HoldCreateMapping.CONSTANTS
-        self.CONNECT_MAPPING['Intervention_ID'] = 'intervention_id'
+        self.CONNECT_MAPPING.update({
+            'Intervention_ID': 'intervention_id',
+            "HoldID": "hold_id",
+        })
         self.FIELDS_TO_SUBMIT['HoldID'] = None
 
 

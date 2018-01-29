@@ -1,19 +1,26 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from HTMLParser import HTMLParser
+import logging
 
-from openerp.addons.message_center_compassion.mappings.base_mapping import \
+from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
-from openerp.addons.sbc_compassion.models.correspondence_page import \
-    BOX_SEPARATOR
+
+from ..models.correspondence_page import BOX_SEPARATOR
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from HTMLParser import HTMLParser
+except ImportError:
+    _logger.warning("Please install HTMLParser")
 
 
 def _format_text(text):

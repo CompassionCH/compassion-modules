@@ -1,16 +1,16 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Maxime Beck, Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp import api, models, fields, _
+from odoo import api, models, fields, _
 
-from openerp.addons.child_compassion.models.compassion_hold import HoldType
+from odoo.addons.child_compassion.models.compassion_hold import HoldType
 
 
 class WeeklyRevision(models.Model):
@@ -92,7 +92,8 @@ class WeeklyRevision(models.Model):
             nb_holds = len(holds.filtered(lambda h: h.channel == 'web'))
             nb_sponsorships = len(sponsorships.filtered(
                 lambda s: s.channel == 'website' and
-                s.origin_id.type not in ('partner', 'event', 'sub')))
+                s.origin_id.type not in ('partner', 'event') and not
+                s.parent_id))
         elif revision.type == 'ambassador':
             nb_holds = len(holds.filtered(
                 lambda h: h.channel == 'ambassador'))
@@ -110,7 +111,7 @@ class WeeklyRevision(models.Model):
                 ('type', '=', HoldType.SUB_CHILD_HOLD.value)
             ])
             nb_sponsorships = len(sponsorships.filtered(
-                lambda s: s.origin_id.type == 'sub'))
+                lambda s: s.parent_id))
         elif revision.type == 'cancel':
             nb_holds = 0
             nb_sponsorships = self.env['recurring.contract'].search_count([

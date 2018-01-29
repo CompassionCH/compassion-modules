@@ -1,24 +1,29 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Loic Hausammann <loic_hausammann@hotmail.com>, Emanuel Cino
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 """
 Define the class CheckboxReader that read a checkbox (the input image
 should contains more or less only the box).
 """
-
-import cv2
-from cv2 import filter2D
-from numpy import logical_and as and2
-from numpy import logical_or as or2
-import numpy as np
 import os
+import logging
+_logger = logging.getLogger(__name__)
+try:
+    import cv2
+    from cv2 import filter2D
+    from numpy import logical_and as and2
+    from numpy import logical_or as or2
+    import numpy as np
+except ImportError:
+    _logger.warning('Please install cv2 and numpy on your system to use SBC '
+                    'module')
 
 
 class CheckboxReader:

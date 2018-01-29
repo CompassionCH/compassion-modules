@@ -1,18 +1,18 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
 import logging
 import csv
 import os
-from openerp import api, models, fields, _
+from odoo import api, models, fields, _
 
 logger = logging.getLogger(__name__)
 
@@ -73,9 +73,10 @@ class InterventionSubCategory(models.Model):
             csvreader.next()
             for row in csvreader:
                 cat_id = self.env.ref('intervention_compassion.' + row[1]).id
-                subcat_id = self.env.ref(
-                    'intervention_compassion.' + row[2]).id
-                self.env.cr.execute("""
-                    INSERT INTO compassion_intervention_cat_subcat_rel
-                    ("category_id", "subcategory_id")
-                    VALUES ({}, {})""".format(cat_id, subcat_id))
+                subcategory = self.env.ref('intervention_compassion.' + row[2])
+                if cat_id not in subcategory.category_ids.ids:
+                    self.env.cr.execute("""
+                        INSERT INTO compassion_intervention_cat_subcat_rel
+                        ("category_id", "subcategory_id")
+                        VALUES (%s, %s)
+                        """, (cat_id, subcategory.id))

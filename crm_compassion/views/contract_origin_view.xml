@@ -1,105 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
-        <!--
-        CONTRACT Origin
-        -->
-        <record id="view_contract_origin_tree_event" model="ir.ui.view">
-            <field name="name">contract.origin.tree.event</field>
-            <field name="model">recurring.contract.origin</field>
-            <field name="inherit_id" ref="contract_compassion.view_contract_origin_tree"/>
-            <field name="arch" type="xml">
-                <field name="partner_id" position="after">
-                    <field name="event_id"/>
-                </field>
+<odoo>
+    <!--
+    CONTRACT Origin
+    -->
+    <record id="view_contract_origin_tree_event" model="ir.ui.view">
+        <field name="name">contract.origin.tree.event</field>
+        <field name="model">recurring.contract.origin</field>
+        <field name="inherit_id" ref="contract_compassion.view_contract_origin_tree"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="event_id"/>
             </field>
-        </record>
+        </field>
+    </record>
 
-        <record id="view_contract_origin_form_event" model="ir.ui.view">
-            <field name="name">contract.origin.form.event</field>
-            <field name="model">recurring.contract.origin</field>
-            <field name="inherit_id" ref="contract_compassion.view_contract_origin_form"/>
-            <field name="arch" type="xml">
-                <field name="analytic_id" position="replace">
-                     <field name="analytic_id" attrs="{'invisible': [('type', 'not in', ('marketing','partner'))],
+    <record id="view_contract_origin_form_event" model="ir.ui.view">
+        <field name="name">contract.origin.form.event</field>
+        <field name="model">recurring.contract.origin</field>
+        <field name="inherit_id" ref="contract_compassion.view_contract_origin_form"/>
+        <field name="arch" type="xml">
+            <field name="analytic_id" position="replace">
+                <field name="analytic_id" attrs="{'invisible': [('type', 'not in', ('marketing','partner'))],
                                                               'required': [('type', '=', 'marketing')]}"
-                                   domain="[('parent_id.name','=','Campaign')]"/>
-                </field>
-                <field name="partner_id" position="after">
-                    <field name="event_id" attrs="{'invisible': [('type', '!=', 'event')],
+                       domain="[('tag_ids.name','=','Campaign')]"/>
+            </field>
+            <field name="partner_id" position="after">
+                <field name="event_id" attrs="{'invisible': [('type', '!=', 'event')],
                         'required': [('type','=','event')]}"
-                            options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
-                </field>
+                       options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
             </field>
-        </record>
+        </field>
+    </record>
 
-        <record id="view_crm_contract_origin_filter" model="ir.ui.view">
-            <field name="name">recurring.contract.origin.crm.select</field>
-            <field name="model">recurring.contract.origin</field>
-            <field name="inherit_id" ref="contract_compassion.view_contract_origin_filter"/>
-            <field name="arch" type="xml">
-                <field name="partner_id" position="after">
-                    <field name="event_id"/>
-                </field>
+    <record id="view_crm_contract_origin_filter" model="ir.ui.view">
+        <field name="name">recurring.contract.origin.crm.select</field>
+        <field name="model">recurring.contract.origin</field>
+        <field name="inherit_id" ref="contract_compassion.view_contract_origin_filter"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="event_id"/>
             </field>
-        </record>
-        
-        
-        <!--
-        RECURRING CONTRACT
-        -->
-        
-        
-        <!-- Search contracts by Salesperson -->
-        <record id="view_recurring_contract_filter" model="ir.ui.view">
-            <field name="name">recurring.contract.select</field>
-            <field name="model">recurring.contract</field>
-            <field name="inherit_id" ref="contract_compassion.view_recurring_contract_compassion_filter" />
-            <field name="arch" type="xml">
-                <data>
-                    <field name="origin_id" position="after">
-                        <field name="user_id" filter_domain="[
-                            '|', '|', '|',
-                            ('user_id', 'ilike', self),
-                            ('origin_id.partner_id', 'ilike', self),
-                            ('origin_id.event_id.user_id', 'ilike', self),
-                            ('origin_id.analytic_id.manager_id.partner_id', 'ilike', self),
-                            ]"/>
-                    </field>
-                    <xpath expr="//filter[@string='Origin']" position="after">
-                        <filter string="Ambassador" domain="[]"  context="{'group_by':'user_id'}"/>
-                    </xpath>
-                </data>
-            </field>
-        </record>
+        </field>
+    </record>
 
-        <record id="view_contract_tree_crm" model="ir.ui.view">
-            <field name="name">recurring.contract.crm.tree</field>
-            <field name="model">recurring.contract</field>
-            <field name="inherit_id" ref="contract_compassion.view_recurring_contract_tree_compassion"/>
-            <field eval="18" name="priority"/>
-            <field name="arch" type="xml">
-                <data>
-                    <field name="group_freq" position="after">
-                        <field name="user_id" invisible="context.get('partner_contracts_view')"/>
-                        <field name="origin_id" invisible="context.get('partner_contracts_view')"/>
-                    </field>
-                </data>
-            </field>
-        </record>
 
-        <record id="view_contract_form_crm" model="ir.ui.view">
-            <field name="name">recurring.contract.crm.form</field>
-            <field name="model">recurring.contract</field>
-            <field name="inherit_id" ref="contract_compassion.view_recurring_contract_form_compassion"/>
-            <field eval="18" name="priority"/>
-            <field name="arch" type="xml">
-                <data>
-                    <field name="origin_id" position="after">
-                        <field name="user_id"/>
-                    </field>
-                </data>
+    <!--
+    RECURRING CONTRACT
+    -->
+
+
+    <!-- Search contracts by Salesperson -->
+    <record id="view_recurring_contract_filter" model="ir.ui.view">
+        <field name="name">recurring.contract.select</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id" ref="contract_compassion.view_recurring_contract_compassion_filter" />
+        <field name="arch" type="xml">
+            <field name="origin_id" position="after">
+                <field name="user_id" filter_domain="[
+                        '|', '|', '|',
+                        ('user_id', 'ilike', self),
+                        ('origin_id.partner_id', 'ilike', self),
+                        ('origin_id.event_id.user_id', 'ilike', self),
+                        ('origin_id.analytic_id.partner_id', 'ilike', self),
+                        ]"/>
             </field>
-        </record>
-    </data>
-</openerp>
+            <filter name="group_type" position="after">
+                <filter string="Ambassador" domain="[]"  context="{'group_by':'user_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="view_contract_tree_crm" model="ir.ui.view">
+        <field name="name">recurring.contract.crm.tree</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id" ref="contract_compassion.view_recurring_contract_tree_compassion"/>
+        <field eval="18" name="priority"/>
+        <field name="arch" type="xml">
+            <field name="payment_mode_id" position="after">
+                <field name="user_id"/>
+                <field name="origin_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_contract_form_crm" model="ir.ui.view">
+        <field name="name">recurring.contract.crm.form</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id" ref="contract_compassion.view_recurring_contract_form_compassion"/>
+        <field eval="18" name="priority"/>
+        <field name="arch" type="xml">
+            <field name="origin_id" position="after">
+                <field name="user_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,18 +1,19 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import logging
 
-from openerp import api, models, fields, _, http
-from openerp.exceptions import Warning
-from openerp.addons.base_phone.controller import BasePhoneController
+from odoo import api, models, fields, _, http
+from odoo.exceptions import UserError
+from odoo.addons.base_phone import fields as phone_fields
+from odoo.addons.base_phone.controllers.main import BasePhoneController
 
 logger = logging.getLogger(__name__)
 
@@ -43,8 +44,10 @@ class CommunicationJob(models.Model):
     model = fields.Char(related='config_id.model')
     partner_id = fields.Many2one(
         'res.partner', 'Send to', required=True, ondelete='cascade')
-    partner_phone = fields.Char(related='partner_id.phone')
-    partner_mobile = fields.Char(related='partner_id.mobile')
+    partner_phone = phone_fields.Phone(related='partner_id.phone')
+    partner_mobile = phone_fields.Phone(related='partner_id.mobile')
+    country_id = fields.Many2one(related='partner_id.country_id')
+    parent_id = fields.Many2one(related='partner_id.parent_id')
     object_ids = fields.Char('Resource ids', required=True)
 
     date = fields.Datetime(default=fields.Datetime.now)
@@ -66,7 +69,10 @@ class CommunicationJob(models.Model):
     send_mode = fields.Selection('send_mode_select')
     email_template_id = fields.Many2one(
         related='config_id.email_template_id', store=True)
-    report_id = fields.Many2one(related='config_id.report_id', store=True)
+    report_id = fields.Many2one(
+        'ir.actions.report.xml', 'Letter template',
+        domain=[('model', '=', 'partner.communication.job')]
+    )
     user_id = fields.Many2one(
         'res.users', 'From', domain=[('share', '=', False)])
     email_to = fields.Char(
@@ -99,7 +105,7 @@ class CommunicationJob(models.Model):
                         'attachment_id'):
                     if not attachment.report_id and not \
                             self.env.context.get('no_print'):
-                        raise Warning(
+                        raise UserError(
                             _("Please select a printing configuration for the "
                               "attachments you add.")
                         )
@@ -109,6 +115,10 @@ class CommunicationJob(models.Model):
                         'report_name': attachment.report_id.report_name or '',
                         'attachment_id': attachment.id
                     })
+            # Remove deleted attachments
+            job.attachment_ids.filtered(
+                lambda a: a.attachment_id not in job.ir_attachment_ids
+            ).unlink()
 
     @api.model
     def send_mode_select(self):
@@ -140,6 +150,8 @@ class CommunicationJob(models.Model):
         same_job_search = [
             ('partner_id', '=', vals.get('partner_id')),
             ('config_id', '=', vals.get('config_id')),
+            ('config_id', '!=',
+             self.env.ref('partner_communication.default_communication').id),
             ('state', 'in', ('call', 'pending'))
         ] + self.env.context.get('same_job_search', [])
         job = self.search(same_job_search)
@@ -160,6 +172,10 @@ class CommunicationJob(models.Model):
         # Check if phonecall is needed
         if job.need_call or job.config_id.need_call:
             job.state = 'call'
+
+        # Check print report
+        if not vals.get('report_id'):
+            job.report_id = job.config_id.report_id
 
         # Determine send mode
         send_mode = job.config_id.get_inform_mode(job.partner_id)
@@ -206,15 +222,13 @@ class CommunicationJob(models.Model):
             if job.send_mode != 'both':
                 job.write({
                     'state': state,
-                    'sent_date': fields.Datetime.now()
+                    'sent_date': state != 'pending' and fields.Datetime.now()
                 })
             else:
                 # Job was sent by e-mail and must now be printed
                 job.send_mode = 'physical'
                 job.refresh_text()
 
-        # Commit after sending by e-mail
-        self.env.cr.commit()
         if to_print:
             to_print.write({
                 'state': 'done',
@@ -340,7 +354,7 @@ class CommunicationJob(models.Model):
             if job.config_id.attachments_function:
                 binaries = getattr(
                     job.with_context(lang=job.partner_id.lang),
-                    job.config_id.attachments_function, dict())()
+                    job.config_id.attachments_function, lambda: dict())()
                 for name, data in binaries.iteritems():
                     attachment_obj.create({
                         'name': name,
@@ -351,15 +365,37 @@ class CommunicationJob(models.Model):
 
     @api.multi
     def preview_pdf(self):
+        preview_model = 'partner.communication.pdf.wizard'
+        preview = self.env[preview_model].create({
+            'communication_id': self.id
+        })
         return {
             'name': _("Preview"),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'form',
-            'res_model': 'partner.communication.pdf.wizard',
+            'res_model': preview_model,
+            'res_id': preview.id,
             'context': self.env.context,
             'target': 'new',
         }
+
+    @api.multi
+    def message_post(self, **kwargs):
+        """
+        If message is not from a user, it is probably the answer of the
+        partner by e-mail. We post it on the partner thread instead of
+        the communication thread
+        :param kwargs: arguments
+        :return: mail_message record
+        """
+        message = super(CommunicationJob, self).message_post(**kwargs)
+        if not message.author_id.user_ids:
+            message.write({
+                'model': 'res.partner',
+                'res_id': self.partner_id.id
+            })
+        return message
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -380,7 +416,8 @@ class CommunicationJob(models.Model):
                 'communication_config_id': self.config_id.id,
                 'body_html': self.body_html,
                 'subject': self.subject,
-                'attachment_ids': [(6, 0, self.ir_attachment_ids.ids)]
+                'attachment_ids': [(6, 0, self.ir_attachment_ids.ids)],
+                'auto_delete': False,
             }
             if self.email_to:
                 # Replace partner e-mail by specified address
@@ -395,6 +432,9 @@ class CommunicationJob(models.Model):
                 self.email_template_id, [self.id], email_vals)
             self.email_id = email
             email.send()
+            # Subscribe author to thread, so that the reply
+            # notifies the author.
+            self.message_subscribe(self.user_id.partner_id.ids)
 
         return 'done' if email.state == 'sent' else 'pending'
 
@@ -404,7 +444,10 @@ class CommunicationJob(models.Model):
         for job in self:
             # Get pdf should directly send it to the printer if report
             # is correctly configured.
-            report_obj.get_pdf(job, job.report_id.report_name)
+            report_obj.with_context(
+                print_name=self.env.user.firstname[:3] + ' ' + (
+                    job.subject or '')
+            ).get_pdf(job.ids, job.report_id.report_name)
             # Print attachments
             job.attachment_ids.print_attachments()
             job.partner_id.message_post(

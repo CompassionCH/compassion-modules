@@ -1,15 +1,15 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emmanuel Mathier <emmanuel.mathier@gmail.com>, Emanuel Cino
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from openerp import fields, models, api
+from odoo import fields, models, api
 
 
 class ResPartner(models.Model):
@@ -22,12 +22,6 @@ class ResPartner(models.Model):
     ##########################################################################
     spoken_lang_ids = fields.Many2many(
         'res.lang.compassion', string='Spoken languages')
-    letter_delivery_preference = fields.Selection(
-        selection='_get_delivery_preference',
-        default='auto_digital',
-        required=True,
-        help='Delivery preference for Child Letters',
-        oldname='delivery_preference')
     translator_email = fields.Char(help='e-mail address used in SDL')
     nb_letters = fields.Integer(compute='_compute_nb_letters')
 

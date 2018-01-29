@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Copyright (C) 2015 Compassion (http://www.compassion.ch)
-    @author David Coninckx <david@coninckx.com>
-    The licence is in the file __openerp__.py
--->
-<openerp>
-	<data noupdate='1'>
+<odoo>
+    <data noupdate='1'>
         <function model="install.sds.tracking" name="set_sds_states"/>
-        <function model="install.sds.tracking" name="set_project_state"/>
-        <function model="install.sds.tracking" name="insert_wkf_items_for_sds_state"/>
     </data>
-</openerp>
+</odoo>

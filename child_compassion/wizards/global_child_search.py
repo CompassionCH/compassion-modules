@@ -1,21 +1,25 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: David Coninckx <david@coninckx.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from datetime import datetime, timedelta, date
 from math import ceil
-from openerp import models, fields, api, _
-from openerp.exceptions import Warning
 
-from openerp.addons.message_center_compassion.tools.onramp_connector import \
+import sys
+
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+
+from odoo.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
-
-from openerp.addons.message_center_compassion.mappings import base_mapping
+from odoo.addons.message_center_compassion.mappings import base_mapping
+from odoo.addons.queue_job.job import job
 
 
 class GlobalChildSearch(models.TransientModel):
@@ -27,7 +31,7 @@ class GlobalChildSearch(models.TransientModel):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    # Search parameters
+    # Quick Search parameters
     gender = fields.Selection([
         ('Male', 'Male'),
         ('Female', 'Female')
@@ -51,6 +55,39 @@ class GlobalChildSearch(models.TransientModel):
     min_days_waiting = fields.Integer(size=4)
     source_code = fields.Char()
 
+    # Advanced Search parameters
+    # List of available search parameters :
+    # https://github.com/compassion-intl/R4-JSON/blob/master/EIM_Reviewed/
+    # CI_NS_BeneficiarySearchRequestList_schema.json#L24
+    advanced_criteria_used = fields.Boolean(
+        compute='_compute_advanced_critieria_used')
+    search_filter_ids = fields.Many2many(
+        'compassion.query.filter', 'compassion_child_search_filters',
+        'search_id', 'query_id', 'Filters'
+    )
+    local_id = fields.Char('Child code')
+    state_chooser = fields.Selection(lambda s: s.env[
+        'compassion.generic.child']._get_availability_state())
+    state_selected = fields.Char(default='Available', readonly=True)
+    chronic_illness = fields.Selection(
+        lambda s: s.env['compassion.household']._get_yes_no(),
+        'Has chronic illnesses'
+    )
+    holding_gp_ids = fields.Many2many(
+        'compassion.global.partner', 'child_search_holding_gp',
+        'search_id', 'global_partner_id', 'Holding Global Partner'
+    )
+    father_alive = fields.Selection(lambda s: s.env[
+        'compassion.household']._get_yes_no())
+    mother_alive = fields.Selection(lambda s: s.env[
+        'compassion.household']._get_yes_no())
+    physical_disability = fields.Selection(
+        lambda s: s.env['compassion.household']._get_yes_no(),
+        'Has physical disabilities'
+    )
+    completion_date_after = fields.Date()
+    completion_date_before = fields.Date()
+
     # Pagination
     # By default : skip 50000 children to take less priority
     # Leave high priority children for bigger countries
@@ -61,27 +98,64 @@ class GlobalChildSearch(models.TransientModel):
     nb_found = fields.Integer('Number of matching children', readonly=True)
     nb_selected = fields.Integer(
         'Selected children', compute='_compute_nb_children')
+    all_children_available = fields.Boolean(
+        compute='_compute_available'
+    )
     global_child_ids = fields.Many2many(
         'compassion.global.child', 'childpool_children_rel',
         string='Available Children', readonly=True,
     )
-    nb_male = fields.Integer('Boys', compute='_compute_nb_children')
-    nb_female = fields.Integer('Girls', compute='_compute_nb_children')
+    nb_restricted_children = fields.Integer(
+        "Number of restricted children", readonly=True,
+        help="These children were removed from the search results because "
+             "of a Field Office restriction configuration."
+    )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.depends('state_selected', 'chronic_illness', 'holding_gp_ids',
+                 'father_alive', 'mother_alive', 'physical_disability',
+                 'completion_date_after', 'completion_date_before', 'local_id'
+                 )
+    def _compute_advanced_critieria_used(self):
+        self.advanced_criteria_used = (self.state_selected and
+                                       self.state_selected != 'Available') or \
+            self.chronic_illness or self.holding_gp_ids or \
+            self.father_alive or self. mother_alive or \
+            self.physical_disability or self.completion_date_after or \
+            self.completion_date_before or self.local_id
+
     def _compute_nb_children(self):
         for search in self:
             search.nb_selected = len(search.global_child_ids)
-            search.nb_male = len(search.global_child_ids.filtered(
-                lambda child: child.gender == 'M'))
-            search.nb_female = len(search.global_child_ids.filtered(
-                lambda child: child.gender == 'F'))
+
+    def _compute_available(self):
+        for search in self:
+            search.all_children_available = len(
+                search.global_child_ids.filtered(
+                    lambda c: c.beneficiary_state == 'Available')) == len(
+                search.global_child_ids)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
+    @api.multi
+    def add_status(self):
+        self.ensure_one()
+        if self.state_selected:
+            self.state_selected += ';' + self.state_chooser
+        else:
+            self.state_selected = self.state_chooser
+        self.state_chooser = False
+        return True
+
+    @api.multi
+    def reset_status(self):
+        self.ensure_one()
+        self.state_selected = False
+        return True
+
     @api.multi
     def do_search(self):
         self.ensure_one()
@@ -89,20 +163,37 @@ class GlobalChildSearch(models.TransientModel):
         self.global_child_ids.unlink()
         # When searching for specifics, we don't want to skip children
         self.skip = 0
-        self._call_search_service(
-            'profile_search', 'beneficiaries/availabilitysearch',
-            'BeneficiarySearchResponseList')
+        if not self.advanced_criteria_used:
+            self._call_search_service(
+                'profile_search', 'beneficiaries/availabilitysearch',
+                'BeneficiarySearchResponseList')
+        else:
+            self.compute_advanced_search()
+            self.with_context(
+                default_mapping_name='advanced_search')._call_search_service(
+                'advanced_search', 'beneficiaries/availabilityquery',
+                'BeneficiarySearchResponseList', 'POST'
+            )
+
         return True
 
     @api.multi
     def add_search(self):
         self.ensure_one()
         self.skip += self.nb_selected
-        self._call_search_service(
-            'profile_search', 'beneficiaries/availabilitysearch',
-            'BeneficiarySearchResponseList')
+        if not self.advanced_criteria_used:
+            self._call_search_service(
+                'profile_search', 'beneficiaries/availabilitysearch',
+                'BeneficiarySearchResponseList')
+        else:
+            self.compute_advanced_search()
+            self.with_context(
+                default_mapping_name='advanced_search')._call_search_service(
+                'advanced_search', 'beneficiaries/availabilityquery',
+                'BeneficiarySearchResponseList', 'POST'
+            )
         if self.nb_found == 0:
-            raise Warning(_('No children found.'))
+            raise UserError(_('No children found.'))
         return True
 
     @api.multi
@@ -122,7 +213,6 @@ class GlobalChildSearch(models.TransientModel):
     @api.multi
     def make_a_hold(self):
         """ Create hold and send to Connect """
-
         self.ensure_one()
         return {
             'name': _('Specify Attributes'),
@@ -130,6 +220,20 @@ class GlobalChildSearch(models.TransientModel):
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'child.hold.wizard',
+            'context': self.with_context(
+                active_id=self.id, active_model=self._name).env.context,
+            'target': 'new',
+        }
+
+    @api.multi
+    def create_reservation(self):
+        self.ensure_one()
+        return {
+            'name': _('Specify Attributes'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'child.reservation.wizard',
             'context': self.env.context,
             'target': 'new',
         }
@@ -165,7 +269,7 @@ class GlobalChildSearch(models.TransientModel):
             self.skip += self.take
             tries += 1
             if tries > 5:
-                raise Warning(
+                raise UserError(
                     _("Cannot find enough availalbe children in all "
                       "countries. Try with less"))
 
@@ -193,33 +297,179 @@ class GlobalChildSearch(models.TransientModel):
         return True
 
     ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    @job(default_channel='root.global_pool')
+    def hold_children_job(self):
+        """Job for holding requested children on the web."""
+        self.ensure_one()
+        child_hold = self.env['child.hold.wizard'].with_context(
+            active_id=self.id).sudo()
+        expiration_date = datetime.now() + timedelta(minutes=15)
+
+        user_id = self.env['res.users']. \
+            search([('name', '=', 'Reber Rose-Marie')]).id or self.env.uid
+
+        holds = child_hold.create({
+            'type': 'E-Commerce Hold',
+            'hold_expiration_date': expiration_date.strftime(
+                "%Y-%m-%dT%H:%M:%SZ"),
+            'primary_owner': user_id,
+            'secondary_owner': 'Carole Rochat',
+            'no_money_yield_rate': '1.1',
+            'yield_rate': '1.1',
+            'channel': 'Website',
+        })
+        holds.send()
+
+    def compute_advanced_search(self):
+        self.ensure_one()
+        # Remove all search filters
+        self.write({'search_filter_ids': [(5, False, False)]})
+
+        # Utility to get write values for a selected filter
+        def _get_filter(field_name, operator_id, value):
+            field_id = self.env['ir.model.fields'].search([
+                ('model', '=', self._name),
+                ('name', '=', field_name)
+            ]).id
+            return (0, 0, {
+                'field_id': field_id,
+                'operator_id': operator_id,
+                'value': value
+            })
+
+        # Construct filter values
+        anyof_id = self.env.ref('message_center_compassion.anyof').id
+        is_id = self.env.ref('message_center_compassion.is').id
+        between_id = self.env.ref('message_center_compassion.between').id
+        equalto_id = self.env.ref('message_center_compassion.equalto').id
+        within_id = self.env.ref('message_center_compassion.within').id
+        new_filters = list()
+        if self.min_age or self.max_age:
+            min_age = self.min_age or 0
+            max_age = self.max_age or 120
+            age_range = str(min_age) + ';' + str(max_age)
+            new_filters.append(_get_filter('min_age', between_id, age_range))
+        if self.local_id:
+            new_filters.append(_get_filter(
+                'local_id', is_id, self.local_id))
+        if self.child_name:
+            new_filters.append(_get_filter(
+                'child_name', is_id, self.child_name))
+        if self.state_selected and self.state_selected != 'Available':
+            new_filters.append(_get_filter(
+                'state_selected', anyof_id, self.state_selected))
+        if self.birthday_day:
+            new_filters.append(_get_filter(
+                'birthday_day', equalto_id, self.birthday_day))
+        if self.birthday_month:
+            new_filters.append(_get_filter(
+                'birthday_month', equalto_id, self.birthday_month))
+        if self.birthday_year:
+            new_filters.append(_get_filter(
+                'birthday_year', equalto_id, self.birthday_year))
+        if self.chronic_illness and self.chronic_illness != 'Unknown':
+            new_filters.append(_get_filter(
+                'chronic_illness', is_id,
+                "T" if self.chronic_illness == 'Yes' else "F"))
+        if self.field_office_ids:
+            values = ';'.join(self.field_office_ids.mapped('country_code'))
+            new_filters.append(_get_filter(
+                'field_office_ids', anyof_id, values))
+        if self.gender:
+            new_filters.append(_get_filter(
+                'gender', anyof_id, self.gender[0]))
+        if self.holding_gp_ids:
+            values = ';'.join(self.holding_gp_ids.mapped('country_id.code'))
+            new_filters.append(_get_filter(
+                'holding_gp_ids', anyof_id, values))
+        if self.icp_ids:
+            values = ';'.join(self.icp_ids.mapped('icp_id'))
+            new_filters.append(_get_filter(
+                'icp_ids', anyof_id, values))
+        if self.icp_name:
+            new_filters.append(_get_filter(
+                'icp_name', is_id, self.icp_name))
+        if self.hiv_affected_area:
+            new_filters.append(_get_filter(
+                'hiv_affected_area', is_id, "T"))
+        if self.is_orphan:
+            new_filters.append(_get_filter(
+                'is_orphan', is_id, "T"))
+        if self.has_special_needs:
+            new_filters.append(_get_filter(
+                'has_special_needs', is_id, "T"))
+        if self.father_alive:
+            new_filters.append(_get_filter(
+                'father_alive', anyof_id, self.father_alive))
+        if self.mother_alive:
+            new_filters.append(_get_filter(
+                'mother_alive', anyof_id, self.mother_alive))
+        if self.physical_disability and self.physical_disability != "Unknown":
+            new_filters.append(_get_filter(
+                'physical_disability', is_id,
+                "T" if self.self.physical_disability == 'Yes' else "F"
+            ))
+        if self.completion_date_after or self.completion_date_before:
+            start_date = self.completion_date_after or '1970-01-01'
+            stop_date = self.completion_date_before or fields.Date.to_string(
+                date.max)
+            date_range = start_date + ';' + stop_date
+            new_filters.append(_get_filter(
+                'completion_date_after', within_id, date_range))
+        if self.min_days_waiting:
+            days_range = str(self.min_days_waiting) + ';' + str(sys.maxint)
+            new_filters.append(_get_filter(
+                'min_days_waiting', between_id, days_range))
+
+        return self.write({'search_filter_ids': new_filters})
+
+    ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    def _call_search_service(self, mapping_name, service_name, result_name):
+    def _call_search_service(self, mapping_name, service_name, result_name,
+                             method='GET'):
         """
         Calls the given search service for the global childpool
         :param mapping_name: Name of the action mapping to use the correct
                              mapping.
         :param service_name: URL endpoint of the search service to call
         :param result_name: Name of the wrapping tag for the answer
+        :param method: Method URL (GET or POST)
         :return:
         """
         mapping = base_mapping.new_onramp_mapping(
             self._name, self.env, mapping_name)
         params = mapping.get_connect_data(self)
         onramp = OnrampConnector()
-        result = onramp.send_message(service_name, 'GET', None, params)
+        if method == 'POST':
+            result = onramp.send_message(service_name, method, params)
+        else:
+            result = onramp.send_message(service_name, method, None, params)
         if result['code'] == 200:
             self.nb_found = result['content'].get('NumberOfBeneficiaries', 0)
             mapping = base_mapping.new_onramp_mapping(
                 'compassion.global.child', self.env)
+            if not result['content'][result_name]:
+                raise UserError(_("No children found meeting criterias"))
+            new_children = self.env['compassion.global.child']
             for child_data in result['content'][result_name]:
                 child_vals = mapping.get_vals_from_connect(child_data)
                 child_vals['search_view_id'] = self.id
-                self.global_child_ids += self.env[
-                    'compassion.global.child'].create(child_vals)
+                new_children += self.env['compassion.global.child'].create(
+                    child_vals)
+            restricted_children = new_children - new_children.filtered(
+                'field_office_id.available_on_childpool')
+            new_children -= restricted_children
+            self.nb_restricted_children = len(restricted_children)
+            restricted_children.unlink()
+            self.global_child_ids += new_children
         else:
-            raise Warning(result.get('content', result)['Error'])
+            error = result.get('content', result)['Error']
+            if isinstance(error, dict):
+                error = error.get('ErrorMessage')
+            raise UserError(error)
 
     def _does_match(self, child):
         """ Returns if the selected criterias correspond to the given child.

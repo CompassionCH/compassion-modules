@@ -1,15 +1,15 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from openerp import api, models, fields, _
+from odoo import api, models, fields, _
 
 
 class ContractOrigin(models.Model):
@@ -18,13 +18,13 @@ class ContractOrigin(models.Model):
 
     event_id = fields.Many2one('crm.event.compassion', 'Event')
 
-    @api.one
     @api.depends('type')
-    def _set_name(self):
-        if self.type == 'event':
-            self.name = self.event_id.full_name
-        else:
-            super(ContractOrigin, self)._set_name()
+    def _compute_name(self):
+        for origin in self:
+            if origin.type == 'event':
+                origin.name = origin.event_id.full_name
+            else:
+                super(ContractOrigin, origin)._compute_name()
 
 
 class Contracts(models.Model):
@@ -60,10 +60,10 @@ class Contracts(models.Model):
         user_id = False
         if origin.partner_id:
             user_id = origin.partner_id.id
-        elif origin.analytic_id and origin.analytic_id.manager_id:
-            user_id = origin.analytic_id.manager_id.partner_id.id
         elif origin.event_id and origin.event_id.user_id:
             user_id = origin.event_id.user_id.partner_id.id
+        elif origin.analytic_id and origin.analytic_id.partner_id:
+            user_id = origin.analytic_id.partner_id.id
         return user_id
 
 

@@ -1,17 +1,17 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import logging
 
-from openerp import http, fields
-from openerp.http import request
+from odoo import http, fields
+from odoo.http import request
 
 from werkzeug.exceptions import BadRequest, NotFound
 from werkzeug.wrappers import Response

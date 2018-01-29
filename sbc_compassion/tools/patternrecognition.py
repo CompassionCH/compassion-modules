@@ -1,11 +1,11 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Loic Hausammann <loic_hausammannn@hotmail.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 """
@@ -14,19 +14,23 @@ sift implementation in opencv.
 A method (keyPointCenter) has been defined in order to find an approximation
 of the center based on the keypoint detected.
 """
-import cv2
-import numpy as np
 import base64
 import tempfile
 import math
 import logging
 from copy import deepcopy
 from time import time
+from odoo import _
+from odoo.exceptions import UserError
 
-from openerp import _
-from openerp.exceptions import Warning
+_logger = logging.getLogger(__name__)
 
-logger = logging.getLogger(__name__)
+try:
+    import cv2
+    import numpy as np
+except ImportError:
+    _logger.warning('Please install cv2 and numpy on your system to use SBC '
+                    'module')
 
 
 ##########################################################################
@@ -59,8 +63,7 @@ def patternRecognition(image, pattern, crop_area=None,
     # read images
     img1 = deepcopy(image)
     if img1 is None:
-        raise Warning(
-            _("Could not read template image"),
+        raise UserError(
             _("Template image is broken"))
     if isinstance(pattern, str):
         with tempfile.NamedTemporaryFile() as temp:
@@ -71,8 +74,7 @@ def patternRecognition(image, pattern, crop_area=None,
     else:
         img2 = pattern
     if img2 is None:
-        raise Warning(
-            _("Could not read pattern image"),
+        raise UserError(
             _("The pattern image is broken"))
 
     # cut the part useful for the recognition
@@ -283,7 +285,6 @@ def scaled_rigid_transform(A, B):
 
     # special reflection case
     if np.linalg.det(R) < 0:
-        print("Reflection detected")
         Vt[1, :] *= -1
         R = Vt.T * U.T
 
@@ -345,9 +346,9 @@ def find_template(img, templates, test=False, resize_ratio=1.0):
     # number of keypoint related between the picture and the pattern
     nb_keypoints = 0.0
     # we will store the nb of matched keypoints for each pattern (only used
-    #  by logger.debug)
+    #  by _logger.debug)
     score = ['0' for k in templates]
-    logger.debug("\t\t\tTemplates ids:\t\t" + "\t".join(
+    _logger.debug("\t\t\tTemplates ids:\t\t" + "\t".join(
         [str(t.id) for t in templates]))
 
     key_img = False
@@ -405,11 +406,11 @@ def find_template(img, templates, test=False, resize_ratio=1.0):
         score[i] = str(len(tmp_key))
 
     tic = time()-tic
-    logger.debug("\t\t\tTemplates scores:\t" + '\t'.join(score))
+    _logger.debug("\t\t\tTemplates scores:\t" + '\t'.join(score))
     if matching_template:
-        logger.info("\t\t\tTemplate '" + matching_template.name +
-                    "' matched with {} keypoints in {:.3} seconds".format(
-                        nb_keypoints, tic))
+        _logger.info("\t\t\tTemplate '" + matching_template.name +
+                     "' matched with {} keypoints in {:.3} seconds".format(
+                         nb_keypoints, tic))
     else:
-        logger.info("\t\t\tNo template found.")
+        _logger.info("\t\t\tNo template found.")
     return matching_template, keyPointCenter(key_img)

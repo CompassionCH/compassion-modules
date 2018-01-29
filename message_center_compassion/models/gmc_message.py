@@ -1,11 +1,11 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2017 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import re
@@ -13,11 +13,10 @@ import re
 from ..tools.onramp_connector import OnrampConnector
 from ..mappings import base_mapping as mapping
 
-from openerp import api, models, fields, _
-from openerp.exceptions import Warning
+from odoo import api, models, fields, _
+from odoo.exceptions import UserError
 
-from openerp.addons.connector.queue.job import job, related_action
-from openerp.addons.connector.session import ConnectorSession
+from odoo.addons.queue_job.job import job, related_action
 
 from datetime import datetime
 
@@ -141,8 +140,7 @@ class GmcMessagePool(models.Model):
             lambda m: m.state in ('new', 'failure', 'pending'))
         new_messages.write({'state': 'pending', 'failure_reason': False})
         if self.env.context.get('async_mode', True):
-            session = ConnectorSession.from_env(self.env)
-            process_messages_job.delay(session, self._name, new_messages.ids)
+            new_messages.with_delay()._process_messages()
         else:
             new_messages._process_messages()
         return True
@@ -153,6 +151,7 @@ class GmcMessagePool(models.Model):
     @api.multi
     def force_success(self):
         self.write({'state': 'success', 'failure_reason': False})
+        self.mapped('message_ids').unlink()
         return True
 
     @api.multi
@@ -194,6 +193,8 @@ class GmcMessagePool(models.Model):
     #                             PRIVATE METHODS                            #
     ##########################################################################
     @api.multi
+    @job(default_channel='root.gmc_pool')
+    @related_action(action='related_action_messages')
     def _process_messages(self):
         """ Process given messages in pool. """
         today = datetime.now()
@@ -206,9 +207,10 @@ class GmcMessagePool(models.Model):
         # actions at once)
         action = messages.mapped('action_id')
         if len(action) > 1:
-            raise Warning(_("Cannot process several actions at the same "
-                            "time. Please process each message type "
-                            "individually."))
+            raise UserError(_(
+                "Cannot process several actions at the same "
+                "time. Please process each message type "
+                "individually."))
         elif not action:
             # No messages pending
             return True
@@ -227,20 +229,14 @@ class GmcMessagePool(models.Model):
                     'failure_reason': traceback.format_exc()})
 
         elif action.direction == 'out':
-            try:
-                self._perform_outgoing_action()
-            except Warning as e:
-                # Put the messages in failure state
-                self.write({
-                    'state': 'failure',
-                    'failure_reason': e.args[1]
-                })
-                self.env.cr.commit()
-                raise
+            self._perform_outgoing_action()
         else:
             raise NotImplementedError
 
         self.write(message_update)
+        if message_update.get('state') == 'success':
+            # Remove thread history
+            self.mapped('message_ids').unlink()
 
         return True
 
@@ -393,7 +389,7 @@ class GmcMessagePool(models.Model):
         url_endpoint = self.mapped('action_id').connect_service
         if '${object' in url_endpoint:
             url_endpoint = re.sub(
-                '\$\{(object\.)(.+?)\}',
+                r'\$\{(object\.)(.+?)\}',
                 lambda match: self._replace_object_string(match),
                 url_endpoint
             )
@@ -414,27 +410,3 @@ class GmcMessagePool(models.Model):
     @api.model
     def _needaction_domain_get(self):
         return [('state', 'in', ('new', 'pending'))]
-
-
-##############################################################################
-#                            CONNECTOR METHODS                               #
-##############################################################################
-def related_action_messages(session, job):
-    message_ids = job.args[1]
-    action = {
-        'name': _("Messages"),
-        'type': 'ir.actions.act_window',
-        'res_model': 'gmc.message.pool',
-        'domain': [('id', 'in', message_ids)],
-        'view_type': 'form',
-        'view_mode': 'tree,form',
-    }
-    return action
-
-
-@job(default_channel='root.gmc_pool')
-@related_action(action=related_action_messages)
-def process_messages_job(session, model_name, message_ids):
-    """Job for processing messages."""
-    messages = session.env[model_name].browse(message_ids)
-    messages._process_messages()

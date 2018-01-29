@@ -80,16 +80,19 @@
                                     <group colspan="2">
                                         <field name="icp_disaster_impact_ids">
                                             <tree>
+                                                <field name="project_id"/>
                                                 <field name="impact_on_icp_program"/>
-                                                <field name="state"/>
                                                 <field name="infrastructure"/>
+                                                <field name="state"/>
                                             </tree>
                                         </field>
                                         <field name="child_disaster_impact_ids">
                                             <tree>
+                                                <field name="child_id"/>
                                                 <field name="name"/>
                                                 <field name="beneficiary_location"/>
                                                 <field name="beneficiary_physical_condition"/>
+                                                <field name="house_condition"/>
                                                 <field name="state"/>
                                             </tree>
                                         </field>
@@ -147,6 +150,57 @@
                     <field name="disaster_date"/>
                     <field name="field_office_id"/>
                     <field name="number_impacted_children"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_child_disaster_impact_form" model="ir.ui.view">
+            <field name="name">child.disaster.impact.form</field>
+            <field name="model">child.disaster.impact</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="disaster_id"/>
+                                <field name="child_id"/>
+                                <field name="name"/>
+                            </group>
+                            <group>
+                                <field name="beneficiary_location"/>
+                                <field name="beneficiary_physical_condition"/>
+                                <field name="beneficiary_physical_condition_description"/>
+                            </group>
+                            <group>
+                                <field name="caregivers_died_number"/>
+                                <field name="caregivers_seriously_injured_number"/>
+                                <field name="siblings_died_number"/>
+                                <field name="siblings_seriously_injured_number"/>
+                            </group>
+                            <group>
+                                <field name="house_condition"/>
+                                <field name="loss_ids" widget="many2many_tags"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_child_disaster_impact_tree" model="ir.ui.view">
+            <field name="name">child.disaster.impact.tree</field>
+            <field name="model">child.disaster.impact</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="create_date"/>
+                    <field name="child_id"/>
+                    <field name="beneficiary_location"/>
+                    <field name="beneficiary_physical_condition"/>
+                    <field name="house_condition"/>
                     <field name="state"/>
                 </tree>
             </field>

@@ -1,14 +1,14 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp.addons.message_center_compassion.mappings.base_mapping import \
+from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 
@@ -138,11 +138,17 @@ class CorrespondenceMapping(OnrampMapping):
     def _process_odoo_data(self, odoo_data):
         # Replace child and correspondant values with sponsorship
         if 'child_id' in odoo_data and 'correspondant_id' in odoo_data:
+            correspondant_id = odoo_data.pop('correspondant_id')
+            child_id = odoo_data.pop('child_id')
             sponsorship = self.env['recurring.contract'].search([
-                ('correspondant_id', '=', odoo_data['correspondant_id']),
-                ('child_id', '=', odoo_data['child_id'])], limit=1)
-            del odoo_data['child_id']
-            del odoo_data['correspondant_id']
+                ('correspondant_id', '=', correspondant_id),
+                ('child_id', '=', child_id)], limit=1)
+            if not sponsorship:
+                # We can have multiple partners with same global_id :(
+                partner = self.env['res.partner'].browse(correspondant_id)
+                sponsorship = self.env['recurring.contract'].search([
+                    ('correspondant_id.global_id', '=', partner.global_id),
+                    ('child_id', '=', child_id)], limit=1)
             if sponsorship:
                 odoo_data['sponsorship_id'] = sponsorship.id
         # Replace dict by a tuple for the ORM update/create

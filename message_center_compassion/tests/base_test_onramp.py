@@ -1,19 +1,26 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Yannick Vaucher, Emanuel Cino
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import base64
 import urllib2
-import httplib
-import simplejson
+import logging
 
-from openerp.tests import common
+from odoo.tests import common
+
+_logger = logging.getLogger(__name__)
+
+try:
+    import httplib
+    import simplejson
+except ImportError:
+    _logger.warning("Please install httplib and simplejson")
 
 
 class TestOnramp(common.HttpCase):

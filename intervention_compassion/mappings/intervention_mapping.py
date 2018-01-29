@@ -1,15 +1,15 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emmanuel Girardin <emmanuel.girardin@outlook.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from openerp.addons.message_center_compassion.mappings.base_mapping \
+from odoo.addons.message_center_compassion.mappings.base_mapping \
     import OnrampMapping
 
 
@@ -53,7 +53,7 @@ class InterventionMapping(OnrampMapping):
             'deliverable_level_2_ids.name',
             'compassion.intervention.deliverable'),
         "GlobalPartnerLevel2Selection": "sla_selection_complete",
-        "ICP": ('icp_id.icp_id', 'compassion.project'),
+        "ICP": ('icp_ids.icp_id', 'compassion.project'),
         "Intervention_ID": 'intervention_id',
         "ImpactedBeneficiaryQuantity": 'impacted_beneficiaries',
         "ImplementationRisks": 'implementation_risks',
@@ -63,6 +63,7 @@ class InterventionMapping(OnrampMapping):
         "Intervention_Name": 'name',
         "NotFundedImplications": 'not_funded_implications',
         "Objectives": 'objectives',
+        "ParentInterventionName": 'parent_intervention_name',
         "ProblemStatement": 'problem_statement',
         "ProposedSLACostUSD": 'fo_proposed_sla_costs',
         "ProposedStartDate": 'proposed_start_date',
@@ -81,9 +82,29 @@ class InterventionMapping(OnrampMapping):
         "ExpirationDate": 'expiration_date',
         "NotificationReason": 'cancel_reason',
         "HoldAmount": 'hold_amount',
-        "PrimaryOwner": ('primary_owner.name', 'res.users'),
+        "PrimaryOwner": ('user_id.name', 'res.users'),
         "SecondaryOwner": 'secondary_owner',
         "InterventionHold_ID": 'hold_id',
+
+        # Survival fields
+        "AllocatedSurvivalSlots": 'survival_slots',
+        "ReasonsForLaunch": 'launch_reason',
+        "MotherAndChildrenChallenges": 'mother_children_challenges',
+        "DesiredCommuniyBenefits": 'community_benefits',
+        "FirstTimeMothersAverageAge": 'mother_average_age',
+        "HouseholdChildrenAverageQuantity": 'household_children_average',
+        "PopulationUnderAge5": 'under_five_population',
+        "MedicalFacilityBirthPercent": 'birth_medical',
+        "SpiritualActivities": ('spiritual_activity_ids.name',
+                                'icp.spiritual.activity'),
+        "SocioEmotionalActivities": ('socio_activity_ids.name',
+                                     'icp.spiritual.activity'),
+        "CognitiveVocationalActivities": ('cognitive_activity_ids.name',
+                                          'icp.spiritual.activity'),
+        "OtherActivities": 'other_activities',
+        "ParentFamilyActivities": 'activities_for_parents',
+        "PhysicalHealthActivities": ('physical_activity_ids.name',
+                                     'icp.spiritual.activity'),
 
         # Not used in odoo:
         "Beneficiary_ProgramFieldManualExemption": None,
@@ -101,63 +122,44 @@ class InterventionMapping(OnrampMapping):
         "TotalActualCosts": None,
         "TotalEstimatedCost": None,
         "AdditionalFundsCommitted": None,
-        "AllocatedSurvivalSlots": None,
         "ApprovedDate": None,
-        "CognitiveVocationalActivities": None,
         "ContractorInformation": None,
-        "DesiredCommuniyBenefits": None,
-        "FirstTimeMothersAverageAge": None,
         "FiscalYear": None,
         "FocusAreaNumber": None,
         "FundCode": None,
         "FundingStatusCommittedDate": None,
-        "HouseholdChildrenAverageQuantity": None,
         "InitiationType": None,
         "IsIncludedInInterventionStrategy": None,
         "LeadershipApproval": None,
         "LinkToFieldOfficeStrategy": None,
-        "MedicalFacilityBirthPercent": None,
         "MonthFundsRequested": None,
         "MonthOfNBRAllocation": None,
-        "MotherAndChildrenChallenges": None,
-        "OtherActivities": None,
-        "ParentFamilyActivities": None,
-        "PhysicalHealthActivities": None,
-        "PopulationUnderAge5": None,
         "ProgramActivitiesFirstDayDate": None,
         "ProgramType": None,
         "ProposedSLACost": None,
-        "ReasonsForLaunch": None,
         "RequestedAdditionalFundingUSD": 'requested_additional_funding',
         "SLAPreferenceSubmittedByUser": None,
-        "SocioEmotionalActivities": None,
-        "SpiritualActivities": None,
         "Supporter": None,
         "SurvivalInterventionDesignation": None,
         "TopThreeAnticipatedExpenses": None,
         "SourceKitName": None,
         "Supporter_GlobalID": None,
+        "InterventionReportingMilestone_ID": None,
+        "Intervention_RecordTypeID": None,
+        "DueDate": None,
+        "HoldID": 'hold_id',
+        "HoldReason": None,
     }
 
     CONSTANTS = {
         "GlobalPartner_ID": 'CH',
     }
 
-    def _process_odoo_data(self, odoo_data):
-        """ Prepend deliverables to replace current selection. """
-        deliverable_field = False
-        level2_deliverable_field = 'deliverable_level_2_ids'
-        service_level = odoo_data.get('service_level')
-        if service_level == 'Level 2':
-            deliverable_field = level2_deliverable_field
-        elif service_level == 'Level 3':
-            deliverable_field = 'deliverable_level_3_ids'
-
-        if service_level == 'Level 3' and level2_deliverable_field in \
-                odoo_data:
-            # Level 3 is set but we receive deliverables in Level 2 field
-            odoo_data[deliverable_field] = odoo_data[level2_deliverable_field]
-            del odoo_data[level2_deliverable_field]
-        elif deliverable_field:
-            # No deliverables received
-            odoo_data[deliverable_field] = [(5, 0, 0)]
+    def _convert_connect_data(self, connect_name, value_mapping, value,
+                              relation_search=None):
+        """ Split ICP ids"""
+        if connect_name == 'ICP':
+            value = value.split("; ")
+        return super(InterventionMapping, self)._convert_connect_data(
+            connect_name, value_mapping, value, relation_search
+        )

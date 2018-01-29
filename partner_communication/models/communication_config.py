@@ -1,15 +1,15 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp import api, models, fields, _
-from openerp.exceptions import ValidationError
+from odoo import api, models, fields, _
+from odoo.exceptions import ValidationError
 import logging
 
 
@@ -30,7 +30,7 @@ class CommunicationConfig(models.Model):
     model_id = fields.Many2one(
         'ir.model', 'Applies to', required=True,
         help="The kind of document with this communication can be used")
-    model = fields.Char(related='model_id.model', store=True)
+    model = fields.Char(related='model_id.model', store=True, readonly=True)
     user_id = fields.Many2one(
         'res.users', 'From', domain=[('share', '=', False)])
     send_mode = fields.Selection('_get_send_mode', required=True)
@@ -47,7 +47,7 @@ class CommunicationConfig(models.Model):
              "an e-mail address"
     )
     email_template_id = fields.Many2one(
-        'email.template', 'Email template',
+        'mail.template', 'Email template',
         domain=[('model', '=', 'partner.communication.job')]
     )
     report_id = fields.Many2one(
@@ -66,19 +66,17 @@ class CommunicationConfig(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.one
     @api.constrains('send_mode_pref_field')
     def _validate_config(self):
         """ Test if the config is valid. """
-        valid = True
-        if self.send_mode_pref_field:
-            valid = hasattr(self.env['res.partner'], self.send_mode_pref_field)
-
-        if not valid:
-            raise ValidationError(
-                "Following field does not exist in res.partner: %s." %
-                self.send_mode_pref_field
-            )
+        for config in self.filtered('send_mode_pref_field'):
+            valid = hasattr(self.env['res.partner'],
+                            config.send_mode_pref_field)
+            if not valid:
+                raise ValidationError(
+                    _("Following field does not exist in res.partner: %s.") %
+                    config.send_mode_pref_field
+                )
 
     @api.constrains('email_template_id', 'report_id')
     def _validate_attached_reports(self):
@@ -86,14 +84,14 @@ class CommunicationConfig(models.Model):
             if config.email_template_id and config.email_template_id.model \
                     != 'partner.communication.job':
                 raise ValidationError(
-                    "Attached e-mail templates should be linked to "
-                    "partner.communication.job objects!"
+                    _("Attached e-mail templates should be linked to "
+                      "partner.communication.job objects!")
                 )
             if config.report_id and config.report_id.model != \
                     'partner.communication.job':
                 raise ValidationError(
-                    "Attached report templates should be linked to "
-                    "partner.communication.job objects!"
+                    _("Attached report templates should be linked to "
+                      "partner.communication.job objects!")
                 )
 
     @api.constrains('attachments_function')
@@ -102,7 +100,7 @@ class CommunicationConfig(models.Model):
         for config in self.filtered('attachments_function'):
             if not hasattr(job_obj, config.attachments_function):
                 raise ValidationError(
-                    "partner.communication.job has no function called " +
+                    _("partner.communication.job has no function called ") +
                     config.attachments_function
                 )
 

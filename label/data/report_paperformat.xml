@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-  <data>
+<odoo>
     <record id="paperformat_label" model="report.paperformat">
       <field name="name">Label A4</field>
       <field name="format">custom</field>
@@ -22,6 +21,4 @@
     <record id="dynamic_label" model="ir.actions.report.xml">
       <field name="paperformat_id" ref="label.paperformat_label"/>
     </record>
-
-  </data>
-</openerp>
+</odoo>

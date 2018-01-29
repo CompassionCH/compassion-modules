@@ -1,22 +1,17 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Michael Sandoz <michaelsandoz87@gmail.com>, Emanuel Cino
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import logging
-from datetime import datetime
-from datetime import timedelta
 
-from openerp import http
-from openerp.http import request
-
-from openerp.addons.connector.queue.job import job
-from openerp.addons.connector.session import ConnectorSession
+from odoo import http
+from odoo.http import request
 
 from werkzeug.wrappers import Response
 from werkzeug.datastructures import Headers
@@ -25,6 +20,10 @@ _logger = logging.getLogger(__name__)
 
 
 class RestController(http.Controller):
+    """
+    Test Controller that could be called by a directly connected website
+    for requesting children from the global childpool.
+    """
 
     @http.route('/web_children_hold', type='http', auth='public', methods=[
         'GET'])
@@ -39,8 +38,7 @@ class RestController(http.Controller):
         research.rich_mix()
 
         # create a hold for all children found
-        session = ConnectorSession.from_env(request.env)
-        hold_children_job.delay(session, research.id)
+        research.with_delay().hold_children_job()
 
         data = ""
         # return principal children info
@@ -56,29 +54,3 @@ class RestController(http.Controller):
 
     def _validate_headers(self, headers):
         pass
-
-
-##############################################################################
-#                            CONNECTOR METHODS                               #
-##############################################################################
-@job(default_channel='root.global_pool')
-def hold_children_job(session, research_id):
-    """Job for holding requested children on the web."""
-    child_hold = session.env['child.hold.wizard'].with_context(
-        active_id=research_id).sudo()
-    expiration_date = datetime.now() + timedelta(minutes=15)
-
-    user_id = session.env['res.users'].\
-        search([('name', '=', 'Reber Rose-Marie')]).id
-
-    holds = child_hold.create({
-        'type': 'E-Commerce Hold',
-        'hold_expiration_date': expiration_date.strftime(
-            "%Y-%m-%dT%H:%M:%SZ"),
-        'primary_owner': user_id,
-        'secondary_owner': 'Carole Rochat',
-        'no_money_yield_rate': '1.1',
-        'yield_rate': '1.1',
-        'channel': 'Website',
-    })
-    holds.send()

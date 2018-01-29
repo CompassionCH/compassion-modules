@@ -1,23 +1,23 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import simplejson
 import requests
-from openerp.addons.message_center_compassion.tools.onramp_connector import \
+from odoo.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
-from openerp.addons.message_center_compassion.tools.onramp_logging import \
+from odoo.addons.message_center_compassion.tools.onramp_logging import \
     log_message
 
-from openerp import _
-from openerp.exceptions import Warning
-from openerp.tools.config import config
+from odoo import _
+from odoo.exceptions import UserError
+from odoo.tools.config import config
 
 
 class TestOnrampConnector(OnrampConnector):
@@ -40,8 +40,7 @@ class TestOnrampConnector(OnrampConnector):
                 session.params.update({'api_key': api_key})
                 TestOnrampConnector.__instance._session = session
             else:
-                raise Warning(
-                    _('Missing configuration'),
+                raise UserError(
                     _('Please give connect_url and connect_api_key values '
                       'in your Odoo configuration file.'))
         return TestOnrampConnector.__instance

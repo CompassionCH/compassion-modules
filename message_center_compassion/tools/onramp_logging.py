@@ -1,11 +1,11 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import logging
@@ -13,7 +13,7 @@ import simplejson
 import os
 import sys
 
-from openerp.netsvc import DBFormatter
+from odoo.netsvc import DBFormatter
 
 ONRAMP_LOGGER = logging.getLogger('ONRAMP')
 
@@ -39,7 +39,7 @@ def init_logger():
         if dirname and not os.path.isdir(dirname):
             os.makedirs(dirname)
         handler = logging.handlers.TimedRotatingFileHandler(
-            filename=logf, when='D', interval=1, backupCount=30)
+            filename=logf, when='midnight', backupCount=90)
         formatter = DBFormatter(format)
         handler.setFormatter(formatter)
 

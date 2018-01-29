@@ -1,4 +1,4 @@
-<openerp>
+<odoo>
     <data noupdate="1">
         <!-- Create Gift Message -->
         <record id="create_gift" model="gmc.action">
@@ -29,4 +29,4 @@
             <field name="action_id" ref="update_gift"/>
         </record>
     </data>
-</openerp>
+</odoo>

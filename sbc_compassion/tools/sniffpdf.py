@@ -1,11 +1,11 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emmanuel Girardin <emmanuel.girardin@outlook.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 # All the code here has been inspired from these two web pages:
@@ -14,11 +14,18 @@
 
 
 import os
+import logging
 from cStringIO import StringIO
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-from pdfminer.converter import TextConverter, PDFPageAggregator
-from pdfminer.layout import LAParams, LTImage
-from pdfminer.pdfpage import PDFPage
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+    from pdfminer.converter import TextConverter, PDFPageAggregator
+    from pdfminer.layout import LAParams, LTImage
+    from pdfminer.pdfpage import PDFPage
+except ImportError:
+    _logger.error('Please install pdfminer to use SBC module')
 
 
 def get_images(pdf_data, dst_folder, dst_name):
@@ -91,7 +98,7 @@ def get_text(url, pages=None):
             interpreter.process_page(page)
     converter.close()
     text = output.getvalue()
-    output.close
+    output.close()
     return text
 
 

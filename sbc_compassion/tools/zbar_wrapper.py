@@ -1,21 +1,25 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emmanuel Girardin <emmanuel.girardin@outlook.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
 """ This wrapper allows to scan QRCodes thanks to the ZBar library. When no
 ZBar is detected, it apply a few filter on the input image and try the
 scanning again. This technique reduces the number of false negative."""
-
-import zbar
-import cv2  # we use openCV to repair broken QRCodes.
-from PIL import Image
+import logging
+_logger = logging.getLogger(__name__)
+try:
+    import zbar
+    import cv2  # we use openCV to repair broken QRCodes.
+    from PIL import Image
+except ImportError:
+    _logger.warning("SBC module needs zbar, cv2 and PIL to work.")
 
 
 def scan_qrcode(filename):
@@ -61,8 +65,7 @@ def _decode(filename):
     scanner.parse_config('enable')
 
     # obtain image data
-    img = cv2.imread(filename)
-    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    img = cv2.imread(filename, 0)
 
     qrcode = _scan(img, scanner=scanner)
     if not qrcode:

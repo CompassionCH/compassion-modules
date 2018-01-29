@@ -1,14 +1,15 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: David Coninckx
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp import api, models, fields
+from psycopg2 import sql
+from odoo import api, models, fields
 
 from datetime import timedelta, datetime
 
@@ -24,58 +25,9 @@ SDS_COLORS = {
 }
 
 
-class recurring_contract(models.TransientModel):
+class InstallSdsTracking(models.TransientModel):
     _name = "install.sds.tracking"
-
-    # Only at module installation
-    @api.model
-    def insert_wkf_items_for_sds_state(self):
-        contract_obj = self.env['recurring.contract']
-        active_contract_ids = contract_obj.search(
-            [('sds_state', '=', 'active')]).ids
-        draft_contract_ids = contract_obj.search(
-            [('sds_state', '=', 'draft')]).ids
-        sub_waiting_contract_ids = contract_obj.search(
-            [('sds_state', '=', 'sub_waiting')]).ids
-        sub_contract_ids = contract_obj.search(
-            [('sds_state', '=', 'sub')]).ids
-        self.env.cr.execute(
-            "SELECT id FROM wkf WHERE name = 'recurring.contract.wkf'")
-        wkf_id = self.env.cr.fetchall()[0][0]
-
-        self._ins_wkf_items('act_draft', wkf_id, draft_contract_ids)
-        self._ins_wkf_items('act_active', wkf_id, active_contract_ids)
-        self._ins_wkf_items(
-            'act_sub_waiting', wkf_id, sub_waiting_contract_ids)
-        self._ins_wkf_items('act_sub', wkf_id, sub_contract_ids)
-
-    def _ins_wkf_items(self, act_id, wkf_id, cont_ids):
-        if cont_ids:
-            cr = self.env.cr
-            ir_model_data = self.env['ir.model.data']
-            wkf_activity_id = ir_model_data.get_object_reference(
-                'sponsorship_tracking', act_id)[1]
-
-            wkf_instance_ids = list()
-            con_ids_string = ','.join([str(c) for c in cont_ids])
-            cr.execute(
-                "UPDATE wkf_instance SET state='active' "
-                "WHERE wkf_id = {0} and res_id in ({1})".format(
-                    wkf_id, con_ids_string))
-            cr.execute(
-                "SELECT id FROM wkf_instance "
-                "WHERE wkf_id = {0} AND res_id in ({1})".format(
-                    wkf_id, con_ids_string))
-            res = cr.fetchall()
-            if res:
-                for row in res:
-                    wkf_instance_ids.append(row[0])
-
-            for wkf_instance_id in wkf_instance_ids:
-                cr.execute(
-                    "INSERT INTO wkf_workitem(act_id, inst_id, state) "
-                    "VALUES ('{0}', '{1}', 'complete')".format(
-                        wkf_activity_id, wkf_instance_id))
+    _description = "Install SDS Tracking"
 
     # Only at module installation
     @api.model
@@ -117,15 +69,15 @@ class recurring_contract(models.TransientModel):
     def _set_sds_state(self, contract_ids, sds_state, sds_change_date,
                        date_delta=0):
         if contract_ids:
-            con_ids = ','.join([str(c) for c in contract_ids])
-            self.env.cr.execute("""
+            self.env.cr.execute(
+                sql.SQL("""
                 UPDATE recurring_contract
-                SET sds_state = '{0}',
-                    sds_state_date = {1} + interval '{2} days',
-                    color = {3}
-                WHERE id in ({4})
-            """.format(sds_state, sds_change_date,
-                       date_delta, SDS_COLORS[sds_state], con_ids))
+                SET sds_state = %s, sds_state_date = {} + interval '%s days',
+                    color = %s
+                WHERE id = ANY (%s)""").format(
+                    sql.Identifier(sds_change_date)),
+                (sds_state, date_delta, SDS_COLORS[sds_state], contract_ids)
+            )
 
     def _get_contract_sub(self):
         """ Rules for setting SUB Status of a contract with child departed:

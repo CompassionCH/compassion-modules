@@ -1,14 +1,14 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Philippe Heer <heerphilippe@msn.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp.addons.message_center_compassion.mappings.base_mapping import \
+from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 
@@ -54,9 +54,9 @@ class LifecycleMapping(OnrampMapping):
         'gpid': None,
     }
 
-    CONSTANTS = {
-
-    }
+    def __init__(self, env):
+        super(LifecycleMapping, self).__init__(env)
+        self.CONSTANTS = {'gpid': env.user.country_id.code}
 
     def _process_odoo_data(self, odoo_data):
         """ Put the request reason in lower case. """

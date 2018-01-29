@@ -1,17 +1,17 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 from ..tools.onramp_connector import OnrampConnector
 
-from openerp import api, models, fields, _
-from openerp.exceptions import Warning, ValidationError
+from odoo import api, models, fields, _
+from odoo.exceptions import UserError, ValidationError
 
 
 class GetLetterImageWizard(models.TransientModel):
@@ -60,8 +60,7 @@ class GetLetterImageWizard(models.TransientModel):
                 letter.final_letter_url, self.format,
                 self.page_number, self.dpi)
         if image_data is None:
-            raise Warning(
-                _('Image does not exist'),
+            raise UserError(
                 _("Image requested was not found remotely."))
         self.write({
             'image_preview': image_data,

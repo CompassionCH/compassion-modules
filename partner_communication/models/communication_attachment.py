@@ -1,16 +1,16 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import base64
 
-from openerp import api, models, fields
+from odoo import api, models, fields
 import logging
 
 
@@ -45,18 +45,20 @@ class CommunicationAttachment(models.Model):
         :param vals: vals for creation
         :return: record created
         """
-        if 'data' in vals and 'attachment_id' not in vals:
+        new_record = 'data' in vals and 'attachment_id' not in vals
+        if new_record:
             name = vals['name']
             attachment = self.env['ir.attachment'].create({
                 'datas_fname': name,
-                'res_model': self._name,
+                'res_model': 'partner.communication.job',
                 'datas': vals['data'],
-                'name': name
+                'name': name,
             })
             vals['attachment_id'] = attachment.id
 
         res = super(CommunicationAttachment, self).create(vals)
-        res.attachment_id.res_id = res.id
+        if new_record:
+            res.attachment_id.res_id = res.communication_id.id
         return res
 
     @api.multi
@@ -67,6 +69,9 @@ class CommunicationAttachment(models.Model):
             behaviour = report.behaviour()[report.id]
             printer = behaviour['printer']
             if printer:
-                printer.print_document(
+                printer.with_context(
+                    print_name=self.env.user.firstname[:3] + ' ' +
+                    attachment.name
+                ).print_document(
                     report, attachment.data, report.report_type)
         return True

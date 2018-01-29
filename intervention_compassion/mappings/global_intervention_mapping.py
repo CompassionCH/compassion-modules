@@ -1,14 +1,14 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp.addons.message_center_compassion.mappings.base_mapping import \
+from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 
@@ -64,7 +64,7 @@ class GlobalInterventionMapping(OnrampMapping):
         "InterventionSubCategory_Name": (
             "subcategory_id.name", "compassion.intervention.subcategory"),
         "ProposedStartDate": "proposed_start_date",
-        "ICP_ID": ("icp_id.icp_id", "compassion.project"),
+        "ICP_ID": ("icp_ids.icp_id", "compassion.project"),
         "FieldOffice_ID": ("field_office_id.field_office_id",
                            "compassion.field.office"),
         "IsFieldOfficePriority": "is_fo_priority",
@@ -88,3 +88,12 @@ class GlobalInterventionMapping(OnrampMapping):
             ])
             odoo_data['category_id'] = category.id
             del odoo_data['type']
+
+    def _convert_connect_data(self, connect_name, value_mapping, value,
+                              relation_search=None):
+        """ Split ICP ids"""
+        if connect_name == 'ICP':
+            value = value.split("; ")
+        return super(GlobalInterventionMapping, self)._convert_connect_data(
+            connect_name, value_mapping, value, relation_search
+        )

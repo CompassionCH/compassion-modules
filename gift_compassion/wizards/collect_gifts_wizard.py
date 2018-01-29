@@ -1,15 +1,16 @@
-﻿# -*- encoding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from openerp import api, fields, models
+from odoo import api, fields, models
+from odoo.tools import safe_eval
 
 
 class CollectGiftWizard(models.TransientModel):
@@ -28,7 +29,7 @@ class CollectGiftWizard(models.TransientModel):
     @api.onchange('domain')
     def apply_domain(self):
         return {
-            'domain': {'invoice_line_ids': eval(self.domain)}
+            'domain': {'invoice_line_ids': safe_eval(self.domain)}
         }
 
     @api.multi

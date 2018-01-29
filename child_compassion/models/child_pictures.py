@@ -1,14 +1,14 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp import models, fields, api, _
+from odoo import models, fields, api, _
 
 import logging
 import base64
@@ -31,8 +31,8 @@ class ChildPictures(models.Model):
     ##########################################################################
     child_id = fields.Many2one(
         'compassion.child', 'Child', required=True, ondelete='cascade')
-    fullshot = fields.Binary(compute='set_pictures')
-    headshot = fields.Binary(compute='set_pictures')
+    fullshot = fields.Binary(compute='_compute_pictures')
+    headshot = fields.Binary(compute='_compute_pictures')
     image_url = fields.Char()
     date = fields.Date('Date of pictures', default=fields.Date.today)
     fname = fields.Char(compute='_compute_filename')
@@ -42,34 +42,35 @@ class ChildPictures(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.one
-    def set_pictures(self):
+    def _compute_pictures(self):
         """Get the picture given field_name (headshot or fullshot)"""
         attachment_obj = self.env['ir.attachment']
+        for pictures in self:
+            # We search related images, and sort them by date of creation
+            # from newest to oldest
+            attachments = attachment_obj.search([
+                ('res_model', '=', self._name),
+                ('res_id', '=', pictures.id)],
+                order='create_date desc')
 
-        # We search related images, and sort them by date of creation
-        # from newest to oldest
-        attachments = attachment_obj.search([
-            ('res_model', '=', self._name),
-            ('res_id', '=', self.id)],
-            order='create_date desc')
+            # We recover the newest Fullshot and Headshots
+            for rec in attachments:
+                if rec.datas_fname.split('.')[0] == 'Headshot':
+                    try:
+                        pictures.headshot = rec.datas
+                        break
+                    except:
+                        logger.error(
+                            "Couldn't find attachment for child headshot.")
 
-        # We recover the newest Fullshot and Headshots
-        for rec in attachments:
-            if rec.datas_fname.split('.')[0] == 'Headshot':
-                try:
-                    self.headshot = rec.datas
-                    break
-                except:
-                    continue
-
-        for rec in attachments:
-            if rec.datas_fname.split('.')[0] == 'Fullshot':
-                try:
-                    self.fullshot = rec.datas
-                    break
-                except:
-                    continue
+            for rec in attachments:
+                if rec.datas_fname.split('.')[0] == 'Fullshot':
+                    try:
+                        pictures.fullshot = rec.datas
+                        break
+                    except:
+                        logger.error(
+                            "Couldn't find attachement for child fullshot.")
 
     def _compute_filename(self):
         for pictures in self:
@@ -160,8 +161,8 @@ class ChildPictures(models.Model):
 
     @api.multi
     def _get_picture(self, type='Headshot', width=300, height=400):
-        self.ensure_one()
         """ Gets a picture from Compassion webservice """
+        self.ensure_one()
         attach_id = self.id
         if type.lower() == 'headshot':
             cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(
@@ -197,7 +198,7 @@ class ChildPictures(models.Model):
             if not attach_id:
                 return data
 
-            picture.env['ir.attachment'].create({
+            picture.env['ir.attachment'].with_context({}).create({
                 'datas_fname': _store_fname,
                 'res_model': picture._name,
                 'res_id': attach_id,

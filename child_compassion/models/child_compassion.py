@@ -1,11 +1,11 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2017 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino, Cyril Sester
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
@@ -13,18 +13,17 @@ import logging
 
 from dateutil.relativedelta import relativedelta
 
-from openerp import models, fields, api, _
-from openerp.addons.advanced_translation.models.ir_advanced_translation \
+from odoo import models, fields, api, _
+from odoo.addons.advanced_translation.models.ir_advanced_translation \
     import setlocale
-from datetime import datetime, timedelta, date
+from datetime import datetime, date
 
 from ..mappings.compassion_child_mapping import CompassionChildMapping
 from .compassion_hold import HoldType
 
-from openerp.exceptions import Warning
-from openerp.addons.connector.queue.job import job
-from openerp.addons.connector.session import ConnectorSession
-from openerp.addons.message_center_compassion.tools.onramp_connector import \
+from odoo.exceptions import UserError
+from odoo.addons.queue_job.job import job, related_action
+from odoo.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
 
 logger = logging.getLogger(__name__)
@@ -63,7 +62,7 @@ class CompassionChild(models.Model):
     state = fields.Selection(
         '_get_child_states', readonly=True, required=True,
         track_visibility='onchange', default='N',)
-    is_available = fields.Boolean(compute='_set_available')
+    is_available = fields.Boolean(compute='_compute_available')
     sponsor_id = fields.Many2one(
         'res.partner', 'Sponsor', track_visibility='onchange', readonly=True)
     sponsor_ref = fields.Char(
@@ -128,10 +127,15 @@ class CompassionChild(models.Model):
         ('Cooking / Food Service', 'Cooking and food service'),
         ('Cosmetology', 'Cosmetology'),
         ('Electrical/ Electronics', 'Electronics'),
+        ('Electrical / Electronics', 'Electronics'),
         ('Graphic Arts', 'Graphic arts'),
+        ('Hospitality / Hotel / Tourism', 'Hospitality, hotel and tourism'),
         ('Income-Generating Program at Project',
          'Income-generating program at project'),
+        ('Industrial / Manufacturing / Fabrication',
+         'Industrial / Manufacturing / Fabrication'),
         ('Manufacturing/ Fabrication', 'Manufacturing / Fabrication'),
+        ('Manufacturing / Fabrication', 'Manufacturing / Fabrication'),
         ('Medical/ Health Services', 'Medical / Health services'),
         ('Not Enrolled', 'Not enrolled'),
         ('Not enrolled', 'Not enrolled'),
@@ -219,9 +223,6 @@ class CompassionChild(models.Model):
     # Descriptions
     ##############
     desc_en = fields.Text('English description', readonly=True)
-    desc_fr = fields.Text('French description', readonly=True)
-    desc_de = fields.Text('German description', readonly=True)
-    desc_it = fields.Text('Italian description', readonly=True)
 
     # Just for migration
     delegated_comment = fields.Text()
@@ -247,7 +248,7 @@ class CompassionChild(models.Model):
             ('R', _('Released')),
         ]
 
-    def _set_available(self):
+    def _compute_available(self):
         for child in self:
             child.is_available = child.state in self._available_states()
 
@@ -297,12 +298,19 @@ class CompassionChild(models.Model):
 
     @api.multi
     def unlink(self):
-        res = super(CompassionChild, self).unlink()
         holds = self.mapped('hold_id').filtered(
             lambda h: h.state == 'active' and
             h.type != HoldType.NO_MONEY_HOLD.value)
+        res = super(CompassionChild, self).unlink()
         holds.release_hold()
         return res
+
+    @api.multi
+    @job(default_channel='root.child_compassion')
+    @related_action('related_action_child_compassion')
+    def unlink_job(self):
+        """ Small wrapper to unlink only released children. """
+        return self.filtered(lambda c: c.state == 'R').unlink()
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -364,7 +372,7 @@ class CompassionChild(models.Model):
             message = message_obj.create(message_vals)
             if message.state == 'failure' and not self.env.context.get(
                     'async_mode'):
-                raise Warning(message.failure_reason)
+                raise UserError(message.failure_reason)
         return True
 
     @api.multi
@@ -387,7 +395,7 @@ class CompassionChild(models.Model):
                 new_photo = fields.Date.from_string(pictures[0].date)
                 diff_pic = relativedelta(new_photo, last_photo)
                 diff_today = relativedelta(today, new_photo)
-                if (diff_pic.months > 6 or diff_pic.years > 1) and (
+                if (diff_pic.months > 6 or diff_pic.years > 0) and (
                         diff_today.months <= 6 and diff_today.years == 0):
                     child.new_photo()
         return res
@@ -432,6 +440,11 @@ class CompassionChild(models.Model):
     def child_waiting_hold(self):
         """ Called on child creation. """
         self.write({'state': 'W', 'sponsor_id': False})
+        # If hold was already set, put it back in ConsignmentHold type
+        self.mapped('hold_id').write({
+            'type': HoldType.CONSIGNMENT_HOLD.value
+        })
+        return True
 
     @api.multi
     def child_consigned(self):
@@ -445,7 +458,7 @@ class CompassionChild(models.Model):
         ])
         jobs.button_done()
         jobs.unlink()
-        self.get_infos()
+        self.with_context(async_mode=False).get_infos()
         return True
 
     @api.multi
@@ -455,6 +468,13 @@ class CompassionChild(models.Model):
                 'child_id': child.id,
                 'image_url': child.image_url
             })
+            hold = child.hold_id
+            if hold.type != HoldType.SUB_CHILD_HOLD.value:
+                hold.write({
+                    'type': HoldType.NO_MONEY_HOLD.value,
+                    'expiration_date': hold.get_default_hold_expiration(
+                        HoldType.NO_MONEY_HOLD)
+                })
         return self.write({
             'state': 'P',
             'has_been_sponsored': True
@@ -473,13 +493,14 @@ class CompassionChild(models.Model):
         other_children.get_lifecycle_event()
 
         # the children will be deleted when we reach their expiration date
-        default_expiration = datetime.now() + timedelta(weeks=1)
+        postpone = 60 * 60 * 24 * 7  # One week by default
+        today = datetime.today()
         for child in other_children:
-            postpone = fields.Datetime.from_string(child.hold_expiration) or \
-                default_expiration
-            session = ConnectorSession.from_env(other_children.env)
-            unlink_children_job.delay(session, self._name, child.ids,
-                                      eta=postpone)
+            if child.hold_expiration:
+                expire = fields.Datetime.from_string(child.hold_expiration)
+                postpone = (expire - today).total_seconds() + 60
+
+            child.with_delay(eta=postpone).unlink_job()
 
         return True
 
@@ -519,13 +540,3 @@ class CompassionChild(models.Model):
         self.ensure_one()
         self.write(vals)
         self.get_infos()
-
-
-##############################################################################
-#                            CONNECTOR METHODS                               #
-##############################################################################
-@job(default_channel='root.child_compassion')
-def unlink_children_job(session, model_name, message_ids):
-    """Job for deleting released children."""
-    children = session.env[model_name].browse(message_ids)
-    children.unlink()

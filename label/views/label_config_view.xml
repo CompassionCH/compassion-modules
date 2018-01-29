@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<openerp>
-  <data>
-    
+<odoo>
     <record model="ir.ui.view" id="view_label_brand_tree">
       <field name="name">label.brand.tree</field>
       <field name="model">label.brand</field>
@@ -74,6 +72,5 @@
     
     <menuitem id="menu_label_config_view"
               action="action_label_config_form"
-	      parent="base.menu_config"/>
-  </data>
-</openerp>
+	      parent="report.reporting_menuitem"/>
+</odoo>

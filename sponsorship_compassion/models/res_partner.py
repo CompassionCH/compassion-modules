@@ -1,14 +1,14 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Cyril Sester, Emanuel Cino
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp import api, fields, models, _
+from odoo import api, fields, models, _
 from functools import reduce
 
 
@@ -20,66 +20,40 @@ class ResPartner(models.Model):
     ##########################################################################
     global_id = fields.Char()
     contracts_fully_managed = fields.One2many(
-        "recurring.contract", compute='_get_related_contracts',
+        "recurring.contract", compute='_compute_related_contracts',
         string='Fully managed sponsorships',
         order="state asc")
     contracts_paid = fields.One2many(
-        "recurring.contract", compute='_get_related_contracts',
+        "recurring.contract", compute='_compute_related_contracts',
         string='Sponsorships as payer only')
     contracts_correspondant = fields.One2many(
-        "recurring.contract", compute='_get_related_contracts',
+        "recurring.contract", compute='_compute_related_contracts',
         string='Sponsorships as correspondant only')
     sponsorship_ids = fields.One2many(
-        "recurring.contract", compute='_get_related_contracts')
+        "recurring.contract", compute='_compute_related_contracts')
     mandatory_review = fields.Boolean(
         help='Indicates that we should review the letters of this sponsor '
              'before sending them to GMC.')
     other_contract_ids = fields.One2many(
-        "recurring.contract", compute='_get_related_contracts',
+        "recurring.contract", compute='_compute_related_contracts',
         string='Other contracts')
-    unrec_items = fields.Integer(compute='_set_count_items')
-    receivable_items = fields.Integer(compute='_set_count_items')
-    has_sponsorships = fields.Boolean(
-        compute='_compute_has_sponsorships', store=True)
-    number_sponsorships = fields.Integer(
-        compute='_compute_has_sponsorships', store=True)
+    unrec_items = fields.Integer(compute='_compute_count_items')
+    receivable_items = fields.Integer(compute='_compute_count_items')
+    has_sponsorships = fields.Boolean()
+    number_sponsorships = fields.Integer()
     send_original = fields.Boolean(
         help='Indicates that we request the original letters for this sponsor'
     )
     preferred_name = fields.Char()
     sponsored_child_ids = fields.One2many(
         'compassion.child', 'sponsor_id', 'Sponsored children')
-    number_children = fields.Integer(compute='_compute_children')
+    number_children = fields.Integer(compute='_compute_children', store=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.multi
-    @api.depends('category_id')
-    def _compute_has_sponsorships(self):
-        """
-        A partner is sponsor if he is correspondent of at least one
-        sponsorship.
-        """
-        for partner in self:
-            partner.has_sponsorships = self.env[
-                'recurring.contract'].search_count([
-                    '|',
-                    ('partner_id', '=', partner.id),
-                    ('correspondant_id', '=', partner.id),
-                    ('type', 'like', 'S')
-                ])
-            partner.number_sponsorships = self.env[
-                'recurring.contract'].search_count([
-                    '|',
-                    ('partner_id', '=', partner.id),
-                    ('correspondant_id', '=', partner.id),
-                    ('type', 'like', 'S'),
-                    ('state', 'in', ('waiting', 'mandate', 'active')),
-                ])
-
-    @api.multi
-    def _get_related_contracts(self):
+    def _compute_related_contracts(self):
         """ Returns the contracts of the sponsor of given type
         ('fully_managed', 'correspondant' or 'payer')
         """
@@ -108,18 +82,21 @@ class ResPartner(models.Model):
                  ('type', 'not in', ['S', 'SC'])],
                 order='start_date desc').ids
 
-    def _set_count_items(self):
+    def _compute_count_items(self):
         move_line_obj = self.env['account.move.line']
         for partner in self:
             partner.unrec_items = move_line_obj.search_count([
                 ('partner_id', '=', partner.id),
-                ('reconcile_id', '=', False),
-                ('account_id.reconcile', '=', True)])
+                ('reconciled', '=', False),
+                ('account_id.reconcile', '=', True),
+                ('account_id.code', '=', '1050')
+            ])
             partner.receivable_items = move_line_obj.search_count([
                 ('partner_id', '=', partner.id),
                 ('account_id.code', '=', '1050')])
 
     @api.multi
+    @api.depends('sponsored_child_ids')
     def _compute_children(self):
         for partner in self:
             partner.number_children = len(partner.sponsored_child_ids)
@@ -168,21 +145,16 @@ class ResPartner(models.Model):
 
     @api.multi
     def show_move_lines(self):
-        try:
-            ir_model_data = self.env['ir.model.data']
-            move_line_id = ir_model_data.get_object_reference(
-                'account',
-                'view_move_line_tree')[1]
-        except ValueError:
-            move_line_id = False
+        tree_view_id = self.env.ref('account.view_move_line_tree').id
+        form_view_id = self.env.ref('account.view_move_line_form').id
         action = {
             'name': _('1050 move lines'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree',
             'res_model': 'account.move.line',
-            'view_id': move_line_id,
-            'views': [(move_line_id, 'tree')],
+            'view_id': tree_view_id,
+            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'target': 'current',
             'context': self.with_context(
                 search_default_partner_id=self.ids).env.context,
@@ -210,7 +182,7 @@ class ResPartner(models.Model):
     @api.multi
     def unreconciled_transaction_items(self):
         return self.with_context(
-            search_default_unreconciled=1).show_move_lines()
+            search_default_unreconciled=1).receivable_transaction_items()
 
     @api.multi
     def receivable_transaction_items(self):

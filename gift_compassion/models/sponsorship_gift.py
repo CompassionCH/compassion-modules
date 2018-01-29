@@ -1,19 +1,19 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 from datetime import date, timedelta
-from openerp import fields, models, api, _
-from openerp.exceptions import Warning
+from odoo import fields, models, api, _
+from odoo.exceptions import UserError
 
 from ..mappings.gift_mapping import CreateGiftMapping
-from openerp.addons.sponsorship_compassion.models.product import \
+from odoo.addons.sponsorship_compassion.models.product import \
     GIFT_NAMES, GIFT_CATEGORY
 
 
@@ -53,6 +53,9 @@ class SponsorshipGift(models.Model):
     payment_id = fields.Many2one(
         'account.move', 'GMC Payment', copy=False
     )
+    inverse_payment_id = fields.Many2one(
+        'account.move', 'Inverse move', copy=False
+    )
     message_id = fields.Many2one(
         'gmc.message.pool', 'GMC message', copy=False
     )
@@ -69,23 +72,27 @@ class SponsorshipGift(models.Model):
         compute='_compute_invoice_fields',
         inverse=lambda g: True, store=True
     )
-    date_sent = fields.Datetime(related='message_id.process_date')
+    date_sent = fields.Datetime(
+        related='message_id.process_date', store=True, readonly=True)
     amount = fields.Float(
         compute='_compute_invoice_fields',
         inverse=lambda g: True, store=True, track_visibility='onchange')
     currency_id = fields.Many2one('res.currency', default=lambda s:
                                   s.env.user.company_id.currency_id)
     currency_usd = fields.Many2one('res.currency', compute='_compute_usd')
-    exchange_rate = fields.Float(readonly=True, copy=False)
+    exchange_rate = fields.Float(readonly=True, copy=False, digits=(12, 6))
     amount_us_dollars = fields.Float('Amount due', readonly=True, copy=False)
     instructions = fields.Char()
-    gift_type = fields.Selection('get_gift_type_selection', required=True)
+    gift_type = fields.Selection('get_gift_type_selection', required=True,
+                                 string="Gift for")
     attribution = fields.Selection('get_gift_attributions', required=True)
-    sponsorship_gift_type = fields.Selection('get_sponsorship_gifts')
+    sponsorship_gift_type = fields.Selection('get_sponsorship_gifts',
+                                             string="Gift type")
     state = fields.Selection([
         ('draft', _('Draft')),
         ('verify', _('Verify')),
         ('open', _('Pending')),
+        ('suspended', _('Suspended')),
         ('In Progress', _('In Progress')),
         ('Delivered', _('Delivered')),
         ('Undeliverable', _('Undeliverable')),
@@ -93,6 +100,8 @@ class SponsorshipGift(models.Model):
     undeliverable_reason = fields.Selection([
         ('Project Transitioned', 'Project Transitioned'),
         ('Beneficiary Exited', 'Beneficiary Exited'),
+        ('Beneficiary Exited/Whereabouts Unknown',
+         'Beneficiary Exited/Whereabouts Unknown'),
         ('Beneficiary Exited More Than 90 Days Ago',
          'Beneficiary Exited More Than 90 Days Ago'),
     ], readonly=True, copy=False)
@@ -109,9 +118,9 @@ class SponsorshipGift(models.Model):
     @api.model
     def get_gift_type_selection(self):
         return [
-            ('Project Gift', _('Project Gift')),
-            ('Family Gift', _('Family Gift')),
-            ('Beneficiary Gift', _('Beneficiary Gift')),
+            ('Project Gift', _('Project')),
+            ('Family Gift', _('Family')),
+            ('Beneficiary Gift', _('Beneficiary')),
         ]
 
     @api.model
@@ -205,6 +214,7 @@ class SponsorshipGift(models.Model):
                 gift.invoice_line_ids.write({'gift_id': gift.id})
             else:
                 # Prevent computed fields to reset their values
+                vals.pop('message_follower_ids')
                 gift.write(vals)
             gift._create_gift_message()
 
@@ -217,7 +227,7 @@ class SponsorshipGift(models.Model):
         to_remove = self.filtered(lambda g: g.state != 'Undeliverable')
         for gift in to_remove:
             if gift.gmc_gift_id:
-                raise Warning(
+                raise UserError(
                     _("You cannot delete the %s."
                       "It is already sent to GMC.")
                     % gift.name
@@ -283,7 +293,7 @@ class SponsorshipGift(models.Model):
             ('sponsorship_gift_type', '=', self.sponsorship_gift_type),
         ], limit=1)
         if threshold_rule:
-            current_rate = threshold_rule.currency_id.rate_silent or 1.0
+            current_rate = threshold_rule.currency_id.rate or 1.0
             minimum_amount = threshold_rule.min_amount
             maximum_amount = threshold_rule.max_amount
 
@@ -374,64 +384,69 @@ class SponsorshipGift(models.Model):
         try:
             exchange_rate = float(data.get('exchange_rate'))
         except ValueError:
-            exchange_rate = self.env.ref('base.USD').rate_silent or 1.0
+            exchange_rate = self.env.ref('base.USD').rate or 1.0
         data.update({
             'state': 'In Progress',
             'amount_us_dollars': exchange_rate * self.amount
         })
-        account_credit = self.env.ref('gift_compassion.comp_2002_2')
+        account_credit = self.env['account.account'].search([
+            ('code', '=', '2002')])
         account_debit = self.env['account.account'].search([
             ('code', '=', '5003')])
         journal = self.env['account.journal'].search([
             ('code', '=', 'OD')])
-        move = self.env['account.move'].create({
-            'journal_id': journal.id,
-            'ref': 'Gift payment to GMC'
-        })
         maturity = self.date_sent or fields.Date.today()
-        analytic = self.env.ref(
-            'account_analytic_attribution.account_attribution_CD')
-        mvl_obj = self.env['account.move.line']
+        move_data = {
+            'journal_id': journal.id,
+            'ref': 'Gift payment to GMC',
+            'date': maturity
+        }
+        move_lines_data = list()
+        analytic = self.env['account.analytic.account'].search([
+            ('code', '=', 'ATT_CD')])
         # Create the debit lines from the Gift Account
         if self.invoice_line_ids:
             for invl in self.invoice_line_ids:
-                mvl_obj.create({
-                    'move_id': move.id,
+                move_lines_data.append({
                     'partner_id': invl.partner_id.id,
                     'account_id': account_debit.id,
                     'name': invl.name,
                     'debit': invl.price_subtotal,
                     'credit': 0.0,
                     'analytic_account_id': analytic.id,
+                    'date': maturity,
                     'date_maturity': maturity,
                     'currency_id': self.currency_usd.id,
                     'amount_currency': invl.price_subtotal * exchange_rate
                 })
         else:
-            mvl_obj.create({
-                'move_id': move.id,
+            move_lines_data.append({
                 'partner_id': self.partner_id.id,
                 'account_id': account_debit.id,
                 'name': self.name,
                 'debit': self.amount,
                 'analytic_account_id': analytic.id,
+                'date': maturity,
                 'date_maturity': maturity,
                 'currency_id': self.currency_usd.id,
                 'amount_currency': data['amount_us_dollars']
             })
 
         # Create the credit line in the GMC Gift Due Account
-        mvl_obj.create({
-            'move_id': move.id,
+        move_lines_data.append({
             'partner_id': self.partner_id.id,
             'account_id': account_credit.id,
             'name': self.name,
+            'date': maturity,
             'date_maturity': maturity,
+            'credit': self.amount,
             'currency_id': self.currency_usd.id,
             'amount_currency': self.amount * exchange_rate * -1
         })
-
-        move.button_validate()
+        move_data['line_ids'] = [
+            (0, False, line_data) for line_data in move_lines_data]
+        move = self.env['account.move'].create(move_data)
+        move.post()
         data['payment_id'] = move.id
         self.write(data)
 
@@ -482,6 +497,10 @@ class SponsorshipGift(models.Model):
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree,form',
+            'views': [
+                (self.env.ref('account.invoice_tree').id, 'tree'),
+                (self.env.ref('account.invoice_form').id, 'form'),
+            ],
             'res_model': 'account.invoice',
             'target': 'current',
             'context': self.with_context({
@@ -507,12 +526,25 @@ class SponsorshipGift(models.Model):
         return True
 
     @api.multi
+    def action_in_progress(self):
+        self.write({'state': 'In Progress'})
+        self.mapped('payment_id').post()
+        return True
+
+    @api.multi
+    def action_suspended(self):
+        self.write({'state': 'suspended'})
+        self.mapped('payment_id').button_cancel()
+        return True
+
+    @api.multi
     def action_cancel(self):
         """ Cancel Invoices and delete Gifts. """
         invoices = self.mapped('invoice_line_ids.invoice_id')
-        self.env['account.move.line']._remove_move_reconcile(
-            invoices.mapped('payment_ids.reconcile_id.line_id.id'))
-        invoices.signal_workflow('invoice_cancel')
+        invoices.mapped(
+            'payment_ids.full_reconcile_id.'
+            'reconciled_line_ids').remove_move_reconcile()
+        invoices.action_invoice_cancel()
         self.mapped('message_id').unlink()
         return self.unlink()
 
@@ -573,7 +605,38 @@ class SponsorshipGift(models.Model):
 
     @api.multi
     def _gift_undeliverable(self):
-        """ Notify users defined in settings. """
+        """
+        Create an inverse move
+        Notify users defined in settings.
+        """
+        inverse_credit_account = self.env['account.account'].search([
+            ('code', '=', '5003')
+        ])
+        inverse_debit_account = self.env['account.account'].search([
+            ('code', '=', '2001')
+        ])
+        analytic = self.env['account.analytic.account'].search([
+            ('code', '=', 'ATT_CD')])
+        for gift in self:
+            pay_move = gift.payment_id
+            inverse_move = pay_move.copy({
+                'date': fields.Date.today()
+            })
+            inverse_move.line_ids.write({'date_maturity': fields.Date.today()})
+            for line in inverse_move.line_ids:
+                if line.debit > 0:
+                    line.write({
+                        'account_id': inverse_debit_account.id,
+                        'analytic_account_id': False
+                    })
+                elif line.credit > 0:
+                    line.write({
+                        'account_id': inverse_credit_account.id,
+                        'analytic_account_id': analytic.id
+                    })
+            inverse_move.post()
+            gift.inverse_payment_id = inverse_move
+
         notify_ids = self.env['staff.notification.settings'].get_param(
             'gift_notify_ids')
         if notify_ids:
@@ -588,9 +651,9 @@ class SponsorshipGift(models.Model):
                     'reason': gift.undeliverable_reason
                 }
                 body = (
-                    "{name} ({ref}) made a gift to {child_name}"
-                    " ({child_code}) which is undeliverable because {reason}."
-                    "\nPlease inform the sponsor about it."
+                    u"{name} ({ref}) made a gift to {child_name}"
+                    u" ({child_code}) which is undeliverable because {reason}."
+                    u"\nPlease inform the sponsor about it."
                 ).format(**values)
                 gift.message_post(
                     body=body,

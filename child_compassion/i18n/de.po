@@ -165,7 +165,7 @@ msgid "Amharic"
 msgstr "Amharic"
 
 #. module: child_compassion
-#: model:child.household.duty,value:child_compassion.household_duty _animal
+#: model:child.household.duty,value:child_compassion.household_duty_animal
 msgid "Animal care"
 msgstr "Versorgt Nutztiere"
 
@@ -496,7 +496,7 @@ msgid "Business management"
 msgstr "Geschäft / Verwaltung"
 
 #. module: child_compassion
-#: model:child.household.duty,value:child_compassion.household_duty _market
+#: model:child.household.duty,value:child_compassion.household_duty_market
 msgid "Buying or selling in market"
 msgstr "Kauft oder verkauft auf dem Markt"
 
@@ -573,7 +573,7 @@ msgid "Caregivers seriously injured number"
 msgstr "Caregivers seriously injured number"
 
 #. module: child_compassion
-#: model:child.household.duty,value:child_compassion.household_duty _water
+#: model:child.household.duty,value:child_compassion.household_duty_water
 msgid "Carrying water"
 msgstr "Holt Wasser"
 
@@ -683,7 +683,7 @@ msgid "Child Transfer"
 msgstr ""
 
 #. module: child_compassion
-#: model:child.household.duty,value:child_compassion.household_duty _childcare
+#: model:child.household.duty,value:child_compassion.household_duty_childcare
 msgid "Child care"
 msgstr "Kümmert sich mit um Geschwister"
 
@@ -858,7 +858,7 @@ msgid "Clapping hands to rhythm"
 msgstr "Rhythmisch klatschen"
 
 #. module: child_compassion
-#: model:child.household.duty,value:child_compassion.household_duty _cleaning
+#: model:child.household.duty,value:child_compassion.household_duty_cleaning
 msgid "Cleaning"
 msgstr "Saubermachen"
 
@@ -2023,12 +2023,12 @@ msgid "Gardening"
 msgstr "Gärtnern"
 
 #. module: child_compassion
-#: model:child.household.duty,value:child_compassion.household_duty _gardening
+#: model:child.household.duty,value:child_compassion.household_duty_gardening
 msgid "Gardening or farming"
 msgstr "Hilft im Garten oder Feld"
 
 #. module: child_compassion
-#: model:child.household.duty,value:child_compassion.household_duty _firewood
+#: model:child.household.duty,value:child_compassion.household_duty_firewood
 msgid "Gathering firewood"
 msgstr "Sammelt Brennholz"
 
@@ -2875,7 +2875,7 @@ msgid "Kinyarwanda"
 msgstr "Kinyarwanda"
 
 #. module: child_compassion
-#: model:child.household.duty,value:child_compassion.household_duty _kitchen
+#: model:child.household.duty,value:child_compassion.household_duty_kitchen
 msgid "Kitchen help"
 msgstr "Hilft in Küche"
 
@@ -3187,7 +3187,7 @@ msgid "Make a hold"
 msgstr "Make a hold"
 
 #. module: child_compassion
-#: model:child.household.duty,value:child_compassion.household_duty _makingbed
+#: model:child.household.duty,value:child_compassion.household_duty_makingbed
 msgid "Making beds"
 msgstr "Bettenmachen"
 
@@ -4330,7 +4330,7 @@ msgid "Running"
 msgstr "Laufen"
 
 #. module: child_compassion
-#: model:child.household.duty,value:child_compassion.household_duty _errands
+#: model:child.household.duty,value:child_compassion.household_duty_errands
 msgid "Running errands"
 msgstr "Macht Besorgungen"
 
@@ -4509,7 +4509,7 @@ msgid "Severity level"
 msgstr "Severity level"
 
 #. module: child_compassion
-#: model:child.household.duty,value:child_compassion.household_duty _sewing
+#: model:child.household.duty,value:child_compassion.household_duty_sewing
 msgid "Sewing"
 msgstr "Nähen"
 
@@ -4901,7 +4901,7 @@ msgid "Talent development"
 msgstr "Entwicklung der Begabungen"
 
 #. module: child_compassion
-#: model:child.household.duty,value:child_compassion.household_duty _teaching
+#: model:child.household.duty,value:child_compassion.household_duty_teaching
 msgid "Teaching others"
 msgstr "Hilft anderen Kindern bei Hausaufgaben"
 
@@ -5343,7 +5343,7 @@ msgid "Warmest month"
 msgstr "Wärmster Monat"
 
 #. module: child_compassion
-#: model:child.household.duty,value:child_compassion.household_duty _clothes
+#: model:child.household.duty,value:child_compassion.household_duty_clothes
 msgid "Washing clothes"
 msgstr "Wäschewaschen"
 

@@ -1,11 +1,11 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Yannick Vaucher, Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import simplejson
@@ -15,8 +15,8 @@ import uuid
 from datetime import datetime
 
 from ..tools.onramp_logging import ONRAMP_LOGGER
-from openerp import exceptions
-from openerp.http import (
+from odoo import exceptions
+from odoo.http import (
     Response, JsonRequest, Root, SessionExpiredException,
     AuthenticationError, serialize_exception
 )
@@ -168,7 +168,7 @@ Sample Unsuccessful Response
                 })
         except Exception:
             # Any other cases, lookup what exception type was raised.
-            if not isinstance(exception, (exceptions.Warning)):
+            if not isinstance(exception, (exceptions.UserError)):
                 _logger.exception("Exception during JSON request handling.")
             error.update({
                 'ErrorCode': 500,

@@ -1,18 +1,18 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from openerp import api, models, _
+from odoo import api, models, _
 
 
-class res_partner(models.Model):
+class Partner(models.Model):
     _inherit = 'res.partner'
 
     @api.multi
@@ -33,7 +33,7 @@ class res_partner(models.Model):
     @api.multi
     def make_ambassador(self):
         portal = self.env['portal.wizard'].create({})
-        portal.write(portal.onchange_portal_id(portal.portal_id.id)['value'])
+        portal.onchange_portal_id()
         users = portal.mapped('user_ids')
         users.write({'in_portal': True})
         no_mail = users.filtered(lambda u: not u.email)

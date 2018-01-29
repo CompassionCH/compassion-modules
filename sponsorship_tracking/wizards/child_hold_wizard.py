@@ -1,14 +1,18 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp import api, models, _
+from datetime import datetime
+
+from odoo import api, models, fields, _
+from odoo.exceptions import UserError
+from odoo.tools import relativedelta
 
 
 class ChildHoldWizard(models.TransientModel):
@@ -29,8 +33,11 @@ class ChildHoldWizard(models.TransientModel):
         """
         async_mode = self.env.context.get(
             'async_mode', self.return_action != 'sub')
-        return super(ChildHoldWizard, self.with_context(
-            default_type='CDSP', async_mode=async_mode)).send()
+        context_copy = self.env.context.copy()
+        context_copy['async_mode'] = async_mode
+        if 'default_type' in context_copy:
+            del context_copy['default_type']
+        return super(ChildHoldWizard, self.with_context(context_copy)).send()
 
     def _get_action(self, holds):
         action = super(ChildHoldWizard, self)._get_action(holds)
@@ -38,8 +45,16 @@ class ChildHoldWizard(models.TransientModel):
             sub_contract = self.env['recurring.contract'].browse(
                 self.env.context.get('contract_id')).with_context(
                 allow_rewind=True)
-            sub_contract.write({'child_id': holds[0].child_id.id})
-            sub_contract.signal_workflow('contract_validated')
+            # Prevent choosing child completing in less than 2 years
+            in_two_years = datetime.today() + relativedelta(years=2)
+            child = holds[0].child_id
+            if child.completion_date and fields.Datetime.from_string(
+                    child.completion_date) < in_two_years:
+                raise UserError(_(
+                    "Completion date of child is in less than 2 years! "
+                    "Please choose another child."
+                ))
+            sub_contract.write({'child_id': child.id})
             sub_contract.next_invoice_date = self.env.context.get(
                 'next_invoice_date')
             action.update({

@@ -1,11 +1,11 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emmanuel Mathier, Loic Hausammann <loic_hausammann@hotmail.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 """
@@ -17,13 +17,12 @@ import base64
 import zipfile
 
 from io import BytesIO
-from openerp.exceptions import Warning
+from odoo.exceptions import UserError
 
 from ..tools import import_letter_functions as func
-from openerp import api, fields, models, _, exceptions
+from odoo import api, fields, models, _
 
-from openerp.addons.connector.queue.job import job, related_action
-from openerp.addons.connector.session import ConnectorSession
+from odoo.addons.queue_job.job import job, related_action
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +55,7 @@ class ImportLettersHistory(models.Model):
         track_visibility='onchange')
     import_completed = fields.Boolean()
     nber_letters = fields.Integer(
-        "Number of files", readonly=True, compute="_count_nber_letters")
+        "Number of files", readonly=True, compute="_compute_nber_letters")
     data = fields.Many2many('ir.attachment', string="Add a file")
     import_line_ids = fields.One2many(
         'import.letter.line', 'import_id', 'Files to process',
@@ -94,51 +93,51 @@ class ImportLettersHistory(models.Model):
             else:
                 import_letters.state = "draft"
 
-    @api.one
     @api.onchange("data")
-    def _count_nber_letters(self):
+    def _compute_nber_letters(self):
         """
         Counts the number of scans. If a zip file is given, the number of
         scans inside is counted.
         """
-        if self.state in ("open", "pending", "ready"):
-            self.nber_letters = len(self.import_line_ids)
-        elif self.state == "done":
-            self.nber_letters = len(self.letters_ids)
-        elif self.state is False or self.state == "draft":
-            # counter
-            tmp = 0
-            # loop over all the attachments
-            for attachment in self.data:
-                # pdf or tiff case
-                if func.check_file(attachment.name) == 1:
-                    tmp += 1
-                # zip case
-                elif func.isZIP(attachment.name):
-                    # create a tempfile and read it
-                    zip_file = BytesIO(base64.b64decode(
-                        attachment.with_context(bin_size=False).datas))
-                    # catch ALL the exceptions that can be raised
-                    # by class zipfile
-                    try:
-                        zip_ = zipfile.ZipFile(zip_file, 'r')
-                        list_file = zip_.namelist()
-                        # loop over all files in zip
-                        for tmp_file in list_file:
-                            tmp += (func.check_file(tmp_file) == 1)
-                    except zipfile.BadZipfile:
-                        raise exceptions.Warning(
-                            _('Zip file corrupted (' +
-                              attachment.name + ')'))
-                    except zipfile.LargeZipFile:
-                        raise exceptions.Warning(
-                            _('Zip64 is not supported(' +
-                              attachment.name + ')'))
+        for letter in self:
+            if letter.state in ("open", "pending", "ready"):
+                letter.nber_letters = len(letter.import_line_ids)
+            elif letter.state == "done":
+                letter.nber_letters = len(letter.letters_ids)
+            elif letter.state is False or letter.state == "draft":
+                # counter
+                tmp = 0
+                # loop over all the attachments
+                for attachment in letter.data:
+                    # pdf or tiff case
+                    if func.check_file(attachment.name) == 1:
+                        tmp += 1
+                    # zip case
+                    elif func.isZIP(attachment.name):
+                        # create a tempfile and read it
+                        zip_file = BytesIO(base64.b64decode(
+                            attachment.with_context(bin_size=False).datas))
+                        # catch ALL the exceptions that can be raised
+                        # by class zipfile
+                        try:
+                            zip_ = zipfile.ZipFile(zip_file, 'r')
+                            list_file = zip_.namelist()
+                            # loop over all files in zip
+                            for tmp_file in list_file:
+                                tmp += (func.check_file(tmp_file) == 1)
+                        except zipfile.BadZipfile:
+                            raise UserError(
+                                _('Zip file corrupted (' +
+                                  attachment.name + ')'))
+                        except zipfile.LargeZipFile:
+                            raise UserError(
+                                _('Zip64 is not supported(' +
+                                  attachment.name + ')'))
 
-            self.nber_letters = tmp
-        else:
-            raise exceptions.Warning(
-                _("State: '{}' not implemented".format(self.state)))
+                letter.nber_letters = tmp
+            else:
+                raise UserError(
+                    _("State: '{}' not implemented".format(letter.state)))
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -150,7 +149,7 @@ class ImportLettersHistory(models.Model):
                 ('config_id', '=', vals['config_id']),
                 ('state', '!=', 'done')])
             if other_import:
-                raise Warning(
+                raise UserError(
                     _("Another import with the same configuration is "
                       "already open. Please finish it before creating a new "
                       "one.")
@@ -169,9 +168,7 @@ class ImportLettersHistory(models.Model):
             if letters_import.data:
                 letters_import.state = 'pending'
                 if self.env.context.get('async_mode', True):
-                    session = ConnectorSession.from_env(self.env)
-                    import_letters_job.delay(
-                        session, self._name, letters_import.id)
+                    letters_import.with_delay()._run_analyze()
                 else:
                     letters_import._run_analyze()
         return True
@@ -184,7 +181,7 @@ class ImportLettersHistory(models.Model):
         # check if all the imports are OK
         for letters_h in self:
             if letters_h.state != "ready":
-                raise exceptions.Warning(_("Some letters are not ready"))
+                raise UserError(_("Some letters are not ready"))
         # save the imports
         for letters in self:
             correspondence_vals = letters.import_line_ids.get_letter_data()
@@ -211,7 +208,6 @@ class ImportLettersHistory(models.Model):
         }
 
     @api.onchange('config_id')
-    @api.one
     def onchange_config(self):
         config = self.config_id
         if config:
@@ -221,6 +217,8 @@ class ImportLettersHistory(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    @job(default_channel='root.sbc_compassion')
+    @related_action(action='related_action_s2b_imports')
     def _run_analyze(self):
         """
         Analyze each attachment:
@@ -255,10 +253,10 @@ class ImportLettersHistory(models.Model):
                     self._analyze_attachment(file_data, attachment.name)
                     progress += 1
                 else:
-                    raise exceptions.Warning(
-                        'Only zip/pdf files are supported.')
+                    raise UserError(
+                        _('Only zip/pdf files are supported.'))
             else:
-                raise exceptions.Warning(_('Two files are the same'))
+                raise UserError(_('Two files are the same'))
 
         # remove all the files (now they are inside import_line_ids)
         self.data.unlink()
@@ -277,28 +275,3 @@ class ImportLettersHistory(models.Model):
             })
             letters_line.letter_image = self.env['ir.attachment'].create(
                 document_vals[i])
-            # self.import_line_ids += letters_line
-
-
-##############################################################################
-#                            CONNECTOR METHODS                               #
-##############################################################################
-def related_action_imports(session, job):
-    import_model = job.args[0]
-    import_id = job.args[1]
-    action = {
-        'type': 'ir.actions.act_window',
-        'res_model': import_model,
-        'view_type': 'form',
-        'view_mode': 'form',
-        'res_id': import_id,
-    }
-    return action
-
-
-@job(default_channel='root.sbc_compassion')
-@related_action(action=related_action_imports)
-def import_letters_job(session, model_name, import_id):
-    """Job for importing letters."""
-    import_history = session.env[model_name].browse(import_id)
-    import_history._run_analyze()

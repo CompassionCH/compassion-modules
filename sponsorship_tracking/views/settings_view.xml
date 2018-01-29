@@ -2,39 +2,37 @@
 <!--
     Copyright (C) 2016 Compassion (http://www.compassion.ch)
     @author Emanuel Cino <ecino@compassion.ch>
-    The licence is in the file __openerp__.py
+    The licence is in the file __manifest__.py
 -->
-<openerp>
-    <data>
-        <!-- Availability Management -->
-        <record id="view_sds_follower_settings_form" model="ir.ui.view">
-            <field name="name">sds.follower.settings.form</field>
-            <field name="model">sds.follower.settings</field>
-            <field name="arch" type="xml">
-                <form class="oe_form_configuration">
-                    <header>
-                        <button string="Apply" type="object" name="execute" class="oe_highlight"/>
-                        or
-                        <button string="Cancel" type="object" name="cancel" class="oe_link"/>
-                    </header>
-                    <group string="Sub Sponsorship Followers">
-                        <field name="sub_fr"/>
-                        <field name="sub_de"/>
-                        <field name="sub_it"/>
-                        <field name="sub_en"/>
-                    </group>
-                </form>
-            </field>
-        </record>
+<odoo>
+    <!-- Availability Management -->
+    <record id="view_sds_follower_settings_form" model="ir.ui.view">
+        <field name="name">sds.follower.settings.form</field>
+        <field name="model">sds.follower.settings</field>
+        <field name="arch" type="xml">
+            <form class="oe_form_configuration">
+                <header>
+                    <button string="Apply" type="object" name="execute" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" type="object" name="cancel" class="oe_link"/>
+                </header>
+                <group string="Sub Sponsorship Followers">
+                    <field name="sub_fr"/>
+                    <field name="sub_de"/>
+                    <field name="sub_it"/>
+                    <field name="sub_en"/>
+                </group>
+            </form>
+        </field>
+    </record>
 
-        <record id="open_sds_follower_config" model="ir.actions.act_window">
-            <field name="name">SDS Followers</field>
-            <field name="res_model">sds.follower.settings</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form</field>
-            <field name="target">inline</field>
-        </record>
+    <record id="open_sds_follower_config" model="ir.actions.act_window">
+        <field name="name">SDS Followers</field>
+        <field name="res_model">sds.follower.settings</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+    </record>
 
-        <menuitem id="menu_sds_followers_configuration" name="SDS Followers" parent="child_compassion.menu_configuration" action="open_sds_follower_config"/>
-    </data>
-</openerp>
+    <menuitem id="menu_sds_followers_configuration" name="SDS Followers" parent="child_compassion.menu_configuration" action="open_sds_follower_config"/>
+</odoo>

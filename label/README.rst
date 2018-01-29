@@ -9,13 +9,14 @@ This code is based on the work of SerpentCS but due to the lack of maintaining
 we have done a copy of it.
 
 Installation
-=============
+============
 To install this module, you need to install dependencies:
     * requires reportlab
 
 Contributors
 ------------
 
+* Emanuel Cino <ecino@compassion.ch>
 * Loic Hausammann <loic_hausammann@hotmail.com>
 * SerpentCS 
 

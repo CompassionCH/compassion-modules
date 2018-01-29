@@ -1,18 +1,18 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from openerp import api, models, fields
+from odoo import api, models, fields
 
 
-class account_invoice_line(models.Model):
+class AccountInvoiceLine(models.Model):
     """ Add salespersons to invoice_lines. """
     _inherit = "account.invoice.line"
 
@@ -30,13 +30,13 @@ class account_invoice_line(models.Model):
             self.user_id = contract.user_id.id
 
 
-class generate_gift_wizard(models.TransientModel):
+class GenerateGiftWizard(models.TransientModel):
     """ Push salespersons to generated invoices """
     _inherit = 'generate.gift.wizard'
 
-    def _setup_invoice_line(self, invoice_id, contract):
-        invl_data = super(generate_gift_wizard, self)._setup_invoice_line(
-            invoice_id, contract)
+    def _setup_invoice_line(self, contract):
+        invl_data = super(GenerateGiftWizard, self)._setup_invoice_line(
+            contract)
         if contract.user_id:
             invl_data['user_id'] = contract.user_id.id
         return invl_data

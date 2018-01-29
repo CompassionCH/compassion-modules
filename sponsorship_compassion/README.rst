@@ -31,7 +31,8 @@ will be cancelled.
 
 If you want to change sponsorship with a fund donation, you can add
 the following key-value in the System Parameters:
-    - sponsorship_compassion.suspend_product_id : product_id
+
+* sponsorship_compassion.suspend_product_id : product_id
     
 Usage
 =====
@@ -43,7 +44,8 @@ Known issues / Roadmap
 ======================
 
 * Remove localization from this module -> should be specific for Switzerland
-* Tests for R4
+* Tests for R4 : test the hold states when sending commitments to GMC
+* Test end sponsorship wizard
 
 Credits
 =======

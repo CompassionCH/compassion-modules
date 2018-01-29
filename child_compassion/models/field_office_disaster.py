@@ -1,15 +1,15 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Maxime Beck <mbcompte@gmail.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from openerp import api, models, fields, _
+from odoo import api, models, fields, _
 from ..mappings.field_office_disaster_mapping import FieldOfficeDisasterMapping
 
 
@@ -245,12 +245,12 @@ class FieldOfficeDisasterAlert(models.Model):
     def view_children(self):
         return {
             'name': _('Impacted children'),
-            'domain': [('id', 'in', self.child_disaster_impact_ids.mapped(
-                        'child_id').ids)],
+            'domain': [('id', 'in', self.child_disaster_impact_ids.filtered(
+                'child_id').ids)],
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree,form',
-            'res_model': 'compassion.child',
+            'res_model': 'child.disaster.impact',
             'target': 'current',
         }
 

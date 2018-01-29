@@ -1,20 +1,19 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino, Cyril Sester
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
 import logging
 
-from openerp import models, fields, api
+from odoo import models, fields, api
 import base64
 import urllib2
-import timeit
 
 logger = logging.getLogger(__name__)
 
@@ -106,9 +105,9 @@ class GlobalChild(models.TransientModel):
     _inherit = 'compassion.generic.child'
     _description = 'Global Child'
 
-    portrait = fields.Binary(compute='_load_image_portrait')
-    fullshot = fields.Binary(compute='_load_image_fullshot')
-    thumbnail_url = fields.Char(compute='_load_image_thumb')
+    portrait = fields.Binary(compute='_compute_image_portrait')
+    fullshot = fields.Binary(compute='_compute_image_fullshot')
+    thumbnail_url = fields.Char(compute='_compute_image_thumb')
 
     color = fields.Integer(compute='_compute_color')
     is_special_needs = fields.Boolean()
@@ -131,8 +130,11 @@ class GlobalChild(models.TransientModel):
 
     @api.multi
     def _compute_color(self):
-        for child in self:
+        available = self.filtered(lambda c: c.beneficiary_state == 'Available')
+        for child in available:
             child.color = 6 if child.gender == 'M' else 9
+        for child in self - available:
+            child.color = 5 if child.gender == 'M' else 2
 
     @api.multi
     def _load_image(self, thumb=False, binar=False):
@@ -146,10 +148,14 @@ class GlobalChild(models.TransientModel):
                 #   https://media.ci.org/image/upload/w_150/ChildPhotos/Published/06182814_539e18.jpg
 
                 image_split = (child.image_url).split('/')
-                ind = image_split.index("w_150")
-                image_split[ind] = cloudinary
-                url = "/".join(image_split)
-                child.thumbnail_url = url
+                try:
+                    ind = image_split.index("w_150")
+                    image_split[ind] = cloudinary
+                    url = "/".join(image_split)
+                    child.thumbnail_url = url
+                except ValueError:
+                    logger.error(
+                        "Wrong child image received: " + str(child.image_url))
 
         if binar:
             for child in self.filtered('image_url'):
@@ -158,22 +164,16 @@ class GlobalChild(models.TransientModel):
                     child.portrait = base64.encodestring(
                         urllib2.urlopen(url).read())
                 except:
-                    logger.error('Image cannot be fetched : ' + url)
+                    logger.error('Image cannot be fetched : ' + str(url))
 
     @api.multi
-    def _load_image_portrait(self):
-        tic = timeit.default_timer()
+    def _compute_image_portrait(self):
         self._load_image(True, True)
-        print "load portrait: " + str(timeit.default_timer()-tic) + " sec"
 
     @api.multi
-    def _load_image_fullshot(self):
-        tic = timeit.default_timer()
+    def _compute_image_fullshot(self):
         self._load_image(False, True)
-        print "load fullshot: " + str(timeit.default_timer()-tic) + " sec"
 
     @api.multi
-    def _load_image_thumb(self):
-        tic = timeit.default_timer()
+    def _compute_image_thumb(self):
         self._load_image(True, False)
-        print "load thumbnail: " + str(timeit.default_timer()-tic) + " sec"

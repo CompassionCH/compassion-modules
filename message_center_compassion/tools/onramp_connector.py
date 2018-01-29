@@ -1,27 +1,31 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import logging
-import httplib
-import simplejson
 import requests
 import base64
 from datetime import datetime, timedelta
 
-from onramp_logging import log_message
+from .onramp_logging import log_message
 
-from openerp import _
-from openerp.exceptions import Warning
-from openerp.tools.config import config
+from odoo import _
+from odoo.exceptions import UserError
+from odoo.tools.config import config
 
 logger = logging.getLogger(__name__)
+
+try:
+    import httplib
+    import simplejson
+except ImportError:
+    logger.warning("Please install httplib and simplejson")
 
 
 class OnrampConnector(object):
@@ -59,8 +63,7 @@ class OnrampConnector(object):
                 })
                 OnrampConnector.__instance._session = session
             else:
-                raise Warning(
-                    _('Missing configuration'),
+                raise UserError(
                     _('Please give connect_url and connect_api_key values '
                       'in your Odoo configuration file.'))
         return OnrampConnector.__instance
@@ -143,8 +146,7 @@ class OnrampConnector(object):
         secret = config.get('connect_secret')
         environment = config.get('connect_env', 'core')
         if not client or not secret:
-            raise Warning(
-                _('Missing configuration'),
+            raise UserError(
                 _('Please give connect_client and connect_secret values '
                   'in your Odoo configuration file.'))
         api_client_secret = base64.b64encode("{0}:{1}".format(client, secret))
@@ -166,6 +168,5 @@ class OnrampConnector(object):
                 'Authorization': '{token_type} {access_token}'.format(
                     **self._token)})
         except (AttributeError, KeyError):
-            raise Warning(
-                _('Authentication Error'),
+            raise UserError(
                 _('Token validation failed.'))

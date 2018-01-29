@@ -1,4 +1,4 @@
-<openerp>
+<odoo>
     <data noupdate="1">
         <!-- Translation Boxes -->
         <record id="l1_box_1" model="correspondence.translation.box">
@@ -131,4 +131,4 @@
             <field name="additional_page_box_id" ref="l6_box_1"/>
         </record>
     </data>
-</openerp>
+</odoo>

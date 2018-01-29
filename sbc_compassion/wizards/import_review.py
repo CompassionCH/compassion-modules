@@ -1,15 +1,15 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp import models, api, fields, _
-from openerp.exceptions import Warning
+from odoo import models, api, fields, _
+from odoo.exceptions import UserError
 
 
 class ImportReview(models.TransientModel):
@@ -23,20 +23,20 @@ class ImportReview(models.TransientModel):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    progress = fields.Float(compute='_get_current_line', store=True)
+    progress = fields.Float(compute='_compute_current_line', store=True)
     current_line_index = fields.Integer(default=0)
-    count = fields.Integer(compute='_get_current_line', store=True)
-    nb_lines = fields.Integer(compute='_get_current_line', store=True)
+    count = fields.Integer(compute='_compute_current_line', store=True)
+    nb_lines = fields.Integer(compute='_compute_current_line', store=True)
     current_line_id = fields.Many2one(
-        'import.letter.line', 'Letter', compute='_get_current_line',
+        'import.letter.line', 'Letter', compute='_compute_current_line',
         store=True, readonly=True)
     postpone_import_id = fields.Many2one('import.letters.history')
 
     # Import line related fields
     state = fields.Selection(related='current_line_id.status', readonly=True)
-    letter_image = fields.Binary(compute='_get_current_line')
-    letter_file = fields.Binary(
-        'Letter file', readonly=True, compute='_get_current_line')
+    letter_image = fields.Binary(
+        related='current_line_id.letter_image_preview')
+    letter_file = fields.Binary(related='current_line_id.letter_image.datas')
     fname = fields.Char(related='current_line_id.letter_image.name')
     partner_id = fields.Many2one(related='current_line_id.partner_id')
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
@@ -57,19 +57,17 @@ class ImportReview(models.TransientModel):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.one
+    @api.multi
     @api.depends('current_line_index')
-    def _get_current_line(self):
+    def _compute_current_line(self):
         line_ids = self.env.context.get('line_ids')
         if line_ids:
-            self.current_line_id = line_ids[self.current_line_index]
-            self.nb_lines = len(line_ids)
-            self.count = self.current_line_index + 1
-            self.progress = (float(self.count) / self.nb_lines) * 100
-            self.letter_image = self.with_context(
-                bin_size=False).current_line_id.letter_image_preview
-            self.letter_file = self.with_context(
-                bin_size=False).current_line_id.letter_image.datas
+            for review in self:
+                review.current_line_id = line_ids[review.current_line_index]
+                review.nb_lines = len(line_ids)
+                review.count = review.current_line_index + 1
+                review.progress = (
+                    float(review.count) / review.nb_lines) * 100
 
     @api.onchange('sponsorship_id')
     def _get_partner_child(self):
@@ -96,8 +94,7 @@ class ImportReview(models.TransientModel):
         """ Load the next import line in the view. """
         self.ensure_one()
         if self.current_line_id.status not in ('ok', 'no_template'):
-            raise Warning(
-                _("Import is not valid"),
+            raise UserError(
                 _("Please review this import before going to the next."))
         self.write({
             'current_line_index': self.current_line_index + 1,
@@ -110,7 +107,7 @@ class ImportReview(models.TransientModel):
         """ Return to import view. """
         self.ensure_one()
         import_history = self.current_line_id.import_id
-        import_history.import_line_ids.check_status()
+        import_history.import_line_ids._compute_check_status()
         return {
             'type': 'ir.actions.act_window',
             'view_type': 'form',

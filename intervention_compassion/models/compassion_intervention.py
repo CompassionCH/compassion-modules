@@ -1,22 +1,24 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
 import logging
 
-from openerp import models, fields, _, api
-from openerp.exceptions import Warning
-from openerp.addons.message_center_compassion.mappings import base_mapping \
+from odoo import models, fields, _, api
+from odoo.exceptions import UserError
+from odoo.addons.message_center_compassion.mappings import base_mapping \
     as mapping
 
 logger = logging.getLogger(__name__)
+
+INTERVENTION_PORTAL_URL = "https://compassion.force.com/GlobalPartners/"
 
 
 class CompassionIntervention(models.Model):
@@ -40,9 +42,8 @@ class CompassionIntervention(models.Model):
         ('cancel', _('Cancelled')),
     ], default='on_hold', track_visibility='onchange')
     type = fields.Selection(store=True, readonly=True)
-    parent_id = fields.Many2one(
-        'compassion.intervention', help='Parent Intervention', readonly=True
-    )
+    parent_intervention_name = fields.Char(string='Parent Intervention',
+                                           readonly=True)
     intervention_status = fields.Selection([
         ("Approved", _("Approved")),
         ("Cancelled", _("Cancelled")),
@@ -53,6 +54,11 @@ class CompassionIntervention(models.Model):
     ], readonly=True)
     funding_global_partners = fields.Char(readonly=True)
     cancel_reason = fields.Char(readonly=True)
+    icp_ids = fields.Many2many(
+        'compassion.project', 'icp_interventions', 'intervention_id', 'icp_id',
+        string='ICPs', readonly=True
+    )
+    product_template_id = fields.Many2one('product.template', 'Linked product')
 
     # Schedule Information
     ######################
@@ -60,8 +66,10 @@ class CompassionIntervention(models.Model):
     actual_duration = fields.Integer(
         help='Actual duration in months', readonly=True)
     initial_planned_end_date = fields.Date(readonly=True)
-    planned_end_date = fields.Date(readonly=True)
-    end_date = fields.Date(help='Actual end date', readonly=True)
+    planned_end_date = fields.Date(
+        readonly=True, track_visibility='onchange')
+    end_date = fields.Date(
+        help='Actual end date', readonly=True, track_visibility='onchange')
 
     # Budget Information (all monetary fields are in US dollars)
     ####################
@@ -70,7 +78,14 @@ class CompassionIntervention(models.Model):
         help='Actual number of impacted beneficiaries', readonly=True)
     local_contribution = fields.Float(
         readonly=True, help='Actual local contribution')
-    commitment_amount = fields.Float(readonly=True)
+    commitment_amount = fields.Float(
+        readonly=True, track_visibility='onchange')
+    commited_percentage = fields.Float(
+        readonly=True, track_visibility='onchange', default=100.0)
+    total_expense = fields.Char(
+        'Total expense', compute='_compute_move_line', readonly=True)
+    total_income = fields.Char(
+        'Total income', compute='_compute_move_line', readonly=True)
 
     # Intervention Details Information
     ##################################
@@ -134,7 +149,7 @@ class CompassionIntervention(models.Model):
     hold_amount = fields.Float(readonly=True, states={
         'on_hold': [('readonly', False)],
         'sla': [('readonly', False)],
-    })
+    }, track_visibility='onchange')
     expiration_date = fields.Date(readonly=True, states={
         'on_hold': [('readonly', False)],
         'sla': [('readonly', False)],
@@ -143,15 +158,57 @@ class CompassionIntervention(models.Model):
         'on_hold': [('readonly', False)],
         'sla': [('readonly', False)],
     })
-    primary_owner = fields.Many2one(
-        'res.users', domain=[('share', '=', False)], readonly=True, states={
+    user_id = fields.Many2one(
+        'res.users', 'Primary owner',
+        domain=[('share', '=', False)], readonly=True, states={
             'on_hold': [('readonly', False)],
             'sla': [('readonly', False)],
-        })
+        },
+        track_visibility='onchange',
+        oldname='primary_owner'
+    )
     secondary_owner = fields.Char(readonly=True, states={
         'on_hold': [('readonly', False)],
         'sla': [('readonly', False)],
     })
+
+    # Survival Information
+    ######################
+    survival_slots = fields.Integer(readonly=True)
+    launch_reason = fields.Char(readonly=True)
+    mother_children_challenges = fields.Char(
+        'Challenges for mother and children', readonly=True
+    )
+    community_benefits = fields.Char(readonly=True)
+    mother_average_age = fields.Integer(
+        'Avg age of first-time mother', readonly=True)
+    household_children_average = fields.Integer(
+        'Avg of children per household', readonly=True
+    )
+    under_five_population = fields.Char(
+        '% population under age 5', readonly=True
+    )
+    birth_medical = fields.Char(
+        '% births in medical facility', readonly=True
+    )
+    spiritual_activity_ids = fields.Many2many(
+        'icp.spiritual.activity', 'intervention_spiritual_activities',
+        string='Spiritual activities', readonly=True
+    )
+    cognitive_activity_ids = fields.Many2many(
+        'icp.cognitive.activity', 'intervention_cognitive_activities',
+        string='Cognitive activities', readonly=True
+    )
+    physical_activity_ids = fields.Many2many(
+        'icp.physical.activity', 'intervention_physical_activities',
+        string='Physical activities', readonly=True
+    )
+    socio_activity_ids = fields.Many2many(
+        'icp.sociological.activity', 'intervention_socio_activities',
+        string='Sociological activities', readonly=True
+    )
+    activities_for_parents = fields.Char(readonly=True)
+    other_activities = fields.Char(readonly=True)
 
     @api.multi
     def _compute_level1_deliverables(self):
@@ -186,6 +243,28 @@ class CompassionIntervention(models.Model):
                     'deliverable_sponsorship_launch_budget'
                 )
 
+    def _compute_move_line(self):
+        for record in self:
+            mv_line_expense = record.env['account.move.line'].search(
+                [('product_id.product_tmpl_id', '=',
+                  record.product_template_id.id),
+                 ('debit', '>', 0),
+                 ('account_id', '=',
+                  record.product_template_id.property_account_expense_id.id)
+                 ])
+            mv_line_income = record.env['account.move.line'].search(
+                [('product_id.product_tmpl_id', '=',
+                  record.product_template_id.id),
+                 ('credit', '>', 0),
+                 ('account_id', '=',
+                  record.product_template_id.property_account_income_id.id)
+                 ])
+
+            record.total_income = '{0} CHF'.format(
+                sum(mv_line_income.mapped('credit')))
+            record.total_expense = ("{0} CHF".format(sum(
+                mv_line_expense.mapped('credit'))))
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -193,6 +272,7 @@ class CompassionIntervention(models.Model):
     def create(self, vals):
         if vals.get('service_level') != 'Level 1':
             vals['state'] = 'sla'
+        vals['commited_percentage'] = 0
         intervention = super(CompassionIntervention, self).create(vals)
         intervention.get_infos()
         return intervention
@@ -203,51 +283,22 @@ class CompassionIntervention(models.Model):
         When record is updated :
 
         - Update hold if values are changed.
-        - Check SLA Negotiation modifications
-        - Check start of intervention
+        - Check SLA Negotiation modifications (in ir.action.rules)
         - Check end of intervention
         """
         hold_fields = [
             'hold_amount', 'expiration_date', 'next_year_opt_in',
-            'primary_owner', 'secondary_owner', 'service_level']
+            'user_id', 'secondary_owner', 'service_level']
         update_hold = False
         for field in hold_fields:
             if field in vals:
                 update_hold = self.env.context.get('hold_update', True)
                 break
 
-        # Check SLA change
-        service_level = vals.get('service_level')
-        if service_level == 'Level 1':
-            vals['state'] = 'on_hold'
-
         res = super(CompassionIntervention, self).write(vals)
 
         if update_hold:
             self.update_hold()
-
-        # Check SLA Negotiation Status
-        check_sla = self.filtered(lambda i: i.state in ('on_hold', 'sla'))
-        sla_done = check_sla.filtered(
-            lambda i:
-                i.service_level == 'Level 1' or
-                (i.service_level == 'Level 2' and i.sla_selection_complete) or
-                i.sla_negotiation_status == 'GP Accepted Costs'
-        )
-        super(CompassionIntervention, sla_done).write({'state': 'on_hold'})
-        if service_level != 'Level 1':
-            sla_wait = check_sla - sla_done
-            super(CompassionIntervention, sla_wait).write({'state': 'sla'})
-
-        # Check start of Intervention
-        today = fields.Date.today()
-        start = vals.get('start_date')
-        if start and start < today:
-            super(
-                CompassionIntervention,
-                self.filtered(lambda i: i.state == 'committed')).write({
-                    'state': 'active'
-                })
 
         # Check closure of Intervention
         intervention_status = vals.get('intervention_status')
@@ -261,12 +312,36 @@ class CompassionIntervention(models.Model):
     def unlink(self):
         """ Only allow to delete cancelled Interventions. """
         if self.filtered(lambda i: i.state != 'cancel'):
-            raise Warning(_("You can only delete cancelled Interventions."))
+            raise UserError(_("You can only delete cancelled Interventions."))
         return super(CompassionIntervention, self).unlink()
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.model
+    def create_intervention(self, commkit_data):
+        intervention_mapping = mapping.new_onramp_mapping(
+            self._name,
+            self.env,
+            'intervention_mapping')
+
+        # Two messages can call this method. Try to find which one.
+        intervention_details_request = commkit_data.get(
+            'GPInitiatedInterventionHoldNotification',
+            commkit_data.get('InterventionOptInHoldNotification')
+        )
+
+        intervention = self
+        if intervention_details_request:
+            vals = intervention_mapping.get_vals_from_connect(
+                intervention_details_request)
+
+            if 'service_level' not in vals:
+                vals['service_level'] = 'Level 1'
+
+            intervention = self.create(vals)
+
+        return intervention.ids
 
     @api.model
     def update_intervention_details_request(self, commkit_data):
@@ -292,12 +367,18 @@ class CompassionIntervention(models.Model):
             vals = intervention_mapping.get_vals_from_connect(idr)
             intervention_id = vals['intervention_id']
 
-            intervention = self.env['compassion.intervention'].search([
+            intervention = self.search([
                 ('intervention_id', '=', intervention_id)
             ])
-
-            intervention_local_ids.append(intervention.id)
-            intervention.write(vals)
+            if intervention:
+                intervention_local_ids.append(intervention.id)
+                intervention.write(vals)
+                intervention.message_post("The information of this "
+                                          "intervention have been updated",
+                                          subject=(intervention.name +
+                                                   "got an Update"),
+                                          message_type='email',
+                                          subtype='mail.mt_comment')
 
         return intervention_local_ids
 
@@ -311,7 +392,7 @@ class CompassionIntervention(models.Model):
                 'object_id': self.id
             })
         if message.state == 'failure':
-            raise Warning(_('Hold not updated'), message.failure_reason)
+            raise UserError(message.failure_reason)
         return True
 
     @api.multi
@@ -327,23 +408,151 @@ class CompassionIntervention(models.Model):
             'state': 'cancel',
         })
 
+    @api.model
+    def auto_subscribe(self):
+        """
+        Method added to auto subscribe users after migration
+        """
+        interventions = self.search([
+            ('user_id', '!=', False)
+        ])
+        for intervention in interventions:
+            vals = {'user_id': intervention.user_id.id}
+            intervention.message_auto_subscribe(['user_id'], vals)
+        return True
+
+    @api.model
+    def commited_percent_change(self, commkit_data):
+        """
+        Called when GMC message received
+        :param commkit_data: json data
+        :return: list of ids updated
+        """
+        json_data = commkit_data.get(
+            'InterventionCommittedPercentChangeNotification')
+        intervention_id = json_data.get("Intervention_ID")
+        intervention = self.search([
+            ('intervention_id', '=', intervention_id)
+        ])
+        if intervention:
+            intervention.commited_percentage = json_data.get(
+                "CommittedPercent", 100)
+            intervention.message_post(
+                "The commitment percentage has changed.",
+                message_type='email', subtype='mail.mt_comment'
+            )
+        return intervention.ids
+
+    @api.multi
+    def link_product(self):
+        # search existing project or create a new one if doesn't exist.
+        for intervention in self:
+            if intervention.product_template_id or \
+                    intervention.state != 'committed' or not \
+                    intervention.parent_intervention_name:
+                continue
+            product_name = intervention.parent_intervention_name
+            product_price = intervention.total_cost
+            product = intervention.env['product.template'].search(
+                [['name', '=', product_name]])
+            intervention.product_template_id = product if product else \
+                intervention.env['product.template'].create(
+                    {'name': product_name,
+                     'type': 'service',
+                     'list_price': product_price,
+                     'intervention_id': None
+                     })
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     @api.multi
+    def show_expenses(self):
+        return {
+            'name': _('Expenses'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'res_model': 'account.move.line',
+            'context': self.env.context,
+            'domain': [('product_id.product_tmpl_id', '=',
+                        self.product_template_id.id),
+                       ('debit', '>', 0),
+                       ('account_id', '=',
+                        self.product_template_id.property_account_expense_id
+                        .id)
+                       ]
+        }
+
+    @api.multi
+    def show_income(self):
+        return {
+            'name': _('Income'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'res_model': 'account.move.line',
+            'context': self.env.context,
+            'domain': [('product_id.product_tmpl_id', '=',
+                        self.product_template_id.id),
+                       ('credit', '>', 0),
+                       ('account_id', '=',
+                        self.product_template_id.property_account_income_id.id)
+                       ],
+        }
+
+    @api.multi
+    def show_contract(self):
+        return {
+            'name': _('Contract'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'res_model': 'recurring.contract.line',
+            'context': self.env.context,
+            'domain': [('product_id.product_tmpl_id', '=',
+                        self.product_template_id.id)]
+        }
+
+    @api.multi
+    def show_partner(self):
+        contracts = self.env['recurring.contract'].search(
+            [('type', 'not in', ['S', 'SC']),
+             ('contract_line_ids.product_id.product_tmpl_id', '=',
+              self.product_template_id.id)])
+
+        move_lines = self.env['account.move.line'].search(
+            [('product_id.product_tmpl_id', '=', self.product_template_id.id),
+             ('credit', '>', 0)])
+
+        return {
+            'name': _('Partner'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'res_model': 'res.partner',
+            'context': self.env.context,
+            'domain': ['|', ('id', 'in', contracts.mapped('partner_id.id')),
+                       ('id', 'in', move_lines.mapped('partner_id.id'))]
+        }
+
+    @api.multi
     def get_infos(self):
         """ Get the most recent information about the intervention """
-        action_id = self.env.ref(
-            'intervention_compassion.intervention_details_request').id
+        for intervention in self:
+            if intervention.state == 'cancel':
+                continue
+            action_id = intervention.env.ref(
+                'intervention_compassion.intervention_details_request').id
 
-        message_vals = {
-            'action_id': action_id,
-            'object_id': self.id,
-        }
-        message = self.env['gmc.message.pool'].with_context(
-            hold_update=False).create(message_vals)
-        if message.state == 'failure':
-            raise Warning(message.failure_reason)
+            message_vals = {
+                'action_id': action_id,
+                'object_id': intervention.id,
+            }
+            message = intervention.env['gmc.message.pool'].with_context(
+                hold_update=False).create(message_vals)
+            if message.state == 'failure':
+                raise UserError(message.failure_reason)
         return True
 
     @api.multi
@@ -356,7 +565,7 @@ class CompassionIntervention(models.Model):
                 'object_id': self.id
             })
         if message.state == 'failure':
-            raise Warning(_('Hold not cancelled'), message.failure_reason)
+            raise UserError(message.failure_reason)
         return True
 
     @api.multi
@@ -408,6 +617,84 @@ class CompassionIntervention(models.Model):
             intervention.hold_cancelled()
 
         return [intervention.id]
+
+    @api.model
+    def intervention_reporting_milestone(self, commkit_data):
+        """This function is automatically executed when a
+                InterventionReportingMilestoneRequestList is received,
+                it send a message to the follower of the Intervention
+                :param commkit_data contains the data of the
+                message (json)
+                :return list of intervention ids which are concerned by the
+                message """
+        intervention_mapping = mapping.new_onramp_mapping(
+            self._name,
+            self.env,
+            'intervention_mapping')
+        # actually commkit_data is a dictionary with a single entry which
+        # value is a list of dictionary (for each record)
+        milestones_data = commkit_data[
+            'InterventionReportingMilestoneRequestList']
+        intervention_local_ids = []
+
+        for milestone in milestones_data:
+            intervention_vals = intervention_mapping.get_vals_from_connect(
+                milestone)
+            milestone_id = milestone.get('InterventionReportingMilestone_ID')
+            intervention_id = intervention_vals.get('intervention_id')
+            intervention = self.search([
+                ('intervention_id', '=', intervention_id)
+            ])
+            if intervention:
+                intervention_local_ids.append(intervention.id)
+                body = "A new milestone is available"
+                if milestone_id:
+                    milestone_url = INTERVENTION_PORTAL_URL + milestone_id
+                    body += ' at <a href="{}" target="_blank">{}</a>.'.format(
+                            milestone_url, milestone_url)
+                intervention.message_post(
+                    body,
+                    subject=(intervention.name + ': New milestone received.'),
+                    message_type='email',
+                    subtype='mail.mt_comment'
+                )
+        return intervention_local_ids
+
+    @api.model
+    def intervention_amendement_commitment(self, commkit_data):
+        """This function is automatically executed when a
+        InterventionAmendmentCommitmentNotification is received,
+        it send a message to the follower of the Intervention,
+        and update it
+        :param commkit_data contains the data of the
+               message (json)
+        :return list of intervention ids which are concerned
+                by the message """
+        intervention_mapping = mapping.new_onramp_mapping(
+            self._name,
+            self.env,
+            'intervention_mapping')
+        # actually commkit_data is a dictionary with a single entry which
+        # value is a list of dictionary (for each record)
+        interventionamendment = commkit_data[
+            'InterventionAmendmentCommitmentNotification']
+        intervention_local_ids = []
+
+        v = intervention_mapping.get_vals_from_connect(interventionamendment)
+        intervention_id = v['intervention_id']
+        intervention = self.env['compassion.intervention'].search([
+            ('intervention_id', '=', intervention_id)
+        ])
+
+        if intervention:
+            intervention.get_infos()
+            intervention_local_ids.append(intervention.id)
+            intervention.message_post(
+                "This intervention has been modified by amendment",
+                subject=intervention.name + ": Amendment received",
+                message_type='email', subtype='mail.mt_comment')
+
+        return intervention_local_ids
 
 
 class InterventionDeliverable(models.Model):

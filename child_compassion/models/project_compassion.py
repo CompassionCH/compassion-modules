@@ -1,11 +1,11 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Cyril Sester, Kevin Cristi, Emanuel Cino
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
@@ -14,8 +14,11 @@ import sys
 
 from ..mappings.icp_mapping import ICPMapping
 
-from openerp import models, fields, api, _
-from openerp.exceptions import Warning
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+
+from odoo.addons.message_center_compassion.tools.onramp_connector import \
+    OnrampConnector
 
 logger = logging.getLogger(__name__)
 
@@ -217,13 +220,19 @@ class CompassionProject(models.Model):
         'connect.month', string='Rainy months', readonly=True
     )
     planting_month_ids = fields.Many2many(
-        'connect.month', string='Planting months', readonly=True
+        'connect.month',
+        relation='compassion_project_planting_months',
+        string='Planting months', readonly=True
     )
     harvest_month_ids = fields.Many2many(
-        'connect.month', string='Harvest months', readonly=True
+        'connect.month',
+        relation='compassion_project_harvest_months',
+        string='Harvest months', readonly=True
     )
     hunger_month_ids = fields.Many2many(
-        'connect.month', string='Hunger months', readonly=True
+        'connect.month',
+        relation='compassion_project_hunger_months',
+        string='Hunger months', readonly=True
     )
     cultural_rituals = fields.Text(readonly=True)
     economic_needs = fields.Text(readonly=True)
@@ -263,7 +272,7 @@ class CompassionProject(models.Model):
     suspension = fields.Selection([
         ('suspended', 'Suspended'),
         ('fund-suspended', 'Suspended & fund retained')], 'Suspension',
-        compute='_set_suspension_state', store=True,
+        compute='_compute_suspension_state', store=True,
         track_visibility='onchange')
     status = fields.Selection(
         '_get_state', track_visibility='onchange', default='A', readonly=True)
@@ -280,9 +289,6 @@ class CompassionProject(models.Model):
     # Project Descriptions
     ######################
     description_en = fields.Text('English description', readonly=True)
-    description_fr = fields.Text('French description', readonly=True)
-    description_de = fields.Text('German description', readonly=True)
-    description_it = fields.Text('Italian description', readonly=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -300,35 +306,15 @@ class CompassionProject(models.Model):
         return self.env['connect.month'].get_months_selection()
 
     @api.depends('lifecycle_ids')
-    @api.one
-    def _set_suspension_state(self):
-        if isinstance(self.id, models.NewId):
-            return
-        try:
-            old_value = self.read(['suspension'])[0]['suspension']
-        except IndexError:
-            return
-        if self.lifecycle_ids:
-            last_info = self.lifecycle_ids[0]
+    @api.multi
+    def _compute_suspension_state(self):
+        for project in self.filtered('lifecycle_ids'):
+            last_info = project.lifecycle_ids[0]
             if last_info.type == 'Suspension':
-                suspension_status = 'fund-suspended' if \
+                project.suspension = 'fund-suspended' if \
                     last_info.hold_cdsp_funds else 'suspended'
-                if suspension_status == 'fund-suspended' and suspension_status\
-                        != old_value:
-                    self.suspend_funds()
-                if last_info.hold_gifts:
-                    self._hold_gifts()
-                if last_info.hold_s2b_letters:
-                    self._hold_letters()
-                self.suspension = suspension_status
             elif last_info.type == 'Reactivation':
-                if old_value == 'fund-suspended':
-                    self._reactivate_project()
-                if not last_info.hold_gifts:
-                    self._reactivate_gifts()
-                if not last_info.hold_s2b_letters:
-                    self._reactivate_letters()
-                self.suspension = False
+                project.suspension = False
 
     @api.model
     def _get_state(self):
@@ -369,9 +355,9 @@ class CompassionProject(models.Model):
     def _compute_chf_income(self):
         for project in self.filtered('country_id'):
             income = project.monthly_income / \
-                project.country_id.currency_id.rate_silent
+                project.country_id.currency_id.rate
             if int(income) < 10:
-                income = project.monthly_income / project.usd.rate_silent
+                income = project.monthly_income / project.usd.rate
             project.chf_income = income
 
     @api.model
@@ -394,14 +380,14 @@ class CompassionProject(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.one
     def suspend_funds(self):
         """ Hook to perform some action when project is suspended.
         By default: log a message.
         """
-        self.message_post(
-            "The project was suspended and funds are retained.",
-            "Project Suspended", 'comment')
+        for project in self:
+            project.message_post(
+                "The project was suspended and funds are retained.",
+                "Project Suspended", 'comment')
         return True
 
     @api.model
@@ -420,6 +406,7 @@ class CompassionProject(models.Model):
     def details_answer(self, vals):
         """ Called when receiving the answer of GetDetails message. """
         self.ensure_one()
+        vals['last_update_date'] = fields.Date.today()
         self.write(vals)
         self.env['compassion.project.description'].create({
             'project_id': self.id})
@@ -457,29 +444,43 @@ class CompassionProject(models.Model):
         }
         message = message_obj.create(message_vals)
         if message.state == 'failure':
-            raise Warning(message.failure_reason)
+            raise UserError(message.failure_reason)
 
         return True
+
+    @api.multi
+    def get_lifecycle_event(self):
+        onramp = OnrampConnector()
+        endpoint = 'churchpartners/{}/kits/icplifecycleeventkit'
+        lifecylcle_ids = list()
+        for project in self:
+            result = onramp.send_message(
+                endpoint.format(project.icp_id), 'GET')
+            if 'ICPLifecycleEventList' in result.get('content', {}):
+                lifecylcle_ids.extend(
+                    self.env['compassion.project.ile'].process_commkit(
+                        result['content']))
+        return lifecylcle_ids
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    @api.one
-    def _reactivate_project(self):
+    def reactivate_project(self):
         """ To perform some actions when project is reactivated """
-        self.message_post(
-            "The project is reactivated.",
-            "Project Reactivation", 'comment')
+        for project in self:
+            project.message_post(
+                "The project is reactivated.",
+                "Project Reactivation", 'comment')
         return True
 
-    def _hold_gifts(self):
+    def hold_gifts_action(self):
         pass
 
-    def _hold_letters(self):
+    def hold_letters_action(self):
         pass
 
-    def _reactivate_gifts(self):
+    def reactivate_gifts(self):
         pass
 
-    def _reactivate_letters(self):
+    def reactivate_letters(self):
         pass

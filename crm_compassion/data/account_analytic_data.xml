@@ -1,56 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data noupdate="True">
-    	<!--
+<odoo>
+    <data noupdate="1">
+        <!--
             Resource: account.analytic.account
         -->
-        <record id="account_analytic_account_events" model="account.analytic.account">
+        <record id="tag_event" model="account.analytic.tag">
             <field name="name">Events</field>
-            <field name="type">normal</field>
-            <field name="code">AA118</field>
-            <field name="parent_id" search="[('name', '=', 'FUND')]"/>
         </record>
-        <record id="account_analytic_account_stand" model="account.analytic.account">
+        <record id="tag_stand" model="account.analytic.tag">
             <field name="name">Stand</field>
-            <field name="type">normal</field>
-            <field name="code">AA1181</field>
-            <field name="parent_id" search="[('name', '=', 'Events')]"/>
         </record>
-        <record id="account_analytic_account_pres" model="account.analytic.account">
+        <record id="tag_presentation" model="account.analytic.tag">
             <field name="name">Presentation</field>
-            <field name="type">normal</field>
-            <field name="code">AA1182</field>
-            <field name="parent_id" search="[('name', '=', 'Events')]"/>
         </record>
-        <record id="account_analytic_account_meet" model="account.analytic.account">
+        <record id="tag_meeting" model="account.analytic.tag">
             <field name="name">Meeting</field>
-            <field name="type">normal</field>
-            <field name="code">AA1183</field>
-            <field name="parent_id" search="[('name', '=', 'Events')]"/>
         </record>
-        <record id="account_analytic_account_sport" model="account.analytic.account">
-            <field name="name">Sport</field>
-            <field name="type">normal</field>
-            <field name="code">AA1184</field>
-            <field name="parent_id" search="[('name', '=', 'Events')]"/>
-        </record>
-        <record id="account_analytic_account_concert" model="account.analytic.account">
-            <field name="name">Concert</field>
-            <field name="type">normal</field>
-            <field name="code">AA1185</field>
-            <field name="parent_id" search="[('name', '=', 'Events')]"/>
-        </record>
-        <record id="account_analytic_account_sponsor_tour" model="account.analytic.account">
-            <field name="name">Tour</field>
-            <field name="type">normal</field>
-            <field name="code">AA1187</field>
-            <field name="parent_id" search="[('name', '=', 'Events')]"/>
-        </record>
-        <record id="account_analytic_account_ambassadors" model="account.analytic.account">
+        <record id="tag_partners" model="account.analytic.tag">
             <field name="name">Partners</field>
-            <field name="type">view</field>
-            <field name="code">AA1186</field>
-            <field name="parent_id" search="[('name', '=', 'FUND')]"/>
+        </record>
+        <record id="tag_sport" model="account.analytic.tag">
+            <field name="name">Sport</field>
+        </record>
+        <record id="tag_concert" model="account.analytic.tag">
+            <field name="name">Concert</field>
+        </record>
+        <record id="tag_tour" model="account.analytic.tag">
+            <field name="name">Tour</field>
+        </record>
+        <record id="tag_campaign" model="account.analytic.tag">
+            <field name="name">Campaign</field>
         </record>
     </data>
-</openerp>
+</odoo>

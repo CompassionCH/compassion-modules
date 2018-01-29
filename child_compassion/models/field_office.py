@@ -1,16 +1,16 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
 
-from openerp import api, models, fields
+from odoo import api, models, fields
 
 
 class FieldOffice(models.Model):
@@ -35,6 +35,10 @@ class FieldOffice(models.Model):
     province = fields.Char()
     zip_code = fields.Char()
     currency = fields.Char()
+    available_on_childpool = fields.Boolean(
+        default=True,
+        help='Uncheck to restrict child selection from this field office.'
+    )
 
     primary_language_id = fields.Many2one('res.lang.compassion', 'Primary '
                                                                  'language')
@@ -59,15 +63,6 @@ class FieldOffice(models.Model):
         ('field_office_id', 'unique(field_office_id)',
          'The field already exists in database.'),
     ]
-
-    ##########################################################################
-    #                              ORM METHODS                               #
-    ##########################################################################
-    @api.model
-    def create(self, vals):
-        field_office = super(FieldOffice, self).create(vals)
-        field_office.with_context(async_mode=True).update_informations()
-        return field_office
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

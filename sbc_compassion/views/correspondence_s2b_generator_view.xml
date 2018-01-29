@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
+<odoo>
         <!-- Form Definition -->
         <record id="s2b_generator_form" model="ir.ui.view">
             <field name="name">correspondence.s2b.generator.form</field>
@@ -75,5 +74,4 @@
 
         <!-- Menu Definition -->
         <menuitem id="s2b_generator_menu" parent="menu_correspondence" name="S2B Generator" action="action_s2b_generator" sequence="2"/>
-    </data>
-</openerp>
+</odoo>

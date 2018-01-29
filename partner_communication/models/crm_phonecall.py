@@ -1,14 +1,14 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp import api, models, fields, _
+from odoo import api, models, fields, _
 import logging
 
 
@@ -38,14 +38,14 @@ class Phonecall(models.Model):
                 # Unlock the need call state
                 communication.write({
                     'need_call': False,
-                    'state': 'pending'
+                    'state': 'pending',
+                    'phonecall_id': phonecall.id
                 })
             info = _('Phone call with sponsor') + ':' + '<br/>'
             if phonecall.description:
-                info += phonecall.description + \
-                    '<br/>--------------------------------<br/>'
+                info += phonecall.description
             communication.partner_id.message_post(
-                info + communication.body_html, communication.config_id.name)
+                info, communication.config_id.name)
         else:
             # Phone call was made outside from communication call wizard.
             # Create a communication to log the call.

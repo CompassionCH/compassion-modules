@@ -1,16 +1,16 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import re
 
-from openerp.addons.message_center_compassion.mappings.base_mapping import \
+from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 
@@ -156,9 +156,9 @@ class ICPMapping(OnrampMapping):
         'gpid': None,
     }
 
-    CONSTANTS = {
-        'gpid': 'CH',
-    }
+    def __init__(self, env):
+        super(ICPMapping, self).__init__(env)
+        self.CONSTANTS = {'gpid': env.user.country_id.code}
 
     def _convert_connect_data(self, connect_name, value_mapping, value,
                               relation_search=None):
@@ -193,11 +193,12 @@ class ICPMapping(OnrampMapping):
         if monthly_income:
             monthly_income = monthly_income.replace(',', '')
             # Replace all but last dot
-            monthly_income = re.sub("\.(?=[^.]*\.)", "", monthly_income)
+            monthly_income = re.sub(r"\.(?=[^.]*\.)", "", monthly_income)
             # Replace any alpha character
-            monthly_income = re.sub('[a-zA-Z$ ]', "", monthly_income)
+            monthly_income = re.sub(r'[a-zA-Z$ ]', "", monthly_income)
             try:
                 float(monthly_income)
                 odoo_data['monthly_income'] = monthly_income
             except ValueError:
+                # Weird value received, we prefer to ignore it.
                 del odoo_data['monthly_income']

@@ -1,33 +1,28 @@
-<openerp>
-    <data>
-        <template id="report_label">
-            <link rel="stylesheet" href="/label/static/src/css/label.css"/>
-            <t t-call="report.html_container">
-                <t t-foreach="docs" t-as="o">
-                    <div class="page">
-                        <t t-foreach="range(len(get_data(rows, columns, ids, model, o.number_of_labels)))" t-as="data_page">
-                            <div t-attf-style="position: absolute; left: {{ o.name.left_margin}}mm; top: {{(297 * data_page + o.name.top_margin)}}mm; height: {{(297 - o.name.top_margin - o.name.bottom_margin)}}mm; width: {{(210 - o.name.left_margin - o.name.right_margin)}}mm;">
-                                <!-- Start page -->
-                                <table class="o_label_page_table" t-attf-style="border-space: 1mm {{o.name.cell_spacing}}mm;">
-                                    <t t-foreach="get_data(rows, columns, ids, model, o.number_of_labels)[data_page]" t-as="row">
-                                        <tr>
-                                            <t t-foreach="row" t-as="col">
-                                                <td t-attf-style="height: {{o.name.height}}mm; width: {{ o.name.width }}">
-
-                                                    <!-- One Label -->
-                                                    <t t-call="label.one_label"/>
-                                                </td>
-                                            </t>
-                                        </tr>
-                                    </t>
-                                </table>
-
-
-                            </div>
-                        </t>
-                    </div>
-                </t>
+<odoo>
+    <template id="report_label">
+        <link rel="stylesheet" href="/label/static/src/css/label.css"/>
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <t t-foreach="range(len(label_data))" t-as="data_page">
+                        <div t-attf-style="position: absolute; left: {{ o.config_id.left_margin}}mm; top: {{(297 * data_page + o.config_id.top_margin)}}mm; height: {{(297 - o.config_id.top_margin - o.config_id.bottom_margin)}}mm; width: {{(210 - o.config_id.left_margin - o.config_id.right_margin)}}mm;">
+                            <!-- Start page -->
+                            <table class="o_label_page_table" t-attf-style="border-space: 1mm {{o.config_id.cell_spacing}}mm;">
+                                <t t-foreach="label_data[data_page]" t-as="row">
+                                    <tr>
+                                        <t t-foreach="row" t-as="col">
+                                            <td t-attf-style="height: {{o.config_id.height}}mm; width: {{ o.config_id.width }}">
+                                                <!-- One Label -->
+                                                <t t-call="label.one_label"/>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </t>
+                            </table>
+                        </div>
+                    </t>
+                </div>
             </t>
-        </template>
-    </data>
-</openerp>
+        </t>
+    </template>
+</odoo>

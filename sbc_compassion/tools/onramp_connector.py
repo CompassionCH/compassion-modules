@@ -1,25 +1,25 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import logging
 import base64
 import requests
 
-from openerp import _
-from openerp.exceptions import Warning
-from openerp.addons.message_center_compassion.tools.onramp_connector import \
+from odoo import _
+from odoo.exceptions import UserError
+from odoo.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
-from openerp.addons.message_center_compassion.tools.onramp_logging import \
+from odoo.addons.message_center_compassion.tools.onramp_logging import \
     log_message
 
-from openerp.tools.config import config
+from odoo.tools.config import config
 
 
 logger = logging.getLogger(__name__)
@@ -47,8 +47,7 @@ class SBCConnector(OnrampConnector):
                 })
                 SBCConnector.__instance._session = session
             else:
-                raise Warning(
-                    _('Missing configuration'),
+                raise UserError(
                     _('Please give connect_url and connect_api_key values '
                       'in your Odoo configuration file.'))
         return SBCConnector.__instance
@@ -73,9 +72,8 @@ class SBCConnector(OnrampConnector):
         if status == 201:
             letter_url = r.text
         else:
-            raise Warning(
-                _("Error while uploading letter image to GMC."),
-                '[%s] %s' % (r.status_code, r.text))
+            raise UserError(
+                _('[%s] %s') % (r.status_code, r.text))
         return letter_url
 
     def get_letter_image(self, letter_url, type='jpeg', pages=0, dpi=96):

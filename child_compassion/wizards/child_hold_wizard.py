@@ -1,15 +1,15 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Philippe Heer
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 from ..models.compassion_hold import AbstractHold  # NOQA
-from openerp import models, api, fields, _
+from odoo import models, api, fields, _
 
 
 class ChildHoldWizard(models.TransientModel):
@@ -46,7 +46,6 @@ class ChildHoldWizard(models.TransientModel):
     ##########################################################################
     @api.multi
     def send(self):
-
         holds = self.env['compassion.hold']
         messages = self.env['gmc.message.pool']
         child_search = self.env['compassion.childpool.search'].browse(

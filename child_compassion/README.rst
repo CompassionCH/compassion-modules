@@ -25,6 +25,14 @@ Configuration
 You need to add "Manage sponsorships" access rights to the users
 who will have access to Beneficiary and ICP data.
 
+Demand Planning:
+
+You can add in the system settings default values for weekly demand and
+resupply quantities by setting the following keys:
+
+- `child_compassion.default_demand`
+- `child_compassion.default_resupply`
+
 Usage
 =====
 

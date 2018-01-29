@@ -1,14 +1,14 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp.addons.message_center_compassion.mappings.base_mapping import \
+from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 
@@ -23,6 +23,7 @@ class GenericChildMapping(OnrampMapping):
         'Age': 'age',
         'BeneficiaryHousehold': ('household_id', 'compassion.household'),
         'BeneficiaryHouseholdList': ('household_id', 'compassion.household'),
+        'BeneficiaryState': 'beneficiary_state',
         'BeneficiaryStatus': 'beneficiary_state',
         'Beneficiary_Gender': 'gender',
         'Beneficiary_GlobalID': 'global_id',
@@ -60,6 +61,9 @@ class GenericChildMapping(OnrampMapping):
         'HoldExpirationDate': 'hold_expiration_date',
         'HoldingGlobalPartner': (
             'holding_global_partner_id.name', 'compassion.global.partner'),
+        'HoldingGlobalPartnerID': (
+            'holding_global_partner_id.country_id.code',
+            'compassion.global.partner'),
         'HouseholdDuty_Name': ('duty_ids.name', 'child.household.duty'),
         'ICPID': ('project_id.icp_id', 'compassion.project'),
         'ICP_ID': ('project_id.icp_id', 'compassion.project'),
@@ -164,9 +168,9 @@ class CompassionChildMapping(GenericChildMapping):
         'gpid': None,
     }
 
-    CONSTANTS = {
-        'gpid': 'CH',
-    }
+    def __init__(self, env):
+        super(CompassionChildMapping, self).__init__(env)
+        self.CONSTANTS = {'gpid': env.user.country_id.code}
 
     def _process_odoo_data(self, odoo_data):
         if 'gender' in odoo_data:

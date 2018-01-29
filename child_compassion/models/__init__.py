@@ -1,11 +1,11 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino, Cyril Sester
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
@@ -29,3 +29,6 @@ from . import compassion_reservation
 from . import major_revision
 from . import field_office_disaster
 from . import child_note
+from . import demand_planning
+from . import weekly_demand
+from . import queue_job

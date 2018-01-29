@@ -1,16 +1,16 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Maxime Beck, Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import math
 
-from openerp import api, models, fields
+from odoo import api, models, fields
 from datetime import datetime, timedelta
 
 
@@ -22,22 +22,11 @@ STATS_DURATION = 52.0
 
 
 class WeeklyDemand(models.Model):
-    _name = 'demand.weekly.demand'
-    _description = 'Weekly Demand'
-    _rec_name = 'week_start_date'
-    _order = 'week_start_date asc, id desc'
+    _inherit = 'demand.weekly.demand'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    demand_id = fields.Many2one(
-        'demand.planning', string='Demand Planning', readonly=True,
-        ondelete='cascade'
-    )
-    week_start_date = fields.Date(required=True)
-    week_end_date = fields.Date(required=True)
-    period_locked = fields.Boolean(compute='_compute_period_locked',
-                                   store=True)
     # Demand fields
     number_children_website = fields.Integer(
         'Web demand',
@@ -53,7 +42,7 @@ class WeeklyDemand(models.Model):
     number_children_events = fields.Float(
         'Events demand',
         compute='_compute_demand_events',
-        inverse='_set_manually',
+        inverse='_inverse_fields',
         store=True)
     total_demand = fields.Integer(compute='_compute_demand_total', store=True)
 
@@ -69,7 +58,7 @@ class WeeklyDemand(models.Model):
     resupply_sub = fields.Float(
         'SUB resupply',
         compute='_compute_resupply_sub', store=True,
-        inverse='_set_manually'
+        inverse='_inverse_fields'
     )
     average_cancellation = fields.Float(
         'Sponsorship cancellations',
@@ -78,7 +67,7 @@ class WeeklyDemand(models.Model):
     resupply_events = fields.Integer(
         'Events resupply',
         compute='_compute_demand_events', store=True,
-        inverse='_set_manually',
+        inverse='_inverse_fields',
     )
     total_resupply = fields.Integer(
         compute='_compute_resupply_total', store=True)
@@ -86,15 +75,6 @@ class WeeklyDemand(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.depends('week_start_date')
-    @api.multi
-    def _compute_period_locked(self):
-        for week in self:
-            date_week = fields.Datetime.from_string(week.week_start_date)
-            if date_week:
-                week.period_locked = date_week <= (datetime.today() +
-                                                   timedelta(weeks=8))
-
     @api.depends('week_start_date', 'week_end_date')
     @api.multi
     def _compute_demand_events(self):
@@ -133,7 +113,7 @@ class WeeklyDemand(models.Model):
             week.resupply_events = resupply
 
     @api.multi
-    def _set_manually(self):
+    def _inverse_fields(self):
         """ Allow to manually set demand and resupply computed numbers. """
         pass
 
@@ -142,7 +122,7 @@ class WeeklyDemand(models.Model):
         """ Compute average of SUB since one year. """
         start_date = datetime.today() - timedelta(weeks=STATS_DURATION)
         sub_sponsored = self.env['recurring.contract'].search_count([
-            ('origin_id.type', '=', 'sub'),
+            ('parent_id', '!=', False),
             ('start_date', '>=', fields.Date.to_string(start_date)),
             ('channel', '!=', 'internet')
         ])
@@ -195,7 +175,7 @@ class WeeklyDemand(models.Model):
         sub_average = self._default_demand_sub()
         today = datetime.today()
         rejected_sub = self.env['recurring.contract'].search([
-            ('origin_id.type', '=', 'sub'),
+            ('parent_id', '!=', False),
             ('start_date', '>=',
              datetime.today() - timedelta(weeks=STATS_DURATION)),
             ('end_date', '!=', None),
@@ -212,13 +192,14 @@ class WeeklyDemand(models.Model):
                 week.week_start_date) - timedelta(days=SUB_DURATION)
             if start_date <= today:
                 sub = self.env['recurring.contract'].search_count([
-                    ('origin_id.type', '=', 'sub'),
+                    ('parent_id', '!=', False),
                     ('start_date', '>=', start_date),
                     ('start_date', '<=', fields.Date.from_string(
                         week.week_end_date) - timedelta(days=SUB_DURATION)),
                     ('channel', '!=', 'internet')
                 ])
-                week.resupply_sub = sub * (sub_reject_average / sub_average)
+                week.resupply_sub = sub * (
+                    sub_reject_average / sub_average or 1)
             else:
                 week.resupply_sub = sub_reject_average
 
@@ -228,7 +209,7 @@ class WeeklyDemand(models.Model):
         start_date = datetime.today() - timedelta(weeks=STATS_DURATION)
         cancellations = self.env['recurring.contract'].search_count([
             ('state', '=', 'terminated'),
-            ('origin_id.type', '!=', 'sub'),
+            ('parent_id', '=', False),
             ('channel', '!=', 'internet'),
             ('end_reason', '!=', '1'),
             ('end_date', '>=', fields.Date.to_string(start_date))
@@ -266,6 +247,18 @@ class WeeklyDemand(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    def get_values(self):
+        """ Returns the values of a given week. """
+        self.ensure_one()
+        return self.read([
+            'week_start_date', 'week_end_date',
+            'number_children_website',
+            'number_children_ambassador', 'number_sub_sponsorship',
+            'number_children_events', 'average_unsponsored_web',
+            'average_unsponsored_ambassador',
+            'resupply_sub', 'average_cancellation',
+            'resupply_events'])[0]
+
     def get_defaults(self):
         """ Returns the computation defaults in a dictionary. """
         web = self.env['demand.planning.settings'].get_param(

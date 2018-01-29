@@ -1,14 +1,14 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp.addons.message_center_compassion.mappings.base_mapping import \
+from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 
@@ -35,7 +35,6 @@ class ChilpoolSearchMapping(OnrampMapping):
         'isOrphan': 'is_orphan',
         'hasSpecialNeeds': 'has_special_needs',
         'minDaysWaiting': 'min_days_waiting',
-        'sourceCode': 'source_code',
         'skip': 'skip',
         'take': 'take',
     }
@@ -52,6 +51,62 @@ class ChilpoolSearchMapping(OnrampMapping):
         for key, value in temp_data.iteritems():
             if not value:
                 del connect_data[key]
+
+
+class AdvancedSearchMapping(OnrampMapping):
+    ODOO_MODEL = 'compassion.childpool.search'
+    MAPPING_NAME = "advanced_search"
+
+    CONNECT_MAPPING = {
+        # Search params
+        'NumberOfBeneficiaries': 'take',
+        'Start': 'skip',
+        'Filter': ('search_filter_ids', 'compassion.query.filter'),
+        # Search fields
+        'Age': 'min_age',
+        'BeneficiaryLocalId': 'local_id',
+        'BeneficiaryName': 'child_name',
+        'BeneficiaryAMState': 'state_selected',
+        'BirthDay': 'birthday_day',
+        'BirthMonth': 'birthday_month',
+        'BirthYear': 'birthday_year',
+        'ChronicIllnesses': 'chronic_illness',
+        'FieldOffice': 'field_office_ids',
+        'Gender': 'gender',
+        'HoldingGlobalPartner': 'holding_gp_ids',
+        'ICPID': 'icp_ids',
+        'ICPName': 'icp_name',
+        'IsHIVAffectedArea': 'hiv_affected_area',
+        'IsOrphan': 'is_orphan',
+        'IsSpecialNeeds': 'has_special_needs',
+        'NaturalFatherAlive': 'father_alive',
+        'NaturalMotherAlive': 'mother_alive',
+        'PhysicalDisabilities': 'physical_disability',
+        'PlannedCompletionDate': 'completion_date_after',
+        'WaitTime': 'min_days_waiting',
+        # Constants not used
+        'SortBy': None,
+        'SortType': None,
+    }
+
+    FIELDS_TO_SUBMIT = {
+        'NumberOfBeneficiaries': None,
+        'Start': None,
+        'Filter': None,
+        'SortBy': None,
+        'SortType': None,
+    }
+
+    CONSTANTS = {
+        'SortBy': 'PriorityScore',
+        'SortType': None
+    }
+
+    def _process_connect_data(self, connect_data):
+        """ Put data in outgoing wrapper. """
+        data = connect_data.copy()
+        connect_data.clear()
+        connect_data['BeneficiarySearchRequestList'] = data
 
 
 class ChilpoolSearchMixMapping(OnrampMapping):

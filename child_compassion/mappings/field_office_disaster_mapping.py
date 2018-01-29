@@ -1,14 +1,14 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Maxime Beck <mbcompte@gmail.com>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp.addons.message_center_compassion.mappings.base_mapping import \
+from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 
@@ -69,10 +69,9 @@ class ChildDisasterImpact(OnrampMapping):
         'SiblingsSeriouslyInjuredNumber': 'siblings_seriously_injured_number',
         'Beneficiary_GlobalID': ('child_id.global_id', 'compassion.child'),
         'SponsorshipStatus': 'sponsorship_status',
+        'Beneficiary_FullName': 'name',
         # Not used in Odoo
         'DisasterStatus': None,
-        'Beneficiary_FullName': None,
-        'Beneficiary_FullName': None,
         'Beneficiary_LocalID': None,
         'Disaster_Name': None,
     }
@@ -149,8 +148,9 @@ class FieldOfficeDisasterMapping(OnrampMapping):
             [('disaster_id', '=', odoo_data['disaster_id'])])
 
         if 'child_disaster_impact_ids' in odoo_data:
-            # Remove all old impacts
-            disaster.child_disaster_impact_ids.unlink()
+            # Remove old impacts not related to our children
+            disaster.child_disaster_impact_ids.filtered(
+                lambda i: not i.child_id).unlink()
             impact_list = [(0, 0, impact) for impact in
                            odoo_data['child_disaster_impact_ids']]
             odoo_data['child_disaster_impact_ids'] = impact_list
@@ -162,6 +162,13 @@ class FieldOfficeDisasterMapping(OnrampMapping):
             odoo_data['icp_disaster_impact_ids'] = impact_list
 
         if 'fo_disaster_update_ids' in odoo_data:
-            update_list = [(0, 0, impact) for impact in
-                           odoo_data['fo_disaster_update_ids']]
+            update_list = list()
+            update_obj = self.env['fo.disaster.update']
+            for impact in odoo_data['fo_disaster_update_ids']:
+                update = update_obj.search([
+                    ('fodu_id', '=', impact.get('fodu_id'))])
+                if update:
+                    update_list.append((1, update.id, impact))
+                else:
+                    update_list.append((0, 0, impact))
             odoo_data['fo_disaster_update_ids'] = update_list

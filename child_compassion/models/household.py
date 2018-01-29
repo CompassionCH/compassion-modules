@@ -1,16 +1,16 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
 
-from openerp import api, models, fields, _
+from odoo import api, models, fields, _
 
 from ..mappings.household_mapping import HouseHoldMapping
 
@@ -215,6 +215,10 @@ class Household(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
+        role = vals.get('role')
+        if role and role not in [t[0] for t in self._get_roles()]:
+            vals['unknown_role'] = vals.pop('role')
+
         res = self.search([('household_id', '=', vals.get('household_id'))])
         if res:
             res.write(vals)
@@ -239,6 +243,7 @@ class HouseholdMembers(models.Model):
     is_primary_caregiver = fields.Boolean()
     name = fields.Char()
     role = fields.Selection('_get_roles')
+    unknown_role = fields.Char()
     gender = fields.Char(size=1, compute='_compute_gender', store=True)
     male_role = fields.Boolean(compute='_compute_gender', store=True)
     female_role = fields.Boolean(compute='_compute_gender', store=True)

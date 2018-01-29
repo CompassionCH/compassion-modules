@@ -1,17 +1,17 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
 import sys
 
-from openerp import models, fields, api, _
-from openerp.exceptions import Warning
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 
 class InterventionSearch(models.TransientModel):
@@ -127,7 +127,7 @@ class InterventionSearch(models.TransientModel):
                 'type', anyof_id, self.type_selected))
         if self.category_id:
             new_filters.append(_get_filter(
-                'category_id', is_id, self.category_id.name))
+                'category_id', anyof_id, self.category_id.name))
         if self.status_selected:
             new_filters.append(_get_filter(
                 'funding_status', anyof_id, self.status_selected))
@@ -139,7 +139,8 @@ class InterventionSearch(models.TransientModel):
             new_filters.append(_get_filter(
                 'icp_id', anyof_id, icp_codes))
         if self.field_office_ids:
-            fo_codes = ';'.join(self.field_office_ids.mapped('country_code'))
+            fo_codes = ';'.join(self.field_office_ids.mapped(
+                'field_office_id'))
             new_filters.append(_get_filter(
                 'field_office_id', anyof_id, fo_codes))
         if self.remaining_amount_equal:
@@ -171,8 +172,8 @@ class InterventionSearch(models.TransientModel):
                 'object_id': self.id
             })
         if not self.intervention_ids:
-            raise Warning(_("No intervention found"),
-                          message.failure_reason or '')
+            raise UserError(
+                message.failure_reason or _("No intervention found"))
         return {
             'name': _('Interventions'),
             'type': 'ir.actions.act_window',

@@ -1,28 +1,32 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
-#    The licence is in the file __openerp__.py
+#    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openerp import api, models, fields, _
+from odoo import api, models, fields, _
 
-from openerp.addons.child_compassion.models.compassion_hold import HoldType
+from odoo.addons.child_compassion.models.compassion_hold import HoldType
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 
-class sub_sponsorship_wizard(models.TransientModel):
+class SubSponsorshipWizard(models.TransientModel):
     _name = "sds.subsponsorship.wizard"
+    _description = "Sub Sponsorship Wizard"
 
     state = fields.Selection([
         ('sub', 'sub'),
         ('no_sub', 'no_sub')])
-    channel = fields.Selection('_get_channels')
+    channel = fields.Selection([
+        ('childpool', 'Global Childpool'),
+        ('direct', 'Direct')
+    ])
     child_id = fields.Many2one(
         'compassion.child', 'Child', domain=[('state', 'in', ['N', 'I'])])
     no_sub_default_reasons = fields.Selection(
@@ -41,12 +45,6 @@ class sub_sponsorship_wizard(models.TransientModel):
             ('other', _('Other...'))
         ]
 
-    def _get_channels(self):
-        """Returns the available channel through the new sponsor
-        reached Compassion.
-        """
-        return self.env['recurring.contract']._get_channels()
-
     @api.multi
     def create_subsponsorship(self):
         """ Creates a subsponsorship. """
@@ -57,12 +55,9 @@ class sub_sponsorship_wizard(models.TransientModel):
             allow_rewind=True)
         contract = contract_obj.browse(sponsorship_id)
         contract.sds_uid = self.env.user
-        origin_obj = self.env['recurring.contract.origin']
-        sub_origin_id = origin_obj.search([('type', '=', 'sub')], limit=1).id
         sub_contract = contract.copy({
             'parent_id': sponsorship_id,
-            'origin_id': sub_origin_id,
-            'channel': self.channel,
+            'channel': 'sub',
             'child_id': self.child_id.id,
             'user_id': False,
             'sds_uid': self.env.uid,
@@ -77,7 +72,6 @@ class sub_sponsorship_wizard(models.TransientModel):
             next_invoice_date = max(next_invoice_date, sub_invoice_date)
 
         if self.child_id:
-            sub_contract.signal_workflow('contract_validated')
             sub_contract.next_invoice_date = next_invoice_date
             return {
                 'name': sub_contract.name,
@@ -106,6 +100,7 @@ class sub_sponsorship_wizard(models.TransientModel):
                         next_invoice_date),
                     'default_type': HoldType.SUB_CHILD_HOLD.value,
                     'default_return_action': 'sub',
+                    'default_source_code': 'sub_proposal',
                 }).env.context
             }
 
@@ -122,7 +117,8 @@ class sub_sponsorship_wizard(models.TransientModel):
             reason = dict(self._get_no_sub_reasons()).get(default_reason)
         contract.write({
             'no_sub_reason': reason,
-            'sds_uid': self.env.uid
+            'sds_uid': self.env.uid,
+            'sds_state': 'no_sub',
+            'color': 1
         })
-        contract.signal_workflow('no_sub')
         return True
