@@ -8,14 +8,37 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import StringIO
 import logging
+from HTMLParser import HTMLParser
+
+from odoo.addons.base_phone import fields as phone_fields
+from odoo.addons.base_phone.controllers.main import BasePhoneController
+from pyPdf import PdfFileReader
 
 from odoo import api, models, fields, _, http
 from odoo.exceptions import UserError
-from odoo.addons.base_phone import fields as phone_fields
-from odoo.addons.base_phone.controllers.main import BasePhoneController
 
 logger = logging.getLogger(__name__)
+
+
+class MLStripper(HTMLParser):
+    """ Used to remove HTML tags. """
+    def __init__(self):
+        self.reset()
+        self.fed = []
+
+    def handle_data(self, d):
+        self.fed.append(d)
+
+    def get_data(self):
+        return ''.join(self.fed)
+
+
+def strip_tags(html):
+    s = MLStripper()
+    s.feed(html)
+    return s.get_data()
 
 
 class CommunicationJob(models.Model):
@@ -31,7 +54,8 @@ class CommunicationJob(models.Model):
     _name = 'partner.communication.job'
     _description = 'Communication Job'
     _order = 'date desc,sent_date desc'
-    _inherit = ['ir.needaction_mixin', 'mail.thread']
+    _inherit = ['partner.communication.defaults', 'ir.needaction_mixin',
+                'mail.thread']
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -49,7 +73,6 @@ class CommunicationJob(models.Model):
     country_id = fields.Many2one(related='partner_id.country_id')
     parent_id = fields.Many2one(related='partner_id.parent_id')
     object_ids = fields.Char('Resource ids', required=True)
-
     date = fields.Datetime(default=fields.Datetime.now)
     sent_date = fields.Datetime(readonly=True)
     state = fields.Selection([
@@ -59,29 +82,22 @@ class CommunicationJob(models.Model):
         ('cancel', _('Cancelled')),
     ], default='pending', readonly=True, track_visibility='onchange')
     need_call = fields.Boolean(
-        help='Indicates we should have a personal contact with the partner',
         readonly=True,
         states={'pending': [('readonly', False)]}
     )
-
     auto_send = fields.Boolean(
         help='Job is processed at creation if set to true')
     send_mode = fields.Selection('send_mode_select')
     email_template_id = fields.Many2one(
         related='config_id.email_template_id', store=True)
-    report_id = fields.Many2one(
-        'ir.actions.report.xml', 'Letter template',
-        domain=[('model', '=', 'partner.communication.job')]
-    )
-    user_id = fields.Many2one(
-        'res.users', 'From', domain=[('share', '=', False)])
     email_to = fields.Char(
         help='optional e-mail address to override recipient')
     email_id = fields.Many2one('mail.mail', 'Generated e-mail', readonly=True)
     phonecall_id = fields.Many2one('crm.phonecall', 'Phonecall log',
                                    readonly=True)
-
     body_html = fields.Html()
+    pdf_page_count = fields.Integer(string='PDF size',
+                                    readonly=True)
     subject = fields.Char()
     attachment_ids = fields.One2many(
         'partner.communication.attachment', 'communication_id',
@@ -96,6 +112,17 @@ class CommunicationJob(models.Model):
     def _compute_ir_attachments(self):
         for job in self:
             job.ir_attachment_ids = job.mapped('attachment_ids.attachment_id')
+
+    def count_pdf_page(self):
+        for record in self.filtered('report_id'):
+            if record.send_mode == 'physical':
+                report_obj = record.env['report'].with_context(
+                    lang=record.partner_id.lang,
+                    must_skip_send_to_printer=True)
+                pdf_str = report_obj.get_pdf(record.ids,
+                                             record.report_id.report_name)
+                pdf = PdfFileReader(StringIO.StringIO(pdf_str))
+                record.pdf_page_count = pdf.getNumPages()
 
     def _inverse_ir_attachments(self):
         attach_obj = self.env['partner.communication.attachment']
@@ -160,22 +187,8 @@ class CommunicationJob(models.Model):
             job.refresh_text()
             return job
 
+        self._get_default_vals(vals)
         job = super(CommunicationJob, self).create(vals)
-
-        # Determine user by default : employee or take in config
-        if not vals.get('user_id'):
-            user = self.env.user
-            if not user.employee_ids and job.config_id.user_id:
-                user = job.config_id.user_id
-            job.user_id = user
-
-        # Check if phonecall is needed
-        if job.need_call or job.config_id.need_call:
-            job.state = 'call'
-
-        # Check print report
-        if not vals.get('report_id'):
-            job.report_id = job.config_id.report_id
 
         # Determine send mode
         send_mode = job.config_id.get_inform_mode(job.partner_id)
@@ -186,15 +199,52 @@ class CommunicationJob(models.Model):
                 self.env.context:
             job.auto_send = send_mode[1]
 
-        if not job.body_html:
+        if not job.body_html or not strip_tags(job.body_html):
             job.refresh_text()
         else:
             job.set_attachments()
+
+        # Check if phonecall is needed
+        if job.need_call or job.config_id.need_call:
+            job.state = 'call'
+
+        if job.body_html or job.send_mode == 'physical':
+            job.count_pdf_page()
 
         if job.auto_send:
             job.send()
 
         return job
+
+    @api.model
+    def _get_default_vals(self, vals, default_vals=None):
+        """
+        Used at record creation to find default values given the config of the
+        communication.
+        :param vals: dict: record values
+        :param default_vals: list of fields to copy from config to job.
+        :return: config record to use in inheritances.
+                 The vals dict is updated.
+        """
+        if default_vals is None:
+            default_vals = []
+        default_vals.extend(['report_id', 'need_call'])
+
+        config = self.config_id.browse(vals['config_id'])
+
+        # Determine user by default : take in config or employee
+        if not vals.get('user_id'):
+            vals['user_id'] = config.user_id.id or self.env.uid
+
+        # Check all default_vals fields
+        for default_val in default_vals:
+            if default_val not in vals:
+                value = getattr(config, default_val)
+                if default_val.endswith('_id'):
+                    value = value.id
+                vals[default_val] = value
+
+        return config
 
     @api.multi
     def write(self, vals):
@@ -206,7 +256,12 @@ class CommunicationJob(models.Model):
         if vals.get('need_call'):
             vals['state'] = 'call'
 
-        return super(CommunicationJob, self).write(vals)
+        super(CommunicationJob, self).write(vals)
+
+        if vals.get('body_html') or vals.get('send_mode') == 'physical':
+            self.count_pdf_page()
+
+        return True
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -278,6 +333,13 @@ class CommunicationJob(models.Model):
         if self.config_id and self.partner_id:
             send_mode = self.config_id.get_inform_mode(self.partner_id)
             self.send_mode = send_mode[0]
+            # set default fields
+            default_vals = {'config_id': self.config_id.id}
+            self._get_default_vals(default_vals)
+            for key, val in default_vals.iteritems():
+                if key.endswith('_id'):
+                    val = getattr(self, key).browse(val)
+                setattr(self, key, val)
 
     @api.multi
     def open_related(self):

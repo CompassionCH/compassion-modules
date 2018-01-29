@@ -11,6 +11,14 @@
 from odoo import api, models, fields
 
 
+class CommunicationDefaults(models.AbstractModel):
+    _inherit = 'partner.communication.defaults'
+
+    print_subject = fields.Boolean(default=True)
+    print_header = fields.Boolean()
+    show_signature = fields.Boolean()
+
+
 class PartnerCommunication(models.Model):
     _inherit = 'partner.communication.job'
 
@@ -23,9 +31,6 @@ class PartnerCommunication(models.Model):
         'success.story', 'Success Sentence',
         domain=[('type', '=', 'sentence')])
     success_sentence = fields.Text(related='success_sentence_id.body_text')
-    print_subject = fields.Boolean(default=True)
-    print_header = fields.Boolean()
-    show_signature = fields.Boolean()
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -40,6 +45,15 @@ class PartnerCommunication(models.Model):
         job = super(PartnerCommunication, self).create(vals)
         job.set_success_story()
         return job
+
+    @api.model
+    def _get_default_vals(self, vals, default_vals=None):
+        if default_vals is None:
+            default_vals = []
+        default_vals.extend([
+            'print_subject', 'print_header', 'show_signature'])
+        return super(PartnerCommunication, self)._get_default_vals(
+            vals, default_vals)
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -64,9 +78,9 @@ class PartnerCommunication(models.Model):
                     story, use_count = job._get_min_used_story(stories)
                     job.success_story_id = story
 
-            if sentences and 'object.success_sentence' in \
-                    job.with_context(
-                        lang=job.partner_id.lang).email_template_id.body_html:
+            body = job.with_context(
+                lang=job.partner_id.lang).email_template_id.body_html
+            if sentences and body and 'object.success_sentence' in body:
                 if len(sentences) == 1:
                     job.success_sentence_id = sentences
                 else:

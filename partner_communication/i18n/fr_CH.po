@@ -46,6 +46,11 @@ msgid "Body html"
 msgstr "Corps de texte"
 
 #. module: partner_communication
+#: field:partner.communication.job,pdf_page_count:0
+msgid "PDF size"
+msgstr "Taille du PDF"
+
+#. module: partner_communication
 #: selection:partner.communication.job,send_mode:0
 msgid "Both"
 msgstr "Combo"

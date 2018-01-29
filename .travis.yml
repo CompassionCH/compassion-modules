@@ -33,7 +33,7 @@ env:
 
   matrix:
   - LINT_CHECK="1"
-  - TESTS="1" ODOO_REPO="odoo/odoo" EXCLUDE="geo_project_compassion"
+  - TESTS="1" ODOO_REPO="odoo/odoo" EXCLUDE="geo_project_compassion,thankyou_letters,partner_communication"
 
 
 virtualenv:
@@ -59,3 +59,11 @@ script:
 
 after_success:
   - travis_after_tests_success
+
+coverage:
+  status:
+    project:
+      default:
+        # basic
+        target: 40%
+        threshold: 1%

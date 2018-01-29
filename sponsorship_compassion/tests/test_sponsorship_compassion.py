@@ -25,6 +25,8 @@ mock_release_hold = ('odoo.addons.child_compassion.models.compassion_hold'
                      '.CompassionHold.release_hold')
 mock_get_infos = ('odoo.addons.child_compassion.models.child_compassion'
                   '.CompassionChild.get_infos')
+mock_project_infos = ('odoo.addons.child_compassion.models.project_compassion'
+                      '.CompassionProject.update_informations')
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +43,9 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
 
     @mock.patch(mock_update_hold)
     @mock.patch(mock_get_infos)
-    def create_child(self, local_id, get_infos, update_hold):
+    @mock.patch(mock_project_infos)
+    def create_child(self, local_id, project_infos, get_infos, update_hold):
+        project_infos.return_value = True
         get_infos.return_value = True
         update_hold.return_value = True
         return self.env['compassion.child'].create({

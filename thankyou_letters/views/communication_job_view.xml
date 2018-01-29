@@ -27,6 +27,19 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="communication_config_form_thankyou">
+        <field name="name">communication.config.form.thankyou</field>
+        <field name="model">partner.communication.config</field>
+        <field name="inherit_id" ref="partner_communication.communication_config_form"/>
+        <field name="arch" type="xml">
+            <field name="need_call" position="after">
+                <field name="print_subject"/>
+                <field name="print_header"/>
+                <field name="show_signature"/>
+            </field>
+        </field>
+    </record>
+
     <!-- Add menus for thank you letters -->
     <record id="partner_communication.action_communication_job" model="ir.actions.act_window">
         <field name="domain">[('config_id.model', '!=', 'account.invoice.line')]</field>
