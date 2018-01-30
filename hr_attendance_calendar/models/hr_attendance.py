@@ -175,7 +175,8 @@ class HRDayAttendance(models.Model):
     employee_id = fields.Many2one('hr.employee', string="Employee")
     attendance_ids = fields.One2many('hr.attendance', string="Attendances", compute=_get_attendances)
     calendar_att_ids = fields.One2many('resource.calendar.attendance', string="Working schedule", compute=_get_calendar_att)
-    calendar_worked_hours = fields.Float(string='Worked hours (based on calendar)', compute=_get_worked_hours, store=True, readonly=False)
+    calendar_worked_hours = fields.Float(string='Logged hours (based on '
+                                                'calendar)', compute=_get_worked_hours, store=True, readonly=False)
     calendar_due_hours = fields.Float(string="Due hours (based on calendar)", compute=_get_due_hours)
     total_break_hours = fields.Float(string="Total break", compute=_get_total_break_time)
     total_calendar_breaks = fields.Float(string="Total break (calendar)",compute=_get_total_calendar_break_time)
