@@ -15,6 +15,11 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     thanks_name = fields.Char(translate=True)
+    requires_thankyou = fields.Boolean(
+        'Enable thank you letter',
+        help='Set to true to enable thank you letters when invoice line '
+             'with this product is reconciled.',
+        default=True)
 
 
 class Product(models.Model):
