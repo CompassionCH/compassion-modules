@@ -8,6 +8,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="type" position="after">
+                    <field name="requires_thankyou"/>
                     <field name="thanks_name"/>
                 </field>
             </field>
