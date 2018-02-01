@@ -35,7 +35,7 @@
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['recurring_contract', 'child_compassion'],
+    'depends': ['recurring_contract', 'child_compassion', 'utm'],
     'data': [
         'views/end_contract_wizard_view.xml',
         'views/contract_group_view.xml',
