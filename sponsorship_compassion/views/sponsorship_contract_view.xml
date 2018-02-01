@@ -124,7 +124,6 @@
         <field name="arch"
                type="xml">
             <kanban>
-                <field name="child_id"/>
                 <templates>
                     <t t-debug="pdb"
                        t-name="kanban-box">
@@ -135,12 +134,16 @@
                                 <div class="oe_product_desc">
                                     <a type="open">
                                         <h4>
-                                            <field name="partner_id"/>
+                                            <field name="name"/>
                                         </h4>
                                     </a>
                                     <ul>
                                         <li>
-                                            Correspondant :
+                                            Sponsorship :
+                                            <field name="partner_id"/>
+                                        </li>
+                                        <li>
+                                            Correspondent :
                                             <field name="correspondant_id"/>
                                         </li>
                                         <li>Sponsored child :

@@ -70,12 +70,12 @@
     </record>
 
     <menuitem id="menu_donation"
-              name="Donation Receipts"
+              name="Communications"
               parent="child_compassion.menu_sponsorship_root"
               sequence="6"/>
 
     <menuitem id="menu_donation_sales"
-              name="Donation Receipts"
+              name="Communications"
               parent="sales_team.menu_base_partner"
               sequence="5"/>
 

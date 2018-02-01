@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="create_attendance_day_wizard_form_view">
+        <field name="name">Create Attendance Day Wizard Form View</field>
+        <field name="model">create.hr.attendance.day</field>
+        <field name="arch" type="xml">
+            <form string="Create attendance day">
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+                     <footer>
+                        <button name="create_attendance_day" string="CREATE" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_create_attendance_day" model="ir.actions.act_window">
+        <field name="name">Attendance day</field>
+        <field name="res_model">create.hr.attendance.day</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="create_attendance_day_wizard_form_view"/>
+        <field name="target">new</field>
+    </record>
+    <menuitem id="menu_attendance_day_creation" name="Attendance days creation" action="action_create_attendance_day" parent="hr_attendance.menu_hr_attendance_manage_attendances"/>
+</odoo>

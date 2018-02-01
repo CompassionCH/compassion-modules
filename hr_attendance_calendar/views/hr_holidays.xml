@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="hr_holidays_status_due_hours">
+            <field name="name">HR Holiday Status Form View</field>
+            <field name="model">hr.holidays.status</field>
+            <field name="priority" eval="20"/>
+            <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form"/>
+            <field name="arch" type="xml">
+                <field name="active" position="after">
+                    <field name="remove_from_due_hours"/>
+                    <field name="bonus_hours"/>
+                </field>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="hr_holidays_form_view">
+            <field name="name">HR Holiday Form View</field>
+            <field name="model">hr.holidays</field>
+            <field name="priority" eval="20"/>
+            <field name="inherit_id" ref="hr_holidays.edit_holiday_new"/>
+            <field name="arch" type="xml">
+                <field name="holiday_type" position="attributes">
+                    <attribute name="attrs">{'readonly':[('type', '=', 'remove'),('state','not in',['draft', 'confirm'])]}</attribute>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

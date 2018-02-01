@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="res_calendar_attendance_tree">
+            <field name="name">Resource Calendar Attendance Tree View</field>
+            <field name="model">resource.calendar.attendance</field>
+            <field name="inherit_id" ref="resource.view_resource_calendar_attendance_tree"/>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+                <field name="date_from" position="after">
+                    <field name="due_hours" widget="float_time"/>
+                    <field name="break_hours" widget="float_time"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
