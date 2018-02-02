@@ -11,11 +11,11 @@
                 <field name="send_gifts_to"/>
             </field>
 
-            <!-- Make origin and channel mandatory for sponsorships -->
+            <!-- Make origin and medium mandatory for sponsorships -->
             <field name="origin_id" position="attributes">
                 <attribute name="attrs">{'required':[('type', 'in', ['S','SC'])]}</attribute>
             </field>
-            <field name="channel" position="attributes">
+            <field name="medium_id" position="attributes">
                 <attribute name="attrs">{'required':[('type', 'in', ['S','SC'])]}</attribute>
             </field>
 
@@ -114,6 +114,50 @@
             </filter>
         </field>
     </record>
+    
+    <!--Compassion sponsorship kanban view -->
+    <record model="ir.ui.view"
+            id="view_compassion_sponsorship_kanban">
+        <field name="name">compassion.sponsorship.kanban</field>
+        <field name="model">recurring.contract</field>
+        <field name="type">kanban</field>
+        <field name="arch"
+               type="xml">
+            <kanban>
+                <templates>
+                    <t t-debug="pdb"
+                       t-name="kanban-box">
+                        <div class="oe_kanban_vignette">
+                            <!-- Left side image: -->
+                            <div class="oe_kanban_details">
+                                <!-- Title and data -->
+                                <div class="oe_product_desc">
+                                    <a type="open">
+                                        <h4>
+                                            <field name="name"/>
+                                        </h4>
+                                    </a>
+                                    <ul>
+                                        <li>
+                                            Sponsorship :
+                                            <field name="partner_id"/>
+                                        </li>
+                                        <li>
+                                            Correspondent :
+                                            <field name="correspondant_id"/>
+                                        </li>
+                                        <li>Sponsored child :
+                                            <field name="child_id"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
 
     <record model="ir.actions.act_window" id="contract_compassion.action_contract">
         <field name="domain">[('type','in',['O','G'])]</field>
@@ -124,7 +168,8 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">recurring.contract</field>
         <field name="view_type">form</field>
-        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="view_mode">tree,kanban,form,graph,pivot</field>
+        <field name="view_mode">tree,kanban,form</field>
         <field name="domain">[('type','like','S')]</field>
         <field name="context">{'default_type':'S'}</field>
     </record>

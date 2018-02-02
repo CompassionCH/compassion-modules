@@ -333,7 +333,6 @@ class TestSponsorship(BaseSponsorshipTest):
         sponsorship1 = self._create_contract(
             other_vals={
                 'origin_id': self.origin_id,
-                'channel': 'postal',
                 'type': 'S',
                 'child_id': child1.id,
                 'correspondant_id': sp_group.partner_id.id
@@ -341,7 +340,6 @@ class TestSponsorship(BaseSponsorshipTest):
         sponsorship2 = self._create_contract(
             other_vals={
                 'origin_id': self.origin_id,
-                'channel': 'postal',
                 'type': 'S',
                 'child_id': child1.id,
                 'correspondant_id': sp_group.partner_id.id
@@ -350,7 +348,6 @@ class TestSponsorship(BaseSponsorshipTest):
         sponsorship3 = self._create_contract(
             other_vals={
                 'origin_id': self.origin_id,
-                'channel': 'postal',
                 'type': 'S',
                 'child_id': child3.id,
                 'correspondant_id': sp_group.partner_id.id

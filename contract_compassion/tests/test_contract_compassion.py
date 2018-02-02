@@ -22,7 +22,6 @@ class BaseContractCompassionTest(BaseContractTest):
     def create_contract(self, vals, line_vals):
         # Add default values
         default_values = {
-            'channel': 'phone',
             'type': 'O'
         }
         default_values.update(vals)
@@ -183,7 +182,7 @@ class TestContractCompassion(BaseContractCompassionTest):
         contract = self.create_contract(
             datetime.today().strftime(DF), contract_group,
             datetime.today().strftime(DF),
-            other_vals={'channel': 'postal', 'type': 'O'})
+            other_vals={'type': 'O'})
         contract_group.write({'partner_id': self.partners.ids[1]})
         contract_group.on_change_partner_id()
         self.assertTrue(contract_group.bvr_reference)
