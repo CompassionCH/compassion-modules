@@ -285,10 +285,6 @@ class CommunicationJob(models.Model):
                 job.refresh_text()
 
         if to_print:
-            to_print.write({
-                'state': 'done',
-                'sent_date': fields.Datetime.now()
-            })
             return to_print._print_report()
         return True
 
@@ -326,6 +322,26 @@ class CommunicationJob(models.Model):
                 if job.state == 'call' and not job.need_call:
                     job.state = 'pending'
 
+        return True
+
+    @api.multi
+    def quick_refresh(self):
+        # Only refresh text and subject, all at once
+        jobs = self.filtered('email_template_id').filtered('object_ids')
+        langs = set(jobs.mapped('partner_id.lang'))
+        template = jobs.mapped('email_template_id')
+        if len(langs) > 1:
+            raise UserError(_("This is only possible for one lang at time"))
+        if len(template) > 1:
+            raise UserError(_(
+                "This is only possible for one template at time"))
+        values = self.env['mail.compose.message'].with_context(
+            lang=langs.pop()).get_generated_fields(template, jobs.ids)
+        for index in range(0, len(values)):
+            jobs[index].write({
+                'body_html': values[index]['body_html'],
+                'subject': values[index]['subject']
+            })
         return True
 
     @api.onchange('config_id', 'partner_id')
@@ -512,8 +528,15 @@ class CommunicationJob(models.Model):
             ).get_pdf(job.ids, job.report_id.report_name)
             # Print attachments
             job.attachment_ids.print_attachments()
+            # Save info
             job.partner_id.message_post(
                 job.body_html, job.subject)
+            job.write({
+                'state': 'done',
+                'sent_date': fields.Datetime.now()
+            })
+            # Commit to avoid invalid state if process fails
+            self.env.cr.commit()    # pylint: disable=invalid-commit
         return True
 
     @api.model
