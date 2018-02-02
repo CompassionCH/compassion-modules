@@ -143,7 +143,7 @@
         <field name="priority" eval="2"/>
         <field name="arch" type="xml">
             <calendar string="Compassion Events"
-                      date_start="start_date" date_stop="end_date" color="user_id">
+                      date_start="start_date" date_stop="end_date" color="user_id" mode="month">
                 <field name="name"/>
                 <field name="partner_id"/>
             </calendar>
