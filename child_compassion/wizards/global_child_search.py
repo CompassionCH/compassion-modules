@@ -409,7 +409,7 @@ class GlobalChildSearch(models.TransientModel):
         if self.physical_disability and self.physical_disability != "Unknown":
             new_filters.append(_get_filter(
                 'physical_disability', is_id,
-                "T" if self.self.physical_disability == 'Yes' else "F"
+                "T" if self.physical_disability == 'Yes' else "F"
             ))
         if self.completion_date_after or self.completion_date_before:
             start_date = self.completion_date_after or '1970-01-01'
