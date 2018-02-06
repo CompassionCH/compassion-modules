@@ -163,6 +163,14 @@ class CompassionReservation(models.Model):
         vals['state'] = 'active'
         return self.write(vals)
 
+    def reservation_create_answer_fail(self, vals):
+        """ Called when the reservation has failed"""
+        self.message_post(
+            subject='Reservation failed',
+            body='[' + str(vals['Code']) + ']' + vals['Message'],
+            message_type='comment',
+        )
+
     def reservation_cancel_answer(self, vals):
         """ Called when receiving the answer of CreateReservation message. """
         vals['state'] = 'expired'
