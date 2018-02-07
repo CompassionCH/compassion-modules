@@ -76,7 +76,7 @@ class GmcMessagePool(models.Model):
         default=fields.Datetime.now)
     action_id = fields.Many2one(
         'gmc.action', 'GMC Message', ondelete='restrict',
-        required=True, readonly=True)
+        required=False, readonly=True)
     process_date = fields.Datetime(readonly=True, track_visibility='onchange')
     state = fields.Selection(
         [('new', _('New')),
@@ -118,7 +118,8 @@ class GmcMessagePool(models.Model):
             message = self.search([
                 ('object_id', '=', vals['object_id']),
                 ('state', 'in', ('new', 'pending')),
-                ('action_id', '=', vals['action_id'])])
+                ('action_id', '=', vals['action_id'])
+            ])
 
         if not message:
             message = super(GmcMessagePool, self).create(vals)
@@ -324,16 +325,17 @@ class GmcMessagePool(models.Model):
             self._answer_failure(onramp_answer)
             return
 
+        if not isinstance(results, list):
+            results = [results]
+        data_objects = self.env[action.model].with_context(
+            lang='en_US').browse(self.mapped('object_id'))
+
         if 200 <= onramp_answer['code'] < 300:
             # Success, loop through answer to get individual results
-            data_objects = self.env[action.model].with_context(
-                lang='en_US').browse(self.mapped('object_id'))
 
             object_mapping = mapping.new_onramp_mapping(
                 action.model, self.env, action.mapping_name)
 
-            if not isinstance(results, list):
-                results = [results]
             for i in range(0, len(results)):
                 result = results[i]
                 content_sent = message_data.get(
@@ -352,17 +354,27 @@ class GmcMessagePool(models.Model):
                             *answer_vals)
                         mess_vals['state'] = 'success'
                     except Exception as e:
+                        if action.failure_method:
+                            getattr(data_objects[i], action.failure_method)(
+                                result)
                         mess_vals.update({
                             'state': 'failure',
                             'failure_reason': e.message,
                         })
                 else:
+                    if action.failure_method:
+                        getattr(data_objects[i], action.failure_method)(result)
                     mess_vals.update({
                         'state': 'failure',
                         'failure_reason': result['Message'],
                     })
                 self[i].write(mess_vals)
         else:
+            if action.failure_method:
+                for i in range(0, len(results)):
+                    result = results[i]
+                    getattr(data_objects[i], action.failure_method)(result)
+
             self._answer_failure(onramp_answer, results)
 
     def _answer_failure(self, onramp_answer, results=None):

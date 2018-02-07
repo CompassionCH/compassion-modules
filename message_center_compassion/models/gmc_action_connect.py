@@ -19,7 +19,7 @@ class GmcActionConnect(models.Model):
     _rec_name = 'connect_schema'
 
     connect_schema = fields.Char(required=True)
-    action_id = fields.Many2one('gmc.action', 'GMC Action', required=True)
+    action_id = fields.Many2one('gmc.action', 'GMC Action', required=False)
 
     _sql_constraints = [
         ('connect_schema_uniq', 'UNIQUE(connect_schema)',
