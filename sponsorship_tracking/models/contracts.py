@@ -72,6 +72,14 @@ class RecurringContract(models.Model):
 
         return super(RecurringContract, self).write(vals)
 
+    @api.multi
+    def unlink(self):
+        """ Put parent in SUB Reject. """
+        is_sub = self.filtered(lambda s: s.parent_id.sds_state == 'sub')
+        is_sub.mapped('parent_id').action_sub_reject()
+        # Unlink is already called in action_sub_reject
+        return super(RecurringContract, self - is_sub).unlink()
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
@@ -120,6 +128,25 @@ class RecurringContract(models.Model):
     @api.multi
     def action_sub(self):
         return self.with_context(default_state='sub').sub_wizard()
+
+    @api.multi
+    def action_sub_reject(self):
+        for contract in self:
+            contract.partner_id.message_post(
+                subject='{} - SUB Reject'.format(contract.child_code),
+                body="The sponsor doesn't want a new child."
+            )
+            sub = contract.sub_sponsorship_id
+            if sub and not sub.global_id:
+                super(RecurringContract, sub).unlink()
+            elif sub:
+                sub.end_reason = '10'   # Subreject reason
+                self.env['end.contract.wizard'].create({
+                    'contract_id': sub.id
+                }).end_contract()
+        return self.write({
+            'sds_state': 'sub_reject'
+        })
 
     def sub_wizard(self):
         sub_model = 'sds.subsponsorship.wizard'
