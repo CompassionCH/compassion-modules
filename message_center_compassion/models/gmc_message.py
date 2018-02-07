@@ -76,7 +76,7 @@ class GmcMessagePool(models.Model):
         default=fields.Datetime.now)
     action_id = fields.Many2one(
         'gmc.action', 'GMC Message', ondelete='restrict',
-        required=True, readonly=True)
+        required=False, readonly=True)
     process_date = fields.Datetime(readonly=True, track_visibility='onchange')
     state = fields.Selection(
         [('new', _('New')),
@@ -118,7 +118,8 @@ class GmcMessagePool(models.Model):
             message = self.search([
                 ('object_id', '=', vals['object_id']),
                 ('state', 'in', ('new', 'pending')),
-                ('action_id', '=', vals['action_id'])])
+                ('action_id', '=', vals['action_id'])
+            ])
 
         if not message:
             message = super(GmcMessagePool, self).create(vals)
