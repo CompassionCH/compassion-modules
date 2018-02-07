@@ -25,7 +25,8 @@
                                 </a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                                     <li t-if="record.sds_state.raw_value == 'sub_waiting'"><a name="action_sub" type="object">Create SUB Sponsorship</a></li>
-                                    <li t-if="record.sds_state.raw_value == 'sub_waiting'"><a name="action_no_sub" type="object">No sub</a></li>
+                                    <li t-if="record.sds_state.raw_value in ('active', 'sub_waiting')"><a name="action_no_sub" type="object">No sub</a></li>
+                                    <li t-if="record.sds_state.raw_value in ('sub_waiting', 'sub')"><a name="action_sub_reject" type="object">SUB Reject</a></li>
                                     <li><ul class="oe_kanban_colorpicker" data-field="color"/></li>
                                 </ul>
                             </div>
@@ -72,6 +73,7 @@
                     <field name="sds_state" widget="statusbar" statusbar_visible="draft,start,waiting_welcome,active,sub,sub_accept"/>
                     <button name="action_sub" type="object" class="oe_highlight" string="Create SUB Sponsorship" attrs="{'invisible':[('sds_state','!=','sub_waiting')]}"/>
                     <button name="action_no_sub" type="object" string="No sub" attrs="{'invisible':[('sds_state','not in',['active', 'sub_waiting'])]}"/>
+                    <button name="action_sub_reject" type="object" string="SUB Reject" attrs="{'invisible':[('sds_state','not in',['sub', 'sub_waiting'])]}"/>
                 </header>
                 <sheet>
                     <div class="oe_right oe_button_box" name="button_box">
