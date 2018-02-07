@@ -21,7 +21,7 @@ class GenerateCommunicationWizard(models.TransientModel):
         ('preview', 'preview'),
         ('generation', 'generation')
     ], default='edit')
-    selection_domain = fields.Char(default="[]")
+    selection_domain = fields.Char(default=lambda s: s._default_domain())
     partner_ids = fields.Many2many(
         'res.partner', string='Recipients',
         default=lambda s: s._default_partners()
@@ -49,6 +49,10 @@ class GenerateCommunicationWizard(models.TransientModel):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.model
+    def _default_domain(self):
+        return "[('id', 'in', {})]".format(self._default_partners())
+
     @api.model
     def _default_partners(self):
         partners = self.env['res.partner'].browse(self.env.context.get(

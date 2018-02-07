@@ -54,6 +54,9 @@ class GmcAction(models.Model):
         help='method to call on the object upon success delivery '
              '(will pass the received answer as parameter as dictionary)'
     )
+    failure_method = fields.Char(
+        help='method called on the object when the response contain error')
+
     incoming_method = fields.Char(
         default='process_commkit',
         help='method called on the object when receiving incoming message '
