@@ -25,8 +25,8 @@
                                 </a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                                     <li t-if="record.sds_state.raw_value == 'sub_waiting'"><a name="action_sub" type="object">Create SUB Sponsorship</a></li>
-                                    <li t-if="record.sds_state.raw_value in ('active', 'sub_waiting')"><a name="action_no_sub" type="object">No sub</a></li>
-                                    <li t-if="record.sds_state.raw_value in ('sub_waiting', 'sub')"><a name="action_sub_reject" type="object">SUB Reject</a></li>
+                                    <li t-if="record.sds_state.raw_value == 'sub_waiting'"><a name="action_no_sub" type="object">No sub</a></li>
+                                    <li t-if="record.sds_state.raw_value == 'sub_waiting'"><a name="action_sub_reject" type="object">SUB Reject</a></li>
                                     <li><ul class="oe_kanban_colorpicker" data-field="color"/></li>
                                 </ul>
                             </div>
@@ -183,13 +183,13 @@
 
     <!-- Tracking actions -->
     <record model="ir.actions.act_window" id="action_follow_sds">
-        <field name="name">Welcome / SUB</field>
+        <field name="name">SUB Sponsorships</field>
         <field name="res_model">recurring.contract</field>
         <field name="domain">[('type', 'like', 'S')]</field>
         <field name="context">{'default_type': 'S', 'search_default_user':1}</field>
         <field name="view_ids"
                    eval="[(5, 0, 0),
-                          (0, 0, {'view_mode': 'kanban'}),
+                          (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_follow_contract_kanban_compassion')}),
                           (0, 0, {'view_mode': 'tree', 'view_id': ref('view_follow_contract_tree_compassion')}),
                           (0, 0, {'view_mode': 'form', 'view_id': ref('view_follow_contract_form_compassion')}),
                           ]"/>
