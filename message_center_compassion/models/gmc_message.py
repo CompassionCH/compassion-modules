@@ -76,7 +76,7 @@ class GmcMessagePool(models.Model):
         default=fields.Datetime.now)
     action_id = fields.Many2one(
         'gmc.action', 'GMC Message', ondelete='restrict',
-        required=True, readonly=True)
+        required=False, readonly=True)
     process_date = fields.Datetime(readonly=True, track_visibility='onchange')
     state = fields.Selection(
         [('new', _('New')),
@@ -118,7 +118,8 @@ class GmcMessagePool(models.Model):
             message = self.search([
                 ('object_id', '=', vals['object_id']),
                 ('state', 'in', ('new', 'pending')),
-                ('action_id', '=', vals['action_id'])])
+                ('action_id', '=', vals['action_id'])
+            ])
 
         if not message:
             message = super(GmcMessagePool, self).create(vals)
@@ -353,7 +354,7 @@ class GmcMessagePool(models.Model):
                             *answer_vals)
                         mess_vals['state'] = 'success'
                     except Exception as e:
-                        if hasattr(action, 'failure_method'):
+                        if action.failure_method:
                             getattr(data_objects[i], action.failure_method)(
                                 result)
                         mess_vals.update({
@@ -361,7 +362,7 @@ class GmcMessagePool(models.Model):
                             'failure_reason': e.message,
                         })
                 else:
-                    if hasattr(action, 'failure_method'):
+                    if action.failure_method:
                         getattr(data_objects[i], action.failure_method)(result)
                     mess_vals.update({
                         'state': 'failure',
@@ -369,7 +370,7 @@ class GmcMessagePool(models.Model):
                     })
                 self[i].write(mess_vals)
         else:
-            if hasattr(action, 'failure_method'):
+            if action.failure_method:
                 for i in range(0, len(results)):
                     result = results[i]
                     getattr(data_objects[i], action.failure_method)(result)

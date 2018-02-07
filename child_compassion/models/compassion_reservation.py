@@ -167,7 +167,7 @@ class CompassionReservation(models.Model):
         """ Called when the reservation has failed"""
         self.message_post(
             subject='Reservation failed',
-            body='[' + str(vals['Code']) + ']' + vals['Message'],
+            body='[' + str(vals['Code']) + '] ' + vals['Message'],
             message_type='comment',
         )
 
@@ -181,15 +181,7 @@ class CompassionReservation(models.Model):
     ##########################################################################
     @api.multi
     def send_reservation(self):
-        messages = self.with_context(async_mode=False).handle_reservation()
-        for i in range(0, len(messages)):
-            if messages[i].state != 'success':
-                self[i].message_post(
-                    messages[i].failure_reason,
-                    _("Reservation failed")
-                )
-                messages[i].unlink()
-        return True
+        return self.with_context(async_mode=False).handle_reservation()
 
     @api.multi
     def cancel_reservation(self):

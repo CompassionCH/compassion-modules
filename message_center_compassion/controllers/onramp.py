@@ -37,19 +37,32 @@ class RestController(http.Controller):
         }
         action_connect = request.env['gmc.action.connect'].sudo(
             request.uid).search([('connect_schema', '=', message_type)])
-        if action_connect:
-            action = action_connect.action_id
+        if not action_connect:
+            action_connect = request.env['gmc.action.connect'].sudo(
+                request.uid).create({
+                    'connect_schema': message_type
+                })
+        action = action_connect.action_id
+        if action.id:
             request.env['gmc.message.pool'].sudo(request.uid).create({
                 'request_id': request.uuid,
                 'action_id': action.id,
                 'headers': json.dumps(dict(headers.items())),
                 'content': json.dumps(request.jsonrequest)
             })
+
             result["Message"] = "Your message was successfully received."
         else:
             ONRAMP_LOGGER.error(
                 "Unknown message type received: " + message_type)
             result["Message"] = "Unknown message type - not processed."
+            request.env['gmc.message.pool'].sudo(request.uid).create({
+                'request_id': request.uuid,
+                'direction': 'in',
+                'headers': json.dumps(dict(headers.items())),
+                'content': json.dumps(request.jsonrequest)
+            })
+
         return result
 
     def _validate_headers(self, headers):
