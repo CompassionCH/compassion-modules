@@ -38,7 +38,8 @@
     'depends': ['base'],
     'data': [
         'security/ir.model.access.csv',
-        'data/ir.advanced.translation.csv'
+        'data/ir.advanced.translation.csv',
+        'views/advanced_translation_view.xml',
     ],
     'demo': [],
     'installable': True,
