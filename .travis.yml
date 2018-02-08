@@ -33,7 +33,7 @@ env:
 
   matrix:
   - LINT_CHECK="1"
-  - TESTS="1" ODOO_REPO="odoo/odoo" EXCLUDE="geo_project_compassion,thankyou_letters,partner_communication"
+  - TESTS="1" ODOO_REPO="odoo/odoo" EXCLUDE="geo_project_compassion,thankyou_letters,partner_communication,hr_attendance_calendar"
 
 
 virtualenv:
@@ -54,7 +54,6 @@ install:
 #  - cat ~/error.log
 
 script:
-  - travis/travis_header.sh
   - travis_run_tests
 
 after_success:

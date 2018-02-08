@@ -45,7 +45,7 @@ class IrAdvancedTranslation(models.Model):
     _name = 'ir.advanced.translation'
     _description = 'Advanced translation terms'
 
-    src = fields.Text(required=True, translate=False)
+    src = fields.Text('Source', required=True, translate=False)
     lang = fields.Selection('_get_lang', required=True)
     group = fields.Char()
     male_singular = fields.Text(translate=False)

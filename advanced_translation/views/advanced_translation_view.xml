@@ -6,13 +6,13 @@
             <field name="model">ir.advanced.translation</field>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="lang">Lang</field>
-                    <field name="src">Source</field>
-                    <field name="male_singular">Male singular</field>
-                    <field name="female_singular">Female singular</field>
-                    <field name="male_plural">Male plural</field>
-                    <field name="female_plural">Female plural</field>
-                    <field name="group">Group</field>
+                    <field name="lang"/>
+                    <field name="src"/>
+                    <field name="male_singular"/>
+                    <field name="female_singular"/>
+                    <field name="male_plural"/>
+                    <field name="female_plural"/>
+                    <field name="group"/>
                 </tree>
             </field>
         </record>
