@@ -473,7 +473,7 @@ class CommunicationJob(models.Model):
                 'model': 'res.partner',
                 'res_id': self.partner_id.id
             })
-        return message
+        return message.id
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
