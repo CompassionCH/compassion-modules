@@ -41,13 +41,16 @@ class CommunicationConfig(models.Model):
     sponsor when a given event occurs. """
     _name = 'partner.communication.config'
     _inherit = 'partner.communication.defaults'
+    _inherits = {'utm.source': 'source_id'}
+    _rec_name = "source_id"
     _description = 'Communication Configuration'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    name = fields.Char(
-        required=True, help='Rule name')
+    source_id = fields.Many2one(
+        'utm.source', 'UTM Source', required=True, ondelete='restrict'
+    )
     model_id = fields.Many2one(
         'ir.model', 'Applies to', required=True,
         help="The kind of document with this communication can be used")
