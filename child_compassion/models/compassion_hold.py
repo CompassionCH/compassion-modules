@@ -352,6 +352,8 @@ class CompassionHold(models.Model):
             if child.sponsor_id:
                 # Check if it was a depart and retrieve lifecycle event
                 child.get_lifecycle_event()
+                if child.sponsor_id:
+                    child.signal_workflow('release')
             else:
                 child.signal_workflow('release')
         return True
@@ -362,35 +364,10 @@ class CompassionHold(models.Model):
         Remove expired holds
         :return: True
         """
-        # Mark old holds as expired
         holds = self.search([
-            ('expiration_date', '<', fields.Datetime.now()),
-            ('state', '=', 'active')
+            ('state', '=', 'draft')
         ])
-        holds.write({'state': 'expired'})
-
-        # Release children (don't call workflow which sometimes crashes)
-        children = holds.mapped('child_id')
-        children.write({'hold_id': False})
-        children.delete_workflow()
-        children.child_released()
-
-        try:
-            with self.env.cr.savepoint():
-                # Remove holds that have no child linked anymore
-                holds = self.search([
-                    ('state', '=', 'expired'),
-                    ('child_id', '=', False)
-                ])
-                holds.unlink()
-
-                # Remove draft holds
-                holds = self.search([
-                    ('state', '=', 'draft')
-                ])
-                holds.unlink()
-        except:
-            logger.error("Some old or draft holds couldn't be removed.")
+        holds.unlink()
         return True
 
     @api.model
