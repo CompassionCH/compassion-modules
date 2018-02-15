@@ -153,7 +153,7 @@ class RecurringContract(models.Model):
         for contract in self:
             if contract.type == 'S':
                 recurring_value = contract.group_id.advance_billing_months
-                recurring_unit = _('month')
+                recurring_unit = 'month'
             else:
                 recurring_value = contract.group_id.recurring_value
                 recurring_unit = contract.group_id.recurring_unit
