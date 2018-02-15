@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-# (C) 2016 Coninckx David (Open Net Sarl)
+# © 2016 Coninckx David (Open Net Sarl)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 
-from odoo import models, fields, api
+from openerp import models, fields, api
 import logging
 _logger = logging.getLogger(__name__)
 
