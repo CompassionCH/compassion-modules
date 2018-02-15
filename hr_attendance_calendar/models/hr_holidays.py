@@ -1,39 +1,32 @@
 # -*- coding: utf-8 -*-
-# (C) 2016 Coninckx David (Open Net Sarl)
+# © 2016 Coninckx David (Open Net Sarl)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from datetime import timedelta
 
-from odoo import models, fields, api
+from openerp import models, fields, api
 import logging
-
 _logger = logging.getLogger(__name__)
-
 
 class HrHolidaysStatus(models.Model):
     _inherit = 'hr.holidays.status'
 
     remove_from_due_hours = fields.Boolean(string="Remove from due hours")
     bonus_hours = fields.Boolean(string="Bonus hours")
-
-    @api.multi
-    def name_get(self):
-        res = super(HrHolidaysStatus, self).name_get()
-        if not self.env.context.get('employee_id'):
+    
+    def name_get(self, cr, uid, ids, context=None):
+        res = super(HrHolidaysStatus, self).name_get(cr, uid, ids, context=context)
+        if not context.get('employee_id'):
             return res
-        employee = \
-            self.env['hr.employee'].browse(
-                self.env.context.get('employee_id'))[0]
-        result = []
-        for record in self:
+        employee = self.pool.get('hr.employee').browse(cr, uid, context.get('employee_id'), context=context)[0]
+        res2 = []
+        for record in self.browse(cr, uid, ids, context=context):
             if record.bonus_hours:
                 for name in res:
                     if name[0] == record.id:
-                        name = (record.id, record.name + (
-                            '  (%0.2f h)' % employee.bonus_malus))
-                    result.append(name)
-        return result
-
+                        name = (record.id, record.name + ('  (%0.2f h)' % (employee.bonus_malus)))
+                    res2.append(name)
+        return res2
 
 class HrHolidays(models.Model):
     _inherit = 'hr.holidays'
