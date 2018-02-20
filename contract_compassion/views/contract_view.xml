@@ -111,7 +111,8 @@
                     <field name="origin_id"/>
                 </field>
                 <xpath expr="//filter[@name='draft']" position="replace">
-                    <filter name="waiting" string="Waiting" domain="[('state','in', ('draft','waiting','mandate'))]"/>
+                    <filter name="draft" string="Draft" domain="[('state','=', 'draft')]"/>
+                    <filter name="waiting" string="Waiting" domain="[('state','in', ('waiting','mandate'))]"/>
                 </xpath>
                 <xpath expr="//filter[@name='terminated']" position="replace">
                     <filter name="finished" string="Finished" domain="[('state','=', 'terminated')]"/>
