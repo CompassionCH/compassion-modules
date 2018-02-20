@@ -4,29 +4,28 @@
 
 {
     'name': 'Attendance - Calendar',
-    'summary': 'Compute Bonus/Malus based on attendances',
-    'description': 'Compute Bonus/Malus based on attendances',
+    'summary': 'Compute extra hours based on attendances',
     'category': 'Human Resources',
-    'author': "Open Net Sàrl",
+    'author': "CompassionCH, Open Net Sàrl",
     'depends': [
         'hr',
+        'hr_employee',
         'hr_attendance',
         'hr_holidays',
         'hr_public_holidays'
     ],
-    'version': '9.0.1.0.0',
+    'version': '10.0.1.0.0',
     'auto_install': False,
     'website': 'http://open-net.ch',
     'license': 'AGPL-3',
     'images': [],
     'data': [
         'security/ir.model.access.csv',
-        # 'security/hr_security.xml',
         'views/hr_attendance_calendar_view.xml',
-        # 'views/resource_calendar_view.xml',
-        # 'views/hr_holidays.xml',
-        'views/hr_employee.xml',
+        'views/hr_attendance_day_view.xml',
         'views/hr_attendance_view.xml',
+        'views/hr_employee.xml',
+        'views/hr_holidays_status_views.xml',
         'wizard/create_hr_attendance_day_view.xml',
         'data/attendance_computation_cron.xml'
     ],

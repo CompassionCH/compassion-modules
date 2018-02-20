@@ -2,11 +2,13 @@
 # © 2016 Coninckx David (Open Net Sarl)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, fields, api
+import logging
 from datetime import timedelta
 
-import logging
+from odoo import models, fields
+
 _logger = logging.getLogger(__name__)
+
 
 class CreateHrAttendance(models.TransientModel):
     _name = 'create.hr.attendance.day'
@@ -22,7 +24,7 @@ class CreateHrAttendance(models.TransientModel):
         current_date = date_from
         att_day = self.env['hr.attendance.day']
 
-        while (current_date <= date_to):
+        while current_date <= date_to:
             already_exist = att_day.search([
                 ('employee_id', '=', self.employee_id.id),
                 ('name', '=', current_date)
