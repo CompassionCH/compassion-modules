@@ -25,7 +25,6 @@
         'views/hr_attendance_view.xml',
         'views/hr_employee.xml',
         'views/hr_holidays_status_views.xml',
-        'wizard/create_hr_attendance_day_view.xml',
         'data/attendance_computation_cron.xml'
     ],
     'installable': True
