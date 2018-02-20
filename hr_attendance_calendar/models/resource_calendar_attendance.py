@@ -11,4 +11,3 @@ class ResCalendarAttendance(models.Model):
     _inherit = 'resource.calendar.attendance'
 
     due_hours = fields.Float(string="Due hours")
-    break_hours = fields.Float(string="Break duration")
