@@ -9,7 +9,6 @@
     'author': "CompassionCH, Open Net Sàrl",
     'depends': [
         'hr',
-        'hr_employee',
         'hr_attendance',
         'hr_holidays',
         'hr_public_holidays'
