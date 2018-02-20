@@ -7,7 +7,6 @@
         <field name="arch" type="xml">
             <field name="date_to" position="after">
                 <field name="due_hours" widget="float_time"/>
-                <field name="break_hours" widget="float_time"/>
             </field>
         </field>
     </record>
