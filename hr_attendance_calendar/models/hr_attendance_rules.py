@@ -16,7 +16,8 @@ class HrAttendanceRules(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    name = fields.Char(string='Name')
-    threshold = fields.Float(string='Hours threshold in the day')
-    due_break = fields.Integer(string='Minimum break in minute')
-    due_break_total = fields.Integer(string='Total break due in minute')
+    name = fields.Char('Name')
+    threshold = fields.Float('Threshold', help='Threshold in hours when the '
+                                               'duration break change')
+    due_break = fields.Integer('Minimum break in minute')
+    due_break_total = fields.Integer('Total break due in minute')

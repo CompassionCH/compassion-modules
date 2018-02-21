@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    @author: Stephane Eicher <seicher@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
@@ -16,18 +16,14 @@ class HrAttendanceBreak(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    employee_id = fields.Many2one(comodel_name='hr.employee',
-                                  string="Employee")
-    attendance_day_id = fields.Many2one(comodel_name='hr.attendance.day',
-                                        string="Attendance day",
+    employee_id = fields.Many2one('hr.employee', "Employee")
+    attendance_day_id = fields.Many2one('hr.attendance.day', "Attendance day",
                                         readonly=True,
                                         ondelete="cascade")
-    duration = fields.Float(string='Duration',
-                            compute='_compute_duration',
-                            store=True,
-                            readonly=True)
-    start = fields.Datetime(string="Start")
-    stop = fields.Datetime(string="Stop")
+    duration = fields.Float('Duration', compute='_compute_duration',
+                            store=True, readonly=True)
+    start = fields.Datetime("Start")
+    stop = fields.Datetime("Stop")
 
     ##########################################################################
     #                             FIELDS METHODS                             #

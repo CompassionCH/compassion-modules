@@ -21,11 +21,11 @@ class HrAttendance(models.Model):
     ##########################################################################
     # New fields --------------------------------------------------------------
     attendance_day_id = fields.Many2one(comodel_name='hr.attendance.day',
-                                        string="Attendance day",
+                                        string='Attendance day',
                                         readonly=True)
 
     ##########################################################################
-    #                             PUBLIC METHODS                             #
+    #                               ORM METHODS                              #
     ##########################################################################
     @api.model
     def create(self, vals):
@@ -58,7 +58,7 @@ class HrAttendance(models.Model):
                     attendance_day = self.env['hr.attendance.day'].search([
                         ('employee_id', '=', vals['employee_id']),
                         ('date', '=', check_in)])
-                    vals['attendance_day_id'] = attendance_day
+                    vals['attendance_day_id'] = attendance_day.id
 
             super(HrAttendance, self).write(vals)
 

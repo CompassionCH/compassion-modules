@@ -28,15 +28,13 @@ class HrHolidays(models.Model):
     @api.multi
     def write(self, vals):
         super(HrHolidays, self).write(vals)
-        for att_call in self:
-            if att_call.state == 'validate' and 'hr_att_day_ids' not in vals:
-                start = fields.Date.from_string(att_call.date_from)
-                end = fields.Date.from_string(att_call.date_to)
-                att_call.hr_att_day_ids = self.env['hr.attendance.day'].search(
-                    [('employee_id', '=', att_call.employee_id.id),
-                     ('date', '>=', start),
-                     ('date', '<=', end)])
-                att_call.hr_att_day_ids.recompute_due_hours()
+        for leave in self:
+            if leave.state == 'validate' and 'hr_att_day_ids' not in vals:
+                leave.hr_att_day_ids = self.env['hr.attendance.day'].search(
+                    [('employee_id', '=', leave.employee_id.id),
+                     ('date', '>=', leave.date_from),
+                     ('date', '<=', leave.date_to)])
+                leave.hr_att_day_ids.recompute_due_hours()
 
     @api.model
     def compute_work_day(self, str_date):
