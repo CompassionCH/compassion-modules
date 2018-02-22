@@ -52,7 +52,10 @@ class EventCompassion(models.Model):
     effective_allocated = fields.Integer(compute='_compute_allocate_children')
     staff_ids = fields.Many2many(
         'res.partner', 'partners_to_staff_event', 'event_id', 'partner_id',
-        'Staff')
+        'Staff', track_visibility='onchange')
+    user_ids = fields.Many2many(
+        'res.users', compute='_compute_users', track_visibility='onchange'
+    )
     description = fields.Text()
     analytic_id = fields.Many2one(
         'account.analytic.account', 'Analytic Account')
@@ -171,6 +174,13 @@ class EventCompassion(models.Model):
                     _("The hold start date must "
                       "be before the event starting date !"))
 
+    @api.multi
+    @api.depends('staff_ids')
+    def _compute_users(self):
+        for event in self:
+            event.user_ids = event.staff_ids.mapped('user_ids').filtered(
+                lambda u: not u.share)
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -234,7 +244,7 @@ class EventCompassion(models.Model):
 
                 # Update Analytic Account and Origin
                 event.analytic_id.write(event._get_analytic_vals())
-                if 'user_id' in vals:
+                if 'user_id' in vals and event.origin_id:
                     event.origin_id.partner_id = event.user_id.partner_id
 
                 if 'name' in vals:
@@ -511,3 +521,45 @@ class EventCompassion(models.Model):
                     fields.Datetime.to_string(expiration_date)
             }).env.context
         }
+
+    ##########################################################################
+    #              SUBSCRIPTION METHODS TO SUBSCRIBE STAFF ONLY              #
+    ##########################################################################
+    @api.multi
+    def message_auto_subscribe(self, updated_fields, values=None):
+        """
+        Subscribe from user_ids field which is a computed field.
+        """
+        if 'staff_ids' in updated_fields and values:
+            updated_fields = ['user_ids']
+            for event in self:
+                users = event.user_ids
+                # Subscribe each staff individually
+                ambassador = event.user_id
+                for user in users:
+                    # Hack to address the mail to the correct user, change
+                    # user_id field(bypass ORM to avoid tracking field change)
+                    self.env.cr.execute(
+                        "UPDATE crm_event_compassion "
+                        "SET user_id = %s WHERE id = %s", [user.id, event.id]
+                    )
+                    values = {'user_ids': user.id}
+                    super(EventCompassion, event).message_auto_subscribe(
+                        updated_fields, values
+                    )
+                # Restore ambassador
+                self.env.cr.execute(
+                    "UPDATE crm_event_compassion "
+                    "SET user_id = %s WHERE id = %s", [ambassador.id, event.id]
+                )
+        return True
+
+    @api.model
+    def _message_get_auto_subscribe_fields(self, updated_fields,
+                                           auto_follow_fields=None):
+        """ Add user_ids field to followers """
+        auto_follow_fields = ['user_ids']
+        if 'staff_ids' in updated_fields:
+            updated_fields.append('user_ids')
+        return super(EventCompassion, self)._message_get_auto_subscribe_fields(
+            updated_fields, auto_follow_fields)
