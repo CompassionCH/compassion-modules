@@ -232,8 +232,10 @@ class EventCompassion(models.Model):
                     event.project_id.with_context(from_event=True).write(
                         event._get_project_vals())
 
-                # Update Analytic Account
+                # Update Analytic Account and Origin
                 event.analytic_id.write(event._get_analytic_vals())
+                if 'user_id' in vals:
+                    event.origin_id.partner_id = event.user_id.partner_id
 
                 if 'name' in vals:
                     # Only administrator has write access to origins.
@@ -435,7 +437,7 @@ class EventCompassion(models.Model):
             'name': name,
             'year': self.year,
             'tag_ids': [(6, 0, tag_ids)],
-            'partner_id': self.partner_id.id,
+            'partner_id': self.user_id.partner_id.id,
         }
 
     def _get_origin_vals(self, analytic_id):
@@ -443,6 +445,7 @@ class EventCompassion(models.Model):
             'type': 'event',
             'event_id': self.id,
             'analytic_id': analytic_id,
+            'partner_id': self.user_id.partner_id.id
         }
 
     def _get_calendar_vals(self):
