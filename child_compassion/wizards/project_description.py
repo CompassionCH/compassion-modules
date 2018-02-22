@@ -68,6 +68,16 @@ class ProjectDescription(models.TransientModel):
         # 1. Basic Information
         ######################
         project = self.project_id
+
+        # Put country if not the same as Field Office
+        if project.country_id and project.country_id != \
+                project.field_office_id.country_id:
+            desc('.project_country')[0].text = _(
+                "The project is located in %s, close to the border."
+            ) % project.country_id.name
+        else:
+            desc('#project_country').remove()
+
         desc('.project_name')[0].text = _("Project name")
         desc('.project_name')[1].text = project.name
         desc('.project_closest_city')[0].text = _("Closest city")

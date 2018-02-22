@@ -55,7 +55,7 @@ class ICPMapping(OnrampMapping):
         'TravelTimeToMedicalServices': 'time_to_medical_facility',
         'UnemploymentRate': 'unemployment_rate',
         'WarmestMonth': 'warmest_month',
-        'Country': None,
+        'Country': ('country_id.name', 'res.country'),
         'Denomination': 'church_denomination',
         'FieldOffice_Name': ('field_office_id.name',
                              'compassion.field.office'),

@@ -203,7 +203,8 @@ class OnrampMapping(object):
         result = dict()
         if isinstance(value_mapping, tuple):
             # Relational field
-            relation_obj = self.env[value_mapping[1]]
+            relation_obj = self.env[value_mapping[1]].with_context(
+                lang='en_US')
             correspondence_field = value_mapping[0].split('.')[0]
             relation_field = value_mapping[0].split('.')[-1]
             operator = 'in' if isinstance(value, list) else '='
