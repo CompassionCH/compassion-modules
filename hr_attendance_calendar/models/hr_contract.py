@@ -13,4 +13,4 @@ from odoo import fields, models
 class HrContract(models.Model):
     _inherit = 'hr.contract'
 
-    limit_extra_hours = fields.Integer(string='Limit extra hours')
+    limit_extra_hours = fields.Integer('Limit extra hours')

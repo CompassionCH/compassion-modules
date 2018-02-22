@@ -25,6 +25,11 @@ class HrAttendanceBreak(models.Model):
     start = fields.Datetime("Start")
     stop = fields.Datetime("Stop")
 
+    previous_attendance = fields.Many2one('hr.attendance')
+    next_attendance = fields.Many2one('hr.attendance')
+
+    system_modified = fields.Boolean('Modified by the system', default=False)
+
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
@@ -39,3 +44,25 @@ class HrAttendanceBreak(models.Model):
                 stop = fields.Datetime.from_string(att_break.stop)
                 delta = stop - start
                 att_break.duration = delta.total_seconds() / 3600.0
+
+    ##########################################################################
+    #                               ORM METHODS                              #
+    ##########################################################################
+
+    @api.multi
+    def write(self, vals):
+        for this in self:
+            if 'start' in vals:
+                this.previous_attendance.write({
+                    'check_in': vals['start'],
+                    'from_break_write': True,
+                })
+            if 'stop' in vals:
+                this.next_attendance.write({
+                    'check_in': vals['stop'],
+                    'from_break_write': True,
+                })
+            if 'system_modified' not in vals:
+                vals['system_modified'] = False
+
+            super(HrAttendanceBreak, self).write(vals)

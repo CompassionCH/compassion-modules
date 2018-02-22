@@ -48,6 +48,7 @@
         'security/ir.model.access.csv',
         'views/hr_attendance_calendar_view.xml',
         'views/hr_attendance_day_view.xml',
+        'views/hr_attendance_settings.xml',
         'views/hr_attendance_view.xml',
         'views/hr_employee.xml',
         'views/hr_holidays_status_views.xml',

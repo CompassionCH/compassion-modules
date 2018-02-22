@@ -22,6 +22,7 @@
                                 <field name="employee_id"/>
                                 <field name="in_leave"/>
                                 <field name="working_day"/>
+                                <field name="rule_id"/>
                             </group>
                             <group string="Hours">
                                 <field name="due_hours"
@@ -32,11 +33,14 @@
                                        widget="float_time"/>
                             </group>
                             <group string="Break">
-                                <!--<field name="due_break_min"-->
-                                <!--widget="float_time"/>-->
-                                <!--<field name="due_break_total"-->
-                                <!--widget="float_time"/>-->
-                                <!--<field name="working_day"/>-->
+                                <field name="due_break_min"
+                                       widget="float_time"/>
+                                <field name="due_break_total"
+                                       widget="float_time"/>
+                                <field name="break_max"
+                                       widget="float_time"/>
+                                <field name="break_total"
+                                       widget="float_time"/>
                             </group>
 
                         </group>
@@ -55,6 +59,7 @@
                                            widget="float_time"/>
                                     <field name="start"/>
                                     <field name="stop"/>
+                                    <field name="system_modified"/>
                                 </tree>
                             </field>
                             <field name="leave_ids">
@@ -81,6 +86,7 @@
             <tree decoration-info="extra_hours &gt;= 0"
                   decoration-danger="extra_hours &lt; 0">
                 <field name="date"/>
+                <field name="working_day"/>
                 <field name="employee_id"/>
                 <field name="worked_hours"
                        widget="float_time"/>

@@ -21,18 +21,15 @@ class HrEmployee(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    extra_hours = fields.Float(string='Extra hours',
+    extra_hours = fields.Float('Extra hours',
                                compute='_compute_extra_hours',
                                readonly=True,
                                oldname='bonus_malus')
-    extra_hours_lost = fields.Float(string="Extra hours lost",
+    extra_hours_lost = fields.Float("Extra hours lost",
                                     readonly=True, store=True)
-    attendance_days_ids = fields.One2many(comodel_name='hr.attendance.day',
-                                          inverse_name='employee_id',
-                                          string="Attendance day")
-    annual_balance = fields.Float(string='Annual balance')
-
-
+    attendance_days_ids = fields.One2many('hr.attendance.day', 'employee_id',
+                                          "Attendance day")
+    annual_balance = fields.Float('Annual balance')
 
     ##########################################################################
     #                             FIELDS METHODS                             #

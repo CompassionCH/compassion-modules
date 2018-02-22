@@ -8,8 +8,6 @@
 #
 ##############################################################################
 
-import pytz
-
 from odoo import models, fields, api
 
 
@@ -19,7 +17,7 @@ class HrHolidays(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    hr_att_day_ids = fields.Many2many(comodel_name='hr.attendance.day',
+    hr_att_day_ids = fields.Many2many('hr.attendance.day',
                                       string='Attendance day related')
 
     ##########################################################################
@@ -36,7 +34,6 @@ class HrHolidays(models.Model):
                      ('date', '<=', leave.date_to)])
                 leave.hr_att_day_ids.recompute_due_hours()
 
-    @api.model
     def compute_work_day(self, str_date):
         """
         Compute if the leave duration for the day is full/half work day.
@@ -45,12 +42,18 @@ class HrHolidays(models.Model):
         :return: daily leave duration (in days)
         :rtype: float [1,0.5]
         """
-        tz_employee = pytz.timezone(self.employee_id.user_id.tz)
-        date = fields.Datetime.from_string(
-            str_date + ' 12:00:00').replace(tzinfo=tz_employee)
 
-        start = pytz.utc.localize(fields.Datetime.from_string(self.date_from))
-        end = pytz.utc.localize(fields.Datetime.from_string(self.date_to))
+        start = fields.Datetime.context_timestamp(self.employee_id,
+                                                  fields.Datetime.from_string(
+                                                      self.date_from))
+
+        end = fields.Datetime.context_timestamp(self.employee_id,
+                                                fields.Datetime.from_string(
+                                                    self.date_to))
+
+        date = fields.Date.from_string(str_date)
+        date = start.replace(year=date.year, month=date.month, day=date.day,
+                             hour=12, minute=0, second=0)
 
         if start.date() == date.date():
             if start < date:

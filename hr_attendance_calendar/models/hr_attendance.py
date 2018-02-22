@@ -37,6 +37,8 @@ class HrAttendance(models.Model):
         ])
         if attendance_day:
             new_record.attendance_day_id = attendance_day
+            # todo: find better solution
+            new_record.attendance_day_id.compute_breaks()
 
         else:
             self.env['hr.attendance.day'].create({
@@ -63,6 +65,7 @@ class HrAttendance(models.Model):
             super(HrAttendance, self).write(vals)
 
             if 'check_in' in vals or 'check_out' in vals:
-                self.attendance_day_id.compute_breaks()
+                if 'from_break_write' not in vals:
+                    self.attendance_day_id.compute_breaks()
 
             return
