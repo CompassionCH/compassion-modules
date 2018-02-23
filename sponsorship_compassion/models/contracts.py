@@ -101,6 +101,8 @@ class SponsorshipContract(models.Model):
         ('partner_id', 'Payer'),
         ('correspondant_id', 'Correspondent')
     ], default='correspondant_id')
+    gift_partner_id = fields.Many2one('res.partner',
+                                      compute='_compute_gift_partner')
 
     _sql_constraints = [
         ('unique_global_id', 'unique(global_id)', 'You cannot have same '
@@ -189,6 +191,12 @@ class SponsorshipContract(models.Model):
                 ('cancel', 'draft'))
             contract.nb_invoices = len(gift_invoices)
         super(SponsorshipContract, self - gift_contracts)._compute_invoices()
+
+    @api.multi
+    def _compute_gift_partner(self):
+        for contract in self:
+            contract.gift_partner_id = getattr(
+                contract, contract.send_gifts_to, contract.correspondant_id)
 
     ##########################################################################
     #                              ORM METHODS                               #

@@ -26,6 +26,19 @@ class ContractOrigin(models.Model):
             else:
                 super(ContractOrigin, origin)._compute_name()
 
+    @api.multi
+    def write(self, vals):
+        """ Propagate ambassador into contracts and invoice lines. """
+        if 'partner_id' in vals:
+            sponsorships = self.env['recurring.contract'].search([
+                ('origin_id', 'in', self.ids)])
+            sponsorships.write({'user_id': vals['partner_id']})
+            invoice_lines = self.env['account.invoice.line'].search([
+                ('contract_id', 'in', sponsorships.ids)]
+            )
+            invoice_lines.write({'user_id': vals['partner_id']})
+        return super(ContractOrigin, self).write(vals)
+
 
 class Contracts(models.Model):
     """ Adds the Salesperson to the contract. """
