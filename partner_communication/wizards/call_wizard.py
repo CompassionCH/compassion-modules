@@ -31,8 +31,8 @@ class CallWizard(models.TransientModel):
         communication = self.env['partner.communication.job'].browse(
             self.env.context.get('communication_id'))
         communication.message_post(
-            self.comments or _('Partner did not answer'),
-            _('Phone attempt')
+            subject=_('Phone attempt'),
+            body=self.comments or _('Partner did not answer')
         )
         return True
 
