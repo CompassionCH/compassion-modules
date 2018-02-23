@@ -30,13 +30,17 @@ class ContractOrigin(models.Model):
     def write(self, vals):
         """ Propagate ambassador into contracts and invoice lines. """
         if 'partner_id' in vals:
-            sponsorships = self.env['recurring.contract'].search([
-                ('origin_id', 'in', self.ids)])
-            sponsorships.write({'user_id': vals['partner_id']})
-            invoice_lines = self.env['account.invoice.line'].search([
-                ('contract_id', 'in', sponsorships.ids)]
-            )
-            invoice_lines.write({'user_id': vals['partner_id']})
+            for origin in self:
+                old_ambassador_id = origin.partner_id.id
+                sponsorships = self.env['recurring.contract'].search([
+                    ('origin_id', '=', origin.id),
+                    ('user_id', '=', old_ambassador_id)
+                ])
+                sponsorships.write({'user_id': vals['partner_id']})
+                invoice_lines = self.env['account.invoice.line'].search([
+                    ('contract_id', 'in', sponsorships.ids)]
+                )
+                invoice_lines.write({'user_id': vals['partner_id']})
         return super(ContractOrigin, self).write(vals)
 
 
