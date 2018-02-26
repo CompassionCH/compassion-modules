@@ -11,8 +11,8 @@
 from odoo import models, fields
 
 
-class HrAttendanceWeighting(models.Model):
-    _name = "hr.attendance.weighting"
+class HrWeekdayCoefficient(models.Model):
+    _name = "hr.weekday.coefficient"
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -24,12 +24,10 @@ class HrAttendanceWeighting(models.Model):
         ('3', 'Thursday'),
         ('4', 'Friday'),
         ('5', 'Saturday'),
-        ('6', 'Sunday')
-    ],
-        string='Day of Week',
-        required=True,
-        index=True,
+        ('6', 'Sunday'),
+        ('7', 'Default')], 'Day of Week', required=True, index=True,
         default='0')
-    weighting = fields.Float
-    category_ids = fields.Many2many(comodel_name='hr.employee.category',
+    category_ids = fields.Many2many('hr.employee.category',
                                     string='Employee tag')
+    coefficient = fields.Float(
+        help='Multiply the worked hours by the coefficient')

@@ -16,5 +16,5 @@ from odoo import models, fields
 class HrHolidaysStatus(models.Model):
     _inherit = 'hr.holidays.status'
 
-    remove_from_due_hours = fields.Boolean(string="Remove from due hours",
+    remove_from_due_hours = fields.Boolean("Remove from due hours",
                                            default=False)

@@ -21,11 +21,11 @@ class HrAttendance(models.Model):
     ##########################################################################
     # New fields --------------------------------------------------------------
     attendance_day_id = fields.Many2one(comodel_name='hr.attendance.day',
-                                        string="Attendance day",
+                                        string='Attendance day',
                                         readonly=True)
 
     ##########################################################################
-    #                             PUBLIC METHODS                             #
+    #                               ORM METHODS                              #
     ##########################################################################
     @api.model
     def create(self, vals):
@@ -37,6 +37,8 @@ class HrAttendance(models.Model):
         ])
         if attendance_day:
             new_record.attendance_day_id = attendance_day
+            # todo: find better solution
+            new_record.attendance_day_id.compute_breaks()
 
         else:
             self.env['hr.attendance.day'].create({
@@ -58,11 +60,12 @@ class HrAttendance(models.Model):
                     attendance_day = self.env['hr.attendance.day'].search([
                         ('employee_id', '=', vals['employee_id']),
                         ('date', '=', check_in)])
-                    vals['attendance_day_id'] = attendance_day
+                    vals['attendance_day_id'] = attendance_day.id
 
             super(HrAttendance, self).write(vals)
 
             if 'check_in' in vals or 'check_out' in vals:
-                self.attendance_day_id.compute_breaks()
+                if 'from_break_write' not in vals:
+                    self.attendance_day_id.compute_breaks()
 
             return

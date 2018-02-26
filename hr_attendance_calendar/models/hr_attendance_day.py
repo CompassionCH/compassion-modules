@@ -10,12 +10,12 @@
 #
 ##############################################################################
 
-from datetime import date
+from datetime import date, timedelta
 
 from odoo import models, fields, api
 
 
-class HrDayAttendance(models.Model):
+class HrAttendanceDay(models.Model):
     """
     The instances of hr.attendance.day is created either at the first
     attendance of the day or by the method
@@ -27,80 +27,63 @@ class HrDayAttendance(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    date = fields.Date(string="Date",
-                       oldname='name',
+    date = fields.Date("Date",
                        # readonly=True, todo: uncomment
                        required=True)
-    employee_id = fields.Many2one(comodel_name='hr.employee',
-                                  string="Employee",
-                                  ondelete="cascade",
-                                  required=True)
+    employee_id = fields.Many2one('hr.employee', "Employee",
+                                  ondelete="cascade", required=True)
 
     # Working schedule
-    cal_att_ids = fields.Many2many(comodel_name='resource.calendar.attendance',
+    cal_att_ids = fields.Many2many('resource.calendar.attendance',
                                    string="Working schedule",
                                    required=True)
-    working_day = fields.Char(string="Working day",
-                              compute='_compute_working_day',
-                              readonly=True,
-                              store=True)
+    working_day = fields.Char("Working day", compute='_compute_working_day',
+                              readonly=True, store=True)
 
     # Leaves
-    leave_ids = fields.Many2many(comodel_name='hr.holidays',
-                                 string='Leaves')
-    in_leave = fields.Boolean(string='In leave',
-                              compute='_compute_in_leave',
+    leave_ids = fields.Many2many('hr.holidays', readonly=True, string='Leaves')
+    in_leave = fields.Boolean('In leave', compute='_compute_in_leave',
                               store=True)
 
     # Due hours
-    due_hours = fields.Float(string='Due hours',
-                             compute='_compute_due_hours',
-                             readonly=True,
-                             store=True)
+    due_hours = fields.Float('Due hours', compute='_compute_due_hours',
+                             readonly=True, store=True)
 
     # Attendances
-    attendance_ids = fields.One2many(string="Attendances",
-                                     comodel_name='hr.attendance',
-                                     inverse_name='attendance_day_id',
-                                     readonly=True)
+    attendance_ids = fields.One2many('hr.attendance', 'attendance_day_id',
+                                     'Attendances', readonly=True)
 
     # Worked
-    worked_hours = fields.Float(string='Worked hours',
-                                compute='_compute_worked_hours',
-                                store=True,
-                                readonly=True,
-                                oldname='calendar_worked_hours')
-    logged_hours = fields.Float(string='Logged hours',
-                                compute='_compute_logged_hours',
-                                store=True,
+    worked_hours = fields.Float('Worked hours',
+                                compute='_compute_worked_hours', store=True,
                                 readonly=True)
+    logged_hours = fields.Float('Logged hours',
+                                compute='_compute_logged_hours', store=True,
+                                readonly=True)
+    coefficient_id = fields.Many2one('hr.weekday.coefficient', readonly=True)
 
     # Break
-    # due_break_min = fields.Float(string='Minimum break due',
-    #                              compute='_compute_due_break',
-    #                              store=True, )
-    # due_break_total = fields.Float(string='Total break due',
-    #                                compute='_compute_due_break',
-    #                                store=True, )
-    break_ids = fields.One2many(string='Breaks',
-                                comodel_name='hr.attendance.break',
-                                inverse_name='attendance_day_id',
-                                readonly=True,
-                                store=True)
-    break_max = fields.Float(string='Longest break',
+    due_break_min = fields.Float('Minimum break due',
+                                 compute='_compute_due_break')
+    due_break_total = fields.Float('Total break due',
+                                   compute='_compute_due_break')
+    break_ids = fields.One2many('hr.attendance.break',
+                                'attendance_day_id',
+                                'Breaks',
+                                readonly=True)
+    break_max = fields.Float('Longest break',
                              compute='_compute_break_max',
                              store=True, )
-    break_total = fields.Float(string='Total break',
+    break_total = fields.Float('Total break',
                                compute='_compute_break_total',
                                store=True, )
+    rule_id = fields.Many2one('hr.attendance.rules', 'Rules',
+                              compute='_compute_rule_id')
 
     # Extra hours
-    extra_hours = fields.Float(string="Extra hours",
+    extra_hours = fields.Float("Extra hours",
                                compute='_compute_extra_hours',
-                               store=True,
-                               oldname='total_bonus_malus')
-    weighting = fields.Float(String="Weighting",
-                             readonly=True)
+                               store=True, )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -109,15 +92,8 @@ class HrDayAttendance(models.Model):
     @api.depends('cal_att_ids')
     def _compute_working_day(self):
         for att_day in self.filtered('cal_att_ids'):
-            day_id = int(self.cal_att_ids[0].dayofweek)
-            days_list = ('Monday',
-                         'Tuesday',
-                         'Wednesday',
-                         'Thursday',
-                         'Friday',
-                         'Saturday',
-                         'Sunday')
-            att_day.working_day = days_list[day_id]
+            att_day.working_day = fields.Date.from_string(
+                att_day.date).strftime('%A')
 
     @api.multi
     @api.depends('leave_ids')
@@ -129,6 +105,8 @@ class HrDayAttendance(models.Model):
     @api.multi
     @api.depends('cal_att_ids', 'leave_ids.state')
     def _compute_due_hours(self):
+        """First search the due hours based on the contract and after remove
+        somme hours if they are vacation"""
         for att_day in self:
             due_hours = 0
             for cal_att in att_day.cal_att_ids:
@@ -139,9 +117,10 @@ class HrDayAttendance(models.Model):
                     if leave.state not in ['validate', 'validate1']:
                         continue
                     if not leave.holiday_status_id.remove_from_due_hours:
-                        # todo: use config instead of 8.0
+                        working_day = self.env[
+                            'base.config.settings'].get_work_day_duration()
                         due_hours -= leave.compute_work_day(
-                            att_day.date) * 8
+                            att_day.date) * working_day
 
             att_day.due_hours = due_hours
 
@@ -149,45 +128,54 @@ class HrDayAttendance(models.Model):
     @api.depends('attendance_ids.worked_hours')
     def _compute_worked_hours(self):
         for att_day in self.filtered('attendance_ids'):
-            total_hours = 0
-            for attendance in att_day.attendance_ids:
-                total_hours += attendance.worked_hours
-            att_day.worked_hours = total_hours
+            att_day.worked_hours = sum(
+                att_day.attendance_ids.mapped('worked_hours'))
 
     @api.multi
     @api.depends('worked_hours')
     def _compute_logged_hours(self):
-        # todo: at verify if it's still useful
-        pass
+        for att_day in self.filtered('coefficient_id'):
+            logged_hours = att_day.worked_hours
+            coefficient = att_day.coefficient_id.coefficient
 
-    # @api.multi
-    # @api.depends('break_ids')
-    # def _compute_due_break(self):
-    #     for att_day in self:
-    #         more_hours = att_day.worked_hours > att_day.due_hours
-    #         hours = att_day.worked_hours if more_hours else att_day.due_hours
-    #         # todo: verify
-    #         rule = self.env['hr.attendance.rules'].search([
-    #             ('threshold', '>', hours),
-    #         ])
-    #         if rule:
-    #             att_day.due_break_min = rule[0].due_break
-    #             att_day.due_break_total = rule[0].due_break_total
-    #         else:
-    #             att_day.due_break_min = 0
-    #             att_day.due_break_total = 0
+            att_day.logged_hours = logged_hours * coefficient
 
     @api.multi
-    @api.depends('break_ids')
+    @api.depends('worked_hours', 'due_hours')
+    def _compute_rule_id(self):
+        for att_day in self:
+            more_hours = att_day.worked_hours > att_day.due_hours
+            hours = att_day.worked_hours if more_hours else att_day.due_hours
+
+            att_day.rule_id = self.env['hr.attendance.rules'].search([
+                ('time_from', '<=', hours),
+                ('time_to', '>', hours),
+            ])
+
+    @api.multi
+    @api.depends('rule_id')
+    def _compute_due_break(self):
+        """Calculation of the break duration due depending of
+        hr.attendance.rules"""
+        for att_day in self:
+            if att_day.rule_id:
+                att_day.due_break_min = att_day.rule_id.due_break
+                att_day.due_break_total = att_day.rule_id.due_break_total
+            else:
+                att_day.due_break_min = 0
+                att_day.due_break_total = 0
+
+    @api.multi
+    @api.depends('break_ids', 'break_ids.duration')
     def _compute_break_max(self):
         for att_day in self.filtered('break_ids'):
             att_day.break_max = max(att_day.break_ids.mapped('duration'))
 
     @api.multi
-    @api.depends('break_ids')
+    @api.depends('break_ids', 'break_ids.duration')
     def _compute_break_total(self):
         for att_day in self.filtered('break_ids'):
-            att_day.break_max = sum(att_day.break_ids.mapped('duration'))
+            att_day.break_total = sum(att_day.break_ids.mapped('duration'))
 
     @api.multi
     @api.depends('worked_hours', 'due_hours')
@@ -196,96 +184,122 @@ class HrDayAttendance(models.Model):
             att_day.extra_hours = att_day.worked_hours - att_day.due_hours
 
     @api.multi
-    def _compute_weighting(self):
-        return 1
+    def breaks_validation(self):
+        for att_day in self.filtered('break_ids'):
+            # local variable
+            rule = att_day.rule_id
+            free_break = self.env['base.config.settings'].get_free_break()
+            worked_hours = att_day.worked_hours
+            breaks_total = sum(att_day.break_ids.mapped('duration'))
+            break_max = max(att_day.break_ids.mapped('duration'))
+
+            # Find the rule corresponding to worked_hours
+            if not (rule.time_from <= worked_hours < rule.time_to):
+                rule = self.env['hr.attendance.rules'].search([
+                    ('time_to', '>', worked_hours),
+                    '|', ('time_from', '<=', worked_hours),
+                    ('time_from', '=', False),
+                ])
+
+            respect_min = break_max >= rule.due_break
+            respect_total = breaks_total + free_break >= rule.due_break_total
+
+            if respect_total and respect_min:
+                # breaks valid
+                return
+
+            # Extend the break duration
+            att_break = att_day.break_ids.sorted('duration')[-1]
+
+            start = fields.Datetime.from_string(att_break.start)
+            stop = fields.Datetime.to_string(
+                start + timedelta(hours=rule.due_break))
+            att_break.write({
+                'stop': stop,
+                'system_modified': True
+            })
+            return att_day.breaks_validation()
 
     ##########################################################################
-    #                             PUBLIC METHODS                             #
+    #                               ORM METHODS                              #
     ##########################################################################
     @api.model
     def create(self, vals):
-        rd = super(HrDayAttendance, self).create(vals)
+        rd = super(HrAttendanceDay, self).create(vals)
 
         cal_att_date = fields.Date.from_string(rd.date)
 
         # link to schedule (resource.calendar.attendance)
-        att_day = cal_att_date.weekday()
+        week_day = cal_att_date.weekday()
         cal_att_ids = rd.employee_id.contract_id.working_hours.attendance_ids
         current_cal_att = cal_att_ids.filtered(
-            lambda a: int(a.dayofweek) == att_day)
+            lambda a: int(a.dayofweek) == week_day)
 
         for cal_att_id in current_cal_att:
-            start = cal_att_id.date_from
-            start = start if start else date.min
-            end = cal_att_id.date_to
-            end = end if end else date.max
+            start = cal_att_id.date_from or date.min
+            end = cal_att_id.date_to or date.max
             if start <= cal_att_date <= end:
                 rd.cal_att_ids += cal_att_id
 
         # link to leaves (hr.holidays )
-        holiday_ids = self.env['hr.holidays'].search([
+        date_str = fields.Date.to_string(cal_att_date)
+        rd.leave_ids = self.env['hr.holidays'].search([
             ('employee_id', '=', rd.employee_id.id),
-            ('type', '=', 'remove')])
-        for leave in holiday_ids:
-            start = fields.Date.from_string(leave.date_from)
-            end = fields.Date.from_string(leave.date_to)
-            if start <= cal_att_date <= end:
-                rd.leave_ids += leave
+            ('type', '=', 'remove'),
+            ('date_from', '<=', date_str),
+            ('date_to', '>=', date_str)])
 
-        # find weighting hours
-        weighting = self.env['hr.attendance.weighting'].search([
-            ('day_of_week', '=', att_day),
-        ])
-        # todo: after settings remove
-        if not weighting:
-            rd.weighting = 1
-        else:
-            for category in weighting.category_ids:
-                if category in rd.category_ids:
-                    rd.weighting = weighting
-                    break
+        # find coefficient
+        co_ids = self.env['hr.weekday.coefficient'].search([
+            ('day_of_week', '=', week_day)]).filtered(
+            lambda r: r.category_ids & self.employee_id.category_ids)
+        if co_ids:
+            self.coefficient_id = co_ids if len(co_ids) == 1 else co_ids[0]
 
         # find related attendance
         rd.recompute_attendance()
 
         # compute breaks
-        self.compute_breaks()
+        rd.compute_breaks()
 
         return rd
 
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
     @api.multi
     def compute_breaks(self):
-        for att_day in self:
+        for att_day in self.filtered('attendance_ids'):
             att_day.break_ids.unlink()
             if len(att_day.attendance_ids) <= 1:
                 # no break
                 continue
-            else:
-                att_ids = att_day.attendance_ids
-                iter_att = iter(att_ids.sorted(key=lambda r: r.check_in))
-                previous_att = iter_att.next()
-                while True:
-                    try:
-                        attendance = iter_att.next()
-                        start = fields.Datetime.from_string(
-                            previous_att.check_out)
-                        stop = fields.Datetime.from_string(
-                            attendance.check_in)
-                        att_break = self.env['hr.attendance.break'].create(
-                            {
-                                'employee_id': att_day.employee_id.id,
-                                'attendance_day_id': att_day.id,
-                                'start': start,
-                                'stop': stop
-                            })
-                        att_break.attendance_day_id = att_day
-                    except StopIteration:
-                        break
+            att_ids = att_day.attendance_ids
+            iter_att = iter(att_ids.sorted(key=lambda r: r.check_in))
+            previous_att = iter_att.next()
+            while True:
+                try:
+                    attendance = iter_att.next()
+                    att_break = self.env['hr.attendance.break'].create(
+                        {
+                            'employee_id': att_day.employee_id.id,
+                            'attendance_day_id': att_day.id,
+                            'start': previous_att.check_out,
+                            'stop': attendance.check_in,
+                            'previous_attendance': previous_att.id,
+                            'next_attendance': attendance.id,
+                        })
+                    att_break.attendance_day_id = att_day
+                    previous_att = attendance
+                except StopIteration:
+                    break
+
+            # valid break
+            att_day.breaks_validation()
 
     @api.multi
     def recompute_attendance(self):
         for att_day in self:
-            att_day.attendance_ids = False
             att_day.attendance_ids = self.env['hr.attendance'].search([
                 ('employee_id', '=', att_day.employee_id.id),
                 ('check_in', '>=', att_day.date + " 00:00:00"),

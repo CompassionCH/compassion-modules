@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    @author: Stephane Eicher <seicher@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
@@ -16,18 +16,19 @@ class HrAttendanceBreak(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    employee_id = fields.Many2one(comodel_name='hr.employee',
-                                  string="Employee")
-    attendance_day_id = fields.Many2one(comodel_name='hr.attendance.day',
-                                        string="Attendance day",
+    employee_id = fields.Many2one('hr.employee', "Employee")
+    attendance_day_id = fields.Many2one('hr.attendance.day', "Attendance day",
                                         readonly=True,
                                         ondelete="cascade")
-    duration = fields.Float(string='Duration',
-                            compute='_compute_duration',
-                            store=True,
-                            readonly=True)
-    start = fields.Datetime(string="Start")
-    stop = fields.Datetime(string="Stop")
+    duration = fields.Float('Duration', compute='_compute_duration',
+                            store=True, readonly=True)
+    start = fields.Datetime("Start")
+    stop = fields.Datetime("Stop")
+
+    previous_attendance = fields.Many2one('hr.attendance')
+    next_attendance = fields.Many2one('hr.attendance')
+
+    system_modified = fields.Boolean('Modified by the system', default=False)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -43,3 +44,25 @@ class HrAttendanceBreak(models.Model):
                 stop = fields.Datetime.from_string(att_break.stop)
                 delta = stop - start
                 att_break.duration = delta.total_seconds() / 3600.0
+
+    ##########################################################################
+    #                               ORM METHODS                              #
+    ##########################################################################
+
+    @api.multi
+    def write(self, vals):
+        for this in self:
+            if 'start' in vals:
+                this.previous_attendance.write({
+                    'check_in': vals['start'],
+                    'from_break_write': True,
+                })
+            if 'stop' in vals:
+                this.next_attendance.write({
+                    'check_in': vals['stop'],
+                    'from_break_write': True,
+                })
+            if 'system_modified' not in vals:
+                vals['system_modified'] = False
+
+            super(HrAttendanceBreak, self).write(vals)
