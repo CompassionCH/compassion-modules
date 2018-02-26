@@ -129,6 +129,7 @@
             <tree>
                 <field name="connect_schema"/>
                 <field name="action_id"/>
+                <field name="ignored"/>
             </tree>
         </field>
     </record>
