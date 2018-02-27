@@ -52,7 +52,11 @@
         'views/hr_attendance_view.xml',
         'views/hr_employee.xml',
         'views/hr_holidays_status_views.xml',
+        'views/attendance.xml',
         'data/attendance_computation_cron.xml'
     ],
-    'installable': True
+    'installable': True,
+    'qweb': [
+        "static/src/xml/attendance.xml",
+    ],
 }
