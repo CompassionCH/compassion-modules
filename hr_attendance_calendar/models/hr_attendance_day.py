@@ -89,7 +89,7 @@ class HrAttendanceDay(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.multi
-    @api.depends('cal_att_ids')
+    @api.depends('date')
     def _compute_working_day(self):
         for att_day in self.filtered('cal_att_ids'):
             att_day.working_day = fields.Date.from_string(
