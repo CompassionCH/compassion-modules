@@ -44,6 +44,8 @@ class HrAttendanceDay(models.Model):
     leave_ids = fields.Many2many('hr.holidays', readonly=True, string='Leaves')
     in_leave = fields.Boolean('In leave', compute='_compute_in_leave',
                               store=True)
+    public_holiday_id = fields.Many2one('hr.holidays.public.line',
+                                        'Public holidays')
 
     # Due hours
     due_hours = fields.Float('Due hours', compute='_compute_due_hours',
@@ -91,7 +93,7 @@ class HrAttendanceDay(models.Model):
     @api.multi
     @api.depends('date')
     def _compute_working_day(self):
-        for att_day in self.filtered('cal_att_ids'):
+        for att_day in self:
             att_day.working_day = fields.Date.from_string(
                 att_day.date).strftime('%A')
 
@@ -103,7 +105,7 @@ class HrAttendanceDay(models.Model):
                 att_day.in_leave = True
 
     @api.multi
-    @api.depends('cal_att_ids', 'leave_ids.state')
+    @api.depends('cal_att_ids', 'cal_att_ids.due_hours', 'leave_ids.state')
     def _compute_due_hours(self):
         """First search the due hours based on the contract and after remove
         somme hours if they are vacation"""
