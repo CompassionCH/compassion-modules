@@ -35,6 +35,7 @@
                    position="after">
                 <page string="Hours">
                     <group>
+                        <field name="annual_balance"/>
                         <field name="attendance_days_ids"/>
                     </group>
                 </page>

@@ -36,7 +36,7 @@ class HrEmployee(models.Model):
     ##########################################################################
 
     @api.multi
-    @api.depends('attendance_days_ids.extra_hours')
+    @api.depends('attendance_days_ids.extra_hours', 'annual_balance')
     def _compute_extra_hours(self):
         for employee in self:
 
