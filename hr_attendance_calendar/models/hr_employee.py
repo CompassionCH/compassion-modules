@@ -79,7 +79,7 @@ class HrEmployee(models.Model):
     def _compute_extra_hours_today(self):
         for employee in self:
             employee.extra_hours_today = \
-                '- ' if employee.today_hour < 0 else '+'
+                '-' if employee.today_hour < 0 else ''
             employee.extra_hours_today += employee. \
                 convert_hour_to_time(employee.today_hour)
 
