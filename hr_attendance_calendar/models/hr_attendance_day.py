@@ -93,7 +93,7 @@ class HrAttendanceDay(models.Model):
     @api.multi
     @api.depends('date')
     def _compute_working_day(self):
-        for att_day in self:
+        for att_day in self.filtered('date'):
             att_day.working_day = fields.Date.from_string(
                 att_day.date).strftime('%A')
 
