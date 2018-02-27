@@ -56,9 +56,10 @@ class HrAttendance(models.Model):
 
             if 'check_in' in vals:
                 check_in = fields.Date.from_string(vals['check_in'])
+                # the check_in_date has change
                 if check_in_date != check_in:
                     attendance_day = self.env['hr.attendance.day'].search([
-                        ('employee_id', '=', vals['employee_id']),
+                        ('employee_id', '=', att.employee_id.id),
                         ('date', '=', check_in)])
                     vals['attendance_day_id'] = attendance_day.id
 
