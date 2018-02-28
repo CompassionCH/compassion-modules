@@ -15,35 +15,40 @@
                             class="btn-primary"/>
                 </header>
                 <sheet>
-                    <group>
-                        <group>
-                            <group string="Attendance day">
-                                <field name="date"/>
-                                <field name="employee_id"/>
-                                <field name="in_leave"/>
-                                <field name="working_day"/>
-                                <field name="rule_id"/>
-                            </group>
-                            <group string="Hours">
-                                <field name="due_hours"
-                                       widget="float_time"/>
-                                <field name="worked_hours"
-                                       widget="float_time"/>
-                                <field name="extra_hours"
-                                       widget="float_time"/>
-                            </group>
-                            <group string="Break">
-                                <field name="due_break_min"
-                                       widget="float_time"/>
-                                <field name="due_break_total"
-                                       widget="float_time"/>
-                                <field name="break_max"
-                                       widget="float_time"/>
-                                <field name="break_total"
-                                       widget="float_time"/>
-                            </group>
+                    <group col="3">
+                        <group string="Attendance day">
+                            <field name="working_day"/>
+                            <field name="date"/>
+                            <field name="employee_id"/>
+                            <field name="in_leave"/>
+                            <field name="extra_hours"
+                                   widget="float_time"/>
+                        </group>
+
+                        <group string="Contract">
+                            <field name="due_hours"
+                                   widget="float_time"/>
+                            <field name="due_break_min"
+                                   widget="float_time"/>
+                            <field name="due_break_total"
+                                   widget="float_time"/>
+                            <field name="rule_id"
+                                   attrs="{'invisible':[('in_leave', '=', True)]}"/>
+                            <field name="public_holiday_id"
+                                   attrs="{'invisible':[('public_holiday_id', '=', False)]}"/>
 
                         </group>
+                        <group string=" Hours">
+                            <field name="worked_hours"
+                                   widget="float_time"/>
+                            <field name="break_max"
+                                   widget="float_time"/>
+                            <field name="break_total"
+                                   widget="float_time"/>
+
+                        </group>
+                    </group>
+                    <newline/>
                         <group string="Relations">
                             <field name="attendance_ids">
                                 <tree>
@@ -71,7 +76,6 @@
                                 </tree>
                             </field>
                         </group>
-                    </group>
                 </sheet>
             </form>
         </field>
