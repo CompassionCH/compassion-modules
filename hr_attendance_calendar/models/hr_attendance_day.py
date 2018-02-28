@@ -247,8 +247,14 @@ class HrAttendanceDay(models.Model):
             lambda a: int(a.dayofweek) == week_day)
 
         for cal_att_id in current_cal_att:
-            start = cal_att_id.date_from or date.min
-            end = cal_att_id.date_to or date.max
+            if cal_att_id.date_from:
+                start = fields.Date.from_string(cal_att_id.date_from)
+            else:
+                start = date.min
+            if cal_att_id.date_to:
+                end = fields.Date.from_string(cal_att_id.date_to)
+            else:
+                end = date.max
             if start <= cal_att_date <= end:
                 rd.cal_att_ids += cal_att_id
 
@@ -269,9 +275,10 @@ class HrAttendanceDay(models.Model):
 
         # find public holiday
         public_holiday = self.env['hr.holidays.public'].search([(
-            'country_id', '=', rd.employee_id.country_id.id)])[0]
-        rd.public_holiday_id = public_holiday.line_ids.filtered(
-            lambda r: r.date == rd.date)
+            'country_id', '=', rd.employee_id.address_home_id.country_id.id)])
+        if public_holiday:
+            rd.public_holiday_id = public_holiday[0].line_ids.filtered(
+                lambda r: r.date == rd.date)
 
         # find related attendance
         rd.recompute_attendance()

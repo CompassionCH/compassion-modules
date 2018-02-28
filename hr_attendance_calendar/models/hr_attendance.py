@@ -63,10 +63,10 @@ class HrAttendance(models.Model):
                         ('date', '=', check_in)])
                     vals['attendance_day_id'] = attendance_day.id
 
-            super(HrAttendance, self).write(vals)
+            ret = super(HrAttendance, self).write(vals)
 
             if 'check_in' in vals or 'check_out' in vals:
                 if 'from_break_write' not in vals:
                     self.attendance_day_id.compute_breaks()
 
-            return
+            return ret
