@@ -21,10 +21,8 @@ class HrEmployee(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    extra_hours = fields.Float('Extra hours',
-                               compute='_compute_extra_hours',
-                               readonly=True,
-                               oldname='bonus_malus')
+    extra_hours = fields.Float('Extra hours', compute='_compute_extra_hours',
+                               readonly=True, store=True)
     extra_hours_lost = fields.Float("Extra hours lost",
                                     readonly=True, store=True)
     attendance_days_ids = fields.One2many('hr.attendance.day', 'employee_id',
@@ -32,7 +30,7 @@ class HrEmployee(models.Model):
     annual_balance = fields.Float('Annual balance')
 
     extra_hours_formatted = fields.Char(string="Balance",
-                                        compute='_compute_extra_hours')
+                                        compute='_compute_formatted_hours')
 
     time_warning_balance = fields.Char(compute='_compute_time_warning_balance')
 
@@ -116,7 +114,7 @@ class HrEmployee(models.Model):
                 employee.compute_today_hour() - current_att_day.due_hours
 
     @api.multi
-    def _compute_extra_hours(self):
+    def _compute_formatted_hours(self):
         for employee in self:
             employee.extra_hours_formatted = \
                 '-' if employee.extra_hours < 0 else ''
