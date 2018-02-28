@@ -103,6 +103,8 @@ class HrAttendanceDay(models.Model):
         for att_day in self:
             if att_day.leave_ids:
                 att_day.in_leave = True
+            if att_day.public_holiday_id:
+                att_day.in_leave = True
 
     @api.multi
     @api.depends('cal_att_ids', 'cal_att_ids.due_hours', 'leave_ids.state')
@@ -123,6 +125,9 @@ class HrAttendanceDay(models.Model):
                             'base.config.settings'].get_work_day_duration()
                         due_hours -= leave.compute_work_day(
                             att_day.date) * working_day
+
+            if att_day.public_holiday_id:
+                due_hours = 0
 
             att_day.due_hours = due_hours
 
@@ -257,6 +262,12 @@ class HrAttendanceDay(models.Model):
             lambda r: r.category_ids & self.employee_id.category_ids)
         if co_ids:
             self.coefficient_id = co_ids if len(co_ids) == 1 else co_ids[0]
+
+        # find public holiday
+        public_holiday = self.env['hr.holidays.public'].search([(
+            'country_id', '=', rd.employee_id.country_id.id)])[0]
+        rd.public_holiday_id = public_holiday.line_ids.filtered(
+            lambda r: r.date == rd.date)
 
         # find related attendance
         rd.recompute_attendance()
