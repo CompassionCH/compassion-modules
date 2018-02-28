@@ -214,13 +214,17 @@ class HrAttendanceDay(models.Model):
             if respect_total and respect_min:
                 # breaks valid
                 return
+            elif not respect_min:
+                due_break = rule.due_break
+            else:
+                due_break = rule.due_break_total
 
             # Extend the break duration
             att_break = att_day.break_ids.sorted('duration')[-1]
 
             start = fields.Datetime.from_string(att_break.start)
             stop = fields.Datetime.to_string(
-                start + timedelta(hours=rule.due_break))
+                start + timedelta(hours=due_break))
             att_break.write({
                 'stop': stop,
                 'system_modified': True

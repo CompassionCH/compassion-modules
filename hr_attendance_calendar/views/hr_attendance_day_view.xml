@@ -21,8 +21,6 @@
                             <field name="date"/>
                             <field name="employee_id"/>
                             <field name="in_leave"/>
-                            <field name="extra_hours"
-                                   widget="float_time"/>
                         </group>
 
                         <group string="Contract">
@@ -45,7 +43,8 @@
                                    widget="float_time"/>
                             <field name="break_total"
                                    widget="float_time"/>
-
+                            <field name="extra_hours"
+                                   widget="float_time"/>
                         </group>
                     </group>
                     <newline/>
