@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
+#    Copyright (C) 2016 Open Net Sarl (https://www.open-net.ch)
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    @author: Eicher Stephane <seicher@compassion.ch>
+#    @author: Coninckx David <david@coninckx.com>
 #
 #    The licence is in the file __manifest__.py
 #
@@ -86,6 +88,9 @@ class HrAttendanceDay(models.Model):
     extra_hours = fields.Float("Extra hours",
                                compute='_compute_extra_hours',
                                store=True, )
+    extra_hours_lost = fields.Float("Extra hours lost",
+                                    compute='_compute_extra_hours_lost',
+                                    store=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -211,6 +216,18 @@ class HrAttendanceDay(models.Model):
             coefficient = att_day.coefficient
 
             att_day.extra_hours = extra_hours * coefficient
+
+    @api.multi
+    @api.depends('employee_id.extra_hours')
+    def _compute_extra_hours_lost(self):
+        for att_day in self.sorted(key=lambda r: r.date)[-2]:
+
+            max_extra_hours = float(self.env['ir.config_parameter'].get_param(
+                'hr_attendance_calendar.max_extra_hours'))
+            employee = att_day.employee_id
+
+            if employee.extra_hours > max_extra_hours:
+                att_day.extra_hours_lost = employee.extra_hours-max_extra_hours
 
     @api.multi
     def breaks_is_valid(self):
