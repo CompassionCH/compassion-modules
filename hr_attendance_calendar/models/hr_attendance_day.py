@@ -273,11 +273,13 @@ class HrAttendanceDay(models.Model):
         if co_ids:
             self.coefficient_id = co_ids if len(co_ids) == 1 else co_ids[0]
 
-        # find public holiday
-        public_holiday = self.env['hr.holidays.public'].search([(
-            'country_id', '=', rd.employee_id.address_home_id.country_id.id)])
-        if public_holiday:
-            rd.public_holiday_id = public_holiday[0].line_ids.filtered(
+        # check public holiday
+        if self.env['hr.holidays.public'].is_public_holiday(
+                rd.date, rd.employee_id.id):
+            holidays_lines = self.env[
+                'hr.holidays.public'].get_holidays_list(
+                cal_att_date.year, rd.employee_id.id)
+            rd.public_holiday_id = holidays_lines.filtered(
                 lambda r: r.date == rd.date)
 
         # find related attendance
