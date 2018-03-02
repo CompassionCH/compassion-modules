@@ -115,15 +115,17 @@ class HrAttendanceDay(models.Model):
                 att_day.in_leave = True
 
     @api.multi
-    @api.depends('cal_att_ids', 'cal_att_ids.due_hours', 'leave_ids.state')
+    @api.depends('cal_att_ids', 'cal_att_ids.due_hours', 'leave_ids.state',
+                 'public_holiday_id')
     def _compute_due_hours(self):
         """First search the due hours based on the contract and after remove
         somme hours if they are vacation"""
         for att_day in self:
             due_hours = 0
+            # Contract
             for cal_att in att_day.cal_att_ids:
                 due_hours += cal_att.due_hours
-
+            # Leaves
             if att_day.leave_ids:
                 for leave in att_day.leave_ids:
                     if leave.state not in ['validate', 'validate1']:
@@ -133,7 +135,7 @@ class HrAttendanceDay(models.Model):
                             'base.config.settings'].get_work_day_duration()
                         due_hours -= leave.compute_work_day(
                             att_day.date) * working_day
-
+            # Public holidays
             if att_day.public_holiday_id:
                 due_hours = 0
 
@@ -361,3 +363,7 @@ class HrAttendanceDay(models.Model):
                 ('check_in', '<=', att_day.date + " 23:59:59"),
             ])
         self._compute_extra_hours()
+
+    @api.multi
+    def recompute_due_hours(self):
+        self._compute_due_hours()

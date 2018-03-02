@@ -27,14 +27,15 @@ class HrHolidays(models.Model):
     def create(self, vals):
         rd = super(HrHolidays, self).create(vals)
         rd.find_attendance_day()
+        return rd
 
     @api.multi
     def write(self, vals):
         super(HrHolidays, self).write(vals)
-        if 'state' in vals or 'hr_att_day_ids' in vals:
-            return
-
-        self.find_attendance_day()
+        if 'date_from' in vals or 'date_to' in vals:
+            self.find_attendance_day()
+            self.hr_att_day_ids.recompute_due_hours()
+        return True
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
