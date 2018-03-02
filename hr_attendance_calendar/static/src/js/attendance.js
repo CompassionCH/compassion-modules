@@ -36,20 +36,23 @@ odoo.define('hr_switzerland.attendance', function (require) {
                             ['worked_today', 'balance_today'].forEach(
                                 function (el) {
                                     var matches = $('#' + el + '_pl').text().match(/^-?(\d{2}):(\d{2})$/);
-                                    var hours = parseInt(matches[1]);
-                                    var minutes = parseInt(matches[2]);
 
-                                    var total_minutes = (hours * 60 + minutes) * ((matches[0].substring(0, 1) == '-') ? -1 : 1);
-                                    var negative = (total_minutes + diff_minutes) < 0;
+                                    if (matches != null) {
+                                        var hours = parseInt(matches[1]);
+                                        var minutes = parseInt(matches[2]);
 
-                                    var new_total = Math.abs(total_minutes + diff_minutes);
-                                    var new_hours = ('0' + (new_total / 60 | 0)).slice(-2);
-                                    var new_minutes = ('0' + (new_total % 60)).slice(-2);
+                                        var total_minutes = (hours * 60 + minutes) * ((matches[0].substring(0, 1) == '-') ? -1 : 1);
+                                        var negative = (total_minutes + diff_minutes) < 0;
 
-                                    $('#' + el).text((negative ? '-' : '') + new_hours + ':' + new_minutes);
+                                        var new_total = Math.abs(total_minutes + diff_minutes);
+                                        var new_hours = ('0' + (new_total / 60 | 0)).slice(-2);
+                                        var new_minutes = ('0' + (new_total % 60)).slice(-2);
 
-                                    if (el != 'worked_today') {
-                                        $('#' + el).parent().get(0).style.color = negative ? 'red' : 'green';
+                                        $('#' + el).text((negative ? '-' : '') + new_hours + ':' + new_minutes);
+
+                                        if (el != 'worked_today') {
+                                            $('#' + el).parent().get(0).style.color = negative ? 'red' : 'green';
+                                        }
                                     }
                                 });
                         }

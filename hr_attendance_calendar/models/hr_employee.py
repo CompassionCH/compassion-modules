@@ -82,7 +82,7 @@ class HrEmployee(models.Model):
     def _compute_extra_hours_today(self):
         for employee in self:
             employee.extra_hours_today = \
-                '-' if employee.today_hour < 0 else ''
+                '-' if float(employee.today_hour) < 0 else ''
             employee.extra_hours_today += employee. \
                 convert_hour_to_time(employee.today_hour)
 
@@ -101,7 +101,7 @@ class HrEmployee(models.Model):
     def _compute_time_warning_today(self):
         for employee in self:
             employee.time_warning_today = \
-                'red' if employee.today_hour < 8 else 'green'
+                'red' if float(employee.today_hour) < 0 else 'green'
 
     @api.multi
     def _compute_today_hour(self):
@@ -124,8 +124,10 @@ class HrEmployee(models.Model):
     @api.depends('today_hour')
     def _compute_today_hour_formatted(self):
         for employee in self:
-            employee.today_hour_formatted = \
-                employee.convert_hour_to_time(employee.today_hour)
+            today_hour = employee.compute_today_hour()
+            thf = '-' if today_hour < 0 else ''
+            thf += employee.convert_hour_to_time(float(today_hour))
+            employee.today_hour_formatted = thf
 
     @api.multi
     def convert_hour_to_time(self, hour):
