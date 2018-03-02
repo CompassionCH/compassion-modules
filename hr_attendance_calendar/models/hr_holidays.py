@@ -21,19 +21,34 @@ class HrHolidays(models.Model):
                                       string='Attendance day related')
 
     ##########################################################################
-    #                             PUBLIC METHODS                             #
+    #                               ORM METHODS                              #
     ##########################################################################
+    @api.model
+    def create(self, vals):
+        rd = super(HrHolidays, self).create(vals)
+        rd.find_attendance_day()
+
     @api.multi
     def write(self, vals):
         super(HrHolidays, self).write(vals)
-        for leave in self:
-            if leave.state == 'validate' and 'hr_att_day_ids' not in vals:
-                leave.hr_att_day_ids = self.env['hr.attendance.day'].search(
-                    [('employee_id', '=', leave.employee_id.id),
-                     ('date', '>=', leave.date_from),
-                     ('date', '<=', leave.date_to)])
-                leave.hr_att_day_ids.recompute_due_hours()
+        if 'state' in vals or 'hr_att_day_ids' in vals:
+            return
 
+        self.find_attendance_day()
+
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    @api.multi
+    def find_attendance_day(self):
+        for rd in self:
+            rd.hr_att_day_ids = self.env['hr.attendance.day'].search([
+                ('employee_id', '=', rd.employee_id.id),
+                ('date', '>=', rd.date_from),
+                ('date', '<=', rd.date_to)
+            ])
+
+    @api.model
     def compute_work_day(self, str_date):
         """
         Compute if the leave duration for the day is full/half work day.

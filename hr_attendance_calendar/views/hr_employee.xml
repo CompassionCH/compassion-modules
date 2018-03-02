@@ -36,7 +36,8 @@
                 <page string="Hours">
                     <group>
                         <field name="annual_balance"/>
-                        <field name="attendance_days_ids"/>
+                        <field name="attendance_days_ids"
+                               groups="product.group_uom"/>
                     </group>
                 </page>
             </xpath>

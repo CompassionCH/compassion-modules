@@ -23,6 +23,9 @@ class HrAttendanceDay(models.Model):
     """
     _name = "hr.attendance.day"
     _order = 'date DESC'
+    _sql_constraints = [('unique_product', 'unique(date, employee_id)',
+                         'This "Attendance day" already exist for this '
+                         'employee')]
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -39,6 +42,7 @@ class HrAttendanceDay(models.Model):
                                    required=True)
     working_day = fields.Char("Working day", compute='_compute_working_day',
                               readonly=True, store=True)
+    name = fields.Char(compute='_compute_name', store=True)
 
     # Leaves
     leave_ids = fields.Many2many('hr.holidays', readonly=True, string='Leaves')
@@ -96,6 +100,13 @@ class HrAttendanceDay(models.Model):
         for att_day in self.filtered('date'):
             att_day.working_day = fields.Date.from_string(
                 att_day.date).strftime('%A')
+
+    @api.multi
+    @api.depends('working_day')
+    def _compute_name(self):
+        for rd in self.filtered('working_day'):
+            rd._name = rd.working_day + ' ' + rd.date
+
 
     @api.multi
     @api.depends('leave_ids')
