@@ -30,7 +30,10 @@ class HrAttendance(models.Model):
     @api.model
     def create(self, vals):
         new_record = super(HrAttendance, self).create(vals)
-        att_check_in_date = fields.Date.from_string(vals['check_in'])
+        if isinstance(vals['check_in'], basestring):
+            att_check_in_date = fields.Date.from_string(vals['check_in'])
+        else:
+            att_check_in_date = vals['check_in']
         attendance_day = self.env['hr.attendance.day'].search([
             ('employee_id', '=', vals['employee_id']),
             ('date', '=', att_check_in_date)
@@ -66,7 +69,7 @@ class HrAttendance(models.Model):
             ret = super(HrAttendance, self).write(vals)
 
             if 'check_in' in vals or 'check_out' in vals:
-                if 'from_break_write' not in vals:
+                if 'no_compute_break' not in vals:
                     self.attendance_day_id.compute_breaks()
 
             return ret

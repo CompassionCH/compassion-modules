@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import models, fields
+from odoo import models, fields, api
 
 
 class HrWeekdayCoefficient(models.Model):
@@ -17,6 +17,7 @@ class HrWeekdayCoefficient(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
+    name = fields.Char(compute='_compute_name')
     day_of_week = fields.Selection([
         ('0', 'Monday'),
         ('1', 'Tuesday'),
@@ -31,3 +32,12 @@ class HrWeekdayCoefficient(models.Model):
                                     string='Employee tag')
     coefficient = fields.Float(
         help='Multiply the worked hours by the coefficient')
+
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+    @api.multi
+    @api.depends('coefficient')
+    def _compute_name(self):
+        for rd in self:
+            rd.name = rd.coefficient
