@@ -87,10 +87,9 @@ class HrAttendanceDay(models.Model):
     # Extra hours
     extra_hours = fields.Float("Extra hours",
                                compute='_compute_extra_hours',
-                               store=True, )
-    extra_hours_lost = fields.Float("Extra hours lost",
-                                    compute='_compute_extra_hours_lost',
-                                    store=True)
+                               store=True)
+    extra_hours_lost = fields.Float("Extra hours lost", store=True,
+                                    compute='_compute_extra_hours_lost')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -218,18 +217,23 @@ class HrAttendanceDay(models.Model):
             att_day.extra_hours = extra_hours * coefficient
 
     @api.multi
-    @api.depends('employee_id.extra_hours')
+    @api.depends('extra_hours')
     def _compute_extra_hours_lost(self):
-        max_extra_hours = float(self.env['ir.config_parameter'].get_param(
-            'hr_attendance_calendar.max_extra_hours'))
-        employee = self[0].employee_id
+        for att_day in self:
+            att_days_ids = self.env['hr.attendance.day'].search(
+                [('employee_id', '=', att_day.employee_id.id)])
 
-        if employee.extra_hours > max_extra_hours:
-            att_days = self.sorted(key=lambda r: r.date)
+            total_extra_hours = sum(att_days_ids.mapped('extra_hours'))
+            total_lost_hours = sum(att_days_ids.mapped('extra_hours_lost'))
+            max_extra_hours = float(self.env['ir.config_parameter'].get_param(
+                'hr_attendance_calendar.max_extra_hours'))
 
-            if len(att_days) >= 2:
-                att_day = att_days[-2]  # yesterday
-                att_day.extra_hours_lost = employee.extra_hours-max_extra_hours
+            difference = (total_extra_hours-total_lost_hours)-max_extra_hours
+
+            if difference > 0:
+                att_day.extra_hours_lost = float(difference)
+            else:
+                att_day.extra_hours_lost = 0.0
 
     @api.multi
     def breaks_is_valid(self):
