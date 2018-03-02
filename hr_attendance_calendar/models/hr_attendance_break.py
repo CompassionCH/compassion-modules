@@ -22,8 +22,8 @@ class HrAttendanceBreak(models.Model):
                                         ondelete="cascade")
     duration = fields.Float('Duration', compute='_compute_duration',
                             store=True, readonly=True)
-    start = fields.Datetime("Start")
-    stop = fields.Datetime("Stop")
+    start = fields.Datetime("Start", compute='_compute_start_stop', store=True)
+    stop = fields.Datetime("Stop", compute='_compute_start_stop', store=True)
 
     previous_attendance = fields.Many2one('hr.attendance')
     next_attendance = fields.Many2one('hr.attendance')
@@ -33,6 +33,13 @@ class HrAttendanceBreak(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.multi
+    @api.depends('previous_attendance',)
+    def _compute_start_stop(self):
+        for rd in self:
+            rd.start = rd.previous_attendance.check_out
+            rd.stop = rd.next_attendance.check_in
+
     @api.multi
     @api.depends('start', 'stop')
     def _compute_duration(self):
@@ -55,12 +62,12 @@ class HrAttendanceBreak(models.Model):
             if 'start' in vals:
                 this.previous_attendance.write({
                     'check_in': vals['start'],
-                    'from_break_write': True,
+                    'no_compute_break': True,
                 })
             if 'stop' in vals:
                 this.next_attendance.write({
                     'check_in': vals['stop'],
-                    'from_break_write': True,
+                    'no_compute_break': True,
                 })
             if 'system_modified' not in vals:
                 vals['system_modified'] = False

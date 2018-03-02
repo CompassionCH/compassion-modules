@@ -21,6 +21,7 @@
                             <field name="date"/>
                             <field name="employee_id"/>
                             <field name="in_leave"/>
+                            <field name="coefficient"/>
                         </group>
 
                         <group string="Contract">
