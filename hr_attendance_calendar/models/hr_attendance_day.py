@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2016 Open Net Sarl (https://www.open-net.ch)
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    @author: Eicher Stephane <seicher@compassion.ch>
-#    @author: Coninckx David <david@coninckx.com>
 #
 #    The licence is in the file __manifest__.py
 #
@@ -137,6 +135,9 @@ class HrAttendanceDay(models.Model):
                             att_day.date) * working_day
             # Public holidays
             if att_day.public_holiday_id:
+                due_hours = 0
+
+            if due_hours < 0:
                 due_hours = 0
 
             att_day.due_hours = due_hours
