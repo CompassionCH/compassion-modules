@@ -62,21 +62,17 @@ class HrEmployee(models.Model):
 
     @api.model
     def _cron_create_attendance(self):
+        att_day = self.env['hr.attendance.day']
         employees = self.search([])
         today = fields.Date.today()
         for employee in employees:
-            if today in employee.attendance_days_ids.mapped['date']:
-                continue
-            contract_date_start = fields.Date.from_string(
-                employee.contract_id.date_start)
-            contract_date_end = fields.Date.from_string(
-                employee.contract_id.date_end)
-            if contract_date_start < today < contract_date_end:
-                if employee.contract_id.working_hours:
-                    self.env['hr.attendance.day'].create({
-                        'date': today,
-                        'employee_id': employee.id
-                    })
+            att_days = att_day.search(
+                [('name', '=', today), ('employee_id', '=', employee.id)])
+            if not att_days:
+                att_day.create({
+                    'date': today,
+                    'employee_id': employee.id
+                })
 
     @api.multi
     @api.depends('today_hour')
