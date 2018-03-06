@@ -264,8 +264,13 @@ class SponsorshipContract(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def clean_invoices_paid(self, since_date, to_date):
-        """ Unreconcile paid invoices in the given period, so that they
-            can be cleaned with the clean_invoices process.
+        """
+        Unreconcile paid invoices in the given period, so that they
+        can be cleaned with the clean_invoices process.
+        :param since_date: clean invoices with date greater than this
+        :param to_date: clean invoices with date lower than this
+        :return: invoices cleaned that contained other contracts than the
+                 the ones we are cleaning.
         """
         # Find all paid invoice lines after the given date
         inv_line_obj = self.env['account.invoice.line']
@@ -275,9 +280,11 @@ class SponsorshipContract(models.Model):
             'invoice_id.payment_move_line_ids.full_reconcile_id')
 
         # Unreconcile paid invoices
-        reconciles.mapped('reconciled_line_ids').remove_move_reconcile()
+        move_lines = reconciles.mapped('reconciled_line_ids')
+        move_lines.remove_move_reconcile()
 
-        return True
+        return move_lines.mapped('invoice_id.invoice_line_ids').filtered(
+            lambda l: l.contract_id not in self).mapped('invoice_id')
 
     @api.model
     def _on_invoice_line_removal(self, invl_rm_data):
@@ -738,16 +745,27 @@ class SponsorshipContract(models.Model):
     @related_action(action='related_action_contract')
     def _clean_invoices(self, since_date=None, to_date=None,
                         keep_lines=None, clean_invoices_paid=True):
-        """ Take into consideration when the sponsor has paid in advance,
+        """ Clean invoices
+        Take into consideration when the sponsor has paid in advance,
         so that we cancel/modify the paid invoices and let the user decide
         what to do with the payment.
+        :param since_date: optional date from which invoices will be cleaned
+        :param to_date: optional date limit for invoices we want to clean
+        :param keep_lines: set to true to avoid deleting invoice lines
+        :param clean_invoices_paid: set to true to unreconcile paid invoices
+                                    and clean them as well.
+        :return: invoices cleaned (which should be in cancel state)
         """
         if clean_invoices_paid:
             sponsorships = self.filtered(lambda s: s.type == 'S')
-            sponsorships.clean_invoices_paid(since_date, to_date)
+            paid_invoices = sponsorships.clean_invoices_paid(since_date,
+                                                             to_date)
 
-        return super(SponsorshipContract, self)._clean_invoices(
+        invoices = super(SponsorshipContract, self)._clean_invoices(
             since_date, to_date, keep_lines)
+        if clean_invoices_paid:
+            paid_invoices.reconcile_after_clean()
+        return invoices
 
     @api.multi
     def _on_sponsorship_finished(self):
