@@ -204,7 +204,9 @@ class ResPartner(models.Model):
             'domain': ['|', ('correspondant_id', '=', self.id),
                        ('partner_id', '=', self.id)],
             'context': self.with_context({
-                'default_type': 'S'}).env.context,
+                'default_type': 'S',
+                'search_default_active': True
+            }).env.context,
         }
 
     @api.multi

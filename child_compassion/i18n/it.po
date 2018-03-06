@@ -4998,6 +4998,12 @@ msgid "The project has no electricity."
 msgstr "Il centro non ha elettricità"
 
 #. module: child_compassion
+#: code:addons/child_compassion/wizards/project_description.py:75
+#, python-format
+msgid "The project is located in %s, close to the border."
+msgstr "Il centro è in %s, vicino al confine."
+
+#. module: child_compassion
 #: selection:compassion.child,major_course_study:0
 msgid "Theology"
 msgstr "Teologia"

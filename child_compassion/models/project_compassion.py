@@ -60,9 +60,7 @@ class CompassionProject(models.Model):
 
     # Location information
     ######################
-    country_id = fields.Many2one(
-        'res.country', 'Country', related='field_office_id.country_id',
-        readonly=True)
+    country_id = fields.Many2one('res.country', 'Country', readonly=True)
     street = fields.Char(readonly=True)
     city = fields.Char(readonly=True)
     state_province = fields.Char(readonly=True)
