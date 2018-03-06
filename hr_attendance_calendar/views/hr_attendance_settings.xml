@@ -150,7 +150,7 @@
               sequence="1"/>
 
     <menuitem id="hr_attendance_calendar.menu_hr_attendance_rules"
-              name="Break"
+              name="Break rules"
               parent="menu_hr_attendance_configuration"
               sequence="2"
               action="action_hr_attendance_rules"/>
