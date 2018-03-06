@@ -19,7 +19,6 @@ class HrAttendance(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    # New fields --------------------------------------------------------------
     attendance_day_id = fields.Many2one(comodel_name='hr.attendance.day',
                                         string='Attendance day',
                                         readonly=True)
@@ -29,11 +28,10 @@ class HrAttendance(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
+        """ If the corresponding attendance day doesn't exist a new one is
+        created"""
         new_record = super(HrAttendance, self).create(vals)
-        if isinstance(vals['check_in'], basestring):
-            att_check_in_date = fields.Date.from_string(vals['check_in'])
-        else:
-            att_check_in_date = vals['check_in']
+        att_check_in_date = fields.Date.from_string(vals['check_in'])
         attendance_day = self.env['hr.attendance.day'].search([
             ('employee_id', '=', vals['employee_id']),
             ('date', '=', att_check_in_date)

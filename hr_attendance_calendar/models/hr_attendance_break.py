@@ -86,7 +86,6 @@ class HrAttendanceBreak(models.Model):
             rd.logged_duration = rd.modified_duration if \
                 rd.modified_duration else rd.original_duration
 
-
     ##########################################################################
     #                               ORM METHODS                              #
     ##########################################################################
