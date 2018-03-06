@@ -59,11 +59,10 @@
                             </field>
                             <field name="break_ids">
                                 <tree>
-                                    <field name="duration"
-                                           widget="float_time"/>
-                                    <field name="start"/>
-                                    <field name="stop"/>
+                                    <field name="name"/>
                                     <field name="system_modified"/>
+                                    <field name="logged_duration"
+                                           widget="float_time"/>
                                 </tree>
                             </field>
                             <field name="leave_ids">
