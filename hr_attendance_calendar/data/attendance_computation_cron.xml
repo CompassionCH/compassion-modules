@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<openerp>
+<odoo>
     <data noupdate="1">
         <record id="ir_cron_create_att_comp_result" model="ir.cron">
             <field name="name">Create attendance computation results</field>
@@ -9,4 +9,4 @@
             <field name="function">_cron_create_attendance</field>
         </record>
     </data>
-</openerp>
+</odoo>

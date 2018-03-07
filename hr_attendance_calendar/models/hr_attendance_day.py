@@ -251,8 +251,10 @@ class HrAttendanceDay(models.Model):
                     ('time_from', '=', False),
                 ])
 
-            breaks_total = sum(att_day.break_ids.mapped('logged_duration'))
-            break_max = max(att_day.break_ids.mapped('logged_duration'))
+            breaks_total = sum(
+                att_day.break_ids.mapped('logged_duration') or [0])
+            break_max = max(
+                att_day.break_ids.mapped('logged_duration') or [0])
 
             respect_min = break_max >= rule.due_break
             respect_total = breaks_total >= rule.due_break_total
@@ -299,7 +301,12 @@ class HrAttendanceDay(models.Model):
 
         # link to schedule (resource.calendar.attendance)
         week_day = cal_att_date.weekday()
-        cal_att_ids = rd.employee_id.contract_id.working_hours.attendance_ids
+        contracts = self.env['hr.contract'].search([
+            ('employee_id', '=', rd.employee_id.id),
+            ('date_start', '<=', rd.date),
+            '|', ('date_end', '=', False), ('date_end', '>=', rd.date)
+        ])
+        cal_att_ids = contracts.mapped('working_hours.attendance_ids')
         current_cal_att = cal_att_ids.filtered(
             lambda a: int(a.dayofweek) == week_day)
 

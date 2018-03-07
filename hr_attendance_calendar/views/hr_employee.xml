@@ -35,7 +35,7 @@
                    position="after">
                 <page string="Hours">
                     <group>
-                        <field name="annual_balance"/>
+                        <field name="annual_balance" widget="float_time"/>
                         <field name="attendance_days_ids"
                                groups="product.group_uom"/>
                     </group>

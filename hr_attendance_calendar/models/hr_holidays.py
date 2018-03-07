@@ -7,8 +7,11 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
 
 from odoo import models, fields, api
+
+_logger = logging.getLogger(__name__)
 
 
 class HrHolidays(models.Model):
@@ -84,5 +87,7 @@ class HrHolidays(models.Model):
         elif start.date() < date.date() < end.date():
             return 1
         else:
-            raise IndexError("This attendance day doesn't correspond to this "
-                             "leave")
+            _logger.error(
+                "This attendance day doesn't correspond to this leave"
+            )
+            return 0

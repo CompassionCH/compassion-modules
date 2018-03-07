@@ -153,6 +153,7 @@
                type="xml">
             <search string="Attendances">
                 <field name="employee_id"/>
+                <filter name="my_attendances" string="My attendances" domain="[('employee_id.user_id.id', '=', uid)]"/>
                 <group expand="0"
                        string="Group By">
                     <filter string="Employee"
@@ -170,6 +171,7 @@
         <field name="res_model">hr.attendance.day</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,kanban,form</field>
+        <field name="context">{'search_default_my_attendances': 1}</field>
     </record>
 
     <menuitem action="action_attendance_day"
