@@ -42,26 +42,30 @@ class RestController(http.Controller):
                 request.uid).create({
                     'connect_schema': message_type
                 })
-        action = action_connect.action_id
-        if action.id:
-            request.env['gmc.message.pool'].sudo(request.uid).create({
-                'request_id': request.uuid,
-                'action_id': action.id,
-                'headers': json.dumps(dict(headers.items())),
-                'content': json.dumps(request.jsonrequest)
-            })
 
+        action = action_connect.action_id
+        params = {
+            'request_id': request.uuid,
+            'headers': json.dumps(dict(headers.items())),
+            'content': json.dumps(request.jsonrequest),
+            'state': 'success' if action_connect.ignored else 'new'
+        }
+
+        if action.id:
+            params['action_id'] = action.id
             result["Message"] = "Your message was successfully received."
         else:
-            ONRAMP_LOGGER.error(
-                "Unknown message type received: " + message_type)
-            result["Message"] = "Unknown message type - not processed."
-            request.env['gmc.message.pool'].sudo(request.uid).create({
-                'request_id': request.uuid,
-                'direction': 'in',
-                'headers': json.dumps(dict(headers.items())),
-                'content': json.dumps(request.jsonrequest)
-            })
+            params['direction'] = 'in'
+            if action_connect.ignored:
+                ONRAMP_LOGGER.info(
+                    "Ignored message type received: " + message_type)
+                result["Message"] = "Ignored message type - not processed."
+            else:
+                ONRAMP_LOGGER.error(
+                    "Unknown message type received: " + message_type)
+                result["Message"] = "Unknown message type - not processed."
+
+        request.env['gmc.message.pool'].sudo(request.uid).create(params)
 
         return result
 

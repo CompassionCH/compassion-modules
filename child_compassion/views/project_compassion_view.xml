@@ -24,7 +24,7 @@
                         <group>
                             <field name="icp_id" />
                             <field name="suspension" />
-                            <field name="status_date" />
+                            <field name="last_reviewed_date" />
                             <field name="status_comment" />
                         </group>
                         <group>

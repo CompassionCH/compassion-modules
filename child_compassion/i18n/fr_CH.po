@@ -3066,7 +3066,7 @@ msgid "Last review date"
 msgstr "Last review date"
 
 #. module: child_compassion
-#: field:compassion.project,status_date:0
+#: field:compassion.project,last_reviewed_date:0
 msgid "Last status change"
 msgstr "Status changé le"
 

@@ -20,6 +20,9 @@ class GmcActionConnect(models.Model):
 
     connect_schema = fields.Char(required=True)
     action_id = fields.Many2one('gmc.action', 'GMC Action', required=False)
+    ignored = fields.Boolean(
+        help='True if the received connect_schema sould be ignored'
+    )
 
     _sql_constraints = [
         ('connect_schema_uniq', 'UNIQUE(connect_schema)',

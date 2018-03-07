@@ -8,9 +8,8 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from datetime import timedelta
-
 import datetime
+from datetime import timedelta
 
 from odoo import models, fields, api
 from odoo.exceptions import UserError

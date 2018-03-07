@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <odoo>
     <record model="ir.ui.view"
-            id="hr_employe_bonus_malus_kanban">
-        <field name="name">HR Employee Bonus/Malus Kanban View</field>
+            id="hr_employee_extra_hours_kanban">
+        <field name="name">HR Employee Extra Hours Kanban View</field>
         <field name="model">hr.employee</field>
         <field name="priority"
                eval="20"/>
@@ -13,7 +14,7 @@
             <xpath expr="//div[@class='oe_kanban_details']/ul/li"
                    position="after">
                 <li>
-                    <field name="bonus_malus"
+                    <field name="extra_hours"
                            widget="float_time"/>
                 </li>
             </xpath>
@@ -21,8 +22,8 @@
     </record>
 
     <record model="ir.ui.view"
-            id="hr_employe_bonus_malus_form">
-        <field name="name">HR Employee Bonus/Malus Form View</field>
+            id="hr_employee_extra_hours_form">
+        <field name="name">HR Employee Extra Hours Form View</field>
         <field name="model">hr.employee</field>
         <field name="priority"
                eval="20"/>
@@ -32,17 +33,19 @@
                type="xml">
             <xpath expr="//page[@name='hr_settings']"
                    position="after">
-                <page string="Jours de présences">
+                <page string="Hours">
                     <group>
-                        <field name="attendance_days_ids"/>
+                        <field name="annual_balance"/>
+                        <field name="attendance_days_ids"
+                               groups="product.group_uom"/>
                     </group>
                 </page>
             </xpath>
             <field name="category_ids"
                    position="after">
                 <div>
-                    <label for="bonus_malus"/>
-                    <field name="bonus_malus"
+                    <label for="extra_hours"/>
+                    <field name="extra_hours"
                            widget="float_time"/>
                 </div>
             </field>

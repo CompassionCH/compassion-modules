@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record model="ir.ui.view"
+            id="hr_attendance_day_form">
+        <field name="name">HR Attendance Day Form View</field>
+        <field name="model">hr.attendance.day</field>
+        <field name="arch"
+               type="xml">
+            <form string="Attendance day">
+                <header>
+                    <button name="recompute_attendance"
+                            string="Recompute attendances"
+                            type="object"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group col="3">
+                        <group string="Attendance day">
+                            <field name="working_day"/>
+                            <field name="date"/>
+                            <field name="employee_id"/>
+                            <field name="in_leave"/>
+                            <field name="coefficient"/>
+                        </group>
+
+                        <group string="Contract">
+                            <field name="due_hours"
+                                   widget="float_time"/>
+                            <field name="due_break_min"
+                                   widget="float_time"/>
+                            <field name="due_break_total"
+                                   widget="float_time"/>
+                            <field name="rule_id"/>
+                            <field name="public_holiday_id"
+                                   attrs="{'invisible':[('public_holiday_id', '=', False)]}"/>
+
+                        </group>
+                        <group string=" Hours">
+                            <field name="worked_hours"
+                                   widget="float_time"/>
+                            <field name="break_max"
+                                   widget="float_time"/>
+                            <field name="break_total"
+                                   widget="float_time"/>
+                            <field name="extra_hours"
+                                   widget="float_time"/>
+                            <field name="extra_hours_lost"
+                                   widget="float_time"/>
+                        </group>
+                    </group>
+                    <newline/>
+                        <group string="Relations">
+                            <field name="attendance_ids">
+                                <tree>
+                                    <field name="check_in"/>
+                                    <field name="check_out"/>
+                                    <field name="worked_hours"
+                                           widget="float_time"/>
+                                </tree>
+                            </field>
+                            <field name="break_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="system_modified"/>
+                                    <field name="logged_duration"
+                                           widget="float_time"/>
+                                </tree>
+                            </field>
+                            <field name="leave_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view"
+            id="hr_attendance_day_tree">
+        <field name="name">HR Attendance Day Tree View</field>
+        <field name="model">hr.attendance.day</field>
+        <field name="arch"
+               type="xml">
+            <tree decoration-info="extra_hours &gt;= 0"
+                  decoration-danger="extra_hours &lt; 0">
+                <field name="date"/>
+                <field name="working_day"/>
+                <field name="employee_id"/>
+                <field name="worked_hours"
+                       widget="float_time"/>
+                <field name="extra_hours"
+                       widget="float_time"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view"
+            id="hr_attendance_day_kanban">
+        <field name="name">HR Attendance Day Kanban View</field>
+        <field name="model">hr.attendance.day</field>
+        <field name="type">kanban</field>
+        <field name="arch"
+               type="xml">
+            <kanban decoration-info="extra_hours &gt;= 0"
+                    decoration-danger="extra_hours &lt; 0">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_vignette">
+                            <div class="oe_kanban_details">
+                                <div class="oe_product_desc">
+                                    <a type="open">
+                                        <h4>
+                                            <field name="date"/>
+                                        </h4>
+                                        <h5>
+                                            <field name="employee_id"/>
+                                        </h5>
+                                    </a>
+                                    <table>
+                                        <tr>
+                                            <td>Worked hours:</td>
+                                            <td>
+                                                <field name="worked_hours"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Difference:</td>
+                                            <td>
+                                                <field name="extra_hours"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record model="ir.ui.view"
+            id="hr_attendance_day_search">
+        <field name="name">HR Attendance Day Search View</field>
+        <field name="model">hr.attendance.day</field>
+        <field name="arch"
+               type="xml">
+            <search string="Attendances">
+                <field name="employee_id"/>
+                <group expand="0"
+                       string="Group By">
+                    <filter string="Employee"
+                            domain=""
+                            context="{'group_by':'employee_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- actions -->
+    <record id="action_attendance_day"
+            model="ir.actions.act_window">
+        <field name="name">Attendance days</field>
+        <field name="res_model">hr.attendance.day</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form</field>
+    </record>
+
+    <menuitem action="action_attendance_day"
+              id="menu_action_attendance_day"
+              string="Attendance by day"
+              parent="hr_attendance.menu_hr_attendance_manage_attendances"
+              sequence="4"/>
+</odoo>
