@@ -138,6 +138,6 @@ class ProjectLifecycle(models.Model):
             lifecycle_ids.append(lifecycle.id)
 
             lifecycle.project_id.status = vals['project_status']
-            lifecycle.project_id.status_date = fields.Date.today()
+            lifecycle.project_id.last_update_date = fields.Date.today()
 
         return lifecycle_ids

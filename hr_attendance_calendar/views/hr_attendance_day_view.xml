@@ -45,6 +45,8 @@
                                    widget="float_time"/>
                             <field name="extra_hours"
                                    widget="float_time"/>
+                            <field name="extra_hours_lost"
+                                   widget="float_time"/>
                         </group>
                     </group>
                     <newline/>

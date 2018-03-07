@@ -22,9 +22,9 @@ class HrEmployee(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     extra_hours = fields.Float('Extra hours', compute='_compute_extra_hours',
-                               readonly=True, store=True)
+                               store=True)
     extra_hours_lost = fields.Float("Extra hours lost",
-                                    readonly=True, store=True)
+                                    store=True)
     attendance_days_ids = fields.One2many('hr.attendance.day', 'employee_id',
                                           "Attendance day")
     annual_balance = fields.Float('Annual balance')
@@ -57,8 +57,10 @@ class HrEmployee(models.Model):
                 lambda r: r.date >= current_year.strftime('%x'))
 
             extra_hours_sum = sum(attendance_day_ids.mapped('extra_hours'))
+            extra_hours_lost_sum = sum(attendance_day_ids.
+                                       mapped('extra_hours_lost'))
 
-            employee.extra_hours = extra_hours_sum + employee.annual_balance
+            employee.extra_hours = extra_hours_sum + employee.annual_balance - extra_hours_lost_sum
 
     @api.model
     def _cron_create_attendance(self):
@@ -79,7 +81,7 @@ class HrEmployee(models.Model):
     def _compute_extra_hours_today(self):
         for employee in self:
             employee.extra_hours_today = \
-                '- ' if employee.today_hour < 0 else '+'
+                '-' if float(employee.today_hour) < 0 else ''
             employee.extra_hours_today += employee. \
                 convert_hour_to_time(employee.today_hour)
 
@@ -98,7 +100,7 @@ class HrEmployee(models.Model):
     def _compute_time_warning_today(self):
         for employee in self:
             employee.time_warning_today = \
-                'red' if employee.today_hour < 8 else 'green'
+                'red' if float(employee.today_hour) < 0 else 'green'
 
     @api.multi
     def _compute_today_hour(self):
@@ -121,8 +123,10 @@ class HrEmployee(models.Model):
     @api.depends('today_hour')
     def _compute_today_hour_formatted(self):
         for employee in self:
-            employee.today_hour_formatted = \
-                employee.convert_hour_to_time(employee.today_hour)
+            today_hour = employee.compute_today_hour()
+            thf = '-' if today_hour < 0 else ''
+            thf += employee.convert_hour_to_time(float(today_hour))
+            employee.today_hour_formatted = thf
 
     @api.multi
     def convert_hour_to_time(self, hour):

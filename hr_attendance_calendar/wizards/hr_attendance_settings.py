@@ -22,6 +22,7 @@ class HrAttendanceSettings(models.TransientModel):
                                           'day in the calculation of the '
                                           'holidays')
     free_break = fields.Float('Free break (hour)')
+    max_extra_hours = fields.Float('Max extra hours')
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -38,6 +39,12 @@ class HrAttendanceSettings(models.TransientModel):
             'hr_attendance_calendar.free_break',
             str(self.free_break))
 
+    @api.multi
+    def set_max_extra_hours(self):
+        self.env['ir.config_parameter'].set_param(
+            'hr_attendance_calendar.max_extra_hours',
+            str(self.max_extra_hours))
+
     @api.model
     def get_default_values(self, _fields):
         param_obj = self.env['ir.config_parameter']
@@ -45,7 +52,9 @@ class HrAttendanceSettings(models.TransientModel):
             'work_day_duration': float(param_obj.get_param(
                 'hr_attendance_calendar.work_day_duration', '8.0')),
             'free_break': float(param_obj.get_param(
-                'hr_attendance_calendar.free_break', '0.0'))
+                'hr_attendance_calendar.free_break', '0.0')),
+            'max_extra_hours': float(param_obj.get_param(
+                'hr_attendance_calendar.max_extra_hours', '0.0'))
         }
         return res
 
@@ -58,6 +67,11 @@ class HrAttendanceSettings(models.TransientModel):
     def get_free_break(self):
         return float(self.env['ir.config_parameter'].get_param(
             'hr_attendance_calendar.free_break'))
+
+    @api.model
+    def get_max_extra_hours(self):
+        return float(self.env['ir.config_parameter'].get_param(
+            'hr_attendance_calendar.max_extra_hours'))
 
 
 class CreateHrAttendance(models.TransientModel):
