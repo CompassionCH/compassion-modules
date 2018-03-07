@@ -83,11 +83,10 @@ class CreateHrAttendance(models.TransientModel):
 
     def create_attendance_day(self):
         date_to = fields.Date.from_string(self.date_to)
-        current_date = fields.Date.from_string(self.date_from)
-
         att_day = self.env['hr.attendance.day']
 
         for employee_id in self.employee_ids:
+            current_date = fields.Date.from_string(self.date_from)
             while current_date <= date_to:
                 already_exist = att_day.search([
                     ('employee_id', '=', employee_id.id),

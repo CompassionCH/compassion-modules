@@ -12,9 +12,9 @@
                type="xml">
             <field name="group_attendance_use_pin"
                    position="after">
-                <field name="work_day_duration"/>
-                <field name="free_break"/>
-                <field name="max_extra_hours"/>
+                <field name="work_day_duration" widget="float_time"/>
+                <field name="free_break" widget="float_time"/>
+                <field name="max_extra_hours" widget="float_time"/>
             </field>
         </field>
     </record>
@@ -28,10 +28,10 @@
                type="xml">
             <form string="Break">
                 <group>
-                    <field name="time_from"/>
-                    <field name="time_to"/>
-                    <field name="due_break_total"/>
-                    <field name="due_break"/>
+                    <field name="time_from" widget="float_time"/>
+                    <field name="time_to" widget="float_time"/>
+                    <field name="due_break_total" widget="float_time"/>
+                    <field name="due_break" widget="float_time"/>
                 </group>
             </form>
         </field>
@@ -45,10 +45,10 @@
                type="xml">
             <tree editable="True"
                   default_order="time_from">
-                <field name="time_from"/>
-                <field name="time_to"/>
-                <field name="due_break_total"/>
-                <field name="due_break"/>
+                <field name="time_from" widget="float_time"/>
+                <field name="time_to" widget="float_time"/>
+                <field name="due_break_total" widget="float_time"/>
+                <field name="due_break" widget="float_time"/>
             </tree>
         </field>
     </record>
