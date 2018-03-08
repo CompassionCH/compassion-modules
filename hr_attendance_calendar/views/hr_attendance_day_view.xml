@@ -8,12 +8,12 @@
         <field name="arch"
                type="xml">
             <form string="Attendance day">
-                <header>
-                    <button name="recompute_attendance"
-                            string="Recompute attendances"
-                            type="object"
-                            class="btn-primary"/>
-                </header>
+                <!--<header>-->
+                    <!--<button name="recompute_attendance"-->
+                            <!--string="Recompute attendances"-->
+                            <!--type="object"-->
+                            <!--class="btn-primary"/>-->
+                <!--</header>-->
                 <sheet>
                     <group col="3">
                         <group string="Attendance day">
@@ -45,8 +45,8 @@
                                    widget="float_time"/>
                             <field name="extra_hours"
                                    widget="float_time"/>
-                            <field name="extra_hours_lost"
-                                   widget="float_time"/>
+                            <!--<field name="extra_hours_lost"-->
+                                   <!--widget="float_time"/>-->
                         </group>
                     </group>
                     <newline/>

@@ -23,8 +23,8 @@ class HrEmployee(models.Model):
     ##########################################################################
     extra_hours = fields.Float('Extra hours', compute='_compute_extra_hours',
                                store=True)
-    extra_hours_lost = fields.Float("Extra hours lost",
-                                    store=True)
+    # extra_hours_lost = fields.Float("Extra hours lost",
+    #                                 store=True)
     attendance_days_ids = fields.One2many('hr.attendance.day', 'employee_id',
                                           "Attendance day")
     annual_balance = fields.Float('Annual balance')
@@ -51,17 +51,20 @@ class HrEmployee(models.Model):
     def _compute_extra_hours(self):
         for employee in self:
 
-            current_year = datetime.date.today().replace(month=1, day=1)
+            start_year = datetime.date.today().replace(month=1, day=1)
+            start_year = fields.Date.to_string(start_year)
+            yesterday = datetime.date.today() - datetime.timedelta(days=1)
+            yesterday = fields.Date.to_string(yesterday)
 
             attendance_day_ids = employee.attendance_days_ids.filtered(
-                lambda r: r.date >= current_year.strftime('%x'))
+                lambda r: start_year <= r.date <= yesterday)
 
             extra_hours_sum = sum(attendance_day_ids.mapped('extra_hours'))
-            extra_hours_lost_sum = sum(attendance_day_ids.
-                                       mapped('extra_hours_lost'))
+            # extra_hours_lost_sum = sum(attendance_day_ids.
+            #                            mapped('extra_hours_lost'))
 
             employee.extra_hours = extra_hours_sum + \
-                employee.annual_balance - extra_hours_lost_sum
+                employee.annual_balance
 
     @api.model
     def _cron_create_attendance(self):
