@@ -187,11 +187,27 @@ class SponsorshipGift(models.Model):
     @api.model
     def create(self, vals):
         """ Try to find existing gifts before creating a new one. """
+        gift_date = vals.get('gift_date')
+        if not gift_date:
+            invl = self.env['account.invoice.line']
+            dates = []
+            default = fields.Date.today()
+            for invl_write in vals.get('invoice_line_ids', [[3]]):
+                if invl_write[0] == 0:
+                    dates.append(invl_write[2].get('due_date'), default)
+                elif invl_write[0] == 4:
+                    dates.append(invl.browse(invl_write[1]).due_date)
+                elif invl_write[0] == 6:
+                    dates.extend(invl.browse(invl_write[2]).mapped('due_date'))
+                else:
+                    dates.append(default)
+            gift_date = max(dates)
+
         gift = self.search([
             ('sponsorship_id', '=', vals['sponsorship_id']),
             ('gift_type', '=', vals['gift_type']),
             ('attribution', '=', vals['attribution']),
-            ('gift_date', 'like', vals['gift_date'][:4]),
+            ('gift_date', 'like', gift_date[:4]),
             ('sponsorship_gift_type', '=', vals.get('sponsorship_gift_type')),
             ('state', 'in', ['draft', 'verify', 'error'])
         ], limit=1)
