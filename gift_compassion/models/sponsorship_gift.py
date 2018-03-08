@@ -191,6 +191,7 @@ class SponsorshipGift(models.Model):
             ('sponsorship_id', '=', vals['sponsorship_id']),
             ('gift_type', '=', vals['gift_type']),
             ('attribution', '=', vals['attribution']),
+            ('gift_date', 'like', vals['gift_date'][:4]),
             ('sponsorship_gift_type', '=', vals.get('sponsorship_gift_type')),
             ('state', 'in', ['draft', 'verify', 'error'])
         ], limit=1)
@@ -206,6 +207,9 @@ class SponsorshipGift(models.Model):
                     invl_write.append(line_write)
             if invl_write:
                 gift.write({'invoice_line_ids': invl_write})
+
+            else:
+                gift.write({'amount': gift.amount + vals['amount']})
 
         else:
             # If a gift for the same partner is to verify, put as well

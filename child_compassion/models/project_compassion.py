@@ -274,8 +274,9 @@ class CompassionProject(models.Model):
         track_visibility='onchange')
     status = fields.Selection(
         '_get_state', track_visibility='onchange', default='A', readonly=True)
-    status_date = fields.Date(
-        'Last status change', track_visibility='onchange', readonly=True)
+    last_reviewed_date = fields.Date(
+        'Last reviewed date', track_visibility='onchange', readonly=True,
+        oldname="status_date")
     status_comment = fields.Text(
         related='lifecycle_ids.details', store=True)
     hold_cdsp_funds = fields.Boolean(related='lifecycle_ids.hold_cdsp_funds')

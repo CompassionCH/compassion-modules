@@ -125,8 +125,7 @@
                type="xml">
             <kanban>
                 <templates>
-                    <t t-debug="pdb"
-                       t-name="kanban-box">
+                    <t t-name="kanban-box">
                         <div class="oe_kanban_vignette">
                             <!-- Left side image: -->
                             <div class="oe_kanban_details">

@@ -94,7 +94,7 @@ class ICPMapping(OnrampMapping):
                                         'icp.program'),
         'InternationalDenominationAffiliation': 'international_affiliation',
         'InternetAccess': 'church_internet_access',
-        'LastReviewedDate': 'status_date',
+        'LastReviewedDate': 'last_reviewed_date',
         'ICP_Name': 'local_church_name',
         'ICP_NameNonLatin': 'local_church_original_name',
         'NumberOfActiveMembers': 'number_church_members',

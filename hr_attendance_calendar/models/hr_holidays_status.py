@@ -10,14 +10,11 @@
 #
 ##############################################################################
 
+from odoo import models, fields
 
-from . import hr_attendance
-from . import hr_attendance_break
-from . import hr_attendance_day
-from . import hr_attendance_rules
-from . import hr_contract
-from . import hr_employee
-from . import hr_holidays
-from . import hr_holidays_status
-from . import hr_weekday_coefficient
-from . import resource_calendar_attendance
+
+class HrHolidaysStatus(models.Model):
+    _inherit = 'hr.holidays.status'
+
+    remove_from_due_hours = fields.Boolean("Remove from due hours",
+                                           default=False)
