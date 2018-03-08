@@ -63,18 +63,23 @@ class EventCompassion(models.Model):
     contract_ids = fields.One2many(
         'recurring.contract', related='origin_id.contract_ids', readonly=True)
     expense_line_ids = fields.One2many(
-        'account.analytic.line', compute='_compute_analytic_lines',
-        readonly=True)
+        'account.analytic.line',
+        compute='_compute_expense_lines', string='Expenses'
+    )
+    invoice_line_ids = fields.One2many(
+        'account.invoice.line', 'event_id', readonly=True
+    )
     income_line_ids = fields.One2many(
-        'account.invoice.line', compute='_compute_analytic_lines',
-        readonly=True)
+        'account.invoice.line',
+        compute='_compute_income_lines', string='Income'
+    )
     total_expense = fields.Float(
-        'Total expense', compute='_compute_analytic_lines', readonly=True,
+        'Total expense', compute='_compute_expense', readonly=True,
         store=True)
     total_income = fields.Float(
-        compute='_compute_analytic_lines', readonly=True, store=True)
+        compute='_compute_income', readonly=True, store=True)
     balance = fields.Float(
-        compute='_compute_analytic_lines', readonly=True, store=True)
+        compute='_compute_balance', readonly=True, store=True)
     number_allocate_children = fields.Integer(
         'Number of children to allocate',
         track_visibility='onchange',
@@ -99,40 +104,41 @@ class EventCompassion(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.multi
-    def update_analytics(self):
-        self._compute_analytic_lines()
+    def _compute_expense_lines(self):
+        for event in self:
+            event.expense_line_ids = event.analytic_id.line_ids.filtered(
+                lambda l: l.amount < 0.0)
 
     @api.multi
-    @api.depends('analytic_id', 'analytic_id.line_ids',
-                 'analytic_id.line_ids.amount')
-    def _compute_analytic_lines(self):
-        analytic_line_obj = self.env['account.analytic.line']
-        for event in self.filtered('analytic_id'):
-            if event.analytic_id:
-                expenses = analytic_line_obj.search([
-                    ('account_id', '=', event.analytic_id.id),
-                    ('amount', '<', '0.0')])
-                incomes = self.env['account.invoice.line'].search([
-                    ('state', '=', 'paid'),
-                    ('account_analytic_id', '=', event.analytic_id.id),
-                    ('contract_id', '=', False),
-                    ('invoice_id.type', '=', 'out_invoice'),
-                ])
-                expense = abs(sum(expenses.mapped('amount')))
-                income = sum(incomes.mapped('price_subtotal'))
-                event.expense_line_ids = expenses
-                event.income_line_ids = incomes
-                event.total_expense = expense
-                event.total_income = income
-                if expense:
-                    event.balance = income / float(expense)
-                else:
-                    event.balance = 0
-            elif not isinstance(event.id, models.NewId):
-                event.expense_line_ids = False
-                event.income_line_ids = False
-                event.total_expense = 0.0
-                event.total_income = 0.0
+    def _compute_income_lines(self):
+        for event in self:
+            event.income_line_ids = event.invoice_line_ids.filtered(
+                lambda l: l.state == 'paid' and not l.contract_id and
+                l.invoice_id.type == 'out_invoice'
+            )
+
+    @api.multi
+    @api.depends('analytic_id.line_ids')
+    def _compute_expense(self):
+        for event in self:
+            expenses = event.expense_line_ids.filtered(
+                lambda l: l.amount < 0)
+            event.total_expense = abs(sum(expenses.mapped('amount') or [0]))
+
+    @api.multi
+    @api.depends('invoice_line_ids.state')
+    def _compute_income(self):
+        for event in self:
+            incomes = event.income_line_ids
+            event.total_income = sum(incomes.mapped('price_subtotal') or [0])
+
+    @api.multi
+    @api.depends('total_income', 'total_expense')
+    def _compute_balance(self):
+        for event in self:
+            if event.total_expense and event.total_income:
+                event.balance = event.total_income / float(event.total_expense)
+            else:
                 event.balance = 0.0
 
     @api.multi
@@ -448,6 +454,7 @@ class EventCompassion(models.Model):
             'year': self.year,
             'tag_ids': [(6, 0, tag_ids)],
             'partner_id': self.user_id.partner_id.id,
+            'event_id': self.id
         }
 
     def _get_origin_vals(self, analytic_id):
