@@ -389,7 +389,7 @@ class CompassionChild(models.Model):
         for child in self:
             res = child._get_last_pictures() and res
             pictures = child.pictures_ids
-            if len(pictures) > 1:
+            if res and len(pictures) > 1:
                 today = date.today()
                 last_photo = fields.Date.from_string(pictures[1].date)
                 new_photo = fields.Date.from_string(pictures[0].date)
