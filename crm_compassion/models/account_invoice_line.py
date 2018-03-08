@@ -21,6 +21,10 @@ class AccountInvoiceLine(models.Model):
     currency_id = fields.Many2one(
         'res.currency', 'Currency', related='invoice_id.currency_id',
         store=True)
+    event_id = fields.Many2one(
+        'crm.event.compassion', 'Event',
+        related='account_analytic_id.event_id', store=True, readonly=True
+    )
 
     @api.onchange('contract_id')
     def on_change_contract_id(self):
