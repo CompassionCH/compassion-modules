@@ -550,7 +550,8 @@ class EventCompassion(models.Model):
                 # Restore ambassador
                 self.env.cr.execute(
                     "UPDATE crm_event_compassion "
-                    "SET user_id = %s WHERE id = %s", [ambassador.id, event.id]
+                    "SET user_id = %s WHERE id = %s", [ambassador.id or None,
+                                                       event.id]
                 )
         return True
 
