@@ -21,7 +21,7 @@ class ProjectCompassion(models.Model):
 
         for project in self:
             project.sponsorships_count = self.env['recurring.contract'].\
-                search_count([('child_id.project_id', '=', self.id)])
+                search_count([('child_id.project_id', '=', project.id)])
 
     @api.multi
     def open_sponsorships(self):
