@@ -242,7 +242,7 @@ class RecurringContract(models.Model):
     ##########################################################################
     def _check_need_sub(self):
         """ Called when a contract is terminated, update the sds states. """
-        for contract in self:
+        for contract in self.filtered('child_id'):
             lang = contract.correspondant_id.lang[:2]
             sds_user = self.env['sds.follower.settings'].get_param(
                 'sub_' + lang)
