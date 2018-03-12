@@ -227,8 +227,9 @@ class HrAttendanceDay(models.Model):
                     ('employee_id', '=', att_day.employee_id.id)])
                 att_days_future.compute_extra_hours_lost()
 
+        return True
+
     @api.multi
-    @api.depends('extra_hours')
     def compute_extra_hours_lost(self):
         for att_day in self:
             data = self.env[
@@ -237,9 +238,9 @@ class HrAttendanceDay(models.Model):
                  ('employee_id', '=', att_day.employee_id.id)])
 
             max_extra_hours = float(self.env['ir.config_parameter'].get_param(
-                         'hr_attendance_calendar.max_extra_hours'))
+                'hr_attendance_calendar.max_extra_hours'), 0.0)
 
-            if data.balance > max_extra_hours:
+            if data.balance > max_extra_hours > 0:
                 att_day.extra_hours_lost = data.balance - max_extra_hours
 
     @api.multi

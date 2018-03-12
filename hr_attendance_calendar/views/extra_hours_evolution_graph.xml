@@ -4,7 +4,8 @@
         <field name="res_model">hr_attendance_day.extra_hours_evolution_day_report</field>
         <field name="view_type">form</field>
         <field name="view_mode">graph</field>
-        <field name="context">{"graph_mode":"bar", "filter":[('employee_id', '=', user.id.employee_id)]}</field>
+        <field name="context">{"graph_mode":"bar"}</field>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
         <field name="help">From this report, you can see the evolution of your extra hours</field>
     </record>
 
@@ -19,9 +20,9 @@
         </field>
     </record>
 
-    <!--<menuitem id="menu_view_extra_hours_evolution_day_report"
-              name="Extra hours evolution graph"
-              parent="hr_attendance.menu_hr_attendance_settings"
+    <menuitem id="menu_view_extra_hours_evolution_day_report"
+              name="Balance history"
+              parent="hr_attendance.menu_hr_attendance_manage_attendances"
               action="view_extra_hours_evolution_day_report"
-              sequence="1"/>-->
+              sequence="98"/>
 </odoo>

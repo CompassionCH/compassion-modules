@@ -20,7 +20,7 @@ class ExtraHoursEvolutionDayReport(models.Model):
     _rec_name = 'hr_date'
 
     hr_date = fields.Char(string="Date", readonly=True)
-    employee_id = fields.Integer(string="employee_id")
+    employee_id = fields.Many2one('hr.employee')
     balance = fields.Float(string="Balance")
 
     @api.model_cr
