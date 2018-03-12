@@ -137,7 +137,7 @@ class RecurringContract(models.Model):
                 body="The sponsor doesn't want a new child."
             )
             sub = contract.sub_sponsorship_id
-            if sub and not sub.global_id:
+            if sub and sub.state == 'draft':
                 super(RecurringContract, sub).unlink()
             elif sub:
                 sub.end_reason = '10'   # Subreject reason
