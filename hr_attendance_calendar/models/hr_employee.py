@@ -60,11 +60,11 @@ class HrEmployee(models.Model):
                 lambda r: start_year <= r.date <= yesterday)
 
             extra_hours_sum = sum(attendance_day_ids.mapped('extra_hours'))
-            # extra_hours_lost_sum = sum(attendance_day_ids.
-            #                            mapped('extra_hours_lost'))
+            extra_hours_lost_sum = sum(attendance_day_ids.
+                                       mapped('extra_hours_lost'))
 
             employee.extra_hours = extra_hours_sum + \
-                employee.annual_balance
+                employee.annual_balance - extra_hours_lost_sum
 
     @api.model
     def _cron_create_attendance(self):

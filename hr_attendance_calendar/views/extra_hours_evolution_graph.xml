@@ -1,0 +1,27 @@
+<odoo>
+    <record id="view_extra_hours_evolution_day_report" model="ir.actions.act_window">
+        <field name="name">Extra hours evolution</field>
+        <field name="res_model">hr_attendance_day.extra_hours_evolution_day_report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="context">{"graph_mode":"bar", "filter":[('employee_id', '=', user.id.employee_id)]}</field>
+        <field name="help">From this report, you can see the evolution of your extra hours</field>
+    </record>
+
+    <record id="view_extra_hours_evolution_day_report_graph" model="ir.ui.view">
+        <field name="name">hr_attendance_day.extra_hours_evolution_day_report.graph</field>
+        <field name="model">hr_attendance_day.extra_hours_evolution_day_report</field>
+        <field name="arch" type="xml">
+            <graph string="Extra hours evolution" type="line">
+                <field name="hr_date" type="col" interval="day"/>
+                <field name="balance" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!--<menuitem id="menu_view_extra_hours_evolution_day_report"
+              name="Extra hours evolution graph"
+              parent="hr_attendance.menu_hr_attendance_settings"
+              action="view_extra_hours_evolution_day_report"
+              sequence="1"/>-->
+</odoo>
