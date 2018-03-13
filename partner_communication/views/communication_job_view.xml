@@ -36,7 +36,15 @@
                         </group>
                     </group>
                     <group>
-                        <field name="subject"/>
+                        <group>
+                            <field name="subject"/>
+                        </group>
+                        <group>
+                            <field name="omr_enable_marks"/>
+                            <field name="omr_should_close_envelope" string="Close the envelope" attrs="{'readonly': [('omr_enable_marks', '=', False)]}"/>
+                            <field name="omr_add_attachment_back_1" string="Attachment from back 1" attrs="{'readonly': [('omr_enable_marks', '=', False)]}"/>
+                            <field name="omr_add_attachment_back_2" string="Attachment from back 2" attrs="{'readonly': [('omr_enable_marks', '=', False)]}"/>
+                        </group>
                     </group>
                     <group>
                         <field name="pdf_page_count" attrs="{'invisible': [('send_mode', '!=', 'physical')]}"/>
@@ -112,7 +120,7 @@
                 <field name="report_id"/>
             </field>
             <field name="type" position="after">
-                <field name="disable_omr"/>
+                <field name="enable_omr"/>
             </field>
         </field>
     </record>
