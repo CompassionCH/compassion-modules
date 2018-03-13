@@ -238,7 +238,7 @@ class HrAttendanceDay(models.Model):
                  ('employee_id', '=', att_day.employee_id.id)])
 
             max_extra_hours = float(self.env['ir.config_parameter'].get_param(
-                'hr_attendance_calendar.max_extra_hours'), 0.0)
+                'hr_attendance_calendar.max_extra_hours', 0.0))
 
             if data.balance > max_extra_hours > 0:
                 att_day.extra_hours_lost = data.balance - max_extra_hours

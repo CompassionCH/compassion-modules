@@ -29,22 +29,30 @@ class ExtraHoursEvolutionDayReport(models.Model):
             self.env.cr, self._table)
 
         self.env.cr.execute("""
-        CREATE OR REPLACE VIEW extra_hours_evolution_day_report AS
-        SELECT sub.hr_date AS hr_date,
-               ROW_NUMBER() OVER (
-                                  ORDER BY
-                                    (SELECT 100)) AS id,
-               sum(sub.extra_hours) OVER (PARTITION BY sub.employee_id
-                                          ORDER BY sub.hr_date) AS balance,
-               sub.employee_id AS employee_id
-        FROM
-          (SELECT to_char(date_trunc('day', hr.date), 'YYYY-MM-DD') AS hr_date,
-                   sum(hr.extra_hours) AS extra_hours,
-                   hr.employee_id AS employee_id
-           FROM hr_attendance_day AS hr
-           WHERE hr.date < now()
-           GROUP BY date_trunc('day', hr.date),
-                    hr.employee_id
-           ORDER BY hr_date) AS sub
-        ORDER BY hr_date
+            CREATE OR REPLACE VIEW extra_hours_evolution_day_report AS
+            SELECT sub_2.id,
+                   sub_2.hr_date,
+                   sub_2.employee_id,
+                   sub_2.balance + sub_2.annual_balance AS balance
+            FROM
+              (SELECT sub.hr_date AS hr_date,
+                      ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS id,
+                      sum(sub.extra_hours) OVER (PARTITION BY sub.employee_id 
+                          ORDER BY sub.hr_date) AS balance,
+                      sub.employee_id AS employee_id,
+                      sub.annual_balance
+               FROM
+                 (SELECT hr.date AS hr_date,
+                         sum(hr.extra_hours) AS extra_hours,
+                         hr.employee_id AS employee_id,
+                         COALESCE(max(e.annual_balance), 0.0) AS annual_balance
+                  FROM hr_attendance_day AS hr
+                  JOIN hr_employee e ON hr.employee_id = e.id
+                  WHERE hr.date < now()
+                    AND hr.date >= date_trunc('year', now())
+                  GROUP BY hr_date,
+                           hr.employee_id
+                  ORDER BY hr_date) AS sub
+               ORDER BY hr_date,
+                        employee_id) AS sub_2
         """)
