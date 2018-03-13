@@ -89,7 +89,7 @@ class HrAttendanceDay(models.Model):
                                compute='_compute_extra_hours',
                                store=True)
     extra_hours_lost = fields.Float("Extra hours lost", store=True,
-                                    compute='compute_extra_hours_lost')
+                                    compute='_compute_extra_hours_lost')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -225,12 +225,12 @@ class HrAttendanceDay(models.Model):
                 att_days_future = self.search([
                     ('date', '>=', att_day.date),
                     ('employee_id', '=', att_day.employee_id.id)])
-                att_days_future.compute_extra_hours_lost()
+                att_days_future._compute_extra_hours_lost()
 
         return True
 
     @api.multi
-    def compute_extra_hours_lost(self):
+    def _compute_extra_hours_lost(self):
         for att_day in self:
             data = self.env[
                 'hr.attendance.balance.evolution.report'].search(
