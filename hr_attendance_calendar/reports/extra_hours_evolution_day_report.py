@@ -13,7 +13,7 @@ from odoo import models, fields, api
 
 
 class ExtraHoursEvolutionDayReport(models.Model):
-    _name = "hr_attendance_day.extra_hours_evolution_day_report"
+    _name = "hr.attendance.balance.evolution.report"
     _table = "extra_hours_evolution_day_report"
     _description = "Extra hours evolution by days"
     _auto = False

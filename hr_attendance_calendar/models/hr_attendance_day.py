@@ -233,7 +233,7 @@ class HrAttendanceDay(models.Model):
     def compute_extra_hours_lost(self):
         for att_day in self:
             data = self.env[
-                'hr_attendance_day.extra_hours_evolution_day_report'].search(
+                'hr.attendance.balance.evolution.report'].search(
                 [('hr_date', '=', att_day.date),
                  ('employee_id', '=', att_day.employee_id.id)])
 
