@@ -479,7 +479,7 @@ class CommunicationJob(models.Model):
         return message.id
 
     @api.multi
-    def add_omr_marks(self, pdf_data, is_latest_document, communication):
+    def add_omr_marks(self, pdf_data, is_latest_document):
         # Documentation
         # http://meteorite.unm.edu/site_media/pdf/reportlab-userguide.pdf
         # https://pythonhosted.org/PyPDF2/PdfFileReader.html
@@ -487,6 +487,8 @@ class CommunicationJob(models.Model):
         # https://gist.github.com/kzim44/5023021
         # https://www.blog.pythonlibrary.org/2013/07/16/
         #   pypdf-how-to-write-a-pdf-to-memory/
+
+        self.ensure_one()
 
         # OMR const Parameters
         orm_mark_length = 7 * mm
@@ -537,12 +539,18 @@ class CommunicationJob(models.Model):
 
                 # alimentation (2 marks)
                 for alimentation_number in range(number_of_alimentation):
-                    # p.line(x1, y_position, x2, y_position)
+                    if is_latest_page:
+                        if self.omr_add_attachment_back_1 and \
+                                alimentation_number == 1:
+                            p.line(x1, y_position, x2, y_position)
+                        elif self.omr_add_attachment_back_2 and \
+                                alimentation_number == 2:
+                            p.line(x1, y_position, x2, y_position)
                     y_position -= y_step
 
                 # close envelop (if display the envelop is not closed)
                 if is_latest_page \
-                        and not communication.omr_should_close_envelope:
+                        and not self.omr_should_close_envelope:
                     p.line(x1, y_position, x2, y_position)
                 y_position -= y_step
 
@@ -554,14 +562,13 @@ class CommunicationJob(models.Model):
                 # p.line(x1, y_position, x2, y_position)
                 # y_position -= y_step
 
-                # partiy mark (total number of marks should be pair)
-                if self._display_parity(is_latest_page, communication):
+                # parity mark (total number of marks should be pair)
+                if self._display_parity(is_latest_page):
                     p.line(x1, y_position, x2, y_position)
                 y_position -= y_step
 
                 # end mark (compulsory)
                 p.line(x1, y_position, x2, y_position)
-
 
                 # Close the PDF object cleanly.
                 p.showPage()
@@ -578,8 +585,6 @@ class CommunicationJob(models.Model):
                 page = existing_pdf.getPage(page_number)
 
             output.addPage(page)
-
-        # pdf_buffer.close()
 
         out_buffer = StringIO.StringIO()
         output.write(out_buffer)
@@ -641,13 +646,12 @@ class CommunicationJob(models.Model):
 
             # add omr to pdf if needed
             if job.omr_enable_marks:
-                is_latest_document = False if \
-                    len(self.attachment_ids) > 0 \
-                    and len(self.attachment_ids.filtered(
-                        lambda r: r.attachment_id.disable_omr == False)) > 0 \
-                    else True
+                is_latest_document = not self.attachment_ids.filtered(
+                    'attachment_id.enable_omr'
+                )
                 to_print = job.add_omr_marks(
-                    pdf_data, is_latest_document, job)
+                    pdf_data, is_latest_document
+                )
             else:
                 to_print = pdf_data
 
@@ -672,7 +676,7 @@ class CommunicationJob(models.Model):
             self.env.cr.commit()    # pylint: disable=invalid-commit
         return True
 
-    def _display_parity(self, is_latest_page, communication):
+    def _display_parity(self, is_latest_page):
         # current_page_number = 0
 
         nb_displayed_marks = 2  # always display start and stop marks
@@ -682,10 +686,14 @@ class CommunicationJob(models.Model):
             nb_displayed_marks += 1
 
             # a mark is added if the envelope should not be closed
-            if not communication.omr_should_close_envelope:
+            if not self.omr_should_close_envelope:
                 nb_displayed_marks += 1
 
-            # if used, add alimentation marks count here
+            # count attachment marks
+            if self.omr_add_attachment_back_1:
+                nb_displayed_marks += 1
+            if self.omr_add_attachment_back_2:
+                nb_displayed_marks += 1
 
         # # page number (2) marks
         # # no mark for page 00 (binary)

@@ -112,7 +112,7 @@
                 <field name="report_id"/>
             </field>
             <field name="type" position="after">
-                <field name="disable_omr"/>
+                <field name="enable_omr"/>
             </field>
         </field>
     </record>
