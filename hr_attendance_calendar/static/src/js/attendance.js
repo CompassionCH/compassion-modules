@@ -37,7 +37,7 @@ odoo.define('hr_switzerland.attendance', function (require) {
                                 function (el) {
                                     var matches = $('#' + el + '_pl').text().match(/^-?(\d{2}):(\d{2})$/);
 
-                                    if (matches != null) {
+                                    if (matches != null && $('#state').text() == 'checked in') {
                                         var hours = parseInt(matches[1]);
                                         var minutes = parseInt(matches[2]);
 
