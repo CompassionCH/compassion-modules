@@ -20,8 +20,8 @@
                         </group>
                     </group>
                     <group>
-                        <field name="body" options="{'style-inline': true}" attrs="{'invisible': [('type', '!=', 'story')]}"/>
-                        <field name="body_text" options="{'style-inline': true }" attrs="{'invisible': [('type', '!=', 'sentence')]}"/>
+                        <field name="body" widget="text_ckeditor4" attrs="{'invisible': [('type', '!=', 'story')]}"/>
+                        <field name="body_text" attrs="{'invisible': [('type', '!=', 'sentence')]}"/>
                     </group>
                 </sheet>
             </form>
