@@ -18,6 +18,7 @@ from odoo.addons.base_phone.controllers.main import BasePhoneController
 from pyPdf import PdfFileReader, PdfFileWriter
 from reportlab.lib.units import mm
 from reportlab.pdfgen.canvas import Canvas
+from reportlab.lib.colors import white
 
 from odoo import api, models, fields, _, http
 from odoo.exceptions import UserError
@@ -490,12 +491,20 @@ class CommunicationJob(models.Model):
 
         self.ensure_one()
 
-        # OMR const Parameters
-        orm_mark_length = 7 * mm
-        y_step = 4 * mm
-        x1 = 194 * mm
-        y_position = 180 * mm
+        # OMR Parameters
         number_of_alimentation = 2
+        number_of_marks = 7
+
+        orm_mark_length = 7 * mm
+
+        # margin around the omr code which should stay white
+        horizontal_margin = 4.2 * mm
+        vertical_margin = 8.5 * mm
+
+        x1 = 194 * mm
+        x2 = x1 + orm_mark_length
+        y1 = y_position = 180 * mm
+        y_step = 4 * mm
 
         pdf_buffer = StringIO.StringIO()
         pdf_buffer.write(pdf_data)
@@ -520,13 +529,20 @@ class CommunicationJob(models.Model):
 
                 # Create a canvas to write on
                 p = Canvas(omr_buffer)
-                # With someone on
 
                 # line (x1, y1, x2, y2)
                 p.setLineWidth(0.2 * mm)
 
-                # Variables initialisation
-                x2 = x1 + orm_mark_length
+                # add a white background for the omr code
+                p.setFillColor(white)
+                p.rect(
+                    x1 - horizontal_margin,
+                    y1 - (number_of_marks - 1) * y_step - vertical_margin,
+                    orm_mark_length + 2 * horizontal_margin,
+                    (number_of_marks - 1) * y_step + 2 * vertical_margin,
+                    fill=True,
+                    stroke=False
+                )
 
                 # start mark (compulsory)
                 p.line(x1, y_position, x2, y_position)
