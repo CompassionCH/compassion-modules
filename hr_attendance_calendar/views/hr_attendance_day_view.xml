@@ -92,10 +92,9 @@
                 <field name="date"/>
                 <field name="working_day"/>
                 <field name="employee_id"/>
-                <field name="worked_hours"
-                       widget="float_time"/>
-                <field name="extra_hours"
-                       widget="float_time"/>
+                <field name="worked_hours" widget="float_time"/>
+                <field name="extra_hours" widget="float_time"/>
+                <field name="extra_hours_lost" widget="float_time"/>
             </tree>
         </field>
     </record>

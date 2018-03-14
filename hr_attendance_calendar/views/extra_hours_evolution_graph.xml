@@ -4,8 +4,7 @@
         <field name="res_model">hr.attendance.balance.evolution.report</field>
         <field name="view_type">form</field>
         <field name="view_mode">graph</field>
-        <field name="context">{"graph_mode":"bar"}</field>
-        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="context">{"graph_mode":"line", "search_default_personal_history": 1}</field>
         <field name="help">From this report, you can see the evolution of your extra hours</field>
     </record>
 
@@ -15,8 +14,19 @@
         <field name="arch" type="xml">
             <graph string="Extra hours evolution" type="line">
                 <field name="hr_date" type="col" interval="day"/>
-                <field name="balance" type="measure"/>
+                <field name="balance" type="measure" widget="float_time"/>
             </graph>
+        </field>
+    </record>
+
+    <record id="view_extra_hours_evolution_day_search" model="ir.ui.view">
+        <field name="name">hr.attendance.balance.evolution.report.search</field>
+        <field name="model">hr.attendance.balance.evolution.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <filter name="personal_history" string="My history" domain="[('employee_id.user_id', '=', uid)]"/>
+            </search>
         </field>
     </record>
 
