@@ -41,9 +41,9 @@
                         </group>
                         <group>
                             <field name="omr_enable_marks"/>
-                            <field name="omr_should_close_envelope" string="Close the envelope" attrs="{'readonly': [('omr_enable_marks', '=', False)]}"/>
-                            <field name="omr_add_attachment_back_1" string="Attachment from back 1" attrs="{'readonly': [('omr_enable_marks', '=', False)]}"/>
-                            <field name="omr_add_attachment_back_2" string="Attachment from back 2" attrs="{'readonly': [('omr_enable_marks', '=', False)]}"/>
+                            <field name="omr_should_close_envelope" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                            <field name="omr_add_attachment_tray_1" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                            <field name="omr_add_attachment_tray_2" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
                         </group>
                     </group>
                     <group>
