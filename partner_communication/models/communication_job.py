@@ -506,7 +506,7 @@ class CommunicationJob(models.Model):
 
         x1 = 194 * mm
         x2 = x1 + orm_mark_length
-        y1 = y_position = 180 * mm
+        y1 = 180 * mm
         y_step = 4 * mm
 
         pdf_buffer = StringIO.StringIO()
@@ -522,6 +522,7 @@ class CommunicationJob(models.Model):
         output = PdfFileWriter()
 
         for page_number in range(total_pages):
+            y_position = y1
             # only print omr marks on pair pages (recto)
             if page_number % 2 is 0:
                 is_latest_page = True if \
