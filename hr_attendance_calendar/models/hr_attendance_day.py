@@ -63,8 +63,7 @@ class HrAttendanceDay(models.Model):
     worked_hours = fields.Float('Worked hours',
                                 compute='_compute_worked_hours', store=True,
                                 readonly=True)
-    coefficient = fields.Float(readonly=True, string='Coefficient',
-                               help='Worked hours coefficient')
+    coefficient = fields.Float(help='Worked hours coefficient')
 
     # Break
     due_break_min = fields.Float('Minimum break due',
@@ -75,9 +74,6 @@ class HrAttendanceDay(models.Model):
                                 'attendance_day_id',
                                 'Breaks',
                                 readonly=True)
-    break_max = fields.Float('Longest break',
-                             compute='_compute_break_max',
-                             store=True, )
     break_total = fields.Float('Total break',
                                compute='_compute_break_total',
                                store=True, )
@@ -345,15 +341,11 @@ class HrAttendanceDay(models.Model):
             ('date_from', '<=', date_str),
             ('date_to', '>=', date_str)])
 
-        # find coefficient TODO: review
+        # find coefficient
         co_ids = self.env['hr.weekday.coefficient'].search([
             ('day_of_week', '=', week_day)]).filtered(
             lambda r: r.category_ids & rd.employee_id.category_ids)
-        if co_ids:
-            rd.coefficient = co_ids.coefficient if len(
-                co_ids) == 1 else co_ids[0].coefficient
-        else:
-            rd.coefficient = 1
+        rd.coefficient = co_ids[0].coefficient if co_ids else 1
 
         # check public holiday
         if self.env['hr.holidays.public'].is_public_holiday(

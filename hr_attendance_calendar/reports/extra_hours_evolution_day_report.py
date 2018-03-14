@@ -37,7 +37,7 @@ class ExtraHoursEvolutionDayReport(models.Model):
             FROM
               (SELECT sub.hr_date AS hr_date,
                       ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS id,
-                      sum(sub.extra_hours) OVER (PARTITION BY sub.employee_id 
+                      sum(sub.extra_hours) OVER (PARTITION BY sub.employee_id
                           ORDER BY sub.hr_date) AS balance,
                       sub.employee_id AS employee_id,
                       sub.annual_balance
