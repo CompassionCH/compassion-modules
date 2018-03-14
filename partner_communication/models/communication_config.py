@@ -44,15 +44,15 @@ class CommunicationDefaults(models.AbstractModel):
         help='If set to True, the OMR mark for closing the envelope is added '
              'to the communication.'
     )
-    omr_add_attachment_back_1 = fields.Boolean(
-        string='OMR add attachment from back 1',
+    omr_add_attachment_tray_1 = fields.Boolean(
+        string='Attachment from tray 1',
         help='If set to True, the OMR mark for adding an '
-             'attachment from back 1 is addet to the communication.'
+             'attachment from back 1 is added to the communication.'
     )
-    omr_add_attachment_back_2 = fields.Boolean(
-        string='OMR add attachment from back 2',
+    omr_add_attachment_tray_2 = fields.Boolean(
+        string='Attachment from tray 2',
         help='If set to True, the OMR mark for adding an '
-             'attachment from back 2 is addet to the communication.'
+             'attachment from tray 2 is added to the communication.'
     )
 
 

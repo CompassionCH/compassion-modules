@@ -232,7 +232,10 @@ class CommunicationJob(models.Model):
         """
         if default_vals is None:
             default_vals = []
-        default_vals.extend(['report_id', 'need_call'])
+        default_vals.extend(['report_id', 'need_call', 'omr_enable_marks',
+                             'omr_should_close_envelope',
+                             'omr_add_attachment_tray_1',
+                             'omr_add_attachment_tray_2'])
 
         config = self.config_id.browse(vals['config_id'])
 
@@ -556,10 +559,10 @@ class CommunicationJob(models.Model):
                 # alimentation (2 marks)
                 for alimentation_number in range(number_of_alimentation):
                     if is_latest_page:
-                        if self.omr_add_attachment_back_1 and \
+                        if self.omr_add_attachment_tray_1 and \
                                 alimentation_number == 1:
                             p.line(x1, y_position, x2, y_position)
-                        elif self.omr_add_attachment_back_2 and \
+                        elif self.omr_add_attachment_tray_2 and \
                                 alimentation_number == 2:
                             p.line(x1, y_position, x2, y_position)
                     y_position -= y_step
@@ -706,9 +709,9 @@ class CommunicationJob(models.Model):
                 nb_displayed_marks += 1
 
             # count attachment marks
-            if self.omr_add_attachment_back_1:
+            if self.omr_add_attachment_tray_1:
                 nb_displayed_marks += 1
-            if self.omr_add_attachment_back_2:
+            if self.omr_add_attachment_tray_2:
                 nb_displayed_marks += 1
 
         # # page number (2) marks
