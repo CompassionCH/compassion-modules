@@ -44,3 +44,12 @@ class Partner(models.Model):
         portal.action_apply()
         no_mail.mapped('partner_id').write({'email': False})
         return True
+
+    @api.multi
+    def _compute_opportunity_count(self):
+        super(Partner, self)._compute_opportunity_count()
+        for partner in self:
+            operator = 'child_of' if partner.is_company else '='
+            partner.opportunity_count += self.env['crm.lead'].search_count(
+                [('partner_id', operator, partner.id),
+                 ('type', '=', 'opportunity'), ('active', '=', False)])

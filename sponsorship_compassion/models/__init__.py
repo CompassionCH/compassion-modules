@@ -16,3 +16,5 @@ from . import res_partner
 from . import project_compassion
 from . import child_compassion
 from . import product
+from . import account_invoice
+from . import move_line

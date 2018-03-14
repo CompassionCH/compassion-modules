@@ -17,6 +17,18 @@ class AnalyticAccount(models.Model):
     _inherit = 'account.analytic.account'
 
     year = fields.Char()
+    event_id = fields.Many2one(
+        'crm.event.compassion', 'Event',
+        # Only used to set by default the event at migration
+        # TODO Remove compute when this in production
+        compute='_compute_event', store=True, readonly=True)
+
+    @api.multi
+    def _compute_event(self):
+        for account in self:
+            account.event_id = self.env['crm.event.compassion'].search([
+                ('analytic_id', '=', account.id)
+            ], limit=1)
 
     @api.multi
     def name_get(self):
@@ -29,36 +41,3 @@ class AnalyticAccount(models.Model):
                 name = name + ' ' + analytic.year
             res.append((analytic.id, name))
         return res
-
-
-class AnalyticLine(models.Model):
-    """ Triggers for computation on event lines. """
-    _inherit = 'account.analytic.line'
-
-    @api.model
-    def create(self, vals):
-        line = super(AnalyticLine, self).create(vals)
-        line.onchange_line()
-        return line
-
-    @api.multi
-    def unlink(self):
-        events = self.env['crm.event.compassion'].search([
-            ('analytic_id', 'in', self.mapped('account_id').ids)
-        ])
-        super(AnalyticLine, self).unlink()
-        events.update_analytics()
-        return True
-
-    @api.multi
-    def write(self, vals):
-        super(AnalyticLine, self).write(vals)
-        self.onchange_line()
-        return True
-
-    @api.multi
-    def onchange_line(self):
-        events = self.env['crm.event.compassion'].search([
-            ('analytic_id', 'in', self.mapped('account_id').ids)
-        ])
-        events.update_analytics()

@@ -8,6 +8,4 @@
 #
 ##############################################################################
 
-from . import models
-from . import wizards
-from . import reports
+from . import hr_attendance_settings

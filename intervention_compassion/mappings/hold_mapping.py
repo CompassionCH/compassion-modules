@@ -52,9 +52,9 @@ class HoldUpdateMapping(OnrampMapping):
 
     def __init__(self, env):
         super(HoldUpdateMapping, self).__init__(env)
-        self.CONNECT_MAPPING = HoldCreateMapping.CONNECT_MAPPING
-        self.FIELDS_TO_SUBMIT = HoldCreateMapping.FIELDS_TO_SUBMIT
-        self.CONSTANTS = HoldCreateMapping.CONSTANTS
+        self.CONNECT_MAPPING = HoldCreateMapping.CONNECT_MAPPING.copy()
+        self.FIELDS_TO_SUBMIT = HoldCreateMapping.FIELDS_TO_SUBMIT.copy()
+        self.CONSTANTS = HoldCreateMapping.CONSTANTS.copy()
         self.CONNECT_MAPPING.update({
             'Intervention_ID': 'intervention_id',
             "HoldID": "hold_id",
