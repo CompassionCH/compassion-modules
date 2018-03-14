@@ -38,7 +38,7 @@
                     <group>
                         <field name="subject"/>
                         <field name="pdf_page_count" attrs="{'invisible': [('send_mode', '!=', 'physical')]}"/>
-                        <field name="body_html" options="{'style-inline': true}"/>
+                        <field name="body_html" widget="text_ckeditor4"/>
                     </group>
                     <group>
                         <field name="ir_attachment_ids" context="{'default_res_model': 'partner.communication.job', 'default_res_id': active_id}"/>
