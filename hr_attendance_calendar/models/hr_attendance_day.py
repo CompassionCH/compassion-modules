@@ -308,33 +308,13 @@ class HrAttendanceDay(models.Model):
     def create(self, vals):
         rd = super(HrAttendanceDay, self).create(vals)
 
-        cal_att_date = fields.Date.from_string(rd.date)
+        att_date = fields.Date.from_string(rd.date)
 
         # link to schedule (resource.calendar.attendance)
-        week_day = cal_att_date.weekday()
-        contracts = self.env['hr.contract'].search([
-            ('employee_id', '=', rd.employee_id.id),
-            ('date_start', '<=', rd.date),
-            '|', ('date_end', '=', False), ('date_end', '>=', rd.date)
-        ])
-        cal_att_ids = contracts.mapped('working_hours.attendance_ids')
-        current_cal_att = cal_att_ids.filtered(
-            lambda a: int(a.dayofweek) == week_day)
-
-        for cal_att_id in current_cal_att:
-            if cal_att_id.date_from:
-                start = fields.Date.from_string(cal_att_id.date_from)
-            else:
-                start = date.min
-            if cal_att_id.date_to:
-                end = fields.Date.from_string(cal_att_id.date_to)
-            else:
-                end = date.max
-            if start <= cal_att_date <= end:
-                rd.cal_att_ids += cal_att_id
+        rd.update_calendar_attendance()
 
         # link to leaves (hr.holidays )
-        date_str = fields.Date.to_string(cal_att_date)
+        date_str = fields.Date.to_string(att_date)
         rd.leave_ids = self.env['hr.holidays'].search([
             ('employee_id', '=', rd.employee_id.id),
             ('type', '=', 'remove'),
@@ -342,6 +322,7 @@ class HrAttendanceDay(models.Model):
             ('date_to', '>=', date_str)])
 
         # find coefficient
+        week_day = att_date.weekday()
         co_ids = self.env['hr.weekday.coefficient'].search([
             ('day_of_week', '=', week_day)]).filtered(
             lambda r: r.category_ids & rd.employee_id.category_ids)
@@ -352,7 +333,7 @@ class HrAttendanceDay(models.Model):
                 rd.date, rd.employee_id.id):
             holidays_lines = self.env[
                 'hr.holidays.public'].get_holidays_list(
-                    cal_att_date.year, rd.employee_id.id)
+                    att_date.year, rd.employee_id.id)
             rd.public_holiday_id = holidays_lines.filtered(
                 lambda r: r.date == rd.date)
 
@@ -367,6 +348,40 @@ class HrAttendanceDay(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.multi
+    def update_calendar_attendance(self):
+        """
+        Find matching calendar attendance given the work schedule of the
+        employee.
+        :return: None
+        """
+        for att_day in self:
+            att_date = fields.Date.from_string(att_day.date)
+            week_day = att_date.weekday()
+            contracts = self.env['hr.contract'].search([
+                ('employee_id', '=', att_day.employee_id.id),
+                ('date_start', '<=', att_day.date),
+                '|', ('date_end', '=', False), ('date_end', '>=', att_day.date)
+            ])
+            cal_att_ids = self.env['resource.calendar.attendance']
+            current_cal_att = contracts.mapped(
+                'working_hours.attendance_ids').filtered(
+                lambda a: int(a.dayofweek) == week_day)
+
+            for cal_att_id in current_cal_att:
+                if cal_att_id.date_from:
+                    start = fields.Date.from_string(cal_att_id.date_from)
+                else:
+                    start = date.min
+                if cal_att_id.date_to:
+                    end = fields.Date.from_string(cal_att_id.date_to)
+                else:
+                    end = date.max
+                if start <= att_date <= end:
+                    cal_att_ids += cal_att_id
+
+            att_day.cal_att_ids = cal_att_ids
+
     @api.multi
     def compute_breaks(self):
         for att_day in self.filtered('attendance_ids'):
