@@ -20,8 +20,8 @@ class ExtraHoursEvolutionDayReport(models.Model):
     _rec_name = 'hr_date'
 
     hr_date = fields.Char(string="Date", readonly=True)
-    employee_id = fields.Many2one('hr.employee')
-    balance = fields.Float(string="Balance")
+    employee_id = fields.Many2one('hr.employee', 'Employee', readonly=True)
+    balance = fields.Float()
 
     @api.model_cr
     def init(self):
@@ -37,7 +37,7 @@ class ExtraHoursEvolutionDayReport(models.Model):
             FROM
               (SELECT sub.hr_date AS hr_date,
                       ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS id,
-                      sum(sub.extra_hours) OVER (PARTITION BY sub.employee_id 
+                      sum(sub.extra_hours) OVER (PARTITION BY sub.employee_id
                           ORDER BY sub.hr_date) AS balance,
                       sub.employee_id AS employee_id,
                       sub.annual_balance

@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from datetime import timedelta
+from datetime import timedelta, date
 
 from odoo import models, fields, api
 
@@ -44,6 +44,10 @@ class HrAttendanceSettings(models.TransientModel):
         self.env['ir.config_parameter'].set_param(
             'hr_attendance_calendar.max_extra_hours',
             str(self.max_extra_hours))
+        # We should compute again the extra hours lost for the year
+        self.env['hr.attendance.day'].search([
+            ('date', '>=', date.today().strftime('%Y-01-01'))
+        ]).update_extra_hours_lost()
 
     @api.model
     def get_default_values(self, _fields):

@@ -46,6 +46,7 @@
     'images': [],
     'data': [
         'security/ir.model.access.csv',
+        'security/ir_rule.xml',
         'views/hr_attendance_calendar_view.xml',
         'views/hr_attendance_day_view.xml',
         'views/hr_attendance_settings.xml',
