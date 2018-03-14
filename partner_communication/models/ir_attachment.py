@@ -19,3 +19,8 @@ class IrAttachment(models.Model):
         'ir.actions.report.xml', 'Print configuration',
         domain=[('property_printing_action_id.action_type', '=', 'server')]
     )
+    enable_omr = fields.Boolean(
+        string="Enable OMR",
+        help="If checked, the OMR marks will be print on the document",
+        default=True
+    )
