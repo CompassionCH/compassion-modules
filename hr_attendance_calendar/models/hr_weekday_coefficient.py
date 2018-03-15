@@ -8,15 +8,16 @@
 #
 ##############################################################################
 
-from odoo import models, fields
+from odoo import models, fields, api
 
 
-class HrAttendanceWeighting(models.Model):
-    _name = "hr.attendance.weighting"
+class HrWeekdayCoefficient(models.Model):
+    _name = "hr.weekday.coefficient"
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
+    name = fields.Char(compute='_compute_name')
     day_of_week = fields.Selection([
         ('0', 'Monday'),
         ('1', 'Tuesday'),
@@ -24,12 +25,19 @@ class HrAttendanceWeighting(models.Model):
         ('3', 'Thursday'),
         ('4', 'Friday'),
         ('5', 'Saturday'),
-        ('6', 'Sunday')
-    ],
-        string='Day of Week',
-        required=True,
-        index=True,
+        ('6', 'Sunday'),
+        ('7', 'Default')], 'Day of Week', required=True, index=True,
         default='0')
-    weighting = fields.Float
-    category_ids = fields.Many2many(comodel_name='hr.employee.category',
+    category_ids = fields.Many2many('hr.employee.category',
                                     string='Employee tag')
+    coefficient = fields.Float(
+        help='Multiply the worked hours by the coefficient')
+
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+    @api.multi
+    @api.depends('coefficient')
+    def _compute_name(self):
+        for rd in self:
+            rd.name = rd.coefficient

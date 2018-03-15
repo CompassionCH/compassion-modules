@@ -434,18 +434,21 @@ class CompassionHold(models.Model):
                 if not hold.no_money_extension else second_extension
             new_hold_date = fields.Datetime.from_string(
                 hold.expiration_date) + timedelta(days=hold_extension)
-            extension = hold.no_money_extension < 2
+            is_extended = hold.no_money_extension < 2
+            next_extension = hold.no_money_extension
+            if hold.type == HoldType.NO_MONEY_HOLD.value:
+                next_extension += 1
             hold_vals = {
-                'no_money_extension': hold.no_money_extension + 1,
+                'no_money_extension': next_extension,
             }
-            if extension:
+            if is_extended:
                 hold_vals['expiration_date'] = fields.Datetime.to_string(
                     new_hold_date)
             old_date = hold.expiration_date
             hold.write(hold_vals)
-            subject = "No money hold extension" if extension else \
+            subject = "No money hold extension" if is_extended else \
                 "No money hold expiration"
-            body = body_extension if extension else body_expiration
+            body = body_extension if is_extended else body_expiration
             values = {
                 'local_id': hold.child_id.local_id,
                 'old_expiration': old_date,
