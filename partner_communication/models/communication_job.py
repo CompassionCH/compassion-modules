@@ -554,13 +554,15 @@ class CommunicationJob(models.Model):
                 y_position -= y_step
 
                 # alimentation (2 marks)
+                # back 1 is the "big special" one (the lower)
+                # back 2 is at the middle
                 for alimentation_number in range(number_of_alimentation):
                     if is_latest_page:
                         if self.omr_add_attachment_back_1 and \
-                                alimentation_number == 1:
+                                alimentation_number == 0:
                             p.line(x1, y_position, x2, y_position)
                         elif self.omr_add_attachment_back_2 and \
-                                alimentation_number == 2:
+                                alimentation_number == 1:
                             p.line(x1, y_position, x2, y_position)
                     y_position -= y_step
 
