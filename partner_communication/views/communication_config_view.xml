@@ -19,6 +19,10 @@
                             <field name="email_template_id"/>
                             <field name="report_id"/>
                             <field name="attachments_function"/>
+                            <field name="omr_enable_marks"/>
+                            <field name="omr_should_close_envelope" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                            <field name="omr_add_attachment_tray_1" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                            <field name="omr_add_attachment_tray_2" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
                         </group>
                     </group>
                 </sheet>

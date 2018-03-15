@@ -8,12 +8,6 @@
         <field name="arch"
                type="xml">
             <form string="Attendance day">
-                <!--<header>-->
-                    <!--<button name="recompute_attendance"-->
-                            <!--string="Recompute attendances"-->
-                            <!--type="object"-->
-                            <!--class="btn-primary"/>-->
-                <!--</header>-->
                 <sheet>
                     <group col="3">
                         <group string="Attendance day">
@@ -36,35 +30,27 @@
                                    attrs="{'invisible':[('public_holiday_id', '=', False)]}"/>
 
                         </group>
-                        <group string=" Hours">
-                            <field name="worked_hours"
-                                   widget="float_time"/>
-                            <field name="break_max"
-                                   widget="float_time"/>
-                            <field name="break_total"
-                                   widget="float_time"/>
-                            <field name="extra_hours"
-                                   widget="float_time"/>
-                            <!--<field name="extra_hours_lost"-->
-                                   <!--widget="float_time"/>-->
+                        <group string="Hours">
+                            <field name="worked_hours" widget="float_time"/>
+                            <field name="extra_hours" widget="float_time"/>
+                            <field name="extra_hours_lost" widget="float_time"/>
                         </group>
                     </group>
                     <newline/>
-                        <group string="Relations">
+                        <group>
                             <field name="attendance_ids">
                                 <tree>
                                     <field name="check_in"/>
                                     <field name="check_out"/>
-                                    <field name="worked_hours"
-                                           widget="float_time"/>
+                                    <field name="worked_hours" widget="float_time"/>
                                 </tree>
                             </field>
+                            <field name="break_total" widget="float_time"/>
                             <field name="break_ids">
                                 <tree>
                                     <field name="name"/>
                                     <field name="system_modified"/>
-                                    <field name="logged_duration"
-                                           widget="float_time"/>
+                                    <field name="logged_duration" widget="float_time"/>
                                 </tree>
                             </field>
                             <field name="leave_ids">
@@ -92,10 +78,9 @@
                 <field name="date"/>
                 <field name="working_day"/>
                 <field name="employee_id"/>
-                <field name="worked_hours"
-                       widget="float_time"/>
-                <field name="extra_hours"
-                       widget="float_time"/>
+                <field name="worked_hours" widget="float_time"/>
+                <field name="extra_hours" widget="float_time"/>
+                <field name="extra_hours_lost" widget="float_time"/>
             </tree>
         </field>
     </record>

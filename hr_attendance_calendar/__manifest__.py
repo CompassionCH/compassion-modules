@@ -46,6 +46,7 @@
     'images': [],
     'data': [
         'security/ir.model.access.csv',
+        'security/ir_rule.xml',
         'views/hr_attendance_calendar_view.xml',
         'views/hr_attendance_day_view.xml',
         'views/hr_attendance_settings.xml',
@@ -53,7 +54,8 @@
         'views/hr_employee.xml',
         'views/hr_holidays_status_views.xml',
         'views/attendance.xml',
-        'data/attendance_computation_cron.xml'
+        'data/attendance_computation_cron.xml',
+        'views/extra_hours_evolution_graph.xml'
     ],
     'installable': True,
     'qweb': [

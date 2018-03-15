@@ -64,7 +64,24 @@ class CommunicationAttachment(models.Model):
     @api.multi
     def print_attachments(self):
         report_obj = self.env['report']
+        total_attachment_with_omr = len(self.filtered(
+            'attachment_id.enable_omr'
+        ))
+        count_attachment_with_omr = 1
         for attachment in self:
+            # add omr to pdf if needed
+            if attachment.communication_id.omr_enable_marks \
+                    and attachment.attachment_id.enable_omr:
+                is_latest_document = \
+                    count_attachment_with_omr >= total_attachment_with_omr
+                to_print = attachment.communication_id.add_omr_marks(
+                    attachment.data, is_latest_document
+                )
+
+                count_attachment_with_omr += 1
+            else:
+                to_print = attachment.data
+
             report = report_obj._get_report_from_name(attachment.report_name)
             behaviour = report.behaviour()[report.id]
             printer = behaviour['printer']
@@ -73,5 +90,5 @@ class CommunicationAttachment(models.Model):
                     print_name=self.env.user.firstname[:3] + ' ' +
                     attachment.name
                 ).print_document(
-                    report, attachment.data, report.report_type)
+                    report, to_print, report.report_type)
         return True

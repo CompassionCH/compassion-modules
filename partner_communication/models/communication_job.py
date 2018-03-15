@@ -14,7 +14,11 @@ from HTMLParser import HTMLParser
 
 from odoo.addons.base_phone import fields as phone_fields
 from odoo.addons.base_phone.controllers.main import BasePhoneController
-from pyPdf import PdfFileReader
+
+from pyPdf import PdfFileReader, PdfFileWriter
+from reportlab.lib.units import mm
+from reportlab.pdfgen.canvas import Canvas
+from reportlab.lib.colors import white
 
 from odoo import api, models, fields, _, http
 from odoo.exceptions import UserError
@@ -228,7 +232,10 @@ class CommunicationJob(models.Model):
         """
         if default_vals is None:
             default_vals = []
-        default_vals.extend(['report_id', 'need_call'])
+        default_vals.extend(['report_id', 'need_call', 'omr_enable_marks',
+                             'omr_should_close_envelope',
+                             'omr_add_attachment_tray_1',
+                             'omr_add_attachment_tray_2'])
 
         config = self.config_id.browse(vals['config_id'])
 
@@ -475,6 +482,137 @@ class CommunicationJob(models.Model):
             })
         return message.id
 
+    @api.multi
+    def add_omr_marks(self, pdf_data, is_latest_document):
+        # Documentation
+        # http://meteorite.unm.edu/site_media/pdf/reportlab-userguide.pdf
+        # https://pythonhosted.org/PyPDF2/PdfFileReader.html
+        # https://stackoverflow.com/a/17538003
+        # https://gist.github.com/kzim44/5023021
+        # https://www.blog.pythonlibrary.org/2013/07/16/
+        #   pypdf-how-to-write-a-pdf-to-memory/
+
+        self.ensure_one()
+
+        # OMR Parameters
+        number_of_alimentation = 2
+        number_of_marks = 7
+
+        orm_mark_length = 7 * mm
+
+        # margin around the omr code which should stay white
+        horizontal_margin = 4.2 * mm
+        vertical_margin = 8.5 * mm
+
+        x1 = 194 * mm
+        x2 = x1 + orm_mark_length
+        y1 = 180 * mm
+        y_step = 4 * mm
+
+        pdf_buffer = StringIO.StringIO()
+        pdf_buffer.write(pdf_data)
+
+        existing_pdf = PdfFileReader(pdf_buffer)
+        total_pages = existing_pdf.getNumPages()
+
+        # print latest omr mark on latest pair page (recto)
+        latest_omr_page = (total_pages - 1) if total_pages % 2 is 0 \
+            else total_pages
+
+        output = PdfFileWriter()
+
+        for page_number in range(total_pages):
+            y_position = y1
+            # only print omr marks on pair pages (recto)
+            if page_number % 2 is 0:
+                is_latest_page = True if \
+                    is_latest_document and \
+                    page_number == (latest_omr_page - 1) else False
+
+                omr_buffer = StringIO.StringIO()
+
+                # Create a canvas to write on
+                p = Canvas(omr_buffer)
+
+                # line (x1, y1, x2, y2)
+                p.setLineWidth(0.2 * mm)
+
+                # add a white background for the omr code
+                p.setFillColor(white)
+                p.rect(
+                    x1 - horizontal_margin,
+                    y1 - (number_of_marks - 1) * y_step - vertical_margin,
+                    orm_mark_length + 2 * horizontal_margin,
+                    (number_of_marks - 1) * y_step + 2 * vertical_margin,
+                    fill=True,
+                    stroke=False
+                )
+
+                # start mark (compulsory)
+                p.line(x1, y_position, x2, y_position)
+                y_position -= y_step
+
+                # insert mark (only on latest page)
+                if is_latest_page:
+                    p.line(x1, y_position, x2, y_position)
+                y_position -= y_step
+
+                # alimentation (2 marks)
+                # back 1 is the "big special" one (the lower)
+                # back 2 is at the middle
+                for alimentation_number in range(number_of_alimentation):
+                    if is_latest_page:
+                        if self.omr_add_attachment_tray_1 and \
+                                alimentation_number == 0:
+                            p.line(x1, y_position, x2, y_position)
+                        elif self.omr_add_attachment_tray_2 and \
+                                alimentation_number == 1:
+                            p.line(x1, y_position, x2, y_position)
+                    y_position -= y_step
+
+                # close envelop (if display the envelop is not closed)
+                if is_latest_page \
+                        and not self.omr_should_close_envelope:
+                    p.line(x1, y_position, x2, y_position)
+                y_position -= y_step
+
+                # # number of pages in binary (MSB first with sequence:
+                # # 00, 01, 10, 11, 00, 01, ...)
+                # p.line(x1, y_position, x2, y_position)
+                # y_position -= y_step
+                #
+                # p.line(x1, y_position, x2, y_position)
+                # y_position -= y_step
+
+                # parity mark (total number of marks should be pair)
+                if self._display_parity(is_latest_page):
+                    p.line(x1, y_position, x2, y_position)
+                y_position -= y_step
+
+                # end mark (compulsory)
+                p.line(x1, y_position, x2, y_position)
+
+                # Close the PDF object cleanly.
+                p.showPage()
+                p.save()
+
+                # move to the beginning of the StringIO buffer
+                omr_buffer.seek(0)
+                omr_pdf = PdfFileReader(omr_buffer)
+
+                # add the omr marks to the page
+                page = existing_pdf.getPage(page_number)
+                page.mergePage(omr_pdf.getPage(0))
+            else:
+                page = existing_pdf.getPage(page_number)
+
+            output.addPage(page)
+
+        out_buffer = StringIO.StringIO()
+        output.write(out_buffer)
+
+        return out_buffer.getvalue()
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
@@ -522,10 +660,31 @@ class CommunicationJob(models.Model):
         for job in self:
             # Get pdf should directly send it to the printer if report
             # is correctly configured.
-            report_obj.with_context(
+            pdf_data = report_obj.with_context(
                 print_name=self.env.user.firstname[:3] + ' ' + (
-                    job.subject or '')
+                    job.subject or ''),
+                must_skip_send_to_printer=True
             ).get_pdf(job.ids, job.report_id.report_name)
+
+            # add omr to pdf if needed
+            if job.omr_enable_marks:
+                is_latest_document = not self.attachment_ids.filtered(
+                    'attachment_id.enable_omr'
+                )
+                to_print = job.add_omr_marks(
+                    pdf_data, is_latest_document
+                )
+            else:
+                to_print = pdf_data
+
+            # Print letter
+            report = job.report_id
+            behaviour = report.behaviour()[report.id]
+            printer = behaviour['printer']
+            if printer:
+                printer.print_document(
+                    report, to_print, report.report_type)
+
             # Print attachments
             job.attachment_ids.print_attachments()
             # Save info
@@ -538,6 +697,40 @@ class CommunicationJob(models.Model):
             # Commit to avoid invalid state if process fails
             self.env.cr.commit()    # pylint: disable=invalid-commit
         return True
+
+    def _display_parity(self, is_latest_page):
+        # current_page_number = 0
+
+        nb_displayed_marks = 2  # always display start and stop marks
+
+        # insert mark is displayed only on latest page
+        if is_latest_page:
+            nb_displayed_marks += 1
+
+            # a mark is added if the envelope should not be closed
+            if not self.omr_should_close_envelope:
+                nb_displayed_marks += 1
+
+            # count attachment marks
+            if self.omr_add_attachment_tray_1:
+                nb_displayed_marks += 1
+            if self.omr_add_attachment_tray_2:
+                nb_displayed_marks += 1
+
+        # # page number (2) marks
+        # # no mark for page 00 (binary)
+        # # one mark for page 01 and 10 (binary)
+        # if current_page_number % 4 in {1, 2}:
+        #     nb_displayed_marks += 1
+        # # two marks for page 11 (binary)
+        # elif current_page_number % 4 is 3:
+        #     nb_displayed_marks += 2
+
+        # if the nb_displayed_marks is pair, do not display the parity
+        if nb_displayed_marks % 2 is 0:
+            return False
+        else:
+            return True
 
     @api.model
     def _needaction_domain_get(self):

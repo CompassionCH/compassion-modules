@@ -34,6 +34,26 @@ class CommunicationDefaults(models.AbstractModel):
         'ir.actions.report.xml', 'Letter template',
         domain=[('model', '=', 'partner.communication.job')]
     )
+    omr_enable_marks = fields.Boolean(
+        string='Enable OMR',
+        help='If set to True, the OMR marks are displayed in the '
+             'communication.'
+    )
+    omr_should_close_envelope = fields.Boolean(
+        string='OMR should close the envelope',
+        help='If set to True, the OMR mark for closing the envelope is added '
+             'to the communication.'
+    )
+    omr_add_attachment_tray_1 = fields.Boolean(
+        string='Attachment from tray 1',
+        help='If set to True, the OMR mark for adding an '
+             'attachment from back 1 is added to the communication.'
+    )
+    omr_add_attachment_tray_2 = fields.Boolean(
+        string='Attachment from tray 2',
+        help='If set to True, the OMR mark for adding an '
+             'attachment from tray 2 is added to the communication.'
+    )
 
 
 class CommunicationConfig(models.Model):

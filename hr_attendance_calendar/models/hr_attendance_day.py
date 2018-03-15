@@ -63,8 +63,7 @@ class HrAttendanceDay(models.Model):
     worked_hours = fields.Float('Worked hours',
                                 compute='_compute_worked_hours', store=True,
                                 readonly=True)
-    coefficient = fields.Float(readonly=True, string='Coefficient',
-                               help='Worked hours coefficient')
+    coefficient = fields.Float(help='Worked hours coefficient')
 
     # Break
     due_break_min = fields.Float('Minimum break due',
@@ -75,9 +74,6 @@ class HrAttendanceDay(models.Model):
                                 'attendance_day_id',
                                 'Breaks',
                                 readonly=True)
-    break_max = fields.Float('Longest break',
-                             compute='_compute_break_max',
-                             store=True, )
     break_total = fields.Float('Total break',
                                compute='_compute_break_total',
                                store=True, )
@@ -88,8 +84,7 @@ class HrAttendanceDay(models.Model):
     extra_hours = fields.Float("Extra hours",
                                compute='_compute_extra_hours',
                                store=True)
-    # extra_hours_lost = fields.Float("Extra hours lost", store=True,
-    #                                 compute='_compute_extra_hours_lost')
+    extra_hours_lost = fields.Float()
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -195,45 +190,61 @@ class HrAttendanceDay(models.Model):
 
     @api.multi
     @api.depends('break_ids', 'break_ids.logged_duration')
-    def _compute_break_max(self):
-        for att_day in self.filtered('break_ids'):
-            att_day.break_max = max(
-                att_day.break_ids.mapped('logged_duration'))
-
-    @api.multi
-    @api.depends('break_ids', 'break_ids.logged_duration')
     def _compute_break_total(self):
         for att_day in self.filtered('break_ids'):
             att_day.break_total = sum(
-                att_day.break_ids.mapped('logged_duration'))
+                att_day.break_ids.mapped('logged_duration') or [0])
 
     @api.multi
-    @api.depends('worked_hours', 'due_hours', 'coefficient')
+    @api.depends('worked_hours', 'due_hours', 'coefficient',
+                 'extra_hours_lost')
     def _compute_extra_hours(self):
         for att_day in self.filtered('coefficient'):
             extra_hours = att_day.worked_hours - att_day.due_hours
             coefficient = att_day.coefficient
+            att_day.extra_hours = (
+                extra_hours * coefficient) - att_day.extra_hours_lost
 
-            att_day.extra_hours = extra_hours * coefficient
+    @api.multi
+    def write(self, vals):
+        super(HrAttendanceDay, self).write(vals)
+        if 'worked_hours' in vals or 'coefficient' in vals:
+            for att_day in self:
+                att_days_future = self.search([
+                    ('date', '>=', att_day.date),
+                    ('employee_id', '=', att_day.employee_id.id)
+                ], order='date')
+                att_days_future.update_extra_hours_lost()
 
-# @api.multi
-# @api.depends('extra_hours')
-# def _compute_extra_hours_lost(self):
-#     for att_day in self:
-#         att_days_ids = self.env['hr.attendance.day'].search(
-#             [('employee_id', '=', att_day.employee_id.id)])
-#
-#         total_extra_hours = sum(att_days_ids.mapped('extra_hours'))
-#         total_lost_hours = sum(att_days_ids.mapped('extra_hours_lost'))
-#         max_extra_hours = float(self.env['ir.config_parameter'].get_param(
-#             'hr_attendance_calendar.max_extra_hours'))
-#
-#         difference = (total_extra_hours-total_lost_hours)-max_extra_hours
-#
-#         if difference > 0:
-#             att_day.extra_hours_lost = float(difference)
-#         else:
-#             att_day.extra_hours_lost = 0.0
+        return True
+
+    @api.multi
+    def update_extra_hours_lost(self):
+        """
+        This will set the extra hours lost based on the balance evolution
+        of the employee, which is a SQL view.
+        """
+        max_extra_hours = float(self.env['ir.config_parameter'].get_param(
+            'hr_attendance_calendar.max_extra_hours', 0.0))
+        # First reset the extra hours lost
+        self.write({'extra_hours_lost': 0})
+
+        for att_day in self:
+            # For whatever reason, the search method is unable to search
+            # on employee field (gives wrong search results)! Therefore
+            # we use a direct SQL query.
+            self.env.cr.execute("""
+                SELECT balance FROM extra_hours_evolution_day_report
+                WHERE employee_id = %s AND hr_date = %s
+            """, [att_day.employee_id.id, att_day.date])
+            balance = self.env.cr.fetchone()
+            balance = balance[0] if balance else 0
+
+            if balance > max_extra_hours > 0:
+                overhead = balance - max_extra_hours
+                att_day.extra_hours_lost = min(overhead, att_day.extra_hours)
+            else:
+                att_day.extra_hours_lost = 0
 
     @api.multi
     def breaks_is_valid(self):
@@ -297,55 +308,32 @@ class HrAttendanceDay(models.Model):
     def create(self, vals):
         rd = super(HrAttendanceDay, self).create(vals)
 
-        cal_att_date = fields.Date.from_string(rd.date)
+        att_date = fields.Date.from_string(rd.date)
 
         # link to schedule (resource.calendar.attendance)
-        week_day = cal_att_date.weekday()
-        contracts = self.env['hr.contract'].search([
-            ('employee_id', '=', rd.employee_id.id),
-            ('date_start', '<=', rd.date),
-            '|', ('date_end', '=', False), ('date_end', '>=', rd.date)
-        ])
-        cal_att_ids = contracts.mapped('working_hours.attendance_ids')
-        current_cal_att = cal_att_ids.filtered(
-            lambda a: int(a.dayofweek) == week_day)
-
-        for cal_att_id in current_cal_att:
-            if cal_att_id.date_from:
-                start = fields.Date.from_string(cal_att_id.date_from)
-            else:
-                start = date.min
-            if cal_att_id.date_to:
-                end = fields.Date.from_string(cal_att_id.date_to)
-            else:
-                end = date.max
-            if start <= cal_att_date <= end:
-                rd.cal_att_ids += cal_att_id
+        rd.update_calendar_attendance()
 
         # link to leaves (hr.holidays )
-        date_str = fields.Date.to_string(cal_att_date)
+        date_str = fields.Date.to_string(att_date)
         rd.leave_ids = self.env['hr.holidays'].search([
             ('employee_id', '=', rd.employee_id.id),
             ('type', '=', 'remove'),
             ('date_from', '<=', date_str),
             ('date_to', '>=', date_str)])
 
-        # find coefficient TODO: review
+        # find coefficient
+        week_day = att_date.weekday()
         co_ids = self.env['hr.weekday.coefficient'].search([
             ('day_of_week', '=', week_day)]).filtered(
             lambda r: r.category_ids & rd.employee_id.category_ids)
-        if co_ids:
-            rd.coefficient = co_ids.coefficient if len(
-                co_ids) == 1 else co_ids[0].coefficient
-        else:
-            rd.coefficient = 1
+        rd.coefficient = co_ids[0].coefficient if co_ids else 1
 
         # check public holiday
         if self.env['hr.holidays.public'].is_public_holiday(
                 rd.date, rd.employee_id.id):
             holidays_lines = self.env[
                 'hr.holidays.public'].get_holidays_list(
-                    cal_att_date.year, rd.employee_id.id)
+                    att_date.year, rd.employee_id.id)
             rd.public_holiday_id = holidays_lines.filtered(
                 lambda r: r.date == rd.date)
 
@@ -360,6 +348,40 @@ class HrAttendanceDay(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.multi
+    def update_calendar_attendance(self):
+        """
+        Find matching calendar attendance given the work schedule of the
+        employee.
+        :return: None
+        """
+        for att_day in self:
+            att_date = fields.Date.from_string(att_day.date)
+            week_day = att_date.weekday()
+            contracts = self.env['hr.contract'].search([
+                ('employee_id', '=', att_day.employee_id.id),
+                ('date_start', '<=', att_day.date),
+                '|', ('date_end', '=', False), ('date_end', '>=', att_day.date)
+            ])
+            cal_att_ids = self.env['resource.calendar.attendance']
+            current_cal_att = contracts.mapped(
+                'working_hours.attendance_ids').filtered(
+                lambda a: int(a.dayofweek) == week_day)
+
+            for cal_att_id in current_cal_att:
+                if cal_att_id.date_from:
+                    start = fields.Date.from_string(cal_att_id.date_from)
+                else:
+                    start = date.min
+                if cal_att_id.date_to:
+                    end = fields.Date.from_string(cal_att_id.date_to)
+                else:
+                    end = date.max
+                if start <= att_date <= end:
+                    cal_att_ids += cal_att_id
+
+            att_day.cal_att_ids = cal_att_ids
+
     @api.multi
     def compute_breaks(self):
         for att_day in self.filtered('attendance_ids'):
