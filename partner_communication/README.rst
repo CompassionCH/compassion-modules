@@ -18,9 +18,7 @@ provided method in the communication_config class.
 Known issues / Roadmap
 ======================
 
-* Print is not implemented
-* Add context menu to generate job from objects
-  like it is possible for e-mails
+* None
 
 Credits
 =======

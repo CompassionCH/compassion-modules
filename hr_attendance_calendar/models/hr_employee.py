@@ -60,11 +60,8 @@ class HrEmployee(models.Model):
                 lambda r: start_year <= r.date <= yesterday)
 
             extra_hours_sum = sum(attendance_day_ids.mapped('extra_hours'))
-            extra_hours_lost_sum = sum(attendance_day_ids.
-                                       mapped('extra_hours_lost'))
 
-            employee.extra_hours = extra_hours_sum + \
-                employee.annual_balance - extra_hours_lost_sum
+            employee.extra_hours = extra_hours_sum + employee.annual_balance
 
     @api.multi
     @api.depends('attendance_days_ids.extra_hours_lost')
