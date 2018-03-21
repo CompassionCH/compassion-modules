@@ -853,7 +853,7 @@ class SponsorshipContract(models.Model):
                 project = contract.project_id
                 if invl.product_id.categ_name == SPONSORSHIP_CATEGORY:
                     payment_allowed = not project.hold_cdsp_funds or \
-                        invl.due_date < project.status_date
+                        invl.due_date < project.last_reviewed_date
                 if not payment_allowed:
                     raise UserError(
                         _("The project %s is fund-suspended. You cannot "
