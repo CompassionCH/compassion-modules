@@ -373,7 +373,7 @@ class CompassionIntervention(models.Model):
             ])
             if intervention:
                 intervention_local_ids.append(intervention.id)
-                intervention.write(vals)
+                intervention.with_context(hold_update=False).write(vals)
                 intervention.message_post("The information of this "
                                           "intervention have been updated",
                                           subject=(intervention.name +
