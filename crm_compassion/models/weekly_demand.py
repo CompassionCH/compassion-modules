@@ -124,7 +124,7 @@ class WeeklyDemand(models.Model):
         sub_sponsored = self.env['recurring.contract'].search_count([
             ('parent_id', '!=', False),
             ('start_date', '>=', fields.Date.to_string(start_date)),
-            ('channel', '!=', 'internet')
+            ('medium_id.name', '!=', 'internet')
         ])
         return float(sub_sponsored) / STATS_DURATION
 
@@ -144,7 +144,7 @@ class WeeklyDemand(models.Model):
         """
         start_date = datetime.today() - timedelta(weeks=STATS_DURATION)
         web_sponsored = self.env['recurring.contract'].search_count([
-            ('channel', '=', 'internet'),
+            ('medium_id.name', '=', 'Website'),
             ('start_date', '>=', fields.Date.to_string(start_date))
         ])
         allocate_per_week = self.env['demand.planning.settings'].get_param(
@@ -162,7 +162,7 @@ class WeeklyDemand(models.Model):
             ('origin_id.partner_id', '!=', False),
             ('origin_id.partner_id.user_ids', '!=', False),
             ('start_date', '>=', fields.Date.to_string(start_date)),
-            ('channel', '!=', 'internet')
+            ('medium_id.name', '!=', 'Website')
         ])
         allocate_per_week = self.env['demand.planning.settings'].get_param(
             'number_children_ambassador')
@@ -179,7 +179,7 @@ class WeeklyDemand(models.Model):
             ('start_date', '>=',
              datetime.today() - timedelta(weeks=STATS_DURATION)),
             ('end_date', '!=', None),
-            ('channel', '!=', 'internet')
+            ('medium_id.name', '!=', 'internet')
         ]).filtered(
             lambda s: ((
                 fields.Date.from_string(s.end_date) -
@@ -196,7 +196,7 @@ class WeeklyDemand(models.Model):
                     ('start_date', '>=', start_date),
                     ('start_date', '<=', fields.Date.from_string(
                         week.week_end_date) - timedelta(days=SUB_DURATION)),
-                    ('channel', '!=', 'internet')
+                    ('medium_id.name', '!=', 'internet')
                 ])
                 week.resupply_sub = sub * (
                     sub_reject_average / sub_average or 1)
@@ -210,7 +210,7 @@ class WeeklyDemand(models.Model):
         cancellations = self.env['recurring.contract'].search_count([
             ('state', '=', 'terminated'),
             ('parent_id', '=', False),
-            ('channel', '!=', 'internet'),
+            ('medium_id.name', '!=', 'internet'),
             ('end_reason', '!=', '1'),
             ('end_date', '>=', fields.Date.to_string(start_date))
         ])
