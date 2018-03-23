@@ -1,8 +1,8 @@
 .. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
     :alt: License: AGPL-3
 
-Advanced Survey
-====================
+Survey Phone
+============
 
 Use this module to make easy phone survey of the sponsors. Offers the ability to bypass the sending of an email.
 

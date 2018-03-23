@@ -4,7 +4,7 @@
         <record id="survey_user_input_view_view_tree" model="ir.ui.view">
             <field name="model">survey.user_input</field>
             <field name="inherit_id" ref="survey.survey_user_input_form"/>
-            <field name="name">Advanced survey</field>
+            <field name="name">Phone survey</field>
             <field name="arch" type="xml">
                 <field name="email" position="after">
                     <field name="phone" string="Call phone"/>

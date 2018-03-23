@@ -17,7 +17,8 @@
                 <xpath expr="/form/group[3]" position="after">
                     <group col="1" attrs="{'invisible':['|',('public','=',False),('public','!=','no_email')]}">
                         <group col="2">
-                            <field invisible="context.get('survey_resent_token')" name="partner_ids_new" widget="many2many_tags" placeholder="Add list of existing contacts..." context="{'show_email':True, 'show_phone':True}" />
+                            <field
+                                    invisible="context.get('survey_resent_token')" name="phone_partner_ids" widget="many2many_tags" placeholder="Add list of existing contacts..." context="{'show_email':True, 'show_phone':True}" />
                         </group>
                     </group>
                 </xpath>

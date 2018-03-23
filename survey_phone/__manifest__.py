@@ -9,7 +9,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    @author: Nicolas Badoux <n.badoux@hotmail.com>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 ##############################################################################
 # pylint: disable=C8101
 {
-    'name': 'Advanced Survey',
+    'name': 'Survey Phone',
     'summary': 'Make the filling of survey by internal users easier.',
     'version': '10.0.1.0.0',
     'category': 'Other',

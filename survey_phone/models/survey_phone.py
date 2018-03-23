@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Nicolas Badoux <n.badoux@hotmail.com>
 #
@@ -17,7 +17,7 @@ from odoo import models, fields, api, _
 logger = logging.getLogger(__name__)
 
 
-class SurveyPhone(models.TransientModel):
+class SurveyMailComposeMessage(models.TransientModel):
     """
     Extend the creation of a survey and reimplemented it to make the sending of
     an email optional.
@@ -27,10 +27,10 @@ class SurveyPhone(models.TransientModel):
         ('no_email', 'Do not send an email to the user. No public or private '
                      'invitation is sent, you will have to fill the survey '
                      'yourself')])
-    partner_ids_new = fields.Many2many('res.partner',
-                                       'survey_phone_res_partner_rel',
-                                       'wizard_id', 'partner_id',
-                                       string='Existing contacts')
+    phone_partner_ids = fields.Many2many('res.partner',
+                                         'survey_phone_res_partner_rel',
+                                         'wizard_id', 'partner_id',
+                                         string='Existing contacts')
 
     @api.multi
     def add_new_answer(self):
@@ -87,11 +87,11 @@ class SurveyPhone(models.TransientModel):
                                   "converted into the special url of the "
                                   "survey."))
             context = self.env.context
-            if not wizard.partner_ids_new \
+            if not wizard.phone_partner_ids \
                     and context.get('default_partner_ids'):
-                wizard.partner_ids_new = context.get('default_partner_ids')
+                wizard.phone_partner_ids = context.get('default_partner_ids')
             partner_list = []
-            for partner in wizard.partner_ids_new:
+            for partner in wizard.phone_partner_ids:
                 if not anonymous_group or not partner.user_ids \
                         or anonymous_group not in \
                         partner.user_ids[0].groups_id:
