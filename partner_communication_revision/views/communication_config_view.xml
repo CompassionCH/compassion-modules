@@ -1,0 +1,27 @@
+<odoo>
+    <record model="ir.ui.view" id="communication_config_form">
+        <field name="name">communication.config.revision.form</field>
+        <field name="model">partner.communication.config</field>
+        <field name="inherit_id" ref="partner_communication.communication_config_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet">
+                <group string="Revisions">
+                    <group colspan="2">
+                        <field name="revision_number"/>
+                        <field name="revision_date"/>
+                        <field name="revision_ids" context="{'default_config_id': id, 'form_view_ref': 'partner_communication_revision.revision_simplified_form'}">
+                            <tree>
+                                <field name="lang"/>
+                                <field name="revision_number"/>
+                                <field name="revision_date"/>
+                                <button name="show_revision" type="object" icon="fa-eye"/>
+                                <button name="edit_revision" type="object" icon="fa-edit"/>
+                                <button name="new_revision" type="object" icon="fa-plus-square"/>
+                            </tree>
+                        </field>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

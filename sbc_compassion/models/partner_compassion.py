@@ -29,7 +29,7 @@ class ResPartner(models.Model):
     def _compute_nb_letters(self):
         for partner in self:
             partner.nb_letters = self.env['correspondence'].search_count([
-                ('correspondant_id', '=', partner.id)
+                ('partner_id', '=', partner.id)
             ])
 
     @api.multi
@@ -44,7 +44,7 @@ class ResPartner(models.Model):
             'view_mode': 'tree,form',
             'context': self.with_context(
                 group_by=False,
-                search_default_correspondant_id=self.id
+                search_default_partner_id=self.id
             ).env.context,
         }
 
