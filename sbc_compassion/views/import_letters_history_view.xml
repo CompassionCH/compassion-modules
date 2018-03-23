@@ -43,7 +43,9 @@
                                 <field name="mandatory_review"/>
                                 <field name="physical_attachments"/>
                                 <field name="attachments_description"/>
-                                <field name="letter_image_preview" widget='image_preview' display="icon" string="Letter image preview" readonly="1"/>
+                                <field name="letter_image_preview"
+                                       widget='image' height="400"
+                                       string="Letter image preview" readonly="1"/>
                             </tree>
                         </field>
                         <field name="letters_ids" states="done"/>
