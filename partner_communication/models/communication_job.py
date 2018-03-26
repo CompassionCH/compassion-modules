@@ -344,6 +344,8 @@ class CommunicationJob(models.Model):
                 "This is only possible for one template at time"))
         values = self.env['mail.compose.message'].with_context(
             lang=langs.pop()).get_generated_fields(template, jobs.ids)
+        if not isinstance(values, list):
+            values = [values]
         for index in range(0, len(values)):
             jobs[index].write({
                 'body_html': values[index]['body_html'],

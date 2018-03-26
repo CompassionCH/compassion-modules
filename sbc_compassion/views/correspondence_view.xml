@@ -78,7 +78,7 @@
                             <field name="rework_comments" attrs="{'invisible': [('marked_for_rework', '=', False)]}"/>
                         </group>
                         <group string="Supporter">
-                            <field name="correspondant_id"/>
+                            <field name="partner_id"/>
                             <field name="supporter_languages_ids" string="Partner spoken languages" widget="many2many_tags" options="{'create':False}"/>
                             <field name="email"/>
                         </group>
@@ -161,7 +161,7 @@
             <search>
                 <field name="kit_identifier"/>
                 <field name="child_id" />
-                <field name="correspondant_id" />
+                <field name="partner_id" />
                 <field name="direction" />
                 <field name="state" />
                 <field name="sponsorship_id" />
@@ -171,7 +171,7 @@
                 <separator />
                 <filter name="state_published" string="Published state" domain="[('state','=','Published to Global Partner')]" />
                 <group expand="0" string="Group By">
-                    <filter string="Partner" domain="[]" context="{'group_by': 'correspondant_id'}" />
+                    <filter string="Partner" domain="[]" context="{'group_by': 'partner_id'}" />
                     <filter string="Sponsorship" domain="[]" context="{'group_by': 'sponsorship_id'}" />
                     <filter string="State" domain="[]" context="{'group_by': 'state'}" />
                     <filter string="Translator" domain="[]" context="{'group_by': 'translator_id'}" />
