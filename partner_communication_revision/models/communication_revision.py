@@ -15,8 +15,9 @@ from odoo.exceptions import UserError
 
 try:
     from pyquery import PyQuery
+    from bs4 import BeautifulSoup
 except ImportError:
-    raise UserError(_("Please install python pyquery"))
+    raise UserError(_("Please install python pyquery and bs4"))
 
 
 def safe_replace(original, to_replace, replacement):
@@ -97,11 +98,11 @@ class CommunicationRevision(models.Model):
     def _compute_keyword_ids(self):
         for revision in self:
             revision.edit_keyword_ids = revision.keyword_ids.filtered(
-                lambda k: k.type not in ('var', 'if', 'for') and k.is_visible)
+                lambda k: k.type == 'code' and k.is_visible)
             revision.if_keyword_ids = revision.keyword_ids.filtered(
                 lambda k: k.type == 'if' and k.is_visible)
             revision.for_keyword_ids = revision.keyword_ids.filtered(
-                lambda k: k.type == 'for' and k.is_visible)
+                lambda k: 'for' in k.type and k.is_visible)
 
     @api.multi
     def _inverse_keyword_ids(self):
@@ -263,17 +264,23 @@ class CommunicationRevision(models.Model):
         simplified_text, keywords = self._replace_inline_code(simplified_text)
         found_keywords |= keywords
         nested_position = 1
+        if_keyword_index = 1
+        for_keyword_index = 1
         while '% if' in simplified_text:
             simplified_text, keywords = self._replace_if(
-                simplified_text, nested_position)
+                simplified_text, nested_position, if_keyword_index)
             found_keywords |= keywords
+            if_keywords = keywords.filtered(lambda k: k.type == 'if')
+            if_keyword_index += len(if_keywords)
+            for_keyword_index += len(keywords - if_keywords)
             nested_position += 1
         nested_position = 1
         while '% for' in simplified_text:
             simplified_text, keywords = self._replace_for(
-                simplified_text, nested_position)
-            nested_position += 1
+                simplified_text, nested_position, for_keyword_index)
             found_keywords |= keywords
+            for_keyword_index += len(keywords)
+            nested_position += 1
         # Remove invalid keywords that are no more in the template
         (previous_keywords - found_keywords).unlink()
         return simplified_text
@@ -310,15 +317,15 @@ class CommunicationRevision(models.Model):
         setter_pattern = re.compile(pattern)
         simple_text = text
         keywords = self.env['partner.communication.keyword']
+        keyword_number = 1
         # Find first match
         for match in setter_pattern.finditer(text):
-            raw_code = match.group(0)
+            raw_code = match.group(0).strip()
             if not raw_code:
                 continue
             keyword = self.keyword_ids.filtered(
                 lambda k: k.raw_code == raw_code
-                and (k.position == match.start() if kw_type == 'var' else 1)
-            )
+                and (k.index == keyword_number if kw_type == 'var' else 1))
             if not keyword:
                 vals = {
                     'raw_code': raw_code,
@@ -329,18 +336,22 @@ class CommunicationRevision(models.Model):
                 if is_black:
                     vals['color'] = 'black'
                 keyword = keywords.create(vals)
+                # Recompute replacement html
+                keyword.env.invalidate_all()
             keywords += keyword
+            keyword_number += 1
             simple_text = safe_replace(
                 simple_text, raw_code, keyword.replacement)
         return simple_text, keywords
 
-    def _replace_if(self, text, nested_position):
+    def _replace_if(self, text, nested_position, keyword_number=1):
         """
         Finds and replace the % if: ... % endif
         of the mail.template. It will create keyword records for
         each if found.
         :param text: mail.template text
         :param nested_position: counts how nested if the current pass
+        :param keyword_number: counts how many if we found
         :return: simplified text without the if code, keywords found
         """
         # Scan for non-nested % if, % else codes
@@ -348,7 +359,7 @@ class CommunicationRevision(models.Model):
         simple_text = text
         keywords = self.env['partner.communication.keyword']
         for match in if_pattern.finditer(text, overlapped=True):
-            raw_code = match.group(1)
+            raw_code = match.group(1).strip()
             if_text = match.group(2)
             start_if = match.start()
             end_if = match.end()
@@ -358,7 +369,7 @@ class CommunicationRevision(models.Model):
             if number_nested > 0:
                 continue
             keyword = self.keyword_ids.filtered(
-                lambda k: k.raw_code == raw_code and k.position == start_if)
+                lambda k: k.raw_code == raw_code and k.index == keyword_number)
 
             # Convert nested for loops in if text
             if_text, for_keywords = self._replace_for(if_text, 1)
@@ -366,13 +377,13 @@ class CommunicationRevision(models.Model):
 
             if_parts = if_text.split('% else:')
             true_text = if_parts[0]
-            false_text = if_parts[1] if len(if_parts) > 1 else False
+            false_text = if_parts[1].strip() if len(if_parts) > 1 else False
             if not keyword:
                 # Create a new keyword object by extracting the text
                 keyword = self.keyword_ids.create({
                     'raw_code': raw_code,
                     'revision_id': self.id,
-                    'true_text': true_text,
+                    'true_text': true_text.strip(),
                     'false_text': false_text,
                     'type': 'if',
                     'position': start_if,
@@ -382,19 +393,23 @@ class CommunicationRevision(models.Model):
                 keyword.write({
                     'true_text': true_text,
                     'false_text': false_text,
+                    'position': start_if,
+                    'nested_position': nested_position
                 })
             keywords += keyword
+            keyword_number += 1
             simple_text = simple_text.replace(text[start_if:end_if],
                                               keyword.replacement)
         return simple_text, keywords
 
-    def _replace_for(self, text, nested_position):
+    def _replace_for(self, text, nested_position, keyword_number=1):
         """
         Finds and replace the % for: ... % endfor loops
         of the mail.template. It will create keyword records for
         each loop found.
         :param text: mail.template text
         :param nested_position: counts how nested if the current pass
+        :param keyword_number: counts how many for we found
         :return: simplified text without the if code, keywords found
         """
         # Scan for the % if, % else codes
@@ -408,11 +423,11 @@ class CommunicationRevision(models.Model):
             ul_text = match.group(3)
             if ul_text:
                 for_type = 'for_ul'
-                raw_code = match.group(2)
+                raw_code = match.group(2).strip()
                 for_text = ul_text
             else:
                 for_type = 'for'
-                raw_code = match.group(6)
+                raw_code = match.group(6).strip()
                 for_text = match.group(7)
             start_for = match.start()
             end_for = match.end()
@@ -422,13 +437,13 @@ class CommunicationRevision(models.Model):
             if number_nested > 0:
                 continue
             keyword = self.keyword_ids.filtered(
-                lambda k: k.raw_code == raw_code and k.position == start_for)
+                lambda k: k.raw_code == raw_code and k.index == keyword_number)
             if not keyword:
                 # Create a new keyword object by extracting the text
                 keyword = self.keyword_ids.create({
                     'raw_code': raw_code,
                     'revision_id': self.id,
-                    'true_text': for_text,
+                    'true_text': for_text.strip(),
                     'type': for_type,
                     'position': start_for,
                     'nested_position': nested_position
@@ -437,8 +452,11 @@ class CommunicationRevision(models.Model):
                 keyword.write({
                     'true_text': for_text,
                     'type': for_type,
+                    'position': start_for,
+                    'nested_position': nested_position
                 })
             keywords += keyword
+            keyword_number += 1
             simple_text = simple_text.replace(text[start_for:end_for],
                                               keyword.replacement)
         return simple_text, keywords
@@ -451,7 +469,7 @@ class CommunicationRevision(models.Model):
         """
         self.ensure_one()
         # Parse and set back the keywords into raw template code
-        html_text = PyQuery(self.simplified_text)
+        html_text = PyQuery(self.simplified_text.replace('\n', ''))
 
         def sort_keywords(kw):
             # Replace first if-clause, then for-clause, then var, then code
@@ -475,4 +493,5 @@ class CommunicationRevision(models.Model):
         for keyword in keywords.filtered(lambda k: k.type == 'code'):
             to_replace = u"[{}]".format(keyword.short_code)
             template_text = template_text.replace(to_replace, keyword.raw_code)
-        return template_text
+        final_text = PyQuery(BeautifulSoup(template_text).prettify())
+        return final_text('body').html()
