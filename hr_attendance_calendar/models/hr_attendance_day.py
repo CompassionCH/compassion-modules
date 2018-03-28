@@ -125,10 +125,10 @@ class HrAttendanceDay(models.Model):
                 continue
 
             # Contract
-            # sum the due hours from today attendance prescription for the
-            # employee. These attendance are selected in
-            # update_calendar_attendance() which is called upon
-            # attendance_day creation.
+            # sum the due hours extracted from the employee contract. The
+            # expected attendances are selected in update_calendar_attendance
+            # (further down in the file) which is called when an attendance
+            # day is created.
             due_hours = sum(att_day.mapped('cal_att_ids.due_hours'))
             # Leaves
             if att_day.leave_ids:
@@ -204,9 +204,8 @@ class HrAttendanceDay(models.Model):
         for att_day in self.filtered('coefficient'):
             extra_hours = att_day.worked_hours - att_day.due_hours
             coefficient = att_day.coefficient
-            att_day.extra_hours = (
-                                      extra_hours * coefficient) - \
-                                  att_day.extra_hours_lost
+            att_day.extra_hours = (extra_hours * coefficient) - \
+                att_day.extra_hours_lost
 
     @api.multi
     def write(self, vals):
@@ -332,9 +331,8 @@ class HrAttendanceDay(models.Model):
 
         # check public holiday
         if self.env['hr.holidays.public'].is_public_holiday(
-            rd.date, rd.employee_id.id):
-            holidays_lines = self.env[
-                'hr.holidays.public'].get_holidays_list(
+                rd.date, rd.employee_id.id):
+            holidays_lines = self.env['hr.holidays.public'].get_holidays_list(
                 att_date.year, rd.employee_id.id)
             rd.public_holiday_id = holidays_lines.filtered(
                 lambda r: r.date == rd.date)
