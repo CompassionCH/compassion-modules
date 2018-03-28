@@ -55,6 +55,7 @@
         'views/hr_holidays_status_views.xml',
         'views/attendance.xml',
         'data/attendance_computation_cron.xml',
+        'data/annual_balance_cron.xml',
         'views/extra_hours_evolution_graph.xml'
     ],
     'installable': True,

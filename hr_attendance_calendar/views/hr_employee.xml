@@ -30,6 +30,8 @@
                 <page string="Hours">
                     <group>
                         <field name="annual_balance" widget="float_time"/>
+                        <field name="previous_annual_balance"
+                               widget="float_time" invisible="1"/>
                         <field name="extra_hours_lost" widget="float_time"/>
                         <field name="attendance_days_ids" groups="product.group_uom"/>
                     </group>
