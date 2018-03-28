@@ -48,10 +48,10 @@ class CorrespondenceMapping(OnrampMapping):
 
     SUPPORTER_MAPPING = {
         'CompassConstituentId': None,
-        'GlobalId': ('correspondant_id.global_id', 'res.partner'),
+        'GlobalId': ('partner_id.global_id', 'res.partner'),
         'MandatoryReviewRequired': 'mandatory_review',
         'ObjectUrl': None,
-        'PreferredName': ('correspondant_id.preferred_name', 'res.partner'),
+        'PreferredName': ('partner_id.preferred_name', 'res.partner'),
         'Gender': None
     }
 
@@ -137,17 +137,17 @@ class CorrespondenceMapping(OnrampMapping):
 
     def _process_odoo_data(self, odoo_data):
         # Replace child and correspondant values with sponsorship
-        if 'child_id' in odoo_data and 'correspondant_id' in odoo_data:
-            correspondant_id = odoo_data.pop('correspondant_id')
+        if 'child_id' in odoo_data and 'partner_id' in odoo_data:
+            partner_id = odoo_data.pop('partner_id')
             child_id = odoo_data.pop('child_id')
             sponsorship = self.env['recurring.contract'].search([
-                ('correspondant_id', '=', correspondant_id),
+                ('partner_id', '=', partner_id),
                 ('child_id', '=', child_id)], limit=1)
             if not sponsorship:
                 # We can have multiple partners with same global_id :(
-                partner = self.env['res.partner'].browse(correspondant_id)
+                partner = self.env['res.partner'].browse(partner_id)
                 sponsorship = self.env['recurring.contract'].search([
-                    ('correspondant_id.global_id', '=', partner.global_id),
+                    ('partner_id.global_id', '=', partner.global_id),
                     ('child_id', '=', child_id)], limit=1)
             if sponsorship:
                 odoo_data['sponsorship_id'] = sponsorship.id

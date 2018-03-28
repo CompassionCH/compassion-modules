@@ -36,17 +36,6 @@ class PartnerCommunication(models.Model):
     #                              ORM METHODS                               #
     ##########################################################################
     @api.model
-    def create(self, vals):
-        """
-        Fetch a success story at creation
-        :param vals: values for record creation
-        :return: partner.communication.job record
-        """
-        job = super(PartnerCommunication, self).create(vals)
-        job.set_success_story()
-        return job
-
-    @api.model
     def _get_default_vals(self, vals, default_vals=None):
         if default_vals is None:
             default_vals = []

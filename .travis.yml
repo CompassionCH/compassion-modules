@@ -19,6 +19,7 @@ addons:
       - python-serial
       - python-yaml
       - python-cups
+      - wkhtmltopdf
     # OpenCV requirements packages
       - zbar-tools
       - python-zbar

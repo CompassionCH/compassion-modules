@@ -61,8 +61,10 @@ class Correspondence(models.Model):
             ('state', 'not in', ['draft', 'cancelled'])],
         track_visibility='onchange')
     name = fields.Char(compute='_compute_name')
-    correspondant_id = fields.Many2one(
-        related='sponsorship_id.correspondant_id', store=True)
+    partner_id = fields.Many2one(
+        related='sponsorship_id.correspondant_id', store=True,
+        oldname='correspondant_id'
+    )
     child_id = fields.Many2one(related='sponsorship_id.child_id', store=True)
     # Field used for identifying correspondence by GMC
     kit_identifier = fields.Char('Kit id', copy=False, readonly=True)
@@ -93,7 +95,7 @@ class Correspondence(models.Model):
     # 3. Letter language and text information
     #########################################
     supporter_languages_ids = fields.Many2many(
-        related='correspondant_id.spoken_lang_ids', readonly=True)
+        related='partner_id.spoken_lang_ids', readonly=True)
     beneficiary_language_ids = fields.Many2many(
         related='child_id.project_id.field_office_id.spoken_language_ids',
         readonly=True)
@@ -141,7 +143,7 @@ class Correspondence(models.Model):
     translator_id = fields.Many2one(
         'res.partner', 'GP Translator', compute='_compute_translator',
         inverse='_inverse_set_translator', store=True)
-    email = fields.Char(related='correspondant_id.email')
+    email = fields.Char(related='partner_id.email')
     sponsorship_state = fields.Selection(
         related='sponsorship_id.state', string='Sponsorship state')
     is_final_letter = fields.Boolean(compute='_compute_is_final_letter')
@@ -268,7 +270,7 @@ class Correspondence(models.Model):
     @api.depends('sponsorship_id')
     def _set_partner_review(self):
         for letter in self:
-            if letter.correspondant_id.mandatory_review:
+            if letter.partner_id.mandatory_review:
                 letter.mandatory_review = True
 
     @api.depends('page_ids')
@@ -487,7 +489,7 @@ class Correspondence(models.Model):
                 'action_id': action_id,
                 'object_id': letter.id,
                 'child_id': letter.child_id.id,
-                'partner_id': letter.correspondant_id.id
+                'partner_id': letter.partner_id.id
             })
             if letter.sponsorship_id.state not in ('active', 'terminated') or\
                     letter.child_id.project_id.hold_s2b_letters:
@@ -527,9 +529,9 @@ class Correspondence(models.Model):
         # Holds the text that cannot fit in the box
         remaining_text = ''
         additional_pages_header = 'Page '
-        if self.correspondant_id.lang == 'de_DE':
+        if self.partner_id.lang == 'de_DE':
             additional_pages_header = 'Seite '
-        elif self.correspondant_id.lang == 'it_IT':
+        elif self.partner_id.lang == 'it_IT':
             additional_pages_header = 'Pagina '
 
         def get_chars(t):
@@ -701,7 +703,7 @@ class Correspondence(models.Model):
             name = ''
             if letter.communication_type_ids.ids:
                 name = letter.communication_type_ids[0].with_context(
-                    lang=letter.correspondant_id.lang).name + ' '
+                    lang=letter.partner_id.lang).name + ' '
 
             name += letter.child_id.local_id + ' ' + letter.kit_identifier + \
                 '.pdf'
