@@ -324,8 +324,8 @@ class CommunicationRevision(models.Model):
             if not raw_code:
                 continue
             keyword = self.keyword_ids.filtered(
-                lambda k: k.raw_code == raw_code
-                and (k.index == keyword_number if kw_type == 'var' else 1))
+                lambda k: k.raw_code == raw_code and (
+                    k.index == keyword_number if kw_type == 'var' else 1))
             if not keyword:
                 vals = {
                     'raw_code': raw_code,
@@ -412,23 +412,31 @@ class CommunicationRevision(models.Model):
         :param keyword_number: counts how many for we found
         :return: simplified text without the if code, keywords found
         """
-        # Scan for the % if, % else codes
+        # Regex for finding text wrapped in loops
         loop_regex = r'(% for .*?:)(.*?)(% endfor)'
-        ul_loop_regex = r'(<ul[^<]*?)(% for .*?:)(.*?)(% endfor)(.*?</ul>)'
-        regex = ul_loop_regex + '|' + loop_regex
-        for_pattern = re.compile(regex, flags=re.DOTALL)
+        ul_loop_regex = r'(?:<ul[^<]*?)(% for .*?:)(.*?)(% endfor)(.*?</ul>)'
+
+        # First scan for ul_loops
+        for_pattern = re.compile(ul_loop_regex, flags=re.DOTALL)
+        simple_text, found_keywords = self._replace_for_type(
+            text, nested_position, keyword_number, 'for_ul', for_pattern)
+        keyword_number += len(found_keywords)
+
+        # Then scan for regular loops
+        for_pattern = re.compile(loop_regex, flags=re.DOTALL)
+        simple_text, keywords = self._replace_for_type(
+            simple_text, nested_position, keyword_number, 'for', for_pattern)
+        found_keywords |= keywords
+
+        return simple_text, found_keywords
+
+    def _replace_for_type(self, text, nested_position, keyword_number,
+                          for_type, for_pattern):
         simple_text = text
         keywords = self.env['partner.communication.keyword']
         for match in for_pattern.finditer(text, overlapped=True):
-            ul_text = match.group(3)
-            if ul_text:
-                for_type = 'for_ul'
-                raw_code = match.group(2).strip()
-                for_text = ul_text
-            else:
-                for_type = 'for'
-                raw_code = match.group(6).strip()
-                for_text = match.group(7)
+            raw_code = match.group(1).strip()
+            for_text = match.group(2)
             start_for = match.start()
             end_for = match.end()
             # Nested for : skip to next for loop which is not encapsulating
@@ -437,7 +445,8 @@ class CommunicationRevision(models.Model):
             if number_nested > 0:
                 continue
             keyword = self.keyword_ids.filtered(
-                lambda k: k.raw_code == raw_code and k.index == keyword_number)
+                lambda k: k.raw_code == raw_code and
+                k.index == keyword_number and k.type == for_type)
             if not keyword:
                 # Create a new keyword object by extracting the text
                 keyword = self.keyword_ids.create({
@@ -451,7 +460,6 @@ class CommunicationRevision(models.Model):
             else:
                 keyword.write({
                     'true_text': for_text,
-                    'type': for_type,
                     'position': start_for,
                     'nested_position': nested_position
                 })

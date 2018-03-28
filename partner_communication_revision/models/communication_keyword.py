@@ -154,7 +154,7 @@ class CommunicationKeyword(models.Model):
                     keyword.true_text
                 final_text += '\n% endfor \n'
                 if keyword.type == 'for_ul':
-                    final_text = '<ul>\n{}\n</ul>'.format(final_text)
+                    final_text = '<ul>{}</ul>'.format(final_text)
                 keyword.final_text = final_text
             elif keyword.type == 'var':
                 keyword.final_text = '\n' + keyword.raw_code + '\n'

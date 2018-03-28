@@ -12,4 +12,3 @@ Shapely
 wand
 regex
 simplejson
-enum31
