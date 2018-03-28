@@ -78,6 +78,9 @@ class CommunicationKeyword(models.Model):
     position = fields.Integer(
         help='Position in the original mail.template text'
     )
+    index = fields.Integer(
+        help='Counts the number of keywords of the same type in the revision'
+    )
     nested_position = fields.Integer(
         help='Counts the nested if or for, to recover them in order'
     )
@@ -102,7 +105,7 @@ class CommunicationKeyword(models.Model):
     color = fields.Char()
 
     _sql_constraints = [
-        ('unique_keyword', 'unique(raw_code,position,revision_id)',
+        ('unique_keyword', 'unique(raw_code,type,index,revision_id)',
          'this keyword already exists')
     ]
 
@@ -140,17 +143,21 @@ class CommunicationKeyword(models.Model):
     def _compute_final_text(self):
         for keyword in self:
             if keyword.type == 'if':
-                final_text = keyword.raw_code + '\n\t' + keyword.true_text
+                final_text = '\n' + keyword.raw_code + '\n\t' + \
+                    keyword.true_text
                 if keyword.false_text:
                     final_text += '\n\t% else:' + '\n\t' + keyword.false_text
                 final_text += '\n% endif \n'
                 keyword.final_text = final_text
             elif 'for' in keyword.type:
-                final_text = keyword.raw_code + '\n\t' + keyword.true_text
+                final_text = '\n' + keyword.raw_code + '\n\t' + \
+                    keyword.true_text
                 final_text += '\n% endfor \n'
                 if keyword.type == 'for_ul':
-                    final_text = '<ul>\n{}\n</ul>'.format(final_text)
+                    final_text = '<ul>{}</ul>'.format(final_text)
                 keyword.final_text = final_text
+            elif keyword.type == 'var':
+                keyword.final_text = '\n' + keyword.raw_code + '\n'
             else:
                 keyword.final_text = keyword.raw_code
 
@@ -189,16 +196,30 @@ class CommunicationKeyword(models.Model):
     @api.model
     def create(self, vals):
         """ Assign color at creation. """
+        count = self.search_count([
+            ('revision_id', '=', vals['revision_id']),
+            ('type', '=', vals['type'])
+        ])
+        vals['index'] = count + 1
         if 'color' not in vals:
-            count = self.search_count([
-                ('revision_id', '=', vals['revision_id']),
-                ('type', '=', vals['type'])
-            ])
             vals['color'] = COLOR_SEQUENCE[count % len(COLOR_SEQUENCE)]
         keyword = super(CommunicationKeyword, self).create(vals)
         # Define html_id once
-        keyword.html_id = str(keyword.position) + '-' + keyword.short_code
+        keyword.html_id = str(count+1) + '-' + keyword.short_code
         return keyword
+
+    @api.multi
+    def unlink(self):
+        # Update indexes
+        for keyword in self:
+            other_kw = self.search([
+                ('type', '=', keyword.type),
+                ('revision_id', '=', keyword.revision_id.id),
+                ('index', '>', keyword.index)
+            ])
+            for kw in other_kw:
+                kw.index -= 1
+        return super(CommunicationKeyword, self).unlink()
 
     @api.multi
     def toggle_edit_value(self):
@@ -230,7 +251,7 @@ class CommunicationKeyword(models.Model):
             text = False
         field = 'true_text' if (edit_value or
                                 'for' in self.type) else 'false_text'
-        return self.write({field: text})
+        return self.write({field: text and text.strip('[]')})
 
     @api.multi
     def get_text(self):
