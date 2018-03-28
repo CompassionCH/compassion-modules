@@ -4,19 +4,28 @@
         <field name="model">partner.communication.config</field>
         <field name="inherit_id" ref="partner_communication.communication_config_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="%(action_new_proposition)d" type="action" string="New revision" class="oe_highlight"/>
+                </header>
+            </xpath>
             <xpath expr="//sheet">
                 <group string="Revisions">
                     <group colspan="2">
                         <field name="revision_number"/>
                         <field name="revision_date"/>
                         <field name="revision_ids" context="{'default_config_id': id, 'form_view_ref': 'partner_communication_revision.revision_simplified_form'}">
-                            <tree>
+                            <tree colors="blue:state in ('pending','submit');green:state=='approved'">
+                                <field name="config_id" invisible="1"/>
                                 <field name="lang"/>
                                 <field name="revision_number"/>
                                 <field name="revision_date"/>
+                                <field name="update_user_id"/>
+                                <button name="edit_proposition" type="object" icon="fa-file" context="{'config_id': config_id}"/>
                                 <button name="show_revision" type="object" icon="fa-eye"/>
                                 <button name="edit_revision" type="object" icon="fa-edit"/>
-                                <button name="new_revision" type="object" icon="fa-plus-square"/>
+                                <button name="new_revision" type="object" icon="fa-plus-square" states="approved" groups="base.group_erp_manager"/>
+                                <field name="state"/>
                             </tree>
                         </field>
                     </group>
