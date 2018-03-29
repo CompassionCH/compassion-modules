@@ -260,10 +260,10 @@ class CompassionIntervention(models.Model):
                   record.product_template_id.property_account_income_id.id)
                  ])
 
-            record.total_income = '{0} CHF'.format(
-                sum(mv_line_income.mapped('credit')))
+            record.total_income = '{0} CHF'.format(sum(
+                mv_line_income.mapped('credit')))
             record.total_expense = ("{0} CHF".format(sum(
-                mv_line_expense.mapped('credit'))))
+                mv_line_expense.mapped('debit'))))
 
     ##########################################################################
     #                              ORM METHODS                               #
