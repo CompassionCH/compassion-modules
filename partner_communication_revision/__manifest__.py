@@ -41,6 +41,8 @@
     },
     'data': [
         'security/ir.model.access.csv',
+        'views/new_proposition_wizard_view.xml',
+        'views/validate_revision_wizard_view.xml',
         'views/communication_config_view.xml',
         'views/revision_preview_view.xml',
         'views/communication_revision_view.xml',
