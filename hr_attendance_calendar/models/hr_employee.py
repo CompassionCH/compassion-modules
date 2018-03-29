@@ -96,7 +96,7 @@ class HrEmployee(models.Model):
             today = datetime.date.today()
             start_previous_year = today.replace(year=today.year-1, month=1,
                                                 day=1)
-            end_previous_year = today.replace(year=today.year-1, month=12, 
+            end_previous_year = today.replace(year=today.year-1, month=12,
                                               day=31)
             # updating the annual balance in case it changed since the
             # automatic computation of 01.01.XX 00:00:01.

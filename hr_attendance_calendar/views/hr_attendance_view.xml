@@ -20,26 +20,6 @@
         </field>
     </record>
 
-
-    <record model="ir.ui.view"
-            id="hr_attendance_calendar_view_form">
-        <field name="name">HR Attendance Worked Calendar Form View</field>
-        <field name="model">hr.attendance</field>
-        <field name="priority"
-               eval="20"/>
-        <field name="inherit_id"
-               ref="hr_attendance.hr_attendance_view_form"/>
-        <field name="arch"
-               type="xml">
-            <field name="check_out"
-                   position="after">
-                <field name="worked_hours"
-                       widget="float_time"/>
-                <field name="attendance_day_id"/>
-            </field>
-        </field>
-    </record>
-
     <record model="ir.ui.view"
             id="hr_attendance_kanban">
         <field name="name">HR Attendance Kanban View</field>
