@@ -374,10 +374,10 @@ class CompassionIntervention(models.Model):
             if intervention:
                 intervention_local_ids.append(intervention.id)
                 intervention.with_context(hold_update=False).write(vals)
-                intervention.message_post("The information of this "
-                                          "intervention have been updated",
-                                          subject=(intervention.name +
-                                                   "got an Update"),
+                intervention.message_post(_("The information of this "
+                                          "intervention have been updated"),
+                                          subject=(_(intervention.name +
+                                                   "got an Update")),
                                           message_type='email',
                                           subtype='mail.mt_comment')
 
@@ -439,7 +439,7 @@ class CompassionIntervention(models.Model):
             intervention.commited_percentage = json_data.get(
                 "CommittedPercent", 100)
             intervention.message_post(
-                "The commitment percentage has changed.",
+                _("The commitment percentage has changed."),
                 message_type='email', subtype='mail.mt_comment'
             )
         return intervention.ids
@@ -655,7 +655,8 @@ class CompassionIntervention(models.Model):
                             milestone_url, milestone_url)
                 intervention.message_post(
                     body,
-                    subject=(intervention.name + ': New milestone received.'),
+                    subject=(_(intervention.name + ': New milestone '
+                                                   'received.')),
                     message_type='email',
                     subtype='mail.mt_comment'
                 )
@@ -691,8 +692,8 @@ class CompassionIntervention(models.Model):
             intervention.get_infos()
             intervention_local_ids.append(intervention.id)
             intervention.message_post(
-                "This intervention has been modified by amendment",
-                subject=intervention.name + ": Amendment received",
+                _("This intervention has been modified by amendment"),
+                subject=_(intervention.name + ": Amendment received"),
                 message_type='email', subtype='mail.mt_comment')
 
         return intervention_local_ids
