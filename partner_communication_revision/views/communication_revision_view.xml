@@ -2,11 +2,13 @@
     <record model="ir.ui.view" id="revision_simplified_form">
         <field name="name">communication.revision.simplified.form</field>
         <field name="model">partner.communication.revision</field>
+        <field name="priority">15</field>
         <field name="arch" type="xml">
             <form>
                 <group>
                     <field name="lang"/>
                     <field name="config_id" invisible="1"/>
+                    <field name="state" invisible="1"/>
                 </group>
             </form>
         </field>
@@ -49,6 +51,55 @@
                         <field name="if_keyword_ids" context="{'tree_view_ref': 'partner_communication_revision.revision_keyword_tree_if'}"/>
                     </group>
                 </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="revision_form_proposition">
+        <field name="name">communication.revision.form.proposition</field>
+        <field name="model">partner.communication.revision</field>
+        <field name="priority">7</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="is_proposer" invisible="1"/>
+                    <field name="is_corrector" invisible="1"/>
+                    <field name="is_corrected" invisible="1"/>
+                    <field name="state" widget="statusbar"/>
+                    <button type="object" name="submit_proposition" string="Submit proposition" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'pending'),('is_proposer', '=', False)]}"/>
+                    <button type="object" name="validate_proposition" string="Validate proposition" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_corrector', '=', False)]}"/>
+                    <button type="object" name="submit_correction" string="Submit corrections" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_corrector', '=', False)]}"/>
+                    <button type="object" name="validate_correction" string="Validate corrections" class="oe_highlight" attrs="{'invisible': ['|','|', ('state', '!=', 'pending'),('is_proposer', '=', False),('is_corrected', '=', False)]}"/>
+                    <button type="object" name="discard_correction" string="Validate my version" attrs="{'invisible': ['|','|', ('state', '!=', 'pending'),('is_proposer', '=', False),('is_corrected', '=', False)]}"/>
+                </header>
+                <sheet>
+                    <field name="is_master_version" invisible="1"/>
+                    <field name="config_id" invisible="1"/>
+                    <group>
+                        <group>
+                            <field name="user_id" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
+                        </group>
+                        <group>
+                            <field name="correction_user_id" attrs="{'required': [('state', '=', 'pending')], 'readonly': [('is_proposer', '=', False)]}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="proposition_text" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
+                        </group>
+                        <group>
+                            <field name="proposition_correction" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit"/>
+                        </group>
+                        <group string="Compare with other translations" attrs="{'invisible': ['|', ('state', 'not in', ('pending','submit')),('is_master_version', '=', True)]}">
+                            <field name="compare_lang" attrs="{'invisible': [('is_master_version', '=', True)]}"/>
+                            <field name="compare_text" attrs="{'invisible': [('is_master_version', '=', True)]}" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
         </field>
     </record>

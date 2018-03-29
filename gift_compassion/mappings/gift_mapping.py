@@ -9,8 +9,23 @@
 #
 ##############################################################################
 
+import string
+
 from odoo.addons.message_center_compassion.mappings.base_mapping \
     import OnrampMapping
+
+
+def escape_special_characters(note):
+    replacement_dictionary = {"'": " ",
+                              "`": " ",
+                              "\"": " ",
+                              }
+    # The syntax of maketrans is not really clear. We go with a
+    # dictionary for improved readability.
+    to_replace = "".join(replacement_dictionary.keys())
+    replacement = "".join([replacement_dictionary[char] for char in
+                           to_replace])
+    return note.translate(string.maketrans(to_replace, replacement))
 
 
 class CreateGiftMapping(OnrampMapping):
@@ -48,7 +63,8 @@ class CreateGiftMapping(OnrampMapping):
         'AmountInOriginatingCurrency': None,
         'GiftSubType': lambda type: type or None,
         'GiftType': None,
-        'GlobalPartnerNote': lambda note: note or None,
+        'GlobalPartnerNote': lambda note: escape_special_characters(note) if
+        note else None,
         'PartnerGiftDate': None,
         'PartnerGiftID': str,
         'RecipientID': None,

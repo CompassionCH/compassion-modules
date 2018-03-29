@@ -8,7 +8,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields
+from odoo import api, models, fields
 
 
 class CommunicationConfig(models.Model):
@@ -19,3 +19,19 @@ class CommunicationConfig(models.Model):
     revision_ids = fields.One2many(
         'partner.communication.revision', 'config_id', 'Revisions'
     )
+
+    @api.multi
+    def new_proposition(self):
+        """
+        Called for creating a new revision text
+        :return: view action for editing proposition text
+        """
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'res_id': self.id,
+            'res_model': self._name,
+            'target': 'current',
+            'context': self.env.context
+        }
