@@ -116,7 +116,7 @@ class HrAttendanceDay(models.Model):
                  'public_holiday_id')
     def _compute_due_hours(self):
         """First search the due hours based on the contract and after remove
-        somme hours if they are vacation"""
+        some hours if they are vacation"""
         for att_day in self:
 
             # Public holidays
@@ -125,8 +125,11 @@ class HrAttendanceDay(models.Model):
                 continue
 
             # Contract
+            # sum the due hours extracted from the employee contract. The
+            # expected attendances are selected in update_calendar_attendance
+            # (further down in the file) which is called when an attendance
+            # day is created.
             due_hours = sum(att_day.mapped('cal_att_ids.due_hours'))
-
             # Leaves
             if att_day.leave_ids:
                 for leave in att_day.leave_ids.filtered(
@@ -139,7 +142,6 @@ class HrAttendanceDay(models.Model):
 
             if due_hours < 0:
                 due_hours = 0
-
             att_day.due_hours = due_hours
 
     @api.multi
@@ -202,8 +204,8 @@ class HrAttendanceDay(models.Model):
         for att_day in self.filtered('coefficient'):
             extra_hours = att_day.worked_hours - att_day.due_hours
             coefficient = att_day.coefficient
-            att_day.extra_hours = (
-                extra_hours * coefficient) - att_day.extra_hours_lost
+            att_day.extra_hours = (extra_hours * coefficient) - \
+                att_day.extra_hours_lost
 
     @api.multi
     def write(self, vals):
@@ -312,7 +314,6 @@ class HrAttendanceDay(models.Model):
 
         # link to schedule (resource.calendar.attendance)
         rd.update_calendar_attendance()
-
         # link to leaves (hr.holidays )
         date_str = fields.Date.to_string(att_date)
         rd.leave_ids = self.env['hr.holidays'].search([
@@ -331,9 +332,8 @@ class HrAttendanceDay(models.Model):
         # check public holiday
         if self.env['hr.holidays.public'].is_public_holiday(
                 rd.date, rd.employee_id.id):
-            holidays_lines = self.env[
-                'hr.holidays.public'].get_holidays_list(
-                    att_date.year, rd.employee_id.id)
+            holidays_lines = self.env['hr.holidays.public'].get_holidays_list(
+                att_date.year, rd.employee_id.id)
             rd.public_holiday_id = holidays_lines.filtered(
                 lambda r: r.date == rd.date)
 
@@ -358,12 +358,16 @@ class HrAttendanceDay(models.Model):
         for att_day in self:
             att_date = fields.Date.from_string(att_day.date)
             week_day = att_date.weekday()
+
+            # look for a valid contract
             contracts = self.env['hr.contract'].search([
                 ('employee_id', '=', att_day.employee_id.id),
                 ('date_start', '<=', att_day.date),
                 '|', ('date_end', '=', False), ('date_end', '>=', att_day.date)
             ])
             cal_att_ids = self.env['resource.calendar.attendance']
+
+            # select the attendance(s) from the contract that is valid today.
             current_cal_att = contracts.mapped(
                 'working_hours.attendance_ids').filtered(
                 lambda a: int(a.dayofweek) == week_day)

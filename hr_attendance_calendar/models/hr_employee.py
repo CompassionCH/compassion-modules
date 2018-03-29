@@ -76,9 +76,19 @@ class HrEmployee(models.Model):
         employees = self.search([])
         today = fields.Date.today()
         for employee in employees:
+            # check if an entry already exists. If yes, it will not be
+            # recreated
             att_days = att_day.search(
-                [('name', '=', today), ('employee_id', '=', employee.id)])
-            if not att_days:
+                [('date', '=', today), ('employee_id', '=', employee.id)])
+
+            # check that the employee is currently employed.
+            contracts_valid_today = self.env['hr.contract'].search([
+                ('employee_id', '=', employee.id),
+                ('date_start', '<=', today),
+                '|', ('date_end', '=', False), ('date_end', '>=', today)
+            ])
+
+            if not att_days and contracts_valid_today:
                 att_day.create({
                     'date': today,
                     'employee_id': employee.id
