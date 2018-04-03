@@ -19,10 +19,10 @@
                     </div>
                     <div class="oe_right oe_button_box" name="buttons">
                         <button name="get_infos"
-                                string="get infos"
                                 type="object"
-                                icon="fa-refresh"
                                 class="oe_stat_button"
+                                icon="fa-refresh"
+                                string="get infos"
                                 context="{'async_mode': False}"/>
 
                         <button name="show_expenses"
@@ -30,8 +30,8 @@
                                 class="oe_stat_button"
                                 icon="fa-credit-card">
                             <field name="total_expense"
-                                   widget="statinfo"
-                                   string="Expenses"/>
+                                   string="Expenses"
+                                   widget="statinfo"/>
                         </button>
 
                         <button name="show_income"
