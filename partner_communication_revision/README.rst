@@ -6,6 +6,13 @@ Partner Communication Revisions
 
 This module adds a new way of defining e-mail templates so that non-technical staff can edit text templates.
 
+Installation
+============
+
+You need to add regex library
+
+- sudo pip install regex
+
 Usage
 =====
 

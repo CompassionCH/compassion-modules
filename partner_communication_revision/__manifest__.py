@@ -47,8 +47,8 @@
         'views/revision_preview_view.xml',
         'views/communication_revision_view.xml',
         'views/communication_keyword_view.xml',
-        'data/install.xml'
-        # 'views/partner_communication_revision.xml',
+        'data/install.xml',
+        #'views/partner_communication_revision.xml',
     ],
     'qweb': [],
     'demo': [],
