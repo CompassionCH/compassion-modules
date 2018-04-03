@@ -31,8 +31,7 @@
 
                         </group>
                         <group string="Hours">
-                            <field name="worked_hours" widget="float_time"
-                                   string="Paid hours"/>
+                            <field name="paid_hours" widget="float_time"/>
                             <field name="extra_hours" widget="float_time"/>
                             <field name="extra_hours_lost" widget="float_time"/>
                         </group>
@@ -83,7 +82,7 @@
                 <field name="date"/>
                 <field name="working_day"/>
                 <field name="employee_id"/>
-                <field name="worked_hours" widget="float_time"/>
+                <field name="paid_hours" widget="float_time"/>
                 <field name="extra_hours" widget="float_time"/>
                 <field name="extra_hours_lost" widget="float_time"/>
             </tree>
@@ -114,9 +113,9 @@
                                     </a>
                                     <table>
                                         <tr>
-                                            <td>Worked hours:</td>
+                                            <td>Paid hours:</td>
                                             <td>
-                                                <field name="worked_hours"/>
+                                                <field name="paid_hours"/>
                                             </td>
                                         </tr>
                                         <tr>

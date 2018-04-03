@@ -60,9 +60,11 @@ class HrAttendanceDay(models.Model):
                                      'Attendances', readonly=True)
 
     # Worked
-    worked_hours = fields.Float('Worked hours',
-                                compute='_compute_worked_hours', store=True,
-                                readonly=True)
+    paid_hours = fields.Float('Paid hours',
+                              compute='_compute_paid_hours', store=True,
+                              readonly=True,
+                              oldname="worked_hours")
+
     coefficient = fields.Float(help='Worked hours coefficient')
 
     # Break
@@ -144,9 +146,9 @@ class HrAttendanceDay(models.Model):
 
     @api.multi
     @api.depends('attendance_ids.worked_hours')
-    def _compute_worked_hours(self):
+    def _compute_paid_hours(self):
         for att_day in self.filtered('attendance_ids'):
-            worked_hours = sum(att_day.attendance_ids.mapped('worked_hours'))
+            logged_hours = sum(att_day.attendance_ids.mapped('paid_hours'))
 
             # Take only the breaks edited by the system
             breaks = att_day.break_ids.filtered(lambda r: r.system_modified)
@@ -159,15 +161,15 @@ class HrAttendanceDay(models.Model):
                 else:
                     # the break was created
                     deduct = logged_duration
-                worked_hours -= deduct
+                logged_hours -= deduct
 
-            att_day.worked_hours = worked_hours
+            att_day.paid_hours = logged_hours
 
     @api.multi
-    @api.depends('worked_hours', 'due_hours')
+    @api.depends('paid_hours', 'due_hours')
     def _compute_rule_id(self):
         for att_day in self:
-            hours = max(att_day.worked_hours, att_day.due_hours)
+            hours = max(att_day.paid_hours, att_day.due_hours)
 
             att_day.rule_id = self.env['hr.attendance.rules'].search([
                 ('time_from', '<=', hours),
@@ -195,11 +197,11 @@ class HrAttendanceDay(models.Model):
                 att_day.break_ids.mapped('logged_duration') or [0])
 
     @api.multi
-    @api.depends('worked_hours', 'due_hours', 'coefficient',
+    @api.depends('paid_hours', 'due_hours', 'coefficient',
                  'extra_hours_lost')
     def _compute_extra_hours(self):
         for att_day in self.filtered('coefficient'):
-            extra_hours = att_day.worked_hours - att_day.due_hours
+            extra_hours = att_day.paid_hours - att_day.due_hours
             coefficient = att_day.coefficient
             att_day.extra_hours = (
                 extra_hours * coefficient) - att_day.extra_hours_lost
@@ -207,7 +209,7 @@ class HrAttendanceDay(models.Model):
     @api.multi
     def write(self, vals):
         super(HrAttendanceDay, self).write(vals)
-        if 'worked_hours' in vals or 'coefficient' in vals:
+        if 'paid_hours' in vals or 'coefficient' in vals:
             for att_day in self:
                 att_days_future = self.search([
                     ('date', '>=', att_day.date),
@@ -269,7 +271,7 @@ class HrAttendanceDay(models.Model):
             })
 
         for att_day in self:
-            paid_hours = att_day.worked_hours
+            paid_hours = att_day.paid_hours
             free_breaks_hours = sum(att_day.break_ids.filtered(
                 lambda b: b.is_offered).mapped("logged_duration"))
             worked_hours = paid_hours - free_breaks_hours
@@ -304,8 +306,8 @@ class HrAttendanceDay(models.Model):
                                       rules_sorted[idx]["time_from"])
                     extend_longest_break(time_to_add)
                 idx += 1
-                self._compute_worked_hours()
-                worked_hours = att_day.worked_hours - free_breaks_hours
+                self._compute_paid_hours()
+                worked_hours = att_day.paid_hours - free_breaks_hours
 
     ##########################################################################
     #                               ORM METHODS                              #
@@ -424,7 +426,7 @@ class HrAttendanceDay(models.Model):
 
             # valid break
             att_day.breaks_is_valid()
-        self._compute_worked_hours()
+        self._compute_paid_hours()
 
     @api.multi
     def recompute_attendance(self):
