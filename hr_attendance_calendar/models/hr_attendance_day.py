@@ -84,7 +84,7 @@ class HrAttendanceDay(models.Model):
     extra_hours = fields.Float("Extra hours",
                                compute='_compute_extra_hours',
                                store=True)
-    extra_hours_lost = fields.Float()
+    extra_hours_lost = fields.Float(readonly=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
