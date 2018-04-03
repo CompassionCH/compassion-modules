@@ -9,6 +9,8 @@
 #
 ##############################################################################
 
+import re
+
 from odoo.addons.message_center_compassion.mappings.base_mapping \
     import OnrampMapping
 
@@ -48,7 +50,8 @@ class CreateGiftMapping(OnrampMapping):
         'AmountInOriginatingCurrency': None,
         'GiftSubType': lambda type: type or None,
         'GiftType': None,
-        'GlobalPartnerNote': lambda note: note or None,
+        'GlobalPartnerNote': lambda note: re.sub(ur"['\"´]", u" ", note) if
+        note else None,
         'PartnerGiftDate': None,
         'PartnerGiftID': str,
         'RecipientID': None,

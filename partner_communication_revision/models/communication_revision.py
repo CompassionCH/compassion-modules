@@ -11,7 +11,7 @@
 import regex as re
 
 from odoo import api, models, _, fields
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 try:
     from pyquery import PyQuery
@@ -42,6 +42,7 @@ def safe_replace(original, to_replace, replacement):
 
 class CommunicationRevision(models.Model):
     _name = 'partner.communication.revision'
+    _inherit = 'mail.thread'
     _rec_name = 'config_id'
     _description = 'Communication template revision'
     _order = 'config_id asc,revision_number desc'
@@ -59,8 +60,24 @@ class CommunicationRevision(models.Model):
     lang = fields.Selection('select_lang', required=True)
     revision_number = fields.Float(default=1.0)
     revision_date = fields.Date(default=fields.Date.today())
+    state = fields.Selection([
+        ('pending', 'Pending'),
+        ('submit', 'Submitted'),
+        ('approved', 'Approved'),
+        ('active', 'Active'),
+    ], default='active')
+    is_master_version = fields.Boolean()
     body_html = fields.Html(related='config_id.email_template_id.body_html')
     simplified_text = fields.Html(sanitize=False)
+    user_id = fields.Many2one('res.users', 'Responsible', domain=[
+        ('share', '=', False)], track_visibility='onchange')
+    correction_user_id = fields.Many2one('res.users', 'Corrector', domain=[
+        ('share', '=', False)], track_visibility='onchange')
+    update_user_id = fields.Many2one('res.users', 'Modified by')
+    proposition_text = fields.Html()
+    proposition_correction = fields.Html()
+    compare_lang = fields.Selection('select_lang')
+    compare_text = fields.Html()
     preview_text = fields.Html()
     keyword_ids = fields.One2many(
         'partner.communication.keyword', 'revision_id', 'Keywords'
@@ -80,6 +97,9 @@ class CommunicationRevision(models.Model):
         compute='_compute_keyword_ids', inverse='_inverse_keyword_ids',
         string='Loops'
     )
+    is_proposer = fields.Boolean(compute='_compute_allowed')
+    is_corrector = fields.Boolean(compute='_compute_allowed')
+    is_corrected = fields.Boolean(compute='_compute_allowed')
 
     _sql_constraints = [
         ('unique_revision', 'unique(config_id,lang)',
@@ -92,7 +112,14 @@ class CommunicationRevision(models.Model):
     @api.model
     def select_lang(self):
         langs = self.env['res.lang'].search([])
-        return [(lang.code, lang.name) for lang in langs]
+        config_id = self.env.context.get('config_id')
+        valid_langs = None
+        if config_id:
+            revisions = self.config_id.browse(config_id).revision_ids.filtered(
+                lambda r: r.state in ('approved', 'active'))
+            valid_langs = revisions.mapped('lang')
+        return [(lang.code, lang.name) for lang in langs if
+                not config_id or lang.code in valid_langs]
 
     @api.multi
     def _compute_keyword_ids(self):
@@ -108,6 +135,24 @@ class CommunicationRevision(models.Model):
     def _inverse_keyword_ids(self):
         return True
 
+    @api.constrains('correction_user_id')
+    def _check_corrector(self):
+        for rev in self:
+            if rev.correction_user_id and \
+                    rev.correction_user_id == rev.user_id:
+                raise ValidationError(_(
+                    "Corrector cannot be the same person as the one making "
+                    "the new version."))
+        return True
+
+    @api.multi
+    def _compute_allowed(self):
+        for rev in self:
+            rev.is_proposer = self.env.user == rev.user_id
+            rev.is_corrector = self.env.user == rev.correction_user_id
+            rev.is_corrected = rev.proposition_correction and \
+                rev.proposition_correction != rev.proposition_text
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -117,10 +162,14 @@ class CommunicationRevision(models.Model):
         Push back the enhanced text in translation of the mail.template.
         Update revision date and number depending on edit mode.
         """
+        if 'correction_user_id' in vals:
+            self.message_subscribe_users([vals['correction_user_id']])
+
         if 'simplified_text' not in vals or self.env.context.get('no_update'):
             return super(CommunicationRevision, self).write(vals)
 
         for revision in self.filtered('simplified_text'):
+            vals['update_user_id'] = self.env.uid
             super(CommunicationRevision, revision).write(vals)
 
             # 2. Push back the template text
@@ -165,7 +214,8 @@ class CommunicationRevision(models.Model):
             this_revision_number, current_revision_number])
         revision_vals = {
             'revision_number': int(new_revision_number),
-            'revision_date': fields.Date.today()
+            'revision_date': fields.Date.today(),
+            'state': 'active'
         }
         if new_revision_number > current_revision_number:
             self.config_id.write(revision_vals)
@@ -173,9 +223,15 @@ class CommunicationRevision(models.Model):
         return self._open_revision()
 
     @api.multi
+    def edit_proposition(self):
+        """ This is used to open the revision proposition text. """
+        self.ensure_one()
+        return self._open_revision(form_view_mode='proposition')
+
+    @api.multi
     def show_revision(self):
         self.ensure_one()
-        return self._open_revision(readonly=True)
+        return self._open_revision(form_view_mode='readonly')
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -223,22 +279,113 @@ class CommunicationRevision(models.Model):
             'target': 'new',
         }
 
+    # Revision proposition buttons
+    @api.multi
+    def submit_proposition(self):
+        body = 'A new text for {} was submitted for approval.'.format(
+            self.display_name
+        )
+        self.notify_proposition('Revision text submitted', body)
+        self.write({
+            'proposition_correction': self.proposition_correction or
+            self.proposition_text,
+            'state': 'submit'
+        })
+        return True
+
+    @api.multi
+    def validate_proposition(self):
+        subject = 'Revision approved'
+        body = 'The text for {} was approved.'.format(self.display_name)
+        if not self.is_master_version:
+            self.approve(subject, body)
+        return self.with_context(body=body, subject=subject)._open_validation()
+
+    @api.multi
+    def submit_correction(self):
+        self.state = 'pending'
+        body = 'Corrections for {} were proposed.'.format(self.display_name)
+        self.notify_proposition('Correction submitted', body)
+        return True
+
+    @api.multi
+    def validate_correction(self):
+        self.proposition_text = self.proposition_correction
+        body = 'The text for {} was approved.'.format(self.display_name)
+        subject = 'Corrections approved'
+        if not self.is_master_version:
+            self.approve(subject, body)
+
+        return self.with_context(body=body, subject=subject)._open_validation()
+
+    @api.multi
+    def discard_correction(self):
+        subject = 'Revision approved'
+        body = 'The original text for {} was kept. Proposed ' \
+               'corrections were discarded.'.format(self.display_name)
+        if not self.is_master_version:
+            self.approve(subject, body)
+        return self.with_context(body=body, subject=subject)._open_validation()
+
+    @api.multi
+    def approve(self, subject=None, body=None):
+        self.write({
+            'proposition_correction': False,
+            'state': 'approved',
+            'compare_text': False
+        })
+        subject = self._context.get('subject', subject)
+        body = self._context.get('body', body)
+        self.notify_proposition(subject, body)
+
+    @api.multi
+    def notify_proposition(self, subject, body):
+        # Post a message that is sent to watchers
+        self.message_post(
+            body=body, subject=subject, type='comment',
+            subtype='mail.mt_comment', content_subtype='plaintext'
+        )
+
+    @api.onchange('compare_lang')
+    def onchange_compare_lang(self):
+        self.compare_text = self.search([
+            ('config_id', '=', self.config_id.id),
+            ('lang', '=', self.compare_lang),
+            ('state', '=', 'approved')
+        ]).proposition_text
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
     @api.multi
-    def _open_revision(self, readonly=False):
+    def _open_validation(self):
+        # After master version is approved, we must setup the translations
+        if self.is_master_version:
+            return {
+                'name': 'Validate proposition',
+                'type': 'ir.actions.act_window',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'partner.communication.validate.proposition',
+                'context': self.with_context(
+                    active_id=self.id, form_view_ref=False).env.context,
+                'target': 'new',
+            }
+        return True
+
+    @api.multi
+    def _open_revision(self, form_view_mode=None):
         """
         Fetches the text from the mail.template and open the revision view
-        :param readonly: Should we open the readonly view or not
+        :param form_view_mode: Specify a form view.
         :return: action for opening the revision view
         """
         text = self.with_context(lang=self.lang).body_html
         self.with_context(
             no_update=True).simplified_text = self._simplify_text(text)
         form_view = 'partner_communication_revision.revision_form'
-        if readonly:
-            form_view += '_readonly'
+        if form_view_mode:
+            form_view += '_' + form_view_mode
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
