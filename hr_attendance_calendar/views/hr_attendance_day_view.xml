@@ -31,7 +31,7 @@
 
                         </group>
                         <group string="Hours">
-                            <field name="worked_hours" widget="float_time"/>
+                            <field name="paid_hours" widget="float_time"/>
                             <field name="extra_hours" widget="float_time"/>
                             <field name="extra_hours_lost" widget="float_time"/>
                         </group>
@@ -43,7 +43,10 @@
                                     <field name="check_in"/>
                                     <field name="check_out"/>
                                     <field name="worked_hours"
-                                           widget="float_time" type="char"/>
+                                           widget="float_time"
+                                           type="char" string="Logged
+                                           duration"/>
+
                                 </tree>
                             </field>
                             <field name="break_total" widget="float_time"/>
@@ -81,10 +84,11 @@
                 <field name="working_day"/>
                 <field name="employee_id"/>
                 <field name="due_hours" widget="float_time" type="char"/>
-                <field name="worked_hours" widget="float_time" type="char"/>
+                <field name="paid_hours" widget="float_time" type="char"/>
                 <field name="extra_hours_lost" widget="float_time"
                        type="char"/>
                 <field name="extra_hours" widget="float_time" type="char"/>
+
             </tree>
         </field>
     </record>
@@ -113,9 +117,9 @@
                                     </a>
                                     <table>
                                         <tr>
-                                            <td>Worked hours:</td>
+                                            <td>Paid hours:</td>
                                             <td>
-                                                <field name="worked_hours"/>
+                                                <field name="paid_hours"/>
                                             </td>
                                         </tr>
                                         <tr>

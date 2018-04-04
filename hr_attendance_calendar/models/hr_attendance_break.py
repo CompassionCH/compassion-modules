@@ -48,7 +48,7 @@ class HrAttendanceBreak(models.Model):
             if rd.is_offered:
                 rd.name = 'Free break'
             elif not rd.start:
-                rd.name = 'Create by the system'
+                rd.name = 'Created by the system'
             else:
                 start = fields.Datetime.from_string(rd.start)
                 start = fields.Datetime.context_timestamp(
