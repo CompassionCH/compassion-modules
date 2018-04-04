@@ -42,7 +42,8 @@
                                 <tree>
                                     <field name="check_in"/>
                                     <field name="check_out"/>
-                                    <field name="worked_hours" widget="float_time"/>
+                                    <field name="worked_hours"
+                                           widget="float_time" type="char"/>
                                 </tree>
                             </field>
                             <field name="break_total" widget="float_time"/>
@@ -50,7 +51,8 @@
                                 <tree>
                                     <field name="name"/>
                                     <field name="system_modified"/>
-                                    <field name="logged_duration" widget="float_time"/>
+                                    <field name="logged_duration"
+                                           widget="float_time" type="char"/>
                                 </tree>
                             </field>
                             <field name="leave_ids">
@@ -78,6 +80,7 @@
                 <field name="date"/>
                 <field name="working_day"/>
                 <field name="employee_id"/>
+                <field name="due_hours" widget="float_time" type="char"/>
                 <field name="worked_hours" widget="float_time" type="char"/>
                 <field name="extra_hours_lost" widget="float_time"
                        type="char"/>
