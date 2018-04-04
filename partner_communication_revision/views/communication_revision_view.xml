@@ -75,6 +75,14 @@
                 <sheet>
                     <field name="is_master_version" invisible="1"/>
                     <field name="config_id" invisible="1"/>
+                    <div>
+                        <h5>Revision Instructions</h5>
+                        <ul>
+                            <li style="color: darkgreen">green : keywords or comments that are not part of the text</li>
+                            <li><span style="color: red">red : any changes you make</span>, except if you change everything, you can use black</li>
+                            <li><span style="color: blue">blue</span>/<span style="color: violet">violet</span> : text for a boy / text for a girl</li>
+                        </ul>
+                    </div>
                     <group>
                         <group>
                             <field name="user_id" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
