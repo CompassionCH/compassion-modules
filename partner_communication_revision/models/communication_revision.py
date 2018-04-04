@@ -67,6 +67,8 @@ class CommunicationRevision(models.Model):
         ('active', 'Active'),
     ], default='active')
     is_master_version = fields.Boolean()
+    subject = fields.Char()
+    subject_correction = fields.Char()
     body_html = fields.Html(related='config_id.email_template_id.body_html')
     simplified_text = fields.Html(sanitize=False)
     user_id = fields.Many2one('res.users', 'Responsible', domain=[
@@ -78,6 +80,7 @@ class CommunicationRevision(models.Model):
     proposition_correction = fields.Html()
     compare_lang = fields.Selection('select_lang')
     compare_text = fields.Html()
+    compare_subject = fields.Char()
     preview_text = fields.Html()
     keyword_ids = fields.One2many(
         'partner.communication.keyword', 'revision_id', 'Keywords'
@@ -99,7 +102,7 @@ class CommunicationRevision(models.Model):
     )
     is_proposer = fields.Boolean(compute='_compute_allowed')
     is_corrector = fields.Boolean(compute='_compute_allowed')
-    is_corrected = fields.Boolean(compute='_compute_allowed')
+    is_corrected = fields.Boolean()
 
     _sql_constraints = [
         ('unique_revision', 'unique(config_id,lang)',
@@ -150,8 +153,6 @@ class CommunicationRevision(models.Model):
         for rev in self:
             rev.is_proposer = self.env.user == rev.user_id
             rev.is_corrector = self.env.user == rev.correction_user_id
-            rev.is_corrected = rev.proposition_correction and \
-                rev.proposition_correction != rev.proposition_text
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -175,12 +176,8 @@ class CommunicationRevision(models.Model):
             # 2. Push back the template text
             # Set the conditionals texts
             revision.with_context(save_mode=True).refresh_text()
-            translation = self.env['ir.translation'].search([
-                ('lang', '=', revision.lang),
-                ('name', 'like', 'body_html'),
-                ('res_id', '=', revision.config_id.email_template_id.id)
-            ])
-            translation.value = revision._enhance_text()
+            revision.config_id.email_template_id.with_context(
+                lang=revision.lang).body_html = revision._enhance_text()
         return True
 
     ##########################################################################
@@ -197,6 +194,7 @@ class CommunicationRevision(models.Model):
         self.ensure_one()
         new_revision_number = self.revision_number + 0.01
         self.revision_number = new_revision_number
+        self.revision_date = fields.Date.today()
         return self._open_revision()
 
     @api.multi
@@ -289,7 +287,9 @@ class CommunicationRevision(models.Model):
         self.write({
             'proposition_correction': self.proposition_correction or
             self.proposition_text,
-            'state': 'submit'
+            'subject_correction': self.subject_correction or self.subject,
+            'state': 'submit',
+            'is_corrected': False
         })
         return True
 
@@ -303,14 +303,17 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def submit_correction(self):
-        self.state = 'pending'
+        self.write({'state': 'pending', 'is_corrected': True})
         body = 'Corrections for {} were proposed.'.format(self.display_name)
         self.notify_proposition('Correction submitted', body)
         return True
 
     @api.multi
     def validate_correction(self):
-        self.proposition_text = self.proposition_correction
+        self.write({
+            'proposition_text': self.proposition_correction,
+            'subject': self.subject_correction
+        })
         body = 'The text for {} was approved.'.format(self.display_name)
         subject = 'Corrections approved'
         if not self.is_master_version:
@@ -331,8 +334,11 @@ class CommunicationRevision(models.Model):
     def approve(self, subject=None, body=None):
         self.write({
             'proposition_correction': False,
+            'subject_correction': False,
             'state': 'approved',
-            'compare_text': False
+            'compare_text': False,
+            'compare_subject': False,
+            'is_corrected': False
         })
         subject = self._context.get('subject', subject)
         body = self._context.get('body', body)
@@ -348,11 +354,13 @@ class CommunicationRevision(models.Model):
 
     @api.onchange('compare_lang')
     def onchange_compare_lang(self):
-        self.compare_text = self.search([
+        master = self.search([
             ('config_id', '=', self.config_id.id),
             ('lang', '=', self.compare_lang),
             ('state', '=', 'approved')
-        ]).proposition_text
+        ])
+        self.compare_text = master.proposition_text
+        self.compare_subject = master.subject
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -368,7 +376,8 @@ class CommunicationRevision(models.Model):
                 'view_mode': 'form',
                 'res_model': 'partner.communication.validate.proposition',
                 'context': self.with_context(
-                    active_id=self.id, form_view_ref=False).env.context,
+                    active_id=self.id, form_view_ref=False,
+                    config_id=False).env.context,
                 'target': 'new',
             }
         return True
@@ -428,8 +437,12 @@ class CommunicationRevision(models.Model):
             found_keywords |= keywords
             for_keyword_index += len(keywords)
             nested_position += 1
-        # Remove invalid keywords that are no more in the template
-        (previous_keywords - found_keywords).unlink()
+        if self._context.get('unstore_keywords'):
+            # Remove found keywords
+            (found_keywords - previous_keywords).unlink()
+        else:
+            # Remove invalid keywords that are no more in the template
+            (previous_keywords - found_keywords).unlink()
         return simplified_text
 
     def _replace_inline_code(self, text):

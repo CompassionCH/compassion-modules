@@ -84,7 +84,7 @@ class RevisionPreview(models.TransientModel):
 
     @api.multi
     def close(self):
-        self.preview_job_id.unlink()
+        self.preview_job_id.sudo().unlink()
         return True
 
     def _reload(self):
