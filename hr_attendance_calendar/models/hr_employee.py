@@ -29,6 +29,8 @@ class HrEmployee(models.Model):
                                           "Attendance day")
     annual_balance = fields.Float()
 
+    previous_annual_balance = fields.Float()
+
     extra_hours_formatted = fields.Char(string="Balance",
                                         compute='_compute_formatted_hours')
 
@@ -48,20 +50,23 @@ class HrEmployee(models.Model):
 
     @api.multi
     @api.depends('attendance_days_ids.extra_hours', 'annual_balance')
-    def _compute_extra_hours(self):
+    def _compute_extra_hours(self, start_date=None, end_date=None,
+                             from_start_of_employment=True):
+        if not start_date:
+            start_date = datetime.date.today().replace(month=1, day=1)
+        start_date_str = fields.Date.to_string(start_date)
+        if not end_date:
+            end_date = datetime.date.today() - datetime.timedelta(days=1)
+        end_date_str = fields.Date.to_string(end_date)
+
         for employee in self:
-
-            start_year = datetime.date.today().replace(month=1, day=1)
-            start_year = fields.Date.to_string(start_year)
-            yesterday = datetime.date.today() - datetime.timedelta(days=1)
-            yesterday = fields.Date.to_string(yesterday)
-
             attendance_day_ids = employee.attendance_days_ids.filtered(
-                lambda r: start_year <= r.date <= yesterday)
+                lambda r: start_date_str <= r.date <= end_date_str)
 
             extra_hours_sum = sum(attendance_day_ids.mapped('extra_hours'))
-
-            employee.extra_hours = extra_hours_sum + employee.annual_balance
+            if from_start_of_employment:
+                extra_hours_sum += employee.annual_balance
+            employee.extra_hours = extra_hours_sum
 
     @api.multi
     @api.depends('attendance_days_ids.extra_hours_lost')
@@ -76,13 +81,48 @@ class HrEmployee(models.Model):
         employees = self.search([])
         today = fields.Date.today()
         for employee in employees:
+            # check if an entry already exists. If yes, it will not be
+            # recreated
             att_days = att_day.search(
-                [('name', '=', today), ('employee_id', '=', employee.id)])
-            if not att_days:
+                [('date', '=', today), ('employee_id', '=', employee.id)])
+
+            # check that the employee is currently employed.
+            contracts_valid_today = self.env['hr.contract'].search([
+                ('employee_id', '=', employee.id),
+                ('date_start', '<=', today),
+                '|', ('date_end', '=', False), ('date_end', '>=', today)
+            ])
+
+            if not att_days and contracts_valid_today:
                 att_day.create({
                     'date': today,
                     'employee_id': employee.id
                 })
+
+    @api.model
+    def _cron_compute_annual_balance(self, update=False):
+        employees = self.search([])
+        if update:
+            today = datetime.date.today()
+            start_previous_year = today.replace(year=today.year-1, month=1,
+                                                day=1)
+            end_previous_year = today.replace(year=today.year-1, month=12,
+                                              day=31)
+            # updating the annual balance in case it changed since the
+            # automatic computation of 01.01.XX 00:00:01.
+            # This will put an unexpected value in compute_extra_hours. It
+            # will be recomputed when employee.annual_balance will be set
+            employees._compute_extra_hours(start_date=start_previous_year,
+                                           end_date=end_previous_year,
+                                           from_start_of_employment=False)
+            for employee in employees:
+                employee.annual_balance = employee.previous_annual_balance + \
+                    employee.extra_hours
+        else:
+            for employee in employees:
+                # This execution is done on Januray 1st, 00:00:01
+                employee.previous_annual_balance = employee.annual_balance
+                employee.annual_balance = employee.extra_hours
 
     @api.multi
     @api.depends('today_hour')

@@ -46,6 +46,7 @@
                                            widget="float_time"
                                            type="char" string="Logged
                                            duration"/>
+
                                 </tree>
                             </field>
                             <field name="break_total" widget="float_time"/>
@@ -82,9 +83,12 @@
                 <field name="date"/>
                 <field name="working_day"/>
                 <field name="employee_id"/>
-                <field name="paid_hours" widget="float_time"/>
-                <field name="extra_hours" widget="float_time"/>
-                <field name="extra_hours_lost" widget="float_time"/>
+                <field name="due_hours" widget="float_time" type="char"/>
+                <field name="paid_hours" widget="float_time" type="char"/>
+                <field name="extra_hours_lost" widget="float_time"
+                       type="char"/>
+                <field name="extra_hours" widget="float_time" type="char"/>
+
             </tree>
         </field>
     </record>
