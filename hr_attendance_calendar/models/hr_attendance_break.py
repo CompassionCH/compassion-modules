@@ -22,10 +22,11 @@ class HrAttendanceBreak(models.Model):
     attendance_day_id = fields.Many2one('hr.attendance.day', "Attendance day",
                                         readonly=True,
                                         ondelete="cascade")
-    original_duration = fields.Float('Duration', store=True, readonly=True,
+    original_duration = fields.Float(store=True, readonly=True,
                                      compute='_compute_original_duration')
-    modified_duration = fields.Float(readonly=True)
-    logged_duration = fields.Float('Logged duration', readonly=True,
+    modified_duration = fields.Float('Duration adjusted by the rules',
+                                     readonly=True)
+    logged_duration = fields.Float('Break duration', readonly=True,
                                    store=True,
                                    compute='_compute_logged_duration')
 
@@ -85,7 +86,3 @@ class HrAttendanceBreak(models.Model):
         for rd in self:
             rd.logged_duration = rd.modified_duration if \
                 rd.modified_duration else rd.original_duration
-
-    ##########################################################################
-    #                               ORM METHODS                              #
-    ##########################################################################

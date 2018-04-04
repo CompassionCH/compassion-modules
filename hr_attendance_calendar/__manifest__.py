@@ -39,7 +39,7 @@
         'hr_holidays',
         'hr_public_holidays'
     ],
-    'version': '10.0.1.0.0',
+    'version': '10.0.1.0.1',
     'auto_install': False,
     'website': 'http://open-net.ch',
     'license': 'AGPL-3',
@@ -54,6 +54,7 @@
         'views/hr_employee.xml',
         'views/hr_holidays_status_views.xml',
         'views/attendance.xml',
+        'views/hr_attendance_break.xml',
         'data/attendance_computation_cron.xml',
         'data/annual_balance_cron.xml',
         'views/extra_hours_evolution_graph.xml'
