@@ -19,6 +19,21 @@ class CommunicationConfig(models.Model):
     revision_ids = fields.One2many(
         'partner.communication.revision', 'config_id', 'Revisions'
     )
+    state = fields.Selection(
+        [('active', 'Active'),
+         ('pending', 'In Revision')],
+        compute='_compute_state', store=True
+    )
+
+    @api.depends('revision_ids', 'revision_ids.state')
+    @api.multi
+    def _compute_state(self):
+        for config in self:
+            rev_states = list(set(config.revision_ids.mapped('state')))
+            if len(rev_states) == 1 and rev_states[0] == 'active':
+                config.state = 'active'
+            else:
+                config.state = 'pending'
 
     @api.multi
     def new_proposition(self):

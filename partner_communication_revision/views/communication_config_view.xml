@@ -33,4 +33,29 @@
             </xpath>
         </field>
     </record>
+
+    <record model="ir.ui.view" id="communication_config_tree">
+        <field name="name">communication.config.revision.tree</field>
+        <field name="model">partner.communication.config</field>
+        <field name="inherit_id" ref="partner_communication.communication_config_tree"/>
+        <field name="arch" type="xml">
+            <field name="report_id" position="after">
+                <field name="state"/>
+            </field>
+            <xpath expr="//tree" position="attributes">
+                <attribute name="colors">blue: state=='pending'</attribute>
+            </xpath>
+        </field>
+    </record>
+
+     <record model="ir.ui.view" id="communication_config_search">
+        <field name="name">communication.config.search</field>
+        <field name="model">partner.communication.config</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Name"/>
+                <filter name="need_action" string="Need Action" domain="['|', '&amp;', ('revision_ids.state', '=', 'pending'), ('revision_ids.user_id', '=', uid), '&amp;', ('revision_ids.state', '=', 'submit'), ('revision_ids.correction_user_id', '=', uid)]"/>
+            </search>
+        </field>
+     </record>
 </odoo>
