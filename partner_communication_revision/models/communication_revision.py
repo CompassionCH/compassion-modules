@@ -99,7 +99,7 @@ class CommunicationRevision(models.Model):
     )
     is_proposer = fields.Boolean(compute='_compute_allowed')
     is_corrector = fields.Boolean(compute='_compute_allowed')
-    is_corrected = fields.Boolean(compute='_compute_allowed')
+    is_corrected = fields.Boolean()
 
     _sql_constraints = [
         ('unique_revision', 'unique(config_id,lang)',
@@ -150,8 +150,6 @@ class CommunicationRevision(models.Model):
         for rev in self:
             rev.is_proposer = self.env.user == rev.user_id
             rev.is_corrector = self.env.user == rev.correction_user_id
-            rev.is_corrected = rev.proposition_correction and \
-                rev.proposition_correction != rev.proposition_text
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -197,6 +195,7 @@ class CommunicationRevision(models.Model):
         self.ensure_one()
         new_revision_number = self.revision_number + 0.01
         self.revision_number = new_revision_number
+        self.revision_date = fields.Date.today()
         return self._open_revision()
 
     @api.multi
@@ -289,7 +288,8 @@ class CommunicationRevision(models.Model):
         self.write({
             'proposition_correction': self.proposition_correction or
             self.proposition_text,
-            'state': 'submit'
+            'state': 'submit',
+            'is_corrected': False
         })
         return True
 
@@ -303,7 +303,7 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def submit_correction(self):
-        self.state = 'pending'
+        self.write({'state': 'pending', 'is_corrected': True})
         body = 'Corrections for {} were proposed.'.format(self.display_name)
         self.notify_proposition('Correction submitted', body)
         return True
@@ -332,7 +332,8 @@ class CommunicationRevision(models.Model):
         self.write({
             'proposition_correction': False,
             'state': 'approved',
-            'compare_text': False
+            'compare_text': False,
+            'is_corrected': False
         })
         subject = self._context.get('subject', subject)
         body = self._context.get('body', body)
@@ -368,7 +369,8 @@ class CommunicationRevision(models.Model):
                 'view_mode': 'form',
                 'res_model': 'partner.communication.validate.proposition',
                 'context': self.with_context(
-                    active_id=self.id, form_view_ref=False).env.context,
+                    active_id=self.id, form_view_ref=False,
+                    config_id=False).env.context,
                 'target': 'new',
             }
         return True
