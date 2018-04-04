@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data noupdate="1">
-        <record id="ir_cron_compute_annual_extra_hours_balance4"
+        <record id="ir_cron_compute_annual_extra_hours_balance"
                 model="ir.cron">
-            <field name="name">Compute annual extra hours balance new</field>
+            <field name="name">Compute annual extra hours balance</field>
             <field name="interval_type">months</field>
             <field name="interval_number">12</field>
             <field name="nextcall" >2019-01-01 00:00:01</field>
@@ -11,11 +11,9 @@
             <field name="model">hr.employee</field>
             <field name="function">_cron_compute_annual_balance</field>
         </record>
-    </data>
-    <data noupdate="1">
-        <record id="ir_cron_update_annual_extra_hours_balance4"
+        <record id="ir_cron_update_annual_extra_hours_balance"
                 model="ir.cron">
-            <field name="name">Update annual extra hours balance new</field>
+            <field name="name">Update annual extra hours balance</field>
             <field name="active" eval="True"/>
             <field name="interval_type">months</field>
             <field name="interval_number">12</field>

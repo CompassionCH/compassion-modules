@@ -1,8 +1,8 @@
 .. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
     :alt: License: AGPL-3
 
-Compassion CRM - Human Resources Attendance Calendar
-====================================================
+Human Resources Attendance Calendar
+===================================
 
 This module helps Compassion CH to track employee worked hours.
 
