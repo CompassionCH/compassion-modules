@@ -93,13 +93,16 @@
                     </group>
                     <group>
                         <group>
+                            <field name="subject" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
                             <field name="proposition_text" widget="text_ckeditor4" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
                         </group>
                         <group>
+                            <field name="subject_correction" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit"/>
                             <field name="proposition_correction" widget="text_ckeditor4" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit"/>
                         </group>
                         <group string="Compare with other translations" attrs="{'invisible': ['|', ('state', 'not in', ('pending','submit')),('is_master_version', '=', True)]}">
                             <field name="compare_lang" attrs="{'invisible': [('is_master_version', '=', True)]}"/>
+                            <field name="compare_subject" attrs="{'invisible': [('is_master_version', '=', True)]}" readonly="1"/>
                             <field name="compare_text" attrs="{'invisible': [('is_master_version', '=', True)]}" readonly="1"/>
                         </group>
                     </group>
