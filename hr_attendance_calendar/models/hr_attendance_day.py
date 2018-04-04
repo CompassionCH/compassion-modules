@@ -148,7 +148,7 @@ class HrAttendanceDay(models.Model):
     @api.depends('attendance_ids.worked_hours')
     def _compute_paid_hours(self):
         for att_day in self.filtered('attendance_ids'):
-            logged_hours = sum(att_day.attendance_ids.mapped('paid_hours'))
+            logged_hours = sum(att_day.attendance_ids.mapped('worked_hours'))
 
             # Take only the breaks edited by the system
             breaks = att_day.break_ids.filtered(lambda r: r.system_modified)
