@@ -111,8 +111,7 @@ class ResPartner(models.Model):
                     ('partner_id', '=', partner.id),
                     ('correspondant_id', '=', partner.id),
                     ('is_active', '=', True),
-                    ('child_id', '!=', False)
-            ])
+                    ('child_id', '!=', False)])
             partner.has_sponsorships = partner.number_sponsorships > 0
 
     ##########################################################################

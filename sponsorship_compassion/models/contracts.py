@@ -312,18 +312,18 @@ class SponsorshipContract(models.Model):
             # Add a note in the contract and in the partner.
             project_code = contract.project_id.icp_id
             contract.message_post(
-                "The project {0} was suspended and funds are retained."
-                "<br/>Invoices due in the suspension period "
-                "are automatically cancelled.".format(
-                    project_code),
-                "Project Suspended", 'comment')
+                _("The project {0} was suspended and funds are retained."
+                    "<br/>Invoices due in the suspension period "
+                    "are automatically cancelled.".format(
+                        project_code)),
+                _("Project Suspended"), 'comment')
             contract.partner_id.message_post(
-                "The project {0} was suspended and funds are retained "
-                "for child {1}. <b>"
-                "<br/>Invoices due in the suspension period "
-                "are automatically cancelled.".format(
-                    project_code, contract.child_code),
-                "Project Suspended", 'comment')
+                _("The project {0} was suspended and funds are retained "
+                    "for child {1}. <b>"
+                    "<br/>Invoices due in the suspension period "
+                    "are automatically cancelled.".format(
+                        project_code, contract.child_code)),
+                _("Project Suspended"), 'comment')
 
         # Change invoices if config tells to do so.
         if suspend_config:
@@ -430,10 +430,10 @@ class SponsorshipContract(models.Model):
         # Log a note in the contracts
         for contract in contracts:
             contract.message_post(
-                "The project was reactivated."
-                "<br/>Invoices due in the suspension period "
-                "are automatically reverted.",
-                "Project Reactivated", 'comment')
+                _("The project was reactivated."
+                    "<br/>Invoices due in the suspension period "
+                    "are automatically reverted."),
+                _("Project Reactivated"), 'comment')
 
     def commitment_sent(self, vals):
         """ Called when GMC received the commitment. """
@@ -656,7 +656,7 @@ class SponsorshipContract(models.Model):
                     if message.state == 'failure':
                         failure = message.failure_reason
                         sponsorship.message_post(
-                            failure, "Language update failed.")
+                            failure, _("Language update failed."))
             except:
                 logger.error(
                     "Error when updating sponsorship language. "
