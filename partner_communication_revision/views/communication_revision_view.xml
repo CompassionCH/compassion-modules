@@ -24,7 +24,7 @@
                         <button class="oe_stat_button" name="open_preview" icon="fa-search-plus" string="Preview" type="object"/>
                     </div>
                     <field name="simplified_text" widget="html"/>
-                    <button name="refresh_text" type="object" string="Refresh text" class="oe_highlight"/>
+                    <button name="refresh_text" type="object" string="Refresh text" class="oe_highlight sht_refresh_button"/>
                     <group>
                         <field name="if_keyword_ids" context="{'tree_view_ref': 'partner_communication_revision.revision_keyword_tree_if'}"/>
                         <field name="edit_keyword_ids" context="{'tree_view_ref': 'partner_communication_revision.revision_keyword_tree'}"/>
@@ -46,7 +46,7 @@
                         <button class="oe_stat_button" name="open_preview" icon="fa-search-plus" string="Preview" type="object"/>
                     </div>
                     <field name="simplified_text" widget="html" readonly="1"/>
-                    <button name="refresh_text" type="object" string="Refresh text" class="oe_highlight"/>
+                    <button name="refresh_text" type="object" string="Refresh text" class="oe_highlight sht_refresh_button"/>
                     <group>
                         <field name="if_keyword_ids" context="{'tree_view_ref': 'partner_communication_revision.revision_keyword_tree_if'}"/>
                     </group>
@@ -75,6 +75,14 @@
                 <sheet>
                     <field name="is_master_version" invisible="1"/>
                     <field name="config_id" invisible="1"/>
+                    <div>
+                        <h5>Revision Instructions</h5>
+                        <ul>
+                            <li style="color: darkgreen">green : keywords or comments that are not part of the text</li>
+                            <li><span style="color: red">red : any changes you make</span>, except if you change everything, you can use black</li>
+                            <li><span style="color: blue">blue</span>/<span style="color: violet">violet</span> : text for a boy / text for a girl</li>
+                        </ul>
+                    </div>
                     <group>
                         <group>
                             <field name="user_id" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
@@ -85,13 +93,16 @@
                     </group>
                     <group>
                         <group>
-                            <field name="proposition_text" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
+                            <field name="subject" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
+                            <field name="proposition_text" widget="text_ckeditor4" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
                         </group>
                         <group>
-                            <field name="proposition_correction" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit"/>
+                            <field name="subject_correction" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit"/>
+                            <field name="proposition_correction" widget="text_ckeditor4" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit"/>
                         </group>
                         <group string="Compare with other translations" attrs="{'invisible': ['|', ('state', 'not in', ('pending','submit')),('is_master_version', '=', True)]}">
                             <field name="compare_lang" attrs="{'invisible': [('is_master_version', '=', True)]}"/>
+                            <field name="compare_subject" attrs="{'invisible': [('is_master_version', '=', True)]}" readonly="1"/>
                             <field name="compare_text" attrs="{'invisible': [('is_master_version', '=', True)]}" readonly="1"/>
                         </group>
                     </group>

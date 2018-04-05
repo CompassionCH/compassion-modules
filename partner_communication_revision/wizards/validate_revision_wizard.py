@@ -52,7 +52,8 @@ class ValidateRevisionWizard(models.TransientModel):
         revision_lang.write({
             'user_id': self.translator_user_id.id,
             'compare_lang': revision.lang,
-            'compare_text': revision.proposition_text
+            'compare_text': revision.proposition_text,
+            'compare_subject': revision.subject,
         })
         if len(other_lang) > self.set_current_translation:
             self.write({

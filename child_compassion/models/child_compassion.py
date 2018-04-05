@@ -65,6 +65,9 @@ class CompassionChild(models.Model):
     is_available = fields.Boolean(compute='_compute_available')
     sponsor_id = fields.Many2one(
         'res.partner', 'Sponsor', track_visibility='onchange', readonly=True)
+    partner_id = fields.Many2one(
+        'res.partner', related='sponsor_id'
+    )
     sponsor_ref = fields.Char(
         'Sponsor reference', related='sponsor_id.ref')
     has_been_sponsored = fields.Boolean()
