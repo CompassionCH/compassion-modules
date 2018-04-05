@@ -26,7 +26,7 @@ class HrEmployee(models.Model):
     extra_hours_lost = fields.Float(compute='_compute_extra_hours_lost',
                                     store=True)
     attendance_days_ids = fields.One2many('hr.attendance.day', 'employee_id',
-                                          "Attendance day")
+                                          "Attendance days")
     annual_balance = fields.Float()
 
     previous_annual_balance = fields.Float()

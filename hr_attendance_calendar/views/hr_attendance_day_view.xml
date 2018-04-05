@@ -31,6 +31,7 @@
 
                         </group>
                         <group string="Hours">
+                            <field name="total_attendance" widget="float_time"/>
                             <field name="paid_hours" widget="float_time"/>
                             <field name="extra_hours" widget="float_time"/>
                             <field name="extra_hours_lost" widget="float_time"/>
@@ -72,23 +73,36 @@
         </field>
     </record>
 
-    <record model="ir.ui.view"
-            id="hr_attendance_day_tree">
+    <record model="ir.ui.view" id="hr_attendance_day_tree_from_employee">
         <field name="name">HR Attendance Day Tree View</field>
         <field name="model">hr.attendance.day</field>
-        <field name="arch"
-               type="xml">
+        <field name="priority">25</field>
+        <field name="arch" type="xml">
             <tree decoration-info="extra_hours &gt;= 0"
                   decoration-danger="extra_hours &lt; 0">
                 <field name="date"/>
                 <field name="working_day"/>
-                <field name="employee_id"/>
                 <field name="due_hours" widget="float_time" type="char"/>
+                <field name="total_attendance" widget="float_time" type="char"/>
                 <field name="paid_hours" widget="float_time" type="char"/>
                 <field name="extra_hours_lost" widget="float_time"
                        type="char"/>
                 <field name="extra_hours" widget="float_time" type="char"/>
 
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="hr_attendance_day_tree">
+        <field name="name">HR Attendance Day Tree View</field>
+        <field name="model">hr.attendance.day</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="extra_hours &gt;= 0" decoration-danger="extra_hours &lt; 0">
+                <field name="date"/>
+                <field name="working_day"/>
+                <field name="employee_id"/>
+                <field name="paid_hours" widget="float_time" type="char"/>
+                <field name="extra_hours" widget="float_time" type="char"/>
             </tree>
         </field>
     </record>
