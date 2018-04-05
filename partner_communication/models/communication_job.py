@@ -670,7 +670,7 @@ class CommunicationJob(models.Model):
 
             # add omr to pdf if needed
             if job.omr_enable_marks:
-                is_latest_document = not self.attachment_ids.filtered(
+                is_latest_document = not job.attachment_ids.filtered(
                     'attachment_id.enable_omr'
                 )
                 to_print = job.add_omr_marks(
