@@ -8,6 +8,11 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import StringIO
+import base64
+
+from pyPdf import PdfFileReader
+
 from odoo import models, api, fields
 
 
@@ -19,15 +24,23 @@ class RevisionPreview(models.TransientModel):
         'partner.communication.revision', readonly=True, required=True,
         ondelete='cascade'
     )
+    state = fields.Selection([
+        ('active_revision', 'active'),
+        ('working_revision', 'working')
+    ])
     name = fields.Char(related='revision_id.config_id.name', readonly=True)
     model = fields.Char(related='revision_id.model', readonly=True)
     model_desc = fields.Char(
         related='revision_id.config_id.model_id.name', readonly=True)
-    res_id = fields.Selection('_select_res_id')
+    res_id = fields.Selection(
+        '_select_res_id', default=lambda s: s._default_res_id()
+    )
     preview_job_id = fields.Many2one(
         'partner.communication.job', readonly=True)
-    preview_html = fields.Html(related='preview_job_id.body_html',
-                               readonly=True)
+    preview_html = fields.Html(related='preview_job_id.body_html')
+    pdf_data = fields.Binary(readonly=True)
+    pdf_name = fields.Char(default='letter_preview.pdf', readonly=True)
+    pdf_page_count = fields.Integer('Number of pages', readonly=True)
 
     @api.model
     def _select_res_id(self):
@@ -45,6 +58,11 @@ class RevisionPreview(models.TransientModel):
                                                   order='id desc')
         res = [(str(r[0]), r[1]) for r in records.name_get()]
         return res
+
+    @api.model
+    def _default_res_id(self):
+        recs = self._select_res_id()
+        return recs and recs[0][0]
 
     @api.multi
     def unlink(self):
@@ -65,7 +83,9 @@ class RevisionPreview(models.TransientModel):
             'object_ids': self.res_id,
             'partner_id': partner_id,
             'state': 'done',  # Prevents sending test jobs,
-            'send_mode': 'digital'  # Prevents pdf generation
+            'send_mode': 'digital',  # Prevents pdf generation
+            'body_html': self._context.get('working_text'),  # Custom text
+            'subject': self._context.get('working_subject')
         }
         if not self.preview_job_id:
             # Avoid creating attachments for the communication
@@ -77,9 +97,20 @@ class RevisionPreview(models.TransientModel):
                 lang=self.revision_id.lang).create(job_vals)
             if attachments_function:
                 config.write({'attachments_function': attachments_function})
-        else:
+        elif self.state == 'active_revision':
             self.preview_job_id.write(job_vals)
             self.preview_job_id.quick_refresh()
+
+        if config.report_id:
+            # Create a PDF preview
+            pdf_data = self.env['report'].with_context(
+                must_skip_send_to_printer=True
+            ).get_pdf(self.preview_job_id.ids, config.report_id.report_name)
+            pdf = PdfFileReader(StringIO.StringIO(pdf_data))
+            self.write({
+                'pdf_data': base64.b64encode(pdf_data),
+                'pdf_page_count': pdf.getNumPages()
+            })
         return self._reload()
 
     @api.multi
