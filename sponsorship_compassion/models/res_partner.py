@@ -39,9 +39,10 @@ class ResPartner(models.Model):
         string='Other contracts')
     unrec_items = fields.Integer(compute='_compute_count_items')
     receivable_items = fields.Integer(compute='_compute_count_items')
-    has_sponsorships = fields.Boolean()
+    has_sponsorships = fields.Boolean(compute='_compute_has_sponsorships',
+                                      store=True)
     number_sponsorships = fields.Integer(
-        compute='_compute_number_sponsorships')
+        compute='_compute_number_sponsorships', store=True)
     send_original = fields.Boolean(
         help='Indicates that we request the original letters for this sponsor'
     )
@@ -112,6 +113,11 @@ class ResPartner(models.Model):
                     ('correspondant_id', '=', partner.id),
                     ('is_active', '=', True),
                     ('child_id', '!=', False)])
+
+    @api.multi
+    @api.depends('number_sponsorships')
+    def _compute_has_sponsorships(self):
+        for partner in self:
             partner.has_sponsorships = partner.number_sponsorships > 0
 
     ##########################################################################

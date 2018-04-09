@@ -220,8 +220,12 @@ class SponsorshipContract(models.Model):
         if 'child_id' in vals:
             self._on_change_child_id(vals)
 
+        if 'partner_id' in vals:
+            old_partner = self.mapped('partner_id')
+
         updated_correspondents = self.env[self._name]
         if 'correspondant_id' in vals:
+            old_correspondent = self.mapped('correspondant_id')
             updated_correspondents = self._on_change_correspondant(
                 vals['correspondant_id'])
             self.mapped('child_id').write({
@@ -242,6 +246,14 @@ class SponsorshipContract(models.Model):
                 )
         if 'reading_language' in vals:
             (self - updated_correspondents)._on_language_changed()
+
+        if 'partner_id' in vals:
+            self.mapped('partner_id')._compute_number_sponsorships()
+            old_partner._compute_number_sponsorships()
+
+        if 'correspondant_id' in vals:
+            self.mapped('correspondant_id')._compute_number_sponsorships()
+            old_correspondent._compute_number_sponsorships()
 
         return True
 
@@ -589,7 +601,10 @@ class SponsorshipContract(models.Model):
             gift_contract_lines.mapped('contract_id').signal_workflow(
                 'contract_active')
 
-        # Update sponsorships on partner
+        self.mapped('partner_id')._compute_number_sponsorships()
+        self.filtered(lambda c: not c.fully_managed).mapped(
+            'correspondant_id')._compute_number_sponsorships()
+
         return True
 
     @api.multi
@@ -800,6 +815,9 @@ class SponsorshipContract(models.Model):
                     ('state', 'in', ['new', 'failure']),
                     ('object_id', '=', sponsorship.id),
                 ]).unlink()
+        self.mapped('partner_id')._compute_number_sponsorships()
+        self.filtered(lambda c: not c.fully_managed).mapped(
+            'correspondant_id')._compute_number_sponsorships()
 
     @api.multi
     def _on_change_child_id(self, vals):
