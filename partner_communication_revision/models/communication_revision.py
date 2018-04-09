@@ -262,7 +262,25 @@ class CommunicationRevision(models.Model):
     @api.multi
     def open_preview(self):
         preview_model = 'partner.communication.revision.preview'
-        preview = self.env[preview_model].create({'revision_id': self.id})
+        working_mode = self._context.get('working_revision')
+        context = {
+            'revision_id': self.id,
+            'lang': self.lang,
+        }
+        if working_mode:
+            # The preview is from the revision edition mode, we fetch the
+            # working texts.
+            context['working_text'] = self.proposition_text
+            context['working_subject'] = self.subject
+
+            if self.state == 'submit':
+                context['working_text'] = self.proposition_correction
+                context['working_subject'] = self.subject_correction
+        preview = self.env[preview_model].with_context(context).create({
+            'revision_id': self.id,
+            'state': 'working_revision' if working_mode else 'active_revision'
+        })
+        preview.preview()
         return {
             'name': 'Preview',
             'type': 'ir.actions.act_window',
@@ -270,10 +288,7 @@ class CommunicationRevision(models.Model):
             'view_mode': 'form',
             'res_model': preview_model,
             'res_id': preview.id,
-            'context': self.with_context({
-                'revision_id': self.id,
-                'lang': self.lang
-            }).env.context,
+            'context': self.with_context(context).env.context,
             'target': 'new',
         }
 
