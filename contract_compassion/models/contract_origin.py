@@ -8,9 +8,12 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
 
 from odoo import models, fields, api, _
 from psycopg2 import IntegrityError
+
+logger = logging.getLogger(__name__)
 
 
 class ContractOrigin(models.Model):
@@ -103,18 +106,14 @@ class ContractOrigin(models.Model):
         """Try to find existing origin instead of raising an error."""
         try:
             res = super(ContractOrigin, self).create(vals)
-        except IntegrityError:
+        except IntegrityError as error:
             # Find the origin
+            logger.error(error.message)
+            self.env.cr.rollback()
             self.env.invalidate_all()
-            origins = self.search([
-                ('type', '=', vals.get('type')),
-                ('partner_id', '=', vals.get('partner_id')),
-                ('analytic_id', '=', vals.get('analytic_id')),
-                ('country_id', '=', vals.get('country_id')),
-                ('other_name', '=', vals.get('other_name')),
-            ])
-            if origins:
-                res = origins[0]
+            origin = self._find_same_origin(vals)
+            if origin:
+                res = origin
             else:
                 raise
 
@@ -130,3 +129,12 @@ class ContractOrigin(models.Model):
             res.analytic_id = analytic_account
 
         return res
+
+    def _find_same_origin(self, vals):
+        return self.search([
+            ('type', '=', vals.get('type')),
+            ('partner_id', '=', vals.get('partner_id')),
+            ('analytic_id', '=', vals.get('analytic_id')),
+            ('country_id', '=', vals.get('country_id')),
+            ('other_name', '=', vals.get('other_name')),
+        ], limit=1)

@@ -58,8 +58,9 @@ class EventCompassion(models.Model):
     )
     description = fields.Text()
     analytic_id = fields.Many2one(
-        'account.analytic.account', 'Analytic Account')
-    origin_id = fields.Many2one('recurring.contract.origin', 'Origin')
+        'account.analytic.account', 'Analytic Account', copy=False)
+    origin_id = fields.Many2one(
+        'recurring.contract.origin', 'Origin', copy=False)
     contract_ids = fields.One2many(
         'recurring.contract', related='origin_id.contract_ids', readonly=True)
     expense_line_ids = fields.One2many(
@@ -261,6 +262,15 @@ class EventCompassion(models.Model):
                     event.calendar_event_id.write(self._get_calendar_vals())
 
         return True
+
+    @api.multi
+    def copy(self, default=None):
+        this_year = str(datetime.now().year)
+        if self.year == this_year:
+            if default is None:
+                default = {}
+            default['name'] = self.name + ' (copy)'
+        return super(EventCompassion, self).copy(default)
 
     @api.multi
     def unlink(self):

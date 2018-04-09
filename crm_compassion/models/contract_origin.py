@@ -8,7 +8,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
 from odoo import api, models, fields, _
 
 
@@ -42,6 +41,16 @@ class ContractOrigin(models.Model):
                 )
                 invoice_lines.write({'user_id': vals['partner_id']})
         return super(ContractOrigin, self).write(vals)
+
+    def _find_same_origin(self, vals):
+        return self.search([
+            ('type', '=', vals.get('type')),
+            ('partner_id', '=', vals.get('partner_id')),
+            '|', ('analytic_id', '=', vals.get('analytic_id')),
+            ('event_id', '=', vals.get('event_id')),
+            ('country_id', '=', vals.get('country_id')),
+            ('other_name', '=', vals.get('other_name')),
+        ], limit=1)
 
 
 class Contracts(models.Model):
