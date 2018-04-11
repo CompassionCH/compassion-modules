@@ -310,7 +310,7 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def validate_proposition(self):
-        subject = 'Revision approved'
+        subject = '[{}] Revision approved'.format(self.display_name)
         body = 'The text for {} was approved.'.format(self.display_name)
         if not self.is_master_version:
             self.approve(subject, body)
@@ -320,7 +320,8 @@ class CommunicationRevision(models.Model):
     def submit_correction(self):
         self.write({'state': 'pending', 'is_corrected': True})
         body = 'Corrections for {} were proposed.'.format(self.display_name)
-        self.notify_proposition('Correction submitted', body)
+        subject = '[{}] Correction submitted'.format(self.display_name)
+        self.notify_proposition(subject, body)
         return True
 
     @api.multi
@@ -330,7 +331,7 @@ class CommunicationRevision(models.Model):
             'subject': self.subject_correction
         })
         body = 'The text for {} was approved.'.format(self.display_name)
-        subject = 'Corrections approved'
+        subject = '[{}] Corrections approved'.format(self.display_name)
         if not self.is_master_version:
             self.approve(subject, body)
 
@@ -338,7 +339,7 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def discard_correction(self):
-        subject = 'Revision approved'
+        subject = '[{}] Revision approved'.format(self.display_name)
         body = 'The original text for {} was kept. Proposed ' \
                'corrections were discarded.'.format(self.display_name)
         if not self.is_master_version:

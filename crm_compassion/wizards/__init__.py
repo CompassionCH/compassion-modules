@@ -11,3 +11,4 @@
 
 from . import portal_wizard
 from . import demand_settings
+from . import child_hold_wizard

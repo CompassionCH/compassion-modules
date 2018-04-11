@@ -76,6 +76,7 @@ class Contracts(models.Model):
             self.channel = 'internet'
         if hold.ambassador:
             self.user_id = hold.ambassador
+        self.campaign_id = hold.campaign_id
         if hold.comments:
             return {
                 'warning': {'title': _('The child has some comments'),
