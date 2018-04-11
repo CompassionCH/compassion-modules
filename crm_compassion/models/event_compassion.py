@@ -100,6 +100,7 @@ class EventCompassion(models.Model):
     calendar_event_id = fields.Many2one('calendar.event')
     hold_start_date = fields.Date(required=True)
     hold_end_date = fields.Date()
+    campaign_id = fields.Many2one('utm.campaign', 'Campaign')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -535,7 +536,8 @@ class EventCompassion(models.Model):
                 'default_no_money_yield_rate': no_money_yield,
                 'default_yield_rate': yield_rate,
                 'default_expiration_date':
-                    fields.Datetime.to_string(expiration_date)
+                    fields.Datetime.to_string(expiration_date),
+                'default_campaign_id': self.campaign_id.id
             }).env.context
         }
 
