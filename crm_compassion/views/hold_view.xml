@@ -6,6 +6,7 @@
         <field name="inherit_id" ref="child_compassion.view_compassion_holds_tree"/>
         <field name="arch" type="xml">
             <field name="ambassador" position="before">
+                <field name="campaign_id"/>
                 <field name="event_id"/>
             </field>
         </field>
@@ -17,6 +18,7 @@
         <field name="inherit_id" ref="child_compassion.view_compassion_holds_form"/>
         <field name="arch" type="xml">
             <field name="ambassador" position="before">
+                <field name="campaign_id"/>
                 <field name="origin_id"/>
                 <field name="event_id"/>
             </field>
@@ -29,6 +31,7 @@
         <field name="inherit_id" ref="child_compassion.view_hold_filter"/>
         <field name="arch" type="xml">
             <field name="ambassador" position="before">
+                <field name="campaign_id"/>
                 <field name="event_id"/>
             </field>
             <filter name="ambassador" position="before">
@@ -68,7 +71,19 @@
         <field name="inherit_id" ref="child_compassion.view_compassion_reservation_form"/>
         <field name="arch" type="xml">
             <field name="ambassador" position="before">
+                <field name="campaign_id"/>
                 <field name="event_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_hold_wizard_campaign_form" model="ir.ui.view">
+        <field name="name">child.hold.wizard.campaign.form</field>
+        <field name="model">child.hold.wizard</field>
+        <field name="inherit_id" ref="child_compassion.view_compassion_global_child_attributes_form"/>
+        <field name="arch" type="xml">
+            <field name="channel" position="before">
+                <field name="campaign_id"/>
             </field>
         </field>
     </record>
