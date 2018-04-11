@@ -220,8 +220,12 @@ class SponsorshipContract(models.Model):
         if 'child_id' in vals:
             self._on_change_child_id(vals)
 
+        if 'partner_id' in vals:
+            old_partner = self.mapped('partner_id')
+
         updated_correspondents = self.env[self._name]
         if 'correspondant_id' in vals:
+            old_correspondent = self.mapped('correspondant_id')
             updated_correspondents = self._on_change_correspondant(
                 vals['correspondant_id'])
             self.mapped('child_id').write({
@@ -242,6 +246,14 @@ class SponsorshipContract(models.Model):
                 )
         if 'reading_language' in vals:
             (self - updated_correspondents)._on_language_changed()
+
+        if 'partner_id' in vals:
+            self.mapped('partner_id')._compute_number_sponsorships()
+            old_partner._compute_number_sponsorships()
+
+        if 'correspondant_id' in vals:
+            self.mapped('correspondant_id')._compute_number_sponsorships()
+            old_correspondent._compute_number_sponsorships()
 
         return True
 
@@ -312,18 +324,18 @@ class SponsorshipContract(models.Model):
             # Add a note in the contract and in the partner.
             project_code = contract.project_id.icp_id
             contract.message_post(
-                "The project {0} was suspended and funds are retained."
-                "<br/>Invoices due in the suspension period "
-                "are automatically cancelled.".format(
-                    project_code),
-                "Project Suspended", 'comment')
+                _("The project {0} was suspended and funds are retained."
+                    "<br/>Invoices due in the suspension period "
+                    "are automatically cancelled.".format(
+                        project_code)),
+                _("Project Suspended"), 'comment')
             contract.partner_id.message_post(
-                "The project {0} was suspended and funds are retained "
-                "for child {1}. <b>"
-                "<br/>Invoices due in the suspension period "
-                "are automatically cancelled.".format(
-                    project_code, contract.child_code),
-                "Project Suspended", 'comment')
+                _("The project {0} was suspended and funds are retained "
+                    "for child {1}. <b>"
+                    "<br/>Invoices due in the suspension period "
+                    "are automatically cancelled.".format(
+                        project_code, contract.child_code)),
+                _("Project Suspended"), 'comment')
 
         # Change invoices if config tells to do so.
         if suspend_config:
@@ -430,10 +442,10 @@ class SponsorshipContract(models.Model):
         # Log a note in the contracts
         for contract in contracts:
             contract.message_post(
-                "The project was reactivated."
-                "<br/>Invoices due in the suspension period "
-                "are automatically reverted.",
-                "Project Reactivated", 'comment')
+                _("The project was reactivated."
+                    "<br/>Invoices due in the suspension period "
+                    "are automatically reverted."),
+                _("Project Reactivated"), 'comment')
 
     def commitment_sent(self, vals):
         """ Called when GMC received the commitment. """
@@ -589,11 +601,10 @@ class SponsorshipContract(models.Model):
             gift_contract_lines.mapped('contract_id').signal_workflow(
                 'contract_active')
 
-        # Update sponsorships on partner
-        partners = self.mapped('partner_id') | self.mapped('correspondant_id')
-        for partner in partners:
-            partner.number_sponsorships += 1
-            partner.has_sponsorships = partner.number_sponsorships
+        self.mapped('partner_id')._compute_number_sponsorships()
+        self.filtered(lambda c: not c.fully_managed).mapped(
+            'correspondant_id')._compute_number_sponsorships()
+
         return True
 
     @api.multi
@@ -660,7 +671,7 @@ class SponsorshipContract(models.Model):
                     if message.state == 'failure':
                         failure = message.failure_reason
                         sponsorship.message_post(
-                            failure, "Language update failed.")
+                            failure, _("Language update failed."))
             except:
                 logger.error(
                     "Error when updating sponsorship language. "
@@ -804,12 +815,9 @@ class SponsorshipContract(models.Model):
                     ('state', 'in', ['new', 'failure']),
                     ('object_id', '=', sponsorship.id),
                 ]).unlink()
-
-        # Update sponsorships on partner
-        partners = self.mapped('partner_id') | self.mapped('correspondant_id')
-        for partner in partners:
-            partner.number_sponsorships -= 1
-            partner.has_sponsorships = partner.number_sponsorships
+        self.mapped('partner_id')._compute_number_sponsorships()
+        self.filtered(lambda c: not c.fully_managed).mapped(
+            'correspondant_id')._compute_number_sponsorships()
 
     @api.multi
     def _on_change_child_id(self, vals):
