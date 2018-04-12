@@ -83,7 +83,7 @@ class HrAttendanceDay(models.Model):
                                 readonly=True)
     break_total = fields.Float('Total break',
                                compute='_compute_break_total',
-                               store=True, )
+                               store=True)
     rule_id = fields.Many2one('hr.attendance.rules', 'Rules',
                               compute='_compute_rule_id')
 
@@ -125,6 +125,17 @@ class HrAttendanceDay(models.Model):
         """First search the due hours based on the contract and after remove
         some hours if they are vacation"""
         for att_day in self:
+
+            # Forced due hours (when an user changes work days)
+            res = self.env['hr.forced.due.hours'].search([
+                ('employee_id', '=', att_day.employee_id.id),
+                ('date', '=', att_day.date),
+            ])
+            # res.forced_due_hours returns False if exists and has value 0.0
+            # that's why we write len(res) == 1
+            if len(res) == 1:
+                att_day.due_hours = res.forced_due_hours
+                continue
 
             # Public holidays
             if att_day.public_holiday_id:

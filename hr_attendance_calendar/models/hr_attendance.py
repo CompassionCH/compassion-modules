@@ -23,6 +23,8 @@ class HrAttendance(models.Model):
                                         string='Attendance day',
                                         readonly=True)
 
+    due_hours = fields.Float(related='attendance_day_id.due_hours')
+
     ##########################################################################
     #                               ORM METHODS                              #
     ##########################################################################

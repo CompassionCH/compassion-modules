@@ -63,3 +63,62 @@ odoo.define('hr_switzerland.attendance', function (require) {
         },
     });
 });
+
+odoo.define('hr_switzerland.exchange_days_wizard', function(require) {
+"use strict";
+
+    var greeting_message = require('hr_attendance.greeting_message');
+
+    greeting_message.include({
+        start: function () {
+            if (!this.attendance.due_hours && !this.attendance.check_out && this.attendance.worked_hours === 0) {
+                this.do_action('hr_attendance_calendar.change_day_wizard');
+                this._super();
+                // remove timeout that redirects to main page after 5 seconds
+                clearTimeout(this.return_to_main_menu);
+            }
+            else {
+                this._super();
+            }
+
+            window.find_parent_by_tag_name = function (element, tag) {
+                while (element.prop('tagName').toLowerCase() !== tag.toLowerCase()) {
+                    element = element.parent();
+                }
+                return element;
+            };
+
+            // converts selection field into radio field
+            window.convert_select_into_radio = function(parent_id) {
+                var select = $('#' + parent_id).find('select').first();
+                var result = $('#dates_available_radio_selection');
+                result.html('');
+
+                select.find('option').each(function () {
+                    if ($(this).val() !== 'false') {
+                        result.append('<div class="radio"><input type="radio" name="date_select"><span class="val_text"></span></div>');
+                        var input = result.find('input').last();
+                        var val_text = result.find('.val_text').last();
+                        var date = moment($(this).val(), 'YYYY-MM-DD');
+                        input.val(date.format('YYYY-MM-DD'));
+                        val_text.html(date.format('dddd YYYY-MM-DD') + ' (' + $(this).text() + ' hours scheduled)');
+                    } else {
+                        // select first choice (select)
+                        select.val($(this).next().val());
+                    }
+                });
+                // select first choice (radio)
+                result.find('input').first().get(0).checked = true;
+                result.wrap('<p style="margin-left: 20px;"></p>');
+
+                // link radio and select fields when changes
+                result.find('input').change(function () {
+                    select.val('"' + $(this).val() + '"');
+                });
+
+                // style modifications
+                window.find_parent_by_tag_name($('#select_change_day_message'), 'table').css('margin-bottom', '-8px');
+            };
+        }
+    });
+});
