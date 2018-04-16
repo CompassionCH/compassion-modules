@@ -100,7 +100,7 @@
                             <field name="subject" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
                             <field name="proposition_text" widget="text_ckeditor4" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
                         </group>
-                        <group>
+                        <group attrs="{'invisible': [('proposition_correction', '=', False)]}">
                             <field name="subject_correction" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit"/>
                             <field name="proposition_correction" widget="text_ckeditor4" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit"/>
                         </group>
