@@ -71,6 +71,7 @@
                     <button type="object" name="submit_correction" string="Submit corrections" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_corrector', '=', False)]}"/>
                     <button type="object" name="validate_correction" string="Validate corrections" class="oe_highlight" attrs="{'invisible': ['|','|', ('state', '!=', 'pending'),('is_proposer', '=', False),('is_corrected', '=', False)]}"/>
                     <button type="object" name="discard_correction" string="Validate my version" attrs="{'invisible': ['|','|', ('state', '!=', 'pending'),('is_proposer', '=', False),('is_corrected', '=', False)]}"/>
+                    <button type="object" name="cancel_approve" string="Cancel approval" attrs="{'invisible': ['|','|', ('state', '!=', 'approved'), '&amp;', ('is_proposer', '=', False),('is_corrector', '=', False)]}"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">

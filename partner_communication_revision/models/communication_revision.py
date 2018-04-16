@@ -150,9 +150,11 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def _compute_allowed(self):
+        user = self.env.user
+        admin = self.env.ref('base.group_erp_manager') in user.groups_id
         for rev in self:
-            rev.is_proposer = self.env.user == rev.user_id
-            rev.is_corrector = self.env.user == rev.correction_user_id
+            rev.is_proposer = user == rev.user_id or admin
+            rev.is_corrector = user == rev.correction_user_id or admin
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -298,7 +300,9 @@ class CommunicationRevision(models.Model):
         body = 'A new text for {} was submitted for approval.'.format(
             self.display_name
         )
-        self.notify_proposition('Revision text submitted', body)
+        subject = '[{} - {}] Revision text submitted'.format(
+            self.display_name, self.lang.upper()[:2])
+        self.notify_proposition(subject, body)
         self.write({
             'proposition_correction': self.proposition_correction or
             self.proposition_text,
@@ -310,7 +314,8 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def validate_proposition(self):
-        subject = '[{}] Revision approved'.format(self.display_name)
+        subject = '[{} - {}] Revision approved'.format(self.display_name,
+                                                       self.lang.upper()[:2])
         body = 'The text for {} was approved.'.format(self.display_name)
         if not self.is_master_version:
             self.approve(subject, body)
@@ -320,7 +325,8 @@ class CommunicationRevision(models.Model):
     def submit_correction(self):
         self.write({'state': 'pending', 'is_corrected': True})
         body = 'Corrections for {} were proposed.'.format(self.display_name)
-        subject = '[{}] Correction submitted'.format(self.display_name)
+        subject = '[{} - {}] Correction submitted'.format(
+            self.display_name, self.lang.upper()[:2])
         self.notify_proposition(subject, body)
         return True
 
@@ -331,7 +337,8 @@ class CommunicationRevision(models.Model):
             'subject': self.subject_correction
         })
         body = 'The text for {} was approved.'.format(self.display_name)
-        subject = '[{}] Corrections approved'.format(self.display_name)
+        subject = '[{} - {}] Corrections approved'.format(
+            self.display_name, self.lang.upper()[:2])
         if not self.is_master_version:
             self.approve(subject, body)
 
@@ -339,7 +346,8 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def discard_correction(self):
-        subject = '[{}] Revision approved'.format(self.display_name)
+        subject = '[{} - {}] Revision approved'.format(
+            self.display_name, self.lang.upper()[:2])
         body = 'The original text for {} was kept. Proposed ' \
                'corrections were discarded.'.format(self.display_name)
         if not self.is_master_version:
@@ -367,6 +375,21 @@ class CommunicationRevision(models.Model):
             body=body, subject=subject, type='comment',
             subtype='mail.mt_comment', content_subtype='plaintext'
         )
+
+    @api.multi
+    def cancel_approve(self):
+        """ Set back a text approved in revision mode. """
+        return {
+            'name': 'Cancel proposition',
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'partner.communication.cancel.proposition',
+            'context': self.with_context(
+                active_id=self.id, form_view_ref=False,
+                config_id=False).env.context,
+            'target': 'new',
+        }
 
     @api.onchange('compare_lang')
     def onchange_compare_lang(self):
