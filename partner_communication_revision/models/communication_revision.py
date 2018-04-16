@@ -102,6 +102,7 @@ class CommunicationRevision(models.Model):
     )
     is_proposer = fields.Boolean(compute='_compute_allowed')
     is_corrector = fields.Boolean(compute='_compute_allowed')
+    display_name = fields.Char(compute='_compute_display_name')
     is_corrected = fields.Boolean()
 
     _sql_constraints = [
@@ -155,6 +156,12 @@ class CommunicationRevision(models.Model):
         for rev in self:
             rev.is_proposer = user == rev.user_id or admin
             rev.is_corrector = user == rev.correction_user_id or admin
+
+    @api.multi
+    def _compute_display_name(self):
+        for rev in self:
+            rev.display_name = rev.config_id.name + ' - ' + \
+                rev.lang.upper()[:2]
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -300,8 +307,7 @@ class CommunicationRevision(models.Model):
         body = 'A new text for {} was submitted for approval.'.format(
             self.display_name
         )
-        subject = '[{} - {}] Revision text submitted'.format(
-            self.display_name, self.lang.upper()[:2])
+        subject = '[{}] Revision text submitted'.format(self.display_name)
         self.notify_proposition(subject, body)
         self.write({
             'proposition_correction': self.proposition_correction or
@@ -314,8 +320,7 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def validate_proposition(self):
-        subject = '[{} - {}] Revision approved'.format(self.display_name,
-                                                       self.lang.upper()[:2])
+        subject = '[{}] Revision approved'.format(self.display_name)
         body = 'The text for {} was approved.'.format(self.display_name)
         if not self.is_master_version:
             self.approve(subject, body)
@@ -325,8 +330,7 @@ class CommunicationRevision(models.Model):
     def submit_correction(self):
         self.write({'state': 'pending', 'is_corrected': True})
         body = 'Corrections for {} were proposed.'.format(self.display_name)
-        subject = '[{} - {}] Correction submitted'.format(
-            self.display_name, self.lang.upper()[:2])
+        subject = '[{}] Correction submitted'.format(self.display_name)
         self.notify_proposition(subject, body)
         return True
 
@@ -337,8 +341,7 @@ class CommunicationRevision(models.Model):
             'subject': self.subject_correction
         })
         body = 'The text for {} was approved.'.format(self.display_name)
-        subject = '[{} - {}] Corrections approved'.format(
-            self.display_name, self.lang.upper()[:2])
+        subject = '[{}] Corrections approved'.format(self.display_name)
         if not self.is_master_version:
             self.approve(subject, body)
 
@@ -346,8 +349,7 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def discard_correction(self):
-        subject = '[{} - {}] Revision approved'.format(
-            self.display_name, self.lang.upper()[:2])
+        subject = '[{}] Revision approved'.format(self.display_name)
         body = 'The original text for {} was kept. Proposed ' \
                'corrections were discarded.'.format(self.display_name)
         if not self.is_master_version:

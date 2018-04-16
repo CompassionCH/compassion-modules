@@ -7,6 +7,7 @@
             <xpath expr="//sheet" position="before">
                 <header>
                     <button name="%(action_new_proposition)d" type="action" string="New revision" class="oe_highlight"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
             </xpath>
             <xpath expr="//sheet">
@@ -57,6 +58,9 @@
             <search>
                 <field name="name" string="Name"/>
                 <filter name="need_action" string="Need Action" domain="['|', '&amp;', ('revision_ids.state', '=', 'pending'), ('revision_ids.user_id', '=', uid), '&amp;', ('revision_ids.state', '=', 'submit'), ('revision_ids.correction_user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="active" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="pending" string="In Revision" domain="[('state', '=', 'pending')]"/>
             </search>
         </field>
      </record>

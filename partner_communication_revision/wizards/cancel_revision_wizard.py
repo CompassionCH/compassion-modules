@@ -74,9 +74,8 @@ class ValidateRevisionWizard(models.TransientModel):
         if self.user_id != self.env.user or self.comments:
             body = u"The text was set back in revision by {}. {}".format(
                 self.env.user.name, self.comments or u"").strip()
-            subject = "[{} - {}] Approval cancelled:  text needs corrections"\
-                .format(self.revision_id.config_id.name,
-                        self.revision_id.lang.upper()[:2])
+            subject = "[{}] Approval cancelled:  text needs corrections"\
+                .format(self.revision_id.display_name)
             self.revision_id.message_post(
                 body=body, subject=subject, type='comment',
                 subtype='mail.mt_comment', content_subtype='plaintext')
