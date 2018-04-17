@@ -61,6 +61,10 @@ class SubSponsorshipWizard(models.TransientModel):
             'child_id': self.child_id.id,
             'user_id': False,
             'sds_uid': self.env.uid,
+            'medium_id': self.env.ref('utm.utm_medium_direct').id,
+            'source_id': self.env.ref('contract_compassion.utm_source_sub').id,
+            'campaign_id': self.env.ref(
+                'contract_compassion.utm_campaign_sub').id
         })
         today = datetime.today()
         next_invoice_date = fields.Date.from_string(
