@@ -17,6 +17,7 @@ class CommunicationDefaults(models.AbstractModel):
     print_subject = fields.Boolean(default=True)
     print_header = fields.Boolean()
     show_signature = fields.Boolean()
+    add_success_story = fields.Boolean()
 
 
 class PartnerCommunication(models.Model):
@@ -31,6 +32,7 @@ class PartnerCommunication(models.Model):
         'success.story', 'Success Sentence',
         domain=[('type', '=', 'sentence')])
     success_sentence = fields.Text(related='success_sentence_id.body_text')
+    add_success_story = fields.Boolean(related='config_id.add_success_story')
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -58,9 +60,10 @@ class PartnerCommunication(models.Model):
             ('is_active', '=', True)])
         stories = all_stories.filtered(lambda s: s.type == 'story')
         sentences = all_stories.filtered(lambda s: s.type == 'sentence')
+        default_story = self.env.context.get('default_success_story_id')
         for job in self:
-            # Only set success story for donation letters
-            if job.config_id.model == 'account.invoice.line' and stories:
+            # Only set success story if config is set.
+            if job.add_success_story and stories and not default_story:
                 if len(stories) == 1:
                     job.success_story_id = stories
                 else:
