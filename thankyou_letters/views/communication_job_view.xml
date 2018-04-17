@@ -33,6 +33,7 @@
         <field name="inherit_id" ref="partner_communication.communication_config_form"/>
         <field name="arch" type="xml">
             <field name="need_call" position="after">
+                <field name="add_success_story"/>
                 <field name="print_subject"/>
                 <field name="print_header"/>
                 <field name="show_signature"/>

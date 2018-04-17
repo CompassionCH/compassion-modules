@@ -102,6 +102,7 @@ class CommunicationRevision(models.Model):
     )
     is_proposer = fields.Boolean(compute='_compute_allowed')
     is_corrector = fields.Boolean(compute='_compute_allowed')
+    display_name = fields.Char(compute='_compute_display_name')
     is_corrected = fields.Boolean()
 
     _sql_constraints = [
@@ -150,9 +151,17 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def _compute_allowed(self):
+        user = self.env.user
+        admin = self.env.ref('base.group_erp_manager') in user.groups_id
         for rev in self:
-            rev.is_proposer = self.env.user == rev.user_id
-            rev.is_corrector = self.env.user == rev.correction_user_id
+            rev.is_proposer = user == rev.user_id or admin
+            rev.is_corrector = user == rev.correction_user_id or admin
+
+    @api.multi
+    def _compute_display_name(self):
+        for rev in self:
+            rev.display_name = rev.config_id.name + ' - ' + \
+                rev.lang.upper()[:2]
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -295,18 +304,7 @@ class CommunicationRevision(models.Model):
     # Revision proposition buttons
     @api.multi
     def submit_proposition(self):
-        body = 'A new text for {} was submitted for approval.'.format(
-            self.display_name
-        )
-        self.notify_proposition('Revision text submitted', body)
-        self.write({
-            'proposition_correction': self.proposition_correction or
-            self.proposition_text,
-            'subject_correction': self.subject_correction or self.subject,
-            'state': 'submit',
-            'is_corrected': False
-        })
-        return True
+        return self._open_submit_text_wizard()
 
     @api.multi
     def validate_proposition(self):
@@ -318,11 +316,20 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def submit_correction(self):
-        self.write({'state': 'pending', 'is_corrected': True})
-        body = 'Corrections for {} were proposed.'.format(self.display_name)
-        subject = '[{}] Correction submitted'.format(self.display_name)
-        self.notify_proposition(subject, body)
-        return True
+        return self._open_submit_text_wizard()
+
+    def _open_submit_text_wizard(self):
+        return {
+            'name': 'Submit text',
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'partner.communication.submit.revision',
+            'context': self.with_context(
+                active_id=self.id, form_view_ref=False,
+                config_id=False).env.context,
+            'target': 'new',
+        }
 
     @api.multi
     def validate_correction(self):
@@ -367,6 +374,21 @@ class CommunicationRevision(models.Model):
             body=body, subject=subject, type='comment',
             subtype='mail.mt_comment', content_subtype='plaintext'
         )
+
+    @api.multi
+    def cancel_approve(self):
+        """ Set back a text approved in revision mode. """
+        return {
+            'name': 'Cancel proposition',
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'partner.communication.cancel.proposition',
+            'context': self.with_context(
+                active_id=self.id, form_view_ref=False,
+                config_id=False).env.context,
+            'target': 'new',
+        }
 
     @api.onchange('compare_lang')
     def onchange_compare_lang(self):

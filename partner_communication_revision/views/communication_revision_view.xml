@@ -23,6 +23,8 @@
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" name="open_preview" icon="fa-search-plus" string="Preview" type="object"/>
                     </div>
+                    <field name="proposition_text" groups="base.group_erp_manager"/>
+                    <hr groups="base.group_erp_manager"/>
                     <field name="simplified_text" widget="html"/>
                     <button name="refresh_text" type="object" string="Refresh text" class="oe_highlight sht_refresh_button"/>
                     <group>
@@ -67,17 +69,18 @@
                     <field name="is_corrected" invisible="1"/>
                     <field name="state" widget="statusbar"/>
                     <button type="object" name="submit_proposition" string="Submit proposition" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'pending'),('is_proposer', '=', False)]}"/>
-                    <button type="object" name="validate_proposition" string="Validate proposition" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_corrector', '=', False)]}"/>
+                    <button type="object" name="validate_proposition" string="Validate proposition" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_corrector', '=', False)]}" confirm="This will approve the proposition text."/>
                     <button type="object" name="submit_correction" string="Submit corrections" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_corrector', '=', False)]}"/>
-                    <button type="object" name="validate_correction" string="Validate corrections" class="oe_highlight" attrs="{'invisible': ['|','|', ('state', '!=', 'pending'),('is_proposer', '=', False),('is_corrected', '=', False)]}"/>
-                    <button type="object" name="discard_correction" string="Validate my version" attrs="{'invisible': ['|','|', ('state', '!=', 'pending'),('is_proposer', '=', False),('is_corrected', '=', False)]}"/>
+                    <button type="object" name="validate_correction" string="Validate corrections" class="oe_highlight" attrs="{'invisible': ['|','|', ('state', '!=', 'pending'),('is_proposer', '=', False),('is_corrected', '=', False)]}" confirm="This will approve the corrections."/>
+                    <button type="object" name="discard_correction" string="Validate my version" attrs="{'invisible': ['|','|', ('state', '!=', 'pending'),('is_proposer', '=', False),('is_corrected', '=', False)]}" confirm="This will discard corrections and approve your version."/>
+                    <button type="object" name="cancel_approve" string="Cancel approval" attrs="{'invisible': ['|','|', ('state', '!=', 'approved'), '&amp;', ('is_proposer', '=', False),('is_corrector', '=', False)]}"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" name="open_preview" icon="fa-search-plus" string="Preview" type="object" context="{'working_revision': True}"/>
                     </div>
+                    <h3><field name="config_id" readonly="1"/></h3>
                     <field name="is_master_version" invisible="1"/>
-                    <field name="config_id" invisible="1"/>
                     <div>
                         <h5>Revision Instructions</h5>
                         <ul>
@@ -99,7 +102,7 @@
                             <field name="subject" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
                             <field name="proposition_text" widget="text_ckeditor4" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
                         </group>
-                        <group>
+                        <group attrs="{'invisible': [('proposition_correction', '=', False)]}">
                             <field name="subject_correction" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit"/>
                             <field name="proposition_correction" widget="text_ckeditor4" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit"/>
                         </group>
