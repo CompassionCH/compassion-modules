@@ -23,6 +23,8 @@
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" name="open_preview" icon="fa-search-plus" string="Preview" type="object"/>
                     </div>
+                    <field name="proposition_text" groups="base.group_erp_manager"/>
+                    <hr groups="base.group_erp_manager"/>
                     <field name="simplified_text" widget="html"/>
                     <button name="refresh_text" type="object" string="Refresh text" class="oe_highlight sht_refresh_button"/>
                     <group>
