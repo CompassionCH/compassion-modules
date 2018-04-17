@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <!-- Add correspondant field for sponsorships -->
             <field name="partner_id" position="after">
-                <field name="correspondant_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', 'not in', ['S','SC'])], 'required': [('type', 'in', ['S', 'SC'])]}"/>
+                <field name="correspondent_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', 'not in', ['S','SC'])], 'required': [('type', 'in', ['S', 'SC'])]}"/>
                 <field name="send_gifts_to"/>
             </field>
 
@@ -53,7 +53,7 @@
             <!-- Replace filter domain of parent_id field to take correspondant -->
             <field name="parent_id" position="attributes">
                 <attribute name="domain" position="replace">
-                    <attribute name="domain">[('correspondant_id', '=', correspondant_id), ('child_id', '!=', child_id), ('sub_sponsorship_id', '=', False)]</attribute>
+                    <attribute name="domain">[('correspondent_id', '=', correspondent_id), ('child_id', '!=', child_id), ('sub_sponsorship_id', '=', False)]</attribute>
                 </attribute>
                 <attribute name="attrs">{'invisible': [('type', 'not in', ['S', 'SC'])]}</attribute>
             </field>
@@ -74,7 +74,7 @@
                 <!-- Ability to link gift contract lines to sponsorships -->
                 <field name="contract_type" invisible="1"/>
                 <field name="sponsorship_id"
-                       domain="[('correspondant_id', '=', parent.partner_id), ('type', 'like', 'S'), ('state', 'not in', ['draft', 'terminated', 'cancelled'])]"
+                       domain="[('correspondent_id', '=', parent.partner_id), ('type', 'like', 'S'), ('state', 'not in', ['draft', 'terminated', 'cancelled'])]"
                 />
             </field>
         </field>
@@ -143,7 +143,7 @@
                                         </li>
                                         <li>
                                             Correspondent :
-                                            <field name="correspondant_id"/>
+                                            <field name="correspondent_id"/>
                                         </li>
                                         <li>Sponsored child :
                                             <field name="child_id"/>

@@ -77,10 +77,12 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    correspondant_id = fields.Many2one(
-        'res.partner', string='Correspondant', track_visibility='onchange')
+    correspondent_id = fields.Many2one(
+        'res.partner', string='Correspondent', track_visibility='onchange',
+        oldname='correspondant_id'
+    )
     partner_codega = fields.Char(
-        'Partner ref', related='correspondant_id.ref', readonly=True)
+        'Partner ref', related='correspondent_id.ref', readonly=True)
     fully_managed = fields.Boolean(
         compute='_compute_fully_managed', store=True)
     birthday_invoice = fields.Float(
@@ -99,8 +101,8 @@ class SponsorshipContract(models.Model):
         help='Used for setting a hold after sponsorship cancellation')
     send_gifts_to = fields.Selection([
         ('partner_id', 'Payer'),
-        ('correspondant_id', 'Correspondent')
-    ], default='correspondant_id')
+        ('correspondent_id', 'Correspondent')
+    ], default='correspondent_id')
     gift_partner_id = fields.Many2one('res.partner',
                                       compute='_compute_gift_partner')
 
@@ -154,12 +156,12 @@ class SponsorshipContract(models.Model):
         return res
 
     @api.multi
-    @api.depends('partner_id', 'correspondant_id')
+    @api.depends('partner_id', 'correspondent_id')
     def _compute_fully_managed(self):
         """Tells if the correspondent and the payer is the same person."""
         for contract in self:
             contract.fully_managed = (contract.partner_id ==
-                                      contract.correspondant_id)
+                                      contract.correspondent_id)
 
     @api.model
     def _get_type(self):
@@ -196,7 +198,7 @@ class SponsorshipContract(models.Model):
     def _compute_gift_partner(self):
         for contract in self:
             contract.gift_partner_id = getattr(
-                contract, contract.send_gifts_to, contract.correspondant_id)
+                contract, contract.send_gifts_to, contract.correspondent_id)
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -209,7 +211,7 @@ class SponsorshipContract(models.Model):
         child = self.env['compassion.child'].browse(vals.get('child_id'))
         if 'S' in vals.get('type', '') and child:
             child.write({
-                'sponsor_id': vals.get('correspondant_id', vals['partner_id'])
+                'sponsor_id': vals.get('correspondent_id', vals['partner_id'])
             })
 
         return super(SponsorshipContract, self).create(vals)
@@ -224,12 +226,12 @@ class SponsorshipContract(models.Model):
             old_partner = self.mapped('partner_id')
 
         updated_correspondents = self.env[self._name]
-        if 'correspondant_id' in vals:
-            old_correspondent = self.mapped('correspondant_id')
+        if 'correspondent_id' in vals:
+            old_correspondent = self.mapped('correspondent_id')
             updated_correspondents = self._on_change_correspondant(
-                vals['correspondant_id'])
+                vals['correspondent_id'])
             self.mapped('child_id').write({
-                'sponsor_id': vals['correspondant_id']
+                'sponsor_id': vals['correspondent_id']
                 })
 
         super(SponsorshipContract, self).write(vals)
@@ -251,8 +253,8 @@ class SponsorshipContract(models.Model):
             self.mapped('partner_id')._compute_number_sponsorships()
             old_partner._compute_number_sponsorships()
 
-        if 'correspondant_id' in vals:
-            self.mapped('correspondant_id')._compute_number_sponsorships()
+        if 'correspondent_id' in vals:
+            self.mapped('correspondent_id')._compute_number_sponsorships()
             old_correspondent._compute_number_sponsorships()
 
         return True
@@ -268,7 +270,7 @@ class SponsorshipContract(models.Model):
             if 'S' in contract.type and contract.child_id:
                 child_sponsor_id = contract.child_id.sponsor_id and \
                     contract.child_id.sponsor_id.id
-                if child_sponsor_id == contract.correspondant_id.id:
+                if child_sponsor_id == contract.correspondent_id.id:
                     contract.child_id.signal_workflow('release')
         return super(SponsorshipContract, self).unlink()
 
@@ -452,7 +454,7 @@ class SponsorshipContract(models.Model):
         self.ensure_one()
         # We don't need to write back partner and child
         del vals['child_id']
-        del vals['correspondant_id']
+        del vals['correspondent_id']
         self.write(vals)
         # Remove the hold on the child.
         if self.child_id.hold_id:
@@ -551,8 +553,8 @@ class SponsorshipContract(models.Model):
     def on_change_partner_id(self):
         super(SponsorshipContract, self).on_change_partner_id()
         if 'S' in self.type and self.state == 'draft':
-            # If state draft correspondant_id=partner_id
-            self.correspondant_id = self.partner_id
+            # If state draft correspondent_id=partner_id
+            self.correspondent_id = self.partner_id
 
     @api.multi
     def open_invoices(self):
@@ -578,7 +580,7 @@ class SponsorshipContract(models.Model):
         """
         for contract in self.filtered(lambda c: 'S' in c.type):
             # UpsertConstituent Message
-            partner = contract.correspondant_id
+            partner = contract.correspondent_id
             partner.upsert_constituent()
 
             message_obj = self.env['gmc.message.pool']
@@ -586,7 +588,7 @@ class SponsorshipContract(models.Model):
                 'sponsorship_compassion.create_sponsorship').id
 
             message_vals = {
-                'partner_id': contract.correspondant_id.id,
+                'partner_id': contract.correspondent_id.id,
                 'child_id': contract.child_id.id,
                 'action_id': action_id,
                 'object_id': contract.id
@@ -603,7 +605,7 @@ class SponsorshipContract(models.Model):
 
         self.mapped('partner_id')._compute_number_sponsorships()
         self.filtered(lambda c: not c.fully_managed).mapped(
-            'correspondant_id')._compute_number_sponsorships()
+            'correspondent_id')._compute_number_sponsorships()
 
         return True
 
@@ -664,7 +666,7 @@ class SponsorshipContract(models.Model):
                     message = message_obj.create({
                         'action_id': action.id,
                         'child_id': sponsorship.child_id.id,
-                        'partner_id': sponsorship.correspondant_id.id,
+                        'partner_id': sponsorship.correspondent_id.id,
                         'object_id': sponsorship.id
                     })
                     message.process_messages()
@@ -679,7 +681,7 @@ class SponsorshipContract(models.Model):
                 )
 
     @api.multi
-    def _on_change_correspondant(self, correspondant_id):
+    def _on_change_correspondant(self, correspondent_id):
         """
         This is useful for not having to internally cancel and create
         a new commitment just to change the corresponding partner.
@@ -693,7 +695,7 @@ class SponsorshipContract(models.Model):
             'sponsorship_compassion.cancel_sponsorship')
 
         sponsorships = self.filtered(
-            lambda s: s.correspondant_id.id != correspondant_id and
+            lambda s: s.correspondent_id.id != correspondent_id and
             s.global_id and s.state not in ('cancelled', 'terminated'))
         sponsorships.write({
             'hold_expiration_date': self.env[
@@ -707,7 +709,7 @@ class SponsorshipContract(models.Model):
             messages += message_obj.create({
                 'action_id': cancel_action.id,
                 'child_id': sponsorship.child_id.id,
-                'partner_id': sponsorship.correspondant_id.id,
+                'partner_id': sponsorship.correspondent_id.id,
                 'object_id': sponsorship.id
             })
         messages.process_messages()
@@ -739,7 +741,7 @@ class SponsorshipContract(models.Model):
             messages += message_obj.create({
                 'action_id': create_action.id,
                 'child_id': sponsorship.child_id.id,
-                'partner_id': sponsorship.correspondant_id.id,
+                'partner_id': sponsorship.correspondent_id.id,
                 'object_id': sponsorship.id
             })
         messages.process_messages()
@@ -801,7 +803,7 @@ class SponsorshipContract(models.Model):
                 message_vals = {
                     'action_id': action_id,
                     'object_id': sponsorship.id,
-                    'partner_id': sponsorship.correspondant_id.id,
+                    'partner_id': sponsorship.correspondent_id.id,
                     'child_id': sponsorship.child_id.id
                 }
                 message_obj.create(message_vals)
@@ -817,7 +819,7 @@ class SponsorshipContract(models.Model):
                 ]).unlink()
         self.mapped('partner_id')._compute_number_sponsorships()
         self.filtered(lambda c: not c.fully_managed).mapped(
-            'correspondant_id')._compute_number_sponsorships()
+            'correspondent_id')._compute_number_sponsorships()
 
     @api.multi
     def _on_change_child_id(self, vals):
@@ -832,8 +834,8 @@ class SponsorshipContract(models.Model):
             if 'S' in contract.type:
                 # Mark the selected child as sponsored
                 self.env['compassion.child'].browse(child_id).write(
-                    {'sponsor_id': vals.get('correspondant_id') or
-                     contract.correspondant_id.id})
+                    {'sponsor_id': vals.get('correspondent_id') or
+                     contract.correspondent_id.id})
 
     @api.multi
     def invoice_paid(self, invoice):

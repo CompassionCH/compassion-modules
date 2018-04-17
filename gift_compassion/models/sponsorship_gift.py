@@ -32,7 +32,7 @@ class SponsorshipGift(models.Model):
         'recurring.contract', 'Sponsorship', required=True
     )
     partner_id = fields.Many2one(
-        'res.partner', 'Partner', related='sponsorship_id.correspondant_id',
+        'res.partner', 'Partner', related='sponsorship_id.correspondent_id',
         store=True
     )
     project_id = fields.Many2one(

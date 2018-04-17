@@ -1024,7 +1024,7 @@ msgstr ""
 
 #. module: sponsorship_compassion
 #: code:addons/sponsorship_compassion/model/contracts.py:134
-#: field:recurring.contract,correspondant_id:0
+#: field:recurring.contract,correspondent_id:0
 #, python-format
 msgid "Correspondant"
 msgstr "Correspondant"

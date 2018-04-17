@@ -141,13 +141,13 @@ class CorrespondenceMapping(OnrampMapping):
             partner_id = odoo_data.pop('partner_id')
             child_id = odoo_data.pop('child_id')
             sponsorship = self.env['recurring.contract'].search([
-                ('correspondant_id', '=', partner_id),
+                ('correspondent_id', '=', partner_id),
                 ('child_id', '=', child_id)], limit=1)
             if not sponsorship:
                 # We can have multiple partners with same global_id :(
                 partner = self.env['res.partner'].browse(partner_id)
                 sponsorship = self.env['recurring.contract'].search([
-                    ('correspondant_id.global_id', '=', partner.global_id),
+                    ('correspondent_id.global_id', '=', partner.global_id),
                     ('child_id', '=', child_id)], limit=1)
             if sponsorship:
                 odoo_data['sponsorship_id'] = sponsorship.id

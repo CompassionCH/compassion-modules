@@ -91,8 +91,8 @@ class RecurringContract(models.Model):
         if 'S' in self.type:
             origin_id = self.env['recurring.contract.origin'].search(
                 [('type', '=', 'sub')], limit=1).id
-            correspondant_id = self.correspondant_id.id
-            parent_id = self._define_parent_id(correspondant_id)
+            correspondent_id = self.correspondent_id.id
+            parent_id = self._define_parent_id(correspondent_id)
 
             if parent_id and self.state == 'draft':
                 self.parent_id = parent_id
@@ -243,7 +243,7 @@ class RecurringContract(models.Model):
     def _check_need_sub(self):
         """ Called when a contract is terminated, update the sds states. """
         for contract in self.filtered('child_id'):
-            lang = contract.correspondant_id.lang[:2]
+            lang = contract.correspondent_id.lang[:2]
             sds_user = self.env['sds.follower.settings'].get_param(
                 'sub_' + lang)
             if contract.end_reason == '1':  # Child departure
@@ -280,9 +280,9 @@ class RecurringContract(models.Model):
             if contract.sds_state != 'no_sub':
                 contract.write(vals)
 
-    def _define_parent_id(self, correspondant_id):
+    def _define_parent_id(self, correspondent_id):
         same_partner_contracts = self.search(
-            [('correspondant_id', '=', correspondant_id),
+            [('correspondent_id', '=', correspondent_id),
              ('sds_state', '=', 'sub_waiting')])
         for same_partner_contract in same_partner_contracts:
             if not self.search_count([

@@ -68,7 +68,7 @@
                 <div class="page">
                     <t t-call="sbc_compassion.style"/>
                     <div id="header">
-                        <t t-set="sponsor" t-value="o.sponsorship_id.correspondant_id"/>
+                        <t t-set="sponsor" t-value="o.sponsorship_id.correspondent_id"/>
                         <t t-set="child" t-value="o.sponsorship_id.child_id"/>
                         <span t-field="sponsor.global_id"/> - <span t-field="sponsor.name"/>
                         <br/>

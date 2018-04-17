@@ -192,7 +192,7 @@ class CorrespondenceS2bGenerator(models.Model):
 
     def _get_pdf(self, sponsorship, preview=False):
         """ Generates a PDF given a sponsorship. """
-        sponsor = sponsorship.correspondant_id
+        sponsor = sponsorship.correspondent_id
         child = sponsorship.child_id
         keywords = {
             '%child%': child.preferred_name,
