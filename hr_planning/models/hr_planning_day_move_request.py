@@ -14,7 +14,7 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
 
 
-class hr_planning_day_move_request(models.Model):
+class HrPlanningDayMoveRequest(models.Model):
     ''' Add possibility to create request to modify the planning
         - Move a planning day
         - Create a new planning day
@@ -48,7 +48,7 @@ class hr_planning_day_move_request(models.Model):
         'Status', default='to_approve', track_visibility="onchange",
         readonly=True)
     type = fields.Selection(
-        [('add', 'Add'), ('move', 'Move')], _('Type'), required=True,
+        [('add', 'Add'), ('move', 'Move')], 'Type', required=True,
         states={'validate': [('readonly', True)]})
 
     ##########################################################################
@@ -69,7 +69,7 @@ class hr_planning_day_move_request(models.Model):
             # Check if this employee is working this day
             if (self._check_is_working(
                     vals['employee_id'], vals['old_date'])):
-                return super(hr_planning_day_move_request,
+                return super(HrPlanningDayMoveRequest,
                              self).create(vals)
             # Check if the move will have no effect
             elif vals['old_date'] == vals['new_date']:
@@ -84,20 +84,20 @@ class hr_planning_day_move_request(models.Model):
         # Add request
         else:
             vals['old_date'] = False
-            return super(hr_planning_day_move_request, self).create(vals)
+            return super(HrPlanningDayMoveRequest, self).create(vals)
 
     @api.multi
     def write(self, vals):
         if 'type' in vals:
             if vals['type'] == 'add':
                 vals['old_date'] = False
-        return super(hr_planning_day_move_request, self).write(vals)
+        return super(HrPlanningDayMoveRequest, self).write(vals)
 
     # Delete a request
     @api.multi
     def unlink(self):
         employee_ids = self.mapped('employee_id.id')
-        res = super(hr_planning_day_move_request, self).unlink()
+        res = super(HrPlanningDayMoveRequest, self).unlink()
         self.env['hr.planning.wizard'].generate(employee_ids)
         return res
 

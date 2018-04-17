@@ -28,6 +28,7 @@
 #
 ##############################################################################
 
+# pylint: disable=C8101
 {
     'name': 'Attendance - Calendar',
     'summary': 'Compute extra hours based on attendances',

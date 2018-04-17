@@ -8,12 +8,12 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import regex as re
 
 from odoo import api, models, _, fields
 from odoo.exceptions import UserError, ValidationError
 
 try:
+    import regex as re
     from pyquery import PyQuery
     from bs4 import BeautifulSoup
 except ImportError:

@@ -30,27 +30,27 @@ odoo.define('hr_switzerland.attendance', function (require) {
                     $('#moment_pl').html(Date.now());
                     setInterval(function () {
                         if ($('#moment_pl').length) {
-                            var moment_start = moment(new Date(parseInt($('#moment_pl').text())));
+                            var moment_start = moment(new Date(parseInt($('#moment_pl').text(), 10)));
                             var diff_minutes = moment().diff(moment_start, 'minutes');
 
                             ['worked_today', 'balance_today'].forEach(
                                 function (el) {
                                     var matches = $('#' + el + '_pl').text().match(/^-?(\d{2}):(\d{2})$/);
 
-                                    if (matches != null && $('#state').text() == 'checked in') {
-                                        var hours = parseInt(matches[1]);
-                                        var minutes = parseInt(matches[2]);
+                                    if (matches !== null && $('#state').text() === 'checked in') {
+                                        var hours = parseInt(matches[1], 10);
+                                        var minutes = parseInt(matches[2], 10);
 
-                                        var total_minutes = (hours * 60 + minutes) * ((matches[0].substring(0, 1) == '-') ? -1 : 1);
-                                        var negative = (total_minutes + diff_minutes) < 0;
+                                        var total_minutes = (minutes + (hours * 60)) * matches[0].substring(0, 1) === '-' ? -1 : 1;// eslint-disable-line no-extra-parens
+                                        var negative = total_minutes + diff_minutes < 0;
 
                                         var new_total = Math.abs(total_minutes + diff_minutes);
-                                        var new_hours = ('0' + (new_total / 60 | 0)).slice(-2);
-                                        var new_minutes = ('0' + (new_total % 60)).slice(-2);
+                                        var new_hours = ('0' + (new_total / 60) || 0).slice(-2); // eslint-disable-line no-extra-parens
+                                        var new_minutes = ('0' + (new_total % 60)).slice(-2); // eslint-disable-line no-extra-parens
 
                                         $('#' + el).text((negative ? '-' : '') + new_hours + ':' + new_minutes);
 
-                                        if (el != 'worked_today') {
+                                        if (el !== 'worked_today') {
                                             $('#' + el).parent().get(0).style.color = negative ? 'red' : 'green';
                                         }
                                     }

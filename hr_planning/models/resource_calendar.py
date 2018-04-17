@@ -12,12 +12,12 @@
 from odoo import api, models
 
 
-class resource_calendar(models.Model):
+class ResourceCalendar(models.Model):
     _inherit = 'resource.calendar'
 
     @api.model
     def create(self, vals):
-        res = super(resource_calendar, self).create(vals)
+        res = super(ResourceCalendar, self).create(vals)
 
         if ('attendance_ids' in vals):
             res._generate()
@@ -25,14 +25,15 @@ class resource_calendar(models.Model):
 
     @api.multi
     def write(self, vals):
-        res = super(resource_calendar, self).write(vals)
+        res = super(ResourceCalendar, self).write(vals)
 
         if ('attendance_ids' in vals):
             self._generate()
         return res
 
-    @api.one
+    @api.multi
     def _generate(self):
+        self.ensure_one()
         contract_obj = self.env['hr.contract']
         contracts = contract_obj.search(
             [('working_hours', '=', self.id)])

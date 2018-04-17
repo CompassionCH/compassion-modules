@@ -8,6 +8,8 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+
+
 def migrate(cr, version):
     if not version:
         return

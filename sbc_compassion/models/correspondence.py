@@ -496,9 +496,8 @@ class Correspondence(models.Model):
                 if letter.child_id.project_id.hold_s2b_letters:
                     letter.state = 'Exception'
                     letter.message_post(
-                        'Letter was put on hold because the project is '
-                        'suspended',
-                        'Project suspended')
+                        _('Letter was put on hold because the project is '
+                          'suspended'), _('Project suspended'))
         return True
 
     @api.multi
@@ -589,8 +588,8 @@ class Correspondence(models.Model):
                     remaining_text += '\n\n'
                     # Log when text is too long to see if that happens a lot
                     self.message_post(
-                        'Translation went out of the translation box',
-                        'Translation too long')
+                        _('Translation went out of the translation box'),
+                        _('Translation too long'))
 
                 # Merge the translation on the existing page
                 page = page_output.getPage(j)
@@ -733,7 +732,7 @@ class Correspondence(models.Model):
         })
         for letter in self:
             letter.message_post(
-                'Letter was put on hold', message)
+                _('Letter was put on hold'), message)
         gmc_action = self.env.ref('sbc_compassion.create_letter')
         gmc_messages = self.env['gmc.message.pool'].search([
             ('action_id', '=', gmc_action.id),
@@ -749,7 +748,7 @@ class Correspondence(models.Model):
         })
         for letter in self:
             letter.message_post(
-                'The letter can now be sent.', message)
+                _('The letter can now be sent.'), message)
         gmc_action = self.env.ref('sbc_compassion.create_letter')
         gmc_messages = self.env['gmc.message.pool'].search([
             ('action_id', '=', gmc_action.id),

@@ -133,8 +133,8 @@ class RecurringContract(models.Model):
     def action_sub_reject(self):
         for contract in self:
             contract.partner_id.message_post(
-                subject='{} - SUB Reject'.format(contract.child_code),
-                body="The sponsor doesn't want a new child."
+                subject=_('{} - SUB Reject'.format(contract.child_code)),
+                body=_("The sponsor doesn't want a new child.")
             )
             sub = contract.sub_sponsorship_id
             if sub and sub.state == 'draft':

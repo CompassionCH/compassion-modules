@@ -13,19 +13,19 @@
 from odoo import api, models
 
 
-class hr_contract(models.Model):
+class HrContract(models.Model):
     _inherit = "hr.contract"
 
     @api.model
     def create(self, vals):
-        res = super(hr_contract, self).create(vals)
+        res = super(HrContract, self).create(vals)
         if('working_hours' in vals):
             res._generate()
         return res
 
     @api.multi
     def write(self, vals):
-        res = super(hr_contract, self).write(vals)
+        res = super(HrContract, self).write(vals)
         if('working_hours' in vals or
            'date_start' in vals or
            'date_end' in vals):
@@ -38,7 +38,7 @@ class hr_contract(models.Model):
             planning_day_ids = self.env['hr.planning.day'].search(
                 [('contract_id', '=', contract.id)])
             planning_day_ids.unlink()
-        res = super(hr_contract, self).unlink()
+        res = super(HrContract, self).unlink()
         return res
 
     @api.multi

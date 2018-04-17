@@ -10,7 +10,7 @@
 ##############################################################################
 
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from ..mappings.child_note_mapping import ChildNoteMapping
 
 
@@ -33,7 +33,7 @@ class ChildNote(models.Model):
     def create(self, vals):
         note = super(ChildNote, self).create(vals)
         note.child_id.message_post(
-            note.body, "New beneficiary notes"
+            note.body, _("New beneficiary notes")
         )
         return note
 

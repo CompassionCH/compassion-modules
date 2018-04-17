@@ -11,7 +11,7 @@
 import datetime
 from datetime import timedelta
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
 
@@ -165,8 +165,8 @@ class CompassionReservation(models.Model):
     def reservation_create_answer_fail(self, vals):
         """ Called when the reservation has failed"""
         self.message_post(
-            subject='Reservation failed',
-            body='[' + str(vals['Code']) + '] ' + vals['Message'],
+            subject=_('Reservation failed'),
+            body=_('[' + str(vals['Code']) + '] ' + vals['Message']),
             message_type='comment',
         )
 
