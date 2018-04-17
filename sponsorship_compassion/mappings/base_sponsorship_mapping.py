@@ -40,7 +40,7 @@ class BaseSponsorshipMapping(OnrampMapping):
         "SecondaryHoldOwner": ('create_uid.name', 'res.users'),
         "SponsorCorrespondenceLanguage": ('reading_language.name',
                                           'res.lang.compassion'),
-        "SponsorSupporterGlobalID": ('correspondant_id.global_id',
+        "SponsorSupporterGlobalID": ('correspondent_id.global_id',
                                      'res.partner'),
         "Beneficiary_GlobalID": ('child_id.global_id', 'compassion.child'),
         "HoldExpirationDate": "hold_expiration_date",

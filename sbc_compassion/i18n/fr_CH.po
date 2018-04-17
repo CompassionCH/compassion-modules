@@ -281,7 +281,7 @@ msgid "Contract for recurring invoicing"
 msgstr "Contract for recurring invoicing"
 
 #. module: sbc_compassion
-#: field:correspondence,correspondant_id:0
+#: field:correspondence,correspondent_id:0
 msgid "Correspondant"
 msgstr "Correspondant"
 

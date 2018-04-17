@@ -53,7 +53,7 @@ class Contracts(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.onchange('correspondant_id', 'child_id')
+    @api.onchange('correspondent_id', 'child_id')
     def onchange_relationship(self):
         """ Define the preferred reading language for the correspondent.
             1. Sponsor main language if child speaks that language
@@ -62,8 +62,8 @@ class Contracts(models.Model):
             3. English
         """
         for sponsorship in self:
-            if sponsorship.correspondant_id and sponsorship.child_id:
-                sponsor = sponsorship.correspondant_id
+            if sponsorship.correspondent_id and sponsorship.child_id:
+                sponsor = sponsorship.correspondent_id
                 child_languages = sponsorship.child_id.field_office_id.\
                     spoken_language_ids
                 sponsor_languages = sponsor.spoken_lang_ids

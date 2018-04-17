@@ -88,7 +88,7 @@
                     <group>
                         <group>
                             <field name="partner_id" readonly="1"/>
-                            <field name="correspondant_id" readonly="1"/>
+                            <field name="correspondent_id" readonly="1"/>
                             <field name="parent_id" context="{
                                     'form_view_ref' : 'sponsorship_tracking.view_follow_contract_form_compassion',
                                     'tree_view_ref' : 'sponsorship_tracking.view_follow_contract_tree_compassion'

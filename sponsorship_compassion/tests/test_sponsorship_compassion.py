@@ -74,7 +74,7 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         # Add default values
         default_values = {
             'type': 'S',
-            'correspondant_id': vals['partner_id'],
+            'correspondent_id': vals['partner_id'],
             'origin_id': self.origin_id,
         }
         default_values.update(vals)
@@ -127,7 +127,7 @@ class TestSponsorship(BaseSponsorshipTest):
             self.create_group({'partner_id': self.thomas.id})
         sponsorship.write({'partner_id': self.thomas.id})
         sponsorship.on_change_partner_id()
-        self.assertEqual(sponsorship.correspondant_id, sponsorship.partner_id)
+        self.assertEqual(sponsorship.correspondent_id, sponsorship.partner_id)
         self.assertEqual(child.sponsor_id, self.thomas)
 
         # Test validation of contract
@@ -279,12 +279,12 @@ class TestSponsorship(BaseSponsorshipTest):
         contract = self._create_contract(
             other_vals={
                 'type': 'O',
-                'correspondant_id': contract_group.partner_id.id
+                'correspondent_id': contract_group.partner_id.id
             })
         contract2 = self._create_contract(
             other_vals={
                 'type': 'O',
-                'correspondant_id': contract_group.partner_id.id
+                'correspondent_id': contract_group.partner_id.id
             })
         self._create_contract_line(
             contract.id, '40.0', other_vals={'quantity': '2'})
@@ -335,14 +335,14 @@ class TestSponsorship(BaseSponsorshipTest):
                 'origin_id': self.origin_id,
                 'type': 'S',
                 'child_id': child1.id,
-                'correspondant_id': sp_group.partner_id.id
+                'correspondent_id': sp_group.partner_id.id
             })
         sponsorship2 = self._create_contract(
             other_vals={
                 'origin_id': self.origin_id,
                 'type': 'S',
                 'child_id': child1.id,
-                'correspondant_id': sp_group.partner_id.id
+                'correspondent_id': sp_group.partner_id.id
             })
         sponsorship2.write({'child_id': child2.id})
         sponsorship3 = self._create_contract(
@@ -350,7 +350,7 @@ class TestSponsorship(BaseSponsorshipTest):
                 'origin_id': self.origin_id,
                 'type': 'S',
                 'child_id': child3.id,
-                'correspondant_id': sp_group.partner_id.id
+                'correspondent_id': sp_group.partner_id.id
             })
         sponsorship1.signal_workflow('contract_validated')
         sponsorship2.signal_workflow('contract_validated')

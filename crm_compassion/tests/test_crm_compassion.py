@@ -66,7 +66,7 @@ class TestCrmCompassion(BaseSponsorshipTest):
                 'group_id': sp_group.id,
                 'origin_id': event.origin_id.id,
                 'child_id': child.id,
-                'correspondant_id': sp_group.partner_id.id
+                'correspondent_id': sp_group.partner_id.id
             },
             [{'amount': 50.0}]
         )
