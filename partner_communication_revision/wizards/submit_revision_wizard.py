@@ -37,8 +37,10 @@ class ValidateRevisionWizard(models.TransientModel):
             subject_base = u'[{}] Revision text submitted'
             body_base = u'A new text for was submitted for approval. {}'
             revision.write({
-                'proposition_correction': revision.proposition_text,
-                'subject_correction': revision.subject,
+                'proposition_correction':
+                revision.proposition_correction or revision.proposition_text,
+                'subject_correction':
+                revision.subject_correction or revision.subject,
                 'state': 'submit',
                 'is_corrected': False
             })
