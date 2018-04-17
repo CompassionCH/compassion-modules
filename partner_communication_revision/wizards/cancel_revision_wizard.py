@@ -76,8 +76,6 @@ class ValidateRevisionWizard(models.TransientModel):
                 self.env.user.name, self.comments or u"").strip()
             subject = "[{}] Approval cancelled:  text needs corrections"\
                 .format(self.revision_id.display_name)
-            self.revision_id.message_post(
-                body=body, subject=subject, type='comment',
-                subtype='mail.mt_comment', content_subtype='plaintext')
+            self.revision_id.notify_proposition(subject, body)
 
         return True
