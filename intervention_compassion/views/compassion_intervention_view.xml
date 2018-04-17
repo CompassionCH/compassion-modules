@@ -96,6 +96,7 @@
                                     <field name="requested_additional_funding" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                                     <field name="commitment_amount" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                                     <field name="commited_percentage" widget="progressbar"/>
+                                    <field name="total_amendment" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                                     <field name="local_contribution" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                                     <field name="impacted_beneficiaries"/>
                                 </group>
