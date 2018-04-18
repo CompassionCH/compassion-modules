@@ -201,7 +201,7 @@ class DownloadChildPictures(models.TransientModel):
                 self.env.context['active_ids'])
             contracts = self.env['recurring.contract'].search([
                 '|',
-                ('correspondant_id', 'in', partners.ids),
+                ('correspondent_id', 'in', partners.ids),
                 ('partner_id', 'in', partners.ids),
                 ('type', 'in', ['S', 'SC']),
                 ('state', '!=', 'cancelled')

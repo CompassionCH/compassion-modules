@@ -62,7 +62,7 @@ class ResPartner(models.Model):
         contract_obj = self.env['recurring.contract']
         for partner in self:
             partner.contracts_correspondant = contract_obj.search(
-                [('correspondant_id', '=', partner.id),
+                [('correspondent_id', '=', partner.id),
                  ('type', 'in', ['S', 'SC']),
                  ('fully_managed', '=', False)],
                 order='start_date desc').ids
@@ -110,7 +110,7 @@ class ResPartner(models.Model):
                 'recurring.contract'].search_count([
                     '|',
                     ('partner_id', '=', partner.id),
-                    ('correspondant_id', '=', partner.id),
+                    ('correspondent_id', '=', partner.id),
                     ('is_active', '=', True),
                     ('child_id', '!=', False)])
 
@@ -220,7 +220,7 @@ class ResPartner(models.Model):
             'name': 'Contracts',
             'res_model': 'recurring.contract',
             'views': [[False, "tree"], [False, "form"]],
-            'domain': ['|', ('correspondant_id', '=', self.id),
+            'domain': ['|', ('correspondent_id', '=', self.id),
                        ('partner_id', '=', self.id)],
             'context': self.with_context({
                 'default_type': 'S',
@@ -257,7 +257,7 @@ class ResPartner(models.Model):
         action_id = self.env.ref('sponsorship_compassion.upsert_partner').id
         for partner in self:
             contract_count = self.env['recurring.contract'].search_count([
-                ('correspondant_id', '=', partner.id),
+                ('correspondent_id', '=', partner.id),
                 ('state', 'not in', ('terminated', 'cancelled'))])
             if contract_count:
                 # UpsertConstituent Message if not one already pending

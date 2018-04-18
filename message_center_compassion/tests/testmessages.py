@@ -101,7 +101,7 @@ class TestMessages(test_base_module):
         """Creates a new contract for given child."""
         contract_vals = {
             'partner_id': self.partners.ids[0],
-            'correspondant_id': self.partners.ids[0],
+            'correspondent_id': self.partners.ids[0],
             'origin_id': self.origin.id,
             'group_id': self.group.id,
             'channel': 'direct',

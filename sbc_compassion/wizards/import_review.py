@@ -81,7 +81,7 @@ class ImportReview(models.TransientModel):
         self.ensure_one()
         if self.partner_id:
             sponsorships = self.env['recurring.contract'].search([
-                ('correspondant_id', '=', self.partner_id.id)
+                ('correspondent_id', '=', self.partner_id.id)
             ])
             if len(sponsorships) == 1:
                 self.sponsorship_id = sponsorships

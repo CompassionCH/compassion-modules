@@ -32,7 +32,7 @@
             <field name="mapping_name">CreateSponsorship</field>
             <field name="model">recurring.contract</field>
             <field name="description">This will change the supporter of a Sponsorship to GMC. The supporter accounts will be merged.</field>
-            <field name="connect_service">supporters/${object.correspondant_id.global_id}/sponsorships/${object.global_id}</field>
+            <field name="connect_service">supporters/${object.correspondent_id.global_id}/sponsorships/${object.global_id}</field>
             <field name="connect_outgoing_wrapper">CommitmentUpdates</field>
             <field name="connect_answer_wrapper">BeneficiaryCommitmentResponseList</field>
             <field name="auto_process">true</field>

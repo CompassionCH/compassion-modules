@@ -62,8 +62,7 @@ class Correspondence(models.Model):
         track_visibility='onchange')
     name = fields.Char(compute='_compute_name')
     partner_id = fields.Many2one(
-        related='sponsorship_id.correspondant_id', store=True,
-        oldname='correspondant_id'
+        related='sponsorship_id.correspondent_id', store=True
     )
     child_id = fields.Many2one(related='sponsorship_id.child_id', store=True)
     # Field used for identifying correspondence by GMC
