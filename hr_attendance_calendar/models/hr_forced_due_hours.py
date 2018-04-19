@@ -44,15 +44,11 @@ class HrForcedDueHours(models.Model):
 
     @api.multi
     def unlink(self):
-        length = len(self)
-        employee_ids = [0]*length
-        dates = [0]*length
-        for i in range(length):
-            employee_ids[i] = self[i].employee_id.id
-            dates[i] = self[i].date
+        employee_ids = self.mapped('employee_id.id')
+        dates = self.mapped('date')
 
         super(HrForcedDueHours, self).unlink()
-        for i in range(length):
+        for i in range(len(employee_ids)):
             self.recompute_due_hours(employee_ids[i], dates[i])
 
 
