@@ -69,14 +69,16 @@ class InstallSdsTracking(models.TransientModel):
     def _set_sds_state(self, contract_ids, sds_state, sds_change_date,
                        date_delta=0):
         if contract_ids:
-            self.env.cr.execute(
-                sql.SQL("""
+            # correct according to
+            # http://initd.org/psycopg/docs/usage.html#passing-parameters-to-sql-queries
+            # pylint:disable=E8103
+            query = sql.SQL("""
                 UPDATE recurring_contract
                 SET sds_state = %s, sds_state_date = {} + interval '%s days',
                     color = %s
-                WHERE id = ANY (%s)""").format(
-                    sql.Identifier(sds_change_date)),
-                (sds_state, date_delta, SDS_COLORS[sds_state], contract_ids)
+                WHERE id = ANY (%s)""").format(sql.Identifier(sds_change_date))
+            self.env.cr.execute(query, (sds_state, date_delta, SDS_COLORS[
+                sds_state], contract_ids,)
             )
 
     def _get_contract_sub(self):

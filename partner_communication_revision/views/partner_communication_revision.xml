@@ -1,3 +1,4 @@
+<!--pylint:disable=file-not-used-->
 <odoo>
     <template id="assets_backend" name="partner_communication_revision assets" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">

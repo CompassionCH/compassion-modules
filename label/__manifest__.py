@@ -27,12 +27,14 @@
 #
 ##############################################################################
 
+# pylint: disable=C8101
 {
     "name": "Mass Label Reporting",
     "version": "10.0.1.0.0",
     "author": "Serpent Consulting Services Pvt. Ltd.",
     "category": "Tools",
     "website": "http://www.serpentcs.com",
+    'license': 'AGPL-3',
     'depends': ['report'],
     'data': [
         'views/label_config_view.xml',

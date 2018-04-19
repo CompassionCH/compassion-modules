@@ -686,7 +686,7 @@ class SponsorshipGift(models.Model):
                 ).format(**values)
                 gift.message_post(
                     body=body,
-                    subject="Gift Undeliverable Notification",
+                    subject=_("Gift Undeliverable Notification"),
                     partner_ids=notify_ids,
                     type='comment',
                     subtype='mail.mt_comment',

@@ -27,6 +27,7 @@
 #
 ##############################################################################
 
+# pylint: disable=C8101
 {
     'name': 'Compassion CH - Planning',
     'version': '10.0.1.0.0',
@@ -34,6 +35,7 @@
     'sequence': 150,
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
+    'license': 'AGPL-3',
     'depends': ['hr_contract', 'hr_holidays'],
     'data': [
         'views/hr_planning_view.xml',

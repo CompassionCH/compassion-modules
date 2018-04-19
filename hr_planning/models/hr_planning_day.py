@@ -12,7 +12,7 @@
 from odoo import fields, models
 
 
-class hr_planning_day(models.Model):
+class HrPlanningDay(models.Model):
     _name = "hr.planning.day"
     '''
         Simple model for a working day for an employee.

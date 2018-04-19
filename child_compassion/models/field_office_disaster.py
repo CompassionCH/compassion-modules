@@ -84,9 +84,9 @@ class ChildDisasterImpact(models.Model):
         impact = super(ChildDisasterImpact, self).create(vals)
         if impact.child_id:
             impact.child_id.message_post(
-                "Child was affected by the natural disaster {}".format(
-                    impact.disaster_id.name),
-                "Disaster Alert"
+                _("Child was affected by the natural disaster {}".format(
+                    impact.disaster_id.name)),
+                _("Disaster Alert")
             )
         return impact
 
@@ -218,8 +218,8 @@ class FieldOfficeDisasterAlert(models.Model):
             disaster.write(vals)
             if notify_ids:
                 disaster.message_post(
-                    body="The Disaster Alert was just updated.",
-                    subject="Disaster Alert Update",
+                    body=_("The Disaster Alert was just updated."),
+                    subject=_("Disaster Alert Update"),
                     partner_ids=notify_ids,
                     type='comment',
                     subtype='mail.mt_comment',
@@ -229,8 +229,8 @@ class FieldOfficeDisasterAlert(models.Model):
             disaster = super(FieldOfficeDisasterAlert, self).create(vals)
             if notify_ids:
                 disaster.message_post(
-                    body="The disaster alert has just been received.",
-                    subject="New Disaster Alert",
+                    body=_("The disaster alert has just been received."),
+                    subject=_("New Disaster Alert"),
                     partner_ids=notify_ids,
                     type='comment',
                     subtype='mail.mt_comment',

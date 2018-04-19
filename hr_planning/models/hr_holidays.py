@@ -12,7 +12,7 @@
 from odoo import api, models
 
 
-class hr_holidays(models.Model):
+class HrHolidays(models.Model):
     _inherit = "hr.holidays"
 
     @api.multi
@@ -22,12 +22,12 @@ class hr_holidays(models.Model):
 
     @api.multi
     def holidays_validate(self):
-        res = super(hr_holidays, self).holidays_validate()
+        res = super(HrHolidays, self).holidays_validate()
         self._generate()
         return res
 
     @api.multi
     def holidays_refuse(self):
-        res = super(hr_holidays, self).holidays_refuse()
+        res = super(HrHolidays, self).holidays_refuse()
         self._generate()
         return res

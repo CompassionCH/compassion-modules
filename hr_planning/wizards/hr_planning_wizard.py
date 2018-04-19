@@ -16,7 +16,7 @@ import pytz
 from datetime import datetime, timedelta, time
 
 
-class hr_planning_wizard(models.TransientModel):
+class HrPlanningWizard(models.TransientModel):
     _name = 'hr.planning.wizard'
 
     ##########################################################################

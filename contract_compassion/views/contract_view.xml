@@ -17,7 +17,7 @@
             <field name="reference" position="replace" />
         </field>
     </record>
-
+<!--pylint:disable=dangerous-view-replace-wo-priority-->
     <record id="view_recurring_contract_form_compassion" model="ir.ui.view">
         <field name="name">recurring.contract.compassion.form</field>
         <field name="model">recurring.contract</field>
@@ -87,7 +87,7 @@
             </xpath>
         </field>
     </record>
-
+<!--pylint:disable=dangerous-view-replace-wo-priority-->
     <record id="view_recurring_contract_compassion_filter" model="ir.ui.view">
         <field name="name">recurring.contract.compassion.select</field>
         <field name="model">recurring.contract</field>

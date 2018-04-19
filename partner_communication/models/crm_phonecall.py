@@ -64,6 +64,6 @@ class Phonecall(models.Model):
                 'auto_send': False,
             })
             phonecall.partner_id.message_post(
-                phonecall.name, "Phonecall"
+                phonecall.name, _("Phonecall")
             )
         return phonecall
