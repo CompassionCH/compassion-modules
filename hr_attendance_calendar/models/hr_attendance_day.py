@@ -58,6 +58,11 @@ class HrAttendanceDay(models.Model):
     # Attendances
     attendance_ids = fields.One2many('hr.attendance', 'attendance_day_id',
                                      'Attendances', readonly=True)
+    has_logged_hours = fields.Boolean('Has logged hours',
+                                      compute='_compute_has_logged_hours',
+                                      store=True)
+    has_linked_change_day_request = fields.Boolean(
+        compute='_compute_has_linked_change_day_request', store=True)
 
     # Worked
     paid_hours = fields.Float(
@@ -97,6 +102,27 @@ class HrAttendanceDay(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.multi
+    @api.depends('attendance_ids')
+    def _compute_has_logged_hours(self):
+        for att_day in self:
+            # > 1 because when we calculate this, we're creating an attendance
+            att_day.has_logged_hours = (len(att_day.attendance_ids) > 1)
+
+    @api.multi
+    def get_related_forced_due_hours(self):
+        self.ensure_one()
+        return self.env['hr.forced.due.hours'].search([
+            ('employee_id', '=', self.employee_id.id),
+            ('date', '=', self.date)])
+
+    @api.multi
+    @api.depends('due_hours')
+    def _compute_has_linked_change_day_request(self):
+        for att_day in self:
+            res = att_day.get_related_forced_due_hours()
+            att_day.has_linked_change_day_request = len(res) == 1
+
+    @api.multi
     @api.depends('date')
     def _compute_working_day(self):
         for att_day in self.filtered('date'):
@@ -127,14 +153,9 @@ class HrAttendanceDay(models.Model):
         for att_day in self:
 
             # Forced due hours (when an user changes work days)
-            res = self.env['hr.forced.due.hours'].search([
-                ('employee_id', '=', att_day.employee_id.id),
-                ('date', '=', att_day.date),
-            ])
-            # res.forced_due_hours returns False if exists and has value 0.0
-            # that's why we write len(res) == 1
-            if len(res) == 1:
-                att_day.due_hours = res.forced_due_hours
+            forced_hours = att_day.get_related_forced_due_hours()
+            if forced_hours:
+                att_day.due_hours = forced_hours.forced_due_hours
                 continue
 
             # Public holidays

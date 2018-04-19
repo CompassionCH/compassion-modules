@@ -10,8 +10,11 @@
                         <!--<field name="test" required="True" style="height: 50px"/>-->
                      <footer>
                         <button type="object" class="oe_highlight" name="go_to_step2" string="Yes, I want to exchange these hours with an other day"/>
-                        <button special="cancel" string="No, I just want to do extra hours today"/>
+                        <button special="cancel" class="change_day_wizard_close_button" string="No, I just want to do extra hours today"/>
                      </footer>
+                     <script>
+                         window.add_timeout_button_event('change_day_wizard_close_button');
+                     </script>
                 </form>
             </field>
         </record>
@@ -30,13 +33,14 @@
                     <group>
                         <span id="dates_available_radio_selection"></span>
                     </group>
-                    <span>
-                        <script>window.convert_select_into_radio('change_dates_available');</script>
-                    </span>
                     <footer>
-                        <button type="object" class="oe_highlight" name="change_due_hours" string="Submit"/>
-                        <button special="cancel" string="Cancel"/>
+                        <button type="object" class="oe_highlight change_day_wizard_close_button" name="change_due_hours" string="Submit"/>
+                        <button special="cancel" class="change_day_wizard_close_button" string="Cancel"/>
                     </footer>
+                    <script>
+                        window.convert_select_into_radio('change_dates_available');
+                        window.add_timeout_button_event('change_day_wizard_close_button');
+                    </script>
                 </form>
             </field>
         </record>

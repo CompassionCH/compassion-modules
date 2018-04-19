@@ -71,15 +71,19 @@ odoo.define('hr_switzerland.exchange_days_wizard', function(require) {
 
     greeting_message.include({
         start: function () {
-            if (!this.attendance.due_hours && !this.attendance.check_out && this.attendance.worked_hours === 0) {
-                this.do_action('hr_attendance_calendar.change_day_wizard');
-                this._super();
-                // remove timeout that redirects to main page after 5 seconds
-                clearTimeout(this.return_to_main_menu);
-            }
-            else {
-                this._super();
-            }
+            window.setAttendanceMessageTimeout = function(context) {
+                return function() {
+                    setTimeout(function() {
+                        context.do_action(context.next_action, {
+                            clear_breadcrumbs: true
+                        });
+                    }, 5000);
+                }
+            };
+
+            window.add_timeout_button_event = function(className) {
+                $('.'+className).click(window.attendance_message_timeout);
+            };
 
             window.find_parent_by_tag_name = function (element, tag) {
                 while (element.prop('tagName').toLowerCase() !== tag.toLowerCase()) {
@@ -119,6 +123,17 @@ odoo.define('hr_switzerland.exchange_days_wizard', function(require) {
                 // style modifications
                 window.find_parent_by_tag_name($('#select_change_day_message'), 'table').css('margin-bottom', '-8px');
             };
+
+            if (!this.attendance.due_hours && !this.attendance.check_out && !this.attendance.has_logged_hours && !this.attendance.has_linked_change_day_request) {
+                this.do_action('hr_attendance_calendar.change_day_wizard');
+                this._super();
+                // remove timeout that redirects to main page after 5 seconds
+                clearTimeout(this.return_to_main_menu);
+                window.attendance_message_timeout = window.setAttendanceMessageTimeout(this);
+            }
+            else {
+                this._super();
+            }
         }
     });
 });

@@ -24,6 +24,10 @@ class HrAttendance(models.Model):
                                         readonly=True)
 
     due_hours = fields.Float(related='attendance_day_id.due_hours')
+    has_logged_hours = fields.Boolean(
+        related='attendance_day_id.has_logged_hours')
+    has_linked_change_day_request = fields.Boolean(
+        related='attendance_day_id.has_linked_change_day_request')
 
     ##########################################################################
     #                               ORM METHODS                              #

@@ -1,11 +1,10 @@
-from odoo import models, fields, api, exceptions
+from odoo import models, fields, api
 import datetime
+from collections import OrderedDict
 
 
 class ChangeDayDWizard(models.TransientModel):
     _name = 'hr.change.day.wizard'
-
-    test = fields.Char('hello world')
 
     @api.multi
     def go_to_step2(self):
@@ -68,43 +67,26 @@ class ChangeDayDWizard(models.TransientModel):
 class ChangeDayWizardStep2(models.TransientModel):
     _name = 'hr.change.day.wizard.step2'
 
-    test = fields.Char('hello world')
     dates = fields.Selection(selection='_compute_dates')
 
     @api.multi
     def _compute_dates(self):
         if 'data' in self._context:
-            return [(k, v) for k, v in self._context['data'].items()]
+            d = self._context['data']
+            # orders by date
+            return [(k, v) for k, v in OrderedDict(sorted(d.items())).items()]
         return [('default', 'no valid date')]
 
     @api.multi
     def change_due_hours(self):
         employee_id = self.env['res.users'].browse(self._uid).employee_ids
-        employee_id.ensure_one()
 
-        day1 = {
+        vals = {
             'employee_id': employee_id.id,
-            'date': datetime.date.today(),
-            'forced_due_hours': self._context['data'][self.dates]
+            'date1': datetime.date.today(),
+            'forced1': self._context['data'][self.dates],
+            'date2': self.dates,
+            'forced2': 0,
+            'user_id': employee_id.parent_id.user_id.id
         }
-        day2 = {
-            'employee_id': employee_id.id,
-            'date': self.dates,
-            'forced_due_hours': 0
-        }
-        forced_due_hours = self.env['hr.forced.due.hours']
-
-        for day in [day1, day2]:
-            domain = [('employee_id', '=', employee_id.id),
-                      ('date', '=', day['date'])]
-
-            existing = forced_due_hours.search(domain)
-            if len(existing) == 1:
-                existing.unlink()
-
-            forced_due_hours.create(day)
-
-            # recompute due hours after forced hour creation
-            att_days = self.env['hr.attendance.day'].search(domain)
-            for att_day in att_days:
-                att_day.recompute_due_hours()
+        self.env['hr.change.day.request'].create(vals)
