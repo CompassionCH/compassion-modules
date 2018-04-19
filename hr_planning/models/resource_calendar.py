@@ -33,11 +33,11 @@ class ResourceCalendar(models.Model):
 
     @api.multi
     def _generate(self):
-        self.ensure_one()
-        contract_obj = self.env['hr.contract']
-        contracts = contract_obj.search(
-            [('working_hours', '=', self.id)])
+        for record in self:
+            contract_obj = record.env['hr.contract']
+            contracts = contract_obj.search(
+                [('working_hours', '=', record.id)])
 
-        employee_ids = contracts.mapped('employee_id.id')
+            employee_ids = contracts.mapped('employee_id.id')
 
-        self.env['hr.planning.wizard'].generate(employee_ids)
+            record.env['hr.planning.wizard'].generate(employee_ids)
