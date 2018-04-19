@@ -29,19 +29,18 @@ class HrForcedDueHours(models.Model):
             [('employee_id', '=', employee_id),
              ('date', '=', date)]).recompute_due_hours()
 
-    @api.one
+    @api.multi
     def write(self, vals):
-        old_vals = dict()
-        for field in ['employee_id', 'date', 'forced_due_hours']:
-            old_vals[field] = getattr(self, field)
+        for record in self:
+            old_vals = dict()
+            for field in ['employee_id', 'date', 'forced_due_hours']:
+                old_vals[field] = getattr(record, field)
 
-        res = super(HrForcedDueHours, self).write(vals)
+            super(HrForcedDueHours, record).write(vals)
 
-        self.recompute_due_hours(
-            old_vals['employee_id'].id, old_vals['date'])
-        self.recompute_due_hours(self.employee_id.id, self.date)
-
-        return res
+            record.recompute_due_hours(
+                old_vals['employee_id'].id, old_vals['date'])
+            record.recompute_due_hours(record.employee_id.id, record.date)
 
     @api.multi
     def unlink(self):
