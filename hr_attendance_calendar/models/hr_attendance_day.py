@@ -58,9 +58,7 @@ class HrAttendanceDay(models.Model):
     # Attendances
     attendance_ids = fields.One2many('hr.attendance', 'attendance_day_id',
                                      'Attendances', readonly=True)
-    has_logged_hours = fields.Boolean('Has logged hours',
-                                      compute='_compute_has_logged_hours',
-                                      store=True)
+
     has_linked_change_day_request = fields.Boolean(
         compute='_compute_has_linked_change_day_request', store=True)
 
@@ -101,13 +99,6 @@ class HrAttendanceDay(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.multi
-    @api.depends('attendance_ids')
-    def _compute_has_logged_hours(self):
-        for att_day in self:
-            # > 1 because when we calculate this, we're creating an attendance
-            att_day.has_logged_hours = (len(att_day.attendance_ids) > 1)
-
     @api.multi
     def get_related_forced_due_hours(self):
         self.ensure_one()

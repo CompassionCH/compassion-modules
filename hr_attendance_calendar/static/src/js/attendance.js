@@ -124,7 +124,7 @@ odoo.define('hr_switzerland.exchange_days_wizard', function(require) {
                 window.find_parent_by_tag_name($('#select_change_day_message'), 'table').css('margin-bottom', '-8px');
             };
 
-            if (!this.attendance.due_hours && !this.attendance.check_out && !this.attendance.has_logged_hours && !this.attendance.has_linked_change_day_request) {
+            if (!this.attendance.due_hours && !this.attendance.check_out && this.attendance.total_attendance === 0 && !this.attendance.has_linked_change_day_request) {
                 this.do_action('hr_attendance_calendar.change_day_wizard');
                 this._super();
                 // remove timeout that redirects to main page after 5 seconds

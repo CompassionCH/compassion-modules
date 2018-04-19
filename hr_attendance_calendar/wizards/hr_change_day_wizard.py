@@ -30,7 +30,7 @@ class ChangeDayDWizard(models.TransientModel):
         date_to += datetime.timedelta(7)
 
         att_day = self.env['hr.attendance.day']
-        att_day_created = []
+        att_day_created = att_day
         current_date = date_from
 
         while current_date <= date_to:
@@ -39,10 +39,10 @@ class ChangeDayDWizard(models.TransientModel):
                 ('date', '=', current_date)
             ])
             if not already_exist:
-                att_day_created.append(att_day.create({
+                att_day_created += att_day.create({
                     'employee_id': employee_id.id,
                     'date': current_date,
-                }))
+                })
             current_date += datetime.timedelta(days=1)
 
         next_att_days = att_day.search(
@@ -58,10 +58,9 @@ class ChangeDayDWizard(models.TransientModel):
                 data[date] = due_hours[index]
 
         #  delete created att_days
-        unlinked = [x.unlink() for x in att_day_created].count(False) == 0
+        att_day_created.unlink()
 
-        if unlinked:
-            return data
+        return data
 
 
 class ChangeDayWizardStep2(models.TransientModel):
