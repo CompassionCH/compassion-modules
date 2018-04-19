@@ -290,11 +290,13 @@ class SponsorshipContract(models.Model):
         inv_line_obj = self.env['account.invoice.line']
         invl_search = self._filter_clean_invoices(since_date, to_date)
         inv_lines = inv_line_obj.search(invl_search)
+        move_lines = inv_lines.mapped('invoice_id.move_id.line_ids').filtered(
+            'reconciled')
         reconciles = inv_lines.mapped(
             'invoice_id.payment_move_line_ids.full_reconcile_id')
 
         # Unreconcile paid invoices
-        move_lines = reconciles.mapped('reconciled_line_ids')
+        move_lines |= reconciles.mapped('reconciled_line_ids')
         move_lines.remove_move_reconcile()
 
         return move_lines.mapped('invoice_id.invoice_line_ids').filtered(
