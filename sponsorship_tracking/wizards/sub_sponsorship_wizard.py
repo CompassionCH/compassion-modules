@@ -126,7 +126,7 @@ class SubSponsorshipWizard(models.TransientModel):
             'color': 1
         })
         contract.partner_id.message_post(
-            subject='{} - No SUB'.format(contract.child_code),
-            body="The sponsor doesn't want a new child."
+            subject=_('{} - No SUB'.format(contract.child_code)),
+            body=_("The sponsor doesn't want a new child.")
         )
         return True

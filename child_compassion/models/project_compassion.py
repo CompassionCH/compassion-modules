@@ -385,8 +385,8 @@ class CompassionProject(models.Model):
         """
         for project in self:
             project.message_post(
-                "The project was suspended and funds are retained.",
-                "Project Suspended", 'comment')
+                _("The project was suspended and funds are retained."),
+                _("Project Suspended"), 'comment')
         return True
 
     @api.model
@@ -468,8 +468,8 @@ class CompassionProject(models.Model):
         """ To perform some actions when project is reactivated """
         for project in self:
             project.message_post(
-                "The project is reactivated.",
-                "Project Reactivation", 'comment')
+                _("The project is reactivated."),
+                _("Project Reactivation"), 'comment')
         return True
 
     def hold_gifts_action(self):

@@ -86,6 +86,7 @@ class CompassionIntervention(models.Model):
         'Total expense', compute='_compute_move_line', readonly=True)
     total_income = fields.Char(
         'Total income', compute='_compute_move_line', readonly=True)
+    total_amendment = fields.Float()
 
     # Intervention Details Information
     ##################################
@@ -684,15 +685,25 @@ class CompassionIntervention(models.Model):
 
         v = intervention_mapping.get_vals_from_connect(interventionamendment)
         intervention_id = v['intervention_id']
+        amendment_amount = interventionamendment[
+            'AdditionalAmountRequestedUSD']
         intervention = self.env['compassion.intervention'].search([
             ('intervention_id', '=', intervention_id)
         ])
 
         if intervention:
+            intervention.total_amendment += amendment_amount
             intervention.get_infos()
             intervention_local_ids.append(intervention.id)
+            body = _("This intervention has been modified by amendment.")
+            body += "<br/><ul><li>Amendment ID: {}</li>".format(
+                interventionamendment['InterventionAmendment_ID'])
+            body += "<li>Amendment Amount: {}</li>".format(
+                amendment_amount)
+            body += "<li>Hold ID: {}</li></ul>".format(
+                interventionamendment['HoldID'])
             intervention.message_post(
-                _("This intervention has been modified by amendment"),
+                body,
                 subject=_(intervention.name + ": Amendment received"),
                 message_type='email', subtype='mail.mt_comment')
 

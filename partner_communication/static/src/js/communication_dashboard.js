@@ -2,16 +2,13 @@ odoo.define('partner_communication.dashboard', function (require) {
 'use strict';
 
 var core = require('web.core');
-var formats = require('web.formats');
 var Model = require('web.Model');
-var session = require('web.session');
 var KanbanView = require('web_kanban.KanbanView');
 
 var QWeb = core.qweb;
 
 var _model = new Model('partner.communication.config');
 
-var _t = core._t;
 var _lt = core._lt;
 
 // Code copied from sales_team/static/src/js/sales_team_dashboard.js
@@ -42,7 +39,7 @@ var CommunicationDashboardView = KanbanView.extend({
 
         var $action = $(ev.currentTarget);
         var action_name = $action.attr('name');
-        var action_extra = $action.data('extra');
+        $action.data('extra');
         var additional_context = {};
 
         this.do_action(action_name, {additional_context: additional_context});

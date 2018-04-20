@@ -127,14 +127,16 @@ class AccountInvoice(models.Model):
             # https://stackoverflow.com/questions/34517540/
             # find-all-combinations-of-a-list-of-numbers-with-a-given-sum
             credits = open_payments.mapped('credit')
-            payment_ids = open_payments.ids
             matching_lines = line_obj
             must_split_move_line = False
             for i in range(2, len(credits)):
                 for combination in itertools.combinations(credits, i):
                     if sum(combination) == total_amount:
-                        matching_lines = line_obj.browse([
-                            payment_ids[j] for j in combination])
+                        prev_index = 0
+                        for amount in combination:
+                            index = credits[prev_index:].index(amount)
+                            matching_lines += open_payments[prev_index:][index]
+                            prev_index += index + 1
                         break
                 if matching_lines:
                     break

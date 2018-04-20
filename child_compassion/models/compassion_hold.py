@@ -293,13 +293,23 @@ class CompassionHold(models.Model):
                 'channel': hold.reservation_id.channel
             })
             child.hold_id = hold
-            hold.reservation_id.number_reserved += 1
+            reservation = hold.reservation_id
+            reservation_state = 'active'
+            number_reserved = reservation.number_reserved + 1
+            if number_reserved == reservation.number_of_beneficiaries or \
+                    reservation.reservation_type == 'child':
+                reservation_state = 'expired'
+            reservation.write({
+                'state': reservation_state,
+                'number_reserved': number_reserved
+            })
 
             # Notify reservation owner
             hold.message_post(
-                body="A new hold has been created because of an existing "
-                "reservation.",
-                subject="%s - Reservation converted to hold" % child.local_id,
+                body=_("A new hold has been created because of an existing "
+                       "reservation."),
+                subject=_("%s - Reservation converted to hold" %
+                          child.local_id),
                 partner_ids=hold.primary_owner.partner_id.ids,
                 type='comment',
                 subtype='mail.mt_comment',
@@ -456,8 +466,8 @@ class CompassionHold(models.Model):
                 'additional_text': additional_text or '',
             }
             hold.message_post(
-                body=body.format(**values),
-                subject=subject,
+                body=_(body.format(**values)),
+                subject=_(subject),
                 type='comment',
             )
             # Commit after hold is updated

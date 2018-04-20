@@ -27,13 +27,14 @@
 #
 ##############################################################################
 
-
+# pylint: disable=C8101
 {
     'name': 'Compassion Dashboard',
     'version': '10.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
+    'license': 'AGPL-3',
     'depends': [
         'web'
     ],

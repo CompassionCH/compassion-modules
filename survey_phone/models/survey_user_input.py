@@ -22,8 +22,10 @@ class SurveyUserInput(models.Model):
     both mobile and phone number as well as a clickable URL to the survey page.
     """
     _inherit = 'survey.user_input'
-    phone = phone_fields.Phone(related='partner_id.phone')
-    mobile = phone_fields.Phone(related='partner_id.mobile')
+    partner_id = fields.Many2one('res.partner', string='Partner',
+                                 readonly=False)
+    phone = phone_fields.Phone(related='partner_id.phone', readonly=True)
+    mobile = phone_fields.Phone(related='partner_id.mobile', readonly=True)
     survey_link = fields.Char("Link to complete the survey",
                               compute='_compute_survey_link')
 

@@ -94,7 +94,7 @@ class ChildPictures(models.Model):
         same_url = pictures._find_same_picture_by_url()
         if same_url:
             pictures.child_id.message_post(
-                _('The picture was the same'), 'Picture update')
+                _('The picture was the same'), _('Picture update'))
             pictures._unlink_related_attachment()
             pictures.unlink()
             return False
@@ -109,7 +109,7 @@ class ChildPictures(models.Model):
         if not image_date:
             # We could not retrieve a picture, we cancel the creation
             pictures.child_id.message_post(
-                _(pictures._error_msg), 'Picture update')
+                _(pictures._error_msg), _('Picture update'))
             pictures._unlink_related_attachment()
             pictures.unlink()
             return False
@@ -120,7 +120,7 @@ class ChildPictures(models.Model):
             # That case is not likely to happens, it means that the url has
             #  changed, while the picture stay unchanged.
             pictures.child_id.message_post(
-                _('The picture was the same'), 'Picture update')
+                _('The picture was the same'), _('Picture update'))
             pictures._unlink_related_attachment()
             pictures.unlink()
             return False
