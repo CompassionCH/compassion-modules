@@ -45,7 +45,7 @@ odoo.define('hr_switzerland.attendance', function (require) {
                                         var negative = total_minutes + diff_minutes < 0;
 
                                         var new_total = Math.abs(total_minutes + diff_minutes);
-                                        var new_hours = ('0' + (new_total / 60) || 0).slice(-2); // eslint-disable-line no-extra-parens
+                                        var new_hours = ('0' + Math.trunc(new_total / 60)).slice(-2); // eslint-disable-line no-extra-parens
                                         var new_minutes = ('0' + (new_total % 60)).slice(-2); // eslint-disable-line no-extra-parens
 
                                         $('#' + el).text((negative ? '-' : '') + new_hours + ':' + new_minutes);
