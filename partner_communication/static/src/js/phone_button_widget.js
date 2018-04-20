@@ -14,7 +14,6 @@ odoo.define('partner_communication.phone_widget', function (require) {
                 var self = this;
                 var phone_num = this.get('value');
                 if(phone_num) {
-                    // pylint: disable=W7903
                     phone_num = phone_num.replace(/\s/g, '').replace(/-/g, '');
                 }
                 var click2dial_text = '';
