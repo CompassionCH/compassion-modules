@@ -21,3 +21,4 @@ from . import hr_holidays
 from . import hr_holidays_status
 from . import hr_weekday_coefficient
 from . import resource_calendar_attendance
+from . import hr_forced_due_hours

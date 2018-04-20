@@ -176,10 +176,9 @@ class HrEmployee(models.Model):
             thf += employee.convert_hour_to_time(float(today_hour))
             employee.today_hour_formatted = thf
 
-    @api.multi
+    @api.model
     def convert_hour_to_time(self, hour):
-        hour = float(hour)
-        return '{:02d}:{:02d}'.format(*divmod(int(abs(hour * 60)), 60))
+        return '{:02d}:{:02d}'.format(*divmod(int(abs(float(hour) * 60)), 60))
 
     @api.multi
     def compute_today_hour(self):
