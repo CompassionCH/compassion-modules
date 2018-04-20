@@ -411,9 +411,7 @@ class CommunicationJob(models.Model):
         """ Call partner from tree view button. """
         self.ensure_one()
         phone_controller = BasePhoneController()
-        request = http.request
         phone_controller.click2dial(
-            request,
             self.partner_phone or self.partner_mobile,
             self._name,
             self.id
