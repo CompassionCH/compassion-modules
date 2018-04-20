@@ -24,8 +24,8 @@ class SurveyUserInput(models.Model):
     _inherit = 'survey.user_input'
     partner_id = fields.Many2one('res.partner', string='Partner',
                                  readonly=False)
-    phone = phone_fields.Phone(related='partner_id.phone')
-    mobile = phone_fields.Phone(related='partner_id.mobile')
+    phone = phone_fields.Phone(related='partner_id.phone', readonly=True)
+    mobile = phone_fields.Phone(related='partner_id.mobile', readonly=True)
     survey_link = fields.Char("Link to complete the survey",
                               compute='_compute_survey_link')
 
