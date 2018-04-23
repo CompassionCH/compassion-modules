@@ -13,14 +13,13 @@ import logging
 from HTMLParser import HTMLParser
 
 from odoo.addons.base_phone import fields as phone_fields
-from odoo.addons.base_phone.controllers.main import BasePhoneController
 
 from pyPdf import PdfFileReader, PdfFileWriter
 from reportlab.lib.units import mm
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.colors import white
 
-from odoo import api, models, fields, _, http
+from odoo import api, models, fields, _
 from odoo.exceptions import UserError
 
 logger = logging.getLogger(__name__)
@@ -410,14 +409,9 @@ class CommunicationJob(models.Model):
     def call(self):
         """ Call partner from tree view button. """
         self.ensure_one()
-        phone_controller = BasePhoneController()
-        request = http.request
-        phone_controller.click2dial(
-            request,
-            self.partner_phone or self.partner_mobile,
-            self._name,
-            self.id
-        )
+        self.env['phone.common'].with_context(
+            click2dial_model=self._name, click2dial_id=self.id)\
+            .click2dial(self.partner_phone or self.partner_mobile)
         return self.log_call()
 
     @api.multi

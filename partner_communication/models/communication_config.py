@@ -178,21 +178,21 @@ class CommunicationConfig(models.Model):
         # value is the send_mode that should be selected.
         send_priority = {
             'physical': {
-                'digital': 'physical' if not partner.email_only else 'none',
                 'none': 'none',
-                'both': 'physical',
                 'physical': 'physical',
+                'digital': 'physical' if not partner.email_only else 'none',
+                'both': 'physical',
             },
             'digital': {
-                'physical': 'physical' if self.print_if_not_email else 'none',
                 'none': 'none',
-                'both': 'both' if self.print_if_not_email else 'digital',
+                'physical': 'physical' if self.print_if_not_email else 'none',
                 'digital': 'digital',
+                'both': 'both' if self.print_if_not_email else 'digital',
             },
             'both': {
                 'none': 'none',
                 'physical': 'physical',
-                'digital': 'both',
+                'digital': 'both' if not partner.email_only else 'digital',
                 'both': 'both',
             }
         }
@@ -224,7 +224,7 @@ class CommunicationConfig(models.Model):
         if send_mode == 'none':
             send_mode = False
         if send_mode == 'digital' and not partner.email:
-            if self.print_if_not_email:
+            if self.print_if_not_email and not partner.email_only:
                 send_mode = 'physical'
                 auto_mode = False
             else:

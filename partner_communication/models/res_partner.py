@@ -30,6 +30,12 @@ class ResPartner(models.Model):
     email_only = fields.Boolean(help="Don't send any printed communication")
     communication_count = fields.Integer(compute='_compute_comm_count')
 
+    _sql_constraints = [
+        ('email_is_set_if_email_only',
+         'CHECK (email_only != TRUE OR email IS NOT NULL)',
+         'The email address should not be empty if email_only is checked.')
+    ]
+
     @api.multi
     def _compute_comm_count(self):
         for partner in self:

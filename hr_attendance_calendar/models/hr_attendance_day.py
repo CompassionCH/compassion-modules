@@ -59,6 +59,9 @@ class HrAttendanceDay(models.Model):
     attendance_ids = fields.One2many('hr.attendance', 'attendance_day_id',
                                      'Attendances', readonly=True)
 
+    has_linked_change_day_request = fields.Boolean(
+        compute='_compute_has_linked_change_day_request', store=True)
+
     # Worked
     paid_hours = fields.Float(
         'Paid hours', compute='_compute_paid_hours', store=True,
@@ -83,7 +86,7 @@ class HrAttendanceDay(models.Model):
                                 readonly=True)
     break_total = fields.Float('Total break',
                                compute='_compute_break_total',
-                               store=True, )
+                               store=True)
     rule_id = fields.Many2one('hr.attendance.rules', 'Rules',
                               compute='_compute_rule_id')
 
@@ -96,6 +99,20 @@ class HrAttendanceDay(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.multi
+    def get_related_forced_due_hours(self):
+        self.ensure_one()
+        return self.env['hr.forced.due.hours'].search([
+            ('employee_id', '=', self.employee_id.id),
+            ('date', '=', self.date)])
+
+    @api.multi
+    @api.depends('due_hours')
+    def _compute_has_linked_change_day_request(self):
+        for att_day in self:
+            res = att_day.get_related_forced_due_hours()
+            att_day.has_linked_change_day_request = len(res) == 1
+
     @api.multi
     @api.depends('date')
     def _compute_working_day(self):
@@ -125,6 +142,12 @@ class HrAttendanceDay(models.Model):
         """First search the due hours based on the contract and after remove
         some hours if they are vacation"""
         for att_day in self:
+
+            # Forced due hours (when an user changes work days)
+            forced_hours = att_day.get_related_forced_due_hours()
+            if forced_hours:
+                att_day.due_hours = forced_hours.forced_due_hours
+                continue
 
             # Public holidays
             if att_day.public_holiday_id:

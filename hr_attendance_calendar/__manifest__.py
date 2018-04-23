@@ -58,7 +58,9 @@
         'views/hr_attendance_break.xml',
         'data/attendance_computation_cron.xml',
         'data/annual_balance_cron.xml',
-        'views/extra_hours_evolution_graph.xml'
+        'views/extra_hours_evolution_graph.xml',
+        'views/hr_change_day_wizard_view.xml',
+        'views/hr_change_day_requests.xml'
     ],
     'installable': True,
     'qweb': [
