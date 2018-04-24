@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- Search Definition -->
+        <record id="hr_change_day_request_search" model="ir.ui.view">
+            <field name="name">Change day request search</field>
+            <field name="model">hr.change.day.request</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="employee_id"/>
+                    <field name="date1"/>
+                    <field name="date2"/>
+                </search>
+            </field>
+        </record>
+
         <record id="view_hr_change_day_request" model="ir.ui.view">
             <field name="name">Change day requests</field>
             <field name="model">hr.change.day.request</field>
