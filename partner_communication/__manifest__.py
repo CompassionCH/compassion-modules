@@ -54,7 +54,7 @@
         'data/default_communication.xml'
     ],
     'qweb': ["static/src/xml/communication_dashboard.xml"],
-    'demo': [],
+    'demo': ["demo/demo_data.xml"],
     'installable': True,
     'auto_install': False
 }
