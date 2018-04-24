@@ -223,10 +223,23 @@ class CommunicationConfig(models.Model):
         send_mode = send_mode.replace('auto_', '')
         if send_mode == 'none':
             send_mode = False
-        if send_mode == 'digital' and not partner.email:
-            if self.print_if_not_email and not partner.email_only:
+
+        # missing email
+        if send_mode in ['digital', 'both'] and not partner.email:
+            removed_digital = True
+            if (self.print_if_not_email or send_mode == 'both') and not \
+                    partner.email_only:
                 send_mode = 'physical'
                 auto_mode = False
             else:
                 send_mode = False
+
+        # missing address
+        if send_mode in ['physical', 'both'] and \
+                not (partner.zip or partner.city):
+            if send_mode == 'both' and not removed_digital:
+                send_mode = 'digital'
+            else:
+                send_mode = False
+
         return send_mode, auto_mode
