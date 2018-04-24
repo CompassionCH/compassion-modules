@@ -32,8 +32,12 @@ class ResPartner(models.Model):
 
     _sql_constraints = [
         ('email_is_set_if_email_only',
-         'CHECK (email_only != TRUE OR email IS NOT NULL)',
-         'The email address should not be empty if email_only is checked.')
+         "CHECK (NOT email_only OR email IS NOT NULL)",
+         'The email address should not be empty if email_only is selected.'),
+        ('not_both_and_email_only',
+         "CHECK (NOT email_only OR global_communication_delivery_preference "
+         "!= 'both')",
+         'The send mode should not be "both" if email_only is selected.')
     ]
 
     @api.multi
