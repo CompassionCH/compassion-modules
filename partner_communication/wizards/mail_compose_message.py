@@ -9,11 +9,13 @@
 #
 ##############################################################################
 
-from odoo import models, api
+from odoo import models, api, fields
 
 
 class EmailComposeMessage(models.TransientModel):
     _inherit = 'mail.compose.message'
+
+    body = fields.Html(sanitize=False)
 
     @api.model
     def create_emails(self, template, res_ids, default_mail_values=None):

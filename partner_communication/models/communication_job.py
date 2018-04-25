@@ -98,7 +98,7 @@ class CommunicationJob(models.Model):
     email_id = fields.Many2one('mail.mail', 'Generated e-mail', readonly=True)
     phonecall_id = fields.Many2one('crm.phonecall', 'Phonecall log',
                                    readonly=True)
-    body_html = fields.Html()
+    body_html = fields.Html(sanitize=False)
     pdf_page_count = fields.Integer(string='PDF size',
                                     readonly=True)
     subject = fields.Char()
