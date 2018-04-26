@@ -399,6 +399,10 @@ class CommunicationRevision(models.Model):
         ])
         self.compare_text = master.proposition_text
         self.compare_subject = master.subject
+        self._origin.write({
+            'compare_text': master.proposition_text,
+            'compare_subject': master.subject
+        })
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
