@@ -45,6 +45,10 @@ class SuccessStory(models.Model):
         ('active', 'Active'),
         ('used', 'Used')
     ], compute='_compute_state', store=True, default='new')
+    only_when_chosen = fields.Boolean(
+        help='Set this to use the story only for given products or when '
+             'manually chosen. The story won\'t be used automatically.'
+    )
     print_count = fields.Integer()
     current_usage_count = fields.Integer(compute='_compute_current_usage')
 
