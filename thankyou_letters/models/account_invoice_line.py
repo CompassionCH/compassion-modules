@@ -43,7 +43,6 @@ class AccountInvoiceLine(models.Model):
             # Avoid generating thank you if no valid invoice lines are present
             return
 
-        comm_obj = self.env['partner.communication.job']
         small = self.env.ref('thankyou_letters.config_thankyou_small')
         standard = self.env.ref('thankyou_letters.config_thankyou_standard')
         large = self.env.ref('thankyou_letters.config_thankyou_large')
@@ -51,7 +50,7 @@ class AccountInvoiceLine(models.Model):
         partner = self.mapped('partner_id')
         partner.ensure_one()
 
-        existing_comm = comm_obj.search([
+        existing_comm = self.env['partner.communication.job'].search([
             ('partner_id', '=', partner.id),
             ('state', 'in', ('call', 'pending')),
             ('config_id', 'in', (small + standard + large).ids),
@@ -70,12 +69,16 @@ class AccountInvoiceLine(models.Model):
         send_mode = config.get_inform_mode(partner)
         comm_vals['send_mode'] = send_mode[0]
         comm_vals['auto_send'] = send_mode[1]
+        success_stories = invoice_lines.mapped('product_id.success_story_id')
+        if success_stories:
+            existing_comm = existing_comm.with_context(
+                default_success_story_id=success_stories[0].id)
 
         if existing_comm:
             existing_comm.write(comm_vals)
             existing_comm.refresh_text()
         else:
-            existing_comm = comm_obj.create(comm_vals)
+            existing_comm = existing_comm.create(comm_vals)
         self.mapped('invoice_id').write({
             'communication_id': existing_comm.id
         })
