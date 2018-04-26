@@ -52,7 +52,9 @@
         'views/res_partner_view.xml',
         'views/generate_communication_wizard_view.xml',
     ],
-    'demo': [],
+    'demo': [
+        'demo/success_story.xml'
+    ],
     'installable': True,
     'auto_install': False,
 }

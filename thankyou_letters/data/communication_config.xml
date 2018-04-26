@@ -9,6 +9,7 @@
             <field name="email_template_id" ref="thankyou_letter_template"/>
             <field name="report_id" ref="report_donation"/>
             <field name="model_id" ref="model_account_invoice_line"/>
+            <field name="add_success_story">True</field>
         </record>
         <record id="config_thankyou_standard" model="partner.communication.config">
             <field name="name">Donation - Thank You [Standard]</field>
@@ -18,6 +19,7 @@
             <field name="email_template_id" ref="thankyou_letter_template"/>
             <field name="report_id" ref="report_donation"/>
             <field name="model_id" ref="model_account_invoice_line"/>
+            <field name="add_success_story">True</field>
         </record>
         <record id="config_thankyou_large" model="partner.communication.config">
             <field name="name">Donation - Thank You [Large]</field>
@@ -28,6 +30,7 @@
             <field name="email_template_id" ref="thankyou_letter_template"/>
             <field name="report_id" ref="report_donation"/>
             <field name="model_id" ref="model_account_invoice_line"/>
+            <field name="add_success_story">True</field>
         </record>
 
         <record id="config_thankyou_summary" model="partner.communication.config">

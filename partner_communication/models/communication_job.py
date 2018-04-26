@@ -10,6 +10,7 @@
 ##############################################################################
 import StringIO
 import logging
+import threading
 from HTMLParser import HTMLParser
 
 from odoo.addons.base_phone import fields as phone_fields
@@ -117,15 +118,17 @@ class CommunicationJob(models.Model):
             job.ir_attachment_ids = job.mapped('attachment_ids.attachment_id')
 
     def count_pdf_page(self):
-        for record in self.filtered('report_id'):
-            if record.send_mode == 'physical':
-                report_obj = record.env['report'].with_context(
-                    lang=record.partner_id.lang,
-                    must_skip_send_to_printer=True)
-                pdf_str = report_obj.get_pdf(record.ids,
-                                             record.report_id.report_name)
-                pdf = PdfFileReader(StringIO.StringIO(pdf_str))
-                record.pdf_page_count = pdf.getNumPages()
+        test_mode = getattr(threading.currentThread(), 'testing', False)
+        if not test_mode:
+            for record in self.filtered('report_id'):
+                if record.send_mode == 'physical':
+                    report_obj = record.env['report'].with_context(
+                        lang=record.partner_id.lang,
+                        must_skip_send_to_printer=True)
+                    pdf_str = report_obj.get_pdf(record.ids,
+                                                 record.report_id.report_name)
+                    pdf = PdfFileReader(StringIO.StringIO(pdf_str))
+                    record.pdf_page_count = pdf.getNumPages()
 
     def _inverse_ir_attachments(self):
         attach_obj = self.env['partner.communication.attachment']
