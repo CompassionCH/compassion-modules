@@ -13,6 +13,7 @@
                     <group>
                         <group>
                             <field name="type"/>
+                            <field name="only_when_chosen" string="Use story only when manually chosen"/>
                             <field name="date_start" attrs="{'invisible': [('type', '=', 'sentence')]}"/>
                             <field name="date_stop" attrs="{'invisible': [('type', '=', 'sentence')]}"/>
                             <field name="is_active" attrs="{'invisible': [('type', '=', 'story')]}"/>

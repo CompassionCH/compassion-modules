@@ -395,10 +395,14 @@ class CommunicationRevision(models.Model):
         master = self.search([
             ('config_id', '=', self.config_id.id),
             ('lang', '=', self.compare_lang),
-            ('state', '=', 'approved')
+            ('state', 'in', ('approved', 'active'))
         ])
         self.compare_text = master.proposition_text
         self.compare_subject = master.subject
+        self._origin.write({
+            'compare_text': master.proposition_text,
+            'compare_subject': master.subject
+        })
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

@@ -57,7 +57,9 @@ class PartnerCommunication(models.Model):
         :return: True
         """
         all_stories = self.env['success.story'].search([
-            ('is_active', '=', True)])
+            ('is_active', '=', True),
+            ('only_when_chosen', '=', False)
+        ])
         stories = all_stories.filtered(lambda s: s.type == 'story')
         sentences = all_stories.filtered(lambda s: s.type == 'sentence')
         default_story = self.env.context.get('default_success_story_id')
