@@ -2,8 +2,7 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_recurring_contract,Full access on recurring.contract,recurring_contract.model_recurring_contract,child_compassion.group_sponsorship,1,1,1,1
 access_recurring_contract_line,Full access on recurring.contract.line,recurring_contract.model_recurring_contract_line,child_compassion.group_sponsorship,1,1,1,1
 access_recurring_contract_group,Full access on recurring.contract.group,recurring_contract.model_recurring_contract_group,child_compassion.group_sponsorship,1,1,1,1
-read_access_recurring_contract_origin,Read access on recurring.contract.origin,model_recurring_contract_origin,child_compassion.group_sponsorship,1,0,1,1
-access_recurring_contract_origin,Full access on recurring.contract.origin,model_recurring_contract_origin,base.group_system,1,1,1,1
+access_recurring_contract_origin,Full access on recurring.contract.origin,model_recurring_contract_origin,child_compassion.group_sponsorship,1,1,1,1
 access_recurring_invoicer,Full access on recurring.invoicer,recurring_contract.model_recurring_invoicer,child_compassion.group_sponsorship,1,1,1,1
 acces_account_invoice,Write access on account.invoice,account.model_account_invoice,child_compassion.group_sponsorship,1,1,0,0
 acces_account_invoice_line,Full access on account.invoice.line,account.model_account_invoice_line,child_compassion.group_sponsorship,1,1,1,1

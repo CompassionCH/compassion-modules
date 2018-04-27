@@ -30,9 +30,10 @@ class HrAttendanceDay(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    date = fields.Date(readonly=True, required=True)
-    employee_id = fields.Many2one('hr.employee', "Employee",
-                                  ondelete="cascade", required=True)
+    date = fields.Date(required=True, default=fields.Date.today())
+    employee_id = fields.Many2one(
+        'hr.employee', "Employee", ondelete="cascade", required=True,
+        default=lambda self: self.env.user.employee_ids[0].id)
 
     # Working schedule
     cal_att_ids = fields.Many2many('resource.calendar.attendance',

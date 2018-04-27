@@ -13,9 +13,9 @@
                         <group string="Attendance day">
                             <field name="working_day"/>
                             <field name="date"/>
-                            <field name="employee_id"/>
+                            <field name="employee_id" groups="hr_attendance.group_hr_attendance_user"/>
                             <field name="in_leave"/>
-                            <field name="coefficient"/>
+                            <field name="coefficient" groups="hr_attendance.group_hr_attendance_user"/>
                         </group>
 
                         <group string="Contract">
@@ -180,9 +180,19 @@
         <field name="context">{'search_default_my_attendances': 1}</field>
     </record>
 
+    <!-- Make manage attendance menu accessible to all users, to access own attendances -->
+    <menuitem id="hr_attendance.menu_hr_attendance_manage_attendances" groups="base.group_user"
+              name="Manage Attendances" parent="hr_attendance.menu_hr_attendance_root" sequence="20"/>
+    <menuitem id="hr_attendance.menu_hr_attendance_view_attendances" groups="base.group_user"
+              name="Attendances" parent="hr_attendance.menu_hr_attendance_manage_attendances" sequence="10" action="hr_attendance.hr_attendance_action"/>
+
     <menuitem action="action_attendance_day"
               id="menu_action_attendance_day"
-              string="Attendance by day"
+              string="Attendance days"
               parent="hr_attendance.menu_hr_attendance_manage_attendances"
-              sequence="4"/>
+              sequence="4"
+              groups="base.group_user"
+    />
+
+
 </odoo>
