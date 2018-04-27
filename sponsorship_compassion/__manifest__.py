@@ -56,6 +56,7 @@
         'data/gmc_action.xml',
     ],
     'demo': [
+        'demo/demo_data.yml'
     ],
     'installable': True,
     'auto_install': False,

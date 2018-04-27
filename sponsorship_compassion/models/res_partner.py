@@ -111,7 +111,8 @@ class ResPartner(models.Model):
                     '|',
                     ('partner_id', '=', partner.id),
                     ('correspondent_id', '=', partner.id),
-                    ('is_active', '=', True),
+                    ('activation_date', '!=', False),
+                    ('state', 'not in', ['cancelled', 'terminated']),
                     ('child_id', '!=', False)])
 
     @api.multi
