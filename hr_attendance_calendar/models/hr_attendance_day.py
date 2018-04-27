@@ -118,7 +118,7 @@ class HrAttendanceDay(models.Model):
     def _compute_working_day(self):
         for att_day in self:
             att_day.working_day = fields.Date.from_string(
-                att_day.date).strftime('%A')
+                att_day.date).strftime('%A').title()
 
     @api.multi
     @api.depends('working_day')
@@ -407,17 +407,19 @@ class HrAttendanceDay(models.Model):
             att_date = fields.Date.from_string(att_day.date)
             week_day = att_date.weekday()
 
-            # look for a valid contract
+            # look for a valid contract or take schedule of employee
             contracts = self.env['hr.contract'].search([
                 ('employee_id', '=', att_day.employee_id.id),
                 ('date_start', '<=', att_day.date),
                 '|', ('date_end', '=', False), ('date_end', '>=', att_day.date)
             ])
+            schedules = contracts.mapped('working_hours')
+            if not schedules:
+                schedules = att_day.employee_id.calendar_id
             cal_att_ids = self.env['resource.calendar.attendance']
 
-            # select the attendance(s) from the contract that is valid today.
-            current_cal_att = contracts.mapped(
-                'working_hours.attendance_ids').filtered(
+            # select the attendance(s) that are valid today.
+            current_cal_att = schedules.mapped('attendance_ids').filtered(
                 lambda a: int(a.dayofweek) == week_day)
 
             for cal_att_id in current_cal_att:

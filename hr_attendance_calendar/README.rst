@@ -63,7 +63,7 @@ new views to keep track of your extra hours evolution.
 Known issues / Roadmap
 ======================
 
-* Add tests
+* Improve leaves request to be able to specify how many hours it should deduct from the due hours
 
 Bug Tracker
 ===========

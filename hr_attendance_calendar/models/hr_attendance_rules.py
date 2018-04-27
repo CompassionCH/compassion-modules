@@ -12,9 +12,7 @@ from odoo import models, fields, api
 
 class HrAttendanceRules(models.Model):
     _name = 'hr.attendance.rules'
-    _sql_constraints = [(
-        'field_unique', 'unique(threshold)', 'This threshold already exist!'
-    )]
+    _description = "HR attendance break time rule"
 
     ##########################################################################
     #                                 FIELDS                                 #

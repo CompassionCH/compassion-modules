@@ -35,7 +35,8 @@
               "Odoo Community Association (OCA)",
     'depends': [
         'hr_attendance',
-        'hr_public_holidays'
+        'hr_public_holidays',
+        'hr_contract'
     ],
     'version': '10.0.1.1.0',
     'auto_install': False,
@@ -58,6 +59,10 @@
         'views/extra_hours_evolution_graph.xml',
         'views/hr_change_day_wizard_view.xml',
         'views/hr_change_day_requests.xml'
+    ],
+    'demo': [
+        'demo/hr_config.xml',
+        'demo/resource_calendar.xml',
     ],
     'installable': True,
     'qweb': [
