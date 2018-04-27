@@ -12,17 +12,16 @@ from odoo import models, fields, api
 
 class HrAttendanceRules(models.Model):
     _name = 'hr.attendance.rules'
-    _sql_constraints = [('field_unique', 'unique(threshold)', 'This threshold '
-                                                              'already '
-                                                              'exist!')]
+    _sql_constraints = [(
+        'field_unique', 'unique(threshold)', 'This threshold already exist!'
+    )]
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
     name = fields.Char('Name', compute='_compute_name')
-    time_from = fields.Float('From',
-                             help='Threshold in hours when the duration '
-                                  'break change')
+    time_from = fields.Float(
+        'From', help='Threshold in hours when the duration break change')
     time_to = fields.Float('To', help='In hour')
     due_break = fields.Float('Minimum break', help='In hour')
     due_break_total = fields.Float('Total break', help='In hour')

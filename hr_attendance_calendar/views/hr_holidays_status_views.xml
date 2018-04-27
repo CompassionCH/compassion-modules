@@ -11,7 +11,7 @@
                type="xml">
             <field name="company_id"
                    position="after">
-                <field name="remove_from_due_hours"/>
+                <field name="keep_due_hours"/>
             </field>
         </field>
     </record>
@@ -26,7 +26,7 @@
                type="xml">
             <field name="limit"
                    position="after">
-                <field name="remove_from_due_hours"/>
+                <field name="keep_due_hours"/>
             </field>
         </field>
     </record>

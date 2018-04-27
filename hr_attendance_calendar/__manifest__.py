@@ -11,7 +11,6 @@
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    @author: Stephane Eicher <seicher@compassion.com>
-#    @author: David Coninckx <david@coninckx.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -28,21 +27,19 @@
 #
 ##############################################################################
 
-# pylint: disable=C8101
 {
-    'name': 'Attendance - Calendar',
+    'name': 'HR (Extra) Hours Management',
     'summary': 'Compute extra hours based on attendances',
     'category': 'Human Resources',
-    'author': "CompassionCH, Open Net Sàrl",
+    'author': "Compassion Switzerland, "
+              "Odoo Community Association (OCA)",
     'depends': [
-        'hr',
         'hr_attendance',
-        'hr_holidays',
         'hr_public_holidays'
     ],
-    'version': '10.0.1.0.1',
+    'version': '10.0.1.1.0',
     'auto_install': False,
-    'website': 'http://open-net.ch',
+    'website': 'https://www.compassion.ch',
     'license': 'AGPL-3',
     'images': [],
     'data': [

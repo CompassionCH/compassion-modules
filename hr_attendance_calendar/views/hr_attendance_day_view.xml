@@ -53,10 +53,9 @@
                             <field name="break_total" widget="float_time"/>
                             <field name="break_ids">
                                 <tree>
-                                    <field name="name"/>
+                                    <field name="name" string="Description"/>
                                     <field name="system_modified"/>
-                                    <field name="logged_duration"
-                                           widget="float_time" type="char"/>
+                                    <field name="total_duration" widget="float_time" type="char"/>
                                 </tree>
                             </field>
                             <field name="leave_ids">
