@@ -70,20 +70,10 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_donation"
-              name="Communications"
-              parent="child_compassion.menu_sponsorship_root"
-              sequence="6"/>
-
     <menuitem id="menu_donation_sales"
               name="Communications"
               parent="sales_team.menu_base_partner"
               sequence="5"/>
-
-    <menuitem id="menu_donation_success_story"
-              name="Success Stories"
-              parent="menu_donation"
-              action="action_success_story"/>
 
     <!-- Add menu in Sales-->
     <menuitem id="menu_donation_success_story_sales"

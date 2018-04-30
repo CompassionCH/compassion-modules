@@ -81,6 +81,37 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         return super(BaseSponsorshipTest,
                      self).create_contract(default_values, line_vals)
 
+    def create_contract_line(self, vals):
+        default_values = {
+            'contract_id': 0,
+            'amount': 5,
+            'product_id': 1,
+            'quantity': 1,
+        }
+        default_values.update(vals)
+        return self.env['recurring.contract.line'].create(default_values)
+
+    @mock.patch(mock_update_hold)
+    @mock.patch(mock_project_infos)
+    @mock.patch(mock_get_infos)
+    def change_child(self, sponsorship, child, update_hold, project_info,
+                     get_info):
+        """
+        Change the child of a sponsorship
+        :param sponsorship: the sponsorship in which we should change the child
+        :param child: the child to add to the sponsorship
+        :param update_hold: mock
+        :param project_info: mock
+        :param get_info: mock
+        :return: the result of the write operation
+        """
+        # The following lines ensure that the test is run in local without
+        # making requests to GMC.
+        update_hold.return_value = True
+        project_info.return_value = True
+        get_info.return_value = True
+        return sponsorship.write({'child_id': child.id})
+
     @mock.patch(mock_update_hold)
     def validate_sponsorship(self, contract, update_hold):
         """
@@ -91,6 +122,13 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         update_hold.return_value = True
         contract.signal_workflow('contract_validated')
         return update_hold
+
+    def pay_sponsorship(self, sponsorship):
+        invoices = sponsorship.button_generate_invoices().invoice_ids
+        self.assertEqual(len(invoices), 2)
+        for invoice in reversed(invoices):
+            self.assertEqual(invoices[0].state, 'open')
+            self._pay_invoice(invoice)
 
 
 class TestSponsorship(BaseSponsorshipTest):
@@ -268,50 +306,62 @@ class TestSponsorship(BaseSponsorshipTest):
         sponsorship2.signal_workflow('contract_terminated')
         self.assertEqual(sponsorship2.state, 'cancelled')
 
-    def _test_sponsorship_compassion_third_scenario(self):
+    def test_sponsorship_compassion_third_scenario(self):
         """
             Test of the general contract (type 'O'). It's approximately the
             same test than the contract_compassion's one.
         """
-        # TODO Migrate this test
-        contract_group = self._create_group(
-            'do_nothing', self.partners.ids[0], 1, self.payment_mode_id)
-        contract = self._create_contract(
-            other_vals={
-                'type': 'O',
-                'correspondent_id': contract_group.partner_id.id
-            })
-        contract2 = self._create_contract(
-            other_vals={
-                'type': 'O',
-                'correspondent_id': contract_group.partner_id.id
-            })
-        self._create_contract_line(
-            contract.id, '40.0', other_vals={'quantity': '2'})
-        contract_line = self._create_contract_line(
-            contract2.id, '137', other_vals={'quantity': '4'})
-        self.assertEqual(contract.state, 'draft')
-        contract.contract_line_ids += contract_line
-        self.assertEqual(
-            contract.total_amount,
-            contract_line.subtotal + contract.contract_line_ids[0].subtotal)
-        # Switching to "waiting for payment" state
-        contract.signal_workflow('contract_validated')
-        self.assertEqual(contract.state, 'waiting')
-        invoices = contract.button_generate_invoices().invoice_ids
-        nb_invoices = len(invoices)
-        self.assertEqual(nb_invoices, 2)
-        self.assertEqual(invoices[0].state, 'open')
-        self.assertEqual(invoices[1].state, 'open')
-        self._pay_invoice(invoices[0])
-        self._pay_invoice(invoices[1])
-        self.assertEqual(contract.state, 'active')
-        contract.signal_workflow('contract_terminated')
-        self.assertEqual(contract.state, 'terminated')
-        is_unlinked = contract2.unlink()
-        self.assertTrue(is_unlinked)
+        contract_amount = [50, 75]
+        amount = [17, 29]
+        quantity = [1, 20]
+        contract_group = self.create_group({
+            'change_method': 'do_nothing',
+            'partner_id': self.michel.id,
+            'payment_mode_id': self.payment_mode.id
+        })
+        contract1 = self.create_contract({
+            'type': 'O',
+            'partner_id': contract_group.partner_id.id,
+            'group_id': contract_group.id
+        },
+            [{'amount': contract_amount[0]}]
+        )
+        contract2 = self.create_contract({
+            'type': 'O',
+            'partner_id': contract_group.partner_id.id,
+            'group_id': contract_group.id
+        },
+            [{'amount': contract_amount[1]}]
+        )
+        self.create_contract_line({
+            'contract_id': contract1.id,
+            'amount': amount[0],
+            'quantity': quantity[0]
+        })
+        contract_line = self.create_contract_line({
+            'contract_id': contract2.id,
+            'amount': amount[1],
+            'quantity': quantity[1]
+        })
+        self.assertEqual(contract1.state, 'draft')
+        contract1.contract_line_ids += contract_line
+        self.assertEqual(contract_line.contract_id, contract1)
+        self.assertEqual(len(contract2.contract_line_ids), 1)
+        self.assertEqual(contract1.total_amount, contract_amount[0] +
+                         sum([amount[i] * q for i, q in enumerate(quantity)]))
 
-    def _test_sponsorship_compassion_fourth_scenario(self):
+        self.assertEqual(contract2.total_amount, contract_amount[1])
+
+        # Switching to "waiting for payment" state
+        self.validate_sponsorship(contract1)
+        self.assertEqual(contract1.state, 'waiting')
+        self.pay_sponsorship(contract1)
+        self.assertEqual(contract1.state, 'active')
+        contract1.signal_workflow('contract_terminated')
+        self.assertEqual(contract1.state, 'cancelled')
+        self.assertTrue(contract2.unlink())
+
+    def test_sponsorship_compassion_fourth_scenario(self):
         """
             In this final scenario we are testing the creation of 3 sponsorship
             contracts for the same partner with for each contract one child to
@@ -321,63 +371,147 @@ class TestSponsorship(BaseSponsorshipTest):
             Check if the 3 contracts create one merged invoice for every month
             (2 months here) with the good values.
         """
-        # TODO Migrate this test
-        child1 = self.env['compassion.child'].create({'local_id':
-                                                      'UG08320010'})
-        child2 = self.env['compassion.child'].create({'local_id':
-                                                      'UG08320011'})
-        child3 = self.env['compassion.child'].create({'local_id':
-                                                      'UG08320013'})
-        sp_group = self._create_group(
-            'do_nothing', self.partners.ids[0], 1, self.payment_mode_id)
-        sponsorship1 = self._create_contract(
-            other_vals={
-                'origin_id': self.origin_id,
-                'type': 'S',
-                'child_id': child1.id,
-                'correspondent_id': sp_group.partner_id.id
-            })
-        sponsorship2 = self._create_contract(
-            other_vals={
-                'origin_id': self.origin_id,
-                'type': 'S',
-                'child_id': child1.id,
-                'correspondent_id': sp_group.partner_id.id
-            })
-        sponsorship2.write({'child_id': child2.id})
-        sponsorship3 = self._create_contract(
-            other_vals={
-                'origin_id': self.origin_id,
-                'type': 'S',
-                'child_id': child3.id,
-                'correspondent_id': sp_group.partner_id.id
-            })
-        sponsorship1.signal_workflow('contract_validated')
-        sponsorship2.signal_workflow('contract_validated')
-        sponsorship3.signal_workflow('contract_validated')
-        original_price1 = sponsorship1.total_amount
-        original_price2 = sponsorship2.total_amount
-        original_price3 = sponsorship3.total_amount
-        self.assertEqual(sponsorship1.state, 'waiting')
-        self.assertEqual(sponsorship2.state, 'waiting')
-        self.assertEqual(sponsorship3.state, 'waiting')
+        child1 = self.create_child('UG72320010')
+        child2 = self.create_child('S008320011')
+        child3 = self.create_child('SA12311013')
+        sp_group = self.create_group({
+            'change_method': 'do_nothing',
+            'partner_id': self.michel.id,
+            'advance_billing_months': 1,
+            'payment_mode_id': self.payment_mode.id
+        })
+        sponsorship1 = self.create_contract({
+            'child_id': child1.id,
+            'group_id': sp_group.id,
+            'partner_id': sp_group.partner_id.id
+        },
+            [{'amount': 50.0}]
+        )
+        sponsorship2 = self.create_contract({
+            'child_id': child1.id,
+            'group_id': sp_group.id,
+            'partner_id': sp_group.partner_id.id
+        },
+            [{'amount': 50.0}]
+        )
+        sponsorship3 = self.create_contract({
+            'child_id': child3.id,
+            'group_id': sp_group.id,
+            'partner_id': sp_group.partner_id.id
+        },
+            [{'amount': 50.0}]
+        )
+        res = self.change_child(sponsorship2, child2)
+        self.assertTrue(res)
+        self.assertEqual(sponsorship1.child_id, child1)
+        self.assertEqual(sponsorship2.child_id, child2)
+        total_price = 0
+        for sponsorship in [sponsorship1, sponsorship2, sponsorship3]:
+            self.validate_sponsorship(sponsorship)
+            total_price += sponsorship.total_amount
+            self.assertEqual(sponsorship.state, 'waiting')
         invoices = sponsorship1.button_generate_invoices().invoice_ids
-        self._pay_invoice(invoices[0])
-        self._pay_invoice(invoices[1])
-        invoice1 = self.env['account.invoice'].browse(invoices[1].id)
-        invoice2 = self.env['account.invoice'].browse(invoices[0].id)
-        self.assertEqual(
-            invoice1.amount_total,
-            original_price1 + original_price2 + original_price3)
-        self.assertEqual(
-            invoice2.amount_total,
-            original_price1 + original_price2 + original_price3)
-        self.assertEqual(invoice1.state, 'paid')
-        self.assertEqual(invoice2.state, 'paid')
-        child3.write({'state': 'F'})
+        for invoice in reversed(invoices):
+            self._pay_invoice(invoice)
+            invoiced = self.env['account.invoice'].browse(invoice.id)
+            self.assertEqual(invoiced.amount_total, total_price)
+            self.assertEqual(invoiced.state, 'paid')
+        child3.child_departed()
         self.assertEqual(child3.state, 'F')
         self.assertEqual(child3.sponsor_id.id, False)
-        action_move = self.partners[0].unreconciled_transaction_items()
+        action_move = self.michel.unreconciled_transaction_items()
         self.assertTrue(action_move)
-        action = self.partners[0].show_lines()
+        action = self.michel.show_lines()
         self.assertTrue(action)
+
+    def test_sponsorship_compassion_fifth_scenario(self):
+        """
+        Testing the workflow transitions. In particular the termination of
+        the contract if they were sent to GMC or not (global_id set).
+        """
+        child1 = self.create_child('UG83320015')
+        child2 = self.create_child('UG28320016')
+        sp_group = self.create_group({
+            'change_method': 'do_nothing',
+            'partner_id': self.michel.id,
+            'advance_billing_months': 1,
+            'payment_mode_id': self.payment_mode.id
+        })
+        sponsorship1 = self.create_contract(
+            {
+                'child_id': child1.id,
+                'group_id': sp_group.id,
+                'partner_id': sp_group.partner_id.id
+            },
+            [{'amount': 50.0}]
+        )
+        sponsorship2 = self.create_contract(
+            {
+                'child_id': child2.id,
+                'group_id': sp_group.id,
+                'partner_id': sp_group.partner_id.id
+            },
+            [{'amount': 50.0}]
+        )
+        sponsorships = [sponsorship1, sponsorship2]
+        for sponsorship in sponsorships:
+            self.assertEqual(sponsorship.state, 'draft')
+            self.validate_sponsorship(sponsorship)
+            self.assertEqual(sponsorship.state, 'waiting')
+            self.pay_sponsorship(sponsorship)
+        sponsorship1.global_id = 12349123
+        sponsorship1.signal_workflow('contract_terminated')
+        self.assertEqual(sponsorship1.state, 'terminated')
+        sponsorship2.signal_workflow('contract_terminated')
+        self.assertEqual(sponsorship2.state, 'cancelled')
+
+    def test_number_sponsorships(self):
+        partner = self.michel
+
+        def valid(number_sponsorships, has_sponsorships, number_children):
+            self.assertEqual(partner.number_sponsorships, number_sponsorships)
+            self.assertEqual(partner.has_sponsorships, has_sponsorships)
+            self.assertEqual(partner.number_children, number_children)
+
+        valid(0, False, 0)
+        child1 = self.create_child('UG18320017')
+        child2 = self.create_child('UG08320018')
+        sp_group = self.create_group({
+            'change_method': 'do_nothing',
+            'partner_id': partner.id,
+            'payment_mode_id': self.payment_mode.id
+        })
+        sponsorship1 = self.create_contract(
+            {
+                'child_id': child1.id,
+                'group_id': sp_group.id,
+                'partner_id': sp_group.partner_id.id
+            },
+            [{'amount': 50.0}]
+        )
+        sponsorship2 = self.create_contract(
+            {
+                'child_id': child2.id,
+                'group_id': sp_group.id,
+                'partner_id': sp_group.partner_id.id
+            },
+            [{'amount': 50.0}]
+        )
+        valid(0, False, 2)
+        self.validate_sponsorship(sponsorship1)
+        valid(0, False, 2)
+        self.pay_sponsorship(sponsorship1)
+        valid(1, True, 2)
+        sponsorship1.update({'partner_id': self.thomas.id})
+        valid(1, True, 2)
+        sponsorship1.update({'correspondent_id': self.thomas.id})
+        valid(0, False, 1)
+        sponsorship1.update({'partner_id': partner.id})
+        valid(1, True, 1)
+        self.validate_sponsorship(sponsorship2)
+        self.pay_sponsorship(sponsorship2)
+        valid(2, True, 1)
+        sponsorship2.signal_workflow('contract_terminated')
+        valid(1, True, 1)
+        sponsorship1.signal_workflow('contract_terminated')
+        valid(0, False, 1)

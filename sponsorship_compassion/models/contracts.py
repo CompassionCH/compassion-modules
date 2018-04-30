@@ -223,11 +223,11 @@ class SponsorshipContract(models.Model):
             self._on_change_child_id(vals)
 
         if 'partner_id' in vals:
-            old_partner = self.mapped('partner_id')
+            old_partners = self.mapped('partner_id')
 
         updated_correspondents = self.env[self._name]
         if 'correspondent_id' in vals:
-            old_correspondent = self.mapped('correspondent_id')
+            old_correspondents = self.mapped('correspondent_id')
             updated_correspondents = self._on_change_correspondant(
                 vals['correspondent_id'])
             self.mapped('child_id').write({
@@ -246,16 +246,17 @@ class SponsorshipContract(models.Model):
                 "The sponsorship is no longer active at GMC side. "
                 "Please activate it again manually."
                 )
+
         if 'reading_language' in vals:
             (self - updated_correspondents)._on_language_changed()
 
         if 'partner_id' in vals:
             self.mapped('partner_id')._compute_number_sponsorships()
-            old_partner._compute_number_sponsorships()
+            old_partners._compute_number_sponsorships()
 
         if 'correspondent_id' in vals:
             self.mapped('correspondent_id')._compute_number_sponsorships()
-            old_correspondent._compute_number_sponsorships()
+            old_correspondents._compute_number_sponsorships()
 
         return True
 
