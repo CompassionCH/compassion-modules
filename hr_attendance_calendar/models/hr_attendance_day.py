@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2016 Open Net Sarl (https://www.open-net.ch)
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    @author: Eicher Stephane <seicher@compassion.ch>
-#    @author: Coninckx David <david@coninckx.com>
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
 #
@@ -22,25 +21,25 @@ class HrAttendanceDay(models.Model):
     hr.employee._cron_create_attendance() called by a cron everyday.
     """
     _name = "hr.attendance.day"
+    _description = "Attendance day"
     _order = 'date DESC'
-    _sql_constraints = [('unique_product', 'unique(date, employee_id)',
-                         'This "Attendance day" already exist for this '
+    _sql_constraints = [('unique_attendance_day', 'unique(date, employee_id)',
+                         'This "Attendance day" already exists for this '
                          'employee')]
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    date = fields.Date("Date",
-                       # readonly=True, todo: uncomment
-                       required=True)
-    employee_id = fields.Many2one('hr.employee', "Employee",
-                                  ondelete="cascade", required=True)
+    date = fields.Date(required=True, default=fields.Date.today())
+    employee_id = fields.Many2one(
+        'hr.employee', "Employee", ondelete="cascade", required=True,
+        default=lambda self: self.env.user.employee_ids[0].id)
 
     # Working schedule
     cal_att_ids = fields.Many2many('resource.calendar.attendance',
                                    string="Working schedule",
                                    required=True)
-    working_day = fields.Char("Working day", compute='_compute_working_day',
+    working_day = fields.Char(compute='_compute_working_day',
                               readonly=True, store=True)
     name = fields.Char(compute='_compute_name', store=True)
 
@@ -59,13 +58,14 @@ class HrAttendanceDay(models.Model):
     attendance_ids = fields.One2many('hr.attendance', 'attendance_day_id',
                                      'Attendances', readonly=True)
 
-    has_linked_change_day_request = fields.Boolean(
-        compute='_compute_has_linked_change_day_request', store=True)
+    has_change_day_request = fields.Boolean(
+        compute='_compute_has_linked_change_day_request', store=True,
+        oldname='has_linked_change_day_request'
+    )
 
     # Worked
     paid_hours = fields.Float(
-        'Paid hours', compute='_compute_paid_hours', store=True,
-        readonly=True, oldname="worked_hours"
+        compute='_compute_paid_hours', store=True, readonly=True
     )
     free_breaks_hours = fields.Float(compute='_compute_free_break_hours')
     total_attendance = fields.Float(
@@ -111,29 +111,26 @@ class HrAttendanceDay(models.Model):
     def _compute_has_linked_change_day_request(self):
         for att_day in self:
             res = att_day.get_related_forced_due_hours()
-            att_day.has_linked_change_day_request = len(res) == 1
+            att_day.has_change_day_request = len(res) == 1
 
     @api.multi
     @api.depends('date')
     def _compute_working_day(self):
-        for att_day in self.filtered('date'):
+        for att_day in self:
             att_day.working_day = fields.Date.from_string(
-                att_day.date).strftime('%A')
+                att_day.date).strftime('%A').title()
 
     @api.multi
     @api.depends('working_day')
     def _compute_name(self):
-        for rd in self.filtered('working_day'):
+        for rd in self:
             rd.name = rd.working_day + ' ' + rd.date
 
     @api.multi
-    @api.depends('leave_ids')
+    @api.depends('leave_ids', 'public_holiday_id')
     def _compute_in_leave(self):
         for att_day in self:
-            if att_day.leave_ids:
-                att_day.in_leave = True
-            if att_day.public_holiday_id:
-                att_day.in_leave = True
+            att_day.in_leave = att_day.leave_ids or att_day.public_holiday_id
 
     @api.multi
     @api.depends('cal_att_ids', 'cal_att_ids.due_hours', 'leave_ids.state',
@@ -154,21 +151,11 @@ class HrAttendanceDay(models.Model):
                 att_day.due_hours = 0
                 continue
 
-            # Contract
-            # sum the due hours extracted from the employee contract. The
-            # expected attendances are selected in update_calendar_attendance
-            # (further down in the file) which is called when an attendance
-            # day is created.
             due_hours = sum(att_day.mapped('cal_att_ids.due_hours'))
             # Leaves
-            if att_day.leave_ids:
-                for leave in att_day.leave_ids.filtered(
-                        lambda l: l.state in ('validate', 'validate1')):
-                    if not leave.holiday_status_id.remove_from_due_hours:
-                        working_day = self.env[
-                            'base.config.settings'].get_work_day_duration()
-                        due_hours -= leave.compute_work_day(
-                            att_day.date) * working_day
+            for leave in att_day.leave_ids.filtered(
+                    lambda l: l.state == 'validate' and not l.keep_due_hours):
+                due_hours -= leave.compute_leave_time(att_day.date)
 
             if due_hours < 0:
                 due_hours = 0
@@ -195,17 +182,14 @@ class HrAttendanceDay(models.Model):
             breaks = att_day.break_ids.filtered(
                 lambda r: r.system_modified and not r.is_offered)
 
-            for break_id in breaks:
-                deduct = break_id.logged_duration - break_id.original_duration
-                paid_hours -= deduct
-
+            paid_hours -= sum(breaks.mapped('additional_duration'))
             att_day.paid_hours = paid_hours
 
     @api.multi
     def _compute_free_break_hours(self):
         for att_day in self:
             att_day.free_breaks_hours = sum(att_day.break_ids.filtered(
-                lambda b: b.is_offered).mapped("logged_duration") or [0])
+                'is_offered').mapped('total_duration') or [0])
 
     @api.multi
     def _compute_rule_id(self):
@@ -233,11 +217,11 @@ class HrAttendanceDay(models.Model):
                 att_day.due_break_total = 0
 
     @api.multi
-    @api.depends('break_ids', 'break_ids.logged_duration')
+    @api.depends('break_ids', 'break_ids.total_duration')
     def _compute_break_total(self):
-        for att_day in self.filtered('break_ids'):
+        for att_day in self:
             att_day.break_total = sum(
-                att_day.break_ids.mapped('logged_duration') or [0])
+                att_day.break_ids.mapped('total_duration') or [0])
 
     @api.multi
     @api.depends('paid_hours', 'due_hours', 'coefficient',
@@ -269,7 +253,7 @@ class HrAttendanceDay(models.Model):
         of the employee, which is a SQL view.
         """
         max_extra_hours = float(self.env['ir.config_parameter'].get_param(
-            'hr_attendance_calendar.max_extra_hours', 0.0))
+            'hr_attendance_extra_hours.max_extra_hours', 0.0))
         # First reset the extra hours lost
         self.write({'extra_hours_lost': 0})
 
@@ -291,7 +275,7 @@ class HrAttendanceDay(models.Model):
                 att_day.extra_hours_lost = 0
 
     @api.multi
-    def breaks_is_valid(self):
+    def validate_extend_breaks(self):
         """
         This will extend the break time based on the break attendance rules
         of the day. The paid hours will be recomputed after that.
@@ -303,7 +287,7 @@ class HrAttendanceDay(models.Model):
                 lambda r: not r.is_offered)
 
             if att_breaks:
-                att_break = att_breaks.sorted('logged_duration')[-1]
+                att_break = att_breaks.sorted('total_duration')[-1]
             # if not exist create a new one
             else:
                 att_break = self.env['hr.attendance.break'].create({
@@ -313,25 +297,24 @@ class HrAttendanceDay(models.Model):
 
             att_break.write({
                 'system_modified': True,
-                'modified_duration': att_break.original_duration +
-                extension_duration
+                'additional_duration': extension_duration
             })
 
         def compute_break_time_to_add(rule):
             breaks_total = sum(
-                att_day.break_ids.mapped('logged_duration') or [0])
+                att_day.break_ids.mapped('total_duration') or [0])
             due_break_total = rule["due_break_total"]
             due_break_min_length = rule["due_break"]
 
             time_to_add = 0
             break_max = max(
-                att_day.break_ids.mapped('logged_duration') or [0])
+                att_day.break_ids.mapped('total_duration') or [0])
             if break_max < due_break_min_length:
                 # We want to extend an non-offered break to at least the
                 # minimum value.
                 break_max_non_offered = max(att_day.break_ids.filtered(
                     lambda b: not b.is_offered).mapped(
-                    'logged_duration') or [0])
+                    'total_duration') or [0])
                 time_to_add += due_break_min_length - break_max_non_offered
                 breaks_total += time_to_add
 
@@ -424,17 +407,19 @@ class HrAttendanceDay(models.Model):
             att_date = fields.Date.from_string(att_day.date)
             week_day = att_date.weekday()
 
-            # look for a valid contract
+            # look for a valid contract or take schedule of employee
             contracts = self.env['hr.contract'].search([
                 ('employee_id', '=', att_day.employee_id.id),
                 ('date_start', '<=', att_day.date),
                 '|', ('date_end', '=', False), ('date_end', '>=', att_day.date)
             ])
+            schedules = contracts.mapped('working_hours')
+            if not schedules:
+                schedules = att_day.employee_id.calendar_id
             cal_att_ids = self.env['resource.calendar.attendance']
 
-            # select the attendance(s) from the contract that is valid today.
-            current_cal_att = contracts.mapped(
-                'working_hours.attendance_ids').filtered(
+            # select the attendance(s) that are valid today.
+            current_cal_att = schedules.mapped('attendance_ids').filtered(
                 lambda a: int(a.dayofweek) == week_day)
 
             for cal_att_id in current_cal_att:
@@ -453,20 +438,26 @@ class HrAttendanceDay(models.Model):
 
     @api.multi
     def compute_breaks(self):
+        """
+        Given the attendance of the employee, check the break time rules
+        and compute the break time of the day. This will then trigger the
+        computation of the paid hours for the day
+        (total attendance - additional break time added)
+        :return: None
+        """
         for att_day in self.filtered('attendance_ids'):
             att_day.break_ids.unlink()
 
             # add the offered break
             free_break = self.env['base.config.settings'].get_free_break()
             if free_break > 0:
-                rd = self.env['hr.attendance.break'].create(
-                    {
-                        'employee_id': att_day.employee_id.id,
-                        'attendance_day_id': att_day.id,
-                        'is_offered': True,
-                        'system_modified': True,
-                    })
-                rd.write({'modified_duration': free_break})
+                self.env['hr.attendance.break'].create({
+                    'employee_id': att_day.employee_id.id,
+                    'attendance_day_id': att_day.id,
+                    'is_offered': True,
+                    'system_modified': True,
+                    'additional_duration': free_break
+                })
 
             att_ids = att_day.attendance_ids
             iter_att = iter(att_ids.sorted(key=lambda r: r.check_in))
@@ -485,8 +476,8 @@ class HrAttendanceDay(models.Model):
                 except StopIteration:
                     break
 
-            # valid break
-            att_day.breaks_is_valid()
+            # Extend the break time if needed
+            att_day.validate_extend_breaks()
         self._compute_paid_hours()
 
     @api.multi

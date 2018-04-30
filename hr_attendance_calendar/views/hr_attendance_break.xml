@@ -15,8 +15,8 @@
                         </group>
                         <group>
                             <field name="original_duration" widget="float_time"/>
-                            <field name="modified_duration" widget="float_time"/>
-                            <field name="logged_duration" widget="float_time"/>
+                            <field name="additional_duration" widget="float_time"/>
+                            <field name="total_duration" widget="float_time"/>
                         </group>
                     </group>
                 </sheet>

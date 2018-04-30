@@ -2,17 +2,20 @@
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
-#    @author: Eicher Stephane <seicher@compassion.ch>
+#    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from odoo import models, fields
 
+def migrate(cr, version):
+    if not version:
+        return
 
-class HrHolidaysStatus(models.Model):
-    _inherit = 'hr.holidays.status'
-
-    keep_due_hours = fields.Boolean(oldname='remove_from_due_hours')
+    # Recompute break duration with new field definition
+    cr.execute("""
+        UPDATE hr_attendance_break
+        SET additional_duration = total_duration - original_duration;
+    """)

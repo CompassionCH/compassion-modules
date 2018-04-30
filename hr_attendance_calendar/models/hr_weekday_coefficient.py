@@ -13,6 +13,7 @@ from odoo import models, fields, api
 
 class HrWeekdayCoefficient(models.Model):
     _name = "hr.weekday.coefficient"
+    _description = "HR Weekday Coefficient"
 
     ##########################################################################
     #                                 FIELDS                                 #

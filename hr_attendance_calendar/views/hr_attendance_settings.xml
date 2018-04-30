@@ -12,7 +12,6 @@
                type="xml">
             <field name="group_attendance_use_pin"
                    position="after">
-                <field name="work_day_duration" widget="float_time"/>
                 <field name="free_break" widget="float_time"/>
                 <field name="max_extra_hours" widget="float_time"/>
             </field>
@@ -145,18 +144,18 @@
               sequence="99"
               groups="hr_attendance.group_hr_attendance_manager"/>
 
-    <menuitem id="hr_attendance.menu_hr_attendance_settings"
+    <menuitem id="menu_hr_attendance_settings"
               name="Attendance Settings"
               parent="menu_hr_attendance_configuration"
               sequence="1"/>
 
-    <menuitem id="hr_attendance_calendar.menu_hr_attendance_rules"
+    <menuitem id="menu_hr_attendance_rules"
               name="Break rules"
               parent="menu_hr_attendance_configuration"
               sequence="2"
               action="action_hr_attendance_rules"/>
 
-    <menuitem id="hr_attendance_calendar.menu_hr_weekday_coefficient"
+    <menuitem id="menu_hr_weekday_coefficient"
               name="Coefficient"
               parent="menu_hr_attendance_configuration"
               sequence="3"
