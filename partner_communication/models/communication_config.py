@@ -93,6 +93,7 @@ class CommunicationConfig(models.Model):
         'report_name is the name of the report used for printing,'
         'b64_data is the binary of the attachment'
     )
+    active = fields.Boolean(default=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #

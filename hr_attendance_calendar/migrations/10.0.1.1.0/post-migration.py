@@ -19,3 +19,13 @@ def migrate(cr, version):
         UPDATE hr_attendance_break
         SET additional_duration = total_duration - original_duration;
     """)
+
+    # Rename settings
+    cr.execute("""
+            UPDATE ir_config_parameter
+            SET key = replace(key, 'hr_attendance_calendar',
+                              'hr_attendance_extra_hours')
+        """)
+
+    # See https://confluence.compassion.ch/display/CI/Migration+hr-attendance
+    # for migration protocol

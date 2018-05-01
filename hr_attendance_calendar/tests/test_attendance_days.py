@@ -47,8 +47,9 @@ class TestAttendanceDays(SavepointCase):
         #     ('employee_id', '=', self.gilles.id)
         # ])
         pieter_days = day_obj.search([
-            ('employee_id', '=', self.pieter.id)
-        ])
+            ('employee_id', '=', self.pieter.id),
+            ('date', '<', fields.Date.today())
+        ], order='date desc')
         # Pieter is admin and has only one day logged day, yesterday.
         p_last_day = pieter_days[0]
         # Bunch of tests for the attendance day
