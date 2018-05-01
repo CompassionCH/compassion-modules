@@ -22,6 +22,7 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" name="open_preview" icon="fa-search-plus" string="Preview" type="object"/>
+                        <button class="oe_stat_button" name="open_translation_view" icon="fa-edit" string="Edit template" type="object"/>
                     </div>
                     <field name="proposition_text" groups="base.group_erp_manager"/>
                     <hr groups="base.group_erp_manager"/>

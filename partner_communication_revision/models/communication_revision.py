@@ -404,6 +404,11 @@ class CommunicationRevision(models.Model):
             'compare_subject': master.subject
         })
 
+    @api.multi
+    def open_translation_view(self):
+        return self.env['ir.translation'].translate_fields(
+            'mail.template', self.config_id.email_template_id.id, 'body_html')
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
