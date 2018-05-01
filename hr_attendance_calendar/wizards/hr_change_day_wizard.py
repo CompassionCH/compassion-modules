@@ -1,6 +1,7 @@
-from odoo import models, fields, api
 import datetime
 from collections import OrderedDict
+
+from odoo import models, fields, api
 
 
 class ChangeDayDWizard(models.TransientModel):

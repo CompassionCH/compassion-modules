@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2016 Open Net Sarl (https://www.open-net.ch)
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    @author: Eicher Stephane <seicher@compassion.ch>
-#    @author: Coninckx David <david@coninckx.com>
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
 from odoo import models, fields, api
 
 
@@ -26,8 +24,8 @@ class HrAttendance(models.Model):
     due_hours = fields.Float(related='attendance_day_id.due_hours')
     total_attendance = fields.Float(
         related='attendance_day_id.total_attendance')
-    has_linked_change_day_request = fields.Boolean(
-        related='attendance_day_id.has_linked_change_day_request')
+    has_change_day_request = fields.Boolean(
+        related='attendance_day_id.has_change_day_request')
 
     ##########################################################################
     #                               ORM METHODS                              #
@@ -37,43 +35,51 @@ class HrAttendance(models.Model):
         """ If the corresponding attendance day doesn't exist a new one is
         created"""
         new_record = super(HrAttendance, self).create(vals)
-        att_check_in_date = fields.Date.from_string(vals['check_in'])
-        attendance_day = self.env['hr.attendance.day'].search([
-            ('employee_id', '=', vals['employee_id']),
-            ('date', '=', att_check_in_date)
-        ])
-        if attendance_day:
-            new_record.attendance_day_id = attendance_day
-            # todo: find better solution
-            new_record.attendance_day_id.compute_breaks()
-
-        else:
-            self.env['hr.attendance.day'].create({
-                'employee_id': vals['employee_id'],
-                'date': att_check_in_date
-            })
+        new_record.attendance_day_id = new_record._find_related_day()
         return new_record
 
     @api.multi
     def write(self, vals):
-        for att in self:
-            # Check if only the date of check_in has change and thus change the
+        att_day_updated = self.env['hr.attendance']
+        if 'check_in' in vals:
+            # Check if the date of check_in has changed and change the
             # attendance_day
-            check_in_date = fields.Date.from_string(att.check_in)
-
-            if 'check_in' in vals:
+            for att in self:
+                old_check_in = fields.Date.from_string(att.check_in)
                 check_in = fields.Date.from_string(vals['check_in'])
-                # the check_in_date has change
-                if check_in_date != check_in:
-                    attendance_day = self.env['hr.attendance.day'].search([
-                        ('employee_id', '=', att.employee_id.id),
-                        ('date', '=', check_in)])
-                    vals['attendance_day_id'] = attendance_day.id
+                if old_check_in != check_in:
+                    # Update break time of old attendance day
+                    att._find_related_day()
+                    # Save attendance to update attendance days after writing
+                    # the change.
+                    att_day_updated += att
 
-            ret = super(HrAttendance, self).write(vals)
+        res = super(HrAttendance, self).write(vals)
+        att_day_updated._find_related_day()
 
-            if 'check_in' in vals or 'check_out' in vals:
-                if 'no_compute_break' not in vals:
-                    self.attendance_day_id.compute_breaks()
+        return res
 
-            return ret
+    def _find_related_day(self):
+        """
+        Finds the existing attendance day or create one if it doesn't exist
+        Called when an attendance is mapped to an attendance day
+        :return: hr.attendance.day record
+        """
+        attendance_days = self.env['hr.attendance.day']
+        for attendance in self:
+            date = attendance.check_in[:10]
+            employee_id = attendance.employee_id.id
+            attendance_day = self.env['hr.attendance.day'].search([
+                ('employee_id', '=', employee_id),
+                ('date', '=', date)
+            ])
+            if not attendance_day:
+                attendance_day = self.env['hr.attendance.day'].create({
+                    'employee_id': employee_id,
+                    'date': date
+                })
+            else:
+                # A modified attendance should update related breaks
+                attendance_day.compute_breaks()
+            attendance_days |= attendance_day
+        return attendance_days

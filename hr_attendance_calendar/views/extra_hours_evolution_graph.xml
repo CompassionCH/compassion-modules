@@ -34,5 +34,7 @@
               name="Balance history"
               parent="hr_attendance.menu_hr_attendance_manage_attendances"
               action="view_extra_hours_evolution_day_report"
-              sequence="98"/>
+              sequence="98"
+              groups="base.group_user"
+    />
 </odoo>

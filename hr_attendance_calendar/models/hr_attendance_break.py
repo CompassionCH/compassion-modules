@@ -3,6 +3,7 @@
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    @author: Stephane Eicher <seicher@compassion.ch>
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
 #
@@ -12,29 +13,31 @@ from odoo import models, fields, api
 
 class HrAttendanceBreak(models.Model):
     _name = "hr.attendance.break"
+    _description = "Attendance break"
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
 
-    name = fields.Char('Description', compute='_compute_name')
-    employee_id = fields.Many2one('hr.employee', "Employee")
-    attendance_day_id = fields.Many2one('hr.attendance.day', "Attendance day",
-                                        readonly=True,
-                                        ondelete="cascade")
-    original_duration = fields.Float(store=True, readonly=True,
-                                     compute='_compute_original_duration')
-    modified_duration = fields.Float('Duration adjusted by the rules',
-                                     readonly=True)
-    logged_duration = fields.Float('Break duration', readonly=True,
-                                   store=True,
-                                   compute='_compute_logged_duration')
+    name = fields.Char(compute='_compute_name')
+    employee_id = fields.Many2one('hr.employee', "Employee", required=True)
+    attendance_day_id = fields.Many2one(
+        'hr.attendance.day', "Attendance day", required=True,
+        ondelete="cascade")
 
-    is_offered = fields.Boolean('Is offered', default=False)
-    system_modified = fields.Boolean('Modified by the system', default=False)
+    original_duration = fields.Float(
+        compute='_compute_original_duration', store=True)
+    additional_duration = fields.Float('Duration added by the rules')
+    total_duration = fields.Float(
+        'Break duration', readonly=True, compute='_compute_total_duration',
+        store=True, oldname='logged_duration')
 
-    start = fields.Datetime("Start", compute='_compute_start_stop', store=True)
-    stop = fields.Datetime("Stop", compute='_compute_start_stop', store=True)
+    is_offered = fields.Boolean()
+    system_modified = fields.Boolean(
+        'Modified by the system', compute='_compute_system_modified')
+
+    start = fields.Datetime(compute='_compute_start_stop', store=True)
+    stop = fields.Datetime(compute='_compute_start_stop', store=True)
 
     previous_attendance = fields.Many2one('hr.attendance')
     next_attendance = fields.Many2one('hr.attendance')
@@ -43,7 +46,6 @@ class HrAttendanceBreak(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.multi
-    @api.depends('logged_duration')
     def _compute_name(self):
         for rd in self:
             if rd.is_offered:
@@ -81,8 +83,12 @@ class HrAttendanceBreak(models.Model):
                 att_break.original_duration = delta.total_seconds() / 3600.0
 
     @api.multi
-    @api.depends('original_duration', 'modified_duration')
-    def _compute_logged_duration(self):
+    @api.depends('original_duration', 'additional_duration')
+    def _compute_total_duration(self):
         for rd in self:
-            rd.logged_duration = rd.modified_duration if \
-                rd.modified_duration else rd.original_duration
+            rd.total_duration = rd.original_duration + rd.additional_duration
+
+    @api.multi
+    def _compute_system_modified(self):
+        for rd in self:
+            rd.system_modified = rd.additional_duration

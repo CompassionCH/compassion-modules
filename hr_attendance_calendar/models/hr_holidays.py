@@ -3,6 +3,7 @@
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    @author: Stephane Eicher <seicher@compassion.ch>
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
 #
@@ -17,77 +18,72 @@ _logger = logging.getLogger(__name__)
 class HrHolidays(models.Model):
     _inherit = 'hr.holidays'
 
-    ##########################################################################
-    #                                 FIELDS                                 #
-    ##########################################################################
-    hr_att_day_ids = fields.Many2many('hr.attendance.day',
-                                      string='Attendance day related')
+    keep_due_hours = fields.Boolean(related='holiday_status_id.keep_due_hours')
 
     ##########################################################################
     #                               ORM METHODS                              #
     ##########################################################################
-    @api.model
-    def create(self, vals):
-        rd = super(HrHolidays, self).create(vals)
-        rd.find_attendance_day()
-        return rd
+    @api.multi
+    def action_validate(self):
+        res = super(HrHolidays, self).action_validate()
+        att_days = self.find_attendance_days()
+        att_days.recompute_due_hours()
+        return res
 
     @api.multi
-    def write(self, vals):
-        super(HrHolidays, self).write(vals)
-        if 'date_from' in vals or 'date_to' in vals:
-            self.find_attendance_day()
-            self.hr_att_day_ids.recompute_due_hours()
-        return True
+    def action_refuse(self):
+        res = super(HrHolidays, self).action_refuse()
+        att_days = self.find_attendance_days()
+        att_days.recompute_due_hours()
+        return res
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
     @api.multi
-    def find_attendance_day(self):
+    def find_attendance_days(self):
+        att_days = self.env['hr.attendance.day']
         for rd in self:
-            rd.hr_att_day_ids = self.env['hr.attendance.day'].search([
+            att_day = att_days.search([
                 ('employee_id', '=', rd.employee_id.id),
                 ('date', '>=', rd.date_from),
                 ('date', '<=', rd.date_to)
             ])
+            # Add leave in attendance day
+            att_day.leave_ids |= rd
+            att_days |= att_day
+        return att_days
 
-    @api.model
-    def compute_work_day(self, str_date):
+    @api.multi
+    def compute_leave_time(self, str_date):
         """
-        Compute if the leave duration for the day is full/half work day.
-
+        Compute leave duration for the day.
         :param str_date: date to compute (string)
-        :return: daily leave duration (in days)
-        :rtype: float [1,0.5]
+        :return: daily leave duration (in hours)
+        :rtype: float [0:24]
         """
 
-        start = fields.Datetime.context_timestamp(self.employee_id,
-                                                  fields.Datetime.from_string(
-                                                      self.date_from))
-
-        end = fields.Datetime.context_timestamp(self.employee_id,
-                                                fields.Datetime.from_string(
-                                                    self.date_to))
+        start_time = fields.Datetime.from_string(self.date_from)
+        end_time = fields.Datetime.from_string(self.date_to)
+        start_day = fields.Date.from_string(self.date_from)
+        end_day = fields.Date.from_string(self.date_to)
 
         date = fields.Date.from_string(str_date)
-        date = start.replace(year=date.year, month=date.month, day=date.day,
-                             hour=12, minute=0, second=0)
 
-        if start.date() == date.date():
-            if start < date:
-                return 1
+        if date == start_day == end_day:
+            duration = (end_time - start_time).total_seconds() / 3600.0
+        elif start_day < date < end_day:
+            duration = 24
+        elif start_day <= date <= end_day:
+            if date == start_day:
+                end_time = start_time.replace(hour=23, minute=59)
             else:
-                return 0.5
-        elif end.date() == date.date():
-            if end > date:
-                return 1
-            else:
-                return 0.5
-        elif start.date() < date.date() < end.date():
-            return 1
+                start_time = end_time.replace(hour=0, minute=0)
+            duration = (end_time - start_time).total_seconds() / 3600.0
         else:
             _logger.error(
                 "This attendance day doesn't correspond to this leave"
             )
-            return 0
+            duration = 0
+
+        return duration
