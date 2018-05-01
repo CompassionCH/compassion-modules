@@ -54,14 +54,15 @@
      <record model="ir.ui.view" id="communication_config_search">
         <field name="name">communication.config.search</field>
         <field name="model">partner.communication.config</field>
+        <field name="inherit_id" ref="partner_communication.communication_config_search"/>
         <field name="arch" type="xml">
-            <search>
-                <field name="name" string="Name"/>
+            <field name="name" position="after">
                 <filter name="need_action" string="Need Action" domain="['|', '&amp;', ('revision_ids.state', '=', 'pending'), ('revision_ids.user_id', '=', uid), '&amp;', ('revision_ids.state', '=', 'submit'), ('revision_ids.correction_user_id', '=', uid)]"/>
                 <separator/>
                 <filter name="active" string="Active" domain="[('state', '=', 'active')]"/>
                 <filter name="pending" string="In Revision" domain="[('state', '=', 'pending')]"/>
-            </search>
+                <separator/>
+            </field>
         </field>
      </record>
 </odoo>
